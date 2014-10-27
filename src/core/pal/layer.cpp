@@ -492,7 +492,7 @@ namespace pal
     connectedTexts = NULL;
   }
 
-  void Layer::chopFeaturesAtRepeatDistance( )
+  void Layer::chopFeaturesAtRepeatDistance()
   {
     GEOSContextHandle_t geosctxt = geosContext();
     LinkedList<FeaturePart*> * newFeatureParts = new LinkedList<FeaturePart*>( ptrFeaturePartCompare );

@@ -270,7 +270,7 @@ bool QgsDualView::saveEditChanges()
 void QgsDualView::previewExpressionBuilder()
 {
   // Show expression builder
-  QgsExpressionBuilderDialog dlg( mLayerCache->layer(), mFeatureList->displayExpression() , this );
+  QgsExpressionBuilderDialog dlg( mLayerCache->layer(), mFeatureList->displayExpression(), this );
   dlg.setWindowTitle( tr( "Expression based preview" ) );
   dlg.setExpressionText( mFeatureList->displayExpression() );
 
@@ -292,9 +292,9 @@ void QgsDualView::previewColumnChanged( QObject* action )
   {
     if ( !mFeatureList->setDisplayExpression( QString( "COALESCE( \"%1\", '<NULL>' )" ).arg( previewAction->text() ) ) )
     {
-      QMessageBox::warning( this
-                            , tr( "Could not set preview column" )
-                            , tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
+      QMessageBox::warning( this,
+                            tr( "Could not set preview column" ),
+                            tr( "Could not set column '%1' as preview column.\nParser error:\n%2" )
                             .arg( previewAction->text() )
                             .arg( mFeatureList->parserErrorString() )
                           );

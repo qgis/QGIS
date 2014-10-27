@@ -86,6 +86,9 @@ QgsOWSSourceSelect::QgsOWSSourceSelect( QString service, QWidget * parent, Qt::W
   mCacheComboBox->addItem( tr( "Prefer network" ), QNetworkRequest::PreferNetwork );
   mCacheComboBox->addItem( tr( "Always network" ), QNetworkRequest::AlwaysNetwork );
 
+  // 'Prefer network' is the default noted in the combobox's tool tip
+  mCacheComboBox->setCurrentIndex( mCacheComboBox->findData( QNetworkRequest::PreferNetwork ) );
+
   if ( !mManagerMode )
   {
     connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
@@ -335,7 +338,7 @@ QgsNumericSortTreeWidgetItem *QgsOWSSourceSelect::createItem(
   return item;
 }
 
-void QgsOWSSourceSelect::populateLayerList( )
+void QgsOWSSourceSelect::populateLayerList()
 {
 }
 
@@ -351,8 +354,6 @@ void QgsOWSSourceSelect::on_mConnectButton_clicked()
   mConnName = mConnectionsComboBox->currentText();
 
   QgsOWSConnection connection( mService, mConnectionsComboBox->currentText() );
-  //QgsDataProvider *theProvider = connection.provider( );
-  mConnectionInfo = connection.connectionInfo();
   mUri = connection.uri();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );

@@ -70,7 +70,7 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     QString selectedIdentifier();
 
     // QgsWcsCapabilities virtual methods
-    void populateLayerList( );
+    void populateLayerList();
     void addClicked();
     void on_mLayersTreeWidget_itemSelectionChanged();
     void enableLayersForCrs( QTreeWidgetItem *item );

@@ -163,7 +163,7 @@ class CORE_EXPORT QgsComposerGroupItem: public QgsComposerLegendItem
 class CORE_EXPORT QgsComposerStyleItem: public QStandardItem
 {
   public:
-    QgsComposerStyleItem( );
+    QgsComposerStyleItem();
     QgsComposerStyleItem( QgsComposerLegendItem *item );
     ~QgsComposerStyleItem();
 };

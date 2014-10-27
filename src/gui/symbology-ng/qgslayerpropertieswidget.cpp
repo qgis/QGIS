@@ -151,8 +151,8 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayerV2* layer 
       w->setSymbolLayer( layer );
       stackedWidget->addWidget( w );
       stackedWidget->setCurrentWidget( w );
-      // start recieving updates from widget
-      connect( w , SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+      // start receiving updates from widget
+      connect( w, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
       return;
     }
   }

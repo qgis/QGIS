@@ -79,15 +79,15 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
 
     /***************** LOCATION *****************/
     //! Set location page
-    void setLocationPage( );
+    void setLocationPage();
 
     //! Set locations
-    void setLocations( );
+    void setLocations();
 
     //! Location radio switched
     void on_mCreateLocationRadioButton_clicked() { locationRadioSwitched(); }
     void on_mSelectLocationRadioButton_clicked() { locationRadioSwitched(); }
-    void locationRadioSwitched( );
+    void locationRadioSwitched();
 
     //! Existing location selection
     void on_mLocationComboBox_textChanged( const QString &txt )
@@ -115,7 +115,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     //! Location radio switched
     void on_mNoProjRadioButton_clicked() { projRadioSwitched(); }
     void on_mProjRadioButton_clicked() { projRadioSwitched(); }
-    void projRadioSwitched( );
+    void projRadioSwitched();
 
     //! Set GRASS projection structures for currently selected projection
     // or CRS_XY if 'not defined' is selected

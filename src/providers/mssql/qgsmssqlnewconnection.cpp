@@ -185,7 +185,7 @@ void QgsMssqlNewConnection::testConnection()
   {
     QMessageBox::information( this,
                               tr( "Test connection" ),
-                              db.lastError( ).text( ) );
+                              db.lastError().text() );
   }
   else
   {

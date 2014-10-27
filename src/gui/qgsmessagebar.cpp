@@ -253,7 +253,7 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   showItem( item );
 }
 
-QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget , QgsMessageBar::MessageLevel level, int duration )
+QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
 {
   QgsMessageBarItem *item;
   item = dynamic_cast<QgsMessageBarItem*>( widget );

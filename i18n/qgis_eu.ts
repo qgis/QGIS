@@ -1123,42 +1123,27 @@ Kontsulta:
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="47"/>
-        <source>Action</source>
-        <translation>Ekintza</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="53"/>
-        <source>Create new file</source>
-        <translation>Sortu fitxategi berria</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="81"/>
+        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="133"/>
         <source>Drop existing one</source>
         <translation>Jaregin lehendik dagoena</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="93"/>
-        <source>Append data to file</source>
-        <translation>Gehitu datuak fitxategiari</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="103"/>
+        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="47"/>
         <source>Options</source>
         <translation>Aukerak</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="111"/>
+        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="55"/>
         <source>Source SRID</source>
         <translation>Sorburu-SRIDa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="144"/>
+        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="88"/>
         <source>Target SRID</source>
         <translation>Helburu-SRIDa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="163"/>
+        <location filename="../python/plugins/db_manager/ui/DlgExportVector.ui" line="107"/>
         <source>Encoding</source>
         <translation>Kodeketa</translation>
     </message>
@@ -1235,63 +1220,48 @@ Kontsulta:
     </message>
     <message>
         <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="146"/>
-        <source>Action</source>
-        <translation>Ekintza</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="152"/>
-        <source>Create new table</source>
-        <translation>Sortu taula berria</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="180"/>
-        <source>Drop existing one</source>
-        <translation>Jaregin existitzen dena</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="192"/>
-        <source>Append data to table</source>
-        <translation>Gehitu datuak taulari</translation>
-    </message>
-    <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="202"/>
         <source>Options</source>
         <translation>Aukerak</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="208"/>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="152"/>
         <source>Primary key</source>
         <translation>Gako nagusia</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="222"/>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="166"/>
         <source>Geometry column</source>
         <translation>Geometria-zutabea</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="238"/>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="182"/>
         <source>Source SRID</source>
         <translation>Sorburu-SRIDa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="268"/>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="212"/>
         <source>Target SRID</source>
         <translation>Helburu-SRIDa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="284"/>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="228"/>
         <source>Encoding</source>
         <translation>Kodeketa</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="301"/>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="245"/>
         <source>Create single-part geometries instead of multi-part</source>
         <translation>Sortu zati bakarreko geometriak, zati anitzeko geometrien ordez</translation>
     </message>
     <message>
-        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="308"/>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="252"/>
         <source>Create spatial index</source>
         <translation>Sortu indize espaziala</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/db_manager/ui/DlgImportVector.ui" line="259"/>
+        <source>Drop existing table</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2597,7 +2567,7 @@ Geruza berria aurkibideari gehitu nahi diozu?</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation>Hautatu batuko diren shapefile-ak dituen direktorioa</translation>
+        <translation>Hautatu fusionatuko diren shapefile-ak dituen direktorioa</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
@@ -3570,24 +3540,100 @@ Plugina ez da gaituko.</translation>
         <translation>Proiekzioak</translation>
     </message>
     <message>
-        <source>Warp (Reproject)</source>
-        <translation>Bihurritu (birproiektatu)</translation>
+        <source>Warp (Reproject)...</source>
+        <translation>Bihurritu (birproiektatu)...</translation>
+    </message>
+    <message>
+        <source>Assign Projection...</source>
+        <translation>Esleitu proiekzioa...</translation>
+    </message>
+    <message>
+        <source>Extract Projection...</source>
+        <translation>Erauzi proiekzioa...</translation>
+    </message>
+    <message>
+        <source>Rasterize (Vector to Raster)...</source>
+        <translation>Rasterizatu (bektoretik rasterrera)...</translation>
+    </message>
+    <message>
+        <source>Polygonize (Raster to Vector)...</source>
+        <translation>Poligonizatu (rasterretik bektorera)...</translation>
+    </message>
+    <message>
+        <source>Translate (Convert Format)...</source>
+        <translation>Itzuli (bihurtu formatua)...</translation>
+    </message>
+    <message>
+        <source>RGB to PCT...</source>
+        <translation>RGBtik PCTra...</translation>
+    </message>
+    <message>
+        <source>PCT to RGB...</source>
+        <translation>PCTtik RGBra...</translation>
+    </message>
+    <message>
+        <source>Contour...</source>
+        <translation>Sestra-kurbak...</translation>
+    </message>
+    <message>
+        <source>Clipper...</source>
+        <translation>Ebakitzailea...</translation>
+    </message>
+    <message>
+        <source>Sieve...</source>
+        <translation>Bahea...</translation>
+    </message>
+    <message>
+        <source>Near Black...</source>
+        <translation>Ia beltza...</translation>
+    </message>
+    <message>
+        <source>Fill nodata...</source>
+        <translation>Bete daturik gabekoak...</translation>
+    </message>
+    <message>
+        <source>Proximity (Raster Distance)...</source>
+        <translation>Hurbiltasuna (raster-distantzia)...</translation>
+    </message>
+    <message>
+        <source>Grid (Interpolation)...</source>
+        <translation>Sareta (interpolazioa)...</translation>
+    </message>
+    <message>
+        <source>DEM (Terrain Models)...</source>
+        <translation>DEM (altitudeen eredu digitalak)...</translation>
+    </message>
+    <message>
+        <source>Build Virtual Raster (Catalog)...</source>
+        <translation>Eraiki raster birtuala (katalogoa)...</translation>
+    </message>
+    <message>
+        <source>Merge...</source>
+        <translation>Fusionatu...</translation>
+    </message>
+    <message>
+        <source>Information...</source>
+        <translation>Informazioa...</translation>
+    </message>
+    <message>
+        <source>Build Overviews (Pyramids)...</source>
+        <translation>Eraiki ikuspegi orokorrak (piramideak)...</translation>
+    </message>
+    <message>
+        <source>Tile Index...</source>
+        <translation>Lauza-aurkibidea...</translation>
+    </message>
+    <message>
+        <source>GdalTools Settings...</source>
+        <translation>GDAL tresnen ezarpenak...</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
         <translation>Bihurritu irudi bat beste koordenatu-sistema bat har dezan</translation>
     </message>
     <message>
-        <source>Assign projection</source>
-        <translation>Esleitu proiekzioa</translation>
-    </message>
-    <message>
         <source>Add projection info to the raster</source>
         <translation>Gehitu proiekzio-informazioa rasterrari</translation>
-    </message>
-    <message>
-        <source>Extract projection</source>
-        <translation>Erauzi proiekzioa</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
@@ -3598,40 +3644,20 @@ Plugina ez da gaituko.</translation>
         <translation>Bihurketa</translation>
     </message>
     <message>
-        <source>Rasterize (Vector to raster)</source>
-        <translation>Rasterizatu (bektoretik rasterrera)</translation>
-    </message>
-    <message>
         <source>Burns vector geometries into a raster</source>
         <translation>Geometria bektorialak raster batean markatzen ditu</translation>
-    </message>
-    <message>
-        <source>Polygonize (Raster to vector)</source>
-        <translation>Poligonizatu (rasterretik bektorera)</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
         <translation>Poligono-geruza bat sortzen du raster batetik abiatuz</translation>
     </message>
     <message>
-        <source>Translate (Convert format)</source>
-        <translation>itzuli (bihurtu formatua)</translation>
-    </message>
-    <message>
         <source>Converts raster data between different formats</source>
         <translation>Raster datuak formatuz aldatzen ditu</translation>
     </message>
     <message>
-        <source>RGB to PCT</source>
-        <translation>RGBtik PCTra</translation>
-    </message>
-    <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
         <translation>24 biteko RGB irudia 8 biteko bihurtzen du</translation>
-    </message>
-    <message>
-        <source>PCT to RGB</source>
-        <translation>PCTtik RGBra</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
@@ -3642,64 +3668,32 @@ Plugina ez da gaituko.</translation>
         <translation>Erauzketa</translation>
     </message>
     <message>
-        <source>Contour</source>
-        <translation>Sestra-kurbak</translation>
-    </message>
-    <message>
         <source>Builds vector contour lines from a DEM</source>
         <translation>Sestra-kurba bektorialak sortzen ditu DEM batetik</translation>
-    </message>
-    <message>
-        <source>Clipper</source>
-        <translation>Ebakitzailea</translation>
     </message>
     <message>
         <source>Analysis</source>
         <translation>Analisia</translation>
     </message>
     <message>
-        <source>Sieve</source>
-        <translation>Bahea</translation>
-    </message>
-    <message>
         <source>Removes small raster polygons</source>
         <translation>Raster-poligono txikiak kentzen ditu</translation>
-    </message>
-    <message>
-        <source>Near black</source>
-        <translation>Ia beltza</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
         <translation>Ia beltzak/zuriak diren ertzak balio zehatzetan bihurtzen ditu</translation>
     </message>
     <message>
-        <source>Fill nodata</source>
-        <translation>Bete daturik gabekoak</translation>
-    </message>
-    <message>
         <source>Fill raster regions by interpolation from edges</source>
         <translation>Raster-eskualdeak betetzen ditu ertzetatik interpolazioa eginez</translation>
-    </message>
-    <message>
-        <source>Proximity (Raster distance)</source>
-        <translation>Hurbiltasuna (raster-distantzia)</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
         <translation>Hurbiltasun-mapa rasterra sortzen du</translation>
     </message>
     <message>
-        <source>Grid (Interpolation)</source>
-        <translation>Sareta (interpolazioa)</translation>
-    </message>
-    <message>
         <source>Create raster from the scattered data</source>
         <translation>Raster bat sortzen du sakabanatutako datuetatik</translation>
-    </message>
-    <message>
-        <source>DEM (Terrain models)</source>
-        <translation>DEM (altitudeen eredu digitalak)</translation>
     </message>
     <message>
         <source>Tool to analyze and visualize DEMs</source>
@@ -3710,48 +3704,24 @@ Plugina ez da gaituko.</translation>
         <translation>Denetarik</translation>
     </message>
     <message>
-        <source>Build Virtual Raster (Catalog)</source>
-        <translation>Eraiki raster birtuala (katalogoa)</translation>
-    </message>
-    <message>
         <source>Builds a VRT from a list of datasets</source>
         <translation>VRT bat eraikitzen du datu-multzoen zerrenda batetik abiatuz</translation>
-    </message>
-    <message>
-        <source>Merge</source>
-        <translation>Batu</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
         <translation>Eraiki mosaiko azkarra irudien multzo batetik abiatuz</translation>
     </message>
     <message>
-        <source>Information</source>
-        <translation>Informazioa</translation>
-    </message>
-    <message>
         <source>Lists information about raster dataset</source>
         <translation>Datu-multzo rasterren informazioa zerrendatzen du</translation>
-    </message>
-    <message>
-        <source>Build overviews (Pyramids)</source>
-        <translation>Eraiki ikuspegi orokorrak (piramideak)</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
         <translation>Ikuspegi orokorreko irudiak eraiki edo berraikitzen ditu</translation>
     </message>
     <message>
-        <source>Tile index</source>
-        <translation>Lauzen aurkibidea</translation>
-    </message>
-    <message>
         <source>Build a shapefile as a raster tileindex</source>
         <translation>Eraiki shapefile bat lauzen aurkibide raster gisa</translation>
-    </message>
-    <message>
-        <source>GdalTools settings</source>
-        <translation>GdalTools ezarpenak</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
@@ -4051,7 +4021,7 @@ Amaitu egin nahi al duzu?</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation>Hautatu batuko diren fitxategiak</translation>
+        <translation>Hautatu fusionatuko diren fitxategiak</translation>
     </message>
     <message>
         <source>Error retrieving the extent</source>
@@ -4075,11 +4045,11 @@ Desgaitu &quot;Erabili ebakitze-hedadura&quot; aukera hutsik egongo ez den irtee
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation>Hautatu non gordeko den batutako irteera</translation>
+        <translation>Hautatu non gordeko den fusionatutako irteera</translation>
     </message>
     <message>
         <source>Select the input directory with files to Merge</source>
-        <translation>Hautatu batuko diren fitxategiak dituen sarrera-direktorioa</translation>
+        <translation>Hautatu fusionatuko diren fitxategiak dituen sarrera-direktorioa</translation>
     </message>
     <message>
         <source>{0} not created.</source>
@@ -4807,7 +4777,7 @@ tresnaren Laguntz botoian sakatzean.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
         <source>Merge</source>
-        <translation>Batu</translation>
+        <translation>Fusionatu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="87"/>
@@ -5256,7 +5226,7 @@ See log for more details</source>
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation>Batu denak</translation>
+        <translation>Fusionatu denak</translation>
     </message>
     <message>
         <source>Geometry</source>
@@ -5711,8 +5681,8 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>Heatmap</name>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="90"/>
-        <source>Heatmap</source>
-        <translation>Bero-mapa</translation>
+        <source>Heatmap...</source>
+        <translation>Bero-mapa...</translation>
     </message>
     <message>
         <location filename="../src/plugins/heatmap/heatmap.cpp" line="93"/>
@@ -6730,19 +6700,9 @@ Ireki emaitzen koadroa hura egiaztatzeko.</translation>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1180"/>
-        <source>New SpatiaLite Layer ...</source>
-        <translation>SpatiaLite geruza berria...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1183"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="1192"/>
-        <source>Raster calculator ...</source>
-        <translation>Raster-kalkulagailua...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1201"/>
@@ -6846,6 +6806,81 @@ Ireki emaitzen koadroa hura egiaztatzeko.</translation>
         <translation>Kendu geruza/taldea</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgisapp.ui" line="1468"/>
+        <source>Configure Shortcuts...</source>
+        <translation>Konfiguratu laster-teklak...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1500"/>
+        <source>API Documentation</source>
+        <translation>API dokumentazioa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1611"/>
+        <source>Full Histogram Stretch</source>
+        <translation>Histograma osoaren luzatzea</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1743"/>
+        <source>Touch Zoom and Pan</source>
+        <translation>Ukipen bidezko zooma eta desplazamendua</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1926"/>
+        <source>SVG Annotation</source>
+        <translation>SVG oharpena</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2048"/>
+        <source>&amp;Download Data...</source>
+        <translation>&amp;Deskargatu datuak...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2053"/>
+        <source>&amp;Import Topology from XML...</source>
+        <translation>&amp;Inportatu topologia XMLtik...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2058"/>
+        <source>&amp;Export Topology to SpatiaLite...</source>
+        <translation>&amp;Esportatu topologia SpatiaLite-ra...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2067"/>
+        <source>Increase Brightness</source>
+        <translation>Handitu distira</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2076"/>
+        <source>Decrease Brightness</source>
+        <translation>Txikitu distira</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2085"/>
+        <source>Increase Contrast</source>
+        <translation>Handitu kontrastea</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2094"/>
+        <source>Decrease Contrast</source>
+        <translation>Txikitu kontrastea</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2103"/>
+        <source>Select By Expression...</source>
+        <translation>Hautatu adierazpenaren arabera...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2111"/>
+        <source>Need Commercial Support?</source>
+        <translation>Laguntza komertziala nahi duzu?</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="2120"/>
+        <source>Open Field Calculator...</source>
+        <translation>Ireki eremu-kalkulagailua...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgisapp.ui" line="2176"/>
         <source>Add from Layer Definition File...</source>
         <translation>Gehitu geruza-definizioko fitxategitik...</translation>
@@ -6913,17 +6948,27 @@ Ireki emaitzen koadroa hura egiaztatzeko.</translation>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2253"/>
         <source>Show Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Erakutsi hautatutako geruzak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2262"/>
         <source>Hide Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezkutatu hautatutako geruzak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1332"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1180"/>
+        <source>New SpatiaLite Layer...</source>
+        <translation>SpatiaLite geruza berria...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgisapp.ui" line="1192"/>
+        <source>Raster Calculator...</source>
+        <translation>Raster-kalkulagailua...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1337"/>
@@ -6991,7 +7036,6 @@ Ireki emaitzen koadroa hura egiaztatzeko.</translation>
         <translation>Kudeatu eta instalatu pluginak...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2120"/>
         <location filename="../src/ui/qgisapp.ui" line="2123"/>
         <source>Open Field Calculator</source>
         <translation>Ireki eremu-kalkulagailua</translation>
@@ -7077,11 +7121,6 @@ Ireki emaitzen koadroa hura egiaztatzeko.</translation>
         <translation>CRS pertsonalizatua...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1468"/>
-        <source>Configure shortcuts...</source>
-        <translation>Konfiguratu laster-teklak...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1480"/>
         <source>Local Histogram Stretch</source>
         <translation>Histograma lokalaren luzatzea</translation>
@@ -7100,11 +7139,6 @@ Ireki emaitzen koadroa hura egiaztatzeko.</translation>
         <location filename="../src/ui/qgisapp.ui" line="1495"/>
         <source>F1</source>
         <translation>F1</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="1500"/>
-        <source>API documentation</source>
-        <translation>API dokumentazioa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1509"/>
@@ -7168,11 +7202,6 @@ Ctrl (Cms) handitu 15 graduz.</translation>
         <location filename="../src/ui/qgisapp.ui" line="1602"/>
         <source>Python Console</source>
         <translation>Python kontsola</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="1611"/>
-        <source>Full histogram stretch</source>
-        <translation>Histograma osoaren luzatzea</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1614"/>
@@ -7262,7 +7291,6 @@ Ctrl (Cms) handitu 15 graduz.</translation>
         <translation>Mugitu mapa hautapenera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1743"/>
         <location filename="../src/ui/qgisapp.ui" line="1746"/>
         <source>Touch zoom and pan</source>
         <translation>Ukipen bidezko zooma eta desplazamendua</translation>
@@ -7374,11 +7402,6 @@ Uneko geruza editagarrian du eragina</translation>
         <translation>Bikoiztu geruza(k)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="1926"/>
-        <source>SVG annotation</source>
-        <translation>SVG oharpena</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="1935"/>
         <location filename="../src/ui/qgisapp.ui" line="1938"/>
         <source>Save for All Layers</source>
@@ -7427,54 +7450,9 @@ Uneko geruza editagarrian du eragina</translation>
         <translation>Biratu elementua(k)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgisapp.ui" line="2048"/>
-        <source>&amp;Download data</source>
-        <translation>&amp;Deskargatu datuak</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2053"/>
-        <source>&amp;Import topology from XML</source>
-        <translation>&amp;Inportatu topologia XMLtik</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2058"/>
-        <source>&amp;Export topology to SpatiaLite</source>
-        <translation>&amp;Esportatu topologia SpatiaLite-ra</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2067"/>
-        <source>Increase brightness</source>
-        <translation>Handitu distira</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2076"/>
-        <source>Decrease brightness</source>
-        <translation>Txikitu distira</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2085"/>
-        <source>Increase contrast</source>
-        <translation>Handitu kontrastea</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2094"/>
-        <source>Decrease contrast</source>
-        <translation>Txikitu kontrastea</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2103"/>
-        <source>Select By Expression</source>
-        <translation>Hautatu adierazpen bidez</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgisapp.ui" line="2106"/>
         <source>Select features using an expression</source>
         <translation>Hautatu elementuak adierazpen baten bidez</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgisapp.ui" line="2111"/>
-        <source>Need commercial support?</source>
-        <translation>Laguntza komertziala behar duzu?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="2156"/>
@@ -7943,6 +7921,10 @@ Uneko geruza editagarrian du eragina</translation>
     <message>
         <source>Models</source>
         <translation>Ereduak</translation>
+    </message>
+    <message>
+        <source>Could not load model %s</source>
+        <translation>Ezin da %s eredua kargatu</translation>
     </message>
     <message>
         <source>Could not load model %s
@@ -8617,28 +8599,28 @@ Ikusi egunkaria informazio gehiagorako.</translation>
 <context>
     <name>Processing</name>
     <message>
-        <source>Processing</source>
-        <translation>Prozesuak</translation>
+        <source>Pro&amp;cessing</source>
+        <translation>Pro_zesuak</translation>
     </message>
     <message>
-        <source>Toolbox</source>
-        <translation>Tresna-kutxa</translation>
+        <source>&amp;Toolbox</source>
+        <translation>&amp;Tresna-kutxa</translation>
     </message>
     <message>
-        <source>Graphical modeler</source>
-        <translation>Modelizatzaile grafikoa</translation>
+        <source>Graphical &amp;Modeler...</source>
+        <translation>&amp;Modelizatzaile grafikoa...</translation>
     </message>
     <message>
-        <source>History and log</source>
-        <translation>Historia eta egunkaria</translation>
+        <source>&amp;History and Log...</source>
+        <translation>&amp;Historia eta egunkaria...</translation>
     </message>
     <message>
-        <source>Options and configuration</source>
-        <translation>Aukerak eta konfigurazioa</translation>
+        <source>&amp;Options...</source>
+        <translation>&amp;Aukerak...</translation>
     </message>
     <message>
-        <source>&amp;Results viewer</source>
-        <translation>&amp;Emaitzen bisorea</translation>
+        <source>&amp;Results Viewer...</source>
+        <translation>&amp;Emaitzen bisorea...</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
@@ -9297,22 +9279,22 @@ Erabili iface QGIS APIaren interfazea atzitzeko, edo idatzi &apos;help(iface)&ap
         <translation>Eratorri normalak estimatzen...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10224"/>
+        <location filename="../src/app/qgisapp.cpp" line="10274"/>
         <source>minidump written to %1</source>
         <translation>mini-iraulketa %1(e)n idatzi da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10228"/>
+        <location filename="../src/app/qgisapp.cpp" line="10278"/>
         <source>writing of minidump to %1 failed (%2)</source>
         <translation>mini-iraulketa %1(e)n idazteak huts egin du (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10235"/>
+        <location filename="../src/app/qgisapp.cpp" line="10285"/>
         <source>creation of minidump to %1 failed (%2)</source>
         <translation>mini-iraulketa %1(e)n sortzeak huts egin du (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10238"/>
+        <location filename="../src/app/qgisapp.cpp" line="10288"/>
         <source>Crash dumped</source>
         <translation>Kraskadura irauli da</translation>
     </message>
@@ -9449,7 +9431,7 @@ Errorea(%2): %3</translation>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1411"/>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1517"/>
-        <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="176"/>
+        <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="177"/>
         <source>CRS</source>
         <translation>CRSa</translation>
     </message>
@@ -9678,32 +9660,32 @@ Errorea(%2): %3</translation>
         <translation>Ezin da &apos;%1:%2:%3:%4:%5&apos; kolore batean bihurtu</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2699"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2705"/>
         <source>function help for %1 missing</source>
         <translation>%1 funtzioaren laguntza falta da</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2708"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2714"/>
         <source>Operators</source>
         <translation>Eragileak</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2710"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2716"/>
         <source>Fields and Values</source>
         <translation>Eremuak eta balioak</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2711"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2717"/>
         <source>Math</source>
         <translation>Matematika</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2712"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2718"/>
         <source>Conversions</source>
         <translation>Bihurketak</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2709"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2715"/>
         <source>Conditionals</source>
         <translation>Baldintzak</translation>
     </message>
@@ -9750,27 +9732,27 @@ Errorea(%2): %3</translation>
         <translation>urte|urte</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2713"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2719"/>
         <source>Date and Time</source>
         <translation>Ordua eta eguna</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2714"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2720"/>
         <source>String</source>
         <translation>Katea</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2715"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2721"/>
         <source>Color</source>
         <translation>Kolorea</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2716"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2722"/>
         <source>Geometry</source>
         <translation>Geometria</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2717"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2723"/>
         <source>Record</source>
         <translation>Erregistroa</translation>
     </message>
@@ -9786,80 +9768,82 @@ Errorea(%2): %3</translation>
         <translation>(errorik ez)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2102"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2108"/>
         <source>Unary minus only for numeric values.</source>
         <translation>Unario minusa zenbakizko balioetarako soilik.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2158"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2164"/>
         <source>Can&apos;t preform /, *, or % on DateTime and Interval</source>
         <translation>Ezin da erabili /, *, edo % DateTime eta Interval motetan</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2572"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2578"/>
         <source>[unsupported type;%1; value:%2]</source>
         <translation>onartzen ez den moa;%1; balioa:%2]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="2600"/>
+        <location filename="../src/core/qgsexpression.cpp" line="2606"/>
         <source>Column &apos;%1&apos; not found</source>
         <translation>Ez da aurkitu &apos;%1&apos; zutabea</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="46"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="216"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="240"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="259"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="295"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="367"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="395"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="428"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="450"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="475"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2034"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2333"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2367"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2405"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2540"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2605"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3424"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4855"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4949"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6091"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6120"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6143"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="48"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="218"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="242"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="261"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="297"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="369"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="397"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="430"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="452"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="477"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2036"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2335"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2369"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2407"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2542"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2607"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3426"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4857"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4888"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4959"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6101"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6130"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6153"/>
         <source>Exception: %1</source>
         <translation>Salbuespena: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="46"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="216"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="240"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="259"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="295"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="367"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="395"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="428"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="450"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="475"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2034"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2333"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2367"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2405"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2540"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2605"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3424"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4855"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4949"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5747"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6091"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6120"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6143"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="48"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="218"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="242"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="261"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="297"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="369"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="397"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="430"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="452"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="477"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2036"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2335"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2369"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2407"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2542"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2607"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3426"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4857"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4888"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4959"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5757"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6101"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6130"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6153"/>
         <source>GEOS</source>
         <translation>GEOS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="5747"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5757"/>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
         <translation>GEOS 3.2 bertsioa baino lehenagokoek ez dute GEOSInterpolate onartzen</translation>
     </message>
@@ -9979,28 +9963,28 @@ Errorea(%2): %3</translation>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1257"/>
+        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1258"/>
         <location filename="../src/core/qgspoint.cpp" line="189"/>
         <location filename="../src/core/qgspoint.cpp" line="277"/>
         <source>W</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1257"/>
+        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1258"/>
         <location filename="../src/core/qgspoint.cpp" line="189"/>
         <location filename="../src/core/qgspoint.cpp" line="277"/>
         <source>E</source>
         <translation>E</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1265"/>
+        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1266"/>
         <location filename="../src/core/qgspoint.cpp" line="190"/>
         <location filename="../src/core/qgspoint.cpp" line="278"/>
         <source>S</source>
         <translation>H</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1265"/>
+        <location filename="../src/core/composer/qgscomposermapgrid.cpp" line="1266"/>
         <location filename="../src/core/qgspoint.cpp" line="190"/>
         <location filename="../src/core/qgspoint.cpp" line="278"/>
         <source>N</source>
@@ -10077,26 +10061,26 @@ Errorea(%2): %3</translation>
         <translation>ez da aurkitzen sortutako %1 eremua (OGR errorea: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1685"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1688"/>
         <source>Invalid variant type for field %1[%2]: received %3 with type %4</source>
         <translation>Aldaera-mota baliogabea %1 eremurako [%2]: %4 motako %3 jaso da</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="408"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1690"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1725"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1736"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1752"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1770"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1693"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1728"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1739"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1755"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1773"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="64"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1641"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2048"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2065"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2113"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2139"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2202"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2208"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2226"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1637"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2044"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2061"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2109"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2135"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2198"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2204"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2222"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -10116,38 +10100,38 @@ Errorea(%2): %3</translation>
         <translation>Modu lehenetsian, BNA fitxategiek lerro anitzeko formatuan sortzen dira. Erregistro bakoitzerako, lehen lerroak identifikatzaileak eta koordenatuen mota/kopurua gordetzen ditu. Hurrengo lerroetako bakoitzak koordenatu-pare bat gordetzen du.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1722"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1733"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1749"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1725"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1736"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1752"/>
         <source>Feature geometry not imported (OGR error: %1)</source>
         <translation>Elementu-geometria ez da inportatu (OGR errorea: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1768"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1771"/>
         <source>Feature creation error (OGR error: %1)</source>
         <translation>Errorea elementua sortzean (OGR errorea: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1964"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1973"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="380"/>
         <source>Failed to transform a point while drawing a feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation>Puntu baten transformazioak huts egin du &apos;%1&apos; IDa duen elementu bat marraztean. Idazketa gelditu egin da. (Salbuespena: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1989"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1998"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="334"/>
         <source>Feature write errors:</source>
         <translation>Erroreak elementua idaztean:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1999"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2008"/>
         <location filename="../src/core/qgsvectorlayerimport.cpp" line="358"/>
         <source>Stopping after %1 errors</source>
         <translation>Gelditzen %1 errore gertatu ondoren</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2022"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2558"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2031"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2565"/>
         <source>
 Only %1 of %2 features written.</source>
         <translation>
@@ -10155,39 +10139,39 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="509"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2202"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1653"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2211"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1649"/>
         <source>Arc/Info ASCII Coverage</source>
         <translation>Arc/Inforen ASCII Coverage</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="574"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2209"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1658"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2218"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1654"/>
         <source>Atlas BNA</source>
         <translation>Atlas BNA</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1663"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1659"/>
         <source>Comma Separated Value</source>
         <translation>Komaz banandutako balioa</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="684"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2223"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2232"/>
         <source>ESRI Shapefile</source>
         <translation>ESRI Shapefile</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2230"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2239"/>
         <source>DBF file</source>
         <translation>DBF fitxategia</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="714"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2237"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1691"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1693"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2246"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1687"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1689"/>
         <source>FMEObjects Gateway</source>
         <translation>FMEObjects Gateway</translation>
     </message>
@@ -10238,7 +10222,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="636"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2216"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2225"/>
         <source>Comma Separated Value [CSV]</source>
         <translation>Komaz Banandutako Balioak [CSV]</translation>
     </message>
@@ -10270,12 +10254,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="733"/>
         <source>Maximum number of figures after decimal separator to write in coordinates. Default to 15. Truncation will occur to remove trailing zeros.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordenatuetan idatziko diren dezimalen kopuru maximoa. Balio lehenetsia 15 da. Zenbakia trunkatu egingo da atzeko zeroak kentzeko.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="741"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2244"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1699"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2253"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1695"/>
         <source>GeoJSON</source>
         <translation>GeoJSON</translation>
     </message>
@@ -10331,8 +10315,8 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="835"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2251"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1704"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2260"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1700"/>
         <source>GeoRSS</source>
         <translation>GeoRSS</translation>
     </message>
@@ -10383,15 +10367,15 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="924"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2258"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1709"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2267"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1705"/>
         <source>Geography Markup Language [GML]</source>
         <translation>Geography Markup Language [GML]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="939"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2265"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2274"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1710"/>
         <source>Generic Mapping Tools [GMT]</source>
         <translation>Generic Mapping Tools [GMT]</translation>
     </message>
@@ -10427,22 +10411,22 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1002"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2272"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1719"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2281"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1715"/>
         <source>GPS eXchange Format [GPX]</source>
         <translation>GPS eXchange Format [GPX]</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1017"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2279"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1737"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2288"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1733"/>
         <source>INTERLIS 1</source>
         <translation>INTERLIS 1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1032"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2286"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1742"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2295"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1738"/>
         <source>INTERLIS 2</source>
         <translation>INTERLIS 2</translation>
     </message>
@@ -10463,8 +10447,8 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1067"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2293"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1751"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2302"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1747"/>
         <source>Keyhole Markup Language [KML]</source>
         <translation>Keyhole Markup Language [KML]</translation>
     </message>
@@ -10475,20 +10459,20 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1092"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2300"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2309"/>
         <source>Mapinfo TAB</source>
         <translation>Mapinfo TAB</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1104"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2308"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2317"/>
         <source>Mapinfo MIF</source>
         <translation>Mapinfo MIF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1117"/>
         <source>Determine whether 2D (seed_2d.dgn) or 3D (seed_3d.dgn) seed file should be used. This option is ignored if the SEED option is provided.</source>
-        <translation type="unfinished"></translation>
+        <translation>Adierazi 2D (seed_2d.dgn) ala 3D (seed_3d.dgn) hazi-fitxategia erabiliko den. Aukera hau ezikusi egiten da SEED aukera ematen bada.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1123"/>
@@ -10533,8 +10517,8 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1171"/>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1186"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2315"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1761"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2324"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1757"/>
         <source>Microstation DGN</source>
         <translation>Microstation DGN</translation>
     </message>
@@ -10575,37 +10559,37 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1258"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2322"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1794"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2331"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1790"/>
         <source>S-57 Base file</source>
         <translation>S-57 Base fitxategia</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="1273"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2329"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1800"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2338"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1796"/>
         <source>Spatial Data Transfer Standard [SDTS]</source>
         <translation>Spatial Data Transfer Standard [SDTS]</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1287"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1361"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1286"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1360"/>
         <source>Can be used to avoid creating the geometry_columns and spatial_ref_sys tables in a new database. By default these metadata tables are created when a new database is created.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1304"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1303"/>
         <source>Controls the format used for the geometry column. Defaults to WKB.This is generally more space and processing efficient, but harder to inspect or use in simple applications than WKT (Well Known Text).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1382"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1381"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be convered to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1333"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1414"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1332"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1413"/>
         <source>column_name1[,column_name2, ...] A list of (String) columns that must be compressed with ZLib DEFLATE algorithm. This might be beneficial for databases that have big string blobs. However, use with care, since the value of such columns will be seen as compressed binary content with other SQLite utilities (or previous OGR versions). With OGR, when inserting, modifying or queryings compressed columns, compression/decompression is done transparently. However, such columns cannot be (easily) queried with an attribute filter or WHERE clause. Note: in table definition, such columns have the &apos;VARCHAR_deflate&apos; declaration type.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10630,92 +10614,107 @@ Only %1 of %2 features written.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1314"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1313"/>
         <source>Controls whether layer and field names will be laundered for easier use in SQLite. Laundered names will be converted to lower case and some special characters(&apos; - #) will be changed to underscores.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1348"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2336"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1347"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2345"/>
         <source>SQLite</source>
         <translation>SQLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1372"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1371"/>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
-        <translation type="unfinished"></translation>
+        <translation>Txertatu EPSG CSV fitxategiaren edukia spatial_ref_sys taulan. Ezarri NO SQLite datu-base arruntetarako.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1389"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1388"/>
         <source>If the database is of the SpatiaLite flavour, and if OGR is linked against libspatialite, this option can be used to control if a spatial index must be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datu-basea SpatiaLite motakoa bada, eta OGR libspatialite-kin estekatuta badago, aukera hau erabil daiteke indize espaziala sortu behar den kontrolatzeko.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1396"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1395"/>
         <source>If the format of the geometry BLOB is of the SpatiaLite flavour, this option can be used to control if the compressed format for geometries (LINESTRINGs, POLYGONs) must be used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1403"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1402"/>
         <source>Used to force the SRID number of the SRS associated with the layer. When this option isn&apos;t specified and that a SRS is associated with the layer, a search is made in the spatial_ref_sys to find a match for the SRS, and, if there is no match, a new entry is inserted for the SRS in the spatial_ref_sys table. When the SRID option is specified, this search (and the eventual insertion of a new entry) will not be done: the specified SRID is used as such.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1429"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2344"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1428"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2353"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="176"/>
         <location filename="../src/providers/spatialite/qgsspatialitefeatureiterator.cpp" line="288"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1453"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2351"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1846"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1441"/>
+        <source>Override the header file used - in place of header.dxf.</source>
+        <translation>Gainidatzi goiburu-fitxategia, header.dxf ordez erabilia izan dadin.</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1446"/>
+        <source>Override the trailer file used - in place of trailer.dxf.</source>
+        <translation>Gainidatzi atzeko fitxategia, trailer.dxf ordez erabilia izan dadin.</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1454"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2360"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1842"/>
         <source>AutoCAD DXF</source>
         <translation>AutoCAD DXF</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1466"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1467"/>
         <source>Indicates the GeoConcept export file extension. TXT was used by earlier releases of GeoConcept. GXT is currently used.</source>
         <translation>GeoConcept esportazio-fitxategiaren luzapena adierazten du. TXT erabiltzen zen GeoConcept-en aurreko bertsioetan. Egun GXT erabiltzen da.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1484"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2358"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1841"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1477"/>
+        <source>path to the GCT : the GCT file describe the GeoConcept types definitions: In this file, every line must start with //# followed by a keyword. Lines starting with // are comments.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1487"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2367"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1837"/>
         <source>Geoconcept</source>
         <translation>Geoconcept</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1497"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1500"/>
         <source>When this option is set, the new layer will be created inside the named FeatureDataset folder. If the folder does not already exist, it will be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aukera hau ezartzen denean, geruza berria izendatutako FeatureDataset karpetan sortuko da. Karpeta lehendik existitzen ez bada, sortu egingo da.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1503"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1506"/>
         <source>Set name of geometry column in new layer. Defaults to &apos;SHAPE&apos;.</source>
         <translation>Ezarri geruza berriaren geometria-zutabearen izena. Lehenetsia &apos;SHAPE&apos; da.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1508"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1511"/>
         <source>Name of the OID column to create. Defaults to &apos;OBJECTID&apos;.</source>
         <translation>Sortuko den OID zutabearen izena. Lehenetsia &apos;OBJECTID&apos; da.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1515"/>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2365"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1672"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1518"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2374"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1668"/>
         <source>ESRI FileGDB</source>
         <translation>ESRI FileGDB</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1860"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="1865"/>
         <source>Cannot overwrite a OGR layer in place</source>
         <translation>Ezin da OGR geruza bat gainidatzi tokian</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2465"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="2472"/>
         <source>Failed to transform, writing stopped. (Exception: %1)</source>
         <translation>Ezin izan da transformatu, idaztea gelditu da (Salbuespena: %1)</translation>
     </message>
@@ -11642,7 +11641,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2139"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1873"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1869"/>
         <source>GDAL/OGR VSIFileHandler</source>
         <translation>GDAL/OGR VSIFileHandler</translation>
     </message>
@@ -11853,19 +11852,19 @@ Zure GRASS instalazioaren bidea (GISBASE) zein den zehaztu nahi duzu?</translati
         <translation>Ezin da rasterra marraztu</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1678"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1711"/>
         <source>Loading of the MSSQL provider failed</source>
         <translation>MSSQL hornitzailea kargatzeak huts egin du</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1712"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1745"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2721"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3080"/>
         <source>Unsupported type for field %1</source>
         <translation>Onartzen ez den mota %1 eremuan</translation>
     </message>
     <message>
-        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1726"/>
+        <location filename="../src/providers/mssql/qgsmssqlprovider.cpp" line="1759"/>
         <location filename="../src/providers/oracle/qgsoracleprovider.cpp" line="2740"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3100"/>
         <source>Creation of fields failed</source>
@@ -11882,169 +11881,169 @@ Zure GRASS instalazioaren bidea (GISBASE) zein den zehaztu nahi duzu?</translati
         <translation>Ezin da datu-iturburua sortu. lehendik badago %1 eta gainidazte-bandera faltsua da.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1641"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1637"/>
         <source>Unable to get driver %1</source>
         <translation>Ezin da %1 kontrolagailua eskuratu</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1649"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1645"/>
         <source>Arc/Info Binary Coverage</source>
         <translation>Arc/Inforen Coverage (estaldura) bitarra</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1666"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1662"/>
         <source>DODS</source>
         <translation>DODS</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1786"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1782"/>
         <source>OpenFileGDB</source>
         <translation>OpenFileGDB</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1676"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1678"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1672"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1674"/>
         <source>ESRI Personal GeoDatabase</source>
         <translation>ESRIren geodatubase pertsonala</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1684"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1680"/>
         <source>ESRI ArcSDE</source>
         <translation>ESRIren ArcSDE</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1688"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1684"/>
         <source>ESRI Shapefiles</source>
         <translation>ESRIren shapefileak</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1724"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1720"/>
         <source>GeoPackage</source>
         <translation>GeoPackage</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1729"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1725"/>
         <source>Grass Vector</source>
         <translation>GRASS bektorea</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1733"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1729"/>
         <source>Informix DataBlade</source>
         <translation>Informixen DataBlade</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1747"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1743"/>
         <source>Ingres</source>
         <translation>Ingres</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1756"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1752"/>
         <source>Mapinfo File</source>
         <translation>MapInfo fitxategia</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1766"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1762"/>
         <source>MySQL</source>
         <translation>MySQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1770"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1766"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1774"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1770"/>
         <source>Oracle Spatial</source>
         <translation>Oracle Spatial</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1778"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1774"/>
         <source>ODBC</source>
         <translation>ODBC</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1782"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1778"/>
         <source>OGDI Vectors</source>
         <translation>OGDI bektoreak</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1790"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1786"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1806"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1802"/>
         <source>Systematic Organization of Spatial Information [SOSI]</source>
         <translation>Systematic Organization of Spatial Information [SOSI]</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1811"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1807"/>
         <source>SQLite/SpatiaLite</source>
         <translation>SQLite/SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1816"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1812"/>
         <source>Storage and eXchange Format</source>
         <translation>Storage and eXchange Format</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1821"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1817"/>
         <source>UK. NTF2</source>
         <translation>UK. NTF2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1825"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1821"/>
         <source>U.S. Census TIGER/Line</source>
         <translation>U.S. Census TIGER/Line</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1829"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1825"/>
         <source>VRT - Virtual Datasource</source>
         <translation>VRT - Virtual Datasource</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1835"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1831"/>
         <source>X-Plane/Flightgear</source>
         <translation>X-Plane/Flightgear</translation>
     </message>
     <message>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="2145"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1880"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1876"/>
         <source>All files</source>
         <translation>Fitxategi guztiak</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2048"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2044"/>
         <source>Duplicate field (10 significant characters): %1</source>
         <translation>Eremu bikoiztua (10 karaktere esanguratsu): %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2065"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2061"/>
         <source>Creating the data source %1 failed: %2</source>
         <translation>%1 datu-iturburua sortzeak huts egin du: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2113"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2109"/>
         <source>Unknown vector type of %1</source>
         <translation>%1 bektore-mota ezezaguna</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2139"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2135"/>
         <source>Creation of OGR data source %1 failed: %2</source>
         <translation>%1 OGR datu-iturburua sortzeak huts egin du: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2202"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2198"/>
         <source>field %1 with unsupported type %2 skipped</source>
         <translation>onartzen ez den %2 motako %1 eremua saltatu da</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2208"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2204"/>
         <source>creation of field %1 failed</source>
         <translation>%1 eremuaren sorrerak huts egin du</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2226"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2222"/>
         <source>Couldn&apos;t create file %1.qpj</source>
         <translation>Ezin izan da %1.qpj fitxategia sortu</translation>
     </message>
@@ -12522,7 +12521,7 @@ SQL: %1</translation>
         <translation>Gorde estiloa DBan (%1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1041"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1053"/>
         <source>Could not save symbology because:
 %1</source>
         <translation>Ezin izan da sinbologia gorde:
@@ -12594,9 +12593,9 @@ SQL: %1</translation>
         <translation>Ez dago errendatzailerik marrazkirako.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="176"/>
+        <location filename="../src/core/qgsvectorlayerrenderer.cpp" line="177"/>
         <source>Simplify transform error caught: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinplifikazioaren transformazio-errorea atzitu da: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="121"/>
@@ -12616,7 +12615,11 @@ This is probably due to an incorrect WMS Server URL.
 Response was:
 
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan dira WMS kapazitateak eskuratu: %1 %2 lerroan, %3 zutabean
+WMS zerbitzariaren URLa okerra delako izan daiteke.
+Erantzuna hau izan da:
+
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="237"/>
@@ -12625,7 +12628,11 @@ This might be due to an incorrect WMS Server URL.
 Tag:%3
 Response was:
 %4</source>
-        <translation type="unfinished"></translation>
+        <translation>Ezin izan dira WMS kapazitateak eskuratu esperotako formatuan (DTD): ez da %1 edo %2 aurkitu.
+WMS zerbitzariaren URLa okerra delako izan daiteke.
+Etiketa:%3
+Erantzuna hau izan da:
+%4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmscapabilities.cpp" line="1467"/>
@@ -12955,13 +12962,13 @@ Response was:
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1320"/>
-        <location filename="../src/app/qgisapp.cpp" line="4912"/>
-        <location filename="../src/app/qgisapp.cpp" line="6242"/>
-        <location filename="../src/app/qgisapp.cpp" line="6268"/>
-        <location filename="../src/app/qgisapp.cpp" line="6280"/>
-        <location filename="../src/app/qgisapp.cpp" line="6419"/>
-        <location filename="../src/app/qgisapp.cpp" line="6499"/>
-        <location filename="../src/app/qgisapp.cpp" line="9408"/>
+        <location filename="../src/app/qgisapp.cpp" line="4922"/>
+        <location filename="../src/app/qgisapp.cpp" line="6277"/>
+        <location filename="../src/app/qgisapp.cpp" line="6303"/>
+        <location filename="../src/app/qgisapp.cpp" line="6315"/>
+        <location filename="../src/app/qgisapp.cpp" line="6454"/>
+        <location filename="../src/app/qgisapp.cpp" line="6534"/>
+        <location filename="../src/app/qgisapp.cpp" line="9443"/>
         <source>Error</source>
         <translation>Errorea</translation>
     </message>
@@ -13026,7 +13033,7 @@ Jarri harremanetan garatzaileekin.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1712"/>
-        <location filename="../src/app/qgisapp.cpp" line="8629"/>
+        <location filename="../src/app/qgisapp.cpp" line="8664"/>
         <source>Coordinate:</source>
         <translation>Koordenatua:</translation>
     </message>
@@ -13116,12 +13123,12 @@ Jarri harremanetan garatzaileekin.</translation>
         <translation>Geruzak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2394"/>
+        <location filename="../src/app/qgisapp.cpp" line="2396"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>Mapa-geruzen zerrenda, geruza guztiak marrazte-ordenan erakusten dituena.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2395"/>
+        <location filename="../src/app/qgisapp.cpp" line="2397"/>
         <source>Layer order</source>
         <translation>Geruza-ordena</translation>
     </message>
@@ -13131,149 +13138,149 @@ Jarri harremanetan garatzaileekin.</translation>
         <translation>qgis.db pribatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2580"/>
-        <location filename="../src/app/qgisapp.cpp" line="3682"/>
+        <location filename="../src/app/qgisapp.cpp" line="2591"/>
+        <location filename="../src/app/qgisapp.cpp" line="3693"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Hutsik &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2635"/>
+        <location filename="../src/app/qgisapp.cpp" line="2646"/>
         <source>QGIS version</source>
         <translation>QGIS bertsioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2636"/>
+        <location filename="../src/app/qgisapp.cpp" line="2647"/>
         <source>QGIS code revision</source>
         <translation>QGIS kode-berrikuspena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2640"/>
+        <location filename="../src/app/qgisapp.cpp" line="2651"/>
         <source>Compiled against Qt</source>
         <translation>Qt erabiliz konpilatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2641"/>
+        <location filename="../src/app/qgisapp.cpp" line="2652"/>
         <source>Running against Qt</source>
         <translation>Qt erabiliz exekutatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2645"/>
+        <location filename="../src/app/qgisapp.cpp" line="2656"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>GDAL/OGR erabiliz konpilatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2646"/>
+        <location filename="../src/app/qgisapp.cpp" line="2657"/>
         <source>Running against GDAL/OGR</source>
         <translation>GDAL/OGR erabiliz exekutatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2655"/>
+        <location filename="../src/app/qgisapp.cpp" line="2666"/>
         <source>PostgreSQL Client Version</source>
         <translation>PostgreSQL bezeroaren bertsioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2659"/>
+        <location filename="../src/app/qgisapp.cpp" line="2670"/>
         <source>No support.</source>
         <translation>Ez da onartzen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2663"/>
+        <location filename="../src/app/qgisapp.cpp" line="2674"/>
         <source>SpatiaLite Version</source>
         <translation>SpatiaLite bertsioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2669"/>
+        <location filename="../src/app/qgisapp.cpp" line="2680"/>
         <source>QWT Version</source>
         <translation>QWT bertsioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2670"/>
+        <location filename="../src/app/qgisapp.cpp" line="2681"/>
         <source>PROJ.4 Version</source>
         <translation>PROJ.4 bertsioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2674"/>
+        <location filename="../src/app/qgisapp.cpp" line="2685"/>
         <source>QScintilla2 Version</source>
         <translation>QScintilla2 bertsioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2677"/>
+        <location filename="../src/app/qgisapp.cpp" line="2688"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>QGISen kopia honek arazketa-irteera idazten du.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2805"/>
+        <location filename="../src/app/qgisapp.cpp" line="2816"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1(e)k ez dauka geruzarik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2806"/>
-        <location filename="../src/app/qgisapp.cpp" line="2813"/>
-        <location filename="../src/app/qgisapp.cpp" line="3144"/>
+        <location filename="../src/app/qgisapp.cpp" line="2817"/>
+        <location filename="../src/app/qgisapp.cpp" line="2824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3155"/>
         <source>Invalid Data Source</source>
         <translation>Baliogabeko datu-iturburua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2812"/>
-        <location filename="../src/app/qgisapp.cpp" line="3143"/>
+        <location filename="../src/app/qgisapp.cpp" line="2823"/>
+        <location filename="../src/app/qgisapp.cpp" line="3154"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 ez da baliozko datu-iturburu ezaguna</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2904"/>
+        <location filename="../src/app/qgisapp.cpp" line="2915"/>
         <source>Vector</source>
         <translation>Bektoriala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3167"/>
+        <location filename="../src/app/qgisapp.cpp" line="3178"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3167"/>
+        <location filename="../src/app/qgisapp.cpp" line="3178"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>Ezin da atzitu PostgreSQLren hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3223"/>
+        <location filename="../src/app/qgisapp.cpp" line="3234"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1 geruza baliogabea da - ez da kargatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3224"/>
+        <location filename="../src/app/qgisapp.cpp" line="3235"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1 geruza baliogabea da eta ezin da kargatu. Begiratu &lt;a href=&quot;#messageLog&quot;&gt;mezu-egunkaria&lt;/a&gt; informazio gehiagorako.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3757"/>
-        <location filename="../src/app/qgisapp.cpp" line="3916"/>
-        <location filename="../src/app/qgisapp.cpp" line="3981"/>
+        <location filename="../src/app/qgisapp.cpp" line="3768"/>
+        <location filename="../src/app/qgisapp.cpp" line="3926"/>
+        <location filename="../src/app/qgisapp.cpp" line="3991"/>
         <source>QGIS files</source>
         <translation>QGIS fitxategiak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5637"/>
-        <location filename="../src/app/qgisapp.cpp" line="5696"/>
+        <location filename="../src/app/qgisapp.cpp" line="5670"/>
+        <location filename="../src/app/qgisapp.cpp" line="5729"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
         <translation>Elementuen fusioak edizio-moduan dauden geruzekin soilik funtzionatzen du. Fusionatze-tresna erabiltzeko, joan &apos;Geruza-&gt;Txandakatu edizioa&apos; aukerara.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6865"/>
+        <location filename="../src/app/qgisapp.cpp" line="6900"/>
         <source>No legend entries selected</source>
         <translation>Ez da legenda-sarrerarik hautatu </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6866"/>
+        <location filename="../src/app/qgisapp.cpp" line="6901"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>Hautatu legendatik kendu nahi dituzun geruzak eta taldeak.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6873"/>
+        <location filename="../src/app/qgisapp.cpp" line="6908"/>
         <source>Remove layers and groups</source>
         <translation>Kendu geruzak eta taldeak</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6873"/>
+        <location filename="../src/app/qgisapp.cpp" line="6908"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation>
@@ -13282,7 +13289,7 @@ Jarri harremanetan garatzaileekin.</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6885"/>
+        <location filename="../src/app/qgisapp.cpp" line="6920"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation>
@@ -13291,240 +13298,240 @@ Jarri harremanetan garatzaileekin.</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6960"/>
+        <location filename="../src/app/qgisapp.cpp" line="6995"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 mota ez da onartzen)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7646"/>
+        <location filename="../src/app/qgisapp.cpp" line="7681"/>
         <source>http://qgis.org/en/site/forusers/commercial_support.html</source>
         <translation>http://qgis.org/en/site/forusers/commercial_support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7912"/>
+        <location filename="../src/app/qgisapp.cpp" line="7947"/>
         <source>Do you want to save the current project? %1</source>
         <translation>Uneko proiektua gorde nahi duzu? %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9388"/>
+        <location filename="../src/app/qgisapp.cpp" line="9423"/>
         <source>Invalid Layer</source>
         <translation>Baliogabeko geruza</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3250"/>
+        <location filename="../src/app/qgisapp.cpp" line="3261"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3250"/>
+        <location filename="../src/app/qgisapp.cpp" line="3261"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>Ezin da atzitu SpatiaLiteren hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3265"/>
+        <location filename="../src/app/qgisapp.cpp" line="3276"/>
         <source>Delimited Text</source>
         <translation>Testu mugatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3265"/>
+        <location filename="../src/app/qgisapp.cpp" line="3276"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
         <translation>Ezin da atzitu testu mugatuko fitxategien hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3286"/>
+        <location filename="../src/app/qgisapp.cpp" line="3297"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3286"/>
+        <location filename="../src/app/qgisapp.cpp" line="3297"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>Ezin da atzitu MSSQLren hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3303"/>
+        <location filename="../src/app/qgisapp.cpp" line="3314"/>
         <source>Oracle</source>
         <translation>Oracle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3303"/>
+        <location filename="../src/app/qgisapp.cpp" line="3314"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>Ezin da atzitu Oracleren hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3326"/>
+        <location filename="../src/app/qgisapp.cpp" line="3337"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3326"/>
+        <location filename="../src/app/qgisapp.cpp" line="3337"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>Ezin da atzitu WMSren hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3343"/>
+        <location filename="../src/app/qgisapp.cpp" line="3354"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3343"/>
+        <location filename="../src/app/qgisapp.cpp" line="3354"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>Ezin da atzitu WCSren hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3365"/>
+        <location filename="../src/app/qgisapp.cpp" line="3376"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3365"/>
+        <location filename="../src/app/qgisapp.cpp" line="3376"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>Ezin da atzitu WFSren hautatze-koadroa hornitzailetik.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3552"/>
+        <location filename="../src/app/qgisapp.cpp" line="3563"/>
         <source>Default failed to open: %1</source>
         <translation>Lehenetsia irekitzeak huts egin du: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3556"/>
+        <location filename="../src/app/qgisapp.cpp" line="3567"/>
         <source>Default not found: %1</source>
         <translation>Ez da aurkitu lehenetsia: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3558"/>
+        <location filename="../src/app/qgisapp.cpp" line="3569"/>
         <source>Open Template Project</source>
         <translation>Ireki txantiloi-proiektua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3583"/>
+        <location filename="../src/app/qgisapp.cpp" line="3594"/>
         <source>Auto-open Project</source>
         <translation>Ireki proiektua automatikoki</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3616"/>
+        <location filename="../src/app/qgisapp.cpp" line="3627"/>
         <source>Failed to open: %1</source>
         <translation>Ezin izan da ireki: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3639"/>
+        <location filename="../src/app/qgisapp.cpp" line="3650"/>
         <source>Not valid project file: %1</source>
         <translation>Baliogabeko proiektu-fitxategia: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3652"/>
+        <location filename="../src/app/qgisapp.cpp" line="3663"/>
         <source>Project failed to open: %1</source>
         <translation>Ezin izan da proiektua ireki: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3659"/>
+        <location filename="../src/app/qgisapp.cpp" line="3670"/>
         <source>Default template has been reopened: %1</source>
         <translation>Txantiloi lehenetsia berriro ireki da: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3666"/>
+        <location filename="../src/app/qgisapp.cpp" line="3677"/>
         <source>File not found: %1</source>
         <translation>Ez da fitxategia aurkitu: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3734"/>
+        <location filename="../src/app/qgisapp.cpp" line="3745"/>
         <source>Calculating...</source>
         <translation>Kalkulatzen...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3734"/>
-        <location filename="../src/app/qgisapp.cpp" line="4836"/>
+        <location filename="../src/app/qgisapp.cpp" line="3745"/>
+        <location filename="../src/app/qgisapp.cpp" line="4846"/>
         <source>Abort...</source>
         <translation>Abortatu...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3755"/>
+        <location filename="../src/app/qgisapp.cpp" line="3766"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Hautatu irekiko den QGIS proiektu-fitxategia</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3792"/>
+        <location filename="../src/app/qgisapp.cpp" line="3802"/>
         <source>Loading project: %1</source>
         <translation>Proiektua kargatzen: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3806"/>
+        <location filename="../src/app/qgisapp.cpp" line="3816"/>
         <source>Unable to open project</source>
         <translation>Ezin izan da proiektua ireki</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3863"/>
+        <location filename="../src/app/qgisapp.cpp" line="3873"/>
         <source>Security warning</source>
         <translation>Segurtasun-abisua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3864"/>
+        <location filename="../src/app/qgisapp.cpp" line="3874"/>
         <source>project macros have been disabled.</source>
         <translation>Proiektuaren makroak desgaitu egin dira.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3855"/>
+        <location filename="../src/app/qgisapp.cpp" line="3865"/>
         <source>Enable macros</source>
         <translation>Gaitu makroak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3887"/>
+        <location filename="../src/app/qgisapp.cpp" line="3897"/>
         <source>Project loaded</source>
         <translation>Proiektua kargatuta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3914"/>
+        <location filename="../src/app/qgisapp.cpp" line="3924"/>
         <source>Choose a QGIS project file</source>
         <translation>Hautatu QGIS proiektu-fitxategia</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3946"/>
-        <location filename="../src/app/qgisapp.cpp" line="4000"/>
+        <location filename="../src/app/qgisapp.cpp" line="3956"/>
+        <location filename="../src/app/qgisapp.cpp" line="4010"/>
         <source>Saved project to: %1</source>
         <translation>Gorde proiektua hona: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3958"/>
-        <location filename="../src/app/qgisapp.cpp" line="4007"/>
+        <location filename="../src/app/qgisapp.cpp" line="3968"/>
+        <location filename="../src/app/qgisapp.cpp" line="4017"/>
         <source>Unable to save project %1</source>
         <translation>Ezin izan da %1 proiektua gorde</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3979"/>
+        <location filename="../src/app/qgisapp.cpp" line="3989"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Hautatu fitxategi-izen bat QGIS proiektu-fitxategia gordetzeko</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4145"/>
+        <location filename="../src/app/qgisapp.cpp" line="4155"/>
         <source>Unable to load %1</source>
         <translation>Ezin izan da %1 kargatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4264"/>
+        <location filename="../src/app/qgisapp.cpp" line="4274"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Hautatu fitxategi-izen bat mapa-irudia gordetzeko</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4269"/>
+        <location filename="../src/app/qgisapp.cpp" line="4279"/>
         <source>Saved map image to %1</source>
         <translation>Mapa-irudia %1(e)ra gorde da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4646"/>
+        <location filename="../src/app/qgisapp.cpp" line="4656"/>
         <source>Default system font substituted.</source>
         <translation>Sistemaren letra-tipo lehenetsia ordezkatu da.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4665"/>
+        <location filename="../src/app/qgisapp.cpp" line="4675"/>
         <source>Labeling</source>
         <translation>Etiketatzea</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4666"/>
+        <location filename="../src/app/qgisapp.cpp" line="4676"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
         <translation>&lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; geruzarako letra-tipoa ez da aurkitu (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4657"/>
+        <location filename="../src/app/qgisapp.cpp" line="4667"/>
         <source>Open labeling dialog</source>
         <translation>Ireki etiketatze-koadroa</translation>
     </message>
@@ -13625,198 +13632,198 @@ Jarri harremanetan garatzaileekin.</translation>
         <translation>Data/ordua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2329"/>
+        <location filename="../src/app/qgisapp.cpp" line="2331"/>
         <source>Add Group</source>
         <translation>Gehitu taldea</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2335"/>
+        <location filename="../src/app/qgisapp.cpp" line="2337"/>
         <source>Manage Layer Visibility</source>
         <translation>Kudeatu geruzen ikusgaitasuna</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2344"/>
+        <location filename="../src/app/qgisapp.cpp" line="2346"/>
         <source>Filter Legend By Map Content</source>
         <translation>Iragazi legenda maparen edukiaren arabera</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2352"/>
+        <location filename="../src/app/qgisapp.cpp" line="2354"/>
         <source>Expand All</source>
         <translation>Hedatu dena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2357"/>
+        <location filename="../src/app/qgisapp.cpp" line="2359"/>
         <source>Collapse All</source>
         <translation>Tolestu dena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2650"/>
+        <location filename="../src/app/qgisapp.cpp" line="2661"/>
         <source>Compiled against GEOS</source>
         <translation>GEOS erabiliz konpilatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2651"/>
+        <location filename="../src/app/qgisapp.cpp" line="2662"/>
         <source>Running against GEOS</source>
         <translation>GEOS erabiliz exekutatua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3711"/>
+        <location filename="../src/app/qgisapp.cpp" line="3722"/>
         <source>Layer creation failed. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further information.</source>
         <translation>Geruzaren sorrerak huts egin du. Begiratu &lt;a href=&quot;#messageLog&quot;&gt;mezu-egunkaria&lt;/a&gt; informazio gehiagorako.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3936"/>
+        <location filename="../src/app/qgisapp.cpp" line="3946"/>
         <source>Insufficient permissions</source>
         <translation>Baimenik gutxiegi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3937"/>
+        <location filename="../src/app/qgisapp.cpp" line="3947"/>
         <source>The project file is not writable.</source>
         <translation>Proiektu-fitxategia ez da idazgarria.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4039"/>
+        <location filename="../src/app/qgisapp.cpp" line="4049"/>
         <source>DXF export completed</source>
         <translation>DXF esportazioa osatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4043"/>
+        <location filename="../src/app/qgisapp.cpp" line="4053"/>
         <source>DXF export failed</source>
         <translation>DXF esportazioak huts egin du</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4677"/>
-        <location filename="../src/app/qgisapp.cpp" line="4698"/>
+        <location filename="../src/app/qgisapp.cpp" line="4687"/>
+        <location filename="../src/app/qgisapp.cpp" line="4708"/>
         <source>Commit errors</source>
         <translation>Egikaritze-erroreak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4678"/>
-        <location filename="../src/app/qgisapp.cpp" line="4699"/>
+        <location filename="../src/app/qgisapp.cpp" line="4688"/>
+        <location filename="../src/app/qgisapp.cpp" line="4709"/>
         <source>Could not commit changes to layer %1</source>
         <translation>Ezin izan dira %1 geruzaren aldaketak egikaritu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4680"/>
+        <location filename="../src/app/qgisapp.cpp" line="4690"/>
         <source>Errors: %1
 </source>
         <translation>Erroreak: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4687"/>
+        <location filename="../src/app/qgisapp.cpp" line="4697"/>
         <source>Show more</source>
         <translation>Erakutsi gehiago</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4737"/>
+        <location filename="../src/app/qgisapp.cpp" line="4747"/>
         <source>Labeling Options</source>
         <translation>Etiketatze-aukerak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4738"/>
+        <location filename="../src/app/qgisapp.cpp" line="4748"/>
         <source>Please select a vector layer first</source>
         <translation>Hautatu geruza bektorial bat lehenengo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4746"/>
+        <location filename="../src/app/qgisapp.cpp" line="4756"/>
         <source>Layer labeling settings</source>
         <translation>Geruzak etiketatzeko ezarpenak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4838"/>
+        <location filename="../src/app/qgisapp.cpp" line="4848"/>
         <source>Reading raster</source>
         <translation>Rasterra irakurtzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4913"/>
+        <location filename="../src/app/qgisapp.cpp" line="4923"/>
         <source>Cannot write raster error code: %1</source>
         <translation>Rasterra ezin idatzi izanaren errore-kodea: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5063"/>
+        <location filename="../src/app/qgisapp.cpp" line="5073"/>
         <source>Saving done</source>
         <translation>Gorde da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5064"/>
+        <location filename="../src/app/qgisapp.cpp" line="5074"/>
         <source>Export to vector file has been completed</source>
         <translation>Fitxategi bektorialerako esportazioa osatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5070"/>
+        <location filename="../src/app/qgisapp.cpp" line="5080"/>
         <source>Save error</source>
         <translation>Gordetze-errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5071"/>
+        <location filename="../src/app/qgisapp.cpp" line="5081"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>Fitxategi bektorialera esportazioak huts egin du.
 Errorea: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5132"/>
-        <location filename="../src/app/qgisapp.cpp" line="7522"/>
-        <location filename="../src/app/qgisapp.cpp" line="7531"/>
-        <location filename="../src/app/qgisapp.cpp" line="7592"/>
-        <location filename="../src/app/qgisapp.cpp" line="7601"/>
+        <location filename="../src/app/qgisapp.cpp" line="5142"/>
+        <location filename="../src/app/qgisapp.cpp" line="7557"/>
+        <location filename="../src/app/qgisapp.cpp" line="7566"/>
+        <location filename="../src/app/qgisapp.cpp" line="7627"/>
+        <location filename="../src/app/qgisapp.cpp" line="7636"/>
         <source>No Layer Selected</source>
         <translation>Ez da geruzarik hautatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5133"/>
+        <location filename="../src/app/qgisapp.cpp" line="5143"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Elementuak ezabatzeko, legendako geruza bektorial bat hautatu behar duzu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5141"/>
+        <location filename="../src/app/qgisapp.cpp" line="5151"/>
         <source>No Vector Layer Selected</source>
         <translation>Ez da geruza bektorialik hautatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5142"/>
+        <location filename="../src/app/qgisapp.cpp" line="5152"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Elementuen ezabatzea geruza bektorialetan soilik egin daiteke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5149"/>
+        <location filename="../src/app/qgisapp.cpp" line="5159"/>
         <source>Provider does not support deletion</source>
         <translation>Hornitzaileak ez du ezabaketa onartzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5150"/>
+        <location filename="../src/app/qgisapp.cpp" line="5160"/>
         <source>Data provider does not support deleting features</source>
         <translation>Datu-hornitzaileak ez du onartzen elementuak ezabatzerik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5157"/>
-        <location filename="../src/app/qgisapp.cpp" line="5637"/>
-        <location filename="../src/app/qgisapp.cpp" line="5696"/>
+        <location filename="../src/app/qgisapp.cpp" line="5167"/>
+        <location filename="../src/app/qgisapp.cpp" line="5670"/>
+        <location filename="../src/app/qgisapp.cpp" line="5729"/>
         <source>Layer not editable</source>
         <translation>Geruza ez da editagarria</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5158"/>
+        <location filename="../src/app/qgisapp.cpp" line="5168"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Uneko geruza ez dago editatzeko moduan. Hautatu &apos;Hasi edizioa&apos; digitalizaziorako tresna-barran.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5167"/>
+        <location filename="../src/app/qgisapp.cpp" line="5177"/>
         <source>No Features Selected</source>
         <translation>Ez da elementurik hautatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5168"/>
+        <location filename="../src/app/qgisapp.cpp" line="5178"/>
         <source>The current layer has not selected features</source>
         <translation>Uneko geruzak ez dauka elementu hautaturik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5173"/>
+        <location filename="../src/app/qgisapp.cpp" line="5183"/>
         <source>Delete features</source>
         <translation>Ezabatu elementuak</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5173"/>
+        <location filename="../src/app/qgisapp.cpp" line="5183"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -13825,22 +13832,22 @@ Errorea: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5178"/>
+        <location filename="../src/app/qgisapp.cpp" line="5188"/>
         <source>Features deleted</source>
         <translation>Elementuak ezabatu dira</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5181"/>
+        <location filename="../src/app/qgisapp.cpp" line="5191"/>
         <source>Problem deleting features</source>
         <translation>Arazoa elementuak ezabatzean</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5182"/>
+        <location filename="../src/app/qgisapp.cpp" line="5192"/>
         <source>A problem occured during deletion of features</source>
         <translation>Arazoa gertatu da elementuak ezabatzean</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5187"/>
+        <location filename="../src/app/qgisapp.cpp" line="5197"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation>
@@ -13849,246 +13856,246 @@ Errorea: %1</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5233"/>
+        <location filename="../src/app/qgisapp.cpp" line="5243"/>
         <source>Merging features...</source>
         <translation>Elementuak batzen...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5233"/>
+        <location filename="../src/app/qgisapp.cpp" line="5243"/>
         <source>Abort</source>
         <translation>Abortatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5293"/>
+        <location filename="../src/app/qgisapp.cpp" line="5303"/>
         <source>Create unique print composer title</source>
         <translation>Sortu inprimatze-konposatzailearen izenburu bakarra</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5296"/>
+        <location filename="../src/app/qgisapp.cpp" line="5306"/>
         <source>(title generated if left empty)</source>
         <translation>(sortuko den izenburua hutsik uzten bada)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5310"/>
+        <location filename="../src/app/qgisapp.cpp" line="5320"/>
         <source>Composer title</source>
         <translation>Konposatzaile-izenburua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5325"/>
+        <location filename="../src/app/qgisapp.cpp" line="5335"/>
         <source>Title can not be empty!</source>
         <translation>Izenburuak ezin du hutsik geratu!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5336"/>
+        <location filename="../src/app/qgisapp.cpp" line="5346"/>
         <source>Title already exists!</source>
         <translation>Izenburua jadanik existitzen da!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5353"/>
-        <location filename="../src/app/qgisapp.cpp" line="5436"/>
+        <location filename="../src/app/qgisapp.cpp" line="5363"/>
+        <location filename="../src/app/qgisapp.cpp" line="5458"/>
         <source>Composer %1</source>
         <translation>%1. konposatzailea</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5398"/>
+        <location filename="../src/app/qgisapp.cpp" line="5420"/>
         <source> copy</source>
         <translation>kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5622"/>
-        <location filename="../src/app/qgisapp.cpp" line="5685"/>
+        <location filename="../src/app/qgisapp.cpp" line="5655"/>
+        <location filename="../src/app/qgisapp.cpp" line="5718"/>
         <source>No active layer</source>
         <translation>Ez dago geruza aktiborik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5623"/>
-        <location filename="../src/app/qgisapp.cpp" line="5685"/>
+        <location filename="../src/app/qgisapp.cpp" line="5656"/>
+        <location filename="../src/app/qgisapp.cpp" line="5718"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Ez da geruza aktiborik aurkitu. Hautatu geruza bat geruzen zerrendan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5631"/>
-        <location filename="../src/app/qgisapp.cpp" line="5691"/>
+        <location filename="../src/app/qgisapp.cpp" line="5664"/>
+        <location filename="../src/app/qgisapp.cpp" line="5724"/>
         <source>Active layer is not vector</source>
         <translation>Geruza aktiboa ez da bektoriala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5631"/>
-        <location filename="../src/app/qgisapp.cpp" line="5691"/>
+        <location filename="../src/app/qgisapp.cpp" line="5664"/>
+        <location filename="../src/app/qgisapp.cpp" line="5724"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Elementuak fusionatzeko tresnak geruza bektorialetan soilik lan egiten du. Hautatu geruza bektorial bat geruzen zerrendatik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5645"/>
-        <location filename="../src/app/qgisapp.cpp" line="5711"/>
-        <location filename="../src/app/qgisapp.cpp" line="5748"/>
+        <location filename="../src/app/qgisapp.cpp" line="5678"/>
+        <location filename="../src/app/qgisapp.cpp" line="5744"/>
+        <location filename="../src/app/qgisapp.cpp" line="5781"/>
         <source>Not enough features selected</source>
         <translation>Ez dira aski elementu hautatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5645"/>
-        <location filename="../src/app/qgisapp.cpp" line="5711"/>
-        <location filename="../src/app/qgisapp.cpp" line="5748"/>
+        <location filename="../src/app/qgisapp.cpp" line="5678"/>
+        <location filename="../src/app/qgisapp.cpp" line="5744"/>
+        <location filename="../src/app/qgisapp.cpp" line="5781"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Fusio-tresnak gutxienez bi elementu hautatu behar ditu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5659"/>
+        <location filename="../src/app/qgisapp.cpp" line="5692"/>
         <source>Merged feature attributes</source>
         <translation>Fusionatutako elementu-atributuak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5723"/>
-        <location filename="../src/app/qgisapp.cpp" line="5763"/>
+        <location filename="../src/app/qgisapp.cpp" line="5756"/>
+        <location filename="../src/app/qgisapp.cpp" line="5796"/>
         <source>Merge failed</source>
         <translation>Fusioak huts egin du</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5723"/>
-        <location filename="../src/app/qgisapp.cpp" line="5763"/>
+        <location filename="../src/app/qgisapp.cpp" line="5756"/>
+        <location filename="../src/app/qgisapp.cpp" line="5796"/>
         <source>An error occured during the merge operation</source>
-        <translation>Errorea gertatu da bat egiteko eragiketan</translation>
+        <translation>Errorea gertatu da fusionatze-eragiketan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5731"/>
+        <location filename="../src/app/qgisapp.cpp" line="5764"/>
         <source>Union operation canceled</source>
         <translation>Batuketa-eragiketa utzi egin da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5731"/>
-        <location filename="../src/app/qgisapp.cpp" line="5770"/>
+        <location filename="../src/app/qgisapp.cpp" line="5764"/>
+        <location filename="../src/app/qgisapp.cpp" line="5803"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Batuketa-eragiketak uneko geruzarekin bateragarria ez den geometria-mota sortuko lukeenez, bertan behera utzi da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5776"/>
+        <location filename="../src/app/qgisapp.cpp" line="5809"/>
         <source>Merged features</source>
         <translation>Fusionatutako elementuak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5882"/>
+        <location filename="../src/app/qgisapp.cpp" line="5915"/>
         <source>No active vector layer</source>
         <translation>Ez dago geruza bektorial aktiborik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5883"/>
+        <location filename="../src/app/qgisapp.cpp" line="5916"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>Elementuak hautatzeko, hautatu legendako geruza bektorial bat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5920"/>
+        <location filename="../src/app/qgisapp.cpp" line="5953"/>
         <source>Features cut</source>
         <translation>Elementuak moztu dira</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5946"/>
+        <location filename="../src/app/qgisapp.cpp" line="5979"/>
         <source>Features pasted</source>
         <translation>Elementuak itsatsi dira</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6031"/>
-        <location filename="../src/app/qgisapp.cpp" line="6038"/>
-        <location filename="../src/app/qgisapp.cpp" line="6044"/>
+        <location filename="../src/app/qgisapp.cpp" line="6066"/>
+        <location filename="../src/app/qgisapp.cpp" line="6073"/>
+        <location filename="../src/app/qgisapp.cpp" line="6079"/>
         <source>Paste features</source>
         <translation>Itsasi elementuak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6032"/>
+        <location filename="../src/app/qgisapp.cpp" line="6067"/>
         <source>no features could be successfully pasted.</source>
         <translation>ezin izan da elementurik itsatsi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6039"/>
+        <location filename="../src/app/qgisapp.cpp" line="6074"/>
         <source>%1 features were successfully pasted.</source>
         <translation>%1 elementu itsatsi da.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6045"/>
+        <location filename="../src/app/qgisapp.cpp" line="6080"/>
         <source>%1 of %2 features could be successfully pasted.</source>
         <translation>%2 elementutik %1 itsatsi ahal izan da.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6072"/>
+        <location filename="../src/app/qgisapp.cpp" line="6107"/>
         <source>Pasted</source>
         <translation>Itsatsita</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6073"/>
+        <location filename="../src/app/qgisapp.cpp" line="6108"/>
         <source>New memory layer name</source>
         <translation>Memoriako geruza berriaren izena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6074"/>
+        <location filename="../src/app/qgisapp.cpp" line="6109"/>
         <source>Layer name</source>
         <translation>Geruza-izena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6150"/>
+        <location filename="../src/app/qgisapp.cpp" line="6185"/>
         <source>No features in clipboard.</source>
         <translation>Ez dago elementurik arbelean.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6154"/>
+        <location filename="../src/app/qgisapp.cpp" line="6189"/>
         <source>No features with geometry found, point type layer will be created.</source>
         <translation>Ez da aurkitu geometriarik duen elementurik, puntuen geruza sortuko da.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6158"/>
+        <location filename="../src/app/qgisapp.cpp" line="6193"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation>Geometria-mota anitz aurkitu da, %1 motakoak ez diren geometriak dituzten elementuak geometriarik gabe sortuko dira.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6172"/>
+        <location filename="../src/app/qgisapp.cpp" line="6207"/>
         <source>Cannot create new layer</source>
         <translation>Ezin da geruza berria sortu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6185"/>
+        <location filename="../src/app/qgisapp.cpp" line="6220"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation>Ezin da %1 eremua sortu (%2,%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6243"/>
+        <location filename="../src/app/qgisapp.cpp" line="6278"/>
         <source>Cannot copy style: %1</source>
         <translation>Ezin da estiloa kopiatu: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6269"/>
+        <location filename="../src/app/qgisapp.cpp" line="6304"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>Ezin da estiloa analizatu: %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6281"/>
+        <location filename="../src/app/qgisapp.cpp" line="6316"/>
         <source>Cannot read style: %1</source>
         <translation>Ezin da estiloa irakurri: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6362"/>
+        <location filename="../src/app/qgisapp.cpp" line="6397"/>
         <source>Start editing failed</source>
         <translation>Edizioaren hasierak huts egin du</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6363"/>
+        <location filename="../src/app/qgisapp.cpp" line="6398"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Hornitzailea ezin da ireki ediziorako</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6388"/>
+        <location filename="../src/app/qgisapp.cpp" line="6423"/>
         <source>Stop editing</source>
         <translation>Gelditu edizioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6389"/>
+        <location filename="../src/app/qgisapp.cpp" line="6424"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>%1 geruzaren aldaketak gorde nahi dituzu?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6420"/>
+        <location filename="../src/app/qgisapp.cpp" line="6455"/>
         <source>Problems during roll back</source>
         <translation>Arazoak atzera itzultzen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6500"/>
+        <location filename="../src/app/qgisapp.cpp" line="6535"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -14098,228 +14105,228 @@ Errors: %3
 Erroreak: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6501"/>
+        <location filename="../src/app/qgisapp.cpp" line="6536"/>
         <source>rollback</source>
         <translation>itzuli atzera</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6501"/>
+        <location filename="../src/app/qgisapp.cpp" line="6536"/>
         <source>cancel</source>
         <translation>utzi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6531"/>
+        <location filename="../src/app/qgisapp.cpp" line="6566"/>
         <source>Save</source>
         <translation>Gorde</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6531"/>
-        <location filename="../src/app/qgisapp.cpp" line="6557"/>
-        <location filename="../src/app/qgisapp.cpp" line="6583"/>
+        <location filename="../src/app/qgisapp.cpp" line="6566"/>
+        <location filename="../src/app/qgisapp.cpp" line="6592"/>
+        <location filename="../src/app/qgisapp.cpp" line="6618"/>
         <source>all</source>
         <translation>dena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6557"/>
+        <location filename="../src/app/qgisapp.cpp" line="6592"/>
         <source>Rollback</source>
         <translation>Itzuli atzera</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6583"/>
+        <location filename="../src/app/qgisapp.cpp" line="6618"/>
         <source>Cancel</source>
         <translation>Utzi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6599"/>
+        <location filename="../src/app/qgisapp.cpp" line="6634"/>
         <source>Current edits</source>
         <translation>Uneko edizioak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6600"/>
+        <location filename="../src/app/qgisapp.cpp" line="6635"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%1 uneko aldaketa %2 geruzatan?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6912"/>
+        <location filename="../src/app/qgisapp.cpp" line="6947"/>
         <source>copy</source>
         <translation>kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6916"/>
+        <location filename="../src/app/qgisapp.cpp" line="6951"/>
         <source>Plugin layer</source>
         <translation>Plugin-geruza</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6928"/>
+        <location filename="../src/app/qgisapp.cpp" line="6963"/>
         <source>Memory layer</source>
         <translation>Memoria-geruza</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6948"/>
-        <location filename="../src/app/qgisapp.cpp" line="6959"/>
+        <location filename="../src/app/qgisapp.cpp" line="6983"/>
+        <location filename="../src/app/qgisapp.cpp" line="6994"/>
         <source>Duplicate layer: </source>
         <translation>Bikoiztu geruza:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6949"/>
+        <location filename="../src/app/qgisapp.cpp" line="6984"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (bikoizketak geruza baliogabea eman du)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7022"/>
+        <location filename="../src/app/qgisapp.cpp" line="7057"/>
         <source>Set scale visibility for selected layers</source>
         <translation>Ezarri ikusgaitasun-eskala hautatutako geruzetarako</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7272"/>
+        <location filename="../src/app/qgisapp.cpp" line="7307"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>Ezin izan da Python euskarrirako liburutegia kargatu: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7283"/>
+        <location filename="../src/app/qgisapp.cpp" line="7318"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>Ezin izan da Python euskarrirako liburutegiaren instance() ikurra ebatzi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7298"/>
+        <location filename="../src/app/qgisapp.cpp" line="7333"/>
         <source>Python support ENABLED :-) </source>
         <translation>Python euskarria GAITUTA :-) </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7346"/>
+        <location filename="../src/app/qgisapp.cpp" line="7381"/>
         <source>There is a new version of QGIS available</source>
         <translation>QGISen bertsio berria dago eskuragarri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7350"/>
+        <location filename="../src/app/qgisapp.cpp" line="7385"/>
         <source>You are running a development version of QGIS</source>
         <translation>QGISen garapen-bertsioa erabiltzen ari zara</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7354"/>
+        <location filename="../src/app/qgisapp.cpp" line="7389"/>
         <source>You are running the current version of QGIS</source>
         <translation>QGISen uneko bertsioa erabiltzen ari zara</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7359"/>
+        <location filename="../src/app/qgisapp.cpp" line="7394"/>
         <source>Would you like more information?</source>
         <translation>Informazio gehiago nahi duzu?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7362"/>
-        <location filename="../src/app/qgisapp.cpp" line="7375"/>
-        <location filename="../src/app/qgisapp.cpp" line="7380"/>
-        <location filename="../src/app/qgisapp.cpp" line="7401"/>
+        <location filename="../src/app/qgisapp.cpp" line="7397"/>
+        <location filename="../src/app/qgisapp.cpp" line="7410"/>
+        <location filename="../src/app/qgisapp.cpp" line="7415"/>
+        <location filename="../src/app/qgisapp.cpp" line="7436"/>
         <source>QGIS Version Information</source>
         <translation>QGISen bertsio-informazioa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7368"/>
+        <location filename="../src/app/qgisapp.cpp" line="7403"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS - Aldaketak azken bertsiotik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7380"/>
+        <location filename="../src/app/qgisapp.cpp" line="7415"/>
         <source>Unable to get current version information from server</source>
         <translation>Ezin izan da uneko bertsio-informazioa eskuratu zerbitzaritik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7390"/>
+        <location filename="../src/app/qgisapp.cpp" line="7425"/>
         <source>Connection refused - server may be down</source>
         <translation>Konexioa ukatu da - agian zerbitzaria erorita dago</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7393"/>
+        <location filename="../src/app/qgisapp.cpp" line="7428"/>
         <source>QGIS server was not found</source>
         <translation>Ez da QGIS zerbitzaria aurkitu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7396"/>
+        <location filename="../src/app/qgisapp.cpp" line="7431"/>
         <source>Unknown network socket error: %1</source>
         <translation>Sare-socket errore ezezaguna: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7401"/>
+        <location filename="../src/app/qgisapp.cpp" line="7436"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Ezin da QGIS %1 bertsio-zerbitzariarekin komunikatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7523"/>
-        <location filename="../src/app/qgisapp.cpp" line="7532"/>
+        <location filename="../src/app/qgisapp.cpp" line="7558"/>
+        <location filename="../src/app/qgisapp.cpp" line="7567"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>Histograma-luzatze osoa gauzatzeko, raster-geruza bat hautatu behar duzu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7593"/>
-        <location filename="../src/app/qgisapp.cpp" line="7602"/>
+        <location filename="../src/app/qgisapp.cpp" line="7628"/>
+        <location filename="../src/app/qgisapp.cpp" line="7637"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>Distira edo kontrastea aldatzeko, raster-geruza bat hautatuta eduki behar duzu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7628"/>
+        <location filename="../src/app/qgisapp.cpp" line="7663"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translation>en</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7756"/>
-        <location filename="../src/app/qgisapp.cpp" line="7799"/>
+        <location filename="../src/app/qgisapp.cpp" line="7791"/>
+        <location filename="../src/app/qgisapp.cpp" line="7834"/>
         <source>Layer is not valid</source>
         <translation>Geruza ez da baliozkoa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7755"/>
+        <location filename="../src/app/qgisapp.cpp" line="7790"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>%1 geruza ez da baliozkoa eta ezin zaio mapari gehitu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7798"/>
+        <location filename="../src/app/qgisapp.cpp" line="7833"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Geruza ez da baliozkoa eta ezin zaio mapari gehitu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7887"/>
+        <location filename="../src/app/qgisapp.cpp" line="7922"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>Proiektuak gorde gabeko edizioak ditu(zt)en eta oraindik edizioan dauden geruza(k) d(it)u, eta edizio horiek ez dira gordeko!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7911"/>
+        <location filename="../src/app/qgisapp.cpp" line="7946"/>
         <source>Save?</source>
         <translation>Gorde?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8530"/>
+        <location filename="../src/app/qgisapp.cpp" line="8565"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>Uneko CRSa: %1 (OTRF gaituta)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8537"/>
+        <location filename="../src/app/qgisapp.cpp" line="8572"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>Uneko CRSa: %1 (OTRF desgaituta)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8619"/>
+        <location filename="../src/app/qgisapp.cpp" line="8654"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Uneko bista-hedaduraren mapa-koordenatuak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8627"/>
+        <location filename="../src/app/qgisapp.cpp" line="8662"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Saguaren kurtsore-posizioaren mapa-koordenatuak</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8695"/>
+        <location filename="../src/app/qgisapp.cpp" line="8730"/>
         <source>Extents:</source>
         <translation>Hedadura:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8788"/>
+        <location filename="../src/app/qgisapp.cpp" line="8823"/>
         <source>Maptips require an active layer</source>
         <translation>Mapa-oharrek geruza aktibo bat behar dute</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8861"/>
+        <location filename="../src/app/qgisapp.cpp" line="8896"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -14328,112 +14335,112 @@ Erroreak: %3</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9307"/>
+        <location filename="../src/app/qgisapp.cpp" line="9342"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Ireki GDALek onartutako raster datu-iturburua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9406"/>
+        <location filename="../src/app/qgisapp.cpp" line="9441"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>Errorea baliozko geruza gehitzen mapa-oihalari</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9407"/>
-        <location filename="../src/app/qgisapp.cpp" line="9545"/>
+        <location filename="../src/app/qgisapp.cpp" line="9442"/>
+        <location filename="../src/app/qgisapp.cpp" line="9580"/>
         <source>Raster layer</source>
         <translation>Raster-geruza</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9542"/>
+        <location filename="../src/app/qgisapp.cpp" line="9577"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 ez da onartutako raster datu-iturburua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9547"/>
+        <location filename="../src/app/qgisapp.cpp" line="9582"/>
         <source>Unsupported Data Source</source>
         <translation>Onartzen ez den datu-iturburua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9588"/>
+        <location filename="../src/app/qgisapp.cpp" line="9623"/>
         <source>Exit QGIS</source>
         <translation>Irten QGISetik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9589"/>
+        <location filename="../src/app/qgisapp.cpp" line="9624"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>Benetan irten nahi duzu QGISetik?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9697"/>
+        <location filename="../src/app/qgisapp.cpp" line="9732"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
         <translation>Proiektu-fitxategi hau QGISen bertsio zaharrago batekin gorde zen. Proiektu-fitxategi hau gordetzean, QGISek azken bertsiora eguneratuko du, eta seguru asko QGISen bertsio zaharragoek ezin izango dute berriro ireki.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9701"/>
+        <location filename="../src/app/qgisapp.cpp" line="9736"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Proiektu hau QGISen bertsio zaharrago batekin gorde zen. Proiektu-fitxategi hau gordetzean, QGISek azken bertsiora eguneratuko du, eta seguru aski QGISen bertsio zaharragoek ezingo dute ireki.&lt;p&gt;QGISen garatzileak atzerako bateragarritasuna mantentzen saiatzen dira, baina hala ere proiektu-fitxategi zaharraren zenbait informazio galdu egin daiteke. QGISen kalitatea hobetzeko, eskertuko genuke akats-txosten bat beteko bazenu %3 helbidean. Segurtatu proiektu-fitxategi zaharra eransten duzula, eta adierazi QGISen zein bertsio erabili zenuen, errorea hobeto aurkitu ahal izateko.&lt;p&gt;Proiektu-fitxategi zahar bat irekitzean ematen den abisu hau kentzeko, kendu &apos;%5&apos; kontrol-laukiaren marka %4 menuan.&lt;p&gt;Proiektu-fitxategiaren bertsioa: %1&lt;br&gt;QGISen egungo bertsioa: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9717"/>
+        <location filename="../src/app/qgisapp.cpp" line="9752"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Ezarpenak:Aukerak:Orokorra&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9718"/>
+        <location filename="../src/app/qgisapp.cpp" line="9753"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Abisatu QGISen bertsio zaharrago batekin proiektu-fitxategi bat irekitzean</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9719"/>
+        <location filename="../src/app/qgisapp.cpp" line="9754"/>
         <source>Project file is older</source>
         <translation>Proiektu-fitxategia zaharragoa da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9723"/>
+        <location filename="../src/app/qgisapp.cpp" line="9758"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>Proiektu-fitxategi hau QGISen bertsio zaharrago batekin gorde zen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10060"/>
+        <location filename="../src/app/qgisapp.cpp" line="10110"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>Begiratu &lt;a href=&quot;#messageLog&quot;&gt;mezu-egunkaria&lt;/a&gt; informazio gehiagorako.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10059"/>
+        <location filename="../src/app/qgisapp.cpp" line="10109"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
         <translation>Sare-eskari bat denbora-mugaz kanpo geratu da, jasotako datuak segurua asko ez dira osoak.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6163"/>
-        <location filename="../src/app/qgisapp.cpp" line="6172"/>
-        <location filename="../src/app/qgisapp.cpp" line="6184"/>
-        <location filename="../src/app/qgisapp.cpp" line="9894"/>
+        <location filename="../src/app/qgisapp.cpp" line="6198"/>
+        <location filename="../src/app/qgisapp.cpp" line="6207"/>
+        <location filename="../src/app/qgisapp.cpp" line="6219"/>
+        <location filename="../src/app/qgisapp.cpp" line="9929"/>
         <source>Warning</source>
         <translation>Abisua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9895"/>
+        <location filename="../src/app/qgisapp.cpp" line="9930"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Geruza honek ez dauka propietateen koadroa.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9935"/>
+        <location filename="../src/app/qgisapp.cpp" line="9985"/>
         <source>Authentication required</source>
         <translation>Beharrezkoa da autentifikatzea</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9990"/>
+        <location filename="../src/app/qgisapp.cpp" line="10040"/>
         <source>Proxy authentication required</source>
         <translation>Proxy-autentifikazioa beharrezkoa da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10023"/>
+        <location filename="../src/app/qgisapp.cpp" line="10073"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>SSL erroreak gertatu dira %1 URLa atzitzean:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10039"/>
+        <location filename="../src/app/qgisapp.cpp" line="10089"/>
         <source>
 
 Always ignore these errors?</source>
@@ -14442,7 +14449,7 @@ Always ignore these errors?</source>
 Beti ezikusi errore hauek?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10043"/>
+        <location filename="../src/app/qgisapp.cpp" line="10093"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -14579,7 +14586,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="240"/>
         <source>Qt Image Plugin Search Paths &lt;br&gt;</source>
-        <translation>Qtren irudi-pluginak bilatzeko bideak&lt;br&gt;</translation>
+        <translation>Qt-ren irudi-pluginak bilatzeko bideak&lt;br&gt;</translation>
     </message>
 </context>
 <context>
@@ -15015,59 +15022,59 @@ Parser error:
         <translation>Atlas-sorrera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="65"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="47"/>
         <source>Generate an atlas</source>
         <translation>Sortu atlasa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="125"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="113"/>
         <source>Configuration</source>
         <translation>Konfigurazioa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="140"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="128"/>
         <source>Coverage layer </source>
         <translation>Estaldura-geruza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="184"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="172"/>
         <source>Hidden coverage layer</source>
         <translation>Ezkutuko estaldura-geruza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="238"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="229"/>
         <source>Sort by</source>
         <translation>Ordenatu honela</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="245"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="236"/>
         <source>Sort direction</source>
         <translation>Ordenatze-norabidea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="173"/>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="248"/>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="258"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="161"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="239"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="249"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="147"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="135"/>
         <source>Filter with</source>
         <translation>Iragazi honekin</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="207"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="198"/>
         <source>Output</source>
         <translation>Irteera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="272"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="263"/>
         <source>Single file export when possible</source>
         <translation>Fitxategi bakarraren esportazioa, posible denean</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="222"/>
+        <location filename="../src/ui/qgsatlascompositionwidgetbase.ui" line="213"/>
         <source>Output filename expression</source>
         <translation>Irteerako fitxategi-izenerako adierazpena</translation>
     </message>
@@ -16601,12 +16608,12 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
 <context>
     <name>QgsCollapsibleGroupBoxBasic</name>
     <message>
-        <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="194"/>
+        <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="196"/>
         <source>Shift-click to expand, then collapse others</source>
         <translation>Shift-klik hedatzeko, ondoren tolestu besteak</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="194"/>
+        <location filename="../src/gui/qgscollapsiblegroupbox.cpp" line="196"/>
         <source>Ctrl (or Alt)-click to toggle all</source>
         <translation>Ctrl (edo Alt)-klik dena txandakatzeko</translation>
     </message>
@@ -16886,90 +16893,90 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
         <translation>Berrezarri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="283"/>
-        <location filename="../src/gui/qgscolordialog.cpp" line="302"/>
-        <location filename="../src/gui/qgscolordialog.cpp" line="323"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="290"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="309"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="330"/>
         <source>Select Color</source>
         <translation>Hautatu kolorea</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="376"/>
-        <location filename="../src/gui/qgscolordialog.cpp" line="418"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="383"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="425"/>
         <source>Select palette file</source>
         <translation>Hautatu paleta-fitxategia</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="387"/>
-        <location filename="../src/gui/qgscolordialog.cpp" line="396"/>
-        <location filename="../src/gui/qgscolordialog.cpp" line="429"/>
-        <location filename="../src/gui/qgscolordialog.cpp" line="442"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="394"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="403"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="436"/>
         <location filename="../src/gui/qgscolordialog.cpp" line="449"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="456"/>
         <source>Invalid file</source>
         <translation>Fitxategi baliogabea</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="387"/>
-        <location filename="../src/gui/qgscolordialog.cpp" line="429"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="394"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="436"/>
         <source>Error, file does not exist or is not readable</source>
         <translation>Errorea, fitxategia ez da existitzen edo ezin da irakurri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="396"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="403"/>
         <source>Error, no colors found in palette file</source>
         <translation>Errorea, ez da kolorerik aurkitu paleta-fitxategian</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="442"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="449"/>
         <source>Palette file is not readable</source>
         <translation>Paleta-fitxategia ezin da irakurri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="449"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="456"/>
         <source>No colors found in palette file</source>
         <translation>Ez da kolorerik aurkitu paleta-fitxategian</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="482"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="489"/>
         <source>Remove Color Palette</source>
         <translation>Kendu kolore-paleta</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="483"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="490"/>
         <source>Are you sure you want to remove %1?</source>
         <translation>Seguru zaude %1 kendu nahi duzula?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="507"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="514"/>
         <source>Create New Palette</source>
         <translation>Sortu paleta berria</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="507"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="514"/>
         <source>Enter a name for the new palette:</source>
         <translation>Sartu izen bat paleta berrirako:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="508"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="515"/>
         <source>New palette</source>
         <translation>Paleta berria</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="522"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="529"/>
         <source>new_palette</source>
         <translation>paleta_berria</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="560"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="567"/>
         <source>Palette file</source>
         <translation>Paleta-fitxategia</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="580"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="587"/>
         <source>Error exporting</source>
         <translation>Errorea esportatzean</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscolordialog.cpp" line="580"/>
+        <location filename="../src/gui/qgscolordialog.cpp" line="587"/>
         <source>Error writing palette file</source>
         <translation>Errorea paleta-fitxategia idaztean</translation>
     </message>
@@ -17096,512 +17103,520 @@ Existitzen diren klaseak ezabatuko dira sailkapena egin baino lehen?</translatio
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="196"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="197"/>
         <source>Close</source>
         <translation>Itxi</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="198"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="199"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="203"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3031"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="204"/>
+        <source>&amp;Composer</source>
+        <translation>&amp;Konposatzailea</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="211"/>
+        <source>Print &amp;Composers</source>
+        <translation>Inprimatu &amp;konposatzaileak</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="250"/>
+        <source>&amp;Edit</source>
+        <translation>&amp;Editatu</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="273"/>
+        <source>&amp;Normal</source>
+        <translation>&amp;Normala</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="278"/>
+        <source>Simulate Photocopy (&amp;Grayscale)</source>
+        <translation>Simulatu fotokopia (&amp;gris-eskala)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="282"/>
+        <source>Simulate Fax (&amp;Mono)</source>
+        <translation>Simulatu faxa (&amp;monotonua)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="286"/>
+        <source>Simulate Color Blindness (&amp;Protanope)</source>
+        <translation>Simulatu daltonismoa (&amp;protanopia)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="290"/>
+        <source>Simulate Color Blindness (&amp;Deuteranope)</source>
+        <translation>Simulatu daltonismoa (&amp;deuteranopia)</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="303"/>
+        <source>&amp;View</source>
+        <translation>&amp;Bista</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="338"/>
+        <source>P&amp;anels</source>
+        <translation>P&amp;anelak</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="340"/>
+        <source>&amp;Toolbars</source>
+        <translation>&amp;Tresna-barrak</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="351"/>
+        <source>&amp;Layout</source>
+        <translation>&amp;Maketazioa</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="375"/>
+        <source>&amp;Atlas</source>
+        <translation>&amp;Atlasa</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="399"/>
+        <source>&amp;Settings</source>
+        <translation>E&amp;zarpenak</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3036"/>
         <source>Composer</source>
         <translation>Konposatzailea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="210"/>
-        <source>Print Composers</source>
-        <translation>Inprimatu konposatzaileak</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="231"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="232"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Moztu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="233"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="234"/>
         <source>Cut</source>
         <translation>Moztu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="237"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="238"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="239"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="240"/>
         <source>Copy</source>
         <translation>Kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="243"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="244"/>
         <source>&amp;Paste</source>
         <translation>&amp;Itsatsi</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="245"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="246"/>
         <source>Paste</source>
         <translation>Itsatsi</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="249"/>
-        <source>Edit</source>
-        <translation>Editatu</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="272"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="273"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="274"/>
         <source>Normal</source>
         <translation>Normala</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="277"/>
-        <source>Simulate Photocopy (Grayscale)</source>
-        <translation>Simulatu fotokopia (gris-eskala)</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="278"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="279"/>
         <source>Simulate photocopy (grayscale)</source>
         <translation>Simulatu fotokopia (gris-eskala)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="281"/>
-        <source>Simulate Fax (Mono)</source>
-        <translation>Simulatu faxa (monotonua)</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="282"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="283"/>
         <source>Simulate fax (mono)</source>
         <translation>Simulatu faxa (monotonua)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="285"/>
-        <source>Simulate Color Blindness (Protanope)</source>
-        <translation>Simulatu daltonismoa (protanopia)</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="286"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="287"/>
         <source>Simulate color blindness (Protanope)</source>
         <translation>Simulatu daltonismoa (protanopia)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="289"/>
-        <source>Simulate Color Blindness (Deuteranope)</source>
-        <translation>Simulatu daltonismoa (deuteranopia)</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="290"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="291"/>
         <source>Simulate color blindness (Deuteranope)</source>
         <translation>Simulatu daltonismoa (deuteranopia)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="302"/>
-        <source>View</source>
-        <translation>Bista</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="337"/>
-        <source>Panels</source>
-        <translation>Panelak</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="339"/>
-        <source>Toolbars</source>
-        <translation>Tresna-barrak</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="350"/>
-        <source>Layout</source>
-        <translation>Maketazioa</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="373"/>
-        <source>Atlas</source>
-        <translation>Atlasa</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="397"/>
-        <source>Settings</source>
-        <translation>Ezarpenak</translation>
-    </message>
-    <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="403"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="405"/>
         <source>Window</source>
         <translation>Leihoa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="408"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="410"/>
         <source>Help</source>
         <translation>Laguntza</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="440"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="859"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="871"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="442"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="860"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="872"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="516"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="517"/>
         <source>Composition</source>
         <translation>Konposizioa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="520"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="521"/>
         <source>Item properties</source>
         <translation>Elementu-propietateak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="524"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="525"/>
         <source>Command history</source>
         <translation>Komando-historia</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="527"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="528"/>
         <source>Atlas generation</source>
         <translation>Atlas-sorrera</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="530"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="531"/>
         <source>Items</source>
         <translation>Elementuak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="826"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3602"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3647"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="827"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3607"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3652"/>
         <source>Set as atlas feature for %1</source>
         <translation>Ezarri atlas-elementu gisa %1(e)rako</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="841"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="842"/>
         <source>x: %1 mm</source>
         <translation>x: %1 mm</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="842"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="843"/>
         <source>y: %1 mm</source>
         <translation>y: %1 mm</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="843"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="844"/>
         <source>page: %3</source>
         <translation>orrialdea: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="956"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="982"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="957"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="983"/>
         <source>Enable atlas preview</source>
         <translation>Gaitu atlasaren aurrebista</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="957"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="958"/>
         <source>Atlas in not currently enabled for this composition!</source>
         <translation>Atlasa ez dago gaituta konposizio honetarako!</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="983"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="984"/>
         <source>No matching atlas features found!</source>
         <translation>Ez da aurkitu bat datorren atlas-elementurik!</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1384"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2082"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1385"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2087"/>
         <source>Choose a file name to save the map as</source>
         <translation>Hautatu fitxategi-izen bat mapa gordetzeko</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1386"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1387"/>
         <source>PDF Format</source>
         <translation>PDF formatua</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1404"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1810"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2110"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1405"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1815"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2115"/>
         <source>Empty filename pattern</source>
         <translation>Fitxategi-izenerako eredua hutsik</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1405"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1811"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2111"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1406"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1816"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2116"/>
         <source>The filename pattern is empty. A default one will be used.</source>
         <translation>Fitxategi-izenaren eredua hutsik dago. Lehenetsia erabiliko da.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1418"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1419"/>
         <source>Directory where to save PDF files</source>
         <translation>PDF fitxategiak gordeko diren direktorioa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1428"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1874"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2137"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1429"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1879"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2142"/>
         <source>Unable to write into the directory</source>
         <translation>Ezin izan da idatzi direktorioan</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1429"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1875"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2138"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1430"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1880"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2143"/>
         <source>The given output directory is not writable. Cancelling.</source>
         <translation>Emandako irteera-direktorioa ez da idazgarria. Uzten.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1449"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1464"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1488"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1489"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1509"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1537"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1624"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1647"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1648"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1890"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1914"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1915"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1944"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2165"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2192"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2193"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1450"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1467"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1491"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1492"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1512"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1540"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1629"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1652"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1653"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1895"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1919"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1920"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1949"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2170"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2197"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2198"/>
         <source>Atlas processing error</source>
         <translation>Errorea atlasa prozesatzean</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1450"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1625"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1891"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2166"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1451"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1630"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1896"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2171"/>
         <source>Feature filter parser error: %1</source>
         <translation>Elementu-iragazkiaren analisi-errorea: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1465"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1510"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1538"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1780"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1945"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2237"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2360"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1468"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1513"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1541"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1785"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1950"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2242"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2365"/>
         <source>Error creating %1.</source>
         <translation>Errorea %1 sortzean.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1473"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1632"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1899"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2173"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1476"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1637"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1904"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2178"/>
         <source>Rendering maps...</source>
         <translation>Mapak errendatzen...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1473"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1632"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1899"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2173"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1476"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1637"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1904"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2178"/>
         <source>Abort</source>
         <translation>Abortatu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1718"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1723"/>
         <source>Big image</source>
         <translation>Irudi handia</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1719"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1724"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation>%1x%2 tamainako irudia sortzeak %3 MB inguru memoria beharko ditu. Jarraitu?</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1739"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1744"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Hautatu fitxategi-izen bat mapa-irudia gordetzeko</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1757"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1762"/>
         <source>Memory Allocation Error</source>
         <translation>Errorea memoria-esleipenean</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1758"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1763"/>
         <source>Trying to create image #%1( %2x%3 @ %4dpi ) may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
         <translation>#%1 irudia ( %2x%3 @ %4dpi ) sortzen saiatzeak memoria-gainezkatze bat eragin dezake.
 Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1779"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1784"/>
         <source>Image export error</source>
         <translation>Errorea irudia esportatzean</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1825"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1830"/>
         <source>Directory where to save image files</source>
         <translation>Irudi-fitxategiak gordeko diren direktorioa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1849"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1854"/>
         <source>Image format: </source>
         <translation>Irudi-formatua:</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2041"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2046"/>
         <source>SVG warning</source>
         <translation>SVG abisua</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2042"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3356"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2047"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3361"/>
         <source>Don&apos;t show this message again</source>
         <translation>Ez erakutsi mezu hau berriro</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2046"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2051"/>
         <source>&lt;p&gt;The SVG export function in QGIS has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;SVGak esportatzeko funtzioak zenbait arazo ditu QGISen, akatsak eta arazoak baitaude </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2048"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2053"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4 svg kodean. Batez ere, arazoak daude geruzak ez direlako maparen muga-kutxatik mozten.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2051"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2056"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Formatu bektorialeko irteera bat behar baduzu, saia zaitez PostScript formatura inprimatzen, SVG irteera egokia ez bada.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2084"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2089"/>
         <source>SVG Format</source>
         <translation>SVG formatua</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2126"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2131"/>
         <source>Directory where to save SVG files</source>
         <translation>SVG fitxategiak gordeko diren direktorioa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2236"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2359"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2241"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2364"/>
         <source>SVG export error</source>
         <translation>Errorea SVGa esportatzean</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2328"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2333"/>
         <source> on page </source>
         <translation>orrian</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2328"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2333"/>
         <source>SVG error</source>
         <translation>SVG errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2328"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2333"/>
         <source>There was an error in SVG output for SVG layer </source>
         <translation>Errorea gertatu da SVG geruza sortzeko SVG irteeran</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2501"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2506"/>
         <source> copy</source>
         <translation>kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2508"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2513"/>
         <source>Duplicating composer...</source>
         <translation>Konposatzailea bikoizten...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2520"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2525"/>
         <source>Duplicate Composer</source>
         <translation>Bikoiztu konposatzailea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2521"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2526"/>
         <source>Composer duplication failed.</source>
         <translation>Konposatzailearen bikoizketak huts egin du.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2540"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2545"/>
         <source>Save template</source>
         <translation>Gorde txantiloia</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2542"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2547"/>
         <source>Composer templates</source>
         <translation>Konposatzaile-txantiloiak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2566"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2571"/>
         <source>Save error</source>
         <translation>Gordetze-errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2566"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2571"/>
         <source>Error, could not save file</source>
         <translation>Errorea, ezin izan da fitxategia gorde</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2579"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2584"/>
         <source>Load template</source>
         <translation>Kargatu txantiloia</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2592"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2597"/>
         <source>Read error</source>
         <translation>Irakutze-errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2592"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2597"/>
         <source>Error, could not read file</source>
         <translation>Errorea, ezin izan da fitxategia irakurri</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2609"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2614"/>
         <source>Composer error</source>
         <translation>Konposatzaile-errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2609"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2614"/>
         <source>Error, could not create new composer</source>
         <translation>Errorea, ezin izan da konposatzaile berria sortu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2626"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2631"/>
         <source>Loading template into composer...</source>
         <translation>Txantiloia konposatzailean kargatzen...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3354"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3359"/>
         <source>Project contains WMS layers</source>
         <translation>Proiektuak WMS geruzak ditu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3355"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3360"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Zenbait WMS zerbitzarik (adib. UMN mapserver) mugak dituzte WIDTH (zabalera) eta HEIGHT (altuera) parametroetan. Zerbitzari horietako geruzak inprimatzeak muga hori gaindi dezake, eta kasu horietan WMS geruza ez da inprimatuko</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3369"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3374"/>
         <source>Project contains composition effects</source>
         <translation>Proiektuak konposizio-efektuak ditu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3370"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3375"/>
         <source>Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
         <translation>Proiektu honetan konposizio-efektu aurreratuak gaituta daude, esaterako nahaste-moduak edo geruza bektorialen gardentasuna. Horiek ezin dira bektore gisa inprimatu, gomendagarria da raster gisa inprimatzea.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3371"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3376"/>
         <source>Print as raster</source>
         <translation>Inprimatu raster gisa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3610"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3615"/>
         <source>Landscape</source>
         <translation>Horizontala</translation>
     </message>
@@ -17691,79 +17706,79 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Inprimakia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="44"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="35"/>
         <source>Arrow</source>
         <translation>Gezia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="66"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="60"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="199"/>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="216"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="196"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="213"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="206"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="203"/>
         <source>Arrow head width</source>
         <translation>Gezi-buruaren zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="78"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="72"/>
         <source>Line style...</source>
         <translation>Lerro-estiloa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="88"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="85"/>
         <source>Arrow markers</source>
         <translation>Gezi-markatzaileak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="102"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="99"/>
         <source>Default</source>
         <translation>Lehenetsia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="109"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="106"/>
         <source>None</source>
         <translation>Bat ere ez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="116"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="113"/>
         <source>SVG</source>
         <translation>SVG</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="125"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="122"/>
         <source>Arrow outline color</source>
         <translation>Gezi-trazuaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="157"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="154"/>
         <source>Arrow fill color</source>
         <translation>Gezi-betegarriaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="189"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="186"/>
         <source>Arrow outline width</source>
         <translation>Gezi-trazuaren zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="223"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="220"/>
         <source>Start marker</source>
         <translation>Hasierako markatzailea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="235"/>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="256"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="232"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="253"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="244"/>
+        <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="241"/>
         <source>End marker</source>
         <translation>Amaierako markatzailea</translation>
     </message>
@@ -17921,7 +17936,7 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="132"/>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="481"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="487"/>
         <source>Map %1</source>
         <translation>%1. mapa</translation>
     </message>
@@ -17931,161 +17946,161 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Taula-atributuen ezarpenak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="227"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="233"/>
         <source>Table map changed</source>
         <translation>Taula-mapa aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="248"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="254"/>
         <source>Table maximum columns</source>
         <translation>Taularen zutabe maximoak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="268"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="274"/>
         <source>Table margin changed</source>
         <translation>Taularen marjina aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="287"/>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="289"/>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="335"/>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="337"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="293"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="295"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="341"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="343"/>
         <source>Select Font</source>
         <translation>Hautatu letra-tipoa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="296"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="302"/>
         <source>Table header font</source>
         <translation>Taula-goiburuaren letra-tipoa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="316"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="322"/>
         <source>Table header font color</source>
         <translation>Taula-goiburuaren letra-tipoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="344"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="350"/>
         <source>Table content font</source>
         <translation>Taula-edukiaren letra-tipoa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="364"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="370"/>
         <source>Table content font color</source>
         <translation>Taula-edukiaren letra-tipoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="383"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="389"/>
         <source>Table grid stroke</source>
         <translation>Taula-saretaren trazua</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="402"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="408"/>
         <source>Table grid color</source>
         <translation>Taula-saretaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="421"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="427"/>
         <source>Table grid toggled</source>
         <translation>Taula-sareta txandakatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="440"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="446"/>
         <source>Table background color</source>
         <translation>Taularen atzeko planoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="600"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="609"/>
         <source>Current atlas feature</source>
         <translation>Uneko atlas-elementua</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="605"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="614"/>
         <source>Relation children</source>
         <translation>Erlazio-umeak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="661"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="670"/>
         <source>Table visible only toggled</source>
         <translation>Taularen ikusgaitasuna txandakatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="686"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="695"/>
         <source>Table remove duplicates changed</source>
         <translation>Taularen bikoiztuen kentzea aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="703"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="712"/>
         <source>Empty frame mode toggled</source>
         <translation>Marko hutsaren modua txandakatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="715"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="724"/>
         <source>Hide background if empty toggled</source>
         <translation>Atzeko planoa hutsik badago hura ezkutatzea txandakatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="730"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="739"/>
         <source>Table filter to atlas changed</source>
         <translation>Taula atlaserako iragaztea aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="762"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="771"/>
         <source>Table feature filter toggled</source>
         <translation>Taularen elementuak iragaztea txandakatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="782"/>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="810"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="791"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="819"/>
         <source>Table feature filter modified</source>
         <translation>Taularen elementuak iragaztea aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="800"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="809"/>
         <source>Expression based filter</source>
         <translation>Adierazpenean oinarritutako iragazkia</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="832"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="841"/>
         <source>Table header alignment changed</source>
         <translation>Taula-goiburuaren lerrokatzea aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="851"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="860"/>
         <source>Table header mode changed</source>
         <translation>Taula-goiburuaren modua aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="876"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="885"/>
         <source>Table layer changed</source>
         <translation>Taula-geruza aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="930"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="939"/>
         <source>Change resize mode</source>
         <translation>Aldatu tamaina aldatzeko modua</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="948"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="957"/>
         <source>Change table source</source>
         <translation>Aldatu taula-iturburua</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="966"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="975"/>
         <source>Change table source relation</source>
         <translation>Aldatu taula-iturburuaren erlazioa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="982"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="991"/>
         <source>Change empty table behaviour</source>
         <translation>Aldatu taula hutsaren portaera</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="1000"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="1009"/>
         <source>Show empty rows changed</source>
         <translation>Errenkada hutsak erakustea aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="1019"/>
+        <location filename="../src/app/composer/qgscomposerattributetablewidget.cpp" line="1028"/>
         <source>Empty table message changed</source>
         <translation>Taula hutsaren mezua aldatu da</translation>
     </message>
@@ -18103,222 +18118,222 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Atributu-taula</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="57"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="60"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="79"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="82"/>
         <source>Layer</source>
         <translation>Geruza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="109"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="112"/>
         <source>Refresh table data</source>
         <translation>Freskatu taula-datuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="116"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="119"/>
         <source>Attributes...</source>
         <translation>Atributuak...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="256"/>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="390"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="265"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="402"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="126"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="132"/>
         <source>Feature filtering</source>
         <translation>Elementuen iragazkia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="138"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="144"/>
         <source>Maximum rows</source>
         <translation>Errenkada-kopuru maximoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="172"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="178"/>
         <source>Composer map</source>
         <translation>Konposatzaile-mapa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="195"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="201"/>
         <source>Filter with</source>
         <translation>Iragazi honekin</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="207"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="213"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="309"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="318"/>
         <source>Background color</source>
         <translation>Atzeko planoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="352"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="361"/>
         <source>Show empty rows</source>
         <translation>Erakutsi errenkada hutsak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="362"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="374"/>
         <source>Show grid</source>
         <translation>Erakutsi sareta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="377"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="389"/>
         <source>Stroke width</source>
         <translation>Trazu-zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="397"/>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="475"/>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="578"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="409"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="490"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="593"/>
         <source>Color</source>
         <translation>Kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="443"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="458"/>
         <source>Fonts and text styling</source>
         <translation>Letra-tipoen eta testuaren estiloak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="455"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="470"/>
         <source>Table heading</source>
         <translation>Taula-goiburua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="532"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="547"/>
         <source>Follow column alignment</source>
         <translation>Jarraitu zutabe-lerrokatzea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="537"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="552"/>
         <source>Left</source>
         <translation>Ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="542"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="557"/>
         <source>Center</source>
         <translation>Erdia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="547"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="562"/>
         <source>Right</source>
         <translation>Eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="518"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="533"/>
         <source>Alignment</source>
         <translation>Lerrokatzea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="461"/>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="564"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="476"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="579"/>
         <source>Font</source>
         <translation>Letra-tipoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="468"/>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="571"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="483"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="586"/>
         <source>Choose font...</source>
         <translation>Hautatu letra-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="669"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="687"/>
         <source>Don&apos;t export page if frame is empty</source>
         <translation>Ez esportatu orria markoa hutsik badago</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="676"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="694"/>
         <source>Don&apos;t draw background if frame is empty</source>
         <translation>Ez marraztu atzeko planoa markoa hutsik badago</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="271"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="280"/>
         <source>On first frame</source>
         <translation>Lehen markoan</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="69"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="72"/>
         <source>Source</source>
         <translation>Iturburua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="99"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="102"/>
         <source>Relation</source>
         <translation>Erlazioa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="165"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="171"/>
         <source>Show only features visible within a map</source>
         <translation>Erakutsi mapan ikusgai dauden elementuak soilik</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="188"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="194"/>
         <source>Show only features intersecting atlas feature</source>
         <translation>Erakutsi atlas-elementua ebakitzen duten elementuak soilik</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="158"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="164"/>
         <source>Remove duplicate rows from table</source>
         <translation>Kendu taulako errenkada bikoiztuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="231"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="240"/>
         <source>Appearance</source>
         <translation>Itxura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="243"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="252"/>
         <source>Cell margins</source>
         <translation>Gelaxka-marjinak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="263"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="272"/>
         <source>Display header</source>
         <translation>Erakutsi goiburua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="276"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="285"/>
         <source>On all frames</source>
         <translation>Marko guztietan</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="281"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="290"/>
         <source>No header</source>
         <translation>Goibururik ez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="289"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="298"/>
         <source>Empty tables</source>
         <translation>Taula hutsak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="299"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="308"/>
         <source>Message to display</source>
         <translation>Erakutsiko den mezua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="558"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="573"/>
         <source>Table contents</source>
         <translation>Taula-edukiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="627"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="645"/>
         <source>Frames</source>
         <translation>Markoak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="642"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="660"/>
         <source>Resize mode</source>
         <translation>Tamaina aldatzeko modua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="662"/>
+        <location filename="../src/ui/qgscomposerattributetablewidgetbase.ui" line="680"/>
         <source>Add Frame</source>
         <translation>Gehitu markoa</translation>
     </message>
@@ -18366,11 +18381,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="194"/>
-        <source>Zoom Full</source>
-        <translation>Zoom osoa</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="197"/>
         <source>Zoom full</source>
         <translation>Zoom osoa</translation>
@@ -18379,11 +18389,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="200"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="209"/>
-        <source>Zoom In</source>
-        <translation>Handiagotu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="212"/>
@@ -18396,11 +18401,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="224"/>
-        <source>Zoom Out</source>
-        <translation>Txikiagotu</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="227"/>
         <source>Zoom out</source>
         <translation>Txikiagotu</translation>
@@ -18411,7 +18411,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="239"/>
         <location filename="../src/ui/qgscomposerbase.ui" line="242"/>
         <source>Zoom to 100%</source>
         <translation>Zoom % 100era</translation>
@@ -18433,19 +18432,9 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Z</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="269"/>
-        <source>Add Map</source>
-        <translation>Gehitu mapa</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="272"/>
         <source>Add new map</source>
         <translation>Gehitu mapa berria</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="281"/>
-        <source>Add Label</source>
-        <translation>Gehitu etiketa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="284"/>
@@ -18453,19 +18442,9 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Gehitu etiketa berria</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="293"/>
-        <source>Add Legend</source>
-        <translation>Gehitu legenda</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="296"/>
         <source>Add new legend</source>
         <translation>Gehitu legenda berria</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="305"/>
-        <source>Move Item</source>
-        <translation>Mugitu elementua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="308"/>
@@ -18478,39 +18457,14 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>V</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="320"/>
-        <source>Export as Image...</source>
-        <translation>Esportatu irudi gisa...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="323"/>
         <source>Export as image</source>
         <translation>Esportatu irudi gisa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="332"/>
-        <source>Export as PDF...</source>
-        <translation>Esportatu PDF gisa...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="341"/>
-        <source>Export as SVG...</source>
-        <translation>Esportatu SVG...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="350"/>
-        <source>Add Scalebar</source>
-        <translation>Gehitu eskala-barra</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="353"/>
         <source>Add new scalebar</source>
         <translation>Gehitu eskala-barra berria</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="362"/>
-        <source>Refresh</source>
-        <translation>Freskatu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="365"/>
@@ -18523,11 +18477,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="377"/>
-        <source>Show Grid</source>
-        <translation>Erakutsi sareta</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="380"/>
         <source>Show grid</source>
         <translation>Erakutsi sareta</translation>
@@ -18536,11 +18485,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="383"/>
         <source>Ctrl+&apos;</source>
         <translation>Ctrl+&apos;</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="388"/>
-        <source>Snap to Grid</source>
-        <translation>Doitu saretara</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="391"/>
@@ -18553,11 +18497,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+Shift+&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="399"/>
-        <source>Show Guides</source>
-        <translation>Erakutsi gidak</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="402"/>
         <source>Show guides</source>
         <translation>Erakutsi gidak</translation>
@@ -18566,11 +18505,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="405"/>
         <source>Ctrl+;</source>
         <translation>Ctrl+;</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="410"/>
-        <source>Snap to Guides</source>
-        <translation>Doitu gidetara</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="413"/>
@@ -18583,11 +18517,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+Shift+;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="421"/>
-        <source>Smart Guides</source>
-        <translation>Gida adimendunak</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="424"/>
         <source>Smart guides</source>
         <translation>Gida adimendunak</translation>
@@ -18598,29 +18527,14 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+Alt+;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="432"/>
-        <source>Clear Guides</source>
-        <translation>Garbitu gidak</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="435"/>
         <source>Clear guides</source>
         <translation>Garbitu gidak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="444"/>
-        <source>Add Image</source>
-        <translation>Gehitu irudia</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="447"/>
         <source>Add image</source>
         <translation>Gehitu irudia</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="452"/>
-        <source>Move Content</source>
-        <translation>Mugitu edukia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="455"/>
@@ -18633,11 +18547,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="463"/>
-        <source>Group</source>
-        <translation>Taldekatu</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="466"/>
         <source>Group items</source>
         <translation>Taldekatu elementuak</translation>
@@ -18646,11 +18555,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="469"/>
         <source>Ctrl+G</source>
         <translation>Ctrl+G</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="474"/>
-        <source>Ungroup</source>
-        <translation>Banandu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="477"/>
@@ -18663,11 +18567,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+Shift+G</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="485"/>
-        <source>Raise</source>
-        <translation>Goratu</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="488"/>
         <source>Raise selected items</source>
         <translation>Goratu hautatutako elementuak</translation>
@@ -18676,11 +18575,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="491"/>
         <source>Ctrl+]</source>
         <translation>Ctrl+]</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="496"/>
-        <source>Lower</source>
-        <translation>Beheratu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="499"/>
@@ -18693,11 +18587,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+[</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="507"/>
-        <source>Bring to Front</source>
-        <translation>Ekarri aurrera</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="510"/>
         <source>Move selected items to top</source>
         <translation>Mugitu hautatutako elementuak aurrera</translation>
@@ -18706,11 +18595,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="513"/>
         <source>Ctrl+Shift+]</source>
         <translation>Ctrl+Shift+]</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="518"/>
-        <source>Send to Back</source>
-        <translation>Bidali atzera</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="521"/>
@@ -18723,9 +18607,149 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+Shift+[</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="194"/>
+        <source>Zoom &amp;Full</source>
+        <translation>Zoom &amp;osoa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="209"/>
+        <source>Zoom &amp;In</source>
+        <translation>&amp;Handiagotu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="224"/>
+        <source>Zoom &amp;Out</source>
+        <translation>&amp;Txikiagotu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="239"/>
+        <source>Zoom to &amp;100%</source>
+        <translation>Zoom % &amp;100era</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="269"/>
+        <source>Add &amp;Map</source>
+        <translation>Gehitu &amp;mapa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="281"/>
+        <source>Add Lab&amp;el</source>
+        <translation>Gehitu &amp;etiketa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="293"/>
+        <source>Add Legen&amp;d</source>
+        <translation>Gehitu &amp;legenda</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="305"/>
+        <source>Move &amp;Item</source>
+        <translation>Mugitu e&amp;lementua</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="320"/>
+        <source>Export as &amp;Image...</source>
+        <translation>Esportatu &amp;irudi gisa...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="332"/>
+        <source>&amp;Export as PDF...</source>
+        <translation>Esportatu &amp;PDF gisa...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="341"/>
+        <source>Export as S&amp;VG...</source>
+        <translation>Esportatu &amp;SVG gisa...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="350"/>
+        <source>Add &amp;Scalebar</source>
+        <translation>Gehitu eskala-&amp;barra</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="362"/>
+        <source>&amp;Refresh</source>
+        <translation>&amp;Freskatu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="377"/>
+        <source>Show &amp;Grid</source>
+        <translation>Erakutsi &amp;sareta</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="388"/>
+        <source>S&amp;nap to Grid</source>
+        <translation>&amp;Doitu saretara</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="399"/>
+        <source>Show G&amp;uides</source>
+        <translation>Erakutsi &amp;gidak</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="410"/>
+        <source>&amp;Snap to Guides</source>
+        <translation>D&amp;oitu gidetara</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="421"/>
+        <source>S&amp;mart Guides</source>
+        <translation>Gida a&amp;dimendunak</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="432"/>
+        <source>&amp;Clear Guides</source>
+        <translation>Ga&amp;rbitu gidak</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="444"/>
+        <source>Add Im&amp;age</source>
+        <translation>Gehitu &amp;irudia</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="452"/>
+        <source>Move &amp;Content</source>
+        <translation>Mugitu ed&amp;ukia</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="463"/>
+        <source>&amp;Group</source>
+        <translation>&amp;Taldekatu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="474"/>
+        <source>&amp;Ungroup</source>
+        <translation>&amp;Banandu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="485"/>
+        <source>&amp;Raise</source>
+        <translation>Gor&amp;atu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="496"/>
+        <source>&amp;Lower</source>
+        <translation>Be&amp;heratu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="507"/>
+        <source>Bring to &amp;Front</source>
+        <translation>E&amp;karri aurrera</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="518"/>
+        <source>Send to &amp;Back</source>
+        <translation>Bidali a&amp;tzera</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="529"/>
+        <source>&amp;Add Items from Template...</source>
+        <translation>Gehitu elementuak t&amp;xantiloitik...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="537"/>
-        <source>Save as Template</source>
-        <translation>Gorde txantiloi gisa</translation>
+        <source>Save as &amp;Template...</source>
+        <translation>Gorde t&amp;xantiloi gisa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="540"/>
@@ -18808,9 +18832,79 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="607"/>
-        <source>Add Arrow</source>
-        <translation>Gehitu gezia</translation>
+        <location filename="../src/ui/qgscomposerbase.ui" line="788"/>
+        <source>Paste in P&amp;lace</source>
+        <translation>Itsatsi to&amp;kian</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="818"/>
+        <source>D&amp;eselect All</source>
+        <translation>De&amp;sautatu dena</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="829"/>
+        <source>&amp;Select All</source>
+        <translation>&amp;Hautatu dena</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="890"/>
+        <source>Composer &amp;Options...</source>
+        <translation>Kon&amp;posatzaile-aukerak...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="898"/>
+        <source>Show Ru&amp;lers</source>
+        <translation>Erakutsi e&amp;rregelak</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="913"/>
+        <source>&amp;First Feature</source>
+        <translation>&amp;Lehen elementua</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="925"/>
+        <source>P&amp;revious Feature</source>
+        <translation>A&amp;urreko elementua</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="937"/>
+        <source>&amp;Next Feature</source>
+        <translation>&amp;Hurrengo elementua</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="949"/>
+        <source>&amp;Last Feature</source>
+        <translation>&amp;Azken elementua</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="961"/>
+        <source>Preview &amp;Atlas</source>
+        <translation>Aurreikusi at&amp;lasa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="973"/>
+        <source>&amp;Print Atlas...</source>
+        <translation>&amp;Inprimatu atlasa...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="982"/>
+        <source>Export Atlas as &amp;Images...</source>
+        <translation>Esportatu atlasa i&amp;rudi gisa...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="991"/>
+        <source>Export Atlas as S&amp;VG...</source>
+        <translation>Esportatu atlasa S&amp;VG gisa...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="1000"/>
+        <source>&amp;Export Atlas as PDF...</source>
+        <translation>Esportatu atlasa P&amp;DF gisa...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="1012"/>
+        <source>Atlas &amp;Settings</source>
+        <translation>Atlas-e&amp;zarpenak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="610"/>
@@ -18828,19 +18922,9 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Gehitu taula</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="629"/>
-        <source>Add Attribute Table</source>
-        <translation>Gehitu atributu-taula</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="632"/>
         <source>Add attribute table</source>
         <translation>Gehitu atributu-taula</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="637"/>
-        <source>Page Setup</source>
-        <translation>Orriaren konfigurazioa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="640"/>
@@ -18863,14 +18947,39 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>&amp;Berregin</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="715"/>
+        <source>Add &amp;HTML</source>
+        <translation>Gehitu &amp;HTMLa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="723"/>
+        <source>Composer &amp;Manager...</source>
+        <translation>Konposatzaile-&amp;kudeatzailea...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="731"/>
+        <source>&amp;New Composer...</source>
+        <translation>Konposatzaile &amp;berria...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="753"/>
+        <source>&amp;Duplicate Composer...</source>
+        <translation>Bikoi&amp;ztu konposatzailea...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="765"/>
+        <source>Loc&amp;k Selected Items</source>
+        <translation>B&amp;lokeatu hautatutako elementuak</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="777"/>
+        <source>Unl&amp;ock All</source>
+        <translation>De&amp;sblokeatu dena</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="783"/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="788"/>
-        <source>Pa&amp;ste in Place</source>
-        <translation>It&amp;satsi tokian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="791"/>
@@ -18898,11 +19007,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="818"/>
-        <source>De&amp;select All</source>
-        <translation>&amp;Desautatu dena</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="821"/>
         <source>Deselect all</source>
         <translation>Desautatu dena</translation>
@@ -18911,11 +19015,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="824"/>
         <source>Ctrl+Shift+A</source>
         <translation>Ctrl+Shift+A</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="829"/>
-        <source>Select &amp;All</source>
-        <translation>&amp;Hautatu dena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="832"/>
@@ -18978,16 +19077,6 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>P</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="890"/>
-        <source>Composer Options...</source>
-        <translation>Konposatzaile-aukerak...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="898"/>
-        <source>Show Rulers</source>
-        <translation>Erakutsi erregelak</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="901"/>
         <source>Show rulers</source>
         <translation>Erakutsi erregelak</translation>
@@ -18998,19 +19087,9 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="913"/>
-        <source>First Feature</source>
-        <translation>Lehen elementua</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="916"/>
         <source>Ctrl+&lt;</source>
         <translation>Ctrl+&lt;</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="925"/>
-        <source>Previous Feature</source>
-        <translation>Aurreko elementua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="928"/>
@@ -19018,19 +19097,9 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+,</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="937"/>
-        <source>Next Feature</source>
-        <translation>Hurrengo elementua</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="940"/>
         <source>Ctrl+.</source>
         <translation>Ctrl+.</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="949"/>
-        <source>Last Feature</source>
-        <translation>Azken elementua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="952"/>
@@ -19038,34 +19107,9 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="961"/>
-        <source>Preview Atlas</source>
-        <translation>Atlasaren aurrebista</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="964"/>
         <source>Ctrl+Alt+/</source>
         <translation>Ctrl+Alt+/</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="973"/>
-        <source>Print Atlas...</source>
-        <translation>Inprimatu atlasa...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="982"/>
-        <source>Export Atlas as Images...</source>
-        <translation>Esportatu atlasa irudi gisa...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="991"/>
-        <source>Export Atlas as SVG...</source>
-        <translation>Esportatu atlasa SVG gisa...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="1000"/>
-        <source>Export Atlas as PDF...</source>
-        <translation>Esportatu atlasa PDF gisa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="1003"/>
@@ -19073,24 +19117,29 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Esportatu atlasa PDF gisa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="1012"/>
-        <source>Atlas Settings</source>
-        <translation>Atlas-ezarpenak</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="656"/>
         <source>Revert last change</source>
         <translation>Desegin azken aldaketa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="529"/>
-        <source>Add Items from Template</source>
-        <translation>Gehitu elementuak txantiloitik</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="532"/>
         <source>Add items from template</source>
         <translation>Gehitu elementuak txantiloitik</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="607"/>
+        <source>Add Arro&amp;w</source>
+        <translation>Gehitu &amp;gezia</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="629"/>
+        <source>Add Attribute &amp;Table</source>
+        <translation>Gehitu a&amp;tributu-taula</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscomposerbase.ui" line="637"/>
+        <source>Pa&amp;ge Setup...</source>
+        <translation>O&amp;rriaren konfigurazioa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="659"/>
@@ -19138,29 +19187,14 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Gehitu elipsea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="715"/>
-        <source>Add HTML</source>
-        <translation>Gehitu HTMLa</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="718"/>
         <source>Add html frame</source>
         <translation>Gehitu HTML markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="723"/>
-        <source>Composer Manager</source>
-        <translation>Konposatzaile-kudeatzailea</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="726"/>
         <source>Composer manager</source>
         <translation>Konposatzaile-kudeatzailea</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="731"/>
-        <source>&amp;New Composer</source>
-        <translation>&amp;Konposatzaile berria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="734"/>
@@ -19188,29 +19222,14 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="753"/>
-        <source>&amp;Duplicate Composer</source>
-        <translation>&amp;Bikoiztu konposatzailea</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="756"/>
         <source>Duplicate composer</source>
         <translation>Bikoiztu konposatzailea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="765"/>
-        <source>Lock Selected Items</source>
-        <translation>Blokeatu hautatutako elementuak</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="768"/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgscomposerbase.ui" line="777"/>
-        <source>Unlock All</source>
-        <translation>Desblokeatu dena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="780"/>
@@ -19273,7 +19292,7 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
 <context>
     <name>QgsComposerHtml</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerhtml.cpp" line="462"/>
+        <location filename="../src/core/composer/qgscomposerhtml.cpp" line="469"/>
         <source>&lt;html frame&gt;</source>
         <translation>&lt;html markoa&gt;</translation>
     </message>
@@ -19381,98 +19400,98 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>HTML markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="44"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="35"/>
         <source>HTML frame</source>
         <translation>HTML markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="126"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="120"/>
         <source>URL</source>
         <translation>URLa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="100"/>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="107"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="94"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="101"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="66"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="60"/>
         <source>HTML Source</source>
         <translation>HTML iturburua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="78"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="72"/>
         <source>If checked, expressions inside [% %] tags will be evaluated prior to rendering the HTML</source>
         <translation>Markatuta badago, [% %] etiketen barruko adierazpenak ebaluatu egingo dira HTMLa errendatu baino lehen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="81"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="75"/>
         <source>Evaluate QGIS expressions in HTML source</source>
         <translation>Ebaluatu HTML iturburuko QGIS adierazpenak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="116"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="110"/>
         <source>Source:</source>
         <translation>Iturburua:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="133"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="127"/>
         <source>Insert an expression</source>
         <translation>Txertatu adierazpen bat</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="143"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="140"/>
         <source>Frames</source>
         <translation>Markoak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="171"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="168"/>
         <source>Don&apos;t export page if frame is empty</source>
         <translation>Ez esportatu orria markoa hutsik badago</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="185"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="182"/>
         <source>Resize mode</source>
         <translation>Tamaina aldatzeko modua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="178"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="175"/>
         <source>Add Frame</source>
         <translation>Gehitu markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="195"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="192"/>
         <source>Don&apos;t draw background if frame is empty</source>
         <translation>Ez marraztu atzeko planoa markoa hutsik badago</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="205"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="202"/>
         <source>Use smart page breaks</source>
         <translation>Erabili orrien eten adimentsuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="223"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="220"/>
         <source>Maximum distance</source>
         <translation>Distantzia maximoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="230"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="227"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="249"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="246"/>
         <source>User stylesheet</source>
         <translation>Erabiltzailearen estilo-orria</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="270"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="267"/>
         <source>Update HTML</source>
         <translation>Eguneratu HTMLa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="88"/>
+        <location filename="../src/ui/qgscomposerhtmlwidgetbase.ui" line="82"/>
         <source>Refresh HTML</source>
         <translation>Freskatu HTMLa</translation>
     </message>
@@ -19480,67 +19499,67 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
 <context>
     <name>QgsComposerItem</name>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1390"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1419"/>
         <source>&lt;arrow&gt;</source>
         <translation>&lt;gezia&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1392"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1421"/>
         <source>&lt;group&gt;</source>
         <translation>&lt;taldea&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1394"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1423"/>
         <source>&lt;label&gt;</source>
         <translation>&lt;etiketa&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1396"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1425"/>
         <source>&lt;legend&gt;</source>
         <translation>&lt;legenda&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1398"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1427"/>
         <source>&lt;map&gt;</source>
         <translation>&lt;mapa&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1400"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1429"/>
         <source>&lt;picture&gt;</source>
         <translation>&lt;irudia&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1402"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1431"/>
         <source>&lt;scale bar&gt;</source>
         <translation>&lt;eskala-barra&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1404"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1433"/>
         <source>&lt;shape&gt;</source>
         <translation>&lt;forma&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1406"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1435"/>
         <source>&lt;table&gt;</source>
         <translation>&lt;taula&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1408"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1437"/>
         <source>&lt;attribute table&gt;</source>
         <translation>&lt;atributu-taula&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1410"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1439"/>
         <source>&lt;text table&gt;</source>
         <translation>&lt;testu-taula&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1412"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1441"/>
         <source>&lt;frame&gt;</source>
         <translation>&lt;markoa&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1415"/>
+        <location filename="../src/core/composer/qgscomposeritem.cpp" line="1444"/>
         <source>&lt;item&gt;</source>
         <translation>&lt;elementua&gt;</translation>
     </message>
@@ -19626,129 +19645,129 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Aukera globalak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="23"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="26"/>
         <source>Position and size</source>
         <translation>Kokapena eta tamaina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="163"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="172"/>
         <source>Reference point</source>
         <translation>Erreferentzia-puntua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="44"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="47"/>
         <source>X</source>
         <translation>X</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="58"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="61"/>
         <source>Y</source>
         <translation>Y</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="37"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="40"/>
         <source>Width</source>
         <translation>Zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="51"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="54"/>
         <source>Height</source>
         <translation>Altuera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="65"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="68"/>
         <source>Page</source>
         <translation>Orria</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="312"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="324"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="336"/>
         <source>Rotation</source>
         <translation>Biraketa</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="339"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="351"/>
         <source> °</source>
         <translation> °</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="72"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="79"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="86"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="93"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="349"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="590"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="625"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="75"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="82"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="89"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="96"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="361"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="608"/>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="643"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="661"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="361"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="373"/>
         <source>Frame</source>
         <translation>Markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="107"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="120"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="133"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="146"/>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="444"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="110"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="123"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="136"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="152"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="456"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="451"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="463"/>
         <source>Join style</source>
         <translation>Elkartze-estiloa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="376"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="388"/>
         <source>Frame color</source>
         <translation>Markoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="489"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="501"/>
         <source>Background color</source>
         <translation>Atzeko planoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="566"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="584"/>
         <source>Rendering</source>
         <translation>Errendatzea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="578"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="596"/>
         <source>Blending mode</source>
         <translation>Nahaste-modua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="636"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="654"/>
         <source>Exclude item from exports</source>
         <translation>Utzi elementua esportazioetatik kanpo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="425"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="437"/>
         <source>Thickness</source>
         <translation>Lodiera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="471"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="483"/>
         <source>Background</source>
         <translation>Atzeko planoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="599"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="617"/>
         <source>Transparency</source>
         <translation>Gardentasuna</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="541"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="556"/>
         <source>Item ID</source>
         <translation>Elementuaren IDa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="553"/>
+        <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="568"/>
         <source>Id</source>
         <translation>Id</translation>
     </message>
@@ -19756,17 +19775,17 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
 <context>
     <name>QgsComposerLabel</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlabel.cpp" line="421"/>
+        <location filename="../src/core/composer/qgscomposerlabel.cpp" line="449"/>
         <source>&lt;HTML label&gt;</source>
         <translation>&lt;HTML etiketa&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlabel.cpp" line="428"/>
+        <location filename="../src/core/composer/qgscomposerlabel.cpp" line="456"/>
         <source>&lt;label&gt;</source>
         <translation>&lt;etiketa&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlabel.cpp" line="432"/>
+        <location filename="../src/core/composer/qgscomposerlabel.cpp" line="460"/>
         <source>%1...</source>
         <translation>%1...</translation>
     </message>
@@ -19828,87 +19847,87 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Etiketa-aukerak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="50"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="41"/>
         <source>Label</source>
         <translation>Etiketa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="72"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="66"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="94"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="88"/>
         <source>Render as HTML</source>
         <translation>Errendatu HTML gisa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="101"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="95"/>
         <source>Insert an expression...</source>
         <translation>Txertatu adierazpen bat...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="111"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="108"/>
         <source>Appearance</source>
         <translation>Itxura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="132"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="129"/>
         <source>Font...</source>
         <translation>Letra-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="139"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="136"/>
         <source>Font color</source>
         <translation>Letra-tipoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="293"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="290"/>
         <source>Horizontal alignment</source>
         <translation>Lerrokatze horizontala</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="300"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="297"/>
         <source>Vertical alignment</source>
         <translation>Lerrokatze bertikala</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="248"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="245"/>
         <source>Top</source>
         <translation>Goia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="258"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="255"/>
         <source>Middle</source>
         <translation>Erdia bertikalean</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="268"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="265"/>
         <source>Bottom</source>
         <translation>Behea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="201"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="198"/>
         <source>Left</source>
         <translation>Ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="211"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="208"/>
         <source>Center</source>
         <translation>Erdia horizontalean</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="221"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="218"/>
         <source>Right</source>
         <translation>Eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="182"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="179"/>
         <source>Margin</source>
         <translation>Marjina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="192"/>
+        <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="189"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
@@ -19916,12 +19935,12 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
 <context>
     <name>QgsComposerLegend</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="423"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="493"/>
         <source>&lt;legend&gt;</source>
         <translation>&lt;legenda&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="427"/>
+        <location filename="../src/core/composer/qgscomposerlegend.cpp" line="497"/>
         <source>%1...</source>
         <translation>%1...</translation>
     </message>
@@ -19929,12 +19948,12 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
 <context>
     <name>QgsComposerLegendItemDialogBase</name>
     <message>
-        <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="13"/>
+        <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="14"/>
         <source>Legend item properties</source>
         <translation>Legena-elementuaren propietateak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
+        <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="20"/>
         <source>Item text</source>
         <translation>Elementu-testua</translation>
     </message>
@@ -20130,248 +20149,248 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Legenda</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="66"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="69"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="84"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="87"/>
         <source>&amp;Title</source>
         <translation>&amp;Izenburua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="100"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="103"/>
         <source>Map</source>
         <translation>Mapa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="113"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="116"/>
         <source>Wrap text on</source>
         <translation>Egokitu testua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="159"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="165"/>
         <source>Legend items</source>
         <translation>Legenda-elementuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="269"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="275"/>
         <source>Add group</source>
         <translation>Gehitu taldea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="337"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="343"/>
         <source>Show feature count for each class of vector layer.</source>
         <translation>Erakutsi elementu-kopurua geruza bektorialen klase bakoitzerako.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="398"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="407"/>
         <source>Fonts</source>
         <translation>Letra-tipoak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="717"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="738"/>
         <source>Space above text using subgroup style.</source>
         <translation>Testuaren gaineko tartea azpitalde-estiloa erabiliz.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="720"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="741"/>
         <source>Subgroup space</source>
         <translation>Azpimultzoen tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="740"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="761"/>
         <source>Space above symbol and symbol label.</source>
         <translation>Ikurraren eta ikur-etiketaren gaineko tartea.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="806"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="827"/>
         <source>Column space</source>
         <translation>Zutabe-tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="490"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="502"/>
         <source>Columns</source>
         <translation>Zutabeak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="508"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="520"/>
         <source>Count</source>
         <translation>Zenbaketa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="528"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="540"/>
         <source>Equal column widths</source>
         <translation>Zabalera bereko zutabeak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="535"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="547"/>
         <source>Allow to split layer items into multiple columns.</source>
         <translation>Onartu geruza-elementuak zutabe anitzetan zatitzea.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="538"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="550"/>
         <source>Split layers</source>
         <translation>Zatitu geruzak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="676"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="697"/>
         <source>Spacing</source>
         <translation>Tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="579"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="599"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="640"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="663"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="710"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="733"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="756"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="779"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="799"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="816"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="836"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="594"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="614"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="658"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="681"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="731"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="754"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="777"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="800"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="820"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="837"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="857"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="130"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="133"/>
         <source>Title alignment:</source>
         <translation>Izenburu-lerrokatzea:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="138"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="141"/>
         <source>Left</source>
         <translation>Ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="143"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="146"/>
         <source>Center</source>
         <translation>Erdia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="148"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="151"/>
         <source>Right</source>
         <translation>Eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="196"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="202"/>
         <source>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</source>
         <translation>Eguneratu legenda osoa. Geruzak aplikazio nagusiaren legendaren arabera gehitzen/kentzen dira. Erabiltzaileak definitutako etiketak ezabatu egingo dira.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="199"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="205"/>
         <source>Update all</source>
         <translation>Eguneratu dena</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="272"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="278"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="173"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="179"/>
         <source>Auto update</source>
         <translation>Eguneratu automatikoki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="360"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="366"/>
         <source>Filter Legend By Map Content</source>
         <translation>Iragazi legenda maparen edukiaren arabera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="416"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="425"/>
         <source>Title font...</source>
         <translation>Izenburuaren testu-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="423"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="432"/>
         <source>Subgroup font...</source>
         <translation>Azpitaldearen testu-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="430"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="439"/>
         <source>Group font...</source>
         <translation>Taldearen testu-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="437"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="446"/>
         <source>Item font...</source>
         <translation>Elementuaren testu-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="446"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="455"/>
         <source>Font color</source>
         <translation>Letra-tipoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="548"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="563"/>
         <source>Symbol</source>
         <translation>Ikurra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="566"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="581"/>
         <source>Symbol width</source>
         <translation>Ikur-zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="586"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="601"/>
         <source>Symbol height</source>
         <translation>Ikur-altuera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="609"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="627"/>
         <source>WMS LegendGraphic</source>
         <translation>WMS legendaren grafikoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="627"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="645"/>
         <source>Legend width</source>
         <translation>Legendaren zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="650"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="668"/>
         <source>Legend height</source>
         <translation>Legendaren altuera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="694"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="715"/>
         <source>Space above text using group style.</source>
         <translation>Testuaren gaineko tartea talde-estiloa erabiliz.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="697"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="718"/>
         <source>Group Space</source>
         <translation>Taldeen tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="743"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="764"/>
         <source>Symbol space</source>
         <translation>Ikur-tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="763"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="784"/>
         <source>Space between symbol icon and symbol label (symbol label left margin).</source>
         <translation>Ikur-ikonoaren eta ikur-etiketaren arteko tartea (ikur-etiketaren ezkerreko marjina).</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="766"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="787"/>
         <source>Icon label space</source>
         <translation>Ikono-etiketen tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="786"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="807"/>
         <source>Box space</source>
         <translation>Kutxa-tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="823"/>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="833"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="844"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="854"/>
         <source>Space below title.</source>
         <translation>Tartea izenburuaren azpian.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="826"/>
+        <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="847"/>
         <source>Title space</source>
         <translation>Izenburuaren tartea</translation>
     </message>
@@ -20379,119 +20398,119 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
 <context>
     <name>QgsComposerManager</name>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="48"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="50"/>
         <source>&amp;Show</source>
         <translation>&amp;Erakutsi</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="52"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="54"/>
         <source>&amp;Duplicate</source>
         <translation>&amp;Bikoiztu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="56"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="58"/>
         <source>&amp;Remove</source>
         <translation>&amp;Kendu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="60"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="62"/>
         <source>Re&amp;name</source>
         <translation>Be&amp;rrizendatu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="70"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="72"/>
         <source>Empty composer</source>
         <translation>Konposatzaile hutsa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="71"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="73"/>
         <source>Specific</source>
         <translation>Zehatza</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="181"/>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="186"/>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="237"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="183"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="188"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="239"/>
         <source>Template error</source>
         <translation>Txantiloi-errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="181"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="183"/>
         <source>Error, template file not found</source>
         <translation>Errorea, txantiloi-fitxategia ez da aurkitu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="186"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="188"/>
         <source>Error, could not read file</source>
         <translation>Errorea, ezin da fitxategia irakurri</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="203"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="205"/>
         <source>Composer error</source>
         <translation>Konposatzaile-errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="203"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="205"/>
         <source>Error, could not create composer</source>
         <translation>Errorea, ezin da konposatzailea sortu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="218"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="220"/>
         <source>Loading template into composer...</source>
         <translation>Txantiloia konposatzailean kargatzen...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="237"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="239"/>
         <source>Error, could not load template file</source>
         <translation>Errorea, ezin da txantiloi-fitxategia kargatu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="253"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="255"/>
         <source>Choose template</source>
         <translation>Hautatu txantiloia</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="255"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="257"/>
         <source>Composer templates</source>
         <translation>Konposatzaile-txantiloiak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="280"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="282"/>
         <source>File system error</source>
         <translation>Fitxategi-sistemaren errorea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="280"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="282"/>
         <source>Error, could not open or create local directory</source>
         <translation>Errorea, ezin da direktorio lokala ireki edo sortu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="322"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="324"/>
         <source>Remove composer</source>
         <translation>Ezabatu konposatzailea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="322"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="324"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
         <translation>Benetan &apos;%1&apos; mapa-konposatzailea ezabatu nahi duzu? </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="421"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="423"/>
         <source> copy</source>
         <translation>kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="428"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="430"/>
         <source>Duplicating composer...</source>
         <translation>Konposatzailea bikoizten...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="445"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="447"/>
         <source>Duplicate Composer</source>
         <translation>Bikoiztu konposatzailea</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermanager.cpp" line="446"/>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="448"/>
         <source>Composer duplication failed.</source>
         <translation>Konposatzailea bikoizteak huts egin du.</translation>
     </message>
@@ -20504,32 +20523,32 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Konposatzaile-kudeatzailea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="35"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="38"/>
         <source>New from template</source>
         <translation>Berria txantiloitik</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="50"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="53"/>
         <source>Add</source>
         <translation>Gehitu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="63"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="66"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="78"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="81"/>
         <source>Open template directory</source>
         <translation>Ireki txantiloi-direktorioa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="91"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="94"/>
         <source>user</source>
         <translation>erabiltzailea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="104"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="107"/>
         <source>default</source>
         <translation>lehenetsia</translation>
     </message>
@@ -21016,114 +21035,114 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Mapa-aukerak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="50"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
         <source>Map</source>
         <translation>Mapa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="81"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="75"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="105"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="99"/>
         <source>Update preview</source>
         <translation>Eguneratu aurrebista</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="114"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="108"/>
         <source>Scale</source>
         <translation>Eskala</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="142"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="136"/>
         <source>Map rotation</source>
         <translation>Maparen biraketa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="170"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="164"/>
         <source>Draw map canvas items</source>
         <translation>Marraztu mapa-oihalaren elementuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="185"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="179"/>
         <source>Lock layers for map item</source>
         <translation>Blokeatu mapa-elementuaren geruzak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="220"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="217"/>
         <source>Extents</source>
         <translation>Hedadura</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="289"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="286"/>
         <source>X max</source>
         <translation>X max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="262"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="259"/>
         <source>Y min</source>
         <translation>Y min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="316"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="313"/>
         <source>Y max</source>
         <translation>Y max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="343"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="340"/>
         <source>Set to map canvas extent</source>
         <translation>Ezarri mapa oihal-hedadurara</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="235"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="232"/>
         <source>X min</source>
         <translation>X min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="133"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="161"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="205"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="253"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="280"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="307"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="334"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="412"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="127"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="155"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="199"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="250"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="277"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="304"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="331"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="409"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="350"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="347"/>
         <source>View extent in map canvas</source>
         <translation>Ikusi hedadura mapa-oihalean</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="360"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="357"/>
         <source>Controlled by atlas</source>
         <translation>Atlasak kontrolatutakoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="381"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="378"/>
         <source>Margin around feature</source>
         <translation>Marjina elementuaren inguruan</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="399"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="396"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="434"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="431"/>
         <source>Fixed scale</source>
         <translation>Eskala finkoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="421"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="418"/>
         <source>Use one of the predefined scales of the project where the atlas feature best fits.</source>
         <translation>Erabili proiektuan aurredefinitutako eskaletako bat, atlas-elementuari ondoen doitzen zaiona.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="424"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="421"/>
         <source>Predefined scale (best fit)</source>
         <translation>Aurredefinitutako eskala (doitze onena)</translation>
     </message>
@@ -21134,9 +21153,9 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="696"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="786"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="923"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1099"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="789"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="926"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1102"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
@@ -21151,22 +21170,22 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Tartea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="750"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="753"/>
         <source>Grid frame</source>
         <translation>Sareta-markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="769"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="772"/>
         <source>Frame size</source>
         <translation>Markoaren tamaina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="779"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="782"/>
         <source>Frame line thickness</source>
         <translation>Markoaren lerroaren lodiera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="812"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="815"/>
         <source>Frame fill colors</source>
         <translation>Markoaren betegarri-koloreak</translation>
     </message>
@@ -21176,12 +21195,12 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Markatzaile-estiloa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1271"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1277"/>
         <source>Invert overview</source>
         <translation>Alderantzikatu ikuspegi orokorra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1278"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1284"/>
         <source>Center on overview</source>
         <translation>Zentratu ikuspegi orokorrean</translation>
     </message>
@@ -21192,7 +21211,7 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>X</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="151"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="145"/>
         <source> °</source>
         <translation> °</translation>
     </message>
@@ -21208,8 +21227,8 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Gurutze-zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="759"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1247"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="762"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1253"/>
         <source>Frame style</source>
         <translation>Marko-estiloa</translation>
     </message>
@@ -21225,25 +21244,25 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="458"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1145"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1151"/>
         <source>Add a new grid</source>
         <translation>Gehitu sareta berria</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="472"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1159"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1165"/>
         <source>Remove selected grid</source>
         <translation>Kendu hautatutako sareta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="486"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1173"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1179"/>
         <source>Move selected grid up</source>
         <translation>Mugitu hautatutako sareta gora</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="500"/>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1187"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1193"/>
         <source>Move selected grid down</source>
         <translation>Mugitu hautatutako sareta behera</translation>
     </message>
@@ -21290,132 +21309,132 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Zentimetroa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="859"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="862"/>
         <source>Left side</source>
         <translation>Ezkerreko aldea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="866"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="869"/>
         <source>Right side</source>
         <translation>Eskuineko aldea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="873"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="876"/>
         <source>Top side</source>
         <translation>Goiko aldea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="880"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="883"/>
         <source>Bottom side</source>
         <translation>Beheko aldea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="890"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="893"/>
         <source>No frame</source>
         <translation>Markorik ez</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="895"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="898"/>
         <source>Zebra</source>
         <translation>Zebra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="900"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="903"/>
         <source>Interior ticks</source>
         <translation>Barneko markak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="905"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="908"/>
         <source>Exterior ticks</source>
         <translation>Kanpoko markak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="910"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="913"/>
         <source>Interior and exterior ticks</source>
         <translation>Barneko eta kanpoko markak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="915"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="918"/>
         <source>Line border</source>
         <translation>Lerro-ertza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="936"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="939"/>
         <source>Draw coordinates</source>
         <translation>Marraztu koordenatuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="960"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="963"/>
         <source>Format</source>
         <translation>Formatua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="970"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="973"/>
         <source>Left</source>
         <translation>Ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="989"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="992"/>
         <source>Right</source>
         <translation>Eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1008"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1011"/>
         <source>Top</source>
         <translation>Goia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1027"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1030"/>
         <source>Bottom</source>
         <translation>Behea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1046"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1049"/>
         <source>Font</source>
         <translation>Letra-tipoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1053"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1056"/>
         <source>Font...</source>
         <translation>Letra-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1060"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1063"/>
         <source>Font color</source>
         <translation>Letra-tipoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1086"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1089"/>
         <source>Distance to map frame</source>
         <translation>Distantzia mapa-markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1106"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1109"/>
         <source>Coordinate precision</source>
         <translation>Koordenatu-doitasuna</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1131"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1137"/>
         <source>Overviews</source>
         <translation>Ikuspegi orokorrak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1219"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1225"/>
         <source>Draw overview</source>
         <translation>Marraztu ikuspegi-orokorra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1237"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1243"/>
         <source>Map frame</source>
         <translation>Mapa-markoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1261"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1267"/>
         <source>Blending mode</source>
         <translation>Nahaste-modua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1254"/>
+        <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="1260"/>
         <source>Change...</source>
         <translation>Aldatu...</translation>
     </message>
@@ -21470,9 +21489,22 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
     </message>
 </context>
 <context>
+    <name>QgsComposerNameDelegate</name>
+    <message>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="538"/>
+        <source>Rename composer</source>
+        <translation>Berrizendatu konposatzailea</translation>
+    </message>
+    <message>
+        <location filename="../src/app/composer/qgscomposermanager.cpp" line="538"/>
+        <source>There is already a composer named &quot;%1&quot;</source>
+        <translation>Badago lehendik &quot;%1&quot; deitzen den konposatzaile bat</translation>
+    </message>
+</context>
+<context>
     <name>QgsComposerPicture</name>
     <message>
-        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="305"/>
+        <location filename="../src/core/composer/qgscomposerpicture.cpp" line="314"/>
         <source>Picture expression eval error</source>
         <translation>Irudiaren adierazpenaren ebaluazioa-errorea</translation>
     </message>
@@ -21507,28 +21539,28 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Irudiaren tamaina aldatzeko modua aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="249"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="250"/>
         <source>Picture placement changed</source>
         <translation>Irudiaren kokapena aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="261"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="262"/>
         <source>Rotation synchronisation toggled</source>
         <translation>Biraketaren sinkronizazioa txandakatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="321"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="322"/>
         <source>Rotation map changed</source>
         <translation>Biraketa-mapa aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="345"/>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="395"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="346"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="396"/>
         <source>Map %1</source>
         <translation>%1. mapa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="456"/>
+        <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="458"/>
         <source>Creating icon for file %1</source>
         <translation>Ikonoa sortzen %1 fitxategirako</translation>
     </message>
@@ -21541,128 +21573,128 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Irudi-aukerak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="50"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
         <source>Picture</source>
         <translation>Irudia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="72"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="66"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="84"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="78"/>
         <source>Image source</source>
         <translation>Irudi-iturburua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="108"/>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="115"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="102"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="109"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="124"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="118"/>
         <source>Resize mode</source>
         <translation>Tamaina aldatzeko modua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="160"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="154"/>
         <source>Placement</source>
         <translation>Kokapena</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="132"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="126"/>
         <source>Zoom</source>
         <translation>Zooma</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="137"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="131"/>
         <source>Stretch</source>
         <translation>Luzatu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="142"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="136"/>
         <source>Clip</source>
         <translation>Moztu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="147"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="141"/>
         <source>Zoom and resize frame</source>
         <translation>Markoaren zooma eta tamaina aldatu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="152"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="146"/>
         <source>Resize frame to image size</source>
         <translation>Aldatu markoaren tamaina irudi-tamainara</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="168"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="162"/>
         <source>Top left</source>
         <translation>Goi ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="173"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="167"/>
         <source>Top center</source>
         <translation>Goi erdia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="178"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="172"/>
         <source>Top right</source>
         <translation>Goi eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="183"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="177"/>
         <source>Middle left</source>
         <translation>Erdi ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="188"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="182"/>
         <source>Middle</source>
         <translation>Erdia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="193"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="187"/>
         <source>Middle right</source>
         <translation>Erdi eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="198"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="192"/>
         <source>Bottom left</source>
         <translation>Behe ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="203"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="197"/>
         <source>Bottom center</source>
         <translation>Behe erdia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="208"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="202"/>
         <source>Bottom right</source>
         <translation>Behe eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="225"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="222"/>
         <source>Search directories</source>
         <translation>Bilaketa-direktorioak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="242"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="239"/>
         <source>Loading previews...</source>
         <translation>Aurrebistak kargatzen...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="286"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="283"/>
         <source>Image search paths</source>
         <translation>Irudiak bilatzeko bideak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="302"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="299"/>
         <source>Remove</source>
         <translation>Kendu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="309"/>
+        <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="306"/>
         <source>Add...</source>
         <translation>Gehitu...</translation>
     </message>
@@ -21956,136 +21988,136 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Eskala-barra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="63"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="66"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="81"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="84"/>
         <source>Map</source>
         <translation>Mapa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="107"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="110"/>
         <source>Style</source>
         <translation>Estiloa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="123"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="129"/>
         <source>Units</source>
         <translation>Unitateak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="135"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="141"/>
         <source>Label</source>
         <translation>Etiketa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="151"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="157"/>
         <source>Map units per bar unit</source>
         <translation>Mapa-unitateak barra-unitateko</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="180"/>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="192"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="189"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="201"/>
         <source>Segments</source>
         <translation>Segmentuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="204"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="213"/>
         <source>left </source>
         <translation>ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="214"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="223"/>
         <source>right </source>
         <translation>eskuina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="223"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="232"/>
         <source>Size</source>
         <translation>Tamaina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="236"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="245"/>
         <source> units</source>
         <translation>unitateak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="249"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="258"/>
         <source>Height</source>
         <translation>Altuera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="256"/>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="291"/>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="308"/>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="331"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="265"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="303"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="320"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="343"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="269"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="281"/>
         <source>Display</source>
         <translation>Bistaratzea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="281"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="293"/>
         <source>Box margin</source>
         <translation>Kutxa-marjina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="298"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="310"/>
         <source>Labels margin</source>
         <translation>Etiketa-marjina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="315"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="327"/>
         <source>Line width</source>
         <translation>Lerro-zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="347"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="359"/>
         <source>Join style</source>
         <translation>Elkartze-estiloa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="357"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="369"/>
         <source>Cap style</source>
         <translation>Estalki-estiloa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="367"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="379"/>
         <source>Alignment</source>
         <translation>Lerrokatzea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="380"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="395"/>
         <source>Fonts and colors</source>
         <translation>Letra-tipoak eta koloreak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="392"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="407"/>
         <source>Font color</source>
         <translation>Letra-tipoaren kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="435"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="450"/>
         <source>Fill color</source>
         <translation>Betegarri-kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="478"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="493"/>
         <source>Secondary fill color</source>
         <translation>Bigarren mailako betegarri-kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="521"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="536"/>
         <source>Stroke color</source>
         <translation>Trazu-kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="570"/>
+        <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="585"/>
         <source>Font...</source>
         <translation>Letra-tipoa...</translation>
     </message>
@@ -22161,32 +22193,32 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Inprimakia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="44"/>
+        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="35"/>
         <source>Shape</source>
         <translation>Forma</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="66"/>
+        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="60"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="78"/>
+        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="72"/>
         <source>Corner radius</source>
         <translation>Izkinaren erradioa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="91"/>
+        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="85"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="101"/>
+        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="95"/>
         <source>Style</source>
         <translation>Estiloa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="114"/>
+        <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="108"/>
         <source>Change...</source>
         <translation>Aldatu...</translation>
     </message>
@@ -22372,132 +22404,132 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Atributu-taula</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="57"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="60"/>
         <source>Main properties</source>
         <translation>Propietate nagusiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="75"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="78"/>
         <source>Layer</source>
         <translation>Geruza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="102"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="105"/>
         <source>Attributes...</source>
         <translation>Atributuak...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="132"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="138"/>
         <source>Feature filtering</source>
         <translation>Elementuen iragazkia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="171"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="177"/>
         <source>Composer map</source>
         <translation>Konposatzaile-mapa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="256"/>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="340"/>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="389"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="262"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="349"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="398"/>
         <source>Color</source>
         <translation>Kolorea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="285"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="294"/>
         <source>Fonts and text styling</source>
         <translation>Letra-tipoen eta testuaren estiloak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="297"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="306"/>
         <source>Table heading</source>
         <translation>Taula-goiburua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="333"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="342"/>
         <source>Alignment</source>
         <translation>Lerrokatzea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="347"/>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="422"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="356"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="431"/>
         <source>Font</source>
         <translation>Letra-tipoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="354"/>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="415"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="363"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="424"/>
         <source>Choose font...</source>
         <translation>Hautatu letra-tipoa...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="383"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="392"/>
         <source>Table contents</source>
         <translation>Taula-edukiak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="144"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="150"/>
         <source>Maximum rows</source>
         <translation>Errenkada-kopuru maximoa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="109"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="112"/>
         <source>Margin</source>
         <translation>Marjina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="164"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="170"/>
         <source>Show only visible features</source>
         <translation>Erakutsi ikusgai dauden elementuak soilik</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="95"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="98"/>
         <source>Refresh table data</source>
         <translation>Freskatu taula-datuak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="187"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="193"/>
         <source>Filter with</source>
         <translation>Iragazi honekin</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="199"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="205"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="122"/>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="249"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="125"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="255"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="221"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="227"/>
         <source>Show grid</source>
         <translation>Erakutsi sareta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="236"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="242"/>
         <source>Stroke width</source>
         <translation>Trazu-zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="310"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="319"/>
         <source>Follow column alignment</source>
         <translation>Jarraitu zutabe-lerrokatzea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="315"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="324"/>
         <source>Left</source>
         <translation>Ezkerra</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="320"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="329"/>
         <source>Center</source>
         <translation>Erdia</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="325"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="334"/>
         <source>Right</source>
         <translation>Eskuina</translation>
     </message>
@@ -22568,7 +22600,7 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Eskala-barra gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="858"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="863"/>
         <source>Legend added</source>
         <translation>Legenda gehitu da</translation>
     </message>
@@ -22578,7 +22610,7 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Irudia gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="886"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="891"/>
         <source>Table added</source>
         <translation>Taula gehitu da</translation>
     </message>
@@ -22603,35 +22635,35 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Mapa gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="905"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="910"/>
         <source>Attribute table added</source>
         <translation>Atributu-taula gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="910"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="915"/>
         <source>Attribute table frame added</source>
         <translation>Atributu-taularen markoa gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="933"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="938"/>
         <source>Html item added</source>
         <translation>HTML elementua gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="938"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="943"/>
         <source>Html frame added</source>
         <translation>HTML markoa gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1454"/>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1463"/>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1472"/>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1481"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1459"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1468"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1477"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1486"/>
         <source>Item moved</source>
         <translation>Elementua mugitu da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgscomposerview.cpp" line="1579"/>
+        <location filename="../src/gui/qgscomposerview.cpp" line="1584"/>
         <source>Zoom item content</source>
         <translation>Zoom elementuaren edukira</translation>
     </message>
@@ -22639,107 +22671,107 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
 <context>
     <name>QgsComposition</name>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1097"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1098"/>
         <source>Label added</source>
         <translation>Etiketa gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1140"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1141"/>
         <source>Map added</source>
         <translation>Mapa gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1185"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1186"/>
         <source>Arrow added</source>
         <translation>Gezia gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1213"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1214"/>
         <source>Scale bar added</source>
         <translation>Eskala-barra gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1243"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1244"/>
         <source>Shape added</source>
         <translation>Forma gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1271"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1272"/>
         <source>Picture added</source>
         <translation>Irudia gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1299"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1300"/>
         <source>Legend added</source>
         <translation>Legenda gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1327"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1328"/>
         <source>Table added</source>
         <translation>Taula gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1588"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1589"/>
         <source>Aligned items left</source>
         <translation>Elementuak ezkerrean lerrokatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1618"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1619"/>
         <source>Aligned items horizontal center</source>
         <translation>Elementuak erdian horizontalean lerrokatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1705"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1706"/>
         <source>Aligned items vertical center</source>
         <translation>Elementuak erdian bertikalean lerrokatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1648"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1649"/>
         <source>Aligned items right</source>
         <translation>Elementuak eskuinean lerrokatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1677"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1678"/>
         <source>Aligned items top</source>
         <translation>Elementuak goian lerrokatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1733"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1734"/>
         <source>Aligned items bottom</source>
         <translation>Elementuak behean lerrokatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1748"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1749"/>
         <source>Items locked</source>
         <translation>Elementuak blokeatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1768"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1769"/>
         <source>Items unlocked</source>
         <translation>Elementuak desblokeatu dira</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="1802"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="1847"/>
         <source>Item z-order changed</source>
         <translation>Elementuaren z-ordena aldatu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2366"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2411"/>
         <source>Remove item group</source>
         <translation>Kendu elementu-taldea</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2390"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2435"/>
         <source>Frame deleted</source>
         <translation>Markoa ezabatu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2397"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2442"/>
         <source>Item deleted</source>
         <translation>Elementua ezabatu da</translation>
     </message>
     <message>
-        <location filename="../src/core/composer/qgscomposition.cpp" line="2414"/>
+        <location filename="../src/core/composer/qgscomposition.cpp" line="2459"/>
         <source>Multiframe removed</source>
         <translation>Marko anitz ezabatu dira</translation>
     </message>
@@ -22950,66 +22982,66 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation>Konposizioa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="68"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="65"/>
         <source>Paper and quality</source>
         <translation>Papera eta kalitatea</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="80"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="77"/>
         <source>Presets</source>
         <translation>Aurrezarpenak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="108"/>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="148"/>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="188"/>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="239"/>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="276"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="105"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="145"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="185"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="236"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="273"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="117"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="114"/>
         <source>Width</source>
         <translation>Zabalera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="157"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="154"/>
         <source>Height</source>
         <translation>Altuera</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="197"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="194"/>
         <source>Units</source>
         <translation>Unitateak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="220"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="217"/>
         <source>Number of pages</source>
         <translation>Orri-kopurua</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="248"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="245"/>
         <source>Orientation</source>
         <translation>Orientazioa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="299"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="296"/>
         <source>Export resolution</source>
         <translation>Esportazio-bereizmena</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="319"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="316"/>
         <source>Print as raster</source>
         <translation>Inprimatu raster gisa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="292"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="289"/>
         <source>Change...</source>
         <translation>Aldatu...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="285"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="282"/>
         <source>Page background</source>
         <translation>Orrialdearen atzeko planoa</translation>
     </message>
@@ -23024,12 +23056,12 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
         <translation> px</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="306"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="303"/>
         <source> dpi</source>
         <translation>dpi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="338"/>
+        <location filename="../src/ui/qgscompositionwidgetbase.ui" line="335"/>
         <source>World file on</source>
         <translation>Mundu-fitxategia aktibatuta</translation>
     </message>
@@ -23708,233 +23740,233 @@ existitzen den CRSa</translation>
 <context>
     <name>QgsDataDefinedButton</name>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="78"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="80"/>
         <source>Description...</source>
         <translation>Deskribapena...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="80"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="82"/>
         <source>Edit...</source>
         <translation>Editatu...</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="82"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="84"/>
         <source>Paste</source>
         <translation>Itsatsi</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="83"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="85"/>
         <source>Copy</source>
         <translation>Kopiatu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="84"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="86"/>
         <source>Clear</source>
         <translation>Garbitu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="136"/>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="167"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="138"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="169"/>
         <source>string</source>
         <translation>string</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="140"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="142"/>
         <source>int</source>
         <translation>int</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="144"/>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="175"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="146"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="177"/>
         <source>double</source>
         <translation>double</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="150"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="152"/>
         <source>Field type: </source>
         <translation>Eremu-mota:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="171"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="173"/>
         <source>integer</source>
         <translation>integer</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="180"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="182"/>
         <source>unknown type</source>
         <translation>mota ezezaguna</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="215"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="217"/>
         <source>Data defined override</source>
         <translation>Datuek definitutako gainidazketa</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="238"/>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="490"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="240"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="492"/>
         <source>expression</source>
         <translation>adierazpena</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="238"/>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="490"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="240"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="492"/>
         <source>field</source>
         <translation>eremua</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="240"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="242"/>
         <source>Deactivate</source>
         <translation>Desaktibatu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="240"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="242"/>
         <source>Activate</source>
         <translation>Aktibatu</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="253"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="255"/>
         <source>Attribute field</source>
         <translation>Atributu-eremua</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="278"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="280"/>
         <source>No matching field types found</source>
         <translation>Ez da aurkitu bat datorren eremu-motarik</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="285"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="287"/>
         <source>Expression</source>
         <translation>Adierazpena</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="298"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="300"/>
         <source>Current: </source>
         <translation>Unekoa:</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="390"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="392"/>
         <source>Data definition description</source>
         <translation>Datu-definizioaren deskribapena</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="429"/>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="488"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="431"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="490"/>
         <source>undefined</source>
         <translation>definitu gabea</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="440"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="442"/>
         <source>Parse error: %1</source>
         <translation>Analisi-errorea: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="453"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="455"/>
         <source>&apos;%1&apos; field missing</source>
         <translation>&apos;%1&apos; eremua falta da</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="468"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="470"/>
         <source>&lt;b&gt;&lt;u&gt;Data defined override&lt;/u&gt;&lt;/b&gt;&lt;br&gt;</source>
         <translation>Testu lodia
 &lt;b&gt;&lt;u&gt;Datuek definitutako gainidazketa&lt;/u&gt;&lt;/b&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="470"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="472"/>
         <source>&lt;b&gt;Active: &lt;/b&gt;%1&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;i&gt;(ctrl|right-click toggles)&lt;/i&gt;&lt;br&gt;</source>
         <translation>&lt;b&gt;Aktiboa: &lt;/b&gt;%1&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;i&gt;(ctrl|eskuineko klik-ek txandakatzen du)&lt;/i&gt;&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="470"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="472"/>
         <source>yes</source>
         <translation>bai</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="470"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="472"/>
         <source>no</source>
         <translation>ez</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="474"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="476"/>
         <source>&lt;b&gt;Usage:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
         <translation>&lt;b&gt;Erabilera:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="479"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="481"/>
         <source>&lt;b&gt;Expected input:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
         <translation>&lt;b&gt;Esperotako sarrera:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="484"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="486"/>
         <source>&lt;b&gt;Valid input types:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</source>
         <translation>&lt;b&gt;Baliozko sarrera-motak:&lt;/b&gt;&lt;br&gt;%1&lt;br&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="500"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="502"/>
         <source>&lt;b&gt;Current definition %1:&lt;/b&gt;&lt;br&gt;%2</source>
         <translation>&lt;b&gt;Uneko %1 definizioa:&lt;/b&gt;&lt;br&gt;%2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="603"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="605"/>
         <source>string </source>
         <translation>katea </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="608"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="610"/>
         <source>bool [&lt;b&gt;1&lt;/b&gt;=True|&lt;b&gt;0&lt;/b&gt;=False]</source>
         <translation>bool [&lt;b&gt;1&lt;/b&gt;=egia|&lt;b&gt;0&lt;/b&gt;=gezurra]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="613"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="615"/>
         <source>string of variable length</source>
         <translation>luzera aldakorreko katea</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="618"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="620"/>
         <source>int [&amp;lt;= 0 =&amp;gt;]</source>
         <translation>osoa [&amp;lt;= 0 =&amp;gt;]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="623"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="625"/>
         <source>int [&amp;gt;= 0]</source>
         <translation>osoa [&amp;gt;= 0]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="628"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="630"/>
         <source>int [&amp;gt;= 1]</source>
         <translation>osoa [&amp;gt;= 1]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="633"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="635"/>
         <source>double [&amp;lt;= 0.0 =&amp;gt;]</source>
         <translation>bikoitza [&amp;lt;= 0.0 =&amp;gt;]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="638"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="640"/>
         <source>double [&amp;gt;= 0.0]</source>
         <translation>bikoitza [&amp;gt;= 0.0]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="643"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="645"/>
         <source>double coord [&lt;b&gt;X,Y&lt;/b&gt;] as &amp;lt;= 0.0 =&amp;gt;</source>
         <translation>koord. bikoitza [&lt;b&gt;X,Y&lt;/b&gt;] as &amp;lt;= 0.0 =&amp;gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="648"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="650"/>
         <source>double [-180.0 - 180.0]</source>
         <translation>bikoitza [-180.0 - 180.0]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="653"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="655"/>
         <source>int [0-100]</source>
         <translation>osoa [0-100]</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="668"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="670"/>
         <source>string [&lt;b&gt;r,g,b&lt;/b&gt;] as int 0-255</source>
         <translation>katea [&lt;b&gt;r,g,b&lt;/b&gt;] oso gisa 0-255</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="673"/>
+        <location filename="../src/gui/qgsdatadefinedbutton.cpp" line="675"/>
         <source>string [&lt;b&gt;r,g,b,a&lt;/b&gt;] as int 0-255</source>
         <translation>katea [&lt;b&gt;r,g,b,a&lt;/b&gt;] oso gisa 0-255</translation>
     </message>
@@ -26130,12 +26162,12 @@ Parser error:
 <context>
     <name>QgsDxfExportDialog</name>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>Export as DXF</source>
         <translation>Esportatu DXF gisa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsdxfexportdialog.cpp" line="345"/>
+        <location filename="../src/app/qgsdxfexportdialog.cpp" line="370"/>
         <source>DXF files *.dxf *.DXF</source>
         <translation>DXF fitxategiak (*.dxf *.DXF)</translation>
     </message>
@@ -26921,12 +26953,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="49"/>
         <source>You are editing information on this layer but the layer is currently not in edit mode. If you click Ok, edit mode will automatically be turned on.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geruza honetako informazioa editatzen ari zara, baina geruza ez dago edizio-moduan. OK sakatzen baduzu, edizio-modua automatikoki aktibatuko da.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="59"/>
         <source>This layer does not support adding new provider fields. You can only add virtual fields.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geruza honek ez du onartzen hornitzaile-eremu berriak gehitzea. Eremu birtualak soilik gehi ditzakezu.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="134"/>
@@ -26946,7 +26978,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="233"/>
         <source>&lt;p&gt;A virtual field will be recalculated every time it is used. Its definition will be saved in the project file. It will not be saved in the dataprovider and therefore its values not be available in other software.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Eramu birtual bat birkalkulatu egingo da erabiltzen den bakoitzean. Haren definizioa proiektu-fitxategian gordeko da. Ez da gordeko datu-hornitzailean eta, beraz, haren balioak ez dira erabilgarri egongo beste software batzuetan.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="236"/>
@@ -28916,6 +28948,10 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeorefPlugin</name>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="101"/>
+        <source>&amp;Georeferencer...</source>
+        <translation>&amp;Geoerreferentziatzailea...</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="113"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="128"/>
         <source>&amp;Georeferencer</source>
@@ -32861,10 +32897,6 @@ at line %2 column %3</source>
         <translation>Hautatu hautatutako fitxategien direktorio berria</translation>
     </message>
     <message>
-        <source>All files (*)</source>
-        <translation type="obsolete">Fitxategi guztiak (*)</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="340"/>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="359"/>
         <source>Unhandled layer will be lost.</source>
@@ -32875,9 +32907,9 @@ at line %2 column %3</source>
         <location filename="../src/app/qgshandlebadlayers.cpp" line="360"/>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Oraindik kudeatu gabeko geruza %n dago, eta galdu egingo da orain ixten baduzu.</numerusform>
             <numerusform>Oraindik kudeatu gabeko %n geruza daude, eta galdu egingo dira orain ixten baduzu.</numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -33008,10 +33040,11 @@ at line %2 column %3</source>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Sarea denbora-mugaz kanpo geratu da %n segundoz inaktibo egon ondoren.
 Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Sarea denbora-mugaz kanpo geratu da %n segundoz inaktibo egon ondoren.
+Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusform>
         </translation>
     </message>
 </context>
@@ -33037,7 +33070,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     </message>
     <message>
         <location filename="../src/gui/qgsidentifymenu.cpp" line="128"/>
-        <location filename="../src/gui/qgsidentifymenu.cpp" line="400"/>
+        <location filename="../src/gui/qgsidentifymenu.cpp" line="406"/>
         <source>%1 all (%2)</source>
         <translation>%1 dena (%2)</translation>
     </message>
@@ -33048,6 +33081,16 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="14"/>
         <source>Identify Results</source>
         <translation>Identifikatu emaitzak</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="50"/>
+        <source>Expand tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="67"/>
+        <source>Collapse tree</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="284"/>
@@ -33070,9 +33113,8 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Balioa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="50"/>
         <source>Expand tree.</source>
-        <translation>Hedatu zuhaitza.</translation>
+        <translation type="obsolete">Hedatu zuhaitza.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="53"/>
@@ -33121,9 +33163,8 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Ireki inprimakia automatikoki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsidentifyresultsbase.ui" line="67"/>
         <source>Collapse tree.</source>
-        <translation>Tolestu zuhaitza.</translation>
+        <translation type="obsolete">Tolestu zuhaitza.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="84"/>
@@ -35529,97 +35570,97 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
 <context>
     <name>QgsMapLayer</name>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="299"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="788"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="305"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="800"/>
         <source>Specify CRS for layer %1</source>
         <translation>Adierazi %1 geruzaren CRSa</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="932"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="948"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1302"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="944"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="960"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1324"/>
         <source>%1 at line %2 column %3</source>
         <translation>%1 %2 lerroan, %3 zutabean</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="984"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="996"/>
         <source>Error: qgis element could not be found in %1</source>
         <translation>Errorea: ezin izan da qgis elementua aurkitu %1(e)n</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1010"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1338"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1022"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1360"/>
         <source>Loading style file %1 failed because:
 %2</source>
         <translation>%1 estilo-fitxategia kargatzeak huts egin du:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1213"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1220"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1230"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1237"/>
         <source>Could not save symbology because:
 %1</source>
         <translation>Ezin izan da sinbologia gorde: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1084"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1262"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1101"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1284"/>
         <source>The directory containing your dataset needs to be writable!</source>
         <translation>Zure datu-multzoa duen direktorioak idazgarria izan behar du!</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="953"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="965"/>
         <source>Style not found in database</source>
         <translation>Estiloa ez da aurkitu datu-basean</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1098"/>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1276"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1115"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1298"/>
         <source>Created default style file as %1</source>
         <translation>Estilo-fitxategi lehenetsia sortu da %1 izenarekin</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1103"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1120"/>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
         <translation>Errorea: Ezin izan da %1 estilo-fitxategi lehenetsia. Egiaztatu fitxategia idazteko baimenak eta saiatu berriro.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1119"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1136"/>
         <source>User database could not be opened.</source>
         <translation>Erabiltzailearen datu-basea ezin izan da ireki.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1134"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1151"/>
         <source>The style table could not be created.</source>
         <translation>Estilo-taula ezin izan da sortu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1149"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1166"/>
         <source>The style %1 was saved to database</source>
         <translation>%1 estiloa datu-basean gorde da</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1166"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1183"/>
         <source>The style %1 was updated in the database.</source>
         <translation>%1 estiloa datu-basean eguneratu da.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1171"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1188"/>
         <source>The style %1 could not be updated in the database.</source>
         <translation>%1 estiloa ezin izan da datu-basean eguneratu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1177"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1194"/>
         <source>The style %1 could not be inserted into database.</source>
         <translation>%1 estiloa ezin izan da datu-basean txertatu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1281"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1303"/>
         <source>ERROR: Failed to created SLD style file as %1. Check file permissions and retry.</source>
         <translation>Errorea: Ezin izan da SLD estiloa sortu %1 izenarekin. Egiaztatu fitxategia idazteko baimenak eta saiatu berriro.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsmaplayer.cpp" line="1307"/>
+        <location filename="../src/core/qgsmaplayer.cpp" line="1329"/>
         <source>Unable to open file %1</source>
         <translation>Ezin izan da %1 fitxategia ireki</translation>
     </message>
@@ -35678,18 +35719,18 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>gehitu elementua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="80"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="83"/>
         <source>The data provider for this layer does not support the addition of features.</source>
         <translation>Geruza honen data-hornitzaileak ez du onartzen elementuak gehitzeak.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="119"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="178"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="122"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="181"/>
         <source>Cannot transform the point to the layers coordinate system</source>
         <translation>Ezin izan da puntua geruzen koordenatu-sistemara transformatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="99"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="102"/>
         <source>Wrong editing tool, cannot apply the &apos;capture point&apos; tool on this vector layer</source>
         <translation>Edizio-tresna okerra, geruza bektorial honetan ezin da &apos;kapturatu puntua&apos; tresna erabili</translation>
     </message>
@@ -35699,38 +35740,38 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Gehitu elementua</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="155"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="158"/>
         <source>Wrong editing tool, cannot apply the &apos;capture line&apos; tool on this vector layer</source>
         <translation>Edizio-tresna okerra, geruza bektorial honetan ezin da &apos;kapturatu lerroa&apos; tresna erabili</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="162"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="165"/>
         <source>Wrong editing tool, cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
         <translation>Edizio-tresna okerra, geruza bektorial honetan ezin da &apos;kapturatu poligonoa&apos; tresna erabili</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="220"/>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="239"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="223"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="242"/>
         <source>Cannot add feature. Unknown WKB type</source>
         <translation>Ezin da elementua gehitu. WKB mota ezezaguna</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="261"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="264"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
         <translation>Ezin izan da elementua gehitu, poligono-ebaketak kentzeak geometria-mota aldatuko bailuke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="269"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="272"/>
         <source>An error was reported during intersection removal</source>
         <translation>Errorea gertatu da ebaketak kentzean</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="277"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="280"/>
         <source>The feature cannot be added because it&apos;s geometry is empty</source>
         <translation>Elementua ezin da gehitu haren geometria hutsik dagoelako</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="281"/>
+        <location filename="../src/app/qgsmaptooladdfeature.cpp" line="284"/>
         <source>The feature cannot be added because it&apos;s geometry collapsed due to intersection avoidance</source>
         <translation>Ezin da elementua gehitu, haren geometria kolapsatu egin baita ebaketak saihesteko hoberpenagatik</translation>
     </message>
@@ -35739,7 +35780,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     <name>QgsMapToolAddPart</name>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="56"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="186"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="191"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
         <translation>Ez dago elementu hautaturik. Hautatu elementu bat hautapen-tresnarekin edo atributu-taulan</translation>
     </message>
@@ -35750,7 +35791,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="84"/>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="140"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="145"/>
         <source>Part added</source>
         <translation>Zatia gehitu da</translation>
     </message>
@@ -35770,27 +35811,27 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Errorea koordenatuen transformazioan. Ezin izan da puntua transformatu geruzen koordenatu-sistemara</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="174"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="179"/>
         <source>Selected feature is not multi part.</source>
         <translation>Hautatutako elementua ez da zati anitzekoa.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="178"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="183"/>
         <source>New part&apos;s geometry is not valid.</source>
         <translation>Zati berriaren geometria ez da baliozkoa.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="182"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="187"/>
         <source>New polygon ring not disjoint with existing polygons.</source>
         <translation>Poligono-eraztun berria ez dago existitzen diren poligonoetatik aparte.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="190"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="195"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
         <translation>Hainbat elementu hautatu dira. Hautatu elementu bakar bat, uharte bat gehitu ahal izateko.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdpart.cpp" line="194"/>
+        <location filename="../src/app/qgsmaptooladdpart.cpp" line="199"/>
         <source>Selected geometry could not be found</source>
         <translation>Ezin izan da aurkitu hautatutako geometria</translation>
     </message>
@@ -35808,42 +35849,42 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Ezin izan da puntua geruzen koordenatu-sistemara transformatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="79"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="82"/>
         <source>Ring added</source>
         <translation>Eraztuna gehitu da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="87"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="90"/>
         <source>a problem with geometry type occured</source>
         <translation>errorea gertatu da geometria-motarekin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="91"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="94"/>
         <source>the inserted ring is not closed</source>
         <translation>txertatutako eraztuna ez dago itxita</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="95"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="98"/>
         <source>the inserted ring is not a valid geometry</source>
         <translation>txertatutako eraztunak ez du baliozko geometriarik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="99"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="102"/>
         <source>the inserted ring crosses existing rings</source>
         <translation>txertatutako eraztunak lehendik dauden eraztunak zeharkatzen ditu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="103"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="106"/>
         <source>the inserted ring is not contained in a feature</source>
         <translation>txertatutako eraztuna ez dago elementu baten barruan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="107"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="110"/>
         <source>an unknown error occured</source>
         <translation>errore ezezaguna gertatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="109"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="112"/>
         <source>could not add ring since %1.</source>
         <translation>ezin izan da eraztuna gehitu %1(e)tik aurrera.</translation>
     </message>
@@ -35851,12 +35892,12 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
 <context>
     <name>QgsMapToolCapture</name>
     <message>
-        <location filename="../src/app/qgsmaptoolcapture.cpp" line="363"/>
+        <location filename="../src/app/qgsmaptoolcapture.cpp" line="368"/>
         <source>Validation started.</source>
         <translation>Balidazioa hasi da.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolcapture.cpp" line="399"/>
+        <location filename="../src/app/qgsmaptoolcapture.cpp" line="404"/>
         <source>Validation finished.</source>
         <translation>Balidazioa amaitu da.</translation>
     </message>
@@ -35950,42 +35991,42 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <translation>Ezin izan da puntua geruzen koordenatu-sistemara transformatu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="80"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="83"/>
         <source>Ring added and filled</source>
         <translation>Eraztuna gehitu eta bete da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="88"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="91"/>
         <source>a problem with geometry type occured</source>
         <translation>errorea gertatu da geometria-motarekin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="92"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="95"/>
         <source>the inserted Ring is not closed</source>
         <translation>txertatutako eraztuna ez dago itxita</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="96"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="99"/>
         <source>the inserted Ring is not a valid geometry</source>
         <translation>txertatutako eraztunak ez du baliozko geometriarik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="100"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="103"/>
         <source>the inserted Ring crosses existing rings</source>
         <translation>txertatutako eraztunak lehendik dauden eraztunak zeharkatzen ditu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="104"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="107"/>
         <source>the inserted Ring is not contained in a feature</source>
         <translation>txertatutako eraztuna ez dago elementu baten barruan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="108"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="111"/>
         <source>an unknown error occured</source>
         <translation>errore ezezaguna gertatu da</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolfillring.cpp" line="110"/>
+        <location filename="../src/app/qgsmaptoolfillring.cpp" line="113"/>
         <source>could not add ring since %1.</source>
         <translation>ezin izan da eraztuna gehitu %1(e)tik aurrera.</translation>
     </message>
@@ -36215,7 +36256,7 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
 <context>
     <name>QgsMapToolRotateFeature</name>
     <message>
-        <location filename="../src/app/qgsmaptoolrotatefeature.cpp" line="204"/>
+        <location filename="../src/app/qgsmaptoolrotatefeature.cpp" line="208"/>
         <source>Features Rotated</source>
         <translation>Elementuak biratu dira</translation>
     </message>
@@ -36745,9 +36786,9 @@ Zure sare-konexioaren arazo bat izan daiteke, edo WMS zerbitzariarena.</numerusf
         <location filename="../src/gui/qgsmessagebar.cpp" line="322"/>
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n gehiago</numerusform>
-            <numerusform></numerusform>
+            <numerusform>%n gehiago</numerusform>
         </translation>
     </message>
 </context>
@@ -37403,8 +37444,8 @@ enhancement</source>
 <context>
     <name>QgsNetworkContentFetcher</name>
     <message>
-        <location filename="../src/core/qgsnetworkcontentfetcher.cpp" line="132"/>
-        <location filename="../src/core/qgsnetworkcontentfetcher.cpp" line="145"/>
+        <location filename="../src/core/qgsnetworkcontentfetcher.cpp" line="135"/>
+        <location filename="../src/core/qgsnetworkcontentfetcher.cpp" line="148"/>
         <source>HTTP fetch %1 failed with error %2</source>
         <translation>%1 HTTP atzitzeak huts egin du %2 errorea emanez</translation>
     </message>
@@ -38338,19 +38379,6 @@ Errore-informazio hedatua:
     </message>
 </context>
 <context>
-    <name>QgsOWSConnection</name>
-    <message>
-        <location filename="../src/core/qgsowsconnection.cpp" line="62"/>
-        <source>WMS Password for %1</source>
-        <translation>WMS pasahitza %1(e)rako</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsowsconnection.cpp" line="62"/>
-        <source>Password</source>
-        <translation>Pasahitza</translation>
-    </message>
-</context>
-<context>
     <name>QgsOWSConnectionItem</name>
     <message>
         <location filename="../src/providers/ows/qgsowsdataitems.cpp" line="115"/>
@@ -38409,63 +38437,63 @@ Errore-informazio hedatua:
         <translation>Beti sarea</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="271"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="274"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Seguru zaude %1 konexioa eta hari lotutako ezarpen guztiak kendu nahi dituzula?</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="273"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="276"/>
         <source>Confirm Delete</source>
         <translation>Baieztatu ezabaketa</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="291"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="294"/>
         <source>Load connections</source>
         <translation>Kargatu konexioak</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="292"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="295"/>
         <source>XML files (*.xml *XML)</source>
         <translation>XML fitxategiak (*.xml *XML)</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="421"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="422"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Koordenatuen erreferentzia-sistema (%n eskuragarri)</numerusform>
-            <numerusform></numerusform>
+            <numerusform>Koordenatuen erreferentzia-sistema (%n eskuragarri)</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="458"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="459"/>
         <source>Coordinate Reference System</source>
         <translation>Koordenatuen erreferentzia-sistema</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="575"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="576"/>
         <source>Could not understand the response:
 %1</source>
         <translation>Ezin izan da erantzuna ulertu:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="626"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="627"/>
         <source>WMS proxies</source>
         <translation>WMS proxy-ak</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="626"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="627"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>Hainbat WMS zerbitzari gehitu zaizkio zerbitzari-zerrendari. Kontuan izan Internetera web-proxy bidez sartzen bazara, proxy-ezarpenak ezarri beharko dituzula QGISen aukeren koadroan.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="707"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="708"/>
         <source>parse error at row %1, column %2: %3</source>
         <translation>analisi-errorea %1 errenkada, %2 zutabean: %3</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsowssourceselect.cpp" line="712"/>
+        <location filename="../src/gui/qgsowssourceselect.cpp" line="713"/>
         <source>network error: %1</source>
         <translation>sare-errorea: %1</translation>
     </message>
@@ -38576,7 +38604,7 @@ Errore-informazio hedatua:
     </message>
     <message>
         <location filename="../src/ui/qgsowssourceselectbase.ui" line="253"/>
-        <source>Change ...</source>
+        <source>Change...</source>
         <translation>Aldatu...</translation>
     </message>
     <message>
@@ -38951,7 +38979,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="418"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="423"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1052"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1536"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1532"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -39034,7 +39062,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1187"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1288"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1413"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1409"/>
         <source>OGR error on feature %1: id too large</source>
         <translation>OGR errorea %1 elementuan: ID luzeegia</translation>
     </message>
@@ -39061,7 +39089,7 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1272"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2443"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2439"/>
         <source>OGR error syncing to disk: %1</source>
         <translation>OGR errorea diskoarekin sinkronizatzean: %1</translation>
     </message>
@@ -39101,12 +39129,12 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
         <translation>Ezin izan da jatorrizko datu-iturburua berrireki.</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1419"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1415"/>
         <source>OGR error deleting feature %1: %2</source>
         <translation>OGR errorea %1 elementua ezabatzean: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1536"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1532"/>
         <source>Shapefiles without attribute are considered read-only.</source>
         <translation>Atributurik gabeko shapefile-ak irakurtzeko soilik direla kontsideratzen da.</translation>
     </message>
@@ -40011,11 +40039,6 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
         <translation>QSettings</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1097"/>
-        <source>Reset the User Interface settings, to reset QGIS to it&apos;s default view</source>
-        <translation>Berrezarri erabiltzaile-interfazearen ezarpenak, QGIS bistaratze lehenetsian berriro erabiltzeko</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1113"/>
         <source>Environment</source>
         <translation>Ingurunea</translation>
@@ -40102,6 +40125,11 @@ Beti sarea: kargatu beti saretik eta ez begiratu cache-ak baliozko sarrerarik du
         <location filename="../src/ui/qgsoptionsbase.ui" line="971"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
         <translation>Scalable Vector Graphic (SVG) formatuko ikurrak bilatzeko bidea(k)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1097"/>
+        <source>Reset user interface to default settings (restart required)</source>
+        <translation>Berrezarri erabiltzaile-interfazea ezarpen lehenetsietara (berrabiarazi behar da)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1340"/>
@@ -45527,9 +45555,9 @@ Honen ondorioz, proiekzio-hautatzaileak ez du funtzionatuko...</translation>
         <location filename="../src/gui/qgsquerybuilder.cpp" line="206"/>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform>Where sententziak %n errenkada itzuli d(it)u.</numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Where sententziak errenkada %n itzuli ditu.</numerusform>
+            <numerusform>Where sententziak %n errenkada itzuli ditu.</numerusform>
         </translation>
     </message>
     <message>
@@ -46916,16 +46944,6 @@ Klik laguntza-botoian formatu honetarako sorrera-aukera baliozkoak ezagutzeko.</
         <translation>Raster-geruzaren propietateak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2037"/>
-        <source>Save Style ...</source>
-        <translation>Gorde estiloa...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2023"/>
-        <source>Load Style ...</source>
-        <translation>Kargatu estiloa...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1486"/>
         <source>Resolutions</source>
         <translation>Bereizmenak</translation>
@@ -46934,6 +46952,11 @@ Klik laguntza-botoian formatu honetarako sorrera-aukera baliozkoak ezagutzeko.</
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2016"/>
         <source>Save As Default</source>
         <translation>Gorde lehenetsi gisa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2023"/>
+        <source>Load Style...</source>
+        <translation>Kargatu estiloa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2030"/>
@@ -47226,6 +47249,11 @@ p, li { white-space: pre-wrap; }
         <translation>Pixel gardenen zerrenda</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2037"/>
+        <source>Save Style...</source>
+        <translation>Gorde estiloa...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1311"/>
         <source>Add values manually</source>
         <translation>Gehitu balioak eskuz</translation>
@@ -47415,57 +47443,57 @@ p, li { white-space: pre-wrap; }
         <translation>Hona</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="163"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="165"/>
         <source>Select output directory</source>
         <translation>Hautatu irteera-direktorioa</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="176"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="178"/>
         <source>Warning</source>
         <translation>Abisua</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="177"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="179"/>
         <source>The directory %1 contains files which will be overwritten: %2</source>
         <translation>%1 direktorioak gainidatziko diren fitxategiak ditu: %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="197"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="199"/>
         <source>Select output file</source>
         <translation>Hautatu irteera-fitxategia</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="197"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="199"/>
         <source>GeoTIFF</source>
         <translation>GeoTIFF</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="405"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="407"/>
         <source>layer</source>
         <translation>geruza</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="408"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="410"/>
         <source>user defined</source>
         <translation>erabiltzaileak definitua</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="413"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="415"/>
         <source>Resolution (current: %1)</source>
         <translation>Bereizmena (unekoa: %1)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="493"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="495"/>
         <source>Layer (%1, %2)</source>
         <translation>Geruza (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="496"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="498"/>
         <source>Project (%1, %2)</source>
         <translation>Proiektua (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="499"/>
+        <location filename="../src/gui/qgsrasterlayersaveasdialog.cpp" line="501"/>
         <source>Selected (%1, %2)</source>
         <translation>Hautatua (%1, %2)</translation>
     </message>
@@ -47536,7 +47564,7 @@ zabalera eta altuera maximoa duten datu-multzo anitzez osatua.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayersaveasdialogbase.ui" line="182"/>
-        <source>Change ...</source>
+        <source>Change...</source>
         <translation>Aldatu...</translation>
     </message>
     <message>
@@ -48057,38 +48085,50 @@ desbiderapen estandarra ×</translation>
 <context>
     <name>QgsRasterTerrainAnalysisPlugin</name>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="90"/>
-        <source>Terrain analysis</source>
-        <translation>Lurrazalaren analisia</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="93"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="161"/>
         <source>Slope</source>
         <translation>Malda</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="96"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="180"/>
         <source>Aspect</source>
         <translation>Orientazioa</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="98"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="122"/>
         <source>Hillshade</source>
         <translation>Mendien itzala</translation>
     </message>
     <message>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="90"/>
+        <source>Terrain Analysis</source>
+        <translation>Lurrazalaren analisia</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="96"/>
+        <source>Aspect...</source>
+        <translation>Orientazioa...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="98"/>
+        <source>Hillshade...</source>
+        <translation>Mendien itzala...</translation>
+    </message>
+    <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="100"/>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="141"/>
-        <source>Relief</source>
-        <translation>Erliebea</translation>
+        <source>Relief...</source>
+        <translation>Erliebea...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="102"/>
-        <source>Ruggedness index</source>
-        <translation>Malkartasun-indizea</translation>
+        <source>Ruggedness Index...</source>
+        <translation>Malkartasun-indizea...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="141"/>
+        <source>Relief</source>
+        <translation>Erliebea</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="128"/>
@@ -50527,9 +50567,9 @@ baina performantzia hobea eragingo du ondoren.</translation>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="167"/>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Hautatutako geometria %n</numerusform>
             <numerusform>Hautatutako %n geometria</numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -53823,6 +53863,11 @@ Errorea honakoa da: %2</translation>
         <translation>Geruza-propietateak</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1577"/>
+        <source>Load Style...</source>
+        <translation>Kargatu estiloa...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1591"/>
         <source>Restore Default Style</source>
         <translation>Berrezarri estilo lehenetsia</translation>
@@ -53915,16 +53960,6 @@ Errorea honakoa da: %2</translation>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1532"/>
         <source>Properties</source>
         <translation>Propietateak</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1577"/>
-        <source>Load Style ...</source>
-        <translation>Kargatu estiloa...</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1598"/>
-        <source>Save Style ...</source>
-        <translation>Gorde estiloa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
@@ -54103,6 +54138,11 @@ Errorea honakoa da: %2</translation>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1014"/>
         <source>Field</source>
         <translation>Eremua</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1598"/>
+        <source>Save Style...</source>
+        <translation>Gorde estiloa...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="289"/>
@@ -54594,6 +54634,11 @@ Errorea honakoa da: %2</translation>
         <translation>Gehitu WFS geruza zerbitzari batetik</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgswfssourceselectbase.ui" line="68"/>
+        <source>Change...</source>
+        <translation>Aldatu...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="83"/>
         <source>Filter:</source>
         <translation>Iragazkia:</translation>
@@ -54658,19 +54703,6 @@ Errorea honakoa da: %2</translation>
         <location filename="../src/ui/qgswfssourceselectbase.ui" line="30"/>
         <source>Coordinate reference system</source>
         <translation>Koordenatuen erreferentzia-sistema</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswfssourceselectbase.ui" line="68"/>
-        <source>Change ...</source>
-        <translation>Aldatu ...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsWMSConnection</name>
-    <message>
-        <location filename="../src/providers/wms/qgswmsconnection.cpp" line="63"/>
-        <source>WMS Password for %1</source>
-        <translation>WMS pasahitza %1(e)rako</translation>
     </message>
 </context>
 <context>
@@ -54747,37 +54779,37 @@ Errorea honakoa da: %2</translation>
         <translation>%1 kodeketa ez da onartzen.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="445"/>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="462"/>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="471"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="444"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="461"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="470"/>
         <source>WMS Provider</source>
         <translation>WMS hornitzailea</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="446"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="445"/>
         <source>Failed to parse WMS URI</source>
         <translation>Huts egin du WMSaren URIaren analisiak</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="463"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="462"/>
         <source>Failed to download capabilities:
 </source>
         <translation>Ezin izan dira kapazitateak deskargatu:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="472"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="471"/>
         <source>The server you are trying to connect to does not seem to be a WMS server. Please check the URL.</source>
         <translation>Konektatzen saiatzen ari zaren zerbitzariak ez dirudi WMS zerbitzaria. Egiaztatu URLa.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="474"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="473"/>
         <source>Instead of the capabilities string that was expected, the following response has been received:
 
 %1</source>
         <translation>Espero zen kapazitate-katearen ordez, honako erantzuna jaso da: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="817"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="816"/>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
         <translation>
@@ -54786,22 +54818,22 @@ Errorea honakoa da: %2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="907"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="906"/>
         <source>Select layer(s)</source>
         <translation>Hautatu geruza(k)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="909"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="908"/>
         <source>Select layer(s) or a tileset</source>
         <translation>Hautatu geruza(k) edo lauza-multzo bat</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="914"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="913"/>
         <source>Select either layer(s) or a tileset</source>
         <translation>Hautatu geruza(k) edo lauza-multzo bat</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="919"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="918"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation>
@@ -54810,22 +54842,22 @@ Errorea honakoa da: %2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="926"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="925"/>
         <source>No common CRS for selected layers.</source>
         <translation>Hautatutako geruzek ez dute CRS bera.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="931"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="930"/>
         <source>No CRS selected</source>
         <translation>Ez da CRSrik hautatu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="936"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="935"/>
         <source>No image encoding selected</source>
         <translation>Ez da irudi-kodeketarik hautatu</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="941"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="940"/>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation>
@@ -54834,44 +54866,44 @@ Errorea honakoa da: %2</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="947"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="946"/>
         <source>Tileset selected</source>
         <translation>Hautatutako lauza-multzoa</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1070"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1064"/>
         <source>Could not understand the response. The %1 provider said:
 %2</source>
         <translation>Ezin izan da erantzuna ulertu. %1 hornitzaileak honakoa dio:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1121"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1115"/>
         <source>WMS proxies</source>
         <translation>WMS proxy-ak</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1121"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1115"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation>Hainbat WMS zerbitzari gehitu zaizkio zerbitzari-zerrendari. Kontuan izan Internetera web-proxy bidez sartzen bazara, proxy-ezarpenak ezarri beharko dituzula QGISen aukeren koadroan.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1201"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1195"/>
         <source>parse error at row %1, column %2: %3</source>
         <translation>analisi-errorea %1 errenkada, %2 zutabean: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1206"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1200"/>
         <source>network error: %1</source>
         <translation>sare-errorea: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1229"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1223"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
         <translation>Jadanik badago &apos;%1&apos; izena duen konexioa. Gainidatzi?</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1230"/>
+        <location filename="../src/providers/wms/qgswmssourceselect.cpp" line="1224"/>
         <source>Confirm Overwrite</source>
         <translation>Baieztatu gainidaztea</translation>
     </message>
@@ -54972,6 +55004,11 @@ Errorea honakoa da: %2</translation>
         <translation>Aukerak</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="226"/>
+        <source>Change...</source>
+        <translation>Aldatu...</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="451"/>
         <source>Layer name</source>
         <translation>Geruza-izena</translation>
@@ -54985,11 +55022,6 @@ Errorea honakoa da: %2</translation>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a WM(T)S Server</source>
         <translation>Gehitu geruza(k) WM(T)S zerbitzari batetik</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="226"/>
-        <source>Change ...</source>
-        <translation>Aldatu...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="236"/>
@@ -58916,7 +58948,7 @@ The field calculator allows you to update fields with expressions.
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="795"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;OGR datu-baseen konexio berrien elkarrizketa-koadroa&lt;/h3&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="378"/>
@@ -59615,6 +59647,324 @@ This plugin supports basic HTML markup tags for formatting text. For example:
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="401"/>
+        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+Loads and displays delimited text files
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
+is split into fields by a delimiter such as a comma.  
+This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
+Typically the first line of a delimited text file contains the names of the fields.  
+&lt;/p&gt;
+&lt;p&gt;
+Delimited text files can be loaded into QGIS as a layer. 
+The records can be displayed spatially either as a point
+defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
+describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
+only table, which can then be joined to other tables in QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
+QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
+as integer then the type will be integer, if all can be interpreted as real numbers then the type will
+be double, otherwise the type will be text.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
+This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
+The file should just contain one line which lists the type of each field. 
+Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
+Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
+The list of types are separated by commas, regardless of the delimiter used in the data file.  An
+example of a valid format file would be:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="797"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
@@ -59914,324 +60264,6 @@ In this section you can see the list of attributes. To delete one of them, click
 &lt;/ul&gt;
 
 See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt; for a list of supported formats and the available options.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="401"/>
-        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
-&lt;/p&gt;
-&lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
-QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
-as integer then the type will be integer, if all can be interpreted as real numbers then the type will
-be double, otherwise the type will be text.
-&lt;/p&gt;
-&lt;p&gt;
-QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
-This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
-The file should just contain one linewhich lists the type of each field. 
-Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
-Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
-The list of types are separated by commas, regardless of the delimiter used in the data file.  An
-example of a valid format file would be:
-&lt;/p&gt;
-
-&lt;pre&gt;
-&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
-&lt;/pre&gt;
-
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
-&lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-&lt;h5&gt;Layer settings&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
-&lt;/p&gt;
-&lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
-&lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
-&lt;/p&gt;
-&lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
-&lt;/ul&gt;
-
-
 </source>
         <translation type="unfinished"></translation>
     </message>
@@ -61128,184 +61160,184 @@ Plugina ez da gaituko.</translation>
         <translation>&amp;Analisi-tresnak</translation>
     </message>
     <message>
-        <source>Distance matrix</source>
-        <translation>Distantzia-matrizea</translation>
+        <source>Distance Matrix...</source>
+        <translation>Distantzia-matrizea...</translation>
     </message>
     <message>
-        <source>Sum line lengths</source>
-        <translation>Batu lerro-luzerak</translation>
+        <source>Sum Line Lengths...</source>
+        <translation>Lerro-luzeren batuketa...</translation>
     </message>
     <message>
-        <source>Points in polygon</source>
-        <translation>Puntuak poligonoetan</translation>
+        <source>Points in Polygon...</source>
+        <translation>Puntuak poligonoan...</translation>
     </message>
     <message>
-        <source>Basic statistics</source>
-        <translation>Oinarrizko estatistikak</translation>
+        <source>Basic Statistics...</source>
+        <translation>Oinarrizko estatistikak...</translation>
     </message>
     <message>
-        <source>List unique values</source>
-        <translation>Zerrendatu balio bakarrak</translation>
+        <source>List Unique Values...</source>
+        <translation>Zerrendatu balio bakarrak...</translation>
     </message>
     <message>
-        <source>Nearest neighbour analysis</source>
-        <translation>Gertueneko balioen analisia</translation>
+        <source>Nearest Neighbour Analysis...</source>
+        <translation>Gertueneko balioen analisia...</translation>
     </message>
     <message>
-        <source>Mean coordinate(s)</source>
-        <translation>Batez besteko koordenatua(k)</translation>
+        <source>Mean Coordinate(s)...</source>
+        <translation>Batez besteko koordenatua(k)...</translation>
     </message>
     <message>
-        <source>Line intersections</source>
-        <translation>Lerro-ebakidurak</translation>
+        <source>Line Intersections...</source>
+        <translation>Lerro-ebakidurak...</translation>
+    </message>
+    <message>
+        <source>Random Selection...</source>
+        <translation>Ausazko hautapena...</translation>
+    </message>
+    <message>
+        <source>Random Selection Within Subsets...</source>
+        <translation>Ausazko hautateko azpimultzoetan...</translation>
+    </message>
+    <message>
+        <source>Random Points...</source>
+        <translation>Ausazko puntuak...</translation>
+    </message>
+    <message>
+        <source>Regular Points...</source>
+        <translation>Puntu erregularrak...</translation>
+    </message>
+    <message>
+        <source>Vector Grid...</source>
+        <translation>Sareta bektoriala...</translation>
+    </message>
+    <message>
+        <source>Select by Location...</source>
+        <translation>Hautatu kokapenaren arabera...</translation>
+    </message>
+    <message>
+        <source>Polygon from Layer Extent...</source>
+        <translation>Poligonoa geruza-hedaduratik...</translation>
+    </message>
+    <message>
+        <source>Convex Hull(s)...</source>
+        <translation>Kono ganbila(k)...</translation>
+    </message>
+    <message>
+        <source>Buffer(s)...</source>
+        <translation>Bufferra(k)...</translation>
+    </message>
+    <message>
+        <source>Intersect...</source>
+        <translation>Ebaketa...</translation>
+    </message>
+    <message>
+        <source>Union...</source>
+        <translation>Batuketa...</translation>
+    </message>
+    <message>
+        <source>Symetrical Difference...</source>
+        <translation>Diferentzia simetrikoa...</translation>
+    </message>
+    <message>
+        <source>Clip...</source>
+        <translation>Mozketa...</translation>
+    </message>
+    <message>
+        <source>Dissolve...</source>
+        <translation>Disolbaketa...</translation>
+    </message>
+    <message>
+        <source>Difference...</source>
+        <translation>Diferentzia...</translation>
+    </message>
+    <message>
+        <source>Eliminate Sliver Polygons...</source>
+        <translation>Ezabatu ezpal-poligonoak...</translation>
+    </message>
+    <message>
+        <source>Export/Add Geometry Columns...</source>
+        <translation>Esportatu/gehitu geometria-zutabeak...</translation>
+    </message>
+    <message>
+        <source>Check Geometry Validity...</source>
+        <translation>Egiaztatu geometriaren baliozkotasuna...</translation>
+    </message>
+    <message>
+        <source>Polygon Centroids...</source>
+        <translation>Poligono-zentroideak...</translation>
+    </message>
+    <message>
+        <source>Delaunay Triangulation...</source>
+        <translation>Delaunay triangelaketa...</translation>
+    </message>
+    <message>
+        <source>Voronoi Polygons...</source>
+        <translation>Voronoi poligonoak...</translation>
+    </message>
+    <message>
+        <source>Extract Nodes...</source>
+        <translation>Erauzi nodoak...</translation>
+    </message>
+    <message>
+        <source>Simplify Geometries...</source>
+        <translation>Sinplifikatu geometriak...</translation>
+    </message>
+    <message>
+        <source>Densify Geometries...</source>
+        <translation>Trinkotu geometriak...</translation>
+    </message>
+    <message>
+        <source>Multipart to Singleparts...</source>
+        <translation>Zati anitzekoak zati bakarrekoetara...</translation>
+    </message>
+    <message>
+        <source>Singleparts to Multipart...</source>
+        <translation>Zati bakarrekoak zati anitzekora...</translation>
+    </message>
+    <message>
+        <source>Polygons to Lines...</source>
+        <translation>Poligonoak lerroetara...</translation>
+    </message>
+    <message>
+        <source>Lines to Polygons...</source>
+        <translation>Lerroak poligonoetara...</translation>
+    </message>
+    <message>
+        <source>Define Current Projection...</source>
+        <translation>Definitu uneko proiekzioa...</translation>
+    </message>
+    <message>
+        <source>Join Attributes by Location...</source>
+        <translation>Elkartu atributuak kokapenaren arabera...</translation>
+    </message>
+    <message>
+        <source>Split Vector Layer...</source>
+        <translation>Zatitu geruza bektoriala...</translation>
+    </message>
+    <message>
+        <source>Merge Shapefiles to One...</source>
+        <translation>Fusionatu shapefile-ak batean...</translation>
+    </message>
+    <message>
+        <source>Create Spatial Index...</source>
+        <translation>Sortu indize espaziala...</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
         <translation>&amp;Ikerketa-tresnak</translation>
     </message>
     <message>
-        <source>Random selection</source>
-        <translation>Ausazko hautapena</translation>
-    </message>
-    <message>
-        <source>Random selection within subsets</source>
-        <translation>Ausazko hautateko azpimultzoetan</translation>
-    </message>
-    <message>
-        <source>Random points</source>
-        <translation>Ausazko puntuak</translation>
-    </message>
-    <message>
-        <source>Regular points</source>
-        <translation>Puntu erregularrak</translation>
-    </message>
-    <message>
-        <source>Vector grid</source>
-        <translation>Sareta bektoriala</translation>
-    </message>
-    <message>
-        <source>Select by location</source>
-        <translation>Hautatu kokapenaren arabera</translation>
-    </message>
-    <message>
-        <source>Polygon from layer extent</source>
-        <translation>Poligonoa geruza-hedaduratik</translation>
-    </message>
-    <message>
         <source>&amp;Geoprocessing Tools</source>
         <translation>&amp;Geoprozesu-tresnak</translation>
-    </message>
-    <message>
-        <source>Convex hull(s)</source>
-        <translation>Kono ganbila(k)</translation>
-    </message>
-    <message>
-        <source>Buffer(s)</source>
-        <translation>Bufferra(k)</translation>
-    </message>
-    <message>
-        <source>Intersect</source>
-        <translation>Ebaketa</translation>
-    </message>
-    <message>
-        <source>Union</source>
-        <translation>Batuketa</translation>
-    </message>
-    <message>
-        <source>Symetrical difference</source>
-        <translation>Diferentzia simetrikoa</translation>
-    </message>
-    <message>
-        <source>Clip</source>
-        <translation>Mozketa</translation>
-    </message>
-    <message>
-        <source>Dissolve</source>
-        <translation>Disolbaketa</translation>
-    </message>
-    <message>
-        <source>Difference</source>
-        <translation>Diferentzia</translation>
-    </message>
-    <message>
-        <source>Eliminate sliver polygons</source>
-        <translation>Ezabatu ezpal-poligonoak</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
         <translation>G&amp;eometria-tresnak</translation>
     </message>
     <message>
-        <source>Export/Add geometry columns</source>
-        <translation>Esportatu edo gehitu geometria-zutabea</translation>
-    </message>
-    <message>
-        <source>Check geometry validity</source>
-        <translation>Egiaztatu geometriaren baliozkotasuna</translation>
-    </message>
-    <message>
-        <source>Polygon centroids</source>
-        <translation>Poligono-zentroideak</translation>
-    </message>
-    <message>
-        <source>Delaunay triangulation</source>
-        <translation>Delaunay triangelaketa</translation>
-    </message>
-    <message>
-        <source>Voronoi Polygons</source>
-        <translation>Voronoi poligonoa</translation>
-    </message>
-    <message>
-        <source>Extract nodes</source>
-        <translation>Erauzi nodoak</translation>
-    </message>
-    <message>
-        <source>Simplify geometries</source>
-        <translation>Sinplifikatu geometriak</translation>
-    </message>
-    <message>
-        <source>Densify geometries</source>
-        <translation>Trinkotu geometriak</translation>
-    </message>
-    <message>
-        <source>Multipart to singleparts</source>
-        <translation>Zati anitzekoak zati bakarrekoetara</translation>
-    </message>
-    <message>
-        <source>Singleparts to multipart</source>
-        <translation>Zati bakarrekoak zati anitzekoetara</translation>
-    </message>
-    <message>
-        <source>Polygons to lines</source>
-        <translation>Poligonoak lerroetara</translation>
-    </message>
-    <message>
-        <source>Lines to polygons</source>
-        <translation>Lerroak poligonoetara</translation>
-    </message>
-    <message>
         <source>&amp;Data Management Tools</source>
         <translation>&amp;Datuak kudeatzeko tresnak</translation>
-    </message>
-    <message>
-        <source>Define current projection</source>
-        <translation>Definitu uneko proiekzioa</translation>
-    </message>
-    <message>
-        <source>Join attributes by location</source>
-        <translation>Elkartu atributuak kokapenaren arabera</translation>
-    </message>
-    <message>
-        <source>Split vector layer</source>
-        <translation>Zatitu geruza bektoriala</translation>
-    </message>
-    <message>
-        <source>Merge shapefiles to one</source>
-        <translation>Fusionatu shapefile-ak batean</translation>
-    </message>
-    <message>
-        <source>Create spatial index</source>
-        <translation>Sortu indize espaziala</translation>
     </message>
 </context>
 <context>
@@ -64081,7 +64113,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <name>geometryThread</name>
     <message>
         <source>Merge all</source>
-        <translation>Batu denak</translation>
+        <translation>Fusionatu denak</translation>
     </message>
     <message>
         <source>Polygon area</source>

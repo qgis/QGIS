@@ -180,7 +180,7 @@ QIcon QgsCompassPlugin::getThemeIcon( const QString &theName )
   }
 }
 
-void QgsCompassPlugin::about( )
+void QgsCompassPlugin::about()
 {
   QString title = QString( "About Internal Compass" );
   // sort by date of contribution

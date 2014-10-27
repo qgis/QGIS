@@ -67,6 +67,6 @@ void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )
   {
     QComboBox *cb = qobject_cast< QComboBox * >( mDimensions->cellWidget( i, 4 ) );
     Q_ASSERT( cb );
-    selected.insert( mDimensions->item( i, 0 )->text(),  cb->currentText() );
+    selected.insert( mDimensions->item( i, 0 )->text(), cb->currentText() );
   }
 }

@@ -76,7 +76,7 @@ void QgsMssqlConnectionItem::refresh()
   QgsDebugMsg( "mPath = " + mPath );
 
   // read up the schemas and layers from database
-  QVector<QgsDataItem*> items = createChildren( );
+  QVector<QgsDataItem*> items = createChildren();
 
   // Add new items
   foreach ( QgsDataItem *item, items )
@@ -105,7 +105,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
 
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
-    children.append( new QgsErrorItem( this, db.lastError( ).text( ), mPath + "/error" ) );
+    children.append( new QgsErrorItem( this, db.lastError().text(), mPath + "/error" ) );
     return children;
   }
 

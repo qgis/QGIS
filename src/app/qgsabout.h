@@ -20,7 +20,7 @@
 #include "ui_qgsabout.h"
 #include "qgsoptionsdialogbase.h"
 
-class APP_EXPORT QgsAbout : public QgsOptionsDialogBase , private Ui::QgsAbout
+class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
 {
     Q_OBJECT
   public:
@@ -30,7 +30,7 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase , private Ui::QgsAbout
     static QString fileSystemSafe( QString string );
 
   private:
-    void setWhatsNew( );
+    void setWhatsNew();
     void setLicence();
     void setPluginInfo();
     void init();

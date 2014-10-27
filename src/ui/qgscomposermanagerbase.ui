@@ -31,6 +31,9 @@
        <height>0</height>
       </size>
      </property>
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
      <property name="title">
       <string>New from template</string>
      </property>
@@ -145,6 +148,13 @@
  </customwidgets>
  <tabstops>
   <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mTemplateGrpBox</tabstop>
+  <tabstop>mTemplate</tabstop>
+  <tabstop>mAddButton</tabstop>
+  <tabstop>mTemplatePathLineEdit</tabstop>
+  <tabstop>mTemplatePathBtn</tabstop>
+  <tabstop>mTemplatesUserDirBtn</tabstop>
+  <tabstop>mTemplatesDefaultDirBtn</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>

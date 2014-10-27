@@ -131,9 +131,10 @@ void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end 
   if ( QgsLayerTree::isLayer( parentNode ) )
     return; // layers have only symbology nodes (no expanded/collapsed handling)
 
+  QList<QgsLayerTreeNode*> children = parentNode->children();
   for ( int i = start; i <= end; ++i )
   {
-    updateExpandedStateFromNode( parentNode->children()[i] );
+    updateExpandedStateFromNode( children[i] );
   }
 
   // make sure we still have correct current layer

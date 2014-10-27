@@ -9,7 +9,7 @@ from source and rather use frameworks wherever possible.
 some fiddling with the system. It is best to stick with a single, default,
 architecture build and follow these instructions for an initial build.
 Included are notes for building on Mac OS X 10.5 (__Leopard__), 10.6
-(__Snow Leopard__), 10.7 (__Lion__) and 10.8 (__Mt. Lion__).
+(__Snow Leopard__), 10.7 (__Lion__), 10.8 (__Mt. Lion__) and 10.9 (__Mavericks__)
 (These names will be used throughout the instructions.)
 Make sure to read each section completely before typing the first command you see.
 
@@ -296,8 +296,8 @@ your own risk.
 
 === Additional dependencies: SIP ===
 
-__Mt Lion note:__ SIP 4.15.7 appears to not work on Mt Lion.  Install 4.14.6.
-(or a later working version when available)
+__Mt Lion note:__ SIP 4.15.7 appears to not work on Mt Lion.  Install either
+a prior version to 4.14.6 or a later version 4.16.3+
 
 Retrieve the python bindings toolkit SIP from
 
@@ -365,6 +365,15 @@ python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
 -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.8.sdk
 ```
 
+for Mavericks:
+
+```
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.9.sdk
+```
+
+
+
 __continue...__
 
 Then continue with compilation and installation:
@@ -400,15 +409,19 @@ current line --> new line
 target.path = $$[QT_INSTALL_LIBS]  -->  target.path = /usr/local/lib
 header.path = $$[QT_INSTALL_HEADERS]  -->  header.path = /usr/local/include
 ```
-Save the qscintilla.pro file and build the QScintilla2 C++ library (adjust the install_name_tool command for the version installed):
+Save the qscintilla.pro file and build the QScintilla2 C++ library:
 
 ```
 qmake -spec macx-g++ qscintilla.pro
 make -j [#cpus]
 sudo make install
+```
 
-sudo install_name_tool -id /usr/local/lib/libqscintilla2.9.dylib \
-  /usr/local/lib/libqscintilla2.9.dylib
+adjust the install_name_tool command for the version installed of QScintilla installed:
+
+```
+sudo install_name_tool -id /usr/local/lib/libqscintilla2.11.dylib \
+  /usr/local/lib/libqscintilla2.11.dylib
 ```
 
 This installs QScintilla2's dylib in /usr/local/lib/ and the header files in
@@ -476,7 +489,7 @@ python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
 -n /usr/local/Qt4.8/qsci -v /usr/local/share/sip/PyQt4 --use-arch x86_64
 ```
 
-__Lion and Mt. Lion system Python__
+__Lion, Mt. Lion, and Mavericks system Python__
 
 Similar to Snow Leopard, you should install outside the system Python path.
 But you don't need the use-arch option:

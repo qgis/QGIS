@@ -44,7 +44,7 @@ class QgsGraphDirector : QObject
                             const QVector< QgsPoint > &additionalPoints,
                             QVector< QgsPoint> &tiedPoints /Out/ );
 
-    void addProperter( QgsArcProperter* prop /Transfer/ ) ;
+    void addProperter( QgsArcProperter* prop /Transfer/ );
 
     /**
      * return Director name

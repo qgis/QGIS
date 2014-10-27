@@ -69,13 +69,14 @@ def getSupportedOutputTableExtensions():
 
 
 def getRasterLayers(sorting=True):
-    layers = QgsMapLayerRegistry.instance().mapLayers().values()
+    layers = QgsProject.instance().layerTreeRoot().findLayers()
     raster = []
 
     for layer in layers:
-        if layer.type() == layer.RasterLayer:
-            if layer.providerType() == 'gdal':  # only gdal file-based layers
-                raster.append(layer)
+        mapLayer = layer.layer()
+        if mapLayer.type() == QgsMapLayer.RasterLayer:
+            if mapLayer.providerType() == 'gdal':  # only gdal file-based layers
+                raster.append(mapLayer)
     if sorting:
         return sorted(raster,  key=lambda layer: layer.name().lower())
     else:
@@ -83,14 +84,15 @@ def getRasterLayers(sorting=True):
 
 
 def getVectorLayers(shapetype=[-1], sorting=True):
-    layers = QgsMapLayerRegistry.instance().mapLayers().values()
+    layers = QgsProject.instance().layerTreeRoot().findLayers()
     vector = []
     for layer in layers:
-        if layer.type() == layer.VectorLayer:
-            if shapetype == ALL_TYPES or layer.geometryType() in shapetype:
-                uri = unicode(layer.source())
+        mapLayer = layer.layer()
+        if mapLayer.type() == QgsMapLayer.VectorLayer:
+            if shapetype == ALL_TYPES or mapLayer.geometryType() in shapetype:
+                uri = unicode(mapLayer.source())
                 if not uri.lower().endswith('csv') and not uri.lower().endswith('dbf'):
-                    vector.append(layer)
+                    vector.append(mapLayer)
     if sorting:
         return sorted(vector,  key=lambda layer: layer.name().lower())
     else:
@@ -105,11 +107,12 @@ def getAllLayers():
 
 
 def getTables(sorting=True):
-    layers = QgsMapLayerRegistry.instance().mapLayers().values()
-    tables = list()
+    layers = QgsProject.instance().layerTreeRoot().findLayers()
+    tables = []
     for layer in layers:
-        if layer.type() == layer.VectorLayer:
-            tables.append(layer)
+        mapLayer = layer.layer()
+        if mapLayer.type() == QgsMapLayer.VectorLayer:
+            tables.append(mapLayer)
     if sorting:
         return sorted(tables,  key=lambda table: table.name().lower())
     else:
@@ -119,7 +122,7 @@ def getTables(sorting=True):
 def extent(layers):
     first = True
     for layer in layers:
-        if not isinstance(layer, (QgsRasterLayer, QgsVectorLayer)):
+        if not isinstance(layer, (QgsMapLayer.QgsRasterLayer, QgsMapLayer.QgsVectorLayer)):
             layer = getObjectFromUri(layer)
             if layer is None:
                 continue
@@ -348,7 +351,7 @@ def exportTable(table):
 
     settings = QSettings()
     systemEncoding = settings.value('/UI/encoding', 'System')
-    output = getTempFilename('dbf')
+    output = getTempFilename()
     provider = table.dataProvider()
     isASCII = True
     try:
@@ -364,7 +367,7 @@ def exportTable(table):
         for feat in table.getFeatures():
             writer.addFeature(feat)
         del writer
-        return output
+        return output + '.dbf'
     else:
         filename = unicode(table.source())
         if unicode(table.source()).endswith('shp'):

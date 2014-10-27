@@ -52,7 +52,7 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
 
     if ( QgsGrassMapsetItem::isMapset( path ) )
     {
-      QgsGrassMapsetItem * mapset = new QgsGrassMapsetItem( this,  path );
+      QgsGrassMapsetItem * mapset = new QgsGrassMapsetItem( this, path );
       mapsets.append( mapset );
     }
   }
@@ -89,7 +89,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
   foreach ( QString name, vectorNames )
   {
-    QStringList layerNames = QgsGrass::vectorLayers( mGisdbase , mLocation, mName, name );
+    QStringList layerNames = QgsGrass::vectorLayers( mGisdbase, mLocation, mName, name );
 
     QString path = mPath + QDir::separator() + "vector" + QDir::separator() + name;
 
@@ -149,7 +149,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( QgsGrassLocationItem::isLocation( thePath ) )
   {
-    QgsGrassLocationItem * location = new QgsGrassLocationItem( parentItem,  thePath );
+    QgsGrassLocationItem * location = new QgsGrassLocationItem( parentItem, thePath );
     return location;
   }
   return 0;

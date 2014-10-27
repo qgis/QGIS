@@ -329,7 +329,7 @@ bool QgsRasterBlock::isNoData( qgssize index )
   // TODO: optimize
   int row = ( int ) index / mWidth;
   int column = index % mWidth;
-  qgssize byte = ( qgssize )row * mNoDataBitmapWidth + column / 8 ;
+  qgssize byte = ( qgssize )row * mNoDataBitmapWidth + column / 8;
   int bit = column % 8;
   int mask = 0x80 >> bit;
   //int x = mNoDataBitmap[byte] & mask;

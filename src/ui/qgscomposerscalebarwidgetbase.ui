@@ -51,7 +51,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-124</y>
+        <y>-427</y>
         <width>369</width>
         <height>817</height>
        </rect>
@@ -59,6 +59,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -119,6 +122,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxUnits">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Units</string>
          </property>
@@ -176,6 +182,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mGroupBoxSegments">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Segments</string>
          </property>
@@ -265,6 +274,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Display</string>
          </property>
@@ -376,6 +388,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_4">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Fonts and colors</string>
          </property>
@@ -585,13 +600,14 @@
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
@@ -604,6 +620,34 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
+  <tabstop>mMapComboBox</tabstop>
+  <tabstop>mStyleComboBox</tabstop>
+  <tabstop>mGroupBoxUnits</tabstop>
+  <tabstop>mUnitsComboBox</tabstop>
+  <tabstop>mUnitLabelLineEdit</tabstop>
+  <tabstop>mMapUnitsPerBarUnitSpinBox</tabstop>
+  <tabstop>mGroupBoxSegments</tabstop>
+  <tabstop>mSegmentsLeftSpinBox</tabstop>
+  <tabstop>mNumberOfSegmentsSpinBox</tabstop>
+  <tabstop>mSegmentSizeSpinBox</tabstop>
+  <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>groupBox_5</tabstop>
+  <tabstop>mBoxSizeSpinBox</tabstop>
+  <tabstop>mLabelBarSpaceSpinBox</tabstop>
+  <tabstop>mLineWidthSpinBox</tabstop>
+  <tabstop>mLineJoinStyleCombo</tabstop>
+  <tabstop>mLineCapStyleCombo</tabstop>
+  <tabstop>mAlignmentComboBox</tabstop>
+  <tabstop>groupBox_4</tabstop>
+  <tabstop>mFontButton</tabstop>
+  <tabstop>mFontColorButton</tabstop>
+  <tabstop>mFillColorButton</tabstop>
+  <tabstop>mFillColor2Button</tabstop>
+  <tabstop>mStrokeColorButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

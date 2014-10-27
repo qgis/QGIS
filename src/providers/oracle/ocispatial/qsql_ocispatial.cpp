@@ -1395,7 +1395,7 @@ QOCISpatialCols::QOCISpatialCols( int size, QOCISpatialResultPrivate* dp )
         break;
       default:
         // this should make enough space even with character encoding
-        dataSize = ( dataSize + 1 ) * sizeof( utext ) ;
+        dataSize = ( dataSize + 1 ) * sizeof( utext );
         qDebug( "OCIDefineByPosDef(%d): %d", count, dataSize );
         r = OCIDefineByPos( d->sql,
                             &dfn,

@@ -283,12 +283,12 @@ class QgsColorButtonV2: QToolButton
     /**
      * Reimplemented to accept dragged colors
      */
-    void dragEnterEvent( QDragEnterEvent * e ) ;
+    void dragEnterEvent( QDragEnterEvent * e );
 
     /**
      * Reimplemented to reset button appearance after drag leave
      */
-    void dragLeaveEvent( QDragLeaveEvent *e ) ;
+    void dragLeaveEvent( QDragLeaveEvent *e );
 
     /**
      * Reimplemented to accept dropped colors

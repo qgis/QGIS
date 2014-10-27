@@ -931,8 +931,8 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
         leHistoMax->setText( QString::number( minMaxValues[1] ) );
 #endif
       }
-      applyHistoMin( );
-      applyHistoMax( );
+      applyHistoMin();
+      applyHistoMax();
     }
     // update markers
     leHistoMin->blockSignals( false );
@@ -950,7 +950,7 @@ void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actio
   }
 }
 
-void QgsRasterHistogramWidget::applyHistoMin( )
+void QgsRasterHistogramWidget::applyHistoMin()
 {
   if ( ! mRendererWidget )
     return;
@@ -979,7 +979,7 @@ void QgsRasterHistogramWidget::applyHistoMin( )
 
 }
 
-void QgsRasterHistogramWidget::applyHistoMax( )
+void QgsRasterHistogramWidget::applyHistoMax()
 {
   if ( ! mRendererWidget )
     return;
@@ -1109,7 +1109,7 @@ void QgsRasterHistogramWidget::histoPickerSelectedQwt5( const QwtDoublePoint & p
   histoPickerSelected( QPointF( pos.x(), pos.y() ) );
 }
 
-void QgsRasterHistogramWidget::updateHistoMarkers( )
+void QgsRasterHistogramWidget::updateHistoMarkers()
 {
   // hack to not update markers
   if ( leHistoMin->signalsBlocked() )
@@ -1185,7 +1185,7 @@ QList< int > QgsRasterHistogramWidget::rendererSelectedBands()
 
   if ( mRendererName == "singlebandgray" )
   {
-    mySelectedBands << mRendererWidget->selectedBand( );
+    mySelectedBands << mRendererWidget->selectedBand();
   }
   else if ( mRendererName == "multibandcolor" )
   {
@@ -1207,7 +1207,7 @@ QPair< QString, QString > QgsRasterHistogramWidget::rendererMinMax( int theBandN
 
   if ( mRendererName == "singlebandgray" )
   {
-    if ( theBandNo == mRendererWidget->selectedBand( ) )
+    if ( theBandNo == mRendererWidget->selectedBand() )
     {
       myMinMax.first = mRendererWidget->min();
       myMinMax.second = mRendererWidget->max();

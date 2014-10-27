@@ -123,7 +123,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPoint( const QDomElement& geometryEleme
   }
 
   QgsPolyline::const_iterator point_it = pointCoordinate.begin();
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   double x = point_it->x();
   double y = point_it->y();
   int size = 1 + sizeof( int ) + 2 * sizeof( double );
@@ -172,7 +172,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLLineString( const QDomElement& geometry
     }
   }
 
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int size = 1 + 2 * sizeof( int ) + lineCoordinates.size() * 2 * sizeof( double );
 
   QGis::WkbType type = QGis::WKBLineString;
@@ -297,7 +297,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLPolygon( const QDomElement& geometryEle
   unsigned char* wkb = new unsigned char[size];
 
   //char e = QgsApplication::endian();
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPointsInRing = 0;
   double x, y;
@@ -402,7 +402,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPoint( const QDomElement& geometry
   unsigned char* wkb = new unsigned char[size];
 
   //fill the wkb content
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   memcpy( &( wkb )[wkbPosition], &e, 1 );
@@ -540,7 +540,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiLineString( const QDomElement& geo
   unsigned char* wkb = new unsigned char[size];
 
   //fill the wkb content
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   int nPoints; //number of points in a line
   double x, y;
@@ -735,7 +735,7 @@ QgsGeometry* QgsOgcUtils::geometryFromGMLMultiPolygon( const QDomElement& geomet
   QGis::WkbType type = QGis::WKBMultiPolygon;
   unsigned char* wkb = new unsigned char[size];
 
-  char e = htonl( 1 ) != 1 ;
+  char e = htonl( 1 ) != 1;
   int wkbPosition = 0; //current offset from wkb beginning (in bytes)
   double x, y;
   int nRings;
@@ -1595,25 +1595,37 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
   }
 
   QDomElement operandElem = element.firstChildElement();
-  QgsExpression::Node* opLeft = nodeFromOgcFilter( operandElem, errorMessage );
-  if ( !opLeft )
+  QgsExpression::Node *expr = nodeFromOgcFilter( operandElem, errorMessage ), *leftOp = expr;
+  if ( !expr )
   {
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "invalid left operand for '%1' binary operator" ).arg( element.tagName() );
     return NULL;
   }
 
-  operandElem = operandElem.nextSiblingElement();
-  QgsExpression::Node* opRight = nodeFromOgcFilter( operandElem, errorMessage );
-  if ( !opRight )
+  for( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
+  {
+    QgsExpression::Node* opRight = nodeFromOgcFilter( operandElem, errorMessage );
+    if ( !opRight )
+    {
+      if ( errorMessage.isEmpty() )
+        errorMessage = QString( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
+      delete expr;
+      return NULL;
+    }
+
+    expr = new QgsExpression::NodeBinaryOperator(( QgsExpression::BinaryOperator ) op, expr, opRight );
+  }
+
+  if( expr == leftOp )
   {
     if ( errorMessage.isEmpty() )
-      errorMessage = QString( "invalid right operand for '%1' binary operator" ).arg( element.tagName() );
-    delete opLeft;
+      errorMessage = QString( "only one operand for '%1' binary operator" ).arg( element.tagName() );
+    delete expr;
     return NULL;
   }
 
-  return new QgsExpression::NodeBinaryOperator(( QgsExpression::BinaryOperator ) op, opLeft, opRight );
+  return dynamic_cast< QgsExpression::NodeBinaryOperator * >( expr );
 }
 
 
@@ -1843,7 +1855,6 @@ QgsExpression::Node* QgsOgcUtils::nodeIsBetweenFromOgcFilter( QDomElement& eleme
 }
 
 
-
 QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodePropertyIsNullFromOgcFilter( QDomElement& element, QString& errorMessage )
 {
   // convert ogc:PropertyIsNull to IS operator with NULL right operand
@@ -1863,8 +1874,6 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodePropertyIsNullFromOgcFilter(
 
 
 /////////////////
-
-
 
 
 QDomElement QgsOgcUtils::expressionToOgcFilter( const QgsExpression& exp, QDomDocument& doc, QString* errorMessage )

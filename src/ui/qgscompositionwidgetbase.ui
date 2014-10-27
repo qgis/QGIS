@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>294</width>
+    <width>300</width>
     <height>506</height>
    </rect>
   </property>
@@ -23,16 +23,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -42,6 +33,9 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::WheelFocus</enum>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
@@ -57,13 +51,16 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>292</width>
-        <height>504</height>
+        <width>284</width>
+        <height>599</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Paper and quality</string>
          </property>
@@ -354,6 +351,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mSnapToGridGroupCheckBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Guides and Grid</string>
          </property>
@@ -488,6 +488,28 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
+  <tabstop>mPaperSizeComboBox</tabstop>
+  <tabstop>mPaperSizeDDBtn</tabstop>
+  <tabstop>mPaperWidthDoubleSpinBox</tabstop>
+  <tabstop>mPaperWidthDDBtn</tabstop>
+  <tabstop>mPaperHeightDoubleSpinBox</tabstop>
+  <tabstop>mPaperHeightDDBtn</tabstop>
+  <tabstop>mPaperUnitsComboBox</tabstop>
+  <tabstop>mNumPagesSpinBox</tabstop>
+  <tabstop>mNumPagesDDBtn</tabstop>
+  <tabstop>mPaperOrientationComboBox</tabstop>
+  <tabstop>mPaperOrientationDDBtn</tabstop>
+  <tabstop>mPageStyleButton</tabstop>
+  <tabstop>mResolutionSpinBox</tabstop>
+  <tabstop>mPrintAsRasterCheckBox</tabstop>
+  <tabstop>mGenerateWorldFileCheckBox</tabstop>
+  <tabstop>mWorldFileMapComboBox</tabstop>
+  <tabstop>mSnapToGridGroupCheckBox</tabstop>
+  <tabstop>mGridResolutionSpinBox</tabstop>
+  <tabstop>mOffsetXSpinBox</tabstop>
+  <tabstop>mOffsetYSpinBox</tabstop>
+  <tabstop>mSnapToleranceSpinBox</tabstop>
  </tabstops>
  <resources/>
  <connections/>

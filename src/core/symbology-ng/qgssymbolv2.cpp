@@ -310,7 +310,7 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size, QgsRenderConte
 
 QImage QgsSymbolV2::asImage( QSize size, QgsRenderContext* customContext )
 {
-  QImage image( size , QImage::Format_ARGB32_Premultiplied );
+  QImage image( size, QImage::Format_ARGB32_Premultiplied );
   image.fill( 0 );
 
   QPainter p( &image );

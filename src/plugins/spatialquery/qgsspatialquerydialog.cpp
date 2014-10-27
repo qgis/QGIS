@@ -353,7 +353,7 @@ QString QgsSpatialQueryDialog::getDescriptionInvalidFeaturesShow( bool isTarget 
 void QgsSpatialQueryDialog::connectAll()
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
-           this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) ) ;
+           this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) );
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
            this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
   connect( ckbLogProcessing, SIGNAL( clicked( bool ) ),
@@ -363,7 +363,7 @@ void QgsSpatialQueryDialog::connectAll()
 void QgsSpatialQueryDialog::disconnectAll()
 {
   disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
-              this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) ) ;
+              this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) );
   disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
               this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
 

@@ -191,6 +191,12 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
     theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
     mDataSource = theURIParts.join( "|" );
   }
+  else if ( provider == "gpx" )
+  {
+    QStringList theURIParts = mDataSource.split( "?" );
+    theURIParts[0] = QgsProject::instance()->readPath( theURIParts[0] );
+    mDataSource = theURIParts.join( "?" );
+  }
   else if ( provider == "delimitedtext" )
   {
     QUrl urlSource = QUrl::fromEncoded( mDataSource.toAscii() );
@@ -466,6 +472,12 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
     theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0], relativeBasePath );
     src = theURIParts.join( "|" );
   }
+  else if ( vlayer && vlayer->providerType() == "gpx" )
+  {
+    QStringList theURIParts = src.split( "?" );
+    theURIParts[0] = QgsProject::instance()->writePath( theURIParts[0], relativeBasePath );
+    src = theURIParts.join( "?" );
+  }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
     QUrl urlSource = QUrl::fromEncoded( src.toAscii() );
@@ -490,7 +502,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   layerName.appendChild( layerNameText );
 
   // layer title
-  QDomElement layerTitle = document.createElement( "title" ) ;
+  QDomElement layerTitle = document.createElement( "title" );
   QDomText layerTitleText = document.createTextNode( title() );
   layerTitle.appendChild( layerTitleText );
 
@@ -522,7 +534,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aDataUrl = dataUrl();
   if ( !aDataUrl.isEmpty() )
   {
-    QDomElement layerDataUrl = document.createElement( "dataUrl" ) ;
+    QDomElement layerDataUrl = document.createElement( "dataUrl" );
     QDomText layerDataUrlText = document.createTextNode( aDataUrl );
     layerDataUrl.appendChild( layerDataUrlText );
     layerDataUrl.setAttribute( "format", dataUrlFormat() );
@@ -533,7 +545,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aLegendUrl = legendUrl();
   if ( !aLegendUrl.isEmpty() )
   {
-    QDomElement layerLegendUrl = document.createElement( "legendUrl" ) ;
+    QDomElement layerLegendUrl = document.createElement( "legendUrl" );
     QDomText layerLegendUrlText = document.createTextNode( aLegendUrl );
     layerLegendUrl.appendChild( layerLegendUrlText );
     layerLegendUrl.setAttribute( "format", legendUrlFormat() );
@@ -544,7 +556,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aAttribution = attribution();
   if ( !aAttribution.isEmpty() )
   {
-    QDomElement layerAttribution = document.createElement( "attribution" ) ;
+    QDomElement layerAttribution = document.createElement( "attribution" );
     QDomText layerAttributionText = document.createTextNode( aAttribution );
     layerAttribution.appendChild( layerAttributionText );
     layerAttribution.setAttribute( "href", attributionUrl() );
@@ -555,7 +567,7 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
   QString aMetadataUrl = metadataUrl();
   if ( !aMetadataUrl.isEmpty() )
   {
-    QDomElement layerMetadataUrl = document.createElement( "metadataUrl" ) ;
+    QDomElement layerMetadataUrl = document.createElement( "metadataUrl" );
     QDomText layerMetadataUrlText = document.createTextNode( aMetadataUrl );
     layerMetadataUrl.appendChild( layerMetadataUrlText );
     layerMetadataUrl.setAttribute( "type", metadataUrlType() );
@@ -606,7 +618,7 @@ QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers, QStrin
   foreach ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
-    layer->writeLayerXML( layerelm, doc, relativeBasePath  );
+    layer->writeLayerXML( layerelm, doc, relativeBasePath );
     layerelm.removeChild( layerelm.firstChildElement( "id" ) );
     layerselm.appendChild( layerelm );
   }
@@ -808,7 +820,7 @@ QString QgsMapLayer::capitaliseLayerName( const QString& name )
   return layerName;
 }
 
-QString QgsMapLayer::styleURI( )
+QString QgsMapLayer::styleURI()
 {
   QString myURI = publicSource();
 
@@ -1066,6 +1078,11 @@ QString QgsMapLayer::saveNamedStyle( const QString &theURI, bool &theResultFlag 
     QStringList theURIParts = theURI.split( "|" );
     filename = theURIParts[0];
   }
+  else if ( vlayer && vlayer->providerType() == "gpx" )
+  {
+    QStringList theURIParts = theURI.split( "?" );
+    filename = theURIParts[0];
+  }
   else if ( vlayer && vlayer->providerType() == "delimitedtext" )
   {
     filename = QUrl::fromEncoded( theURI.toAscii() ).toLocalFile();
@@ -1242,6 +1259,11 @@ QString QgsMapLayer::saveSldStyle( const QString &theURI, bool &theResultFlag )
   if ( vlayer->providerType() == "ogr" )
   {
     QStringList theURIParts = theURI.split( "|" );
+    filename = theURIParts[0];
+  }
+  else if ( vlayer->providerType() == "gpx" )
+  {
+    QStringList theURIParts = theURI.split( "?" );
     filename = theURIParts[0];
   }
   else if ( vlayer->providerType() == "delimitedtext" )

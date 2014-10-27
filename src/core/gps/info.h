@@ -94,7 +94,7 @@ extern "C"
    * Summary GPS information from all parsed packets,
    * used also for generating NMEA stream
    * @see nmea_parse
-   * @see nmea_GPGGA2info,  nmea_...2info
+   * @see nmea_GPGGA2info, nmea_...2info
    */
   typedef struct _nmeaINFO
   {

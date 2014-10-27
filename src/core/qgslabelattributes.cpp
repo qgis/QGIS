@@ -480,15 +480,15 @@ QString QgsLabelAttributes::alignmentName( int alignment )
 int QgsLabelAttributes::alignmentCode( const QString &name )
 {
   QString lname = name.toLower();
-  if ( lname.compare( "aboveleft" )  == 0 )  return Qt::AlignRight | Qt::AlignBottom     ;
-  if ( lname.compare( "belowleft" )  == 0 )  return Qt::AlignRight | Qt::AlignTop        ;
-  if ( lname.compare( "aboveright" )  == 0 ) return Qt::AlignLeft  | Qt::AlignBottom     ;
-  if ( lname.compare( "belowright" )  == 0 ) return Qt::AlignLeft  | Qt::AlignTop        ;
-  if ( lname.compare( "left" )  == 0 )       return Qt::AlignRight | Qt::AlignVCenter    ;
-  if ( lname.compare( "right" )  == 0 )      return Qt::AlignLeft  | Qt::AlignVCenter    ;
-  if ( lname.compare( "above" )  == 0 )      return Qt::AlignBottom | Qt::AlignHCenter    ;
-  if ( lname.compare( "below" )  == 0 )      return Qt::AlignTop   | Qt::AlignHCenter    ;
-  if ( lname.compare( "center" )  == 0 )       return Qt::AlignCenter                      ;
+  if ( lname.compare( "aboveleft" )  == 0 )  return Qt::AlignRight | Qt::AlignBottom;
+  if ( lname.compare( "belowleft" )  == 0 )  return Qt::AlignRight | Qt::AlignTop;
+  if ( lname.compare( "aboveright" )  == 0 ) return Qt::AlignLeft  | Qt::AlignBottom;
+  if ( lname.compare( "belowright" )  == 0 ) return Qt::AlignLeft  | Qt::AlignTop;
+  if ( lname.compare( "left" )  == 0 )       return Qt::AlignRight | Qt::AlignVCenter;
+  if ( lname.compare( "right" )  == 0 )      return Qt::AlignLeft  | Qt::AlignVCenter;
+  if ( lname.compare( "above" )  == 0 )      return Qt::AlignBottom | Qt::AlignHCenter;
+  if ( lname.compare( "below" )  == 0 )      return Qt::AlignTop   | Qt::AlignHCenter;
+  if ( lname.compare( "center" )  == 0 )     return Qt::AlignCenter;
 
 
   return Qt::AlignCenter;

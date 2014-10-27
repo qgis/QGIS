@@ -252,7 +252,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
   }
 
   mBandCount = GDALGetRasterCount( mCachedGdalDataset );
-  QgsDebugMsg( QString( "mBandCount = %1" ).arg( mBandCount ) ) ;
+  QgsDebugMsg( QString( "mBandCount = %1" ).arg( mBandCount ) );
 
   // Check for server particularities (bbox, rotation)
   int responseWidth = GDALGetRasterXSize( mCachedGdalDataset );
@@ -296,7 +296,7 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     double myNoDataValue = GDALGetRasterNoDataValue( gdalBand, &isValid );
     if ( isValid )
     {
-      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
+      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) );
       myNoDataValue = QgsRaster::representableValue( myNoDataValue, dataTypeFromGdal( myGdalDataType ) );
       mSrcNoDataValue.append( myNoDataValue );
       mSrcHasNoDataValue.append( true );
@@ -422,7 +422,7 @@ bool QgsWcsProvider::parseUri( QString uriString )
   {
     mCacheLoadControl = QgsNetworkAccessManager::cacheLoadControlFromName( cache );
   }
-  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) ) ;
+  QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 
   return true;
 }
@@ -574,7 +574,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
     QgsDebugMsg( QString( "cached data width = %1 height = %2 (expected %3 x %4)" ).arg( width ).arg( height ).arg( pixelWidth ).arg( pixelHeight ) );
 
     GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, bandNo );
-    // TODO: check type? , check band count?
+    // TODO: check type?, check band count?
     if ( mFixRotate && width == pixelHeight && height == pixelWidth )
     {
       // Rotate counter clockwise
@@ -785,7 +785,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const & viewExtent, int
   if ( myFile.open( QIODevice::WriteOnly ) )
   {
     QDataStream myStream( &myFile );
-    myStream.writeRawData( mCachedData.data(),  mCachedData.size() );
+    myStream.writeRawData( mCachedData.data(), mCachedData.size() );
     myFile.close();
   }
 #endif

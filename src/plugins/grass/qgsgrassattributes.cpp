@@ -219,7 +219,7 @@ void QgsGrassAttributes::addTextRow( int tab, const QString &text )
   tb->setSpan( row, 0, 1, 3 );
 }
 
-void QgsGrassAttributes::updateAttributes( )
+void QgsGrassAttributes::updateAttributes()
 {
   QgsDebugMsg( "entered." );
 
@@ -280,7 +280,7 @@ void QgsGrassAttributes::updateAttributes( )
   }
 }
 
-void QgsGrassAttributes::addCat( )
+void QgsGrassAttributes::addCat()
 {
   QgsDebugMsg( "entered." );
 
@@ -292,7 +292,7 @@ void QgsGrassAttributes::addCat( )
   resetButtons();
 }
 
-void QgsGrassAttributes::deleteCat( )
+void QgsGrassAttributes::deleteCat()
 {
   QgsDebugMsg( "entered." );
 
@@ -311,7 +311,7 @@ void QgsGrassAttributes::deleteCat( )
   resetButtons();
 }
 
-void QgsGrassAttributes::clear( )
+void QgsGrassAttributes::clear()
 {
   QgsDebugMsg( "entered." );
 
@@ -337,7 +337,7 @@ void QgsGrassAttributes::setLine( int line )
   mLine = line;
 }
 
-void QgsGrassAttributes::resetButtons( )
+void QgsGrassAttributes::resetButtons()
 {
   if ( tabCats->count() == 0 )
   {

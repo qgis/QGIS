@@ -358,7 +358,7 @@ void QgsColorButton::showContextMenu( QMouseEvent *event )
     pasteColorAction->setEnabled( true );
   }
 
-  QAction* selectedAction = colorContextMenu.exec( event->globalPos( ) );
+  QAction* selectedAction = colorContextMenu.exec( event->globalPos() );
   if ( selectedAction == copyColorAction )
   {
     //copy color

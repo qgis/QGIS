@@ -28,8 +28,8 @@
 #include <QDebug>
 #include <QBuffer>
 
-QgsRasterChecker::QgsRasterChecker( ) :
-    mReport( "" )
+QgsRasterChecker::QgsRasterChecker()
+    : mReport( "" )
 {
   mTabStyle = "border-spacing: 0px; border-width: 1px 1px 0 0; border-style: solid;";
   mCellStyle = "border-width: 0 0 1px 1px; border-style: solid; font-size: smaller; text-align: center;";
@@ -94,7 +94,7 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
     // Data types may differ (?)
     bool typesOk = true;
     compare( "Source data type", verifiedProvider->srcDataType( band ), expectedProvider->srcDataType( band ), mReport, typesOk );
-    compare( "Data type", verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk ) ;
+    compare( "Data type", verifiedProvider->dataType( band ), expectedProvider->dataType( band ), mReport, typesOk );
 
     // TODO: not yet sure if noDataValue() should exist at all
     //compare( "No data (NULL) value", verifiedProvider->noDataValue( band ), expectedProvider->noDataValue( band ), mReport, typesOk );

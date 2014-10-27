@@ -30,7 +30,7 @@
 
 static QColor _interpolate( QColor c1, QColor c2, double value )
 {
-  if ( qIsNaN(value) ) value = 1;
+  if ( qIsNaN( value ) ) value = 1;
   int r = ( int )( c1.red() + value * ( c2.red() - c1.red() ) );
   int g = ( int )( c1.green() + value * ( c2.green() - c1.green() ) );
   int b = ( int )( c1.blue() + value * ( c2.blue() - c1.blue() ) );
@@ -243,7 +243,7 @@ void QgsVectorGradientColorRampV2::addStopsToGradient( QGradient* gradient, doub
     {
       rampColor.setAlpha( rampColor.alpha() * alpha );
     }
-    gradient->setColorAt( it->offset , rampColor );
+    gradient->setColorAt( it->offset, rampColor );
   }
 }
 
@@ -608,7 +608,7 @@ QString QgsCptCityColorRampV2::descFileName() const
                                           QgsCptCityArchive::defaultBaseDir() );
 }
 
-QgsStringMap QgsCptCityColorRampV2::copyingInfo( ) const
+QgsStringMap QgsCptCityColorRampV2::copyingInfo() const
 {
   return QgsCptCityArchive::copyingInfo( copyingFileName() );
 }

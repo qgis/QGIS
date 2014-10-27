@@ -51,7 +51,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       ComposerLabel,
       ComposerLegend,
       ComposerMap,
-      ComposerPaper,  // QgsPaperItem
+      ComposerPaper, // QgsPaperItem
       ComposerPicture,
       ComposerScaleBar,
       ComposerShape,
@@ -774,8 +774,17 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     void deleteVAlignSnapItem();
     void deleteAlignItems();
 
-    /**Update an item rect to consider data defined position and size of item*/
-    QRectF evalItemRect( const QRectF &newRect );
+    /**Evaluates an item's bounding rect to consider data defined position and size of item
+     * and reference point
+     * @param newRect target bouding rect for item
+     * @param resizeOnly set to true if the item is only being resized. If true then
+     * the position of the returned rect will be adjusted to account for the item's
+     * position mode
+     * @returns bounding box rectangle for item after data defined size and position have been
+     * set and position mode has been accounted for
+     * @note added in QGIS 2.5
+    */
+    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false );
 
     /**Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn

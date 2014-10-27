@@ -172,7 +172,7 @@ void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMe
 
 QString QgsSingleSymbolRendererV2::dump() const
 {
-  return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "" ;
+  return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "";
 }
 
 QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const

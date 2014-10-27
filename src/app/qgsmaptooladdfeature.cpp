@@ -42,8 +42,11 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal )
 {
-  QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, -1, this );
-  return action.addFeature( QgsAttributeMap(), showModal );
+  QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), *f, vlayer, -1, -1, this );
+  bool res = action->addFeature( QgsAttributeMap(), showModal );
+  if ( showModal )
+    delete action;
+  return res;
 }
 
 void QgsMapToolAddFeature::activate()
@@ -201,7 +204,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       //create QgsFeature with wkb representation
-      QgsFeature* f = new QgsFeature( vlayer->pendingFields(),  0 );
+      QgsFeature* f = new QgsFeature( vlayer->pendingFields(), 0 );
 
       QgsGeometry *g;
 

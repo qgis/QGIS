@@ -31,7 +31,7 @@
 const int PIXMAP_WIDTH = 200;
 const int PIXMAP_HEIGHT = 20;
 
-QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
+QgsLabelDialog::QgsLabelDialog( QgsLabel *label, QWidget *parent )
     : QWidget( parent ),
     mLabel( label ),
     mFontColor( Qt::black ),
@@ -54,7 +54,7 @@ QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
 }
 
 
-void QgsLabelDialog::init( )
+void QgsLabelDialog::init()
 {
   QgsDebugMsg( "entering." );
 
@@ -238,15 +238,15 @@ void QgsLabelDialog::init( )
   //TODO investigate in QgsLabel why this needs to be the case
   //TODO add support for corners (e.g. bottom right) to xml serialiser
 
-  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignBottom ) ) radioAboveLeft->setChecked( true )   ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignTop ) ) radioBelowLeft->setChecked( true )   ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignBottom ) ) radioAboveRight->setChecked( true )  ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignTop ) ) radioBelowRight->setChecked( true )  ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignVCenter ) ) radioLeft->setChecked( true )        ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignVCenter ) ) radioRight->setChecked( true )       ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignBottom | Qt::AlignHCenter ) ) radioAbove->setChecked( true )       ;
-  if ( myLabelAttributes->alignment() == ( Qt::AlignTop   | Qt::AlignHCenter ) ) radioBelow->setChecked( true )       ;
-  if ( myLabelAttributes->alignment() == Qt::AlignCenter ) radioOver->setChecked( true )        ;
+  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignBottom ) ) radioAboveLeft->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignTop ) ) radioBelowLeft->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignBottom ) ) radioAboveRight->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignTop ) ) radioBelowRight->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignRight | Qt::AlignVCenter ) ) radioLeft->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignLeft  | Qt::AlignVCenter ) ) radioRight->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignBottom | Qt::AlignHCenter ) ) radioAbove->setChecked( true );
+  if ( myLabelAttributes->alignment() == ( Qt::AlignTop   | Qt::AlignHCenter ) ) radioBelow->setChecked( true );
+  if ( myLabelAttributes->alignment() == Qt::AlignCenter ) radioOver->setChecked( true );
 
   mBufferColor = myLabelAttributes->bufferColor();
   //note that it could be that buffer properties are set, but the bufer is disabled
@@ -380,23 +380,23 @@ void QgsLabelDialog::apply()
   //TODO - transparency attributes for buffers
 
   //set the label props that are data bound to a field in the attributes tbl
-  mLabel->setLabelField( QgsLabel::Text,  fieldIndexFromName( cboLabelField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Text, fieldIndexFromName( cboLabelField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Family, fieldIndexFromName( cboFontField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Bold,  fieldIndexFromName( cboBoldField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Italic,  fieldIndexFromName( cboItalicField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Underline,  fieldIndexFromName( cboUnderlineField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::StrikeOut,  fieldIndexFromName( cboStrikeOutField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Size,  fieldIndexFromName( cboFontSizeField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::SizeType,  fieldIndexFromName( cboFontSizeTypeField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Color,  fieldIndexFromName( cboFontColorField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::BufferSize,  fieldIndexFromName( cboBufferSizeField->currentText() ) );
-  //mLabel->setLabelField( QgsLabel::BufferTransparency,  cboBufferTransparencyField->currentText() );
-  mLabel->setLabelField( QgsLabel::XCoordinate,  fieldIndexFromName( cboXCoordinateField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::YCoordinate,  fieldIndexFromName( cboYCoordinateField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::XOffset,  fieldIndexFromName( cboXOffsetField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::YOffset,  fieldIndexFromName( cboYOffsetField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Alignment,  fieldIndexFromName( cboAlignmentField->currentText() ) );
-  mLabel->setLabelField( QgsLabel::Angle,  fieldIndexFromName( cboAngleField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Bold, fieldIndexFromName( cboBoldField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Italic, fieldIndexFromName( cboItalicField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Underline, fieldIndexFromName( cboUnderlineField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::StrikeOut, fieldIndexFromName( cboStrikeOutField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Size, fieldIndexFromName( cboFontSizeField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::SizeType, fieldIndexFromName( cboFontSizeTypeField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Color, fieldIndexFromName( cboFontColorField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::BufferSize, fieldIndexFromName( cboBufferSizeField->currentText() ) );
+  //mLabel->setLabelField( QgsLabel::BufferTransparency, cboBufferTransparencyField->currentText() );
+  mLabel->setLabelField( QgsLabel::XCoordinate, fieldIndexFromName( cboXCoordinateField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::YCoordinate, fieldIndexFromName( cboYCoordinateField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::XOffset, fieldIndexFromName( cboXOffsetField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::YOffset, fieldIndexFromName( cboYOffsetField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Alignment, fieldIndexFromName( cboAlignmentField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::Angle, fieldIndexFromName( cboAngleField->currentText() ) );
 
   // set up the scale based layer visibility stuff....
   mLabel->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );

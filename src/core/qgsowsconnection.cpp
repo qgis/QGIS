@@ -49,7 +49,7 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
   QStringList connStringParts;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
-  mUri.setParam( "url",  settings.value( key + "/url" ).toString() );
+  mUri.setParam( "url", settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -57,11 +57,6 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
   if ( !username.isEmpty() )
   {
     // check for a password, if none prompt to get it
-    if ( password.isEmpty() )
-    {
-      password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), tr( "Password" ), QLineEdit::Password );
-    }
-    mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
     mUri.setParam( "username", username );
     mUri.setParam( "password", password );
   }
@@ -87,7 +82,7 @@ QgsOWSConnection::QgsOWSConnection( const QString & theService, const QString & 
     mUri.setParam( "InvertAxisOrientation", "1" );
   }
 
-  QgsDebugMsg( QString( "Connection info: '%1'." ).arg( mConnectionInfo ) );
+  QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
 QgsOWSConnection::~QgsOWSConnection()
@@ -95,7 +90,7 @@ QgsOWSConnection::~QgsOWSConnection()
 
 }
 
-QString QgsOWSConnection::connectionInfo( )
+QString QgsOWSConnection::connectionInfo()
 {
   return mConnectionInfo;
 }
@@ -104,24 +99,6 @@ QgsDataSourceURI QgsOWSConnection::uri()
 {
   return mUri;
 }
-
-#if 0
-QgsDataProvider * QgsOWSConnection::provider()
-{
-  // TODO: remove completely from this class?
-
-  // load the server data provider plugin
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-
-  //QMap<QString,QString> keys;
-
-  QgsDataProvider *provider =
-    ( QgsDataProvider* ) pReg->provider( "wms", mUri.encodedUri() );
-
-  return provider;
-}
-#endif
-
 
 QStringList QgsOWSConnection::connectionList( const QString & theService )
 {

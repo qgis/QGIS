@@ -51,8 +51,8 @@
  *
  *   mVariableName - a class level member variable
  *   sVariableName - a static class level member variable
- *   variableName( ) - accessor for a class member ( no 'get' in front of name )
- *   setVariableName( ) - mutator for a class member ( prefix with 'set' )
+ *   variableName() - accessor for a class member ( no 'get' in front of name )
+ *   setVariableName() - mutator for a class member ( prefix with 'set' )
  *
  *   Additional useful conventions:
  *
@@ -95,22 +95,22 @@ class eVis: public QObject, public QgisPlugin
     eVis( QgisInterface * theInterface );
 
     //! Destructor */
-    ~eVis( );
+    ~eVis();
 
   public slots:
     //! init the gui
-    virtual void initGui( );
+    virtual void initGui();
 
     //! Main button actions
-    void launchDatabaseConnection( );
-    void launchEventIdTool( );
-    void launchEventBrowser( );
+    void launchDatabaseConnection();
+    void launchEventIdTool();
+    void launchEventBrowser();
 
     //! unload the plugin
-    void unload( );
+    void unload();
 
     //! show the help document
-    void help( );
+    void help();
 
     //! Add a vector layer given vectorLayerPath, baseName, providerKey ( "ogr" or "postgres" );
     void drawVectorLayer( QString, QString, QString );

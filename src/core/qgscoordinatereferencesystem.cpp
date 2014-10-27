@@ -184,7 +184,7 @@ bool QgsCoordinateReferenceSystem::createFromUserInput( const QString &theDefini
   return createFromWkt( theWkt );
 }
 
-void QgsCoordinateReferenceSystem::setupESRIWktFix( )
+void QgsCoordinateReferenceSystem::setupESRIWktFix()
 {
   // make sure towgs84 parameter is loaded if gdal >= 1.9
   // this requires setting GDAL_FIX_ESRI_WKT=GEOGCS (see qgis bug #5598 and gdal bug #4673)
@@ -197,7 +197,7 @@ void QgsCoordinateReferenceSystem::setupESRIWktFix( )
     CPLSetConfigOption( "GDAL_FIX_ESRI_WKT", configNew );
     if ( strcmp( configNew, CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) != 0 )
       QgsLogger::warning( QString( "GDAL_FIX_ESRI_WKT could not be set to %1 : %2" )
-                          .arg( configNew ).arg( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) ) ;
+                          .arg( configNew ).arg( CPLGetConfigOption( "GDAL_FIX_ESRI_WKT", "" ) ) );
     QgsDebugMsg( QString( "set GDAL_FIX_ESRI_WKT : %1" ).arg( configNew ) );
   }
   else
@@ -766,7 +766,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
     QFileInfo myFileInfo;
     myFileInfo.setFile( myDatabaseFileName );
-    if ( !myFileInfo.exists( ) )
+    if ( !myFileInfo.exists() )
     {
       QgsDebugMsg( "user qgis.db not found" );
       return myMap;
@@ -1350,7 +1350,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
     myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
     QFileInfo myFileInfo;
     myFileInfo.setFile( myDatabaseFileName );
-    if ( !myFileInfo.exists( ) ) //its unlikely that this condition will ever be reached
+    if ( !myFileInfo.exists() ) //its unlikely that this condition will ever be reached
     {
       QgsDebugMsg( "users qgis.db not found" );
       return NULL;

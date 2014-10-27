@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -56,12 +47,15 @@
         <x>0</x>
         <y>0</y>
         <width>332</width>
-        <height>364</height>
+        <height>360</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -84,6 +78,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="mArrowMarkersGroupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Arrow markers</string>
          </property>
@@ -279,8 +276,26 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
+  <tabstop>mLineStyleButton</tabstop>
+  <tabstop>mArrowMarkersGroupBox</tabstop>
+  <tabstop>mDefaultMarkerRadioButton</tabstop>
+  <tabstop>mNoMarkerRadioButton</tabstop>
+  <tabstop>mSvgMarkerRadioButton</tabstop>
+  <tabstop>mArrowHeadOutlineColorButton</tabstop>
+  <tabstop>mArrowHeadFillColorButton</tabstop>
+  <tabstop>mOutlineWidthSpinBox</tabstop>
+  <tabstop>mArrowHeadWidthSpinBox</tabstop>
+  <tabstop>mStartMarkerLineEdit</tabstop>
+  <tabstop>mStartMarkerToolButton</tabstop>
+  <tabstop>mEndMarkerLineEdit</tabstop>
+  <tabstop>mEndMarkerToolButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

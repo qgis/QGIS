@@ -169,7 +169,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
     QLineF lowerFrameLine( 0, rect().height(), rect().width(), rect().height() );
     if ( residualLine.intersect( lowerFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
     {
-      upDownDist = dist( QPointF( pixelXMM, pixelYMM ) , intersectionPoint );
+      upDownDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
   }
   else if ( residual.y() < 0 )
@@ -177,7 +177,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
     QLineF upperFrameLine( 0, 0, mExtent.xMaximum(), 0 );
     if ( residualLine.intersect( upperFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
     {
-      upDownDist = dist( QPointF( pixelXMM, pixelYMM ) , intersectionPoint );
+      upDownDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
   }
 
@@ -187,15 +187,15 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
     QLineF rightFrameLine( rect().width(), 0, rect().width(), rect().height() );
     if ( residualLine.intersect( rightFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
     {
-      leftRightDist = dist( QPointF( pixelXMM, pixelYMM ) , intersectionPoint );
+      leftRightDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
   }
   else if ( residual.x() < 0 )
   {
-    QLineF leftFrameLine( 0, 0 , 0, rect().height() );
+    QLineF leftFrameLine( 0, 0, 0, rect().height() );
     if ( residualLine.intersect( leftFrameLine, &intersectionPoint ) != QLineF::NoIntersection )
     {
-      leftRightDist = dist( QPointF( pixelXMM, pixelYMM ) , intersectionPoint );
+      leftRightDist = dist( QPointF( pixelXMM, pixelYMM ), intersectionPoint );
     }
   }
 

@@ -128,7 +128,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       updateFilter();
     }
 
-    void updateFilter( )
+    void updateFilter()
     {
       QgsDebugMsg( QString( "filter = %1 syntax = %2" ).arg( mFilter ).arg( mPatternSyntax ) );
       mREList.clear();
@@ -344,17 +344,17 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
       // only favourites can be removed
       menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
     }
-    menu->addAction( tr( "Properties" ), this, SLOT( showProperties( ) ) );
-    QAction *action = menu->addAction( tr( "Fast scan this dir." ), this, SLOT( toggleFastScan( ) ) );
+    menu->addAction( tr( "Properties" ), this, SLOT( showProperties() ) );
+    QAction *action = menu->addAction( tr( "Fast scan this dir." ), this, SLOT( toggleFastScan() ) );
     action->setCheckable( true );
     action->setChecked( settings.value( "/qgis/scanItemsFastScanUris",
                                         QStringList() ).toStringList().contains( item->path() ) );
   }
   else if ( item->type() == QgsDataItem::Layer )
   {
-    menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer( ) ) );
+    menu->addAction( tr( "Add Layer" ), this, SLOT( addCurrentLayer() ) );
     menu->addAction( tr( "Add Selected Layers" ), this, SLOT( addSelectedLayers() ) );
-    menu->addAction( tr( "Properties" ), this, SLOT( showProperties( ) ) );
+    menu->addAction( tr( "Properties" ), this, SLOT( showProperties() ) );
   }
   else if ( item->type() == QgsDataItem::Favourites )
   {
@@ -487,7 +487,7 @@ void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
   }
 }
 
-void QgsBrowserDockWidget::addCurrentLayer( )
+void QgsBrowserDockWidget::addCurrentLayer()
 {
   addLayerAtIndex( mBrowserView->currentIndex() );
 }
@@ -515,7 +515,7 @@ void QgsBrowserDockWidget::addSelectedLayers()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsBrowserDockWidget::showProperties( )
+void QgsBrowserDockWidget::showProperties()
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
   QgsDataItem* item = mModel->dataItem( index );
@@ -621,7 +621,7 @@ void QgsBrowserDockWidget::showProperties( )
   }
 }
 
-void QgsBrowserDockWidget::toggleFastScan( )
+void QgsBrowserDockWidget::toggleFastScan()
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
   QgsDataItem* item = mModel->dataItem( index );
@@ -658,7 +658,7 @@ void QgsBrowserDockWidget::showFilterWidget( bool visible )
   }
 }
 
-void QgsBrowserDockWidget::setFilter( )
+void QgsBrowserDockWidget::setFilter()
 {
   QString filter = mLeFilter->text();
   if ( mProxyModel )

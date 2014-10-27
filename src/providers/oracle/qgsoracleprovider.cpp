@@ -2620,7 +2620,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
       {
         QgsMessageLog::logMessage( tr( "Drop created table %1 failed.\nSQL:%2\nError: %3" )
                                    .arg( qry.lastQuery() )
-                                   .arg( qry.lastError().text() ) , tr( "Oracle" ) );
+                                   .arg( qry.lastError().text() ), tr( "Oracle" ) );
       }
     }
 

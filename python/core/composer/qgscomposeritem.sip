@@ -5,6 +5,9 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 {
 %TypeHeaderCode
 #include <qgscomposeritem.h>
+#include <qgscomposerarrow.h>
+#include <qgscomposerframe.h>
+#include <qgscomposeritemgroup.h>
 #include <qgscomposerlabel.h>
 #include <qgscomposerlegend.h>
 #include <qgscomposermap.h>
@@ -13,6 +16,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 #include <qgscomposerscalebar.h>
 #include <qgscomposershape.h>
 #include <qgscomposertable.h>
+#include <qgscomposertexttable.h>
 #include <qgscomposerattributetable.h>
 %End
 
@@ -25,16 +29,14 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     sipClass = sipClass_QgsComposerItem;
     *sipCppRet = static_cast<QgsComposerItem*>(sipCpp);
     break;
-#if 0
   case QgsComposerItem::ComposerArrow:
     sipClass = sipClass_QgsComposerArrow;
     *sipCppRet = static_cast<QgsComposerArrow*>(sipCpp);
-    break;
+    break; 
   case QgsComposerItem::ComposerItemGroup:
     sipClass = sipClass_QgsComposerItemGroup;
     *sipCppRet = static_cast<QgsComposerItemGroup*>(sipCpp);
     break;
-#endif
   case QgsComposerItem::ComposerLabel:
     sipClass = sipClass_QgsComposerLabel;
     *sipCppRet = static_cast<QgsComposerLabel*>(sipCpp);
@@ -71,12 +73,14 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     sipClass = sipClass_QgsComposerAttributeTable;
     *sipCppRet = static_cast<QgsComposerAttributeTable*>(sipCpp);
     break;
-/*
   case QgsComposerItem::ComposerTextTable:
     sipClass = sipClass_QgsComposerTextTable;
     *sipCppRet = static_cast<QgsComposerTextTable*>(sipCpp);
     break;
-*/
+  case QgsComposerItem::ComposerFrame:
+    sipClass = sipClass_QgsComposerFrame;
+    *sipCppRet = static_cast<QgsComposerFrame*>(sipCpp);
+    break;
   default:
     sipClass = 0;
   }
@@ -757,8 +761,17 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
     void deleteVAlignSnapItem();
     void deleteAlignItems();
 
-    /**Update an item rect to consider data defined position and size of item*/
-    QRectF evalItemRect( const QRectF &newRect );
+    /**Evaluates an item's bounding rect to consider data defined position and size of item
+     * and reference point
+     * @param newRect target bouding rect for item
+     * @param resizeOnly set to true if the item is only being resized. If true then
+     * the position of the returned rect will be adjusted to account for the item's
+     * position mode
+     * @returns bounding box rectangle for item after data defined size and position have been
+     * set and position mode has been accounted for
+     * @note added in QGIS 2.5
+    */
+    QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false );
     
     /**Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn

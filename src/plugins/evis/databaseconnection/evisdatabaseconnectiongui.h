@@ -53,7 +53,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     eVisDatabaseConnectionGui( QList<QTemporaryFile*>*, QWidget* parent = 0, Qt::WindowFlags fl = 0 );
 
     /** \brief Destructor */
-    ~eVisDatabaseConnectionGui( );
+    ~eVisDatabaseConnectionGui();
 
   private:
     /** \brief Pointer to a database connection */
@@ -72,15 +72,15 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     /** \brief Slot called after the user selects the x, y fields in the field selection gui component */
     void drawNewVectorLayer( QString, QString, QString );
 
-    void on_buttonBox_accepted( );
-    void on_buttonBox_helpRequested( ) { QgsContextHelp::run( metaObject()->className() ); };
+    void on_buttonBox_accepted();
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); };
 
     void on_cboxDatabaseType_currentIndexChanged( int );
     void on_cboxPredefinedQueryList_currentIndexChanged( int );
-    void on_pbtnConnect_clicked( );
-    void on_pbtnLoadPredefinedQueries_clicked( );
-    void on_pbtnOpenFile_clicked( );
-    void on_pbtnRunQuery_clicked( );
+    void on_pbtnConnect_clicked();
+    void on_pbtnLoadPredefinedQueries_clicked();
+    void on_pbtnOpenFile_clicked();
+    void on_pbtnRunQuery_clicked();
 
   signals:
     /** \brief signal emitted by the drawNewVectorLayer slot */

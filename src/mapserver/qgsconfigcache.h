@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QObject>
 
+class QgsServerProjectParser;
 class QgsWCSProjectParser;
 class QgsWFSProjectParser;
 class QgsWMSConfigParser;
@@ -36,6 +37,7 @@ class QgsConfigCache: public QObject
     static QgsConfigCache* instance();
     ~QgsConfigCache();
 
+    QgsServerProjectParser* serverConfiguration( const QString& filePath );
     QgsWCSProjectParser* wcsConfiguration( const QString& filePath );
     QgsWFSProjectParser* wfsConfiguration( const QString& filePath );
     QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() ) );

@@ -176,6 +176,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
             alg = Processing.getAlgorithm(item.alg.commandLineName())
+            alg = alg.getCopy()
             dlg = BatchProcessingDialog(alg)
             dlg.exec_()
 

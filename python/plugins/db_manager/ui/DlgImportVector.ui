@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>514</width>
-    <height>590</height>
+    <width>482</width>
+    <height>436</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -141,62 +141,6 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Action</string>
-     </property>
-     <layout class="QVBoxLayout">
-      <item>
-       <widget class="QRadioButton" name="radCreate">
-        <property name="text">
-         <string>Create new table</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout">
-        <item>
-         <spacer>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="chkDropTable">
-          <property name="text">
-           <string>Drop existing one</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radAppend">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Append data to table</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Options</string>
@@ -295,17 +239,24 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="2">
+      <item row="6" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSinglePart">
         <property name="text">
          <string>Create single-part geometries instead of multi-part</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0" colspan="2">
+      <item row="7" column="0" colspan="2">
        <widget class="QCheckBox" name="chkSpatialIndex">
         <property name="text">
          <string>Create spatial index</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkDropTable">
+        <property name="text">
+         <string>Drop existing table</string>
         </property>
        </widget>
       </item>
@@ -323,16 +274,12 @@
     </widget>
    </item>
   </layout>
-  <zorder>groupBox</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>buttonBox</zorder>
   <zorder>groupBox_3</zorder>
   <zorder>wdgInput</zorder>
  </widget>
  <tabstops>
-  <tabstop>radCreate</tabstop>
-  <tabstop>chkDropTable</tabstop>
-  <tabstop>radAppend</tabstop>
   <tabstop>chkSourceSrid</tabstop>
   <tabstop>editSourceSrid</tabstop>
   <tabstop>chkEncoding</tabstop>
@@ -436,22 +383,6 @@
     <hint type="destinationlabel">
      <x>201</x>
      <y>414</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radCreate</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>chkDropTable</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>131</x>
-     <y>216</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>140</x>
-     <y>245</y>
     </hint>
    </hints>
   </connection>

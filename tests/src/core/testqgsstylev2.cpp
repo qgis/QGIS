@@ -219,14 +219,14 @@ void TestStyleV2::testParseColor()
 {
   // values for color tests
   QMap< QString, QPair< QColor, bool> > colorTests;
-  colorTests.insert( "bad color", qMakePair( QColor( ), false ) );
+  colorTests.insert( "bad color", qMakePair( QColor(), false ) );
   colorTests.insert( "red", qMakePair( QColor( 255, 0, 0 ), false ) );
   colorTests.insert( "#ff00ff", qMakePair( QColor( 255, 0, 255 ), false ) );
   colorTests.insert( "#99AA00", qMakePair( QColor( 153, 170, 0 ), false ) );
   colorTests.insert( "#GG0000", qMakePair( QColor(), false ) );
   colorTests.insert( "000000", qMakePair( QColor( 0, 0, 0 ), false ) );
   colorTests.insert( "00ff00", qMakePair( QColor( 0, 255, 0 ), false ) );
-  colorTests.insert( "00gg00", qMakePair( QColor( ), false ) );
+  colorTests.insert( "00gg00", qMakePair( QColor(), false ) );
   colorTests.insert( "00ff000", qMakePair( QColor(), false ) );
   colorTests.insert( "fff", qMakePair( QColor( 255, 255, 255 ), false ) );
   colorTests.insert( "fff0", qMakePair( QColor(), false ) );
@@ -237,7 +237,7 @@ void TestStyleV2::testParseColor()
   colorTests.insert( "#GG0000aa", qMakePair( QColor(), false ) );
   colorTests.insert( "00000000", qMakePair( QColor( 0, 0, 0, 0 ), true ) );
   colorTests.insert( "00ff0011", qMakePair( QColor( 0, 255, 0, 17 ), true ) );
-  colorTests.insert( "00gg0011", qMakePair( QColor( ), false ) );
+  colorTests.insert( "00gg0011", qMakePair( QColor(), false ) );
   colorTests.insert( "00ff00000", qMakePair( QColor(), false ) );
 
   colorTests.insert( "0,0,0", qMakePair( QColor( 0, 0, 0 ), false ) );
@@ -300,7 +300,7 @@ void TestStyleV2::testParseColorList()
   //ensure that majority of single parseColor tests work for lists
   //note that some are not possible, as the colors may be ambiguous when treated as a list
   QMap< QString, QColor > colorTests;
-  colorTests.insert( "bad color", QColor( ) );
+  colorTests.insert( "bad color", QColor() );
   colorTests.insert( "red", QColor( 255, 0, 0 ) );
   colorTests.insert( "#ff00ff", QColor( 255, 0, 255 ) );
   colorTests.insert( "#99AA00", QColor( 153, 170, 0 ) );
@@ -318,7 +318,7 @@ void TestStyleV2::testParseColorList()
   colorTests.insert( "#GG0000aa", QColor() );
   colorTests.insert( "00000000", QColor( 0, 0, 0, 0 ) );
   colorTests.insert( "00ff0011", QColor( 0, 255, 0, 17 ) );
-  colorTests.insert( "00gg0011", QColor( ) );
+  colorTests.insert( "00gg0011", QColor() );
   colorTests.insert( "00ff00000",  QColor() );
 
   colorTests.insert( "0,0,0", QColor( 0, 0, 0 ) );

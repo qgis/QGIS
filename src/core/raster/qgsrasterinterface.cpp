@@ -476,7 +476,7 @@ QgsRasterHistogram QgsRasterInterface::histogram( int theBandNo,
         }
         double myValue = blk->value( i );
 
-        int myBinIndex = static_cast <int>( qFloor(( myValue - myMinimum ) /  myBinSize ) ) ;
+        int myBinIndex = static_cast <int>( qFloor(( myValue - myMinimum ) /  myBinSize ) );
 
         if (( myBinIndex < 0 || myBinIndex > ( myBinCount - 1 ) ) && !theIncludeOutOfRange )
         {
@@ -523,7 +523,7 @@ void QgsRasterInterface::cumulativeCut( int theBandNo,
 
   //get band stats to specify real histogram min/max (fix #9793 Byte bands)
   QgsRasterBandStats stats = bandStatistics( theBandNo, QgsRasterBandStats::Min, theExtent, theSampleSize );
-  if( stats.maximumValue < stats.minimumValue )
+  if ( stats.maximumValue < stats.minimumValue )
     return;
 
   // for byte bands make sure bin count == actual range

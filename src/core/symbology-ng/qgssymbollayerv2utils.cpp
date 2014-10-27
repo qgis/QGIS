@@ -697,7 +697,8 @@ static QPolygonF makeOffsetGeometry( const QgsPolyline& polyline )
 static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon& polygon )
 {
   QList<QPolygonF> resultGeom;
-  for ( int ring = 0; ring < polygon.size(); ++ring ) resultGeom.append( makeOffsetGeometry( polygon[ ring ] ) );
+  for ( int ring = 0; ring < polygon.size(); ++ring )
+    resultGeom.append( makeOffsetGeometry( polygon[ ring ] ) );
   return resultGeom;
 }
 #endif
@@ -725,7 +726,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPoint( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry* tempGeometry = ( geometryType == QGis::Polygon ) ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
+  QgsGeometry* tempGeometry = geometryType == QGis::Polygon ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
   if ( tempGeometry )
   {
     int quadSegments = 0; // we want mitre joins, not round joins
@@ -825,6 +826,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QGis::GeometryType
 
 #endif
 }
+
 QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 {
   QGis::GeometryType geometryType = QGis::Point;
@@ -3116,7 +3118,7 @@ QgsNamedColorList QgsSymbolLayerV2Utils::importColorsFromGpl( QFile &file, bool 
   return importedColors;
 }
 
-QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr , bool strictEval )
+QColor QgsSymbolLayerV2Utils::parseColor( QString colorStr, bool strictEval )
 {
   bool hasAlpha;
   return parseColorWithAlpha( colorStr, hasAlpha, strictEval );

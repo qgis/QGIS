@@ -78,7 +78,7 @@ extern "C"
 
 QgsGrassGisLib *QgsGrassGisLib::_instance = 0;
 
-QgsGrassGisLib GRASS_LIB_EXPORT *QgsGrassGisLib::instance( )
+QgsGrassGisLib GRASS_LIB_EXPORT *QgsGrassGisLib::instance()
 {
   if ( _instance == 0 )
   {

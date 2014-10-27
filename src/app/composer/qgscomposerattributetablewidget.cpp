@@ -179,10 +179,15 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
     composition->beginMultiFrameCommand( mComposerTable, tr( "Table attribute settings" ) );
   }
 
+  //temporarily block updates for the window, to stop table trying to repaint under windows (#11462)
+  window()->setUpdatesEnabled( false );
+
   QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->sourceLayer(), 0 );
   if ( d.exec() == QDialog::Accepted )
   {
     mComposerTable->refreshAttributes();
+    //safe to unblock updates
+    window()->setUpdatesEnabled( true );
     mComposerTable->update();
     if ( composition )
     {
@@ -197,6 +202,7 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
   {
     //undo changes
     mComposerTable->setColumns( currentColumns );
+    window()->setUpdatesEnabled( true );
     if ( composition )
     {
       composition->cancelMultiFrameCommand();
@@ -565,14 +571,17 @@ void QgsComposerAttributeTableWidget::updateRelationsCombo()
   QgsVectorLayer* atlasLayer = atlasCoverageLayer();
   if ( atlasLayer )
   {
-    QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( mComposerTable->composition()->atlasComposition().coverageLayer() );
+    QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( atlasLayer );
     Q_FOREACH ( const QgsRelation& relation, relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );
     }
+    if ( mComposerTable )
+    {
+      mRelationsComboBox->setCurrentIndex( mRelationsComboBox->findData( mComposerTable->relationId() ) );
+    }
   }
 
-  mRelationsComboBox->setCurrentIndex( mRelationsComboBox->findData( mComposerTable->relationId() ) );
   mRelationsComboBox->blockSignals( false );
 }
 

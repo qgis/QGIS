@@ -237,7 +237,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool readXML( QDomNode & theNode );
     /*! Stores state to the given Dom node in the given document.
      * Below is an example of the generated tag.
-     \verbatim
+     \code{.xml}
       <spatialrefsys>
           <proj4>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs </proj4>
            <srsid>2585</srsid>
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
            <projectionacronym>longlat</projectionacronym>
            <ellipsoidacronym>WGS84</ellipsoidacronym>
        </spatialrefsys>
-     \endverbatim
+     \endcode
      * @param theNode The node in which state will be restored
      * @param theDoc The document in which state will be stored
      * @return bool True on success, False on failure
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //!A textual description of the srs.
     QString mDescription;
     //!The official proj4 acronym for the projection family
-    QString mProjectionAcronym ;
+    QString mProjectionAcronym;
     //!The official proj4 acronym for the ellipoid
     QString mEllipsoidAcronym;
     //!Whether this is a geographic or projected coordinate system
@@ -489,16 +489,16 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenc
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
-  mySummary += "\n\t\tProjection  : " ;
+  mySummary += "\n\t\tProjection  : ";
   if ( !r.projectionAcronym().isNull() )
   {
     mySummary += r.projectionAcronym();
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
 
   mySummary += "\n\t\tEllipsoid   : ";
@@ -508,17 +508,17 @@ inline std::ostream& operator << ( std::ostream& os, const QgsCoordinateReferenc
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
 
-  mySummary += "\n\t\tProj4String  : " ;
+  mySummary += "\n\t\tProj4String  : ";
   if ( !r.toProj4().isNull() )
   {
     mySummary += r.toProj4();
   }
   else
   {
-    mySummary += "Undefined" ;
+    mySummary += "Undefined";
   }
   // Using streams we need to use local 8 Bit
   return os << mySummary.toLocal8Bit().data() << std::endl;

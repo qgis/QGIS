@@ -102,7 +102,7 @@ class QgsSpit : public QDialog, private Ui::QgsSpitBase
       ColFILENAME = 0,
       ColFEATURECLASS = 1, // is editable
       ColFEATURECOUNT = 2,
-      ColDBRELATIONNAME = 3,  // is editable
+      ColDBRELATIONNAME = 3, // is editable
       ColDBSCHEMA = 4  // is editable
     };
 

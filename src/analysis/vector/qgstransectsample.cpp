@@ -295,7 +295,7 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
 
     QgsFeature bufferClipFeature;
     bufferClipFeature.setGeometry( bufferLineClipped );
-    bufferClipFeature.setAttribute( "id" , strataId );
+    bufferClipFeature.setAttribute( "id", strataId );
     bufferClipLineWriter.addFeature( bufferClipFeature );
     //delete bufferLineClipped;
 

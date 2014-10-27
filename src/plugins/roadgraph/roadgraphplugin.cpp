@@ -98,7 +98,7 @@ RoadGraphPlugin::~RoadGraphPlugin()
 void RoadGraphPlugin::initGui()
 {
   // create shorttest path dock
-  mQShortestPathDock = new RgShortestPathWidget( mQGisIface->mainWindow() , this );
+  mQShortestPathDock = new RgShortestPathWidget( mQGisIface->mainWindow(), this );
   mQGisIface->addDockWidget( Qt::LeftDockWidgetArea, mQShortestPathDock );
 
   // Create the action for tool

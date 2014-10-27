@@ -109,7 +109,7 @@ QTreeWidgetItem * QgsCustomizationDialog::item( QString thePath, QTreeWidgetItem
       }
     }
   }
-  QgsDebugMsg( "not found" ) ;
+  QgsDebugMsg( "not found" );
   return 0;
 }
 
@@ -224,7 +224,7 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
 
   QString fileName = QFileDialog::getSaveFileName( this,
                      tr( "Choose a customization INI file" ),
-                     lastDir,  tr( "Customization files (*.ini)" ) );
+                     lastDir, tr( "Customization files (*.ini)" ) );
 
   if ( fileName.isEmpty() )
     return;
@@ -243,7 +243,7 @@ void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
 
   QString fileName = QFileDialog::getOpenFileName( this,
                      tr( "Choose a customization INI file" ),
-                     lastDir,  tr( "Customization files (*.ini)" ) );
+                     lastDir, tr( "Customization files (*.ini)" ) );
 
   if ( fileName.isEmpty() )
     return;
@@ -400,6 +400,8 @@ bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
     {
       QToolButton* toolbutton = qobject_cast<QToolButton*>( widget );
       QAction* action = toolbutton->defaultAction();
+      if ( !action )
+        return false;
       QString toolbarName = widget->parent()->objectName();
       QString actionName = action->objectName();
       path = "/Toolbars/" + toolbarName + "/" + actionName;
@@ -473,9 +475,9 @@ void QgsCustomizationDialog::setCatch( bool on )
 {
   actionCatch->setChecked( on );
 }
-bool QgsCustomizationDialog::catchOn( )
+bool QgsCustomizationDialog::catchOn()
 {
-  return actionCatch->isChecked( );
+  return actionCatch->isChecked();
 }
 
 void QgsCustomization::addTreeItemActions( QTreeWidgetItem* parentItem, const QList<QAction*>& actions )
@@ -516,7 +518,7 @@ void QgsCustomization::addTreeItemMenu( QTreeWidgetItem* parentItem, QMenu* menu
   addTreeItemActions( menuItem, menu->actions() );
 }
 
-void QgsCustomization::createTreeItemMenus( )
+void QgsCustomization::createTreeItemMenus()
 {
   QStringList data;
   data << "Menus";
@@ -536,7 +538,7 @@ void QgsCustomization::createTreeItemMenus( )
   mMainWindowItems << topItem;
 }
 
-void QgsCustomization::createTreeItemToolbars( )
+void QgsCustomization::createTreeItemToolbars()
 {
   QStringList data;
   data << "Toolbars";
@@ -562,7 +564,7 @@ void QgsCustomization::createTreeItemToolbars( )
   mMainWindowItems << topItem;
 }
 
-void QgsCustomization::createTreeItemDocks( )
+void QgsCustomization::createTreeItemDocks()
 {
   QStringList data;
   data << "Panels";
@@ -586,7 +588,7 @@ void QgsCustomization::createTreeItemDocks( )
   mMainWindowItems << topItem;
 }
 
-void QgsCustomization::createTreeItemStatus( )
+void QgsCustomization::createTreeItemStatus()
 {
   QStringList data;
   data << "StatusBar";
@@ -909,7 +911,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
     if ( pDialog && pDialog->isVisible() )
     {
       QKeyEvent *e = static_cast<QKeyEvent*>( event );
-      //QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) ) ;
+      //QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) );
       if ( e->key() == Qt::Key_M && e->modifiers() == Qt::ControlModifier )
       {
         pDialog->setCatch( !pDialog->catchOn() );

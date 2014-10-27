@@ -231,7 +231,7 @@ void QgsGdalProvider::closeDataset()
 
 QString QgsGdalProvider::metadata()
 {
-  QString myMetadata ;
+  QString myMetadata;
   myMetadata += QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) );
   myMetadata += "<br>";
   myMetadata += QString( GDALGetMetadataItem( GDALGetDatasetDriver( mGdalDataset ), GDAL_DMD_LONGNAME, NULL ) );
@@ -563,11 +563,11 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
 
   if ( xRes > srcXRes )
   {
-    tmpWidth = static_cast<int>( qRound( srcWidth * srcXRes / xRes ) ) ;
+    tmpWidth = static_cast<int>( qRound( srcWidth * srcXRes / xRes ) );
   }
   if ( yRes > fabs( srcYRes ) )
   {
-    tmpHeight = static_cast<int>( qRound( -1.*srcHeight * srcYRes / yRes ) ) ;
+    tmpHeight = static_cast<int>( qRound( -1.*srcHeight * srcYRes / yRes ) );
   }
 
   double tmpXMin = mExtent.xMinimum() + srcLeft * srcXRes;
@@ -618,7 +618,7 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
     for ( int col = 0; col < width; ++col )
     {
       // floor() is quite slow! Use just cast to int.
-      tmpCol = static_cast<int>( x ) ;
+      tmpCol = static_cast<int>( x );
       if ( tmpCol > lastCol )
       {
         src += ( tmpCol - lastCol ) * dataSize;
@@ -653,12 +653,12 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   myMemDsn.sprintf( "DATAPOINTER = %p", theBlock );
   QgsDebugMsg( myMemDsn );
 
-  //myMemDsn.sprintf( "MEM:::DATAPOINTER=%lu,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", ( long )theBlock, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
+  //myMemDsn.sprintf( "MEM:::DATAPOINTER=%lu,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", ( long )theBlock, thePixelWidth, thePixelHeight, GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
   char szPointer[64];
   memset( szPointer, 0, sizeof( szPointer ) );
   CPLPrintPointer( szPointer, theBlock, sizeof( szPointer ) );
 
-  myMemDsn.sprintf( "MEM:::DATAPOINTER=%s,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", szPointer, thePixelWidth, thePixelHeight,  GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
+  myMemDsn.sprintf( "MEM:::DATAPOINTER=%s,PIXELS=%d,LINES=%d,BANDS=1,DATATYPE=%s,PIXELOFFSET=0,LINEOFFSET=0,BANDOFFSET=0", szPointer, thePixelWidth, thePixelHeight, GDALGetDataTypeName(( GDALDataType )mGdalDataType[theBandNo-1] ) );
 
   QgsDebugMsg( "Open GDAL MEM : " + myMemDsn );
 
@@ -941,7 +941,7 @@ QString QgsGdalProvider::generateBandName( int theBandNumber ) const
         }
 
         if ( bandNameValues.count() > 0 )
-          return tr( "Band" ) + QString( " %1 / %2" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( " / " ) );
+          return tr( "Band" ) + QString( " %1 / %2" ) .arg( theBandNumber, 1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) ).arg( bandNameValues.join( " / " ) );
       }
     }
   }
@@ -2371,7 +2371,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo, int theStats,
     QgsDebugMsg( "Calculating statistics by GDAL" );
     myerval = GDALComputeRasterStatistics( myGdalBand, bApproxOK,
                                            &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-                                           progressCallback, &myProg ) ;
+                                           progressCallback, &myProg );
   }
   else
   {
@@ -2582,7 +2582,7 @@ void QgsGdalProvider::initBaseDataset()
     double myNoDataValue = GDALGetRasterNoDataValue( myGdalBand, &isValid );
     if ( isValid )
     {
-      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) ) ;
+      QgsDebugMsg( QString( "GDALGetRasterNoDataValue = %1" ).arg( myNoDataValue ) );
       // The no data value double may be non representable by data type, it can result
       // in problems if that value is used to represent additional user defined no data
       // see #3840

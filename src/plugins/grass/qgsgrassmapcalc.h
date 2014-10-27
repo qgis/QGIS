@@ -69,13 +69,13 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     bool hasOutput( int type )
     { Q_UNUSED( type ); return true; }
 
-    /** \brief recieves contentsMousePressEvent from view */
+    /** \brief receives contentsMousePressEvent from view */
     void mousePressEvent( QMouseEvent* );
 
-    /** \brief recieves contentsMouseReleaseEvent from view */
+    /** \brief receives contentsMouseReleaseEvent from view */
     void mouseReleaseEvent( QMouseEvent* );
 
-    /** \brief recieves contentsMouseMoveEvent from view */
+    /** \brief receives contentsMouseMoveEvent from view */
     void mouseMoveEvent( QMouseEvent* );
 
     void keyPressEvent( QKeyEvent * e );

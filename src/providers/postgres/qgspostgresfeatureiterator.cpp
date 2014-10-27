@@ -330,7 +330,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   }
 
   switch ( mSource->mPrimaryKeyType )
-  {
+{
     case pktOid:
       query += delim + "oid";
       delim = ",";

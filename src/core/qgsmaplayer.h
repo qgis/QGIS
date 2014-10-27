@@ -205,6 +205,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** stores state in Dom node
        @param layerElement is a Dom element corresponding to ``maplayer'' tag
        @param document is a the dom document being written
+       @param relativeBasePath base path for relative paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element to be
@@ -273,7 +274,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * @see also loadNamedStyle () and saveNamedStyle ();
      * @note This method was added in QGIS 1.8
      */
-    virtual QString styleURI( );
+    virtual QString styleURI();
 
     /** Retrieve the default style for this layer if one
      * exists (either as a .qml file on disk or as a

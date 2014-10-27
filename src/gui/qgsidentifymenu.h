@@ -129,6 +129,9 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos );
 
+  protected:
+    virtual void closeEvent( QCloseEvent *e );
+
   private slots:
     void handleMenuHover();
     void deleteRubberBands();
@@ -149,7 +152,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     //! adds a vector layer and its results in the menu being built
     //! if singleLayer is true, results will be displayed on the top level item (not in QMenu with the layer name)
-    void addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult> results , bool singleLayer = false );
+    void addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapToolIdentify::IdentifyResult> results, bool singleLayer = false );
 
     //! get the lists of results corresponding to an action in the menu
     QList<QgsMapToolIdentify::IdentifyResult> results( QAction* action, bool& externalAction );

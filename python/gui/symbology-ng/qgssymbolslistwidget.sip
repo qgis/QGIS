@@ -14,7 +14,7 @@ class QgsSymbolsListWidget : QWidget
     void setLineWidth( double width );
     void addSymbolToStyle();
     void symbolAddedToStyle( QString name, QgsSymbolV2* symbol );
-    void on_mSymbolUnitWidget_changed( );
+    void on_mSymbolUnitWidget_changed();
     void on_mTransparencySlider_valueChanged( int value );
 
     void on_groupsCombo_currentIndexChanged( int index );

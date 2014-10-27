@@ -193,7 +193,7 @@ void rulesDialog::showControls( const QString& testName )
       {
         if ( topologyRule.layer2AcceptsType( v1->geometryType() ) )
         {
-          mLayer2Box->addItem( v1->name() , v1->id() );
+          mLayer2Box->addItem( v1->name(), v1->id() );
         }
       }
     }

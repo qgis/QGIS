@@ -27,7 +27,7 @@
 #include <QDebug>
 #include <QBuffer>
 
-QgsRenderChecker::QgsRenderChecker( ) :
+QgsRenderChecker::QgsRenderChecker() :
     mReport( "" ),
     mMatchTarget( 0 ),
     mElapsedTime( 0 ),
@@ -289,7 +289,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                           mExpectedImageFile + "</DartMeasurementFile>\n"
                           "<DartMeasurementFile name=\"Difference Image " + theTestName + "\" type=\"image/png\">" +
                           myDiffImageFile + "</DartMeasurementFile>\n";
-  qDebug( ) << myDashMessage;
+  qDebug() << myDashMessage;
 
   //
   // Put the same info to debug too
@@ -372,7 +372,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                   QString::number( mMismatchCount ) + "/" +
                   QString::number( mMatchTarget ) +
                   "</DartMeasurement>";
-  qDebug( ) << myDashMessage;
+  qDebug() << myDashMessage;
 
   bool myAnomalyMatchFlag = isKnownAnomaly( myDiffImageFile );
 

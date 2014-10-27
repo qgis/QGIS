@@ -292,7 +292,7 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
         pt = geom->asPoint();
       }
       addPoint( pt, false, idx );
-      removeLastPoint( idx , false );
+      removeLastPoint( idx, false );
     }
     break;
 
@@ -306,12 +306,12 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
         if ( layer )
         {
           addPoint( ms.layerToMapCoordinates( layer, pt ), false, idx );
-          removeLastPoint( idx , false );
+          removeLastPoint( idx, false );
         }
         else
         {
           addPoint( pt, false, idx );
-          removeLastPoint( idx , false );
+          removeLastPoint( idx, false );
         }
       }
     }

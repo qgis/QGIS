@@ -29,4 +29,9 @@ class QgsLayerTreeRegistryBridge : QObject
     //! By default it is root group with zero index.
     void setLayerInsertionPoint( QgsLayerTreeGroup* parentGroup, int index );
 
+  signals:
+    //! Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
+    //! @note added in 2.6
+    void addedLayersToLayerTree( QList<QgsMapLayer*> layers );
+
 };

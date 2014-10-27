@@ -20,6 +20,12 @@ class QgsAction
     //! The name of the action
     QString name() const;
 
+    //! The path to the icon
+    const QString iconPath() const;
+
+    //! The icon
+    const QIcon icon() const;
+
     //! The action
     QString action() const;
 
@@ -56,6 +62,14 @@ class QgsAttributeAction
     // any stdout from the process will be captured and displayed in a
     // dialog box.
     void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
+
+    /** Add an action with the given name and action details.
+     * Will happily have duplicate names and actions. If
+     * capture is true, when running the action using doAction(),
+     * any stdout from the process will be captured and displayed in a
+     * dialog box.
+     */
+    void addAction( QgsAction::ActionType type, QString name, QString action, const QString& icon, bool capture = false );
 
     //! Remove an action at given index
     void removeAction( int index );

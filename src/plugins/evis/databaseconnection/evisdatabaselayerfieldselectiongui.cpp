@@ -46,10 +46,10 @@ void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList* fieldList )
 
   int xCoordinateIndex = -1;
   int yCoordinateIndex = -1;
-  cboxXCoordinate->clear( );
-  cboxYCoordinate->clear( );
+  cboxXCoordinate->clear();
+  cboxYCoordinate->clear();
 
-  for ( int x = 0; x < fieldList->size( ); x++ )
+  for ( int x = 0; x < fieldList->size(); x++ )
   {
     cboxXCoordinate->addItem( fieldList->at( x ) );
     cboxYCoordinate->addItem( fieldList->at( x ) );
@@ -79,13 +79,13 @@ void eVisDatabaseLayerFieldSelectionGui::setFieldList( QStringList* fieldList )
 /**
 * Slot called when the ok/accept button is pressed
 */
-void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted( )
+void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted()
 {
   //emit the signal to draw the layer
-  emit eVisDatabaseLayerFieldsSelected( leLayerName->text( ), cboxXCoordinate->currentText( ), cboxYCoordinate->currentText( ) );
+  emit eVisDatabaseLayerFieldsSelected( leLayerName->text(), cboxXCoordinate->currentText(), cboxYCoordinate->currentText() );
 
   //close the gui component
-  close( );
+  close();
 
   //reset the layer name line edit
   leLayerName->setText( "" );
@@ -94,8 +94,8 @@ void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_accepted( )
 /**
 * Slot called then the cancel button is pressed
 */
-void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_rejected( )
+void eVisDatabaseLayerFieldSelectionGui::on_buttonBox_rejected()
 {
-  close( );
+  close();
   leLayerName->setText( "" );
 }

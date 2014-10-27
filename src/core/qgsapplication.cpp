@@ -597,7 +597,7 @@ const QString QgsApplication::libexecPath()
 
 QgsApplication::endian_t QgsApplication::endian()
 {
-  return ( htonl( 1 ) == 1 ) ? XDR : NDR ;
+  return ( htonl( 1 ) == 1 ) ? XDR : NDR;
 }
 
 void QgsApplication::initQgis()

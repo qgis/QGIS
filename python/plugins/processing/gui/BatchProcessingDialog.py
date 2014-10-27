@@ -60,6 +60,7 @@ class BatchProcessingDialog(AlgorithmExecutionDialog):
         self.algs = None
         self.showAdvanced = False
         self.table = QtGui.QTableWidget(None)
+        self.table.setFrameShape(QtGui.QFrame.NoFrame);
         AlgorithmExecutionDialog.__init__(self, alg, self.table)
         self.setWindowModality(1)
         self.resize(800, 500)

@@ -120,7 +120,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
 class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
 {
   public:
-    QgsAttributeEditorField( QString name , int idx, QObject *parent )
+    QgsAttributeEditorField( QString name, int idx, QObject *parent )
         : QgsAttributeEditorElement( AeTypeField, name, parent ), mIdx( idx ) {}
 
     ~QgsAttributeEditorField() {}
@@ -292,7 +292,7 @@ protected:
  * the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
  * or an OGC XML filter. If the value is set to a QGIS expression the driver will
  * turn it into OGC XML filter before passing it to the WFS server. Beware the
- * QGIS expression filter only supports” =, != ,<,> ,<= ,>= ,AND ,OR ,NOT, LIKE, IS NULL”
+ * QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
  * attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
  * spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
  * geometry constructor functions.
@@ -555,7 +555,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     struct GroupData
     {
       GroupData() {}
-      GroupData( QString name , QList<QString> fields )
+      GroupData( QString name, QList<QString> fields )
           : mName( name ), mFields( fields ) {}
       QString mName;
       QList<QString> mFields;
@@ -564,7 +564,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     struct TabData
     {
       TabData() {}
-      TabData( QString name , QList<QString> fields , QList<GroupData> groups )
+      TabData( QString name, QList<QString> fields, QList<GroupData> groups )
           : mName( name ), mFields( fields ), mGroups( groups ) {}
       QString mName;
       QList<QString> mFields;
@@ -849,7 +849,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual bool applyNamedStyle( QString namedStyle , QString errorMsg );
+    virtual bool applyNamedStyle( QString namedStyle, QString errorMsg );
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element

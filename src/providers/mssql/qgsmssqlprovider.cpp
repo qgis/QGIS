@@ -86,7 +86,7 @@ QgsMssqlProvider::QgsMssqlProvider( QString uri )
 
   if ( !OpenDatabase( mDatabase ) )
   {
-    setLastError( mDatabase.lastError( ).text( ) );
+    setLastError( mDatabase.lastError().text() );
     QgsDebugMsg( mLastError );
     mValid = false;
     return;
@@ -754,6 +754,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     statement = QString( "INSERT INTO [%1].[%2] (" ).arg( mSchemaName, mTableName );
 
     bool first = true;
+    if ( !mDatabase.isOpen() )
+    {
+       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
@@ -798,10 +802,10 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       {
         if ( mUseWkb )
           values += QString( "geometry::STGeomFromWKB(%1,%2).MakeValid()" ).arg(
-                      QString( "?" ) , QString::number( mSRId ) );
+                      QString( "?" ), QString::number( mSRId ) );
         else
           values += QString( "geometry::STGeomFromText(%1,%2).MakeValid()" ).arg(
-                      QString( "?" ) , QString::number( mSRId ) );
+                      QString( "?" ), QString::number( mSRId ) );
       }
       else
       {
@@ -881,7 +885,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       if ( mUseWkb )
       {
         QByteArray bytea = QByteArray(( char* )geom->asWkb(), geom->wkbSize() );
-        query.addBindValue( bytea,  QSql::In | QSql::Binary );
+        query.addBindValue( bytea, QSql::In | QSql::Binary );
       }
       else
       {
@@ -951,6 +955,10 @@ bool QgsMssqlProvider::addAttributes( const QList<QgsField> &attributes )
     statement += QString( "[%1] %2" ).arg( it->name(), type );
   }
 
+  if ( !mDatabase.isOpen() )
+  {
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   if ( !query.exec( statement ) )
@@ -977,6 +985,11 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
       statement += ",";
 
     statement += QString( "[%1]" ).arg( mAttributeFields[*it].name() );
+  }
+
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
 
   QSqlQuery query = QSqlQuery( mDatabase );
@@ -1015,6 +1028,10 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
     bool first = true;
+    if ( !mDatabase.isOpen() )
+    {
+      mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
@@ -1121,6 +1138,10 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     QString statement;
     statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
+    if ( !mDatabase.isOpen() )
+    {
+       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
 
@@ -1128,19 +1149,19 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     {
       if ( mUseWkb )
         statement += QString( "[%1]=geometry::STGeomFromWKB(%2,%3).MakeValid()" ).arg(
-                       mGeometryColName, QString( "?" ) , QString::number( mSRId ) );
+                       mGeometryColName, QString( "?" ), QString::number( mSRId ) );
       else
         statement += QString( "[%1]=geometry::STGeomFromText(%2,%3).MakeValid()" ).arg(
-                       mGeometryColName, QString( "?" ) , QString::number( mSRId ) );
+                       mGeometryColName, QString( "?" ), QString::number( mSRId ) );
     }
     else
     {
       if ( mUseWkb )
         statement += QString( "[%1]=geography::STGeomFromWKB(%2,%3)" ).arg(
-                       mGeometryColName, QString( "?" ) , QString::number( mSRId ) );
+                       mGeometryColName, QString( "?" ), QString::number( mSRId ) );
       else
         statement += QString( "[%1]=geography::STGeomFromText(%2,%3)" ).arg(
-                       mGeometryColName, QString( "?" ) , QString::number( mSRId ) );
+                       mGeometryColName, QString( "?" ), QString::number( mSRId ) );
     }
 
     // set attribute filter
@@ -1157,7 +1178,7 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     if ( mUseWkb )
     {
       QByteArray bytea = QByteArray(( char* )it->asWkb(), it->wkbSize() );
-      query.addBindValue( bytea,  QSql::In | QSql::Binary );
+      query.addBindValue( bytea, QSql::In | QSql::Binary );
     }
     else
     {
@@ -1190,6 +1211,10 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
       featureIds += "," + FID_TO_STRING( *it );
   }
 
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
@@ -1221,6 +1246,10 @@ bool QgsMssqlProvider::createSpatialIndex()
   if ( mUseEstimatedMetadata )
     UpdateStatistics( false );
 
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
@@ -1250,6 +1279,10 @@ bool QgsMssqlProvider::createSpatialIndex()
 
 bool QgsMssqlProvider::createAttributeIndex( int field )
 {
+  if ( !mDatabase.isOpen() )
+  {
+     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+  }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
   QString statement;
@@ -1514,7 +1547,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   if ( !QgsMssqlProvider::OpenDatabase( db ) )
   {
     if ( errorMessage )
-      *errorMessage = db.lastError( ).text( );
+      *errorMessage = db.lastError().text();
     return QgsVectorLayerImport::ErrConnectionFailed;
   }
 
@@ -1595,7 +1628,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   if ( !q.exec( sql ) )
   {
     if ( errorMessage )
-      *errorMessage = q.lastError( ).text( );
+      *errorMessage = q.lastError().text();
     return QgsVectorLayerImport::ErrCreateLayer;
   }
 
@@ -1621,7 +1654,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     if ( !q.exec( sql ) )
     {
       if ( errorMessage )
-        *errorMessage = q.lastError( ).text( );
+        *errorMessage = q.lastError().text();
       return QgsVectorLayerImport::ErrCreateLayer;
     }
   }
@@ -1639,7 +1672,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     if ( !q.exec( sql ) )
     {
       if ( errorMessage )
-        *errorMessage = q.lastError( ).text( );
+        *errorMessage = q.lastError().text();
       return QgsVectorLayerImport::ErrCreateLayer;
     }
   }
@@ -1647,7 +1680,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
                  "CREATE TABLE [%1].[%2]([%3] [int] IDENTITY(1,1) NOT NULL, [%4] [geometry] NULL CONSTRAINT [PK_%2] PRIMARY KEY CLUSTERED ( [%3] ASC ))\n"
                  "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'\n"
-                 "INSERT INTO [geometry_columns] ([f_table_catalog], [f_table_schema] ,[f_table_name], "
+                 "INSERT INTO [geometry_columns] ([f_table_catalog], [f_table_schema],[f_table_name], "
                  "[f_geometry_column],[coord_dimension],[srid],[geometry_type]) VALUES ('%5', '%1', '%2', '%4', %6, %7, '%8')" )
         .arg( schemaName )
         .arg( tableName )
@@ -1661,7 +1694,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
   if ( !q.exec( sql ) )
   {
     if ( errorMessage )
-      *errorMessage = q.lastError( ).text( );
+      *errorMessage = q.lastError().text();
     return QgsVectorLayerImport::ErrCreateLayer;
   }
 

@@ -35,7 +35,7 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
 
   protected slots:
     /**Needed to make QtLocation detected*/
-    void broadcastConnectionAvailable( );
+    void broadcastConnectionAvailable();
 
     /**Parse available data source content*/
     void parseData();

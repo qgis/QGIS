@@ -278,7 +278,7 @@ void QgsComposerMap::cache( void )
     h = 5000;
   }
 
-  mCacheImage = QImage( w, h,  QImage::Format_ARGB32 );
+  mCacheImage = QImage( w, h, QImage::Format_ARGB32 );
 
   // set DPI of the image
   mCacheImage.setDotsPerMeterX( 1000 * w / widthMM );
@@ -429,7 +429,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     mDrawing = false;
   }
 
-  painter->setClipRect( thisPaintRect , Qt::NoClip );
+  painter->setClipRect( thisPaintRect, Qt::NoClip );
   if ( shouldDrawPart( OverviewMapExtent ) &&
        ( mComposition->plotStyle() != QgsComposition::Preview || mPreviewMode != Rectangle ) )
   {
@@ -707,7 +707,7 @@ void QgsComposerMap::setSceneRect( const QRectF& rectangle )
   QgsComposerItem::setSceneRect( rectangle );
 
   //QGraphicsRectItem::update();
-  double newHeight = mExtent.width() * h / w ;
+  double newHeight = mExtent.width() * h / w;
   mExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMinimum(), mExtent.xMaximum(), mExtent.yMinimum() + newHeight );
 
   //recalculate data defined scale and extents
@@ -1250,7 +1250,7 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerMapElem.appendChild( extentElem );
 
   //map rotation
-  composerMapElem.setAttribute( "mapRotation",  QString::number( mMapRotation ) );
+  composerMapElem.setAttribute( "mapRotation", QString::number( mMapRotation ) );
 
   //layer set
   QDomElement layerSetElem = doc.createElement( "LayerSet" );
@@ -1403,7 +1403,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mapGrid->setBlendMode( QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) itemElem.attribute( "gridBlendMode", "0" ).toUInt() ) );
     QDomElement gridSymbolElem = gridElem.firstChildElement( "symbol" );
     QgsLineSymbolV2* lineSymbol = 0;
-    if ( gridSymbolElem.isNull( ) )
+    if ( gridSymbolElem.isNull() )
     {
       //old project file, read penWidth /penColorRed, penColorGreen, penColorBlue
       lineSymbol = QgsLineSymbolV2::createSimple( QgsStringMap() );

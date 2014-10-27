@@ -274,7 +274,7 @@ void GlobePlugin::initGui()
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionSettingsPointer );
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionUnload );
 
-  connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
+  connect( mQGisIface->mapCanvas(), SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
   connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
            this, SLOT( imageLayersChanged() ) );
@@ -648,7 +648,7 @@ void GlobePlugin::setupControls()
   rotateCW->setHeight( 22 );
   rotateCW->setWidth( 20 );
   rotateCW->setPosition( imgLeft + 36, imgTop + 18 );
-  rotateCW->addEventHandler( new RotateControlHandler( manip, -MOVE_OFFSET , 0 ) );
+  rotateCW->addEventHandler( new RotateControlHandler( manip, -MOVE_OFFSET, 0 ) );
   mControlCanvas->addControl( rotateCW );
 
   //Rotate Reset

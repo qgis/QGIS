@@ -83,7 +83,7 @@ bool QgsRasterRenderer::setInput( QgsRasterInterface* input )
   return true;
 }
 
-bool QgsRasterRenderer::usesTransparency( ) const
+bool QgsRasterRenderer::usesTransparency() const
 {
   if ( !mInput )
   {

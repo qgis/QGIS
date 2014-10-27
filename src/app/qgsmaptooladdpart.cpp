@@ -62,7 +62,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !selectionErrorMsg.isEmpty() )
   {
-    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ) , QgsMessageBar::WARNING );
+    emit messageEmitted( tr( "Could not add part. %1" ).arg( selectionErrorMsg ), QgsMessageBar::WARNING );
     stopCapturing();
     return;
   }
@@ -101,7 +101,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
         else if ( error == 2 )
         {
           //problem with coordinate transformation
-          emit messageEmitted( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ) , QgsMessageBar::WARNING );
+          emit messageEmitted( tr( "Coordinate transform error. Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
           return;
         }
 
@@ -114,6 +114,11 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
 
         return;
       }
+
+      if ( !isCapturing() )
+        return;
+
+      // we are now going to finish the capturing
 
       if ( mode() == CapturePolygon )
       {
@@ -195,6 +200,6 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
       break;
   }
 
-  emit messageEmitted( errorMessage , QgsMessageBar::WARNING );
+  emit messageEmitted( errorMessage, QgsMessageBar::WARNING );
   vlayer->destroyEditCommand();
 }

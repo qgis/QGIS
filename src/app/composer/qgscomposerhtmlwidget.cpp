@@ -73,8 +73,8 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
   }
 
   //connections for data defined buttons
-  connect( mUrlDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mUrlDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( mUrlDDBtn, SIGNAL( dataDefinedActivated( bool ) ), mUrlLineEdit, SLOT( setDisabled( bool ) ) );
 
 }

@@ -394,9 +394,9 @@ void QgsWFSSourceSelect::addLayer()
       continue;
     }
     int row = idx.row();
-    QString typeName = mModel->item( row,  1 )->text(); //WFS repository's name for layer
-    QString titleName = mModel->item( row,  0 )->text(); //WFS type name title for layer name (if option is set)
-    QString filter = mModel->item( row,  4 )->text(); //optional filter specified by user
+    QString typeName = mModel->item( row, 1 )->text(); //WFS repository's name for layer
+    QString titleName = mModel->item( row, 0 )->text(); //WFS type name title for layer name (if option is set)
+    QString filter = mModel->item( row, 4 )->text(); //optional filter specified by user
     QString layerName = typeName;
     if ( cbxUseTitleLayerName->isChecked() && !titleName.isEmpty() )
     {
@@ -404,7 +404,7 @@ void QgsWFSSourceSelect::addLayer()
     }
     QgsDebugMsg( "Layer " + typeName + " Filter is " + filter );
     //is "cache features" checked?
-    if ( mModel->item( row,  3 )->checkState() == Qt::Checked )
+    if ( mModel->item( row, 3 )->checkState() == Qt::Checked )
     { //yes: entire WFS layer will be retrieved and cached
       mUri = conn.uriGetFeature( typeName, pCrsString, filter );
     }

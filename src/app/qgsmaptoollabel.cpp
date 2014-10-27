@@ -59,7 +59,7 @@ bool QgsMapToolLabel::labelAtPosition( QMouseEvent* e, QgsLabelPosition& p )
   return false;
 }
 
-void QgsMapToolLabel::createRubberBands( )
+void QgsMapToolLabel::createRubberBands()
 {
   delete mLabelRubberBand;
   delete mFeatureRubberBand;

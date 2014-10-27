@@ -45,7 +45,7 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-133</y>
+        <y>-139</y>
         <width>392</width>
         <height>711</height>
        </rect>
@@ -53,6 +53,9 @@
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -128,6 +131,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_5">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Feature filtering</string>
          </property>
@@ -281,6 +287,9 @@
        </item>
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox_3">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Fonts and text styling</string>
          </property>
@@ -446,6 +455,7 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
@@ -453,6 +463,30 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>groupBox</tabstop>
+  <tabstop>mLayerComboBox</tabstop>
+  <tabstop>mRefreshPushButton</tabstop>
+  <tabstop>mAttributesPushButton</tabstop>
+  <tabstop>mMarginSpinBox</tabstop>
+  <tabstop>groupBox_5</tabstop>
+  <tabstop>mMaximumColumnsSpinBox</tabstop>
+  <tabstop>mShowOnlyVisibleFeaturesCheckBox</tabstop>
+  <tabstop>mComposerMapComboBox</tabstop>
+  <tabstop>mFeatureFilterCheckBox</tabstop>
+  <tabstop>mFeatureFilterEdit</tabstop>
+  <tabstop>mFeatureFilterButton</tabstop>
+  <tabstop>mShowGridGroupCheckBox</tabstop>
+  <tabstop>mGridStrokeWidthSpinBox</tabstop>
+  <tabstop>mGridColorButton</tabstop>
+  <tabstop>groupBox_3</tabstop>
+  <tabstop>mHeaderFontPushButton</tabstop>
+  <tabstop>mHeaderFontColorButton</tabstop>
+  <tabstop>mHeaderHAlignmentComboBox</tabstop>
+  <tabstop>mContentFontPushButton</tabstop>
+  <tabstop>mContentFontColorButton</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

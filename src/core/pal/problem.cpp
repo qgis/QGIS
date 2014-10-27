@@ -1967,7 +1967,7 @@ namespace pal
 
 
   /**
-   *  POPMUSIC,  chain
+   *  POPMUSIC, chain
    */
   double Problem::popmusic_chain( SubPart *part )
   {

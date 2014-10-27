@@ -37,7 +37,7 @@
 #include <climits>
 #include <cfloat>
 
-QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl , int fieldIdx )
+QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx )
     : QDialog()
     , mLayer( vl )
     , mFieldIdx( fieldIdx )

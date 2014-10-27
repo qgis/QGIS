@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Friday July 25, 2014</H3>
+<H3>Thursday October 23, 2014</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Friday July 25, 2014
-Last Change : Friday July 25, 2014
+Last Updated: Thursday October 23, 2014
+Last Change : Sunday September 28, 2014
 </P>
 <DIV CLASS="toc">
 
@@ -1669,7 +1669,7 @@ from source and rather use frameworks wherever possible.
 some fiddling with the system. It is best to stick with a single, default,
 architecture build and follow these instructions for an initial build.
 Included are notes for building on Mac OS X 10.5 (<U>Leopard</U>), 10.6
-(<U>Snow Leopard</U>), 10.7 (<U>Lion</U>) and 10.8 (<U>Mt. Lion</U>).
+(<U>Snow Leopard</U>), 10.7 (<U>Lion</U>), 10.8 (<U>Mt. Lion</U>) and 10.9 (<U>Mavericks</U>)
 (These names will be used throughout the instructions.)
 Make sure to read each section completely before typing the first command you see.
 </P>
@@ -2038,8 +2038,8 @@ your own risk.
 <H3>5.4.5. Additional dependencies: SIP</H3>
 
 <P>
-<U>Mt Lion note:</U> SIP 4.15.7 appears to not work on Mt Lion.  Install 4.14.6.
-(or a later working version when available)
+<U>Mt Lion note:</U> SIP 4.15.7 appears to not work on Mt Lion.  Install either
+a prior version to 4.14.6 or a later version 4.16.3+
 </P>
 <P>
 Retrieve the python bindings toolkit SIP from
@@ -2128,6 +2128,15 @@ python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
 </PRE></div>
 
 <P>
+for Mavericks:
+</P>
+
+<div class="code"><PRE>
+python2.7 configure.py -d /Library/Python/2.7/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.9.sdk
+</PRE></div>
+
+<P>
 <U>continue...</U>
 </P>
 <P>
@@ -2174,16 +2183,22 @@ header.path = $$[QT_INSTALL_HEADERS]  --&gt;  header.path = /usr/local/include
 </PRE></div>
 
 <P>
-Save the qscintilla.pro file and build the QScintilla2 C++ library (adjust the install_name_tool command for the version installed):
+Save the qscintilla.pro file and build the QScintilla2 C++ library:
 </P>
 
 <div class="code"><PRE>
 qmake -spec macx-g++ qscintilla.pro
 make -j [#cpus]
 sudo make install
+</PRE></div>
 
-sudo install_name_tool -id /usr/local/lib/libqscintilla2.9.dylib \
-  /usr/local/lib/libqscintilla2.9.dylib
+<P>
+adjust the install_name_tool command for the version installed of QScintilla installed:
+</P>
+
+<div class="code"><PRE>
+sudo install_name_tool -id /usr/local/lib/libqscintilla2.11.dylib \
+  /usr/local/lib/libqscintilla2.11.dylib
 </PRE></div>
 
 <P>
@@ -2272,7 +2287,7 @@ python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
 </PRE></div>
 
 <P>
-<U>Lion and Mt. Lion system Python</U>
+<U>Lion, Mt. Lion, and Mavericks system Python</U>
 </P>
 <P>
 Similar to Snow Leopard, you should install outside the system Python path.

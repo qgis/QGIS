@@ -63,6 +63,7 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     /**Id of moved feature*/
     QgsFeatureIds mRotatedFeatures;
     double mRotation;
+    double mRotationOffset;
 
     QPoint mStPoint;
     QgsVertexMarker* mAnchorPoint;

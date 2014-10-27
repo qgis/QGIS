@@ -225,24 +225,15 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   }
   else if ( elem.attribute( "embedded" ) == "1" ) //layer is embedded from another project file
   {
-    //todo: fixme
-    /*
     QString project = convertToAbsolutePath( elem.attribute( "project" ) );
     QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
-
-    QgsProjectParser* otherConfig = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+    
+    QgsServerProjectParser* otherConfig = QgsConfigCache::instance()->serverConfiguration( project );
     if ( !otherConfig )
     {
       return 0;
     }
-
-    QHash< QString, QDomElement >::const_iterator layerIt = otherConfig->mProjectLayerElementsById.find( elem.attribute( "id" ) );
-    if ( layerIt == otherConfig->mProjectLayerElementsById.constEnd() )
-    {
-      return 0;
-    }
-    return otherConfig->createLayerFromElement( layerIt.value() );
-    */
+    return otherConfig->mapLayerFromLayerId( elem.attribute( "id" ), useCache );
   }
 
   if ( layer )
@@ -540,7 +531,7 @@ QString QgsServerProjectParser::layerName( const QDomElement& layerElem ) const
   {
     return QString();
   }
-  return nameElem.text().replace( "," , "%60" ); //commas are not allowed in layer names
+  return nameElem.text().replace( ",", "%60" ); //commas are not allowed in layer names
 }
 
 QString QgsServerProjectParser::serviceUrl() const

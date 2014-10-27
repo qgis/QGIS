@@ -79,7 +79,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     /**
      * Slot to react to value Preview button pushed
      */
-    void previewButtonPushed( );
+    void previewButtonPushed();
 
   private:
 

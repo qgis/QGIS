@@ -808,6 +808,14 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     QRectF mPrevPaintRect;
     QPolygonF mPrevMapPolygon;
 
+    class QgsMapAnnotation
+    {
+      public:
+        double coordinate;
+        QPointF itemPosition;
+        QgsComposerMapGrid::AnnotationCoordinate coordinateType;
+    };
+
     /**Draws the map grid*/
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
 
@@ -817,13 +825,14 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
         @param vLines vertical coordinate lines in item coordinates*/
     void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
 
-    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString ) const;
+    void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString, const AnnotationCoordinate coordinateType ) const;
 
     /**Draws a single annotation
-        @param p drawing painter
-        @param pos item coordinates where to draw
-        @param rotation text rotation
-        @param annotationText the text to draw*/
+     * @param p drawing painter
+     * @param pos item coordinates where to draw
+     * @param rotation text rotation
+     * @param annotationText the text to draw
+    */
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText ) const;
 
     QString gridAnnotationString( double value, AnnotationCoordinate coord ) const;
@@ -844,23 +853,26 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     void drawGridLine( const QPolygonF& line, QgsRenderContext &context ) const;
 
-    void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines,  QMap< double, double >& leftFrameEntries,
+    void sortGridLinesOnBorders( const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines, QMap< double, double >& leftFrameEntries,
                                  QMap< double, double >& rightFrameEntries, QMap< double, double >& topFrameEntries, QMap< double, double >& bottomFrameEntries ) const;
 
     void drawGridFrameBorder( QPainter* p, const QMap< double, double >& borderPos, BorderSide border ) const;
 
-    /**Returns the item border of a point (in item coordinates)*/
-    BorderSide borderForLineCoord( const QPointF& p ) const;
+    /**Returns the item border of a point (in item coordinates)
+     * @param p point
+     * @param coordinateType coordinate type
+    */
+    BorderSide borderForLineCoord( const QPointF& p, const AnnotationCoordinate coordinateType ) const;
 
     /**Get parameters for drawing grid in CRS different to map CRS*/
     int crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const;
 
     static QPolygonF trimLineToMap( const QPolygonF& line, const QgsRectangle& rect );
 
-    QPolygonF scalePolygon( const QPolygonF &polygon,  const double scale ) const;
+    QPolygonF scalePolygon( const QPolygonF &polygon, const double scale ) const;
 
     /**Draws grid if CRS is different to map CRS*/
-    void drawGridCRSTransform( QgsRenderContext &context , double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
+    void drawGridCRSTransform( QgsRenderContext &context, double dotsPerMM, QList< QPair< double, QLineF > > &horizontalLines,
                                QList< QPair< double, QLineF > > &verticalLines );
 
     void drawGridNoTransform( QgsRenderContext &context, double dotsPerMM, QList<QPair<double, QLineF> > &horizontalLines, QList<QPair<double, QLineF> > &verticalLines ) const;

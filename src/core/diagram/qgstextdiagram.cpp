@@ -130,7 +130,7 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
   {
     if ( mOrientation == Horizontal )
     {
-      textPositions.push_back( QPointF( baseX + ( w / nCategories ) * i + w / nCategories / 2.0 , baseY + h / 2.0 ) );
+      textPositions.push_back( QPointF( baseX + ( w / nCategories ) * i + w / nCategories / 2.0, baseY + h / 2.0 ) );
     }
     else //vertical
     {
@@ -177,11 +177,11 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
     {
       if ( mOrientation == Horizontal )
       {
-        p->drawLine( QPointF( baseX + w / nCategories * i , baseY ), QPointF( baseX + w / nCategories * i, baseY + h ) );
+        p->drawLine( QPointF( baseX + w / nCategories * i, baseY ), QPointF( baseX + w / nCategories * i, baseY + h ) );
       }
       else
       {
-        p->drawLine( QPointF( baseX, baseY + h / nCategories * i ) , QPointF( baseX + w,  baseY + h / nCategories * i ) );
+        p->drawLine( QPointF( baseX, baseY + h / nCategories * i ), QPointF( baseX + w, baseY + h / nCategories * i ) );
       }
     }
   }

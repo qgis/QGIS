@@ -105,7 +105,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     /**
      * set all gui elements to default status
      */
-    void setGuiElementsToDefault( );
+    void setGuiElementsToDefault();
 
   private:
 

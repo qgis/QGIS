@@ -43,7 +43,7 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
   connect( layerComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( fillComboBoxes( int ) ) );
   connect( keyComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( createPreview( int ) ) );
   connect( valueComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( createPreview( int ) ) );
-  connect( previewButton, SIGNAL( pressed( ) ), this, SLOT( previewButtonPushed( ) ) );
+  connect( previewButton, SIGNAL( pressed() ), this, SLOT( previewButtonPushed() ) );
 
   fillLayerList();
 

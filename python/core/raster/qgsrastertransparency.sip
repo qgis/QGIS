@@ -54,7 +54,7 @@ class QgsRasterTransparency
     int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
 
     /**True if there are no entries in the pixel lists except the nodata value*/
-    bool isEmpty( ) const;
+    bool isEmpty() const;
 
     void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 

@@ -434,7 +434,6 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   mConnName = cmbConnections->currentText();
 
   QgsWMSConnection connection( cmbConnections->currentText() );
-  mConnectionInfo = connection.connectionInfo();
   mUri = connection.uri();
 
   QgsWmsSettings wmsSettings;
@@ -981,11 +980,6 @@ void QgsWMSSourceSelect::updateButtons()
 QString QgsWMSSourceSelect::connName()
 {
   return mConnName;
-}
-
-QString QgsWMSSourceSelect::connectionInfo()
-{
-  return mConnectionInfo;
 }
 
 void QgsWMSSourceSelect::collectSelectedLayers( QStringList &layers, QStringList &styles, QStringList &titles )

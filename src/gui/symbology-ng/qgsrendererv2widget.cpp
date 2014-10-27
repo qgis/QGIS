@@ -35,7 +35,7 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   mPasteAction->setShortcut( QKeySequence( QKeySequence::Paste ) );
 
   contextMenu->addSeparator();
-  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );
+  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor() ) );
   contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
   contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
 
@@ -196,7 +196,7 @@ QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVe
 
   mSizeScaleMenu->addSeparator();
 
-  QAction* aScaleByArea = new QAction( tr( "Scale area" ), mSizeMethodActionGroup ) ;
+  QAction* aScaleByArea = new QAction( tr( "Scale area" ), mSizeMethodActionGroup );
   QAction* aScaleByDiameter = new QAction( tr( "Scale diameter" ), mSizeMethodActionGroup );
 
   aScaleByArea->setCheckable( true );

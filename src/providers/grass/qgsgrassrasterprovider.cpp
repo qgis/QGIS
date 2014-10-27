@@ -191,7 +191,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
     return image;
   }
   QgsDebugMsg( QString( "%1 bytes read from modules stdout" ).arg( data.size() ) );
-  uchar * ptr = image->bits( ) ;
+  uchar * ptr = image->bits();
   // byteCount() in Qt >= 4.6
   //int size = image->byteCount() < data.size() ? image->byteCount() : data.size();
   int size = pixelWidth * pixelHeight * 4 < data.size() ? pixelWidth * pixelHeight * 4 : data.size();
@@ -524,7 +524,7 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
 
 QString QgsGrassRasterProvider::metadata()
 {
-  QString myMetadata ;
+  QString myMetadata;
   QStringList myList;
   myList.append( "GISDBASE: " + mGisdbase );
   myList.append( "LOCATION: " + mLocation );

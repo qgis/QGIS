@@ -70,7 +70,7 @@ def setTempOutput(out, alg):
         out.value = getTempFilenameInTempFolder(out.name + '.' + ext)
 
 
-def getTempFilename(ext):
+def getTempFilename(ext = None):
     path = tempFolder()
     if ext is None:
         filename = path + os.sep + str(time.time()) \

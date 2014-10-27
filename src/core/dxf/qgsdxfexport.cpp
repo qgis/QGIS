@@ -371,7 +371,7 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, in
   int minDistAt = -1;
   int minDist = INT_MAX;
 
-  for ( int i = 1; i < sizeof( mDxfColors ) / sizeof( *mDxfColors ); ++i )
+  for ( int i = 1; i < ( int )( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ); ++i )
   {
     int dist = color_distance( color.rgba(), i );
     if ( dist == 0 )
@@ -390,7 +390,7 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, in
   writeGroup( exactMatchCode, minDistAt );
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
   writeGroup( rgbCode, c );
-  if( transparencyCode != -1 && color.alpha() < 255 )
+  if ( transparencyCode != -1 && color.alpha() < 255 )
     writeGroup( transparencyCode, 0x2000000 | color.alpha() );
 }
 
@@ -491,7 +491,7 @@ int QgsDxfExport::writeHandle( int code, int handle )
   if ( handle == 0 )
     handle = mNextHandleId++;
 
-  Q_ASSERT(( "DXF handle too large", handle < DXF_HANDMAX ) );
+  Q_ASSERT_X( handle < DXF_HANDMAX, "QgsDxfExport::writeHandle(int, int)", "DXF handle too large" );
 
   writeGroup( code, QString( "%1" ).arg( handle, 0, 16 ) );
   return handle;
@@ -835,7 +835,7 @@ void QgsDxfExport::writeEntities()
       continue;
     }
 
-    QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
+    QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
     renderer->startRender( ctx, vl->pendingFields() );
 
@@ -939,7 +939,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   QHash< QgsSymbolV2*, QList<QgsFeature> > features;
 
   QgsRenderContext ctx = renderContext();
-  QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM , 1.0, false, 0, 0 );
+  QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
   renderer->startRender( ctx, layer->pendingFields() );
 
   //get iterator
@@ -1000,7 +1000,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
     {
       QgsSymbolV2LevelItem& item = level[i];
       QHash< QgsSymbolV2*, QList<QgsFeature> >::iterator levelIt = features.find( item.symbol() );
-      if( levelIt == features.end() )
+      if ( levelIt == features.end() )
       {
         QgsDebugMsg( QString( "No feature found for symbol on %1 %2.%3" ).arg( layer->id() ).arg( l ).arg( i ) );
         continue;
@@ -3212,7 +3212,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
     writeGroup( 62, 1 );
     writeGroup( 0, pt + QgsVector( -halfSize, -halfSize ) );
     writeGroup( 1, pt + QgsVector( halfSize, -halfSize ) );
-    writeGroup( 2, pt + QgsVector( -halfSize,  halfSize ) );
+    writeGroup( 2, pt + QgsVector( -halfSize, halfSize ) );
     writeGroup( 3, pt + QgsVector( halfSize,  halfSize ) );
   }
 #endif //0
@@ -3710,7 +3710,7 @@ QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > QgsDxfExport::symbolLayers()
       }
       for ( int i = 0; i < maxSymbolLayers; ++i )
       {
-        symbolLayers.append( qMakePair(( *symbolIt )->symbolLayer( i ), *symbolIt ) ) ;
+        symbolLayers.append( qMakePair(( *symbolIt )->symbolLayer( i ), *symbolIt ) );
       }
     }
   }

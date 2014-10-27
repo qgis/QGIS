@@ -70,13 +70,15 @@ class PointsInPolygonUnique(GeoAlgorithm):
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
         polyProvider = polyLayer.dataProvider()
+        fields = polyProvider.fields()
+        fields.append(QgsField(fieldName, QVariant.Int))
 
         classFieldIndex = pointLayer.fieldNameIndex(classFieldName)
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                 polyLayer.pendingFields(), fieldName)
 
         writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fieldList.toList(),
+                self.OUTPUT).getVectorWriter(fields.toList(),
                                              polyProvider.geometryType(),
                                              polyProvider.crs())
 

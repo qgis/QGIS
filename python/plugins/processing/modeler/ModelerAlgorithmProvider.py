@@ -82,8 +82,12 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                     try:
                         fullpath = os.path.join(path, descriptionFile)
                         alg = ModelerAlgorithm.fromFile(fullpath)
-                        alg.provider = self
-                        self.algs.append(alg)
+                        if alg.name:
+                            alg.provider = self
+                            self.algs.append(alg)
+                        else:
+                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                                self.tr('Could not load model %s', 'ModelerAlgorithmProvider') % descriptionFile)
                     except WrongModelException, e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                             self.tr('Could not load model %s\n%s', 'ModelerAlgorithmProvider') % (descriptionFile, e.msg))

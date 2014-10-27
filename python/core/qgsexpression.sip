@@ -90,17 +90,26 @@ class QgsExpression
     //! Sets the geometry calculator used in evaluation of expressions,
     // instead of the default.
     void setGeomCalculator( const QgsDistanceArea &calc );
-
+    
     /** This function currently replaces each expression between [% and %]
        in the string with the result of its evaluation on the feature
        passed as argument.
 
        Additional substitutions can be passed through the substitutionMap
        parameter
+       @param action
+       @param feat
+       @param layer
+       @param substitutionMap
+       @param distanceArea optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+       and area conversion
     */
     static QString replaceExpressionText( const QString &action, const QgsFeature *feat,
                                           QgsVectorLayer *layer,
-                                          const QMap<QString, QVariant> *substitutionMap = 0 );
+                                          const QMap<QString, QVariant> *substitutionMap = 0,
+                                          const QgsDistanceArea* distanceArea = 0
+                                        );
+
     enum UnaryOperator
     {
       uoNot,
@@ -445,4 +454,8 @@ class QgsExpression
 
   protected:
     void initGeomCalculator();
+
+  private:
+    QgsExpression( const QgsExpression& );
+    QgsExpression & operator=( const QgsExpression& );
 };

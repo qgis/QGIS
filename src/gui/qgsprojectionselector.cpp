@@ -515,7 +515,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> *crsFilter )
   // if it doesnt exist we copy it in from the global resources dir
 
   //return straight away if the user has not created any custom projections
-  if ( !QFileInfo( databaseFileName ).exists( ) )
+  if ( !QFileInfo( databaseFileName ).exists() )
   {
     QgsDebugMsg( "Users qgis.db not found...skipping" );
     mUserProjListDone = true;

@@ -102,7 +102,7 @@ bool QgsFieldExpressionWidget::isExpression() const
   return !mFieldProxyModel->sourceFieldModel()->isField( currentText() );
 }
 
-QString QgsFieldExpressionWidget::currentField( bool *isExpression , bool *isValid ) const
+QString QgsFieldExpressionWidget::currentField( bool *isExpression, bool *isValid ) const
 {
   QString text = currentText();
   if ( isValid )

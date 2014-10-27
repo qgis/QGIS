@@ -1094,7 +1094,7 @@
                   <item row="0" column="0">
                    <widget class="QLabel" name="mRestoreDefaultWindowStateLbl">
                     <property name="text">
-                     <string>Reset the User Interface settings, to reset QGIS to it's default view</string>
+                     <string>Reset user interface to default settings (restart required)</string>
                     </property>
                    </widget>
                   </item>

@@ -430,7 +430,7 @@ void QgsSingleCategoryDiagramRenderer::writeXML( QDomElement& layerElem, QDomDoc
 {
   QDomElement rendererElem = doc.createElement( "SingleCategoryDiagramRenderer" );
   mSettings.writeXML( rendererElem, doc, layer );
-  _writeXML( rendererElem, doc , layer );
+  _writeXML( rendererElem, doc, layer );
   layerElem.appendChild( rendererElem );
 }
 

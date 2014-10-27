@@ -49,7 +49,10 @@ class GridDataMetrics(GdalAlgorithm):
     ANGLE = 'ANGLE'
     NODATA = 'NODATA'
     OUTPUT = 'OUTPUT'
-
+    RTYPE = 'RTYPE'
+    
+    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
+    
     DATA_METRICS = ['Minimum', 'Maximum', 'Range', 'Count', 'Average distance',
                     'Average distance between points']
 
@@ -76,7 +79,8 @@ class GridDataMetrics(GdalAlgorithm):
                           0.0, 359.0, 0.0))
         self.addParameter(ParameterNumber(self.NODATA, 'Nodata',
                           0.0, 99999999.999999, 0.0))
-
+        self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
+			  self.TYPE, 5))
         self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
 
     def processAlgorithm(self, progress):
@@ -112,7 +116,8 @@ class GridDataMetrics(GdalAlgorithm):
 
         arguments.append('-a')
         arguments.append(params)
-
+        arguments.append('-ot')
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 

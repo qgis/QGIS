@@ -402,7 +402,7 @@ QgsComposerStyleItem::QgsComposerStyleItem(): QStandardItem()
 
 QgsComposerStyleItem::QgsComposerStyleItem( QgsComposerLegendItem *item ): QStandardItem()
 {
-  setData( QgsComposerLegendStyle::styleLabel( item->style() ) , Qt::DisplayRole );
+  setData( QgsComposerLegendStyle::styleLabel( item->style() ), Qt::DisplayRole );
 }
 
 QgsComposerStyleItem::~QgsComposerStyleItem()

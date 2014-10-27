@@ -1177,7 +1177,7 @@
      <normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</normaloff>:/images/themes/default/mActionNewSpatiaLiteLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>New SpatiaLite Layer ...</string>
+    <string>New SpatiaLite Layer...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+A</string>
@@ -1189,7 +1189,7 @@
      <normaloff>:/images/themes/default/mActionShowRasterCalculator.png</normaloff>:/images/themes/default/mActionShowRasterCalculator.png</iconset>
    </property>
    <property name="text">
-    <string>Raster calculator ...</string>
+    <string>Raster Calculator...</string>
    </property>
   </action>
   <action name="mActionAddOgrLayer">
@@ -1465,7 +1465,7 @@
      <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
-    <string>Configure shortcuts...</string>
+    <string>Configure Shortcuts...</string>
    </property>
    <property name="menuRole">
     <enum>QAction::NoRole</enum>
@@ -1497,7 +1497,7 @@
   </action>
   <action name="mActionHelpAPI">
    <property name="text">
-    <string>API documentation</string>
+    <string>API Documentation</string>
    </property>
   </action>
   <action name="mActionQgisHomePage">
@@ -1608,7 +1608,7 @@ Ctl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionFullHistogramStretch.png</normaloff>:/images/themes/default/mActionFullHistogramStretch.png</iconset>
    </property>
    <property name="text">
-    <string>Full histogram stretch</string>
+    <string>Full Histogram Stretch</string>
    </property>
    <property name="toolTip">
     <string>Stretch Histogram to Full Dataset</string>
@@ -1740,7 +1740,7 @@ Ctl (Cmd) increments by 15 deg.</string>
      <normaloff>:/images/themes/default/mActionTouch.png</normaloff>:/images/themes/default/mActionTouch.png</iconset>
    </property>
    <property name="text">
-    <string>Touch zoom and pan</string>
+    <string>Touch Zoom and Pan</string>
    </property>
    <property name="toolTip">
     <string>Touch zoom and pan</string>
@@ -1923,7 +1923,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionSaveAsSVG.png</normaloff>:/images/themes/default/mActionSaveAsSVG.png</iconset>
    </property>
    <property name="text">
-    <string>SVG annotation</string>
+    <string>SVG Annotation</string>
    </property>
   </action>
   <action name="mActionSaveAllEdits">
@@ -2045,17 +2045,17 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionOSMDownload">
    <property name="text">
-    <string>&amp;Download data</string>
+    <string>&amp;Download Data...</string>
    </property>
   </action>
   <action name="mActionOSMImport">
    <property name="text">
-    <string>&amp;Import topology from XML</string>
+    <string>&amp;Import Topology from XML...</string>
    </property>
   </action>
   <action name="mActionOSMExport">
    <property name="text">
-    <string>&amp;Export topology to SpatiaLite</string>
+    <string>&amp;Export Topology to SpatiaLite...</string>
    </property>
   </action>
   <action name="mActionIncreaseBrightness">
@@ -2064,7 +2064,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionIncreaseBrightness.svg</normaloff>:/images/themes/default/mActionIncreaseBrightness.svg</iconset>
    </property>
    <property name="text">
-    <string>Increase brightness</string>
+    <string>Increase Brightness</string>
    </property>
   </action>
   <action name="mActionDecreaseBrightness">
@@ -2073,7 +2073,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionDecreaseBrightness.svg</normaloff>:/images/themes/default/mActionDecreaseBrightness.svg</iconset>
    </property>
    <property name="text">
-    <string>Decrease brightness</string>
+    <string>Decrease Brightness</string>
    </property>
   </action>
   <action name="mActionIncreaseContrast">
@@ -2082,7 +2082,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionIncreaseContrast.svg</normaloff>:/images/themes/default/mActionIncreaseContrast.svg</iconset>
    </property>
    <property name="text">
-    <string>Increase contrast</string>
+    <string>Increase Contrast</string>
    </property>
   </action>
   <action name="mActionDecreaseContrast">
@@ -2091,7 +2091,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionDecreaseContrast.svg</normaloff>:/images/themes/default/mActionDecreaseContrast.svg</iconset>
    </property>
    <property name="text">
-    <string>Decrease contrast</string>
+    <string>Decrease Contrast</string>
    </property>
   </action>
   <action name="mActionSelectByExpression">
@@ -2100,7 +2100,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mIconExpressionSelect.svg</normaloff>:/images/themes/default/mIconExpressionSelect.svg</iconset>
    </property>
    <property name="text">
-    <string>Select By Expression</string>
+    <string>Select By Expression...</string>
    </property>
    <property name="toolTip">
     <string>Select features using an expression</string>
@@ -2108,7 +2108,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionNeedSupport">
    <property name="text">
-    <string>Need commercial support?</string>
+    <string>Need Commercial Support?</string>
    </property>
   </action>
   <action name="mActionOpenFieldCalc">
@@ -2117,7 +2117,7 @@ Acts on currently active editable layer</string>
      <normaloff>:/images/themes/default/mActionCalculateField.png</normaloff>:/images/themes/default/mActionCalculateField.png</iconset>
    </property>
    <property name="text">
-    <string>Open Field Calculator</string>
+    <string>Open Field Calculator...</string>
    </property>
    <property name="toolTip">
     <string>Open Field Calculator</string>

@@ -73,7 +73,7 @@ void QgsCredentialDialog::requestCredentials( QString realm, QString *username, 
 
   QApplication::restoreOverrideCursor();
 
-  if( activeWindow )
+  if ( activeWindow )
     activeWindow->raise();
 
   if ( *ok )

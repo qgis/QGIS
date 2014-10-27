@@ -101,7 +101,7 @@ QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int f
       }
     }
 
-    return valueList.join( ", " ).prepend( '{' ).append( '}' ) ;
+    return valueList.join( ", " ).prepend( '{' ).append( '}' );
   }
   else
   {

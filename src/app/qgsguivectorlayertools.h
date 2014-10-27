@@ -59,7 +59,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      *
      * @return            True if successful
      */
-    bool stopEditing( QgsVectorLayer* layer , bool allowCancel = true ) const;
+    bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const;
 
   private:
     void commitError( QgsVectorLayer* vlayer ) const;

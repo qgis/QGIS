@@ -45,7 +45,7 @@
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsComposerItemBaseWidget( 0, composerMap ), mComposerMap( composerMap )
 {
   setupUi( this );
-  
+
   mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
 
   //add widget for general composer item properties
@@ -140,26 +140,26 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsCo
   }
 
   //connections for data defined buttons
-  connect( mScaleDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mScaleDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mScaleDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mScaleDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  connect( mMapRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mMapRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mMapRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mMapRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  connect( mXMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mXMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mXMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  connect( mYMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mYMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYMinDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mYMinDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  connect( mXMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mXMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mXMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mXMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  connect( mYMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mYMaxDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mYMaxDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
-  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty( ) ) );
-  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty( ) ) );
+  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( mAtlasMarginDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
 
   updateGuiElements();
   loadGridEntries();

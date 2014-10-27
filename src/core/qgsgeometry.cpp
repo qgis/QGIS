@@ -32,6 +32,8 @@ email                : morb at ozemail dot com dot au
 #include "qgsmessagelog.h"
 #include "qgsgeometryvalidator.h"
 
+#include <QDebug>
+
 #ifndef Q_WS_WIN
 #include <netinet/in.h>
 #else
@@ -96,7 +98,7 @@ static void throwGEOSException( const char *fmt, ... )
   vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  QgsDebugMsg( QString( "GEOS exception: %1" ).arg( buffer ) );
+  qWarning() << QString( "GEOS exception: %1" ).arg( buffer );
 
   throw GEOSException( QString::fromUtf8( buffer ) );
 }
@@ -4877,7 +4879,15 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
 
   GEOSGeom_destroy_r( geosinit.ctxt, reshapeResult );
 
-  newRing = GEOSGeom_createLinearRing_r( geosinit.ctxt, newCoordSequence );
+  try
+  {
+    newRing = GEOSGeom_createLinearRing_r( geosinit.ctxt, newCoordSequence );
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+  }
+
   if ( !newRing )
   {
     delete [] innerRings;
@@ -5221,7 +5231,7 @@ int QgsGeometry::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeome
     return -1;
   }
 
-  double bufferDistance = pow( 1.0L, geomDigits( line2 ) - 11 );
+  double bufferDistance = pow( 10.0L, geomDigits( line2 ) - 11 );
 
   GEOSGeometry* bufferGeom = GEOSBuffer_r( geosinit.ctxt, line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
@@ -5251,7 +5261,7 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
   if ( !point || !line )
     return -1;
 
-  double bufferDistance = pow( 1.0L, geomDigits( line ) - 11 );
+  double bufferDistance = pow( 10.0L, geomDigits( line ) - 11 );
 
   GEOSGeometry* lineBuffer = GEOSBuffer_r( geosinit.ctxt, line, bufferDistance, 8 );
   if ( !lineBuffer )
@@ -5267,7 +5277,7 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
 
 int QgsGeometry::geomDigits( const GEOSGeometry* geom )
 {
-  GEOSGeometry* bbox = GEOSEnvelope_r( geosinit.ctxt,  geom );
+  GEOSGeometry* bbox = GEOSEnvelope_r( geosinit.ctxt, geom );
   if ( !bbox )
     return -1;
 
@@ -5606,7 +5616,7 @@ double QgsGeometry::distance( QgsGeometry& geom )
 
   try
   {
-    GEOSDistance_r( geosinit.ctxt,  mGeos, geom.mGeos, &dist );
+    GEOSDistance_r( geosinit.ctxt, mGeos, geom.mGeos, &dist );
   }
   CATCH_GEOS( -1.0 )
 

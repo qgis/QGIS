@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssinglebandcolordatarenderer.h"
+#include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -36,7 +37,7 @@ QgsRasterInterface * QgsSingleBandColorDataRenderer::clone() const
   QgsSingleBandColorDataRenderer * renderer = new QgsSingleBandColorDataRenderer( 0, mBand );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency );
+  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
   return renderer;
 }
 

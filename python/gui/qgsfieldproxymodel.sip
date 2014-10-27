@@ -29,7 +29,7 @@ class QgsFieldProxyModel : QSortFilterProxyModel
     explicit QgsFieldProxyModel( QObject *parent /TransferThis/ = 0 );
 
     //! sourceFieldModel returns the QgsFieldModel used in this QSortFilterProxyModel
-    QgsFieldModel* sourceFieldModel() ;
+    QgsFieldModel* sourceFieldModel();
 
     /**
      * @brief setFilters set flags that affect how fields are filtered

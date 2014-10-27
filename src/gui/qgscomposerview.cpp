@@ -845,6 +845,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       else
       {
         QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
+        QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
+        if ( mapItemList.size() > 0 )
+        {
+          newLegend->setComposerMap( mapItemList.at( 0 ) );
+        }
         newLegend->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() ) );
         composition()->addComposerLegend( newLegend );
         newLegend->updateLegend();
@@ -1676,7 +1681,7 @@ void QgsComposerView::setZoomLevel( double zoomLevel )
 
   //desired pixel width for 1mm on screen
   double scale = zoomLevel * dpi / 25.4;
-  setTransform( QTransform::fromScale( scale , scale ) );
+  setTransform( QTransform::fromScale( scale, scale ) );
 
   updateRulers();
   update();
@@ -1777,20 +1782,16 @@ void QgsComposerView::groupItems()
     return;
   }
 
+  //group selected items
   QList<QgsComposerItem*> selectionList = composition()->selectedComposerItems();
-  if ( selectionList.size() < 2 )
-  {
-    return; //not enough items for a group
-  }
-  QgsComposerItemGroup* itemGroup = new QgsComposerItemGroup( composition() );
+  QgsComposerItemGroup* itemGroup = composition()->groupItems( selectionList );
 
-  QList<QgsComposerItem*>::iterator itemIter = selectionList.begin();
-  for ( ; itemIter != selectionList.end(); ++itemIter )
+  if ( !itemGroup )
   {
-    itemGroup->addItem( *itemIter );
+    //group could not be created
+    return;
   }
 
-  composition()->addItem( itemGroup );
   itemGroup->setSelected( true );
   emit selectedItemChanged( itemGroup );
 }
@@ -1802,6 +1803,7 @@ void QgsComposerView::ungroupItems()
     return;
   }
 
+  //hunt through selection for any groups, and ungroup them
   QList<QgsComposerItem*> selectionList = composition()->selectedComposerItems();
   QList<QgsComposerItem*>::iterator itemIter = selectionList.begin();
   for ( ; itemIter != selectionList.end(); ++itemIter )
@@ -1809,11 +1811,7 @@ void QgsComposerView::ungroupItems()
     QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup *>( *itemIter );
     if ( itemGroup )
     {
-      itemGroup->removeItems();
-      composition()->removeComposerItem( *itemIter, false, false );
-
-      delete( *itemIter );
-      emit itemRemoved( *itemIter );
+      composition()->ungroupItems( itemGroup );
     }
   }
 }

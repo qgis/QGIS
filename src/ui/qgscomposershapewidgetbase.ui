@@ -17,16 +17,7 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -54,14 +45,17 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>283</width>
-        <height>129</height>
+        <y>-22</y>
+        <width>267</width>
+        <height>147</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
        <item>
         <widget class="QgsCollapsibleGroupBoxBasic" name="groupBox">
+         <property name="focusPolicy">
+          <enum>Qt::StrongFocus</enum>
+         </property>
          <property name="title">
           <string>Main properties</string>
          </property>
@@ -135,6 +129,13 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>groupBox</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mShapeComboBox</tabstop>
+  <tabstop>mCornerRadiusSpinBox</tabstop>
+  <tabstop>mShapeStyleButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

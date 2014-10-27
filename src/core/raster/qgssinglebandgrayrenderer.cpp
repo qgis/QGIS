@@ -37,7 +37,7 @@ QgsRasterInterface * QgsSingleBandGrayRenderer::clone() const
   QgsSingleBandGrayRenderer * renderer = new QgsSingleBandGrayRenderer( 0, mGrayBand );
   renderer->setOpacity( mOpacity );
   renderer->setAlphaBand( mAlphaBand );
-  renderer->setRasterTransparency( mRasterTransparency );
+  renderer->setRasterTransparency( mRasterTransparency ? new QgsRasterTransparency( *mRasterTransparency ) : 0 );
   renderer->setGradient( mGradient );
   if ( mContrastEnhancement )
   {
@@ -66,7 +66,7 @@ QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem, Q
   if ( !contrastEnhancementElem.isNull() )
   {
     QgsContrastEnhancement* ce = new QgsContrastEnhancement(( QGis::DataType )(
-          input->dataType( grayBand ) ) ) ;
+          input->dataType( grayBand ) ) );
     ce->readXML( contrastEnhancementElem );
     r->setContrastEnhancement( ce );
   }

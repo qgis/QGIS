@@ -1145,7 +1145,7 @@ void QgsShapeburstFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QLi
   p->setPen( QPen( Qt::NoPen ) );
 
   //calculate margin size in pixels so that QImage of polygon has sufficient space to draw the full blur effect
-  int sideBuffer = 4 + ( blurRadius + 2 ) * 4 ;
+  int sideBuffer = 4 + ( blurRadius + 2 ) * 4;
   //create a QImage to draw shapeburst in
   double imWidth = points.boundingRect().width() + ( sideBuffer * 2 );
   double imHeight = points.boundingRect().height() + ( sideBuffer * 2 );
@@ -2643,10 +2643,10 @@ void QgsLinePatternFillSymbolLayer::applyPattern( const QgsSymbolV2RenderContext
 
   // To see this rectangle, comment buffer cut below.
   // Subtract 1 because not antialiased are rendered to the right/down by 1 pixel
-  QPolygon polygon = QPolygon() << QPoint( 0, 0 ) << QPoint( width - 1, 0 ) << QPoint( width - 1, height - 1 ) << QPoint( 0, height - 1 ) << QPoint( 0, 0 ) ;
+  QPolygon polygon = QPolygon() << QPoint( 0, 0 ) << QPoint( width - 1, 0 ) << QPoint( width - 1, height - 1 ) << QPoint( 0, height - 1 ) << QPoint( 0, 0 );
   p.drawPolygon( polygon );
 
-  polygon = QPolygon() << QPoint( xBuffer, yBuffer ) << QPoint( width - xBuffer - 1, yBuffer ) << QPoint( width - xBuffer - 1, height - yBuffer - 1 ) << QPoint( xBuffer, height - yBuffer - 1 ) << QPoint( xBuffer, yBuffer ) ;
+  polygon = QPolygon() << QPoint( xBuffer, yBuffer ) << QPoint( width - xBuffer - 1, yBuffer ) << QPoint( width - xBuffer - 1, height - yBuffer - 1 ) << QPoint( xBuffer, height - yBuffer - 1 ) << QPoint( xBuffer, yBuffer );
   p.drawPolygon( polygon );
 #endif
 

@@ -418,12 +418,12 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
     QgsComposerLegend* legend = dynamic_cast< QgsComposerLegend *>( *itemIt );
     if ( legend )
     {
-      /*
+#if 0
       QgsLegendModelV2* model = legend->modelV2();
       QgsLayerTreeGroup* root = model->rootGroup();
       QStringList layerIds = root->findLayerIds();
-      throw QgsMapServiceException( "Error", "Composer legend layerIds "+layerIds.join(" ,") );
-      */
+      throw QgsMapServiceException( "Error", "Composer legend layerIds " + layerIds.join( " ," ) );
+#endif
       if ( legend->autoUpdateModel() )
       {
         QgsLegendModelV2* model = legend->modelV2();
@@ -1812,12 +1812,12 @@ void QgsWMSProjectParser::drawOverlays( QPainter* p, int dpi, int width, int hei
       if ( widthRatio <= heightRatio )
       {
         renderWidth = itemWidth;
-        renderHeight = viewBox.height() * itemWidth / viewBox.width() ;
+        renderHeight = viewBox.height() * itemWidth / viewBox.width();
       }
       else
       {
         renderHeight = itemHeight;
-        renderWidth = viewBox.width() * itemHeight / viewBox.height() ;
+        renderWidth = viewBox.width() * itemHeight / viewBox.height();
       }
 
       svgIt->first->render( p, QRectF( xPos, yPos, renderWidth,

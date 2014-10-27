@@ -88,7 +88,7 @@ class QgsWcsCapabilities : public QObject
     *
     */
     QgsWcsCapabilities( QgsDataSourceURI const & theUri );
-    QgsWcsCapabilities( );
+    QgsWcsCapabilities();
 
     //! Destructor
     ~QgsWcsCapabilities();
@@ -248,7 +248,7 @@ class QgsWcsCapabilities : public QObject
     bool retrieveServerCapabilities( QString preferredVersion );
 
     /** Retrieve the best WCS version supported by server and QGIS */
-    bool retrieveServerCapabilities( );
+    bool retrieveServerCapabilities();
 
     //! \return false if the capabilities document could not be parsed - see lastError() for more info
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWcsCapabilitiesProperty &capabilities );

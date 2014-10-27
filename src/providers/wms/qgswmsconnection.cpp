@@ -48,21 +48,13 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
 
   QStringList connStringParts;
 
-  mConnectionInfo = settings.value( key + "/url" ).toString();
-  mUri.setParam( "url",  settings.value( key + "/url" ).toString() );
+  mUri.setParam( "url", settings.value( key + "/url" ).toString() );
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
   QString password = settings.value( credentialsKey + "/password" ).toString();
   if ( !username.isEmpty() )
   {
-    // check for a password, if none prompt to get it
-    if ( password.isEmpty() )
-    {
-      //password = QInputDialog::getText( this, tr( "WMS Password for %1" ).arg( theConnName ), "Password", QLineEdit::Password );
-      password = QInputDialog::getText( 0, tr( "WMS Password for %1" ).arg( mConnName ), "Password", QLineEdit::Password );
-    }
-    mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
     mUri.setParam( "username", username );
     mUri.setParam( "password", password );
   }
@@ -80,65 +72,37 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
   bool smoothPixmapTransform = settings.value( key + "/smoothPixmapTransform", false ).toBool();
   QString dpiMode = settings.value( key + "/dpiMode", "all" ).toString();
 
-  QString connArgs, delim;
-
   if ( ignoreGetMap )
   {
-    connArgs += delim + "GetMap";
-    delim = ";";
     mUri.setParam( "IgnoreGetMapUrl", "1" );
   }
 
   if ( ignoreGetFeatureInfo )
   {
-    connArgs += delim + "GetFeatureInfo";
-    delim = ";";
     mUri.setParam( "IgnoreGetFeatureInfoUrl", "1" );
   }
 
   if ( ignoreAxisOrientation )
   {
-    connArgs += delim + "AxisOrientation";
-    delim = ";";
     mUri.setParam( "IgnoreAxisOrientation", "1" );
   }
 
   if ( invertAxisOrientation )
   {
-    connArgs += delim + "InvertAxisOrientation";
-    delim = ";";
     mUri.setParam( "InvertAxisOrientation", "1" );
   }
 
   if ( smoothPixmapTransform )
   {
-    connArgs += delim + "SmoothPixmapTransform";
-    delim = ";";
     mUri.setParam( "SmoothPixmapTransform", "1" );
   }
 
   if ( !dpiMode.isEmpty() )
   {
-    connArgs += delim + "dpiMode=" + dpiMode;
-    delim = ";";
     mUri.setParam( "dpiMode", dpiMode );
   }
 
-  if ( !connArgs.isEmpty() )
-  {
-    connArgs.prepend( "ignoreUrl=" );
-
-    if ( mConnectionInfo.startsWith( "username=" ) )
-    {
-      mConnectionInfo.prepend( connArgs + "," );
-    }
-    else
-    {
-      mConnectionInfo.prepend( connArgs + ",url=" );
-    }
-  }
-
-  QgsDebugMsg( QString( "Connection info: '%1'." ).arg( mConnectionInfo ) );
+  QgsDebugMsg( QString( "encodedUri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
 }
 
 QgsWMSConnection::~QgsWMSConnection()
@@ -146,16 +110,10 @@ QgsWMSConnection::~QgsWMSConnection()
 
 }
 
-QString QgsWMSConnection::connectionInfo()
-{
-  return mConnectionInfo;
-}
-
 QgsDataSourceURI QgsWMSConnection::uri()
 {
   return mUri;
 }
-
 
 QStringList QgsWMSConnection::connectionList()
 {

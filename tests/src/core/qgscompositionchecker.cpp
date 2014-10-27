@@ -22,7 +22,7 @@
 #include <QPainter>
 
 QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
-    : QgsRenderChecker( ),
+    : QgsRenderChecker(),
     mTestName( testName ),
     mComposition( composition )
 {
@@ -92,7 +92,7 @@ bool QgsCompositionChecker::testComposition( QString &report, int page, int pixe
                           mExpectedImageFile + "</DartMeasurementFile>"
                           "<DartMeasurementFile name=\"Difference Image " + mTestName + "\" type=\"image/png\">" +
                           diffFilePath + "</DartMeasurementFile>";
-  qDebug( ) << myDashMessage;
+  qDebug() << myDashMessage;
 
   report += mReport;
   return testResult;

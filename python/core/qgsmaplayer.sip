@@ -258,7 +258,7 @@ class QgsMapLayer : QObject
      * @see also loadNamedStyle () and saveNamedStyle ();
      * @note This method was added in QGIS 1.8
      */
-    virtual QString styleURI( );
+    virtual QString styleURI();
 
     /** Retrieve the default style for this layer if one
      * exists (either as a .qml file on disk or as a

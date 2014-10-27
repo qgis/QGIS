@@ -30,7 +30,19 @@ QgsFieldModel::QgsFieldModel( QObject *parent )
 
 QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
 {
-  int r = mFields.indexFromName( fieldName );
+  QString fldName( fieldName ); // we may need a copy
+
+  if ( mLayer )
+  {
+    // the name could be an alias
+    // it would be better to have "display name" directly in QgsFields
+    // rather than having to consult layer in various places in code!
+    QString fieldNameWithAlias = mLayer->attributeAliases().key( fldName );
+    if ( !fieldNameWithAlias.isNull() )
+      fldName = fieldNameWithAlias;
+  }
+
+  int r = mFields.indexFromName( fldName );
   QModelIndex idx = index( r, 0 );
   if ( idx.isValid() )
   {
@@ -39,10 +51,10 @@ QModelIndex QgsFieldModel::indexFromName( const QString &fieldName )
 
   if ( mAllowExpression )
   {
-    int exprIdx = mExpression.indexOf( fieldName );
+    int exprIdx = mExpression.indexOf( fldName );
     if ( exprIdx != -1 )
     {
-      return index( mFields.count() + exprIdx , 0 );
+      return index( mFields.count() + exprIdx, 0 );
     }
   }
 

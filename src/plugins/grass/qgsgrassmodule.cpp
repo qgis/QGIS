@@ -150,7 +150,7 @@ QStringList QgsGrassModule::execArguments( QString module )
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
                                 QString path, bool direct, QWidget * parent, Qt::WindowFlags f )
-    : QgsGrassModuleBase( ), mSuccess( false ), mDirect( direct )
+    : QgsGrassModuleBase(), mSuccess( false ), mDirect( direct )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "called" );
@@ -2836,7 +2836,7 @@ void QgsGrassModuleInput::updateQgisLayers()
       QString mapset = split.last();
       split.pop_back(); // mapset
 
-      //QDir locDir ( sep + split.join ( QString(sep) ) ) ;
+      //QDir locDir ( sep + split.join ( QString(sep) ) );
       //QString loc = locDir.canonicalPath();
       QString loc =  source.remove( QRegExp( "/[^/]+/[^/]+/[^/]+$" ) );
       loc = QDir( loc ).canonicalPath();
@@ -2955,7 +2955,7 @@ void QgsGrassModuleInput::updateQgisLayers()
         QString mapset = split.last();
         split.pop_back(); // mapset
 
-        //QDir locDir ( sep + split.join ( QString(sep) ) ) ;
+        //QDir locDir ( sep + split.join ( QString(sep) ) );
         //QString loc = locDir.canonicalPath();
         QString loc =  source.remove( QRegExp( "/[^/]+/[^/]+/[^/]+$" ) );
         loc = QDir( loc ).canonicalPath();
@@ -3062,13 +3062,13 @@ QStringList QgsGrassModuleInput::options()
 
     if ( !mGeometryTypeOption.isEmpty() && current < mGeometryTypes.size() )
     {
-      opt = mGeometryTypeOption + "=" + mGeometryTypes[current] ;
+      opt = mGeometryTypeOption + "=" + mGeometryTypes[current];
       list.push_back( opt );
     }
 
     if ( !mVectorLayerOption.isEmpty() && current < mVectorLayerNames.size() )
     {
-      opt = mVectorLayerOption + "=" + mVectorLayerNames[current] ;
+      opt = mVectorLayerOption + "=" + mVectorLayerNames[current];
       list.push_back( opt );
     }
   }
@@ -3592,7 +3592,7 @@ QgsGrassModuleField::QgsGrassModuleField(
   }
 
   QHBoxLayout *l = new QHBoxLayout( this );
-  mFieldComboBox = new QComboBox( );
+  mFieldComboBox = new QComboBox();
   l->addWidget( mFieldComboBox );
 
   // Fill in layer current fields
@@ -3935,7 +3935,7 @@ void QgsGrassModuleCheckBox::setToolTip( const QString & text )
 }
 void QgsGrassModuleCheckBox::adjustText()
 {
-  QString t = fontMetrics().elidedText( mText , Qt::ElideRight, width() - iconSize().width() - 20 );
+  QString t = fontMetrics().elidedText( mText, Qt::ElideRight, width() - iconSize().width() - 20 );
   QCheckBox::setText( t );
 
   if ( mTip.isEmpty() )

@@ -29,8 +29,14 @@
 #include <cmath>
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double width, Qt::PenStyle penStyle )
-    : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 ), mOffsetUnit( QgsSymbolV2::MM ),
-    mUseCustomDashPattern( false ), mCustomDashPatternUnit( QgsSymbolV2::MM ), mDrawInsidePolygon( false )
+    : mPenStyle( penStyle )
+    , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
+    , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
+    , mOffset( 0 )
+    , mOffsetUnit( QgsSymbolV2::MM )
+    , mUseCustomDashPattern( false )
+    , mCustomDashPatternUnit( QgsSymbolV2::MM )
+    , mDrawInsidePolygon( false )
 {
   mColor = color;
   mWidth = width;
@@ -274,8 +280,10 @@ void QgsSimpleLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, 
   renderPolyline( points, context );
   if ( rings )
   {
+    mOffset = -mOffset; // invert the offset for rings!
     foreach ( const QPolygonF& ring, *rings )
       renderPolyline( ring, context );
+    mOffset = -mOffset;
   }
 
   if ( mDrawInsidePolygon )
@@ -490,9 +498,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   QgsExpression* dashPatternExpression = expression( "customdash" );
   if ( dashPatternExpression )
   {
-
     double scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
-
     double dashWidthDiv = mPen.widthF();
 
     if ( strokeWidthExpression )
@@ -553,7 +559,7 @@ double QgsSimpleLineSymbolLayerV2::estimateMaxBleed() const
 QVector<qreal> QgsSimpleLineSymbolLayerV2::dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const
 {
   unit = mCustomDashPatternUnit;
-  return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>() ;
+  return mUseCustomDashPattern ? mCustomDashVector : QVector<qreal>();
 }
 
 Qt::PenStyle QgsSimpleLineSymbolLayerV2::dxfPenStyle() const
@@ -845,6 +851,18 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
       else
         renderPolylineVertex( points2, context, placement );
     }
+  }
+}
+
+void QgsMarkerLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+  renderPolyline( points, context );
+  if ( rings )
+  {
+    mOffset = -mOffset; // invert the offset for rings!
+    foreach ( const QPolygonF& ring, *rings )
+      renderPolyline( ring, context );
+    mOffset = -mOffset;
   }
 }
 

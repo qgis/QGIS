@@ -98,7 +98,7 @@ void QgsGeorefPlugin::initGui()
   delete mActionRunGeoref;
 
   // Create the action for tool
-  mActionRunGeoref = new QAction( QIcon(), tr( "&Georeferencer" ), this );
+  mActionRunGeoref = new QAction( QIcon(), tr( "&Georeferencer..." ), this );
   mActionRunGeoref->setObjectName( "mActionRunGeoref" );
 
   // Connect the action to the run

@@ -7,7 +7,11 @@ class QgsFilterLineEdit : QLineEdit
 #include <qgsfilterlineedit.h>
 %End
   public:
-    QgsFilterLineEdit( QWidget* parent = 0 );
+    QgsFilterLineEdit( QWidget* parent = 0, QString nullValue = QString::null );
+
+    void setNullValue( QString nullValue );
+
+    QString nullValue() const;
 
     /**
      * Sets the current text with NULL support
@@ -40,4 +44,10 @@ class QgsFilterLineEdit : QLineEdit
      */
     void valueChanged( const QString& value );
 
+  protected:
+    void mousePressEvent( QMouseEvent* e );
+    void focusInEvent( QFocusEvent* e );
+    void resizeEvent( QResizeEvent* e );
+    void changeEvent( QEvent* e );
+    void paintEvent( QPaintEvent* e );
 };

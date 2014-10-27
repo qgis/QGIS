@@ -598,7 +598,7 @@ void QgisAppInterface::preloadForm( QString uifile )
   QSignalMapper* signalMapper = new QSignalMapper( this );
   mTimer = new QTimer( this );
 
-  connect( mTimer , SIGNAL( timeout() ), signalMapper, SLOT( map() ) );
+  connect( mTimer, SIGNAL( timeout() ), signalMapper, SLOT( map() ) );
   connect( signalMapper, SIGNAL( mapped( QString ) ), mTimer, SLOT( stop() ) );
   connect( signalMapper, SIGNAL( mapped( QString ) ), this, SLOT( cacheloadForm( QString ) ) );
 

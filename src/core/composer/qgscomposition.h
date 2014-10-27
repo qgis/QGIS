@@ -47,6 +47,7 @@ class QgsComposerMouseHandles;
 class QgsComposerHtml;
 class QgsComposerTableV2;
 class QgsComposerItem;
+class QgsComposerItemGroup;
 class QgsComposerLabel;
 class QgsComposerLegend;
 class QgsComposerMap;
@@ -470,6 +471,22 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Unlock all items*/
     void unlockAllItems();
 
+    /**Creates a new group from a list of composer items and adds it to the composition.
+     * @param items items to include in group
+     * @returns QgsComposerItemGroup of grouped items, if grouping was possible
+     * @note added in QGIS 2.6
+    */
+    QgsComposerItemGroup* groupItems( QList<QgsComposerItem*> items );
+
+    /**Ungroups items by removing them from an item group and removing the group from the
+     * composition.
+     * @param group item group to ungroup
+     * @returns list of items removed from the group, or an empty list if ungrouping
+     * was not successful
+     * @note added in QGIS 2.6
+    */
+    QList<QgsComposerItem*> ungroupItems( QgsComposerItemGroup* group );
+
     /**Sorts the zList. The only time where this function needs to be called is from QgsComposer
      * after reading all the items from xml file
      * @deprecated use refreshZList instead
@@ -583,7 +600,9 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QImage printPageAsRaster( int page );
 
     /**Render a page to a paint device
-        @note added in version 1.9*/
+     * @param p destination painter
+     * @param page page number, 0 based such that the first page is page 0
+     * @note added in version 1.9*/
     void renderPage( QPainter* p, int page );
 
     /** Compute world file parameters */
@@ -797,6 +816,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     bool dataDefinedEvaluate( QgsComposerObject::DataDefinedProperty property, QVariant &expressionValue,
                               QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties );
 
+    /**Returns whether a data defined property has been set and is currently active.
+     * @param property data defined property to test
+     * @param dataDefinedProperties map of data defined properties to QgsDataDefined
+     * @note this method was added in version 2.5
+    */
+    bool dataDefinedActive( const QgsComposerObject::DataDefinedProperty property,
+                            const QMap<QgsComposerObject::DataDefinedProperty, QgsDataDefined *> *dataDefinedProperties ) const;
+
     /**Evaluates a data defined property and returns the calculated value.
      * @param property data defined property to evaluate
      * @param feature current atlas feature to evaluate property for
@@ -814,6 +841,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
      * @note this method was added in version 2.5
     */
     void prepareDataDefinedExpression( QgsDataDefined *dd, QMap< QgsComposerObject::DataDefinedProperty, QgsDataDefined* >* dataDefinedProperties ) const;
+
+    /**Check whether any data defined page settings are active.
+     * @returns true if any data defined page settings are active.
+     * @note this method was added in version 2.5
+    */
+    bool ddPageSizeActive() const;
 
   private slots:
     /*Prepares all data defined expressions*/

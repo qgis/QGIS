@@ -66,7 +66,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
 
     //todo: fixme
     void setScaleDenominator( double ) {}
-    void addExternalGMLData( const QString& , QDomDocument* ) {}
+    void addExternalGMLData( const QString&, QDomDocument* ) {}
 
     QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
 

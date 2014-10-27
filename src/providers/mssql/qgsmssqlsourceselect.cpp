@@ -512,7 +512,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   {
     // Let user know we couldn't initialise the MSSQL provider
     QMessageBox::warning( this,
-                          tr( "MSSQL Provider" ), db.lastError( ).text( ) );
+                          tr( "MSSQL Provider" ), db.lastError().text() );
     return;
   }
 
@@ -595,7 +595,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
     QApplication::restoreOverrideCursor();
     // Let user know we couldn't retieve tables from the MSSQL provider
     QMessageBox::warning( this,
-                          tr( "MSSQL Provider" ), q.lastError( ).text( ) );
+                          tr( "MSSQL Provider" ), q.lastError().text() );
     return;
   }
 

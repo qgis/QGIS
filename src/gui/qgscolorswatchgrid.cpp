@@ -256,7 +256,7 @@ void QgsColorSwatchGrid::draw( QPainter &painter )
   QColor highlight = pal.color( QPalette::Highlight );
 
   //draw header background
-  painter.setBrush( headerBgColor ) ;
+  painter.setBrush( headerBgColor );
   painter.setPen( Qt::NoPen );
   painter.drawRect( QRect( 0, 0, width(), LABEL_SIZE ) );
 

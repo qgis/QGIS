@@ -17,18 +17,10 @@
 
 #ifndef QGSWMSCONNECTION_H
 #define QGSWMSCONNECTION_H
+
 #include "qgsdatasourceuri.h"
-#include "qgisgui.h"
-//#include "qgscontexthelp.h"
 
 #include <QStringList>
-#include <QPushButton>
-
-class QgisApp;
-/*class QButtonGroup;*/
-/*class QgsNumericSortTreeWidgetItem;*/
-class QDomDocument;
-class QDomElement;
 
 /*!
  * \brief   Connections management
@@ -50,14 +42,10 @@ class QgsWMSConnection : public QObject
     static QString selectedConnection();
     static void setSelectedConnection( QString name );
 
-
   public:
-    QString connectionInfo();
     QString mConnName;
-    QString mConnectionInfo;
     QgsDataSourceURI uri();
     QgsDataSourceURI mUri;
 };
-
 
 #endif // QGSWMSCONNECTION_H

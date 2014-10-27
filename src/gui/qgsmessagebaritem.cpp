@@ -23,8 +23,8 @@
 #include <QLabel>
 #include <QTextEdit>
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent ) :
-    QWidget( parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+    : QWidget( parent )
     , mTitle( "" )
     , mText( text )
     , mLevel( level )
@@ -36,8 +36,8 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::Messag
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration , QWidget *parent ) :
-    QWidget( parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+    : QWidget( parent )
     , mTitle( title )
     , mText( text )
     , mLevel( level )
@@ -49,8 +49,8 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent ) :
-    QWidget( parent )
+QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+    : QWidget( parent )
     , mTitle( title )
     , mText( text )
     , mLevel( level )
@@ -62,8 +62,8 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   writeContent();
 }
 
-QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent ) :
-    QWidget( parent )
+QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
+    : QWidget( parent )
     , mTitle( "" )
     , mText( "" )
     , mLevel( level )

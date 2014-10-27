@@ -291,7 +291,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   if ( mComposerTable )
   {
     //set up models, views and delegates
-    mColumnModel = new QgsComposerAttributeTableColumnModelV2( mComposerTable , mColumnsTableView );
+    mColumnModel = new QgsComposerAttributeTableColumnModelV2( mComposerTable, mColumnsTableView );
     mColumnsTableView->setModel( mColumnModel );
     mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 
@@ -344,7 +344,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   if ( mComposerTableV1 )
   {
     //set up models, views and delegates
-    mColumnModelV1 = new QgsComposerAttributeTableColumnModel( mComposerTableV1 , mColumnsTableView );
+    mColumnModelV1 = new QgsComposerAttributeTableColumnModel( mComposerTableV1, mColumnsTableView );
     mColumnsTableView->setModel( mColumnModelV1 );
     mColumnsTableView->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
 

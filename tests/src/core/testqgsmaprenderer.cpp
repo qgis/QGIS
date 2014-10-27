@@ -90,7 +90,7 @@ void TestQgsMapRenderer::initTestCase()
   //
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
   QString myTestDataDir = myDataDir + QDir::separator();
-  QString myTmpDir = QDir::tempPath() + QDir::separator() ;
+  QString myTmpDir = QDir::tempPath() + QDir::separator();
   QString myFileName = myTmpDir +  "maprender_testdata.shp";
   //copy over the default qml for our generated layer
   QString myQmlFileName = myTestDataDir +  "maprender_testdata.qml";

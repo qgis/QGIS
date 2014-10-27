@@ -59,7 +59,7 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QString dump() const;
 
-    virtual QgsFeatureRendererV2* clone() const ;
+    virtual QgsFeatureRendererV2* clone() const;
 
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );

@@ -851,6 +851,8 @@ class EditorTabWidget(QTabWidget):
     def __init__(self, parent):
         QTabWidget.__init__(self, parent=None)
         self.parent = parent
+        
+        self.settings = QSettings()
 
         self.idx = -1
         # Layout for top frame (restore tabs)
@@ -1109,7 +1111,6 @@ class EditorTabWidget(QTabWidget):
         Restore tabs if they are found in the settings. If none are found it will add a new empty tab.
         """
         # Restore script of the previuos session
-        self.settings = QSettings()
         tabScripts = self.settings.value("pythonConsole/tabScripts", [])
         self.restoreTabList = tabScripts
 
