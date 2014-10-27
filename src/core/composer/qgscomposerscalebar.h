@@ -236,6 +236,9 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /**Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
 
+    //overriden to apply minimum size
+    void setSceneRect( const QRectF &rectangle );
+
   public slots:
     void updateSegmentSize();
     /**Sets mCompositionMap to 0 if the map is deleted*/
@@ -291,7 +294,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /**Returns diagonal of composer map in selected units (map units / meters / feet / nautical miles)*/
     double mapWidth() const;
-
 };
 
 #endif //QGSCOMPOSERSCALEBAR_H

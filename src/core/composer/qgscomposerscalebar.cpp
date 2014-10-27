@@ -387,6 +387,11 @@ void QgsComposerScaleBar::adjustBoxSize()
   }
 
   QRectF box = mStyle->calculateBoxSize();
+  if ( rect().height() > box.height() )
+  {
+    //keep user specified item height if higher than minimum scale bar height
+    box.setHeight( rect().height() );
+  }
 
   //update rect for data defined size and position
   QRectF newRect = evalItemRect( box, true );
@@ -401,7 +406,33 @@ void QgsComposerScaleBar::adjustBoxSize()
     newRect.setHeight( box.height() );
   }
 
-  setSceneRect( newRect );
+  QgsComposerItem::setSceneRect( newRect );
+}
+
+void QgsComposerScaleBar::setSceneRect( const QRectF& rectangle )
+{
+  QRectF box = mStyle->calculateBoxSize();
+  if ( rectangle.height() > box.height() )
+  {
+    //keep user specified item height if higher than minimum scale bar height
+    box.setHeight( rectangle.height() );
+  }
+  box.moveTopLeft( rectangle.topLeft() );
+
+  //update rect for data defined size and position
+  QRectF newRect = evalItemRect( rectangle );
+
+  //scale bars have a minimum size, respect that regardless of data defined settings
+  if ( newRect.width() < box.width() )
+  {
+    newRect.setWidth( box.width() );
+  }
+  if ( newRect.height() < box.height() )
+  {
+    newRect.setHeight( box.height() );
+  }
+
+  QgsComposerItem::setSceneRect( newRect );
 }
 
 void QgsComposerScaleBar::update()
