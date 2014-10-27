@@ -373,6 +373,9 @@ static GEOSGeometry *createGeosPolygon( const QgsPolygon& polygon )
       geoms << ring;
     }
 
+    if ( geoms.size() == 0 )
+      return 0;
+
     return createGeosPolygon( geoms );
   }
   catch ( GEOSException &e )
@@ -454,7 +457,10 @@ QgsGeometry* QgsGeometry::fromMultiPolyline( const QgsMultiPolyline& multiline )
   try
   {
     for ( int i = 0; i < multiline.count(); i++ )
-      geoms << createGeosLineString( multiline[i] );
+    {
+      GEOSGeometry *lineString = createGeosLineString( multiline[i] );
+      if ( lineString ) geoms << lineString;
+    }
 
     return fromGeosGeom( createGeosCollection( GEOS_MULTILINESTRING, geoms ) );
   }
@@ -479,7 +485,10 @@ QgsGeometry* QgsGeometry::fromMultiPolygon( const QgsMultiPolygon& multipoly )
   try
   {
     for ( int i = 0; i < multipoly.count(); i++ )
-      geoms << createGeosPolygon( multipoly[i] );
+    {
+      GEOSGeometry *polygon = createGeosPolygon( multipoly[i] );
+      if ( polygon ) geoms << polygon;
+    }
 
     return fromGeosGeom( createGeosCollection( GEOS_MULTIPOLYGON, geoms ) );
   }
