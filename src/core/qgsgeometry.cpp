@@ -284,6 +284,8 @@ static GEOSGeometry *createGeosLinearRing( const QgsPolyline& polyline )
     }
     else
     {
+      // XXX [MD] this exception should not be silenced!
+      // this is here just because maptopixel simplification can return invalid linear rings
       if ( polyline.count() == 3 ) //-> Avoid 'GEOS::IllegalArgumentException: Invalid number of points in LinearRing found 3 - must be 0 or >= 4'
         return 0;
 
@@ -359,7 +361,16 @@ static GEOSGeometry *createGeosPolygon( const QgsPolygon& polygon )
     for ( int i = 0; i < polygon.count(); i++ )
     {
       GEOSGeometry *ring = createGeosLinearRing( polygon[i] );
-      if ( ring ) geoms << ring;
+      if ( !ring )
+      {
+        // something went really wrong - exit
+        for ( int j = 0; j < geoms.count(); j++ )
+          GEOSGeom_destroy_r( geosinit.ctxt, geoms[j] );
+        // XXX [MD] we just silently return here - but we shouldn't
+        // this is just because maptopixel simplification can return invalid linear rings
+        return 0;
+      }
+      geoms << ring;
     }
 
     return createGeosPolygon( geoms );

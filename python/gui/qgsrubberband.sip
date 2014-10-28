@@ -48,7 +48,7 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param mapCanvas The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
      *  @param isPolygon true: draw as (multi-)polygon, false draw as (multi-)linestring
      */
-    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon );
+    QgsRubberBand( QgsMapCanvas* mapCanvas /TransferThis/, bool isPolygon ) /Deprecated/;
     ~QgsRubberBand();
 
     /**
@@ -56,6 +56,20 @@ class QgsRubberBand: QgsMapCanvasItem
      *  @param color  The color used to render this rubberband
      */
     void setColor( const QColor & color );
+
+    /**
+     * Set the fill color for the rubberband
+     *  @param color  The color used to render this rubberband
+     *  @note Added in 2.6
+     */
+    void setFillColor( const QColor & color );
+
+    /**
+     * Set the border color for the rubberband
+     *  @param color  The color used to render this rubberband
+     *  @note Added in 2.6
+     */
+    void setBorderColor( const QColor & color );
 
     /**
      * Set the width of the line. Outline width for polygon.
