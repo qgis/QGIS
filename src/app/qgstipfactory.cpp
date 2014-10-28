@@ -192,6 +192,32 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " Check out the plugins and see what they can do for you."
                       ) );
   addGenericTip( myTip );
+  // by yjacolin
+  myTip.setTitle(tr("Add an action to layer"));
+  myTip.setContent(tr("Action in a layer allow user to trigger action when clicking on a geometry"
+                      " with 'Run Feature Action' tools."
+                      "For example, you can open an html page using the field value of the geometry "
+                      "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
+        ));
+  addGuiTip(myTip);
+  // by yjacolin
+  myTip.setTitle(tr("Copy, paste and cut in QGIS"));
+  myTip.setContent(tr("Copy, paste, and cut work as in another applications in QGIS. Select a "
+                      "feature (a geometry or an attribut row in the attribute table) and use "
+                      "one of this shortcuts: Ctrl+C to copy, Ctrl+X to copy, and Ctrl+V to paste."
+        ));
+  addGuiTip(myTip);
+  // by yjacolin
+  myTip.setTitle(tr("Right clic with identify tools"));
+  myTip.setContent(tr("Right clic with the identify tools to show a context menu from which you can "
+                      "choose the layer in which to identify feature. A sub menu will list feature "
+                      "identified and a third sub-menu will show the action link setup for the layer."
+                      "If one of this sub-menu doesn't contains any information, the next sub-menu"
+                      "will appear instead. For example, if you have just one layer, and click "
+                      "somewhere with several features, the first menu will list the feature list "
+                      "instead of layer list."
+        ));
+  addGuiTip(myTip);
 
   /* Template for adding more tips
   myTip.setTitle(tr(""));
