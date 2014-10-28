@@ -9292,22 +9292,22 @@ iface 이용해 QGIS API 인터페이스에 접근하거나, help(iface) 입력�
         <translation>정상적인 파생을 분석중...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10274"/>
+        <location filename="../src/app/qgisapp.cpp" line="10275"/>
         <source>minidump written to %1</source>
         <translation>미니덤프가 %1에 기록</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10278"/>
+        <location filename="../src/app/qgisapp.cpp" line="10279"/>
         <source>writing of minidump to %1 failed (%2)</source>
         <translation>미니덤프가 %1에 기록하는 중 실패 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10285"/>
+        <location filename="../src/app/qgisapp.cpp" line="10286"/>
         <source>creation of minidump to %1 failed (%2)</source>
         <translation>%1에 미니덤프 만들기 실패 (%2)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10288"/>
+        <location filename="../src/app/qgisapp.cpp" line="10289"/>
         <source>Crash dumped</source>
         <translation>크래쉬l 덤프</translation>
     </message>
@@ -9806,25 +9806,25 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsgeometry.cpp" line="218"/>
         <location filename="../src/core/qgsgeometry.cpp" line="242"/>
         <location filename="../src/core/qgsgeometry.cpp" line="261"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="297"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="369"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="397"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="430"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="452"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="477"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2036"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2335"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2369"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2407"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2542"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2607"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3426"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4857"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4888"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4959"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6101"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6130"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6153"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="299"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="380"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="408"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="441"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="463"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="488"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2047"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2346"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2380"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2418"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2553"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2618"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3437"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4868"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4899"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4970"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6112"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6141"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6164"/>
         <source>Exception: %1</source>
         <translation>예외: %1</translation>
     </message>
@@ -9833,31 +9833,31 @@ Error(%2): %3</source>
         <location filename="../src/core/qgsgeometry.cpp" line="218"/>
         <location filename="../src/core/qgsgeometry.cpp" line="242"/>
         <location filename="../src/core/qgsgeometry.cpp" line="261"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="297"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="369"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="397"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="430"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="452"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="477"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2036"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2335"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2369"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2407"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2542"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="2607"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="3426"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4857"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4888"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="4959"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="5757"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6101"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6130"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6153"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="299"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="380"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="408"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="441"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="463"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="488"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2047"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2346"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2380"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2418"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2553"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="2618"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="3437"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4868"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4899"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="4970"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5768"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6112"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6141"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6164"/>
         <source>GEOS</source>
         <translation>GEOS</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="5757"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="5768"/>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
         <translation>GEOS는 3.2 이전 GEOSInterpolate을 지원하지 않습니다</translation>
     </message>
@@ -12977,13 +12977,13 @@ Response was:
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1320"/>
-        <location filename="../src/app/qgisapp.cpp" line="4922"/>
-        <location filename="../src/app/qgisapp.cpp" line="6277"/>
-        <location filename="../src/app/qgisapp.cpp" line="6303"/>
-        <location filename="../src/app/qgisapp.cpp" line="6315"/>
-        <location filename="../src/app/qgisapp.cpp" line="6454"/>
-        <location filename="../src/app/qgisapp.cpp" line="6534"/>
-        <location filename="../src/app/qgisapp.cpp" line="9443"/>
+        <location filename="../src/app/qgisapp.cpp" line="4923"/>
+        <location filename="../src/app/qgisapp.cpp" line="6278"/>
+        <location filename="../src/app/qgisapp.cpp" line="6304"/>
+        <location filename="../src/app/qgisapp.cpp" line="6316"/>
+        <location filename="../src/app/qgisapp.cpp" line="6455"/>
+        <location filename="../src/app/qgisapp.cpp" line="6535"/>
+        <location filename="../src/app/qgisapp.cpp" line="9444"/>
         <source>Error</source>
         <translation>오류</translation>
     </message>
@@ -13037,113 +13037,113 @@ Please contact the developers.
         <translation>웹(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1679"/>
+        <location filename="../src/app/qgisapp.cpp" line="1680"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>레이어 렌더링 등 시간이 걸리는 작업의 상태를 표시하는 진행률 표시줄</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1698"/>
+        <location filename="../src/app/qgisapp.cpp" line="1699"/>
         <source>Toggle extents and mouse position display</source>
         <translation>범위와 마우스 위치 표시간의 전환</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1712"/>
-        <location filename="../src/app/qgisapp.cpp" line="8664"/>
+        <location filename="../src/app/qgisapp.cpp" line="1713"/>
+        <location filename="../src/app/qgisapp.cpp" line="8665"/>
         <source>Coordinate:</source>
         <translation>좌표:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1713"/>
+        <location filename="../src/app/qgisapp.cpp" line="1714"/>
         <source>Current map coordinate</source>
         <translation>현재 지도 좌표</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1728"/>
+        <location filename="../src/app/qgisapp.cpp" line="1729"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position. The format is lat,lon or east,north</source>
         <translation>커시 위치의 지도상 좌표를 보여줍니다. 마우스가 움직일때마다 지속적으로 값이 갱신됩니다. 또한 변경하시면 캔버스 중앙의 좌표값을 바꿀 수 있습니다. 형식은 경/위도 혹은 동/북 임</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1732"/>
+        <location filename="../src/app/qgisapp.cpp" line="1733"/>
         <source>Current map coordinate (lat,lon or east,north)</source>
         <translation>현재 지도 좌표 (경/위도 혹은 동/북)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1747"/>
+        <location filename="../src/app/qgisapp.cpp" line="1748"/>
         <source>Scale </source>
         <translation>축척</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1748"/>
+        <location filename="../src/app/qgisapp.cpp" line="1749"/>
         <source>Current map scale</source>
         <translation>현재 지도 축척</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1761"/>
+        <location filename="../src/app/qgisapp.cpp" line="1762"/>
         <source>Displays the current map scale</source>
         <translation>현재 지도 축척을 표시</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1762"/>
+        <location filename="../src/app/qgisapp.cpp" line="1763"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>현재 지도 축척(x:y 형식)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1768"/>
+        <location filename="../src/app/qgisapp.cpp" line="1769"/>
         <source>Render</source>
         <translation>렌더링</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1772"/>
+        <location filename="../src/app/qgisapp.cpp" line="1773"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>체크되어 있는 경우 지도 레이어는 탐색 명령과 같은 이벤트 때 렌더링됩니다. 체크되지 않은 경우 렌더링되지 않습니다. 이를 이용해 렌더링하지 않고 많은 레이어를 추가하여 심볼을 줄 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1776"/>
+        <location filename="../src/app/qgisapp.cpp" line="1777"/>
         <source>Toggle map rendering</source>
         <translation>지도 렌더링 전환</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1798"/>
+        <location filename="../src/app/qgisapp.cpp" line="1799"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>이 아이콘은 실시간 좌표계 변환 활성화 여부를 나타냅니다. 아이콘을 클릭하면이 동작을 변경하기 위한 프로젝트 속성 대화상자가 표시됩니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1802"/>
+        <location filename="../src/app/qgisapp.cpp" line="1803"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>좌표계 상태 - 클릭하면 좌표계 대화상자가 열림</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1807"/>
+        <location filename="../src/app/qgisapp.cpp" line="1808"/>
         <source>Ready</source>
         <translation>준비</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2203"/>
+        <location filename="../src/app/qgisapp.cpp" line="2204"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>지도 오버뷰 캔버스. 이 캔버스는 현재 지도 캔버스의 위치를 식별하는 데 사용됩니다. 현재 표시 영역이 빨간색 사각형 으로 표시됩니다. 지도상의 모든 레이어는 오버뷰 캔버스에 추가될 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2212"/>
+        <location filename="../src/app/qgisapp.cpp" line="2213"/>
         <source>Overview</source>
         <translation>오버뷰</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2304"/>
+        <location filename="../src/app/qgisapp.cpp" line="2305"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>범례에는 지도 캔버스에 있는 모든 레이어가 나타납니다. 체크박스를 클릭하면 레이어를 켜고 끕니다. 범례의 레이어 이름을 두 번 클릭하여 모양 등의 설정을 변경합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2306"/>
+        <location filename="../src/app/qgisapp.cpp" line="2307"/>
         <source>Layers</source>
         <translation>레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2396"/>
+        <location filename="../src/app/qgisapp.cpp" line="2397"/>
         <source>Map layer list that displays all layers in drawing order.</source>
         <translation>그리기 순서에 보이는 모든 레이어의 맵 레이어 리스트.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2397"/>
+        <location filename="../src/app/qgisapp.cpp" line="2398"/>
         <source>Layer order</source>
         <translation>레이어 순서</translation>
     </message>
@@ -13153,149 +13153,149 @@ Please contact the developers.
         <translation>사용자 qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2591"/>
-        <location filename="../src/app/qgisapp.cpp" line="3693"/>
+        <location filename="../src/app/qgisapp.cpp" line="2592"/>
+        <location filename="../src/app/qgisapp.cpp" line="3694"/>
         <source>&lt; Blank &gt;</source>
         <translation>&lt; Blank &gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2646"/>
+        <location filename="../src/app/qgisapp.cpp" line="2647"/>
         <source>QGIS version</source>
         <translation>QGIS 버전</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2647"/>
+        <location filename="../src/app/qgisapp.cpp" line="2648"/>
         <source>QGIS code revision</source>
         <translation>QGIS 코드 리버전</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2651"/>
+        <location filename="../src/app/qgisapp.cpp" line="2652"/>
         <source>Compiled against Qt</source>
         <translation>컴파일시 사용된 Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2652"/>
+        <location filename="../src/app/qgisapp.cpp" line="2653"/>
         <source>Running against Qt</source>
         <translation>실행시 사용된 Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2656"/>
+        <location filename="../src/app/qgisapp.cpp" line="2657"/>
         <source>Compiled against GDAL/OGR</source>
         <translation>다음 GDAL/OGR을 이용하여 컴파일됨</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2657"/>
+        <location filename="../src/app/qgisapp.cpp" line="2658"/>
         <source>Running against GDAL/OGR</source>
         <translation>다음 GDAL/OGR을 이용하여 실행중</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2666"/>
+        <location filename="../src/app/qgisapp.cpp" line="2667"/>
         <source>PostgreSQL Client Version</source>
         <translation>PostgreSQL 클라이언트 버전</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2670"/>
+        <location filename="../src/app/qgisapp.cpp" line="2671"/>
         <source>No support.</source>
         <translation>지원 안됨.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2674"/>
+        <location filename="../src/app/qgisapp.cpp" line="2675"/>
         <source>SpatiaLite Version</source>
         <translation>SpatiaLite 버전</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2680"/>
+        <location filename="../src/app/qgisapp.cpp" line="2681"/>
         <source>QWT Version</source>
         <translation>QWT 버전</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2681"/>
+        <location filename="../src/app/qgisapp.cpp" line="2682"/>
         <source>PROJ.4 Version</source>
         <translation>PROJ.4 버전</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2685"/>
+        <location filename="../src/app/qgisapp.cpp" line="2686"/>
         <source>QScintilla2 Version</source>
         <translation>QScintilla2 버전</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2688"/>
+        <location filename="../src/app/qgisapp.cpp" line="2689"/>
         <source>This copy of QGIS writes debugging output.</source>
         <translation>이 QGIS 버전은 디버깅 정보를 출력합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2816"/>
+        <location filename="../src/app/qgisapp.cpp" line="2817"/>
         <source>%1 doesn&apos;t have any layers</source>
         <translation>%1에 레이어 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2817"/>
-        <location filename="../src/app/qgisapp.cpp" line="2824"/>
-        <location filename="../src/app/qgisapp.cpp" line="3155"/>
+        <location filename="../src/app/qgisapp.cpp" line="2818"/>
+        <location filename="../src/app/qgisapp.cpp" line="2825"/>
+        <location filename="../src/app/qgisapp.cpp" line="3156"/>
         <source>Invalid Data Source</source>
         <translation>잘못된 데이터 소스</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2823"/>
-        <location filename="../src/app/qgisapp.cpp" line="3154"/>
+        <location filename="../src/app/qgisapp.cpp" line="2824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3155"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1은 올바르지 않거나 인식할 수없는 데이터 소스임</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2915"/>
+        <location filename="../src/app/qgisapp.cpp" line="2916"/>
         <source>Vector</source>
         <translation>벡터</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3178"/>
+        <location filename="../src/app/qgisapp.cpp" line="3179"/>
         <source>PostgreSQL</source>
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3178"/>
+        <location filename="../src/app/qgisapp.cpp" line="3179"/>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
         <translation>프로바이더에서 PostgreSQL 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3234"/>
+        <location filename="../src/app/qgisapp.cpp" line="3235"/>
         <source>%1 is an invalid layer - not loaded</source>
         <translation>%1은 잘못된 레이어임 - 불러오지 못함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3235"/>
+        <location filename="../src/app/qgisapp.cpp" line="3236"/>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>%1이 잘못된 레이어라 읽을 수 없습니다. 추가정보는 &lt;a href=&quot;#messageLog&quot;&gt;메시지 로그&lt;/a&gt;를 확인해 주십시요.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3768"/>
-        <location filename="../src/app/qgisapp.cpp" line="3926"/>
-        <location filename="../src/app/qgisapp.cpp" line="3991"/>
+        <location filename="../src/app/qgisapp.cpp" line="3769"/>
+        <location filename="../src/app/qgisapp.cpp" line="3927"/>
+        <location filename="../src/app/qgisapp.cpp" line="3992"/>
         <source>QGIS files</source>
         <translation>QGIS 파일</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5670"/>
-        <location filename="../src/app/qgisapp.cpp" line="5729"/>
+        <location filename="../src/app/qgisapp.cpp" line="5671"/>
+        <location filename="../src/app/qgisapp.cpp" line="5730"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to Layer-&gt;Toggle editing</source>
         <translation>객체 결합은 편집 모드인 레이어에서만 사용할 수 있습니다. 결합 툴을 이용하기 위해서는 레이어-&gt;편집 전환을 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6900"/>
+        <location filename="../src/app/qgisapp.cpp" line="6901"/>
         <source>No legend entries selected</source>
         <translation>범례 항목이 선택되지 않음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6901"/>
+        <location filename="../src/app/qgisapp.cpp" line="6902"/>
         <source>Select the layers and groups you want to remove in the legend.</source>
         <translation>범례에서 제거할 레이어와 그룹을 선택하십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6908"/>
+        <location filename="../src/app/qgisapp.cpp" line="6909"/>
         <source>Remove layers and groups</source>
         <translation>레이어 및 그룹 제거</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6908"/>
+        <location filename="../src/app/qgisapp.cpp" line="6909"/>
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
         <translation>
@@ -13303,7 +13303,7 @@ Please contact the developers.
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="6920"/>
+        <location filename="../src/app/qgisapp.cpp" line="6921"/>
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
         <translation>
@@ -13311,240 +13311,240 @@ Please contact the developers.
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6995"/>
+        <location filename="../src/app/qgisapp.cpp" line="6996"/>
         <source>%1 (%2 type unsupported)</source>
         <translation>%1 (%2 형식 지원안됨)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7681"/>
+        <location filename="../src/app/qgisapp.cpp" line="7682"/>
         <source>http://qgis.org/en/site/forusers/commercial_support.html</source>
         <translation>http://qgis.org/en/site/forusers/commercial_support.html</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7947"/>
+        <location filename="../src/app/qgisapp.cpp" line="7948"/>
         <source>Do you want to save the current project? %1</source>
         <translation>현재 프로젝트를 저장하시겠습니까? %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9423"/>
+        <location filename="../src/app/qgisapp.cpp" line="9424"/>
         <source>Invalid Layer</source>
         <translation>잘못된 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3262"/>
         <source>SpatiaLite</source>
         <translation>SpatiaLite</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3261"/>
+        <location filename="../src/app/qgisapp.cpp" line="3262"/>
         <source>Cannot get SpatiaLite select dialog from provider.</source>
         <translation>프로바이더에서 SpatiaLite 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3276"/>
+        <location filename="../src/app/qgisapp.cpp" line="3277"/>
         <source>Delimited Text</source>
         <translation>구분자로 분리된 텍스트</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3276"/>
+        <location filename="../src/app/qgisapp.cpp" line="3277"/>
         <source>Cannot get Delimited Text select dialog from provider.</source>
         <translation>프로바이더에서 구분자로 분리된 텍스트 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3297"/>
+        <location filename="../src/app/qgisapp.cpp" line="3298"/>
         <source>MSSQL</source>
         <translation>MSSQL</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3297"/>
+        <location filename="../src/app/qgisapp.cpp" line="3298"/>
         <source>Cannot get MSSQL select dialog from provider.</source>
         <translation>프로바이더에서 MSSQL 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3314"/>
+        <location filename="../src/app/qgisapp.cpp" line="3315"/>
         <source>Oracle</source>
         <translation>오라클</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3314"/>
+        <location filename="../src/app/qgisapp.cpp" line="3315"/>
         <source>Cannot get Oracle select dialog from provider.</source>
         <translation>프로바이더에서 오라클 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3337"/>
+        <location filename="../src/app/qgisapp.cpp" line="3338"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3337"/>
+        <location filename="../src/app/qgisapp.cpp" line="3338"/>
         <source>Cannot get WMS select dialog from provider.</source>
         <translation>프로바이더에서 WMS 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3354"/>
+        <location filename="../src/app/qgisapp.cpp" line="3355"/>
         <source>WCS</source>
         <translation>WCS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3354"/>
+        <location filename="../src/app/qgisapp.cpp" line="3355"/>
         <source>Cannot get WCS select dialog from provider.</source>
         <translation>프로바이더에서 WCS 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3376"/>
+        <location filename="../src/app/qgisapp.cpp" line="3377"/>
         <source>WFS</source>
         <translation>WFS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3376"/>
+        <location filename="../src/app/qgisapp.cpp" line="3377"/>
         <source>Cannot get WFS select dialog from provider.</source>
         <translation>프로바이더에서 WFS 선택 대화상자를 받을 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3563"/>
+        <location filename="../src/app/qgisapp.cpp" line="3564"/>
         <source>Default failed to open: %1</source>
         <translation>다음을 여는 중 기본값 실패: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3567"/>
+        <location filename="../src/app/qgisapp.cpp" line="3568"/>
         <source>Default not found: %1</source>
         <translation>기본값 발견 안됨: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3569"/>
+        <location filename="../src/app/qgisapp.cpp" line="3570"/>
         <source>Open Template Project</source>
         <translation>템플릿 프로젝트 열기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3594"/>
+        <location filename="../src/app/qgisapp.cpp" line="3595"/>
         <source>Auto-open Project</source>
         <translation>프로젝트 자동 열기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3627"/>
+        <location filename="../src/app/qgisapp.cpp" line="3628"/>
         <source>Failed to open: %1</source>
         <translation>열기 실패: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3650"/>
+        <location filename="../src/app/qgisapp.cpp" line="3651"/>
         <source>Not valid project file: %1</source>
         <translation>잘못된 프로젝트 파일: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3663"/>
+        <location filename="../src/app/qgisapp.cpp" line="3664"/>
         <source>Project failed to open: %1</source>
         <translation>프로젝트 열기 실패: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3670"/>
+        <location filename="../src/app/qgisapp.cpp" line="3671"/>
         <source>Default template has been reopened: %1</source>
         <translation>기본 템플릿이 다시 열림: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3677"/>
+        <location filename="../src/app/qgisapp.cpp" line="3678"/>
         <source>File not found: %1</source>
         <translation>파일 찾지 못함: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3745"/>
+        <location filename="../src/app/qgisapp.cpp" line="3746"/>
         <source>Calculating...</source>
         <translation>계산중...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3745"/>
-        <location filename="../src/app/qgisapp.cpp" line="4846"/>
+        <location filename="../src/app/qgisapp.cpp" line="3746"/>
+        <location filename="../src/app/qgisapp.cpp" line="4847"/>
         <source>Abort...</source>
         <translation>중단...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3766"/>
+        <location filename="../src/app/qgisapp.cpp" line="3767"/>
         <source>Choose a QGIS project file to open</source>
         <translation>불러올 QGIS 프로젝트 파일을 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3802"/>
+        <location filename="../src/app/qgisapp.cpp" line="3803"/>
         <source>Loading project: %1</source>
         <translation>프로젝트 읽는중: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3816"/>
+        <location filename="../src/app/qgisapp.cpp" line="3817"/>
         <source>Unable to open project</source>
         <translation>프로젝트 열 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3873"/>
+        <location filename="../src/app/qgisapp.cpp" line="3874"/>
         <source>Security warning</source>
         <translation>보안 경고</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3874"/>
+        <location filename="../src/app/qgisapp.cpp" line="3875"/>
         <source>project macros have been disabled.</source>
         <translation>프로젝트 매크로가 비활성화 됨.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3865"/>
+        <location filename="../src/app/qgisapp.cpp" line="3866"/>
         <source>Enable macros</source>
         <translation>매크로 활성화</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3897"/>
+        <location filename="../src/app/qgisapp.cpp" line="3898"/>
         <source>Project loaded</source>
         <translation>프로젝트 불러와짐</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3924"/>
+        <location filename="../src/app/qgisapp.cpp" line="3925"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS 프로젝트 파일을 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3956"/>
-        <location filename="../src/app/qgisapp.cpp" line="4010"/>
+        <location filename="../src/app/qgisapp.cpp" line="3957"/>
+        <location filename="../src/app/qgisapp.cpp" line="4011"/>
         <source>Saved project to: %1</source>
         <translation>다음에 저장된 프로젝트: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3968"/>
-        <location filename="../src/app/qgisapp.cpp" line="4017"/>
+        <location filename="../src/app/qgisapp.cpp" line="3969"/>
+        <location filename="../src/app/qgisapp.cpp" line="4018"/>
         <source>Unable to save project %1</source>
         <translation>프로젝트 %1 저장할 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3989"/>
+        <location filename="../src/app/qgisapp.cpp" line="3990"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>새 QGIS 프로젝트로 저장할 파일 이름 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4155"/>
+        <location filename="../src/app/qgisapp.cpp" line="4156"/>
         <source>Unable to load %1</source>
         <translation>%1 불러오지 못함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4274"/>
+        <location filename="../src/app/qgisapp.cpp" line="4275"/>
         <source>Choose a file name to save the map image as</source>
         <translation>새 지도 이미지로 저장할 파일 이름 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4279"/>
+        <location filename="../src/app/qgisapp.cpp" line="4280"/>
         <source>Saved map image to %1</source>
         <translation>%1에 지도 이미지 저장됨</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4656"/>
+        <location filename="../src/app/qgisapp.cpp" line="4657"/>
         <source>Default system font substituted.</source>
         <translation>기본 시스템 글꼴로 대체되었습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4675"/>
+        <location filename="../src/app/qgisapp.cpp" line="4676"/>
         <source>Labeling</source>
         <translation>라벨링</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4676"/>
+        <location filename="../src/app/qgisapp.cpp" line="4677"/>
         <source>Font for layer &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt; was not found (&lt;i&gt;%2&lt;/i&gt;). %3</source>
         <translation>레이어 &lt;b&gt;&lt;u&gt;%1&lt;/u&gt;&lt;/b&gt;의 폰트 발견 못함 (&lt;i&gt;%2&lt;/i&gt;). %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4667"/>
+        <location filename="../src/app/qgisapp.cpp" line="4668"/>
         <source>Open labeling dialog</source>
         <translation>라벨링 대화상자 열기</translation>
     </message>
@@ -13645,199 +13645,199 @@ Please contact the developers.
         <translation>일자/시간</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2331"/>
+        <location filename="../src/app/qgisapp.cpp" line="2332"/>
         <source>Add Group</source>
         <translation>그룹 추가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2337"/>
+        <location filename="../src/app/qgisapp.cpp" line="2338"/>
         <source>Manage Layer Visibility</source>
         <translation>레이어 가시성 관리</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2346"/>
+        <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>Filter Legend By Map Content</source>
         <translation>지도 컨텐츠에 의해 범례 필터링</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2354"/>
+        <location filename="../src/app/qgisapp.cpp" line="2355"/>
         <source>Expand All</source>
         <translation>모두 펼치기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2359"/>
+        <location filename="../src/app/qgisapp.cpp" line="2360"/>
         <source>Collapse All</source>
         <translation>모두 접기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2661"/>
+        <location filename="../src/app/qgisapp.cpp" line="2662"/>
         <source>Compiled against GEOS</source>
         <translation>컴파일시 사용된 GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2662"/>
+        <location filename="../src/app/qgisapp.cpp" line="2663"/>
         <source>Running against GEOS</source>
         <translation>실행시 사용된 GEOS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3722"/>
+        <location filename="../src/app/qgisapp.cpp" line="3723"/>
         <source>Layer creation failed. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further information.</source>
         <translation>레이어 생성 실패. 자세한 정보는 &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt;에서 확인해 주십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3946"/>
+        <location filename="../src/app/qgisapp.cpp" line="3947"/>
         <source>Insufficient permissions</source>
         <translation>권한이 불충분함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3947"/>
+        <location filename="../src/app/qgisapp.cpp" line="3948"/>
         <source>The project file is not writable.</source>
         <translation>프로젝트 파일이 쓰기가능하지 않음.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4049"/>
+        <location filename="../src/app/qgisapp.cpp" line="4050"/>
         <source>DXF export completed</source>
         <translation>DXF 내보내기 완료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4053"/>
+        <location filename="../src/app/qgisapp.cpp" line="4054"/>
         <source>DXF export failed</source>
         <translation>DXF 내보내기 실패</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4687"/>
-        <location filename="../src/app/qgisapp.cpp" line="4708"/>
+        <location filename="../src/app/qgisapp.cpp" line="4688"/>
+        <location filename="../src/app/qgisapp.cpp" line="4709"/>
         <source>Commit errors</source>
         <translation>커밋 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4688"/>
-        <location filename="../src/app/qgisapp.cpp" line="4709"/>
+        <location filename="../src/app/qgisapp.cpp" line="4689"/>
+        <location filename="../src/app/qgisapp.cpp" line="4710"/>
         <source>Could not commit changes to layer %1</source>
         <translation>레이어 %1에 변경을 커밋할 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4690"/>
+        <location filename="../src/app/qgisapp.cpp" line="4691"/>
         <source>Errors: %1
 </source>
         <translation>오류: %1
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4697"/>
+        <location filename="../src/app/qgisapp.cpp" line="4698"/>
         <source>Show more</source>
         <translation>더 보기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4747"/>
+        <location filename="../src/app/qgisapp.cpp" line="4748"/>
         <source>Labeling Options</source>
         <translation>라벨링 옵션</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4748"/>
+        <location filename="../src/app/qgisapp.cpp" line="4749"/>
         <source>Please select a vector layer first</source>
         <translation>먼저 벡터 레이어를 선택해 주십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4756"/>
+        <location filename="../src/app/qgisapp.cpp" line="4757"/>
         <source>Layer labeling settings</source>
         <translation>레이어 라벨링 설정</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4848"/>
+        <location filename="../src/app/qgisapp.cpp" line="4849"/>
         <source>Reading raster</source>
         <translation>래스터 읽는 중</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4923"/>
+        <location filename="../src/app/qgisapp.cpp" line="4924"/>
         <source>Cannot write raster error code: %1</source>
         <translation>래스터 쓸 수 없음. 오류 코드: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5073"/>
+        <location filename="../src/app/qgisapp.cpp" line="5074"/>
         <source>Saving done</source>
         <translation>저장 완료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5074"/>
+        <location filename="../src/app/qgisapp.cpp" line="5075"/>
         <source>Export to vector file has been completed</source>
         <translation>벡터 파일 내보내기 완료되었음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5080"/>
+        <location filename="../src/app/qgisapp.cpp" line="5081"/>
         <source>Save error</source>
         <translation>저장 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5081"/>
+        <location filename="../src/app/qgisapp.cpp" line="5082"/>
         <source>Export to vector file failed.
 Error: %1</source>
         <translation>벡터 파일 내보내기가 실패했습니다. 
 오류: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5142"/>
-        <location filename="../src/app/qgisapp.cpp" line="7557"/>
-        <location filename="../src/app/qgisapp.cpp" line="7566"/>
-        <location filename="../src/app/qgisapp.cpp" line="7627"/>
-        <location filename="../src/app/qgisapp.cpp" line="7636"/>
+        <location filename="../src/app/qgisapp.cpp" line="5143"/>
+        <location filename="../src/app/qgisapp.cpp" line="7558"/>
+        <location filename="../src/app/qgisapp.cpp" line="7567"/>
+        <location filename="../src/app/qgisapp.cpp" line="7628"/>
+        <location filename="../src/app/qgisapp.cpp" line="7637"/>
         <source>No Layer Selected</source>
         <translation>레이어가 선택되지 않음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5143"/>
+        <location filename="../src/app/qgisapp.cpp" line="5144"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>객체를 제거하려면, 범례에서 벡터 레이어를 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5151"/>
+        <location filename="../src/app/qgisapp.cpp" line="5152"/>
         <source>No Vector Layer Selected</source>
         <translation>벡터 레이어가 선택되어 있지 않음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5152"/>
+        <location filename="../src/app/qgisapp.cpp" line="5153"/>
         <source>Deleting features only works on vector layers</source>
         <translation>객체 삭제는 벡터 레이어에서만 동작함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5159"/>
+        <location filename="../src/app/qgisapp.cpp" line="5160"/>
         <source>Provider does not support deletion</source>
         <translation>프로바이더가 삭제를 지원하지 않음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5160"/>
+        <location filename="../src/app/qgisapp.cpp" line="5161"/>
         <source>Data provider does not support deleting features</source>
         <translation>데이터 프로바이더가 객체의 삭제를 지원하지 않음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5167"/>
-        <location filename="../src/app/qgisapp.cpp" line="5670"/>
-        <location filename="../src/app/qgisapp.cpp" line="5729"/>
+        <location filename="../src/app/qgisapp.cpp" line="5168"/>
+        <location filename="../src/app/qgisapp.cpp" line="5671"/>
+        <location filename="../src/app/qgisapp.cpp" line="5730"/>
         <source>Layer not editable</source>
         <translation>레이어 편집 불가</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5168"/>
+        <location filename="../src/app/qgisapp.cpp" line="5169"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>현재 레이어는 편집할 수 없습니다. 디지타이징 도구 모음에서 &apos;편집 시작&apos;을 선택하십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5177"/>
+        <location filename="../src/app/qgisapp.cpp" line="5178"/>
         <source>No Features Selected</source>
         <translation>객체가 선택되지 않았음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5178"/>
+        <location filename="../src/app/qgisapp.cpp" line="5179"/>
         <source>The current layer has not selected features</source>
         <translation>현재 레이어에 선택된 객체가 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5183"/>
+        <location filename="../src/app/qgisapp.cpp" line="5184"/>
         <source>Delete features</source>
         <translation>객체 삭제</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5183"/>
+        <location filename="../src/app/qgisapp.cpp" line="5184"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -13845,22 +13845,22 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5188"/>
+        <location filename="../src/app/qgisapp.cpp" line="5189"/>
         <source>Features deleted</source>
         <translation>객체 삭제됨</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5191"/>
+        <location filename="../src/app/qgisapp.cpp" line="5192"/>
         <source>Problem deleting features</source>
         <translation>객체 삭제중 문제발생</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5192"/>
+        <location filename="../src/app/qgisapp.cpp" line="5193"/>
         <source>A problem occured during deletion of features</source>
         <translation>객체를 삭제하는 동안 문제가 발생</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5197"/>
+        <location filename="../src/app/qgisapp.cpp" line="5198"/>
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
         <translation>
@@ -13868,246 +13868,246 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5243"/>
+        <location filename="../src/app/qgisapp.cpp" line="5244"/>
         <source>Merging features...</source>
         <translation>객체를 결합중...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5243"/>
+        <location filename="../src/app/qgisapp.cpp" line="5244"/>
         <source>Abort</source>
         <translation>중단</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5303"/>
+        <location filename="../src/app/qgisapp.cpp" line="5304"/>
         <source>Create unique print composer title</source>
         <translation>유일한 인쇄 구성기 제목 생성</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5306"/>
+        <location filename="../src/app/qgisapp.cpp" line="5307"/>
         <source>(title generated if left empty)</source>
         <translation>(비어있을 경우 제목 생성됨)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5320"/>
+        <location filename="../src/app/qgisapp.cpp" line="5321"/>
         <source>Composer title</source>
         <translation>구성기 제목</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5335"/>
+        <location filename="../src/app/qgisapp.cpp" line="5336"/>
         <source>Title can not be empty!</source>
         <translation>제목이 비어있을 수 없음!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5346"/>
+        <location filename="../src/app/qgisapp.cpp" line="5347"/>
         <source>Title already exists!</source>
         <translation>제목이 항상 있어야 함!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5363"/>
-        <location filename="../src/app/qgisapp.cpp" line="5458"/>
+        <location filename="../src/app/qgisapp.cpp" line="5364"/>
+        <location filename="../src/app/qgisapp.cpp" line="5459"/>
         <source>Composer %1</source>
         <translation>구성기 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5420"/>
+        <location filename="../src/app/qgisapp.cpp" line="5421"/>
         <source> copy</source>
         <translation> 복사</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5655"/>
-        <location filename="../src/app/qgisapp.cpp" line="5718"/>
+        <location filename="../src/app/qgisapp.cpp" line="5656"/>
+        <location filename="../src/app/qgisapp.cpp" line="5719"/>
         <source>No active layer</source>
         <translation>활성 레이어 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5656"/>
-        <location filename="../src/app/qgisapp.cpp" line="5718"/>
+        <location filename="../src/app/qgisapp.cpp" line="5657"/>
+        <location filename="../src/app/qgisapp.cpp" line="5719"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>활성 레이어 발견 안됨. 레이어 목록에서 레이어를 선택하십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5664"/>
-        <location filename="../src/app/qgisapp.cpp" line="5724"/>
+        <location filename="../src/app/qgisapp.cpp" line="5665"/>
+        <location filename="../src/app/qgisapp.cpp" line="5725"/>
         <source>Active layer is not vector</source>
         <translation>활성 레이어가 벡터가 아님</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5664"/>
-        <location filename="../src/app/qgisapp.cpp" line="5724"/>
+        <location filename="../src/app/qgisapp.cpp" line="5665"/>
+        <location filename="../src/app/qgisapp.cpp" line="5725"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>객체 결합 도구는 벡터 레이어에서만 사용할 수 있습니다. 레이어 목록에서 벡터 레이어를 선택하십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5744"/>
-        <location filename="../src/app/qgisapp.cpp" line="5781"/>
+        <location filename="../src/app/qgisapp.cpp" line="5679"/>
+        <location filename="../src/app/qgisapp.cpp" line="5745"/>
+        <location filename="../src/app/qgisapp.cpp" line="5782"/>
         <source>Not enough features selected</source>
         <translation>충분한 객체가 선택되지 않았음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5678"/>
-        <location filename="../src/app/qgisapp.cpp" line="5744"/>
-        <location filename="../src/app/qgisapp.cpp" line="5781"/>
+        <location filename="../src/app/qgisapp.cpp" line="5679"/>
+        <location filename="../src/app/qgisapp.cpp" line="5745"/>
+        <location filename="../src/app/qgisapp.cpp" line="5782"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>결합 도구를 이용하기 위해서는 적어도 2 개의 객체를 선택해야 함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5692"/>
+        <location filename="../src/app/qgisapp.cpp" line="5693"/>
         <source>Merged feature attributes</source>
         <translation>객체 속성 결함됨</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5756"/>
-        <location filename="../src/app/qgisapp.cpp" line="5796"/>
+        <location filename="../src/app/qgisapp.cpp" line="5757"/>
+        <location filename="../src/app/qgisapp.cpp" line="5797"/>
         <source>Merge failed</source>
         <translation>결합 실패함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5756"/>
-        <location filename="../src/app/qgisapp.cpp" line="5796"/>
+        <location filename="../src/app/qgisapp.cpp" line="5757"/>
+        <location filename="../src/app/qgisapp.cpp" line="5797"/>
         <source>An error occured during the merge operation</source>
         <translation>결합하는 동안 오류 발생</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5764"/>
+        <location filename="../src/app/qgisapp.cpp" line="5765"/>
         <source>Union operation canceled</source>
         <translation>병합 작업 취소됨</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5764"/>
-        <location filename="../src/app/qgisapp.cpp" line="5803"/>
+        <location filename="../src/app/qgisapp.cpp" line="5765"/>
+        <location filename="../src/app/qgisapp.cpp" line="5804"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>병합 작업의 결과 지오메트리 유형이 현재 레이어와 맞지 않으므로 작업이 취소되었음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5809"/>
+        <location filename="../src/app/qgisapp.cpp" line="5810"/>
         <source>Merged features</source>
         <translation>머지된 객체</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5915"/>
+        <location filename="../src/app/qgisapp.cpp" line="5916"/>
         <source>No active vector layer</source>
         <translation>활성 벡터 레이어 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5916"/>
+        <location filename="../src/app/qgisapp.cpp" line="5917"/>
         <source>To select features, choose a vector layer in the legend</source>
         <translation>객체를 선택하기 위해서는, 범례에서 벡터 레이어 선택</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5953"/>
+        <location filename="../src/app/qgisapp.cpp" line="5954"/>
         <source>Features cut</source>
         <translation>객체 잘라내기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5979"/>
+        <location filename="../src/app/qgisapp.cpp" line="5980"/>
         <source>Features pasted</source>
         <translation>객체 붙여넣기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6066"/>
-        <location filename="../src/app/qgisapp.cpp" line="6073"/>
-        <location filename="../src/app/qgisapp.cpp" line="6079"/>
+        <location filename="../src/app/qgisapp.cpp" line="6067"/>
+        <location filename="../src/app/qgisapp.cpp" line="6074"/>
+        <location filename="../src/app/qgisapp.cpp" line="6080"/>
         <source>Paste features</source>
         <translation>객체 붙여넣기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6067"/>
+        <location filename="../src/app/qgisapp.cpp" line="6068"/>
         <source>no features could be successfully pasted.</source>
         <translation>어떤 객체도 성공적으로 붙어넣지 못함.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6074"/>
+        <location filename="../src/app/qgisapp.cpp" line="6075"/>
         <source>%1 features were successfully pasted.</source>
         <translation>%1 객체가 성공적으로 붙여짐.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6080"/>
+        <location filename="../src/app/qgisapp.cpp" line="6081"/>
         <source>%1 of %2 features could be successfully pasted.</source>
         <translation>%2 중 %1 객체가 성공적으로 붙여 짐.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6107"/>
+        <location filename="../src/app/qgisapp.cpp" line="6108"/>
         <source>Pasted</source>
         <translation>붙여넣어짐</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6108"/>
+        <location filename="../src/app/qgisapp.cpp" line="6109"/>
         <source>New memory layer name</source>
         <translation>새로운 메모리 레이어 이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6109"/>
+        <location filename="../src/app/qgisapp.cpp" line="6110"/>
         <source>Layer name</source>
         <translation>레이어 이름</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6185"/>
+        <location filename="../src/app/qgisapp.cpp" line="6186"/>
         <source>No features in clipboard.</source>
         <translation>클립보드에 객체 없음.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6189"/>
+        <location filename="../src/app/qgisapp.cpp" line="6190"/>
         <source>No features with geometry found, point type layer will be created.</source>
         <translation>도형이 없는 객체가 발견되어, 포인트 형식 레이어가 만들어 졌습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6193"/>
+        <location filename="../src/app/qgisapp.cpp" line="6194"/>
         <source>Multiple geometry types found, features with geometry different from %1 will be created without geometry.</source>
         <translation>다중 지오메트리 타입이 발견되어, %1과 지오메트리가 다른 객체들은 지오메트리 없이 생성되었습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6207"/>
+        <location filename="../src/app/qgisapp.cpp" line="6208"/>
         <source>Cannot create new layer</source>
         <translation>새 레이어 만들 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6220"/>
+        <location filename="../src/app/qgisapp.cpp" line="6221"/>
         <source>Cannot create field %1 (%2,%3)</source>
         <translation>필드 %1 만들 수 없음 (%2 %3)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6278"/>
+        <location filename="../src/app/qgisapp.cpp" line="6279"/>
         <source>Cannot copy style: %1</source>
         <translation>다음 스타일 복사 못함: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6304"/>
+        <location filename="../src/app/qgisapp.cpp" line="6305"/>
         <source>Cannot parse style: %1:%2:%3</source>
         <translation>스타일 해석 못함: %1:%2:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6316"/>
+        <location filename="../src/app/qgisapp.cpp" line="6317"/>
         <source>Cannot read style: %1</source>
         <translation>스타일 읽지 못함: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6397"/>
+        <location filename="../src/app/qgisapp.cpp" line="6398"/>
         <source>Start editing failed</source>
         <translation>편집 시작 실패</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6398"/>
+        <location filename="../src/app/qgisapp.cpp" line="6399"/>
         <source>Provider cannot be opened for editing</source>
         <translation>지정된 프로바이더는 편집모드로 열 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6423"/>
+        <location filename="../src/app/qgisapp.cpp" line="6424"/>
         <source>Stop editing</source>
         <translation>편집 종료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6424"/>
+        <location filename="../src/app/qgisapp.cpp" line="6425"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>레이어 %1의 변경사항을 저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6455"/>
+        <location filename="../src/app/qgisapp.cpp" line="6456"/>
         <source>Problems during roll back</source>
         <translation>롤백 중에 문제가 발생</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6535"/>
+        <location filename="../src/app/qgisapp.cpp" line="6536"/>
         <source>Could not %1 changes to layer %2
 
 Errors: %3
@@ -14118,229 +14118,229 @@ Errors: %3
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6536"/>
+        <location filename="../src/app/qgisapp.cpp" line="6537"/>
         <source>rollback</source>
         <translation>롤백</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6536"/>
+        <location filename="../src/app/qgisapp.cpp" line="6537"/>
         <source>cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6566"/>
+        <location filename="../src/app/qgisapp.cpp" line="6567"/>
         <source>Save</source>
         <translation>저장</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6566"/>
-        <location filename="../src/app/qgisapp.cpp" line="6592"/>
-        <location filename="../src/app/qgisapp.cpp" line="6618"/>
+        <location filename="../src/app/qgisapp.cpp" line="6567"/>
+        <location filename="../src/app/qgisapp.cpp" line="6593"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>all</source>
         <translation>모두</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6592"/>
+        <location filename="../src/app/qgisapp.cpp" line="6593"/>
         <source>Rollback</source>
         <translation>롤백</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6618"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>Cancel</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6634"/>
+        <location filename="../src/app/qgisapp.cpp" line="6635"/>
         <source>Current edits</source>
         <translation>현재 편집내용</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6635"/>
+        <location filename="../src/app/qgisapp.cpp" line="6636"/>
         <source>%1 current changes for %2 layer(s)?</source>
         <translation>%2 레이어에 대해 변경사항을 %1 하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6947"/>
+        <location filename="../src/app/qgisapp.cpp" line="6948"/>
         <source>copy</source>
         <translation>복사</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6951"/>
+        <location filename="../src/app/qgisapp.cpp" line="6952"/>
         <source>Plugin layer</source>
         <translation>플러그인 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6963"/>
+        <location filename="../src/app/qgisapp.cpp" line="6964"/>
         <source>Memory layer</source>
         <translation>메모리 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6983"/>
-        <location filename="../src/app/qgisapp.cpp" line="6994"/>
+        <location filename="../src/app/qgisapp.cpp" line="6984"/>
+        <location filename="../src/app/qgisapp.cpp" line="6995"/>
         <source>Duplicate layer: </source>
         <translation>중복 레이어:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6984"/>
+        <location filename="../src/app/qgisapp.cpp" line="6985"/>
         <source>%1 (duplication resulted in invalid layer)</source>
         <translation>%1 (잘못된 레이어에서의 중복된 결과)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7057"/>
+        <location filename="../src/app/qgisapp.cpp" line="7058"/>
         <source>Set scale visibility for selected layers</source>
         <translation>선택된 레이어에 대한 가시 스케일 설정</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7307"/>
+        <location filename="../src/app/qgisapp.cpp" line="7308"/>
         <source>Couldn&apos;t load Python support library: %1</source>
         <translation>파이썬 지원 라이브러리를 불러올 수 없음: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7318"/>
+        <location filename="../src/app/qgisapp.cpp" line="7319"/>
         <source>Couldn&apos;t resolve python support library&apos;s instance() symbol.</source>
         <translation>파이썬 지원 라이브러리의  instance() 심볼을 해석할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7333"/>
+        <location filename="../src/app/qgisapp.cpp" line="7334"/>
         <source>Python support ENABLED :-) </source>
         <translation>파이썬 지원이 가능해짐 ^^</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7381"/>
+        <location filename="../src/app/qgisapp.cpp" line="7382"/>
         <source>There is a new version of QGIS available</source>
         <translation>새로운 버전의 QGIS가 존재함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7385"/>
+        <location filename="../src/app/qgisapp.cpp" line="7386"/>
         <source>You are running a development version of QGIS</source>
         <translation>개발 버전 QGIS를 사용중임</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7389"/>
+        <location filename="../src/app/qgisapp.cpp" line="7390"/>
         <source>You are running the current version of QGIS</source>
         <translation>최신 버전의 QGIS 사용중임</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7394"/>
+        <location filename="../src/app/qgisapp.cpp" line="7395"/>
         <source>Would you like more information?</source>
         <translation>더 많은 정보를 원하십니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7397"/>
-        <location filename="../src/app/qgisapp.cpp" line="7410"/>
-        <location filename="../src/app/qgisapp.cpp" line="7415"/>
-        <location filename="../src/app/qgisapp.cpp" line="7436"/>
+        <location filename="../src/app/qgisapp.cpp" line="7398"/>
+        <location filename="../src/app/qgisapp.cpp" line="7411"/>
+        <location filename="../src/app/qgisapp.cpp" line="7416"/>
+        <location filename="../src/app/qgisapp.cpp" line="7437"/>
         <source>QGIS Version Information</source>
         <translation>QGIS 버전 정보</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7403"/>
+        <location filename="../src/app/qgisapp.cpp" line="7404"/>
         <source>QGIS - Changes since last release</source>
         <translation>QGIS - 마지막 릴리즈 후의 변경사항</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7415"/>
+        <location filename="../src/app/qgisapp.cpp" line="7416"/>
         <source>Unable to get current version information from server</source>
         <translation>서버에서 현재 버전 정보를 가져올 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7425"/>
+        <location filename="../src/app/qgisapp.cpp" line="7426"/>
         <source>Connection refused - server may be down</source>
         <translation>연결 거부 - 서버가 다운된 듯 함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7428"/>
+        <location filename="../src/app/qgisapp.cpp" line="7429"/>
         <source>QGIS server was not found</source>
         <translation>QGIS 서버를 찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7431"/>
+        <location filename="../src/app/qgisapp.cpp" line="7432"/>
         <source>Unknown network socket error: %1</source>
         <translation>알 수 없는 네트워크 소켓 오류: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7436"/>
+        <location filename="../src/app/qgisapp.cpp" line="7437"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>QGIS 버전 서버와 통신할 수 없음
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7558"/>
-        <location filename="../src/app/qgisapp.cpp" line="7567"/>
+        <location filename="../src/app/qgisapp.cpp" line="7559"/>
+        <location filename="../src/app/qgisapp.cpp" line="7568"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
         <translation>히스토그램 스트레치를 하시려면, 래스터 레이어를 선택해야합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7628"/>
-        <location filename="../src/app/qgisapp.cpp" line="7637"/>
+        <location filename="../src/app/qgisapp.cpp" line="7629"/>
+        <location filename="../src/app/qgisapp.cpp" line="7638"/>
         <source>To change brightness or contrast, you need to have a raster layer selected.</source>
         <translation>밝기나 대조를 변경하시려면 래스터 레이어를 선택하셔야 합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7663"/>
+        <location filename="../src/app/qgisapp.cpp" line="7664"/>
         <source>en</source>
         <comment>documentation language</comment>
         <translation>ko-KR</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7791"/>
-        <location filename="../src/app/qgisapp.cpp" line="7834"/>
+        <location filename="../src/app/qgisapp.cpp" line="7792"/>
+        <location filename="../src/app/qgisapp.cpp" line="7835"/>
         <source>Layer is not valid</source>
         <translation>레이어가 잘못되었음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7790"/>
+        <location filename="../src/app/qgisapp.cpp" line="7791"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>레이어 %1은 올바른 레이어가 아니기 때문에 지도에 추가할 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7833"/>
+        <location filename="../src/app/qgisapp.cpp" line="7834"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>이 레이어가 잘못되어 지도에 추가할 수 없음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7922"/>
+        <location filename="../src/app/qgisapp.cpp" line="7923"/>
         <source>Project has layer(s) in edit mode with unsaved edits, which will NOT be saved!</source>
         <translation>프로젝트에 저장되지 않은 변경사항이 있는 편집모드 레이어가 있으며, 이는 저장되지 않습니다!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="7946"/>
+        <location filename="../src/app/qgisapp.cpp" line="7947"/>
         <source>Save?</source>
         <translation>저장하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8565"/>
+        <location filename="../src/app/qgisapp.cpp" line="8566"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
         <translation>현재 좌표계: %1 (OTFR 활성화)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8572"/>
+        <location filename="../src/app/qgisapp.cpp" line="8573"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
         <translation>현재 좌표계: %1 (OTFR 비활성화)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8654"/>
+        <location filename="../src/app/qgisapp.cpp" line="8655"/>
         <source>Map coordinates for the current view extents</source>
         <translation>현재 뷰 영역의 지도 좌표</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8662"/>
+        <location filename="../src/app/qgisapp.cpp" line="8663"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>마우스 커서 위치의 지도 좌표</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8730"/>
+        <location filename="../src/app/qgisapp.cpp" line="8731"/>
         <source>Extents:</source>
         <translation>범위:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="8823"/>
+        <location filename="../src/app/qgisapp.cpp" line="8824"/>
         <source>Maptips require an active layer</source>
         <translation>지도팁은 활성 레이어가 필요함</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="8896"/>
+        <location filename="../src/app/qgisapp.cpp" line="8897"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation>
@@ -14348,112 +14348,112 @@ Errors: %3
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9342"/>
+        <location filename="../src/app/qgisapp.cpp" line="9343"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>GDAL이 지원하는 래스터 데이터 소스 열기</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9441"/>
+        <location filename="../src/app/qgisapp.cpp" line="9442"/>
         <source>Error adding valid layer to map canvas</source>
         <translation>유효한 레이어를 지도 캔버스에 추가 실패</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9442"/>
-        <location filename="../src/app/qgisapp.cpp" line="9580"/>
+        <location filename="../src/app/qgisapp.cpp" line="9443"/>
+        <location filename="../src/app/qgisapp.cpp" line="9581"/>
         <source>Raster layer</source>
         <translation>래스터 레이어</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9577"/>
+        <location filename="../src/app/qgisapp.cpp" line="9578"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1은 지원되는 래스터 데이터 소스가 아님</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9582"/>
+        <location filename="../src/app/qgisapp.cpp" line="9583"/>
         <source>Unsupported Data Source</source>
         <translation>지원되지 않은 데이터 소스</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9623"/>
+        <location filename="../src/app/qgisapp.cpp" line="9624"/>
         <source>Exit QGIS</source>
         <translation>QGIS 종료</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9624"/>
+        <location filename="../src/app/qgisapp.cpp" line="9625"/>
         <source>Do you really want to quit QGIS?</source>
         <translation>정말로 QGIS를 종료하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9732"/>
+        <location filename="../src/app/qgisapp.cpp" line="9733"/>
         <source>This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
         <translation>이 프로젝크 파일은 구버전의 QGIS에서 저당되었음. 이 프로젝트 파일을 저장할 때, QGIS가 최신 버전으로 업데이트 할 것이며, 구버전 QGIS에서 사용할 수 없게 됩니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9736"/>
+        <location filename="../src/app/qgisapp.cpp" line="9737"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;이 프로젝트 파일은 다른 이전 버전 QGIS에서 저장되었고 이 프로젝트가 저장될 때 QGIS 프로젝트 파일을 최신 버전으로 저장됩니다. 이 경우 이전 버전의 QGIS에서 사용할 수 없는 표현이 갱신됩니다.&lt;p&gt;QGIS 개발자는 하위 호환성을 유지하려고 노력하지만 이전 프로젝트의 일부 정보가 손실될 것입니다. QGIS의 품질을 향상시키기 위해 %3에 버그 보고서를 해 주실 수 있으면 감사하겠습니다. 이 경우 이전 프로젝트 파일과 오류를 발견한 QGIS 버전을 포함하는 것을 잊지 마십시오.&lt;p&gt;이전 프로젝트 파일을 열 때마다이 경고가 표시되는 것을 중지 하기 위해서는 %4 메뉴의 &apos;%5&apos; 체크를 취소하십시오.&lt;p&gt;프로젝트 파일 버전: %1&lt;br&gt;QGIS 버전: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9752"/>
+        <location filename="../src/app/qgisapp.cpp" line="9753"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;설정:옵션:일반&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9753"/>
+        <location filename="../src/app/qgisapp.cpp" line="9754"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>열 프로젝트 파일이 구 버전의 QGIS에서 만든 것일 때 경고</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9754"/>
+        <location filename="../src/app/qgisapp.cpp" line="9755"/>
         <source>Project file is older</source>
         <translation>프로젝트 파일이 구버전임</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9758"/>
+        <location filename="../src/app/qgisapp.cpp" line="9759"/>
         <source>This project file was saved by an older version of QGIS</source>
         <translation>이 프로젝트 파일은 구버전의 QGIS에서 저장되었음</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10110"/>
+        <location filename="../src/app/qgisapp.cpp" line="10111"/>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
         <translation>자세한 정보는 &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt;를 확인해 주십시오.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10109"/>
+        <location filename="../src/app/qgisapp.cpp" line="10110"/>
         <source>A network request timed out, any data received is likely incomplete.</source>
         <translation>네트워크 요청이 시간초과 됨. 일부 데이터가 불완전하게 받아진 듯 함.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6198"/>
-        <location filename="../src/app/qgisapp.cpp" line="6207"/>
-        <location filename="../src/app/qgisapp.cpp" line="6219"/>
-        <location filename="../src/app/qgisapp.cpp" line="9929"/>
+        <location filename="../src/app/qgisapp.cpp" line="6199"/>
+        <location filename="../src/app/qgisapp.cpp" line="6208"/>
+        <location filename="../src/app/qgisapp.cpp" line="6220"/>
+        <location filename="../src/app/qgisapp.cpp" line="9930"/>
         <source>Warning</source>
         <translation>경고</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9930"/>
+        <location filename="../src/app/qgisapp.cpp" line="9931"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>이 레이어는 속성 대화상자를 지원하지 않습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="9985"/>
+        <location filename="../src/app/qgisapp.cpp" line="9986"/>
         <source>Authentication required</source>
         <translation>인증이 필요함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10040"/>
+        <location filename="../src/app/qgisapp.cpp" line="10041"/>
         <source>Proxy authentication required</source>
         <translation>프록시 인증이 필요함</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10073"/>
+        <location filename="../src/app/qgisapp.cpp" line="10074"/>
         <source>SSL errors occured accessing URL %1:</source>
         <translation>URL %1에 액세스하는 동안 SSL 오류 발생:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="10089"/>
+        <location filename="../src/app/qgisapp.cpp" line="10090"/>
         <source>
 
 Always ignore these errors?</source>
@@ -14462,7 +14462,7 @@ Always ignore these errors?</source>
 항상 이런 오류를 무시하시겠습니까?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="10093"/>
+        <location filename="../src/app/qgisapp.cpp" line="10094"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
         <translation>
@@ -17195,7 +17195,7 @@ Should the existing classes be deleted before classification?</source>
         <translation>설정(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3036"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3039"/>
         <source>Composer</source>
         <translation>구성기</translation>
     </message>
@@ -17266,369 +17266,369 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="442"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="860"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="872"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="863"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="875"/>
         <source>%1%</source>
         <translation>%1%</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="517"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="520"/>
         <source>Composition</source>
         <translation>구성</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="521"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="524"/>
         <source>Item properties</source>
         <translation>아이템 속성</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="525"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="528"/>
         <source>Command history</source>
         <translation>명령 히스토리</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="528"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="531"/>
         <source>Atlas generation</source>
         <translation>아틀라스 생성</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="531"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="534"/>
         <source>Items</source>
         <translation>항목들</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="827"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3607"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3652"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="830"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3610"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3655"/>
         <source>Set as atlas feature for %1</source>
         <translation>%1을 위해 아틀라스 피처로 지정</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="842"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="845"/>
         <source>x: %1 mm</source>
         <translation>x: %1 mm</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="843"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="846"/>
         <source>y: %1 mm</source>
         <translation>y: %1 mm</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="844"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="847"/>
         <source>page: %3</source>
         <translation>page: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="957"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="983"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="960"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="986"/>
         <source>Enable atlas preview</source>
         <translation>사용가능 아틀라스 미리보기</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="958"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="961"/>
         <source>Atlas in not currently enabled for this composition!</source>
         <translation>현재 이 구성을 위해 아틀라스를 사용할 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="984"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="987"/>
         <source>No matching atlas features found!</source>
         <translation>일치하는 아틀라스 객체 찾지 못함!</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1385"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2087"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1388"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2090"/>
         <source>Choose a file name to save the map as</source>
         <translation>지도를 저장할 파일 이름을 선택하십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1387"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1390"/>
         <source>PDF Format</source>
         <translation>PDF 포멧</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1405"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1815"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2115"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1408"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1818"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2118"/>
         <source>Empty filename pattern</source>
         <translation>파일이름 비어 있음</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1406"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1816"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2116"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1409"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1819"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2119"/>
         <source>The filename pattern is empty. A default one will be used.</source>
         <translation>파일이름이 비어있습니다.기본값이 사용됩니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1419"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1422"/>
         <source>Directory where to save PDF files</source>
         <translation>PDF 파일을 저장할 디렉토리</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1429"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1879"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2142"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1432"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1882"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2145"/>
         <source>Unable to write into the directory</source>
         <translation>디렉토리내에 쓸 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1430"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1880"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2143"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1433"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1883"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2146"/>
         <source>The given output directory is not writable. Cancelling.</source>
         <translation>해당 출력 디렉토리에 쓸 수 없습니다. 취소합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1450"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1467"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1491"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1492"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1512"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1540"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1629"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1652"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1653"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1895"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1919"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1920"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1949"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2170"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2197"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2198"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1453"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1470"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1494"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1495"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1515"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1543"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1632"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1655"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1656"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1898"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1922"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1923"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1952"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2173"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2200"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2201"/>
         <source>Atlas processing error</source>
         <translation>아틀라스 프로세싱 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1451"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1630"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1896"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2171"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1454"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1633"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1899"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2174"/>
         <source>Feature filter parser error: %1</source>
         <translation>객체 필터 해석기 오류: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1468"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1513"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1541"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1785"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1950"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2242"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2365"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1471"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1516"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1544"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1788"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1953"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2245"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2368"/>
         <source>Error creating %1.</source>
         <translation>%1 생성중 오류.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1476"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1637"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1904"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2178"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1479"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1640"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1907"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2181"/>
         <source>Rendering maps...</source>
         <translation>도면 표현하기...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1476"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1637"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1904"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2178"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1479"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1640"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1907"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2181"/>
         <source>Abort</source>
         <translation>취소</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1723"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1726"/>
         <source>Big image</source>
         <translation>큰 이미지</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1724"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1727"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
         <translation>%1x%2 이미지를 만들기 위해서는 약 %3 MB의 메모리가 필요합니다. 실행하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1744"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1747"/>
         <source>Choose a file name to save the map image as</source>
         <translation>지도 이미지를 저장할 파일 이름을 선택하십시오</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1762"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1765"/>
         <source>Memory Allocation Error</source>
         <translation>메모리 할당 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1763"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1766"/>
         <source>Trying to create image #%1( %2x%3 @ %4dpi ) may result in a memory overflow.
 Please try a lower resolution or a smaller papersize</source>
         <translation>이미지 #%1 ( %2x%3 @ %4dpi )을 생성하는 중 메모리 오버플로우가 발생했습니다.
 해상도를 낮추거나 더 작은 출력크기로 시도해 주세요</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1784"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1787"/>
         <source>Image export error</source>
         <translation>이미지 내보내기 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1830"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1833"/>
         <source>Directory where to save image files</source>
         <translation>이미지파일을 저장할 디렉토리</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1854"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1857"/>
         <source>Image format: </source>
         <translation>이미지 양식:</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2046"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2049"/>
         <source>SVG warning</source>
         <translation>SVG 경고</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2047"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3361"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2050"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3364"/>
         <source>Don&apos;t show this message again</source>
         <translation>이 메시지를 다시 보여주지 않음</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2051"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2054"/>
         <source>&lt;p&gt;The SVG export function in QGIS has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;QGIS의  SVG 내보내기 기능은 버그와 결함때문에  몇가지 문제가 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2053"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2056"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation> Qt4 svg 코드에 있어 조금 문제가 있습니다. 특히 레이어가 지도 도곽에서 잘리지 않는 문제가 있습니다.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2056"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2059"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>만약 Qgis에서 벡터기반 출력 파일이 필요하다면 PostScript로 출력할 것을 권장합니다. SVG로 출력은 심뢰도가 낮습니다.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2089"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2092"/>
         <source>SVG Format</source>
         <translation>SVG 포멧</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2131"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2134"/>
         <source>Directory where to save SVG files</source>
         <translation>SVG 파일을 저장할 디렉토리</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2241"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2364"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2244"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2367"/>
         <source>SVG export error</source>
         <translation>SVG 내보내기 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2333"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2336"/>
         <source> on page </source>
         <translation> 발생 패이지 </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2333"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2336"/>
         <source>SVG error</source>
         <translation>SVG 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2333"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2336"/>
         <source>There was an error in SVG output for SVG layer </source>
         <translation>SVG 레이어를 위한 SVG 출력에 오류가 있음 </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2506"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2509"/>
         <source> copy</source>
         <translation>복사</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2513"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2516"/>
         <source>Duplicating composer...</source>
         <translation>구성기 복사하기...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2525"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2528"/>
         <source>Duplicate Composer</source>
         <translation>구성기 복사</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2526"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2529"/>
         <source>Composer duplication failed.</source>
         <translation>구성기 복사 실패.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2545"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2548"/>
         <source>Save template</source>
         <translation>템플릿 저장</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2547"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2550"/>
         <source>Composer templates</source>
         <translation>구성기 템플릿</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2571"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2574"/>
         <source>Save error</source>
         <translation>저장 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2571"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2574"/>
         <source>Error, could not save file</source>
         <translation>오류, 파일을 저장할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2584"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2587"/>
         <source>Load template</source>
         <translation>템플릿 불러오기</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2597"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2600"/>
         <source>Read error</source>
         <translation>읽기 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2597"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2600"/>
         <source>Error, could not read file</source>
         <translation>오류, 파일을 읽을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2614"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2617"/>
         <source>Composer error</source>
         <translation>구성기 오류</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2614"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2617"/>
         <source>Error, could not create new composer</source>
         <translation>오류, 새로운 구성기를 생성할 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="2631"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="2634"/>
         <source>Loading template into composer...</source>
         <translation>구성기에 템플릿 불러오기...</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3359"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3362"/>
         <source>Project contains WMS layers</source>
         <translation>프로젝트에 WMS 레이어가 포함되어 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3360"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3363"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>어떤 WMS 서버(예: UMN mapserver)는 WIDTH와 HEIGHT 매개 변수에 제한이 있습니다. 이러한 서버 레이어를 인쇄하는 경우 제한을 초과할 수 있습니다. 이 경우 WMS 레이어는 인쇄되지 않습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3374"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3377"/>
         <source>Project contains composition effects</source>
         <translation>프로젝트에 구성 효과가 포함되어 있습니다</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3375"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3378"/>
         <source>Advanced composition effects such as blend modes or vector layer transparency are enabled in this project, which cannot be printed as vectors. Printing as a raster is recommended.</source>
         <translation>강화된 구성 효과는 이 프로젝트내에서 블렌드 모드나 벡터 레이어 투명도 기능을 지원합니다, 벡터로 출력할 수 없을 경우. 래스터로 출력하도록 추천합니다.</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3376"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3379"/>
         <source>Print as raster</source>
         <translation>래스터로 인쇄</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="3615"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="3618"/>
         <source>Landscape</source>
         <translation>가로</translation>
     </message>
@@ -33129,10 +33129,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>값</translation>
     </message>
     <message>
-        <source>Expand tree.</source>
-        <translation type="obsolete">트리를 확장합니다.</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="53"/>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="70"/>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="87"/>
@@ -33177,10 +33173,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="258"/>
         <source>Auto open form</source>
         <translation>자동 열림 양식</translation>
-    </message>
-    <message>
-        <source>Collapse tree.</source>
-        <translation type="obsolete">트리를 축소합니다.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsidentifyresultsbase.ui" line="84"/>
@@ -52662,6 +52654,36 @@ There was a problem with your symbol database.</source>
         <translation>지도회전과 방위표 연동</translation>
     </message>
     <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="196"/>
+        <source>Add an action to layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="197"/>
+        <source>Action in a layer allow user to trigger action when clicking on a geometry with &apos;Run Feature Action&apos; tools.For example, you can open an html page using the field value of the geometry as a parameter. Look at the &lt;a href=&quot;http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu&quot;&gt;documentation&lt;/a&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="204"/>
+        <source>Copy, paste and cut in QGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="205"/>
+        <source>Copy, paste, and cut work as in another applications in QGIS. Select a feature (a geometry or an attribut row in the attribute table) and use one of this shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="211"/>
+        <source>Right click with identify tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgstipfactory.cpp" line="212"/>
+        <source>Right click with the identify tool to show a context menu from which you can choose the layer in which to identify a feature. A sub menu will list features identified and a third sub-menu will show the action link setup for the layer.If one of this sub-menu doesn&apos;t contain any information, the next sub-menuwill appear instead. For example, if you have just one layer, and click somewhere with several features, the first menu will list the feature list instead of layer list.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/app/qgstipfactory.cpp" line="49"/>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
         <translation>당신이 사용하시는 언어로 QGIS를 보고 싶으십니까? 우리는 더 많은 번역자를 찾고 있으며 당신의 도움을 감사히 생각합니다. 번역은 매우 신뢰성있게 진행되고 있습니다. 상세한 방법은 QGIS 위키의 &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;번역자 페이지&lt;/a&gt;에 있습니다</translation>
@@ -58730,13 +58752,13 @@ Run topology check again.</source>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1434"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1446"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;데이터베이스 연결&lt;/h3&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1350"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1362"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -58815,7 +58837,7 @@ WMS 서버로부터 데이터를 다운로드 받는 동안에,WMS 플러그인 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="778"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="786"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -58837,7 +58859,7 @@ Identifiable layers can be set in the Project Properties dialog &lt;label&gt;Set
 &lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="914"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="926"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -58919,7 +58941,7 @@ geometry types and don&apos;t offer to add others.
 &lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="775"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="783"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -58928,7 +58950,7 @@ geometry types and don&apos;t offer to add others.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="987"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="999"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -59005,7 +59027,7 @@ Ticking &lt;label&gt;Search options&lt;/label&gt; enables additional options for
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="715"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="723"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -59127,14 +59149,14 @@ The field calculator allows you to update fields with expressions.
 &lt;/table&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="795"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="807"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;새로운 OGR 데이터베이스 연결 대화상자&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="378"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="386"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
@@ -59145,7 +59167,7 @@ At present there is only one style available. You can adjust the angle of the ar
 현재로는 한가지 스타일만 가능합니다. 화살표의 각을 조절하거나 QGIS가 자동으로 방향을 조절하도록 조정할 수 있습니다. QGIS가 방향을 결정하도록 선택하면, 화살표가 올바른 방향을 가르치도록 최선을 다합니다. 화살표의 배치에 대해 맵 캔버스의 각 코너에 따라 4개 옵션이 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="382"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="390"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -59185,7 +59207,6 @@ QGIS는 맵 프레임과 동일한 단위의 스케일 표시 만을 지원합�
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="788"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -59193,7 +59214,7 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation>&lt;h3&gt;측정 도구&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;측정 도구&lt;/h3&gt;
 거리와 면적을 위한 두 측정도구가 있습니다. 이를 이용해 지도 캔버스에서 거리 및 면적을 측정할 수 있습니다. 현재 이 툴은 미터 단위로만 결과를 제공합니다. 마우스 오른쪽 버튼을 한번 클릭하면 측정을 멈추며 마우스 오른쪽 버튼을 두번 클릭하면 새롭게 측정을 시작합니다.
 &lt;h4&gt;길이 측정&lt;/h4&gt;
 길이를 측정하려면, 이 도구를 선택하고 측정하고자 하는 경로를 따라 클릭합니다. 각각의 세그먼트의 길이가 경로 전체 길이와 함께 표시됩니다.
@@ -59202,7 +59223,6 @@ To measure areas, select the tool and click to create the area. The total area i
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="227"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -59255,7 +59275,7 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation>&lt;h3&gt; 속성 테이블&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt; 속성 테이블&lt;/h3&gt;
 속성 테이블은 선택한 레이어의 객체들을 표시합니다. 테이블의 각 행은 여러 컬럼에서 속성을 볼 수 있는, 하나의 지도 객체를 나타냅니다. 테이블에 있는 객체들은 검색, 선택, 이동, 심지어 편집까지 할 수 있습니다. 기본적으로 속성 테이블은 독립된 창을 가집니다. 사용자가 이 창을 열었음에도 보이지 않는다면, 대부분 QGIS 메인 창 아래에 숨겨져 있는 경우입니다. 사용자가 &lt;label&gt; 설정 &gt; 옵션 &gt; 일반&lt;/label&gt;에 있는 &lt;label&gt;도킹 윈도우에 속성 테이블 열기&lt;/label&gt;를 체크하면, 도킹된 창으로 만들 수 있습니다.&lt;p&gt;
 
 선택한 레이어 객체의 총 개수, 필터된 객체와 선택된 객체들은 윈도우 헤더에 보입니다. &lt;p&gt;
@@ -59716,7 +59736,7 @@ GIS 파이썬 콘솔은 파이썬 명령어를 실행할 수 있는 대화형 �
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1110"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1122"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -59788,7 +59808,7 @@ On this tab you can choose on which layers the identify tool will work.
 이 탭을 통해 객체 확인 도구가 작동되는 레이어를 선택할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1191"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1203"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
@@ -59798,7 +59818,7 @@ The connections you define will be remembered for further use and available to c
 사용자가 정의하는 연결은 이후 사용을 위해 기억되고 드롭 다운 메뉴에서 선택할 수 있게 됩니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1197"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1209"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -60076,7 +60096,7 @@ QGIS는 객체의 속성에 기반한 액션을 수행하는 기능을 제공합
 현재 구현된 도표는 파이 및 막대 그래프와 분류된 속성값에 따른 도표 크기에 대한 선형 스케일링을 지원합니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="279"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="287"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -60157,7 +60177,7 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
 북마크의 지리적 영역을 갱신하려면  북마크를 선택한 후 &lt;label&gt;갱신&lt;/label&gt; 버튼을 클릭합니다. &lt;label&gt;확인&lt;/label&gt;을 클릭하여 선택 사항을 확인하거나 &lt;label&gt;취소&lt;/label&gt;를 클릭하여 갱신을 취소 할 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1388"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1400"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -60217,7 +60237,7 @@ To update the extent of a bookmark, click on it then click the &lt;label&gt;Upda
 &lt;p&gt;선형 레이어의 속성 테이블에 필요한 필드가 없거나 필드에 예기치 않은 값이 포함된 않은 경우, 플러그인은 기본값을 사용합니다. 사용자가 이 값들을 &lt;label&gt;기본 설정&lt;/label&gt; 탭에서 설정할 수 있습니다.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1145"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1157"/>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
 The query builder allows you to create provider specific filter expressions.
 
@@ -60311,7 +60331,71 @@ are sometimes limited (e.g. for shape files) or behave diffently.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="331"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="227"/>
+        <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
+The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; Data Sources&lt;/label&gt;.&lt;p&gt;
+
+The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
+At the bottom right of the dialog, you can choose whether to display features in a form or in a table.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Editing&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalcBar&quot;&gt;Field Calculator bar&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Selecting&lt;/h4&gt;
+&lt;/a&gt;
+Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
+A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sorting&lt;/h4&gt;
+&lt;/a&gt;
+Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtering&lt;/h4&gt;
+&lt;/a&gt;
+To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
+&lt;h5&gt;Show All Features&lt;/h5&gt;
+Shows all features of the layer.
+&lt;h5&gt;Show Selected Features&lt;/h5&gt;
+Shows all features which are currently selected.
+&lt;h5&gt;Show Features Visible on Map&lt;/h5&gt;
+Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
+&lt;h5&gt;Show Edited and New Features&lt;/h5&gt;
+Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
+&lt;h5&gt;Column Filter&lt;/h5&gt;
+A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for &lt;b&gt;man&lt;/b&gt; will therefore also show records containing &lt;b&gt;woman&lt;/b&gt;. After changing the filter text, press &lt;label&gt;Enter&lt;/label&gt; or click on &lt;label&gt;Apply&lt;/label&gt;. You can also toggle the check-box &lt;label&gt;Case sensitive&lt;/label&gt;, so your filter will also match &lt;b&gt;Night&lt;/b&gt; when your search text is &lt;b&gt;night&lt;/b&gt;.   
+&lt;h5&gt;Advanced Filter&lt;/h5&gt;
+For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Editing&lt;/h4&gt;
+&lt;/a&gt;
+To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  &lt;br&gt;
+You can also edit a field&apos;s value for many rows at once. You need to select the rows you want to edit and then use the &lt;label&gt;Field Calculator&lt;/label&gt; or the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. If no row is selected, the edition will apply on all the features.
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Field Calculator&lt;/h4&gt;
+&lt;/a&gt;
+The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
+The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
+The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
+
+&lt;a name=&quot;FieldCalcBar&quot;&gt;
+&lt;h4&gt;Field Calculator Bar&lt;/h4&gt;
+&lt;/a&gt;
+When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
+To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="339"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -60342,7 +60426,7 @@ QGIS에서 사용자 정의 좌표계를 만들기 위해서는 Proj.4 투영 �
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="346"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="354"/>
         <source>&lt;h3&gt;Copyright Label&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -60408,7 +60492,7 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="401"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="409"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -60726,7 +60810,22 @@ The following options can be added
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="797"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="796"/>
+        <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
+There are three measure tools: length, area and angle. With them, you can measure distances, areas and angles on the map canvas. The tools provide results in the units set in &lt;label&gt;Settings &gt; Options &gt; Map tools&lt;/label&gt;.
+&lt;h4&gt;Measuring Lengths&lt;/h4&gt;
+To measure lengths, select the tool and click along the path you want to measure. The length of each segment is displayed as is the total length for the path.
+A single right mouse click stops the measuring.
+&lt;h4&gt;Measuring Areas&lt;/h4&gt;
+To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
+A single right mouse click stops the measuring, while two right mouse clicks starts measuring a new.
+&lt;h4&gt;Measuring Angles&lt;/h4&gt;
+To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="809"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -60773,7 +60872,7 @@ Click on &lt;label&gt;OK&lt;/label&gt; to create the layer and close the dialog.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="833"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="845"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -60789,7 +60888,7 @@ QGIS는 PostgreSQL 데이터베이스의 PostGIS 레이어와 SpatiaLite 레이�
 벡터 데이터와 함께 작업하는 방법에 대한 자세한 설명은 &apos;벡터 데이터 작업&apos; 제 5 장에 설명되어 있습니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="954"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="966"/>
         <source>&lt;h3&gt;Create a New PostGIS Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL/PostGIS database.
 &lt;p&gt;
@@ -60858,7 +60957,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1024"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1036"/>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
 
 &lt;p&gt;
@@ -61026,14 +61125,14 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1195"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1207"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;스타일 관리자&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1419"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1431"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Vector &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -61066,7 +61165,7 @@ Pressing the &lt;label&gt;Calculate&lt;/label&gt; button will run the shortest p
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="840"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="852"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -61215,7 +61314,7 @@ QGIS는 더 이상 지도에 처음 불러와진 레이어의 좌표계에 따�
 &lt;label&gt;웹 연결에 프록시 사용&lt;/label&gt;기능을 선택해 호스트, 포트, 사용자, 및 비밀번호를 설정합니다.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="821"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="833"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -61242,7 +61341,7 @@ In this section you can see the list of attributes. To delete one of them, click
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1336"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1348"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -61272,621 +61371,7 @@ See &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector fo
 자원되는 포맷과 사용가능한 옵션을 보시려면 &lt;a href=&quot;http://gdal.org/ogr/ogr_formats.html&quot;&gt;OGR Vector formats&lt;/a&gt;을 참고하세요.</translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
-Loads and displays delimited text files
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
-is split into fields by a delimiter such as a comma.  
-This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
-Typically the first line of a delimited text file contains the names of the fields.  
-&lt;/p&gt;
-&lt;p&gt;
-Delimited text files can be loaded into QGIS as a layer. 
-The records can be displayed spatially either as a point
-defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
-describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
-only table, which can then be joined to other tables in QGIS.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
-QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
-as integer then the type will be integer, if all can be interpreted as real numbers then the type will
-be double, otherwise the type will be text.
-&lt;/p&gt;
-&lt;p&gt;
-QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
-This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
-The file should just contain one linewhich lists the type of each field. 
-Valid types are &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. The date, time, and datetime types are treated as strings in QGIS.
-Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
-The list of types are separated by commas, regardless of the delimiter used in the data file.  An
-example of a valid format file would be:
-&lt;/p&gt;
-
-&lt;pre&gt;
-&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
-&lt;/pre&gt;
-
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
-be split into fields), and defining the geometry is represented.  
-This is managed with the delimited text dialog as detailed below.  
-The dialog box displays a sample from the beginning of the file which shows how the format
-options have been applied.
-&lt;/p&gt;
-&lt;h5&gt;Choosing the data file&lt;/h5&gt;
-&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
-layer name will automatically be populated based on the file name.  The layer name is used to represent
-the data in the QGIS legend.  
-&lt;/p&gt;
-&lt;p&gt;
-By default files are assumed to be encoded as UTF-8.  However other file
-encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
-It is safer to use an explicit coding if the QGIS project needs to be portable.
-&lt;/p&gt;
-&lt;h5&gt;Specifying the file format&lt;/h5&gt;
-&lt;p&gt;The file format can be one of
-&lt;ul&gt;
-    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
-    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
-    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
-    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
-    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
-    to treat the following character as a normal character (ie to include delimiter, quote, and 
-    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
-    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
-    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
-&lt;/ul&gt;
-&lt;h5&gt;Record and field options&lt;/h5&gt;
-&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
-    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
-    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
-    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
-    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
-    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
-    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
-    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;Geometry definition&lt;/h5&gt;
-&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
-    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
-    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
-    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
-    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
-    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
-    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
-    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
-    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
-    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
-    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
-    which geometry type is displayed in text files containing multiple geometry types. Records containing
-   other geometry types are discarded.   
-    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
-    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
-    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
-&lt;/ul&gt;
-&lt;h5&gt;Layer settings&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
-&lt;/p&gt;
-&lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
-&lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
-&lt;/p&gt;
-&lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
-&lt;/p&gt;
-&lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</source>
-        <translation type="obsolete">&lt;h3&gt;구분자로 분리된 텍스트 파일 레이어&lt;/h3&gt;
-구분자로 분리된 텍스트 파일을 읽고 표시
-&lt;p&gt;
-&lt;a href=&quot;#re&quot;&gt;요약&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#creating&quot;&gt;구분자로 분리된 텍스트 파일 만들기&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#csv&quot;&gt;구분자, 인용 문자, 이스케이프 문자가 동작하는 방법&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#regexp&quot;&gt;정규 표현식 구분 기호가 작동하는 방법&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#wkt&quot;&gt;WKT 텍스트를 해석하는 방법&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#attributes&quot;&gt;구분자로 분리된 텍스트 파일 내의 속성&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;#example&quot;&gt;X, Y 점 좌표를 가진 텍스트 파일 예시&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#wkt_example&quot;&gt;WKT 지오메트리를 가진 텍스트 파일 예시&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;파이썬에서 구분자로 분리된 텍스트 파일 다루기&lt;/a&gt;&lt;br/&gt;
-&lt;/p&gt;
-
-&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;요약&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-&amp;quot;구분자로 분리된 텍스트 파일&amp;quot;는 각 줄당 하나씩의 레코드가 들어있고, 각 줄은 
-쉼표와 같은 구분자로 분리된 데이터를 담고 있습니다.
-이런 형식의 파일은 일반적으로 엑셀 등에서 내보내기 형식(예로 CSV 파일)으로 만들어 지거나 
-테이터베이스에서 만들어집니다.
-일반적으로 구분자로 분리된 텍스트 파일의 첫 줄에는 각 필드들의 이름이 담깁니다.
-&lt;/p&gt;
-&lt;p&gt;
-구분자로 분리된 텍스트 파일은 QGIS에 레이어로 로딩됩니다.
-각 레코드는 X, Y 좌표로 정의된 점이거나 WKT로 정의된 점, 선, 임의의 복잡한 폴리곤 등의 
-지도메트리로 공간적으로 표현될 수 있습니다. 
-파일은 속성만 있는 테이블로도 불러올 수 있고, 이런 테이블은 QGIS에서 다른 테이블과
-조인될 수 있습니다.
-&lt;/p&gt;
-&lt;p&gt;
-추가적으로 파일에 있는 지오메트리 정의는 텍스트, 정수, 실수 필드를 포함할 수 있습니다. 기본적으로 QGIS는
-비어있지 않은 필드 값을 기준으로 타입을 선택합니다. 만약 모두 정수로 해석 될 수 있다면 타입은 integer로 되고,
-실수로 해석될 수 있다면 타입은 double로 되고, 그렇지 않은 경우는 타입이 텍스트로 설정됩니다.
-&lt;/p&gt;
-&lt;p&gt;
-QGIS는 OGR CSV 드라이버와 호환되는 &amp;quot;csvt&amp;quot;파일 형식을 읽을 수 있습니다.
-이것은 데이터 파일과 쌍을 이루는 파일이지만, 파일 이름에 &amp;quot;t&amp;quot;가 추가되어 있습니다.  
-이 파일에는 각 필드의 타입 리스트가 있는 단 한 줄만 들어가야 합니다.
-가능한 형식은 &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, &amp;quot;datetime&amp;quot; 입니다. 
-date, time, datetime 형식은 QGIS에서 문자열로 처리됩니다.
-각 타입은 예를 들어 &amp;quot;real(10.4)&amp;quot; 처럼 폭과 정밀도가 있을 수 있습니다.
-타입 리스트는 데이터 파일이 사용하는 구분자와 상관없이 항상 쉽표로 구분됩니다.
-유효한 포맷 파일의 예는 다음과 같습니다:
-&lt;/p&gt;
-
-&lt;pre&gt;
-&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
-&lt;/pre&gt;
-
-&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;구분자로 분리된 텍스트 파일 만들기&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-구분자로 분리된 텍스트 파일을 만들 때는 데이터 파일을 선택하고, 형식을 정의(어떻게 각 레코드가 필드로 
-분리되는지)하고, 지오메트리 정의를 해야합니다.
-이는 구분자로 분리된 텍스트 레이어 대화상자에서 상세히 관리할 수 있습니다.
-이 대화상자는 파일의 시작 부분을 표시해서 형식 옵션이 적용되는 방법을 보여줍니다.
-&lt;/p&gt;
-&lt;h5&gt;데이터 파일 선택&lt;/h5&gt;
-&lt;p&gt;
-데이터 파일을 선택하기 위해서 &amp;quot;탐색...&amp;quot;버튼을 사용합니다. 파일이 선택되면
-레이어 이름은 자동적으로 파일 이름을 기반으로 정해집니다. 레이어 이름은 QGIS의 범례에서 데이터를 
-나타내는데 사용됩니다.
-&lt;/p&gt;
-&lt;p&gt;
-기본적으로 파일은 UTF-8 인코딩을 사용하는 것으로 가정됩니다. 
-그러나 다른 파일 인코딩도 선택할 수 있습니다. 예를 들어 &amp;quot;시스템&amp;quot;은 운영체제의 기본 인코딩을 사용합니다.
-만약 QGIS 프로젝트를 다른 사람에게 복사해줄 필요가 있다면 명시적인 인코딩을 사용하는 것이 안전합니다.
-&lt;/p&gt;
-&lt;h5&gt;파일 포맷 선택&lt;/h5&gt;
-&lt;p&gt;파일 포맷은 다음 중 하나일 수 있음
-&lt;ul&gt;
-    &lt;li&gt;CSV 파일 포맷.  이것은 스프래드쉬트에서 흔히 이용되는 형식으로, 각 필드는 쉼표에 의해 분리되고,
-    따옴표(&amp;quot;)가 문자열을 묶기 위해 사용됩니다. 따옴표로 묶인 필드 내에서는, 따옴표를
-	&amp;quot;&amp;quot;로 입력해야 합니다.&lt;/li&gt;
-    &lt;li&gt;구분자 선택됨.  각 레코드는 하나 이상의 구분자 문자를 이용해 필드로 분리됩니다.
-	인용 문자는 구분자를 포함한 필드를 위해 사용됩니다. 이스케이프 문자는 그 뒤의 문자를
-	일반 문자로 처리하기 위해 사용됩니다(예: 텍스트 필드의 구분자, 인용 문자, 줄넘김 문자).
-	구분자, 인용 문자, 이스케이프 문자의 사용은 &lt;a href=&quot;#csv&quot;&gt;여기&lt;/a&gt;에서 자세히 알 수 있습니다.&lt;/li&gt;
-	&lt;li&gt;정규식.  각 라인은 &amp;quot;정규식&amp;quot; 구분자를 이용해 필드로 분리됩니다.
-	정규식 사용법은 &lt;a href=&quot;#regexp&quot;&gt;여기&lt;/a&gt;에서 자세히 알 수 있습니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;레코드와 필드 옵션&lt;/h5&gt;
-&lt;p&gt;다음 옵션은 데이터 파일에서 레코드와 필드를 선택하는데 영향을 줍니다.&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;무시할 헤더 라인 수: 텍스트 파일의 시작위치부터 헤더 라인을 무시하는데 사용됨&lt;/li&gt;
-    &lt;li&gt;첫 레코드가 필드 이름을 가짐: 만약 선택되면 파일의 (무시되는 라인 이후)첫 줄은 데이터 레코드가 아닌 필드 이름으로 해석 됨&lt;/li&gt;
-    &lt;li&gt;필드 트림: 만약 선택되면 각 필드(인용 문자로 묶인 필드는 제외)의 앞, 뒤 공백은 제거됨&lt;/li&gt;
-    &lt;li&gt;빈 필드 무시: 만약 선택되면 (트림 후에) 빈 필드는 무시됨. 이것은 각 필드에 데이터가 
-	맞게 정렬되는데 영향을 주며 연속 구분기호를 단일 구분기호로 취급합니다. 
-	인용 문자로 묶인 필드는 무시되지 않습니다.&lt;/li&gt;
-    &lt;li&gt;소수점 기호로 쉼표 사용: 만약 선택되면 점 대신 쉼표를 정수부와 실수부 구분자로 사용합니다. 
-	예를 들면 &lt;tt&gt;-51,354&lt;/tt&gt;는 -51.354와 같습니다.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;h5&gt;지오메트리 정의&lt;/h5&gt;
-&lt;p&gt;지오메트리는 다음 중 하나로 정의될 수 있음&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;점 좌표쌍: 각 객체는 X, Y 좌표로 정의된 점으로 표현됩니다.&lt;/li&gt;
-    &lt;li&gt;Well known text (WKT) 지오메트리: 각 객체는 예를 들어 &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt; 같은 
-	WKT로 정의됩니다. &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt;에서 자세한 정보를 확인하세요.
-    &lt;li&gt;지오메트리 없음(속성만 있는 테이블): 레코드들이 지도상에 표시되지 않고, 속성 테이블에만 
-	보여서 QGIS에서 다른 테이블과 조인되어 보일 수 있습니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;점 좌표를 위해서는 다음과 같은 옵션이 있음:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;X 필드: X 좌표를 담고 있는 필드를 지정&lt;/li&gt;
-    &lt;li&gt;Y 필드: Y 좌표를 담고 있는 필드를 지정&lt;/li&gt;
-    &lt;li&gt;DMS 각도: 만약 선택되면 좌표는 도/분/초 혹은 도/분으로 표현됩니다.
-	QGIS는 도/분의 해석에 매우 관대합니다. 유효한 도분초 좌표는 옵션인 반구 접두사 혹은 접미사
-	(N, E 혹은 +는 양의 각도, S, W 혹은 -는 음의 각도)와 세 개의 숫자 필드를 포함합니다.
-	추가적인 숫자가 아닌 문자는 일반적으로 생략됩니다. 예를 들어 &lt;tt&gt;N41d54&amp;quot;01.54&amp;quot;&lt;/tt&gt;는 올바른 좌표입니다.
-    &lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;WKT 지오메트리를 위해서는 다음과 같은 옵션이 있음:&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;지오메트리 필드: WKT 정의를 포함하고 있는 필드&lt;/li&gt;
-    &lt;li&gt;지오메트리 타입: &amp;quot;감지&amp;quot;, &amp;quot;점&amp;quot;, &amp;quot;선&amp;quot;, &amp;quot;폴리곤&amp;quot; 중 하나.
-	QGIS 레이어는 단지 한 가지 지오메트리만 타입(점, 선, 폴리곤)만 표시할 수 있습니다.
-	이 옵션은 여러 지오메트르 타입이 포함된 텍스트 필드에서 어떤 지오메트리 타입을 표시할 지 선택합니다.
-	다른 지오메트리 타입을 포함하고 있는 필드는 삭제됩니다.
-	만약 &amp;quot;감지&amp;quot;가 선택되면 파일의 첫 번째 지오메트리의 타입이 사용됩니다.
-	&amp;quot;점&amp;quot;은 POINT와 MULTIPOINT WKT 타입을 포함하며, &amp;quot;선&amp;quot;은 LINESTRING 와 MULTLINESTRING WKT를 포함하고,
-	&amp;quot;폴리곤&amp;quot;은 POLYGON 와 MULTIPOLYGON WKT를 포함합니다.
-&lt;/ul&gt;
-&lt;h5&gt;레이어 설정&lt;/h5&gt;
-&lt;p&gt;레이어 설정은 QGIS가 레이어를 다루는 방법을 조정합니다. 사용 가능한 옵션은 다음과 같습니다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;공간 인덱스 사용. 공간 객체의 표시와 선택 성능 향상을 위해 공간 인덱스를 생성합니다.
-이 옵션은 파일이 몇 메가바이트 이상의 크기일때 유용합니다.&lt;/li&gt;
-&lt;li&gt;서브셋 인덱스 사용. 사용된 레코드 서브셋의 인덱스를 만듭니다(레이어 속성 대화상자에서 명시적인 서브셋 
-문자열 설정, 혹은 모든 지오메트리가 유효하지 않을 때 유효한 지오메트리인 암시적인 객체 서브셋).
-이 인덱스는 서브셋이 정의된 경우만 만들어 집니다.&lt;/li&gt;
-&lt;li&gt;파일 감시. 만약 이 옵션이 선택되면 QGIS는 파일이 다른 어플리케이션에 의해 변경되는지를 감시하고,
-파일이 변경된 경우 다시 읽습니다.  지도는 사용자가 새로고침 할 때까지 갱신되지 않지만, 인덱스와 범위는 
-다시 읽혀집니다.  이 옵션은 인덱스가 사용되고 있고 다른 어플리케이션이 파일을 변경할 가능성이 있을 때
-선택됩니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;구분자, 인용 문자, 이스케이프 문자가 동작하는 방법&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;레코드는 세 개의 문자 세트(구분자, 인용 문자, 이스케이프 문자)를 이용해 필드로 분리됩니다.
-레코드에 있는 다른 문자들은 데이터로 간주되면, 구분자에 의해 필드로 분리된다.
-인용 문자는 쌍으로 들어가야 되고 그 사이의 문자열들이 하나의 테이터로 간주됩니다.
-이스케이프 문자는 뒤에 오는 문자를 데이터로 간주하게 합니다.
-&lt;/p&gt;
-&lt;p&gt;
-인용 문자와 이스케이프 문자는 구분자와 같을 수 없습니다. 만약 같다면 무시됩니다.
-이스케이프 문자는 인용 문자와 같을 수 있지만, 서로 다르게 동작합니다.&lt;/p&gt;
-&lt;p&gt;구분자는 각 필드의 끝을 표시하기 위해 사용됩니다. 만약 하나 이상의 구분자가 지정되면
-이 중 어떤 문자로도 필드의 끝을 표시할 수 있습니다. 인용 문자와 이스케이프 문자는
-구분자를 재정의해 일반 문자로 처리되게 할 수 있습니다.&lt;/p&gt;
-&lt;p&gt;인용 문자는 인용문 필드의 시작과 끝을 표시하는데 사용됩니다. 인용문 필드는 구문자를 포함할 수 있고
-텍스트 파일에서 여러 줄로 이루어질 수 있습니다. 인용문은 같은 인용 문자로 시작하고 끝나야 합니다.
-인용 문자는 이스케이프 문자 없이 필드 내에 있을 수 없습니다.
-&lt;/p&gt;
-&lt;p&gt;인용 문자가 아닌 이스케이프 문자는 특수 문자들(개행 문자, 구분자, 인용문자)을 강제로 데이터로 취급하게 합니다.
-&lt;/p&gt;
-&lt;p&gt;인용 문자를 이스케이프 문자로 사용할 경우는 제약이 많습니다. 이것은 인용문 내에서 인용 문자를 쓸 수 있게만 해줄 수 있습니다.
-예륻 들어, &lt;tt&gt;&amp;quot;&lt;/tt&gt;가 인용 문자인 동시에 이스케이프 문자라면, &lt;tt&gt;&amp;quot;Smith&amp;quot;&amp;quot;s&amp;nbsp;Creek&amp;quot;&lt;/tt&gt; 라는 문자열은
-Smith&amp;quot;s&amp;nbsp;Creek 로 해석됩니다.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;정규 표현식 구분 기호가 작동하는 방법&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;정규식은 문자 패턴을 묘사하는데 사용하는 미니 랭귀지 입니다. 정규식의 구문에는 많은 변형판이 있습니다.
-QGIS는 &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; 프레임워크의 클래스인 &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt;에서 제공되는 문법을 사용합니다.&lt;/p&gt;
-&lt;p&gt;정규식으로 구분되는 파일에서 각 라인은 한 개의 레코드로 취급됩니다. 라인에서 정규 표현식과 일치하는 각 부분은 필드의 끝으로 취급됩니다. 
-만약 정규식이 캡처 그룹(예: &lt;tt&gt;(cat|dog)&lt;/tt&gt;)을 포함한다면 이것들은 필드로 추출됩니다.
-이를 원하지 않는다면 비 캡처 그룹(예: &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;)을 이용하십시오.
-&lt;/p&gt;
-&lt;p&gt;정규식이 라인의 시작 부분에 위치 한다면 다르게 처리됩니다(즉 패턴이 &lt;tt&gt;^&lt;/tt&gt;로 시작).
-이 경우 정규식은 각 라인에 매치됩니다. 만약 일치하지 않으면 잘못된 레코드로 간주되어 무시됩니다.
-식 내의 각 캡처 그룹은 필드로 취급됩니다. 캡춰 그룹이 조건을 벗어나면 정규식은 유효하지 않습니다.
-한 예로 이는 고정 폭 데이터 로딩을 (다소 직관적으로) 의미하는데 이용될 수 있습니다.
-예를 들어 다음 식&lt;/p&gt;
-&lt;pre&gt;
-^(.{5})(.{10})(.{20})(.{20})
-&lt;/pre&gt;
-&lt;p&gt;은 각 라인에서 5, 10, 20, 20 문자 길이의 4 필드로 추출됩니다.
-라인이 55 문자 이하라면 무시됩니다.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;WKT 텍스트를 해석하는 방법&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;
-구분자로 분리된 텍스트 레이어는 &lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text(WKT)&lt;/a&gt; 타입(&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;)을 인식합니다.
-이는 Z 좌표(예: &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), 혹은 둘 다 (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;)를 가진 지오메트리도 허용합니다.
-&lt;/p&gt;
-&lt;p&gt;
-이는 또한 지오메트리에는 좌표계 ID(예: &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)가 앞에 붙는 PostGIS의 변형된 EWKT도 처리할 수 있으며, 
-Informix에서 사용되는 숫자 좌표계 아이디가 앞에 붙는 WKT(예: &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;)도 처리할 수 있습니다.
-이 두가지의 경우 모두 SRID는 무시됩니다.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;구분자로 분리된 텍스트 파일 내의 속성&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;구분자로 분리된 텍스트 파일 내의 각 레코드는 레코드의 속성을 나타내는 필드로 분리됩니다.
-일반적으로 파일의 첫 레코드에는 속성들의 이름이 들어 있습니다.
-만약 속성들 이름이 없다면, &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt; 등으로 이름 붙여 집니다.
-또한, 만약 레코드가 첫 줄에서 정의된 것 보다 더 많은 필드를 가지고 있다면 이 필드들은 &lt;tt&gt;field_#&lt;/tt&gt;로 이름 붙여 집니다. 
-#은 필드 번호 입니다(레코드 마지막의 빈 필드는 무시됨을 주의하세요).
-QGIS는 텍스트 파일 내의 숫자로 된 이름, &lt;tt&gt;field_#&lt;/tt&gt;와 같은 이름, 중복된 이름을 덮어씁니다.
-&lt;/p&gt;
-&lt;p&gt;
-추가적으로 소스 파일에서 레코드 시작 위치로부터의 줄 수가 QGIS에서 명시적으로 객체의 단일 ID로 적용됩니다. 
-&lt;/p&gt;
-&lt;p&gt;
-각 속성은 문자열(텍스트), 정수, 실수 데이터 타입을 가집니다.
-데이터 타입은 필드의 내용에서 유추됩니다. 만약 비어 있지 않은 모든 값이
-유효한 정수라면 타입은 정수로 되고, 모두 실수라면 타입은 실수로, 그렇지 않다면
-타입은 문자열로 됩니다. 이것은 필드의 내용에 기반함에 주의하십시오 - 인용기호로 묶인
-필드는 해석되는 방법이 변경되지 않습니다.
-&lt;/p&gt;
-
-
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;X, Y 점 좌표를 가진 텍스트 파일 예시&lt;/a&gt;&lt;/h4&gt; 
-&lt;pre&gt;
-X;Y;ELEV
--300120;7689960;13
--654360;7562040;52
-1640;7512840;3
-&lt;/pre&gt;
-&lt;p&gt;이 파일에서:&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;b&gt;;&lt;/b&gt;가 구분자로 사용되었습니다. 모든 문자는 필드를 구분하는데 사용할 수 있습니다.&lt;/li&gt;
-&lt;li&gt;첫 열은 헤더 열 입니다. 여기에는 필드 이름인 X, Y와 ELEV가 들어 있습니다.&lt;/li&gt;
-&lt;li&gt;x 좌표값은 X 필드에 들어 있습니다.&lt;/li&gt;
-&lt;li&gt;y 좌표값은 Y 필드에 들어 있습니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;WKT 지오메트리를 가진 텍스트 파일 예시&lt;/a&gt;&lt;/h4&gt;
-&lt;pre&gt;
-id|wkt
-1|POINT(172.0702250 -43.6031036)
-2|POINT(172.0702250 -43.6031036)
-3|POINT(172.1543206 -43.5731302)
-4|POINT(171.9282585 -43.5493308)
-5|POINT(171.8827359 -43.5875983)
-&lt;/pre&gt;
-&lt;p&gt;이 파일에서:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;헤더 열에 id와 wkt의 두 필드가 있습니다.&lt;/li&gt;
-  &lt;li&gt;&lt;b&gt;|&lt;/b&gt;가 구분자로 사용되었습니다.&lt;/li&gt;
-  &lt;li&gt;WKT 표기법을 사용하여 각 점을 지정합니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;파이썬에서 구분자로 분리된 텍스트 파일 다루기&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;구분자로 분리된 텍스트 데이터 소스는 다른 벡터 레이어와 마찬가지로 파이썬에서 만들어 질 수 있습니다.
-패턴은 다음과 같습니다:
-&lt;/p&gt;
-&lt;pre&gt;
-from PyQt4.QtCore import QUrl, QString
-from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
-
-# Define the data source
-filename=&quot;test.csv&quot;
-uri=QUrl.fromLocalFile(filename)
-uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
-uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
-uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
-layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
-if layer.isValid():
-    QgsMapLayerRegistry.instance().addMapLayer( layer )
-&lt;/pre&gt;
-&lt;p&gt;이것을 위의 두번째 예시 파일을 읽는데 사용할 수 있습니다.&lt;/p&gt;
-&lt;p&gt;구분자로 분리된 텍스트 레이어의 설정은 URI로 질의 항목을 추가해서 정의됩니다.
-다음 옵션들이 추가될 수 있습니다.
-&lt;/p&gt;
-&lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; 파일의 인코딩을 정의합니다. 기본값은&amp;quot;UTF-8&amp;quot;입니다.&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; 구문자 유형을 정의합니다. 유효한 값은 csv, regexp, whitespace(이것은 정규식의 특별한 경우임)입니다.  기본값은  csv 입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; CSV 파일이나 정규식 파일에서 사용할 구분자를 정의합니다. 기본값은 CSV 파일에는 쉼표(,)이고, 정규식 파일에 대한 기본값은 없습니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (CSV 파일의 경우) 인용 부호로 사용될 문자를 정의합니다. 기본값은 &amp;quot;입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (CSV 파일의 경우) 다음에 오는 특수기호를 무시하게 할 이스케이프 문자를 정의합니다. 기본값은 &amp;quot;입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; 파일 처음에서부터 무시할 즐 수를 정의합니다. 기본값은 0 입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; 첫 데이터 레코드가 데이터 필드들의 이름을 담고 있는지를 정의합니다. 기본값은 yes 입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; 인용문자 없는 필드에서 앞 뒤의 공백을 제거할지를 정의합니다. 기본값은 no 입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; 파일에서 최대 몇 개의 필드를 읽을 지 정의합니다.
-	   각 레코드의 추가적인 필드는 무시됩니다. 기본값은 0이고 이는 모든 필드를 읽음을 의미합니다.
-	   (이 옵션은 구분자로 분리된 텍스트 레이어 대화상자에는 없습니다)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; 인용 기호로 둘러싸이지 않은 필드가 (trimFields 적용 후) 비어있으면 무시할지 정의합니다. 기본값은 no 입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; 어떤 문자가 소숫점 기호로 사용될지 지정합니다.  기본값은 점(마침표) 입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; WKT 지오메트리 정의를 포함하고 있는 필드의 이름이나 순번(1에서 시작함)을 지정합니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; X 좌표를 포함하고 있는 필드의 이름이나 순번(1에서 시작함)을 지정합니다. (wktField가 정의되지 않은 경우만 적용됨)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; Y 좌표를 포함하고 있는 필드의 이름이나 순번(1에서 시작함)을 지정합니다. (wktField가 정의되지 않은 경우만 적용됨)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; WKT 필드의 지오메트리 타입을 지정하거나 속성만 있는 테이블을 읽기 위해 none을 지정합니다.  기본값은 auto 입니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; 레코드의 서브셋을 인식시키는데 사용할 표현식을 지정합니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; 벡터 레이어가 사용할 좌표계를 지정합니다. 이것은 QgsCoordinateReferenceSystem.createFromString 
-	   에서 사용할 수 있는 형식(예: &amp;quot;EPSG:4167&amp;quot;))이어야 합니다. 
-	   만약 지정되지 않으면 (QGIS 좌표계 설정에 따라)레이어가 읽혀질 때 사용자에게 이 정보를 요구하기 위한 대화상자가 필요합니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; 파일 검색을 초기화 할 때 서브셋을 정의하기 위해 프로바이더가 인덱스를 만들지 지정합니다. 이 인덱스는 명시적으로 서브셋을 정의한 경우와 유효한 지오메트리로 정의된 암시적인 서브셋 모두에 적용됩니다. 기본적으로 서브셋 인덱스는 적용 가능한 경우 만들어집니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; 파일 검색을 초기화 할 때 공간 인덱스를 만들지 지정합니다. 기본적으로 공간 인덱스는 만들어지지 않습니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; 파일의 변경 모니터링을 위해 시스템 감시를 사용할지 지정합니다.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; 레이어를 읽는 중 발생하는 오류(QGIS 로그에는 항상 기록됨)를 대화상자에 표시할지 지정합니다. 기본적으로 no 입니다. 이 옵션은 GUI에는 없습니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-
-</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="319"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="327"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
