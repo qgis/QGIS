@@ -455,6 +455,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mStatusCompositionLabel->setMinimumWidth( 350 );
   mStatusAtlasLabel = new QLabel( mStatusBar );
 
+  //hide borders from child items in status bar under Windows
+  mStatusBar->setStyleSheet( "QStatusBar::item {border: none;}" );
+
   mStatusBar->addWidget( mStatusCursorXLabel );
   mStatusBar->addWidget( mStatusCursorYLabel );
   mStatusBar->addWidget( mStatusCursorPageLabel );

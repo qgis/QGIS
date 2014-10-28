@@ -1668,10 +1668,11 @@ void QgisApp::createToolBars()
 
 void QgisApp::createStatusBar()
 {
-  //
+  //remove borders from children under Windows
+  statusBar()->setStyleSheet( "QStatusBar::item {border: none;}" );
+
   // Add a panel to the status bar for the scale, coords and progress
   // And also rendering suppression checkbox
-  //
   mProgressBar = new QProgressBar( statusBar() );
   mProgressBar->setObjectName( "mProgressBar" );
   mProgressBar->setMaximumWidth( 100 );
