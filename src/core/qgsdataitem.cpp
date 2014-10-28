@@ -718,7 +718,8 @@ void QgsFavouritesItem::addDirectory( QString favDir )
   favDirs.append( favDir );
   settings.setValue( "/browser/favourites", favDirs );
 
-  addChildItem( new QgsDirectoryItem( this, favDir, favDir ), true );
+  if ( mPopulated )
+    addChildItem( new QgsDirectoryItem( this, favDir, favDir ), true );
 }
 
 void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
@@ -738,7 +739,8 @@ void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
     return;
   }
 
-  deleteChildItem( mChildren[idx] );
+  if ( mPopulated )
+    deleteChildItem( mChildren[idx] );
 }
 
 //-----------------------------------------------------------------------
