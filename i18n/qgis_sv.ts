@@ -29098,7 +29098,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1035"/>
         <source>Current transform parametrisation</source>
-        <translation>Nuvarande tranformationsparametrar</translation>
+        <translation>Nuvarande transformationsparametrar</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1040"/>
@@ -44761,12 +44761,12 @@ Välj &apos;Ignorera&apos; för att fortsätta utan de saknade lagren. Välj &ap
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="937"/>
         <source>Measure tool (CRS transformation: %1)</source>
-        <translation>Mätverktyg (Koordinatsystemstranformation: %1)</translation>
+        <translation>Mätverktyg (Koordinatsystemstransformation: %1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="938"/>
         <source>Canvas units (CRS transformation: %1)</source>
-        <translation>Kartfönstrets enheter (Koordinatsystemstranformation: %1)</translation>
+        <translation>Kartfönstrets enheter (Koordinatsystemstransformation: %1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="971"/>

@@ -65515,7 +65515,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
         <source>Inverse fast fourier transform for image processing</source>
-        <translation>Fourier-en alderantzizko tranformatu azkarra irudien prozesamendurako</translation>
+        <translation>Fourier-en alderantzizko transformatu azkarra irudien prozesamendurako</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>

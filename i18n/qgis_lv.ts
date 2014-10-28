@@ -30164,7 +30164,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please set transformation type</source>
-        <translation>Lūdzu iestatiet tranformācijas veidu</translation>
+        <translation>Lūdzu iestatiet transformācijas veidu</translation>
     </message>
     <message>
         <source>Please set output raster name</source>

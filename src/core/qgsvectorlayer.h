@@ -635,7 +635,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Sets the textencoding of the data provider */
     void setProviderEncoding( const QString& encoding );
 
-    /** Setup the coordinate system tranformation for the layer */
+    /** Setup the coordinate system transformation for the layer */
     void setCoordinateSystem();
 
     /** Joins another vector layer to this layer

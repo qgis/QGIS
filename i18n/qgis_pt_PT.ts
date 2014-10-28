@@ -59844,7 +59844,7 @@ As &lt;label&gt;Opções de snapping&lt;/label&gt; permitem definir a tolerânci
 &lt;h4&gt;Separador do Sistema Referência de Coordenadas (SRC)&lt;/h4&gt;
 &lt;/a&gt;
 O separador Sistema Referência de Coordenadas (SRC) permite definir a projecção para o projecto actual e activa a transformação on the fly. Não necessita de guardar o projecto para configurar e activar a transformação &apos;on the fly&apos; SRC.
-&lt;p&gt;Para usar a tranformação SRC &apos;on the fly&apos; , clique na caixa de verificação &lt;label&gt;Activar transformação CRS &apos;on the fly&apos; &lt;/label&gt;. De seguida escolha a projecção para o projecto (enquadramento do mapa) a partir da lista dos Sistemas de Coordenadas  Geográficas ou Projectadas.
+&lt;p&gt;Para usar a transformação SRC &apos;on the fly&apos; , clique na caixa de verificação &lt;label&gt;Activar transformação CRS &apos;on the fly&apos; &lt;/label&gt;. De seguida escolha a projecção para o projecto (enquadramento do mapa) a partir da lista dos Sistemas de Coordenadas  Geográficas ou Projectadas.
 &lt;p&gt;Pode encontrar sistemas de coordenadas introduzindo o nome, código ESPG ou o ID QGIS e clicar no botão &lt;label&gt;Encontrar&lt;/label&gt;.
 &lt;p&gt;A lista dos sistemas de coordenadas usadas recentemente estarão disponíveis na parte inferior para um acesso rápido.
 

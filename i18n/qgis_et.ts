@@ -77383,7 +77383,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
-        <translation>Brovey tranformatsioon et liita multispektraalsed ja kõrge-res pankromaatilised kanalid</translation>
+        <translation>Brovey transformatsioon et liita multispektraalsed ja kõrge-res pankromaatilised kanalid</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>

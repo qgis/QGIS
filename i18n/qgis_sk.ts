@@ -39870,7 +39870,7 @@ nie sú zobrazené</translation>
     </message>
     <message>
         <source>Coordinate transform error</source>
-        <translation type="obsolete">Chyba pri tranformácii súradníc</translation>
+        <translation type="obsolete">Chyba pri transformácii súradníc</translation>
     </message>
     <message>
         <source>Cannot transform the point to the layers coordinate system</source>
