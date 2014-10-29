@@ -945,6 +945,14 @@ Abfrage:
         <source>Re-connect</source>
         <translation>Neu verbinden</translation>
     </message>
+    <message>
+        <source>%1 is an invalid layer - not loaded</source>
+        <translation>%1 ist ein ungültiger Layer - nicht geladen</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
+        <translation>%1 ist ein ungültiger Layer und kann nicht geladen werden. Bitte untersuchen Sie das &lt;a href=&quot;#messageLog&quot;&gt;Protokoll&lt;/a&gt; auf weitere Informationen.</translation>
+    </message>
 </context>
 <context>
     <name>DbManagerDlgAddGeometryColumn</name>
@@ -36466,7 +36474,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="90"/>
         <source>a problem with geometry type occured</source>
-        <translation>Es ist ein Problem mit dem Geometrietyp aufgetreten</translation>
+        <translation>ein Problem mit dem Geometrietyp aufgetreten ist</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="94"/>
@@ -36491,12 +36499,12 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="110"/>
         <source>an unknown error occured</source>
-        <translation>Ein unbekannter Fehler trat auf</translation>
+        <translation>ein unbekannter Fehler aufgetreten ist</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="112"/>
         <source>could not add ring since %1.</source>
-        <translation>Es ist ein Fehler beim Einfügen des Rings aufgetreten: %1</translation>
+        <translation>Konnte Ring nicht einfügen, weil %1.</translation>
     </message>
 </context>
 <context>
@@ -59458,14 +59466,14 @@ Topopologie-Prüfung wiederholen.</translation>
 <context>
     <name>context_help</name>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1446"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1434"/>
         <source>&lt;h3&gt;Database connection&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Datenbankverbindung&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1362"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1350"/>
         <source>&lt;h3&gt;Create a new WMS connection&lt;/h3&gt;
 WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.&lt;p&gt;
 QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
@@ -59544,7 +59552,7 @@ Sie können dann die Layerliste mit einem Klick auf den Knopf &lt;label&gt;Verbi
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="786"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="778"/>
         <source>&lt;h3&gt;Identify Features&lt;/h3&gt;
 &lt;p&gt;
 The results dialog shows all the features identified within the search tolerance. To see the results details, expand the feature information on the left of each feature.
@@ -59565,7 +59573,7 @@ Die abfragbare Layer können in Dialog Projekteigenschaften unter &lt;label&gt;E
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="926"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="914"/>
         <source>&lt;h3&gt;Create a New Oracle Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a Oracle database.
 &lt;p&gt;
@@ -59655,7 +59663,7 @@ Geometriezeilen bestimmt.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="783"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="775"/>
         <source>&lt;h3&gt;GPS Plugin&lt;/h3&gt;
 
 </source>
@@ -59663,7 +59671,7 @@ Geometriezeilen bestimmt.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="999"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="987"/>
         <source>&lt;h3&gt;Add PostGIS Tables&lt;/h3&gt;
 This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
 &lt;p&gt;
@@ -59741,7 +59749,7 @@ Durch Abhaken von &lt;label&gt;Suchoptionen&lt;/label&gt; werden weitere Möglic
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="723"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="715"/>
         <source>&lt;h3&gt;Field Calculator&lt;/h3&gt;
 The field calculator allows you to update fields with expressions.
 
@@ -59882,14 +59890,14 @@ Der Feldrechner erlaubt Ihnen Felder mit Ausdrücken zu setzen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="807"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="795"/>
         <source>&lt;h3&gt;New OGR Database Connection Dialog&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Neue OGR-Datenbankverbindung&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="386"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="378"/>
         <source>&lt;h3&gt; North Arrow Plugin&lt;/h3&gt;
 Displays a north arrow overlayed onto the map.
 &lt;p&gt;
@@ -59905,7 +59913,7 @@ vier Ecken der Karte entsprechenden, Positionen wählen.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="390"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="382"/>
         <source>&lt;h3&gt;Scale bar Plugin&lt;/h3&gt;
 Draws a scale bar on the map.
 &lt;p&gt;
@@ -59945,6 +59953,7 @@ anzeigt.&lt;/li&gt;
 </translation>
     </message>
     <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="788"/>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
 There are two measure tools: length and area. With them, you can measure both distances and areas on the map canvas. Currently the tools provide results in metric units only. A single right mouse click stops the measuring, while two right mouse clicks starts measuring anew.
 &lt;h4&gt;Measuring Lengths&lt;/h4&gt;
@@ -59952,17 +59961,16 @@ To measure lengths, select the tool and click along the path you want to measure
 &lt;h4&gt;Measuring Areas&lt;/h4&gt;
 To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Messwerkzeuge&lt;/h3&gt; 
-Es gibt Messwerkzeuge für Länge und Fläche.  Zur Zeit liefern sie nur metrische Ergebnisse. Ein einfacher Rechtsklick beendet die Messung, während zwei Rechtsklicks eine neue Messung einleiten. 
-
+        <translation>&lt;h3&gt;Messwerkzeuge&lt;/h3&gt; 
+Es gibt Messwerkzeuge für Länge, Fläche.  Zur Zeit liefern sie nur metrische Ergebnisse. Ein einfacher Rechtsklick beendet die Messung, während zwei Rechtsklicks eine neue Messung einleiten.
 &lt;h4&gt;Längen messen&lt;/h4&gt;
-Um Längen zu messen, wählen Sie das Werkzeug und klicken entlang eines Weges, den Sie messen möchten.  Außer den Längen der einzelnen Segmente wird auch die Gesamtlänge des Weges angezeigt.  Mit dem Messwerkzeug können Sie sowohl Abstände als auch Flächen auf der Karte messen. 
-
+Um Längen zu messen, wählen Sie das Werkzeug und klicken entlang eines Weges, den Sie messen möchten.  Außer den Längen der einzelnen Segmente wird auch die Gesamtlänge des Weges angezeigt.
 &lt;h4&gt;Flächen messen&lt;/h4&gt;
-Um Flächen zu messen, wählen Sie das Werkzeug und klicken dann um die Fläche zu erzeugen. Die Gesamtgröße wird währenddessen laufend angezeigt. 
+Um Flächen zu messen, wählen Sie das Werkzeug und klicken dann um die Fläche zu erzeugen. Die Gesamtgröße wird währenddessen laufend angezeigt.
 </translation>
     </message>
     <message>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="227"/>
         <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
 The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
 
@@ -60015,11 +60023,11 @@ The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table al
 The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
 The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
 </source>
-        <translation type="obsolete">&lt;h3&gt;Attributtabelle&lt;/h3&gt;
+        <translation>&lt;h3&gt;Attributtabelle&lt;/h3&gt;
 Die Attributtabelle zeigt Objekte des gewählten Layers an.  Jede Zeile stelle ein Objekt auf der Karte mit seinem Attributen in mehreren Spalten.  Die Objekt in der Tabelle können durchsucht, ausgewählt, verschieben und auch bearbeitet werden.  Die Attributtabelle erscheint normalerweise als separates Fenster.   Wenn Sie es geöffnet haben, aber es nicht mehr sehen können, ist es vermutlich unter dem QGIS-Hauptfenster verschwunden.  Sie können das Fenster auch gedockt anzeigen indem Sie unter &lt;label&gt;Einstellungen &gt; Optionen &gt; Allgemein&lt;/label&gt; ein Häkchen bei &lt;label&gt;Attributtabelle gedockt öffnen&lt;/label&gt; setzen.&lt;p&gt;
 
-Die Nummer des Tabellenobjekts ist in der führenden Spalte angegeben&lt;p&gt;
-&lt;p&gt;
+Die Nummer des Tabellenobjekts ist in der führenden Spalte angegeben.&lt;p&gt;
+Unten rechts im Dialog kann zwischen Formular- und Tabellenansicht umgeschaltet werden.&lt;p&gt;
 &lt;a href=&quot;#Selecting&quot;&gt;Auswählen&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#Sorting&quot;&gt;Sortieren&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#Searching&quot;&gt;Suchen&lt;/a&gt;&lt;br/&gt;
@@ -60033,7 +60041,7 @@ Zeilen können durch Klicken auf die Zeilennummer auf der linken Seite der Zeile
 &lt;a name=&quot;Sorting&quot;&gt;
 &lt;h4&gt;Sortieren&lt;/h4&gt;
 &lt;/a&gt;
-Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).&lt;br&gt; Benutzen Sie den Knopf &lt;label&gt;Ausgewählte nach oben&lt;/label&gt; um die gewählten Tabellenzeilen als erste anzuzeigen.  Um nur die gewählten Datensätze anzuzeigen haken Sie das Kontrollkästchen &lt;label&gt;Nur gewählte Datensätze zeigen&lt;/label&gt; ab.
+Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).
 
 &lt;a name=&quot;Searching&quot;&gt;
 &lt;h4&gt;Suchen&lt;/h4&gt;
@@ -60045,8 +60053,7 @@ Für eine einfache Suche nach Attribute einer Spalte kann das &lt;label&gt;Suche
 &lt;/a&gt;
 Der Knopf &lt;label&gt;Feldrechner&lt;/label&gt; in der Attributtabelle ermöglicht Berechnungen auf mit vorhandenen Attributwerten oder definierten Funktionen.  Z.B.  kann die Länge oder Fläche von Geometrieobjekten berechnet werden.&lt;br/&gt;
 Die Ergebnisse können in eine neue Attributspalte geschrieben oder eine vorhandene Spalte damit überschrieben werden.&lt;br/&gt;
-Um den Feldrechner zu öffnen, müssen Sie den Vektorlayer zuvor in den Bearbeitungsmodus versetzen.
-</translation>
+Um den Feldrechner zu öffnen, müssen Sie den Vektorlayer zuvor in den Bearbeitungsmodus versetzen.</translation>
     </message>
     <message>
         <location filename="../src/core/qgscontexthelp_texts.cpp" line="11"/>
@@ -60463,7 +60470,7 @@ from the close button. This allows you to save the geometry to be restored to th
 &lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1122"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1110"/>
         <source>&lt;h3&gt;Project Properties&lt;/h3&gt;
 This dialog allows you to set a number of properties related to the &lt;label&gt;Project&lt;/label&gt;. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.&lt;p&gt;
 
@@ -60537,7 +60544,7 @@ Auf diesem Reiter können Sie einstellen welche Layern das Abfragewerkzeug berü
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1203"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1191"/>
         <source>&lt;h3&gt;Add SpatiaLite Tables&lt;/h3&gt;
 To define a new connection, click on &lt;label&gt;New&lt;/label&gt; button and use the file browser to point to your SpatiaLite database, which is a file with a &lt;i&gt;.sqlite&lt;/i&gt; extension.&lt;p&gt;
 The connections you define will be remembered for further use and available to choose from the drop down menu.
@@ -60552,7 +60559,7 @@ und in der Liste zur Auswahl angeboten.
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1209"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1197"/>
         <source>&lt;h3&gt;Vector Layer Properties&lt;/h3&gt;
 This dialog allows you to work with vector layer settings and properties. There are seven tabs:
 &lt;p&gt;
@@ -60810,7 +60817,7 @@ Der Reiter Diagramm-Überlagerung gestattet Ihnen über dem Layer eine Grafik ei
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="287"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="279"/>
         <source>&lt;h3&gt;Spatial Bookmarks&lt;/h3&gt;
 Spatial Bookmarks allow you to &quot;bookmark&quot; a geographic location and return to it later.
 &lt;p&gt;
@@ -60890,7 +60897,7 @@ Um ein Lesezeichen im Dialog zu löschen, klicken Sie auf &lt;label&gt;Löschen&
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1400"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1388"/>
         <source>&lt;h3&gt;Road graph plugin settings&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any polyline layer and plots this path over the road network.&lt;/p&gt;
 &lt;p&gt;
@@ -60955,7 +60962,7 @@ Um ein Lesezeichen im Dialog zu löschen, klicken Sie auf &lt;label&gt;Löschen&
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1157"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1145"/>
         <source>&lt;h3&gt;Query Builder&lt;/h3&gt;
 The query builder allows you to create provider specific filter expressions.
 
@@ -61047,71 +61054,7 @@ Dies werden normalerweise viel schneller ausgeführt das generische QGIS-Ausdrü
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="227"/>
-        <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; Data Sources&lt;/label&gt;.&lt;p&gt;
-
-The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
-At the bottom right of the dialog, you can choose whether to display features in a form or in a table.&lt;p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Filtering&quot;&gt;Filtering&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Editing&quot;&gt;Editing&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalc&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalcBar&quot;&gt;Field Calculator bar&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;Selecting&quot;&gt;
-&lt;h4&gt;Selecting&lt;/h4&gt;
-&lt;/a&gt;
-Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
-A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
-
-&lt;a name=&quot;Sorting&quot;&gt;
-&lt;h4&gt;Sorting&lt;/h4&gt;
-&lt;/a&gt;
-Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
-
-&lt;a name=&quot;Filtering&quot;&gt;
-&lt;h4&gt;Filtering&lt;/h4&gt;
-&lt;/a&gt;
-To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
-&lt;h5&gt;Show All Features&lt;/h5&gt;
-Shows all features of the layer.
-&lt;h5&gt;Show Selected Features&lt;/h5&gt;
-Shows all features which are currently selected.
-&lt;h5&gt;Show Features Visible on Map&lt;/h5&gt;
-Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
-&lt;h5&gt;Show Edited and New Features&lt;/h5&gt;
-Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
-&lt;h5&gt;Column Filter&lt;/h5&gt;
-A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for &lt;b&gt;man&lt;/b&gt; will therefore also show records containing &lt;b&gt;woman&lt;/b&gt;. After changing the filter text, press &lt;label&gt;Enter&lt;/label&gt; or click on &lt;label&gt;Apply&lt;/label&gt;. You can also toggle the check-box &lt;label&gt;Case sensitive&lt;/label&gt;, so your filter will also match &lt;b&gt;Night&lt;/b&gt; when your search text is &lt;b&gt;night&lt;/b&gt;.   
-&lt;h5&gt;Advanced Filter&lt;/h5&gt;
-For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
-
-&lt;a name=&quot;Editing&quot;&gt;
-&lt;h4&gt;Editing&lt;/h4&gt;
-&lt;/a&gt;
-To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  &lt;br&gt;
-You can also edit a field&apos;s value for many rows at once. You need to select the rows you want to edit and then use the &lt;label&gt;Field Calculator&lt;/label&gt; or the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. If no row is selected, the edition will apply on all the features.
-
-&lt;a name=&quot;FieldCalc&quot;&gt;
-&lt;h4&gt;Field Calculator&lt;/h4&gt;
-&lt;/a&gt;
-The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
-The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
-The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
-
-&lt;a name=&quot;FieldCalcBar&quot;&gt;
-&lt;h4&gt;Field Calculator Bar&lt;/h4&gt;
-&lt;/a&gt;
-When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
-To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="339"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="331"/>
         <source>&lt;h3&gt;Custom Coordinate Reference System Definition&lt;/h3&gt;
 If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. &lt;p&gt;
 To define a CRS, select &lt;label&gt;Custom CRS&lt;/label&gt; from the &lt;label&gt;Edit&lt;/label&gt; (Gnome, OSX) or &lt;label&gt;Settings&lt;/label&gt; (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
@@ -61145,7 +61088,7 @@ Ein Benutzer-KBS in QGIS zu definieren erfordert gutes Verständnis der PROJ.4-P
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="354"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="346"/>
         <source>&lt;h3&gt;Copyright Label&lt;/h3&gt;
 Draws a copyright label with information.&lt;br/&gt;
 You can add any random text to the map not only a copyright label.
@@ -61212,7 +61155,7 @@ Diese Erweiterung unterstützt grundlegende HTML-Hervorhebungstags zur Textforma
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="409"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="401"/>
         <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
@@ -61527,25 +61470,10 @@ The following options can be added
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="796"/>
-        <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
-There are three measure tools: length, area and angle. With them, you can measure distances, areas and angles on the map canvas. The tools provide results in the units set in &lt;label&gt;Settings &gt; Options &gt; Map tools&lt;/label&gt;.
-&lt;h4&gt;Measuring Lengths&lt;/h4&gt;
-To measure lengths, select the tool and click along the path you want to measure. The length of each segment is displayed as is the total length for the path.
-A single right mouse click stops the measuring.
-&lt;h4&gt;Measuring Areas&lt;/h4&gt;
-To measure areas, select the tool and click to create the area. The total area is dynamically displayed as you click.
-A single right mouse click stops the measuring, while two right mouse clicks starts measuring a new.
-&lt;h4&gt;Measuring Angles&lt;/h4&gt;
-To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="809"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="797"/>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
@@ -61596,7 +61524,7 @@ Klicken Sie auf &lt;label&gt;OK&lt;/label&gt; um den Layer anzulegen und den Dia
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="845"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="833"/>
         <source>&lt;h3&gt;Open Vector Layer Dialog&lt;/h3&gt;
 
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
@@ -61613,7 +61541,7 @@ Eine genaue Beschreibung wie mit Vektordaten umzugehen ist, steht im Kapitel 5 &
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="966"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="954"/>
         <source>&lt;h3&gt;Create a New PostGIS Connection&lt;/h3&gt;
 This dialog allows you to define the settings for a connection to a PostgreSQL/PostGIS database.
 &lt;p&gt;
@@ -61682,7 +61610,7 @@ In diesem Dialog kann eine Verbindung zu einer PostgreSQL-Datenbank eingestellt 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1036"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1024"/>
         <source>&lt;h3&gt;Manage and install Plugins&lt;/h3&gt;
 
 &lt;p&gt;
@@ -61850,14 +61778,14 @@ Hinweis: Experimentelle Erweiterungen sind grundsätzliche für den Produktivein
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1207"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1195"/>
         <source>&lt;h3&gt;Style Manager&lt;/h3&gt;
 </source>
         <translation>&lt;h3&gt;Stil-Manager&lt;/h3&gt;
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1431"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1419"/>
         <source>&lt;h3&gt;Finding shortest path&lt;/h3&gt;
 &lt;p&gt;Road graph is a C++ plugin for QGIS, that calculates the shortest path between two points on any line layer and plots this path over the road network. Before using the plugin to configure it. This can be done in the menu &lt;label&gt;Vector &amp;rarr; Road graph &amp;rarr; Settings&lt;/label&gt;&lt;/p&gt;
 &lt;p&gt;
@@ -61890,7 +61818,7 @@ Durch Klick auf &lt;label&gt;Berechnen&lt;/label&gt; wird der kürzeste Weg mit 
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="852"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="840"/>
         <source>&lt;h3&gt;Options&lt;/h3&gt;
 This dialog allows you to select some basic options for QGIS. There are eight tabs:
 &lt;p&gt;
@@ -62052,7 +61980,7 @@ Haken Sie &lt;label&gt;Proxy für Webzugriff benutzen an&lt;/label&gt; und setze
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="833"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="821"/>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;
 To create a new layer for editing, choose &lt;label&gt;New Vector Layer&lt;/label&gt; from the &lt;label&gt;Layer&lt;/label&gt; menu.&lt;br/&gt;
 With this dialog you can create a shape file layer.
@@ -62081,7 +62009,7 @@ In diesem Abschnitt werden die vorhandenen Attribute aufgelistet. Um ein Attribu
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1348"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="1336"/>
         <source>&lt;h3&gt;Save vector layer as...&lt;/h3&gt;
 
 &lt;p&gt;This dialog allows you to save vector data in various formats using GDAL/OGR.
@@ -62663,7 +62591,7 @@ Die folgenden Optionen können verwendet werden
 </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscontexthelp_texts.cpp" line="327"/>
+        <location filename="../src/core/qgscontexthelp_texts.cpp" line="319"/>
         <source>&lt;h3&gt;Print Composer&lt;/h3&gt;
 
 &lt;p&gt;
