@@ -28,7 +28,6 @@
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent, bool showDialogButtons )
     : QDialog( parent )
     , mHighlight( 0 )
-    , mOwnedFeature( featureOwner ? thepFeature : 0 )
 {
   QgsAttributeEditorContext context;
   context.setDistanceArea( myDa );
@@ -37,17 +36,22 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeat
 
   if ( !showDialogButtons )
     mAttributeForm->hideButtonBox();
+
+  if ( featureOwner )
+    delete thepFeature;
 }
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, QgsAttributeEditorContext context )
     : QDialog( parent )
     , mHighlight( 0 )
-    , mOwnedFeature( featureOwner ? thepFeature : 0 )
 {
   init( vl, thepFeature, context, parent );
 
   if ( !showDialogButtons )
     mAttributeForm->hideButtonBox();
+
+  if ( featureOwner )
+    delete thepFeature;
 }
 
 QgsAttributeDialog::~QgsAttributeDialog()
@@ -57,9 +61,6 @@ QgsAttributeDialog::~QgsAttributeDialog()
     mHighlight->hide();
     delete mHighlight;
   }
-
-  if( mOwnedFeature )
-    delete mOwnedFeature;
 
   saveGeometry();
 }
