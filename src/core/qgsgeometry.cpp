@@ -5221,18 +5221,17 @@ GEOSGeometry *QgsGeometry::nodeGeometries( const GEOSGeometry *splitLine, const 
   if ( !splitLine || !geom )
     return 0;
 
-  GEOSGeometry *geometryBoundary = 0;
   if ( GEOSGeomTypeId_r( geosinit.ctxt, geom ) == GEOS_POLYGON || GEOSGeomTypeId_r( geosinit.ctxt, geom ) == GEOS_MULTIPOLYGON )
-    geometryBoundary = GEOSBoundary_r( geosinit.ctxt, geom );
+  {
+    GEOSGeometry *geometryBoundary = GEOSBoundary_r( geosinit.ctxt, geom );
+    GEOSGeometry *unionGeometry = GEOSUnion_r( geosinit.ctxt, splitLine, geometryBoundary );
+    GEOSGeom_destroy_r( geosinit.ctxt, geometryBoundary );
+    return unionGeometry;
+  }
   else
-    geometryBoundary = GEOSGeom_clone_r( geosinit.ctxt, geom );
-
-  GEOSGeometry *splitLineClone = GEOSGeom_clone_r( geosinit.ctxt, splitLine );
-  GEOSGeometry *unionGeometry = GEOSUnion_r( geosinit.ctxt, splitLineClone, geometryBoundary );
-  GEOSGeom_destroy_r( geosinit.ctxt, splitLineClone );
-
-  GEOSGeom_destroy_r( geosinit.ctxt, geometryBoundary );
-  return unionGeometry;
+  {
+    return GEOSUnion_r( geosinit.ctxt, splitLine, geom );
+  }
 }
 
 int QgsGeometry::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeometry* line2 )
