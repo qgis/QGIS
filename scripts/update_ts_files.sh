@@ -76,7 +76,7 @@ else
 fi
 
 exclude="--exclude i18n/qgis_en.ts"
-opts=
+opts="-locations none"
 fast=
 while (( $# > 0 )); do
   arg=$1
@@ -139,7 +139,7 @@ if [ -n "$add" ]; then
 	done
 fi
 echo Updating translations
-$LUPDATE$opts -verbose qgis_ts.pro
+$LUPDATE $opts -verbose qgis_ts.pro
 
 if [ -z "$fast" ]; then
 	echo Updating TRANSLATORS File
