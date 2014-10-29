@@ -136,7 +136,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     QString mReturnvarname;
     QgsAttributeForm* mAttributeForm;
     QMenuBar* mMenuBar;
-    QgsFeature *mOwnedFeature;
 
     // true if this dialog is editable
     bool mEditable;
