@@ -111,7 +111,7 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAt
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
 
   mMenuBar = new QMenuBar( this );
-  QgsActionMenu* menu = new QgsActionMenu( layer, feature, this );
+  QgsActionMenu* menu = new QgsActionMenu( layer, &mAttributeForm->feature(), this );
   mMenuBar->addMenu( menu );
   layout()->setMenuBar( mMenuBar );
 
