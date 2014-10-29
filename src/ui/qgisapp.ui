@@ -2247,7 +2247,7 @@ Acts on currently active editable layer</string>
   <action name="mActionShowSelectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionShowAllLayers.png</normaloff>:/images/themes/default/mActionShowSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionShowSelectedLayers.png</normaloff>:/images/themes/default/mActionShowSelectedLayers.png</iconset>
    </property>
    <property name="text">
     <string>Show Selected Layers</string>
@@ -2256,7 +2256,7 @@ Acts on currently active editable layer</string>
   <action name="mActionHideSelectedLayers">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionHideAllLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
+     <normaloff>:/images/themes/default/mActionHideSelectedLayers.png</normaloff>:/images/themes/default/mActionHideSelectedLayers.png</iconset>
    </property>
    <property name="text">
     <string>Hide Selected Layers</string>

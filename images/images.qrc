@@ -194,6 +194,7 @@
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.png</file>
+        <file>themes/default/mActionHideSelectedLayers.png</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
@@ -266,6 +267,7 @@
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
+        <file>themes/default/mActionShowSelectedLayers.png</file>
         <file>themes/default/mActionSignMinus.png</file>
         <file>themes/default/mActionSignPlus.png</file>
         <file>themes/default/mActionSimplify.png</file>
