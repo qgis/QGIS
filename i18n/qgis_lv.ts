@@ -980,6 +980,14 @@ Vaicājums:
         <source>Re-connect</source>
         <translation>Atjaunot savienojumu</translation>
     </message>
+    <message>
+        <source>%1 is an invalid layer - not loaded</source>
+        <translation type="unfinished">%1 ir nederīgs slānis - nav ielādēts</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>DbManagerDlgAddGeometryColumn</name>

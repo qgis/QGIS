@@ -1032,6 +1032,14 @@ Consulta:
         <source>Re-connect</source>
         <translation>Reconectar</translation>
     </message>
+    <message>
+        <source>%1 is an invalid layer - not loaded</source>
+        <translation type="unfinished">%1 es una capa no válida - no se carga</translation>
+    </message>
+    <message>
+        <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
+        <translation type="unfinished">%1 no es una capa válida y no se puede cargar. Por favor, compruebe el &lt;a href=&quot;#messageLog&quot;&gt;registro de mensajes&lt;/a&gt; para más información.</translation>
+    </message>
 </context>
 <context>
     <name>DbManagerDlgAddGeometryColumn</name>
