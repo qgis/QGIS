@@ -112,7 +112,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+      outputFile = Utils.FileDialog.getSaveFileName(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.saveRastersFilter(), lastUsedFilter)
       if outputFile == '':
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)

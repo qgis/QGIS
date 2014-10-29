@@ -96,10 +96,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       gdalVersion = Utils.GdalConfig.versionNum()
       if gdalVersion >= 1800:
         fileDialogFunc = Utils.FileDialog.getSaveFileName
+        filters = Utils.FileFilter.saveRastersFilter()
       else:
         fileDialogFunc = Utils.FileDialog.getOpenFileName
+        filters = Utils.FileFilter.allRastersFilter()
 
-      outputFile = fileDialogFunc(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
+      outputFile = fileDialogFunc(self, self.tr( "Select the raster file to save the results to" ), filters, lastUsedFilter)
       if not outputFile:
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
