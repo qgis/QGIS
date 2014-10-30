@@ -175,7 +175,7 @@ def createUniqueFieldName( field ):
                 val = 2
             else:
                 val = val + 1
-            field.setName( shortName[len( shortName )-1:] + unicode( val ) )
+            field.setName( shortName[:-1] + str( val ) )
         except ValueError:
             field.setName( shortName + "_2" )
     else:
