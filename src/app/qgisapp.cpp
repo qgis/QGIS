@@ -2771,7 +2771,7 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
 
     // create the layer
 
-    QgsVectorLayer *layer = new QgsVectorLayer( src, base, "ogr" );
+    QgsVectorLayer *layer = new QgsVectorLayer( src, base, "ogr", false );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
@@ -2807,9 +2807,9 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
       {
         //set friendly name for datasources with only one layer
         QStringList sublayers = layer->dataProvider()->subLayers();
-        QString ligne = sublayers.at( 0 );
-        QStringList elements = ligne.split( ":" );
-        layer->setLayerName( elements.at( 1 ) );
+        QStringList elements = sublayers.at( 0 ).split( ":" );
+        if ( layer->storageType() != "GeoJSON" )
+          layer->setLayerName( elements.at( 1 ) );
         myList << layer;
       }
       else
@@ -2838,6 +2838,11 @@ bool QgisApp::addVectorLayers( const QStringList &theLayerQStringList, const QSt
 
   // Register this layer with the layers registry
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
+  foreach ( QgsMapLayer *l, myList )
+  {
+    bool ok;
+    l->loadDefaultStyle( ok );
+  }
 
   // Only update the map if we frozen in this method
   // Let the caller do it otherwise
@@ -3163,10 +3168,10 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   {
     // Register layer(s) with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
-    foreach( QgsMapLayer *l, myList )
+    foreach ( QgsMapLayer *l, myList )
     {
       bool ok;
-      l->loadDefaultStyle(ok);
+      l->loadDefaultStyle( ok );
     }
   }
 }
