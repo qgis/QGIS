@@ -49711,8 +49711,8 @@ De vectorlaag moet in de modus Bewerken staan, vóórdat u op de knop &lt;label&
 &lt;a name=&quot;FieldCalcBar&quot;&gt;
 &lt;h4&gt;werkbalk Veldberekening&lt;/h4&gt;
 &lt;/a&gt;
-Wanneer u schakelt om de laag te bewerken verschijnt ene nieuwe rij met functies in de attributentabel: de &lt;label&gt;werkbalk Veldberekening&lt;/label&gt;. Dit maakt het mogelijk snel waarden van bestaande velden te bewerken door berekeningen uit te voeren op basis van bestaande waarden voor attributen of de knop voor gedefinieerde functies in de attributentabel, bijv. om de lengte of gebied van geometrie-objecten te berekenen.&lt;br&gt;
-Selecteer, om waarden te berekenen, het veld dat aangepast moet worden met de knop Filter aan de linkerzijde en vul het tekstvak met de nieuwe waarde of een expressie om de nieuwe waarde te berekenen. Druk dan op de knop &lt;label&gt;Alles bijwerken&lt;/label&gt; om alle rijen van de attributentabel bij te werken of de knop &lt;label&gt;Geselecteerde bijwerken&lt;/label&gt; indien enkele objecten zijn geselecteerd of een filter is toegepast op de weergave van de attributentabel. U kunt ook de knop &lt;label&gt;Expressie bouwer&lt;/label&gt; gebruiken om de nieuwe waarde in de kolom te berekenen.&lt;br&gt;
+Wanneer u de laag bewerken activeert verschijnt er een nieuwe rij met functies in de attributentabel: de &lt;label&gt;werkbalk Veldberekening&lt;/label&gt;. Dit maakt het mogelijk snel waarden van bestaande velden te bewerken door berekeningen uit te voeren op basis van bestaande waarden voor attributen of de knop voor gedefinieerde functies in de attributentabel, bijv. om de lengte of gebied van geometrie-objecten te berekenen.&lt;br&gt;
+Selecteer, om waarden bij te werken, het veld dat aangepast moet worden met de knop Filter aan de linkerzijde en vul het tekstvak met de nieuwe waarde of een expressie om de nieuwe waarde te berekenen. Druk dan op de knop &lt;label&gt;Alles bijwerken&lt;/label&gt; om alle rijen van de attributentabel bij te werken of de knop &lt;label&gt;Geselecteerde bijwerken&lt;/label&gt; indien enkele objecten zijn geselecteerd of een filter is toegepast op de weergave van de attributentabel. U kunt ook de knop &lt;label&gt;Expressie bouwer&lt;/label&gt; gebruiken om de nieuwe waarde in de kolom te berekenen.&lt;br&gt;
 </translation>
     </message>
     <message>
@@ -49727,7 +49727,18 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Meetgereedschap&lt;/h3&gt;
+Er zijn drie meetgereedschappen: lengte, oppervlakte en hoek. Hiermee kun je op de kaart afstanden, oppervlakten en hoeken opmeten. Dit gereedschap geeft het resultaat terug in de ingestelde meeteenheid onder &lt;label&gt;Extra &gt; Opties &gt; Kaartgereedschap &lt;/label&gt;
+&lt;h4&gt;Afstanden opmeten&lt;/h4&gt;
+Om afstanden op te meten, selecteer het gereedschap en klik langs de route die je wil opmeten. De lengte van de totale route en de lengte van elk afzonderlijke lijnstuk worden weergegeven.
+Met de rechtermuisknop beeindigd het meten.
+&lt;h4&gt;Oppervlakte opmeten&lt;/h4&gt;
+Om oppervlakte te meten, selecteer het gereedschap om het vlak te tekenen. De totale oppervlakte wordt tijdens het tekenen continu in beeld gebracht.
+Een enkele keer de rechtermuisknop indrukken beeindigd het meten, door te dubbelklikken start deze opnieuw.
+&lt;h4&gt;Hoeken opmeten&lt;/h4&gt;
+Om hoeken op te meten selecteer het gereedschap en klik op drie punten in het kaartbeeld om een hoek te maken tussen deze drie punten. De hoek wordt continu getoond na het ingeven van het tweede punt.
+
+</translation>
     </message>
 </context>
 <context>

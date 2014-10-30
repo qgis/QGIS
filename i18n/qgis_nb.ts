@@ -49706,7 +49706,67 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Attributttabell&lt;/h3&gt; 
+Attributttabellen viser objekter fra et valgt lag. Hver rad i tabellen representerer et kartobjekt med dens egenskaper i forskjellige kolonner. Objektene i tabellen kan søkes, velges, flyttes og til og med redigeres. Som standard er attributttabellen et separat vindu. Hvis du åpner den og ikke kan se den lenger, er den mest sannsynlig skjult under QGIS hovedvindu. Du kan laged det om til et forankret vindu ved å krysse av&lt;label&gt;Åpne attributttabell i forankret vindu&lt;/label&gt; i &lt;label&gt;Innstillinger &gt; Alternativer &gt; Generell&lt;/label&gt;.&lt;p&gt;
+
+Antall for totalt antall lagobjekter, filtrerte objekter og valgte objekter er skrevet i vinduoverskriften.&lt;p&gt;
+På bunnen til høyre for dialogen, kan du velge hvorvidt du vil vise objektene i en blankett eller en tabell.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Velger&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sorterer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrerer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Redigerer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Feltkalkulator&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalcBar&quot;&gt;Feltkalkulator verktøylinje&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Velger&quot;&gt; 
+&lt;h4&gt;Velger&lt;/h4&gt; 
+&lt;/a&gt; 
+Man kan ta utvalg av rader ved å klikke på radnummeret på venstre side av raden. Påfølgende rader kan velges ved å holde musknappen nede og flytte musen til den andre enden av utvalget. Flere ikke påfølgende rader kan velges ved å holde inne &lt;label&gt;Ctrl&lt;/label&gt; tasten.&lt;br&gt;
+
+Et sammenhengende utvalg kan gjøres ved å holde inne &lt;label&gt;Shift&lt;/label&gt; knappen og klikke på flere radoverskrifter på venstre side av radene. Alle rader mellom nåværende pilposisjon og klikket rad blir valgt. 
+
+&lt;a name=&quot;Sorterer&quot;&gt; 
+&lt;h4&gt;Sorterer&lt;/h4&gt; 
+&lt;/a&gt; 
+Hver kolonne kan sorteres ved å klikke på kolonnehodet. En smal fil indikerer sorteringsrekkefølgen (nedoverpil betyr synkende verdier fra toppen og ned, oppoverpil betyr økende verdier fra toppen og ned).&lt;br&gt; 
+
+&lt;a name=&quot;Filtrering&quot;&gt;
+&lt;h4&gt;Filtrering&lt;/h4&gt; 
+&lt;/a&gt; 
+For å kun navigere gjennom deler av dine data, kan du bruke filtreringsknappen nede til venstre. Følgende alternativer er tilgjengelig. 
+&lt;h5&gt;Vis Alle Objekter&lt;/h5&gt;
+Viser alle objekter i laget. 
+&lt;h5&gt;Vis Valgte Objekter&lt;/h5&gt; 
+Viser alle objekt som er valgt i laget. 
+&lt;h5&gt;Vis Objekter Synlig på Kart&lt;/h5&gt; 
+Viser alle objekter som for øyeblikket er synlige i kartvinduet, basert på nåværende utstrekning og skala. 
+&lt;h5&gt;Vis Redigerte og Nye objekter&lt;/h5&gt; 
+Viser kun redigerte og nye objekter. I dette moduset vises objekter med ikke commitede endringer og er derfor et bra filter for å se på endringer før commit. Noter deg at slettede objekter ikke vises i dette moduset. 
+&lt;h5&gt;Kolonnefilter&lt;/h5&gt; 
+Et enkelt filter, som lar deg filtrere etter et attributt. Hvis attributtet inneholder tekst, søkes det også etter under-strenger. Søk etter &lt;b&gt;man&lt;/b&gt; vil defor også vise poster som inneholder &lt;b&gt;woman&lt;/b&gt;. Etter endring av filtertekst, trykk&lt;label&gt;Enter&lt;/label&gt; eller klikk på&lt;label&gt;Bruk&lt;/label&gt;. Du kan også slå av/på avkrysningsboks &lt;label&gt;Tegnsensitiv&lt;/label&gt;, slik at filteret ditt også vil samsvare med &lt;b&gt;Natt&lt;/b&gt; når du søker i teksten &lt;b&gt;natt&lt;/b&gt;.
+&lt;h5&gt;Avansert Filter&lt;/h5&gt; 
+For mer komplekse søk, vil dette moduset tilby en kraftfull uttykksbygger, som er lik et SQL- WHERE setninger. Referer til innebygd hjelp i uttrykksbyggeren for syntaksdetaljer. 
+
+ &lt;a name=&quot;Redigering&quot;&gt; 
+&lt;h4&gt;Redigering&lt;/h4&gt; 
+&lt;/a&gt;
+For å redigere verdier må du først slå på redigeringsmodus på ønsket lag. For å skru på redigeringsmodus; klikk på &lt;label&gt;Skru på redigeringsmodus&lt;/label&gt; (penn) knappen eller trykk&lt;label&gt;Ctrl + E&lt;/label&gt;. Etterpå dobbeltklikker du på verdien du vil redigere eller plasserer muspilen på den og bruker&lt;label&gt;Mellomrom&lt;/label&gt;-tasten. Du kan tilpasse programtillegg brukt for feltredigering i &lt;label&gt;Vektor Lag Innstillinger &gt; Felt&lt;/label&gt; &lt;br&gt;
+Du kan også redigere et felts verdi for mange rader på en gang. Du må velge radene du ønsker å redigere og så bruke &lt;label&gt;Feltkalkulator&lt;/label&gt; eller &lt;label&gt;Feltkalkulator verktøylinje&lt;/label&gt;. Hvis ingen rader velges, vil redigering gjelde for alle objektene.
+
+&lt;a name=&quot;FieldCalc&quot;&gt; 
+&lt;h4&gt;Feltkalkulator&lt;/h4&gt; 
+&lt;/a&gt;
+&lt;label&gt;Feltkalkulator&lt;/label&gt; knappen i attributttabellen lar deg å utføre beregninger basert på eksisterende attributtverdier eller definerte funksjoner, f.eks. beregn lengde eller areal til geometriobjekter.&lt;br&gt;
+Resultatet kan skrives til en ny attributtkolonne eller det kan brukes til å oppdatere verdier i en allerede eksisterende kolonne.&lt;br&gt; 
+Vektorlaget må være i redigeringsmodus før du kan klikke på &lt;label&gt;Feltkalkulator&lt;/label&gt; ikonet for å åpne dialogen.
+
+&lt;a name=&quot;FieldCalcBar&quot;&gt;
+&lt;h4&gt;Feltkalkulator Verktøylinje&lt;/h4&gt;
+&lt;/a&gt;
+Når du skrur på redigering av laget, vil en ny rad med funksjoner komme til syne i attributttabellen: &lt;label&gt;Feltkalkulator Verktøylinje&lt;/label&gt;. Dette tillater rask redigering av verdier i eksisterende felt ved å utføre beregninger basert på eksisterende attributtverdier eller definerte funksjonsknapper i attributttabellen, f.eks. for å beregne lengde eller areal av geometriobjekter.&lt;br&gt;
+For å redigere verdier, velg feltet som skal modifiseres med filterknappen på venstre side og fyll tekstboksen med nye verider eller et uttrykk for å beregne ny verdi. Klikk så &lt;label&gt;Oppdater alle&lt;/label&gt; knappen for å oppdatere alle radene i attributttabellen eller &lt;label&gt;Oppdater valgte&lt;/label&gt; knappen hvis noen objekter er valgt eller et filter er angitt for attributttabellvisningen. Du kan også bruke &lt;label&gt;Uttrykksbygger&lt;/label&gt; knappen for å beregne de nye verdiene i kolonnen.&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -49720,7 +49780,16 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Måleverktøy&lt;/h3&gt; Det fins tre måleverktøy: lengde, areal og vinkel. Med dem kan du måle distanser, arealer og vinkler i kartvinduet. Verktøyene tilbyr foreløpig kun resultater i enhetene gitt i  &lt;label&gt;Innstillinger &gt; Alternativer &gt; Kartverktøy&lt;/label&gt;.
+&lt;h4&gt;Måler lengder&lt;/h4&gt;.
+For å måle lengder, velg verktøyet og klikk langs stien du ønsker å måle. Lengden på hvert segment vises, og likeså total lengde på stien.
+Et enkelt høyreklikk med musen avslutter målingen.
+&lt;h4&gt;Måle arealer&lt;/h4&gt;
+For å måle arealer, velg verktøyet og klikk for å opprette arealet. Totalarealet vises dynamisk etter hvert som du klikker.
+Et enkelt høyreklikk med musen stanser målingen, mens to høyreklikk med musen starter en ny måling.
+&lt;h4&gt;Måle vinkler&lt;/h4&gt;
+For å måle vinkler, velg verktøyet og klikk på tre punkter for å opprette en vinkel mellom disse punktene. Det andre valgte punktet er knutepunktet for vinkelen. Vinkelen vises dynamisk når du klikker det andre punktet.
+</translation>
     </message>
 </context>
 <context>

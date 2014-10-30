@@ -48700,7 +48700,255 @@ The following options can be added
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Separerad textfil&lt;/h3&gt;
+Laddar och visar separerade textfiler
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Översikt&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Skapa ett lager från separerad text&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;Hur separering, citat och escape-tecken fungerar&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;Hur reguljära uttrycksseparerare fungerar&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;Hur text med WKT tolkas&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attribut i separerade textfiler&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Exempel på en textfil med X,Y punkt koordinater&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Exempel på en textfil med WKT geometrier&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Använa separerade textfiler med Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Översikt&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;En &amp;quot;separerad textfil&amp;quot; innehåller data där varje objekt skrivs på en ny rad, och delas i olika fält med en separerare som exempelvis komma.
+Denna typ av filer exporteras vanligen från kalkylark (exempelvis CSV filer) eller databaser.
+Normalt består den första raden i den separerade textfilen av fältnamn.
+&lt;/p&gt;
+&lt;p&gt;
+Separerade textfiler kan läsas in i QGIS som lager.
+Objekt kan visas geografiskt antingen som punkt definierad av X och Y koordinater, eller som &apos;välkänd text&apos; (WKT) som kan beskriva punkter, linjer och polygoner av godtycklig komplexitet. 
+Filen kan även laddas som tabell utan geometri, och senare kopplas till en befintlig tabell i QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+Utöver geometrin kan filen innehålla text, heltal och decimaltal. Som standard kommer QGIS att välja fälttyp baserat på de icke-tomma fält. Om alla fält kan tolkas som heltal så kommer typen att bli heltal, om det inte går att tolka enhetligt så blir typen text.&lt;/p&gt;
+&lt;p&gt;
+QGIS kan även läsa typer från en OGR CSV kompatibel &amp;quot;csvt&amp;quot;-fil.
+Detta är en fil jämte datafilen, men med ett &amp;quot;t&amp;quot; lagd till filnamnet.
+Denna fil skall endast innehålla en rad som listar datatyp för varje fält.
+Giltiga typer är &amp;quot;integer&amp;quot;, &amp;quot;real&amp;quot;, &amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, och &amp;quot;datetime&amp;quot;. Date, time och datetime datatyper hanteras som text (string) av QGIS.
+Varje typ kan efterföljas av bredd och precision, exempelvis &amp;quot;real(10.4)&amp;quot;.
+Listan med typer separeras med komma, oavsett vilket tecken som används för att separera data i csv-filen.
+Ett exempel på en giltig formatfil skulle vara:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Skapa ett lager från separerad text&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Att skapa ett lager från separerad text involverar att välja datafil, definiera formatet (hur varje post skall separeras till fält), och definiera geometrin som skall användas.
+Detta hanteras med dialogen för separerad text, vilken beskrivs nedan.
+Dialogen visar ett exempel från inledningen av filen som visar hur inställningarna kommer att tillämpas.
+&lt;/p&gt;
+&lt;h5&gt;Välja datafil&lt;/h5&gt;
+&lt;p&gt;Använd &amp;quot;Bläddra...&amp;quot; knappen för att välja datafil.
+När filen är vald kommer lagernamnet automatiskt skapas från filnamnet. Lagernamnet används för att representera data i QGIS lagerlista.
+&lt;/p&gt;
+&lt;p&gt;
+Som standard antas filer vara kodade med UTF-8. Andra format kan dock väljas. Exempelvis &amp;quot;System&amp;quot; använder det inställda formatet för operativsystemet.
+Det är säkrare att använda ett definierat format om projektet skall hanteras av flera system som kan ha olika kodning.
+&lt;/p&gt;
+&lt;h5&gt;Ange filformat&lt;/h5&gt;
+&lt;p&gt;Filformatet kan vara ett av
+&lt;ul&gt;
+    &lt;li&gt;CSV-filformat.  Detta format är vanligt för kalkylark, där fält separeras med ett kommatecken, och citerad med ett &amp;quot;(citationstecken). Inom citerade fält anges citationstecken med &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Valda separerare. Varje post delas i fält med en eller flera separerande tecken.
+Citationstecken används för fält som kan innehålla någon av dessa separerande tecken. Escape-tecken kan användas för att få efterföljande tecken att hanteras som normala tecken (ex för att inkludera citationstecken, och ny-rad tecken i textfält).  
+Användning av separerare, citationstecken, och escape-tecken beskrivs &lt;a href=&quot;#csv&quot;&gt;nedan&lt;/a&gt;.
+    &lt;li&gt;Reguljära uttryck. Varje rad delas in i fält med ett &amp;quot;reguljärt uttryck&amp;quot; som separerare.
+Användning av reguljära uttryck beskrivs &lt;a href=&quot;#regexp&quot;&gt;nedan&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Poster och fältalternativ&lt;/h5&gt;
+&lt;p&gt;Följande alternativ påverkar urvalet av poster och fält från datafilen&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Antal inledande rader att hoppa över: används för att ignorera inledande rader i textfilen&lt;/li&gt;
+    &lt;li&gt;Första raden innehåller fältnamn: om markerad så kommer första raden i filen (efter överhopppade rader) att tolkas som fältnamn, i stället för data.&lt;/li&gt;
+    &lt;li&gt;Trimma fält: om markerad så kommer inledande och efterföljande blanktecken att tas bort från varje fält (utom citerade textfält).&lt;/li&gt;
+    &lt;li&gt;Hoppa över tomma fält: om markerad kommer tomma fält (efter trimmning) att förkastas. Detta påverkar justeringen av data i fältet och är samma sak som att hantera på varandra följande separerare som en enda. Citerade fält förkastas aldrig.&lt;/li&gt;
+    &lt;li&gt;Decimaltecken är komma: om markerad så kommer komma i stället för punkt att användas som decimaltecken i decimaltal. Exempelvis &lt;tt&gt;-51,354&lt;/tt&gt; är samma som -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometridefinition&lt;/h5&gt;
+&lt;p&gt;Geometrin kan definieras som en av&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Punktkoordinater: varje objekt representeras av en punkt bestämd av X och Y koordinater.&lt;/li&gt;
+    &lt;li&gt;Välkänd text (WKT) geometri: varje objekt representeras av en text av &apos;Well known text&apos; typ, exempelvis
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  Läs detaljer om &lt;a href=&quot;#wkt&quot;&gt;välkänd text&lt;/a&gt; formatet.
+    &lt;li&gt;Ingen geometri (endast attributtabell): poster kommer inte att visasa på kartan, men kan visas som attributtabell och sammanfogas med andra lager i QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;För punktkoordinater tillämpas följande alternativ:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X fält: anger det fält som innehåller X koordinaten&lt;/li&gt;
+    &lt;li&gt;Y fält: anger det fält som innehåller Y koordinaten&lt;/li&gt;
+    &lt;li&gt;DMS grader: om markerad så represnenterar koordinaterna grader/minuter/sekunder eller grader/minuter. QGIS är ganska frikostig vid tolkning av dessa.
+En gilgit DMS koordinat innehåller tre numeriska fält med ett valfritt tecken för hemisfär före eller efter
+    (N, E, eller + är positiva, S, W, eller - är negetiva).  Ytterligare icke-numeriska tecken ignoreras normalt. Exempelvis &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; är en giltig koordinat.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;För välkänd text-geometri gäller följande:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometrifält: fältet som innehåller den välkända textdefinitionen.&lt;/li&gt;
+    &lt;li&gt;Geometrityp: en av &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, eller &amp;quot;Polygon&amp;quot;.
+QGIS lager kan endast visa en typ av geometri för objekt (punkt, linje eller polygon).
+Detta alternativ väljer vilken geometri som visas i textfiler med flera olika geometrityper.
+Poster som innehåller andra geometrityper ignoreras.
+Om &amp;quot;Detect&amp;quot; är valt så kommer den typ som används först i filen att användas.
+&amp;quot;Point&amp;quot; innefattar POINT och MULTIPOINT WKT typer, &amp;quot;Line&amp;quot; innefattar LINESTRING och MULTILINESTRING WKT typer, och &amp;quot;Polygon&amp;quot; inkluderar POLYGON och MULTIPOLYGON WKT typer.&lt;/ul&gt;
+&lt;h5&gt;Lagerinställningar&lt;/h5&gt;
+&lt;p&gt;Lagerinställningar styr över hur lagret hanteras i QGIS. Tillgängliga alternativ är:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Använd rumsligt index. Skapa ett rumsligt index för att förbättra prestanda vid visning och urval av rumsliga objekt.
+Detta alternativ kan vara användbart för filer som är större än ett par megabyte.&lt;/li&gt;
+&lt;li&gt;Använda sub-index. Skapa ett index om ett &apos;subset&apos; av poster används (antingen genom att uttryckligen sätta ett sådant från lageregenskapsdialogen, eller implicit från en fil där alla geometrier inte är giltiga). Index kommer endast att skapas när ett sub-index är definierat.&lt;/li&gt;
+&lt;li&gt;Bevaka fil. Om detta alternativ är valt kommer QGIS att bevaka filen för ändringar av andra program, och läsa om filen om den ändras. Kartan kommer inte att uppdateras förrän den ritas om, men index och utsträckning ändras direkt. Detta alternativ bör väljas om index används och det är troligt att en annan applikation kommer att ändra filen. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Hur skiljetecken, citat och escape-tecken fungerar&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Poster delas in i fält med tre uppsättningar tecken:
+skiljetecken, citattecken, och escapetecken. Andra tecken i posten  
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;Citat och escapetecken kan inte vara samma som separeringstecken - de kommer att ignoreras om de är det. Escapetecken kan vara samma som citattecken, men kommer att fungera annorlunda om de är det.&lt;/p&gt;
+&lt;p&gt;Separeringstecken används för att markera slutet på varje fält. Om mer än ett separeringstecken är definierat så kan en av tecknen användas för att marker slut på fältet. Citat och escapetecken kan åsidosätta separeringstecken, så att det hanteras som ett normalt datatecken.&lt;/p&gt;
+&lt;p&gt;Citattecken kan användas för att markera början och slutet på ett citatfält. Citerade fält kan innehålla separeringstecken och får täcka flera rader i textfilen. Om ett fält är citerat måste det innehålla samma citationstecken i början och slutet. Citationstecken kan inte finnas i ett fält om de inte är tillsammans med escape-tecken.&lt;/p&gt;
+&lt;p&gt;Escapetecken som inte är citationstecken tvingar följande tecken att hanteras som data.
+(eller, för att inte betraktas som ny rad, separerare, eller citattecke).
+&lt;/p&gt;
+&lt;p&gt;Escapetecken som också är citattecken har mycket begränsad effekt. De tillämpas endast inom citationstecken och kommer endast att vara escape åt sig själva. Exempelvis, om &lt;tt&gt;&apos;&lt;/tt&gt; är citat och escapetecken, så kommer texten
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; representera värdet Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Hur reguljära uttryck som separerare fungerar&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Reguljära uttryck är mini-uttryck som används för att representera teckenmönster. Det finns mängder av varianter på reguljära uttryck - QGIS använder den variant som tillhandahålls av &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; klassen av &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; ramverket.&lt;/p&gt;
+&lt;p&gt;I ett reguljärt uttryck-separerad textfil betraktas varje rad som en post. Varje matchning via det reguljära uttrycket i raden betraktas som slutet på ett fält.
+Om det reguljära uttrycket innehåller urvalsgrupper (typ &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+så kommer dessa att extraheras som fält.
+Om detta inte är önskvärt så använd icke-urvalsgrupper (typ &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;Det reguljära uttrycket betraktas annorlunda om det är inledningen av raden (mönster inleds med &lt;tt&gt;^&lt;/tt&gt;).
+I detta fall kommer det reguljära uttrycket att matchas mot varje rad. Om raden inte matchar så betraktas den som ogiltig och förkastas.
+Varje urvalsgrupp i uttrycket betraktas som ett fält. Det reguljära uttrycket är ogiltigt om det inte har urvalsgrupper. Som exempel kan detta användas för att (något ointuitivt) hantera inläsning av data med fält med bestämd bredd. Exempelvis uttrycket
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;kommer att ta ut fyra fält med bredd 5, 10, 20 och 20 tecken från varje rad. Rader med mindre än 55 tecken kommer att förkastas.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Hur WKT text tolkas&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+Separerade textlager känner igen följande &lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;välkända texter&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+Geometrier med Z koordinat kommer att accepteras (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), ett mått (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), eller båda (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+Det kan även hantera PostGIS EWKT variationer, där geometrin föregås av ett rumsligt referenssystem (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), och en variant använd av Informix där WKT föregås av ett heltal representerande referenssystemet (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+I båda dessa fall kommer SRID att ignoreras.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attribut i separerade textfiler&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Varje post i den separerade textfilen delas in i fält som representerar attribut i en post. Vanligtvis hämtas attributnamnen från den första raden i filen. Om denna inte innehåller filnamn så döps fälten till &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, och så vidare. 
+Om poster har fler fält än vad som är definierat i rubrikraden så kommer dessa att döpas till &lt;tt&gt;field_#&lt;/tt&gt;, där # är numret på fältet (notera att tomma fält i slutet på posten ignoreras).
+QGIS kan åsidosätta namnen i textfilen om de är nummer, eller har namn som &lt;tt&gt;field_#&lt;/tt&gt;, eller är dubletter.
+&lt;/p&gt;
+&lt;p&gt;
+Utöver de attribut som finns i datafilen kommer QGIS att tilldela unika objektid till varje post vilket blir radnummer i källfilen där posterna börjar.
+&lt;/p&gt;
+&lt;p&gt;
+Varje attribut har även en datatyp, som text (string), heltal (integer) eller decimaltal (real). Datatypen antyds från innehållet i fälten - om alla fält med innehåll är giltiga heltal så betraktas typen som heltal, annars om det är giltiga decimaltal så är typen &apos;real&apos;, annars är typen &apos;string&apos;. Notera att detta baseras på innehållet i fälten - citatfält ändrar inte på hur de tolkas.&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Exempel på textfiler med X, Y punktkoordinater&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;Denna fil:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Använder &lt;b&gt;;&lt;/b&gt; som separeringstecken. Valfritt tecken kan avnändas för att separera fält.&lt;/li&gt;
+&lt;li&gt;Första raden är rubriker. Den innehåller fältnamnen X, Y, och ELEV.&lt;/li&gt;
+&lt;li&gt;X koordinaterna finns i X fältet.&lt;/li&gt;
+&lt;li&gt;Y koordinaterna finns i Y fältet.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Exempel på en textfil med WKT geometrier&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;Denna fil:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Har två fält definierade i första raden: id och wkt.&lt;/li&gt;
+  &lt;li&gt;Använder &lt;b&gt;|&lt;/b&gt; som separerare.&lt;/li&gt;
+  &lt;li&gt;Anger varje punkt med välkänd text-notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Använd separerade textlager i Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Separerade textfiler som datakälla kan skapas från Python på ett liknande sätt som andra vektorlager.
+Mönstret är:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;Detta kan användas för att läsa den andra exempelfilen ovan.&lt;/p&gt;
+&lt;p&gt;Konfigurationen av det separerade textlagret definieras genom att lägga till ett frågeobjekt till sökvägen (uri).
+Följande alternativ kan läggas till
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; definierar filens kodning. Standard är &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; definierar separeringstypen. Giltiga värden är csv, regexp, och whitespace (som bara är ett specialfall av regexp). Standard är csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; definierar separeraren som skall användas för csv formatterade filer, eller det reguljära uttryck som används för regexp-filer. Standard är csv filer.
+Det finns inget standardvärde för filer med reguljära uttryck.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (för csv filer) definierar vilket tecken som används som citationstecken. Standard är &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (för csv filer) definierar vilket tecken som används som escapetecken för det efterföljande tecknet. Standard är &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; definierar det antal rader som skall ignoreras från början av filen. Standard är 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; definerar hurvida den första posten innehåller fältnamn. Standard är ja (yes).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; definierar om inledande och avslutande blanktecken skall tas bort från ociterade fält. Standard är nej (no).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; definierar det maximala antalet fält som skall läsas in från filen. Ytterligare fält i varje post kommer att ignoreras. Standard är 0 - inkludera alla fält. (Detta alternativ är inte tillgängligt från dialogfönstret).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; definierar om tomma ociterade fält skall ignoreras (tillämpas efter trimFields). Standard är nej (no).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; anger ett alternativt tecke som kan användas som decimaltecken i numeriska fält. Standard är punkt.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; anger namn eller nummer (med början på 1) på det fält som innehåller välkänd text som geometridefinition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; anger namn eller nummer (med början på 1) på det fält som används för X koordinat (endast giltigt om wktField inte är definierat)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; anger namn eller nummer (med början på 1) på det fält som används för Y koordinat (endast giltigt om wktField inte är definierat)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; anger typ av geometri för wkt fält, eller &apos;none&apos; för att ladda filen utan geometri. Standard är &apos;auto&apos;.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; anger ett uttryck som används för att identifiera ett subset med poster som kommer att användas.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; anger det referenskoordinatsystem som används för vektorlagret, i ett format som QgsCoordinateReferenceSystem.createFromString accepterar (exempelvis &amp;quot;EPSG:4167&amp;quot;).  Om detta inte är angivet kommer ett dialogfönster eventuellt upp för att begära denna information av användaren när lagret laddas (beroende på QGIS CRS inställningar).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; anger om det skall byggas ett index för att definiera subset, och för implicita cubset av objekt där geometrin är giltig. Som standard byggs subset index om det är tillämpbart.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; anger om det skall byggas ett rumsligt index under den initiala filgranskningen. Som standard så byggs inget index. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; anger om en bevakning på filen skall tillämpas för att upptäcka förändringar.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; anger om fel som upptäcks under inläsningen skall presenteras i en dialogruta (de kommer att skrivas till QGIS loggen i vilket fall). Standard är nej (no). Detta alternativ är inte tillgängligt från GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
@@ -49262,7 +49510,65 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Attributtabellen&lt;/h3&gt;
+Attributtabellen visar objekt i ett utvalt lager. Varje rad i tabellen representerar ett kartobjekt med tillhörande attribut i flera kolumner. Objekten i tabellen går att söka efter, välja ut, flyttas eller till och med redigeras. Som standard visas attributtabellen i ett separat fönster. Om du öppnar den och inte kan se den, är det troligt att den är dold under QGIS huvudfönster. Du kan även docka fönstret genom att markera &lt;label&gt;Öppna attributtabell i dockat fönster&lt;/label&gt; i &lt;label&gt;Inställningar &gt; Alternativ &gt; Datakällor&lt;/label&gt;.&lt;p&gt;
+
+Det totala antalet lagerobjekt, filtrerade och utvalda objekt visas i fönstertitelraden.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Urval&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sortering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Redigering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Fältkalkylator&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalcBar&quot;&gt;Fältkalkylatorlisten&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Urval&lt;/h4&gt;
+&lt;/a&gt;
+Rader kan väljas genom att klicka på radnumret till vänster om raden. Efterföljande rader kan väljas genom att hålla musknappen nere och flytta musen till slutet på markeringen. Flera rader som inte ligger efter varandra kan väljas genom att hålla &lt;label&gt;Ctrl&lt;/label&gt; knappen nedtryckt.&lt;br&gt;
+Ett kontinuerligt urval kan göras genom att hålla &lt;label&gt;Shift&lt;/label&gt; knappen nedtryckt och klicka på flera rader till vänster. Alla mellanliggande rader kommer att bli markerade.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sortering&lt;/h4&gt;
+&lt;/a&gt;
+Varje kolumn kan sorteras genom att klicka på kolumnrubriken. En liten pil indikerar sorteringsordningen (nedåtpil betyder fallande värden uppifrån och ned, uppåtpil betyder stigande värden uppifrån och ned).&lt;br&gt;
+Aktivera &lt;label&gt;Flytta markerat överst&lt;/label&gt; knappen (ctrl+T) för att alltid visa dessa överst, oavsett sorteringsordning.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtrering&lt;/h4&gt;
+&lt;/a&gt;
+För att bara hantera delar av dina data kan du använda filterknappen nere till vänster. Följande alternativ är tillgängliga.
+&lt;h5&gt;Visa alla objekt&lt;/h5&gt;
+Visar alla objekt i lagret.
+&lt;h5&gt;Visa valda objekt&lt;/h5&gt;
+Visar alla objekt som för tillfället är valda.
+&lt;h5&gt;Visa endast objekt synliga i kartfönstret&lt;/h5&gt;
+Visar alla objekt som för tillfället är synliga i kartan. Hänsyn tas även till om lagret har skalberoende visning inställt.
+&lt;h5&gt;Visa redigerade och nya objekt&lt;/h5&gt;
+Visar endast redigerade och nya objekt. I detta läge kommer objekt med ej verkställda ändringar att visas och det kan därför vara ett bra filter för att kontrollera ändringar, innan dessa verkställs. Notera att raderade objekt inte visas i detta läge.
+&lt;h5&gt;Kolumnfilter&lt;/h5&gt;
+Ett enkelt filter, som låter dig filtrera på attribut. Om attributet innehåller text, så letar det även efter substrängar. En sökning efter &lt;b&gt;bil&lt;/b&gt; kommer även att visa rader som innehåller &lt;b&gt;stabil&lt;/b&gt;. När filtertexten ändrats, tryck på &lt;label&gt;Enter&lt;/label&gt; eller klicka på &lt;label&gt;Verkställ&lt;/label&gt;.Du kan även växla läge med kryssrutan &lt;label&gt;Skilj på gemener/VERSALER&lt;/label&gt;, vilket får ditt filter att även hitta &lt;b&gt;Buss&lt;/b&gt; när söktexten är &lt;b&gt;buss&lt;/b&gt;.   
+&lt;h5&gt;Avancerade filter&lt;/h5&gt;
+För mer avancerade sökningar finns detta läge där det går att använda en kraftfull frågebyggare, som liknar SQL WHERE kommandot. Använd den inbyggda hjälpen i frågebyggaren för detaljer om hur dessa frågor byggs upp.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Redigering&lt;/h4&gt;
+&lt;/a&gt;
+För att redigera värden måste du först växla lagret till redigeringsläge. För att växla till redigeringsläge så klickar man på &lt;label&gt;Växla redigeringsläge&lt;/label&gt; (pennan) knappen eller använder &lt;label&gt;Ctrl + E&lt;/label&gt;. Efteråt dubbelklickar man på det värde man vill ändra eller placerar markören där och använder &lt;label&gt;Space&lt;/label&gt;-tangenten. Du kan anpassa widgetar som används för fältredigering i &lt;label&gt;lageregenskaper &gt; Fält&lt;/label&gt;.
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Fältkalkylatorn&lt;/h4&gt;
+&lt;/a&gt;
+&lt;label&gt;Fältkalkylator&lt;/label&gt;-knappen i attributtabellen låter dig utföra beräkningar baserade på existerande attributvärden eller definierade funktioner, som beräkning av längd eller area för geometriska objekt.&lt;br&gt;
+Resultatet kan skrivas till ett nytt attribut eller användas för att uppdatera ett värde i en redan existerande kolumn.&lt;br&gt;
+Vektorlagret behöver vara i redigeringsläge, innan det går att klicka på &lt;label&gt;Fältkalkylator&lt;/label&gt;-ikonen för att öppna dialogen.
+
+&lt;a name=&quot;FieldCalcBar&quot;&gt;
+&lt;h4&gt;Fältkalkylatorlisten&lt;/h4&gt;
+&lt;/a&gt;
+När du växlar ett lager till redigeringsläge, dyker en ny rad upp i attributtabellen: &lt;label&gt;Fältkalkylatorlisten&lt;/label&gt;. Denna låter dig snabbt editera värden i existerande fält genom att utföra beräkningar baserade på existerande attributvärden eller definierade funktioner genom att skriva in dessa i textfältet. Exempelvis beräkning av längd eller area för geometriska objekt.&lt;br&gt;
+För att editera värden, välj fältet som skall modifieras med en filterknapp i vänsterkant och fyll i textfältet med det nya värdet eller ett uttryck. Tryck sedan på &lt;label&gt;Uppdatera alla&lt;/label&gt; knappen för att uppdatera alla rader i attributtabellen eller på &lt;label&gt;Uppdatera filtrerade&lt;/label&gt; knappen om endast filtrerade rader skall uppdateras. Du kan även använda &lt;label&gt;Uttrycksdialogen&lt;/label&gt; genom att klicka på den knappen för att beräkna nya värden för en kolumn.&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -49276,7 +49582,13 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Mätverktyg&lt;/h3&gt;
+Det finns tre mätverktyg: längd, area och vinkel. Med dessa kan du mäta avstånd, ytor och vinklar i kartfönstret. Verktygen ger resultat i de enheter som agivits i &lt;label&gt;Inställningar &gt; Alternativ &gt; Kartverktyg&lt;/label&gt;.
+&lt;h4&gt;Mät linje&lt;/h4&gt; För att mäta längder, välj verktyget och klicka den sträcka som du vill mäta. Längden på varje segment visas, liksom den totala längden för sträckan. 
+&lt;h4&gt;Mät area&lt;/h4&gt; För att mäta area, välj verktyget och klicka för att skapa området. Den totala ytan visas dynamiskt när du klickar. 
+&lt;h4&gt;Mär vinkel&lt;/h4&gt;
+För att mäta vinklar, välj verktyget och klicka på tre punkter för att skapa en vinkel mellan dessa. Den andra punkten som väljs är brytpunkt för vinkeln. Vinkeln visas dynamiskt så snart du klickat ut den andra punkten.
+</translation>
     </message>
 </context>
 <context>

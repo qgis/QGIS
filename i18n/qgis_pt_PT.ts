@@ -936,11 +936,11 @@ Query:
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation type="unfinished">%1 é uma camada inválida - não carregado</translation>
+        <translation>%1 é uma camada inválida - não carregado</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished">%1 é uma camada inválida e não pode ser carregada. Por favor verifique a &lt;a href=&quot;#messageLog&quot;&gt;mensagens de registo&lt;/a&gt; para mais informação.</translation>
+        <translation>%1 é uma camada inválida e não pode ser carregada. Por favor verifique a &lt;a href=&quot;#messageLog&quot;&gt;mensagens de registo&lt;/a&gt; para mais informação.</translation>
     </message>
 </context>
 <context>
@@ -48720,7 +48720,259 @@ The following options can be added
 
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Camada de texto delimitado&lt;/h3&gt;
+Carrega e mostra ficheiros de texto delimitado
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Enquadramento&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Criar uma camada de texto delimitado&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;Como funcionam os caracteres de delimitação, citação, e escape&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;Como funcionam os delimitadores de expressões regulares&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;Como é interpretado o texto WKT&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Atributos em ficheiros de texto delimitados&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Exemplo de ficheiro de texto com coordenadas de pontos X, Y&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Exemplo de um ficheiro de texto com geometrias WKT &lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Usar camadas de texto delimitado em Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Enquadramento&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Um &quot;ficheiro de texto delimitado&quot; contém dados em que cada registo começa numa nova linha, e é separado em campos por um delimitador, por exemplo uma vírgula.  
+Este é o tipo de ficheiro que é geralmente exportado de folhas de calcúlo (por exemplo ficheiros csv) ou bases de dados.
+Normalmente a primeira linha de um ficheiro de texto delimitado contém o nome dos campos.  
+&lt;/p&gt;
+&lt;p&gt;
+Ficheiros de texto delimitado podem ser abertos no QGIS como uma camada. 
+Os registos pode ser mostrados espacialmente como pontos
+definidos por coordenadas X e Y, ou usando definições Well Known Text (WKT) das geometrias que podem descrever pontos, linhas e polígonos com complexidade arbitrária. O ficheiro pode ainda ser aberto como uma tabela apenas de attributos que pode ser unida a outras camadas no QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+Para além da definição da geometria, o ficheiro pode conter campos de texto, inteiros e números reais. Por defeito
+o QGIS escolhe o tipo de campo com base nos valores não vazios de cada campo. Se todos os valores puderem ser interpretados
+como inteiros então o tipo será integer, se puderem ser interpretados como números reais o tipo 
+será double, caso contrário o tipo será text.
+&lt;/p&gt;
+&lt;p&gt;
+O QGIS também consegue ler os tipos de um ficheiro &quot;csvt&quot; compatível com o driver OGR CSV.
+É um ficheiro que acompanha o de dados, mas com um &quot;t&quot; adicionado ao nome do ficheiro.
+O ficheiro deve apenas conter uma linha que lista o tipo de cada campo.
+Os tipos válidos são &quot;integer&quot;, &quot;real&quot;, &quot;string&quot;, &quot;date&quot;, &quot;time&quot;, e &quot;datetime&quot;. Os tipos date, time e datetime são tratados no QGIS como strings.
+Cada tipo pode precedido por um comprimento e precisão, por exemplo &quot;real(10.4)&quot;.
+Independentemente do delimitador usado no ficheiro de dados, a lista dos tipos é separada por vírgulas. Um exemplo de um ficheiro com formato válido seria:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&quot;integer&quot;,&quot;string&quot;,&quot;string(20)&quot;,&quot;real(20.4)&quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Criar uma camada de texto delimitado&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+Criar uma camada de texto delimitado implica escolher o ficheiro de dados, definir o formato (como cada registo deve ser separado em campos), e definir como a geometria é representada.
+Como é detalhado abaixo, isto é possível através da caixa de diálogo do texto delimitado.
+A caixa de diálogo apresenta uma amostra do ínicio do ficheiro de como as opções de formatação serão aplicadas.
+&lt;/p&gt;
+&lt;h5&gt;Escolher o ficheiro de dados&lt;/h5&gt;
+&lt;p&gt;
+Use o botão &quot;Pesquisar...&quot; para seleccionar o ficheiro de dados. Uma vez seleccionado o nome da camada será automaticamente preenchido com base no nome do ficheiro. O nome da camada é usado para representar os dados na legenda do QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+Por defeito, assume-se que os ficheiros de encontram codificados em UTF-8. No entanto pode ser seleccionado outro tipo de codificação de ficheiros. Por exemplo &quot;System&quot; usa a codificação por defeito do sistema operativo.
+É mais seguro usar uma codificação específica quando o projecto QGIS necessita de ser portátil.
+&lt;/p&gt;
+&lt;h5&gt;Especificar o formato do ficheiro&lt;/h5&gt;
+&lt;p&gt;O formato do ficheiro pode ser um dos seguintes:
+&lt;ul&gt;
+    &lt;li&gt;Ficheiro de formato CSV.  Este é o formato geralmente usado por folhas de cálculo, em cujos campos são delimitados por vírgulas e citados usando um caracter &quot;(aspas). Dentro de campos citados, uma aspa é introduzida com &quot;&quot;.&lt;/li&gt;
+    &lt;li&gt;Delimitador seleccionado.  Cada registo é separado em campos usando um ou mais caracteres delimitadores.
+    Caracteres de citação são usados em campos que possam conter delimitadores. Caractéres de escape podem ser usados para lidar como o seguinte caracter como se fosse normal (i.e, para incluir caracteres delimitadores, de citação e de quebra de linha em campos de texto). O uso do caracteres de delimitação, citação e escape é mais detalhada &lt;a href=&quot;#csv&quot;&gt;abiaxo&lt;/a&gt;.
+    &lt;li&gt;Regular expressions.  Cada linha é separada em campos usando um delimitador &quot;regular expression&quot;.
+    O uso de regular expressions é detalahdo &lt;a href=&quot;#regexp&quot;&gt;abaixo&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Opções de registo e campo&lt;/h5&gt;
+&lt;p&gt;As seguinte opções afectam a selecção de registos e campos do ficheiro de dados:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Número de linhas de cabeçalho a descartar: usado para ignorar linhas de cabeçalho do início do ficheiro de texto&lt;/li&gt;
+    &lt;li&gt;Primeiro registo tem o nome dos campos: se seleccionado então o primeiro registo do ficheiro (após linhas descartadas) é interpretado como sendo os nomes dos campos, e não um registo com dados.&lt;/li&gt;
+    &lt;li&gt;Cortar campos: quando seleccionado serão removidos espaços em branco do ínicio e fim de cada campo (excepto campos citados). &lt;/li&gt;
+    &lt;li&gt;Descarta campos vazio: se seleccionado campos vazios (após corte) serão descartados.  Isto afecta o alinhamento dos dados nos campos e equivale a tratar delimitadores consecutivos como apenas um.  Campos citados nunca são descartados.&lt;/li&gt;
+    &lt;li&gt;Separador decimal é a vírgula: se seleccionado, em vez do ponto,a usada a vírgula como separador decimal para número reais.  Por exemplo &lt;tt&gt;-51,354&lt;/tt&gt; é equivalente a -51.354. &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Definição de Geometria&lt;/h5&gt;
+&lt;p&gt;A geometria pode ser definida de uma das seguintes formas:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Coordenadas do ponto: cada elemento é representado como um ponto definidos pelas coordenadas X e Y.&lt;/li&gt;
+    &lt;li&gt;Geometria Well known text (WKT): cada elemento é representado por uma string well known text, por exemplo
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  Veja detalhes sobre o formato &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt;.
+    &lt;li&gt;Sem geometria (apenas tabela de atributos): os registo não serão mostrados no mapa, mas podem ser visualizados na tabela de atributos e unidos a outras camadas no QGIS.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para coordenadas do ponto aplicam-se as seguintes opções:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Campo X: especifica o campo que contém a coordenada X&lt;/li&gt;
+    &lt;li&gt;Campo Y: especifica o campo que contém a coordenada Y&lt;/li&gt;
+    &lt;li&gt;Coordenadas DMS: se seleccionado as coordenadas são representadas em graus/minutos/segundos ou graus/minutos. O QGIS é bastante permissivo na sua interpretação de graus/minutos/segundos.
+    Uma coordenada DMS válida contém três campos numéricos com um prefixo ou sufixo opcional do hemisfério (N, E, ou + são positivos, S, W ou - são negativos).  Os restante caracteres não numéricos são geralmente ignorados.  Por exemplo &lt;tt&gt;N41d54&apos;01.54&quot;&lt;/tt&gt; é uma coordenada válida.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Para geometrias well known text aplicam-se as seguintes opções:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Campo da geometria: o campo qur contém a definição well known text.&lt;/li&gt;
+    &lt;li&gt;Tipo de geometria: uma das seguintes &quot;Detectar&quot; (detectar), &quot;Pontos&quot;, &quot;Linhas&quot;, ou &quot;Polígonos&quot;.
+    As camadas QGIS apenas podem mostrar um tipo de geometria do elemento (Ponto, linha, ou polígono). Esta opção selecciona qual o tipo de geometria a mostrar no caso de ficheiros de texto contendo multiplos tipos de geometria. Registos contendo outros tipos de geometria serão descartados.   
+    Se &quot;Detectar&quot; for seleccionado então será usado o tipo de geometria do primeiro registo do ficheiro.
+    &quot;Ponto&quot; inclui os tipos WKT POINT e MULTIPOINT, &quot;Linha&quot; inclui os tipos WKT LINESTRING e     MULTLINESTRING, e &quot;Polígono&quot; inclui os tipos WKT POLYGON e MULTIPOLYGON.
+&lt;/ul&gt;
+&lt;h5&gt;Definições da Camada&lt;/h5&gt;
+&lt;p&gt;As definições da Camada controlam a forma como a camada é gerida no QGIS. As opções disponíveis são:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Usar índice espacial. Cria um índice espacial para melhorar o desempenho na visualização e selecção de objectos espaciais.
+Esta opção pode ser útil para ficheiros com tamanhos maiores que alguns megabytes.&lt;/li&gt;
+&lt;li&gt;Usar índice parcial. Cria um índice se está a ser usado um subconjunto dos registos (quer explicitamente por definição de uma string de filtragem nas propriedades da camada, quer um subconjucto implicito de elementos com geometrias válidas em ficheiros em que nem todas as geometrias são válidas). O índice apenas será criado quando o subconjunto for definido.&lt;/li&gt;
+&lt;li&gt;Vigiar ficheiro.  Se esta opção estiver seleccionada o QGIS irá vigiar alterações ao ficheiro feitas por outros programas, e irá reler o ficheiro caso este seja alterado.  O mapa só será actualizado por instrução do utilizador, mas os índices e extensões serão actualizados.  Esta opção deve ser seleccionada caso sejam usados índices e se a alteração do fiecheiro por outros programas seja provável. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Como funcionam os caracteres de delimitação, citação, e escape&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Os registos são separados em campos usando três conjuntos de caracteres: 
+caracteres de delimitação, caracteres de citação, e caracteres de escape.  
+Os restantes caracteres no registo são considerados como dados e separados em campos pelos caracteres de delimitação. 
+Os caracteres de citação acorrem em pares e fazem com que o texto entre eles seja considerado como dados.  Os caracteres de escape fazem com que o caractér imediatamente a seguir seja tratado como dados.   
+&lt;/p&gt;
+&lt;p&gt;
+Os caracteres de citação e escape não podem ser os mesmo que os de delimitação - pois seriam ignorados. Os caracteres de escape podem ser os mesmos que os de citação, mas comportam-se de forma diferente se assim for.
+&lt;/p&gt;
+&lt;p&gt;Os caracteres de delimitação são usados para assinalar o final de cada campo. Se forem definidos vários caracteres de delimitação qualquer um deles pode assinalar o final do campo.  Os caracteres de citação e escape podem sobrepor-se um caractér de delimitação, para que o mesmo seja tratado como um caractér normal de dados.&lt;/p&gt;
+&lt;p&gt; Caracteres de citação pode ser usados para assinalar o ínicio e fim de campos citados. Campos citados podem conter delimitadores e podem ocupar várias linhas no ficheiro de texto.  Se um campo fro citado então deve começar e acabar com o mesmo caractér de citação. Caracteres de citação não podem aparecer no campo a não ser que se use um caractér de espace.&lt;/p&gt;
+&lt;p&gt;Caracteres de escape que não sejam também de citação forçam o caracter seguinte a ser tratado como dados.  
+(ou seja, para evitar que seja tratado como caracter de nova linha, de delimitador ou de citação).  
+&lt;/p&gt;
+&lt;p&gt;Caracteres de escape que também são caracteres de citação têm um efeito bastante mais limitado.  Apenas funcionam dentro de citações e apenas se aplicam a eles próprios.  Por exemplo, se &lt;tt&gt;&apos;&lt;/tt&gt; é um caractér de citação e de escape, então a string &lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; irá representar o valor Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Como funcionam os delimitadores de expressões regulares&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Expressões regulares são uma mini linguagem que é usada para representar padrões de caracteres.  Existem muitas variações na sintaxe das expressões regulares  - O QGIS usa a sintaxe disponibilizada pela classe &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; do framework &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Num ficheiro delimitado por expressões regulares cada linha é tratada como sendo um registo. Cada correspondência da expressão regular na linha é considerada como fim do campo.
+Se a expressão regular contiver grupos de captura (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+estes são extraídos dos campos.
+ Se não pretender que tal aconteça então use grupos de não captura (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;A expressão regular é interpretada de forma diferente se estiver estiver presa ao ínicio da linhas (ou seja, o padrão começa com &lt;tt&gt;^&lt;/tt&gt;).
+Neste caso a expressão regular é testada em cada linha.  Se não hover correspondência na linha a mesma considerada inválida e é descartada.  Cada grupo de captura na expressão é tratado como um campo. A expressão regular é inválida se não contiver grupos de captura.  Como exemplo isto pode ser usado como uma (pouco intuitiva) forma de carregar dados com campos de dimensão fixa.  Por exemplo a expressão
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;irá extrair 4 campos de 5, 10, 20 e 20 caracteres de comprimento de cada linha.  Linhas com menos de 55 caracteres serão descartadas.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Como é interpretado o texto WKT&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+A camada de texto delimitado reconhece os seguintes tipos de 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;Well Known Text&lt;/a&gt; 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, e &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+Também aceita geometrias que contenham
+uma coordenada Z (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), uma medida (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), ou ambas (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+Também consegue lidar com a variaçnte EWKT do Postgis, na qual a geometria é precedida pelo id do sistema de coordenadas de referência
+(eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), e a variante usada pelo Informix onde o WKT é precedido por um id inteiro de referência 
+espacial (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+Em ambos os casos o SRID é ignorado.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Atributos em ficheiros de texto delimitados&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt; Cada registos no ficheiro de texto delimitado é separado em campos que representam os atributos do registo.  Normalmente os nomes dos atributos são obtidos da primeira linha de texto no ficheiro. Se isto não for possível, aos atributos serão dados os nomes &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, e por aí a fora.  
+De igual forma, se existirem registos com mais campos do que os definidos no cabeçalho, então serão-lhes dados nomes &lt;tt&gt;field_#&lt;/tt&gt;, onde o # representa o número do campo (note que campos vazios no final do registo são ignorados).
+O QGIS pode substituir os nomes do ficheiro de texto caso estes sejam números, tenham nomes do tipo &lt;tt&gt;field_#&lt;/tt&gt;, ou sejam duplicados.
+&lt;/p&gt;
+&lt;p&gt;
+Para além dos atributos contidos no ficheiro de dados, o QGIS atribui um id de elemento único a cada registo que representa o número da linha em que o registo começa no ficheiro de origem.
+&lt;/p&gt;
+&lt;p&gt;
+Cada atributo tem também um tipo de dados entre os seguintes: string (texto), inteiro, ou número real.
+O tipo de dados é obtido do conteúdo dos campos - se todos os valores não vazios são inteiros válidos, então o tipo será integer, se forem números reais válidos então o tipo será real, caso contrário será string.  Atenção que isto é lido do conteúdo dos campos - campos citados não alteram a forma como são interpretados.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Exemplo de ficheiro de texto com coordenadas de pontos X, Y&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;Este ficheiro:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Usa o &lt;b&gt;;&lt;/b&gt; como delimitador. Qualquer caracter pode ser usado para delimitar os campos.&lt;/li&gt;
+&lt;li&gt;A primeira linha é uma linha de cabeçalho. Contém os nosmes dos campos X, Y e ELEV.&lt;/li&gt;
+&lt;li&gt;As coordenadas x estão contidas no campo X.&lt;/li&gt;
+&lt;li&gt;As coordenadas y estão contidas no campo Y.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Exemplo de um ficheiro de texto com geometrias WKT&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;Este ficheiro:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;tem dois campos definidos na linha de cabeçalho: id e wkt.
+  &lt;li&gt;Usa o &lt;b&gt;|&lt;/b&gt; como delimitador.&lt;/li&gt;
+  &lt;li&gt;Especifica cada ponto usando a notação WKT.
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Usar camadas de texto delimitado em Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Dados com origem em texto delimitado podem ser criados através de Python da mesma forma que outras camadas vectoriais.
+O padrão é:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Definir a origem dos dados
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... outros parametros do texto delimitado
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Adicionar camada ao mapa
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;Isto poderia ser usado para carregar o segundo exemplo de ficheiro acima.&lt;/p&gt;
+&lt;p&gt;A configuração da camada de texto delimitado é definida adicionando items de pesquisa ao uri.
+Pode ser adicionadas as seguintes opções
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; define to tipo de codificação.  Por defeito é &quot;UTF-8&quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; determina o tipo de delimitador.  Valores válidos são csv, 
+       regexp, e whitespace (que é a apenas um caso particular do regexp).  Por defeito é csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; define os delimitadores que serão usados para ficheiros formatados como csv, ou a expressão regular para ficheiros formatados como regexp. Por defeito é , para ficheiros CSV. Não existe um valor por defeito para ficheiros regexp.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (para ficheiros csv) determina os caracteres a usar para citar campos. Por defeito é usado &quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (para ficheiros csv) determina os caracteres a usar como escape do próximo caracter. Por defeito é usado &quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; determina o número de linhas a descartar do início do ficheiro. Por defeito é 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; define se a primeira linha de dados contém os nomes do campos. Por defeito é yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; define se os espaços vazios no início e fim de campos não citados devem ser retirados. Por defeito é no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; determina o número máximo de campos que serão lidos do ficheiro.  
+       Campos adicionais em cada registo serão descartados. Por defeito é 0 - inluí todos os campos..
+       (Esta opção não está disponível na caixa de diálogo da camada de texto delimitado).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; define se campos não citados vazios são descartados(aplicado após o trimFields). Por defeito é no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; especifica um caracter alternativo para usar como ponto decimal em campos numéricos.  Por defeito é um caracter . (ponto final).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; especifica o nome ou número (começando em 1) do campo que contém uma definição well known text&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; especifica o nome ou número (começando em 1) do campo que contém a coordenada X (apenas é aplicado se o wktField não for definido)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; especifica o nome ou número (começando em 1) do campo que contém a coordenada Y (apenas é aplicado se o wktField não for definido)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; especifica o tipo de geometria para campos wkt, ou none para carregar o ficheiro apenas como tabela de atributos.  Por defeito é auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; especifica uma expressão usada para identificar o subconjunto de registos a usar.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; especifica o sistema de coordenadas a usar na camada vectorial, num formaco aceite pela  QgsCoordinateReferenceSystem.createFromString (por exemplo &quot;EPSG:4167&quot;).  Se isto não for especificado é possível que seja pedida a informação ao utilizador através de uma caixa de diálogo aquando do carregar da camada (depende das definições SRC do QGIS).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; especifica se o provider deve construir um índice parcial durante a leitura inicial.  O índice será aplicado quer em subconjuntos explicitamente definidos, ou para subconjuntos de elementos definidos implicitamente nos quais a geometria é válida.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; especifica se o provider deve criar um índice espacial no carregamento inicial do ficheiro. Por defeito o índice espacial não é criado. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; especifica se o provider deve usar o system watcher para monitorizar alterações ao ficheiro.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; determina se os erros encontrados durante a leitura da camada são apresentados numa caixa de diálogo (de qualquer forma serão sempre escritos no log doQGIS). Por defeito é no.  Esta opção não se encontra disponível através do GUI&lt;/li&gt;
+&lt;/ul&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
@@ -49355,7 +49607,63 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Tabela de atributos&lt;/h3&gt;
+A tabela de atributos exibe os elementos de uma camada seleccionada. Cada linha na tabela representa um elemento do mpa com os seus atributos exibidos num conjunto de colunas. Os elementos na tabela podem ser pesquisados, seleccionados, movidos ou mesmo editados.  Por defeito, a tabela de atributos está numa janela separada. Se abri-la e não a conseguir  ver mais, é muito provável que esteja escondida por trás da janela principal do QGIS. Pode também fixar a janela, activando &lt;label&gt;Abrir tabela de atributos numa janela&lt;/label&gt; em &lt;label&gt;Configurações &gt; Opções &gt; Geral&lt;/label&gt;.&lt;p&gt;
+
+O número total dos elementos da camada, os elementos filtrados e os elementos seleccionados são exibidos no cabeçalho da janela.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Seleccionar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Ordenar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Editar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Calculadora de Campo&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Seleccionar&lt;/h4&gt;
+&lt;/a&gt;
+As colunas podem ser seleccionadas clicando no número da linha do lado esquerdoda linha. Poderá fazer a selecção de múltiplas linhas, segurando o botão do rato e movê-lo para baixo para o fim da selecção. Pode seleccionar também elementos alternados segurando a tecla &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt;
+A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Ordenar&lt;/h4&gt;
+&lt;/a&gt;
+Cada coluna pode ser ordenada clicando no cabeçalho da coluna. Uma pequena seta indica a forma de ordenação (apontado para baixo indica valores descendentes, apontado para cima indica valores ascendentes).&lt;br&gt;
+Active o botão &lt;label&gt;Seleccionados no topo&lt;/label&gt; para exibir as linhas seleccionadas no topo, independentemente da ordenação actual da coluna.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtrar&lt;/h4&gt;
+&lt;/a&gt;
+Para navegar apenas em algumas partes dos seus dados, pode usar o botão de filtro no canto inferior esquerdo. As seguintes opções estão disponíveis:
+&lt;h5&gt;Mostrar Todos os Elementos&lt;/h5&gt;
+Mostra todos os elementos da camada.
+&lt;h5&gt;Mostrar Elementos Seleccionados&lt;/h5&gt;
+Mostra todos os elementos que estão actualmente seleccionados.
+&lt;h5&gt;Mostrar Elementos Visíveis no Mapa&lt;/h5&gt;
+Mostra todos os elementos que estão actualmente visíveis no enquadramento do mapa, tendo em conta a extensão actual e e a sua escala.
+&lt;h5&gt;Mostrar Elementos Editados e Novos&lt;/h5&gt;
+Mostra apenas os elementos editados e novos. Neste modo, elementos sem alterações submetidas são exibidas e portanto é um bom filtro para rever as alteraçõs, antes de submete-los. Tenha em atenção, que os elementos apagados não são exibidos neste modo.
+&lt;h5&gt;Filtro de Coluna&lt;/h5&gt;
+Um filtro simples, que permite que possa filtrar por um atributo. Se o atributo conter texto, ele procurará por sub-cadeias de texto. Pesquisando por &lt;b&gt;homem&lt;/b&gt; irá portanto exibir os registos contendo &lt;b&gt;mulher&lt;/b&gt;. Depois de alterar o filtro do texto, carregue&lt;label&gt;Enter&lt;/label&gt; ou clique em &lt;label&gt;Aplicar&lt;/label&gt;. Pode também alterar a caixa de verificação &lt;label&gt;Sensível ao caracter&lt;/label&gt;, para que o seu filtro coincidir com &lt;b&gt;Noite&lt;/b&gt; quando pesquisa no texto por &lt;b&gt;noite&lt;/b&gt;.   
+&lt;h5&gt;Filtro Avançado&lt;/h5&gt;
+Para pesquisas mais complexas, este modo oferece um construtor poderoso de expressões, que é semelhante à condição SQL WHERE. Por favor pesquisa na ajuda do contrutor de expressões para detalhes de sintaxe.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Editar&lt;/h4&gt;
+&lt;/a&gt;
+Para editar valores, deve primeiro alterar para o modo edição. Para alterar para o modo de edição clique no botão &lt;label&gt;Activar modo de edição&lt;/label&gt; (lápis) ou carregue em &lt;label&gt;Ctrl + E&lt;/label&gt;. Depois faça duplo clique no valor que quer editar ou posicione o cursor nele e use a barra de &lt;label&gt;Espaço&lt;/label&gt;. Pode persnalizar os widgets usados para edição de campo em &lt;label&gt;Propriedades da Camada Vectorial &gt; Campos&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Field Calculator&lt;/h4&gt;
+&lt;/a&gt;
+O botão da &lt;label&gt;Calculadora de Campos&lt;/label&gt; na tabela de atributos permite executar cálculos baseados em valores de atributos existentes ou em funções definidas, ex. para calcular o comprimento ou área da geometria dos elementos.&lt;br&gt;
+Os resultados podem ser escritos numa nova coluna do atributou pode ser usada para actualizar os valores que já existem nas colunas.&lt;br&gt;
+A camada vectorial necessita de estar em modo de edição, depois pode clicar no ícone da &lt;label&gt;Calculadora de campo&lt;/label&gt; para abrir o diálogo.
+&lt;h4&gt;Barra da Calculadora de campos&lt;/h4&gt;
+&lt;/a&gt;
+Quando activa a edição de uma camada, uma nova linha de funções aparecerá na tabela de atributos: a &lt;label&gt;Barra da Calculadora de campos&lt;/label&gt;. Isto permite editar rapidamente valores de campos existentes executando calculos em valores de atributos existentes or funções definidas na tabela de atributos, ex.: calcular o comprimento ou área da geometria dos elementos.&lt;br&gt;
+Para editar os valores, seleccione o campo para modificar com o botão de filtro à esquerda e preencha a caixa de texto com o novo valor ou uma expressãp para calcular o nvo valor. De seguida, carregue em &lt;label&gt;Actualizar tudo&lt;/label&gt; para actualizar todas as linhas da tabela de atributos ou no botão &lt;label&gt;Actualizar seleccionados&lt;/label&gt;  se quiser actualizar apenas alguns que estão exibidos na tabela de atributos. Pode também usar o &lt;label&gt;Construtor de Expressões&lt;/label&gt; para calcular o novo valor da coluna.&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -49369,7 +49677,16 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ferramentas de Medição&lt;/h3&gt;
+Existe três ferramentas de medição: comprimento e área. Com eles, pode medir áreas e comprimentos no enquadramento do mapa. Actualmente as ferramentas apenas fornecem resultados em unidades métricas. Um simples clique direito do rato para a medição, enquanto que dois cliques começa um novo.
+&lt;h4&gt;Medindo Comprimentos&lt;/h4&gt;
+Para medir comprimentos, seleccione a ferramenta e clique ao longo do caminho que quer medir. O comprimento para cada segmento é exibido como o seu total de comprimento do caminho.
+&lt;h4&gt;Medindo Áreas&lt;/h4&gt;
+Para medir áreas, seleccione a ferramenta e clique em criar área. A área total é exibida de forma dinâmica consoante o seu clique.
+&lt;h4&gt;Medindo Ângulos&lt;/h4&gt;
+Para medir ângulos, seleccione  a ferramenta e clique em três pontos para criar um ângulo entre esses pontos. O segundo ponto seleccionado é o vértice do ângulo. O ângulo é exibido dinamicamente quando clicar no segundo ponto.
+
+</translation>
     </message>
 </context>
 <context>

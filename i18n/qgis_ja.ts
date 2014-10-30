@@ -938,11 +938,11 @@ Query:
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation type="unfinished">%1は無効なレイヤです-ロードできませんでした</translation>
+        <translation>%1は無効なレイヤです - ロードできませんでした</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished">%1は不正なレイヤです.ロードできませんでした.詳しくは&lt;a href=&quot;#messageLog&quot;&gt;メッセージログ&lt;/a&gt;をチェックして下さい.</translation>
+        <translation>%1は無効なレイヤでロードできません. 詳細については &lt;a href=&quot;#messageLog&quot;&gt;メッセージログ&lt;/a&gt; を参照して下さい.</translation>
     </message>
 </context>
 <context>
@@ -49624,7 +49624,68 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;属性テーブル&lt;/h3&gt;
+属性テーブルには選択したレイヤの地物が表示されます. テーブルの各行には1つの地物の属性がいくつかの列に表示されています. テーブルの地物は検索や選択, 移動, 編集をすることができます. デフォルトでは属性テーブルは別のウィンドウです. 属性テーブルを開いても表示されない場合は多分QGISのメインウィンドウの下に隠れているでしょう. &lt;label&gt;設定 &gt; オプション &gt; データソース&lt;/label&gt;の&lt;label&gt;ドックウィンドウで属性テーブルを開く&lt;/label&gt;をチェックすればドックウィンドウにすることもできます.&lt;p&gt;
+
+レイヤの地物の総数やフィルタされた地物, 選択された地物の数がウィンドウタイトルに表示されます.&lt;p&gt;
+ダイアログの右下で地物をフォームで表示するかテーブルで表示するかを選択できます.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;選択&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;並べ替え&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;フィルタ&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;編集&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;フィールド計算機&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalcBar&quot;&gt;フィールド計算機バー&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;選択&lt;/h4&gt;
+&lt;/a&gt;
+行の左側の行番号をクリックすると行を選択することができます. マウスボタンを押しながら選択範囲の他方の端にマウスを動かすと連続した行を選択できます. &lt;label&gt;Ctrl&lt;/label&gt;キーを押していれば連続しない行を選択することができます.&lt;br&gt;
+&lt;label&gt;Shift&lt;/label&gt;キーを押したまま行の左側の行ヘッダをクリックすると連続する行を選択できます. 現在のカーソル位置とクリックした行の間のすべての行が選択されます.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;並べ替え&lt;/h4&gt;
+&lt;/a&gt;
+各列は列ヘッダをクリックすると並べ替えることができます. 小さな矢印はソート順 (下向きは上から下へ値が小さくなっていき, 上向きは上から下へ値が大きくなっていきます)を示しています.&lt;br&gt;
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;フィルタ&lt;/h4&gt;
+&lt;/a&gt;
+データの一部を抽出するには左下のフィルタボタンを使用します. 次のオプションが利用可能です.
+&lt;h5&gt;全ての地物を表示する&lt;/h5&gt;
+レイヤのすべての地物を表示します.
+&lt;h5&gt;選択した地物を表示する&lt;/h5&gt;
+現在選択されているすべての地物を表示します.
+&lt;h5&gt;地図上に表示されている地物を表示&lt;/h5&gt;
+マップキャンバス上に現在表示されているすべての地物を表示します. 現在の表示範囲とスケールに応じた表示状態が考慮されています.
+&lt;h5&gt;編集された地物と新しい地物を表示する&lt;/h5&gt;
+編集された地物と新しい地物だけを表示します. このモードでは変更がコミットされてない地物が表示されますので, コミット前に変更を確認するにはよいフィルタです. 削除された地物はこのモードでは表示されないことに注意して下さい.
+&lt;h5&gt;カラムフィルタ&lt;/h5&gt;
+シンプルなフィルタで, 属性によってフィルタすることができます. 属性にテキストが含まれる場合、テキスト内の文字列に対して検索されます.
+それゆえに &lt;b&gt;man&lt;/b&gt; を検索すると &lt;b&gt;woman&lt;/b&gt; を含むレコードも表示されます. フィルタテキストを変更した後, &lt;label&gt;Enter&lt;/label&gt;キーを押すか, &lt;label&gt;適用&lt;/label&gt;をクリックします. &lt;label&gt;大文字小文字を区別する&lt;/label&gt;チェックボックスを切り替えると, 検索文字列が&lt;b&gt;night&lt;/b&gt;のときに&lt;b&gt;Night&lt;/b&gt;にもマッチするようにすることができます.
+&lt;h5&gt;応用フィルタ&lt;/h5&gt;
+より複雑な検索を行うために, このモードはSQLのWHERE句に似た強力な式ビルダを提供しています. 構文の詳細は式ビルダのビルトインヘルプを参照して下さい.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;編集&lt;/h4&gt;
+&lt;/a&gt;
+値を編集するには, まずレイヤを編集モードに切り替える必要があります.編集モードに切り替えるには&lt;label&gt;編集モード切替&lt;/label&gt; (鉛筆)ボタンをクリックするか, &lt;label&gt;Ctrl + E&lt;/label&gt;を押します.その後, 編集したい値をダブルクリックするか, カーソルを置いて&lt;label&gt;スペース&lt;/label&gt;キーを押します. フィールドの編集に使うウィジェットは&lt;label&gt;ベクタレイヤプロパティ &gt; フィールド&lt;/label&gt;でカスタマイズできます.  &lt;br&gt;
+また一度に多くの行のフィールド値を編集するには, 編集したい行を選択して&lt;label&gt;フィールド計算機&lt;/label&gt;か&lt;label&gt;フィールド計算機バー&lt;/label&gt;を使います. 行が選択されていない場合は編集はすべての地物に適用されます.
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;フィールド計算機&lt;/h4&gt;
+&lt;/a&gt;
+属性テーブルの&lt;label&gt;フィールド計算機&lt;/label&gt;ボタンからフィールド計算機を開くと既存の属性値や定義された関数(例えばジオメトリの長さや面積を計算する関数)を用いて計算を実行することができます.&lt;br&gt;
+結果は新しい属性列に書き込んだり, 既存の列の値を更新したりすることができます.&lt;br&gt;
+&lt;label&gt;フィールド計算機&lt;/label&gt;アイコンをクリックしてダイアログを開く前にベクタレイヤは編集モードにしておく必要があります.
+
+&lt;a name=&quot;FieldCalcBar&quot;&gt;
+&lt;h4&gt;フィールド計算機バー&lt;/h4&gt;
+&lt;/a&gt;
+レイヤを編集モードに切り替えると&lt;label&gt;フィールド計算機バー&lt;/label&gt;が属性テーブルに表示されます. これを使えば素早く計算を実行して属性値を編集することができます. &lt;br&gt;
+値を編集するには左側のフィルタボタンで変更するフィールドを選択し, テキストボックスに新しい値や新しい値を計算するための式を入力します. 
+そして&lt;label&gt;全部更新&lt;/label&gt;ボタンを押して属性テーブルのすべての行を更新します. 選択されている地物がある場合や属性テーブル表示にフィルタが適用されている場合は&lt;label&gt;フィルタされたものを更新&lt;/label&gt;ボタンを押します. 式を作成するために&lt;label&gt;式ビルダ&lt;/label&gt;を使うこともできます.&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -49638,7 +49699,15 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;計測ツール&lt;/h3&gt;
+長さと面積, 角度を測る3種類の計測ツールがあります. これらを使うと地図キャンバス上で距離と面積, 角度を計測できます. このツールは結果を&lt;label&gt;設定 &gt; オプション &gt; マップツールズ&lt;/label&gt;で設定された単位で表示します.
+&lt;h4&gt;距離計測&lt;/h4&gt;
+距離を計測するにはツールを選択した後で計測したい経路に沿ってクリックしてください. それぞれのセグメントの長さが表示され, さらに経路の長さの合計値が表示されます. 右クリックで計測が終わります.
+&lt;h4&gt;面積計測&lt;/h4&gt;
+面積を計測するにはツールを選択した後でクリックしてエリアを作ります. 面積の合計値はクリックしている時に動的に表示されます. 右クリックで計測が終わりますが, 2回右クリックすると新しい計測が始まります.
+&lt;h4&gt;角度計測&lt;/h4&gt;
+角度を計測するにはツールを選択した後に3つの点でクリックしてこれらの点の間に角を作成します. 2番目の点は角の頂点になります. 角度は2番目の点をクリックした後, 動的に表示されます.
+</translation>
     </message>
 </context>
 <context>

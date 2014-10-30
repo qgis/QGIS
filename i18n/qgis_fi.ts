@@ -41972,7 +41972,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     </message>
     <message>
         <source>Action in a layer allow user to trigger action when clicking on a geometry with &apos;Run Feature Action&apos; tools.For example, you can open an html page using the field value of the geometry as a parameter. Look at the &lt;a href=&quot;http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu&quot;&gt;documentation&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tasolla oleva toimito sallii käyttäjän käynnistävän toiminnon klikkaamalla geometriaa &apos;Suorita ominaisuuden toiminto&apos; työkalulla. Voit esimerkiksi avata html sivun käyttäen geometria tiedon arvoa parametrina. Katso &lt;a href=&quot;http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu&quot;&gt;dokumentointia&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Copy, paste and cut in QGIS</source>
@@ -41988,7 +41988,7 @@ Symbolien tietokannassa oli ongelma.</translation>
     </message>
     <message>
         <source>Right click with the identify tool to show a context menu from which you can choose the layer in which to identify a feature. A sub menu will list features identified and a third sub-menu will show the action link setup for the layer.If one of this sub-menu doesn&apos;t contain any information, the next sub-menuwill appear instead. For example, if you have just one layer, and click somewhere with several features, the first menu will list the feature list instead of layer list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klikkaa oikealla käyttäen tunnustamistyökalua näyttääksesi sisältövalikon josta voit valita tason josta tunnistat ominaisuuden. Alavalikko listaa tunnistetut ominaisuudet ja kolmas alavalikko näyttää toiminnon linkkauksen asetukset tasolle. Jos yksikään alavalikko ei sisällä informaatiota niin seuraava alavalikko tulee esille. Esimerkiksi jos sinulla on vain yksi taso klikkaa jossain useilla ominaisuuksilla, ensimmäinen valikko listaa ominaisuusluettelon tasoluettelon sijasta.</translation>
     </message>
     <message>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
@@ -48690,18 +48690,15 @@ On turvallisempaa käyttää explisiitistä koodausta jos QGIS projektin tulee o
     &quot;Piste&quot; sisältää POINT ja MULTIPOINT WKT tyypit, &quot;Viiva&quot; sisältää LINESTRING ja
     MULTLINESTRING WKT tyypit, ja &quot;Monikulmio&quot; sisältää POLYGON ja MULTIPOLYGON WKT tyypit.
 &lt;/ul&gt;
+
 &lt;h5&gt;Tason asetukset&lt;/h5&gt;
 &lt;p&gt;Tason asetukset kontrolloivat tapaa jolla tasoa käsitellään QGIS:ssä.  Käytettävät vaihtoehdot ovat:&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;Käytä spatiaalista indeksiä. Luo spatiaalinen indeksi parantaaksesi spatiaalisten objektien näytön ja valinnan suorityskykyä.
 Tämä vaihtoehto voi olla hyödyllinen tiedostoille jotka ovat muutamaa megatavua suurempia kooltaan.&lt;/li&gt;
-&lt;li&gt;Käytä alajoukon indeksiä. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
+&lt;li&gt;Käytä alajoukon indeksiä. Luo indeksi jos tietueiden alajoukkoa käytetään (joko selkeästi asettamalla alajoukolle merkkijono tason ominaisuuksien ikkunassa, tai epäsuorasti ominaisuuksien alajoukolle joille geometria on oikea tiedostoissa joissa kaikki geometriat eivät ole oikein), 
+Indeksi luodaan ainoastaan kun alajoukko on määritelty.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and extents will be reloaded.  This option should be selected if indexes are used and it is likely that another application will change the file. &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Kuinka erotin-, lainaus- ja keskytysmerkit toimivat&lt;/a&gt;&lt;/h4&gt;
@@ -49449,7 +49446,66 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Attribuuttitaulu&lt;/h3&gt;
+Attribuuttitaululla näytetään valitun tason ominaisuudet. Jokainen taulun rivi esittää yhtä kartan ominaisuutta näyttäen attribuutit useissa sarakkeissa. Taulun ominaisuuksia voidaan etsiä, valita, siirrellä tai jopa muokata. Oletuksena attribuuttitaululla on erillinen ikkuna. Jos avasit sen etkä voi nähdä sitä, on se luultavasti piilossa QGIS pääikkunan takana. Saat sen myös telakoituna ikkunana, merkkaamalla &lt;label&gt;Avaa attribuuttitaulu telakkaikkunassa&lt;/label&gt; asetusten muokkauksessa &lt;label&gt;Asetukset &gt; Asetukset &gt; Tiedonlähteet&lt;/label&gt;.&lt;p&gt;
+Tasojen ominaisuuksien kokonaismäärä, suodatettujen ominaisuuksien ja valittujen ominaisuuksien määrät on tulostettu ikkunan otsikkoon.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Valinta&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Lajittelu&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Suodatus&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Muokkaus&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Tieto laskin&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalcBar&quot;&gt;Tieto laskimen työkalut&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Valinta&lt;/h4&gt;
+&lt;/a&gt;
+Rivi voidaan valita klikkaamalla sen rivinumeroa rivin vasemmassa laidassa. Perättäisiä lisärivejä voidaan valita pitämällä hiiren näpäintä alhaalla ja liikuttamalla hiirtä valinnan toiseen päähän. Useita ei-perättäisiä rivejä voidaan valita pitämällä &lt;label&gt;Ctrl&lt;/label&gt; näppäintä alas painettuna.&lt;br&gt;
+Jatkuva valinta voidaan tehdä pitämällä &lt;label&gt;Shift&lt;/label&gt; näppäintä alhaalla ja klikkamalla useita rivien päitä rivien vasemmassa reunassa. Kaikki rivit nykyisen kursorin aseman ja klikatun rivin välillä valitaan.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Lajittelu&lt;/h4&gt;
+&lt;/a&gt;
+Jokainen sarake voidaan lajitella klikkaamalla sen sarakeotsikkoa. Pieni nuoli indikoi lajittelun suuntaa ( alas osoittaa laskevia arvoja ylimmältä alaspäin, ylöspäin osoittava tarkoittaa nousevia arvoja ylhäältä alas).&lt;br&gt;
+Aktivoi &lt;label&gt;Valitse ylhäältä&lt;/label&gt; näppäin näyttääksesi valitut aina ylhäällä, huolimatta nykyisestä lajittelu sarakkeesta.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Suodatus&lt;/h4&gt;
+&lt;/a&gt;
+Liikkuaksesi vain osalla tieedoistasi voit käyttää suodata näppäintä alhaalla vasemmalla. Seuraavat vaihtoehdot on käytettävissä.
+&lt;h5&gt;Näytä kaikki ominaisuudet&lt;/h5&gt;
+Näyttää tason kaikki ominaisuudet.
+&lt;h5&gt;Näytä valitut ominaisuudet&lt;/h5&gt;
+Näyttää kaikki valittuina olevat ominaisuudet.
+&lt;h5&gt;Näytä kartalla näkyvät ominaisuudet&lt;/h5&gt;
+Näyttää kaikki ominaisuudet jotka näkyvät karttapohjalla nyt, huomioiden nykyisen alueen laajuuden ja mittakaavan.
+&lt;h5&gt;Näytä muokatut ja uudet ominaisuudet&lt;/h5&gt;
+Näyttää ainoastaan muokatut ja uudet ominaisuudet. Tällä tavalla, ominaisuudet joilla on tallenntamattomia muutoksia näytetään
+ ja on siksi hyvä suodatus muutosten arvioimiseksi, ennen niiden tallentamista. Ole ystävällinen ja huomaa, ettei poistettuja
+ominaisuuksia voida näyttää tässä tavassa.
+&lt;h5&gt;Sarake suodatus&lt;/h5&gt;
+Yksinkertainen suuodatin jolla on mahdollista suodattaa attribuutein. Jos attribuutti sisältää tekstiä, etsitään myös osajonot. Etsittäessä &lt;b&gt;man&lt;/b&gt; etsii siis myös tietueita jotka sisältävät &lt;b&gt;woman&lt;/b&gt;. Muutettuasi suodattimen tekstiä, klikkaa &lt;label&gt;Enter&lt;/label&gt; tai klikkaa &lt;label&gt;Apply&lt;/label&gt;. Voit myös vaihtaa merkkauslaatikkoa &lt;label&gt;Kirjainkoko riippuvainen&lt;/label&gt;, joten suodattimesi löytää myös &lt;b&gt;Night&lt;/b&gt; kun etsit tekstiä &lt;b&gt;night&lt;/b&gt;.   
+&lt;h5&gt;Edistyneet suodattimet&lt;/h5&gt;
+Ovat monimutkaisille etsinnöille, tämä tapa tarjoaa tehokkaan lausekkeen muodostajan, joka on samanlainen kuin SQL WHERE lauseke. Ole ystävällinen tutki ohjetta sisäisestä ohjeesta lausekkeen muodostamisesta yksityiskohtaisen oikean syntaksin selvittämiseksi.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Muokkaus&lt;/h4&gt;
+&lt;/a&gt;
+Arvojen muokkaamiseksi tulee taso vaihtaa ensin muokkaustilaan. Vaihda muokkaustilaan klikkaamalla &lt;label&gt;Vaihda muokkauksen toimintatilaa&lt;/label&gt; (kynä) näppäintä tai paina &lt;label&gt;Ctrl + E&lt;/label&gt;. Tämän jälkeen voit tuplaklikata arvoa jota haluat muokata tai aseta kursori arvolle ja paina &lt;label&gt;Space&lt;/label&gt;-näppäintä. Voit räätälöidä tietojen muokkaamiseen käytettyjä työkaluja &lt;label&gt;Vektori Tason asetukset &gt; Tiedot&lt;/label&gt;  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Tieto laskin&lt;/h4&gt;
+&lt;/a&gt;
+&lt;label&gt;Tieto laskin&lt;/label&gt; näppäin attribuuttitaulussa sallii laskutoimitusten suorittamisen olemassa olevin attribuuttiarvoilla  tai määritellyillä funktioilla, esim. laskemaan geometristen ominaisuuksien pituuden tai alan.&lt;br&gt;
+Tulokset voidaan kirjoittaa uuteen attribuuttisarakkeeseen tai niitä voidaan käyttää olemassa olevien sarakkeiden muokkaamiseen.&lt;br&gt;
+Vektoritason tulee olla muokkaustilassa ennekuin voit klikata &lt;label&gt;Tiedon laskin&lt;/label&gt; kuvaketta avataksesi valintaikkunan.
+
+&lt;a name=&quot;FieldCalcBar&quot;&gt;
+&lt;h4&gt;Tieto laskimen työkalut&lt;/h4&gt;
+&lt;/a&gt;
+Kun vaihdat tason muokkaukseen avautuu uusi rivi attrbuuttitauluun:  &lt;label&gt;Tason laskimen työkalut&lt;/label&gt;. Tällä voit nopeasti muokata olemassa olevien tietojen arvoja suorittamalla laskutoimituksia olemassa olevien attribuuttien arvoilla tai attribuuttitaulun määritettyjen toimintojen näppäimillä , esimerkiksi laskea geometrisen ominaisuuden pituuden tai alueen.&lt;br&gt;
+Muokataksesi arvoja valitse haluamasi tieto suodatin näppäimellä vasemmalta ja täytä tekstilaatikko haluamallasi uudella arvolla tai lausekkeella laskeaksesi uuden arvon. Tämän jälkeen oaina &lt;label&gt;Päivitä kaikki&lt;/label&gt; näppäintä päivittääksesi kaikki rivit attribuuttitaulussa tai &lt;label&gt;Päivitä valitut&lt;/label&gt; näppäintä jos ominaisuuksia on valittu tai attribuuttitaulun näytölle on otettu käyttöön suodatin. Voit käyttää myös  &lt;label&gt;Lausekkeen rakentaja&lt;/label&gt; näppäintä laskeaksesi sarakkeelle uuden arvon.&lt;br&gt;
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -49463,7 +49519,17 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Mittaustyökalut&lt;/h3&gt;
+On kolme mittaustyökalua: pituudelle, pinta-alalle ja kulma. Niitä käyttäen voit mitata sekä etäisyyksiä, pinta-aloja ja kulmia karttapohjalta.. Työkalut palauttavat vain tuloksia yksiköinä jotka on asetettu &lt;label&gt;Asetukset &gt; Asetukset &gt; Karttatyökalut&lt;/label&gt; valikossa.
+&lt;h4&gt;Pituuksien mittaus&lt;/h4&gt;
+Mitataksesi pituuksia valitse työkalu ja klikkaa sen reitin varrella jonka haluat mitata. Jokaisen segmentin pituus näytetään siihen astisena pituutena reitillä.
+Yksi oikean hiirinäppäimen klikkaus lopettaa mittaamisen.
+&lt;h4&gt;Pinta-alojen mittaus&lt;/h4&gt;
+Mitataksesi pinta-aloja valitse työkalu ja klikkaa aluetta. Kokainaisala näytetään dynaamisesti siten kuin klikkailet.
+Yksi oikean hiirinäppäimen klikkaus lopettaa mittaamisen, kun taas kaksi oikean klikkausta aloitaa uuden mittauksen.
+&lt;h4&gt;Kulmien mittaus&lt;/h4&gt;
+Kulmien mittaamiseksi valitse työkalu ja klikkaa kolmea pistettaluodaksesi kulman pisteiden väliin. Toinen valittu piste on kulman verteksi. Kulma näytetään dynaamisesti kun olet valinnnut toisen pisteen,
+</translation>
     </message>
 </context>
 <context>

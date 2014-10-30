@@ -49059,7 +49059,17 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Outils de mesure&lt;/h3&gt;
+Il y a trois outils de mesure : longueur, surface et angle. Avec ceux-ci, vous pouvez mesurer des distances et des superficies et des angles directement sur le canevas de carte. Ces outils fournissent des résultats dans les unités définies dans &lt;label&gt;Préférences &gt; Options &gt; Outils cartographiques&lt;/label&gt;
+&lt;h4&gt;Mesurer une longueur&lt;/h4&gt;
+Pour mesurer une longueur, sélectionnez l&apos;outil et cliquez le long du chemin que vous voulez mesurer. La longueur de chaque segment est affiché ainsi que la longueur totale du chemin.
+Un clic droit arrête la mesure.
+&lt;h4&gt;Mesurer des Surfaces&lt;/h4&gt;
+Pour mesurer des surfaces, sélectionnez l&apos;outil et cliquez pour créer la zone. La superficie totale est dynamiquement affichée lorsque vous cliquez.
+Un clic droit arrête la mesure, tandis que deux clics droit lancent une nouvelle mesure.
+&lt;h4&gt;Mesurer des Angles&lt;/h4&gt;
+Pour mesurer des angles, sélectionnez l&apos;outil et cliquez sur trois points pour dessiner l&apos;angle à mesurer. Le deuxième point est le sommet de l&apos;angle. L&apos;angle s&apos;affiche dynamiquement dès la sélection du deuxième point.
+</translation>
     </message>
 </context>
 <context>
