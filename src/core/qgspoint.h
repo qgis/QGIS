@@ -134,7 +134,6 @@ class CORE_EXPORT QgsPoint
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes and seconds to use two decimals,
      *  eg, '05' instead of '5'.
-     *  @note added in QGIS 1.4
      */
     QString toDegreesMinutesSeconds( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
@@ -146,7 +145,6 @@ class CORE_EXPORT QgsPoint
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes to use two decimals,
      *  eg, '05' instead of '5'.
-     *  @note added in QGIS 1.9
      */
     QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
@@ -163,12 +161,10 @@ class CORE_EXPORT QgsPoint
     /**Returns the squared distance between this and other point*/
     double sqrDist( const QgsPoint& other ) const;
 
-    /**Returns the minimum distance between this point and a segment
-    @note added in QGIS 1.5*/
+    /**Returns the minimum distance between this point and a segment */
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
-    /**Calculates azimut between this point and other one (clockwise in degree, starting from north)
-      @note: this function has been added in version 1.7*/
+    /**Calculates azimut between this point and other one (clockwise in degree, starting from north) */
     double azimuth( const QgsPoint& other );
 
     //! equality operator

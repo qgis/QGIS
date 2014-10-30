@@ -25,7 +25,6 @@
  * To do so, a QgsExpressionBuilderWidget is shown in a dialog.
  * It offers the possibilities to create a new selection, add to the current selection
  * remove from the current selection or select within the current selection.
- * @note added in 2.0
  */
 class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsExpressionSelectionDialogBase
 {

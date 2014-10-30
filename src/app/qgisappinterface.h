@@ -184,7 +184,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Create a new composer
      * @param title window title for new composer (one will be generated if empty)
      * @return pointer to composer's view
-     * @note new composer window will be shown and activated (added in 1.9)
+     * @note new composer window will be shown and activated
      */
     QgsComposerView* createNewComposer( QString title = QString( "" ) );
 
@@ -193,34 +193,24 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param composerView pointer to existing composer view
      * @param title window title for duplicated composer (one will be generated if empty)
      * @return pointer to duplicate composer's view
-     * @note dupicate composer window will be hidden until loaded, then shown and activated (added in 1.9)
+     * @note dupicate composer window will be hidden until loaded, then shown and activated
      */
     QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) );
 
-    /** Deletes parent composer of composer view, after closing composer window
-     * @note (added in 1.9)
-     */
+    /** Deletes parent composer of composer view, after closing composer window */
     void deleteComposer( QgsComposerView* composerView );
 
-    /** Return changeable options built from settings and/or defaults
-     * @note (added in 1.9)
-     */
+    /** Return changeable options built from settings and/or defaults */
     QMap<QString, QVariant> defaultStyleSheetOptions();
 
     /** Generate stylesheet
-     * @param opts generated default option values, or a changed copy of them
-     * @note added in 1.9
-     */
+     * @param opts generated default option values, or a changed copy of them */
     void buildStyleSheet( const QMap<QString, QVariant>& opts );
 
-    /** Save changed default option keys/values to user settings
-      * @note added in 1.9
-      */
+    /** Save changed default option keys/values to user settings */
     void saveStyleSheetOptions( const QMap<QString, QVariant>& opts );
 
-    /** Get reference font for initial qApp (may not be same as QgisApp)
-     * @note added in 1.9
-     */
+    /** Get reference font for initial qApp (may not be same as QgisApp) */
     QFont defaultStyleSheetFont();
 
     /** Add action to the plugins menu */
@@ -256,18 +246,16 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Add a dock widget to the main window */
     void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget );
 
-    /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
+    /** Remove specified dock widget from main window (doesn't delete it). */
     void removeDockWidget( QDockWidget * dockwidget );
 
     /** show layer properties dialog for layer
      * @param l layer to show properties table for
-     * @note added in added in 1.5
      */
     virtual void showLayerProperties( QgsMapLayer *l );
 
     /** show layer attribute dialog for layer
      * @param l layer to show attribute table for
-     * @note added in added in 1.7
      */
     virtual void showAttributeTable( QgsVectorLayer *l );
 
@@ -278,12 +266,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action );
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI.
-      @note added in version 1.2. */
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI. */
     virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut );
 
-    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded.
-      @note added in version 1.2. */
+    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded. */
     virtual bool unregisterMainWindowAction( QAction* action );
 
     /** Accessors for inserting items into menus and toolbars.
@@ -296,7 +282,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QMenu *editMenu();
     virtual QMenu *viewMenu();
     virtual QMenu *layerMenu();
-    //! @note added in 2.0
     virtual QMenu *newLayerMenu();
     //! @note added in 2.5
     virtual QMenu *addLayerMenu();
@@ -383,33 +368,22 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual QAction *actionAddRasterLayer();
     virtual QAction *actionAddPgLayer();
     virtual QAction *actionAddWmsLayer();
-    /** @note added in 1.9 */
     virtual QAction *actionCopyLayerStyle();
-    /** @note added in 1.9 */
     virtual QAction *actionPasteLayerStyle();
     virtual QAction *actionOpenTable();
     virtual QAction *actionOpenFieldCalculator();
     virtual QAction *actionToggleEditing();
-    /** @note added in 1.9 */
     virtual QAction *actionSaveActiveLayerEdits();
-    /** @note added in 1.9 */
     virtual QAction *actionAllEdits();
-    /** @note added in 1.9 */
     virtual QAction *actionSaveEdits();
-    /** @note added in 1.9 */
     virtual QAction *actionSaveAllEdits();
-    /** @note added in 1.9 */
     virtual QAction *actionRollbackEdits();
-    /** @note added in 1.9 */
     virtual QAction *actionRollbackAllEdits();
-    /** @note added in 1.9 */
     virtual QAction *actionCancelEdits();
-    /** @note added in 1.9 */
     virtual QAction *actionCancelAllEdits();
     virtual QAction *actionLayerSaveAs();
     virtual QAction *actionLayerSelectionSaveAs();
     virtual QAction *actionRemoveLayer();
-    /** @note added in 1.9 */
     virtual QAction *actionDuplicateLayer();
     virtual QAction *actionLayerProperties();
     virtual QAction *actionAddToOverview();
@@ -443,7 +417,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
      * @param f feature to show/modify
      * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
      * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
-     * @note added in 1.6
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true );
 
@@ -482,13 +455,10 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
      * @returns list of layers in legend order, or empty list
-     * @note added in 1.9
      */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
-    /** Get timeout for timed messages: default of 5 seconds
-     * @note added in 1.9
-     */
+    /** Get timeout for timed messages: default of 5 seconds */
     virtual int messageTimeout();
 
   signals:

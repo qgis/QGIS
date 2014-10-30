@@ -59,8 +59,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
       BoundaryDirection
     };
 
-    /**Sets coordinate grid style.
-    @note this function (and all others) was added in version 2.0 */
+    /**Sets coordinate grid style. */
     void setGridStyle( GridStyle style ) {mGridStyle = style;}
     GridStyle gridStyle() const { return mGridStyle; }
 

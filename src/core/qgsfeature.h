@@ -219,14 +219,12 @@ class CORE_EXPORT QgsFeature
      *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
      *                        Python: Defaults to true
-     *  @note added in 2.0
      *
      * TODO: QGIS3 - take reference, not pointer
      */
     void setFields( const QgsFields* fields, bool initAttributes = false );
 
     /** Get associated field map.
-     *  @note added in 2.0
      *
      * TODO: QGIS 3 - return reference or value, not pointer
      */
@@ -241,7 +239,6 @@ class CORE_EXPORT QgsFeature
      *  @return false if attribute name could not be converted to index (C++ only)
      *
      *  @note For Python: raises a KeyError exception instead of returning false
-     *  @note added in 2.0
      */
     bool setAttribute( const QString& name, QVariant value );
 
@@ -254,7 +251,6 @@ class CORE_EXPORT QgsFeature
      *  @return false if attribute name could not be converted to index (C++ only)
      *
      *  @note For Python: raises a KeyError exception instead of returning false
-     *  @note added in 2.0
      */
     bool deleteAttribute( const QString& name );
 
@@ -267,7 +263,6 @@ class CORE_EXPORT QgsFeature
      *  @return The value of the attribute (C++: Invalid variant if no such name exists )
      *
      *  @note For Python: raises a KeyError exception if field is not found
-     *  @note added in 2.0
      */
     QVariant attribute( const QString& name ) const;
 
@@ -278,14 +273,11 @@ class CORE_EXPORT QgsFeature
      *  @return The value of the attribute (C++: Invalid variant if no such index exists )
      *
      *  @note For Python: raises a KeyError exception if field is not found
-     *  @note added in 2.0
      */
     QVariant attribute( int fieldIdx ) const;
 
     /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
      *  Field map must be associated to make this work.
-     *
-     *  @note added in 2.0
      */
     int fieldNameIndex( const QString& fieldName ) const;
 

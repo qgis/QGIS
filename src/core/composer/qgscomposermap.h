@@ -55,7 +55,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMap( QgsComposition *composition );
     virtual ~QgsComposerMap();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const { return ComposerMap; }
 
     /** \brief Preview style  */
@@ -236,17 +236,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setPreviewMode( PreviewMode m );
 
     /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
-    @note this function was added in version 1.2*/
+    */
     bool keepLayerSet() const {return mKeepLayerSet;}
     /**Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
-    @note this function was added in version 1.2*/
+    */
     void setKeepLayerSet( bool enabled ) {mKeepLayerSet = enabled;}
 
     /**Getter for stored layer set that is used if mKeepLayerSet is true
-    @note this function was added in version 1.2*/
+    */
     QStringList layerSet() const {return mLayerSet;}
     /**Setter for stored layer set that is used if mKeepLayerSet is true
-    @note this function was added in version 1.2*/
+    */
     void setLayerSet( const QStringList& layerSet ) {mLayerSet = layerSet;}
     /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
@@ -281,7 +281,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /**Enables a coordinate grid that is shown on top of this composermap.
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setEnabled() or grids() instead
      */
     Q_DECL_DEPRECATED void setGridEnabled( bool enabled );
@@ -292,7 +292,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED bool gridEnabled() const;
 
     /**Sets coordinate grid style to solid or cross
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setStyle() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridStyle( GridStyle style );
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED GridStyle gridStyle() const;
 
     /**Sets coordinate interval in x-direction for composergrid.
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setIntervalX() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridIntervalX( double interval );
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED double gridIntervalX() const;
 
     /**Sets coordinate interval in y-direction for composergrid.
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setIntervalY() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridIntervalY( double interval );
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED double gridIntervalY() const;
 
     /**Sets x-coordinate offset for composer grid
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setOffsetX() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridOffsetX( double offset );
@@ -336,7 +336,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED double gridOffsetX() const;
 
     /**Sets y-coordinate offset for composer grid
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setOffsetY() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridOffsetY( double offset );
@@ -347,7 +347,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED double gridOffsetY() const;
 
     /**Sets the pen to draw composer grid
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setPenWidth(), grid()->setPenColor() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridPen( const QPen& p );
@@ -358,19 +358,19 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED QPen gridPen() const;
 
     /**Sets width of grid pen
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setPenWidth() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridPenWidth( double w );
 
     /**Sets the color of the grid pen
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setPenColor() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridPenColor( const QColor& c );
 
     /**Sets font for grid annotations
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setAnnotationFont() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridAnnotationFont( const QFont& f );
@@ -381,19 +381,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED QFont gridAnnotationFont() const;
 
     /**Sets font color for grid annotations
-     * @note this function was added in version 2.0
      * @deprecated use grid()->setAnnotationFontColor() or grids() instead
     */
     Q_DECL_DEPRECATED void setAnnotationFontColor( const QColor& c );
 
     /**Get font color for grid annotations
-     * @note: this function was added in version 2.0
      * @deprecated use grid()->annotationFontColor() or grids() instead
     */
     Q_DECL_DEPRECATED QColor annotationFontColor() const;
 
     /**Sets coordinate precision for grid annotations
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setAnnotationPrecision or grids() instead
     */
     Q_DECL_DEPRECATED void setGridAnnotationPrecision( int p );
@@ -404,7 +402,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED int gridAnnotationPrecision() const;
 
     /**Sets flag if grid annotation should be shown
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setAnnotationEnabled() or grids() instead
     */
     Q_DECL_DEPRECATED void setShowGridAnnotation( bool show );
@@ -425,7 +423,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const;
 
     /**Sets distance between map frame and annotations
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setAnnotationFrameDistance() or grids() instead
     */
     Q_DECL_DEPRECATED void setAnnotationFrameDistance( double d );
@@ -456,7 +454,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED GridAnnotationFormat gridAnnotationFormat() const;
 
     /**Set grid frame style (NoGridFrame or Zebra)
-     * @note: this function was added in version 1.9
      * @deprecated use grid()->setFrameStyle() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridFrameStyle( GridFrameStyle style );
@@ -467,7 +464,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED GridFrameStyle gridFrameStyle() const;
 
     /**Set grid frame width
-     * @note: this function was added in version 1.9
      * @deprecated use grid()->setFrameWidth() or grids() instead
     */
     Q_DECL_DEPRECATED void setGridFrameWidth( double w );
@@ -525,7 +521,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     Q_DECL_DEPRECATED QColor gridFrameFillColor2() const;
 
     /**Sets length of the cross segments (if grid style is cross)
-     * @note this function was added in version 1.4
+     *
      * @deprecated use grid()->setCrossLength() or grids() instead
     */
     Q_DECL_DEPRECATED void setCrossLength( double l );
@@ -586,7 +582,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMapOverview* overview();
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
-    @note this function was added in version 1.4*/
+    */
     QRectF boundingRect() const;
 
     /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
@@ -628,13 +624,11 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double mapUnitsToMM() const;
 
     /**Sets overview frame map. -1 disables the overview frame
-     * @note: this function was added in version 1.9
      * @deprecated use overview()->setFrameMap() or overviews() instead
     */
     Q_DECL_DEPRECATED void setOverviewFrameMap( int mapId );
 
     /**Returns id of overview frame (or -1 if no overfiew frame)
-     * @note: this function was added in version 1.9
      * @deprecated use overview()->frameMapId() or overviews() instead
     */
     Q_DECL_DEPRECATED int overviewFrameMapId() const;
@@ -815,7 +809,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void renderModeUpdateCachedImage();
 
     /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
-    @note this function was added in version 1.4*/
+    */
     void updateBoundingRect();
 
     /**@deprecated use QgsComposerMapOverview::overviewExtentChanged instead*/

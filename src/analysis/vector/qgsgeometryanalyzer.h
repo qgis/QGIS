@@ -44,7 +44,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param tolerance (level of simplification)
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
-      @note: added in version 1.4*/
+      */
     bool simplify( QgsVectorLayer* layer, const QString& shapefileName, double tolerance,
                    bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
@@ -54,7 +54,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
-      @note: added in version 1.4*/
+      */
     bool centroids( QgsVectorLayer* layer, const QString& shapefileName,
                     bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
@@ -63,7 +63,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param shapefileName path to the output shp
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
-      @note: added in version 1.4*/
+      */
     bool extent( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false, QProgressDialog* p = 0 );
 
     /**Create buffers for a vector layer and write it to a new shape file
@@ -74,7 +74,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param dissolve if true, merge all the buffers to a big multipolygon
       @param bufferDistanceField index of the attribute field that contains the buffer distance (or -1 if all features have the same buffer distance)
       @param p progress dialog (or 0 if no progress dialog is to be shown)
-      @note: added in version 1.3*/
+      */
     bool buffer( QgsVectorLayer* layer, const QString& shapefileName, double bufferDistance,
                  bool onlySelectedFeatures = false, bool dissolve = false, int bufferDistanceField = -1, QProgressDialog* p = 0 );
 
@@ -85,7 +85,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param uniqueIdField index of the attribute field that contains the unique convex hull id (or -1 if
       all features have the same buffer distance)
       @param p progress dialog (or 0 if no progress dialog is to be shown)
-      @note: added in version 1.4*/
+      */
     bool convexHull( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                      int uniqueIdField = -1, QProgressDialog* p = 0 );
 
@@ -96,7 +96,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param uniqueIdField index of the attribute field that contains the unique id to dissolve on (or -1 if
       all features should be dissolved together)
       @param p progress dialog (or 0 if no progress dialog is to be shown)
-      @note: added in version 1.4*/
+      */
     bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                    int uniqueIdField = -1, QProgressDialog* p = 0 );
 

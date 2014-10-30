@@ -92,7 +92,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     /**
      * Set the name of the connection for use in authentication where required
-     * \note added in 1.1
      */
     void setConnectionName( QString const & connName );
 
@@ -126,24 +125,17 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
 #if 0
     /**Returns true if layer has tile set profiles
-     * @added in 1.5
      */
     virtual bool hasTiles() const;
 #endif
 
-    /**Returns the GetMap url
-     * @added in 1.5
-     */
+    /**Returns the GetMap url */
     virtual QString getMapUrl() const;
 
-    /**Returns the GetFeatureInfo url
-     * @added in 1.5
-     */
+    /**Returns the GetFeatureInfo url */
     virtual QString getFeatureInfoUrl() const;
 
-    /**Return the GetTile url
-     * @added in 1.9
-     */
+    /**Return the GetTile url */
     virtual QString getTileUrl() const;
 
     /**Return the GetLegendGraphic url

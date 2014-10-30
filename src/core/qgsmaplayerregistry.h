@@ -72,7 +72,6 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *         it will not be part of the returned QList.
      *
      * @note As a side-effect QgsProject is made dirty.
-     * @note Added in QGIS 1.8
      * @note takeOwner not available in python binding - always takes ownership
      */
     QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
@@ -149,16 +148,12 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * freeing up any memory they may have been using. Layer
      * caches are used to speed up rendering in certain situations
      * see ticket #1974 for more details.
-     *
-     * @note Added in QGIS 1.4
      */
     //! @deprecated since 2.4 - does nothing
     Q_DECL_DEPRECATED void clearAllLayerCaches();
 
     /**
      * Reload all provider data caches (currently used for WFS and WMS providers)
-     *
-     * @note Added in QGIS 1.6
      */
     void reloadAllLayers();
 
@@ -201,8 +196,6 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * {@link layerWillBeRemoved()} signals are emitted. You will still get these signals
      * in any case.
      * You can use this signal to do easy (and fast) cleanup.
-     *
-     * @note Added in 2.0
      */
     void removeAll();
 
@@ -233,8 +226,6 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * advertised by this signal.
      *
      * @param theMapLayers  The {@link QgsMapLayer}s which are added to the legend.
-     *
-     * @note Added in 2.0
      */
     void legendLayersAdded( QList<QgsMapLayer*> theMapLayers );
 

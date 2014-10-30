@@ -26,7 +26,6 @@ class QgsExpression;
 /** \ingroup core
  * \class QgsDataDefined
  * A container class for data source field mapping or expression.
- * @note added in QGIS 1.9
  */
 
 class CORE_EXPORT QgsDataDefined

@@ -171,7 +171,6 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     bool removeSymbol( QString name );
 
     //! change symbol's name
-    //! @note added in v1.7
     bool renameSymbol( QString oldName, QString newName );
 
     //! return a NEW copy of symbol
@@ -263,7 +262,6 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     bool removeColorRamp( QString name );
 
     //! change ramp's name
-    //! @note added in v1.7
     bool renameColorRamp( QString oldName, QString newName );
 
 

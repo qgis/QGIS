@@ -28,7 +28,6 @@ class QgsVectorLayer;
 /** \ingroup gui
  * \class QgsDataDefinedButton
  * A button for defining data source field mappings or expressions.
- * @note added in QGIS 1.9
  */
 
 class GUI_EXPORT QgsDataDefinedButton: public QToolButton

@@ -188,7 +188,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setIconSizes( int size );
 
     //! Get stylesheet builder object for app and print composers
-    //! @note added in 1.9
     QgisAppStyleSheet* styleSheetBuilder();
 
     //! Setup the toolbar popup menus for a given theme
@@ -235,7 +234,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * @param acceptEmpty whether to accept empty titles (one will be generated)
      * @param currentTitle base name for initial title choice
      * @return QString::null if user cancels input dialog
-     * @note added in 1.9
      */
     QString uniqueComposerTitle( QWidget* parent, bool acceptEmpty, const QString& currentTitle = QString( "" ) );
     /**Creates a new composer and returns a pointer to it*/
@@ -243,7 +241,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer* c );
     /** Duplicates a composer and adds it to Set
-     * @note added in 1.9
      */
     QgsComposer* duplicateComposer( QgsComposer* currentComposer, QString title = QString( "" ) );
 
@@ -323,31 +320,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
     QAction *actionAddWcsLayer() { return mActionAddWcsLayer; }
     QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
-    /** @note added in 1.9 */
     QAction *actionCopyLayerStyle() { return mActionCopyStyle; }
-    /** @note added in 1.9 */
     QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionOpenFieldCalculator() { return mActionOpenFieldCalc; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
-    /** @note added in 1.9 */
     QAction *actionSaveActiveLayerEdits() { return mActionSaveLayerEdits; }
-    /** @note added in 1.9 */
     QAction *actionAllEdits() { return mActionAllEdits; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
-    /** @note added in 1.9 */
     QAction *actionSaveAllEdits() { return mActionSaveAllEdits; }
-    /** @note added in 1.9 */
     QAction *actionRollbackEdits() { return mActionRollbackEdits; }
-    /** @note added in 1.9 */
     QAction *actionRollbackAllEdits() { return mActionRollbackAllEdits; }
-    /** @note added in 1.9 */
     QAction *actionCancelEdits() { return mActionCancelEdits; }
-    /** @note added in 1.9 */
     QAction *actionCancelAllEdits() { return mActionCancelAllEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
-    /** @note added in 1.9 */
     QAction *actionDuplicateLayer() { return mActionDuplicateLayer; }
     /** @note added in 2.4 */
     QAction *actionSetLayerScaleVisibility() { return mActionSetLayerScaleVisibility; }
@@ -394,7 +381,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *editMenu() { return mEditMenu; }
     QMenu *viewMenu() { return mViewMenu; }
     QMenu *layerMenu() { return mLayerMenu; }
-    //! @note added in 2.0
     QMenu *newLayerMenu() { return mNewLayerMenu; }
     //! @note added in 2.5
     QMenu *addLayerMenu() { return mAddLayerMenu; }
@@ -446,16 +432,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
-     * @returns list of layers in legend order, or empty list
-     * @note added in 1.9 */
+     * @returns list of layers in legend order, or empty list */
     QList<QgsMapLayer *> editableLayers( bool modified = false ) const;
 
-    /** Get timeout for timed messages: default of 5 seconds
-     * @note added in 1.9 */
+    /** Get timeout for timed messages: default of 5 seconds */
     int messageTimeout();
 
     //! emit initializationCompleted signal
-    //! @note added in 1.6
     void completeInitialization();
 
     void emitCustomSrsValidation( QgsCoordinateReferenceSystem &crs );
@@ -489,7 +472,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Zoom to selected features
     void zoomToSelected();
     //! Pan map to selected features
-    //! @note added in 2.0
     void panToSelected();
 
     //! open the properties dialog for the currently selected layer
@@ -503,7 +485,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! mark project dirty
     void markDirty();
 
-    /* changed from layerWasAdded in 1.8 */
     void layersWereAdded( QList<QgsMapLayer *> );
 
     /* layer will be removed - changed from removingLayer to removingLayers
@@ -517,44 +498,37 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! starts/stops editing mode of a layer
     bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
 
-    /** Save edits for active vector layer and start new transactions
-     * @note added in 1.9 */
+    /** Save edits for active vector layer and start new transactions */
     void saveActiveLayerEdits();
 
     /** Save edits of a layer
-     * @param leaveEditable leave the layer in editing mode when done (added in QGIS 1.9)
-     * @param triggerRepaint send layer signal to repaint canvas when done (added in QGIS 1.9)
+     * @param leaveEditable leave the layer in editing mode when done
+     * @param triggerRepaint send layer signal to repaint canvas when done
      */
     void saveEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     /** Cancel edits for a layer
       * @param leaveEditable leave the layer in editing mode when done
       * @param triggerRepaint send layer signal to repaint canvas when done
-      * @note added in 1.9
       */
     void cancelEdits( QgsMapLayer *layer, bool leaveEditable = true, bool triggerRepaint = true );
 
     //! Save current edits for selected layer(s) and start new transaction(s)
     void saveEdits();
 
-    /** Save edits for all layers and start new transactions
-     * @note added in 1.9 */
+    /** Save edits for all layers and start new transactions */
     void saveAllEdits( bool verifyAction = true );
 
-    /** Rollback current edits for selected layer(s) and start new transaction(s)
-      * @note added in 1.9 */
+    /** Rollback current edits for selected layer(s) and start new transaction(s) */
     void rollbackEdits();
 
-    /** Rollback edits for all layers and start new transactions
-     * @note added in 1.9 */
+    /** Rollback edits for all layers and start new transactions */
     void rollbackAllEdits( bool verifyAction = true );
 
-    /** Cancel edits for selected layer(s) and toggle off editing
-      * @note added in 1.9 */
+    /** Cancel edits for selected layer(s) and toggle off editing */
     void cancelEdits();
 
-    /** Cancel all edits for all layers and toggle off editing
-     * @note added in 1.9 */
+    /** Cancel all edits for all layers and toggle off editing */
     void cancelAllEdits( bool verifyAction = true );
 
     void updateUndoActions();
@@ -610,7 +584,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void readProject( const QDomDocument & );
 
     //! Set app stylesheet from settings
-    //! @note added in 1.9
     void setAppStyleSheet( const QString& stylesheet );
 
     //! request credentials for network manager
@@ -630,9 +603,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent * event );
 
-    /** Open a raster layer using the Raster Data Provider.
-     *  \note added in 1.9
-     */
+    /** Open a raster layer using the Raster Data Provider. */
     QgsRasterLayer* addRasterLayer( QString const & uri, QString const & baseName, QString const & providerKey );
 
     void addWfsLayer( QString uri, QString typeName );
@@ -718,8 +689,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
-    /** Duplicate map layer(s) in legend
-     * @note added in 1.9 */
+    /** Duplicate map layer(s) in legend */
     void duplicateLayers( const QList<QgsMapLayer *> lyrList = QList<QgsMapLayer *>() );
     //! Set Scale visibility of selected layers
     void setLayerScaleVisibility();
@@ -745,33 +715,27 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomActualSize();
     /** Perform a local histogram stretch on the active raster layer
      * (stretch based on pixel values in view extent).
-     * Valid for non wms raster layers only.
-     * @note Added in QGIS 1.7 */
+     * Valid for non wms raster layers only. */
     void localHistogramStretch();
     /** perform a full histogram stretch on the active raster layer
      * (stretch based on pixels values in full dataset)
-     * Valid for non wms raster layers only.
-     * @note Added in QGIS 1.7 */
+     * Valid for non wms raster layers only. */
     void fullHistogramStretch();
     /** Perform a local cumulative cut stretch */
     void localCumulativeCutStretch();
     /** Perform a full extent cumulative cut stretch */
     void fullCumulativeCutStretch();
     /**Increase raster brightness
-     * Valid for non wms raster layers only.
-     * @note Added in QGIS 2.0 */
+     * Valid for non wms raster layers only. */
     void increaseBrightness();
     /**Decrease raster brightness
-     * Valid for non wms raster layers only.
-     * @note Added in QGIS 2.0 */
+     * Valid for non wms raster layers only. */
     void decreaseBrightness();
     /**Increase raster contrast
-     * Valid for non wms raster layers only.
-     * @note Added in QGIS 2.0 */
+     * Valid for non wms raster layers only. */
     void increaseContrast();
     /**Decrease raster contrast
-     * Valid for non wms raster layers only.
-     * @note Added in QGIS 2.0 */
+     * Valid for non wms raster layers only. */
     void decreaseContrast();
     //! plugin manager
     void showPluginManager();
@@ -899,11 +863,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNewBlank();
     //! As above but allows forcing without prompt and forcing blank project
     void fileNew( bool thePromptToSaveFlag, bool forceBlank = false );
-    /** What type of project to open after launch
-     * @note Added in QGIS 1.9 */
+    /** What type of project to open after launch */
     void fileOpenAfterLaunch();
-    /** After project read, set any auto-opened project as successful
-     * @note Added in QGIS 1.9 */
+    /** After project read, set any auto-opened project as successful */
     void fileOpenedOKAfterLaunch();
     //! Create a new file from a template project
     bool fileNewFromTemplate( QString fileName );
@@ -1028,12 +990,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! stop "busy" progress bar
     void canvasRefreshFinished();
 
-    /** Dialog for verification of action on many edits
-     * @note added in 1.9 */
+    /** Dialog for verification of action on many edits */
     bool verifyEditsActionDialog( const QString& act, const QString& upon );
 
-    /** Update gui actions/menus when layers are modified
-     * @note added in 1.9 */
+    /** Update gui actions/menus when layers are modified */
     void updateLayerModifiedActions();
 
     //! change layer subset of current vector layer
@@ -1042,8 +1002,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! map tool changed
     void mapToolChanged( QgsMapTool *newTool, QgsMapTool* oldTool );
 
-    /** Called when some layer's editing mode was toggled on/off
-     * @note added in 1.9 */
+    /** Called when some layer's editing mode was toggled on/off */
     void layerEditStateChanged();
 
     /** Activates or deactivates actions depending on the current maplayer type.
@@ -1107,26 +1066,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void addSvgAnnotation();
     void modifyAnnotation();
 
-    /** Alerts user when labeling font for layer has not been found on system
-     * @note added in 1.9
-     */
+    /** Alerts user when labeling font for layer has not been found on system */
     void labelingFontNotFound( QgsVectorLayer* vlayer, const QString& fontfamily );
 
-    /** Alerts user when commit errors occured
-     * @note added in 2.0
-     */
+    /** Alerts user when commit errors occured */
     void commitError( QgsVectorLayer* vlayer );
 
-    /** Opens the labeling dialog for a layer when called from labelingFontNotFound alert
-     * @note added in 1.9
-     */
+    /** Opens the labeling dialog for a layer when called from labelingFontNotFound alert */
     void labelingDialogFontNotFound( QAction* act );
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
 
-    /** Check if deprecated labels are used in project, and flag projects that use them (QGIS 2.0)
-     */
+    /** Check if deprecated labels are used in project, and flag projects that use them */
     void checkForDeprecatedLabelsInProject();
 
     //! save current vector layer
@@ -1174,9 +1126,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**Creates the composer instances in a project file and adds them to the menu*/
     bool loadComposersFromProject( const QDomDocument& doc );
 
-    /** Slot to handle display of composers menu, e.g. sorting
-     * @note added in 1.9
-     */
+    /** Slot to handle display of composers menu, e.g. sorting */
     void on_mPrintComposersMenu_aboutToShow();
 
     bool loadAnnotationItemsFromProject( const QDomDocument& doc );
@@ -1263,25 +1213,22 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newProject();
 
     /** Signal emitted when the current theme is changed so plugins
-     * can change there tool button icons.
-     * @note This was added in QGIS 1.1
-     */
+     * can change there tool button icons. */
     void currentThemeChanged( QString );
 
     /**This signal is emitted when a new composer instance has been created
-       @note added in version 1.4*/
+       */
     void composerAdded( QgsComposerView* v );
 
     /**This signal is emitted before a new composer instance is going to be removed
-      @note added in version 1.4*/
+      */
     void composerWillBeRemoved( QgsComposerView* v );
 
     /**This signal is emitted when a composer instance has been removed
        @note added in version 2.3*/
     void composerRemoved( QgsComposerView* v );
 
-    /**This signal is emitted when QGIS' initialization is complete
-     @note added in version 1.6*/
+    /**This signal is emitted when QGIS' initialization is complete */
     void initializationCompleted();
 
     void customSrsValidation( QgsCoordinateReferenceSystem &crs );
@@ -1289,15 +1236,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * @returns true if any items were loaded
-     * @note added in version 1.9
      */
     bool askUserForZipItemLayers( QString path );
     /** This method will open a dialog so the user can select GDAL sublayers to load
-     * @note added in version 1.8
      */
     void askUserForGDALSublayers( QgsRasterLayer *layer );
     /** This method will verify if a GDAL layer contains sublayers
-     * @note added in version 1.8
      */
     bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
     /** This method will open a dialog so the user can select OGR sublayers to load
@@ -1308,9 +1252,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool addRasterLayer( QgsRasterLayer * theRasterLayer );
 
-    /** Open a raster layer - this is the generic function which takes all parameters
-     * @note added in version 2.0
-      */
+    /** Open a raster layer - this is the generic function which takes all parameters */
     QgsRasterLayer* addRasterLayerPrivate( const QString & uri, const QString & baseName,
                                            const QString & providerKey, bool guiWarning,
                                            bool guiUpdate );
@@ -1374,8 +1316,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**Do histogram stretch for singleband gray / multiband color rasters*/
     void histogramStretch( bool visibleAreaOnly = false, QgsRaster::ContrastEnhancementLimits theLimits = QgsRaster::ContrastEnhancementMinMax );
 
-    /**Apply raster brightness
-     * @note Added in QGIS 2.0 */
+    /**Apply raster brightness */
     void adjustBrightnessContrast( int delta, bool updateBrightness = true );
 
     QgisAppStyleSheet* mStyleSheetBuilder;
@@ -1572,9 +1513,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //!flag to indicate that the previous screen mode was 'maximised'
     bool mPrevScreenModeMaximized;
 
-    /** Flag to indicate an edits save/rollback for active layer is in progress
-     * @note added in QGIS 1.9
-     */
+    /** Flag to indicate an edits save/rollback for active layer is in progress */
     bool mSaveRollbackInProgress;
 
     QgsPythonUtils* mPythonUtils;

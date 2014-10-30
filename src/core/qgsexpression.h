@@ -83,10 +83,7 @@ or they can be converted to numeric types.
 
 Arithmetic operators do integer arithmetics if both operands are integer. That is
 2+2 yields integer 4, but 2.0+2 returns real number 4.0. There are also two versions of
-division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0.
-
-@note added in 2.0
-*/
+division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0. */
 class CORE_EXPORT QgsExpression
 {
   public:

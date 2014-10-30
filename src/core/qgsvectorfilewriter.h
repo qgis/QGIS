@@ -148,12 +148,11 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrCreateLayer,
       ErrAttributeTypeUnsupported,
       ErrAttributeCreationFailed,
-      ErrProjection,  // added in 1.5
-      ErrFeatureWriteFailed, // added in 1.6
-      ErrInvalidLayer, // added in 2.0
+      ErrProjection,
+      ErrFeatureWriteFailed,
+      ErrInvalidLayer,
     };
 
-    //added in 2.0
     enum SymbologyExport
     {
       NoSymbology = 0, //export only data
@@ -162,7 +161,6 @@ class CORE_EXPORT QgsVectorFileWriter
     };
 
     /** Write contents of vector layer to an (OGR supported) vector formt
-        @note: this method was added in version 1.5
     @param layer layer to write
     @param fileName file name to write to
     @param fileEncoding encoding to use
@@ -185,12 +183,12 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QString& driverName = "ESRI Shapefile",
                                             bool onlySelected = false,
                                             QString *errorMessage = 0,
-                                            const QStringList &datasourceOptions = QStringList(),  // added in 1.6
-                                            const QStringList &layerOptions = QStringList(),  // added in 1.6
-                                            bool skipAttributeCreation = false, // added in 1.6
-                                            QString *newFilename = 0, // added in 1.9
-                                            SymbologyExport symbologyExport = NoSymbology, //added in 2.0
-                                            double symbologyScale = 1.0, // added in 2.0
+                                            const QStringList &datasourceOptions = QStringList(),
+                                            const QStringList &layerOptions = QStringList(),
+                                            bool skipAttributeCreation = false,
+                                            QString *newFilename = 0,
+                                            SymbologyExport symbologyExport = NoSymbology,
+                                            double symbologyScale = 1.0,
                                             const QgsRectangle* filterExtent = 0 // added in 2.4
                                           );
 
@@ -218,10 +216,10 @@ class CORE_EXPORT QgsVectorFileWriter
                          QGis::WkbType geometryType,
                          const QgsCoordinateReferenceSystem* srs,
                          const QString& driverName = "ESRI Shapefile",
-                         const QStringList &datasourceOptions = QStringList(), // added in 1.6
-                         const QStringList &layerOptions = QStringList(), // added in 1.6
-                         QString *newFilename = 0, // added in 1.9
-                         SymbologyExport symbologyExport = NoSymbology //added in 2.0
+                         const QStringList &datasourceOptions = QStringList(),
+                         const QStringList &layerOptions = QStringList(),
+                         QString *newFilename = 0,
+                         SymbologyExport symbologyExport = NoSymbology
                        );
 
     /**Returns map with format filter string as key and OGR format key as value*/
@@ -245,9 +243,7 @@ class CORE_EXPORT QgsVectorFileWriter
     /** checks whether there were any errors in constructor */
     WriterError hasError();
 
-    /** retrieves error message
-     * @note added in 1.5
-     */
+    /** retrieves error message */
     QString errorMessage();
 
     /** add feature to the currently opened shapefile */

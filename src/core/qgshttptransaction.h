@@ -41,7 +41,6 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
   public:
     /**
     * Constructor.
-    * \note userName and password added in 1.1
     */
     QgsHttpTransaction( QString uri,
                         QString proxyHost = QString(),
@@ -90,7 +89,6 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
 
     /**
      * Set the credentials (username and password)
-     * \note added in 1.1
      */
 
     void setCredentials( const QString& username, const QString &password );

@@ -30,7 +30,6 @@ class QHideEvent;
 
 /** \ingroup gui
  * A generic message for displaying QGIS log messages.
- * \note added in 1.8
  */
 class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogViewer
 {

@@ -214,11 +214,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void clearExtentHistory();
 
     /** Zoom to the extent of the selected features of current (vector) layer.
-      Added in version 1.2: optionally specify different than current layer */
+      @param layer optionally specify different than current layer */
     void zoomToSelected( QgsVectorLayer* layer = NULL );
 
-    /** Pan to the selected features of current (vector) layer keeping same extent.
-      @note added in 2.0 */
+    /** Pan to the selected features of current (vector) layer keeping same extent. */
     void panToSelected( QgsVectorLayer* layer = NULL );
 
     /** \brief Sets the map tool currently being used on the canvas */
@@ -257,7 +256,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! return number of layers on the map
     int layerCount() const;
 
-    //! return list of layers within map canvas. Added in v1.5
+    //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
 
     /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
@@ -303,7 +302,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void zoomOut();
 
     //! Zoom to a specific scale
-    // added in 1.5
     void zoomScale( double scale );
 
     //! Zoom with the factor supplied. Factor > 1 zooms out, interval (0,1) zooms in
@@ -445,13 +443,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void renderComplete( QPainter * );
 
     // ### QGIS 3: renamte to mapRefreshFinished()
-    /** Emitted when canvas finished a refresh request.
-    \note Added in 2.0 */
+    /** Emitted when canvas finished a refresh request. */
     void mapCanvasRefreshed();
 
     // ### QGIS 3: rename to mapRefreshStarted()
-    /** Emitted when the canvas is about to be rendered.
-      \note Added in 1.5 */
+    /** Emitted when the canvas is about to be rendered. */
     void renderStarting();
 
     //! Emitted when a new set of layers has been received
@@ -476,11 +472,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void selectionChanged( QgsMapLayer * layer );
 
     //! Emitted when zoom last status changed
-    //! @note: this signal was added in version 1.4
     void zoomLastStatusChanged( bool );
 
     //! Emitted when zoom next status changed
-    //! @note: this signal was added in version 1.4
     void zoomNextStatusChanged( bool );
 
     //! Emitted when on-the-fly projection has been turned on/off

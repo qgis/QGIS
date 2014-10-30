@@ -68,16 +68,12 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void setPicRotationSpinValue( double r );
 
     /** Load SVG and pixel-based image previews
-     * @param collapsed Whether the parent group box is collapsed
-     * @note added in 1.9
-     */
+     * @param collapsed Whether the parent group box is collapsed */
     void loadPicturePreviews( bool collapsed );
 
   private:
     QgsComposerPicture* mPicture;
-    /** Whether the picture selection previews have been loaded
-     * @note added in 1.9
-     */
+    /** Whether the picture selection previews have been loaded */
     bool mPreviewsLoaded;
 
     /**Add the icons of a directory to the preview. Returns 0 in case of success*/

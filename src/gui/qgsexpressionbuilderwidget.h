@@ -124,7 +124,6 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadFieldNames( const QgsFields& fields );
 
     /** Sets geometry calculator used in distance/area calculations.
-      * @note added in version 2.0
       */
     void setGeomCalculator( const QgsDistanceArea & da );
 

@@ -34,7 +34,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsComposerLabel( QgsComposition *composition );
     ~QgsComposerLabel();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const { return ComposerLabel; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -49,8 +49,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     int htmlState() { return mHtmlState; }
     void setHtmlState( int state );
 
-    /**Returns the text as it appears on screen (with replaced data field)
-      @note this function was added in version 1.2*/
+    /**Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
@@ -82,10 +81,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     void setMargin( double m ) { mMargin = m; }
 
     /**Sets text color
-        @note: this function was added in version 1.4*/
+        */
     void setFontColor( const QColor& c ) { mFontColor = c; }
     /**Get font color
-        @note: this function was added in version 1.4*/
+        */
     QColor fontColor() const { return mFontColor; }
 
     /** stores state in Dom element

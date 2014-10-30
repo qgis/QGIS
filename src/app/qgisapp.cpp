@@ -739,7 +739,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     // because some plugins may cause QGIS to crash during startup
     QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
 
-    // Also restore plugins from user specified plugin directories - added for 1.7
+    // Also restore plugins from user specified plugin directories
     QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
     if ( !myPaths.isEmpty() )
     {
@@ -8672,7 +8672,6 @@ void QgisApp::markDirty()
   QgsProject::instance()->dirty( true );
 }
 
-//changed from layerWasAdded to layersWereAdded in 1.8
 void QgisApp::layersWereAdded( QList<QgsMapLayer *> theLayers )
 {
   for ( int i = 0; i < theLayers.size(); ++i )

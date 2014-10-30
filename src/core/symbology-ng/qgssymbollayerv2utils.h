@@ -335,9 +335,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
-    /** Blurs an image in place, e.g. creating Qt-independent drop shadows
-     * @note added in 1.9
-     */
+    /** Blurs an image in place, e.g. creating Qt-independent drop shadows */
     static void blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly );
 
     /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value

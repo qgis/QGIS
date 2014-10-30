@@ -53,14 +53,12 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * Specify the current color. Will emit a colorChanged signal if the color is different to the previous.
      *
      * @param color the new color
-     * @note added in 1.9
      */
     void setColor( const QColor &color );
     /**
      * Return the currently selected color.
      *
      * @return the currently selected color
-     * @note added in 1.9
      */
     QColor color() const;
 
@@ -68,7 +66,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * Specify the options for the color chooser dialog (e.g. alpha).
      *
      * @param cdo Options for the color chooser dialog
-     * @note added in 1.9
      */
     void setColorDialogOptions( QColorDialog::ColorDialogOptions cdo );
 
@@ -76,7 +73,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * Returns the options for the color chooser dialog.
      *
      * @return Options for the color chooser dialog
-     * @note added in 1.9
      */
     QColorDialog::ColorDialogOptions colorDialogOptions();
 
@@ -84,7 +80,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * Set the title, which the color chooser dialog will show.
      *
      * @param cdt Title for the color chooser dialog
-     * @note added in 1.9
      */
     void setColorDialogTitle( QString cdt );
 
@@ -92,22 +87,17 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * Returns the title, which the color chooser dialog shows.
      *
      * @return Title for the color chooser dialog
-     * @note added in 1.9
      */
     QString colorDialogTitle();
 
     /**
      * Whether the button accepts live updates from QColorDialog.
-     *
-     * @note added in 1.9
      */
     bool acceptLiveUpdates() { return mAcceptLiveUpdates; }
 
     /**
      * Sets whether the button accepts live updates from QColorDialog.
      * Live updates may cause changes that are not undoable on QColorDialog cancel.
-     *
-     * @note added in 1.9
      */
     void setAcceptLiveUpdates( bool accept ) { mAcceptLiveUpdates = accept; }
 
@@ -118,7 +108,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * but the color has not changed, i.e. setColor() wouldn't update button and
      * you want the button to retain the set color's alpha component regardless
      * @param color Color for button background
-     * @note added in 1.9
      */
     void setButtonBackground( QColor color = QColor() );
 
@@ -128,7 +117,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
      * In case the new color is the same, no signal is emitted, to avoid infinite loops.
      *
      * @param color New color
-     * @note added in 1.9
      */
     void colorChanged( const QColor &color );
 
@@ -226,8 +214,6 @@ class GUI_EXPORT QgsColorButton: public QPushButton
 
     /**
      * Sets color for button, if valid.
-     *
-     * @note added in 1.9
      */
     void setValidColor( const QColor& newColor );
 };

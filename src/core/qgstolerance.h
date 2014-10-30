@@ -22,8 +22,6 @@
 
 /** \ingroup core
  * This is the class is providing tolerance value in map unit values.
- *
- * \note This class has been added in version 1.1.
  */
 class CORE_EXPORT QgsTolerance
 {

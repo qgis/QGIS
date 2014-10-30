@@ -53,8 +53,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     /** delete a feature from the layer (but does not commit it) */
     bool deleteFeature( QgsFeatureId fid );
 
-    /** change feature's geometry
-      @note added in version 1.2 */
+    /** change feature's geometry */
     bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
     /** changed an attribute value (but does not commit it) */
@@ -62,7 +61,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added
-      @note added in version 1.2 */
+       */
     bool addAttribute( const QgsField &field );
 
     /** delete an attribute field (but does not commit it) */
@@ -123,8 +122,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
 
-    /** Signals emitted after committing changes
-      \note added in v1.6 */
+    /** Signals emitted after committing changes */
     void committedAttributesDeleted( const QString& layerId, const QgsAttributeList& deletedAttributes );
     void committedAttributesAdded( const QString& layerId, const QList<QgsField>& addedAttributes );
     void committedFeaturesAdded( const QString& layerId, const QgsFeatureList& addedFeatures );

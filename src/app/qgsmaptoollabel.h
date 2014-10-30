@@ -87,7 +87,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 //    const QgsPalLayerSettings& currentLabelSettings( bool* ok ) const;
 
     /**Returns current label's text
-      @param trunc number of chars to truncate to, with ... added (added in 1.9)*/
+      @param trunc number of chars to truncate to, with ... added */
     QString currentLabelText( int trunc = 0 );
 
     void currentAlignment( QString& hali, QString& vali );
@@ -99,15 +99,15 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
     /**Returns the font for the current feature (considering default font and data defined properties)*/
     QFont labelFontCurrentFeature();
 
-//    /**Returns a data defined attribute column (added in 1.9)
+//    /**Returns a data defined attribute column
 //      @return invalid QVariant if one does not exist or an expression is used instead */
 //    QVariant dataDefinedColumn( QgsPalLayerSettings::DataDefinedProperties p );
 
-//    /**Returns a data defined attribute column - overloaded variation (added in 1.9)
+//    /**Returns a data defined attribute column - overloaded variation
 //      @return invalid QVariant if one does not exist or an expression is used instead */
 //    QVariant dataDefinedColumn( QgsPalLayerSettings::DataDefinedProperties p, QgsPalLayerSettings& labelSettings );
 
-    /**Returns a data defined attribute column index (added in 1.9)
+    /**Returns a data defined attribute column index
       @return -1 if column does not exist or an expression is used instead */
 //    int dataDefinedColumnIndex( QgsPalLayerSettings::DataDefinedProperties p, const QgsPalLayerSettings& labelSettings, const QgsVectorLayer* vlayer ) const;
 

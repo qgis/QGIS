@@ -38,7 +38,6 @@ class QgsMessageBarItem;
 
 /** \ingroup gui
  * A bar for displaying non-blocking messages to the user.
- * \note added in 1.9
  */
 class GUI_EXPORT QgsMessageBar: public QFrame
 {

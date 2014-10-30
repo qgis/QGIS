@@ -177,8 +177,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note this function generates a WKT string using OSRSetFromUserInput() and
      * passes it to createFromWkt() function.
      * @param theDefinition A String containing a coordinate reference system definition.
-     *
-     * @note added in 1.8
      */
     bool createFromUserInput( const QString &theDefinition );
 
@@ -189,8 +187,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @note This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
      * unless it has been set by the user through the commandline or an environment variable.
      * For more details refer to OGRSpatialReference::morphFromESRI() .
-     *
-     * @note added in 1.8
      */
     static void setupESRIWktFix();
 
@@ -280,7 +276,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /*! Get the authority identifier for this srs
      * @return  QString the Authority identifier for this srs
-     * @note added in 1.5
      */
     QString authid() const;
 
@@ -323,7 +318,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /*! return if axis is inverted (eg. for WMS 1.3)
      * @return  bool Whether this is crs axis is inverted
-     * @note added in 1.8
      */
     bool axisInverted() const;
 
@@ -344,7 +338,6 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /*! Update proj.4 parameters in our database from proj.4
      * @returns number of updated CRS on success and
      *   negative number of failed updates in case of errors.
-     * @note added in 1.8
      */
     static int syncDb();
 

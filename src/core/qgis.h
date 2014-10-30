@@ -241,13 +241,10 @@ class CORE_EXPORT QGis
     };
 
     //! Provides the canonical name of the type value
-    // Added in version 2.0
     static QString toLiteral( QGis::UnitType unit );
     //! Converts from the canonical name to the type value
-    // Added in version 2.0
     static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
     //! Provides translated version of the type value
-    // Added in version 2.0
     static QString tr( QGis::UnitType unit );
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
@@ -371,7 +368,7 @@ void CORE_EXPORT *qgsCalloc( size_t nmemb, size_t size );
 void CORE_EXPORT qgsFree( void *ptr );
 
 /** Wkt string that represents a geographic coord sys
- * @note added in 1.8 to replace GEOWkt
+ * @note added to replace GEOWkt
  */
 extern CORE_EXPORT const QString GEOWKT;
 extern CORE_EXPORT const QString PROJECT_SCALES;
@@ -397,7 +394,6 @@ const int LAT_PREFIX_LEN = 7;
 const int USER_CRS_START_ID = 100000;
 
 //! Constant that holds the string representation for "No ellips/No CRS"
-// Added in version 2.0
 extern CORE_EXPORT const QString GEO_NONE;
 
 //
@@ -410,7 +406,7 @@ const double MINIMUM_POINT_SIZE = 0.1;
 const double DEFAULT_POINT_SIZE = 2.0;
 const double DEFAULT_LINE_WIDTH = 0.26;
 
-/** default snapping tolerance for segments (@note added in 1.8) */
+/** default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
 typedef QMap<QString, QString> QgsStringMap;

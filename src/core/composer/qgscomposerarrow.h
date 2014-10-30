@@ -50,9 +50,7 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
 
     ~QgsComposerArrow();
 
-    /**Return composer item type.
-     * @note added in QGIS 1.7
-     */
+    /** Return composer item type. */
     virtual int type() const { return ComposerArrow; }
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */

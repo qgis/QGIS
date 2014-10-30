@@ -84,8 +84,7 @@ class CORE_EXPORT QgsMapToPixel
 
     QgsPoint toMapCoordinates( int x, int y ) const;
 
-    /*! Transform device coordinates to map (world) coordinates
-      @note: this method was added in version 1.6*/
+    /*! Transform device coordinates to map (world) coordinates */
     QgsPoint toMapCoordinatesF( double x, double y ) const;
 
     /*! Tranform device coordinates to map (world)  coordinates

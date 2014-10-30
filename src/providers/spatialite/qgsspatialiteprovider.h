@@ -147,7 +147,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values
-     *  @param limit maximum number of values (added in 1.4) */
+     *  @param limit maximum number of values */
     virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 );
 
     /**Returns true if layer is valid
@@ -232,7 +232,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /**
      * Return list of indexes of fields that make up the primary key
-     * @note added in 2.0
      */
     QgsAttributeList pkAttributeIndexes();
 

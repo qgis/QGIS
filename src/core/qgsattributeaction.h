@@ -133,7 +133,6 @@ class  CORE_EXPORT QgsAttributeAction
 
     /*! Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
-     *  @note added in 1.9
      *  @note available in python bindings as doActionFeature
      */
     void doAction( int index,
@@ -144,7 +143,6 @@ class  CORE_EXPORT QgsAttributeAction
      *  and getting values from the passed feature attribute map.
      *  substitutionMap is used to pass custom substitutions, to replace
      *  each key in the map with the associated value
-     *  @note added in 1.9
      *  @note available in python bindings as doActionFeatureWithSubstitution
      */
     void doAction( int index,
@@ -172,8 +170,6 @@ class  CORE_EXPORT QgsAttributeAction
      *
      *  Additional substitutions can be passed through the substitutionMap
      *  parameter
-     *
-     *  @note added in 1.9
      */
     QString expandAction( QString action,
                           QgsFeature &feat,

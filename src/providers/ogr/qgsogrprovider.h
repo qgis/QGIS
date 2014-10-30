@@ -141,7 +141,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Adds new attributes
      * @param attributes list of new attributes
      * @return true in case of success and false in case of failure
-     * @note added in 1.2
      */
     virtual bool addAttributes( const QList<QgsField> &attributes );
 
@@ -245,7 +244,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** Returns true if the provider is strict about the type of inserted features
           (e.g. no multipolygon in a polygon layer)
-          @note: added in version 1.4*/
+          */
     virtual bool doesStrictFeatureTypeCheck() const { return false;}
 
     /** return OGR geometry type */

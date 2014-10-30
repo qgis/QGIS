@@ -33,7 +33,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
   public:
 
-    /**Added in version 1.8*/
     enum Alignment
     {
       Left = 0,
@@ -41,7 +40,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       Right
     };
 
-    /**Added in version 1.9*/
     enum ScaleBarUnits
     {
       MapUnits = 0,
@@ -53,7 +51,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const { return ComposerScaleBar; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -152,17 +150,13 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     double segmentMillimeters() const {return mSegmentMillimeters;}
 
-    /**Left / Middle/ Right
-      @note: this method was added in version 1.8*/
+    /**Left / Middle/ Right */
     Alignment alignment() const { return mAlignment; }
 
-    /**@note: this method was added in version 1.8*/
     void setAlignment( Alignment a );
 
-    /**@note: this method was added in version 1.9*/
     ScaleBarUnits units() const { return mUnits; }
 
-    /**@note: this method was added in version 1.9*/
     void setUnits( ScaleBarUnits u );
 
     /** Returns the join style used for drawing lines in the scalebar
@@ -196,7 +190,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /**Apply default settings*/
     void applyDefaultSettings();
     /**Apply default size (scale bar 1/5 of map item width)
-      @note this method was added in version 1.7*/
+      */
     void applyDefaultSize( ScaleBarUnits u = Meters );
 
     /**Sets style by name

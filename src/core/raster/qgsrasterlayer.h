@@ -280,8 +280,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      */
     const QgsRasterDataProvider* dataProvider() const;
 
-    /**Synchronises with changes in the datasource
-    @note added in version 1.6*/
+    /**Synchronises with changes in the datasource */
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -297,8 +296,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    /**Returns a list with classification items (Text and color)
-      @note this method was added in version 1.8*/
+    /**Returns a list with classification items (Text and color) */
     QgsLegendColorList legendSymbologyItems() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
@@ -307,9 +305,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
-     * @note added in 2.0
-     */
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
     QString providerType() const;
 
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
@@ -382,7 +378,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**
      *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
-     *   @note added in 1.7
      */
     void dataChanged();
 

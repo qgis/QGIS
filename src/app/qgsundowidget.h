@@ -58,10 +58,7 @@ class APP_EXPORT QgsUndoWidget : public QDockWidget
      */
     void destroyStack();
 
-    /**
-     * Access to dock's contents
-     * @note added in 1.9
-     */
+    /** Access to dock's contents */
     QWidget* dockContents() { return dockWidgetContents; }
 
   public slots:

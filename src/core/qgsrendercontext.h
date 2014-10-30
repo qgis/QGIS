@@ -65,21 +65,17 @@ class CORE_EXPORT QgsRenderContext
 
     bool forceVectorOutput() const {return mForceVectorOutput;}
 
-    /**Returns true if advanced effects such as blend modes such be used
-      @note added in 1.9*/
+    /**Returns true if advanced effects such as blend modes such be used */
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
-    /**Used to enable or disable advanced effects such as blend modes
-      @note: added in version 1.9*/
+    /**Used to enable or disable advanced effects such as blend modes */
     void setUseAdvancedEffects( bool enabled ) { mUseAdvancedEffects = enabled; }
 
     bool drawEditingInformation() const {return mDrawEditingInformation;}
 
     double rendererScale() const {return mRendererScale;}
 
-    //! Added in QGIS v1.4
     QgsLabelingEngineInterface* labelingEngine() const { return mLabelingEngine; }
 
-    //! Added in QGIS v2.0
     QColor selectionColor() const { return mSelectionColor; }
 
     /**Returns true if vector selections should be shown in the rendered map
@@ -102,11 +98,8 @@ class CORE_EXPORT QgsRenderContext
     void setRasterScaleFactor( double factor ) {mRasterScaleFactor = factor;}
     void setRendererScale( double scale ) {mRendererScale = scale;}
     void setPainter( QPainter* p ) {mPainter = p;}
-    //! Added in QGIS v1.5
     void setForceVectorOutput( bool force ) {mForceVectorOutput = force;}
-    //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
-    //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color ) { mSelectionColor = color; }
 
     /**Sets whether vector selections should be shown in the rendered map

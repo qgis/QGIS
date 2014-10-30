@@ -286,19 +286,13 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      */
     virtual QString lastError() = 0;
 
-    /**
-     * \brief   Returns the format of the error text for the last error in this provider
-     *
-     * \note added in 1.6
-     */
+    /** Returns the format of the error text for the last error in this provider */
     virtual QString lastErrorFormat();
 
-    /**Returns the dpi of the output device.
-      @note: this method was added in version 1.2*/
+    /**Returns the dpi of the output device. */
     int dpi() const { return mDpi; }
 
-    /**Sets the output device resolution.
-      @note: this method was added in version 1.2*/
+    /**Sets the output device resolution. */
     void setDpi( int dpi ) { mDpi = dpi; }
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
@@ -388,8 +382,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     static QString makeTableCells( const QStringList & values );
 
     /** Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore
-    are suited for printing. A value of -1 means it has not been set
-    @note: this member has been added in version 1.2*/
+    are suited for printing. A value of -1 means it has not been set */
     int mDpi;
 
     /** Source no data value is available and is set to be used or internal no data

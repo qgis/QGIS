@@ -43,7 +43,6 @@ class QSplitter;
  *    initOptionsBase( false ); // set up this class to use .ui objects, optionally restoring base ui
  *    ...
  *    restoreOptionsBaseUi(); // restore the base ui with initOptionsBase or use this later on
- * @note added in 1.9
  */
 
 class GUI_EXPORT QgsOptionsDialogBase : public QDialog

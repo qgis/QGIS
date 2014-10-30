@@ -26,8 +26,6 @@ typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
   In order to be readable from project files, they should set these attributes in layer DOM node:
    "type" = "plugin"
    "name" = "your_layer_type"
-
-  \note added in v1.5
  */
 class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 {

@@ -38,7 +38,6 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const char* QGIS_ORGANIZATION_NAME;
     static const char* QGIS_ORGANIZATION_DOMAIN;
     static const char* QGIS_APPLICATION_NAME;
-    //! @note customConfigDir parameter added in v1.6
     QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
     virtual ~QgsApplication();
 
@@ -82,21 +81,17 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /** Returns the path to the contributors file.
      * Contributors are people who have submitted patches
-     * but don't have svn write access.
-     * @note this function was added in version 1.3 */
+     * but don't have svn write access. */
     static const QString contributorsFilePath();
 
-    /**Returns the path to the sponsors file.
-      @note this function was added in version 1.2*/
+    /**Returns the path to the sponsors file.*/
     static const QString sponsorsFilePath();
 
-    /** Returns the path to the donors file.
-      @note this function was added in version 1.2*/
+    /** Returns the path to the donors file. */
     static const QString donorsFilePath();
 
     /**
      * Returns the path to the sponsors file.
-     * @note This was added in QGIS 1.1
      */
     static const QString translatorsFilePath();
 
@@ -130,11 +125,9 @@ class CORE_EXPORT QgsApplication : public QApplication
     static const QString srsDbFilePath();
 
     //! Returns the pathes to svg directories.
-    //! @note added in 1.4
     static const QStringList svgPaths();
 
     //! Returns the system environment variables passed to application.
-    //! @note added in 1.9
     static const QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }
 
     //! Returns the path to the application prefix directory.
@@ -154,31 +147,26 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
-    //! @note Added in 1.5
     static QString iconPath( QString iconFile );
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    //! @note Added in 2.0
     static QIcon getThemeIcon( const QString &theName );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    //! @note Added in 2.0
     static QPixmap getThemePixmap( const QString &theName );
 
-    //! Returns the path to user's style. Added in QGIS 1.4
+    //! Returns the path to user's style.
     static const QString userStyleV2Path();
 
-    //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
+    //! Returns the path to default style (works as a starting point).
     static const QString defaultStyleV2Path();
 
     //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
-    //! @note Added in 2.0
     static const QString libraryPath();
 
     //! Returns the path with utility executables (help viewer, crssync, ...)
-    //! @note Added in 2.0
     static const QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
@@ -190,7 +178,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Alters pkg data path - used by 3rd party apps
     static void setPkgDataPath( const QString &thePkgDataPath );
 
-    //! Alters default svg paths - used by 3rd party apps. Added in QGIS 1.5
+    //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
 
     //! loads providers
@@ -236,50 +224,43 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void registerOgrDrivers();
 
     /**Converts absolute path to path relative to target
-      @note: this method was added in version 1.6*/
+      */
     static QString absolutePathToRelativePath( QString apath, QString targetPath );
     /**Converts path relative to target to an absolute path
-      @note: this method was added in version 1.6*/
+      */
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
-    /** Indicates whether running from build directory (not installed)
-       @note added in 2.0 */
+    /** Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
 #ifdef _MSC_VER
     static QString cfgIntDir() { return ABISYM( mCfgIntDir ); }
 #endif
-    /** Returns path to the source directory. Valid only when running from build directory
-        @note added in 2.0 */
+    /** Returns path to the source directory. Valid only when running from build directory */
     static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
-    /** Returns path to the build output directory. Valid only when running from build directory
-        @note added in 2.0 */
+    /** Returns path to the build output directory. Valid only when running from build directory */
     static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
 
     /** Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
-     * @note added in 2.0
      */
     static void skipGdalDriver( QString theDriver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
-     * @note added in 2.0
      */
     static void restoreGdalDriver( QString theDriver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
-     * @note added in 2.0
      */
     static QStringList skippedGdalDrivers() { return ABISYM( mGdalSkipList ); }
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
      * @see restoreGdalDriver
-     * @see skippedGdalDrivers
-     * @note added in 2.0 */
+     * @see skippedGdalDrivers */
     static void applyGdalSkippedDrivers();
 
     /** Get maximum concurrent thread count
@@ -328,8 +309,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     /** path to the output directory of the build. valid only when running from build directory */
     static QString ABISYM( mBuildOutputPath );
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
-     * @see skipGdalDriver, restoreGdalDriver
-     * @note added in 2.0 */
+     * @see skipGdalDriver, restoreGdalDriver */
     static QStringList ABISYM( mGdalSkipList );
     /**
      * @note added in 2.4 */

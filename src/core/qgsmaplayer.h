@@ -55,7 +55,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       VectorLayer,
       RasterLayer,
-      PluginLayer // added in 1.5
+      PluginLayer
     };
 
     /** Constructor
@@ -73,9 +73,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayer::LayerType type() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
-     * @note added in 1.7
-     */
+    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry */
     QString id() const;
 
     /** Set the display name of the layer
@@ -88,9 +86,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     const QString & name() const;
 
-    /** Get the original name of the layer
-     * @note added in 1.9
-     */
+    /** Get the original name of the layer */
     const QString & originalName() const { return mLayerOrigName; }
 
     void setTitle( const QString& title ) { mTitle = title; }
@@ -128,7 +124,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
-        @note added in version 1.6*/
+        */
     virtual void reload() {}
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -232,14 +228,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
     static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString qlrfile );
 
-    /** Set a custom property for layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Set a custom property for layer. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString& key, const QVariant& value );
-    /** Read a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Read a custom property from layer. Properties are stored in a map and saved in project file. */
     QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
-    /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Remove a custom property from layer. Properties are stored in a map and saved in project file. */
     void removeCustomProperty( const QString& key );
 
 
@@ -260,8 +253,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     */
     const QgsCoordinateReferenceSystem& crs() const;
 
-    /** Sets layer's spatial reference system
-    @note emitSignal added in 1.4 */
+    /** Sets layer's spatial reference system */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
     /** A convenience function to (un)capitalise the layer name */
@@ -272,7 +264,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * record in the users style table in their personal qgis.db)
      * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
-     * @note This method was added in QGIS 1.8
      */
     virtual QString styleURI();
 
@@ -442,9 +433,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Emit a signal that the layer name has been changed */
     void layerNameChanged();
 
-    /** Emit a signal that layer's CRS has been reset
-     added in 1.4
-     */
+    /** Emit a signal that layer's CRS has been reset */
     void layerCrsChanged();
 
     /** By emitting this signal the layer tells that either appearance or content have been changed
@@ -458,8 +447,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();
 
-    /** data of layer changed
-     * added in 1.5 */
+    /** data of layer changed */
     void dataChanged();
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
@@ -478,8 +466,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );
 
-    /** set whether layer is valid or not - should be used in constructor.
-        \note added in v1.5 */
+    /** set whether layer is valid or not - should be used in constructor. */
     void setValid( bool valid );
 
     /** called by readLayerXML(), used by children to read state specific to them from
@@ -493,12 +480,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
 
-    /** Read custom properties from project file. Added in v1.4
+    /** Read custom properties from project file.
       @param layerNode note to read from
       @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
     void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = "" );
 
-    /** Write custom properties to project file. Added in v1.4 */
+    /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */
@@ -522,7 +509,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     QString mLayerName;
 
     /** Original name of the layer
-     *  @note added in 1.9
      */
     QString mLayerOrigName;
 

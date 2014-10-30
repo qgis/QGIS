@@ -446,18 +446,13 @@ const QString QgsApplication::donorsFilePath()
   return ABISYM( mPkgDataPath ) + QString( "/doc/DONORS" );
 }
 
-/*!
-  Returns the path to the sponsors file.
-  @note Added in QGIS 1.1
-*/
+/** Returns the path to the sponsors file. */
 const QString QgsApplication::translatorsFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/TRANSLATORS" );
 }
 
-/*!
-  Returns the path to the licence file.
-*/
+/** Returns the path to the licence file. */
 const QString QgsApplication::licenceFilePath()
 {
   return ABISYM( mPkgDataPath ) + QString( "/doc/LICENSE" );

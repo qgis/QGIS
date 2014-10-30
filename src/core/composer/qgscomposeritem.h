@@ -115,7 +115,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue = true );
     virtual ~QgsComposerItem();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const { return ComposerItem; }
 
     /**Returns whether this item has been removed from the composition. Items removed
@@ -203,12 +203,11 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
       @param itemPoint item position mode
       @param posIncludesFrame set to true if the position and size arguments include the item's frame border
       @param page if page > 0, y is interpreted as relative to the origin of the specified page, if page <= 0, y is in absolute canvas coordinates
-      @note: this method was added in version 1.6*/
+      */
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 
     /**Returns item's last used position mode.
-      @note: This property has no effect on actual's item position, which is always the top-left corner.
-      @note: this method was added in version 2.0*/
+      @note: This property has no effect on actual's item position, which is always the top-left corner. */
     ItemPositionMode lastUsedPositionMode() { return mLastUsedPositionMode; }
 
     /**Sets this items bound in scene coordinates such that 1 item size units
@@ -439,7 +438,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     Q_DECL_DEPRECATED double textWidthMillimeters( const QFont& font, const QString& text ) const;
 
     /**Returns the font height of a character in millimeters
-     * @note this method was added in version 1.7
      * @deprecated use QgsComposerUtils::fontHeightCharacterMM instead
      */
     Q_DECL_DEPRECATED double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
@@ -473,14 +471,12 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Locks / unlocks the item position for mouse drags
      * @param lock set to true to prevent item movement and resizing via the mouse
-     * @note this method was added in version 1.2
      * @see positionLock
      */
     void setPositionLock( const bool lock );
 
     /**Returns whether position lock for mouse drags is enabled
      * returns true if item is locked for mouse movement and resizing
-     * @note this method was added in version 1.2
      * @see setPositionLock
     */
     bool positionLock() const { return mItemPositionLocked; }
@@ -506,21 +502,18 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Get item's id (which is not necessarly unique)
      * @returns item id
-     * @note this method was added in version 1.7
      * @see setId
      */
     QString id() const { return mId; }
 
     /**Set item's id (which is not necessarly unique)
      * @param id new id for item
-     * @note this method was added in version 1.7
      * @see id
      */
     virtual void setId( const QString& id );
 
     /**Get item identification name
      * @returns unique item identification string
-     * @note this method was added in version 2.0
      * @note there is not setter since one can't manually set the id
      * @see id
      * @see setId
@@ -641,7 +634,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     Qt::PenJoinStyle mFrameJoinStyle;
 
     /**True if item position  and size cannot be changed with mouse move
-    @note: this member was added in version 1.2*/
+    */
     bool mItemPositionLocked;
 
     /**Backup to restore item appearance if no view scale factor is available*/
@@ -669,8 +662,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * this value differs from mExcludeFromExports.*/
     bool mEvaluatedExcludeFromExports;
 
-    /**The item's position mode
-    @note: this member was added in version 2.0*/
+    /**The item's position mode */
     ItemPositionMode mLastUsedPositionMode;
 
     /**Whether or not this item is part of a group*/
@@ -707,14 +699,13 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     double rectHandlerBorderTolerance() const;
 
     /**Returns the size of the lock symbol depending on the composer zoom level and the item size
-    * @note: this function was introduced in version 1.2
     * @deprecated will be removed in QGIS 3.0
     */
     Q_DECL_DEPRECATED double lockSymbolSize() const;
 
     /**Returns the zoom factor of the graphics view.
       @return the factor or -1 in case of error (e.g. graphic view does not exist)
-    @note: this function was introduced in version 1.2*/
+    */
     double horizontalViewScaleFactor() const;
 
     //some utility functions

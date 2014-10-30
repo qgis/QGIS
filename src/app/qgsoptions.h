@@ -73,9 +73,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void editGdalDriver( const QString& driverName );
     void saveOptions();
     /*!
-    * Slot to reset any temporarily applied options on dialog close/cancel
-    * @note added in QGIS 2.0
-    */
+    * Slot to reset any temporarily applied options on dialog close/cancel */
     void rejectOptions();
     //! Slot to change the theme this is handled when the user
     // activates or highlights a theme name in the drop-down list
@@ -84,13 +82,10 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void iconSizeChanged( const QString &iconSize );
 
     /** Slot to handle when type of project to open after launch is changed
-     * @note added in QGIS 1.9
      */
     void on_mProjectOnLaunchCmbBx_currentIndexChanged( int indx );
 
-    /** Slot to choose path to project to open after launch
-     * @note added in QGIS 1.9
-     */
+    /** Slot to choose path to project to open after launch */
     void on_mProjectOnLaunchPushBtn_pressed();
 
     /**
@@ -100,29 +95,19 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
      */
     bool newVisible();
 
-    /** Slot to select the default font point size for app
-     * @note added in QGIS 1.9
-     */
+    /** Slot to select the default font point size for app */
     void on_spinFontSize_valueChanged( int fontSize );
 
-    /** Slot to set font family for app to Qt default
-     * @note added in QGIS 1.9
-     */
+    /** Slot to set font family for app to Qt default */
     void on_mFontFamilyRadioQt_released();
 
-    /** Slot to set font family for app to custom choice
-     * @note added in QGIS 1.9
-     */
+    /** Slot to set font family for app to custom choice */
     void on_mFontFamilyRadioCustom_released();
 
-    /** Slot to select custom font family choice for app
-     * @note added in QGIS 1.9
-     */
+    /** Slot to select custom font family choice for app */
     void on_mFontFamilyComboBox_currentFontChanged( const QFont& font );
 
-    /** Slot to set whether to use custom group boxes
-     * @note added in QGIS 1.9
-     */
+    /** Slot to set whether to use custom group boxes */
     void on_mCustomGroupBoxChkBx_clicked( bool chkd );
 
     /** Slot to set whether to use custom side bar style
@@ -130,9 +115,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
       */
     void on_mCustomSideBarSide_clicked( bool chkd );
 
-    /** Slot to set whether to bold group box titles
-     * @note added in QGIS 1.9
-     */
+    /** Slot to set whether to bold group box title. */
     void on_mBoldGroupBoxTitleChkBx_clicked( bool chkd );
 
     void on_mProxyTypeComboBox_currentIndexChanged( int idx );
@@ -146,48 +129,32 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /**Slot to flag restoring/delete window state settings upon restart*/
     void on_mRestoreDefaultWindowStateBtn_clicked();
 
-    /** Slot to enable custom environment variables table and buttons
-     * @note added in QGIS 1.9
-     */
+    /** Slot to enable custom environment variables table and buttons */
     void on_mCustomVariablesChkBx_toggled( bool chkd );
 
-    /** Slot to add a custom environment variable to the app
-     * @note added in QGIS 1.9
-     */
+    /** Slot to add a custom environment variable to the app */
     void on_mAddCustomVarBtn_clicked();
 
-    /** Slot to remove a custom environment variable from the app
-     * @note added in QGIS 1.9
-     */
+    /** Slot to remove a custom environment variable from the app */
     void on_mRemoveCustomVarBtn_clicked();
 
-    /** Slot to filter out current environment variables not specific to QGIS
-     * @note added in QGIS 1.9
-     */
+    /** Slot to filter out current environment variables not specific to QGIS */
     void on_mCurrentVariablesQGISChxBx_toggled( bool qgisSpecific );
 
     /* Let the user add a path to the list of search paths
-     * used for finding user Plugin libs.
-     * @note added in QGIS 1.7
-     */
+     * used for finding user Plugin libs. */
     void on_mBtnAddPluginPath_clicked();
 
     /* Let the user remove a path from the list of search paths
-     * used for finding Plugin libs.
-     * @note added in QGIS 1.7
-     */
+     * used for finding Plugin libs. */
     void on_mBtnRemovePluginPath_clicked();
 
     /* Let the user add a path to the list of search paths
-     * used for finding SVG files.
-     * @note added in QGIS 1.4
-     */
+     * used for finding SVG files. */
     void on_mBtnAddSVGPath_clicked();
 
     /* Let the user remove a path from the list of search paths
-     * used for finding SVG files.
-     * @note added in QGIS 1.4
-     */
+     * used for finding SVG files. */
     void on_mBtnRemoveSVGPath_clicked();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
@@ -197,45 +164,31 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     /** Let the user add a scale to the list of scales
      * used in scale combobox
-     * @note added in QGIS 2.0
      */
     void on_pbnAddScale_clicked();
 
     /** Let the user remove a scale from the list of scales
      * used in scale combobox
-     * @note added in QGIS 2.0
      */
     void on_pbnRemoveScale_clicked();
 
     /** Let the user restore default scales
-     * used in scale combobox
-     * @note added in QGIS 2.0
-     */
+     * used in scale combobox  */
     void on_pbnDefaultScaleValues_clicked();
 
-    /** Let the user load scales from file
-     * @note added in QGIS 2.0
-     */
+    /** Let the user load scales from file */
     void on_pbnImportScales_clicked();
 
-    /** Let the user load scales from file
-     * @note added in QGIS 2.0
-     */
+    /** Let the user load scales from file */
     void on_pbnExportScales_clicked();
 
-    /** Auto slot executed when the active page in the option section widget is changed
-     * @note added in 1.9
-     */
+    /** Auto slot executed when the active page in the option section widget is changed */
     void on_mOptionsStackedWidget_currentChanged( int theIndx );
 
-    /* Load the list of drivers available in GDAL
-     * @note added in 2.0
-     */
+    /* Load the list of drivers available in GDAL */
     void loadGdalDriverList();
 
-    /* Save the list of which gdal drivers should be used.
-     * @note added in 2.0
-     */
+    /* Save the list of which gdal drivers should be used. */
     void saveGdalDriverList();
 
     void on_mRemoveDefaultTransformButton_clicked();
@@ -253,9 +206,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
 
-    /** Generate table row for custom environment variables
-     * @note added in QGIS 1.9
-     */
+    /** Generate table row for custom environment variables */
     void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );
 
     void saveDefaultDatumTransformations();

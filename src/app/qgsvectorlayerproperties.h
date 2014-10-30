@@ -85,9 +85,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     /** Get metadata about the layer in nice formatted html */
     QString metadata();
 
-    /** Slot to update layer display name as original is edited
-     * @note added in QGIS 1.9
-     */
+    /** Slot to update layer display name as original is edited */
     void on_mLayerOrigNameLineEdit_textEdited( const QString& text );
 
     /** Toggles on the label check box */

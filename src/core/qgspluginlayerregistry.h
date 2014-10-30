@@ -26,8 +26,6 @@ class QgsPluginLayer;
 
 /** \ingroup core
     class for creating plugin specific layers
-
-  \note added in v1.5
 */
 class CORE_EXPORT QgsPluginLayerType
 {
@@ -52,8 +50,6 @@ class CORE_EXPORT QgsPluginLayerType
 
 /** \ingroup core
     a registry of plugin layers types
-
-  \note added in v1.5
 */
 class CORE_EXPORT QgsPluginLayerRegistry
 {

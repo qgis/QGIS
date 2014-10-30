@@ -24,8 +24,6 @@ class QgsRectangle;
  *
  * Currently supported standards:
  * - GML2 - Geography Markup Language (import, export)
- *
- * @note added in 2.0
  */
 class CORE_EXPORT QgsOgcUtils
 {

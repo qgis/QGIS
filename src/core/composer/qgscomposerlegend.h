@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     QgsComposerLegend( QgsComposition* composition );
     ~QgsComposerLegend();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const { return ComposerLegend; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/

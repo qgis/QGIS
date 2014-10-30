@@ -41,7 +41,6 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     bool measureArea() { return mMeasureArea; }
 
     //! When we have added our last point, and not following
-    // Added in 2.0
     bool done() { return mDone; }
 
     //! Reset and start new
