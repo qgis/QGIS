@@ -3145,7 +3145,7 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = list.at( i );
     name.replace( ":", " " );
-    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, "ogr" );
+    QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, "ogr", false );
     if ( layer && layer->isValid() )
     {
       myList << layer;
@@ -3163,6 +3163,11 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   {
     // Register layer(s) with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayers( myList );
+    foreach( QgsMapLayer *l, myList )
+    {
+      bool ok;
+      l->loadDefaultStyle(ok);
+    }
   }
 }
 
@@ -3212,7 +3217,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
     // create the layer
     QgsDataSourceURI uri( layerPath );
 
-    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), providerKey );
+    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), providerKey, false );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
@@ -3244,6 +3249,13 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
   }
 
   QgsMapLayerRegistry::instance()->addMapLayers( myList );
+
+  // load default style after adding to process readCustomSymbology signals
+  foreach ( QgsMapLayer *l, myList )
+  {
+    bool ok;
+    l->loadDefaultStyle( ok );
+  }
 
   // draw the map
   mMapCanvas->freeze( false );
@@ -7760,7 +7772,7 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
                + " and providerKey of " + providerKey );
 
   // create the layer
-  QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, false );
 
   if ( layer && layer->isValid() )
   {
@@ -7784,6 +7796,8 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
       QList<QgsMapLayer *> myList;
       myList << layer;
       QgsMapLayerRegistry::instance()->addMapLayers( myList );
+      bool ok;
+      layer->loadDefaultStyle( ok );
     }
   }
   else
