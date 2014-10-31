@@ -77,7 +77,7 @@ set CMAKE_OPT=^
 
 :devenv
 set PYTHONPATH=
-path %PF86%\CMake 2.8\bin;%PATH%;c:\cygwin\bin
+path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
 
 PROMPT qgis%VERSION%$g 
 
