@@ -151,7 +151,7 @@ void QgsActionMenu::reloadActions()
     for ( int i = 0; i < mapLayerActions.size(); ++i )
     {
       QgsMapLayerAction* qaction = mapLayerActions.at( i );
-      QAction* action = new QAction( qaction->text(), this );
+      QAction* action = new QAction( qaction->icon(), qaction->text(), this );
       action->setData( QVariant::fromValue<ActionData>( ActionData( qaction, mFeatureId, mLayer ) ) );
       addAction( action );
       connect( action, SIGNAL( triggered() ), this, SLOT( triggerAction() ) );
