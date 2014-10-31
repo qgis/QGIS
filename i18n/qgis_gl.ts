@@ -41979,27 +41979,27 @@ Houbo un problema coa base de datos de símbolos.</translation>
     </message>
     <message>
         <source>Add an action to layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Engadir unha acción á capa</translation>
     </message>
     <message>
         <source>Action in a layer allow user to trigger action when clicking on a geometry with &apos;Run Feature Action&apos; tools.For example, you can open an html page using the field value of the geometry as a parameter. Look at the &lt;a href=&quot;http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu&quot;&gt;documentation&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Unha acción nunha capa permítelle ó usuario disparar accións cando preme nunha xeometría coa ferramenta &apos;Executar Acción de Entidade&apos;. Por exemplo, pode abrir unha páxina html utilizando o valor do campo da xeometría como un parámetro. Vexa a &lt;a href=&quot;http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu&quot;&gt;documentación&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Copy, paste and cut in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar, pegar e cortar en QGIS</translation>
     </message>
     <message>
         <source>Copy, paste, and cut work as in another applications in QGIS. Select a feature (a geometry or an attribut row in the attribute table) and use one of this shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste.</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar, pegar e cortar funciona en QGIS como noutras aplicacións. Seleccione unha entidade (unha xeometría ou unha ringleira de atributos na táboa de atributos) e use un destes atallos: Ctrl+C para copiar, Ctrl+X para cortar e Ctrl+V para pegar.</translation>
     </message>
     <message>
         <source>Right click with identify tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Clic dereito coas ferramentas de identificación</translation>
     </message>
     <message>
         <source>Right click with the identify tool to show a context menu from which you can choose the layer in which to identify a feature. A sub menu will list features identified and a third sub-menu will show the action link setup for the layer.If one of this sub-menu doesn&apos;t contain any information, the next sub-menuwill appear instead. For example, if you have just one layer, and click somewhere with several features, the first menu will list the feature list instead of layer list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Faga clic dereito coa ferramenta de identificación para amosar un menú contextual dende o cal pode escolle-la capa na que identifica-la entidade. Un menú secundario listará as entidades identificadas e un terceiro sub-menú amosará o enlace da acción para a capa. Se un dos sub-menús non contén ningunha información, aparecerá en lugar deste o próximo sub-menú. Por exemplo, se ten unha soa capa, e clica nalgún lugar con varias entidades, o primeiro menú listará a lista de entidades no canto da lista de capas.</translation>
     </message>
     <message>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://qgis.org/en/site/getinvolved/translate.html#howto-translate-gui&quot;&gt;translator&apos;s page.&lt;/a&gt;</source>
@@ -49711,7 +49711,68 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Táboa de Atributos&lt;/h3&gt;
+A táboa de atributos amosa entidades da capa seleccionada. Cada ringleira na táboa representa unha entidade do mapa cos seus atributos amosados en varias columnas. As entidades na táboa poden ser buscadas, seleccionadas, movidas ou incluso editadas. Por sistema a táboa de atributos é unha xanela separada. Se a abriu e xa non a pode ver, é probable que estea agochada debaixo da xanela principal de QGIS. Pode facela tamén unha xanela fixa, marcando &lt;label&gt;Abrir táboa de atributos nunha xanela fixa&lt;/label&gt; en &lt;label&gt;Configuración &gt; Opcións &gt; Fontes de Datos&lt;/label&gt;.&lt;p&gt;
+
+O número total de entidades da capa, entidades filtradas e entidades seleccionadas é impreso na cabeceira da xanela.&lt;p&gt;
+No fondo á dereita do diálogo, pode escoller se amosar as entidades nun formulario ou nunha táboa.&lt;p&gt;
+&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Seleccionar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Ordenar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Filtering&quot;&gt;Filtrar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Editing&quot;&gt;Editar&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalc&quot;&gt;Calculadora de Campos&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#FieldCalcBar&quot;&gt;Barra de Calculadora de Campos&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Seleccionar&lt;/h4&gt;
+&lt;/a&gt;
+As ringleiras poden seleccionarse clicando no número de ringleira na parte esquerda da mesma. As ringleiras subsecuentes poden seleccionarse mantendo pulsado o botón do rato e movéndoo ata a fin da selección. Pódense seleccionar múltiples ringleiras non subsecuentes mantendo pulsada a tecla &lt;label&gt;Ctrl&lt;/label&gt;.&lt;br&gt;
+Pode facerse unha selección continua mantendo pulsada a tecla &lt;label&gt;Maiúscula&lt;/label&gt; e clicando en varias cabeceiras de ringleira na parte esquerda das ringleiras. Tódalas ringleiras entre a posición actual do cursor e a ringleira clicada son seleccionadas.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Ordenar&lt;/h4&gt;
+&lt;/a&gt;
+Cada columna pode ordenarse clicando na cabeceira da columna. Unha pequena frecha indica a dirección da ordenación (apuntando cara abaixo significa valores descendentes dende a ringleira de arriba a arriba a abaixo, apuntando cara arriba significa valores ascendentes dende a ringleira de arriba a abaixo).&lt;br&gt;
+Activa-lo botón &lt;label&gt;Seleccionado na parte superior&lt;/label&gt; para amosa-las ringleiras seleccionadas na parte de arriba, independentemente da orde actual da columna.
+
+&lt;a name=&quot;Filtering&quot;&gt;
+&lt;h4&gt;Filtrado&lt;/h4&gt;
+&lt;/a&gt;
+Para navegar a través de partes dos seus datos, pode utiliza-lo botón de filtro non fondo á esquerda. As seguintes opcións están dispoñibles.
+&lt;h5&gt;Amosar Tódalas Entidades&lt;/h5&gt;
+Amosa tódalas entidades da capa.
+&lt;h5&gt;Amosar Entidades Seleccionadas&lt;/h5&gt;
+Amosa tódalas entidades que actualmente estean seleccionadas.
+&lt;h5&gt;Amosar Entidades Visibles no Mapa&lt;/h5&gt;
+Amosa tódalas entidades que actualmente están visibles na vista do mapa, tomando a actual extensión visible e tendo en conta a visibilidade baseada na escala.
+&lt;h5&gt;Amosar Entidades Editadas e Novas&lt;/h5&gt;
+Amosa só entidades editadas e novas. Neste modo, as entidades nas que non se cometeron cambios son amosadas e isto é polo tanto un bo filtro para revisar cambios, antes de perpetralos. Teña en conta que as entidades eliminadas non se amosan neste modo.
+&lt;h5&gt;Filtro de Columna&lt;/h5&gt;
+Un simple filtro, que permite filtrar por un atributo. Se o atributo contén texto, tamén busca sub-cadeas. Buscando &lt;b&gt;man&lt;/b&gt; amosará tamén rexistros que conteñan &lt;b&gt;woman&lt;/b&gt;. Despois de cambia-lo texto do filtro, prema&lt;label&gt;Enter&lt;/label&gt; ou clique en &lt;label&gt;Aplicar&lt;/label&gt;. Tamén pode conmuta-la caixa &lt;label&gt;Sensible ás maiúsculas&lt;/label&gt;, así o filtro tamén atopará &lt;b&gt;Night&lt;/b&gt; cando o texto de busca é &lt;b&gt;night&lt;/b&gt;.   
+&lt;h5&gt;Filtro Avanzado&lt;/h5&gt;
+Para buscas máis complexas, este modo ofrece un potente construtor de expresións, que é similar á cláusula SQL WHERE. Refírase á axuda interna do construtor de expresións para detalles da sintaxe.
+
+&lt;a name=&quot;Editing&quot;&gt;
+&lt;h4&gt;Editar&lt;/h4&gt;
+&lt;/a&gt;
+Para editar valores, primeiro ten que cambia-la capa a modo edición. Para cambiar a modo edición clique en &lt;label&gt;Alternar modo edición&lt;/label&gt; botón (lapis) ou prema &lt;label&gt;Ctrl + E&lt;/label&gt;. Despois diso faga dobre clic no valor que queira editar ou sitúe o cursor nel e utilice a tecla &lt;label&gt;Espazo&lt;/label&gt;. Pode personaliza-los widgets usados para a edición en &lt;label&gt;Propiedades de Capa Vectorial &gt; Campos&lt;/label&gt;  &lt;br&gt;
+Pode editar un valor de campo para moitas ringleiras a un tempo. Precisa selecciona-las ringleiras que queira editar e logo utiliza-la &lt;label&gt;Calculadora de Campos&lt;/label&gt; ou a &lt;label&gt;Barra da Calculadora de Campos&lt;/label&gt;. Se non hai ningunha ringleira seleccionada, a edición aplicarase a tódalas entidades.  
+
+&lt;a name=&quot;FieldCalc&quot;&gt;
+&lt;h4&gt;Calculadora de Campos&lt;/h4&gt;
+&lt;/a&gt;
+O botón &lt;label&gt;Calculadora de Campos&lt;/label&gt; na táboa de atributos permite realizar cálculos en base á valores de atributo existentes ou funcións definidas, por exemplo calcular a lonxitude ou área de entidades xeométricas.&lt;br&gt;
+Os resultados poden escribirse nunha nova columna de atributos ou poden utilizarse para actualizar valores nunha columna xa existente.&lt;br&gt;
+A capa vectorial necesita estar en modo edición, antes de clicar na icona &lt;label&gt;Calculadora de Campos&lt;/label&gt; para abri-lo diálogo.
+
+&lt;a name=&quot;FieldCalcBar&quot;&gt;
+&lt;h4&gt;Barra da Calculadora de Campos&lt;/h4&gt;
+&lt;/a&gt;
+Cando alterna a edición da capa, unha nova ringleira de funcións aparece na táboa de atributos: a &lt;label&gt;Barra da Calculadora de Campos&lt;/label&gt;. Isto permite editar rapidamente valores de campos existentes realizando cálculos en base ós valores de atributo existentes ou ó botón de funcións definidas na táboa de atributos, por exemplo para calcular a lonxitude ou área de entidades xeométricas.&lt;br&gt;
+Para editar valores, seleccione o campo a modificar co botón de filtro da esquerda e encha a caixa de texto co novo valor ou unha expresión para calcular o novo valor. Logo, prema o botón &lt;label&gt;Actualizar todo&lt;/label&gt; para actualizar tódalas ringleiras da táboa de atributos ou o botón &lt;label&gt;Actualizar seleccionadas&lt;/label&gt; se hai algunhas entidades seleccionadas ou se aplica un filtro na visualización da táboa de atributos. Pode utilizar tamén o botón &lt;label&gt;Construtor de Expresións&lt;/label&gt; para calcular o novo valor na columna.&lt;br&gt;
+
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -49725,7 +49786,17 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Ferramentas de medida&lt;/h3&gt;
+Hai tres ferramentas de medida: lonxitude, área e ángulo. Con elas, pode medir distancias, áreas e ángulos na vista do mapa. As ferramentas proporcionan resultados nas unidades establecidas en &lt;label&gt;Configuración &gt; Opcións &gt; Ferramentas de Mapa&lt;/label&gt;.
+&lt;h4&gt;Medición de distancias&lt;/h4&gt;
+Para medir distancias, seleccione a ferramenta e clique ó longo da ruta que queira medir. A lonxitude de cada segmento será amosada así como o total da lonxitude da ruta.
+Un simple clic dereito para a medida.
+&lt;h4&gt;Medición de Áreas&lt;/h4&gt;
+Para medir áreas, seleccione a ferramenta e clique para crea-la áreas. A área total será amosada dinamicamente segundo clique.
+Un simple clic dereito para a medida, mentres que dous clics dereitos comezan unha nova medida.
+&lt;h4&gt;Medición de Ángulos&lt;/h4&gt;
+Para medir ángulos, seleccione a ferramenta e clique en tres puntos para crear un ángulo entre estes puntos. O segundo punto seleccionado é o vértice do ángulo. O ángulo amósase automaticamente unha vez que clique o segundo punto.
+</translation>
     </message>
 </context>
 <context>

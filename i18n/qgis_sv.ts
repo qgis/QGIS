@@ -49363,7 +49363,80 @@ Informs you about active system locale. To change it tick &lt;label&gt;Override 
 &lt;/a&gt;
 Tick &lt;label&gt;Use proxy for web access&lt;/label&gt; to define host, port, user, and password.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Alternativ&lt;/h3&gt;
+I denna dialog kan du göra grundläggande inställningar i QGIS. Det finns åtta olika flikar:
+&lt;p&gt;
+
+&lt;a href=&quot;#general&quot;&gt;Allmänt&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#ren&quot;&gt;Rendering &amp; SVG&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#map&quot;&gt;Kartverktyg&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#over&quot;&gt;Overlay&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#digit&quot;&gt;Digitalisering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#crs&quot;&gt;Referenskoordiantsystem&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#loc&quot;&gt;Lokalisering&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#net&quot;&gt;Nätverk &amp; Proxy&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;general&quot;&gt;
+&lt;h4&gt;Allmänt&lt;/h4&gt;
+&lt;/a&gt;
+På den här fliken kan du ställa in generella alternativ som rör projektet när du öppnar/sparar, fövalt kartutseende, dina favoriter vad gäller ikonteman och flera andra saker.
+&lt;a name=&quot;ren&quot;&gt;
+&lt;h4&gt;Rendering &amp; SVG&lt;/h4&gt;
+&lt;/a&gt;
+I denna fliken kan du ställa in generella alternativ för hur kartlager renderas.&lt;br&gt;
+Som standard renderar QGIS alla kartlager som visas varje gång som kartans rityta uppdateras. Händelser som triggar uppdatering av kartans rityta är:
+&lt;ul&gt;
+&lt;li&gt;Lägga till ett lager
+&lt;li&gt;Panorera och zooma
+&lt;li&gt;Ändra storlek på QGIS fönster
+&lt;li&gt;Tända och släcka kartlager
+&lt;/ul&gt;
+QGIS ger dig möjlighet att styra renderingen på ett antal olika sätt:&lt;p&gt;
+Du kan välja ett alternativ att alltid ladda nya kartlager utan att rita ut dem.&lt;br&gt;
+Det betyder att kartlagret läggs till, men att kryssrutan i lagerlistan är urkryssad som standard. För att ställa in detta alternativ kryssar du ur rutan för &lt;label&gt;Nya lager som läggs till skall normalt visas&lt;/label&gt;.&lt;p&gt;
+Du kan välja ett alternativ att uppdatera kartvisningen samtidigt som objekten ritas ut. &lt;br&gt;
+Som standard visar inte QGIS några objekt i ett kartlager förrän hela lagret är renderat. För att uppdatera visningen samtidigt som objekten läses från datalagringen ange &lt;label&gt;Antal objekt som skall ritas ut innan kartan uppdateras&lt;/label&gt; till ett lämpligt värde. Om du anger värdet 0 stängs uppdatering av under ritningen (detta är standard). Om du anger ett för lågt värde kommer du få dålig prestanda eftersom kartans rityta uppdateras kontinuerligt under tiden som objekten läses från datalagret. Ett förslag är att börja med värdet 500.
+&lt;a name=&quot;map&quot;&gt;
+&lt;h4&gt;Kartverktyg&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Identifiera&lt;/h5&gt;
+&lt;label&gt;Mode&lt;/label&gt;-inställningen avgör vilka lager som man skall kunna använda &lt;label&gt;Identifiera&lt;/label&gt; -verktyget på. Genom att ändra till &lt;label&gt;Uppifrån och ner&lt;/label&gt; istället för &lt;label&gt;Aktuellt lager&lt;/label&gt; kommer attribut från alla lager som kan identifieras visas med  &lt;label&gt;Identifiera&lt;/label&gt; -verktyget.
+&lt;h5&gt;Mätverktyg&lt;/h5&gt;
+Här kan du ange en referensellipsoid för att göra avståndsberäkningar, enheter och färg på gummibandet.
+&lt;h5&gt;Panorering och zoomning&lt;/h5&gt;
+Möjlighet att definiera hur mushjulet skall fungera och zoomfaktorer.
+&lt;a name=&quot;over&quot;&gt;
+&lt;h4&gt;Overlay&lt;/h4&gt;
+&lt;/a&gt;
+Definiera etiketternas placeringsalgoritm. Väl mellan &lt;label&gt;centrumpunkt (snabbast)&lt;/label&gt;, &lt;label&gt;kedja (snabb)&lt;/label&gt;, &lt;label&gt;popmusic tabukedja (långsam)&lt;/label&gt;, &lt;label&gt;popmusic tabu (långsam)&lt;/label&gt; och &lt;label&gt;popmusic-kedja(mycket långsam)&lt;/label&gt;.
+
+&lt;a name=&quot;digit&quot;&gt;
+&lt;h4&gt;Digitalisering&lt;/h4&gt;
+&lt;/a&gt;
+&lt;h5&gt;Gummiband&lt;/h5&gt;
+I &lt;label&gt;Digitalisiering&lt;/label&gt; -sfliken kan du ange inställningar för digitaliseringslinjens färg och tjocklek.
+&lt;h5&gt;Snappning&lt;/h5&gt;
+Här kan du definiera en generell snappningstolerans för hela projektet. &lt;p&gt;
+Du kan välja mellan &lt;label&gt;Till brytpunkt&lt;/label&gt;, &lt;label&gt;Till segment&lt;/label&gt; eller &lt;label&gt;Till brytpunkt eller segment&lt;/label&gt; som standardmetod för snappning. Du kan också definiera en standardsnappningstolerans och en sökradie vid brytpunktsredigering. Toleransen kan anges i kartans enhet eller i pixlar. Fördelen med att välja pixlar är att toleransen inte behöver ändras när man zoomar kraftigt.&lt;p&gt;
+Snappningstolerans kan definieras per lager genom att välja &lt;label&gt;Inställningar&lt;/label&gt; (eller &lt;label&gt;Arkiv&lt;/label&gt;) &gt; &lt;label&gt;Projektegenskaper...&lt;/label&gt;. I &lt;label&gt;Allämnt&lt;/label&gt; -fliken, delen för &lt;label&gt;Digitalisering&lt;/label&gt; klickar du på &lt;label&gt;Snappningsalternativ...&lt;/label&gt; för att aktivera och justera snappningsmetodik och -toleranser per lager.
+&lt;h5&gt;Brytpunktsmarkering&lt;/h5&gt;
+Du kan ange markeringsstilen som &lt;label&gt;Halvtransparent cirkel&lt;/label&gt;, &lt;label&gt;Kors&lt;/label&gt; eller &lt;label&gt;Ingen&lt;/label&gt; samt storleken på markeringen. Du kan också ange att brytpunktsmarkeringar endast visas på valda objekt.
+&lt;h5&gt;Ange attributvärden&lt;/h5&gt;
+Som standard får du ange attributvärden för ett objekt direkt när du digitaliserat klart det. Genom att kryssa i &lt;label&gt;Förhindra att attributfönster visas efter varje skapat objekt&lt;/label&gt; får du möjlighet att ange attributvärden vid ett senare tillfälle.
+&lt;a name=&quot;crs&quot;&gt;
+&lt;h4&gt;Referenskoordinatsystem&lt;/h4&gt;
+&lt;/a&gt;
+QGIS anger inte längre kartans referenskoordinatsystem utifrån koordinatsystem för det först inlästa lagret. När du startar med kartlager som inte har ett referenskoordinatsystem får du ange ett koordinatsystem för dessa lager. På den här fliken kan denna inställning göras generellt.&lt;p&gt;
+Det generella standardreferenskoordinatsystemet &lt;i&gt;proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs&lt;/i&gt; är fördefinierat i QGIS men kan naturligtvis ändras och det som anges sparas och används nästa gång QGIS används.
+&lt;a name=&quot;lov&quot;&gt;
+&lt;h4&gt;Lokalisering&lt;/h4&gt;
+&lt;/a&gt;
+Här kan du se vilken lokalisering som är det aktiva för systemet. Om du vill ändra det kryssar du i &lt;label&gt;Forcera systemlokalisering&lt;/label&gt; och startar om QGIS.
+&lt;a name=&quot;net&quot;&gt;
+&lt;h4&gt;Nätverk &amp; Proxy&lt;/h4&gt;
+&lt;/a&gt;
+Kryssa i &lt;label&gt;Använd proxy för åtkomst av webb&lt;/label&gt; och ange dator, port, användare och lösenord.
+</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Create New Vector Layer&lt;/h3&gt;

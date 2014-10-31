@@ -93,7 +93,7 @@ See log for more information</source>
     <name>AddScriptFromFileAction</name>
     <message>
         <source>Add script from file</source>
-        <translation>إضافة البرنامج النصي من ملف</translation>
+        <translation>إضافة النص من ملف</translation>
     </message>
     <message>
         <source>Tools</source>
@@ -197,11 +197,11 @@ See log for more information</source>
     </message>
     <message>
         <source>Batch processing</source>
-        <translation type="unfinished"></translation>
+        <translation>تجهيز الدفعات</translation>
     </message>
     <message>
         <source>Batch processing successfully completed!</source>
-        <translation type="unfinished"></translation>
+        <translation>اكتمل تجهيز الدفعات بنجاح!</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -301,7 +301,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Wrong value</source>
-        <translation>القيمة خطأ</translation>
+        <translation>قيمة خطأ</translation>
     </message>
     <message>
         <source>Wrong parameter value:
@@ -876,7 +876,7 @@ Query:
     </message>
     <message>
         <source>Check</source>
-        <translation>اختيار</translation>
+        <translation>تحقق</translation>
     </message>
     <message>
         <source>Primary key</source>
@@ -1186,7 +1186,7 @@ Query:
     </message>
     <message>
         <source>Create single-part geometries instead of multi-part</source>
-        <translation type="unfinished"></translation>
+        <translation>خلق جزء واحد هندسيا بدلا من عدة أجزاء</translation>
     </message>
     <message>
         <source>Create spatial index</source>
@@ -1194,7 +1194,7 @@ Query:
     </message>
     <message>
         <source>Drop existing table</source>
-        <translation type="unfinished"></translation>
+        <translation>إسقاط جدول موجود</translation>
     </message>
 </context>
 <context>
@@ -1209,7 +1209,7 @@ Query:
     </message>
     <message>
         <source>Store</source>
-        <translation type="unfinished"></translation>
+        <translation>مخزن</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -1350,11 +1350,11 @@ columns</source>
     <name>DeleteModelAction</name>
     <message>
         <source>Delete model</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف نموذج</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>تأكيد</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this model?</source>
@@ -1365,11 +1365,11 @@ columns</source>
     <name>DeleteScriptAction</name>
     <message>
         <source>Delete script</source>
-        <translation type="unfinished"></translation>
+        <translation>حذف النص</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation>تأكيد</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this script?</source>
@@ -1388,7 +1388,7 @@ columns</source>
     </message>
     <message>
         <source>Merge selection with the neighbouring polygon with the largest</source>
-        <translation type="unfinished"></translation>
+        <translation>دمج الاختيار مع المضلع المجاورة مع الأكبر</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -1880,7 +1880,7 @@ columns</source>
     </message>
     <message>
         <source>Parameters</source>
-        <translation>المعايير</translation>
+        <translation>معايير</translation>
     </message>
     <message>
         <source>X</source>
@@ -2427,11 +2427,11 @@ Are you sure you want to proceed?</source>
     <name>DlgAddGeometryColumn</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished">إدارة قاعدة البيانات</translation>
+        <translation>مدير قاعدة بيانات</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
-        <translation type="unfinished">إسم الملف لايجب أن يكون فارغ</translation>
+        <translation>إسم الملف لايجب أن يكون فارغ</translation>
     </message>
 </context>
 <context>
@@ -2446,26 +2446,26 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Do not autofill</source>
-        <translation type="unfinished"></translation>
+        <translation>لا تملأ أوتوماتيكياً</translation>
     </message>
     <message>
         <source>Fill with numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>أملأ بالأرقام</translation>
     </message>
     <message>
         <source>Fill with parameter values</source>
-        <translation type="unfinished"></translation>
+        <translation>ملءبقيم المعلمة</translation>
     </message>
     <message>
         <source>Parameter to use</source>
-        <translation type="unfinished"></translation>
+        <translation>المعلمة للاستخدام</translation>
     </message>
 </context>
 <context>
     <name>DlgConfig</name>
     <message>
         <source>Processing options</source>
-        <translation type="unfinished"></translation>
+        <translation>خيارات المعالجة</translation>
     </message>
     <message>
         <source>Enter setting name to filter list</source>
@@ -2476,7 +2476,7 @@ Are you sure you want to proceed?</source>
     <name>DlgCreateIndex</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">خطأ</translation>
+        <translation>خطأ</translation>
     </message>
     <message>
         <source>Please enter some name for the index</source>
@@ -2487,27 +2487,27 @@ Are you sure you want to proceed?</source>
     <name>DlgCreateTable</name>
     <message>
         <source>&amp;Create</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;بناء</translation>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished">إدارة قاعدة البيانات</translation>
+        <translation>إدارة قاعدة البيانات</translation>
     </message>
     <message>
         <source>no field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يوجد حقل مختار</translation>
     </message>
     <message>
         <source>field is at top already</source>
-        <translation type="unfinished"></translation>
+        <translation>الحقل في أعلى بالفعل</translation>
     </message>
     <message>
         <source>No field selected</source>
-        <translation type="unfinished"></translation>
+        <translation>لا يوجد حقل مختار</translation>
     </message>
     <message>
         <source>field is at bottom already</source>
-        <translation type="unfinished"></translation>
+        <translation>الحقل في الاسفل بالفعل</translation>
     </message>
     <message>
         <source>select schema!</source>
@@ -2515,11 +2515,11 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>enter table name!</source>
-        <translation type="unfinished"></translation>
+        <translation>ادخل اسم الجدول!</translation>
     </message>
     <message>
         <source>add some fields!</source>
-        <translation type="unfinished"></translation>
+        <translation>إضافة بعض الحقول!</translation>
     </message>
     <message>
         <source>set geometry column name</source>
@@ -2527,26 +2527,26 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Good</source>
-        <translation type="unfinished"></translation>
+        <translation>جيد</translation>
     </message>
     <message>
         <source>everything went fine</source>
-        <translation type="unfinished"></translation>
+        <translation>الكل تم بنجاح</translation>
     </message>
 </context>
 <context>
     <name>DlgExportVector</name>
     <message>
         <source>Choose where to save the file</source>
-        <translation type="unfinished"></translation>
+        <translation>اختيار مكان حفظ الملف</translation>
     </message>
     <message>
         <source>Shapefiles</source>
-        <translation type="unfinished">شيب فايل</translation>
+        <translation>شيب فايل</translation>
     </message>
     <message>
         <source>Export to file</source>
-        <translation type="unfinished">تصدير إلى ملف</translation>
+        <translation>تصدير إلى ملف</translation>
     </message>
     <message>
         <source>Output table name is required</source>
@@ -2574,7 +2574,7 @@ Are you sure you want to proceed?</source>
     <name>DlgFieldProperties</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished">إدارة قاعدة البيانات</translation>
+        <translation>إدارة قاعدة البيانات</translation>
     </message>
     <message>
         <source>field name must not be empty</source>
@@ -2626,11 +2626,11 @@ Are you sure you want to proceed?</source>
     <name>DlgImportVector</name>
     <message>
         <source>Choose the file to import</source>
-        <translation type="unfinished"></translation>
+        <translation>اختيار ملف للاستيراد</translation>
     </message>
     <message>
         <source>Import to database</source>
-        <translation type="unfinished"></translation>
+        <translation>استيراد إلى قاعدة بيانات</translation>
     </message>
     <message>
         <source>Input layer missing or not valid</source>
@@ -2666,7 +2666,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished">فتح نموذج</translation>
+        <translation>فتح نموذج</translation>
     </message>
     <message>
         <source>...</source>
@@ -2674,15 +2674,15 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">احفظ</translation>
+        <translation>احفظ</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>حفظ بإسم</translation>
     </message>
     <message>
         <source>Export as image</source>
-        <translation type="unfinished">التصدير كصورة</translation>
+        <translation>التصدير كصورة</translation>
     </message>
     <message>
         <source>Edit model help</source>
@@ -2690,7 +2690,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Run model</source>
-        <translation type="unfinished"></translation>
+        <translation>تشغيل نموذج</translation>
     </message>
     <message>
         <source>Inputs</source>
@@ -2717,7 +2717,7 @@ Are you sure you want to proceed?</source>
     <name>DlgMultipleSelection</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation>تعدد الخيارات</translation>
     </message>
 </context>
 <context>
@@ -2777,7 +2777,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">حفظ بإسم</translation>
     </message>
     <message>
         <source>Edit script help</source>
@@ -2789,23 +2789,23 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation>قص</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">نسخ</translation>
+        <translation>نسخ</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished">لصق</translation>
+        <translation>لصق</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished">تراجع</translation>
+        <translation>تراجع</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished">إعادة</translation>
+        <translation>إعادة</translation>
     </message>
 </context>
 <context>
@@ -2816,7 +2816,7 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished">إدارة قاعدة البيانات</translation>
+        <translation>إدارة قاعدة البيانات</translation>
     </message>
     <message>
         <source>You must fill the required fields: 
@@ -2829,7 +2829,7 @@ geometry column - column with unique integer values</source>
     <name>DlgTableProperties</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished">إدارة قاعدة البيانات</translation>
+        <translation>إدارة قاعدة البيانات</translation>
     </message>
     <message>
         <source>nothing selected</source>
@@ -2837,7 +2837,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Are you sure</source>
-        <translation type="unfinished"></translation>
+        <translation>هل أنت متأكد</translation>
     </message>
     <message>
         <source>really delete column &apos;%s&apos;?</source>
@@ -2853,7 +2853,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Create?</source>
-        <translation type="unfinished"></translation>
+        <translation>بناء؟</translation>
     </message>
     <message>
         <source>Create spatial index for field %s?</source>
@@ -2861,7 +2861,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Nothing selected</source>
-        <translation type="unfinished"></translation>
+        <translation>لا شيء مختار</translation>
     </message>
     <message>
         <source>really delete index &apos;%s&apos;?</source>
@@ -2916,7 +2916,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>time_end</source>
-        <translation>time_end</translation>
+        <translation>نهاية الوقت</translation>
     </message>
     <message>
         <source>SQL to be executed:</source>
@@ -2927,14 +2927,14 @@ geometry column - column with unique integer values</source>
     <name>EditModelAction</name>
     <message>
         <source>Edit model</source>
-        <translation type="unfinished"></translation>
+        <translation>تحرير نموذج</translation>
     </message>
 </context>
 <context>
     <name>EditScriptAction</name>
     <message>
         <source>Edit script</source>
-        <translation type="unfinished"></translation>
+        <translation>تحرير النصي</translation>
     </message>
 </context>
 <context>
@@ -2960,23 +2960,23 @@ geometry column - column with unique integer values</source>
     <name>FieldsCalculator</name>
     <message>
         <source>Field calculator</source>
-        <translation type="unfinished">حقل حساب</translation>
+        <translation>حاسب حقل</translation>
     </message>
     <message>
         <source>Create a new field</source>
-        <translation type="unfinished">إنشاء حقل جديد</translation>
+        <translation>إنشاء حقل جديد</translation>
     </message>
     <message>
         <source>Output field name</source>
-        <translation type="unfinished">إنتاج إسم الحقل</translation>
+        <translation>إسم الحقل المنتج</translation>
     </message>
     <message>
         <source>Output field type</source>
-        <translation type="unfinished">نوع الحقل المنتج</translation>
+        <translation>نوع الحقل المنتج</translation>
     </message>
     <message>
         <source>Output field width</source>
-        <translation type="unfinished">عرض الحقل المنتج</translation>
+        <translation>عرض الحقل المنتج</translation>
     </message>
     <message>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
@@ -3034,7 +3034,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Select file</source>
-        <translation type="unfinished"></translation>
+        <translation>حدد الملف</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
@@ -3423,7 +3423,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Edit</source>
-        <translation>تعديل</translation>
+        <translation>تحرير</translation>
     </message>
     <message>
         <source>Reset</source>
@@ -5230,7 +5230,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تأكيد</translation>
     </message>
     <message>
         <source>Are you sure you want to clear log?</source>
@@ -5268,7 +5268,7 @@ are stored on the installation folder</source>
     <name>InfoViewer</name>
     <message>
         <source>DB Manager</source>
-        <translation type="unfinished">إدارة قاعدة البيانات</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5286,7 +5286,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">المعايير</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Log</source>
@@ -6392,7 +6392,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Select features using an expression</source>
-        <translation>اخييار باستخدام تعبير جبرى معين</translation>
+        <translation>اختيار باستخدام تعبير جبرى معين</translation>
     </message>
     <message>
         <source>DXF Export...</source>
@@ -6616,7 +6616,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">تعديل</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete</source>
@@ -7076,7 +7076,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">المعايير</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
@@ -7114,7 +7114,7 @@ See the log for more information.</source>
     <name>MultipleFileInputDialog</name>
     <message>
         <source>Multiple selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">تعدد الخيارات</translation>
     </message>
     <message>
         <source>Select the file(s) to use</source>
@@ -7723,7 +7723,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قص</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -12512,7 +12512,7 @@ Parser error:
     </message>
     <message>
         <source>Output filename expression</source>
-        <translation>إنتاج اسم ملف الإستثناء</translation>
+        <translation>إنتاج اسم ملف التعبير</translation>
     </message>
 </context>
 <context>
@@ -12524,7 +12524,7 @@ Parser error:
     </message>
     <message>
         <source>Insert expression</source>
-        <translation>إدراج إستثناء</translation>
+        <translation>إدراج التعبير</translation>
     </message>
     <message>
         <source>Missing Information</source>
@@ -12695,11 +12695,11 @@ Parser error:
     </message>
     <message>
         <source>Inserts an expression into the action</source>
-        <translation type="unfinished">إدراج التعبير إلى العمل</translation>
+        <translation>إدراج التعبير إلى العمل</translation>
     </message>
     <message>
         <source>Insert expression...</source>
-        <translation type="unfinished">إدراج التعبير ...</translation>
+        <translation>إدراج التعبير ...</translation>
     </message>
     <message>
         <source>The valid attribute names for this layer</source>
@@ -14223,7 +14223,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">قص</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
@@ -15930,7 +15930,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Insert expression</source>
-        <translation type="unfinished">إدراج إستثناء</translation>
+        <translation>إدراج إستثناء</translation>
     </message>
     <message>
         <source>url string</source>
@@ -15973,7 +15973,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Insert an expression</source>
-        <translation type="unfinished"></translation>
+        <translation>إدراج إستثناء</translation>
     </message>
     <message>
         <source>Frames</source>
@@ -16276,7 +16276,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Insert expression</source>
-        <translation>إدراج إستثناء</translation>
+        <translation>إدراج تعبير</translation>
     </message>
     <message>
         <source>Label alignment changed</source>
@@ -16303,7 +16303,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Insert an expression...</source>
-        <translation type="unfinished"></translation>
+        <translation>إدراج التعبير ...</translation>
     </message>
     <message>
         <source>Appearance</source>
@@ -19389,7 +19389,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished">تعبير</translation>
+        <translation>تعبير</translation>
     </message>
     <message>
         <source>Current: </source>
@@ -19519,7 +19519,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished">تعبير</translation>
+        <translation>تعبير</translation>
     </message>
     <message>
         <source>Help</source>
@@ -20646,7 +20646,7 @@ not displayed</source>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished">تعبير</translation>
+        <translation>تعبير</translation>
     </message>
     <message>
         <source>Regular expression used to split each line into fields</source>
@@ -42752,7 +42752,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Insert expression</source>
-        <translation>إدراج إستثناء</translation>
+        <translation>إدراج تعبير</translation>
     </message>
     <message>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>

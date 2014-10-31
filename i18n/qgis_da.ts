@@ -938,7 +938,7 @@ Forespørgsel:
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation type="unfinished">%1 er et ugyldigt lag - ikke indlæst</translation>
+        <translation>%1 er et ugyldigt lag - ikke indlæst</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
@@ -1198,7 +1198,7 @@ Forespørgsel:
     </message>
     <message>
         <source>Drop existing table</source>
-        <translation type="unfinished"></translation>
+        <translation>Slet eksisterende tabel</translation>
     </message>
 </context>
 <context>
@@ -29076,21 +29076,21 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <name>QgsMapToolSelect</name>
     <message>
         <source>Select</source>
-        <translation type="unfinished">Vælg</translation>
+        <translation>Vælg</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolSelectFeatures</name>
     <message>
         <source>Select features</source>
-        <translation type="unfinished"></translation>
+        <translation>Vælg objekter</translation>
     </message>
 </context>
 <context>
     <name>QgsMapToolShowHideLabels</name>
     <message>
         <source>Show/hide labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Vis/skjul labels</translation>
     </message>
     <message>
         <source>Hid labels</source>
@@ -29214,7 +29214,7 @@ Der er måske et problem med din netværksforbindelse, eller på WMS-serveren.</
     <name>QgsMapToolZoom</name>
     <message>
         <source>Zoom</source>
-        <translation type="unfinished">Zoom</translation>
+        <translation>Zoom</translation>
     </message>
 </context>
 <context>
@@ -30925,7 +30925,7 @@ Udvidet fejlinformation:
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished"></translation>
+        <translation>Skift...</translation>
     </message>
     <message>
         <source>Format</source>

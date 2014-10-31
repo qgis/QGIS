@@ -935,7 +935,7 @@ Kontsulta:
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation type="unfinished">%1 geruza baliogabea da - ez da kargatu</translation>
+        <translation>%1 geruza baliogabea da - ez da kargatu</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
