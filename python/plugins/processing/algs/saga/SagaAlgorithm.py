@@ -246,14 +246,14 @@ class SagaAlgorithm(GeoAlgorithm):
 
                 # Do not export is the output is not a final output
                 # of the model
-                if self.model is not None and optim:
-                    for subalg in self.model.algOutputs:
-                        if out.name in subalg:
-                            if subalg[out.name] is not None:
-                                dontExport = False
-                                break
-                    if dontExport:
-                        continue
+                #if self.model is not None and optim:
+                #    for subalg in self.model.algOutputs:
+                #        if out.name in subalg:
+                #            if subalg[out.name] is not None:
+                #                dontExport = False
+                #                break
+                #    if dontExport:
+                #        continue
 
                 if self.cmdname == 'RGB Composite':
                     if isWindows() or isMac() or not saga208:
