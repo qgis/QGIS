@@ -249,11 +249,11 @@ void QgsRelationEditorWidget::toggleEditing( bool state )
 {
   if ( state )
   {
-    mEditorContext.vectorLayerTools()->stopEditing( mRelation.referencingLayer() );
+    mEditorContext.vectorLayerTools()->startEditing( mRelation.referencingLayer() );
   }
   else
   {
-    mEditorContext.vectorLayerTools()->startEditing( mRelation.referencingLayer() );
+    mEditorContext.vectorLayerTools()->stopEditing( mRelation.referencingLayer() );
   }
 }
 
