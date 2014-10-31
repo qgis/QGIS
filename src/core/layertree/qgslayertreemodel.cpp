@@ -41,7 +41,6 @@ QgsLayerTreeModel::QgsLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *pare
     , mLegendMapViewDpi( 0 )
     , mLegendMapViewScale( 0 )
 {
-  QgsDebugCall;
   connectToRootNode();
 
   mFontLayer.setBold( true );
@@ -111,7 +110,6 @@ int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 
 int QgsLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
-  QgsDebugCall;
   Q_UNUSED( parent );
   return 1;
 }
@@ -347,9 +345,6 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 
 bool QgsLayerTreeModel::setData( const QModelIndex& index, const QVariant& value, int role )
 {
-  QgsDebugCall;
-  QgsDebugMsg( QString( "setData( r=%1 c=%2 value=%3 role=%4 )" ).arg( index.row() ).arg( index.column() ).arg( value.toString() ).arg( role ) );
-
   QgsLayerTreeModelLegendNode *sym = index2legendNode( index );
   if ( sym )
   {
@@ -443,7 +438,6 @@ static bool _isChildOfNodes( QgsLayerTreeNode* child, QList<QgsLayerTreeNode*> n
 
 QList<QgsLayerTreeNode*> QgsLayerTreeModel::indexes2nodes( const QModelIndexList& list, bool skipInternal ) const
 {
-  QgsDebugCall;
   QList<QgsLayerTreeNode*> nodes;
   foreach ( QModelIndex index, list )
   {
@@ -491,7 +485,6 @@ QgsLayerTreeGroup*QgsLayerTreeModel::rootGroup() const
 
 void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
 {
-  QgsDebugCall;
   beginResetModel();
 
   disconnectFromRootNode();
@@ -508,7 +501,6 @@ void QgsLayerTreeModel::setRootGroup( QgsLayerTreeGroup* newRootGroup )
 
 void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer* nodeLayer )
 {
-  QgsDebugCall;
   // update title
   QModelIndex idx = node2index( nodeLayer );
   emit dataChanged( idx, idx );
@@ -529,13 +521,11 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer* nodeLayer )
 
 QModelIndex QgsLayerTreeModel::currentIndex() const
 {
-  QgsDebugCall;
   return mCurrentIndex;
 }
 
 void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
 {
-  QgsDebugCall;
   QModelIndex oldIndex = mCurrentIndex;
   mCurrentIndex = currentIndex;
 
@@ -548,7 +538,6 @@ void QgsLayerTreeModel::setCurrentIndex( const QModelIndex& currentIndex )
 
 void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
 {
-  QgsDebugCall;
   if ( nodeType == QgsLayerTreeNode::NodeGroup )
   {
     if ( mFontGroup != font )
@@ -574,7 +563,6 @@ void QgsLayerTreeModel::setLayerTreeNodeFont( int nodeType, const QFont& font )
 
 QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
 {
-  QgsDebugCall;
   if ( nodeType == QgsLayerTreeNode::NodeGroup )
     return mFontGroup;
   else if ( nodeType == QgsLayerTreeNode::NodeLayer )
@@ -588,7 +576,6 @@ QFont QgsLayerTreeModel::layerTreeNodeFont( int nodeType ) const
 
 void QgsLayerTreeModel::setLegendFilterByScale( double scaleDenominator )
 {
-  QgsDebugCall;
   mLegendFilterByScale = scaleDenominator;
 
   // this could be later done in more efficient way
