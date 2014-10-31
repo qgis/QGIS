@@ -966,7 +966,7 @@ QList<double> QgsGraduatedSymbolRendererV2::getDataValues( QgsVectorLayer *vlaye
     lst = expression->referencedColumns();
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
-                                                .setFlags( expression->needsGeometry() ?
+                                                .setFlags( ( !expression.isNull() && expression->needsGeometry() ) ?
                                                              QgsFeatureRequest::NoFlags :
                                                              QgsFeatureRequest::NoGeometry  )
                                                 .setSubsetOfAttributes( lst, vlayer->pendingFields() ) );
