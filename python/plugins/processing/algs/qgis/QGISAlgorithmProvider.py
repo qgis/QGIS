@@ -17,9 +17,6 @@
 ***************************************************************************
 """
 
-
-
-
 __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -35,11 +32,10 @@ from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 
-from ftools.RegularPoints import RegularPoints
-from ftools.SymetricalDifference import SymetricalDifference
-from ftools.VectorSplit import VectorSplit
-from ftools.VectorGrid import VectorGrid
-
+from RegularPoints import RegularPoints
+from SymetricalDifference import SymetricalDifference
+from VectorSplit import VectorSplit
+from VectorGrid import VectorGrid
 from RandomExtract import RandomExtract
 from RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from ExtractByLocation import ExtractByLocation
