@@ -21977,6 +21977,42 @@ Próbálj kisebb felbontást vagy kisebb papírméretet használni</translation>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished">Könyvjelzk megjelenítése</translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -22586,7 +22622,7 @@ Próbálj kisebb felbontást vagy kisebb papírméretet használni</translation>
     </message>
     <message>
         <source>Margin</source>
-        <translation>Margó</translation>
+        <translation type="obsolete">Margó</translation>
     </message>
     <message>
         <source> mm</source>
@@ -22655,6 +22691,14 @@ Próbálj kisebb felbontást vagy kisebb papírméretet használni</translation>
     <message>
         <source>Label id</source>
         <translation type="obsolete">Címke id</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

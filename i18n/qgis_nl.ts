@@ -4833,7 +4833,7 @@ Kies a.u.b. een ander veld...</translation>
         <source>Created output shapefile:
 %s
 %s%s</source>
-        <translation>Uitvoer shape-bestanden aangemaakt:
+        <translation>Uitvoer shapefile-bestanden aangemaakt:
 %s
 %s%s</translation>
     </message>
@@ -6119,7 +6119,7 @@ Bekijk het in het resultaatvenster.</translation>
     </message>
     <message>
         <source>Manage and Install Plugins...</source>
-        <translation>Beheer en Installeer Plugins...</translation>
+        <translation> Plug-ins beheren en installeren...</translation>
     </message>
     <message>
         <source>Open Field Calculator</source>
@@ -8076,7 +8076,7 @@ Gebruik iface voor toegang tot de API-interface van QGIS  of Type help(iface) vo
     </message>
     <message>
         <source>Run command</source>
-        <translation>Commando uitvoeren</translation>
+        <translation>Opdracht uitvoeren</translation>
     </message>
     <message>
         <source>Help</source>
@@ -10020,7 +10020,7 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
     </message>
     <message>
         <source>Cannot run module</source>
-        <translation>Probleem by uitvoeren van module</translation>
+        <translation>Kan module niet uitvoeren </translation>
     </message>
     <message>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
@@ -15873,6 +15873,42 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
         <source>Unlock All Items</source>
         <translation>Alle onderdelen loszetten</translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished">Ctrl+Shift+B</translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -16414,11 +16450,19 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     </message>
     <message>
         <source>Margin</source>
-        <translation>Marge</translation>
+        <translation type="obsolete">Marge</translation>
     </message>
     <message>
         <source> mm</source>
         <translation> mm</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19095,10 +19139,10 @@ and current file is [%3]</source>
 
 U kunt ze op twee manieren installeren:
 
-1) Installeer de &quot;Color Ramp Manager&quot; python plugin (u dient daarvoor &quot;Experimental plugins&quot; in the plugin manager aan te vinken) en gebruik deze om het laatste cpt-city pakket te downloaden.
+1) Installeer de &quot;Color Ramp Manager&quot; plug-in voor  Python (u dient daarvoor &quot;Experimentele plug-ins&quot; in de Plug-in Manager aan te vinken) en gebruik deze om het laatste cpt-city pakket te downloaden.
 U kunt het gehele cpt-city archief installeren of een selectie voor QGIS.
 
-2) Download het complete archief (in svg formaat) en unzip het in uw &quot;QGIS settings&quot; map [%1] .
+2) Download het complete archief (in svg formaat) en pak het uit in uw map &quot;QGIS settings&quot; [%1] .
 
 Dit bestand kan gevonden worden in [%2]
 en het huidige bestand is [%3]</translation>
@@ -20615,7 +20659,7 @@ niet weergegeven</translation>
     </message>
     <message>
         <source>Watch for changes to the file by other applications while QGIS is running</source>
-        <translation>Controleer op aanpassingen van het bestand door andere applicaties terwijl QGIS werkzaam is</translation>
+        <translation>Controleer op aanpassingen van het bestand door andere applicaties terwijl QGIS wordt uitgevoerd</translation>
     </message>
     <message>
         <source>Watch file</source>
@@ -24535,7 +24579,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Cannot write new region</source>
-        <translation>Kan nieuwe region niet opslaan</translation>
+        <translation>Kan nieuwe regio niet opslaan</translation>
     </message>
 </context>
 <context>
@@ -25323,7 +25367,7 @@ op regel %2 kolom %3</translation>
     </message>
     <message>
         <source>Use Input Region</source>
-        <translation>Gebruik Input-Regio</translation>
+        <translation>Gebruik invoer-regio</translation>
     </message>
     <message>
         <source>Output %1 exists! Overwrite?</source>
@@ -25382,7 +25426,7 @@ op regel %2 kolom %3</translation>
     </message>
     <message>
         <source>View output</source>
-        <translation>Uitvoer Bekijken</translation>
+        <translation>Uitvoer bekijken</translation>
     </message>
     <message>
         <source>Close</source>
@@ -25881,7 +25925,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Default GRASS Region</source>
-        <translation>Standaard GRASS-Regio</translation>
+        <translation>Standaard GRASS-regio</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -25893,7 +25937,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;(new line)
 p, li { white-space: pre-wrap; }(new line)
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;(new line)
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;De GRASS region definieert een werkruimte voor raster-modules. De standaard region is geldig voor één locatie. Het is mogelijk om in elke mapset een andere region te definiëren. Het is mogelijk om de standaard locatie region later aan te passen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;De GRASS-regio definieert een werkruimte voor raster-modules. De standaard regio is geldig voor één locatie. Het is mogelijk om in elke mapset een andere regio te definiëren. Het is mogelijk om de standaard locatie regio later aan te passen.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Set current QGIS extent</source>
@@ -25905,7 +25949,7 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Region Error</source>
-        <translation>Regio-Fout</translation>
+        <translation>Regio-fout</translation>
     </message>
     <message>
         <source>S</source>
@@ -25992,11 +26036,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Display Current Grass Region</source>
-        <translation>Toon Huidige GRASS-regio</translation>
+        <translation>Huidige GRASS-regio tonen</translation>
     </message>
     <message>
         <source>Edit Current Grass Region</source>
-        <translation>Huidige GRASS-regio Bewerken</translation>
+        <translation>Huidige GRASS-regio bewerken</translation>
     </message>
     <message>
         <source>Edit Grass Vector layer</source>
@@ -26174,7 +26218,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassRegionBase</name>
     <message>
         <source>GRASS Region Settings</source>
-        <translation>GRASS Regio Instellingen</translation>
+        <translation>GRASS-regio-instellingen</translation>
     </message>
     <message>
         <source>Extent</source>
@@ -26352,11 +26396,11 @@ of verander de hier getoonde waarden</translation>
     </message>
     <message>
         <source>Modules Tree</source>
-        <translation>Modulen Boom</translation>
+        <translation>Modulesboom</translation>
     </message>
     <message>
         <source>Modules List</source>
-        <translation>Modulen Lijst</translation>
+        <translation>Modulenlijst</translation>
     </message>
     <message>
         <source>Browser</source>
@@ -26364,11 +26408,11 @@ of verander de hier getoonde waarden</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
-        <translation>Direct Modulen Boom</translation>
+        <translation>Direct Modulesboom</translation>
     </message>
     <message>
         <source>Direct Modules List</source>
-        <translation>Direct Modulen Lijst</translation>
+        <translation>Direct Moduleslijst</translation>
     </message>
     <message>
         <source>Cannot start command shell (%1)</source>
@@ -26411,7 +26455,7 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>Modules Tree</source>
-        <translation>Modulen Boom</translation>
+        <translation>Modulesboom</translation>
     </message>
     <message>
         <source>1</source>
@@ -26427,11 +26471,11 @@ in regel %2 kolom %3</translation>
     </message>
     <message>
         <source>Direct Modules Tree</source>
-        <translation>Direct Modulen Boom</translation>
+        <translation>Direct Modulesboom</translation>
     </message>
     <message>
         <source>Direct Modules List</source>
-        <translation>Direct Modulen Lijst</translation>
+        <translation>Direct Moduleslijst</translation>
     </message>
 </context>
 <context>
@@ -30717,7 +30761,7 @@ Uitgebreide foutinformatie:
     </message>
     <message>
         <source>Output SpatiaLite DB file</source>
-        <translation>Uitvoer SpatiaLite DB bestand</translation>
+        <translation>Uitvoer SpatiaLite DB-bestand</translation>
     </message>
     <message>
         <source>Create connection (SpatiaLite) after import</source>
@@ -34597,7 +34641,7 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Installing plugin:</source>
-        <translation>Installeer plugin:</translation>
+        <translation>Installeer plug-in:</translation>
     </message>
     <message>
         <source>Connecting...</source>
@@ -34662,7 +34706,7 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Enabled</source>
-        <translation>Werkzaam</translation>
+        <translation>Ingeschakeld</translation>
     </message>
 </context>
 <context>
@@ -34815,11 +34859,11 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation>Installeer plugin</translation>
+        <translation>Installeer plug-in</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation>Herinstalleer plugin</translation>
+        <translation>Herinstalleer plug-in</translation>
     </message>
     <message>
         <source>Reload all repositories</source>
@@ -34879,11 +34923,11 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Installed Plugins&lt;/h3&gt;&lt;p&gt;Here you only see plugins &lt;b&gt;installed on your QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details. &lt;/p&gt;&lt;p&gt;Click the checkbox or doubleclick the name to &lt;i&gt;activate&lt;/i&gt; or &lt;i&gt;deactivate&lt;/i&gt; the plugin.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Geinstalleerde Plugins&lt;/h3&gt;&lt;p&gt;Hier zie je alleen de plugins die zijn &lt;b&gt;geinstalleerd in jouw QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Klik op de naam voor details.&lt;/p&gt;&lt;p&gt;Voor het &lt;i&gt;inschakelen&lt;/i&gt; of &lt;i&gt;uitschakelen&lt;/i&gt; van een plugin klik je op het vinkje of op de naam.&lt;/p&gt;&lt;p&gt;Je kunt de sorteervolgorde aanpassen via het contextmenu (rechts-klik).&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Geïnstalleerde plug-ins&lt;/h3&gt;&lt;p&gt;Hier zie je alleen de plug-ins die zijn &lt;b&gt;geïnstalleerd in jouw QGIS&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Klik op de naam voor details.&lt;/p&gt;&lt;p&gt;Voor het &lt;i&gt;inschakelen&lt;/i&gt; of &lt;i&gt;uitschakelen&lt;/i&gt; van een plug-in klik je op het vinkje of op de naam.&lt;/p&gt;&lt;p&gt;Je kunt de sorteervolgorde aanpassen via het contextmenu (rechts-klik).&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Not installed plugins&lt;/h3&gt;&lt;p&gt;Here you see the list of all plugins available in the repositories, but which are &lt;b&gt;not yet installed&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Click on the name to see details.&lt;/p&gt;&lt;p&gt;You can change the sorting via the context menu (right click).&lt;/p&gt;&lt;p&gt;A plugin can be downloaded and installed by clicking on it&apos;s name, and then click the &apos;Install plugin&apos; button.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Niet geïnstalleerde plug-ins&lt;/h3&gt;&lt;p&gt;Hier zie je de lijst van alle beschikbare plug-ins in de opslagplaatsen, maar die zijn &lt;b&gt;nog niet geïnstalleerd&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Klik op de naam voor verdere details.&lt;/p&gt;&lt;p&gt;Je kunt de via het snelmenu (via rechtermuisknop) de sorteervolgorde aanpassen.&lt;/p&gt;&lt;p&gt;Een plug-in kan worden gedownload en geïnstalleerd door deze te selecteren door erop te klikken, en vervolgens te klikken op de knop &apos;Installeer plug-in&apos;.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Niet geïnstalleerde plug-ins&lt;/h3&gt;&lt;p&gt;Hier zie je de lijst van alle beschikbare, maar &lt;b&gt;nog niet geïnstalleerde&lt;/b&gt;, plug-ins in de opslagplaatsen.&lt;/p&gt;&lt;p&gt;Klik op de naam voor verdere details.&lt;/p&gt;&lt;p&gt;Je kunt via het snelmenu (via rechtermuisknop) de sorteervolgorde aanpassen.&lt;/p&gt;&lt;p&gt;Een plug-in kan worden gedownload en geïnstalleerd door deze te selecteren door erop te klikken, en vervolgens te klikken op de knop &apos;Installeer plug-in&apos;.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;New plugins&lt;/h3&gt;&lt;p&gt;Here you see brand &lt;b&gt;new&lt;/b&gt; plugins which can be installed.&lt;/p&gt;</source>
@@ -34891,7 +34935,7 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Invalid plugins&lt;/h3&gt;&lt;p&gt;Plugins in this list here are &lt;b&gt;broken or incompatible&lt;/b&gt; with your version of QGIS.&lt;/p&gt;&lt;p&gt;Click on an individual plugin; if possible QGIS shows you more information.&lt;/p&gt;&lt;p&gt;The main reasons to have invalid plugins is that this plugin is not build for this version of QGIS. Maybe you can download another version from &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Another common reason is that a python plugin needs some external python libraries (dependencies). You can install them yourself, depending on your operating system. After a correct install the plugin should work.&lt;/p&gt;</source>
-        <translation>&lt;h3&gt;Invalide plugins&lt;/h3&gt;&lt;p&gt;Plugins in deze lijst zijn &lt;b&gt;stuk of broken of incompatible&lt;/b&gt; met jouw versie van  QGIS.&lt;/p&gt;&lt;p&gt;Klik op een individuele plugin; indien mogelijk zal QGIS meer informatie tonen.&lt;/p&gt;&lt;p&gt;De belangrijkste reden dat er invalide plugins zijn is dat deze plugin niet is gebouwd voor deze versie van QGIS. Misschien kun je een andere versie downloaden van &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Nog een reden is dat de python plugin afhankelijk is van andere python packages die niet geinstalleerd zijn. Je kunt deze zelf installeren wat afhankelijk is van je besturingssysteem. Na een correcte installatie, zal de plugin vervolgens wel werken.&lt;/p&gt;</translation>
+        <translation>&lt;h3&gt;Ongeldige plug-ins&lt;/h3&gt;&lt;p&gt;Plug-ins in deze lijst zijn &lt;b&gt;stuk of niet compatibel&lt;/b&gt; met jouw versie van  QGIS.&lt;/p&gt;&lt;p&gt;Klik op een individuele plug-in; indien mogelijk zal QGIS meer informatie tonen.&lt;/p&gt;&lt;p&gt;De belangrijkste reden dat er ongeldige plug-ins zijn is dat deze plug-in niet is gebouwd voor deze versie van QGIS. Misschien kun je een andere versie downloaden van &lt;a href=&quot;http://plugins.qgis.org&quot;&gt;plugins.qgis.org&lt;/a&gt;.&lt;/p&gt;&lt;p&gt;Nog een reden is dat de plug-in voor Python afhankelijk is van andere pakketten voor Python die niet geïnstalleerd zijn. Je kunt deze zelf installeren wat afhankelijk is van je besturingssysteem. Na een correcte installatie, zal de plug-in vervolgens wel werken.&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -34974,11 +35018,11 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Install, reinstall or upgrade the selected plugin</source>
-        <translation>Installeer, herinstalleer of upgrade de geselecteerde plugin</translation>
+        <translation>Installeer, herinstalleer of werk de geselecteerde plug-in bij</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation>Herinstalleer plugin</translation>
+        <translation>Herinstalleer plug-in</translation>
     </message>
     <message>
         <source>The settings on this tab are only applicable for Python Plugins. No Python support detected, thus no settings available.</source>
@@ -35018,7 +35062,7 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Manager window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Opmerking:&lt;/span&gt;Als u dit instelt zal QGIS u op de hoogte stellen wanneer er een nieuwe plugin is of er een nieuwere versie van een plugin is. In het andere geval zal de informatie worden opgehaald tijdens het openen van de &apos;Beheer en installeer plugins&apos;-dialoog.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Opmerking:&lt;/span&gt;Als u dit instelt zal QGIS u op de hoogte stellen wanneer er een nieuwe plug-in is of er een nieuwere versie van een plug-in is. In het andere geval zal de informatie worden opgehaald tijdens het openen van het dialoogvenster &apos;Plug-ins beheren en installeren &apos;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Show also experimental plugins</source>
@@ -35243,7 +35287,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation>Uw PostGIS installatie biedt geen GEOS ondersteuning. Selecteren en identificeren van objecten zal niet werken. Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</translation>
+        <translation>Uw PostGIS installatie biedt geen ondersteuning voor GEOS. Selecteren en identificeren van objecten zal niet werken. Installeer PostGIS met ondersteuning voor GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>SQL:%1
@@ -37919,7 +37963,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Output mode</source>
-        <translation>Uitvoer modus</translation>
+        <translation>Uitvoermodus</translation>
     </message>
     <message>
         <source>Write out raw raster layer data. Optionally user defined no data values may be applied.</source>
@@ -42001,7 +42045,7 @@ m elementen te verplaatsen. De linker (pijl naar rechts icoon) selecteert en ver
     </message>
     <message>
         <source>QGIS has plugins that extend its functionality. QGIS ships with some core plugins you can explore from the Plugins-&gt;Manage and Install Plugins menu. In addition there are a lot of &lt;a href=&quot;http://plugins.qgis.org/&quot;&gt;Python plugins &lt;/a&gt; contributed by the user community that can be installed via this same menu. Don&apos;t miss out on all QGIS has to offer! Check out the plugins and see what they can do for you.</source>
-        <translation>QGIS heeft plugins die de functionaliteit verder uitbreiden. QGIS wordt geleverd met een aantal standaard plugins die je kunt bekijken via het Plugins-&gt;Beheer en Installeer Plugins menu. Daarnaast zijn er vele plugins gemaakt door gebruikers die kunnen worden geinstalleerd via ditzelfde menu. Mis niets van wat QGIS allemaal te bieden heeft! Bekijk de plugins en zie wat ze voor u kunnen doen.</translation>
+        <translation>QGIS heeft plug-ins die de functionaliteit verder uitbreiden. QGIS wordt geleverd met een aantal standaard plug-ins die je kunt bekijken via het menu Plug-ins-&gt; Plug-ins beheren en installeren. Daarnaast zijn er vele plug-ins gemaakt door gebruikers die kunnen worden geïnstalleerd via ditzelfde menu. Mis niets van wat QGIS allemaal te bieden heeft! Bekijk de plug-ins en zie wat ze voor u kunnen doen.</translation>
     </message>
     <message>
         <source>Join intersected polylines when rendering</source>
@@ -47926,7 +47970,7 @@ The Diagram tab allows you to add a graphic overlay to a vector layer. To activa
 The current implementation of diagrams provides support for pie- and bar charts and for linear scaling
 of the diagram size according to a classification attribute.
 </source>
-        <translation>&lt;h3&gt;Laag eigenschappen&lt;/h3&gt;
+        <translation>&lt;h3&gt;Laag-eigenschappen&lt;/h3&gt;
 Dit dialoogvenster stelt u in staat om te werken met de instellingen en eigenschappen van de vectorlaag. Er zijn zeven tabs:
 &lt;p&gt;
 &lt;a href=&quot;#symbology&quot;&gt;Stijl&lt;/a&gt;&lt;br/&gt;
@@ -48727,7 +48771,7 @@ Laad tekengescheiden tekstbestanden en geeft die weer
 &lt;a href=&quot;#attributes&quot;&gt;Attributen in tekengescheiden tekstbestanden&lt;/a&gt;&lt;br /&gt;
 &lt;a href=&quot;#example&quot;&gt;Voorbeeld van een tekstbestand met X,Y-puntcoördinaten&lt;/a&gt;&lt;br/&gt;
 &lt;a href=&quot;#wkt_example&quot;&gt;Voorbeeld van een tekstbestand met WKT-geometrieën&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#python&quot;&gt;Tekegescheiden tekstbestanden gebruiken in Python&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Tekengescheiden tekstbestanden gebruiken in Python&lt;/a&gt;&lt;br/&gt;
 &lt;/p&gt;
 
 &lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overzicht&lt;/a&gt;&lt;/h4&gt;
@@ -48767,7 +48811,7 @@ Het vak van het dialoogvenster geeft een voorbeeld weer van het begin van het be
 &lt;/p&gt;
 &lt;h5&gt;Het gegevensbestand kiezen&lt;/h5&gt;
 &lt;p&gt;Gebruik de knop &amp;quot;Bladeren...&amp;quot; om het gegevensbestand te selecteren. Als het bestand eenmaal is geselecteerd zal de
-naam van de laag automatisch worden gevuld, gebaseerd oo de bestandsnaam. De naam van de laag wordt gebruikt om de gegevens weer te geven in de legenda van QGIS.  
+naam van de laag automatisch worden gevuld, gebaseerd op de bestandsnaam. De naam van de laag wordt gebruikt om de gegevens weer te geven in de legenda van QGIS.  
 &lt;/p&gt;
 &lt;p&gt;
 Bestanden worden standaard geacht te zijn gecodeerd als UTF-8.  Echter, andere coderingen
@@ -48822,7 +48866,7 @@ Het is veiliger een expliciete codering te gebruiken als het project  van QGIS t
 &lt;ul&gt;
     &lt;li&gt;Geometrie-veld: het veld dat de definitie voor de well known text bevat.&lt;/li&gt;
     &lt;li&gt;Type geometrie: één van &amp;quot;Detecteren&amp;quot; (detect), &amp;quot;Punt&amp;quot;, &amp;quot;Lijn&amp;quot;, of &amp;quot;Polygoon&amp;quot;.
-    Lagen van QGIS lkunnen slechts één type geometrie-object weergeven (punt, lijn, of polygoon). Deze optie selecteert
+    Lagen van QGIS kunnen slechts één type geometrie-object weergeven (punt, lijn, of polygoon). Deze optie selecteert
     welk type geometrie wordt weergegeven in tekstbestanden die meerdere typen geometrie bevatten. Records
    die andere typen geometrie bevatten worden genegeerd.   
     Als &amp;quot;Detecteren&amp;quot; is geselecteerd dan zal het type van de eerste geometrie in het bestand wordne gebruikt.
@@ -48830,194 +48874,183 @@ Het is veiliger een expliciete codering te gebruiken als het project  van QGIS t
     MULTLINESTRING WKT, en &amp;quot;Polygoon&amp;quot; omvat typen POLYGON en MULTIPOLYGON WKT.
 &lt;/ul&gt;
 &lt;h5&gt;Laaginstellingen&lt;/h5&gt;
-&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;p&gt;Laaginstellingen beheren de manier waarop de laag wordt beheerd in QGIS. De beschikbare opties zijn:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
-This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
-&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
-from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
-for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
-&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
-reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
-extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
-application will change the file. &lt;/li&gt;
+&lt;li&gt;Ruimtelijke index gebruiken. Maak een ruimtelijke index om het uitvoeren van het weergeven en selecteren van ruimtelijke objecten te verbeteren.
+Deze optie kan handig zijn voor bestanden die groter zijn dan een aantal megabytes.&lt;/li&gt;
+&lt;li&gt;Gebruik een subset index. Maak een index als een subset van records wordt gebruikt (ofwel door expliciet een tekenreeks voor een subset in te stellen 
+uit het dialoogvenster Laag-eigenschappen, of een impliciete subset van objecten waarvoor de geometrie geldig is in bestanden
+waarvoor niet alle geometrieën geldig zijn). De index zal alleen worden gemaakt als een subset is gedefinieerd.&lt;/li&gt;
+&lt;li&gt;Bestand in de gaten houden. Als deze optie is geselecteerd zal QGIS het bestand in de gaten houden voor wijzigingen door andere toepassingen, en 
+het bestand opnieuw laden wanneer het is gewijzigd. De kaart zal niet worden bijgewerkt totdat hij wordt vernieuwd door de gebruiker, maar indexen en
+bereiken zullen opnieuw worden geladen. Deze optie zou moeten worden geselecteerd als indexen worden gebruikt en het aannemelijk is dat een andere toepassing het bestand zal wijzigen. &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Records are split into fields using three character sets: 
-delimiter characters, quote characters, and escape characters.  
-Other characters in the record are considered as data, split into
-fields by delimiter characters. 
-Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Hoe de scheidingstekens, aanhalingstekens en escape-tekens werken&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records worden opgedeeld in velden met behulp van drie tekensets: 
+scheidingstekens, aanhalingstekens en escape-tekens.  
+Andere tekens in het record worden als gegevens beschouwd, in velden opgedeeld door scheidingstekens. 
+Aanhalingstekens verschijnen in paren en zorgen er voor dat de tekst ertussen wordt behandeld als gegevens.  Escape-tekens zorgen er voor dat het teken dat er op volgt wordt behandeld als gegevens.   
 &lt;/p&gt;
 &lt;p&gt;
-Quote and escape characters cannot be the same as delimiter characters - they
-will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
-if they are.&lt;/p&gt;
-&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
-is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
-can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
-&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
-contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
-start and end with the same quote character.  Quote characters cannot occur within a field unless they
-are escaped.&lt;/p&gt;
-&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
-(that is, to stop it being treated as a new line, delimiter, or quote character).  
+Aanhalings- en escape-tekens mogen niet hetzelfde zijn als scheidingstekens -zij
+zullen worden genegeerd als ze dat wel zijn. Escape-tekens mogen hetzelfde zijn als aanhalingstekens, maar zij gedragen zich anders
+als zij dat zijn.&lt;/p&gt;
+&lt;p&gt;De scheidingstekens worden gebruikt om het einde te markeren van elk veld. Als er meer dan één scheidingsteken wordt gedefinieerd dan mag elk daarvan het einde van een veld markeren. De aanhalings- en escape-tekens 
+kunnen voorrang hebben boven het scheidingsteken , zodat het wordt behandeld als een normaal teken van gegevens.&lt;/p&gt;
+&lt;p&gt;Aanhalingstekens kunnen worden gebruikt om het begin en eind van aangehaalde velden te markeren. Aangehaalde velden mogen 
+scheidingstekens bevatten en kan zich over meerdere regels in het tekstbestand uitstrekken. Als een veld is aangehaald dan moet het
+beginnen en eindigen het hetzelfde aanhalingsteken. Aanhalingstekens mogen niet binnen een veld voorkomen, tenzij zij worden ge-escaped.&lt;/p&gt;
+&lt;p&gt;Escape-tekens die geen aanhalingstekens zijn forceren dat het volgende teken wordt behandeld als gegevens.  
+(dat is, om te zorgen dat het niet behandeld wordt als een teken voor een nieuwe regel, scheidingsteken of aanhalingsteken).  
 &lt;/p&gt;
-&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;p&gt;Escape-tekens die ook aanhalingstekens zijn hebben een veel beperkter effect. Zij zijn alleen van toepassing binnen aanhalingstekens en expaen alleen zichzelf. Bijvoorbeeld als 
+&lt;tt&gt;&apos;&lt;/tt&gt; een aanhalings- en escape-teken is, dan zal de tekenreeks
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; de waarde Smith&apos;s&amp;nbsp;Creek weergeven.
 &lt;/p&gt;
 
 
-&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
-of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
-&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
-If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
- then these are extracted as fields. 
- If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Hoe scheidingstekens van reguliere expressie werken&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Reguliere expressies zijn een mini-taal die wordt gebruikt om taalpatronen weer te geven. Er bestaan vele varianten
+van de syntaxis voor reguliere expressies - QGIS gebruikt de syntaxis die wordt verschaft door de klasse &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; van het framewerk &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;In een door reguliere expressies gescheiden bestand wordt elke regel behandeld als een record. Elke overeenkomst van de reguliere expressie in de regel wordt behandeld als het einde van een veld.  
+Als de reguliere expressie vanggroepen bevat (bijv. &lt;tt&gt;(kat|hond)&lt;/tt&gt;)
+ dan worden die als velden uitgenomen. 
+ Als dat niet gewenst is, gebruik dan niet-vangende groepen (bijv. &lt;tt&gt;(?:kat|hond)&lt;/tt&gt;).
 &lt;/p&gt;
-&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
-In this case the regular expression is matched against each line.  If the line does not match it is discarded
-as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
-is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
-unintuitive) means of loading data with fixed width fields.  For example the 
-expression
+&lt;p&gt;De reguliere expressie wordt anders afgehandeld als hij is verankerd aan het begin van de regel (dat is, het patroon begint met &lt;tt&gt;^&lt;/tt&gt;).
+In dit geval wordt de reguliere expressie vergeleken met elke regel. Als de regel niet overeenkomt wordt hij genegeerd
+als een ongeldig record. Elke vanggroep in de expressie wordt als een veld behandeld. De reguliere expressie
+is ongeldig als hij geen vanggroepen heeft. Als een voorbeeld kan dit worden gebruikt als een (enigszins
+niet-intuïtieve) manier van het laden van gegevens met velden van vaste breedte. Bijvoorbeeld de 
+expressie
 &lt;pre&gt;
 ^(.{5})(.{10})(.{20})(.{20})
 &lt;/pre&gt;
-&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
-Lines less than 55 characters long will be discarded.
+&lt;p&gt;zal vier velden met de breedte van 5, 10, 20 en 20 tekens uit elke regel uitnemen.  
+Regels met minder dan 55 tekens worden genegeerd.
 &lt;/p&gt;
 
 
-&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Hoe WKT-tekst wordt geïnterpreteerd&lt;/a&gt;&lt;/h4&gt;
 &lt;p&gt;
-The delimited text layer recognizes the following 
-&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
-&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
-It will accept geometries with
-a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
-&lt;/p&gt;
-&lt;p&gt;
-It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
-system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
-preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
-In both cases the SRID is ignored.
-&lt;/p&gt;
-
-
-
-&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
-&lt;p&gt;Each record in the delimited text file is split into fields representing
-attributes of the record.  Usually the attribute names are taken from the first
-data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
-Also if records have more fields than are defined in the header record then these
-will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
-QGIS may override 
-the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
-or are duplicated.
+De tekengescheiden tekstlaag herkent de volgende typen 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt;  - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt; en &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+Het zal geometrieën accepteren met
+een Z-coördinaat (bijv. &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), een maat (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), of beide (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
 &lt;/p&gt;
 &lt;p&gt;
-In addition to the attributes explicitly in the data file QGIS assigns a unique 
-feature id to each record which is the line number in the source file on which
-the record starts.  
+Het kan ook de variatie PostGIS EWKT afhandelen, waarin de geometrie wordt voorafgegaan door de ID van een ruimtelijk referentiesysteem (bijv. &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), en een variant die wordt gebruikt door Informix waarin de WKT wordt voorafgegaan door een geheel getal van een ID voor een ruimtelijk referentiesysteem (bijv. &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In beide gevallen wordt het SRID genegeerd.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributen in tekengescheiden tekstbestanden&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Elk record in het tekengescheiden tekstbestand wordt opgedeeld in velden die
+attributen van het record weergeven. Gewoonlijk worden de namen voor de attributen uit het eerste gegevensrecord in het bestand genomen. Als dat echter geen namen voor attributen bevat, dan zullen zij &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, enzovoort worden genoemd.  
+Ook als records meer velden hebben dan zijn gedefinieerd in het koprecord dan zullen
+&lt;tt&gt;field_#&lt;/tt&gt; worden genoemd, waar # het veldnummer is (onthoud dat lege velden aan het einde van een record worden genegeerd).
+QGIS kan 
+de namen in het tekstbestand overschrijven als zij getallen zijn, of namen hebben als &lt;tt&gt;field_#&lt;/tt&gt;,
+of zijn gedupliceerd.
 &lt;/p&gt;
 &lt;p&gt;
-Each attribute also has a data type, one of string (text), integer, or real number.
-The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
-number then the type is real, otherwise the type is string.  Note that this is
-based on the content of the fields - quoting fields does not change the way they
-are interpreted.
+In aanvulling op de expliciete attributen in het gegevensbestand wijst QGIS een uniek 
+object-ID toe aan elk record, wat het regelnummer is waarop het record begint in het bronbestand.  
+&lt;/p&gt;
+&lt;p&gt;
+Elk attribuut heeft ook een gegevenstype, een string (tekst), geheel getal, of getal.
+Het gegevenstype wordt afgeleid uit de inhoud van de velden - als elke niet-blanco waarde een geldig geheel getal is dan is het type integer, anders als het een geldig getal is dan is het type real, anders is het type een string.  Onthoud dat dit is
+gebaseerd op de inhoud van de velden - aangehaalde velden wijzigen niet de manier waarop zij worden weergegeven.
 &lt;/p&gt;
 
 
-&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Voorbeeld van een tekstbestand met X,Y-puntcoördinaten&lt;/a&gt;&lt;/h4&gt; 
 &lt;pre&gt;
 X;Y;ELEV
 -300120;7689960;13
 -654360;7562040;52
 1640;7512840;3
 &lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
+&lt;p&gt;Dit bestand:&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
-&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
-&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
-&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;li&gt; Gebruikt &lt;b&gt;;&lt;/b&gt; als scheidingsteken. Elk teken kan worden gebruikt om velden te scheiden.&lt;/li&gt;
+&lt;li&gt;De eerste rij is de kopregel. Het bevat de veldnamen X, Y en ELEV.&lt;/li&gt;
+&lt;li&gt;De X-coördinaten zijn opgenomen in het veld X.&lt;/li&gt;
+&lt;li&gt;De Y-coördinaten zijn opgenomen in het veld Y..&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Voorbeeld van een tekstbestand met WKT-geometrieën&lt;/a&gt;&lt;/h4&gt;
 &lt;pre&gt;
-id|wkt
+ID|wkt
 1|POINT(172.0702250 -43.6031036)
 2|POINT(172.0702250 -43.6031036)
 3|POINT(172.1543206 -43.5731302)
 4|POINT(171.9282585 -43.5493308)
 5|POINT(171.8827359 -43.5875983)
 &lt;/pre&gt;
-&lt;p&gt;This file:&lt;/p&gt;
+&lt;p&gt;Dit bestand:&lt;/p&gt;
 &lt;ul&gt;
-  &lt;li&gt;Has two fields defined in the header row: id and wkt.
-  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
-  &lt;li&gt;Specifies each point using the WKT notation
+  &lt;li&gt;Heeft twee velden gedefinieerd in de kopregel: ID en wkt.
+  &lt;li&gt;Gebruikt &lt;b&gt;|&lt;/b&gt; als scheidingsteken.&lt;/li&gt;
+  &lt;li&gt;Specificeert elk punt met behulp van de notatie WKT
 &lt;/ul&gt;
 
-&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
-&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
-The pattern is:
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Tekengescheiden tekstbestanden gebruiken in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Gegevensbronnen van tekengescheiden tekst kunnen vanuit Python worden gemaakt op een soortgelijke manier als andere vectorlagen.
+Het patroon is:
 &lt;/p&gt;
 &lt;pre&gt;
 from PyQt4.QtCore import QUrl, QString
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 
-# Define the data source
+# Definiëren van de gegevensbron
 filename=&quot;test.csv&quot;
 uri=QUrl.fromLocalFile(filename)
 uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
 uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
 uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
-# ... other delimited text parameters
+# ... andere parameters voor tekengescheiden tekst
 layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
-# Add the layer to the map
+# Laag aan de kaart toevoegen
 if layer.isValid():
     QgsMapLayerRegistry.instance().addMapLayer( layer )
 &lt;/pre&gt;
-&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
-&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
-The following options can be added
+&lt;p&gt;Dit zou kunnen worden gebruikt om het tweede voorbeeldbestand hierboven te laden.&lt;/p&gt;
+&lt;p&gt;De configuratie van de laag voor de tekengescheiden tekst wordt gedefinieerd door query-items aan de uri toe te voegen.
+De volgende opties kunnen worden toegevoegd
 &lt;/p&gt;
 &lt;ul&gt;
-    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
-    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
-       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
-       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
-       no default for regexp files.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
-       Additional fields in each record will be discarded. The default is 0 - include all fields.
-       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
-       used.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
-       specified then a dialog box may request this information from the user
-       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
-       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; definieert de bestandscodering.  Standaard is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; definieert het type scheidingsteken. Geldige waarden zijn csv, 
+       regexp en witruimte (wat een speciaal geval van regexp is). Standaard is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; definieert de scheidingstekens die zullen worden gebruikt voor als csv opgemaakte bestanden, 
+       of de reguliere expressie voor als regexp opgemaakte bestanden. Standaard is , voor CSV-bestanden. Er is
+       geen standaard voor regexp-bestanden.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (voor csv-bestanden) definieert de tekens die worden gebruikt voor aangehaalde velden. Standaard is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (voor csv-bestanden) definieert de tekens die moeten gebruikt om de speciale betekenis van nhet volgende teken te escapen. Standaard is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; definieert het aantal regels dat moet worden genegeerd van het begin van het bestand. Standaard is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; definieert of het eerste gegevensrecord de namen van de gegevensvelden bevat. Standaard is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; definieert of voorloop en achterliggende witruimte moet worden verwijderd uit niet-aangehaalde velden. Standaard is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; definieert het maximum aantal velden dat zal worden geladen vanuit het bestand.  
+       Aanvullende velden in elk record zullen worden genegeerd. Standaard is 0 - neem alle velden op.
+       (Deze optie is niet beschikbaar in het dialoogvenster voor de laag van tekengescheiden tekst).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; definieert of lege niet-aangehaalde velden moeten worden genegeerd (toegepast na trimFields). Standaard is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specificeert een alternatief teken dat kan worden gebruikt als een decimale punt in  numerieke velden. Standaard is een teken punt (full stop).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specificeert de naam of het getal (beginnend met 1) van het veld dat een definitie voor een geometrie well known text bevat&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specificeert de naam of het getal (beginnend met 1) van het veld met de X-coördinaat (alleen van toepassing als wktField niet is gedefinieerd)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specificeert de naam of het getal (beginnend met 1) van het veld met de Y-coördinaat (alleen van toepassing als wktField niet is gedefinieerd)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specificeert het type van geometrie voor wkt-velden, of geen om het bestand te laden als een tabel met alleen attributen. Standaard is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specificeert een expressie die wordt gebruikt om een subset van de records te identificeren die zal worden 
+       gebruikt.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specificeert het coördinatensysteem dat moet worden gebruikt voor de vectorlaag, in een indeling die wordt geaccepteerd door QgsCoordinateReferenceSystem.createFromString (bijvoorbeeld &amp;quot;EPSG:4167&amp;quot;). Als dit niet is 
+       gespecificeerd dan kan een dialoogvenster deze informatie aan de gebruiker vragen
+       als de laag wordt geladen (afhankelijk van de instellingen voor het CRS in QGIS).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specificeert of de provider een index zou moeten bouwen om een subset te definiëren tijdens de initiële scan van het bestand. De index zal gelden voor zowel expliciet gedefinieerde subsets, als voor de impliciete subset van objecten waarvoor de definitie van de geometrie geldig is. Standaard wordt de index gebouwd als die toepasbaar is.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specificeert of de provider een ruimtelijke index zou moeten bouwen gedurende de initiële scan van het bestand. Standaard wordt de ruimtelijke index niet gebouwd. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specificeert of de provider een controle in het bestandssysteem zou moeten gebruiken om wijzigingen aan het bestand te monitoren.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specificeert of fouten, die optreden tijdens het laden van de laag, moeten worden weergegeven in een dialoogvenster (zij zullen in alle gevallen worden weggeschreven naar het log van QGIS). Standaard is no. Deze optie is niet beschikbaar vanuit de GUI&lt;/li&gt;
 &lt;/ul&gt;
 
 
@@ -49243,7 +49276,7 @@ Note: Experimental plugins are generally unsuitable for production use. These pl
 
 &lt;/p&gt;
 </source>
-        <translation>&lt;h3&gt;Beheer en installeer plug-ins&lt;/h3&gt;
+        <translation>&lt;h3&gt;Plug-ins beheren en installeren&lt;/h3&gt;
 
 &lt;p&gt;
 Plug-ins beheren en installeren.
@@ -49320,7 +49353,7 @@ Het is mogelijk om te controleren hoe vaak QGIS de lijst moet downloaden en info
 Door het keuzevak &apos;Ook de experimentele plug-ins tonen&apos; te selecteren, zullen alle plug-ins in de lijst worden weergegeven, zelfs die welke door de auteur nog worden beschouwd als &apos;experimenteel&apos;.
 
 &lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
-Opmerking: Experimentele plug-ins zijn over het algemene niet geschikt voor productiedoeleinden. Deze plug-ins zijn in het beginstadium van hun ontwikkeling, en zouden moeten beschouwd als &quot;incompleet&quot; of &quot;proof of concept&quot; programma&apos;s. Het ontwikkelingsteam van QGIS raadt niet aan om deze plug-ins te installeren, tenzij u ze wilt gebruken voor testdoeleinden.
+Opmerking: Experimentele plug-ins zijn over het algemene niet geschikt voor productiedoeleinden. Deze plug-ins zijn in het beginstadium van hun ontwikkeling, en zouden moeten beschouwd als &quot;incompleet&quot; of &quot;proof of concept&quot; programma&apos;s. Het ontwikkelingsteam van QGIS raadt niet aan om deze plug-ins te installeren, tenzij u ze wilt gebruiken voor testdoeleinden.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
 &lt;/p&gt;
@@ -56601,7 +56634,7 @@ Geeft een weergave in een tekenreeks terug van een kleur, gebaseerd op zijn attr
     </message>
     <message>
         <source>Region settings</source>
-        <translation>Regio instellingen</translation>
+        <translation>Regio-instellingen</translation>
     </message>
     <message>
         <source>Register external data sources in GRASS</source>

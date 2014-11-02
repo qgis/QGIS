@@ -5,7 +5,7 @@
     <name>@default</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Cannot create unit test for that algorithm execution. The output cannot be a temporary file</source>
@@ -24,7 +24,8 @@
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Sortides&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>&lt;p align=&quot;right&quot;&gt;Algorithm author: %s&lt;/p&gt;</source>
@@ -63,11 +64,11 @@ See log for more information</source>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines</translation>
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished">Obre un model</translation>
+        <translation>O</translation>
     </message>
     <message>
         <source>Processing model files (*.model *.MODEL)</source>
@@ -75,7 +76,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Error reading model</source>
-        <translation type="unfinished"></translation>
+        <translation>Error llegint el model</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid model</source>
@@ -94,7 +95,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines</translation>
     </message>
     <message>
         <source>Script files</source>
@@ -117,7 +118,7 @@ See log for more information</source>
     <name>AlgorithmProvider</name>
     <message>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>Activar</translation>
     </message>
     <message>
         <source>Generic algorithm provider</source>
@@ -136,7 +137,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Obre un fitxer</translation>
+        <translation>Obre un fitxer</translation>
     </message>
     <message>
         <source>All files(*.*);;</source>
@@ -162,15 +163,15 @@ See log for more information</source>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation>Afegeix fila</translation>
     </message>
     <message>
         <source>Delete row</source>
-        <translation type="unfinished"></translation>
+        <translation>Elimina fila</translation>
     </message>
     <message>
         <source>Load in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregar a QGIS</translation>
     </message>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s (row %d)&lt;/b&gt;</source>
@@ -202,22 +203,22 @@ See log for more information</source>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Sí</translation>
+        <translation>Si</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Amaga les opcions avançades</translation>
     </message>
 </context>
 <context>
     <name>CalculatorModelerAlgorithm</name>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculadora</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
@@ -225,11 +226,11 @@ See log for more information</source>
     </message>
     <message>
         <source>Formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Formula</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation>Resultat</translation>
     </message>
     <message>
         <source>Wrong formula: %s</source>
@@ -254,7 +255,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Calculadora</translation>
     </message>
 </context>
 <context>
@@ -356,7 +357,7 @@ See log for more information</source>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Tanca</translation>
+        <translation>Tanca</translation>
     </message>
 </context>
 <context>
@@ -367,14 +368,14 @@ See log for more information</source>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines</translation>
     </message>
 </context>
 <context>
     <name>CreateNewScriptAction</name>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines</translation>
     </message>
 </context>
 <context>
@@ -2791,7 +2792,7 @@ Esteu segur que voleu continuar?</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganza</translation>
     </message>
     <message>
         <source>Undo</source>
@@ -3019,7 +3020,7 @@ geometry column - column with unique integer values</source>
     <name>FileDirectorySelector</name>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select directory</source>
@@ -3038,7 +3039,7 @@ geometry column - column with unique integer values</source>
     <name>FileSelectionPanel</name>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select folder</source>
@@ -3057,7 +3058,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Add row</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Afegeix fila</translation>
     </message>
     <message>
         <source>Remove row</source>
@@ -3072,7 +3073,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -3159,7 +3160,7 @@ El connector no s&apos;habilitarà. </translation>
     </message>
     <message>
         <source>Contour...</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorn...</translation>
     </message>
     <message>
         <source>Clipper...</source>
@@ -3195,7 +3196,7 @@ El connector no s&apos;habilitarà. </translation>
     </message>
     <message>
         <source>Merge...</source>
-        <translation type="unfinished"></translation>
+        <translation>Combina...</translation>
     </message>
     <message>
         <source>Information...</source>
@@ -3338,7 +3339,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>Lloc Web</translation>
     </message>
     <message>
         <source>Close</source>
@@ -3393,7 +3394,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Finalitzat</translation>
+        <translation>Finalitzat</translation>
     </message>
     <message>
         <source>Processing completed.</source>
@@ -3642,7 +3643,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Finalitzat</translation>
+        <translation>Finalitzat</translation>
     </message>
     <message>
         <source>Processing completed.</source>
@@ -4092,11 +4093,11 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>Max points</source>
-        <translation type="unfinished"></translation>
+        <translation>Màxim de punts</translation>
     </message>
     <message>
         <source>Min points</source>
-        <translation type="unfinished"></translation>
+        <translation>Minim de putns</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -4120,7 +4121,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rang</translation>
     </message>
     <message>
         <source>Resize</source>
@@ -4298,11 +4299,11 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertical</translation>
     </message>
     <message>
         <source>Sieve</source>
@@ -4830,7 +4831,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines</translation>
     </message>
     <message>
         <source>Connection problem</source>
@@ -4849,7 +4850,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Eines</translation>
     </message>
     <message>
         <source>Connection problem</source>
@@ -4872,11 +4873,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Updatable</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualitzable</translation>
     </message>
     <message>
         <source>Not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>No instal·lat</translation>
     </message>
     <message>
         <source>&lt;p&gt;&lt;b&gt;Description:&lt;/b&gt; %s&lt;/p&gt;</source>
@@ -4982,7 +4983,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Heatmap generation aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Generació de mapa de calor abortada</translation>
     </message>
     <message>
         <source>QGIS will now load the partially-computed raster</source>
@@ -5048,7 +5049,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Output values</source>
@@ -5092,7 +5093,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Columnes</translation>
+        <translation>Columnes</translation>
     </message>
     <message>
         <source>Cell size Y</source>
@@ -5158,7 +5159,8 @@ are stored on the installation folder</source>
     <message>
         <source>&lt;h2&gt;Outputs&lt;/h2&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;h2&gt;Sortides&lt;/h2&gt;
+</translation>
     </message>
     <message>
         <source>Algorithm description</source>
@@ -5170,7 +5172,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortides</translation>
     </message>
     <message>
         <source>Algorithm created by</source>
@@ -5189,7 +5191,7 @@ are stored on the installation folder</source>
     <name>HistoryDialog</name>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Neteja</translation>
     </message>
     <message>
         <source>Clear history and log</source>
@@ -5197,7 +5199,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Save As...</source>
-        <translation type="unfinished">Desa com a...</translation>
+        <translation>Desa com a...</translation>
     </message>
     <message>
         <source>Save history and log</source>
@@ -5232,7 +5234,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Reload</source>
-        <translation type="unfinished"></translation>
+        <translation>Recarrega</translation>
     </message>
     <message>
         <source>Save</source>
@@ -5421,15 +5423,15 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vector</translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bases de dades</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lloc Web</translation>
     </message>
     <message>
         <source>Ctrl+N</source>
@@ -5537,7 +5539,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <source>Copy Features</source>
@@ -5933,7 +5935,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Normal preview mode</source>
@@ -6013,7 +6015,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>Consulta...</translation>
     </message>
     <message>
         <source>Add to Overview</source>
@@ -6029,7 +6031,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Show All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra totes les capes</translation>
     </message>
     <message>
         <source>Ctrl+Shift+U</source>
@@ -6037,7 +6039,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Hide All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Amaga totes les capes</translation>
     </message>
     <message>
         <source>Ctrl+Shift+H</source>
@@ -6387,7 +6389,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">Navega</translation>
+        <translation>Navega</translation>
     </message>
     <message>
         <source>Load from file</source>
@@ -6395,11 +6397,11 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Carrega</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Desa</translation>
+        <translation>Desa</translation>
     </message>
     <message>
         <source>eXtensible Markup Language (*.xml *.XML)</source>
@@ -6438,7 +6440,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
 </context>
 <context>
@@ -6560,7 +6562,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Títol</translation>
     </message>
     <message>
         <source>View search results as XML</source>
@@ -6604,7 +6606,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carrega</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -6616,7 +6618,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mostra</translation>
     </message>
     <message>
         <source>results at a time</source>
@@ -6736,7 +6738,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Tanca</translation>
+        <translation>Tanca</translation>
     </message>
 </context>
 <context>
@@ -6937,11 +6939,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Sí</translation>
+        <translation>Sí</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>Shape type</source>
@@ -6953,11 +6955,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Polygon</source>
@@ -7060,7 +7062,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amaga les opcions avançades</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
@@ -7256,7 +7258,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Contrasenya</translation>
     </message>
     <message>
         <source>Save Password</source>
@@ -7407,7 +7409,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amaga les opcions avançades</translation>
     </message>
     <message>
         <source>[not set]</source>
@@ -7443,7 +7445,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Fet</translation>
     </message>
 </context>
 <context>
@@ -7518,7 +7520,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished">Directori de sortida</translation>
+        <translation>Directori de sortida</translation>
     </message>
     <message>
         <source>Show layer CRS definition in selection boxes</source>
@@ -7573,7 +7575,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Execute</source>
-        <translation type="unfinished"></translation>
+        <translation>Executa</translation>
     </message>
     <message>
         <source>Execute as batch process</source>
@@ -7612,7 +7614,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Error de Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%s&apos; from [&apos;%s&apos;]</source>
@@ -7643,7 +7645,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Clear console</source>
-        <translation type="unfinished"></translation>
+        <translation>Neteja la consola</translation>
     </message>
     <message>
         <source>Compile APIs</source>
@@ -7659,7 +7661,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation>Fet</translation>
     </message>
     <message>
         <source>Error preparing file...</source>
@@ -7695,19 +7697,19 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished">Retalla</translation>
+        <translation>Retalla</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Copia</translation>
+        <translation>Copia</translation>
     </message>
     <message>
         <source>Paste</source>
-        <translation type="unfinished"></translation>
+        <translation>Enganxa</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Comentari</translation>
     </message>
     <message>
         <source>Uncomment</source>
@@ -7942,7 +7944,7 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra</translation>
     </message>
     <message>
         <source>Clear File</source>
@@ -7990,7 +7992,7 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>Executa la comanda</translation>
     </message>
     <message>
         <source>Help</source>
@@ -8001,15 +8003,15 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
     <name>QGis::UnitType</name>
     <message>
         <source>meters</source>
-        <translation type="unfinished">metres</translation>
+        <translation>metres</translation>
     </message>
     <message>
         <source>feet</source>
-        <translation type="unfinished"></translation>
+        <translation>peus</translation>
     </message>
     <message>
         <source>degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>graus</translation>
     </message>
     <message>
         <source>&lt;unknown&gt;</source>
@@ -8087,7 +8089,7 @@ Use iface to access QGIS API interface or Type help(iface) for more info</source
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation>Aborta</translation>
     </message>
     <message>
         <source>Building triangulation...</source>
@@ -8121,7 +8123,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     </message>
     <message>
         <source>Deleted vertices</source>
-        <translation type="unfinished"></translation>
+        <translation>Vèrtexs eliminats</translation>
     </message>
     <message>
         <source>Moved vertices</source>
@@ -8207,7 +8209,7 @@ Error (%2): %3</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Generated CRS</source>
@@ -8240,11 +8242,11 @@ Error (%2): %3</translation>
     </message>
     <message utf8="true">
         <source> m²</source>
-        <translation type="unfinished"></translation>
+        <translation> m²</translation>
     </message>
     <message utf8="true">
         <source> km²</source>
-        <translation type="unfinished"></translation>
+        <translation> km²</translation>
     </message>
     <message>
         <source> ha</source>
@@ -8304,11 +8306,11 @@ Error (%2): %3</translation>
     </message>
     <message>
         <source> degree</source>
-        <translation type="unfinished"></translation>
+        <translation>grau</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>graus</translation>
     </message>
     <message>
         <source> unknown</source>
@@ -8356,7 +8358,7 @@ Error (%2): %3</translation>
     </message>
     <message>
         <source>Index is out of range</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;index esta fora de rang</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1:%2:%3&apos; to color</source>
@@ -8411,17 +8413,17 @@ Error (%2): %3</translation>
     <message>
         <source>hour|hours</source>
         <comment>list of words separated by | which reference minutes hours</comment>
-        <translation type="unfinished"></translation>
+        <translation>hora|hores</translation>
     </message>
     <message>
         <source>day|days</source>
         <comment>list of words separated by | which reference days</comment>
-        <translation type="unfinished"></translation>
+        <translation>dia|dies</translation>
     </message>
     <message>
         <source>week|weeks</source>
         <comment>wordlist separated by | which reference weeks</comment>
-        <translation type="unfinished"></translation>
+        <translation>setmana|setmanes</translation>
     </message>
     <message>
         <source>month|months</source>
@@ -8443,11 +8445,11 @@ Error (%2): %3</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">Geometria</translation>
+        <translation>Geometria</translation>
     </message>
     <message>
         <source>Record</source>
@@ -8568,7 +8570,7 @@ Error (%2): %3</translation>
     </message>
     <message>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Consola</translation>
     </message>
     <message>
         <source>infinite</source>
@@ -8851,7 +8853,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>If not specified, GML2 will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si no s&apos;especifica s&apos;usarà GML2.</translation>
     </message>
     <message>
         <source>only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. If YES, SRS with EPSG authority will be written with the &apos;urn:ogc:def:crs:EPSG::&apos; prefix. In the case, if the SRS is a geographic SRS without explicit AXIS order, but that the same SRS authority code imported with ImportFromEPSGA() should be treated as lat/long, then the function will take care of coordinate order swapping. If set to NO, SRS with EPSG authority will be written with the &apos;EPSG:&apos; prefix, even if they are in lat/long order.</source>
@@ -9051,7 +9053,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>SQLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite</translation>
     </message>
     <message>
         <source>Insert the content of the EPSG CSV files into the spatial_ref_sys table. Set to NO for regular SQLite databases.</source>
@@ -9236,7 +9238,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Simple line</source>
-        <translation type="unfinished"></translation>
+        <translation>Línia simple</translation>
     </message>
     <message>
         <source>Marker line</source>
@@ -9308,11 +9310,11 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Pixel Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valor del píxel </translation>
     </message>
     <message>
         <source>Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Freqüència</translation>
     </message>
     <message>
         <source>Internal Compass</source>
@@ -9336,7 +9338,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vector</translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>Version 0.1</source>
@@ -9368,7 +9370,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Bases de dades</translation>
     </message>
     <message>
         <source>Version 1.1.0</source>
@@ -9376,7 +9378,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>This tool only supports vector data</source>
@@ -9476,23 +9478,23 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished"></translation>
+        <translation>Nord</translation>
     </message>
     <message>
         <source>South</source>
-        <translation type="unfinished"></translation>
+        <translation>Sud</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished"></translation>
+        <translation>Est</translation>
     </message>
     <message>
         <source>West</source>
-        <translation type="unfinished"></translation>
+        <translation>Oest</translation>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format</translation>
     </message>
     <message>
         <source>Minimum value</source>
@@ -9512,11 +9514,11 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Comments</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentaris</translation>
     </message>
     <message>
         <source>Categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Categories</translation>
     </message>
     <message>
         <source>&lt;b&gt;Vector&lt;/b&gt;</source>
@@ -9524,19 +9526,19 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Punts</translation>
     </message>
     <message>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Línies</translation>
     </message>
     <message>
         <source>Boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Contorns</translation>
     </message>
     <message>
         <source>Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Centroides</translation>
     </message>
     <message>
         <source>Faces</source>
@@ -9588,7 +9590,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Taula</translation>
+        <translation>Taula</translation>
     </message>
     <message>
         <source>Key column</source>
@@ -9660,7 +9662,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Heatmap</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa de calor</translation>
     </message>
     <message>
         <source>Creates a Heatmap raster for the input point vector</source>
@@ -9728,7 +9730,7 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Touches</source>
-        <translation type="unfinished"></translation>
+        <translation>Toca</translation>
     </message>
     <message>
         <source>Crosses</source>
@@ -10025,11 +10027,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>MySQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MySQL</translation>
     </message>
     <message>
         <source>MSSQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MSSQL</translation>
     </message>
     <message>
         <source>Oracle Spatial</source>
@@ -10037,7 +10039,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>ODBC</source>
-        <translation type="unfinished"></translation>
+        <translation>ODBC</translation>
     </message>
     <message>
         <source>OGDI Vectors</source>
@@ -10045,7 +10047,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation>PostgreSQL</translation>
     </message>
     <message>
         <source>Systematic Organization of Spatial Information [SOSI]</source>
@@ -10115,7 +10117,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <source>Connection to database failed</source>
@@ -10168,7 +10170,7 @@ Database error: %2</source>
     </message>
     <message>
         <source>PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <source>Infinite filter rectangle specified</source>
@@ -10279,7 +10281,7 @@ SQL: %1</source>
     </message>
     <message>
         <source>Operation aborted</source>
-        <translation type="unfinished"></translation>
+        <translation>Operació abortada</translation>
     </message>
     <message>
         <source>Error executing loading style. The query was logged</source>
@@ -10339,7 +10341,7 @@ SQL: %1</source>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de Python</translation>
     </message>
     <message>
         <source>Undefined</source>
@@ -10347,15 +10349,15 @@ SQL: %1</source>
     </message>
     <message>
         <source>Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation>Amagat</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Títol</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grup</translation>
     </message>
     <message>
         <source>Subgroup</source>
@@ -10363,7 +10365,7 @@ SQL: %1</source>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbol</translation>
     </message>
     <message>
         <source>Symbol label</source>
@@ -10460,7 +10462,7 @@ SQL: %1</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -10568,7 +10570,7 @@ Response was:
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Llegenda</translation>
     </message>
 </context>
 <context>
@@ -10732,7 +10734,7 @@ Response was:
     </message>
     <message>
         <source>Log Messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Registre de missatges</translation>
     </message>
     <message>
         <source>QGIS starting...</source>
@@ -10764,7 +10766,7 @@ Response was:
     </message>
     <message>
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimitza</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
@@ -10797,7 +10799,7 @@ Response was:
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Failed to open Python console:</source>
@@ -10823,11 +10825,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Toolbars</source>
-        <translation type="unfinished">Barres d&apos;eines</translation>
+        <translation>Barres d&apos;eines</translation>
     </message>
     <message>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Finestra</translation>
     </message>
     <message>
         <source>&amp;Database</source>
@@ -10863,7 +10865,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Scale </source>
-        <translation type="unfinished"></translation>
+        <translation>Escala</translation>
     </message>
     <message>
         <source>Current map scale</source>
@@ -10899,7 +10901,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Llest</translation>
     </message>
     <message>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
@@ -10999,11 +11001,11 @@ Please contact the developers.
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vector</translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>PostgreSQL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PostgreSQL</translation>
     </message>
     <message>
         <source>Cannot get PostgreSQL select dialog from provider.</source>
@@ -11089,7 +11091,7 @@ Please contact the developers.
     </message>
     <message>
         <source>MSSQL</source>
-        <translation type="unfinished"></translation>
+        <translation>MSSQL</translation>
     </message>
     <message>
         <source>Cannot get MSSQL select dialog from provider.</source>
@@ -11097,7 +11099,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Oracle</translation>
     </message>
     <message>
         <source>Cannot get Oracle select dialog from provider.</source>
@@ -11105,7 +11107,7 @@ Please contact the developers.
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <source>Cannot get WMS select dialog from provider.</source>
@@ -11169,7 +11171,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Abort...</source>
-        <translation type="unfinished">Interromp...</translation>
+        <translation>Aborta...</translation>
     </message>
     <message>
         <source>Choose a QGIS project file to open</source>
@@ -11261,7 +11263,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rang</translation>
     </message>
     <message>
         <source>Unique Values</source>
@@ -11269,7 +11271,7 @@ Please contact the developers.
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom del fitxer</translation>
     </message>
     <message>
         <source>Value Map</source>
@@ -11281,7 +11283,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amagat</translation>
     </message>
     <message>
         <source>Check Box</source>
@@ -11501,7 +11503,7 @@ Error: %1</source>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create unique print composer title</source>
@@ -11529,7 +11531,7 @@ Error: %1</source>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">copia</translation>
     </message>
     <message>
         <source>No active layer</source>
@@ -11621,7 +11623,7 @@ Error: %1</source>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>No features in clipboard.</source>
@@ -11688,7 +11690,7 @@ Errors: %3
     </message>
     <message>
         <source>cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>cancel·la</translation>
     </message>
     <message>
         <source>Save</source>
@@ -11696,7 +11698,7 @@ Errors: %3
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation>tot</translation>
     </message>
     <message>
         <source>Rollback</source>
@@ -11810,7 +11812,7 @@ Errors: %3
     </message>
     <message>
         <source>Layer is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa invalida</translation>
     </message>
     <message>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
@@ -12080,7 +12082,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsAddAttrDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
@@ -12095,7 +12097,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsAddAttrDialogBase</name>
     <message>
         <source>Add column</source>
-        <translation type="unfinished">Afegeix una columna</translation>
+        <translation>Afegir columna</translation>
     </message>
     <message>
         <source>N&amp;ame</source>
@@ -12103,7 +12105,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentari</translation>
     </message>
     <message>
         <source>Type</source>
@@ -12300,7 +12302,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsApplication</name>
     <message>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Excepció </translation>
     </message>
     <message>
         <source>unknown exception</source>
@@ -12429,7 +12431,7 @@ Parser error:
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Filter with</source>
@@ -12437,7 +12439,7 @@ Parser error:
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished">Sortida</translation>
+        <translation>Sortida</translation>
     </message>
     <message>
         <source>Single file export when possible</source>
@@ -12516,19 +12518,19 @@ Parser error:
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Acció</translation>
     </message>
     <message>
         <source>Capture</source>
-        <translation type="unfinished"></translation>
+        <translation>Captura</translation>
     </message>
     <message>
         <source>Remove the selected action</source>
@@ -12552,23 +12554,23 @@ Parser error:
     </message>
     <message>
         <source>Generic</source>
-        <translation type="unfinished"></translation>
+        <translation>Generic</translation>
     </message>
     <message>
         <source>Python</source>
-        <translation type="unfinished"></translation>
+        <translation>Python</translation>
     </message>
     <message>
         <source>Mac</source>
-        <translation type="unfinished"></translation>
+        <translation>Mac</translation>
     </message>
     <message>
         <source>Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <source>Unix</source>
-        <translation type="unfinished"></translation>
+        <translation>Unix</translation>
     </message>
     <message>
         <source>Open</source>
@@ -12596,7 +12598,7 @@ Parser error:
     </message>
     <message>
         <source>Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Icona</translation>
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
@@ -12685,7 +12687,7 @@ Parser error:
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Description</source>
@@ -12693,7 +12695,7 @@ Parser error:
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Select data from attributes in selected layer.</source>
@@ -12727,7 +12729,7 @@ Parser error:
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Columnes</translation>
+        <translation>Columnes</translation>
     </message>
     <message>
         <source>Reset</source>
@@ -12970,7 +12972,7 @@ Parser error:
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>An error occured while evaluating the calculation string:
@@ -13043,7 +13045,7 @@ Parser error:
     <name>QgsBlendModeComboBox</name>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Lighten</source>
@@ -13110,7 +13112,7 @@ Parser error:
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Unable to open bookmarks database.
@@ -13125,7 +13127,7 @@ Database: %3</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Project</source>
@@ -13194,7 +13196,7 @@ Database:%2</source>
     <name>QgsBrowser</name>
     <message>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS</translation>
     </message>
     <message>
         <source>Cannot get WMS select dialog from provider.</source>
@@ -13202,7 +13204,7 @@ Database:%2</source>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Cannot set layer CRS</source>
@@ -13276,11 +13278,11 @@ Database:%2</source>
     <name>QgsBrowserDirectoryPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diàleg</translation>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Camí</translation>
     </message>
 </context>
 <context>
@@ -13295,7 +13297,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Wildcard(s)</source>
@@ -13315,7 +13317,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Propietats</translation>
     </message>
     <message>
         <source>Fast scan this dir.</source>
@@ -13339,7 +13341,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Layer Properties</source>
@@ -13374,7 +13376,7 @@ Database:%2</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Collapse All</source>
@@ -13393,7 +13395,7 @@ Database:%2</source>
     <name>QgsBrowserLayerPropertiesBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diàleg</translation>
     </message>
     <message>
         <source>Display Name</source>
@@ -13405,7 +13407,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Proveïdor</translation>
     </message>
     <message>
         <source>Metadata</source>
@@ -13439,11 +13441,11 @@ Database:%2</source>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vertical</translation>
     </message>
     <message>
         <source>Cross</source>
@@ -13520,15 +13522,15 @@ Database:%2</source>
     <name>QgsCategorizedSymbolRendererV2Model</name>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbol</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Llegenda</translation>
     </message>
 </context>
 <context>
@@ -13539,7 +13541,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbol</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -13595,7 +13597,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
@@ -13818,7 +13820,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Sample average radius</source>
@@ -13987,7 +13989,7 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsColorSchemeModel</name>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Label</source>
@@ -14147,7 +14149,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Cut</source>
-        <translation type="unfinished">Retalla</translation>
+        <translation>Retalla</translation>
     </message>
     <message>
         <source>&amp;Copy</source>
@@ -14167,7 +14169,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Normal</source>
-        <translation type="unfinished"></translation>
+        <translation>Normal</translation>
     </message>
     <message>
         <source>Simulate photocopy (grayscale)</source>
@@ -14187,7 +14189,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Window</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Finestra</translation>
     </message>
     <message>
         <source>Help</source>
@@ -14291,7 +14293,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation>Aborta</translation>
     </message>
     <message>
         <source>Big image</source>
@@ -14372,7 +14374,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation>copia</translation>
     </message>
     <message>
         <source>Duplicating composer...</source>
@@ -14404,7 +14406,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Load template</source>
-        <translation type="unfinished"></translation>
+        <translation>Carregar la plantilla</translation>
     </message>
     <message>
         <source>Read error</source>
@@ -14448,7 +14450,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Landscape</source>
-        <translation type="unfinished"></translation>
+        <translation>Panoramica</translation>
     </message>
 </context>
 <context>
@@ -14518,7 +14520,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Fletxa</translation>
     </message>
     <message>
         <source>Main properties</source>
@@ -14542,11 +14544,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Per defecte</translation>
+        <translation>Per defecte</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Cap</translation>
+        <translation>Cap</translation>
     </message>
     <message>
         <source>SVG</source>
@@ -14570,7 +14572,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>End marker</source>
@@ -14581,19 +14583,19 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerAttributeTableColumnModel</name>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut</translation>
     </message>
     <message>
         <source>Heading</source>
@@ -14608,19 +14610,19 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerAttributeTableColumnModelV2</name>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation>Automàtic </translation>
     </message>
     <message>
         <source>%1 mm</source>
@@ -14628,7 +14630,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atribut</translation>
     </message>
     <message>
         <source>Heading</source>
@@ -14640,7 +14642,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Amplada</translation>
+        <translation>Amplada</translation>
     </message>
 </context>
 <context>
@@ -14849,7 +14851,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Refresh table data</source>
@@ -14857,7 +14859,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Attributes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Atributs...</translation>
     </message>
     <message>
         <source> mm</source>
@@ -14881,7 +14883,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Background color</source>
@@ -14901,7 +14903,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Fonts and text styling</source>
@@ -14917,15 +14919,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
     <message>
         <source>Alignment</source>
@@ -14933,7 +14935,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Font</translation>
     </message>
     <message>
         <source>Choose font...</source>
@@ -14973,7 +14975,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aparença</translation>
     </message>
     <message>
         <source>Cell margins</source>
@@ -15404,7 +15406,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Quit</source>
-        <translation type="unfinished">Surt</translation>
+        <translation>Surt</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
@@ -15734,20 +15736,56 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Unlock All Items</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
 </context>
 <context>
@@ -15769,7 +15807,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Automàtic </translation>
     </message>
 </context>
 <context>
@@ -15877,7 +15915,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>HTML Source</source>
@@ -16082,15 +16120,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Amplada</translation>
+        <translation>Amplada</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Alçada</translation>
+        <translation>Alçada</translation>
     </message>
     <message>
         <source>Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Pàgina</translation>
     </message>
     <message>
         <source>Rotation</source>
@@ -16110,7 +16148,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Join style</source>
@@ -16146,7 +16184,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transparència </translation>
     </message>
     <message>
         <source>Item ID</source>
@@ -16231,7 +16269,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Aparença</translation>
     </message>
     <message>
         <source>Font...</source>
@@ -16263,23 +16301,27 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16434,7 +16476,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grup</translation>
     </message>
     <message>
         <source>Map %1</source>
@@ -16453,7 +16495,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Llegenda</translation>
     </message>
     <message>
         <source>Main properties</source>
@@ -16465,7 +16507,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <source>Wrap text on</source>
@@ -16537,15 +16579,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
     <message>
         <source>Update whole legend. Layers are added/removed according to main application legend. User defined labels will be deleted.</source>
@@ -16557,7 +16599,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Auto update</source>
@@ -16589,7 +16631,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Símbol</translation>
     </message>
     <message>
         <source>Symbol width</source>
@@ -16724,7 +16766,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"></translation>
+        <translation>copia</translation>
     </message>
     <message>
         <source>Duplicating composer...</source>
@@ -16755,7 +16797,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Open template directory</source>
@@ -16941,7 +16983,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Millimeter</source>
@@ -17101,11 +17143,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vertical</translation>
     </message>
     <message>
         <source>Annotation position changed</source>
@@ -17128,7 +17170,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <source>Main properties</source>
@@ -17180,7 +17222,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>View extent in map canvas</source>
@@ -17216,7 +17258,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Blend mode</source>
@@ -17308,7 +17350,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>change...</source>
@@ -17320,7 +17362,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Unitats del map</translation>
     </message>
     <message>
         <source>Millimeter</source>
@@ -17376,15 +17418,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
     <message>
         <source>Top</source>
@@ -17396,7 +17438,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Font</translation>
     </message>
     <message>
         <source>Font...</source>
@@ -17557,7 +17599,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Resize mode</source>
@@ -17637,7 +17679,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Suprimeix</translation>
+        <translation>Suprimeix</translation>
     </message>
     <message>
         <source>Add...</source>
@@ -17711,7 +17753,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Middle</source>
@@ -17719,19 +17761,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Metres</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Peu</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
@@ -17874,15 +17916,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mapa</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estil</translation>
+        <translation>Estil</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unitats</translation>
     </message>
     <message>
         <source>Label</source>
@@ -17898,23 +17940,23 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>left </source>
-        <translation type="unfinished"></translation>
+        <translation>esquerra</translation>
     </message>
     <message>
         <source>right </source>
-        <translation type="unfinished"></translation>
+        <translation>dreta</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mida</translation>
     </message>
     <message>
         <source> units</source>
-        <translation type="unfinished"></translation>
+        <translation>unitats</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Alçada</translation>
+        <translation>Alçada</translation>
     </message>
     <message>
         <source> mm</source>
@@ -18027,7 +18069,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma</translation>
     </message>
     <message>
         <source>Main properties</source>
@@ -18043,7 +18085,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estil</translation>
+        <translation>Estil</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -18062,7 +18104,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atribut</translation>
     </message>
     <message>
         <source>Sort Order</source>
@@ -18081,7 +18123,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atribut</translation>
     </message>
     <message>
         <source>Sort Order</source>
@@ -18202,7 +18244,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Attributes...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atributs...</translation>
     </message>
     <message>
         <source>Feature filtering</source>
@@ -18214,7 +18256,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Fonts and text styling</source>
@@ -18230,7 +18272,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Font</translation>
     </message>
     <message>
         <source>Choose font...</source>
@@ -18262,7 +18304,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source> mm</source>
@@ -18282,15 +18324,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
 </context>
 <context>
@@ -18305,11 +18347,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Títol</translation>
     </message>
     <message>
         <source>Layers</source>
@@ -18317,7 +18359,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grup</translation>
     </message>
     <message>
         <source>ID</source>
@@ -18325,11 +18367,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Caixa</translation>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Font</translation>
     </message>
 </context>
 <context>
@@ -18494,15 +18536,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Paper</source>
-        <translation type="unfinished"></translation>
+        <translation>Paper</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unitats</translation>
     </message>
     <message>
         <source>Width</source>
@@ -18521,15 +18563,15 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsCompositionWidget</name>
     <message>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <source>inch</source>
-        <translation type="unfinished"></translation>
+        <translation>polzada</translation>
     </message>
     <message>
         <source>Landscape</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Panoramica</translation>
     </message>
     <message>
         <source>Portrait</source>
@@ -18668,7 +18710,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats</translation>
     </message>
     <message>
         <source>Number of pages</source>
@@ -18743,11 +18785,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Acció</translation>
     </message>
     <message>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreçera </translation>
     </message>
     <message>
         <source>Change</source>
@@ -18763,7 +18805,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Carrega...</translation>
     </message>
     <message>
         <source>Save...</source>
@@ -18775,7 +18817,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>XML file</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxer XML</translation>
     </message>
     <message>
         <source>All files</source>
@@ -18826,7 +18868,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Entrada:</translation>
     </message>
     <message>
         <source>Shortcut conflict</source>
@@ -18860,7 +18902,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
@@ -18885,7 +18927,7 @@ Error: %5</source>
     <name>QgsCptCityBrowserModel</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Info</source>
@@ -18896,7 +18938,7 @@ Error: %5</source>
     <name>QgsCptCityColorRampItem</name>
     <message>
         <source>colors</source>
-        <translation type="unfinished"></translation>
+        <translation>colors</translation>
     </message>
     <message>
         <source>discrete</source>
@@ -18978,7 +19020,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Camí</translation>
     </message>
     <message>
         <source>Information</source>
@@ -18994,7 +19036,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Details</source>
-        <translation type="unfinished"></translation>
+        <translation>Detalls</translation>
     </message>
     <message>
         <source>Save as standard gradient</source>
@@ -19013,7 +19055,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrasenya</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -19066,7 +19108,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
 </context>
 <context>
@@ -19089,7 +19131,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Parameters</source>
@@ -19113,15 +19155,15 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished"></translation>
+        <translation>Nord</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished"></translation>
+        <translation>Est</translation>
     </message>
     <message>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom:</translation>
     </message>
     <message>
         <source>Parameters:</source>
@@ -19200,7 +19242,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Carrega</translation>
     </message>
     <message>
         <source>Load from file</source>
@@ -19242,7 +19284,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Paste</source>
@@ -19254,7 +19296,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neteja</translation>
     </message>
     <message>
         <source>string</source>
@@ -19274,7 +19316,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>integer</source>
-        <translation type="unfinished"></translation>
+        <translation>enter</translation>
     </message>
     <message>
         <source>unknown type</source>
@@ -19286,11 +19328,11 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>expression</source>
-        <translation type="unfinished"></translation>
+        <translation>expressió</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="unfinished">camp</translation>
+        <translation>camp</translation>
     </message>
     <message>
         <source>Deactivate</source>
@@ -19298,7 +19340,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Activar</translation>
     </message>
     <message>
         <source>Attribute field</source>
@@ -19310,7 +19352,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Expressió</translation>
     </message>
     <message>
         <source>Current: </source>
@@ -19436,11 +19478,11 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation>Propietat</translation>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Expressió</translation>
     </message>
     <message>
         <source>Help</source>
@@ -19531,7 +19573,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>preview</source>
-        <translation type="unfinished"></translation>
+        <translation>previsualitza</translation>
     </message>
 </context>
 <context>
@@ -19556,7 +19598,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>desconegut</translation>
     </message>
 </context>
 <context>
@@ -19591,7 +19633,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
 </context>
 <context>
@@ -19614,16 +19656,16 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Edita</translation>
+        <translation>Edita</translation>
     </message>
     <message>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <source>Load</source>
         <comment>Load connections from file</comment>
-        <translation type="unfinished"></translation>
+        <translation>Carrega</translation>
     </message>
     <message>
         <source>Save connections to file</source>
@@ -19725,15 +19767,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertical</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Select text color</source>
@@ -19744,7 +19786,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsDecorationGrid</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>No active layer</source>
@@ -19835,7 +19877,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia</translation>
     </message>
     <message>
         <source>Marker</source>
@@ -19843,11 +19885,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vertical</translation>
     </message>
     <message>
         <source>Boundary direction</source>
@@ -19960,11 +20002,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra</translation>
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Caixa</translation>
     </message>
     <message>
         <source> km</source>
@@ -20004,11 +20046,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> degree</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">grau</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">graus</translation>
     </message>
     <message>
         <source> unknown</source>
@@ -20059,11 +20101,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Box</source>
-        <translation type="unfinished"></translation>
+        <translation>Caixa</translation>
     </message>
     <message>
         <source>Bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Barra</translation>
     </message>
     <message>
         <source>Color of bar</source>
@@ -20091,7 +20133,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>graus</translation>
     </message>
     <message>
         <source>Select scalebar color</source>
@@ -20228,7 +20270,7 @@ not displayed</source>
     </message>
     <message>
         <source>Text files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxers de text</translation>
     </message>
     <message>
         <source>Please select an input file</source>
@@ -20295,7 +20337,7 @@ not displayed</source>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom del fitxer</translation>
     </message>
     <message>
         <source>Full path to the delimited text file</source>
@@ -20307,7 +20349,7 @@ not displayed</source>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la capa</translation>
     </message>
     <message>
         <source>Name to display in the map legend</source>
@@ -20327,7 +20369,7 @@ not displayed</source>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navega...</translation>
     </message>
     <message>
         <source>Field names are read from the first record. If not selected then fields are numbered</source>
@@ -20387,11 +20429,11 @@ not displayed</source>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Polygon</source>
@@ -20567,7 +20609,7 @@ not displayed</source>
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Expressió</translation>
     </message>
     <message>
         <source>Regular expression used to split each line into fields</source>
@@ -20641,11 +20683,11 @@ not displayed</source>
     </message>
     <message>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mm</translation>
     </message>
     <message>
         <source>Map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unitats del map</translation>
     </message>
     <message>
         <source>Around Point</source>
@@ -20657,11 +20699,11 @@ not displayed</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <source>Free</source>
@@ -20721,7 +20763,7 @@ not displayed</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Bottom</source>
@@ -20729,7 +20771,7 @@ not displayed</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>Unknown diagram type.</source>
@@ -20796,7 +20838,7 @@ not displayed</source>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aparença</translation>
     </message>
     <message>
         <source>Background color</source>
@@ -20848,7 +20890,7 @@ not displayed</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mida</translation>
     </message>
     <message>
         <source>Fixed size</source>
@@ -20864,7 +20906,7 @@ not displayed</source>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atribut</translation>
     </message>
     <message>
         <source>Edit expression</source>
@@ -20897,7 +20939,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Posició </translation>
     </message>
     <message>
         <source>Placement</source>
@@ -20949,11 +20991,11 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>Attributes</source>
@@ -20977,7 +21019,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
 </context>
 <context>
@@ -20988,7 +21030,7 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Date</source>
@@ -21000,11 +21042,11 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Propietari</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grup</translation>
     </message>
     <message>
         <source>Type</source>
@@ -21016,11 +21058,11 @@ Leave empty to automatically apply the maximum value.</source>
     </message>
     <message>
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>fitxer</translation>
     </message>
     <message>
         <source>link</source>
-        <translation type="unfinished"></translation>
+        <translation>enllaç</translation>
     </message>
 </context>
 <context>
@@ -21075,7 +21117,7 @@ Parser error:
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation>Aborta</translation>
     </message>
     <message>
         <source>Attribute table</source>
@@ -21094,7 +21136,7 @@ Parser error:
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Expressió</translation>
     </message>
     <message>
         <source>Column Preview</source>
@@ -21143,7 +21185,7 @@ Parser error:
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>No symbology</source>
@@ -21193,7 +21235,7 @@ Parser error:
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Unitats del map</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -21295,15 +21337,15 @@ Parser error:
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polígon</translation>
+        <translation>Polígon</translation>
     </message>
     <message>
         <source>(i.e. including colliding objects)</source>
@@ -21338,14 +21380,14 @@ Parser error:
     <name>QgsErrorDialog</name>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
 </context>
 <context>
     <name>QgsErrorDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diàleg</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -21594,7 +21636,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Expressió</translation>
     </message>
 </context>
 <context>
@@ -21632,7 +21674,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsExtentGroupBox</name>
     <message>
         <source>layer</source>
-        <translation type="unfinished"></translation>
+        <translation>capa</translation>
     </message>
     <message>
         <source>map view</source>
@@ -21655,19 +21697,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>West</source>
-        <translation type="unfinished"></translation>
+        <translation>Oest</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished"></translation>
+        <translation>Est</translation>
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished"></translation>
+        <translation>Nord</translation>
     </message>
     <message>
         <source>South</source>
-        <translation type="unfinished"></translation>
+        <translation>Sud</translation>
     </message>
     <message>
         <source>Layer extent</source>
@@ -21716,7 +21758,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>An error occured while evaluating the calculation string:
@@ -21781,7 +21823,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">Precisió</translation>
+        <translation>Precisió</translation>
     </message>
     <message>
         <source>Update existing field</source>
@@ -21829,11 +21871,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Type name</source>
@@ -21841,15 +21883,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Longitud</translation>
+        <translation>Longitud</translation>
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">Precisió</translation>
+        <translation>Precisió</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentari</translation>
     </message>
     <message>
         <source>Edit widget</source>
@@ -21865,7 +21907,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Camp</translation>
     </message>
     <message>
         <source>Added attribute</source>
@@ -21929,7 +21971,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amagat</translation>
     </message>
     <message>
         <source>Checkbox</source>
@@ -22023,15 +22065,15 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     </message>
     <message>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+X</translation>
     </message>
     <message>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Relacions</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Edit UI</source>
@@ -22098,11 +22140,11 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     <name>QgsFileNameWidgetWrapper</name>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecciona un fitxer</translation>
     </message>
 </context>
 <context>
@@ -22113,7 +22155,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select symbol color</source>
@@ -22150,7 +22192,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished">píxels</translation>
+        <translation>píxels</translation>
     </message>
 </context>
 <context>
@@ -22161,7 +22203,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     </message>
     <message>
         <source>Remove</source>
-        <translation type="unfinished">Suprimeix</translation>
+        <translation>Suprimeix</translation>
     </message>
 </context>
 <context>
@@ -22210,7 +22252,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     </message>
     <message>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualitza</translation>
     </message>
     <message>
         <source>Device name</source>
@@ -22345,11 +22387,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Automàtic </translation>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Manual</translation>
     </message>
     <message>
         <source>3D</source>
@@ -22377,7 +22419,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Valid</translation>
     </message>
     <message>
         <source>Invalid</source>
@@ -22401,7 +22443,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1
@@ -22477,15 +22519,15 @@ gray = no data
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Posició </translation>
     </message>
     <message>
         <source>Signal</source>
-        <translation type="unfinished"></translation>
+        <translation>Senyal</translation>
     </message>
     <message>
         <source>Satellite</source>
@@ -22509,7 +22551,7 @@ gray = no data
     </message>
     <message>
         <source>Longitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Longitud</translation>
     </message>
     <message>
         <source>longitude of position fix (degrees)</source>
@@ -22521,11 +22563,11 @@ gray = no data
     </message>
     <message>
         <source>Altitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Altitud</translation>
     </message>
     <message>
         <source>Latitude</source>
-        <translation type="unfinished"></translation>
+        <translation>Latitud</translation>
     </message>
     <message>
         <source>Time of fix</source>
@@ -22549,7 +22591,7 @@ gray = no data
     </message>
     <message>
         <source>Direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Direcció</translation>
     </message>
     <message>
         <source>Horizontal Dilution of Precision</source>
@@ -22597,7 +22639,7 @@ gray = no data
     </message>
     <message>
         <source>Quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Qualitat</translation>
     </message>
     <message>
         <source>position fix status: Valid or Invalid</source>
@@ -22605,7 +22647,7 @@ gray = no data
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Estat</translation>
     </message>
     <message>
         <source>number of satellites used in the position fix</source>
@@ -22641,15 +22683,15 @@ gray = no data
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor</translation>
     </message>
     <message>
         <source>Device</source>
-        <translation type="unfinished"></translation>
+        <translation>Dispositiu</translation>
     </message>
     <message>
         <source>00000; </source>
@@ -22685,7 +22727,7 @@ gray = no data
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>save layer after every feature added</source>
@@ -22701,7 +22743,7 @@ gray = no data
     </message>
     <message>
         <source>Log File</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxer de registre</translation>
     </message>
     <message>
         <source>browse for log file</source>
@@ -22721,15 +22763,15 @@ gray = no data
     </message>
     <message>
         <source>never</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mai</translation>
     </message>
     <message>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">sempre</translation>
     </message>
     <message>
         <source>Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursor</translation>
     </message>
     <message>
         <source>Small</source>
@@ -22868,7 +22910,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Routes</source>
-        <translation type="unfinished"></translation>
+        <translation>Rutes</translation>
     </message>
     <message>
         <source>Tracks</source>
@@ -22923,11 +22965,11 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Fitxer</translation>
+        <translation>Fitxer</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navega...</translation>
     </message>
     <message>
         <source>Feature types</source>
@@ -22939,7 +22981,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Routes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rutes</translation>
     </message>
     <message>
         <source>Tracks</source>
@@ -22959,7 +23001,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>GPX output file</source>
@@ -22987,7 +23029,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Port</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -23770,7 +23812,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -23786,7 +23828,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Up</source>
@@ -23794,11 +23836,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <source>Base Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Capa base</translation>
     </message>
     <message>
         <source>URL</source>
@@ -23846,11 +23888,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Camí</translation>
     </message>
     <message>
         <source>Video</source>
-        <translation type="unfinished"></translation>
+        <translation>Video</translation>
     </message>
     <message>
         <source>Anti Aliasing</source>
@@ -23934,7 +23976,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error: %1 on line %2, column %3</source>
@@ -23968,7 +24010,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -24031,26 +24073,26 @@ p, li { white-space: pre-wrap; }
     <name>QgsGraduatedSymbolRendererV2Model</name>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Símbol</translation>
     </message>
     <message>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Valors</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Llegenda</translation>
     </message>
 </context>
 <context>
     <name>QgsGraduatedSymbolRendererV2Widget</name>
     <message>
         <source>Column</source>
-        <translation type="unfinished">Columna</translation>
+        <translation>Columna</translation>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Símbol</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -24149,7 +24191,7 @@ Use &quot;%1&quot; for the lower bound of the classification, and &quot;%2&quot;
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
@@ -24181,27 +24223,27 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <name>QgsGrassAttributes</name>
     <message>
         <source>Column</source>
-        <translation type="unfinished">Columna</translation>
+        <translation>Columna</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>ERROR</source>
-        <translation type="unfinished"></translation>
+        <translation>ERROR</translation>
     </message>
     <message>
         <source>OK</source>
@@ -24220,7 +24262,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>result</source>
-        <translation type="unfinished"></translation>
+        <translation>resultat</translation>
     </message>
     <message>
         <source>Update database record</source>
@@ -24228,7 +24270,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualitza</translation>
     </message>
     <message>
         <source>Add new category using settings in GRASS Edit toolbox</source>
@@ -24251,7 +24293,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <name>QgsGrassBrowser</name>
     <message>
         <source>Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eines</translation>
     </message>
     <message>
         <source>Add selected map to canvas</source>
@@ -24287,7 +24329,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>Cannot copy map %1@%2</source>
@@ -24335,7 +24377,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <name>QgsGrassEdit</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>You are not owner of the mapset, cannot open the vector for editing.</source>
@@ -24411,11 +24453,11 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Boundary (no area)</source>
@@ -24540,7 +24582,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Settings</source>
@@ -24568,7 +24610,7 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Type</source>
@@ -24819,11 +24861,11 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     </message>
     <message>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>I</translation>
     </message>
     <message>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>O</translation>
     </message>
     <message>
         <source>Absolute value of x</source>
@@ -25043,7 +25085,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished">Sortida</translation>
+        <translation>Sortida</translation>
     </message>
 </context>
 <context>
@@ -25054,7 +25096,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>The module file (%1) not found.</source>
@@ -25155,11 +25197,11 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished">Sortida</translation>
+        <translation>Sortida</translation>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manual</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -25197,7 +25239,7 @@ at line %2 column %3</source>
     <name>QgsGrassModuleFile</name>
     <message>
         <source>File</source>
-        <translation type="unfinished">Fitxer</translation>
+        <translation>Fitxer</translation>
     </message>
     <message>
         <source>%1:&amp;nbsp;missing value</source>
@@ -25216,7 +25258,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>Cannot find layeroption %1</source>
@@ -25228,7 +25270,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrasenya</translation>
     </message>
     <message>
         <source>Select a layer</source>
@@ -25247,11 +25289,11 @@ at line %2 column %3</source>
     <name>QgsGrassModuleInput</name>
     <message>
         <source>Input</source>
-        <translation type="unfinished">Entrada</translation>
+        <translation>Entrada</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>Cannot find typeoption %1</source>
@@ -25294,7 +25336,7 @@ at line %2 column %3</source>
     <name>QgsGrassModuleOption</name>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">Navega</translation>
+        <translation>Navega</translation>
     </message>
     <message>
         <source>Output file</source>
@@ -25425,7 +25467,7 @@ at line %2 column %3</source>
     <name>QgsGrassNewMapset</name>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bases de dades</translation>
     </message>
     <message>
         <source>Location 1</source>
@@ -25469,7 +25511,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>Cannot create projection.</source>
@@ -25586,11 +25628,11 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Arbre</translation>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Comentari</translation>
     </message>
     <message>
         <source>Example directory tree:</source>
@@ -25614,7 +25656,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navega...</translation>
     </message>
     <message>
         <source>Select existing directory or create a new one:</source>
@@ -25650,7 +25692,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Projecció </translation>
     </message>
     <message>
         <source>Projection Error</source>
@@ -25722,7 +25764,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Propietari</translation>
     </message>
     <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -25931,7 +25973,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGrassRegion</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
@@ -25962,19 +26004,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>North</source>
-        <translation type="unfinished"></translation>
+        <translation>Nord</translation>
     </message>
     <message>
         <source>West</source>
-        <translation type="unfinished"></translation>
+        <translation>Oest</translation>
     </message>
     <message>
         <source>East</source>
-        <translation type="unfinished"></translation>
+        <translation>Est</translation>
     </message>
     <message>
         <source>South</source>
-        <translation type="unfinished"></translation>
+        <translation>Sud</translation>
     </message>
     <message>
         <source>Select the extent by dragging on canvas 
@@ -26007,7 +26049,7 @@ or change the following values</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Width</source>
@@ -26089,11 +26131,11 @@ or change the following values</source>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navega...</translation>
     </message>
 </context>
 <context>
@@ -26155,7 +26197,7 @@ or change the following values</source>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Avís</translation>
+        <translation>Avís</translation>
     </message>
     <message>
         <source>GRASS Shell is not compiled.</source>
@@ -26235,7 +26277,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Problems during roll back</source>
@@ -26263,19 +26305,19 @@ at line %2 column %3</source>
     <name>QgsHandleBadLayers</name>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">Navega</translation>
+        <translation>Navega</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Proveïdor</translation>
     </message>
     <message>
         <source>Datasource</source>
@@ -26283,7 +26325,7 @@ at line %2 column %3</source>
     </message>
     <message>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation>cap</translation>
     </message>
     <message>
         <source>Select file to replace &apos;%1&apos;</source>
@@ -26427,7 +26469,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsIDWInterpolatorDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diàleg</translation>
     </message>
     <message>
         <source>Distance coefficient P</source>
@@ -26461,7 +26503,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>FID</source>
@@ -26469,7 +26511,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atribut</translation>
     </message>
     <message>
         <source>Value</source>
@@ -26477,7 +26519,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Clear Results</source>
@@ -26532,7 +26574,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Current layer</source>
@@ -26572,7 +26614,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Tree</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Arbre</translation>
     </message>
     <message>
         <source>Graph</source>
@@ -26584,7 +26626,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Format</translation>
     </message>
     <message>
         <source>No attributes.</source>
@@ -26663,7 +26705,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsIdentifyResultsWebView</name>
     <message>
         <source>Print</source>
-        <translation type="unfinished"></translation>
+        <translation>Imprimeix</translation>
     </message>
 </context>
 <context>
@@ -26716,7 +26758,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Punts</translation>
     </message>
     <message>
         <source>Save interpolated raster as...</source>
@@ -26759,15 +26801,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation type="unfinished">Sortida</translation>
+        <translation>Sortida</translation>
     </message>
     <message>
         <source>Interpolation method</source>
@@ -26775,7 +26817,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Number of columns</source>
@@ -26894,7 +26936,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Below</source>
@@ -26910,7 +26952,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Below Left</source>
@@ -26930,11 +26972,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished">Màxim</translation>
+        <translation>Màxim</translation>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished">Mínim</translation>
+        <translation>Mínim</translation>
     </message>
     <message>
         <source>Buffer labels</source>
@@ -26954,7 +26996,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>%</source>
@@ -27002,7 +27044,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Font</translation>
     </message>
     <message>
         <source>Multiline labels?</source>
@@ -27124,7 +27166,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Font</translation>
     </message>
     <message>
         <source>Available typeface styles</source>
@@ -27132,11 +27174,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estil</translation>
+        <translation>Estil</translation>
     </message>
     <message>
         <source>Underlined text</source>
@@ -27206,7 +27248,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Posició </translation>
     </message>
     <message>
         <source>Label distance</source>
@@ -27245,7 +27287,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">mm</translation>
     </message>
     <message>
         <source>% of length</source>
@@ -27384,11 +27426,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Lorem Ipsum</source>
-        <translation type="unfinished"></translation>
+        <translation>Lorem Ipsum</translation>
     </message>
     <message>
         <source>Sample text</source>
@@ -27522,15 +27564,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation>Esquerra</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Centre</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreta</translation>
     </message>
     <message>
         <source>Force point inside polygon</source>
@@ -27566,11 +27608,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estil</translation>
+        <translation>Estil</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transparència </translation>
     </message>
     <message>
         <source> %</source>
@@ -27590,15 +27632,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Font</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mida</translation>
     </message>
     <message>
         <source>Buffer</source>
@@ -27794,7 +27836,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
         <source>Offset from centroid</source>
@@ -27862,11 +27904,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>outside</source>
-        <translation type="unfinished"></translation>
+        <translation>fora</translation>
     </message>
     <message>
         <source>inside</source>
-        <translation type="unfinished"></translation>
+        <translation>dins</translation>
     </message>
     <message>
         <source>Maximum angle between curved characters</source>
@@ -27926,7 +27968,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Forma</translation>
     </message>
     <message>
         <source>Sync with label</source>
@@ -27978,7 +28020,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>never</source>
-        <translation type="unfinished"></translation>
+        <translation>mai</translation>
     </message>
     <message>
         <source>when rotation defined</source>
@@ -27986,7 +28028,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>always</source>
-        <translation type="unfinished"></translation>
+        <translation>sempre</translation>
     </message>
     <message>
         <source>Limit number of features to be labeled to</source>
@@ -27998,7 +28040,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Posició </translation>
     </message>
     <message>
         <source>Uncheck to write labeling engine derived rotation on pin and NULL on unpin</source>
@@ -28063,7 +28105,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsLegendModel</name>
     <message>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grup</translation>
     </message>
     <message>
         <source>No Legend Available</source>
@@ -28078,7 +28120,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -28094,7 +28136,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Color</source>
-        <translation type="unfinished">Color</translation>
+        <translation>Color</translation>
     </message>
 </context>
 <context>
@@ -28132,11 +28174,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporta</translation>
     </message>
     <message>
         <source>Export/import error</source>
@@ -28152,7 +28194,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Saving connections</source>
@@ -28358,7 +28400,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
 </context>
 <context>
@@ -28662,7 +28704,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Length</source>
-        <translation type="unfinished">Longitud</translation>
+        <translation>Longitud</translation>
     </message>
     <message>
         <source>firstX</source>
@@ -28850,7 +28892,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsMapToolSelect</name>
     <message>
         <source>Select</source>
-        <translation type="unfinished">Selecciona</translation>
+        <translation>Selecciona</translation>
     </message>
 </context>
 <context>
@@ -29018,7 +29060,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Interval</source>
@@ -29189,19 +29231,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Minimum</source>
-        <translation type="unfinished">Mínim</translation>
+        <translation>Mínim</translation>
     </message>
     <message>
         <source>Maximum</source>
-        <translation type="unfinished">Màxim</translation>
+        <translation>Màxim</translation>
     </message>
     <message>
         <source>Median</source>
-        <translation type="unfinished">Mediana</translation>
+        <translation>Mediana</translation>
     </message>
     <message>
         <source>Sum</source>
-        <translation type="unfinished">Suma</translation>
+        <translation>Suma</translation>
     </message>
     <message>
         <source>Concatenation</source>
@@ -29293,7 +29335,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>Edita...</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -29374,7 +29416,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Provider/DSN</source>
@@ -29382,11 +29424,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bases de dades</translation>
     </message>
     <message>
         <source>Username</source>
@@ -29394,7 +29436,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Contrasenya</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
@@ -29433,19 +29475,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsMssqlProvider</name>
     <message>
         <source>8 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Enter de 1 byte {8 ?}</translation>
     </message>
     <message>
         <source>4 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter de 4 bytes</translation>
     </message>
     <message>
         <source>2 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter de 2 bytes</translation>
     </message>
     <message>
         <source>1 Bytes integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter de 1 byte</translation>
     </message>
     <message>
         <source>Decimal number (numeric)</source>
@@ -29534,19 +29576,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tot</translation>
     </message>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Taula</translation>
+        <translation>Taula</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Geometry column</source>
@@ -29558,11 +29600,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
@@ -29578,7 +29620,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Select Table</source>
@@ -29612,15 +29654,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     <name>QgsMssqlTableModel</name>
     <message>
         <source>Schema</source>
-        <translation type="unfinished">Esquema</translation>
+        <translation>Esquema</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Taula</translation>
+        <translation>Taula</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Geometry column</source>
@@ -29640,7 +29682,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Detecting...</source>
@@ -29660,7 +29702,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Multipoint</source>
@@ -29668,7 +29710,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Multiline</source>
@@ -29715,15 +29757,15 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation>Vermell</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation>Verd</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation>Blau</translation>
     </message>
 </context>
 <context>
@@ -29787,7 +29829,7 @@ enhancement</source>
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">tot</translation>
     </message>
     <message>
         <source>off</source>
@@ -29855,7 +29897,7 @@ Note: giving the password is optional. It will be requested interactivly, when n
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Contrasenya</translation>
     </message>
     <message>
         <source>&amp;User name</source>
@@ -29948,15 +29990,15 @@ Extended error information:
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Servidor</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bases de dades</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Port</translation>
     </message>
     <message>
         <source>Username</source>
@@ -29964,7 +30006,7 @@ Extended error information:
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Contrasenya</translation>
     </message>
     <message>
         <source>Save Password</source>
@@ -30007,7 +30049,7 @@ Extended error information:
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Failed to load SRIDS: %1</source>
@@ -30069,7 +30111,7 @@ Extended error information:
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Bases de dades</translation>
     </message>
     <message>
         <source>Create a new Spatialite database</source>
@@ -30077,11 +30119,11 @@ Extended error information:
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de la capa</translation>
     </message>
     <message>
         <source>Name for the new layer</source>
@@ -30093,23 +30135,23 @@ Extended error information:
     </message>
     <message>
         <source>geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>geometria</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polígon</translation>
+        <translation>Polígon</translation>
     </message>
     <message>
         <source>MultiPoint</source>
@@ -30149,7 +30191,7 @@ Extended error information:
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>An attribute name</source>
@@ -30204,7 +30246,7 @@ Extended error information:
     </message>
     <message>
         <source>GML</source>
-        <translation type="unfinished"></translation>
+        <translation>GML</translation>
     </message>
     <message>
         <source>Mapinfo File</source>
@@ -30227,19 +30269,19 @@ Extended error information:
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Point</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polígon</translation>
+        <translation>Polígon</translation>
     </message>
     <message>
         <source>New attribute</source>
@@ -30247,11 +30289,11 @@ Extended error information:
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Amplada</translation>
+        <translation>Amplada</translation>
     </message>
     <message>
         <source>Precision</source>
@@ -30325,7 +30367,7 @@ Extended error information:
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Manual</translation>
     </message>
     <message>
         <source>Output file</source>
@@ -30333,7 +30375,7 @@ Extended error information:
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>OpenStreetMap files (*.osm)</source>
@@ -30381,7 +30423,7 @@ Extended error information:
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Export type</source>
@@ -30417,7 +30459,7 @@ Extended error information:
     </message>
     <message>
         <source>Tag</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta</translation>
     </message>
     <message>
         <source>Count</source>
@@ -30458,7 +30500,7 @@ Extended error information:
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Output SpatiaLite DB file</source>
@@ -30502,7 +30544,7 @@ Extended error information:
     <name>QgsOWSConnectionItem</name>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -30560,7 +30602,7 @@ Extended error information:
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
@@ -30605,7 +30647,7 @@ Extended error information:
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Llest</translation>
     </message>
     <message>
         <source>Layers</source>
@@ -30633,7 +30675,7 @@ Extended error information:
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carrega</translation>
     </message>
     <message>
         <source>Save connections to file</source>
@@ -30661,7 +30703,7 @@ Extended error information:
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Títol</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -30685,7 +30727,7 @@ Extended error information:
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format</translation>
     </message>
     <message>
         <source>Options</source>
@@ -30693,7 +30735,7 @@ Extended error information:
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>Tile size</source>
@@ -30742,11 +30784,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Estil</translation>
+        <translation>Estil</translation>
     </message>
     <message>
         <source>Tilesets</source>
@@ -30758,11 +30800,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mida</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Server Search</source>
@@ -30774,7 +30816,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Descripció</translation>
+        <translation>Descripció</translation>
     </message>
     <message>
         <source>URL</source>
@@ -30921,7 +30963,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navega...</translation>
     </message>
     <message>
         <source>Select remote layers</source>
@@ -30943,7 +30985,7 @@ Always network: always load from network and do not check if the cache has a val
     <name>QgsOfflineEditingProgressDialogBase</name>
     <message>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Diàleg</translation>
     </message>
     <message>
         <source>TextLabel</source>
@@ -31005,7 +31047,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished">Desconegut</translation>
+        <translation>Desconegut</translation>
     </message>
     <message>
         <source>OGR error creating wkb for feature %1: %2</source>
@@ -31108,7 +31150,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Save raster as:</source>
@@ -31195,15 +31237,15 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Fitxer</translation>
+        <translation>Fitxer</translation>
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Directori</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bases de dades</translation>
     </message>
     <message>
         <source>Protocol</source>
@@ -31285,19 +31327,19 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tot</translation>
     </message>
     <message>
         <source>Always</source>
-        <translation type="unfinished"></translation>
+        <translation>Sempre</translation>
     </message>
     <message>
         <source>If needed</source>
-        <translation type="unfinished"></translation>
+        <translation>Si fa falta</translation>
     </message>
     <message>
         <source>Never</source>
-        <translation type="unfinished"></translation>
+        <translation>Mai</translation>
     </message>
     <message>
         <source>Load all</source>
@@ -31313,7 +31355,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">No</translation>
+        <translation>No</translation>
     </message>
     <message>
         <source>Basic scan</source>
@@ -31381,11 +31423,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>map units</source>
-        <translation type="unfinished">unitats del mapa</translation>
+        <translation>unitats del mapa</translation>
     </message>
     <message>
         <source>pixels</source>
-        <translation type="unfinished">píxels</translation>
+        <translation>píxels</translation>
     </message>
     <message>
         <source>Semi transparent circle</source>
@@ -31397,7 +31439,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Cap</translation>
+        <translation>Cap</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -31541,7 +31583,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Save scales</source>
@@ -31580,7 +31622,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistema</translation>
     </message>
     <message>
         <source>Data Sources</source>
@@ -31596,7 +31638,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Colors</translation>
     </message>
     <message>
         <source>Canvas &amp; Legend</source>
@@ -31620,11 +31662,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <source>Locale</source>
@@ -31664,7 +31706,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Font</translation>
     </message>
     <message>
         <source>Qt default</source>
@@ -31672,7 +31714,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Mida</translation>
     </message>
     <message>
         <source>Timeout for timed messages or dialogs</source>
@@ -31716,7 +31758,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Open project on launch</source>
@@ -31764,7 +31806,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Never</source>
-        <translation type="unfinished"></translation>
+        <translation>Mai</translation>
     </message>
     <message>
         <source>Ask</source>
@@ -31796,7 +31838,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valor</translation>
+        <translation>Valor</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -31984,7 +32026,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Debugging</source>
-        <translation type="unfinished"></translation>
+        <translation>Depuració </translation>
     </message>
     <message>
         <source>Show these events in the Log Message panel (under Rendering tab)</source>
@@ -32000,11 +32042,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exporta</translation>
     </message>
     <message>
         <source>Add color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Afegir color</translation>
     </message>
     <message>
         <source>Remove color</source>
@@ -32016,7 +32058,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa</translation>
     </message>
     <message>
         <source>Default map appearance (overridden by project properties)</source>
@@ -32184,11 +32226,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Meters</source>
-        <translation type="unfinished"></translation>
+        <translation>Metres</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation type="unfinished"></translation>
+        <translation>Peu</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
@@ -32200,7 +32242,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>Graus</translation>
     </message>
     <message>
         <source>Map update interval</source>
@@ -32428,7 +32470,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>ext</source>
@@ -32440,7 +32482,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Descripció</translation>
+        <translation>Descripció</translation>
     </message>
     <message>
         <source>CRS for new layers</source>
@@ -32564,7 +32606,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Directori</translation>
     </message>
     <message>
         <source>Size [KiB]</source>
@@ -32572,7 +32614,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Neteja</translation>
     </message>
     <message>
         <source>Use proxy for web access</source>
@@ -32580,11 +32622,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port</translation>
     </message>
     <message>
         <source>User</source>
@@ -32596,7 +32638,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrasenya</translation>
     </message>
     <message>
         <source>Proxy type</source>
@@ -32644,7 +32686,7 @@ Missing some of the .ui template objects:
     </message>
     <message>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <source>SQL:%1
@@ -32677,7 +32719,7 @@ error:%2
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation>Punt</translation>
     </message>
     <message>
         <source>Multipoint</source>
@@ -32685,7 +32727,7 @@ error:%2
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Multiline</source>
@@ -32712,7 +32754,7 @@ error:%2
     <name>QgsOracleConnectionItem</name>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -32728,7 +32770,7 @@ error:%2
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation>Aborta</translation>
     </message>
     <message>
         <source>Import layer</source>
@@ -32814,7 +32856,7 @@ error:%2
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrasenya</translation>
     </message>
     <message>
         <source>Save Username</source>
@@ -32830,11 +32872,11 @@ error:%2
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Bases de dades</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Restrict the displayed tables to those that are in the all_sdo_geom_metadata table</source>
@@ -32874,7 +32916,7 @@ error:%2
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Port</translation>
     </message>
     <message>
         <source>1521</source>
@@ -32890,7 +32932,7 @@ error:%2
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor</translation>
     </message>
     <message>
         <source>Use estimated table statistics for the layer metadata.</source>
@@ -32971,7 +33013,7 @@ error:%2
     </message>
     <message>
         <source>Oracle</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle</translation>
     </message>
     <message>
         <source>Read attempt on an invalid oracle data source</source>
@@ -33330,19 +33372,19 @@ Error: %2</source>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tot</translation>
     </message>
     <message>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Propietari</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Taula</translation>
+        <translation>Taula</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Geometry column</source>
@@ -33354,11 +33396,11 @@ Error: %2</source>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
@@ -33374,7 +33416,7 @@ Error: %2</source>
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Select Table</source>
@@ -33408,15 +33450,15 @@ Error: %2</source>
     <name>QgsOracleTableModel</name>
     <message>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Propietari</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Taula</translation>
+        <translation>Taula</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Geometry column</source>
@@ -33424,7 +33466,7 @@ Error: %2</source>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>Primary key column</source>
@@ -33436,7 +33478,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Specify a geometry type</source>
@@ -33444,7 +33486,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Enter a SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Entra un SRID</translation>
     </message>
     <message>
         <source>Select a primary key</source>
@@ -33467,7 +33509,7 @@ Error: %2</source>
     <name>QgsPGConnectionItem</name>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -33483,7 +33525,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Import layer</source>
@@ -33591,7 +33633,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Flat</source>
-        <translation type="unfinished"></translation>
+        <translation>Pla</translation>
     </message>
     <message>
         <source>Round</source>
@@ -33648,7 +33690,7 @@ Error: %2</source>
     </message>
     <message>
         <source>allow</source>
-        <translation type="unfinished"></translation>
+        <translation>permet</translation>
     </message>
     <message>
         <source>prefer</source>
@@ -33702,23 +33744,23 @@ Error: %2</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Servei</translation>
     </message>
     <message>
         <source>Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Servidor</translation>
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Bases de dades</translation>
     </message>
     <message>
         <source>SSL mode</source>
@@ -33730,7 +33772,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation>Contrasenya</translation>
     </message>
     <message>
         <source>Name of the new connection</source>
@@ -33738,7 +33780,7 @@ Error: %2</source>
     </message>
     <message>
         <source>5432</source>
-        <translation type="unfinished">5432</translation>
+        <translation>5432</translation>
     </message>
     <message>
         <source>Restrict the displayed tables to those that are in the layer registries.</source>
@@ -33833,7 +33875,7 @@ Error: %2</source>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tot</translation>
     </message>
     <message>
         <source>Schema</source>
@@ -33857,11 +33899,11 @@ Error: %2</source>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
@@ -33877,7 +33919,7 @@ Error: %2</source>
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Select Table</source>
@@ -33931,7 +33973,7 @@ Error: %2</source>
     </message>
     <message>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <source>Primary Key</source>
@@ -33943,7 +33985,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <source>Select a primary key</source>
@@ -33963,7 +34005,7 @@ Error: %2</source>
     </message>
     <message>
         <source>Enter a SRID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Entra un SRID</translation>
     </message>
     <message>
         <source>Enter...</source>
@@ -34005,7 +34047,7 @@ Error: %2</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -34201,7 +34243,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
 </context>
 <context>
@@ -34224,7 +34266,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>State</source>
-        <translation type="unfinished"></translation>
+        <translation>Estat</translation>
     </message>
 </context>
 <context>
@@ -34259,7 +34301,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
@@ -34319,7 +34361,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>Enter the repository URL, beginning with &quot;http://&quot;</source>
@@ -34452,7 +34494,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>Author</source>
-        <translation type="unfinished"></translation>
+        <translation>Autor</translation>
     </message>
     <message>
         <source>More info</source>
@@ -34583,7 +34625,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tot</translation>
     </message>
     <message>
         <source>Installed</source>
@@ -34631,7 +34673,7 @@ You need to restart QGIS in order to reload it.</source>
     </message>
     <message>
         <source>Not installed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">No instal·lat</translation>
     </message>
     <message>
         <source>about:blank</source>
@@ -34731,11 +34773,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Estat</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <source>URL</source>
@@ -34768,7 +34810,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Remove the selected repository</source>
@@ -34783,7 +34825,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPointDisplacementRendererWidget</name>
     <message>
         <source>None</source>
-        <translation type="unfinished">Cap</translation>
+        <translation>Cap</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -34874,7 +34916,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Horizontal distance</source>
@@ -34901,7 +34943,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <source>error in setting encoding</source>
@@ -35003,7 +35045,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Multipoint</source>
@@ -35011,7 +35053,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Multiline</source>
@@ -35035,7 +35077,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished">Cap</translation>
+        <translation>Cap</translation>
     </message>
     <message>
         <source>Geometry</source>
@@ -35055,7 +35097,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>PQgetCancel failed</source>
-        <translation type="unfinished"></translation>
+        <translation>PQgetCancel ha fallat</translation>
     </message>
 </context>
 <context>
@@ -35066,7 +35108,7 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>PostGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <source>invalid PostgreSQL topology layer</source>
@@ -35254,7 +35296,7 @@ SQL: %2</source>
     </message>
     <message>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>desconegut</translation>
     </message>
     <message>
         <source>PostgreSQL not connected</source>
@@ -35310,7 +35352,7 @@ PostGIS %2</source>
     <name>QgsProjectBadLayerGuiHandler</name>
     <message>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignora</translation>
     </message>
     <message>
         <source>QGIS Project Read Error</source>
@@ -35360,18 +35402,18 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
     <name>QgsProjectProperties</name>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Identifiable</source>
@@ -35379,11 +35421,11 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vector</translation>
+        <translation>Vector</translation>
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS</translation>
     </message>
     <message>
         <source>Raster</source>
@@ -35456,7 +35498,7 @@ Proceed?</source>
     </message>
     <message>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Save scales</source>
@@ -35583,15 +35625,15 @@ Proceed?</source>
     </message>
     <message>
         <source>Meters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Metres</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Peu</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
@@ -35616,7 +35658,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Degree</source>
-        <translation type="unfinished"></translation>
+        <translation>Grau</translation>
     </message>
     <message>
         <source>Degree display</source>
@@ -35636,7 +35678,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Precision</source>
-        <translation type="unfinished">Precisió</translation>
+        <translation>Precisió</translation>
     </message>
     <message>
         <source>Automatically sets the number of decimal places in the mouse position display</source>
@@ -35648,7 +35690,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Automàtic </translation>
     </message>
     <message>
         <source>Sets the number of decimal places to use for the mouse position display</source>
@@ -35656,7 +35698,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manual</translation>
     </message>
     <message>
         <source>The number of decimal places for the manual option</source>
@@ -35672,7 +35714,7 @@ Proceed?</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
@@ -35688,11 +35730,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Layer</source>
-        <translation type="unfinished">Capa</translation>
+        <translation>Capa</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipus</translation>
+        <translation>Tipus</translation>
     </message>
     <message>
         <source>Identifiable</source>
@@ -35704,7 +35746,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation>Línia </translation>
     </message>
     <message>
         <source>Default symbols</source>
@@ -35720,7 +35762,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparència </translation>
     </message>
     <message>
         <source> %</source>
@@ -35736,7 +35778,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Relacions</translation>
     </message>
     <message>
         <source>Project file</source>
@@ -35760,7 +35802,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Add color</source>
-        <translation type="unfinished"></translation>
+        <translation>Afegir color</translation>
     </message>
     <message>
         <source>Paste colors</source>
@@ -35772,11 +35814,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importa</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exporta</translation>
     </message>
     <message>
         <source>Service capabilities</source>
@@ -35784,11 +35826,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Person</source>
-        <translation type="unfinished"></translation>
+        <translation>Persona</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Títol</translation>
     </message>
     <message>
         <source>Organization</source>
@@ -35892,7 +35934,7 @@ Proceed?</source>
     </message>
     <message>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Actualitza</translation>
     </message>
     <message>
         <source>Insert</source>
@@ -35920,11 +35962,11 @@ Proceed?</source>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Amplada</translation>
+        <translation>Amplada</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Alçada</translation>
+        <translation>Alçada</translation>
     </message>
     <message>
         <source>Maximums for GetMap request</source>
@@ -36069,7 +36111,7 @@ The data provider said:
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Camps</translation>
+        <translation>Camps</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -36080,7 +36122,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valors</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -36109,7 +36151,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tot</translation>
     </message>
     <message>
         <source>Use unfiltered layer</source>
@@ -36281,7 +36323,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Current layer extent</source>
@@ -36443,15 +36485,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Sense compressió </translation>
     </message>
     <message>
         <source>Low compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Baixa compressió</translation>
     </message>
     <message>
         <source>High compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Alta compressió</translation>
     </message>
     <message>
         <source>JPEG compression</source>
@@ -36479,7 +36521,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Valid</translation>
     </message>
     <message>
         <source>Invalid %1:
@@ -36518,7 +36560,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Nou</translation>
     </message>
     <message>
         <source>Remove</source>
@@ -36846,7 +36888,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rang</translation>
     </message>
     <message>
         <source>Mean</source>
@@ -36941,15 +36983,15 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Red</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vermell</translation>
     </message>
     <message>
         <source>Green</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verd</translation>
     </message>
     <message>
         <source>Blue</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Blau</translation>
     </message>
     <message>
         <source>Percent Transparent</source>
@@ -37130,7 +37172,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transparència </translation>
     </message>
     <message>
         <source>Style</source>
@@ -37158,7 +37200,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Format</translation>
     </message>
     <message>
         <source>Data Url</source>
@@ -37198,7 +37240,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Propietats</translation>
     </message>
     <message>
         <source>Band rendering</source>
@@ -37370,7 +37412,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>displayed as</source>
@@ -37414,7 +37456,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Llegenda</translation>
     </message>
     <message>
         <source>Palette</source>
@@ -37426,7 +37468,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Títol</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -37505,7 +37547,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">capa</translation>
     </message>
     <message>
         <source>user defined</source>
@@ -37556,7 +37598,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Format</translation>
     </message>
     <message>
         <source>Create GDAL Virtual Format composed of multiple 
@@ -37573,11 +37615,11 @@ datasets with maximum width and height specified below.</source>
     </message>
     <message>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Navega...</translation>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -37593,7 +37635,7 @@ datasets with maximum width and height specified below.</source>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
         <source>Columns</source>
@@ -37613,7 +37655,7 @@ datasets with maximum width and height specified below.</source>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vertical</translation>
     </message>
     <message>
         <source>VRT Tiles</source>
@@ -37753,7 +37795,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carrega</translation>
     </message>
 </context>
 <context>
@@ -38306,7 +38348,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Símbol</translation>
     </message>
     <message>
         <source>Error</source>
@@ -38417,7 +38459,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Transparència </translation>
     </message>
     <message>
         <source>Change symbol transparency [%]</source>
@@ -38437,7 +38479,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Width</source>
@@ -38449,7 +38491,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Change symbol size</source>
@@ -38579,7 +38621,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38590,7 +38632,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Acció</translation>
     </message>
     <message>
         <source>Unable to run command
@@ -38599,7 +38641,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Done</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fet</translation>
     </message>
     <message>
         <source>Unable to run command %1</source>
@@ -38714,7 +38756,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -39036,7 +39078,7 @@ The error was:
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -39083,7 +39125,7 @@ The error was:
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -39122,7 +39164,7 @@ The error was:
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select line color</source>
@@ -39161,7 +39203,7 @@ The error was:
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -39577,7 +39619,7 @@ enhancement</source>
     </message>
     <message>
         <source>Units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats</translation>
     </message>
     <message>
         <source>Avoid intersections</source>
@@ -39727,7 +39769,7 @@ SQL: %1</source>
     </message>
     <message>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tot</translation>
     </message>
     <message>
         <source>Table</source>
@@ -39743,7 +39785,7 @@ SQL: %1</source>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sql</translation>
     </message>
     <message>
         <source>Are you sure you want to update the internal statistics for DB: %1?
@@ -39859,11 +39901,11 @@ but implies better performance thereafter.</source>
     </message>
     <message>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sql</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Multipoint</source>
@@ -39871,7 +39913,7 @@ but implies better performance thereafter.</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Multiline</source>
@@ -40195,7 +40237,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsSpit</name>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom del fitxer</translation>
     </message>
     <message>
         <source>Feature Class</source>
@@ -40592,7 +40634,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Importa</translation>
     </message>
     <message>
         <source>Export style(s)</source>
@@ -40600,7 +40642,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exporta</translation>
     </message>
     <message>
         <source>Export/import error</source>
@@ -40616,7 +40658,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Error when saving selected symbols to file:
@@ -40681,7 +40723,7 @@ Overwrite?</source>
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>Downloading style ... </source>
@@ -40731,11 +40773,11 @@ Overwrite?</source>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exporta</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Importa</translation>
     </message>
     <message>
         <source>Group Actions</source>
@@ -40974,7 +41016,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línia </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Fill</source>
@@ -41021,7 +41063,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>Number of features</source>
@@ -41120,7 +41162,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select fill color</source>
@@ -41201,7 +41243,7 @@ There was a problem with your symbol database.</source>
     <name>QgsSymbolLayerV2Widget</name>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>area</source>
@@ -41300,7 +41342,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Unitats del map</translation>
     </message>
     <message>
         <source>Select color</source>
@@ -41709,11 +41751,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Horizontal</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vertical</translation>
     </message>
     <message>
         <source>Create world file</source>
@@ -41819,7 +41861,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsValueMapConfigDlg</name>
     <message>
         <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Selecciona un fitxer</translation>
     </message>
     <message>
         <source>Error</source>
@@ -41931,7 +41973,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Colors</translation>
     </message>
     <message>
         <source>Preview</source>
@@ -42106,7 +42148,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>ERROR: no provider</source>
@@ -42199,7 +42241,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Camp</translation>
     </message>
     <message>
         <source>Type</source>
@@ -42215,7 +42257,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Comentari</translation>
     </message>
 </context>
 <context>
@@ -42534,7 +42576,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Format</translation>
     </message>
     <message>
         <source>Attribution</source>
@@ -42570,7 +42612,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Propietats</translation>
     </message>
     <message>
         <source>Style</source>
@@ -42706,7 +42748,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Camp</translation>
     </message>
     <message>
         <source>Save Style...</source>
@@ -42714,7 +42756,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>displayed as</source>
@@ -42726,7 +42768,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Títol</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -42812,7 +42854,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Symbology export</source>
@@ -42836,7 +42878,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Format</translation>
     </message>
     <message>
         <source>Change...</source>
@@ -42933,7 +42975,7 @@ Error was:%2</source>
     <name>QgsWCSConnectionItem</name>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -42969,7 +43011,7 @@ Error was:%2</source>
     <name>QgsWFSConnectionItem</name>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -42992,7 +43034,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">desconegut</translation>
     </message>
     <message>
         <source>received %1 bytes from %2</source>
@@ -43094,7 +43136,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
 </context>
 <context>
@@ -43141,7 +43183,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carrega</translation>
     </message>
     <message>
         <source>Save connections to file</source>
@@ -43176,7 +43218,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Edita...</translation>
     </message>
     <message>
         <source>Delete</source>
@@ -43214,7 +43256,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitxers XML (*.xml *XML)</translation>
     </message>
     <message>
         <source>encoding %1 not supported.</source>
@@ -43332,7 +43374,7 @@ Error was:%2</source>
     <name>QgsWMSSourceSelectBase</name>
     <message>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Llest</translation>
     </message>
     <message>
         <source>Layers</source>
@@ -43372,7 +43414,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Títol</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -43396,7 +43438,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Carrega</translation>
     </message>
     <message>
         <source>Options</source>
@@ -43408,7 +43450,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Layer name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nom de la capa</translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
@@ -43464,7 +43506,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Format</translation>
     </message>
     <message>
         <source>Tileset</source>
@@ -43472,7 +43514,7 @@ Error was:%2</source>
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Server Search</source>
@@ -43528,7 +43570,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Exception</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Excepció </translation>
     </message>
     <message>
         <source>Could not get WCS capabilities: %1</source>
@@ -43742,7 +43784,7 @@ Response was:
     </message>
     <message>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Propietat</translation>
     </message>
     <message>
         <source>Value</source>
@@ -43754,7 +43796,7 @@ Response was:
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Títol</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -43889,7 +43931,7 @@ Response was:
     </message>
     <message>
         <source>Select a file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Selecciona un fitxer</translation>
     </message>
 </context>
 <context>
@@ -43908,7 +43950,7 @@ Response was:
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS</translation>
     </message>
     <message>
         <source>empty of capabilities: %1</source>
@@ -43927,7 +43969,7 @@ Response was:
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS</translation>
     </message>
     <message>
         <source>Returned image is flawed [Content-Type:%1; URL:%2]</source>
@@ -43974,7 +44016,7 @@ Response was:
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS</translation>
     </message>
     <message>
         <source>Number of tile layers must be one</source>
@@ -44119,7 +44161,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Property</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Propietat</translation>
     </message>
     <message>
         <source>Value</source>
@@ -44139,11 +44181,11 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Hidden</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Amagat</translation>
     </message>
     <message>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Títol</translation>
     </message>
     <message>
         <source>Abstract</source>
@@ -44155,7 +44197,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Sí</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No</source>
@@ -44336,7 +44378,7 @@ Response was:
     </message>
     <message>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">CRS</translation>
     </message>
     <message>
         <source>Bounding Box</source>
@@ -44388,7 +44430,7 @@ Response was:
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>Bottom</source>
@@ -44396,7 +44438,7 @@ Response was:
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message numerus="yes">
         <source>%n missing row(s)</source>
@@ -44528,7 +44570,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">WMS</translation>
     </message>
     <message>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
@@ -44767,7 +44809,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Direction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Direcció</translation>
     </message>
     <message>
         <source>Two-way direction</source>
@@ -44865,11 +44907,11 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Exporta</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Neteja</translation>
     </message>
     <message>
         <source>Help</source>
@@ -45047,11 +45089,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Update</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Actualitza</translation>
     </message>
     <message>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Llest</translation>
     </message>
 </context>
 <context>
@@ -45178,11 +45220,11 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Font</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Enable Object Inspector (switching between tabs may be slow)</source>
@@ -45190,7 +45232,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Consola</translation>
     </message>
     <message>
         <source>APIs</source>
@@ -45202,7 +45244,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Camí</translation>
     </message>
     <message>
         <source>Using prepared APIs file</source>
@@ -45263,7 +45305,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Rotation</source>
@@ -45487,7 +45529,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Colors</translation>
     </message>
     <message>
         <source>Fill</source>
@@ -45499,7 +45541,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -45507,7 +45549,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Top</source>
@@ -45574,7 +45616,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -45582,7 +45624,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Top</source>
@@ -45598,7 +45640,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Color</source>
@@ -45829,7 +45871,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Colors</translation>
     </message>
     <message>
         <source>Fill</source>
@@ -45927,7 +45969,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Colors</translation>
     </message>
     <message>
         <source>Border style</source>
@@ -46009,7 +46051,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>Fill</source>
@@ -46033,7 +46075,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -46041,7 +46083,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Top</source>
@@ -46061,7 +46103,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Colors</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -46084,7 +46126,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Colors</translation>
     </message>
     <message>
         <source>Fill</source>
@@ -46104,7 +46146,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Esquerra</translation>
     </message>
     <message>
         <source>HCenter</source>
@@ -46112,7 +46154,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dreta</translation>
     </message>
     <message>
         <source>Top</source>
@@ -46140,7 +46182,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mida</translation>
     </message>
     <message>
         <source>SVG Groups</source>
@@ -46222,7 +46264,7 @@ Problem with line %d</source>
     </message>
     <message>
         <source>Degrees</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Graus</translation>
     </message>
     <message>
         <source>Radians</source>
@@ -46365,7 +46407,7 @@ Run topology check again.</source>
     </message>
     <message>
         <source>Abort</source>
-        <translation type="unfinished">Interromp</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -47958,7 +48000,7 @@ To measure angles, select the tool and click on three points to create an angle 
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punt</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Warning</source>
@@ -48180,7 +48222,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Password</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Contrasenya</translation>
     </message>
     <message>
         <source>Database Type</source>
@@ -48188,7 +48230,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Port</translation>
     </message>
     <message>
         <source>SQL Query</source>
@@ -48254,7 +48296,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Camp</translation>
     </message>
     <message>
         <source>Value</source>
@@ -48421,7 +48463,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Manual</translation>
     </message>
     <message>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
@@ -51928,7 +51970,7 @@ Returns a string representation of a color based on its hue, saturation, value a
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bases de dades</translation>
     </message>
     <message>
         <source>Database connection</source>

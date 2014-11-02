@@ -18477,6 +18477,42 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Add arrow</source>
         <translation>Thêm mũi tên</translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -19021,10 +19057,6 @@ Please try a lower resolution or a smaller papersize</source>
         <translation type="obsolete">Trình bày</translation>
     </message>
     <message>
-        <source>Margin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source> mm</source>
         <translation type="unfinished"> mm</translation>
     </message>
@@ -19099,6 +19131,14 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Font color...</source>
         <translation type="obsolete">Màu phông...</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

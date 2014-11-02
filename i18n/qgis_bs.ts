@@ -18869,6 +18869,42 @@ Pokušajte sa nižom rezolucijom ili manjom veličinom papira</translation>
         <source>Add html frame</source>
         <translation>Dodaj html okvir</translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished">Ctrl+Shift+B</translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -19478,7 +19514,7 @@ Pokušajte sa nižom rezolucijom ili manjom veličinom papira</translation>
     </message>
     <message>
         <source>Margin</source>
-        <translation>Margina</translation>
+        <translation type="obsolete">Margina</translation>
     </message>
     <message>
         <source> mm</source>
@@ -19539,6 +19575,14 @@ Pokušajte sa nižom rezolucijom ili manjom veličinom papira</translation>
     <message>
         <source>Insert an expression</source>
         <translation type="obsolete">Unesi izraz</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -938,7 +938,7 @@ Consulta:
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation type="unfinished">%1 é uma camada inválida - não carregada</translation>
+        <translation>%1 é uma camada inválida - não carregada</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
@@ -1198,7 +1198,7 @@ Consulta:
     </message>
     <message>
         <source>Drop existing table</source>
-        <translation type="unfinished"></translation>
+        <translation>Soltar tabela existente</translation>
     </message>
 </context>
 <context>
@@ -15861,6 +15861,42 @@ Tente uma resolução ou um tamanho de papel menor</translation>
         <source>Unlock All Items</source>
         <translation>Desbloquear Todos os Items</translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished">Ctrl+Shift+B</translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -16404,11 +16440,19 @@ Tente uma resolução ou um tamanho de papel menor</translation>
     </message>
     <message>
         <source>Margin</source>
-        <translation>Margem</translation>
+        <translation type="obsolete">Margem</translation>
     </message>
     <message>
         <source> mm</source>
         <translation> mm</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26672,11 +26716,11 @@ Isto pode ser um problema em sua conexão ou no servidor WMS.</numerusform>
     </message>
     <message>
         <source>Expand tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Expandir árvore</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Recolher árvore</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -41935,7 +41979,7 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     </message>
     <message>
         <source>Add an action to layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Adicionar uma ação para a camada</translation>
     </message>
     <message>
         <source>Action in a layer allow user to trigger action when clicking on a geometry with &apos;Run Feature Action&apos; tools.For example, you can open an html page using the field value of the geometry as a parameter. Look at the &lt;a href=&quot;http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu&quot;&gt;documentation&lt;/a&gt;.</source>
@@ -41943,15 +41987,15 @@ Houve um problema com o seu banco de dados de simbologias.</translation>
     </message>
     <message>
         <source>Copy, paste and cut in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiar, colar e cortar no QGIS</translation>
     </message>
     <message>
         <source>Copy, paste, and cut work as in another applications in QGIS. Select a feature (a geometry or an attribut row in the attribute table) and use one of this shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trabalhe Copiando, colando ou cortando em qualquer aplicação no QGIS. Selecione uma feição (uma geometria ou uma linha na tabela de atributo) e use um destes atalhos de techado:  Ctrl+C para copiar, Ctrl+X para cortar, e Ctrl+V para colar.</translation>
     </message>
     <message>
         <source>Right click with identify tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Botão direito do mouse com identificar ferramentas</translation>
     </message>
     <message>
         <source>Right click with the identify tool to show a context menu from which you can choose the layer in which to identify a feature. A sub menu will list features identified and a third sub-menu will show the action link setup for the layer.If one of this sub-menu doesn&apos;t contain any information, the next sub-menuwill appear instead. For example, if you have just one layer, and click somewhere with several features, the first menu will list the feature list instead of layer list.</source>

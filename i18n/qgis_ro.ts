@@ -938,11 +938,11 @@ Interogare:
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation type="unfinished">%1 este un strat nevalid - nu a fost încărcat</translation>
+        <translation>%1 nu este un strat valid - nu a fost încărcat</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 nu este un strat valid și nu poate fi încărcat. Vă rugăm să verificați &lt;a href=&quot;#messageLog&quot;&gt;jurnalul mesajelor&lt;/a&gt; pentru mai multe informații.</translation>
     </message>
 </context>
 <context>
@@ -1198,7 +1198,7 @@ Interogare:
     </message>
     <message>
         <source>Drop existing table</source>
-        <translation type="unfinished"></translation>
+        <translation>Renunțare la tabela existentă</translation>
     </message>
 </context>
 <context>
@@ -5400,7 +5400,7 @@ Deschide dialogul rezultatelor, pentru verificare.</translation>
     <name>MainWindow</name>
     <message>
         <source>&amp;Edit</source>
-        <translation>&amp;Editează</translation>
+        <translation>&amp;Editare</translation>
     </message>
     <message>
         <source>Print Composers</source>
@@ -11125,7 +11125,7 @@ Please contact the developers.
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 nu este un strat valid și nu poate fi încărcat. Vă rugăm să verificați &lt;a href=&quot;#messageLog&quot;&gt;jurnalul mesajelor&lt;/a&gt; pentru mai multe informații.</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -14218,7 +14218,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Editează</translation>
+        <translation type="unfinished">&amp;Editare</translation>
     </message>
     <message>
         <source>&amp;Normal</source>
@@ -15861,6 +15861,42 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Unlock All Items</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished">Ctrl+Shift+B</translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -16402,11 +16438,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Margin</source>
-        <translation>Margin</translation>
+        <translation type="obsolete">Margin</translation>
     </message>
     <message>
         <source> mm</source>
         <translation>mm</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -31861,7 +31905,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Style &lt;i&gt;(QGIS restart required)&lt;/i&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Stil &lt;i&gt;(Este necesară restartarea QGIS)&lt;/i&gt;</translation>
     </message>
     <message>
         <source>Icon theme</source>

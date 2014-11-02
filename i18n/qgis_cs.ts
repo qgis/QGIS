@@ -938,11 +938,11 @@ Dotaz:
     </message>
     <message>
         <source>%1 is an invalid layer - not loaded</source>
-        <translation type="unfinished">%1 je neplatná vrstva - nenačtena</translation>
+        <translation>%1 je neplatná vrstva - nenačteno</translation>
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 je neplatná vrstva a nemohla být načtena. Zkontrolujte prosím &lt;a href=&quot;#messageLog&quot;&gt;zaznamenané zprávylog&lt;/a&gt; pro další informace.</translation>
     </message>
 </context>
 <context>
@@ -1198,7 +1198,7 @@ Dotaz:
     </message>
     <message>
         <source>Drop existing table</source>
-        <translation type="unfinished"></translation>
+        <translation>Zahodit existující tabulku</translation>
     </message>
 </context>
 <context>
@@ -3152,91 +3152,91 @@ Zásuvný modul nebude zapnut.</translation>
     </message>
     <message>
         <source>Warp (Reproject)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Změnit projekci...</translation>
     </message>
     <message>
         <source>Assign Projection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Přiřadit projekci...</translation>
     </message>
     <message>
         <source>Extract Projection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Extrahovat projekci...</translation>
     </message>
     <message>
         <source>Rasterize (Vector to Raster)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Převést na rastr (vektor na rastr)...</translation>
     </message>
     <message>
         <source>Polygonize (Raster to Vector)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Převést na polygony (rastr na vektor)...</translation>
     </message>
     <message>
         <source>Translate (Convert Format)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Převést na jiný formát...</translation>
     </message>
     <message>
         <source>RGB to PCT...</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB na PCT</translation>
     </message>
     <message>
         <source>PCT to RGB...</source>
-        <translation type="unfinished"></translation>
+        <translation>PCT na RGB</translation>
     </message>
     <message>
         <source>Contour...</source>
-        <translation type="unfinished"></translation>
+        <translation>Izolinie...</translation>
     </message>
     <message>
         <source>Clipper...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ořezávač...</translation>
     </message>
     <message>
         <source>Sieve...</source>
-        <translation type="unfinished"></translation>
+        <translation>Síto...</translation>
     </message>
     <message>
         <source>Near Black...</source>
-        <translation type="unfinished"></translation>
+        <translation>Blízko černé...</translation>
     </message>
     <message>
         <source>Fill nodata...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyplnit nodata (žádná data)...</translation>
     </message>
     <message>
         <source>Proximity (Raster Distance)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Blízkost (vzdálenost rastru)...</translation>
     </message>
     <message>
         <source>Grid (Interpolation)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid (interpolace)...</translation>
     </message>
     <message>
         <source>DEM (Terrain Models)...</source>
-        <translation type="unfinished"></translation>
+        <translation>DEM (modely reliéfu)...</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit Virtuální rastr (katalog)...</translation>
     </message>
     <message>
         <source>Merge...</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloučit...</translation>
     </message>
     <message>
         <source>Information...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informace...</translation>
     </message>
     <message>
         <source>Build Overviews (Pyramids)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vytvořit přehledy (pyramidy)...</translation>
     </message>
     <message>
         <source>Tile Index...</source>
-        <translation type="unfinished"></translation>
+        <translation>Index dlaždic...</translation>
     </message>
     <message>
         <source>GdalTools Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavení GdalTools...</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
@@ -5002,7 +5002,7 @@ Chyba GEOS geoprocessingu: jeden nebo více vstupních prvků mají neplatnou ge
     <name>Heatmap</name>
     <message>
         <source>Heatmap...</source>
-        <translation type="unfinished"></translation>
+        <translation>Teplotní mapa...</translation>
     </message>
     <message>
         <source>Creates a heatmap raster for the input point vector.</source>
@@ -5938,63 +5938,63 @@ Otevřete dialog výstupů pro jeho kontrolu.</translation>
     </message>
     <message>
         <source>Configure Shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastavit zástupce...</translation>
     </message>
     <message>
         <source>API Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>API dokumentace</translation>
     </message>
     <message>
         <source>Full Histogram Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Celkové roztažení histogramu</translation>
     </message>
     <message>
         <source>Touch Zoom and Pan</source>
-        <translation type="unfinished"></translation>
+        <translation>Posun a přiblížení dotykem</translation>
     </message>
     <message>
         <source>SVG Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG anotace</translation>
     </message>
     <message>
         <source>&amp;Download Data...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stáhnout data...</translation>
     </message>
     <message>
         <source>&amp;Import Topology from XML...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importovat topologii z XML...</translation>
     </message>
     <message>
         <source>&amp;Export Topology to SpatiaLite...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Exportovat topologii do SpatiaLite...</translation>
     </message>
     <message>
         <source>Increase Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvýšit jas</translation>
     </message>
     <message>
         <source>Decrease Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Snížit jas</translation>
     </message>
     <message>
         <source>Increase Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Zvýšit kontrast</translation>
     </message>
     <message>
         <source>Decrease Contrast</source>
-        <translation type="unfinished"></translation>
+        <translation>Snížit kontrast</translation>
     </message>
     <message>
         <source>Select By Expression...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vybrat pomocí vzorce...</translation>
     </message>
     <message>
         <source>Need Commercial Support?</source>
-        <translation type="unfinished"></translation>
+        <translation>Potřebujete komerční podporu?</translation>
     </message>
     <message>
         <source>Open Field Calculator...</source>
-        <translation type="unfinished"></translation>
+        <translation>Otevřít kalkulačku polí...</translation>
     </message>
     <message>
         <source>Add from Layer Definition File...</source>
@@ -6050,11 +6050,11 @@ Otevřete dialog výstupů pro jeho kontrolu.</translation>
     </message>
     <message>
         <source>Show Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Zobrazit vybrané vrstvy</translation>
     </message>
     <message>
         <source>Hide Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Skrýt vybrané vrstvy</translation>
     </message>
     <message>
         <source>Ctrl+D</source>
@@ -6062,11 +6062,11 @@ Otevřete dialog výstupů pro jeho kontrolu.</translation>
     </message>
     <message>
         <source>New SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nová vrstva SpatiaLite ...</translation>
     </message>
     <message>
         <source>Raster Calculator...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rastrový kalkulátor ...</translation>
     </message>
     <message>
         <source>Set CRS of Layer(s)</source>
@@ -6869,7 +6869,7 @@ Funguje pro všechny editovatelné vrstvy</translation>
     </message>
     <message>
         <source>Could not load model %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemohu načíst model %s</translation>
     </message>
     <message>
         <source>Could not load model %s
@@ -7535,27 +7535,27 @@ Pročtete si záznam pro více informací.</translation>
     <name>Processing</name>
     <message>
         <source>Pro&amp;cessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Zprac&amp;ování</translation>
     </message>
     <message>
         <source>&amp;Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sada nástrojů</translation>
     </message>
     <message>
         <source>Graphical &amp;Modeler...</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafický &amp;modelář...</translation>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Historie a záznam...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Možnosti...</translation>
     </message>
     <message>
         <source>&amp;Results Viewer...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Prohlížeč výsledků...</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
@@ -11122,7 +11122,7 @@ Please contact the developers.
     </message>
     <message>
         <source>%1 is an invalid layer and cannot be loaded. Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 je neplatná vrstva a nemohla být načtena. Zkontrolujte prosím &lt;a href=&quot;#messageLog&quot;&gt;zaznamenané zprávylog&lt;/a&gt; pro další informace.</translation>
     </message>
     <message>
         <source>QGIS files</source>
@@ -15867,6 +15867,42 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Unlock All Items</source>
         <translation>Odemknout všechny položky</translation>
     </message>
+    <message>
+        <source>Show Bounding Boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show bounding boxes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="unfinished">Ctrl+Shift+B</translation>
+    </message>
+    <message>
+        <source>Toggle Full Scr&amp;een</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle full screen mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="unfinished">F11</translation>
+    </message>
+    <message>
+        <source>&amp;Hide Panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide panels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="unfinished">F10</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
@@ -16408,11 +16444,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Margin</source>
-        <translation>Okraj</translation>
+        <translation type="obsolete">Okraj</translation>
     </message>
     <message>
         <source> mm</source>
         <translation> mm</translation>
+    </message>
+    <message>
+        <source>Horizontal margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vertical margin</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -19178,7 +19222,7 @@ a aktuální soubor je [%3]</translation>
     <name>QgsCustomColorScheme</name>
     <message>
         <source>Standard colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Standardní barvy</translation>
     </message>
 </context>
 <context>
@@ -22214,7 +22258,7 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
     </message>
     <message>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Potlačit vyskakování formuláře po vytvoření prvku</translation>
     </message>
     <message>
         <source>Default</source>
@@ -23292,7 +23336,7 @@ Vyberte prosím nějaký platný soubor.</translation>
     </message>
     <message>
         <source>Table retrieval finished.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Obdržení tabulky dokončeno.</translation>
     </message>
 </context>
 <context>
@@ -29343,7 +29387,7 @@ To může být problém vašeho síťového nastavení nebo WMS serveru.</numeru
     </message>
     <message>
         <source>Date</source>
-        <translation type="unfinished">Datum</translation>
+        <translation>Datum</translation>
     </message>
     <message>
         <source>Whole number (smallint - 16bit)</source>
@@ -29998,23 +30042,23 @@ enhancement</source>
     </message>
     <message>
         <source>all</source>
-        <translation type="unfinished">vše</translation>
+        <translation>vše</translation>
     </message>
     <message>
         <source>off</source>
-        <translation type="unfinished"></translation>
+        <translation>vypnuto</translation>
     </message>
     <message>
         <source>QGIS</source>
-        <translation type="unfinished">QGIS</translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <source>UMN</source>
-        <translation type="unfinished"></translation>
+        <translation>UMN</translation>
     </message>
     <message>
         <source>GeoServer</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoServer</translation>
     </message>
     <message>
         <source>Ignore GetCoverage URI reported in capabilities</source>
@@ -30055,7 +30099,7 @@ Poznámka: zadání hesla je volitelné. Bude požadováno interaktivně, pokud 
     </message>
     <message>
         <source>DPI-Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>DPI-režim</translation>
     </message>
     <message>
         <source>URL</source>
@@ -30410,7 +30454,7 @@ Rozšířené informace o chybě:
     </message>
     <message>
         <source>Date</source>
-        <translation type="unfinished">Datum</translation>
+        <translation>Datum</translation>
     </message>
     <message>
         <source>ESRI Shapefile</source>
@@ -30418,19 +30462,19 @@ Rozšířené informace o chybě:
     </message>
     <message>
         <source>Comma Separated Value</source>
-        <translation type="unfinished">Hodnoty oddělené čárkou</translation>
+        <translation>Hodnoty oddělené čárkou</translation>
     </message>
     <message>
         <source>GML</source>
-        <translation type="unfinished"></translation>
+        <translation>GML</translation>
     </message>
     <message>
         <source>Mapinfo File</source>
-        <translation type="unfinished">MapInfo soubory</translation>
+        <translation>MapInfo soubor</translation>
     </message>
     <message>
         <source>Save layer as...</source>
-        <translation type="unfinished">Uložit vrstvu jako...</translation>
+        <translation>Uložit vrstvu jako...</translation>
     </message>
 </context>
 <context>
@@ -30904,7 +30948,7 @@ Rozšířené informace o chybě:
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Změnit...</translation>
+        <translation>Změnit ...</translation>
     </message>
     <message>
         <source>Format</source>
@@ -31281,7 +31325,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>OGR error syncing to disk: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR chyba synchronizace na disk: %1</translation>
     </message>
     <message>
         <source>OGR error changing geometry: feature %1 not found</source>
@@ -32040,7 +32084,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Use custom variables (restart required - include separators)</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít vlastní proměnné (restart nutný - zahrnuje oddělovače)</translation>
     </message>
     <message>
         <source>Plugin paths</source>
@@ -32064,7 +32108,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Use native color chooser dialogs</source>
-        <translation type="unfinished"></translation>
+        <translation>Použít nativní dialogy výběru barvy</translation>
     </message>
     <message>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
@@ -32072,7 +32116,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Reset user interface to default settings (restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit výchozí nastavení rozhraní (vyžadován restart)</translation>
     </message>
     <message>
         <source>Feature attributes and table</source>
@@ -32292,7 +32336,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Suppress attribute form pop-up after feature creation</source>
-        <translation type="unfinished"></translation>
+        <translation>Potlačit vyskakování formuláře po vytvoření prvku</translation>
     </message>
     <message>
         <source>Background color</source>
@@ -32332,11 +32376,11 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>Vyšší hodnoty znamenají větší zjednodušení</translation>
     </message>
     <message>
         <source>Simplify on provider side if possible</source>
-        <translation type="unfinished">Zjednodušit na straně poskytovatele pokud je to možné</translation>
+        <translation>Zjednodušit na straně poskytovatele pokud to lze</translation>
     </message>
     <message>
         <source>Layer legend</source>
@@ -32380,7 +32424,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>WMS getLegendGraphic Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS getLegendGraphic rozlišení</translation>
     </message>
     <message>
         <source>Identify</source>
@@ -32508,7 +32552,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Composition defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Výchozí nastavení kompozice</translation>
     </message>
     <message>
         <source>Default font</source>
@@ -32712,7 +32756,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Standard colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Standardní barvy</translation>
     </message>
     <message>
         <source>Don&apos;t enable &apos;on the fly&apos; reprojection</source>
@@ -32776,7 +32820,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Max retry in case of tile request errors</source>
-        <translation type="unfinished"></translation>
+        <translation>Max počet opětovných pokusů v případě chyb požadavků dlaždic</translation>
     </message>
     <message>
         <source>User-Agent</source>
@@ -32857,7 +32901,7 @@ Missing some of the .ui template objects:
     </message>
     <message>
         <source>Table retrieval finished.</source>
-        <translation type="unfinished"></translation>
+        <translation>Obdržení tabulky dokončeno.</translation>
     </message>
 </context>
 <context>
@@ -33480,11 +33524,11 @@ Chyba: %2</translation>
     </message>
     <message>
         <source>Could not lookup authid %1:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemohu vyhledat authid %1:%2</translation>
     </message>
     <message>
         <source>Could not lookup WKT.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemohu vyhledat WKT.</translation>
     </message>
     <message>
         <source>Could not determine new srid.</source>
@@ -37903,7 +37947,7 @@ datasets with maximum width and height specified below.</source>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Změnit...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Extent</source>
@@ -43047,7 +43091,7 @@ Chyba byla:%2</translation>
     </message>
     <message>
         <source>Higher values result in more simplification</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Vyšší hodnoty znamenají větší zjednodušení</translation>
     </message>
     <message>
         <source>pixels</source>
@@ -43490,7 +43534,7 @@ Chyba byla:%2</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Změnit...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Filter:</source>
@@ -43791,7 +43835,7 @@ Chyba byla:%2</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Změnit...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Layer name</source>
