@@ -74,6 +74,10 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void on_mCopySelectedRowsButton_clicked();
     /**
+     * Paste features from the clipboard
+     */
+    void on_mPasteFeatures_clicked();
+    /**
      * Toggles editing mode
      */
     void on_mToggleEditingButton_toggled();

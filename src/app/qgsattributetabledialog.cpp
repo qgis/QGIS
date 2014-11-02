@@ -536,6 +536,12 @@ void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
   QgisApp::instance()->editCopy( mLayer );
 }
 
+void QgsAttributeTableDialog::on_mPasteFeatures_clicked()
+{
+  QgisApp::instance()->editPaste( mLayer );
+}
+
+
 void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
   QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
