@@ -240,7 +240,8 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       }
       else
       {
-        QgsDebugMsg( "invalid connection option \"" + pname + "\" ignored" );
+        QgsDebugMsg( "parameter \"" + pname + "\":\"" + pval + "\" added" );
+        setParam( pname, pval );
       }
     }
   }
@@ -588,6 +589,17 @@ QString QgsDataSourceURI::uri() const
   if ( mSelectAtIdDisabled )
   {
     theUri += QString( " selectatid=false" );
+  }
+
+  for ( QMap<QString, QString>::const_iterator it = mParams.begin(); it != mParams.end(); ++it )
+  {
+    if ( it.key().contains( "=" ) || it.key().contains( " " ) )
+    {
+      QgsDebugMsg( QString( "invalid uri parameter %1 skipped" ).arg( it.key() ) );
+      continue;
+    }
+
+    theUri += " " + it.key() + "='" + escape( it.value() ) + "'";
   }
 
   QString columnName( mGeometryColumn );
