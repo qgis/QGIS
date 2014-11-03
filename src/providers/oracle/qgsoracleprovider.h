@@ -397,8 +397,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
     QgsFeatureId mFidCounter;                //! next feature id if map is used
     QgsOracleConn *mConnection;
 
-    QString mSpatialIndex;                   //! name of spatial index of geometry column
     bool mHasSpatial;                        //! Oracle Spatial is installed
+    bool mHasSpatialIndex;                   //! Geometry column is indexed
+    QString mSpatialIndexName;               //! name of spatial index of geometry column
 
     QSharedPointer<QgsOracleSharedData> mShared;
 

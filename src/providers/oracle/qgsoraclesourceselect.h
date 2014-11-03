@@ -53,7 +53,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
-    void setConnectionInfo( const QString& connInfo ) { mConnInfo = connInfo; }
+    void setConnectionInfo( const QgsDataSourceURI& connInfo ) { mConnInfo = connInfo; }
 
   protected:
     void setConn( QgsOracleConn *conn ) const { if ( mConn ) mConn->disconnect();  mConn = conn; }
@@ -66,7 +66,7 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     }
 
   private:
-    QString mConnInfo;
+    QgsDataSourceURI mConnInfo;
     //! lazily initialized connection (to detect possible primary keys)
     mutable QgsOracleConn *mConn;
 };
@@ -92,8 +92,6 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void populateConnectionList();
     //! String list containing the selected tables
     QStringList selectedTables();
-    //! Connection info (database, host, user, password)
-    QString connectionInfo();
 
   signals:
     void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
@@ -164,9 +162,8 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsOracleColumnTypeThread *mColumnTypeThread;
-    QString mConnInfo;
+    QgsDataSourceURI mConnInfo;
     QStringList mSelectedTables;
-    bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 

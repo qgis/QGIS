@@ -52,7 +52,7 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
       break;
 
     case QgsFeatureRequest::FilterRect:
-      if ( !mSource->mGeometryColumn.isNull() )
+      if ( !mSource->mGeometryColumn.isNull() && mSource->mHasSpatialIndex )
       {
         QgsRectangle rect( mRequest.filterRect() );
         QString bbox = QString( "mdsys.sdo_geometry(2003,%1,NULL,"
@@ -65,18 +65,15 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
                        .arg( qgsDoubleToString( rect.xMaximum() ) )
                        .arg( qgsDoubleToString( rect.yMaximum() ) );
 
-        if ( !mSource->mSpatialIndex.isNull() )
-        {
-          whereClause = QString( "sdo_filter(%1,%2)='TRUE'" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
+        whereClause = QString( "sdo_filter(%1,%2)='TRUE'" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
 #if 0
-          if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
-          {
-            whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
-                           .arg( quotedIdentifier( P->mGeometryColumn ) )
-                           .arg( bbox );
-          }
-#endif
+        if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+        {
+          whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
+                         .arg( quotedIdentifier( P->mGeometryColumn ) )
+                         .arg( bbox );
         }
+#endif
       }
       break;
 
@@ -344,7 +341,7 @@ QgsOracleFeatureSource::QgsOracleFeatureSource( const QgsOracleProvider* p )
     , mFields( p->mAttributeFields )
     , mGeometryColumn( p->mGeometryColumn )
     , mSrid( p->mSrid )
-    , mSpatialIndex( p->mSpatialIndex )
+    , mHasSpatialIndex( p->mHasSpatialIndex )
     , mDetectedGeomType( p->mDetectedGeomType )
     , mRequestedGeomType( p->mRequestedGeomType )
     , mSqlWhereClause( p->mSqlWhereClause )

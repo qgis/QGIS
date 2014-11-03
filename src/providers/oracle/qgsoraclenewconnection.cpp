@@ -44,6 +44,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
       port = "1521";
     }
     txtPort->setText( port );
+    txtOptions->setText( settings.value( key + "/dboptions" ).toString() );
     cb_userTablesOnly->setChecked( settings.value( key + "/userTablesOnly", false ).toBool() );
     cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometryColumnsOnly", true ).toBool() );
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
@@ -125,6 +126,7 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + "/onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/dboptions", txtOptions->text() );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );
@@ -136,6 +138,8 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
 {
   QgsDataSourceURI uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
+  if ( !txtOptions->text().isEmpty() )
+    uri.setParam( "dboptions", txtOptions->text() );
 
   QgsOracleConn *conn = QgsOracleConn::connectDb( uri );
 
