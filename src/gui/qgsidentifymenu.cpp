@@ -331,7 +331,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     QList<QgsMapLayerAction*> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
     if ( mShowFeatureActions )
     {
-      featureActionMenu = new QgsActionMenu( layer, &( result.mFeature ), layerMenu );
+      featureActionMenu = new QgsActionMenu( layer, result.mFeature.id(), layerMenu );
     }
 
     // feature title
