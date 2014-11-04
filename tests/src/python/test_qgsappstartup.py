@@ -132,6 +132,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
                 testDir=testDir,
                 testFile="plugin_started.txt",
                 timeOut=10,
+                loadPlugins=True,
                 env={'QGIS_PLUGINPATH':
                          str(QtCore.QString(testDir).toLocal8Bit())})
 
