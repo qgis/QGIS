@@ -37,7 +37,7 @@ static const QString WCS_NAMESPACE = "http://www.opengis.net/wcs";
 static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 
-QgsWCSServer::QgsWCSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWCSProjectParser* pp,
+QgsWCSServer::QgsWCSServer(const QString& configFilePath, QMap<QString, QString> &parameters, QgsWCSProjectParser* pp,
                             QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, rh ), mConfigParser( pp )
 {
 }
@@ -58,7 +58,7 @@ void QgsWCSServer::executeRequest()
   {
     //do some error handling
     QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
-    mRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
+    mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
     return;
   }
 
@@ -71,11 +71,11 @@ void QgsWCSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "sending GetCapabilities response" );
-    mRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
+    QgsDebugMsg( "seting GetCapabilities response" );
+    mRequestHandler->setGetCapabilitiesResponse( capabilitiesDocument );
     return;
   }
   else if ( request.compare( "DescribeCoverage", Qt::CaseInsensitive ) == 0 )
@@ -87,11 +87,11 @@ void QgsWCSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "sending GetCapabilities response" );
-    mRequestHandler->sendGetCapabilitiesResponse( describeDocument );
+    QgsDebugMsg( "seting GetCapabilities response" );
+    mRequestHandler->setGetCapabilitiesResponse( describeDocument );
     return;
   }
   else if ( request.compare( "GetCoverage", Qt::CaseInsensitive ) == 0 )
@@ -103,12 +103,12 @@ void QgsWCSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       return;
     }
     if ( coverageOutput )
     {
-      mRequestHandler->sendGetCoverageResponse( coverageOutput );
+      mRequestHandler->setGetCoverageResponse( coverageOutput );
     }
     return;
   }

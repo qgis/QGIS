@@ -3,7 +3,9 @@
                               -------------------------
   begin                : June 29, 2007
   copyright            : (C) 2007 by Marco Hugentobler
+                         (C) 2014 by Alessandro Pasotti
   email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+                         a dot pasotti at itopen dot it
  ***************************************************************************/
 
 /***************************************************************************
@@ -30,9 +32,11 @@
 #include <QUrl>
 #include <fcgi_stdio.h>
 
-QgsHttpRequestHandler::QgsHttpRequestHandler(): QgsRequestHandler()
-{
-
+QgsHttpRequestHandler::QgsHttpRequestHandler():
+  QgsRequestHandler()
+{  
+  mException = NULL;
+  mHeadersSent = FALSE;
 }
 
 QgsHttpRequestHandler::~QgsHttpRequestHandler()
@@ -40,9 +44,9 @@ QgsHttpRequestHandler::~QgsHttpRequestHandler()
 
 }
 
-void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& format ) const
+void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &format )
 {
-  QgsDebugMsg( "Checking byte array is ok to send..." );
+  QgsDebugMsg( "Checking byte array is ok to set..." );
   if ( !ba )
   {
     return;
@@ -52,22 +56,113 @@ void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& for
   {
     return;
   }
+  QgsDebugMsg( "Byte array looks good, setting response..." );
 
-  QgsDebugMsg( "Byte array looks good, returning response..." );
-  QgsDebugMsg( QString( "Content size: %1" ).arg( ba->size() ) );
-  QgsDebugMsg( QString( "Content format: %1" ).arg( format ) );
-  printf( "Content-Type: " );
-  printf( format.toLocal8Bit() );
+  appendBody( *ba );
+  mInfoFormat = format;
+}
+
+bool QgsHttpRequestHandler::responseReady() const
+{
+  return mHeaders.count() || ( mBody.size() && mInfoFormat.length() );
+}
+
+bool QgsHttpRequestHandler::exceptionRaised() const
+{
+  return mException != NULL;
+}
+
+void QgsHttpRequestHandler::setHeader( const QString &name, const QString &value )
+{
+  mHeaders.insert( name, value);
+}
+
+
+void QgsHttpRequestHandler::clearHeaders( )
+{
+  mHeaders.clear();
+}
+
+int QgsHttpRequestHandler::removeHeader( const QString &name )
+{
+  return mHeaders.remove( name );
+}
+
+void QgsHttpRequestHandler::appendBody( const QByteArray &body)
+{
+  mBody.append( body );
+}
+
+void QgsHttpRequestHandler::clearBody( )
+{
+  mBody.clear();
+}
+
+
+void QgsHttpRequestHandler::setInfoFormat( const QString &format )
+{
+  mInfoFormat = format;
+}
+
+void QgsHttpRequestHandler::sendHeaders()
+{
+  // Send default headers if they've not been set in a previous stage
+  if ( mHeaders.empty() )
+  {
+      QgsDebugMsg( QString( "Content size: %1" ).arg( mBody.size() ) );
+      QgsDebugMsg( QString( "Content format: %1" ).arg( mInfoFormat ) );
+      printf( "Content-Type: " );
+      printf( mInfoFormat.toLocal8Bit() );
+      printf( "\n" );
+      // size is not known when streaming
+      if ( mBody.size() > 0)
+      {
+        printf( "Content-Length: %d\n", mBody.size() );
+      }
+  }
+  else
+  {
+      QMap<QString, QString>::const_iterator it;
+      for ( it = mHeaders.constBegin(); it != mHeaders.constEnd(); ++it )
+      {
+          printf ( it.key().toLocal8Bit() );
+          printf ( ": " );
+          printf ( it.value().toLocal8Bit() );
+          printf ( "\n" );
+      }
+      printf( "\n" );
+  }
   printf( "\n" );
-  printf( "Content-Length: %d\n", ba->size() );
-  printf( "\n" );
-  size_t result = fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  mHeadersSent = TRUE;
+}
+
+void QgsHttpRequestHandler::sendBody() const
+{
+  fwrite( (void*)mBody.data(), mBody.size(), 1, FCGI_stdout );
 #ifdef QGISDEBUG
-  QgsDebugMsg( QString( "Sent %1 bytes" ).arg( result ) );
+  QgsDebugMsg( QString( "Sent %1 bytes" ).arg( mBody.size() ) );
 #else
   Q_UNUSED( result );
 #endif
 }
+
+void QgsHttpRequestHandler::sendResponse()
+{ 
+  QgsDebugMsg( QString( "Sending HTTP response" ) );
+  if ( ! responseReady() )
+  {
+    QgsDebugMsg( QString( "Trying to send out an empty reponse" ) );
+    return;
+  }
+  if (! mHeadersSent )
+  {
+    sendHeaders();
+  }
+  sendBody();
+  //Clear the body to allow for streaming content to stdout
+  clearBody();
+}
+
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 {
@@ -90,10 +185,10 @@ QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
   return format;
 }
 
-void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* img, int imageQuality = -1 ) const
+void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* img, int imageQuality = -1 )
 {
   Q_UNUSED( service );
-  QgsDebugMsg( "Sending getmap response..." );
+  QgsDebugMsg( "setting getmap response..." );
   if ( img )
   {
     bool png16Bit = ( mFormatString.compare( "image/png; mode=16bit", Qt::CaseInsensitive ) == 0 );
@@ -103,11 +198,11 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
     if ( mFormat != "PNG" && mFormat != "JPG" && !png16Bit && !png8Bit && !png1Bit )
     {
       QgsDebugMsg( "service exception - incorrect image format requested..." );
-      sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormatString + "' is not supported in the GetMap request" ) );
+      setServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormatString + "' is not supported in the GetMap request" ) );
       return;
     }
 
-    //store the image in a QByteArray and send it directly
+    //store the image in a QByteArray and set it directly
     QByteArray ba;
     QBuffer buffer( &ba );
     buffer.open( QIODevice::WriteOnly );
@@ -147,24 +242,23 @@ void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* 
     {
       ba = ba.toBase64();
     }
-
-    sendHttpResponse( &ba, formatToMimeType( mFormat ) );
+    setHttpResponse( &ba, formatToMimeType( mFormat ) );
   }
 }
 
-void QgsHttpRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc ) const
+void QgsHttpRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc )
 {
   QByteArray ba = doc.toByteArray();
-  sendHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, "text/xml" );
 }
 
-void QgsHttpRequestHandler::sendGetStyleResponse( const QDomDocument& doc ) const
+void QgsHttpRequestHandler::setGetStyleResponse( const QDomDocument& doc )
 {
   QByteArray ba = doc.toByteArray();
-  sendHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, "text/xml" );
 }
 
-void QgsHttpRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const
+void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat )
 {
   QByteArray ba;
   QgsDebugMsg( "Info format is:" + infoFormat );
@@ -283,17 +377,18 @@ void QgsHttpRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& info
     }
     ba = featureInfoString.toUtf8();
   }
-  else //unsupported format, send exception
+  else //unsupported format, set exception
   {
-    sendServiceException( QgsMapServiceException( "InvalidFormat", "Feature info format '" + mFormat + "' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ) );
+    setServiceException( QgsMapServiceException( "InvalidFormat", "Feature info format '" + mFormat + "' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ) );
     return;
   }
 
-  sendHttpResponse( &ba, infoFormat );
+  setHttpResponse( &ba, infoFormat );
 }
 
-void QgsHttpRequestHandler::sendServiceException( const QgsMapServiceException& ex ) const
+void QgsHttpRequestHandler::setServiceException(QgsMapServiceException ex )
 {
+  mException = &ex;
   //create Exception DOM document
   QDomDocument exceptionDoc;
   QDomElement serviceExceptionReportElem = exceptionDoc.createElement( "ServiceExceptionReport" );
@@ -307,19 +402,20 @@ void QgsHttpRequestHandler::sendServiceException( const QgsMapServiceException& 
   serviceExceptionReportElem.appendChild( serviceExceptionElem );
 
   QByteArray ba = exceptionDoc.toByteArray();
-  sendHttpResponse( &ba, "text/xml" );
+  setHttpResponse( &ba, "text/xml" );
 }
 
-void QgsHttpRequestHandler::sendGetPrintResponse( QByteArray* ba ) const
+void QgsHttpRequestHandler::setGetPrintResponse( QByteArray* ba )
 {
   if ( mFormatString.endsWith( ";base64", Qt::CaseInsensitive ) )
   {
     *ba = ba->toBase64();
   }
-  sendHttpResponse( ba, formatToMimeType( mFormat ) );
+  setHttpResponse( ba, formatToMimeType( mFormat ) );
 }
 
-bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) const
+
+bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QString& infoFormat )
 {
   if ( !ba )
   {
@@ -337,15 +433,14 @@ bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QStri
   else
     format = "text/xml";
 
-  printf( "Content-Type: " );
-  printf( format.toLocal8Bit() );
-  printf( "\n" );
-  printf( "\n" );
-  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  setHeader( "Content-Type", format );
+  appendBody( *ba );
+  // Streaming
+  sendResponse();
   return true;
 }
 
-void QgsHttpRequestHandler::sendGetFeatureResponse( QByteArray* ba ) const
+void QgsHttpRequestHandler::setGetFeatureResponse( QByteArray* ba )
 {
   if ( !ba )
   {
@@ -356,22 +451,25 @@ void QgsHttpRequestHandler::sendGetFeatureResponse( QByteArray* ba ) const
   {
     return;
   }
-  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  appendBody( *ba );
+  // Streaming
+  sendResponse();
 }
 
-void QgsHttpRequestHandler::endGetFeatureResponse( QByteArray* ba ) const
+void QgsHttpRequestHandler::endGetFeatureResponse( QByteArray* ba )
 {
   if ( !ba )
   {
     return;
   }
-
-  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  appendBody( *ba );
+  // Streaming
+  sendResponse();
 }
 
-void QgsHttpRequestHandler::sendGetCoverageResponse( QByteArray* ba ) const
+void QgsHttpRequestHandler::setGetCoverageResponse( QByteArray* ba )
 {
-  sendHttpResponse( ba, "image/tiff" );
+  setHttpResponse( ba, "image/tiff" );
 }
 
 void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters )
@@ -509,6 +607,26 @@ QString QgsHttpRequestHandler::readPostBody() const
   }
   return inputString;
 }
+
+void QgsHttpRequestHandler::setParameter(const QString &key, const QString &value)
+{
+  if(! ( key.isEmpty() || value.isEmpty() ) )
+  {
+      mParameterMap.insert(key, value);
+  }
+}
+
+
+QString QgsHttpRequestHandler::parameter(const QString &key) const
+{
+  return mParameterMap.value(key);
+}
+
+int QgsHttpRequestHandler::removeParameter(const QString &key)
+{
+  return mParameterMap.remove(key);
+}
+
 
 void QgsHttpRequestHandler::medianCut( QVector<QRgb>& colorTable, int nColors, const QImage& inputImage )
 {
@@ -798,3 +916,5 @@ QRgb QgsHttpRequestHandler::boxColor( const QgsColorBox& box, int boxPixels )
 
   return qRgba( avRed, avGreen, avBlue, avAlpha );
 }
+
+

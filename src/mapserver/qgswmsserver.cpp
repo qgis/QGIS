@@ -60,7 +60,7 @@
 #include <QUrl>
 #include <QPaintEngine>
 
-QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWMSConfigParser* cp,
+QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWMSConfigParser* cp,
                             QgsRequestHandler* rh, QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache )
     : QgsOWSServer( configFilePath, parameters, rh )
     , mMapRenderer( renderer )
@@ -92,7 +92,7 @@ void QgsWMSServer::executeRequest()
 {
   if ( !mMapRenderer || !mConfigParser || !mRequestHandler || !mCapabilitiesCache )
   {
-    return; //todo: error handling
+    return; //TODO: error handling
   }
 
   //request type
@@ -100,9 +100,7 @@ void QgsWMSServer::executeRequest()
   if ( request.isEmpty() )
   {
     QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
-    mRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
-    cleanupAfterRequest();
-    return;
+    mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
   }
 
   //version
@@ -127,7 +125,7 @@ void QgsWMSServer::executeRequest()
       }
       catch ( QgsMapServiceException& ex )
       {
-        mRequestHandler->sendServiceException( ex );
+        mRequestHandler->setServiceException( ex );
         cleanupAfterRequest();
         return;
       }
@@ -141,7 +139,7 @@ void QgsWMSServer::executeRequest()
 
     if ( capabilitiesDocument )
     {
-      mRequestHandler->sendGetCapabilitiesResponse( *capabilitiesDocument );
+      mRequestHandler->setGetCapabilitiesResponse( *capabilitiesDocument );
     }
   }
   //GetMap
@@ -155,15 +153,15 @@ void QgsWMSServer::executeRequest()
     catch ( QgsMapServiceException& ex )
     {
       QgsDebugMsg( "Caught exception during GetMap request" );
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       cleanupAfterRequest();
       return;
     }
 
     if ( result )
     {
-      QgsDebugMsg( "Sending GetMap response" );
-      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
+      QgsDebugMsg( "Setting GetMap response" );
+      mRequestHandler->setGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -187,13 +185,13 @@ void QgsWMSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
       cleanupAfterRequest();
       return;
     }
 
     QString infoFormat = mParameters.value( "INFO_FORMAT" );
-    mRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
+    mRequestHandler->setGetFeatureInfoResponse( featureInfoDoc, infoFormat );
   }
   //GetContext
   else if ( request.compare( "GetContext", Qt::CaseInsensitive ) == 0 )
@@ -201,11 +199,11 @@ void QgsWMSServer::executeRequest()
     try
     {
       QDomDocument doc = getContext();
-      mRequestHandler->sendGetStyleResponse( doc );
+      mRequestHandler->setGetStyleResponse( doc );
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
     }
   }
   //GetStyle for compatibility with earlier QGIS versions
@@ -214,11 +212,11 @@ void QgsWMSServer::executeRequest()
     try
     {
       QDomDocument doc = getStyle();
-      mRequestHandler->sendGetStyleResponse( doc );
+      mRequestHandler->setGetStyleResponse( doc );
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
     }
   }
   //GetStyles
@@ -227,18 +225,18 @@ void QgsWMSServer::executeRequest()
     // GetStyles is only defined for WMS1.1.1/SLD1.0
     if ( version != "1.1.1" )
     {
-      mRequestHandler->sendServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles method is only available in WMS version 1.1.1" ) );
+      mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles method is only available in WMS version 1.1.1" ) );
     }
     else
     {
       try
       {
         QDomDocument doc = getStyles();
-        mRequestHandler->sendGetStyleResponse( doc );
+        mRequestHandler->setGetStyleResponse( doc );
       }
       catch ( QgsMapServiceException& ex )
       {
-        mRequestHandler->sendServiceException( ex );
+        mRequestHandler->setServiceException( ex );
       }
     }
   }
@@ -255,14 +253,14 @@ void QgsWMSServer::executeRequest()
     catch ( QgsMapServiceException& ex )
     {
       QgsDebugMsg( "Caught exception during GetLegendGraphic request" );
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
     }
 
     if ( result )
     {
-      QgsDebugMsg( "Sending GetLegendGraphic response" );
-      //sending is the same for GetMap and GetLegendGraphic
-      mRequestHandler->sendGetMapResponse( "WMS", result, getImageQuality() );
+      QgsDebugMsg( "Setting GetLegendGraphic response" );
+      //setting is the same for GetMap and GetLegendGraphic
+      mRequestHandler->setGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
     else
@@ -282,19 +280,19 @@ void QgsWMSServer::executeRequest()
     }
     catch ( QgsMapServiceException& ex )
     {
-      mRequestHandler->sendServiceException( ex );
+      mRequestHandler->setServiceException( ex );
     }
 
     if ( printOutput )
     {
-      mRequestHandler->sendGetPrintResponse( printOutput );
+      mRequestHandler->setGetPrintResponse( printOutput );
     }
     delete printOutput;
   }
   else//unknown request
   {
     QgsMapServiceException e( "OperationNotSupported", "Operation " + request + " not supported" );
-    mRequestHandler->sendServiceException( e );
+    mRequestHandler->setServiceException( e );
   }
   cleanupAfterRequest();
 }

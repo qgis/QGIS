@@ -36,7 +36,7 @@ class QgsWCSServer: public QgsOWSServer
 {
   public:
     /**Constructor. Takes parameter map and a pointer to a renderer object (does not take ownership)*/
-    QgsWCSServer( const QString& configFilePath, QMap<QString, QString> parameters, QgsWCSProjectParser* pp,
+    QgsWCSServer( const QString& configFilePath, QMap<QString, QString>& parameters, QgsWCSProjectParser* pp,
                   QgsRequestHandler* rh );
     ~QgsWCSServer();
 

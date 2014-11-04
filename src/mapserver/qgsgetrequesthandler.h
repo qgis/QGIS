@@ -18,9 +18,15 @@
 
 #include "qgshttprequesthandler.h"
 
+#ifndef QGSGETPREQUESTHANDLER_H
+#define QGSGETPREQUESTHANDLER_H
+
+
 class QgsGetRequestHandler: public QgsHttpRequestHandler
 {
   public:
     QgsGetRequestHandler();
-    QMap<QString, QString> parseInput();
+    void parseInput();
 };
+
+#endif
