@@ -129,7 +129,7 @@ class CORE_EXPORT QgsGeometry
      */
     size_t wkbSize() const;
 
-    /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
+    /**Returns a geos geometry. QgsGeometry keeps ownership, don't delete the returned object!
         @note not available in python bindings
       */
     const GEOSGeometry* asGeos() const;
