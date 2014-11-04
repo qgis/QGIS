@@ -87,7 +87,7 @@ class QgsGeometry
      */
     size_t wkbSize() const;
 
-    /**Returns a geos geomtry. QgsGeometry keeps ownership, don't delete the returned object!
+    /**Returns a geos geometry. QgsGeometry keeps ownership, don't delete the returned object!
         @note this method was added in version 1.1
         @note not available in python bindings
       */
