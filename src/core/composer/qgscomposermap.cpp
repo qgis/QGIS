@@ -1694,7 +1694,14 @@ bool QgsComposerMap::showGridAnnotation() const
 void QgsComposerMap::setGridAnnotationPosition( QgsComposerMap::GridAnnotationPosition p, QgsComposerMap::Border border )
 {
   QgsComposerMapGrid* g = grid();
-  g->setAnnotationPosition(( QgsComposerMapGrid::AnnotationPosition )p, ( QgsComposerMapGrid::BorderSide )border );
+  if ( p != QgsComposerMap::Disabled )
+  {
+    g->setAnnotationPosition(( QgsComposerMapGrid::AnnotationPosition )p, ( QgsComposerMapGrid::BorderSide )border );
+  }
+  else
+  {
+    g->setAnnotationDisplay( QgsComposerMapGrid::HideAll, ( QgsComposerMapGrid::BorderSide )border );
+  }
 }
 
 QgsComposerMap::GridAnnotationPosition QgsComposerMap::gridAnnotationPosition( QgsComposerMap::Border border ) const

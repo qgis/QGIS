@@ -98,7 +98,20 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mCheckGridTopSide_toggled( bool checked );
     void on_mCheckGridBottomSide_toggled( bool checked );
 
+    //frame divisions display
+    void on_mFrameDivisionsLeftComboBox_currentIndexChanged( int index );
+    void on_mFrameDivisionsRightComboBox_currentIndexChanged( int index );
+    void on_mFrameDivisionsTopComboBox_currentIndexChanged( int index );
+    void on_mFrameDivisionsBottomComboBox_currentIndexChanged( int index );
+
     void on_mDrawAnnotationGroupBox_toggled( bool state );
+
+    //annotation display
+    void on_mAnnotationDisplayLeftComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationDisplayRightComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationDisplayTopComboBox_currentIndexChanged( const QString& text );
+    void on_mAnnotationDisplayBottomComboBox_currentIndexChanged( const QString& text );
+
     //annotation position
     void on_mAnnotationPositionLeftComboBox_currentIndexChanged( const QString& text );
     void on_mAnnotationPositionRightComboBox_currentIndexChanged( const QString& text );
@@ -168,12 +181,18 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     /**Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
 
+    void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
+    void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString& text );
     void handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString& text );
     void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QString& text );
 
+    void insertFrameDisplayEntries( QComboBox* c );
+    void insertAnnotationDisplayEntries( QComboBox* c );
     void insertAnnotationPositionEntries( QComboBox* c );
     void insertAnnotationDirectionEntries( QComboBox* c );
 
+    void initFrameDisplayBox( QComboBox* c, QgsComposerMapGrid::DisplayMode display );
+    void initAnnotationDisplayBox( QComboBox* c, QgsComposerMapGrid::DisplayMode display );
     void initAnnotationPositionBox( QComboBox* c, QgsComposerMapGrid::AnnotationPosition pos );
     void initAnnotationDirectionBox( QComboBox* c, QgsComposerMapGrid::AnnotationDirection dir );
 
