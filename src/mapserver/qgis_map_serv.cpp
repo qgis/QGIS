@@ -16,6 +16,9 @@
  *                                                                         *
  ***************************************************************************/
 
+//for CMAKE_INSTALL_PREFIX
+#include "qgsconfig.h"
+
 #include "qgsapplication.h"
 #include "qgscapabilitiescache.h"
 #include "qgsconfigcache.h"
@@ -41,9 +44,6 @@
 #include <QSettings>
 #include <QDateTime>
 #include <QScopedPointer>
-
-//for CMAKE_INSTALL_PREFIX
-#include "qgsconfig.h"
 
 #include <fcgi_stdio.h>
 
@@ -281,6 +281,7 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( "User DB PATH: " + QgsApplication::qgisUserDbFilePath() );
   QgsDebugMsg( "SVG PATHS: " + QgsApplication::svgPaths().join( ":" ) );
 
+  // FIXME: what is this debug line for?
   QgsDebugMsg( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
@@ -327,78 +328,82 @@ int main( int argc, char * argv[] )
 
     //Request handler
     QScopedPointer<QgsRequestHandler> theRequestHandler( createRequestHandler() );
-    QMap<QString, QString> parameterMap;
+
     try
     {
-      parameterMap = theRequestHandler->parseInput();
+      // TODO: split parse input into plain parse and processing from specific services
+      theRequestHandler->parseInput();
     }
     catch ( QgsMapServiceException& e )
     {
       QgsMessageLog::logMessage( "Parse input exception: " + e.message(), "Server", QgsMessageLog::CRITICAL );
-      theRequestHandler->sendServiceException( e );
-      continue;
+      theRequestHandler->setServiceException( e );
     }
+
+    // Copy the parameters map
+    QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
 
     printRequestParameters( parameterMap, logLevel );
     QMap<QString, QString>::const_iterator paramIt;
-
     //Config file path
     QString configFilePath = configPath( defaultConfigFilePath, parameterMap );
-
     //Service parameter
-    QString serviceString;
-    paramIt = parameterMap.find( "SERVICE" );
-    if ( paramIt == parameterMap.constEnd() )
-    {
-      QgsMessageLog::logMessage( "Exception: SERVICE parameter is missing", "Server", QgsMessageLog::CRITICAL );
-      theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
-      continue;
-    }
-    else
-    {
-      serviceString = paramIt.value();
-    }
+    QString serviceString = theRequestHandler->parameter( "SERVICE" );
 
-    if ( serviceString == "WCS" )
+    // Enter core services main switch
+    if ( !theRequestHandler->exceptionRaised() )
     {
-      QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
-      if ( !p )
+      if ( serviceString == "WCS" )
       {
-        theRequestHandler->sendServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
-        continue;
+        QgsWCSProjectParser* p = QgsConfigCache::instance()->wcsConfiguration( configFilePath );
+        if ( !p )
+        {
+          theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        }
+        else
+        {
+          QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
+          wcsServer.executeRequest();
+        }
       }
-      QgsWCSServer wcsServer( configFilePath, parameterMap, p, theRequestHandler.take() );
-      wcsServer.executeRequest();
-    }
-    else if ( serviceString == "WFS" )
-    {
-      QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
-      if ( !p )
+      else if ( serviceString == "WFS" )
       {
-        theRequestHandler->sendServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
-        continue;
+        QgsWFSProjectParser* p = QgsConfigCache::instance()->wfsConfiguration( configFilePath );
+        if ( !p )
+        {
+          theRequestHandler->setServiceException( QgsMapServiceException( "Project file error", "Error reading the project file" ) );
+        }
+        else
+        {
+          QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.data() );
+          wfsServer.executeRequest();
+        }
       }
-      QgsWFSServer wfsServer( configFilePath, parameterMap, p, theRequestHandler.take() );
-      wfsServer.executeRequest();
-    }
-    else    //WMS else
-    {
-      QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
-      if ( !p )
+      else if ( serviceString == "WMS" )
       {
-        theRequestHandler->sendServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
-        continue;
+        QgsWMSConfigParser* p = QgsConfigCache::instance()->wmsConfiguration( configFilePath, parameterMap );
+        if ( !p )
+        {
+          theRequestHandler->setServiceException( QgsMapServiceException( "WMS configuration error", "There was an error reading the project file or the SLD configuration" ) );
+        }
+        else
+        {
+          QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.data() , theMapRenderer.data(), &capabilitiesCache );
+          wmsServer.executeRequest();
+        }
       }
-      QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.take(), theMapRenderer.data(), &capabilitiesCache );
-      wmsServer.executeRequest();
-    }
+      else
+      {
+        theRequestHandler->setServiceException( QgsMapServiceException( "Service configuration error", "Service unknown or unsupported" ) );
+      } // end switch
+    } // end if not exception raised
+
+    theRequestHandler->sendResponse();
 
     if ( logLevel < 1 )
     {
       QgsMessageLog::logMessage( "Request finished in " + QString::number( time.elapsed() ) + " ms", "Server", QgsMessageLog::INFO );
     }
   }
-
   return 0;
 }
-

@@ -28,13 +28,13 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
   public:
     QgsSOAPRequestHandler();
     ~QgsSOAPRequestHandler();
-    QMap<QString, QString> parseInput();
-    void sendGetMapResponse( const QString& service, QImage* img ) const;
-    void sendGetCapabilitiesResponse( const QDomDocument& doc ) const;
-    void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const;
-    void sendServiceException( const QgsMapServiceException& ex ) const;
-    void sendGetStyleResponse( const QDomDocument& doc ) const;
-    void sendGetPrintResponse( QByteArray* ba ) const;
+    void parseInput();
+    void setGetMapResponse( const QString& service, QImage* img );
+    void setGetCapabilitiesResponse( const QDomDocument& doc );
+    void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat );
+    void setServiceException( const QgsMapServiceException& ex );
+    void setGetStyleResponse( const QDomDocument& doc );
+    void setGetPrintResponse( QByteArray* ba ) const;
   private:
     /**Parses the xml of a getMap request and fills the parameters into the map. Returns 0 in case of success*/
     int parseGetMapElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
@@ -42,8 +42,8 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
     int parseGetFeatureInfoElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
     int parseBoundingBoxElement( QMap<QString, QString>& parameterMap, const QDomElement& boundingBoxElement ) const;
     int parseOutputAttributesElement( QMap<QString, QString>& parameterMap, const QDomElement& outputAttributesElement ) const;
-    int sendSOAPWithAttachments( QImage* img ) const;
-    int sendUrlToFile( QImage* img ) const;
+    int setSOAPWithAttachments( QImage* img );
+    int setUrlToFile( QImage* img );
     /**Reads the file wms_metadata.xml and extract the OnlineResource href. Returns 0 in case of success.*/
     int findOutHostAddress( QString& address ) const;
 };

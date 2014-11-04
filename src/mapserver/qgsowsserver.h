@@ -25,7 +25,7 @@ class QgsOWSServer
   public:
     QgsOWSServer( const QString& configFilePath, const QMap<QString, QString>& parameters, QgsRequestHandler* rh )
         : mParameters( parameters ), mRequestHandler( rh ), mConfigFilePath( configFilePath ) {}
-    virtual ~QgsOWSServer() { delete mRequestHandler; }
+    virtual ~QgsOWSServer() {}
 
     virtual void executeRequest() = 0;
 
