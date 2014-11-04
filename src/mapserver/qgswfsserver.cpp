@@ -106,7 +106,7 @@ void QgsWFSServer::executeRequest()
       mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "seting GetCapabilities response" );
+    QgsDebugMsg( "Setting GetCapabilities response" );
     mRequestHandler->setGetCapabilitiesResponse( capabilitiesDocument );
     return;
   }
@@ -122,7 +122,7 @@ void QgsWFSServer::executeRequest()
       mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "seting GetCapabilities response" );
+    QgsDebugMsg( "Setting GetCapabilities response" );
     mRequestHandler->setGetCapabilitiesResponse( describeDocument );
     return;
   }
@@ -153,7 +153,7 @@ void QgsWFSServer::executeRequest()
       mRequestHandler->setServiceException( ex );
       return;
     }
-    QgsDebugMsg( "seting Transaction response" );
+    QgsDebugMsg( "Setting Transaction response" );
     mRequestHandler->setGetCapabilitiesResponse( transactionDocument );
     return;
   }

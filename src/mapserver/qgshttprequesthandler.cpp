@@ -36,6 +36,7 @@ QgsHttpRequestHandler::QgsHttpRequestHandler():
   QgsRequestHandler()
 {  
   mException = NULL;
+  mHeadersSent = FALSE;
 }
 
 QgsHttpRequestHandler::~QgsHttpRequestHandler()
@@ -57,7 +58,7 @@ void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &form
   }
   QgsDebugMsg( "Byte array looks good, setting response..." );
 
-  mBody.append( *ba );
+  appendBody( *ba );
   mInfoFormat = format;
 }
 
@@ -103,7 +104,7 @@ void QgsHttpRequestHandler::setInfoFormat( const QString &format )
   mInfoFormat = format;
 }
 
-void QgsHttpRequestHandler::sendHeaders() const
+void QgsHttpRequestHandler::sendHeaders()
 {
   // Send default headers if they've not been set in a previous stage
   if ( mHeaders.empty() )
@@ -113,8 +114,11 @@ void QgsHttpRequestHandler::sendHeaders() const
       printf( "Content-Type: " );
       printf( mInfoFormat.toLocal8Bit() );
       printf( "\n" );
-      printf( "Content-Length: %d\n", mBody.size() );
-    
+      // size is not known when streaming
+      if ( mBody.size() > 0)
+      {
+        printf( "Content-Length: %d\n", mBody.size() );
+      }
   }
   else
   {
@@ -129,19 +133,20 @@ void QgsHttpRequestHandler::sendHeaders() const
       printf( "\n" );
   }
   printf( "\n" );
+  mHeadersSent = TRUE;
 }
 
 void QgsHttpRequestHandler::sendBody() const
 {
-  size_t result = fwrite( (void*)mBody.data(), mBody.size(), 1, FCGI_stdout );
+  fwrite( (void*)mBody.data(), mBody.size(), 1, FCGI_stdout );
 #ifdef QGISDEBUG
-  QgsDebugMsg( QString( "Sent %1 bytes" ).arg( result ) );
+  QgsDebugMsg( QString( "Sent %1 bytes" ).arg( mBody.size() ) );
 #else
   Q_UNUSED( result );
 #endif
 }
 
-void QgsHttpRequestHandler::sendResponse() const
+void QgsHttpRequestHandler::sendResponse()
 { 
   QgsDebugMsg( QString( "Sending HTTP response" ) );
   if ( ! responseReady() )
@@ -149,8 +154,13 @@ void QgsHttpRequestHandler::sendResponse() const
     QgsDebugMsg( QString( "Trying to send out an empty reponse" ) );
     return;
   }
-  sendHeaders();
+  if (! mHeadersSent )
+  {
+    sendHeaders();
+  }
   sendBody();
+  //Clear the body to allow for streaming content to stdout
+  clearBody();
 }
 
 
@@ -232,7 +242,6 @@ void QgsHttpRequestHandler::setGetMapResponse( const QString& service, QImage* i
     {
       ba = ba.toBase64();
     }
-
     setHttpResponse( &ba, formatToMimeType( mFormat ) );
   }
 }
@@ -426,6 +435,8 @@ bool QgsHttpRequestHandler::startGetFeatureResponse( QByteArray* ba, const QStri
 
   setHeader( "Content-Type", format );
   appendBody( *ba );
+  // Streaming
+  sendResponse();
   return true;
 }
 
@@ -441,6 +452,8 @@ void QgsHttpRequestHandler::setGetFeatureResponse( QByteArray* ba )
     return;
   }
   appendBody( *ba );
+  // Streaming
+  sendResponse();
 }
 
 void QgsHttpRequestHandler::endGetFeatureResponse( QByteArray* ba )
@@ -449,7 +462,9 @@ void QgsHttpRequestHandler::endGetFeatureResponse( QByteArray* ba )
   {
     return;
   }
-  mBody.append(ba->data());
+  appendBody( *ba );
+  // Streaming
+  sendResponse();
 }
 
 void QgsHttpRequestHandler::setGetCoverageResponse( QByteArray* ba )

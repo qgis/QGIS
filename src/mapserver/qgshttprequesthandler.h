@@ -45,7 +45,8 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setGetFeatureResponse( QByteArray* ba );
     virtual void endGetFeatureResponse( QByteArray* ba );
     virtual void setGetCoverageResponse( QByteArray* ba );
-    virtual void sendResponse() const;
+    /**Send out HTTP headers and flush output buffer*/
+    virtual void sendResponse();
     virtual void setHeader( const QString &name, const QString &value );
     virtual int removeHeader( const QString &name );
     virtual void clearHeaders( );
@@ -59,7 +60,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual int removeParameter(const QString &key);
 
   protected:
-    virtual void sendHeaders( ) const;
+    virtual void sendHeaders( );
     virtual void sendBody( ) const;
     void setHttpResponse(QByteArray *ba, const QString &format );
     /**Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
