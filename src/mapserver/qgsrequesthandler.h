@@ -63,7 +63,8 @@ class QgsRequestHandler
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
     virtual void setInfoFormat( const QString &format ) = 0;
-    virtual void sendResponse( ) const = 0;
+    /**Send out HTTP headers and flush output buffer*/
+    virtual void sendResponse( ) = 0;
     virtual bool responseReady() const = 0;
     /**Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
@@ -75,14 +76,16 @@ class QgsRequestHandler
     /**Return a request parameter*/
     virtual QString parameter(const QString &key) const = 0;
     QString format() const { return mFormat; }
+    bool headersSent() { return mHeadersSent; }
 
 protected:
 
-    virtual void sendHeaders( ) const = 0;
+    virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;
     /**This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')*/
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
+    bool mHeadersSent;
     QString mService;
     QString mInfoFormat;
     QgsMapServiceException* mException; // Stores the exception
