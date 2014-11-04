@@ -160,7 +160,7 @@ void QgsWMSServer::executeRequest()
 
     if ( result )
     {
-      QgsDebugMsg( "seting GetMap response" );
+      QgsDebugMsg( "Setting GetMap response" );
       mRequestHandler->setGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
@@ -258,8 +258,8 @@ void QgsWMSServer::executeRequest()
 
     if ( result )
     {
-      QgsDebugMsg( "seting GetLegendGraphic response" );
-      //seting is the same for GetMap and GetLegendGraphic
+      QgsDebugMsg( "Setting GetLegendGraphic response" );
+      //setting is the same for GetMap and GetLegendGraphic
       mRequestHandler->setGetMapResponse( "WMS", result, getImageQuality() );
       QgsDebugMsg( "Response sent" );
     }
