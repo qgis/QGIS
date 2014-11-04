@@ -5531,7 +5531,7 @@ Zum Überprüfen Ergebnis Dialog öffnen.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Zuletzt verwendetes</translation>
+        <translation type="obsolete">&amp;Zuletzt verwendetes</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6441,6 +6441,10 @@ Funktioniert auf allen ändernbaren Layern</translation>
     <message>
         <source>Fill Ring</source>
         <translation>Ring füllen</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation>Zuletzt ve&amp;rwendet</translation>
     </message>
 </context>
 <context>
@@ -10670,6 +10674,62 @@ Antwort war:
     <message>
         <source>Legend</source>
         <translation>Legende</translation>
+    </message>
+    <message>
+        <source>Classification</source>
+        <translation>Klassifikation</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation>Bereich</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation>Eindeutige Werte</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation>Dateiname</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation>Wertabbildung</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation>Aufzählung</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation>Markierungsfeld</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation>Texteditor</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation>Wertbeziehung</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation>UUID-Generator</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation>Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation>Webansicht</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation>Beziehungsreferenz</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation>Datum/Zeit</translation>
     </message>
 </context>
 <context>
@@ -17283,6 +17343,38 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
         <source>Map %1</source>
         <translation>Karte %1</translation>
     </message>
+    <message>
+        <source>Frame divisions changed</source>
+        <translation>Rahmenbereiche geändert</translation>
+    </message>
+    <message>
+        <source>Annotation display changed</source>
+        <translation>Beschriftungsanzeige geändert</translation>
+    </message>
+    <message>
+        <source>Show all</source>
+        <translation>Zeige alles</translation>
+    </message>
+    <message>
+        <source>Show latitude only</source>
+        <translation>Zeige nur Breitengrade</translation>
+    </message>
+    <message>
+        <source>Show longitude only</source>
+        <translation>Zeige nur Längengrade</translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation>Alle</translation>
+    </message>
+    <message>
+        <source>Latitude/Y only</source>
+        <translation>Nur Breitengrad/Y</translation>
+    </message>
+    <message>
+        <source>Longitude/X only</source>
+        <translation>Nur Längengrad/X</translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
@@ -17597,6 +17689,22 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <source>Change...</source>
         <translation>Ändern...</translation>
+    </message>
+    <message>
+        <source>Right divisions</source>
+        <translation>Rechte Abgrenzung</translation>
+    </message>
+    <message>
+        <source>Left divisions</source>
+        <translation>Linke Abgrenzung</translation>
+    </message>
+    <message>
+        <source>Top divisions</source>
+        <translation>Obere Abgrenzung</translation>
+    </message>
+    <message>
+        <source>Bottom divisions</source>
+        <translation>Untere Abgrenzung</translation>
     </message>
 </context>
 <context>
@@ -33302,6 +33410,10 @@ Fehler:%2
     <message>
         <source>Use estimated table metadata</source>
         <translation>Geschätzte Tabellenmetadaten nutzen</translation>
+    </message>
+    <message>
+        <source>Options</source>
+        <translation>Optionen</translation>
     </message>
 </context>
 <context>

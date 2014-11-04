@@ -5456,10 +5456,6 @@ Open the results dialog to check it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Open Recent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>New From Template</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6360,6 +6356,10 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Fill Ring</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17186,6 +17186,38 @@ Please try a lower resolution or a smaller papersize</source>
         <source>Map %1</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Frame divisions changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Annotation display changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show latitude only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show longitude only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latitude/Y only</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Longitude/X only</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerMapWidgetBase</name>
@@ -17499,6 +17531,22 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Change...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Right divisions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Left divisions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Top divisions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bottom divisions</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -32959,6 +33007,10 @@ error:%2
     </message>
     <message>
         <source>Use estimated table metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Options</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
