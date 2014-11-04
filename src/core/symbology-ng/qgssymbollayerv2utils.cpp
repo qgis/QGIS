@@ -2438,8 +2438,8 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
 
 bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QString &function )
 {
-  QgsDebugMsg( "Entered." );
-  QDomElement elem;
+  QDomElement elem = element;
+#if 0
   if ( element.tagName() == "Filter" )
   {
     elem = element;
@@ -2457,7 +2457,7 @@ bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QStrin
   {
     return false;
   }
-
+#endif
 
   QgsExpression *expr = QgsOgcUtils::expressionFromOgcFilter( elem );
   if ( !expr )
