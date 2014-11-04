@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>18</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="mProjectMenu">
@@ -26,7 +26,7 @@
     </property>
     <widget class="QMenu" name="mRecentProjectsMenu">
      <property name="title">
-      <string>&amp;Open Recent</string>
+      <string>Open Recent</string>
      </property>
     </widget>
     <widget class="QMenu" name="mPrintComposersMenu">
