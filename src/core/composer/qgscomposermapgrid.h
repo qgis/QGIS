@@ -931,7 +931,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**Get parameters for drawing grid in CRS different to map CRS*/
     int crsGridParams( QgsRectangle& crsRect, QgsCoordinateTransform& inverseTransform ) const;
 
-    static QPolygonF trimLineToMap( const QPolygonF& line, const QgsRectangle& rect );
+    static QList<QPolygonF> trimLinesToMap( const QPolygonF &line, const QgsRectangle &rect );
 
     QPolygonF scalePolygon( const QPolygonF &polygon, const double scale ) const;
 

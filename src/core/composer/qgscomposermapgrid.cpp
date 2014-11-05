@@ -1615,11 +1615,15 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
     }
     crossed180 = false;
 
-    gridLine = trimLineToMap( gridLine, QgsRectangle( mComposerMap->rect() ) );
-    if ( gridLine.size() > 0 )
+    QList<QPolygonF> lineSegments = trimLinesToMap( gridLine, QgsRectangle( mComposerMap->rect() ) );
+    QList<QPolygonF>::const_iterator lineIt = lineSegments.constBegin();
+    for ( ; lineIt != lineSegments.constEnd(); lineIt ++ )
     {
-      lines.append( qMakePair( currentLevel, gridLine ) );
-      gridLineCount++;
+      if (( *lineIt ).size() > 0 )
+      {
+        lines.append( qMakePair( currentLevel, *lineIt ) );
+        gridLineCount++;
+      }
     }
     currentLevel -= mGridIntervalY;
   }
@@ -1677,11 +1681,15 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
       currentY += step;
     }
     //clip grid line to map polygon
-    gridLine = trimLineToMap( gridLine, QgsRectangle( mComposerMap->rect() ) );
-    if ( gridLine.size() > 0 )
+    QList<QPolygonF> lineSegments = trimLinesToMap( gridLine, QgsRectangle( mComposerMap->rect() ) );
+    QList<QPolygonF>::const_iterator lineIt = lineSegments.constBegin();
+    for ( ; lineIt != lineSegments.constEnd(); lineIt ++ )
     {
-      lines.append( qMakePair( currentLevel, gridLine ) );
-      gridLineCount++;
+      if (( *lineIt ).size() > 0 )
+      {
+        lines.append( qMakePair( currentLevel, *lineIt ) );
+        gridLineCount++;
+      }
     }
     currentLevel += mGridIntervalX;
     if ( crosses180 && currentLevel > 180.0 )
@@ -1775,6 +1783,11 @@ bool QgsComposerMapGrid::shouldShowDivisionForDisplayMode( const QgsComposerMapG
          || ( mode == QgsComposerMapGrid::LongitudeOnly && coordinate == QgsComposerMapGrid::Longitude );
 }
 
+bool sortByDistance( const QPair<double, QgsComposerMapGrid::BorderSide>& a, const QPair<double, QgsComposerMapGrid::BorderSide>& b )
+{
+  return a.first < b.first;
+}
+
 QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPointF& p, const AnnotationCoordinate coordinateType ) const
 {
   if ( !mComposerMap )
@@ -1782,19 +1795,19 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPo
     return QgsComposerMapGrid::Left;
   }
 
-  double framePenWidth = mComposerMap->hasFrame() ? mComposerMap->pen().widthF() : 0.000000001;
+  double tolerance = qMax( mComposerMap->hasFrame() ? mComposerMap->pen().widthF() : 0.0, 1.0 );
 
   //check for corner coordinates
-  if (( p.y() <= framePenWidth && p.x() <= framePenWidth )  // top left
-      || ( p.y() <= framePenWidth && p.x() >= ( mComposerMap->rect().width() - framePenWidth ) ) //top right
-      || ( p.y() >= ( mComposerMap->rect().height() - framePenWidth ) && p.x() <= framePenWidth ) //bottom left
-      || ( p.y() >= ( mComposerMap->rect().height() - framePenWidth ) && p.x() >= ( mComposerMap->rect().width() - framePenWidth ) ) //bottom right
+  if (( p.y() <= tolerance && p.x() <= tolerance )  // top left
+      || ( p.y() <= tolerance && p.x() >= ( mComposerMap->rect().width() - tolerance ) ) //top right
+      || ( p.y() >= ( mComposerMap->rect().height() - tolerance ) && p.x() <= tolerance ) //bottom left
+      || ( p.y() >= ( mComposerMap->rect().height() - tolerance ) && p.x() >= ( mComposerMap->rect().width() - tolerance ) ) //bottom right
      )
   {
     //coordinate is in corner - fall back to preferred side for coordinate type
     if ( coordinateType == QgsComposerMapGrid::Latitude )
     {
-      if ( p.x() <= framePenWidth )
+      if ( p.x() <= tolerance )
       {
         return QgsComposerMapGrid::Left;
       }
@@ -1805,7 +1818,7 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPo
     }
     else
     {
-      if ( p.y() <= framePenWidth )
+      if ( p.y() <= tolerance )
       {
         return QgsComposerMapGrid::Top;
       }
@@ -1816,23 +1829,15 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPo
     }
   }
 
-  //otherwise, guess side based on point
-  if ( p.y() <= framePenWidth )
-  {
-    return QgsComposerMapGrid::Top;
-  }
-  else if ( p.x() <= framePenWidth )
-  {
-    return QgsComposerMapGrid::Left;
-  }
-  else if ( p.x() >= ( mComposerMap->rect().width() - framePenWidth ) )
-  {
-    return QgsComposerMapGrid::Right;
-  }
-  else
-  {
-    return QgsComposerMapGrid::Bottom;
-  }
+  //otherwise, guess side based on closest map side to point
+  QList< QPair<double, QgsComposerMapGrid::BorderSide > > distanceToSide;
+  distanceToSide << qMakePair( p.x(), QgsComposerMapGrid::Left );
+  distanceToSide << qMakePair( mComposerMap->rect().width() - p.x(), QgsComposerMapGrid::Right );
+  distanceToSide << qMakePair( p.y(), QgsComposerMapGrid::Top );
+  distanceToSide << qMakePair( mComposerMap->rect().height() - p.y(), QgsComposerMapGrid::Bottom );
+
+  qSort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
+  return distanceToSide.at( 0 ).second;
 }
 
 void QgsComposerMapGrid::setLineSymbol( QgsLineSymbolV2* symbol )
@@ -2268,21 +2273,25 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle& crsRect, QgsCoordinateTrans
   return 0;
 }
 
-QPolygonF QgsComposerMapGrid::trimLineToMap( const QPolygonF& line, const QgsRectangle& rect )
+QList<QPolygonF> QgsComposerMapGrid::trimLinesToMap( const QPolygonF& line, const QgsRectangle& rect )
 {
-  QgsPolyline polyLine;
-  QPolygonF::const_iterator lineIt = line.constBegin();
-  for ( ; lineIt != line.constEnd(); ++lineIt )
+  QgsGeometry* lineGeom = QgsGeometry::fromQPolygonF( line );
+  QgsGeometry* rectGeom = QgsGeometry::fromRect( rect );
+
+  QgsGeometry* intersected = lineGeom->intersection( rectGeom );
+  QList<QgsGeometry*> intersectedParts = intersected->asGeometryCollection();
+
+  QList<QPolygonF> trimmedLines;
+  QList<QgsGeometry*>::const_iterator geomIt = intersectedParts.constBegin();
+  for ( ; geomIt != intersectedParts.constEnd(); geomIt++ )
   {
-    polyLine.append( QgsPoint( lineIt->x(), lineIt->y() ) );
+    trimmedLines << ( *geomIt )->asQPolygonF();
   }
 
-  QgsGeometry* geom = QgsGeometry::fromPolyline( polyLine );
-
-  QPolygonF clippedLine;
-  QgsClipper::clippedLineWKB( geom->asWkb(), rect, clippedLine );
-  delete geom;
-  return clippedLine;
+  qDeleteAll( intersectedParts );
+  intersectedParts.clear();
+  delete intersected;
+  delete lineGeom;
+  delete rectGeom;
+  return trimmedLines;
 }
-
-

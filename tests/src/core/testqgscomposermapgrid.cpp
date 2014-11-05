@@ -35,6 +35,7 @@ class TestQgsComposerMapGrid: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void grid(); //test if grid and grid annotation works
+    void reprojected(); //test if reprojected grid works
     void crossGrid(); //test if grid "cross" mode works
     void markerGrid(); //test if grid "marker" mode works
     void frameOnly(); //test if grid "frame/annotation" mode works
@@ -128,6 +129,31 @@ void TestQgsComposerMapGrid::grid()
   QVERIFY( testResult );
 }
 
+void TestQgsComposerMapGrid::reprojected()
+{
+  mComposerMap->setNewExtent( QgsRectangle( -243577.565, 2939084.773, 1215622.435, 3668684.773 ) );
+  QgsCoordinateReferenceSystem geographic = QgsCoordinateReferenceSystem( 4326 );
+  mComposerMap->grid()->setCrs( geographic );
+  mComposerMap->grid()->setEnabled( true );
+  mComposerMap->grid()->setIntervalX( 1 );
+  mComposerMap->grid()->setIntervalY( 1 );
+  mComposerMap->grid()->setAnnotationEnabled( false );
+  mComposerMap->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
+  mComposerMap->grid()->setGridLineWidth( 0.5 );
+  mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
+  mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::ExteriorTicks );
+  mComposerMap->grid()->setFrameWidth( 10 );
+  mComposerMap->setFrameEnabled( false );
+  QgsCompositionChecker checker( "composermap_gridreprojected", mComposition );
+
+  bool testResult = checker.testComposition( mReport, 0, 0 );
+  mComposerMap->grid()->setEnabled( false );
+  mComposerMap->grid()->setCrs( mMapSettings.destinationCrs() );
+  mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
+  mComposerMap->setFrameEnabled( true );
+  QVERIFY( testResult );
+}
+
 void TestQgsComposerMapGrid::crossGrid()
 {
   mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
@@ -177,6 +203,7 @@ void TestQgsComposerMapGrid::frameOnly()
   mComposerMap->grid()->setAnnotationEnabled( false );
   //set a frame for testing
   mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::Zebra );
+  mComposerMap->grid()->setFrameWidth( 2.0 );
   mComposerMap->grid()->setFramePenSize( 0.5 );
   mComposerMap->grid()->setBlendMode( QPainter::CompositionMode_SourceOver );
   QgsCompositionChecker checker( "composermap_gridframeonly", mComposition );
