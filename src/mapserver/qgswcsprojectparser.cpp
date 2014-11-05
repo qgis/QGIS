@@ -17,10 +17,12 @@
 
 #include "qgswcsprojectparser.h"
 #include "qgsconfigparserutils.h"
+#include "qgsconfigcache.h"
 #include "qgsrasterlayer.h"
 
-QgsWCSProjectParser::QgsWCSProjectParser( QDomDocument* xmlDoc, const QString& filePath ): mProjectParser( xmlDoc, filePath )
+QgsWCSProjectParser::QgsWCSProjectParser( const QString& filePath )
 {
+	QgsServerProjectParser* mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
 
 QgsWCSProjectParser::~QgsWCSProjectParser()
@@ -29,19 +31,19 @@ QgsWCSProjectParser::~QgsWCSProjectParser()
 
 void QgsWCSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  mProjectParser.serviceCapabilities( parentElement, doc, "WCS" );
+  mProjectParser->serviceCapabilities( parentElement, doc, "WCS" );
 }
 
 QString QgsWCSProjectParser::wcsServiceUrl() const
 {
   QString url;
 
-  if ( !mProjectParser.xmlDocument() )
+  if ( !mProjectParser->xmlDocument() )
   {
     return url;
   }
 
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
   if ( !propertiesElem.isNull() )
   {
     QDomElement wcsUrlElem = propertiesElem.firstChildElement( "WCSUrl" );
@@ -55,12 +57,12 @@ QString QgsWCSProjectParser::wcsServiceUrl() const
 
 QString QgsWCSProjectParser::serviceUrl() const
 {
-  return mProjectParser.serviceUrl();
+  return mProjectParser->serviceUrl();
 }
 
 void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
+  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
   if ( projectLayerElements.size() < 1 )
   {
     return;
@@ -75,7 +77,7 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
     {
-      QgsMapLayer *layer = mProjectParser.createLayerFromElement( elem );
+      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
       if ( layer && wcsLayersId.contains( layer->id() ) )
       {
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
@@ -137,12 +139,12 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
 QStringList QgsWCSProjectParser::wcsLayers() const
 {
   QStringList wcsList;
-  if ( !mProjectParser.xmlDocument() )
+  if ( !mProjectParser->xmlDocument() )
   {
     return wcsList;
   }
 
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
   if ( propertiesElem.isNull() )
   {
     return wcsList;
@@ -162,7 +164,7 @@ QStringList QgsWCSProjectParser::wcsLayers() const
 
 void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElement& parentElement, QDomDocument& doc ) const
 {
-  const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
+  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
   if ( projectLayerElements.size() < 1 )
   {
     return;
@@ -186,7 +188,7 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
     {
-      QgsMapLayer *layer = mProjectParser.createLayerFromElement( elem );
+      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
       if ( !layer )
         continue;
       QString coveName = layer->name();
@@ -366,7 +368,7 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
 {
   QList<QgsMapLayer*> layerList;
 
-  const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
+  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
   if ( projectLayerElements.size() < 1 )
   {
     return layerList;
@@ -379,7 +381,7 @@ QList<QgsMapLayer*> QgsWCSProjectParser::mapLayerFromCoverage( const QString& cN
     QString type = elem.attribute( "type" );
     if ( type == "raster" )
     {
-      QgsMapLayer *mLayer = mProjectParser.createLayerFromElement( elem, useCache );
+      QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem, useCache );
       QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( mLayer );
       if ( !layer || !wcsLayersId.contains( layer->id() ) )
         return layerList;

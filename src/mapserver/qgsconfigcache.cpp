@@ -42,13 +42,7 @@ QgsConfigCache::~QgsConfigCache()
 
 QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
 {
-  QDomDocument* doc = xmlDocument( filePath );
-  return new QgsServerProjectParser( doc, filePath );
-}
-
-QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
-{
-  QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
+  QgsServerProjectParser* p = mServerConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -56,7 +50,19 @@ QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
     {
       return 0;
     }
-    p = new QgsWCSProjectParser( doc, filePath );
+    p = new QgsServerProjectParser( doc, filePath );
+    mServerConfigCache.insert( filePath, p );
+    mFileSystemWatcher.addPath( filePath );
+  }
+  return p;
+}
+
+QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
+{
+  QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
+  if ( !p )
+  {
+    p = new QgsWCSProjectParser( filePath );
     mWCSConfigCache.insert( filePath, p );
     mFileSystemWatcher.addPath( filePath );
   }
@@ -70,13 +76,7 @@ QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
   QgsWFSProjectParser* p = mWFSConfigCache.object( filePath );
   if ( !p )
   {
-    QDomDocument* doc = xmlDocument( filePath );
-    if ( !doc )
-    {
-      return 0;
-    }
-
-    p = new QgsWFSProjectParser( doc, filePath );
+    p = new QgsWFSProjectParser( filePath );
     mWFSConfigCache.insert( filePath, p );
     mFileSystemWatcher.addPath( filePath );
   }
@@ -105,7 +105,7 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, c
     }
     else
     {
-      p = new QgsWMSProjectParser( doc, filePath );
+      p = new QgsWMSProjectParser( filePath );
     }
     mWMSConfigCache.insert( filePath, p );
     mFileSystemWatcher.addPath( filePath );
@@ -117,6 +117,12 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, c
 
 QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
 {
+  // first get cache
+  QDomDocument* xmlDoc = mXmlDocumentCache.object( filePath );
+  if ( xmlDoc )
+    return xmlDoc;
+    
+  // i it's first access
   //first open file
   QFile configFile( filePath );
   if ( !configFile.exists() )
@@ -132,7 +138,7 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
   }
 
   //then create xml document
-  QDomDocument* xmlDoc = new QDomDocument();
+  xmlDoc = new QDomDocument();
   QString errorMsg;
   int line, column;
   if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
@@ -142,11 +148,14 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
     delete xmlDoc;
     return 0;
   }
+  mXmlDocumentCache.insert( filePath, xmlDoc );
   return xmlDoc;
 }
 
 void QgsConfigCache::removeChangedEntry( const QString& path )
 {
+  mXmlDocumentCache.remove( path );
+  mServerConfigCache.remove( path );
   mWMSConfigCache.remove( path );
   mWFSConfigCache.remove( path );
   mWCSConfigCache.remove( path );
