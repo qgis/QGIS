@@ -55,10 +55,12 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setInfoFormat( const QString &format );
     virtual bool responseReady() const;
     virtual bool exceptionRaised() const;
-    virtual void setParameter( const QString &key, const QString &value );
-    virtual QString parameter( const QString &key ) const;
-    virtual int removeParameter( const QString &key );
-
+    virtual void setParameter(const QString &key, const QString &value);
+    virtual QString parameter(const QString &key) const;
+    virtual int removeParameter(const QString &key);
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+    virtual void setPluginFilters( QgsServerFiltersMap pluginFilters );
+#endif
   protected:
     virtual void sendHeaders( );
     virtual void sendBody( ) const;

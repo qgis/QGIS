@@ -42,8 +42,13 @@ void QgsServerFilter::requestReady()
   QgsDebugMsg( "QgsServerFilter plugin default requestReady called");
 }
 
-void QgsServerFilter::responseReady()
+void QgsServerFilter::responseComplete()
 {
-  QgsDebugMsg( "QgsServerFilter plugin default responseReady called");
+  QgsDebugMsg( "QgsServerFilter plugin default responseComplete called");
 }
 
+
+void QgsServerFilter::sendResponse()
+{
+  QgsDebugMsg( "QgsServerFilter plugin default sendResponse called");
+}
