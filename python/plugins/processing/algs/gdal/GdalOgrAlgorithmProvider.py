@@ -69,6 +69,8 @@ from GridDataMetrics import GridDataMetrics
 from ogr2ogr import Ogr2Ogr
 from ogr2ogrclip import Ogr2OgrClip
 from ogr2ogrclipextent import Ogr2OgrClipExtent
+from ogr2ogrtopostgis import Ogr2OgrToPostGis
+from ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from ogrinfo import OgrInfo
 from ogrsql import OgrSql
 
@@ -122,7 +124,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
             GridDataMetrics(),
             # ----- OGR tools -----
-            OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(), OgrSql(),
+            OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(), Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), OgrSql(),
             ]
 
         # And then we add those that are created as python scripts
