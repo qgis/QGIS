@@ -47,7 +47,7 @@ class QgsServerInterface
     virtual void registerFilter( QgsServerFilter* filter, int priority = 0 ) = 0;
     virtual QgsServerFiltersMap filters( ) = 0;
     /*Pass  environment variables to python*/
-    virtual QString getEnv(const QString& name ) const = 0;
+    virtual QString getEnv( const QString& name ) const = 0;
 
 };
 

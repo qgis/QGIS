@@ -21,15 +21,15 @@
 
 
 QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache* capCache ) :
-  mCapabilitiesCache( capCache )
+    mCapabilitiesCache( capCache )
 {
   mRequestHandler = NULL;
 }
 
 
-QString QgsServerInterfaceImpl::getEnv(const QString& name ) const
+QString QgsServerInterfaceImpl::getEnv( const QString& name ) const
 {
-    return getenv( name.toLocal8Bit() );
+  return getenv( name.toLocal8Bit() );
 }
 
 
@@ -38,12 +38,12 @@ QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 {
 }
 
-void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler)
+void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler * requestHandler )
 {
   mRequestHandler = requestHandler;
 }
 
 void QgsServerInterfaceImpl::registerFilter( QgsServerFilter *filter, int priority )
 {
-  mFilters.insert(priority, filter);
+  mFilters.insert( priority, filter );
 }

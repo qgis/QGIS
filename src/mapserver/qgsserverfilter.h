@@ -33,20 +33,20 @@ class QgsServerInterface;
 class QgsServerFilter
 {
 
-public:
+  public:
 
-  /** Constructor */
-  QgsServerFilter( QgsServerInterface* serverInterface );
-  /** Destructor */
-  virtual ~QgsServerFilter();
-  QgsServerInterface* serverInterface( ) { return mServerInterface; }
-  virtual void requestReady();
-  virtual void responseComplete();
-  virtual void sendResponse();
+    /** Constructor */
+    QgsServerFilter( QgsServerInterface* serverInterface );
+    /** Destructor */
+    virtual ~QgsServerFilter();
+    QgsServerInterface* serverInterface( ) { return mServerInterface; }
+    virtual void requestReady();
+    virtual void responseComplete();
+    virtual void sendResponse();
 
-private:
+  private:
 
-  QgsServerInterface* mServerInterface;
+    QgsServerInterface* mServerInterface;
 
 };
 

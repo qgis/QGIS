@@ -83,7 +83,7 @@ class QgsRequestHandler
     /**Remove a request parameter*/
     virtual int removeParameter( const QString &key ) = 0;
     /**Return a request parameter*/
-    virtual QString parameter(const QString &key) const = 0;
+    virtual QString parameter( const QString &key ) const = 0;
     /**Return the response body*/
     /**Return the requested format string*/
     QString format() const { return mFormat; }
@@ -95,7 +95,7 @@ class QgsRequestHandler
     /**Allow core services to call plugin hooks through sendResponse() */
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
 #endif
-protected:
+  protected:
     virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;
 #ifdef MAPSERVER_HAVE_PYTHON_PLUGINS

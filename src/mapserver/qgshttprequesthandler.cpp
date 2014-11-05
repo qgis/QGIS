@@ -32,8 +32,8 @@
 #include <QUrl>
 #include <fcgi_stdio.h>
 
-QgsHttpRequestHandler::QgsHttpRequestHandler()
-    : QgsRequestHandler()
+QgsHttpRequestHandler::QgsHttpRequestHandler():
+    QgsRequestHandler()
 {
   mException = NULL;
   mHeadersSent = FALSE;
@@ -138,7 +138,7 @@ void QgsHttpRequestHandler::sendHeaders()
 
 void QgsHttpRequestHandler::sendBody() const
 {
-  size_t result = fwrite( (void*)mBody.data(), mBody.size(), 1, FCGI_stdout );
+  size_t result = fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
 #ifdef QGISDEBUG
   QgsDebugMsg( QString( "Sent %1 blocks of %2 bytes" ).arg( result ).arg( mBody.size() ) );
 #else
@@ -170,7 +170,7 @@ void QgsHttpRequestHandler::sendResponse()
     filtersIterator.value()->sendResponse();
   }
 #endif
-  if (! headersSent() )
+  if ( ! headersSent() )
   {
     sendHeaders();
   }
