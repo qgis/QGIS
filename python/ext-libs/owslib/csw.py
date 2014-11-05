@@ -8,7 +8,7 @@
 # =============================================================================
 
 """ CSW request and response processor """
-
+import inspect
 import warnings
 import StringIO
 import random
@@ -591,7 +591,10 @@ class CatalogueServiceWeb:
             # If skip_caps=True, then self.operations has not been set, so use
             # default URL.
             if hasattr(self, 'operations'):
-                for op in self.operations:
+                caller = inspect.stack()[1][3]
+                if caller == 'getrecords2': caller = 'getrecords'
+                try:
+                    op = self.get_operation_by_name(caller)
                     post_verbs = filter(lambda x: x.get('type').lower() == 'post', op.methods)
                     if len(post_verbs) > 1:
                         # Filter by constraints.  We must match a PostEncoding of "XML"
@@ -602,6 +605,8 @@ class CatalogueServiceWeb:
                             xml_post_url = post_verbs[0].get('url')
                     elif len(post_verbs) == 1:
                         xml_post_url = post_verbs[0].get('url')
+                except:  # no such luck, just go with xml_post_url
+                    pass
 
             self.request = cleanup_namespaces(self.request)
             # Add any namespaces used in the "typeNames" attribute of the
