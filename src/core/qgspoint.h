@@ -46,7 +46,7 @@ class CORE_EXPORT QgsVector
     double x() const;
     double y() const;
 
-    // perpendicular vector (rotated 90° counter-clockwise)
+    // perpendicular vector (rotated 90 degrees counter-clockwise)
     QgsVector perpVector() const;
 
     double angle( void ) const;

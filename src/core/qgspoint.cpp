@@ -71,7 +71,7 @@ double QgsVector::y() const
   return m_y;
 }
 
-// perpendicular vector (rotated 90° counter-clockwise)
+// perpendicular vector (rotated 90 degrees counter-clockwise)
 QgsVector QgsVector::perpVector() const
 {
   return QgsVector( -m_y, m_x );
