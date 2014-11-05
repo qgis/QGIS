@@ -74,8 +74,14 @@ class QgsRequestHandler
     /**Remove a request parameter*/
     virtual int removeParameter( const QString &key ) = 0;
     /**Return a request parameter*/
-    virtual QString parameter( const QString &key ) const = 0;
+    virtual QString parameter(const QString &key) const = 0;
+    /**Return the response body*/
+    virtual QByteArray* body( ) { return &mBody; }
+    /**Return the requested format string*/
     QString format() const { return mFormat; }
+    /**Return the mime type for the response*/
+    QString infoFormat() const { return mInfoFormat; }
+    /**Return true if the HTTP headers were already sent to the client*/
     bool headersSent() { return mHeadersSent; }
     QString infoFormat() const { return mInfoFormat; }
 
@@ -83,6 +89,7 @@ class QgsRequestHandler
 
     virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;
+    QByteArray mBody; // The response payload
     /**This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')*/
     QByteArray mBody; // The response payload
     QString mFormat;
