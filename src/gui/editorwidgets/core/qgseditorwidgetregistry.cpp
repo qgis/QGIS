@@ -23,10 +23,49 @@
 #include "qgsvectorlayer.h"
 #include "qgsmaplayerregistry.h"
 
+// Editors
+#include "qgsclassificationwidgetwrapperfactory.h"
+#include "qgsrangewidgetfactory.h"
+#include "qgsuniquevaluewidgetfactory.h"
+#include "qgsfilenamewidgetfactory.h"
+#include "qgsvaluemapwidgetfactory.h"
+#include "qgsenumerationwidgetfactory.h"
+#include "qgshiddenwidgetfactory.h"
+#include "qgscheckboxwidgetfactory.h"
+#include "qgstexteditwidgetfactory.h"
+#include "qgsvaluerelationwidgetfactory.h"
+#include "qgsuuidwidgetfactory.h"
+#include "qgsphotowidgetfactory.h"
+#include "qgswebviewwidgetfactory.h"
+#include "qgscolorwidgetfactory.h"
+#include "qgsrelationreferencefactory.h"
+#include "qgsdatetimeeditfactory.h"
+
 QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
 {
   static QgsEditorWidgetRegistry sInstance;
   return &sInstance;
+}
+
+void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas* mapCanvas, QgsMessageBar* messageBar )
+{
+  QgsEditorWidgetRegistry* reg = instance();
+  reg->registerWidget( "Classification", new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
+  reg->registerWidget( "Range", new QgsRangeWidgetFactory( tr( "Range" ) ) );
+  reg->registerWidget( "UniqueValues", new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
+  reg->registerWidget( "FileName", new QgsFileNameWidgetFactory( tr( "File Name" ) ) );
+  reg->registerWidget( "ValueMap", new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
+  reg->registerWidget( "Enumeration", new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
+  reg->registerWidget( "Hidden", new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
+  reg->registerWidget( "CheckBox", new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
+  reg->registerWidget( "TextEdit", new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
+  reg->registerWidget( "ValueRelation", new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
+  reg->registerWidget( "UuidGenerator", new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
+  reg->registerWidget( "Photo", new QgsPhotoWidgetFactory( tr( "Photo" ) ) );
+  reg->registerWidget( "WebView", new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
+  reg->registerWidget( "Color", new QgsColorWidgetFactory( tr( "Color" ) ) );
+  reg->registerWidget( "RelationReference", new QgsRelationReferenceFactory( tr( "Relation Reference" ), mapCanvas, messageBar ) );
+  reg->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
 }
 
 QgsEditorWidgetRegistry::QgsEditorWidgetRegistry()

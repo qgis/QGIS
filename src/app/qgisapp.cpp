@@ -270,22 +270,6 @@
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
-#include "qgsclassificationwidgetwrapperfactory.h"
-#include "qgsrangewidgetfactory.h"
-#include "qgsuniquevaluewidgetfactory.h"
-#include "qgsfilenamewidgetfactory.h"
-#include "qgsvaluemapwidgetfactory.h"
-#include "qgsenumerationwidgetfactory.h"
-#include "qgshiddenwidgetfactory.h"
-#include "qgscheckboxwidgetfactory.h"
-#include "qgstexteditwidgetfactory.h"
-#include "qgsvaluerelationwidgetfactory.h"
-#include "qgsuuidwidgetfactory.h"
-#include "qgsphotowidgetfactory.h"
-#include "qgswebviewwidgetfactory.h"
-#include "qgscolorwidgetfactory.h"
-#include "qgsrelationreferencefactory.h"
-#include "qgsdatetimeeditfactory.h"
 
 //
 // Conditional Includes
@@ -665,23 +649,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mVectorLayerTools = new QgsGuiVectorLayerTools();
 
   // Init the editor widget types
-  QgsEditorWidgetRegistry* editorWidgetRegistry = QgsEditorWidgetRegistry::instance();
-  editorWidgetRegistry->registerWidget( "Classification", new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
-  editorWidgetRegistry->registerWidget( "Range", new QgsRangeWidgetFactory( tr( "Range" ) ) );
-  editorWidgetRegistry->registerWidget( "UniqueValues", new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
-  editorWidgetRegistry->registerWidget( "FileName", new QgsFileNameWidgetFactory( tr( "File Name" ) ) );
-  editorWidgetRegistry->registerWidget( "ValueMap", new QgsValueMapWidgetFactory( tr( "Value Map" ) ) );
-  editorWidgetRegistry->registerWidget( "Enumeration", new QgsEnumerationWidgetFactory( tr( "Enumeration" ) ) );
-  editorWidgetRegistry->registerWidget( "Hidden", new QgsHiddenWidgetFactory( tr( "Hidden" ) ) );
-  editorWidgetRegistry->registerWidget( "CheckBox", new QgsCheckboxWidgetFactory( tr( "Check Box" ) ) );
-  editorWidgetRegistry->registerWidget( "TextEdit", new QgsTextEditWidgetFactory( tr( "Text Edit" ) ) );
-  editorWidgetRegistry->registerWidget( "ValueRelation", new QgsValueRelationWidgetFactory( tr( "Value Relation" ) ) );
-  editorWidgetRegistry->registerWidget( "UuidGenerator", new QgsUuidWidgetFactory( tr( "Uuid Generator" ) ) );
-  editorWidgetRegistry->registerWidget( "Photo", new QgsPhotoWidgetFactory( tr( "Photo" ) ) );
-  editorWidgetRegistry->registerWidget( "WebView", new QgsWebViewWidgetFactory( tr( "Web View" ) ) );
-  editorWidgetRegistry->registerWidget( "Color", new QgsColorWidgetFactory( tr( "Color" ) ) );
-  editorWidgetRegistry->registerWidget( "RelationReference", new QgsRelationReferenceFactory( tr( "Relation Reference" ), mMapCanvas, mInfoBar ) );
-  editorWidgetRegistry->registerWidget( "DateTime", new QgsDateTimeEditFactory( tr( "Date/Time" ) ) );
+  QgsEditorWidgetRegistry::initEditors( mMapCanvas, mInfoBar );
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );

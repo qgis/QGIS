@@ -16,6 +16,7 @@
 
 #include <QtTest>
 
+#include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>
 #include <attributetable/qgsdualview.h>
 #include <qgsapplication.h>
@@ -46,6 +47,7 @@ void TestQgsDualView::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+  QgsEditorWidgetRegistry::initEditors();
 
   // Setup a map canvas with a vector layer loaded...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
