@@ -370,6 +370,14 @@ int main( int argc, char * argv[] )
     {
       filtersIterator.value()->requestReady();
     }
+
+    //Pass the filters to the requestHandler, this is needed for the following reasons:
+    // 1. allow core services to access plugin filters and implement thir own plugin hooks
+    // 2. allow requestHandler to call Response
+
+    //TODO: implement this in the requestHandler ctor (far easier if we will get rid of
+    //      MAPSERVER_HAVE_PYTHON_PLUGINS
+    theRequestHandler->setPluginFilters( pluginFilters );
 #endif
 
     // Copy the parameters map
@@ -431,15 +439,12 @@ int main( int argc, char * argv[] )
     } // end if not exception raised
 
 #ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
-    // Call responseReady plugin filters in reverse order
-    filtersIterator = pluginFilters.constEnd();
-    while ( filtersIterator != pluginFilters.constBegin() )
+    // Iterate filters and call their responseComplete() method
+    for ( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator )
     {
-      --filtersIterator;
-      filtersIterator.value()->responseReady();
+      filtersIterator.value()->responseComplete();
     }
 #endif
-
     theRequestHandler->sendResponse();
 
     if ( logLevel < 1 )
