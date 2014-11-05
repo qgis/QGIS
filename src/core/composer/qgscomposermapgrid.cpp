@@ -1088,6 +1088,12 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
         ypos += textWidth / 2.0;
         rotation = 270;
       }
+      else if ( mLeftGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
+      {
+        xpos += ( mAnnotationFrameDistance + gridFrameDistance );
+        ypos -= textWidth / 2.0;
+        rotation = 90;
+      }
       else
       {
         xpos += mAnnotationFrameDistance + gridFrameDistance;
@@ -1105,6 +1111,12 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
         xpos -= ( mAnnotationFrameDistance + gridFrameDistance );
         ypos += textWidth / 2.0;
         rotation = 270;
+      }
+      else if ( mLeftGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
+      {
+        xpos -= textHeight + mAnnotationFrameDistance + gridFrameDistance;
+        ypos -= textWidth / 2.0;
+        rotation = 90;
       }
       else
       {
@@ -1137,11 +1149,17 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
       {
         gridFrameDistance = 0;
       }
-      if ( mRightGridAnnotationDirection == QgsComposerMapGrid::Vertical || mRightGridAnnotationDirection == QgsComposerMapGrid::BoundaryDirection )
+      if ( mRightGridAnnotationDirection == QgsComposerMapGrid::Vertical )
       {
         xpos -= mAnnotationFrameDistance + gridFrameDistance;
         ypos += textWidth / 2.0;
         rotation = 270;
+      }
+      else if ( mRightGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending || mRightGridAnnotationDirection == QgsComposerMapGrid::BoundaryDirection )
+      {
+        xpos -= textHeight + mAnnotationFrameDistance + gridFrameDistance;
+        ypos -= textWidth / 2.0;
+        rotation = 90;
       }
       else
       {
@@ -1155,11 +1173,17 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
       {
         gridFrameDistance = 0;
       }
-      if ( mRightGridAnnotationDirection == QgsComposerMapGrid::Vertical || mRightGridAnnotationDirection == QgsComposerMapGrid::BoundaryDirection )
+      if ( mRightGridAnnotationDirection == QgsComposerMapGrid::Vertical )
       {
         xpos += ( textHeight + mAnnotationFrameDistance + gridFrameDistance );
         ypos += textWidth / 2.0;
         rotation = 270;
+      }
+      else if ( mRightGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending || mRightGridAnnotationDirection == QgsComposerMapGrid::BoundaryDirection )
+      {
+        xpos += ( mAnnotationFrameDistance + gridFrameDistance );
+        ypos -= textWidth / 2.0;
+        rotation = 90;
       }
       else //Horizontal
       {
@@ -1196,6 +1220,12 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
         ypos -= mAnnotationFrameDistance + gridFrameDistance;
         xpos -= textWidth / 2.0;
       }
+      else if ( mBottomGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
+      {
+        xpos -= textHeight / 2.0;
+        ypos -= textWidth + mAnnotationFrameDistance + gridFrameDistance;
+        rotation = 90;
+      }
       else //Vertical
       {
         xpos += textHeight / 2.0;
@@ -1213,6 +1243,12 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
       {
         ypos += ( mAnnotationFrameDistance + textHeight + gridFrameDistance );
         xpos -= textWidth / 2.0;
+      }
+      else if ( mBottomGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
+      {
+        xpos -= textHeight / 2.0;
+        ypos += gridFrameDistance + mAnnotationFrameDistance;
+        rotation = 90;
       }
       else //Vertical
       {
@@ -1250,6 +1286,12 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
         xpos -= textWidth / 2.0;
         ypos += textHeight + mAnnotationFrameDistance + gridFrameDistance;
       }
+      else if ( mTopGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
+      {
+        xpos -= textHeight / 2.0;
+        ypos += mAnnotationFrameDistance + gridFrameDistance;
+        rotation = 90;
+      }
       else //Vertical
       {
         xpos += textHeight / 2.0;
@@ -1267,6 +1309,12 @@ void QgsComposerMapGrid::drawCoordinateAnnotation( QPainter* p, const QPointF& p
       {
         xpos -= textWidth / 2.0;
         ypos -= ( mAnnotationFrameDistance + gridFrameDistance );
+      }
+      else if ( mTopGridAnnotationDirection == QgsComposerMapGrid::VerticalDescending )
+      {
+        xpos -= textHeight / 2.0;
+        ypos -= textWidth + mAnnotationFrameDistance + gridFrameDistance;
+        rotation = 90;
       }
       else //Vertical
       {

@@ -163,8 +163,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     enum AnnotationDirection
     {
-      Horizontal, /*< draw annotations horizontally */
-      Vertical, /*< draw annotations vertically */
+      Horizontal = 0, /*< draw annotations horizontally */
+      Vertical, /*< draw annotations vertically, ascending */
+      VerticalDescending, /*< draw annotations vertically, descending */
       BoundaryDirection /*< annotations follow the boundary direction */
     };
 

@@ -119,10 +119,10 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void on_mAnnotationPositionBottomComboBox_currentIndexChanged( const QString& text );
 
     //annotation direction
-    void on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( const QString& text );
-    void on_mAnnotationDirectionComboBoxRight_currentIndexChanged( const QString& text );
-    void on_mAnnotationDirectionComboBoxTop_currentIndexChanged( const QString& text );
-    void on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( const QString& text );
+    void on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index );
+    void on_mAnnotationDirectionComboBoxRight_currentIndexChanged( int index );
+    void on_mAnnotationDirectionComboBoxTop_currentIndexChanged( int index );
+    void on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index );
 
     void on_mAnnotationFormatComboBox_currentIndexChanged( int index );
     void on_mCoordinatePrecisionSpinBox_valueChanged( int value );
@@ -184,7 +184,7 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void handleChangedFrameDisplay( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::DisplayMode mode );
     void handleChangedAnnotationDisplay( QgsComposerMapGrid::BorderSide border, const QString& text );
     void handleChangedAnnotationPosition( QgsComposerMapGrid::BorderSide border, const QString& text );
-    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QString& text );
+    void handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::AnnotationDirection &direction );
 
     void insertFrameDisplayEntries( QComboBox* c );
     void insertAnnotationDisplayEntries( QComboBox* c );

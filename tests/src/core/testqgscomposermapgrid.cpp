@@ -52,6 +52,7 @@ class TestQgsComposerMapGrid: public QObject
     void lineBorder(); //test line border frame mode
     void lineBorderAnnotated(); //test line border frame with annotations
     void annotationFormats(); //various tests for annotation formats
+    void descendingAnnotations(); //test descending annotation direction
 
   private:
     QgsComposition* mComposition;
@@ -608,7 +609,39 @@ void TestQgsComposerMapGrid::annotationFormats()
 
 }
 
+void TestQgsComposerMapGrid::descendingAnnotations()
+{
+  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
 
+  mComposerMap->grid()->setFrameStyle( QgsComposerMapGrid::NoFrame );
+  mComposerMap->grid()->setEnabled( true );
+  mComposerMap->grid()->setStyle( QgsComposerMapGrid::FrameAnnotationsOnly );
+  mComposerMap->grid()->setAnnotationEnabled( true );
+  mComposerMap->grid()->setAnnotationFontColor( Qt::black );
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Left );
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Right );
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Top );
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::InsideMapFrame, QgsComposerMapGrid::Bottom );
+  mComposerMap->grid()->setAnnotationDirection( QgsComposerMapGrid::VerticalDescending, QgsComposerMapGrid::Left );
+  mComposerMap->grid()->setAnnotationDirection( QgsComposerMapGrid::VerticalDescending, QgsComposerMapGrid::Right );
+  mComposerMap->grid()->setAnnotationDirection( QgsComposerMapGrid::VerticalDescending, QgsComposerMapGrid::Top );
+  mComposerMap->grid()->setAnnotationDirection( QgsComposerMapGrid::VerticalDescending, QgsComposerMapGrid::Bottom );
+
+  QgsCompositionChecker checker( "composermap_verticaldescending_inside", mComposition );
+  bool testResult = checker.testComposition( mReport, 0, 0 );
+  QVERIFY( testResult );
+
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Left );
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Right );
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Top );
+  mComposerMap->grid()->setAnnotationPosition( QgsComposerMapGrid::OutsideMapFrame, QgsComposerMapGrid::Bottom );
+
+  QgsCompositionChecker checker2( "composermap_verticaldescending_outside", mComposition );
+  bool testResult2 = checker2.testComposition( mReport, 0, 0 );
+  QVERIFY( testResult2 );
+
+  mComposerMap->grid()->setAnnotationEnabled( false );
+}
 
 QTEST_MAIN( TestQgsComposerMapGrid )
 #include "testqgscomposermapgrid.moc"

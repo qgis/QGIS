@@ -914,8 +914,9 @@ void QgsComposerMapWidget::insertAnnotationPositionEntries( QComboBox* c )
 
 void QgsComposerMapWidget::insertAnnotationDirectionEntries( QComboBox* c )
 {
-  c->insertItem( 0, tr( "Horizontal" ) );
-  c->insertItem( 1, tr( "Vertical" ) );
+  c->addItem( tr( "Horizontal" ), QgsComposerMapGrid::Horizontal );
+  c->addItem( tr( "Vertical ascending" ), QgsComposerMapGrid::Vertical );
+  c->addItem( tr( "Vertical descending" ), QgsComposerMapGrid::VerticalDescending );
 }
 
 void QgsComposerMapWidget::initFrameDisplayBox( QComboBox *c, QgsComposerMapGrid::DisplayMode display )
@@ -979,7 +980,7 @@ void QgsComposerMapWidget::handleChangedAnnotationPosition( QgsComposerMapGrid::
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QString& text )
+void QgsComposerMapWidget::handleChangedAnnotationDirection( QgsComposerMapGrid::BorderSide border, const QgsComposerMapGrid::AnnotationDirection& direction )
 {
   QgsComposerMapGrid* grid = currentGrid();
   if ( !grid )
@@ -988,14 +989,7 @@ void QgsComposerMapWidget::handleChangedAnnotationDirection( QgsComposerMapGrid:
   }
 
   mComposerMap->beginCommand( tr( "Changed annotation direction" ) );
-  if ( text == tr( "Horizontal" ) )
-  {
-    grid->setAnnotationDirection( QgsComposerMapGrid::Horizontal, border );
-  }
-  else if ( text == tr( "Vertical" ) )
-  {
-    grid->setAnnotationDirection( QgsComposerMapGrid::Vertical, border );
-  }
+  grid->setAnnotationDirection( direction, border );
   mComposerMap->updateBoundingRect();
   mComposerMap->update();
   mComposerMap->endCommand();
@@ -1039,16 +1033,7 @@ void QgsComposerMapWidget::initAnnotationDirectionBox( QComboBox* c, QgsComposer
   {
     return;
   }
-
-  if ( dir == QgsComposerMapGrid::Vertical )
-  {
-    c->setCurrentIndex( c->findText( tr( "Vertical" ) ) );
-  }
-  else if ( dir == QgsComposerMapGrid::Horizontal )
-  {
-    c->setCurrentIndex( c->findText( tr( "Horizontal" ) ) );
-  }
-
+  c->setCurrentIndex( c->findData( dir ) );
 }
 
 void QgsComposerMapWidget::refreshMapComboBox()
@@ -2026,24 +2011,24 @@ void QgsComposerMapWidget::on_mAnnotationPositionBottomComboBox_currentIndexChan
   handleChangedAnnotationPosition( QgsComposerMapGrid::Bottom, text );
 }
 
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( const QString& text )
+void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxLeft_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Left, text );
+  handleChangedAnnotationDirection( QgsComposerMapGrid::Left, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxLeft->itemData( index ).toInt() );
 }
 
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxRight_currentIndexChanged( const QString& text )
+void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxRight_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Right, text );
+  handleChangedAnnotationDirection( QgsComposerMapGrid::Right, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxRight->itemData( index ).toInt() );
 }
 
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxTop_currentIndexChanged( const QString& text )
+void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxTop_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Top, text );
+  handleChangedAnnotationDirection( QgsComposerMapGrid::Top, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxTop->itemData( index ).toInt() );
 }
 
-void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( const QString& text )
+void QgsComposerMapWidget::on_mAnnotationDirectionComboBoxBottom_currentIndexChanged( int index )
 {
-  handleChangedAnnotationDirection( QgsComposerMapGrid::Bottom, text );
+  handleChangedAnnotationDirection( QgsComposerMapGrid::Bottom, ( QgsComposerMapGrid::AnnotationDirection ) mAnnotationDirectionComboBoxBottom->itemData( index ).toInt() );
 }
 
 void QgsComposerMapWidget::on_mDistanceToMapFrameSpinBox_valueChanged( double d )
