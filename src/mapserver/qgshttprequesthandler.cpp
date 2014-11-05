@@ -401,6 +401,10 @@ void QgsHttpRequestHandler::setServiceException(QgsMapServiceException ex )
   serviceExceptionReportElem.appendChild( serviceExceptionElem );
 
   QByteArray ba = exceptionDoc.toByteArray();
+  // Clear response headers and body and set new exception
+  // TODO: check for headersSent()
+  clearHeaders();
+  clearBody();
   setHttpResponse( &ba, "text/xml" );
 }
 
