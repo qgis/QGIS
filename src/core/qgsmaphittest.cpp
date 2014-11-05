@@ -3,6 +3,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrendercontext.h"
 #include "qgsrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
 
 
@@ -52,6 +53,12 @@ void QgsMapHitTest::run()
 void QgsMapHitTest::runHitTestLayer( QgsVectorLayer* vl, SymbolV2Set& usedSymbols, QgsRenderContext& context )
 {
   QgsFeatureRendererV2* r = vl->rendererV2();
+  
+  // Point displacement case
+  QgsPointDisplacementRenderer* pdr = dynamic_cast<QgsPointDisplacementRenderer*>( r );
+  if ( pdr )
+    r = pdr->embeddedRenderer();
+  
   bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRendererV2::MoreSymbolsPerFeature;
   r->startRender( context, vl->pendingFields() );
   QgsFeature f;
