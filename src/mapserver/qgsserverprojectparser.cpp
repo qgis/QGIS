@@ -227,7 +227,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   {
     QString project = convertToAbsolutePath( elem.attribute( "project" ) );
     QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
-    
+
     QgsServerProjectParser* otherConfig = QgsConfigCache::instance()->serverConfiguration( project );
     if ( !otherConfig )
     {

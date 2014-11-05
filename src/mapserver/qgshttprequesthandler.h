@@ -50,21 +50,21 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     virtual void setHeader( const QString &name, const QString &value );
     virtual int removeHeader( const QString &name );
     virtual void clearHeaders( );
-    virtual void appendBody( const QByteArray &body);
+    virtual void appendBody( const QByteArray &body );
     virtual void clearBody( );
     virtual void setInfoFormat( const QString &format );
     virtual bool responseReady() const;
     virtual bool exceptionRaised() const;
-    virtual void setParameter(const QString &key, const QString &value);
-    virtual QString parameter(const QString &key) const;
-    virtual int removeParameter(const QString &key);
+    virtual void setParameter( const QString &key, const QString &value );
+    virtual QString parameter( const QString &key ) const;
+    virtual int removeParameter( const QString &key );
 #ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters );
 #endif
   protected:
     virtual void sendHeaders( );
     virtual void sendBody( ) const;
-    void setHttpResponse(QByteArray *ba, const QString &format );
+    void setHttpResponse( QByteArray *ba, const QString &format );
     /**Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/
     QString formatToMimeType( const QString& format ) const;
@@ -84,7 +84,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     static bool blueCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
     static bool alphaCompare( const QPair<QRgb, int>& c1, const QPair<QRgb, int>& c2 );
     /**Calculates a representative color for a box (pixel weighted average)*/
-    static QRgb boxColor( const QgsColorBox& box, int boxPixels );    
+    static QRgb boxColor( const QgsColorBox& box, int boxPixels );
 };
 
 #endif

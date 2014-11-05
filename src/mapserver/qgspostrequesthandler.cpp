@@ -37,7 +37,7 @@ void QgsPostRequestHandler::parseInput()
   QString errorMsg;
   if ( !doc.setContent( inputString, true, &errorMsg ) )
   {
-    requestStringToParameterMap( inputString, mParameterMap);
+    requestStringToParameterMap( inputString, mParameterMap );
   }
   else
   {
@@ -54,7 +54,7 @@ void QgsPostRequestHandler::parseInput()
       return; //no query string? something must be wrong...
     }
 
-    requestStringToParameterMap( queryString, mParameterMap);
+    requestStringToParameterMap( queryString, mParameterMap );
 
     QDomElement docElem = doc.documentElement();
     if ( docElem.hasAttribute( "version" ) )

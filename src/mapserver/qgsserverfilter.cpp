@@ -27,8 +27,8 @@
  *
  */
 
-QgsServerFilter::QgsServerFilter(QgsServerInterface *serverInterface):
-  mServerInterface( serverInterface )
+QgsServerFilter::QgsServerFilter( QgsServerInterface *serverInterface ):
+    mServerInterface( serverInterface )
 {
 }
 
@@ -39,16 +39,16 @@ QgsServerFilter::~QgsServerFilter()
 
 void QgsServerFilter::requestReady()
 {
-  QgsDebugMsg( "QgsServerFilter plugin default requestReady called");
+  QgsDebugMsg( "QgsServerFilter plugin default requestReady called" );
 }
 
 void QgsServerFilter::responseComplete()
 {
-  QgsDebugMsg( "QgsServerFilter plugin default responseComplete called");
+  QgsDebugMsg( "QgsServerFilter plugin default responseComplete called" );
 }
 
 
 void QgsServerFilter::sendResponse()
 {
-  QgsDebugMsg( "QgsServerFilter plugin default sendResponse called");
+  QgsDebugMsg( "QgsServerFilter plugin default sendResponse called" );
 }

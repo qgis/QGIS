@@ -23,10 +23,10 @@
 #include "qgsserverinterface.h"
 
 class QgsServerPlugins
-{    
-public:
+{
+  public:
     explicit QgsServerPlugins();
-    static bool initPlugins(QgsServerInterface* interface);
+    static bool initPlugins( QgsServerInterface* interface );
     static QgsPythonUtils* mPythonUtils;
     static QStringList mServerPlugins;
 };
