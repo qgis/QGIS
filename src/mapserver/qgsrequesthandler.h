@@ -95,7 +95,7 @@ class QgsRequestHandler
     /**Allow core services to call plugin hooks through sendResponse() */
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
 #endif
-protected:
+  protected:
     virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;
 #ifdef MAPSERVER_HAVE_PYTHON_PLUGINS

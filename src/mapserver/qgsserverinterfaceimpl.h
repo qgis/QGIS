@@ -36,26 +36,26 @@
 class QgsServerInterfaceImpl : public QgsServerInterface
 {
 
-public:
+  public:
 
-  /** Constructor */
-  QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
+    /** Constructor */
+    QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache );
 
-  /** Destructor */
-  ~QgsServerInterfaceImpl();
+    /** Destructor */
+    ~QgsServerInterfaceImpl();
 
-  void setRequestHandler( QgsRequestHandler* requestHandler );
-  QgsCapabilitiesCache* capabiblitiesCache() { return mCapabilitiesCache; }
-  QgsRequestHandler*  requestHandler( ) { return mRequestHandler; }
-  void registerFilter( QgsServerFilter *filter, int priority = 0 );
-  QgsServerFiltersMap filters( ) { return mFilters; }
-  QString getEnv(const QString& name ) const;
+    void setRequestHandler( QgsRequestHandler* requestHandler );
+    QgsCapabilitiesCache* capabiblitiesCache() { return mCapabilitiesCache; }
+    QgsRequestHandler*  requestHandler( ) { return mRequestHandler; }
+    void registerFilter( QgsServerFilter *filter, int priority = 0 );
+    QgsServerFiltersMap filters( ) { return mFilters; }
+    QString getEnv( const QString& name ) const;
 
-private:
+  private:
 
-  QgsServerFiltersMap mFilters;
-  QgsCapabilitiesCache* mCapabilitiesCache;
-  QgsRequestHandler* mRequestHandler;
+    QgsServerFiltersMap mFilters;
+    QgsCapabilitiesCache* mCapabilitiesCache;
+    QgsRequestHandler* mRequestHandler;
 
 };
 
