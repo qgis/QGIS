@@ -410,7 +410,7 @@ void QgsVectorLayerFeatureIterator::useChangedAttributeFeature( QgsFeatureId fid
     QgsFeatureIterator fi = mSource->mProviderFeatureSource->getFeatures( request );
     if ( fi.nextFeature( tmp ) )
     {
-      if ( mHasVirtualAttributes )
+      if ( mHasVirtualAttributes || mSource->mHasEditBuffer )
         updateChangedAttributes( tmp );
       f.setAttributes( tmp.attributes() );
     }
@@ -506,7 +506,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
         if ( mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
         {
           QgsAttributeList attrs;
-          Q_FOREACH ( const QString& col, exp->referencedColumns() )
+          Q_FOREACH( const QString& col, exp->referencedColumns() )
           {
             attrs.append( mSource->mFields.fieldNameIndex( col ) );
           }
