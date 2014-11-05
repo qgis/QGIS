@@ -139,11 +139,7 @@ void QgsHttpRequestHandler::sendHeaders()
 void QgsHttpRequestHandler::sendBody() const
 {
   fwrite( (void*)mBody.data(), mBody.size(), 1, FCGI_stdout );
-#ifdef QGISDEBUG
   QgsDebugMsg( QString( "Sent %1 bytes" ).arg( mBody.size() ) );
-#else
-  Q_UNUSED( result );
-#endif
 }
 
 void QgsHttpRequestHandler::sendResponse()
