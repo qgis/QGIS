@@ -41,7 +41,8 @@ public:
   virtual ~QgsServerFilter();
   QgsServerInterface* serverInterface( ) { return mServerInterface; }
   virtual void requestReady();
-  virtual void responseReady();
+  virtual void responseComplete();
+  virtual void sendResponse();
 
 private:
 

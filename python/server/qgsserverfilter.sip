@@ -48,8 +48,17 @@ public:
     * parameters, just before entering the main switch for core services.*/
    virtual void requestReady();
    /** Method called when the QgsRequestHandler processing has done and
-    * the response is ready, just after the main switch for core services.
+    * the response is ready, just after the main switch for core services
+    * and before final sending response to FCGI stdout.
     */
-   virtual void responseReady();
+   virtual void responseComplete();
+   /** Method called when the QgsRequestHandler sends its data to FCGI stdout.
+    * This normally occours at the end of core services processing just after
+    * the responseComplete() plugin hook. For streaming services (like WFS on
+    * getFeature requests, sendResponse() might have been called several times
+    * before the response is complete: in this particular case, sendResponse()
+    * is called once for each feature before hitting responseComplete()
+    */
+   virtual void sendResponse();
 
 };
