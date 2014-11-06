@@ -27,85 +27,85 @@ __copyright__ = '(C) 2012, Victor Olaya'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtCore, QtGui
 import os
 
-class MultipleFileInputDialog(QtGui.QDialog):
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 
-    def __init__(self, selectedoptions):
-        self.selectedoptions = selectedoptions
-        self.options=selectedoptions
-        QtGui.QDialog.__init__(self)
-        self.setModal(True)
-        self.setupUi()
-        self.selectedoptions = None
+from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
 
-    def setupUi(self):
-        self.resize(381, 320)
-        self.setWindowTitle(self.tr("Multiple selection"))
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.buttonBox = QtGui.QDialogButtonBox()
-        self.buttonBox.setOrientation(QtCore.Qt.Vertical)
-        self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
-        self.buttonPlus = QtGui.QPushButton("+")
-        self.buttonBox.addButton(self.buttonPlus, QtGui.QDialogButtonBox.ActionRole)
-        self.buttonMoins = QtGui.QPushButton("-")
-        self.buttonBox.addButton(self.buttonMoins, QtGui.QDialogButtonBox.ActionRole)
-        self.table = QtGui.QTableWidget()
-        self.table.setColumnCount(1)
-        self.table.setColumnWidth(0,270)
-        self.table.verticalHeader().setVisible(False)
-        self.table.horizontalHeader().setVisible(False)
-        self.table.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
-        self.horizontalLayout.addWidget(self.table)
-        self.horizontalLayout.addWidget(self.buttonBox)
-        self.setLayout(self.horizontalLayout)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("accepted()"), self.okPressed)
-        QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL("rejected()"), self.cancelPressed)
-        QtCore.QObject.connect(self.buttonPlus, QtCore.SIGNAL("clicked()"), self.addFile)
-        QtCore.QObject.connect(self.buttonMoins, QtCore.SIGNAL("clicked()"), self.removeFile)
-        QtCore.QMetaObject.connectSlotsByName(self)
 
-    def setTableContent(self):
-        self.table.setRowCount(len(self.options))
-        for i in range(len(self.options)):
-            item = QtGui.QLabel()
-            item.setText(self.options[i])
-            self.table.setCellWidget(i,0, item)
+class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
 
-    def okPressed(self):
+    def __init__(self, options):
+        QDialog.__init__(self)
+        self.setupUi(self)
+
+        self.selectedoptions = options
+
+        self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
+        # Additional buttons
+        self.btnAdd = QPushButton(self.tr('Add file'))
+        self.buttonBox.addButton(self.btnAdd,
+                                 QDialogButtonBox.ActionRole)
+        self.btnRemove = QPushButton(self.tr('Remove file(s)'))
+        self.buttonBox.addButton(self.btnRemove,
+                                 QDialogButtonBox.ActionRole)
+        self.btnRemoveAll = QPushButton(self.tr('Remove all'))
+        self.buttonBox.addButton(self.btnRemoveAll,
+                                 QDialogButtonBox.ActionRole)
+
+        self.btnAdd.clicked.connect(self.addFile)
+        self.btnRemove.clicked.connect(lambda: self.removeAll())
+        self.btnRemoveAll.clicked.connect(lambda: self.removeAll(True))
+
+        self.populateList()
+
+    def populateList(self):
+        model = QStandardItemModel()
+        for option in self.selectedoptions:
+            item = QStandardItem(option)
+            model.appendRow(item)
+
+        self.lstLayers.setModel(model)
+
+    def accept(self):
         self.selectedoptions = []
-        self.selectedoptions = self.options
-        self.close()
+        model = self.lstLayers.model()
+        for i in xrange(model.rowCount()):
+            item = model.item(i)
+            self.selectedoptions.append(item.text())
+        QDialog.accept(self)
 
-    def cancelPressed(self):
-        self.selectedoptions = None
-        self.close()
+    def reject(self):
+        QDialog.reject(self)
 
     def addFile(self):
-        settings = QtCore.QSettings()
-        lastfolder = settings.value("processingFilesLastFolder")
-        if lastfolder :
-            path = lastfolder
-        else :
-            path = QtCore.QDir.currentPath()
+        settings = QSettings()
+        if settings.contains('/Processing/LastInputPath'):
+            path = settings.value('/Processing/LastInputPath')
+        else:
+            path = ''
 
-        filesOpened = QtGui.QFileDialog.getOpenFileNames(None,
-            self.tr('Select the file(s) to use'), path, self.tr('All files (*.*)'))
+        files = QFileDialog.getOpenFileNames(self,
+            self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
 
-        lastfile = ""
-        for item in filesOpened:
-            self.options.append( str(item) )
-            lastfile=item
+        model = self.lstLayers.model()
+        for filePath in files:
+            item = QStandardItem(filePath)
+            model.appendRow(item)
 
-        self.setTableContent()
-        folder = os.path.dirname( str( lastfile ) )
-        settings.setValue("processingFilesLastFolder", folder)
+        settings.setValue('/Processing/LastInputPath',
+                          os.path.dirname(files[0]))
 
-    def removeFile(self):
-        indexRow = self.table.currentRow()
-        itemToRemove = self.options[indexRow]
-        self.options.remove(itemToRemove)
-        self.setTableContent()
+    def removeAll(self, removeAll=False):
+        if removeAll:
+            self.lstLayers.model().clear()
+        else:
+            self.lstLayers.setUpdatesEnabled(False)
+            indexes = self.lstLayers.selectionModel().selectedIndexes()
+            indexes.sort()
+            for i in reversed(indexes):
+                self.lstLayers.model().removeRow(i.row())
+            self.lstLayers.setUpdatesEnabled(True)
