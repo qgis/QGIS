@@ -42,9 +42,11 @@ class QgsRectangle;
 #define EXPAND(x) STR(x)
 #define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
 
+#if (GRASS_VERSION_MAJOR < 7) || (GRASS_VERSION_MAJOR == 7 && GRASS_VERSION_MINOR == 0)
 #define G_TRY try { if( !setjmp( QgsGrass::jumper ) )
-// Ready for > 7.0.beta1
-//#define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
+#else
+#define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
+#endif
 #define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
 
 /*!
