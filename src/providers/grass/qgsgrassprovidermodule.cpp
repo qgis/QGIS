@@ -117,7 +117,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       }
       else
       {
-        QgsLayerItem *layer = new QgsLayerItem( map, baseLayerName, path, uri, layerType, "grass" );
+        QgsLayerItem *layer = new QgsGrassVectorLayerItem( map, name, baseLayerName, path, uri, layerType, "grass" );
         map->addChild( layer );
       }
     }
@@ -138,6 +138,18 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   }
 
   return items;
+}
+
+QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QString mapName, QString layerName, QString path, QString uri, LayerType layerType, QString providerKey )
+    : QgsLayerItem( parent, layerName, path, uri, layerType, providerKey )
+    , mMapName( mapName )
+{
+}
+
+QString QgsGrassVectorLayerItem::layerName() const
+{
+  // to get map + layer when added from browser
+  return mMapName + " " + name();
 }
 
 QGISEXTERN int dataCapabilities()

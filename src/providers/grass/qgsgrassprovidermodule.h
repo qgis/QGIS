@@ -41,4 +41,16 @@ class QgsGrassMapsetItem : public QgsDataCollectionItem
     QString mGisdbase;
 };
 
+class QgsGrassVectorLayerItem : public QgsLayerItem
+{
+  public:
+    QgsGrassVectorLayerItem( QgsDataItem* parent, QString mapName, QString layerName, QString path, QString uri, LayerType layerType, QString providerKey );
+    ~QgsGrassVectorLayerItem() {};
+
+    QString layerName() const;
+
+  private:
+    QString mMapName;
+};
+
 #endif // QGSGRASSPROVIDERMODULE_H
