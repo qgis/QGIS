@@ -275,7 +275,12 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   else
   {
     feature.setAttribute( 0, id );
+#if GRASS_VERSION_MAJOR < 7
     if ( mSource->mLayerType == QgsGrassProvider::TOPO_POINT || mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
+#else
+    /* No more topo points in GRASS 7 */
+    if ( mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
+#endif
     {
       feature.setAttribute( 1, QgsGrassProvider::primitiveTypeName( type ) );
 

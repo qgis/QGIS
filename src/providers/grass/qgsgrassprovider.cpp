@@ -1401,7 +1401,13 @@ bool QgsGrassProvider::lineNodes( int line, int *node1, int *node2 )
     return false;
   }
 
+#if GRASS_VERSION_MAJOR < 7
   Vect_get_line_nodes( mMap, line, node1, node2 );
+#else
+  /* points don't have topology in GRASS >= 7 */
+  *node1 = 0;
+  *node2 = 0;
+#endif
   return true;
 }
 

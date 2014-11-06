@@ -919,7 +919,9 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
   // add topology layers
   if ( Vect_get_num_primitives( &map, GV_POINTS ) > 0 )
   {
+#if GRASS_VERSION_MAJOR < 7 /* no more point in GRASS 7 topo */
     list.append( "topo_point" );
+#endif
   }
   if ( Vect_get_num_primitives( &map, GV_LINES ) > 0 )
   {
