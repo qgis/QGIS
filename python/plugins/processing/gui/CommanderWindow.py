@@ -31,7 +31,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
 from processing.core.Processing import Processing
-from processing.gui.MissingDependencyDialog import MissingDependencyDialog
+from processing.gui.MessageDialog import MessageDialog
 from processing.gui.ParametersDialog import ParametersDialog
 from processing.tools import dataobjects
 from processing.tools.system import *
@@ -205,7 +205,9 @@ class CommanderWindow(QtGui.QDialog):
         alg = alg.getCopy()
         message = alg.checkBeforeOpeningParametersDialog()
         if message:
-            dlg = MissingDependencyDialog(message)
+            dlg = MessageDialog()
+            dlg.setTitle(self.tr('Missing dependency'))
+            dlg.setMessage(msg)
             dlg.exec_()
             return
         dlg = alg.getCustomParametersDialog()

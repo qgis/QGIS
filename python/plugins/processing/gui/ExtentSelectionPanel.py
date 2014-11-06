@@ -37,7 +37,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterMultipleInput
 from processing.tools import dataobjects
 
-from processing.ui.ui_widgetExtentSelector import Ui_Form
+from processing.ui.ui_widgetBaseSelector import Ui_Form
 
 class ExtentSelectionPanel(QWidget, Ui_Form):
 
@@ -48,8 +48,8 @@ class ExtentSelectionPanel(QWidget, Ui_Form):
         self.dialog = dialog
         self.params = alg.parameters
         if self.canUseAutoExtent():
-            if hasattr(self.leExtent, 'setPlaceholderText'):
-                self.leExtent.setPlaceholderText(
+            if hasattr(self.leText, 'setPlaceholderText'):
+                self.leText.setPlaceholderText(
                     self.tr('[Leave blank to use min covering extent]'))
 
         self.btnSelect.clicked.connect(self.selectExtent)
@@ -92,7 +92,7 @@ class ExtentSelectionPanel(QWidget, Ui_Form):
         popupmenu.exec_(QCursor.pos())
 
     def useMinCoveringExtent(self):
-        self.leExtent.setText('')
+        self.leText.setText('')
 
     def getMinCoveringExtent(self):
         first = True
@@ -165,7 +165,7 @@ class ExtentSelectionPanel(QWidget, Ui_Form):
         s = '{},{},{},{}'.format(
             r.xMinimum(), r.xMaximum(), r.yMinimum(), r.yMaximum())
 
-        self.leExtent.setText(s)
+        self.leText.setText(s)
         self.tool.reset()
         canvas = iface.mapCanvas()
         canvas.setMapTool(self.prevMapTool)
@@ -174,7 +174,7 @@ class ExtentSelectionPanel(QWidget, Ui_Form):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if str(self.leExtent.text()).strip() != '':
-            return str(self.leExtent.text())
+        if str(self.leText.text()).strip() != '':
+            return unicode(self.leText.text())
         else:
             return self.getMinCoveringExtent()

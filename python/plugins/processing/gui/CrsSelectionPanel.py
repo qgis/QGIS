@@ -31,15 +31,17 @@ from PyQt4.QtCore import *
 from qgis.gui import *
 from qgis.core import *
 
-from processing.ui.ui_widgetCRSSelector import Ui_widgetCRSSelector
+from processing.ui.ui_widgetBaseSelector import Ui_Form
 
-class CrsSelectionPanel(QWidget, Ui_widgetCRSSelector):
+class CrsSelectionPanel(QWidget, Ui_Form):
 
     def __init__(self, default):
         QWidget.__init__(self)
         self.setupUi(self)
 
-        self.btnBrowse.clicked.connect(self.browseCRS)
+        self.leText.setEnabled(False)
+
+        self.btnBSelect.clicked.connect(self.browseCRS)
         self.authId = QgsCoordinateReferenceSystem(default).authid()
         self.updateText()
 
@@ -56,7 +58,7 @@ class CrsSelectionPanel(QWidget, Ui_widgetCRSSelector):
 
     def updateText(self):
         if self.authId is not None:
-            self.leCRS.setText(self.authId)
+            self.leText.setText(self.authId)
 
     def getValue(self):
         return self.authId

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>widgetCRSSelector</class>
- <widget class="QWidget" name="widgetCRSSelector">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>249</width>
     <height>23</height>
    </rect>
   </property>
@@ -21,14 +21,10 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLineEdit" name="leCRS">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-    </widget>
+    <widget class="QLineEdit" name="leText"/>
    </item>
    <item>
-    <widget class="QToolButton" name="btnBrowse">
+    <widget class="QToolButton" name="btnSelect">
      <property name="text">
       <string>...</string>
      </property>

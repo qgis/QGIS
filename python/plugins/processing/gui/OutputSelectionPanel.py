@@ -37,9 +37,9 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputDirectory
 
-from processing.ui.ui_widgetOutputSelect import Ui_widgetOutputSelect
+from processing.ui.ui_widgetBaseSelector import Ui_Form
 
-class OutputSelectionPanel(QWidget, Ui_widgetOutputSelect):
+class OutputSelectionPanel(QWidget, Ui_Form):
 
     SAVE_TO_TEMP_FILE = QCoreApplication.translate(
         'OutputSelectionPanel', '[Save to temporary file]')
@@ -51,10 +51,10 @@ class OutputSelectionPanel(QWidget, Ui_widgetOutputSelect):
         self.output = output
         self.alg = alg
 
-        if hasattr(self.text, 'setPlaceholderText'):
-            self.text.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
+        if hasattr(self.leText, 'setPlaceholderText'):
+            self.leText.setPlaceholderText(self.SAVE_TO_TEMP_FILE)
 
-        self.btnBrowse.clicked.connect(self.selectOutput)
+        self.btnSelect.clicked.connect(self.selectOutput)
 
     def selectOutput(self):
         if isinstance(self.output, OutputDirectory):
@@ -63,29 +63,29 @@ class OutputSelectionPanel(QWidget, Ui_widgetOutputSelect):
             popupMenu = QMenu()
 
             actionSaveToTempFile = QAction(
-                self.tr('Save to a temporary file'), self.btnBrowse)
+                self.tr('Save to a temporary file'), self.btnSelect)
             actionSaveToTempFile.triggered.connect(self.saveToTemporaryFile)
             popupMenu.addAction(actionSaveToTempFile)
 
             actionSaveToFile = QAction(
-                self.tr('Save to file...'), self.btnBrowse)
+                self.tr('Save to file...'), self.btnSelect)
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
             if isinstance(self.output, OutputVector) \
                     and self.alg.provider.supportsNonFileBasedOutput():
                 actionSaveToMemory = QAction(
-                    self.tr('Save to memory layer'), self.btnBrowse)
+                    self.tr('Save to memory layer'), self.btnSelect)
                 actionSaveToMemory.triggered.connect(self.saveToMemory)
                 popupMenu.addAction(actionSaveToMemory)
 
             popupMenu.exec_(QCursor.pos())
 
     def saveToTemporaryFile(self):
-        self.text.setText('')
+        self.leText.setText('')
 
     def saveToMemory(self):
-        self.text.setText('memory:')
+        self.leText.setText('memory:')
 
     def selectFile(self):
         fileFilter = self.output.getFileFilter(self.alg)
@@ -114,7 +114,7 @@ class OutputSelectionPanel(QWidget, Ui_widgetOutputSelect):
                 ext = re.search("\*(\.[a-z]{1,5})", selectedFileFilter)
                 if ext:
                     fileName += ext.group(1)
-            self.text.setText(fileName)
+            self.leText.setText(fileName)
             settings.setValue('/Processing/LastOutputPath',
                               os.path.dirname(fileName))
             settings.setValue('/Processing/encoding', encoding)
@@ -125,10 +125,10 @@ class OutputSelectionPanel(QWidget, Ui_widgetOutputSelect):
         dirName = QFileDialog.getExistingDirectory(self,
             self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
 
-        self.text.setText(dirName)
+        self.leText.setText(dirName)
 
     def getValue(self):
-        fileName = unicode(self.text.text())
+        fileName = unicode(self.leText.text())
         if fileName.strip() in ['', self.SAVE_TO_TEMP_FILE]:
             value = None
         elif fileName.startswith('memory:'):
