@@ -26,33 +26,29 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui, QtCore
+
+from PyQt4.QtGui import *
+
 from processing.tools.system import *
 
+from processing.ui.ui_widgetBaseSelector import Ui_Form
 
-class FileSelectionPanel(QtGui.QWidget):
 
-    def __init__(self, isFolder, ext = None):
-        super(FileSelectionPanel, self).__init__(None)
+class FileSelectionPanel(QWidget, Ui_Form):
+
+    def __init__(self, isFolder, ext=None):
+        QWidget.__init__(self)
+        self.setupUi(self)
+
         self.ext = ext or '*'
         self.isFolder = isFolder
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QLineEdit()
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText(self.tr('...'))
-        self.pushButton.clicked.connect(self.showSelectionDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
+
+        self.btnSelect.clicked.connect(self.showSelectionDialog)
 
     def showSelectionDialog(self):
         # Find the file dialog's working directory
-        settings = QtCore.QSettings()
-        text = unicode(self.text.text())
+        settings = QSettings()
+        text = self.leText.text()
         if os.path.isdir(text):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
@@ -63,25 +59,25 @@ class FileSelectionPanel(QtGui.QWidget):
             path = ''
 
         if self.isFolder:
-            folder = QtGui.QFileDialog.getExistingDirectory(self,
+            folder = QFileDialog.getExistingDirectory(self,
                 self.tr('Select folder'), path)
             if folder:
-                self.text.setText(str(folder))
+                self.leText.setText(folder)
                 settings.setValue('/Processing/LastInputPath',
-                                  os.path.dirname(unicode(folder)))
+                                  os.path.dirname(folder))
         else:
-            filenames = QtGui.QFileDialog.getOpenFileNames(self, self.tr('Open file'),
-                    path, '*.' + self.ext)
+            filenames = QFileDialog.getOpenFileNames(self,
+                self.tr('Select file'), path, '*.' + self.ext)
             if filenames:
-                self.text.setText(u';'.join(filenames))
+                self.leText.setText(u';'.join(filenames))
                 settings.setValue('/Processing/LastInputPath',
-                                  os.path.dirname(unicode(filenames[0])))
+                                  os.path.dirname(filenames[0]))
 
     def getValue(self):
-        s = unicode(self.text.text())
+        s = self.leText.text()
         if isWindows():
             s = s.replace('\\', '/')
         return s
 
     def setText(self, text):
-        self.text.setText(text)
+        self.leText.setText(text)

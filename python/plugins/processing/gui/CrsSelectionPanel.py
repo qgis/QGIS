@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtGui import *
-from PyQt4.QtCore import *
 
 from qgis.gui import *
 from qgis.core import *

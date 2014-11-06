@@ -47,7 +47,6 @@ from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
-from processing.gui.MultipleFileInputPanel import MultipleFileInputPanel
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
@@ -294,7 +293,7 @@ class ParametersPanel(QWidget):
             item = FileSelectionPanel(param.isFolder, param.ext)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_FILE:
-                item = MultipleFileInputPanel()
+                item = MultipleInputPanel(datatype=ParameterMultipleInput.TYPE_FILE)
             else:
                 if param.datatype == ParameterMultipleInput.TYPE_RASTER:
                     options = dataobjects.getRasterLayers(sorting=False)

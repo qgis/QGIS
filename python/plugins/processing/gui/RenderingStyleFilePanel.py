@@ -25,37 +25,35 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4 import QtGui, QtCore
+from PyQt4.QtGui import *
+
 from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.system import *
+
+from processing.ui.ui_widgetBaseSelector import Ui_Form
 
 
-class RenderingStyleFilePanel(QtGui.QWidget):
+class RenderingStyleFilePanel(QWidget, Ui_Form):
 
     def __init__(self):
-        super(RenderingStyleFilePanel, self).__init__(None)
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QLineEdit()
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showSelectionDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
+        QWidget.__init__(self)
+        self.setupUi(self)
+
+        self.btnSelect.clicked.connect(self.showSelectionDialog)
+
 
     def showSelectionDialog(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self,
-            self.tr('Select style file'), '', self.tr('QGIS Layer Style File (*.qml *.QML)'))
+        filename = QFileDialog.getOpenFileName(self,
+            self.tr('Select style file'), '',
+            self.tr('QGIS Layer Style File (*.qml *.QML)'))
         if filename:
-            self.text.setText(unicode(filename))
+            self.leText.setText(filename)
 
     def setText(self, text):
-        self.text.setText(unicode(text))
+        self.leText.setText(text)
 
     def getValue(self):
-        filename = unicode(self.text.text())
-        return filename
+        s = self.leText.text()
+        if isWindows():
+            s = s.replace('\\', '/')
+        return s
