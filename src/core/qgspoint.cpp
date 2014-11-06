@@ -118,6 +118,11 @@ QgsPoint::QgsPoint( const QgsPoint& p )
   m_y = p.y();
 }
 
+QPointF QgsPoint::toQPointF() const
+{
+  return QPointF( m_x, m_y );
+}
+
 QString QgsPoint::toString() const
 {
   QString rep;

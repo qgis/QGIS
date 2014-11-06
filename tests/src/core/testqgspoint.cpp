@@ -36,6 +36,10 @@ class TestQgsPoint: public QObject
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+    void equality();
+    void gettersSetters();
+    void constructors();
+    void toQPointF();
     void toString();
     void toDegreesMinutesSeconds();
     void toDegreesMinutesSecondsNoSuffix();
@@ -69,6 +73,60 @@ void TestQgsPoint::init()
 void TestQgsPoint::cleanup()
 {
   // will be called after every testfunction.
+}
+
+void TestQgsPoint::equality()
+{
+  QgsPoint point1( 5.0, 9.0 );
+  QgsPoint point2( 5.0, 9.0 );
+  QCOMPARE( point1, point2 );
+  QgsPoint point3( 5.0, 6.0 );
+  QVERIFY( !( point3 == point1 ) );
+  QVERIFY( point3 != point1 );
+  QgsPoint point4( 8.0, 9.0 );
+  QVERIFY( !( point4 == point1 ) );
+  QVERIFY( point4 != point1 );
+  QVERIFY( !( point4 == point3 ) );
+  QVERIFY( point4 != point3 );
+}
+
+void TestQgsPoint::gettersSetters()
+{
+  QgsPoint point;
+  point.setX( 1.0 );
+  QCOMPARE( point.x(), 1.0 );
+  point.setY( 2.0 );
+  QCOMPARE( point.y(), 2.0 );
+  point.set( 3.0, 4.0 );
+  QCOMPARE( point.x(), 3.0 );
+  QCOMPARE( point.y(), 4.0 );
+}
+
+void TestQgsPoint::constructors()
+{
+  QgsPoint point1 = QgsPoint( 20.0, -20.0 );
+  QCOMPARE( point1.x(), 20.0 );
+  QCOMPARE( point1.y(), -20.0 );
+  QgsPoint point2( point1 );
+  QCOMPARE( point2, point1 );
+
+  QPointF sourceQPointF( 20.0, -20.0 );
+  QgsPoint fromQPointF( sourceQPointF );
+  QCOMPARE( fromQPointF.x(), 20.0 );
+  QCOMPARE( fromQPointF.y(), -20.0 );
+
+  QPointF sourceQPoint( 20, -20 );
+  QgsPoint fromQPoint( sourceQPoint );
+  QCOMPARE( fromQPoint.x(), 20.0 );
+  QCOMPARE( fromQPoint.y(), -20.0 );
+}
+
+void TestQgsPoint::toQPointF()
+{
+  QgsPoint point( 20.0, -20.0 );
+  QPointF result = point.toQPointF();
+  QCOMPARE( result.x(), 20.0 );
+  QCOMPARE( result.y(), -20.0 );
 }
 
 void TestQgsPoint::initTestCase()

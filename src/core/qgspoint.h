@@ -78,6 +78,22 @@ class CORE_EXPORT QgsPoint
         : m_x( x ), m_y( y )
     {}
 
+    /*! Create a point from a QPointF
+     * @param point QPointF source
+     * @note added in QGIS 2.7
+     */
+    QgsPoint( const QPointF& point )
+        : m_x( point.x() ), m_y( point.y() )
+    {}
+
+    /*! Create a point from a QPoint
+     * @param point QPoint source
+     * @note added in QGIS 2.7
+     */
+    QgsPoint( const QPoint& point )
+        : m_x( point.x() ), m_y( point.y() )
+    {}
+
     ~QgsPoint()
     {}
 
@@ -119,6 +135,12 @@ class CORE_EXPORT QgsPoint
     {
       return m_y;
     }
+
+    /** Converts a point to a QPointF
+     * @returns QPointF with same x and y values
+     * @note added in QGIS 2.7
+     */
+    QPointF toQPointF() const;
 
     //! String representation of the point (x,y)
     QString toString() const;
@@ -164,7 +186,7 @@ class CORE_EXPORT QgsPoint
     /**Returns the minimum distance between this point and a segment */
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
-    /**Calculates azimut between this point and other one (clockwise in degree, starting from north) */
+    /**Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
     double azimuth( const QgsPoint& other );
 
     //! equality operator
