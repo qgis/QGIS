@@ -55,19 +55,32 @@ class CORE_EXPORT QgsRenderChecker
     //only records time for actual render part
     int elapsedTime() { return mElapsedTime; }
     void setElapsedTimeTarget( int theTarget ) { mElapsedTimeTarget = theTarget; };
+
     /** Base directory name for the control image (with control image path
       * suffixed) the path to the image will be constructed like this:
       * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
       */
     void setControlName( const QString theName );
+
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
       */
     void setControlPathPrefix( const QString theName ) { mControlPathPrefix = theName + QDir::separator(); }
+
+    void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + QDir::separator(); }
+
     /** Get an md5 hash that uniquely identifies an image */
     QString imageToHash( QString theImageFile );
 
     void setRenderedImage( QString theImageFileName ) { mRenderedImageFile = theImageFileName; }
+
+    /**
+     * The path of the rendered image can be retrieved through that method.
+     * Will return the path set with setRenderedImage() or generated in runTest()
+     *
+     * @return The path to the rendered image
+     */
+    const QString& renderedImage() { return mRenderedImageFile; }
     //! @deprecated since 2.4 - use setMapSettings()
     Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
 
@@ -130,6 +143,7 @@ class CORE_EXPORT QgsRenderChecker
     int mElapsedTimeTarget;
     QgsMapSettings mMapSettings;
     QString mControlPathPrefix;
+    QString mControlPathSuffix;
 
 }; // class QgsRenderChecker
 

@@ -114,12 +114,13 @@ SET(QGIS_CORE_SRCS
   qgsmapsettings.cpp
   qgsmaptopixel.cpp
   qgsmaptopixelgeometrysimplifier.cpp
+  qgsmessagelog.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
-  qgsmessagelog.cpp
+  qgsmultirenderchecker.cpp
   qgsnetworkaccessmanager.cpp
-  qgsnetworkreplyparser.cpp
   qgsnetworkcontentfetcher.cpp
+  qgsnetworkreplyparser.cpp
   qgsobjectcustomproperties.cpp
   qgsofflineediting.cpp
   qgsogcutils.cpp
@@ -131,8 +132,8 @@ SET(QGIS_CORE_SRCS
   qgspoint.cpp
   qgsproject.cpp
   qgsprojectfiletransform.cpp
-  qgsprojectversion.cpp
   qgsprojectproperty.cpp
+  qgsprojectversion.cpp
   qgsprovidercountcalcevent.cpp
   qgsproviderextentcalcevent.cpp
   qgsprovidermetadata.cpp
@@ -140,8 +141,8 @@ SET(QGIS_CORE_SRCS
   qgspythonrunner.cpp
   qgsrelation.cpp
   qgsrelationmanager.cpp
-  qgsrendercontext.cpp
   qgsrenderchecker.cpp
+  qgsrendercontext.cpp
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
@@ -513,8 +514,9 @@ SET(QGIS_CORE_HDRS
   qgsmapunitscale.h
   qgsmessageoutput.h
   qgsmimedatautils.h
-  qgsnetworkreplyparser.h
+  qgsmultirenderchecker.h
   qgsnetworkcontentfetcher.h
+  qgsnetworkreplyparser.h
   qgsobjectcustomproperties.h
   qgsofflineediting.h
   qgsogcutils.h
@@ -534,10 +536,10 @@ SET(QGIS_CORE_HDRS
   qgsproviderregistry.h
   qgspythonrunner.h
   qgsrectangle.h
-  qgsrendercontext.h
-  qgsrenderchecker.h
   qgsrelation.h
   qgsrelationmanager.h
+  qgsrenderchecker.h
+  qgsrendercontext.h
   qgsrunprocess.h
   qgsscalecalculator.h
   qgsscaleutils.h

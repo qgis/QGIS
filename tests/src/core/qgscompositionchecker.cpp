@@ -22,9 +22,11 @@
 #include <QPainter>
 
 QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
-    : QgsRenderChecker(),
+    : QgsMultiRenderChecker(),
     mTestName( testName ),
-    mComposition( composition )
+    mComposition( composition ),
+    mSize( 1122, 794 ),
+    mDotsPerMeter( 96 / 25.4 * 1000 )
 {
 }
 
@@ -36,7 +38,7 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
-bool QgsCompositionChecker::testComposition( QString &report, int page, int pixelDiff )
+bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
 {
   if ( !mComposition )
   {
@@ -62,17 +64,11 @@ bool QgsCompositionChecker::testComposition( QString &report, int page, int pixe
   return true;
 #endif //0
 
-  //load expected image
-  QImage expectedImage( mExpectedImageFile );
-
-  //get width/height, create image and render the composition to it
-  int width = expectedImage.width();
-  int height = expectedImage.height();
-  QImage outputImage( QSize( width, height ), QImage::Format_ARGB32 );
+  QImage outputImage( mSize, QImage::Format_ARGB32 );
 
   mComposition->setPlotStyle( QgsComposition::Print );
-  outputImage.setDotsPerMeterX( expectedImage.dotsPerMeterX() );
-  outputImage.setDotsPerMeterY( expectedImage.dotsPerMeterX() );
+  outputImage.setDotsPerMeterX( mDotsPerMeter );
+  outputImage.setDotsPerMeterY( mDotsPerMeter );
   outputImage.fill( 0 );
   QPainter p( &outputImage );
   mComposition->renderPage( &p, page );
@@ -81,19 +77,11 @@ bool QgsCompositionChecker::testComposition( QString &report, int page, int pixe
   QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_rendered.png";
   outputImage.save( renderedFilePath, "PNG" );
 
-  QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_result_diff.png";
+  setRenderedImage( renderedFilePath );
 
-  bool testResult = compareImages( mTestName, pixelDiff, renderedFilePath );
+  bool testResult = runTest( mTestName, pixelDiff );
 
-  QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\""
-                          " type=\"image/png\">" + renderedFilePath +
-                          "</DartMeasurementFile>"
-                          "<DartMeasurementFile name=\"Expected Image " + mTestName + "\" type=\"image/png\">" +
-                          mExpectedImageFile + "</DartMeasurementFile>"
-                          "<DartMeasurementFile name=\"Difference Image " + mTestName + "\" type=\"image/png\">" +
-                          diffFilePath + "</DartMeasurementFile>";
-  qDebug() << myDashMessage;
+  theReport += report();
 
-  report += mReport;
   return testResult;
 }
