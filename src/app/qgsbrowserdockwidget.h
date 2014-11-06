@@ -31,6 +31,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
   public:
     explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
     void addFavouriteDirectory( QString favDir );
+    void expandPath( QString path );
 
   public slots:
     void addLayerAtIndex( const QModelIndex& index );
@@ -52,6 +53,8 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void addSelectedLayers();
     void showProperties();
     void toggleFastScan();
+
+    void itemExpanded( const QModelIndex& index );
 
   protected:
     void refreshModel( const QModelIndex& index );

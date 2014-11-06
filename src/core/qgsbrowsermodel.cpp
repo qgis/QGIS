@@ -296,6 +296,7 @@ QModelIndex QgsBrowserModel::findPath( QString path )
       if ( path.startsWith( item->path() ) )
       {
         // we have found a preceding item: stop searching on this level and go deeper
+        item->populate();
         foundChild = true;
         theIndex = idx;
         break;
@@ -303,6 +304,7 @@ QModelIndex QgsBrowserModel::findPath( QString path )
     }
   }
 
+  QgsDebugMsg( "path not found" );
   return QModelIndex(); // not found
 }
 

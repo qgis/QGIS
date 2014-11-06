@@ -56,6 +56,7 @@ class QgsBrowserTreeView : public QTreeView
       setContextMenuPolicy( Qt::CustomContextMenu );
       setHeaderHidden( true );
       setDropIndicatorShown( true );
+
     }
 
     void dragEnterEvent( QDragEnterEvent* e )
@@ -287,6 +288,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
+  connect( mBrowserView, SIGNAL( expanded( const QModelIndex& ) ), this, SLOT( itemExpanded( const QModelIndex& ) ) );
 }
 
 void QgsBrowserDockWidget::showEvent( QShowEvent * e )
@@ -313,6 +315,15 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
       QgsDataItem* item = mModel->dataItem( index );
       if ( item && item->type() == QgsDataItem::Favourites )
         mBrowserView->expand( index );
+    }
+
+    // expand last expanded path from previous session
+    QSettings settings;
+    QString lastPath =  settings.value( "/BrowserWidget/lastExpanded" ).toString();
+    QgsDebugMsg( "lastPath = " + lastPath );
+    if ( !lastPath.isEmpty() )
+    {
+      expandPath( lastPath );
     }
   }
 
@@ -677,4 +688,35 @@ void QgsBrowserDockWidget::setCaseSensitive( bool caseSensitive )
   if ( ! mProxyModel )
     return;
   mProxyModel->setCaseSensitive( caseSensitive );
+}
+
+void QgsBrowserDockWidget::itemExpanded( const QModelIndex& index )
+{
+  if ( !mModel || !mProxyModel )
+    return;
+  QSettings settings;
+  QModelIndex srcIndex = mProxyModel->mapToSource( index );
+  QgsDataItem *item = mModel->dataItem( srcIndex );
+  if ( !item )
+    return;
+
+  // TODO: save separately each type (FS, WMS)?
+  settings.setValue( "/BrowserWidget/lastExpanded", item->path() );
+  QgsDebugMsg( "last expanded: " + item->path() );
+}
+
+void QgsBrowserDockWidget::expandPath( QString path )
+{
+  QgsDebugMsg( "path = " + path );
+
+  if ( !mModel || !mProxyModel )
+    return;
+  QModelIndex srcIndex = mModel->findPath( path );
+  QModelIndex index = mProxyModel->mapFromSource( srcIndex );
+  QgsDebugMsg( QString( "srcIndex.isValid() = %1 index.isValid() = %2" ).arg( srcIndex.isValid() ).arg( index.isValid() ) );
+  if ( index.isValid() )
+  {
+    mBrowserView->expand( index );
+    mBrowserView->scrollTo( index, QAbstractItemView::PositionAtTop );
+  }
 }
