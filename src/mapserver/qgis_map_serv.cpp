@@ -37,6 +37,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
+
 #ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
@@ -373,7 +374,7 @@ int main( int argc, char * argv[] )
 
     //Pass the filters to the requestHandler, this is needed for the following reasons:
     // 1. allow core services to access plugin filters and implement thir own plugin hooks
-    // 2. allow requestHandler to call Response
+    // 2. allow requestHandler to call sendResponse plugin hook
 
     //TODO: implement this in the requestHandler ctor (far easier if we will get rid of
     //      MAPSERVER_HAVE_PYTHON_PLUGINS
