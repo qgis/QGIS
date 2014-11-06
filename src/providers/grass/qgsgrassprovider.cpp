@@ -798,21 +798,26 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   map.lastAttributesModified = di.lastModified();
 
   // Do we have topology and cidx (level2)
-  int level = 2;
+  int level = -1;
   G_TRY
   {
-    Vect_set_open_level( 2 );
-    Vect_open_old_head( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
+    //Vect_set_open_level( 2 );
+    level = Vect_open_old_head( map.map, mapName.toUtf8().data(), mapset.toUtf8().data() );
     Vect_close( map.map );
   }
   G_CATCH( QgsGrass::Exception &e )
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "Cannot open GRASS vector head on level2: %1" ).arg( e.what() ) );
-    level = 1;
+    level = -1;
   }
 
-  if ( level == 1 )
+  if ( level == -1 )
+  {
+    QgsDebugMsg( "Cannot open GRASS vector head" );
+    return -1;
+  }
+  else if ( level == 1 )
   {
     QMessageBox::StandardButton ret = QMessageBox::question( 0, "Warning",
                                       tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mapName ),
