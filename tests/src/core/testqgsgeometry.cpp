@@ -47,6 +47,12 @@ class TestQgsGeometry: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
+    void fromQgsPoint();
+    void fromQPoint();
+    void fromQPolygonF();
+    void asQPointF();
+    void asQPolygonF();
+
     void simplifyCheck1();
     void intersectionCheck1();
     void intersectionCheck2();
@@ -176,6 +182,107 @@ void TestQgsGeometry::cleanup()
   delete mpPolygonGeometryB;
   delete mpPolygonGeometryC;
   delete mpPainter;
+}
+
+void TestQgsGeometry::fromQgsPoint()
+{
+  QgsPoint point( 1.0, 2.0 );
+  QgsGeometry* result = QgsGeometry::fromPoint( point );
+  QCOMPARE( result->wkbType(), QGis::WKBPoint );
+  QgsPoint resultPoint = result->asPoint();
+  QCOMPARE( resultPoint, point );
+  delete result;
+}
+
+void TestQgsGeometry::fromQPoint()
+{
+  QPointF point( 1.0, 2.0 );
+  QgsGeometry* result = QgsGeometry::fromQPointF( point );
+  QCOMPARE( result->wkbType(), QGis::WKBPoint );
+  QgsPoint resultPoint = result->asPoint();
+  QCOMPARE( resultPoint.x(), 1.0 );
+  QCOMPARE( resultPoint.y(), 2.0 );
+  delete result;
+}
+
+void TestQgsGeometry::fromQPolygonF()
+{
+  //test with a polyline
+  QPolygonF polyline;
+  polyline << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 );
+  QgsGeometry* result = QgsGeometry::fromQPolygonF( polyline );
+  QCOMPARE( result->wkbType(), QGis::WKBLineString );
+  QgsPolyline resultLine = result->asPolyline();
+  QCOMPARE( resultLine.size(), 4 );
+  QCOMPARE( resultLine.at( 0 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( resultLine.at( 1 ), QgsPoint( 4.0, 6.0 ) );
+  QCOMPARE( resultLine.at( 2 ), QgsPoint( 4.0, 3.0 ) );
+  QCOMPARE( resultLine.at( 3 ), QgsPoint( 2.0, 2.0 ) );
+  delete result;
+
+  //test with a closed polygon
+  QPolygonF polygon;
+  polygon << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 ) << QPointF( 1.0, 2.0 );
+  QgsGeometry* result2 = QgsGeometry::fromQPolygonF( polygon );
+  QCOMPARE( result2->wkbType(), QGis::WKBPolygon );
+  QgsPolygon resultPolygon = result2->asPolygon();
+  QCOMPARE( resultPolygon.size(), 1 );
+  QCOMPARE( resultPolygon.at( 0 ).at( 0 ), QgsPoint( 1.0, 2.0 ) );
+  QCOMPARE( resultPolygon.at( 0 ).at( 1 ), QgsPoint( 4.0, 6.0 ) );
+  QCOMPARE( resultPolygon.at( 0 ).at( 2 ), QgsPoint( 4.0, 3.0 ) );
+  QCOMPARE( resultPolygon.at( 0 ).at( 3 ), QgsPoint( 2.0, 2.0 ) );
+  QCOMPARE( resultPolygon.at( 0 ).at( 4 ), QgsPoint( 1.0, 2.0 ) );
+  delete result2;
+}
+
+void TestQgsGeometry::asQPointF()
+{
+  QPointF point( 1.0, 2.0 );
+  QgsGeometry* geom = QgsGeometry::fromQPointF( point );
+  QPointF resultPoint = geom->asQPointF();
+  QCOMPARE( resultPoint, point );
+  delete geom;
+
+  //non point geom
+  QPointF badPoint = mpPolygonGeometryA->asQPointF();
+  QVERIFY( badPoint.isNull() );
+}
+
+void TestQgsGeometry::asQPolygonF()
+{
+  //test polygon
+  QPolygonF fromPoly = mpPolygonGeometryA->asQPolygonF();
+  QVERIFY( fromPoly.isClosed() );
+  QCOMPARE( fromPoly.size(), 5 );
+  QCOMPARE( fromPoly.at( 0 ).x(), mPoint1.x() );
+  QCOMPARE( fromPoly.at( 0 ).y(), mPoint1.y() );
+  QCOMPARE( fromPoly.at( 1 ).x(), mPoint2.x() );
+  QCOMPARE( fromPoly.at( 1 ).y(), mPoint2.y() );
+  QCOMPARE( fromPoly.at( 2 ).x(), mPoint3.x() );
+  QCOMPARE( fromPoly.at( 2 ).y(), mPoint3.y() );
+  QCOMPARE( fromPoly.at( 3 ).x(), mPoint4.x() );
+  QCOMPARE( fromPoly.at( 3 ).y(), mPoint4.y() );
+  QCOMPARE( fromPoly.at( 4 ).x(), mPoint1.x() );
+  QCOMPARE( fromPoly.at( 4 ).y(), mPoint1.y() );
+  //test polyline
+  QgsPolyline testline;
+  testline << mPoint1 << mPoint2 << mPoint3;
+  QgsGeometry* lineGeom = QgsGeometry::fromPolyline( testline );
+  QPolygonF fromLine = lineGeom->asQPolygonF();
+  QVERIFY( !fromLine.isClosed() );
+  QCOMPARE( fromLine.size(), 3 );
+  QCOMPARE( fromLine.at( 0 ).x(), mPoint1.x() );
+  QCOMPARE( fromLine.at( 0 ).y(), mPoint1.y() );
+  QCOMPARE( fromLine.at( 1 ).x(), mPoint2.x() );
+  QCOMPARE( fromLine.at( 1 ).y(), mPoint2.y() );
+  QCOMPARE( fromLine.at( 2 ).x(), mPoint3.x() );
+  QCOMPARE( fromLine.at( 2 ).y(), mPoint3.y() );
+  delete lineGeom;
+  //test a bad geometry
+  QgsGeometry* badGeom = QgsGeometry::fromPoint( mPoint1 );
+  QPolygonF fromBad = badGeom->asQPolygonF();
+  QVERIFY( fromBad.isEmpty() );
+  delete badGeom;
 }
 
 void TestQgsGeometry::initTestCase()

@@ -190,12 +190,17 @@ static unsigned int getNumGeosPoints( const GEOSGeometry *geom )
   return n;
 }
 
-static GEOSGeometry *createGeosPoint( const QgsPoint &point )
+static GEOSGeometry *createGeosPoint( const double x, const double y )
 {
   GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosinit.ctxt, 1, 2 );
-  GEOSCoordSeq_setX_r( geosinit.ctxt, coord, 0, point.x() );
-  GEOSCoordSeq_setY_r( geosinit.ctxt, coord, 0, point.y() );
+  GEOSCoordSeq_setX_r( geosinit.ctxt, coord, 0, x );
+  GEOSCoordSeq_setY_r( geosinit.ctxt, coord, 0, y );
   return GEOSGeom_createPoint_r( geosinit.ctxt, coord );
+}
+
+static GEOSGeometry *createGeosPoint( const QgsPoint &point )
+{
+  return createGeosPoint( point.x(), point.y() );
 }
 
 static GEOSCoordSequence *createGeosCoordSequence( const QgsPolyline& points )
@@ -509,6 +514,40 @@ QgsGeometry* QgsGeometry::fromRect( const QgsRectangle& rect )
   return fromPolygon( polygon );
 }
 
+QgsGeometry *QgsGeometry::fromQPointF( const QPointF &point )
+{
+  return fromGeosGeom( createGeosPoint( point.x(), point.y() ) );
+}
+
+QgsGeometry *QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
+{
+  if ( polygon.isClosed() )
+  {
+    return QgsGeometry::fromPolygon( createPolygonFromQPolygonF( polygon ) );
+  }
+  else
+  {
+    return QgsGeometry::fromPolyline( createPolylineFromQPolygonF( polygon ) );
+  }
+}
+
+QgsPolygon QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
+{
+  QgsPolygon result;
+  result << createPolylineFromQPolygonF( polygon );
+  return result;
+}
+
+QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
+{
+  QgsPolyline result;
+  QPolygonF::const_iterator it = polygon.constBegin();
+  for ( ; it != polygon.constEnd(); ++it )
+  {
+    result.append( QgsPoint( *it ) );
+  }
+  return result;
+}
 
 QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
 {
@@ -5899,6 +5938,41 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection() const
   }
 
   return geomCollection;
+}
+
+QPointF QgsGeometry::asQPointF() const
+{
+  QgsPoint point = asPoint();
+  return point.toQPointF();
+}
+
+QPolygonF QgsGeometry::asQPolygonF() const
+{
+  QPolygonF result;
+  QgsPolyline polyline;
+  QGis::WkbType type = wkbType();
+  if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D )
+  {
+    polyline = asPolyline();
+  }
+  else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D )
+  {
+    QgsPolygon polygon = asPolygon();
+    if ( polygon.size() < 1 )
+      return result;
+    polyline = polygon.at( 0 );
+  }
+  else
+  {
+    return result;
+  }
+
+  QgsPolyline::const_iterator lineIt = polyline.constBegin();
+  for ( ; lineIt != polyline.constEnd(); ++lineIt )
+  {
+    result << lineIt->toQPointF();
+  }
+  return result;
 }
 
 bool QgsGeometry::deleteRing( int ringNum, int partNum )

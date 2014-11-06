@@ -55,6 +55,20 @@ class QgsGeometry
     static QgsGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly ) /Factory/;
     /** construct geometry from a rectangle */
     static QgsGeometry* fromRect( const QgsRectangle& rect ) /Factory/;
+    /**Construct geometry from a QPointF
+     * @param point source QPointF
+     * @note added in QGIS 2.7
+    */
+    static QgsGeometry* fromQPointF( const QPointF& point ) /Factory/;
+
+    /**Construct geometry from a QPolygonF. If the polygon is closed than
+     * the resultant geometry will be a polygon, if it is open than the
+     * geometry will be a polyline.
+     * @param polygon source QPolygonF
+     * @note added in QGIS 2.7
+    */
+    static QgsGeometry* fromQPolygonF( const QPolygonF& polygon ) /Factory/;
+
     /**
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
@@ -415,6 +429,19 @@ class QgsGeometry
     /** return contents of the geometry as a list of geometries
      @note added in version 1.1 */
     QList<QgsGeometry*> asGeometryCollection() const /Factory/;
+
+    /**Return contents of the geometry as a QPointF if wkbType is WKBPoint,
+     * otherwise returns a null QPointF.
+     * @note added in QGIS 2.7
+    */
+    QPointF asQPointF() const;
+
+    /**Return contents of the geometry as a QPolygonF. If geometry is a linestring,
+     * then the result will be an open QPolygonF. If the geometry is a polygon,
+     * then the result will be a closed QPolygonF of the geometry's exterior ring.
+     * @note added in QGIS 2.7
+    */
+    QPolygonF asQPolygonF() const;
 
     /** delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.

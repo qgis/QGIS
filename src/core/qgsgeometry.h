@@ -106,6 +106,20 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry* fromMultiPolygon( const QgsMultiPolygon& multipoly );
     /** construct geometry from a rectangle */
     static QgsGeometry* fromRect( const QgsRectangle& rect );
+    /**Construct geometry from a QPointF
+     * @param point source QPointF
+     * @note added in QGIS 2.7
+    */
+    static QgsGeometry* fromQPointF( const QPointF& point );
+
+    /**Construct geometry from a QPolygonF. If the polygon is closed than
+     * the resultant geometry will be a polygon, if it is open than the
+     * geometry will be a polyline.
+     * @param polygon source QPolygonF
+     * @note added in QGIS 2.7
+    */
+    static QgsGeometry* fromQPolygonF( const QPolygonF& polygon );
+
     /**
       Set the geometry, feeding in a geometry in GEOS format.
       This class will take ownership of the buffer.
@@ -436,6 +450,19 @@ class CORE_EXPORT QgsGeometry
     /** return contents of the geometry as a list of geometries */
     QList<QgsGeometry*> asGeometryCollection() const;
 
+    /**Return contents of the geometry as a QPointF if wkbType is WKBPoint,
+     * otherwise returns a null QPointF.
+     * @note added in QGIS 2.7
+    */
+    QPointF asQPointF() const;
+
+    /**Return contents of the geometry as a QPolygonF. If geometry is a linestring,
+     * then the result will be an open QPolygonF. If the geometry is a polygon,
+     * then the result will be a closed QPolygonF of the geometry's exterior ring.
+     * @note added in QGIS 2.7
+    */
+    QPolygonF asQPolygonF() const;
+
     /** delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
       @return true on success
@@ -632,6 +659,9 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry* convertToLine( bool destMultipart );
     /** try to convert the geometry to a polygon */
     QgsGeometry* convertToPolygon( bool destMultipart );
+
+    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
+    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
 }; // class QgsGeometry
 
 Q_DECLARE_METATYPE( QgsGeometry );
