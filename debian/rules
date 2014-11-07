@@ -148,7 +148,7 @@ cleantemplates:
 	$(MAKE) -f debian/rules templateclean
 	$(MAKE) -f debian/rules debian/control debian/compat
 
-binary binary-arch binary-indep build build-arch build-indep clean install install-arch install-indep:
+binary build clean install:
 	dh $@ --with python2 --parallel --builddirectory=debian/build
 
 override_dh_clean: cleantemplates
@@ -163,19 +163,23 @@ override_dh_clean: cleantemplates
 override_dh_auto_configure: templates
 	dh_auto_configure -- $(CMAKE_OPTS)
 
-override_dh_auto_build-arch:
-	dh_auto_build --arch
-
-override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+override_dh_auto_test:
 	# Code to run the package test suite - and ignore the outcome for now
-	-LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) PATH=/usr/sbin:$(PATH) LC_CTYPE=C.UTF-8 $(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
+	mkdir -p debian/tmp/locale/
+	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
+	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
+	LC_ALL=en_US.UTF-8 \
+	LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) \
+	PATH=/usr/sbin:$(PATH) \
+	$(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
 else
+override_dh_auto_test:
 	@echo Skipping tests.
 endif
 
-override_dh_auto_install-arch:
-	dh_auto_install --arch
+override_dh_auto_install:
+	dh_auto_install
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps

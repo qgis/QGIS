@@ -30,6 +30,7 @@ Build-Depends:
  libspatialindex-dev,
  pkg-config,
  pyqt4-dev-tools,
+ python-qscintilla2,
 #precise saucy wheezy# python,
 #precise saucy# python-central (>=0.5),
 #saucy wheezy# python-dev,
@@ -49,9 +50,9 @@ Build-Depends:
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
 #sid-oracle# oracle-instantclient11.2-devel,
- spawn-fcgi, lighttpd, poppler-utils
+ spawn-fcgi, lighttpd, poppler-utils, locales
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid jessie sid-oracle#Standards-Version: 3.9.5
+#sid jessie sid-oracle#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
 #precise saucy trusty utopic#Standards-Version: 3.8.4
 #sid jessie sid-oracle#X-Python-Version: >= 2.7, << 2.8
@@ -171,6 +172,18 @@ Description: QGIS - shared Python library
  .
  This package contains the shared Python library.
 
+Package: libqgis-customwidgets{QGIS_ABI}
+Architecture: any
+Depends:
+ qt4-designer,
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS custom widgets for Qt Designer
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains a library to use specific QGIS widgets in Qt Designer.
+
 Package: libqgis-dev
 Architecture: any
 Section: libdevel
@@ -229,14 +242,39 @@ Depends:
 #wheezy precise# python,
  ${python:Depends},
  ${misc:Depends}
-Replaces: qgis-common (<< 1.5)
 Breaks: qgis-common (<< 1.5)
+Replaces: qgis-common (<< 1.5)
 Description: GRASS plugin for QGIS - architecture-independent data
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
  .
  This package contains architecture-independent supporting data files for use
  with the QGIS GRASS plugin.
+
+Package: qgis-plugin-globe
+Architecture: any
+Depends:
+ qgis (= ${binary:Version}),
+ qgis-plugin-globe-common (= ${source:Version}),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: OSG globe plugin for QGIS
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This plugin enables 3D viewing using OSG globe in the QGIS.
+
+Package: qgis-plugin-globe-common
+Architecture: all
+Depends:
+ osgearth-data,
+ ${misc:Depends}
+Description: OSG globe plugin for QGIS - architecture-independent data
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains architecture-independent supporting data files for use
+ with the QGIS GLOBE plugin.
 
 Package: python-qgis
 Architecture: any
@@ -307,8 +345,8 @@ Description: collection of data providers to QGIS
 Package: qgis-providers-common
 Architecture: all
 Depends: ${misc:Depends}
-Replaces: qgis-common (<= 1.6)
 Breaks: qgis-common (<= 1.6)
+Replaces: qgis-common (<= 1.6)
 Description: collection of data providers to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -329,18 +367,6 @@ Description: QGIS server providing various OGC services
  .
  This package contains the QGIS server.
 
-Package: libqgis-customwidgets{QGIS_ABI}
-Architecture: any
-Depends:
- qt4-designer,
- ${shlibs:Depends},
- ${misc:Depends}
-Description: QGIS custom widgets for Qt Designer
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains a library to use specific QGIS widgets in Qt Designer.
-
 Package: qgis-api-doc
 Architecture: all
 Section: doc
@@ -352,31 +378,6 @@ Description: QGIS API documentation
  display databases of geographic information.
  .
  This package contains the QGIS API documentation.
-
-Package: qgis-plugin-globe
-Architecture: any
-Depends:
- qgis (= ${binary:Version}),
- qgis-plugin-globe-common (= ${source:Version}),
- ${shlibs:Depends},
- ${misc:Depends}
-Description: OSG globe plugin for QGIS
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This plugin enables 3D viewing using OSG globe in the QGIS.
-
-Package: qgis-plugin-globe-common
-Architecture: all
-Depends:
- osgearth-data,
- ${misc:Depends}
-Description: OSG globe plugin for QGIS - architecture-independent data
- QGIS is a Geographic Information System (GIS) which manages, analyzes and
- display databases of geographic information.
- .
- This package contains architecture-independent supporting data files for use
- with the QGIS GLOBE plugin.
 
 #sid-oracle#Package: qgis-oracle-provider
 #sid-oracle#Architecture: any
