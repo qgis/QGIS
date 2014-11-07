@@ -61,6 +61,7 @@ class TestQgsGeometry: public QObject
     void differenceCheck1();
     void differenceCheck2();
     void bufferCheck();
+    void bufferCheck2();
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
@@ -411,6 +412,23 @@ void TestQgsGeometry::bufferCheck()
   dumpPolygon( myPolygon );
   delete mypBufferGeometry;
   QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B" ) );
+}
+void TestQgsGeometry::bufferCheck2()
+{
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=8)))
+  // should be a single polygon
+  QgsGeometry * mypBufferGeometry  =  mpPolygonGeometryB->buffer( 10, 10, 0 );
+  qDebug( "Geometry Type: %s", QGis::featureType( mypBufferGeometry->wkbType() ) );
+  QVERIFY( mypBufferGeometry->wkbType() == QGis::WKBPolygon );
+  QgsPolygon myPolygon = mypBufferGeometry->asPolygon();
+  QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
+  dumpPolygon( myPolygon );
+  delete mypBufferGeometry;
+  QVERIFY( renderCheck( "geometry_bufferCheck2", "Checking left side buffer(10,10,0) of B" ) );
+#else
+  return true;
+#endif
 }
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment )
 {

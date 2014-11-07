@@ -5707,6 +5707,39 @@ QgsGeometry*QgsGeometry::buffer( double distance, int segments, int endCapStyle,
 #endif
 }
 
+QgsGeometry* QgsGeometry::buffer( double distance, int segments, int side )
+{
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+ ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=8)))
+  if ( mDirtyGeos )
+  {
+    exportWkbToGeos();
+  }
+  if ( !mGeos )
+  {
+    return 0;
+  }
+
+  try
+  {
+    GEOSBufferParams* bp  = GEOSBufferParams_create();
+    GEOSBufferParams_setSingleSided(bp,1);
+    GEOSBufferParams_setQuadrantSegments(bp,segments);
+
+    if ( side == 1 ){
+        distance = -distance;
+    }
+
+    GEOSGeometry* geom =  GEOSBufferWithParams( mGeos, bp, distance );
+    GEOSBufferParams_destroy(bp);
+    return fromGeosGeom(geom);
+  }
+  CATCH_GEOS( 0 )
+#else
+  return 0;
+#endif
+}
+
 QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit )
 {
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
