@@ -216,7 +216,6 @@ void QgsComposition::loadDefaults()
   mSnapGridOffsetX = settings.value( "/Composer/defaultSnapGridOffsetX", 0 ).toDouble();
   mSnapGridOffsetY = settings.value( "/Composer/defaultSnapGridOffsetY", 0 ).toDouble();
   mSnapTolerance = settings.value( "/Composer/defaultSnapTolerancePixels", 5 ).toInt();
-  mBoundingBoxesVisible = settings.value( "/Composer/showBoundingBoxes", true ).toBool();
 }
 
 void QgsComposition::updateBounds()
@@ -2147,10 +2146,6 @@ void QgsComposition::setGridStyle( const GridStyle s )
 void QgsComposition::setBoundingBoxesVisible( const bool boundsVisible )
 {
   mBoundingBoxesVisible = boundsVisible;
-
-  //save to settings
-  QSettings settings;
-  settings.setValue( "/Composer/showBoundingBoxes", mBoundingBoxesVisible );
 
   if ( mSelectionHandles )
   {
