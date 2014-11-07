@@ -18,7 +18,7 @@
 #include "qgspoint.h"
 #include <QPolygonF>
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 
 class TestQgsGeometryImport: public QObject

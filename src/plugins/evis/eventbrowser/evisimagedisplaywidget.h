@@ -32,7 +32,11 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <QBuffer>
+// TODO: Update to QNetworkAccessManager
+#if QT_VERSION < 0x050000
 #include <QHttp>
+#endif
+
 #include <QResizeEvent>
 
 /**
@@ -90,8 +94,11 @@ class eVisImageDisplayWidget : public QWidget
     /** \brief Pointer to the http buffer */
     QBuffer* mHttpBuffer;
 
+// TODO: Update to QNetworkAccessManager
+#if QT_VERSION < 0x050000
     /** \brief Pointer to the http connection if needed */
     QHttp* mHttpConnection;
+#endif
 
     /** \brief This is a point to the actual image being displayed */
     QPixmap* mImage;

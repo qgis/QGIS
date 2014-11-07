@@ -32,7 +32,7 @@
 #include "qgsrelationmanager.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerTableV2: public QObject
 {

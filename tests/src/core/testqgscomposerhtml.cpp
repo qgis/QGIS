@@ -22,7 +22,7 @@
 #include "qgscompositionchecker.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerHtml: public QObject
 {

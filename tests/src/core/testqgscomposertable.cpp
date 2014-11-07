@@ -26,7 +26,7 @@
 #include "qgsfeature.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerTable: public QObject
 {

@@ -141,7 +141,7 @@ void CharacterWidget::mousePressEvent( QMouseEvent *event )
   if ( event->button() == Qt::LeftButton )
   {
     lastKey = ( event->y() / squareSize ) * columns + event->x() / squareSize;
-    if ( QChar( lastKey ).category() != QChar::NoCategory )
+    if ( QChar( lastKey ).category() != QChar::Other_NotAssigned )
       emit characterSelected( QChar( lastKey ) );
     update();
   }

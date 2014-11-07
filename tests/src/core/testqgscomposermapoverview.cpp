@@ -26,7 +26,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerMapOverview: public QObject
 {

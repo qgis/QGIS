@@ -17,7 +17,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsapplication.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsCoordinateTransform: public QObject
 {

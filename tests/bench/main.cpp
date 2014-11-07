@@ -21,7 +21,7 @@
 #include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QTest>
+#include <QtTest/QTest>
 
 #include <cstdio>
 #include <stdio.h>
