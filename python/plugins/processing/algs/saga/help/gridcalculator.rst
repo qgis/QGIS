@@ -14,24 +14,24 @@ The following operators and functions are available:
 - * Multiplication
 - / Division
 - ^ power
-- abs(x) - absolute value
-- sqrt(x) - square root
-- ln(x) - natural logarithm
-- log(x) - base 10 logarithm
-- exp(x) - exponential
-- sin(x) - sine
-- cos(x) - cosine
-- tan(x) - tangent
-- asin(x) - arcsine
-- acos(x) - arccosine
-- atan(x) - arctangent
-- atan2(x, y) - arctangent of x/y
-- gt(x, y) - if x>y the result is 1.0, else 0.0
-- lt(x, y) - if x<y the result is 1.0, else 0.0
-- eq(x, y) - if x=y the result is 1.0, else 0.0
-- mod(x, y) - returns the floating point remainder of x/y
-- ifelse(c, x, y) - if c=1 the result is x, else y
-- int(x) - integer part of floating point value x
+- abs(a) - absolute value
+- sqrt(a) - square root
+- ln(a) - natural logarithm
+- log(a) - base 10 logarithm
+- exp(a) - exponential
+- sin(a) - sine
+- cos(a) - cosine
+- tan(a) - tangent
+- asin(a) - arcsine
+- acos(a) - arccosine
+- atan(a) - arctangent
+- atan2(a, b) - arctangent of a/b
+- gt(a, b) - if a>b the result is 1.0, else 0.0
+- lt(a, b) - if a<b the result is 1.0, else 0.0
+- eq(a, b) - if a=b the result is 1.0, else 0.0
+- mod(a, b) - returns the floating point remainder of a/b
+- ifelse(c, a, b) - if c=1 the result is a, else b
+- int(a) - integer part of floating point value a
 - pi() - returns the value of Pi
 
 
