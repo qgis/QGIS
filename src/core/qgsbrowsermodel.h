@@ -81,8 +81,12 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     // Refresh item childs
     void refresh( const QModelIndex &index = QModelIndex() );
 
-    //! return index of a path
-    QModelIndex findPath( QString path );
+    /** Return index of item with given path.
+     * @param path item path
+     * @param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
+     *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
+     * @return model index, invalid if item not found */
+    QModelIndex findPath( QString path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );
 

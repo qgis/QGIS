@@ -61,7 +61,7 @@ class QgsBrowserModel : QAbstractItemModel
     void refresh( const QModelIndex &index = QModelIndex() );
 
     //! return index of a path
-    QModelIndex findPath( QString path );
+    QModelIndex findPath( QString path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );
 

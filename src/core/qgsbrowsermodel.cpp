@@ -271,7 +271,7 @@ int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
   return 1;
 }
 
-QModelIndex QgsBrowserModel::findPath( QString path )
+QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
 {
   QModelIndex theIndex; // starting from root
   bool foundChild = true;
@@ -280,6 +280,8 @@ QModelIndex QgsBrowserModel::findPath( QString path )
   {
     foundChild = false; // assume that the next child item will not be found
 
+    int bestLength = 0;
+    QModelIndex bestIndex;
     for ( int i = 0; i < rowCount( theIndex ); i++ )
     {
       QModelIndex idx = index( i, 0, theIndex );
@@ -293,16 +295,22 @@ QModelIndex QgsBrowserModel::findPath( QString path )
         return idx; // we have found the item we have been looking for
       }
 
-      if ( path.startsWith( item->path() ) )
+      // not yet perfect, e.g. if a directory was deleted, it can jump to another one which starts with the same name
+      // but be careful, there are no common path separators, for example WMS contains slashes in its name
+      if ( path.startsWith( item->path() ) && item->path().length() > bestLength )
       {
         // we have found a preceding item: stop searching on this level and go deeper
         item->populate();
         foundChild = true;
-        theIndex = idx;
-        break;
+        bestIndex = idx;
+        bestLength = item->path().length();
       }
     }
+    theIndex = bestIndex;
   }
+
+  if ( matchFlag == Qt::MatchStartsWith )
+    return theIndex;
 
   QgsDebugMsg( "path not found" );
   return QModelIndex(); // not found

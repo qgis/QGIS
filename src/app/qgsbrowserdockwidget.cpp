@@ -308,6 +308,9 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
+    QSettings settings;
+    QString lastPath =  settings.value( "/BrowserWidget/lastExpanded" ).toString();
+
     // expand root favourites item
     for ( int i = 0; i < mModel->rowCount(); i++ )
     {
@@ -318,12 +321,13 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     }
 
     // expand last expanded path from previous session
-    QSettings settings;
-    QString lastPath =  settings.value( "/BrowserWidget/lastExpanded" ).toString();
     QgsDebugMsg( "lastPath = " + lastPath );
     if ( !lastPath.isEmpty() )
     {
       expandPath( lastPath );
+      // save again lastExpanded because QTreeView expands items from deepest and last expanded() signal
+      // is called from highest item and that is stored in settings
+      settings.setValue( "/BrowserWidget/lastExpanded", lastPath );
     }
   }
 
@@ -657,8 +661,6 @@ void QgsBrowserDockWidget::toggleFastScan()
   }
 }
 
-
-
 void QgsBrowserDockWidget::showFilterWidget( bool visible )
 {
   mWidgetFilter->setVisible( visible );
@@ -711,7 +713,7 @@ void QgsBrowserDockWidget::expandPath( QString path )
 
   if ( !mModel || !mProxyModel )
     return;
-  QModelIndex srcIndex = mModel->findPath( path );
+  QModelIndex srcIndex = mModel->findPath( path, Qt::MatchStartsWith );
   QModelIndex index = mProxyModel->mapFromSource( srcIndex );
   QgsDebugMsg( QString( "srcIndex.isValid() = %1 index.isValid() = %2" ).arg( srcIndex.isValid() ).arg( index.isValid() ) );
   if ( index.isValid() )

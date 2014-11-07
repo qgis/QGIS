@@ -26,6 +26,11 @@ class QgsGrassLocationItem : public QgsDataCollectionItem
 
     static bool isLocation( QString path );
     QVector<QgsDataItem*> createChildren();
+
+    /* Add mark to path to distinguish that from directory path */
+    static QString markPath( QString path );
+    /* Remove location mark from path */
+    static QString clearPath( QString path );
 };
 
 class QgsGrassMapsetItem : public QgsDataCollectionItem
