@@ -35,7 +35,7 @@
 #include <qgsfillsymbollayerv2.h>
 #include <qgsvectorcolorrampv2.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for shapeburst fill types.
@@ -233,10 +233,11 @@ bool TestQgsShapeburst::imageCheck( QString theTestType )
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 200 );
+  myChecker.setColorTolerance( 20 );
+  bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();
   return myResultFlag;
 }
