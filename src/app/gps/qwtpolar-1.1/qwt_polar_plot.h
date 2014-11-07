@@ -23,6 +23,7 @@ class QwtScaleDiv;
 class QwtTextLabel;
 class QwtPolarCanvas;
 class QwtPolarLayout;
+class QwtAbstractLegend;
 
 /*!
   \brief A plotting widget, displaying a polar coordinate system
@@ -140,11 +141,14 @@ public:
 
     // Legend
 
-    void insertLegend( QwtLegend *,
+    void insertLegend( QwtAbstractLegend *,
         LegendPosition = RightLegend, double ratio = -1.0 );
 
-    QwtLegend *legend();
-    const QwtLegend *legend() const;
+    QwtAbstractLegend *legend();
+    const QwtAbstractLegend *legend() const;
+
+    void updateLegend();
+    void updateLegend( const QwtPolarItem * );
 
     // Layout
     QwtPolarLayout *plotLayout();
@@ -156,31 +160,28 @@ public:
 
     int plotMarginHint() const;
 
+    virtual QVariant itemToInfo( QwtPolarItem * ) const;
+    virtual QwtPolarItem *infoToItem( const QVariant & ) const;
+
 Q_SIGNALS:
     /*!
-      A signal which is emitted when the user has clicked on
-      a legend item, which is in QwtLegend::ClickableItem mode.
+      A signal indicating, that an item has been attached/detached
 
-      \param plotItem Corresponding plot item of the
-                 selected legend item
-
-      \note clicks are disabled as default
-      \sa QwtLegend::setItemMode, QwtLegend::itemMode
+      \param plotItem Plot item
+      \param on Attached/Detached
      */
-    void legendClicked( QwtPolarItem *plotItem );
+    void itemAttached( QwtPolarItem *plotItem, bool on );
 
-    /*!
-      A signal which is emitted when the user has clicked on
-      a legend item, which is in QwtLegend::CheckableItem mode
-
-      \param plotItem Corresponding plot item of the
-                 selected legend item
-      \param on True when the legen item is checked
-
-      \note clicks are disabled as default
-      \sa QwtLegend::setItemMode, QwtLegend::itemMode
+    /*! 
+      A signal with the attributes how to update 
+      the legend entries for a plot item.
+                
+      \param itemInfo Info about a plot, build from itemToInfo()
+    
+      \sa itemToInfo(), infoToItem(), QwtAbstractLegend::updateLegend()
      */
-    void legendChecked( QwtPolarItem *plotItem, bool on );
+    void legendDataChanged( const QVariant &itemInfo,
+        const QList<QwtLegendData> &data );
 
     /*!
       A signal that is emitted, whenever the layout of the plot
@@ -192,10 +193,6 @@ public Q_SLOTS:
     virtual void replot();
     void autoRefresh();
     void setAzimuthOrigin( double );
-
-protected Q_SLOTS:
-    virtual void legendItemClicked();
-    virtual void legendItemChecked( bool );
 
 protected:
     virtual bool event( QEvent * );
@@ -209,6 +206,9 @@ protected:
         const QRectF &canvasRect ) const;
 
 private:
+    friend class QwtPolarItem;
+    void attachItem( QwtPolarItem *, bool );
+
     void initPlot( const QwtText & );
 
     class ScaleData;

@@ -15,7 +15,6 @@
 #include <qwt_text_label.h>
 #include <qwt_round_scale_draw.h>
 #include <qwt_legend.h>
-#include <qwt_legend_item.h>
 #include <qwt_dyngrid_layout.h>
 #include <qpointer.h>
 #include <qpaintengine.h>
@@ -34,6 +33,7 @@ class QwtPolarPlot::ScaleData
 {
 public:
     ScaleData():
+        isValid( false ),
         scaleEngine( NULL )
     {
     }
@@ -52,6 +52,8 @@ public:
     int maxMajor;
     int maxMinor;
 
+    bool isValid;
+
     QwtScaleDiv scaleDiv;
     QwtScaleEngine *scaleEngine;
 };
@@ -69,7 +71,7 @@ public:
     ScaleData scaleData[QwtPolar::ScaleCount];
     QPointer<QwtTextLabel> titleLabel;
     QPointer<QwtPolarCanvas> canvas;
-    QPointer<QwtLegend> legend;
+    QPointer<QwtAbstractLegend> legend;
     double azimuthOrigin;
 
     QwtPolarLayout *layout;
@@ -99,6 +101,8 @@ QwtPolarPlot::QwtPolarPlot( const QwtText &title, QWidget *parent ):
 //! Destructor
 QwtPolarPlot::~QwtPolarPlot()
 {
+    detachItems( QwtPolarItem::Rtti_PolarItem, autoDelete() );
+
     delete d_data->layout;
     delete d_data;
 }
@@ -180,10 +184,11 @@ const QwtTextLabel *QwtPolarPlot::titleLabel() const
   \sa legend(), QwtPolarLayout::legendPosition(),
       QwtPolarLayout::setLegendPosition()
 */
-void QwtPolarPlot::insertLegend( QwtLegend *legend,
+void QwtPolarPlot::insertLegend( QwtAbstractLegend *legend,
     QwtPolarPlot::LegendPosition pos, double ratio )
 {
     d_data->layout->setLegendPosition( pos, ratio );
+
     if ( legend != d_data->legend )
     {
         if ( d_data->legend && d_data->legend->parent() == this )
@@ -193,50 +198,88 @@ void QwtPolarPlot::insertLegend( QwtLegend *legend,
 
         if ( d_data->legend )
         {
-            if ( pos != ExternalLegend )
-            {
-                if ( d_data->legend->parent() != this )
-                    d_data->legend->setParent( this );
-            }
+            connect( this,
+                SIGNAL( legendDataChanged(
+                    const QVariant &, const QList<QwtLegendData> & ) ),
+                d_data->legend,
+                SLOT( updateLegend(
+                    const QVariant &, const QList<QwtLegendData> & ) )
+            );
 
-            const QwtPolarItemList& itmList = itemList();
-            for ( QwtPolarItemIterator it = itmList.begin();
-                    it != itmList.end(); ++it )
-            {
-                ( *it )->updateLegend( d_data->legend );
-            }
+            if ( d_data->legend->parent() != this )
+                d_data->legend->setParent( this );
 
-            QwtDynGridLayout *tl = qobject_cast<QwtDynGridLayout *>(
-                d_data->legend->contentsWidget()->layout() );
+            updateLegend();
 
-            if ( tl )
+            QwtLegend *lgd = qobject_cast<QwtLegend *>( legend );
+            if ( lgd )
             {
-                switch( d_data->layout->legendPosition() )
+                switch ( d_data->layout->legendPosition() )
                 {
                     case LeftLegend:
                     case RightLegend:
-                        tl->setMaxCols( 1 ); // 1 column: align vertical
+                    {
+                        if ( lgd->maxColumns() == 0     )
+                            lgd->setMaxColumns( 1 ); // 1 column: align vertical
                         break;
-
+                    }
                     case TopLegend:
                     case BottomLegend:
-                        tl->setMaxCols( 0 ); // unlimited
+                    {
+                        lgd->setMaxColumns( 0 ); // unlimited
                         break;
-
-                    case ExternalLegend:
+                    }
+                    default:
                         break;
                 }
             }
+
         }
     }
+
     updateLayout();
 }
 
 /*!
+  Emit legendDataChanged() for all plot item
+
+  \sa QwtPlotItem::legendData(), legendDataChanged()
+ */
+void QwtPolarPlot::updateLegend()
+{
+    const QwtPolarItemList& itmList = itemList();
+    for ( QwtPolarItemIterator it = itmList.begin();
+        it != itmList.end(); ++it )
+    {
+        updateLegend( *it );
+    }
+}
+
+/*!
+  Emit legendDataChanged() for a plot item
+
+  \param plotItem Plot item
+  \sa QwtPlotItem::legendData(), legendDataChanged()
+ */
+void QwtPolarPlot::updateLegend( const QwtPolarItem *plotItem )
+{
+    if ( plotItem == NULL )
+        return;
+
+    QList<QwtLegendData> legendData;
+
+    if ( plotItem->testItemAttribute( QwtPolarItem::Legend ) )
+        legendData = plotItem->legendData();
+
+    const QVariant itemInfo = itemToInfo( const_cast< QwtPolarItem *>( plotItem) );
+    Q_EMIT legendDataChanged( itemInfo, legendData );
+}
+
+/*!
   \return the plot's legend
   \sa insertLegend()
 */
-QwtLegend *QwtPolarPlot::legend()
+QwtAbstractLegend *QwtPolarPlot::legend()
 {
     return d_data->legend;
 }
@@ -245,39 +288,9 @@ QwtLegend *QwtPolarPlot::legend()
   \return the plot's legend
   \sa insertLegend()
 */
-const QwtLegend *QwtPolarPlot::legend() const
+const QwtAbstractLegend *QwtPolarPlot::legend() const
 {
     return d_data->legend;
-}
-
-/*!
-  Called internally when the legend has been clicked on.
-  Emits a legendClicked() signal.
-*/
-void QwtPolarPlot::legendItemClicked()
-{
-    if ( d_data->legend && sender()->isWidgetType() )
-    {
-        QwtPolarItem *plotItem = static_cast< QwtPolarItem* >(
-            d_data->legend->find( qobject_cast<const QWidget *>( sender() ) ) );
-        if ( plotItem )
-            Q_EMIT legendClicked( plotItem );
-    }
-}
-
-/*!
-  Called internally when the legend has been checked
-  Emits a legendClicked() signal.
-*/
-void QwtPolarPlot::legendItemChecked( bool on )
-{
-    if ( d_data->legend && sender()->isWidgetType() )
-    {
-        QwtPolarItem *plotItem = static_cast< QwtPolarItem* >(
-            d_data->legend->find( qobject_cast<const QWidget *>( sender() ) ) );
-        if ( plotItem )
-            Q_EMIT legendChecked( plotItem, on );
-    }
 }
 
 /*!
@@ -386,17 +399,14 @@ void QwtPolarPlot::setScaleMaxMinor( int scaleId, int maxMinor )
     if ( scaleId < 0 || scaleId >= QwtPolar::ScaleCount )
         return;
 
-    if ( maxMinor < 0 )
-        maxMinor = 0;
-    if ( maxMinor > 100 )
-        maxMinor = 100;
+    maxMinor = qBound( 0, maxMinor, 100 );
 
     ScaleData &scaleData = d_data->scaleData[scaleId];
 
     if ( maxMinor != scaleData.maxMinor )
     {
         scaleData.maxMinor = maxMinor;
-        scaleData.scaleDiv.invalidate();
+        scaleData.isValid = false;
         autoRefresh();
     }
 }
@@ -426,16 +436,13 @@ void QwtPolarPlot::setScaleMaxMajor( int scaleId, int maxMajor )
     if ( scaleId < 0 || scaleId >= QwtPolar::ScaleCount )
         return;
 
-    if ( maxMajor < 1 )
-        maxMajor = 1;
-    if ( maxMajor > 1000 )
-        maxMajor = 10000;
+    maxMajor = qBound( 1, maxMajor, 10000 );
 
     ScaleData &scaleData = d_data->scaleData[scaleId];
     if ( maxMajor != scaleData.maxMinor )
     {
         scaleData.maxMajor = maxMajor;
-        scaleData.scaleDiv.invalidate();
+        scaleData.isValid = false;
         autoRefresh();
     }
 }
@@ -474,7 +481,7 @@ void QwtPolarPlot::setScaleEngine( int scaleId, QwtScaleEngine *scaleEngine )
     delete scaleData.scaleEngine;
     scaleData.scaleEngine = scaleEngine;
 
-    scaleData.scaleDiv.invalidate();
+    scaleData.isValid = false;
 
     autoRefresh();
 }
@@ -524,7 +531,7 @@ void QwtPolarPlot::setScale( int scaleId,
 
     ScaleData &scaleData = d_data->scaleData[scaleId];
 
-    scaleData.scaleDiv.invalidate();
+    scaleData.isValid = false;
 
     scaleData.minValue = min;
     scaleData.maxValue = max;
@@ -548,6 +555,7 @@ void QwtPolarPlot::setScaleDiv( int scaleId, const QwtScaleDiv &scaleDiv )
     ScaleData &scaleData = d_data->scaleData[scaleId];
 
     scaleData.scaleDiv = scaleDiv;
+    scaleData.isValid = true;
     scaleData.doAutoScale = false;
 
     autoRefresh();
@@ -729,7 +737,7 @@ QwtScaleMap QwtPolarPlot::scaleMap( int scaleId, const double radius ) const
     if ( scaleId == QwtPolar::Azimuth )
     {
         map.setPaintInterval( d_data->azimuthOrigin,
-            d_data->azimuthOrigin + M_2PI );
+            d_data->azimuthOrigin + 2 * M_PI );
     }
     else
     {
@@ -817,8 +825,9 @@ void QwtPolarPlot::initPlot( const QwtText &title )
         scaleData.maxMinor = 5;
         scaleData.maxMajor = 8;
 
+        scaleData.isValid = false;
+
         scaleData.scaleEngine = new QwtLinearScaleEngine;
-        scaleData.scaleDiv.invalidate();
     }
     d_data->zoomFactor = 1.0;
     d_data->azimuthOrigin = 0.0;
@@ -855,16 +864,18 @@ void QwtPolarPlot::updateLayout()
             d_data->titleLabel->hide();
     }
 
-    if ( d_data->legend &&
-        d_data->layout->legendPosition() != ExternalLegend )
+    if ( d_data->legend )
     {
-        if ( d_data->legend->itemCount() > 0 )
+        if ( d_data->legend->isEmpty() )
         {
-            d_data->legend->setGeometry( d_data->layout->legendRect().toRect() );
-            d_data->legend->show();
+            d_data->legend->hide();
         }
         else
-            d_data->legend->hide();
+        {
+            const QRectF legendRect = d_data->layout->legendRect();
+            d_data->legend->setGeometry( legendRect.toRect() );
+            d_data->legend->show();
+        }
     }
 
     d_data->canvas->setGeometry( d_data->layout->canvasRect().toRect() );
@@ -1051,13 +1062,14 @@ void QwtPolarPlot::updateScale( int scaleId )
 
         d.scaleEngine->autoScale( d.maxMajor,
                                   minValue, maxValue, stepSize );
-        d.scaleDiv.invalidate();
+        d.isValid = false;
     }
 
-    if ( !d.scaleDiv.isValid() )
+    if ( !d.isValid )
     {
         d.scaleDiv = d.scaleEngine->divideScale(
             minValue, maxValue, d.maxMajor, d.maxMinor, stepSize );
+        d.isValid = true;
     }
 
     const QwtInterval interval = visibleInterval();
@@ -1266,4 +1278,85 @@ QwtPolarLayout *QwtPolarPlot::plotLayout()
 const QwtPolarLayout *QwtPolarPlot::plotLayout() const
 {
     return d_data->layout;
+}
+
+/*!
+  \brief Attach/Detach a plot item 
+
+  \param plotItem Plot item
+  \param on When true attach the item, otherwise detach it
+ */
+void QwtPolarPlot::attachItem( QwtPolarItem *plotItem, bool on )
+{
+    if ( on )
+        insertItem( plotItem );
+    else
+        removeItem( plotItem );
+
+    Q_EMIT itemAttached( plotItem, on );
+
+    if ( plotItem->testItemAttribute( QwtPolarItem::Legend ) )
+    {
+        // the item wants to be represented on the legend
+
+        if ( on )
+        {
+            updateLegend( plotItem );
+        }
+        else
+        {
+            const QVariant itemInfo = itemToInfo( plotItem );
+            Q_EMIT legendDataChanged( itemInfo, QList<QwtLegendData>() );
+        }
+    }
+
+    if ( autoReplot() )
+        update();
+}
+
+/*!
+  \brief Build an information, that can be used to identify
+         a plot item on the legend.
+
+  The default implementation simply wraps the plot item
+  into a QVariant object. When overloading itemToInfo()
+  usually infoToItem() needs to reimplemeted too.
+
+\code
+    QVariant itemInfo;
+    qVariantSetValue( itemInfo, plotItem );
+\endcode
+
+  \param plotItem Plot item
+  \sa infoToItem()
+ */
+QVariant QwtPolarPlot::itemToInfo( QwtPolarItem *plotItem ) const
+{
+    QVariant itemInfo;
+    qVariantSetValue( itemInfo, plotItem );
+
+    return itemInfo;
+}
+
+/*!
+  \brief Identify the plot item according to an item info object,
+         that has bee generated from itemToInfo().
+
+  The default implementation simply tries to unwrap a QwtPlotItem 
+  pointer:
+
+\code
+    if ( itemInfo.canConvert<QwtPlotItem *>() )
+        return qvariant_cast<QwtPlotItem *>( itemInfo );
+\endcode
+  \param itemInfo Plot item
+  \return A plot item, when successful, otherwise a NULL pointer.
+  \sa itemToInfo()
+*/
+QwtPolarItem *QwtPolarPlot::infoToItem( const QVariant &itemInfo ) const
+{
+    if ( itemInfo.canConvert<QwtPolarItem *>() )
+        return qvariant_cast<QwtPolarItem *>( itemInfo );
+
+    return NULL;
 }

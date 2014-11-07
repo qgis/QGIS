@@ -876,7 +876,12 @@ void QwtPolarGrid::updateScaleDraws(
                 from += 360.0;
 
             scaleDraw->setAngleRange( from, from - 360.0 );
-            scaleDraw->setTransformation( azimuthMap.transformation()->copy() );
+
+            const QwtTransform *transform = azimuthMap.transformation();
+            if ( transform )
+                scaleDraw->setTransformation( transform->copy() );
+            else
+                scaleDraw->setTransformation( NULL );
         }
         else
         {
@@ -910,7 +915,11 @@ void QwtPolarGrid::updateScaleDraws(
                     break;
                 }
             }
-            scaleDraw->setTransformation( radialMap.transformation()->copy() );
+            const QwtTransform *transform = radialMap.transformation();
+            if ( transform )
+                scaleDraw->setTransformation( transform->copy() );
+            else
+                scaleDraw->setTransformation( NULL );
         }
     }
 }
@@ -975,8 +984,7 @@ void QwtPolarGrid::updateScaleDiv( const QwtScaleDiv &azimuthScaleDiv,
             {
                 QwtScaleDiv sd = radialGrid.scaleDiv;
 
-                QList<double> &ticks =
-                    const_cast<QList<double> &>( sd.ticks( QwtScaleDiv::MajorTick ) );
+                QList<double> ticks = sd.ticks( QwtScaleDiv::MajorTick );
 
                 if ( testDisplayFlag( SmartOriginLabel ) )
                 {
@@ -1010,6 +1018,7 @@ void QwtPolarGrid::updateScaleDiv( const QwtScaleDiv &azimuthScaleDiv,
                         ticks.removeLast();
                 }
 
+                sd.setTicks( QwtScaleDiv::MajorTick, ticks );
                 axis.scaleDraw->setScaleDiv( sd );
 
                 if ( testDisplayFlag( SmartScaleDraw ) )
