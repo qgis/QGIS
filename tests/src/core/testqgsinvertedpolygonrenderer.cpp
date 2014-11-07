@@ -31,7 +31,7 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
@@ -170,10 +170,11 @@ bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle
   {
     mMapSettings.setExtent( *extent );
   }
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 1000 ); // allow some mismatched pixels
+  myChecker.setColorTolerance( 20 );
+  bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();
   return myResultFlag;
 }
