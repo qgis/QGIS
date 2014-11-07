@@ -30,7 +30,7 @@
 #include "qgsdatadefined.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerDD: public QObject
 {

@@ -29,7 +29,6 @@
 #include <QString>
 #include <QStringList>
 #include <QStyle>
-#include <QPlastiqueStyle>
 #include <QTranslator>
 #include <QImageReader>
 #include <QMessageBox>

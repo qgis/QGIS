@@ -24,7 +24,7 @@
 #include "qgsvectordataprovider.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerLabel: public QObject
 {

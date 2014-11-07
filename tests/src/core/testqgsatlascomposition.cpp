@@ -30,8 +30,8 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QSignalSpy>
-#include <QtTest>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 class TestQgsAtlasComposition: public QObject
 {

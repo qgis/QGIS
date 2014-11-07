@@ -20,7 +20,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include <qgisapp.h>
 #include <qgsapplication.h>

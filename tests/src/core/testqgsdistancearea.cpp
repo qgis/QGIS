@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QFile>
 #include <QTextStream>
 #include <QObject>

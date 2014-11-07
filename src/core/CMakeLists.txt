@@ -94,7 +94,6 @@ SET(QGIS_CORE_SRCS
   qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
-  qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
   qgslabelsearchtree.cpp
@@ -268,8 +267,13 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgsbrightnesscontrastfilter.cpp
   raster/qgshuesaturationfilter.cpp  
-
 )
+
+IF (NOT QT5_BUILD)
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    qgshttptransaction.cpp
+  )
+ENDIF (NOT QT5_BUILD)
 
 IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   # spatialindex headers produce warnings
@@ -351,7 +355,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsdataprovider.h
   qgsgml.h
   qgsgmlschema.h
-  qgshttptransaction.h
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayerregistry.h
@@ -428,6 +431,12 @@ SET(QGIS_CORE_MOC_HDRS
   layertree/qgslayertreeregistrybridge.h
 )
 
+IF (NOT QT5_BUILD)
+  SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
+    qgshttptransaction.h
+  )
+ENDIF (NOT QT5_BUILD)
+
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
     gps/qextserialport/qextserialport.h
@@ -493,7 +502,6 @@ SET(QGIS_CORE_HDRS
   qgsgml.h
   qgsgmlschema.h
   qgsgeometrycache.h
-  qgshttptransaction.h
   qgslabel.h
   qgslabelattributes.h
   qgslabelsearchtree.h
@@ -663,6 +671,12 @@ SET(QGIS_CORE_HDRS
   layertree/qgslayertreeregistrybridge.h
   layertree/qgslayertreeutils.h
 )
+
+IF (NOT QT5_BUILD)
+  SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
+    qgshttptransaction.h
+  )
+ENDIF (NOT QT5_BUILD)
 
 IF (QT_MOBILITY_LOCATION_FOUND)
   SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}

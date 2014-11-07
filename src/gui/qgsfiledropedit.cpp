@@ -18,6 +18,7 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QUrl>
+#include <QMimeData>
 
 /*!
   \class QgsFileDropEdit

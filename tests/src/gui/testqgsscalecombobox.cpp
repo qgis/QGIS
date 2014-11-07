@@ -21,8 +21,8 @@
 #include <QObject>
 #include <QLineEdit>
 #include <QComboBox>
-#include <QSignalSpy>
-#include <QtTest>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 class TestQgsScaleComboBox: public QObject
 {

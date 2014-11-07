@@ -248,7 +248,8 @@ QString QgsPostgresProvider::storageType() const
   return "PostgreSQL database with PostGIS extension";
 }
 
-
+// Qt5 has that built in
+#if QT_VERSION < 0x050000
 static bool operator<( const QVariant &a, const QVariant &b )
 {
   if ( a.isNull() || b.isNull() )
@@ -325,7 +326,7 @@ static bool operator<( const QVariant &a, const QVariant &b )
 
   return a.canConvert( QVariant::String ) && b.canConvert( QVariant::String ) && a.toString() < b.toString();
 }
-
+#endif
 
 QgsFeatureIterator QgsPostgresProvider::getFeatures( const QgsFeatureRequest& request )
 {

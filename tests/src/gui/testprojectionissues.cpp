@@ -22,7 +22,7 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestProjectionIssues: public QObject
 {

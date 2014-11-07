@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include <QDir>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"

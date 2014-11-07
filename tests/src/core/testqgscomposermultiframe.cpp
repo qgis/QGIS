@@ -21,7 +21,7 @@
 #include "qgscomposition.h"
 #include "qgscompositionchecker.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerMultiFrame: public QObject
 {

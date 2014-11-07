@@ -17,7 +17,7 @@
 
 #include "qgscolorscheme.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 //dummy color scheme for testing
 class DummyColorScheme : public QgsColorScheme

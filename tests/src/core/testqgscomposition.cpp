@@ -25,7 +25,7 @@
 #include "qgsmapsettings.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposition: public QObject
 {

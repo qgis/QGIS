@@ -24,7 +24,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerMapGrid: public QObject
 {

@@ -19,7 +19,7 @@
 #include "qgscomposermodel.h"
 #include "qgscomposerlabel.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QList>
 
 class TestQgsComposerModel: public QObject

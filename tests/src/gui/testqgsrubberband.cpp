@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>

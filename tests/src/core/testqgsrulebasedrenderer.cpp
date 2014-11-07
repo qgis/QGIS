@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QDomDocument>
 #include <QFile>
 //header for class being tested

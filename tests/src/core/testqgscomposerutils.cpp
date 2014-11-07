@@ -22,7 +22,7 @@
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QMap>
 
 class TestQgsComposerUtils: public QObject

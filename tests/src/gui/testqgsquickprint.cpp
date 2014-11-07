@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
 #include <QObject>

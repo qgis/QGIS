@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>

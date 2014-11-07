@@ -24,7 +24,7 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 

@@ -80,7 +80,7 @@ class CORE_EXPORT QgsSpatialIndex
     /* debugging */
 
     //! get reference count - just for debugging!
-    int refs() const;
+    QAtomicInt refs() const;
 
   protected:
     // @note not available in python bindings

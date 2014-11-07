@@ -20,7 +20,7 @@
 #include "qgscompositionchecker.h"
 #include "qgsdatadefined.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposerObject: public QObject
 {

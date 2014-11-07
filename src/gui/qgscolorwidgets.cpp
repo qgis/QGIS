@@ -26,6 +26,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QSettings>
+#include <QDrag>
 #include <cmath>
 
 

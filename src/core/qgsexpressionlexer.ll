@@ -162,7 +162,7 @@ string      "'"{str_char}*"'"
 {num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
+	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok );
 	if( ok )
 		return NUMBER_INT;
 

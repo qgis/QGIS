@@ -25,7 +25,7 @@
 #include "qgslinesymbollayerv2.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 
