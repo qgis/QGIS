@@ -37,6 +37,8 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
         QDialog.__init__(self)
         self.setupUi(self)
 
+        self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
+
         self.options = options
         self.selectedoptions = selectedoptions or []
 

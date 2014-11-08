@@ -28,9 +28,6 @@
      <property name="alternatingRowColors">
       <bool>true</bool>
      </property>
-     <property name="selectionMode">
-      <enum>QAbstractItemView::NoSelection</enum>
-     </property>
     </widget>
    </item>
    <item>

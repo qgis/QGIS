@@ -41,9 +41,9 @@ class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
         QDialog.__init__(self)
         self.setupUi(self)
 
-        self.selectedoptions = options
-
         self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
+
+        self.selectedoptions = options
 
         # Additional buttons
         self.btnAdd = QPushButton(self.tr('Add file'))
