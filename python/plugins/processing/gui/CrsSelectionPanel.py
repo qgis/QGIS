@@ -40,7 +40,7 @@ class CrsSelectionPanel(QWidget, Ui_Form):
 
         self.leText.setEnabled(False)
 
-        self.btnBSelect.clicked.connect(self.browseCRS)
+        self.btnSelect.clicked.connect(self.browseCRS)
         self.authId = QgsCoordinateReferenceSystem(default).authid()
         self.updateText()
 
