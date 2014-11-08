@@ -72,7 +72,7 @@ class OgrAlgorithm(GdalAlgorithm):
         layerName = None
 
         if 'host' in uri:
-            regex = re.compile('(table=")(.+?)(\.")(.+?)"')
+            regex = re.compile('(table=")(.+?)(\.)(.+?)"')
             r = regex.search(uri)
             return r.groups()[1] + '.' + r.groups()[3]
         elif 'dbname' in uri:
