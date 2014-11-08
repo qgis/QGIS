@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetcher.h"
+#include "qgsapplication.h"
 #include <QObject>
 #include <QtTest>
 #include <QNetworkReply>
@@ -44,22 +45,21 @@ class TestQgsNetworkContentFetcher: public QObject
 
 void TestQgsNetworkContentFetcher::initTestCase()
 {
-
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsNetworkContentFetcher::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 
 void TestQgsNetworkContentFetcher::init()
 {
-
 }
 
 void TestQgsNetworkContentFetcher::cleanup()
 {
-
 }
 
 void TestQgsNetworkContentFetcher::fetchEmptyUrl()

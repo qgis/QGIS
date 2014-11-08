@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 
@@ -609,6 +610,8 @@ void QgsApplication::exitQgis()
   delete QgsMapLayerRegistry::instance();
 
   delete QgsProviderRegistry::instance();
+
+  delete QgsNetworkAccessManager::instance();
 }
 
 QString QgsApplication::showSettings()

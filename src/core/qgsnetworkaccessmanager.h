@@ -48,7 +48,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
   public:
     //! returns a pointer to the single instance
     // and creates that instance on the first call.
-    static QgsNetworkAccessManager *instance();
+    static QgsNetworkAccessManager* instance();
 
     QgsNetworkAccessManager( QObject *parent = 0 );
 
@@ -100,6 +100,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
+    static QgsNetworkAccessManager* sInstance;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
