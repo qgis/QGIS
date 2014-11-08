@@ -2119,6 +2119,9 @@ QString QgsVectorLayer::attributeDisplayName( int attributeIndex ) const
 
 bool QgsVectorLayer::deleteAttribute( int index )
 {
+  if ( index < 0 || index >= pendingFields().count() )
+    return false;
+
   if ( mUpdatedFields.fieldOrigin( index ) == QgsFields::OriginExpression )
   {
     removeExpressionField( index );
