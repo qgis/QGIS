@@ -22,12 +22,14 @@
 #include <QPainter>
 
 QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
-    : QgsMultiRenderChecker(),
-    mTestName( testName ),
-    mComposition( composition ),
-    mSize( 1122, 794 ),
-    mDotsPerMeter( 96 / 25.4 * 1000 )
+    : QgsMultiRenderChecker()
+    , mTestName( testName )
+    , mComposition( composition )
+    , mSize( 1122, 794 )
+    , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
+  // The composer has some slight render inconsistencies on the whole image sometimes
+  setColorTolerance( 1 );
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
