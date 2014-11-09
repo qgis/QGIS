@@ -57,8 +57,8 @@ class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
                                  QDialogButtonBox.ActionRole)
 
         self.btnAdd.clicked.connect(self.addFile)
-        self.btnRemove.clicked.connect(lambda: self.removeAll())
-        self.btnRemoveAll.clicked.connect(lambda: self.removeAll(True))
+        self.btnRemove.clicked.connect(lambda: self.removeRows())
+        self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
         self.populateList()
 
@@ -99,7 +99,7 @@ class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
         settings.setValue('/Processing/LastInputPath',
                           os.path.dirname(files[0]))
 
-    def removeAll(self, removeAll=False):
+    def removeRows(self, removeAll=False):
         if removeAll:
             self.lstLayers.model().clear()
         else:
