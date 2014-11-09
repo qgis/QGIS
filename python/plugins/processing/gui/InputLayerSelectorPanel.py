@@ -26,33 +26,33 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui, QtCore
+
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+
+from processing.ui.ui_widgetLayerSelector import Ui_Form
 
 
-class InputLayerSelectorPanel(QtGui.QWidget):
+class InputLayerSelectorPanel(QWidget, Ui_Form):
 
     def __init__(self, options, param):
-        super(InputLayerSelectorPanel, self).__init__(None)
+        QWidget.__init__(self)
+        self.setupUi(self)
+
+        self.btnIterate.setIcon(
+            QIcon(os.path.dirname(__file__) + '/../images/iterate.png'))
+        self.btnIterate.hide()
+
         self.param = param
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QComboBox()
+
         for (name, value) in options:
-            self.text.addItem(name, value)
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showSelectionDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
+            self.cmbText.addItem(name, value)
+
+        self.btnSelect.clicked.connect(self.showSelectionDialog)
 
     def showSelectionDialog(self):
-        # Find the file dialog's working directory
-        settings = QtCore.QSettings()
-        text = unicode(self.text.currentText())
+        settings = QSettings()
+        text = unicode(self.cmbText.currentText())
         if os.path.isdir(text):
             path = text
         elif os.path.isdir(os.path.dirname(text)):
@@ -62,13 +62,13 @@ class InputLayerSelectorPanel(QtGui.QWidget):
         else:
             path = ''
 
-        filename = QtGui.QFileDialog.getOpenFileName(self, self.param.description, path,
-                self.tr('All files(*.*);;') + self.param.getFileFilter())
+        filename = QFileDialog.getOpenFileName(self, self.tr('Select file'),
+            path, self.tr('All files (*.*);;') + self.param.getFileFilter())
         if filename:
-            self.text.addItem(filename, filename)
-            self.text.setCurrentIndex(self.text.count() - 1)
+            self.cmbText.addItem(filename, filename)
+            self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(unicode(filename)))
 
     def getValue(self):
-        return self.text.itemData(self.text.currentIndex())
+        return self.cmbText.itemData(self.cmbText.currentIndex())
