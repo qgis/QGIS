@@ -82,6 +82,7 @@ class QgsDataItem : QObject
     QIcon icon() const;
     QString name() const;
     QString path() const;
+    void setPath( const QString );
 
     void setIcon( QIcon icon );
 

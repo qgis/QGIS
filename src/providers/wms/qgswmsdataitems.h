@@ -23,7 +23,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path );
+    QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
     ~QgsWMSConnectionItem();
 
     QVector<QgsDataItem*> createChildren();
@@ -34,6 +34,9 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
   public slots:
     void editConnection();
     void deleteConnection();
+
+  private:
+    QString mUri;
 };
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem

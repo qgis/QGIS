@@ -24,8 +24,9 @@
 #include <QFileInfo>
 #include <QSettings>
 
-QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path )
+QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path , QString uri )
     : QgsDataCollectionItem( parent, name, path )
+    , mUri( uri )
 {
   mIcon = QgsApplication::getThemeIcon( "mIconWcs.svg" );
 }
@@ -40,10 +41,9 @@ QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
 
-  QString encodedUri = mPath;
   QgsDataSourceURI uri;
-  uri.setEncodedUri( encodedUri );
-  QgsDebugMsg( "encodedUri = " + encodedUri );
+  uri.setEncodedUri( mUri );
+  QgsDebugMsg( "mUri = " + mUri );
 
   mCapabilities.setUri( uri );
 
@@ -234,9 +234,8 @@ QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   foreach ( QString connName, QgsOWSConnection::connectionList( "WCS" ) )
   {
-    //QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName );
     QgsOWSConnection connection( "WCS", connName );
-    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, connection.uri().encodedUri() );
+    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName, connection.uri().encodedUri() );
 
     conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
@@ -298,9 +297,18 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return new QgsWCSRootItem( parentItem, "WCS", "wcs:" );
   }
 
-  // OWS server
-  QgsDebugMsg( "connection found in uri" );
-  return new QgsWCSConnectionItem( parentItem, "WCS", thePath );
+  // path schema: wcs:/connection name (used by OWS)
+  if ( thePath.startsWith( "wcs:/" ) )
+  {
+    QString connectionName = thePath.split( '/' ).last();
+    if ( QgsOWSConnection::connectionList( "WCS" ).contains( connectionName ) )
+    {
+      QgsOWSConnection connection( "WCS", connectionName );
+      return new QgsWCSConnectionItem( parentItem, "WCS", thePath, connection.uri().encodedUri() );
+    }
+  }
+
+  return 0;
 }
 
 QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )

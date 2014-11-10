@@ -23,7 +23,7 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path );
+    QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
     ~QgsWCSConnectionItem();
 
     QVector<QgsDataItem*> createChildren();
@@ -37,6 +37,9 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
   public slots:
     void editConnection();
     void deleteConnection();
+
+  private:
+    QString mUri;
 };
 
 // WCS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem

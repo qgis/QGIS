@@ -119,6 +119,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QIcon icon() const { return mIcon; }
     QString name() const { return mName; }
     QString path() const { return mPath; }
+    void setPath( const QString path ) { mPath = path; }
 
     void setIcon( QIcon icon ) { mIcon = icon; }
 
@@ -132,7 +133,11 @@ class CORE_EXPORT QgsDataItem : public QObject
     QVector<QgsDataItem*> mChildren; // easier to have it always
     bool mPopulated;
     QString mName;
-    QString mPath; // it is also used to identify item in tree
+    // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
+    // necessary to distinguish paths of two providers to the same source (e.g GRASS location and standard directory have the same
+    // name but different paths). Identifiers in path must not contain '/' characters.
+    // The path is used to identify item in tree.
+    QString mPath;
     QString mToolTip;
     QIcon mIcon;
 

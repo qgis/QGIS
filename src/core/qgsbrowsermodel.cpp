@@ -280,8 +280,6 @@ QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
   {
     foundChild = false; // assume that the next child item will not be found
 
-    int bestLength = 0;
-    QModelIndex bestIndex;
     for ( int i = 0; i < rowCount( theIndex ); i++ )
     {
       QModelIndex idx = index( i, 0, theIndex );
@@ -295,18 +293,19 @@ QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
         return idx; // we have found the item we have been looking for
       }
 
-      // not yet perfect, e.g. if a directory was deleted, it can jump to another one which starts with the same name
-      // but be careful, there are no common path separators, for example WMS contains slashes in its name
-      if ( path.startsWith( item->path() ) && item->path().length() > bestLength )
+      // paths are slash separated identifier
+      if ( path.startsWith( item->path() + "/" ) )
       {
-        // we have found a preceding item: stop searching on this level and go deeper
+        // We have found a preceding item: stop searching on this level and go deeper.
+        // Currently some providers (e.g. Postgres) are using multithread in
+        // QgsDataItem::createChildren(), i.e. we cannot get to children here as they
+        // are not yet created by separate thread
         item->populate();
         foundChild = true;
-        bestIndex = idx;
-        bestLength = item->path().length();
+        theIndex = idx;
+        break;
       }
     }
-    theIndex = bestIndex;
   }
 
   if ( matchFlag == Qt::MatchStartsWith )

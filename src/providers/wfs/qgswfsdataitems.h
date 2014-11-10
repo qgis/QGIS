@@ -34,7 +34,6 @@ class QgsWFSRootItem : public QgsDataCollectionItem
 
   public slots:
     void connectionsChanged();
-
     void newConnection();
 };
 
@@ -44,7 +43,7 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path );
+    QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
     ~QgsWFSConnectionItem();
 
     QVector<QgsDataItem*> createChildren();
@@ -59,7 +58,7 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
     void deleteConnection();
 
   private:
-    QString mName;
+    QString mUri;
 
     QgsWFSCapabilities* mCapabilities;
     bool mGotCapabilities;

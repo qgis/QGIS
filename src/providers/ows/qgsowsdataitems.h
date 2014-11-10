@@ -32,6 +32,9 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
   public slots:
     void editConnection();
     void deleteConnection();
+
+  private:
+    void replacePath( QgsDataItem* item, QString before, QString after );
 };
 
 class QgsOWSRootItem : public QgsDataCollectionItem
