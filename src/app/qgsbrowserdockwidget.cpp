@@ -309,7 +309,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setStretchLastSection( false );
 
     QSettings settings;
-    QString lastPath =  settings.value( "/BrowserWidget/lastExpanded" ).toString();
+    QString lastPath =  settings.value( "/" + objectName().toLower() + "/lastExpanded" ).toString();
 
     // expand root favourites item
     for ( int i = 0; i < mModel->rowCount(); i++ )
@@ -327,7 +327,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
       expandPath( lastPath );
       // save again lastExpanded because QTreeView expands items from deepest and last expanded() signal
       // is called from highest item and that is stored in settings
-      settings.setValue( "/BrowserWidget/lastExpanded", lastPath );
+      settings.setValue( "/" + objectName().toLower() + "/lastExpanded", lastPath );
     }
   }
 
@@ -702,8 +702,7 @@ void QgsBrowserDockWidget::itemExpanded( const QModelIndex& index )
   if ( !item )
     return;
 
-  // TODO: save separately each type (FS, WMS)?
-  settings.setValue( "/BrowserWidget/lastExpanded", item->path() );
+  settings.setValue( "/" + objectName().toLower() + "/lastExpanded", item->path() );
   QgsDebugMsg( "last expanded: " + item->path() );
 }
 
