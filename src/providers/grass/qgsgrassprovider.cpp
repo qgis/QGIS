@@ -288,6 +288,7 @@ QgsGrassProvider::~QgsGrassProvider()
 
 QgsAbstractFeatureSource* QgsGrassProvider::featureSource() const
 {
+  const_cast<QgsGrassProvider*>( this )->ensureUpdated();
   return new QgsGrassFeatureSource( this );
 }
 
