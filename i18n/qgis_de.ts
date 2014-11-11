@@ -1521,7 +1521,7 @@ laden</translation>
     </message>
     <message>
         <source>Select by layers in the folder</source>
-        <translation>Nach Layern des Verzeichnisses auswählen</translation>
+        <translation>Einzellayer aus Verzeichnis wählen</translation>
     </message>
     <message>
         <source>Shapefile type</source>
@@ -4587,7 +4587,7 @@ See log for more details</source>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation>Polygon zu Linie</translation>
+        <translation>Polygone zu Linien</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
@@ -50567,15 +50567,15 @@ Erweiterung wird nicht aktiviert.</translation>
     </message>
     <message>
         <source>Singleparts to Multipart...</source>
-        <translation>Mehr- zu einteilig...</translation>
+        <translation>Ein- zu mehrteilig...</translation>
     </message>
     <message>
         <source>Polygons to Lines...</source>
-        <translation>Polygon zu Linie...</translation>
+        <translation>Polygone zu Linien...</translation>
     </message>
     <message>
         <source>Lines to Polygons...</source>
-        <translation>Polygon zu Linie...</translation>
+        <translation>Linien zu Polygonen...</translation>
     </message>
     <message>
         <source>Define Current Projection...</source>
