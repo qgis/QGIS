@@ -330,6 +330,7 @@
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.svg</file>
         <file>themes/default/mIconLock.png</file>
+        <file>themes/default/mIconLoading.gif</file>
         <file>themes/default/mIconMssql.svg</file>
         <file>themes/default/mIconNew.png</file>
         <file>themes/default/mIconNext.png</file>
