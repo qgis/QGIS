@@ -14,6 +14,11 @@ __revision__ = '$Format:%H$'
 
 import tempfile
 import os
+
+(myFileHandle, myFilename) = tempfile.mkstemp()
+os.environ['QGIS_DEBUG'] = '2'
+os.environ['QGIS_LOG_FILE'] = myFilename
+
 import qgis
 from qgis.core import QgsLogger
 from utilities import (TestCase,
@@ -28,13 +33,10 @@ from utilities import (TestCase,
 class TestQgsLogger(TestCase):
 
     def testLogger(self):
-        (myFileHandle, myFilename) = tempfile.mkstemp()
         try:
             myFile = os.fdopen(myFileHandle, "w")
             myFile.write("QGIS Logger Unit Test\n")
             myFile.close()
-            os.environ['QGIS_DEBUG'] = '2'
-            os.environ['QGIS_LOG_FILE'] = myFilename
             myLogger = QgsLogger()
             myLogger.debug('This is a debug')
             myLogger.warning('This is a warning')

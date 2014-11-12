@@ -37,19 +37,20 @@ QTime QgsLogger::sTime;
 
 void QgsLogger::init()
 {
-  if( sDebugLevel != -999 )
+  if ( sDebugLevel != -999 )
     return;
 
   sTime.start();
 
+  sLogFile = getenv( "QGIS_LOG_FILE" ) ? getenv( "QGIS_LOG_FILE" ) : "";
   sFileFilter = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
   sDebugLevel = getenv( "QGIS_DEBUG" ) ? atoi( getenv( "QGIS_DEBUG" ) ) :
 #ifdef QGISDEBUG
-    1
+                1
 #else
-    0
+                0
 #endif
-;
+                ;
 
   sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
   if ( CMAKE_SOURCE_DIR[sPrefixLength-1] == '/' )
@@ -66,36 +67,37 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   if ( sDebugLevel == 0 || debuglevel > sDebugLevel )
     return;
 
+
   QString m = msg;
-
-  if ( qApp && qApp->thread() != QThread::currentThread() )
-  {
-    m.prepend( QString( "[thread:0x%1] " ).arg( (qint64) QThread::currentThread(), 0, 16 ) );
-  }
-
-  m.prepend( QString( "[%1ms] " ).arg( sTime.elapsed() ) );
-  sTime.restart();
-
-  if ( function )
-  {
-    m.prepend( QString( " (%1) " ).arg( function ) );
-  }
 
   if ( file )
   {
-     if( line != -1 )
-     {
+    if ( qApp && qApp->thread() != QThread::currentThread() )
+    {
+      m.prepend( QString( "[thread:0x%1] " ).arg(( qint64 ) QThread::currentThread(), 0, 16 ) );
+    }
+
+    m.prepend( QString( "[%1ms] " ).arg( sTime.elapsed() ) );
+    sTime.restart();
+
+    if ( function )
+    {
+      m.prepend( QString( " (%1) " ).arg( function ) );
+    }
+
+    if ( line != -1 )
+    {
 #ifndef _MSC_VER
-       m.prepend( QString( ": %1:" ).arg( line ) );
+      m.prepend( QString( ": %1:" ).arg( line ) );
 #else
-       m.prepend( QString( "(%1) :" ).arg( line ) );
+      m.prepend( QString( "(%1) :" ).arg( line ) );
 #endif
-     }
+    }
 
 #ifndef _MSC_VER
-     m.prepend( file + sPrefixLength );
+    m.prepend( file + sPrefixLength );
 #else
-     m.prepend( file );
+    m.prepend( file );
 #endif
   }
 
