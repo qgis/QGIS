@@ -15,6 +15,7 @@
 #include <QDir>
 #include <QApplication>
 #include <QStyle>
+#include <QtConcurrentMap>
 
 #include "qgis.h"
 #include "qgsapplication.h"
@@ -27,6 +28,30 @@
 #include "qgsproject.h"
 
 #include <QSettings>
+
+QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem * item )
+    : mFinished( false )
+    , mItem( item )
+{
+  connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( finished() ) );
+}
+
+QgsBrowserWatcher::~QgsBrowserWatcher()
+{
+  mFutureWatcher.cancel();
+}
+
+void QgsBrowserWatcher::setFuture( QFuture<QVector <QgsDataItem*> > future )
+{
+  mFutureWatcher.setFuture( future );
+}
+
+void QgsBrowserWatcher::finished()
+{
+  QgsDebugMsg( "Entered" );
+  emit finished( mItem, mFutureWatcher.result() );
+  mFinished = true;
+}
 
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
 static bool cmpByDataItemName_( QgsDataItem* a, QgsDataItem* b )
@@ -41,6 +66,9 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent )
 {
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
+  mLoadingMovie.setFileName( QgsApplication::iconPath( "/mIconLoading.gif" ) );
+  mLoadingMovie.setCacheMode( QMovie::CacheAll );
+  connect( &mLoadingMovie, SIGNAL( frameChanged( int ) ), SLOT( loadingFrameChanged() ) );
   addRootItems();
 }
 
@@ -219,6 +247,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
+    if ( fetching( item ) )
+    {
+      return mLoadingIcon;
+    }
     return item->icon();
   }
   else
@@ -241,7 +273,7 @@ QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, 
 
 int QgsBrowserModel::rowCount( const QModelIndex &parent ) const
 {
-  //qDebug("rowCount: idx: (valid %d) %d %d", parent.isValid(), parent.row(), parent.column());
+  //QgsDebugMsg(QString("isValid = %1 row = %2 column = %3").arg(parent.isValid()).arg(parent.row()).arg(parent.column()));
 
   if ( !parent.isValid() )
   {
@@ -252,6 +284,7 @@ int QgsBrowserModel::rowCount( const QModelIndex &parent ) const
   {
     // ordinary item: number of its children
     QgsDataItem *item = dataItem( parent );
+    //if ( item ) QgsDebugMsg(QString("path = %1 rowCount = %2").arg(item->path()).arg(item->rowCount()) );
     return item ? item->rowCount() : 0;
   }
 }
@@ -323,18 +356,6 @@ void QgsBrowserModel::reload()
   endResetModel();
 }
 
-/* Refresh dir path */
-void QgsBrowserModel::refresh( QString path )
-{
-  QModelIndex idx = findPath( path );
-  if ( idx.isValid() )
-  {
-    QgsDataItem* item = dataItem( idx );
-    if ( item )
-      item->refresh();
-  }
-}
-
 QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &parent ) const
 {
   QgsDataItem *p = dataItem( parent );
@@ -369,35 +390,24 @@ QModelIndex QgsBrowserModel::findItem( QgsDataItem *item, QgsDataItem *parent ) 
   return QModelIndex();
 }
 
-/* Refresh item */
-void QgsBrowserModel::refresh( const QModelIndex& theIndex )
-{
-  QgsDataItem *item = dataItem( theIndex );
-  if ( !item )
-    return;
-
-  QgsDebugMsg( "Refresh " + item->path() );
-  item->refresh();
-}
-
 void QgsBrowserModel::beginInsertItems( QgsDataItem *parent, int first, int last )
 {
-  QgsDebugMsg( "parent mPath = " + parent->path() );
+  QgsDebugMsgLevel( "parent mPath = " + parent->path(), 3 );
   QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsg( "valid" );
+  QgsDebugMsgLevel( "valid", 3 );
   beginInsertRows( idx, first, last );
-  QgsDebugMsg( "end" );
+  QgsDebugMsgLevel( "end", 3 );
 }
 void QgsBrowserModel::endInsertItems()
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 3 );
   endInsertRows();
 }
 void QgsBrowserModel::beginRemoveItems( QgsDataItem *parent, int first, int last )
 {
-  QgsDebugMsg( "parent mPath = " + parent->path() );
+  QgsDebugMsgLevel( "parent mPath = " + parent->path(), 3 );
   QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
@@ -405,7 +415,7 @@ void QgsBrowserModel::beginRemoveItems( QgsDataItem *parent, int first, int last
 }
 void QgsBrowserModel::endRemoveItems()
 {
-  QgsDebugMsg( "Entered" );
+  QgsDebugMsgLevel( "Entered", 3 );
   endRemoveRows();
 }
 void QgsBrowserModel::connectItem( QgsDataItem* item )
@@ -478,10 +488,122 @@ bool QgsBrowserModel::canFetchMore( const QModelIndex & parent ) const
 
 void QgsBrowserModel::fetchMore( const QModelIndex & parent )
 {
+  QgsDebugMsg( "Entered" );
   QgsDataItem* item = dataItem( parent );
-  if ( item )
-    item->populate();
+
+  if ( !item || fetching( item ) )
+    return;
+
   QgsDebugMsg( "path = " + item->path() );
+
+  if ( item->isPopulated() )
+    return;
+
+  QList<QgsDataItem*> itemList;
+  itemList << item;
+  QgsBrowserWatcher * watcher = new QgsBrowserWatcher( item );
+  connect( watcher, SIGNAL( finished( QgsDataItem*, QVector <QgsDataItem*> ) ), SLOT( childrenCreated( QgsDataItem*, QVector <QgsDataItem*> ) ) );
+  watcher->setFuture( QtConcurrent::mapped( itemList, QgsBrowserModel::createChildren ) );
+  mWatchers.append( watcher );
+  mLoadingMovie.setPaused( false );
+  emit dataChanged( parent, parent );
+}
+
+/* Refresh dir path */
+void QgsBrowserModel::refresh( QString path )
+{
+  QModelIndex index = findPath( path );
+  refresh( index );
+}
+
+/* Refresh item */
+void QgsBrowserModel::refresh( const QModelIndex& theIndex )
+{
+  QgsDataItem *item = dataItem( theIndex );
+  if ( !item )
+    return;
+
+  QgsDebugMsg( "Refresh " + item->path() );
+  //item->refresh();
+
+  QList<QgsDataItem*> itemList;
+  itemList << item;
+  QgsBrowserWatcher * watcher = new QgsBrowserWatcher( item );
+  connect( watcher, SIGNAL( finished( QgsDataItem*, QVector <QgsDataItem*> ) ), SLOT( refreshChildrenCreated( QgsDataItem*, QVector <QgsDataItem*> ) ) );
+  watcher->setFuture( QtConcurrent::mapped( itemList, QgsBrowserModel::createChildren ) );
+  mWatchers.append( watcher );
+  mLoadingMovie.setPaused( false );
+  emit dataChanged( theIndex, theIndex );
+}
+
+// This is expected to be run in a separate thread
+QVector<QgsDataItem*> QgsBrowserModel::createChildren( QgsDataItem* item )
+{
+  QgsDebugMsg( "Entered" );
+  QVector <QgsDataItem*> children = item->createChildren();
+  // Children objects must be pushed to main thread.
+  foreach ( QgsDataItem* child, children )
+  {
+    if ( !child ) // should not happen
+      continue;
+    // However it seems to work without resetting parent, the Qt doc says that
+    // "The object cannot be moved if it has a parent."
+    QgsDebugMsg( "moveToThread child" + child->path() );
+    child->setParent( 0 );
+    child->moveToThread( QApplication::instance()->thread() );
+    child->setParent( item );
+  }
+  return children;
+}
+
+void QgsBrowserModel::childrenCreated( QgsDataItem* item, QVector <QgsDataItem*> children )
+{
+  QgsDebugMsg( QString( "children.size() = %1" ).arg( children.size() ) );
+  QModelIndex index = findItem( item );
+  if ( !index.isValid() ) // check if item still exists
+    return;
+  item->populate( children );
+  emit dataChanged( index, index );
+}
+
+void QgsBrowserModel::refreshChildrenCreated( QgsDataItem* item, QVector <QgsDataItem*> children )
+{
+  QgsDebugMsg( QString( "path = %1 children.size() = %2" ).arg( item->path() ).arg( children.size() ) );
+  QModelIndex index = findItem( item );
+  if ( !index.isValid() ) // check if item still exists
+    return;
+  item->refresh( children );
+  emit dataChanged( index, index );
+}
+
+bool QgsBrowserModel::fetching( QgsDataItem* item ) const
+{
+  foreach ( QgsBrowserWatcher * watcher, mWatchers )
+  {
+    if ( !watcher->isFinished() && watcher->item() == item )
+      return true;
+  }
+  return false;
+}
+
+void QgsBrowserModel::loadingFrameChanged()
+{
+  mLoadingIcon = QIcon( mLoadingMovie.currentPixmap() );
+  int notFinished = 0;
+  foreach ( QgsBrowserWatcher * watcher, mWatchers )
+  {
+    if ( watcher->isFinished() )
+    {
+      mWatchers.removeOne( watcher );
+      continue;
+    }
+    QModelIndex index = findItem( watcher->item() );
+    QgsDebugMsg( QString( "path = %1 not finished" ).arg( watcher->item()->path() ) );
+    emit dataChanged( index, index );
+    notFinished++;
+  }
+  if ( notFinished == 0 )
+    mLoadingMovie.setPaused( true );
 }
 
 void QgsBrowserModel::addFavouriteDirectory( QString favDir )

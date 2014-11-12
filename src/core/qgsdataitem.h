@@ -56,15 +56,15 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     int rowCount();
 
-    //
-
     virtual void refresh();
+    virtual void refresh( QVector<QgsDataItem*> children );
 
     // Create vector of children
     virtual QVector<QgsDataItem*> createChildren();
 
     // Populate children using children vector created by createChildren()
     virtual void populate();
+    virtual void populate( QVector<QgsDataItem*> children );
     bool isPopulated() { return mPopulated; }
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
@@ -116,12 +116,16 @@ class CORE_EXPORT QgsDataItem : public QObject
     QgsDataItem* parent() const { return mParent; }
     void setParent( QgsDataItem* parent ) { mParent = parent; }
     QVector<QgsDataItem*> children() const { return mChildren; }
-    QIcon icon() const { return mIcon; }
+    virtual QIcon icon();
     QString name() const { return mName; }
     QString path() const { return mPath; }
     void setPath( const QString path ) { mPath = path; }
 
+    // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
+    // not possible to set mIcon in constructor. Either use mIconName/setIconName()
+    // or implement icon().
     void setIcon( QIcon icon ) { mIcon = icon; }
+    void setIconName( const QString & iconName ) { mIconName = iconName; }
 
     void setToolTip( QString msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
@@ -139,7 +143,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     // The path is used to identify item in tree.
     QString mPath;
     QString mToolTip;
+    QString mIconName;
     QIcon mIcon;
+    static QMap<QString, QIcon> mIconMap;
 
   public slots:
     void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
@@ -243,7 +249,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren();
 
     virtual bool equal( const QgsDataItem *other );
-
+    virtual QIcon icon();
     virtual QWidget *paramWidget();
 
     /* static QVector<QgsDataProvider*> mProviders; */

@@ -147,6 +147,7 @@ const QIcon &QgsZipItem::iconZip()
   return icon;
 }
 
+QMap<QString, QIcon> QgsDataItem::mIconMap = QMap<QString, QIcon>();
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
@@ -157,6 +158,17 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString n
 QgsDataItem::~QgsDataItem()
 {
   QgsDebugMsgLevel( "mName = " + mName + " mPath = " + mPath, 2 );
+}
+
+QIcon QgsDataItem::icon()
+{
+  if ( !mIcon.isNull() )
+    return mIcon;
+
+  if ( !mIconMap.contains( mIconName ) )
+    mIconMap.insert( mIconName, QgsApplication::getThemeIcon( mIconName ) );
+
+  return mIconMap.value( mIconName );
 }
 
 void QgsDataItem::emitBeginInsertItems( QgsDataItem* parent, int first, int last )
@@ -201,10 +213,25 @@ void QgsDataItem::populate()
   QApplication::restoreOverrideCursor();
 }
 
+void QgsDataItem::populate( QVector<QgsDataItem*> children )
+{
+  if ( mPopulated )
+    return;
+
+  QgsDebugMsg( "mPath = " + mPath );
+
+  foreach ( QgsDataItem *child, children )
+  {
+    if ( !child ) // should not happen
+      continue;
+    // update after thread finished -> refresh
+    addChildItem( child, true );
+  }
+  mPopulated = true;
+}
+
 int QgsDataItem::rowCount()
 {
-  // if ( !mPopulated )
-  //   populate();
   return mChildren.size();
 }
 bool QgsDataItem::hasChildren()
@@ -295,38 +322,51 @@ int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
   return -1;
 }
 
+void QgsDataItem::refresh( QVector<QgsDataItem*> children )
+{
+  QgsDebugMsgLevel( "mPath = " + mPath, 2 );
+
+  // Remove no more present children
+  QVector<QgsDataItem*> remove;
+  foreach ( QgsDataItem *child, mChildren )
+  {
+    if ( !child ) // should not happen
+      continue;
+    if ( findItem( children, child ) >= 0 )
+      continue;
+    remove.append( child );
+  }
+  foreach ( QgsDataItem *child, remove )
+  {
+    QgsDebugMsg( "remove " + child->path() );
+    deleteChildItem( child );
+  }
+
+  // Add new children
+  foreach ( QgsDataItem *child, children )
+  {
+    if ( !child ) // should not happen
+      continue;
+    // Is it present in childs?
+    if ( findItem( mChildren, child ) >= 0 )
+    {
+      delete child;
+      continue;
+    }
+    addChildItem( child, true );
+  }
+
+}
+
 void QgsDataItem::refresh()
 {
   QgsDebugMsgLevel( "mPath = " + mPath, 2 );
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  QVector<QgsDataItem*> items = createChildren();
+  QVector<QgsDataItem*> children = createChildren();
 
-  // Remove no more present items
-  QVector<QgsDataItem*> remove;
-  foreach ( QgsDataItem *child, mChildren )
-  {
-    if ( findItem( items, child ) >= 0 )
-      continue;
-    remove.append( child );
-  }
-  foreach ( QgsDataItem *child, remove )
-  {
-    deleteChildItem( child );
-  }
-
-  // Add new items
-  foreach ( QgsDataItem *item, items )
-  {
-    // Is it present in childs?
-    if ( findItem( mChildren, item ) >= 0 )
-    {
-      delete item;
-      continue;
-    }
-    addChildItem( item, true );
-  }
+  refresh( children );
 
   QApplication::restoreOverrideCursor();
 }
@@ -351,14 +391,14 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, QString name, QString path, QSt
 {
   switch ( layerType )
   {
-    case Point:      mIcon = iconPoint(); break;
-    case Line:       mIcon = iconLine(); break;
-    case Polygon:    mIcon = iconPolygon(); break;
+    case Point:      mIconName = "/mIconPointLayer.svg"; break;
+    case Line:       mIconName = "/mIconLineLayer.svg"; break;
+    case Polygon:    mIconName = "/mIconPolygonLayer.svg"; break;
       // TODO add a new icon for generic Vector layers
-    case Vector :    mIcon = iconPolygon(); break;
-    case TableLayer: mIcon = iconTable(); break;
-    case Raster:     mIcon = iconRaster(); break;
-    default:         mIcon = iconDefault(); break;
+    case Vector :    mIconName = "/mIconPolygonLayer.svg"; break;
+    case TableLayer: mIconName = "/mIconTableLayer.png"; break;
+    case Raster:     mIconName = "/mIconRaster.svg"; break;
+    default:         mIconName = "/mIconLayer.png"; break;
   }
 }
 
@@ -385,7 +425,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
 QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataItem( Collection, parent, name, path )
 {
-  mIcon = iconDataCollection();
+  mIconName = "/mIconDbSchema.png";
 }
 
 QgsDataCollectionItem::~QgsDataCollectionItem()
@@ -407,7 +447,6 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString p
     : QgsDataCollectionItem( parent, name, path )
 {
   mType = Directory;
-  mIcon = iconDir();
 
   if ( mLibraries.size() == 0 )
   {
@@ -446,6 +485,11 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString p
 
 QgsDirectoryItem::~QgsDirectoryItem()
 {
+}
+
+QIcon QgsDirectoryItem::icon()
+{
+  return iconDir();
 }
 
 QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
@@ -672,7 +716,7 @@ void QgsDirectoryParamWidget::showHideColumn()
 QgsErrorItem::QgsErrorItem( QgsDataItem* parent, QString error, QString path )
     : QgsDataItem( QgsDataItem::Error, parent, error, path )
 {
-  mIcon = QIcon( QgsApplication::getThemePixmap( "/mIconDelete.png" ) );
+  mIconName = "/mIconDelete.png";
 
   mPopulated = true; // no more children
 }
@@ -685,7 +729,7 @@ QgsFavouritesItem::QgsFavouritesItem( QgsDataItem* parent, QString name, QString
     : QgsDataCollectionItem( parent, name, path )
 {
   mType = Favourites;
-  mIcon = iconFavourites();
+  mIconName = "/mIconFavourites.png";
 }
 
 QgsFavouritesItem::~QgsFavouritesItem()
@@ -752,7 +796,7 @@ QgsZipItem::QgsZipItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
   mType = Collection; //Zip??
-  mIcon = iconZip();
+  mIconName = "/mIconZip.png";
   mVsiPrefix = vsiPrefix( path );
 
   if ( mProviderNames.size() == 0 )

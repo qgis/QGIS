@@ -1865,6 +1865,8 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
+  // This is causing Qt warning: "Cannot create children for a parent that is in a different thread."
+  // but it only means that the reply will have no parent
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );

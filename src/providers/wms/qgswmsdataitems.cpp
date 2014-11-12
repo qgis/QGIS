@@ -32,7 +32,7 @@ QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, Q
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
+  mIconName = "mIconWms.svg";
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
@@ -87,10 +87,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     connect( &capDownload, SIGNAL( statusChanged( QString ) ), mainWindow, SLOT( showStatusMessage( QString ) ) );
   }
 
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
   bool res = capDownload.downloadCapabilities();
-  QApplication::restoreOverrideCursor();
 
   if ( !res )
   {
@@ -259,7 +256,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     mChildren.append( layer );
   }
 
-  mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
+  mIconName = "mIconWms.svg";
 
   mPopulated = true;
 }
@@ -359,7 +356,7 @@ QString QgsWMTSLayerItem::createUri()
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
+  mIconName = "mIconWms.svg";
 
   populate();
 }

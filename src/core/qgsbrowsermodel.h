@@ -18,8 +18,35 @@
 #include <QAbstractItemModel>
 #include <QIcon>
 #include <QMimeData>
+#include <QMovie>
+#include <QFuture>
+#include <QFutureWatcher>
 
 #include "qgsdataitem.h"
+
+class CORE_EXPORT QgsBrowserWatcher : public QObject
+{
+    Q_OBJECT
+
+  public:
+    QgsBrowserWatcher( QgsDataItem * item );
+    ~QgsBrowserWatcher();
+
+    void setFuture( QFuture<QVector <QgsDataItem*> > future );
+    bool isFinished() { return mFinished; }
+    QgsDataItem* item() const { return mItem; }
+
+  signals:
+    void finished( QgsDataItem* item, QVector <QgsDataItem*> items );
+
+  public slots:
+    void finished();
+
+  private:
+    bool mFinished;
+    QgsDataItem *mItem;
+    QFutureWatcher<QVector <QgsDataItem*> > mFutureWatcher;
+};
 
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 {
@@ -92,6 +119,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     bool canFetchMore( const QModelIndex & parent ) const;
     void fetchMore( const QModelIndex & parent );
+    static QVector<QgsDataItem*> createChildren( QgsDataItem *item );
+    bool fetching( QgsDataItem *item ) const;
 
   public slots:
     // Reload the whole model
@@ -105,6 +134,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void removeFavourite( const QModelIndex &index );
 
     void updateProjectHome();
+    void childrenCreated( QgsDataItem* item, QVector <QgsDataItem*> items );
+    void refreshChildrenCreated( QgsDataItem* item, QVector <QgsDataItem*> items );
+    void loadingFrameChanged();
 
   protected:
     // populates the model
@@ -114,6 +146,11 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QVector<QgsDataItem*> mRootItems;
     QgsFavouritesItem *mFavourites;
     QgsDirectoryItem *mProjectHome;
+
+  private:
+    QList<QgsBrowserWatcher *> mWatchers;
+    QMovie mLoadingMovie;
+    QIcon mLoadingIcon;
 };
 
 #endif // QGSBROWSERMODEL_H

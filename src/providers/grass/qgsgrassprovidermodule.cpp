@@ -30,7 +30,8 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString path )
   QDir dir( path );
   mName = dir.dirName();
 
-  mIcon = QIcon( QgsApplication::getThemePixmap( "grass_location.png" ) );
+  mIconName = "grass_location.png";
+
   // set Directory type so that when sorted it gets into dirs (after the dir it represents)
   mType = QgsDataItem::Directory;
 }
@@ -85,7 +86,7 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString path )
   dir.cdUp();
   mGisdbase = dir.path();
 
-  mIcon = QIcon( QgsApplication::getThemePixmap( "grass_mapset.png" ) );
+  mIconName = "grass_mapset.png";
 }
 
 QgsGrassMapsetItem::~QgsGrassMapsetItem() {}

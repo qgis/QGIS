@@ -429,9 +429,9 @@ void QgsBrowserDockWidget::removeFavourite()
 
 void QgsBrowserDockWidget::refresh()
 {
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  //QApplication::setOverrideCursor( Qt::WaitCursor );
   refreshModel( QModelIndex() );
-  QApplication::restoreOverrideCursor();
+  //QApplication::restoreOverrideCursor();
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
@@ -488,6 +488,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
 {
+  QgsDebugMsg( QString( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
   if ( item != NULL && item->type() == QgsDataItem::Layer )
@@ -708,6 +709,7 @@ void QgsBrowserDockWidget::itemExpanded( const QModelIndex& index )
 
 void QgsBrowserDockWidget::expandPath( QString path )
 {
+  return; // debug
   QgsDebugMsg( "path = " + path );
 
   if ( !mModel || !mProxyModel )

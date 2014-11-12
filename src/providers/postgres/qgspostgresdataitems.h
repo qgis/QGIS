@@ -63,8 +63,6 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     virtual bool acceptDrop() { return true; }
     virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
 
-    void refresh();
-
   signals:
     void addGeometryColumn( QgsPostgresLayerProperty );
 
@@ -73,13 +71,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     void deleteConnection();
     void refreshConnection();
 
-    void setLayerType( QgsPostgresLayerProperty layerProperty );
-
-    void threadStarted();
-    void threadFinished();
-
   private:
-    void stop();
     QgsPostgresConn *mConn;
     QMap<QString, QgsPGSchemaItem * > mSchemaMap;
     QgsGeomColumnTypeThread *mColumnTypeThread;
@@ -89,12 +81,15 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path );
+    QgsPGSchemaItem( QgsDataItem* parent, QString connectionName, QString name, QString path );
     ~QgsPGSchemaItem();
 
     QVector<QgsDataItem*> createChildren();
 
-    void addLayer( QgsPostgresLayerProperty layerProperty );
+  private:
+    QgsPGLayerItem * createLayer( QgsPostgresLayerProperty layerProperty );
+
+    QString mConnectionName;
 };
 
 class QgsPGLayerItem : public QgsLayerItem

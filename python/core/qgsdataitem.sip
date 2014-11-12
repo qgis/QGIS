@@ -79,12 +79,13 @@ class QgsDataItem : QObject
     QgsDataItem* parent() const;
     void setParent( QgsDataItem* parent );
     QVector<QgsDataItem*> children() const;
-    QIcon icon() const;
+    QIcon icon();
     QString name() const;
     QString path() const;
     void setPath( const QString );
 
     void setIcon( QIcon icon );
+    void setIconName( const QString & icon );
 
     void setToolTip( QString msg );
     QString toolTip() const;
