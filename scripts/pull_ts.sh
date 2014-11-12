@@ -3,7 +3,7 @@
 #    pull_ts.sh
 #    ---------------------
 #    Date                 : November 2014
-#    Copyright            : (C) 2014 by Tim Sutton
+#    Copyright            : (C) 2014 by Juergen E. Fischer
 #    Email                : jef at norbit dot de
 ###########################################################################
 #                                                                         #
@@ -53,26 +53,9 @@ cleanup() {
 
 PATH=$QTDIR/bin:$PATH
 
-if type qmake-qt4 >/dev/null 2>&1; then
-	QMAKE=qmake-qt4
-else
-	QMAKE=qmake
-fi
-
-if ! type pylupdate4 >/dev/null 2>&1; then
-      echo "pylupdate4 not found"
-      exit 1
-fi
-
 if ! type tx >/dev/null 2>&1; then
       echo "tx not found"
       exit 1
-fi
-
-if type lupdate-qt4 >/dev/null 2>&1; then
-	LUPDATE=lupdate-qt4
-else
-	LUPDATE=lupdate
 fi
 
 trap cleanup EXIT

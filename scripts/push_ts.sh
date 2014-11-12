@@ -112,4 +112,4 @@ $QMAKE -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translations
 $LUPDATE -locations none -verbose qgis_ts.pro
 
-echo tx push -s
+tx push -s
