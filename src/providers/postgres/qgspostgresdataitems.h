@@ -74,7 +74,6 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
   private:
     QgsPostgresConn *mConn;
     QMap<QString, QgsPGSchemaItem * > mSchemaMap;
-    QgsGeomColumnTypeThread *mColumnTypeThread;
 };
 
 class QgsPGSchemaItem : public QgsDataCollectionItem

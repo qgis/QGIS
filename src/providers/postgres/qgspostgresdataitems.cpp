@@ -32,7 +32,6 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause );
 // ---------------------------------------------------------------------------
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
-    , mColumnTypeThread( 0 )
 {
   mIconName = "mIconConnect.png";
 }
@@ -328,16 +327,20 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
 
       conn->retrieveLayerTypes( layerProperty, true /* useEstimatedMetadata */ );
     }
-    QgsPGLayerItem *layerItem = createLayer( layerProperty );
-    if ( layerItem )
-      items.append( layerItem );
+
+    for ( int i = 0; i < layerProperty.size(); i++ )
+    {
+      QgsPGLayerItem *layerItem = createLayer( layerProperty.at(i) );
+      if ( layerItem )
+        items.append( layerItem );
+    }
   }
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
   return items;
 }
 
-QgsPGLayerItem * QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
+QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
   QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
   QGis::WkbType wkbType = layerProperty.types[0];
