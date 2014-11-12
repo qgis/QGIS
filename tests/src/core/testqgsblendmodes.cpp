@@ -30,7 +30,7 @@
 #include <qgsmultibandcolorrenderer.h>
 #include <qgsrasterlayer.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for layer blend modes
@@ -214,10 +214,11 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 1500 );
+  myChecker.setColorTolerance( 1 );
+  bool myResultFlag = myChecker.runTest( theTestType );
   mReport += myChecker.report();
   return myResultFlag;
 }

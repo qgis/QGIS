@@ -34,7 +34,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsMapLayerRegistry,
                        QgsMapRenderer,
                        QgsCoordinateReferenceSystem,
-                       QgsRenderChecker,
+                       QgsMultiRenderChecker,
                        QgsRasterLayer,
                        QgsRasterDataProvider,
                        QgsMultiBandColorRenderer,
@@ -112,9 +112,10 @@ class TestQgsBlendModes(TestCase):
         self.mLineLayer.setBlendMode(QPainter.CompositionMode_Difference)
         self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_Difference)
 
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_blendmodes")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
 
         myResult = checker.runTest("vector_blendmodes", 1500);
         myMessage = ('vector blending failed')
@@ -137,9 +138,10 @@ class TestQgsBlendModes(TestCase):
         #Set feature blending for line layer
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_Plus)
 
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_featureblendmodes")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
 
         myResult = checker.runTest("vector_featureblendmodes", 1500);
         myMessage = ('vector feature blending failed')
@@ -161,9 +163,10 @@ class TestQgsBlendModes(TestCase):
         #Set feature blending for line layer
         self.mLineLayer.setLayerTransparency( 50 )
 
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_layertransparency")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
 
         myResult = checker.runTest("vector_layertransparency", 1500);
         myMessage = ('vector layer transparency failed')
@@ -180,9 +183,11 @@ class TestQgsBlendModes(TestCase):
 
         #Set blending mode for top layer
         self.mRasterLayer1.setBlendMode(QPainter.CompositionMode_Plus)
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_raster_blendmodes")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
+        checker.setColorTolerance( 1 )
 
         myResult = checker.runTest("raster_blendmodes", 1500);
         myMessage = ('raster blending failed')
