@@ -82,7 +82,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
         return True
 
-    def setParamValue(self, param, widget):
+    def setParamValue(self, param, widget, alg=None):
         if isinstance(param, ParameterRaster):
             return param.setValue(widget.getValue())
         elif isinstance(param, (ParameterVector, ParameterTable)):
@@ -154,7 +154,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
 
             self.progressBar.setMaximum(0)
             self.lblProgress.setText(self.tr('Processing algorithm...'))
-            # Make sure the log tab is visible before executing the algorithm
+            # Make sure the Log tab is visible before executing the algorithm
             try:
                 self.tabWidget.setCurrentIndex(1)
                 self.repaint()

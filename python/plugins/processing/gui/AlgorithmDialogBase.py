@@ -135,7 +135,7 @@ class AlgorithmDialogBase(QDialog, Ui_Dialog):
     def setParamValues(self):
         pass
 
-    def setParamValue(self, param, widget):
+    def setParamValue(self, param, widget, alg=None):
         pass
 
     def accept(self):

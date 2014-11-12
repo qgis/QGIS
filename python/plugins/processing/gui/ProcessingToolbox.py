@@ -37,7 +37,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.gui.BatchProcessingDialog import BatchProcessingDialog
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
 from processing.ui.ui_ProcessingToolbox import Ui_ProcessingToolbox
@@ -177,7 +177,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         if isinstance(item, TreeAlgorithmItem):
             alg = Processing.getAlgorithm(item.alg.commandLineName())
             alg = alg.getCopy()
-            dlg = BatchProcessingDialog(alg)
+            dlg = BatchAlgorithmDialog(alg)
             dlg.exec_()
 
     def executeAlgorithm(self):

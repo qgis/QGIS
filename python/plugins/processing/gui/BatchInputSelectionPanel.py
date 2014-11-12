@@ -26,56 +26,64 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui, QtCore
-from processing.core.parameters import ParameterMultipleInput
+
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
+
 from processing.gui.MultipleInputDialog import MultipleInputDialog
-from processing.tools import dataobjects
+
+from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
 
+from processing.tools import dataobjects
 
-class BatchInputSelectionPanel(QtGui.QWidget):
 
-    def __init__(self, param, row, col, batchDialog, parent=None):
-        super(BatchInputSelectionPanel, self).__init__(parent)
+class BatchInputSelectionPanel(QWidget):
+
+    def __init__(self, param, row, col, panel):
+        super(BatchInputSelectionPanel, self).__init__(None)
         self.param = param
-        self.batchDialog = batchDialog
-        self.table = batchDialog.table
+        self.panel = panel
+        self.table = self.panel.tblParameters
         self.row = row
         self.col = col
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
+        self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QLineEdit()
+        self.text = QLineEdit()
         self.text.setText('')
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
+        self.text.setSizePolicy(QSizePolicy.Expanding,
+                                QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
+        self.pushButton = QPushButton()
         self.pushButton.setText('...')
         self.pushButton.clicked.connect(self.showPopupMenu)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
 
     def showPopupMenu(self):
-        popupmenu = QtGui.QMenu()
-        if not (isinstance(self.param, ParameterMultipleInput)
-                    and self.param.datatype == ParameterMultipleInput.TYPE_FILE):
-            selectLayerAction = QtGui.QAction(self.tr('Select from open layers'),
-                self.pushButton)
+        popupmenu = QMenu()
+
+        if not (isinstance(self.param, ParameterMultipleInput) and
+                self.param.datatype == ParameterMultipleInput.TYPE_FILE):
+            selectLayerAction = QAction(
+                self.tr('Select from open layers'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
             popupmenu.addAction(selectLayerAction)
-        selectFileAction = QtGui.QAction(self.tr('Select from filesystem'),
-                self.pushButton)
+
+        selectFileAction = QAction(
+            self.tr('Select from filesystem'), self.pushButton)
         selectFileAction.triggered.connect(self.showFileSelectionDialog)
         popupmenu.addAction(selectFileAction)
-        popupmenu.exec_(QtGui.QCursor.pos())
+
+        popupmenu.exec_(QCursor.pos())
 
     def showLayerSelectionDialog(self):
-        if (isinstance(self.param, ParameterRaster)
-                or (isinstance(self.param, ParameterMultipleInput)
-                    and self.param.datatype == ParameterMultipleInput.TYPE_RASTER)):
+        if (isinstance(self.param, ParameterRaster) or
+                (isinstance(self.param, ParameterMultipleInput) and
+                 self.param.datatype == ParameterMultipleInput.TYPE_RASTER)):
             layers = dataobjects.getRasterLayers()
         elif isinstance(self.param, ParameterTable):
             layers = dataobjects.getTables()
@@ -85,6 +93,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
             else:
                 datatype = [self.param.datatype]
             layers = dataobjects.getVectorLayers(datatype)
+
         dlg = MultipleInputDialog([layer.name() for layer in layers])
         dlg.exec_()
         if dlg.selectedoptions is not None:
@@ -97,13 +106,13 @@ class BatchInputSelectionPanel(QtGui.QWidget):
                 else:
                     rowdif = len(selected) - (self.table.rowCount() - self.row)
                     for i in range(rowdif):
-                        self.batchDialog.addRow()
+                        self.table.addRow()
                     for i, layeridx in enumerate(selected):
                         self.table.cellWidget(i + self.row,
                                 self.col).setText(layers[layeridx].name())
 
     def showFileSelectionDialog(self):
-        settings = QtCore.QSettings()
+        settings = QSettings()
         text = unicode(self.text.text())
         if os.path.isdir(text):
             path = text
@@ -114,7 +123,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
         else:
             path = ''
 
-        ret = QtGui.QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
+        ret = QFileDialog.getOpenFileNames(self, self.tr('Open file'), path,
                 self.tr('All files(*.*);;') + self.param.getFileFilter())
         if ret:
             files = list(ret)
@@ -130,7 +139,7 @@ class BatchInputSelectionPanel(QtGui.QWidget):
                 else:
                     rowdif = len(files) - (self.table.rowCount() - self.row)
                     for i in range(rowdif):
-                        self.batchDialog.addRow()
+                        self.table.addRow()
                     for i, f in enumerate(files):
                         self.table.cellWidget(i + self.row,
                                 self.col).setText(f)
