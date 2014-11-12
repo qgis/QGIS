@@ -61,6 +61,14 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      */
     bool stopEditing( QgsVectorLayer* layer, bool allowCancel = true ) const;
 
+    /**
+     * Should be called, when the features should be commited but the editing session is not ended.
+     *
+     * @param layer       The layer to commit
+     * @return            True if successful
+     */
+    bool saveEdits( QgsVectorLayer* layer) const;
+
   private:
     void commitError( QgsVectorLayer* vlayer ) const;
 };
