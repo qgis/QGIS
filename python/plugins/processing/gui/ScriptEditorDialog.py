@@ -37,7 +37,7 @@ from PyQt4.Qsci import *
 from qgis.core import *
 from qgis.utils import iface
 
-from processing.gui.ParametersDialog import ParametersDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
@@ -187,7 +187,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         dlg = alg.getCustomParametersDialog()
         if not dlg:
-            dlg = ParametersDialog(alg)
+            dlg = AlgorithmDialog(alg)
 
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()

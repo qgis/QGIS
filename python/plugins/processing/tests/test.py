@@ -34,7 +34,7 @@ from processing.ProcessingPlugin import ProcessingPlugin
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.gui.ParametersDialog import ParametersDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.Providers import Providers
 from processing.parameters.ParameterRaster import ParameterRaster
@@ -177,7 +177,7 @@ class ProcessingProviderTestCase(unittest.TestCase):
     def runalg_parameters(self):
         dlg = self.alg.getCustomParametersDialog()
         if not dlg:
-            dlg = ParametersDialog(self.alg)
+            dlg = AlgorithmDialog(self.alg)
 
         # Hack to handle that hacky code...
         dlg.setParamValues = lambda : True

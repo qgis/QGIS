@@ -36,7 +36,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
-from processing.gui.ParametersDialog import ParametersDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchProcessingDialog import BatchProcessingDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
@@ -196,7 +196,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             alg = alg.getCopy()
             dlg = alg.getCustomParametersDialog()
             if not dlg:
-                dlg = ParametersDialog(alg)
+                dlg = AlgorithmDialog(alg)
             canvas = iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()

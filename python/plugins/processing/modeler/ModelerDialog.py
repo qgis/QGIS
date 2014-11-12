@@ -33,7 +33,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.gui.ParametersDialog import ParametersDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParameter
@@ -231,7 +231,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             # Might happen if model is opened from modeler dialog
             self.alg.provider = ModelerUtils.providers['model']
         alg = self.alg.getCopy()
-        dlg = ParametersDialog(alg)
+        dlg = AlgorithmDialog(alg)
         dlg.exec_()
 
     def save(self):

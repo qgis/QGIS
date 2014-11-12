@@ -32,7 +32,7 @@ from PyQt4.QtGui import *
 from qgis.utils import iface
 from processing.core.Processing import Processing
 from processing.gui.MessageDialog import MessageDialog
-from processing.gui.ParametersDialog import ParametersDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.tools import dataobjects
 from processing.tools.system import *
 
@@ -212,7 +212,7 @@ class CommanderWindow(QtGui.QDialog):
             return
         dlg = alg.getCustomParametersDialog()
         if not dlg:
-            dlg = ParametersDialog(alg)
+            dlg = AlgorithmDialog(alg)
         canvas = iface.mapCanvas()
         prevMapTool = canvas.mapTool()
         dlg.show()
