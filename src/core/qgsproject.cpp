@@ -1689,16 +1689,27 @@ QString QgsProject::layerIsEmbedded( const QString& id ) const
 bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                                       QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag )
 {
-  QFile projectFile( projectFilePath );
-  if ( !projectFile.open( QIODevice::ReadOnly ) )
-  {
-    return false;
-  }
+  QgsDebugCall;
 
-  QDomDocument projectDocument;
-  if ( !projectDocument.setContent( &projectFile ) )
+  static QString prevProjectFilePath;
+  static QDomDocument projectDocument;
+
+  if ( projectFilePath != prevProjectFilePath )
   {
-    return false;
+    prevProjectFilePath.clear();
+
+    QFile projectFile( projectFilePath );
+    if ( !projectFile.open( QIODevice::ReadOnly ) )
+    {
+      return false;
+    }
+
+    if ( !projectDocument.setContent( &projectFile ) )
+    {
+      return false;
+    }
+
+    prevProjectFilePath = projectFilePath;
   }
 
   //does project store pathes absolute or relative?
