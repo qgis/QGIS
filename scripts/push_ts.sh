@@ -113,5 +113,3 @@ echo Updating translations
 $LUPDATE -locations none -verbose qgis_ts.pro
 
 echo tx push -s
-
-cleanup
