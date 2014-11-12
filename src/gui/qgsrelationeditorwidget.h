@@ -64,6 +64,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void linkFeature();
     void deleteFeature();
     void unlinkFeature();
+    void saveEdits();
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
 
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QgsFeature mFeature;
 
     QToolButton* mToggleEditingButton;
+    QToolButton* mSaveEditsButton;
     QToolButton* mAddFeatureButton;
     QToolButton* mDeleteFeatureButton;
     QToolButton* mLinkFeatureButton;

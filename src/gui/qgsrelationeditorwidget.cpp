@@ -50,6 +50,12 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   mToggleEditingButton->setEnabled( false );
   mToggleEditingButton->setCheckable( true );
   buttonLayout->addWidget( mToggleEditingButton );
+  // save Edits
+  mSaveEditsButton = new QToolButton( this );
+  mSaveEditsButton->setIcon( QgsApplication::getThemeIcon( "/mActionSaveEdits.svg" ) );
+  mSaveEditsButton->setText( tr( "Save layer edits" ) );
+  mSaveEditsButton->setEnabled( true );
+  buttonLayout->addWidget( mSaveEditsButton );
   // add feature
   mAddFeatureButton = new QToolButton( this );
   mAddFeatureButton->setIcon( QgsApplication::getThemeIcon( "/mActionAdd.svg" ) );
@@ -111,6 +117,7 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget* parent )
   connect( this, SIGNAL( collapsedStateChanged( bool ) ), this, SLOT( onCollapsedStateChanged( bool ) ) );
   connect( mViewModeButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( setViewMode( int ) ) );
   connect( mToggleEditingButton, SIGNAL( clicked( bool ) ), this, SLOT( toggleEditing( bool ) ) );
+  connect( mSaveEditsButton, SIGNAL( clicked() ), this, SLOT( saveEdits() ) );
   connect( mAddFeatureButton, SIGNAL( clicked() ), this, SLOT( addFeature() ) );
   connect( mDeleteFeatureButton, SIGNAL( clicked() ), this, SLOT( deleteFeature() ) );
   connect( mLinkFeatureButton, SIGNAL( clicked() ), this, SLOT( linkFeature() ) );
@@ -174,6 +181,7 @@ void QgsRelationEditorWidget::referencingLayerEditingToggled()
   mDeleteFeatureButton->setEnabled( editable );
   mUnlinkFeatureButton->setEnabled( editable );
   mToggleEditingButton->setChecked( editable );
+  mSaveEditsButton->setEnabled( editable );
 }
 
 void QgsRelationEditorWidget::addFeature()
@@ -255,6 +263,11 @@ void QgsRelationEditorWidget::toggleEditing( bool state )
   {
     mEditorContext.vectorLayerTools()->stopEditing( mRelation.referencingLayer() );
   }
+}
+
+void QgsRelationEditorWidget::saveEdits()
+{
+	 mEditorContext.vectorLayerTools()->saveEdits(mRelation.referencingLayer() );
 }
 
 void QgsRelationEditorWidget::onCollapsedStateChanged( bool collapsed )
