@@ -38,7 +38,7 @@ from qgis.core import (
     QgsPalLayerSettings,
     QgsProviderRegistry,
     QgsVectorLayer,
-    QgsRenderChecker
+    QgsMultiRenderChecker
 )
 
 from utilities import (
@@ -345,23 +345,23 @@ class TestQgsPalLabeling(TestCase):
         """
         if not grpprefix:
             grpprefix = self._TestGroupPrefix
-        ctl_path = self.controlImagePath(grpprefix)
-        if not os.path.exists(ctl_path):
-            raise OSError('Missing control image: {0}'.format(ctl_path))
-        chk = QgsRenderChecker()
+        chk = QgsMultiRenderChecker()
+
         chk.setControlPathPrefix('expected_' + grpprefix)
+
         chk.setControlName(self._Test)
-        chk.setColorTolerance(colortol)
+
+        if imgpath:
+            chk.setRenderedImage(imgpath)
+
         ms = self._MapSettings  # class settings
         if self._TestMapSettings is not None:
             ms = self._TestMapSettings  # per test settings
         chk.setMapSettings(ms)
+
+        chk.setColorTolerance(colortol)
         # noinspection PyUnusedLocal
-        res = False
-        if imgpath:
-            res = chk.compareImages(self._Test, mismatch, str(imgpath))
-        else:
-            res = chk.runTest(self._Test, mismatch)
+        res = chk.runTest(self._Test, mismatch)
         if PALREPORT and not res:  # don't report ok checks
             testname = self._TestGroup + ' . ' + self._Test
             PALREPORTS[testname] = str(chk.report().toLocal8Bit())
