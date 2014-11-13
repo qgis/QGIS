@@ -275,6 +275,13 @@ IF (ENABLE_TESTS)
   add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10,1024x768x24" ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
+IF (SUPPRESS_QT_WARNINGS)
+  # Newer versions of UseQt4.cmake include Qt with -isystem automatically
+  # This can be used to force this behavior on older systems
+  # Can be removed as soon as Travis-CI updates from precise
+  INCLUDE_DIRECTORIES(SYSTEM ${QT_INCLUDE_DIR})
+ENDIF (SUPPRESS_QT_WARNINGS)
+
 INCLUDE( ${QT_USE_FILE} )
 
 # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
