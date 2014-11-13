@@ -375,7 +375,7 @@ QSizeF QgsLegendRenderer::drawTitle( QPainter* painter, QPointF point, Qt::Align
   switch ( halignment )
   {
     case Qt::AlignHCenter:
-      textBoxWidth = ( qMin( point.x(), legendWidth - point.x() ) - mSettings.boxSpace() ) * 2.0;
+      textBoxWidth = ( qMin(( double ) point.x(), legendWidth - point.x() ) - mSettings.boxSpace() ) * 2.0;
       textBoxLeft = point.x() - textBoxWidth / 2.;
       break;
     case Qt::AlignRight:

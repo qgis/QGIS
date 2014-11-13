@@ -62,7 +62,7 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
   // itemHeight here is not realy item height, it is only for symbol
   // vertical alignment purpose, i.e. ok take single line height
   // if there are more lines, thos run under the symbol
-  double itemHeight = qMax( settings.symbolSize().height(), textHeight );
+  double itemHeight = qMax(( double ) settings.symbolSize().height(), textHeight );
 
   ItemMetrics im;
   im.symbolSize = drawSymbol( settings, ctx, itemHeight );
@@ -334,8 +334,8 @@ QSizeF QgsSymbolV2LegendNode::drawSymbol( const QgsLegendSettings& settings, Ite
     p->restore();
   }
 
-  return QSizeF( qMax( width + 2 * widthOffset, settings.symbolSize().width() ),
-                 qMax( height + 2 * heightOffset, settings.symbolSize().height() ) );
+  return QSizeF( qMax( width + 2 * widthOffset, ( double ) settings.symbolSize().width() ),
+                 qMax( height + 2 * heightOffset, ( double ) settings.symbolSize().height() ) );
 }
 
 
