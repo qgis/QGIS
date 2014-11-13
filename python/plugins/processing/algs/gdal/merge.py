@@ -42,9 +42,9 @@ class merge(GdalAlgorithm):
     PCT = 'PCT'
     SEPARATE = 'SEPARATE'
     RTYPE = 'RTYPE'
-    
+
     TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
-    
+
     def defineCharacteristics(self):
         self.name = 'Merge'
         self.group = '[GDAL] Miscellaneous'
@@ -55,7 +55,7 @@ class merge(GdalAlgorithm):
         self.addParameter(ParameterBoolean(merge.SEPARATE, 'Layer stack',
                           False))
         self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
-			  self.TYPE, 5))	
+			  self.TYPE, 5))
         self.addOutput(OutputRaster(merge.OUTPUT, 'Output layer'))
 
     def processAlgorithm(self, progress):

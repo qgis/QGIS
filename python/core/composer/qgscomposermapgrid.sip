@@ -119,7 +119,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %End
 
   public:
-  
+
     /** Unit for grid values
      */
     enum GridUnit
@@ -138,7 +138,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
       Markers, /*< draw markers at intersections of grid lines */
       FrameAnnotationsOnly /*< no grid lines over the map, only draw frame and annotations */
     };
-    
+
     /** Display settings for grid annotations and frames
      */
     enum DisplayMode
@@ -500,7 +500,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setAnnotationPrecision
     */
     int annotationPrecision() const;
-    
+
     /**Sets what types of grid annotations should be drawn for a specified side of the map frame,
      * or whether grid annotations should be disabled for the side.
      * @param display display mode for annotations
@@ -728,5 +728,5 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see frameFillColor1
     */
     QColor frameFillColor2() const;
-  
+
 };

@@ -330,7 +330,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
 
     for ( int i = 0; i < layerProperty.size(); i++ )
     {
-      QgsPGLayerItem *layerItem = createLayer( layerProperty.at(i) );
+      QgsPGLayerItem *layerItem = createLayer( layerProperty.at( i ) );
       if ( layerItem )
         items.append( layerItem );
     }

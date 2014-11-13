@@ -43,10 +43,10 @@ class rasterize(GdalAlgorithm):
     DIMENSIONS = 'DIMENSIONS'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
-    WRITEOVER = 'WRITEOVER'     
+    WRITEOVER = 'WRITEOVER'
     RTYPE = 'RTYPE'
     OUTPUT = 'OUTPUT'
-    
+
     TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
 
     def commandLineName(self):
@@ -74,14 +74,14 @@ class rasterize(GdalAlgorithm):
 
     def processAlgorithm(self, progress):
         writeOver = self.getParameterValue(self.WRITEOVER)
-        
+
         arguments = []
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
 
         if not writeOver:
              arguments.append('-ot')
-             arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])  
+             arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
 	     dimType = self.getParameterValue(self.DIMENSIONS)
 	     if dimType == 0:
 		# size in pixels

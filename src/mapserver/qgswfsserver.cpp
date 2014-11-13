@@ -64,7 +64,7 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 static const QString QGS_NAMESPACE = "http://www.qgis.org/gml";
 
-QgsWFSServer::QgsWFSServer(const QString& configFilePath, QMap<QString, QString> &parameters, QgsWFSProjectParser* cp,
+QgsWFSServer::QgsWFSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWFSProjectParser* cp,
                             QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, rh ), mConfigParser( cp )
 {
 }

@@ -17,5 +17,5 @@ class QgsSpinBox : QSpinBox
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );
-    virtual void changeEvent( QEvent* event ); 
+    virtual void changeEvent( QEvent* event );
 };

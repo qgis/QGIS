@@ -56,7 +56,7 @@ class CORE_EXPORT QgsMapToPixel
      * @return QgsPoint in device coordinates
     */
     QgsPoint transform( double x, double y ) const;
-    /*! Tranform device coordinates to map (world)  coordinates
+    /*! Transform device coordinates to map (world) coordinates
     * @param x x coordinate of point to be converted to map cooordinates
     * @param y y coordinate of point to be converted to map cooordinates
     * @return QgsPoint in map coordinates
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsMapToPixel
     /*! Transform device coordinates to map (world) coordinates */
     QgsPoint toMapCoordinatesF( double x, double y ) const;
 
-    /*! Tranform device coordinates to map (world)  coordinates
+    /*! Transform device coordinates to map (world) coordinates
      * @param p Point to be converted to map cooordinates
      * @return QgsPoint in map coorndiates
      */

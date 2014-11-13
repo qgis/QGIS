@@ -1523,9 +1523,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          )
                        );
   return driverMetadata;
-}
+       }
 
-bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFileWriter::MetaData& driverMetadata )
+       bool QgsVectorFileWriter::driverMetadata( const QString& driverName, QgsVectorFileWriter::MetaData& driverMetadata )
 {
   static const QMap<QString, MetaData> sDriverMetadata = initMetaData();
 

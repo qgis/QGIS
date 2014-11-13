@@ -47,7 +47,7 @@ class QgsRequestHandler
     virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
     virtual void setServiceException( QgsMapServiceException ex ) = 0;
     virtual void setGetStyleResponse( const QDomDocument& doc ) = 0;
-    virtual void setGetPrintResponse(  QByteArray* b ) = 0;
+    virtual void setGetPrintResponse( QByteArray* b ) = 0;
     virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) = 0;
     virtual void setGetFeatureResponse( QByteArray* ba ) = 0;
     virtual void endGetFeatureResponse( QByteArray* ba ) = 0;
@@ -59,7 +59,7 @@ class QgsRequestHandler
     /**Delete all HTTP headers*/
     virtual void clearHeaders( ) = 0;
     /**Append the bytestream to response body*/
-    virtual void appendBody( const QByteArray &body) = 0;
+    virtual void appendBody( const QByteArray &body ) = 0;
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
     virtual void setInfoFormat( const QString &format ) = 0;
@@ -70,15 +70,15 @@ class QgsRequestHandler
     virtual bool exceptionRaised() const = 0;
     QMap<QString, QString> parameterMap( ) { return mParameterMap; }
     /**Set a request parameter*/
-    virtual void setParameter(const QString &key, const QString &value) = 0;
+    virtual void setParameter( const QString &key, const QString &value ) = 0;
     /**Remove a request parameter*/
-    virtual int removeParameter(const QString &key) = 0;
+    virtual int removeParameter( const QString &key ) = 0;
     /**Return a request parameter*/
-    virtual QString parameter(const QString &key) const = 0;
+    virtual QString parameter( const QString &key ) const = 0;
     QString format() const { return mFormat; }
     bool headersSent() { return mHeadersSent; }
 
-protected:
+  protected:
 
     virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;

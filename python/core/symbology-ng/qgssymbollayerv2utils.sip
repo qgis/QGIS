@@ -199,7 +199,7 @@ class QgsSymbolLayerV2Utils
      * @note added in 2.5
      */
     static QString colorToName( const QColor& color );
-    
+
     /**
      * Attempts to parse a string as a list of colors using a variety of common formats, including hex
      * codes, rgb and rgba strings.
@@ -228,7 +228,7 @@ class QgsSymbolLayerV2Utils
      * @note added in 2.5
      */
     static QColor colorFromMimeData( const QMimeData * mimeData, bool& hasAlpha );
-    
+
     /**
      * Attempts to parse mime data as a list of named colors
      * @param data mime data to parse

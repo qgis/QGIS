@@ -14,7 +14,7 @@ class QgsColorSwatchGrid: QWidget
 %End
 
 	public:
-	
+
     /**Construct a new color swatch grid.
      * @param scheme QgsColorScheme for colors to show in grid
      * @param context context string provided to color scheme
@@ -71,10 +71,10 @@ class QgsColorSwatchGrid: QWidget
      * @param color selected color
      */
     void colorChanged( const QColor color );
-	
+
     /**Emitted when mouse hovers over widget
      */
-    void hovered();	
+    void hovered();
 
   protected:
     void paintEvent( QPaintEvent * event );

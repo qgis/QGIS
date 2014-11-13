@@ -52,7 +52,7 @@ class QgsComposerObject : QObject
       EvaluatedValue = 0, /*< return the current evaluated value for the property */
       OriginalValue /*< return the original, user set value */
     };
-  
+
     /**Constructor
      * @param composition parent composition
      */

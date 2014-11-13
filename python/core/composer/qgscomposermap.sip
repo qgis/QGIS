@@ -241,7 +241,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated use grid()->setEnabled() or grids() instead
      */
     void setGridEnabled( bool enabled ) /Deprecated/;
-    
+
     /**
      * @deprecated use grid()->enabled() or grids() instead
      */
@@ -455,7 +455,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated use grid()->framePenColor() or grids() instead
     */
     QColor gridFramePenColor() const /Deprecated/;
-    
+
     /**Sets first fill color for grid zebra frame
      * @note: this function was added in version 2.1
      * @deprecated use grid()->setFrameFillColor1() or grids() instead
@@ -479,7 +479,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated use grid()->frameFillColor2() or grids() instead
     */
     QColor gridFrameFillColor2() const /Deprecated/;
-    
+
     /**Sets length of the cross segments (if grid style is cross)
      * @note this function was added in version 1.4
      * @deprecated use grid()->setCrossLength() or grids() instead
@@ -490,7 +490,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated use grid()->crossLength() or grids() instead
      */
     double crossLength() /Deprecated/;
-    
+
     /**
      * @deprecated use grid()->setLineSymbol() or grids() instead
      */
@@ -500,7 +500,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated use grid()->lineSymbol() or grids() instead
      */
     QgsLineSymbolV2* gridLineSymbol() /Deprecated/;
-    
+
     /** Returns the grid's blending mode
      * @deprecated use grid()->blendMode() or grids() instead
      */
@@ -510,7 +510,7 @@ class QgsComposerMap : QgsComposerItem
      * @deprecated use grid()->setBlendMode() or grids() instead
      */
     void setGridBlendMode( QPainter::CompositionMode blendMode ) /Deprecated/;
-    
+
     /**Returns the map item's grid stack, which is used to control how grids
      * are drawn over the map's contents.
      * @returns pointer to grid stack
@@ -525,7 +525,7 @@ class QgsComposerMap : QgsComposerItem
      * @note introduced in QGIS 2.5
      */
     QgsComposerMapGrid* grid();
-    
+
     /**Returns the map item's overview stack, which is used to control how over
      * are drawn over the map's contents.
      * @returns pointer to overview stack
@@ -543,7 +543,7 @@ class QgsComposerMap : QgsComposerItem
 
     /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
     @note this function was added in version 1.4*/
-    
+
     QRectF boundingRect() const;
     /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     @note this function was added in version 1.4*/
@@ -745,7 +745,7 @@ class QgsComposerMap : QgsComposerItem
 
     //overriden to show "Map 1" type names
     virtual QString displayName() const;
-    
+
     /**Returns extent that considers rotation and shift with mOffsetX / mOffsetY*/
     QPolygonF transformedMapPolygon() const;
 

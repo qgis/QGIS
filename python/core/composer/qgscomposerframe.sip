@@ -15,25 +15,25 @@ class QgsComposerFrame: QgsComposerItem
      * @see extent
     */
     void setContentSection( const QRectF& section );
-    
+
     /**Returns the parent multiframe for the frame.
      * @returns parent multiframe
      */
     QgsComposerMultiFrame* multiFrame() const;
-    
+
     //Overriden to allow multiframe to set display name
     virtual QString displayName() const;
-    
+
     //Overriden to handle fixed frame sizes set by multi frame
-    void setSceneRect( const QRectF& rectangle );   
-    
+    void setSceneRect( const QRectF& rectangle );
+
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
     void beginItemCommand( const QString& text );
     void endItemCommand();
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
     int type() const;
-    
+
     /**Returns the visible portion of the multi frame's content which
      * is shown in this frame.
      * @returns extent of visible portion
@@ -41,7 +41,7 @@ class QgsComposerFrame: QgsComposerItem
      * @see setContentSection
      */
     QRectF extent() const;
-    
+
     /**Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
      * @returns true if page should be hidden if frame is empty
      * @note added in QGIS 2.5
@@ -55,7 +55,7 @@ class QgsComposerFrame: QgsComposerItem
      * @see hidePageIfEmpty
      */
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
-    
+
     /**Returns whether the background and frame border should be hidden if this frame is empty
      * @returns true if background and border should be hidden if frame is empty
      * @note added in QGIS 2.5

@@ -1603,7 +1603,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     return NULL;
   }
 
-  for( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
+  for ( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
   {
     QgsExpression::Node* opRight = nodeFromOgcFilter( operandElem, errorMessage );
     if ( !opRight )
@@ -1617,7 +1617,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     expr = new QgsExpression::NodeBinaryOperator(( QgsExpression::BinaryOperator ) op, expr, opRight );
   }
 
-  if( expr == leftOp )
+  if ( expr == leftOp )
   {
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "only one operand for '%1' binary operator" ).arg( element.tagName() );

@@ -15,7 +15,7 @@ class QgsComposerMapItem : QgsComposerObject
      * @param map QgsComposerMap the item is attached to
     */
     QgsComposerMapItem( const QString& name, QgsComposerMap* map );
-    
+
     virtual ~QgsComposerMapItem();
 
     /**Draws the item on to a painter
@@ -53,7 +53,7 @@ class QgsComposerMapItem : QgsComposerObject
      * @returns unique id
     */
     QString id() const;
-    
+
     /**Sets the friendly display name for the item
      * @param name display name
      * @see name
@@ -77,7 +77,7 @@ class QgsComposerMapItem : QgsComposerObject
      * @see setEnabled
     */
     virtual bool enabled() const;
-    
+
     /**Returns true if the item is drawn using advanced effects, such as blend modes.
      * @returns true if item uses advanced effects
     */

@@ -36,7 +36,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
       HeaderCenter, /*!< align headers to center */
       HeaderRight /*!< align headers right */
     };
-    
+
     /*! Controls where headers are shown in the table
      */
     enum HeaderMode
@@ -44,8 +44,8 @@ class QgsComposerTableV2: QgsComposerMultiFrame
       FirstFrame, /*!< header shown on first frame only */
       AllFrames, /*!< headers shown on all frames */
       NoHeaders /*!< no headers shown for table */
-    };    
-    
+    };
+
     /*! Controls how empty tables are displayed
      */
     enum EmptyTableMode
@@ -53,7 +53,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
       HeadersOnly, /*!< show header rows only */
       HideTable, /*!< hides entire table if empty */
       ShowMessage /*!< shows preset message instead of table contents*/
-    };    
+    };
 
     QgsComposerTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     QgsComposerTableV2();
@@ -71,7 +71,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see setCellMargin
      */
     double cellMargin() const;
-    
+
     /**Sets the behaviour for empty tables with no content rows.
      * @param mode behaviour mode for empty tables
      * @see emptyTableBehaviour
@@ -101,9 +101,9 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see setEmptyTableMessage
      * @see emptyTableBehaviour
      */
-    QString emptyTableMessage() const; 
-    
-    /**Sets whether empty rows should be drawn. Tables default to hiding empty 
+    QString emptyTableMessage() const;
+
+    /**Sets whether empty rows should be drawn. Tables default to hiding empty
      * @param showEmpty set to true to show empty rows in the table
      * @see showEmptyRows
      */
@@ -248,7 +248,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see gridStrokeWidth
      */
     QColor gridColor() const;
-    
+
     /**Sets color used for background of table.
      * @param color table background color
      * @see backgroundColor
@@ -288,7 +288,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @note not available in python bindings
      */
     virtual bool getTableContents( QgsComposerTableContents &contents ) = 0;
-    
+
     /**Returns the current contents of the table. Excludes header cells.
      * @returns table contents
      */
@@ -304,7 +304,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
     virtual QSizeF totalSize() const;
     virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
-    
+
   public slots:
 
     /**Refreshes the contents shown in the table by querying for new data.
@@ -315,9 +315,9 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     virtual void refreshAttributes();
 
     void recalculateFrameSizes();
-    
+
   protected:
-  
+
       /**Calculates the maximum width of text shown in columns.
      */
     virtual bool calculateMaxColumnWidths();
@@ -382,12 +382,12 @@ class QgsComposerTableV2: QgsComposerMultiFrame
     /**Recalculates and updates the size of the table and all table frames.
      */
     void recalculateTableSize();
-    
+
     /**Checks whether a table contents contains a given row
      * @param contents table contents to check
      * @param row row to check for
      * @returns true if contents contains rows
      */
     bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
-    
+
 };

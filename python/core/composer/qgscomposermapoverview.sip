@@ -214,5 +214,5 @@ class QgsComposerMapOverview : QgsComposerMapItem
     /**Handles recentering of the map and redrawing of the map's overview
     */
     void overviewExtentChanged();
-  
+
 };

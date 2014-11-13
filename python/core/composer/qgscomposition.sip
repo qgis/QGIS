@@ -95,7 +95,7 @@ class QgsComposition : QGraphicsScene
      * @see setNumPages
     */
     int numPages() const;
-    
+
     /**Returns whether a page is empty, ie, it contains no items except for the background
      * paper item.
      * @param page page number, starting with 1
@@ -222,7 +222,7 @@ class QgsComposition : QGraphicsScene
      * @note Added in QGIS 2.5
     */
     int snapTolerance() const;
-	
+
     /**Sets whether selection bounding boxes should be shown in the composition
      * @param boundsVisible set to true to show selection bounding box
      * @see boundingBoxesVisible
@@ -235,7 +235,7 @@ class QgsComposition : QGraphicsScene
      * @see setBoundingBoxesVisible
      * @note added in QGIS 2.7
     */
-    bool boundingBoxesVisible() const;	
+    bool boundingBoxesVisible() const;
 
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack();
@@ -278,7 +278,7 @@ class QgsComposition : QGraphicsScene
       @note not available in python bindings
      */
     // template<class T> void composerItems( QList<T*>& itemList );
-    
+
     /**Return composer items of a specific type on a specified page
      * @param itemList list of item type to store matching items in
      * @param pageNumber page number (0 based)
@@ -421,7 +421,7 @@ class QgsComposition : QGraphicsScene
     void lockSelectedItems();
     /**Unlock all items*/
     void unlockAllItems();
-    
+
     /**Creates a new group from a list of composer items and adds it to the composition.
      * @param items items to include in group
      * @returns QgsComposerItemGroup of grouped items, if grouping was possible
@@ -631,7 +631,7 @@ class QgsComposition : QGraphicsScene
      * @param item item to set as selected
      * @note added in version 2.3*/
     void setSelectedItem( QgsComposerItem* item );
-    
+
     /**Clears any selected items in the composition. Call this method rather than
      * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
      * the composition's model to update.

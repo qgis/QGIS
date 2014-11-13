@@ -38,7 +38,7 @@ class QgsColorButtonV2: QToolButton
      * @see setColor
      */
     QColor color() const;
-	
+
     /**Sets whether alpha modification (transparency) is permitted
      * for the color. Defaults to false.
      * @param allowAlpha set to true to allow alpha modification

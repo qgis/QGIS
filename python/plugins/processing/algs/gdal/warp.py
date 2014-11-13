@@ -47,9 +47,9 @@ class warp(GdalAlgorithm):
     TR = 'TR'
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
-    
+
     TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
-    
+
     def defineCharacteristics(self):
         self.name = 'Warp (reproject)'
         self.group = '[GDAL] Projections'

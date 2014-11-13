@@ -74,7 +74,7 @@ class QgsColorScheme
      * @returns copy of color scheme
     */
     virtual QgsColorScheme* clone() const = 0 /Factory/;
-	
+
 }; // class QgsColorScheme
 
 QFlags<QgsColorScheme::SchemeFlag> operator|(QgsColorScheme::SchemeFlag f1, QFlags<QgsColorScheme::SchemeFlag> f2);
@@ -137,7 +137,7 @@ class  QgsUserColorScheme : QgsGplColorScheme
     virtual QgsColorScheme* clone() const;
 
     virtual bool isEditable() const;
-    
+
     /**Sets the name for the scheme
      * @param name new name
     */

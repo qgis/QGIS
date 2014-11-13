@@ -61,5 +61,5 @@ class QgsColorSchemeRegistry
      * @returns list of color schemes with flag set
     */
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
-	
+
 }; // class QgsColorSchemeRegistry

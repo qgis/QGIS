@@ -13,7 +13,7 @@ class QgsLayerTreeModelLegendNode : QObject
 %TypeHeaderCode
 #include <qgslayertreemodellegendnode.h>
 %End
-    
+
   public:
     ~QgsLayerTreeModelLegendNode();
 

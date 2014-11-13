@@ -155,7 +155,7 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6
-    virtual QString legendClassificationAttribute() const; 
+    virtual QString legendClassificationAttribute() const;
 
     //! creates a QgsCategorizedSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5

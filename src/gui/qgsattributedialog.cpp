@@ -58,7 +58,7 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mHighlight;
   }
 
-  if( mOwnedFeature )
+  if ( mOwnedFeature )
     delete mOwnedFeature;
 
   saveGeometry();

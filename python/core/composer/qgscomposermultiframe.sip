@@ -4,8 +4,8 @@
  * \class QgsComposerMultiFrame
  * Abstract base class for composer items with the ability to distribute the content to several frames
  * (QgsComposerFrame items).
- */ 
- 
+ */
+
 class QgsComposerMultiFrame: QgsComposerObject
 {
 %TypeHeaderCode
@@ -37,7 +37,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @returns total size required for content
      */
     virtual QSizeF totalSize() const = 0;
-    
+
     /**Returns the fixed size for a frame, if desired. If the fixed frame size changes,
      * the sizes of all frames can be recalculated by calling recalculateFrameRects().
      * @param frameIndex frame number
@@ -49,7 +49,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @see recalculateFrameRects
     */
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
-    
+
     /**Returns the minimum size for a frames, if desired. If the minimum
      * size changes, the sizes of all frames can be recalculated by calling
      * recalculateFrameRects().
@@ -61,20 +61,20 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @see recalculateFrameRects
     */
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
-    
+
     /**Renders a portion of the multiframe's content into a painter.
      * @param p destination painter
      * @param renderExtent visible extent of content to render into the painter.
      * @deprecated use render( QPainter* painter, const QRectF& renderExtent, const int frameIndex ) instead
-    */    
+    */
     virtual void render( QPainter* p, const QRectF& renderExtent ) /Deprecated/;
-    
+
     /**Renders a portion of the multiframe's content into a painter.
      * @param painter destination painter
      * @param renderExtent visible extent of content to render into the painter.
      * @param frameIndex frame number for content
      * @note added in version 2.5
-    */    
+    */
     virtual void render( QPainter* painter, const QRectF& renderExtent, const int frameIndex );
 
     /**Adds a frame to the multiframe.
@@ -100,7 +100,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @see deleteFrames
     */
     void removeFrame( int i, const bool removeEmptyPages = false );
-    
+
     /**Removes and deletes all child frames.
      * @see removeFrame
     */
@@ -111,7 +111,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @see resizeMode
     */
     void setResizeMode( ResizeMode mode );
-    
+
     /**Returns the resize mode for the multiframe.
      * @returns resize mode
      * @see setResizeMode
@@ -126,7 +126,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @see _writeXML
      */
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const = 0;
-    
+
     /**Stores state information about base multiframe object in DOM element. Implementations of writeXML
      * should call this method.
      * @param elem is DOM element
@@ -144,7 +144,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @see _readXML
      */
     virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) = 0;
-    
+
     /**Restores state information about base multiframe object from a DOM element. Implementations of readXML
      * should call this method.
      * @param itemElem is DOM element
@@ -164,7 +164,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @see setCreateUndoCommands
      */
     bool createUndoCommands() const;
-    
+
     /**Sets whether undo commands should be created for interactions with the multiframe.
      * @param enabled set to true if undo commands should be created
      * @see createUndoCommands
@@ -176,21 +176,21 @@ class QgsComposerMultiFrame: QgsComposerObject
      * @note added in QGIS 2.0, replaces nFrames
     **/
     int frameCount() const;
-    
+
     /**Returns a child frame from the multiframe.
      * @param i index of frame
      * @returns child frame if found
      * @see frameIndex
      */
     QgsComposerFrame* frame( int i );
-    
+
     /**Returns the index of a frame within the multiframe
      * @param frame frame to find index of
      * @returns index for frame if found, -1 if frame not found in multiframe
      * @note added in version 2.5
      * @see frame
      */
-    int frameIndex( QgsComposerFrame *frame ) const;    
+    int frameIndex( QgsComposerFrame *frame ) const;
 
     /**Creates a new frame and adds it to the multi frame and composition.
      * @param currentFrame an existing QgsComposerFrame from which to copy the size
@@ -243,7 +243,7 @@ class QgsComposerMultiFrame: QgsComposerObject
      * must be redrawn.
     */
     void contentsChanged();
-    
+
   protected slots:
 
     /**Called before a frame is going to be removed. Updates frame list and recalculates
@@ -253,6 +253,6 @@ class QgsComposerMultiFrame: QgsComposerObject
 
     /**Adapts to changed number of composition pages if resize type is RepeatOnEveryPage.
      */
-    void handlePageChange();  
-  
+    void handlePageChange();
+
 };

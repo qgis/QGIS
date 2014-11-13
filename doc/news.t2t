@@ -59,7 +59,7 @@ This is a minor release increment with the following new features:
 - New Composer Item tree panel
 - More control over appearance of composer arrow/line items
 - Data defined control of composer items
-- Composer images can be specifed as remote URLS
+- Composer images can be specified as remote URLS
 - Composer Table improvements (header fonts / colors, better pagination support, filter to atlas feature etc.)
 - Composer improvements
 - Improved item snapping

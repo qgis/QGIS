@@ -32,7 +32,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
   case QgsComposerItem::ComposerArrow:
     sipClass = sipClass_QgsComposerArrow;
     *sipCppRet = static_cast<QgsComposerArrow*>(sipCpp);
-    break; 
+    break;
   case QgsComposerItem::ComposerItemGroup:
     sipClass = sipClass_QgsComposerItemGroup;
     *sipCppRet = static_cast<QgsComposerItemGroup*>(sipCpp);
@@ -163,7 +163,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
 
     /** return correct graphics item type. Added in v1.7 */
     virtual int type() const;
-	
+
     /**Returns whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
      * command.
@@ -286,7 +286,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @see setFrameOutlineColor
      */
     virtual void setFrameEnabled( const bool drawFrame );
-    
+
     /**Sets frame outline color
      * @param color new color for outline frame
      * @note introduced in 2.6
@@ -590,7 +590,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @note added in version 2.5
     */
     virtual void setVisibility( const bool visible );
-    
+
     /**Returns whether the item should be excluded from composer exports and prints
      * @param valueType controls whether the returned value is the user specified vaule,
      * or the current evaluated value (which may be affected by data driven settings).
@@ -605,7 +605,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @note added in version 2.5
      * @see excludeFromExports
      */
-    virtual void setExcludeFromExports( const bool exclude );    
+    virtual void setExcludeFromExports( const bool exclude );
 
     /**Returns whether this item is part of a group
      * @returns true if item is in a group
@@ -772,7 +772,7 @@ class QgsComposerItem : QgsComposerObject, QGraphicsRectItem
      * @note added in QGIS 2.5
     */
     QRectF evalItemRect( const QRectF &newRect, const bool resizeOnly = false );
-    
+
     /**Returns whether the item should be drawn in the current context
      * @returns true if item should be drawn
      * @note added in QGIS 2.5

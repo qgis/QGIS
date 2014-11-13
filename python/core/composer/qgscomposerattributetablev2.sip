@@ -9,7 +9,7 @@ class QgsComposerAttributeTableCompareV2
   public:
 
     QgsComposerAttributeTableCompareV2();
-    
+
     bool operator()( const QgsComposerTableRow& m1, const QgsComposerTableRow& m2 );
 
     /**Sets column number to sort by
@@ -32,7 +32,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
 %End
 
   public:
-  
+
     /*! Specifies the content source for the attribute table
      */
     enum ContentSource
@@ -44,7 +44,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
 
     QgsComposerAttributeTableV2( QgsComposition* composition /TransferThis/, bool createUndoCommands );
     ~QgsComposerAttributeTableV2();
-    
+
     virtual QString displayName() const;
 
     /**Writes properties specific to attribute tables
@@ -74,14 +74,14 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setSource
      */
     ContentSource source() const;
-    
+
     /**Returns the source layer for the table, considering the table source mode. Eg,
      * if the table is set to atlas feature mode, then the source layer will be the
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.
      * @returns actual source layer
      */
-    QgsVectorLayer* sourceLayer();    
+    QgsVectorLayer* sourceLayer();
 
     /**Sets the vector layer from which to display feature attributes
      * @param layer Vector layer for attribute table
@@ -94,7 +94,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setVectorLayer
      */
     QgsVectorLayer* vectorLayer() const;
-    
+
     /**Sets the relation id from which to display child features
      * @param relationId id for relation to display child features from
      * @see relationId
@@ -109,7 +109,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see source
      * @note only used if table source is set to RelationChildren
      */
-    QString relationId() const; 
+    QString relationId() const;
 
     /**Resets the attribute table's columns to match the vector layer's fields
      * @see setVectorLayer
@@ -134,7 +134,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see displayOnlyVisibleFeatures
      */
     const QgsComposerMap* composerMap() const;
-    
+
     /**Sets the maximum number of features shown by the table. Changing this setting may result
      * in the attribute table changing its size to accommodate the new number of rows, and requires
      * the table to refetch features from its vector layer.
@@ -148,7 +148,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setMaximumNumberOfFeatures
      */
     int maximumNumberOfFeatures() const;
-    
+
     /**Sets attribute table to only show unique rows.
      * @param uniqueOnly set to true to show only unique rows. Duplicate rows
      * will be stripped from the table.
@@ -162,7 +162,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setUniqueRowsOnly
      */
     bool uniqueRowsOnly() const;
-    
+
     /**Sets attribute table to only show features which are visible in a composer map item. Changing
      * this setting forces the table to refetch features from its vector layer, and may result in
      * the table changing size to accommodate the new displayed feature attributes.
@@ -179,7 +179,7 @@ class QgsComposerAttributeTableV2 : QgsComposerTableV2
      * @see setDisplayOnlyVisibleFeatures
      */
     bool displayOnlyVisibleFeatures() const;
-    
+
     /**Sets attribute table to only show features which intersect the current atlas
      * feature.
      * @param filterToAtlas set to true to show only features which intersect

@@ -851,7 +851,7 @@ class EditorTabWidget(QTabWidget):
     def __init__(self, parent):
         QTabWidget.__init__(self, parent=None)
         self.parent = parent
-        
+
         self.settings = QSettings()
 
         self.idx = -1

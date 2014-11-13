@@ -69,11 +69,11 @@ for f in "$@"; do
                 cmd="$ASTYLE $ARTISTIC_STYLE_OPTIONS"
                 ;;
 
-        *.ui|*.qgm|*.txt|*.t2t|*.sip|resources/context_help/*)
+        *.ui|*.qgm|*.txt|*.t2t|resources/context_help/*)
                 cmd=:
                 ;;
 
-        *.py)
+        *.py|*.sip)
                 cmd="perl -i.prepare -pe 's/[\r\t ]+$//;'"
                 ;;
 

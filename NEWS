@@ -1,6 +1,6 @@
 QGIS News
 Change history for the QGIS Project
-Thursday October 23, 2014
+Thursday November 13, 2014
 
 
 ------------------------------------------------------------------------
@@ -34,8 +34,8 @@ Thursday October 23, 2014
 ------------------------------------------------------------------------
 
 
-Last Updated: Thursday October 23, 2014
-Last Change : Thursday October 23, 2014
+Last Updated: Thursday November 13, 2014
+Last Change : Thursday November 13, 2014
 
 
   1. What's new in Version 2.6.0 'Brighton'?
@@ -60,7 +60,7 @@ This is a minor release increment with the following new features:
 - New Composer Item tree panel
 - More control over appearance of composer arrow/line items
 - Data defined control of composer items
-- Composer images can be specifed as remote URLS
+- Composer images can be specified as remote URLS
 - Composer Table improvements (header fonts / colors, better pagination support, filter to atlas feature etc.)
 - Composer improvements
 - Improved item snapping

@@ -83,9 +83,9 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
         arguments.append(regionCoords[0])
         arguments.append(regionCoords[2])
         arguments.append(regionCoords[1])
-        arguments.append(regionCoords[3])        
+        arguments.append(regionCoords[3])
         #arguments.append('-spat')
-        #arguments.append(ogrclipExtent)        
+        #arguments.append(ogrclipExtent)
 
         if len(options) > 0:
             arguments.append(options)

@@ -109,7 +109,7 @@ class QgsColorDialogV2 : QDialog
      * @param color desired color
      */
     void setColor( const QColor color );
-    
+
   protected:
 
     void closeEvent( QCloseEvent* e );

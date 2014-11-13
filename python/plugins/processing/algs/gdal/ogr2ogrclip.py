@@ -56,7 +56,7 @@ class Ogr2OgrClip(OgrAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
                           [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterVector(self.CLIP_LAYER, 'Clip layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON], False))	
+                          [ParameterVector.VECTOR_TYPE_POLYGON], False))
         self.addParameter(ParameterString(self.OPTIONS, 'Creation Options',
                           '', optional=True))
 
@@ -76,7 +76,7 @@ class Ogr2OgrClip(OgrAlgorithm):
 
         arguments = []
         arguments.append('-clipsrc')
-        arguments.append(ogrClipLayer)        
+        arguments.append(ogrClipLayer)
         if len(options) > 0:
             arguments.append(options)
 

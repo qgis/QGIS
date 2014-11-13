@@ -107,7 +107,7 @@ class QgsColorSchemeList: QTreeView
 %End
 
 	public:
-	
+
     /**Construct a new color swatch grid.
      * @param parent parent widget
      * @param scheme QgsColorScheme for colors to show in the list
@@ -149,7 +149,7 @@ class QgsColorSchemeList: QTreeView
      * @param baseColor base color for color scheme
      */
     void setScheme( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor() );
-    
+
     /**Removes any selected colors from the list
      */
     void removeSelection();
@@ -169,7 +169,7 @@ class QgsColorSchemeList: QTreeView
      * @see pasteColors
      */
     void copyColors();
-    
+
   signals:
 
     /**Emitted when a color is selected from the list
@@ -184,6 +184,6 @@ class QgsColorSchemeList: QTreeView
     void mousePressEvent( QMouseEvent* event );
 
     void mouseReleaseEvent( QMouseEvent* event );
-    
+
 };
 

@@ -62,7 +62,7 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QMouseEvent * e )
     double XDistance = e->pos().x() - mStPoint.x();
     double YDistance = e->pos().y() - mStPoint.y();
     mRotation = atan2( YDistance, XDistance ) * ( 180 / PI );
-    mRotation = mRotation-mRotationOffset;
+    mRotation = mRotation - mRotationOffset;
 
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
     double offsetX = mStPoint.x() - mRubberBand->x();

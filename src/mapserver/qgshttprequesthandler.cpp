@@ -32,9 +32,9 @@
 #include <QUrl>
 #include <fcgi_stdio.h>
 
-QgsHttpRequestHandler::QgsHttpRequestHandler():
-  QgsRequestHandler()
-{  
+QgsHttpRequestHandler::QgsHttpRequestHandler()
+    : QgsRequestHandler()
+{
   mException = NULL;
   mHeadersSent = FALSE;
 }
@@ -74,7 +74,7 @@ bool QgsHttpRequestHandler::exceptionRaised() const
 
 void QgsHttpRequestHandler::setHeader( const QString &name, const QString &value )
 {
-  mHeaders.insert( name, value);
+  mHeaders.insert( name, value );
 }
 
 
@@ -88,7 +88,7 @@ int QgsHttpRequestHandler::removeHeader( const QString &name )
   return mHeaders.remove( name );
 }
 
-void QgsHttpRequestHandler::appendBody( const QByteArray &body)
+void QgsHttpRequestHandler::appendBody( const QByteArray &body )
 {
   mBody.append( body );
 }
@@ -109,28 +109,28 @@ void QgsHttpRequestHandler::sendHeaders()
   // Send default headers if they've not been set in a previous stage
   if ( mHeaders.empty() )
   {
-      QgsDebugMsg( QString( "Content size: %1" ).arg( mBody.size() ) );
-      QgsDebugMsg( QString( "Content format: %1" ).arg( mInfoFormat ) );
-      printf( "Content-Type: " );
-      printf( mInfoFormat.toLocal8Bit() );
-      printf( "\n" );
-      // size is not known when streaming
-      if ( mBody.size() > 0)
-      {
-        printf( "Content-Length: %d\n", mBody.size() );
-      }
+    QgsDebugMsg( QString( "Content size: %1" ).arg( mBody.size() ) );
+    QgsDebugMsg( QString( "Content format: %1" ).arg( mInfoFormat ) );
+    printf( "Content-Type: " );
+    printf( mInfoFormat.toLocal8Bit() );
+    printf( "\n" );
+    // size is not known when streaming
+    if ( mBody.size() > 0 )
+    {
+      printf( "Content-Length: %d\n", mBody.size() );
+    }
   }
   else
   {
-      QMap<QString, QString>::const_iterator it;
-      for ( it = mHeaders.constBegin(); it != mHeaders.constEnd(); ++it )
-      {
-          printf ( it.key().toLocal8Bit() );
-          printf ( ": " );
-          printf ( it.value().toLocal8Bit() );
-          printf ( "\n" );
-      }
+    QMap<QString, QString>::const_iterator it;
+    for ( it = mHeaders.constBegin(); it != mHeaders.constEnd(); ++it )
+    {
+      printf( it.key().toLocal8Bit() );
+      printf( ": " );
+      printf( it.value().toLocal8Bit() );
       printf( "\n" );
+    }
+    printf( "\n" );
   }
   printf( "\n" );
   mHeadersSent = TRUE;
@@ -138,19 +138,19 @@ void QgsHttpRequestHandler::sendHeaders()
 
 void QgsHttpRequestHandler::sendBody() const
 {
-  fwrite( (void*)mBody.data(), mBody.size(), 1, FCGI_stdout );
+  fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
   QgsDebugMsg( QString( "Sent %1 bytes" ).arg( mBody.size() ) );
 }
 
 void QgsHttpRequestHandler::sendResponse()
-{ 
+{
   QgsDebugMsg( QString( "Sending HTTP response" ) );
   if ( ! responseReady() )
   {
     QgsDebugMsg( QString( "Trying to send out an empty reponse" ) );
     return;
   }
-  if (! mHeadersSent )
+  if ( ! mHeadersSent )
   {
     sendHeaders();
   }
@@ -382,7 +382,7 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
   setHttpResponse( &ba, infoFormat );
 }
 
-void QgsHttpRequestHandler::setServiceException(QgsMapServiceException ex )
+void QgsHttpRequestHandler::setServiceException( QgsMapServiceException ex )
 {
   mException = &ex;
   //create Exception DOM document
@@ -604,23 +604,23 @@ QString QgsHttpRequestHandler::readPostBody() const
   return inputString;
 }
 
-void QgsHttpRequestHandler::setParameter(const QString &key, const QString &value)
+void QgsHttpRequestHandler::setParameter( const QString &key, const QString &value )
 {
-  if(! ( key.isEmpty() || value.isEmpty() ) )
+  if ( !( key.isEmpty() || value.isEmpty() ) )
   {
-      mParameterMap.insert(key, value);
+    mParameterMap.insert( key, value );
   }
 }
 
 
-QString QgsHttpRequestHandler::parameter(const QString &key) const
+QString QgsHttpRequestHandler::parameter( const QString &key ) const
 {
-  return mParameterMap.value(key);
+  return mParameterMap.value( key );
 }
 
-int QgsHttpRequestHandler::removeParameter(const QString &key)
+int QgsHttpRequestHandler::removeParameter( const QString &key )
 {
-  return mParameterMap.remove(key);
+  return mParameterMap.remove( key );
 }
 
 

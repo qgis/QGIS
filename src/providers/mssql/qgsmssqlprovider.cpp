@@ -756,7 +756,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     bool first = true;
     if ( !mDatabase.isOpen() )
     {
-       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+      mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
@@ -989,7 +989,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
 
   QSqlQuery query = QSqlQuery( mDatabase );
@@ -1140,7 +1140,7 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     if ( !mDatabase.isOpen() )
     {
-       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+      mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
@@ -1213,7 +1213,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
 
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
@@ -1248,7 +1248,7 @@ bool QgsMssqlProvider::createSpatialIndex()
 
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
@@ -1281,7 +1281,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 {
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );

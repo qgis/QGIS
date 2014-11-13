@@ -124,7 +124,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool fetching( QgsDataItem *item ) const;
 
   signals:
-    /** Emited when item children fetch was finished */
+    /** Emitted when item children fetch was finished */
     void fetchFinished( const QModelIndex & index );
 
   public slots:

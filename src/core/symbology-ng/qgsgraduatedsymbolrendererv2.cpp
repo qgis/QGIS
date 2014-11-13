@@ -378,7 +378,7 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )
   {
-    if( !it->symbol() )
+    if ( !it->symbol() )
       continue;
 
     it->symbol()->startRender( context, &fields );
@@ -399,7 +399,7 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )
   {
-    if( !it->symbol() )
+    if ( !it->symbol() )
       continue;
 
     it->symbol()->stopRender( context );
@@ -977,10 +977,10 @@ QList<double> QgsGraduatedSymbolRendererV2::getDataValues( QgsVectorLayer *vlaye
     lst = expression->referencedColumns();
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
-                                                .setFlags( ( expression && expression->needsGeometry() ) ?
-                                                             QgsFeatureRequest::NoFlags :
-                                                             QgsFeatureRequest::NoGeometry  )
-                                                .setSubsetOfAttributes( lst, vlayer->pendingFields() ) );
+                           .setFlags(( expression && expression->needsGeometry() ) ?
+                                     QgsFeatureRequest::NoFlags :
+                                     QgsFeatureRequest::NoGeometry )
+                           .setSubsetOfAttributes( lst, vlayer->pendingFields() ) );
 
   // create list of non-null attribute values
   while ( fit.nextFeature( f ) )
@@ -1015,7 +1015,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
   if ( attrNum == -1 )
   {
     values = getDataValues( vlayer );
-    if( values.isEmpty() )
+    if ( values.isEmpty() )
       return;
 
     qSort( values );
@@ -1355,7 +1355,7 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, 
     foreach ( QgsRendererRangeV2 range, mRanges )
     {
       QgsSymbolV2 *symbol = range.symbol() ? range.symbol()->clone() : 0;
-      if( symbol )
+      if ( symbol )
       {
         double colorValue;
         if ( inverted )
@@ -1373,7 +1373,7 @@ void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, 
 
 void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
 {
-  if( !sym )
+  if ( !sym )
     return;
 
   int i = 0;
@@ -1412,7 +1412,7 @@ void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scal
   mScaleMethod = scaleMethod;
   for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
   {
-    if( it->symbol() )
+    if ( it->symbol() )
       setScaleMethodToSymbol( it->symbol(), scaleMethod );
   }
 }
