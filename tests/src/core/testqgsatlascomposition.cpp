@@ -123,7 +123,9 @@ void TestQgsAtlasComposition::initTestCase()
   // the atlas map
   mAtlasMap = new QgsComposerMap( mComposition, 20, 20, 130, 130 );
   mAtlasMap->setFrameEnabled( true );
-  mComposition->addComposerMap( mAtlasMap );
+  // Make sure it doesn't try to render a map for caching onto a still 0-sized image
+  mAtlasMap->setPreviewMode( QgsComposerMap::Rectangle );
+  mComposition->addComposerMap( mAtlasMap, false );
 
   mAtlas = &mComposition->atlasComposition();
   mAtlas->setCoverageLayer( mVectorLayer );
@@ -134,7 +136,8 @@ void TestQgsAtlasComposition::initTestCase()
   mOverview = new QgsComposerMap( mComposition, 180, 20, 50, 50 );
   mOverview->setFrameEnabled( true );
   mOverview->overview()->setFrameMap( mAtlasMap->id() );
-  mComposition->addComposerMap( mOverview );
+  mOverview->setPreviewMode( QgsComposerMap::Rectangle );
+  mComposition->addComposerMap( mOverview, false );
   mOverview->setNewExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );
 
   // set the fill symbol of the overview map
@@ -159,8 +162,8 @@ void TestQgsAtlasComposition::initTestCase()
   mLabel2->setFont( QgsFontUtils::getStandardTestFont() );
   mLabel2->setSceneRect( QRectF( 150, 200, 60, 15 ) );
 
-  qWarning() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
-  qWarning() << "feature number label font: " << mLabel2->font().toString() << " exactMatch:" << mLabel2->font().exactMatch();
+  qDebug() << "header label font: " << mLabel1->font().toString() << " exactMatch:" << mLabel1->font().exactMatch();
+  qDebug() << "feature number label font: " << mLabel2->font().toString() << " exactMatch:" << mLabel2->font().exactMatch();
 
   mReport = "<h1>Composer Atlas Tests</h1>\n";
 }
