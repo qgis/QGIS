@@ -48,7 +48,7 @@ fi
 
 if [ -z "$MODIFIED" ]; then
 	echo nothing was modified
-	exit 1
+	exit 0
 fi
 
 # save original changes
