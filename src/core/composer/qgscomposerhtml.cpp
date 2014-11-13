@@ -233,7 +233,7 @@ double QgsComposerHtml::maxFrameWidth() const
   QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
   for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
   {
-    maxWidth = qMax( maxWidth, ( *frameIt )->boundingRect().width() );
+    maxWidth = qMax( maxWidth, ( double )(( *frameIt )->boundingRect().width() ) );
   }
 
   return maxWidth;
