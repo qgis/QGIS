@@ -299,6 +299,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mModel = new QgsBrowserModel( mBrowserView );
 
     connect( QgisApp::instance(), SIGNAL( newProject() ), mModel, SLOT( updateProjectHome() ) );
+    connect( mModel, SIGNAL( fetchFinished( const QModelIndex & ) ), SLOT( fetchFinished( const QModelIndex & ) ) );
 
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
@@ -309,7 +310,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setStretchLastSection( false );
 
     QSettings settings;
-    QString lastPath =  settings.value( "/" + objectName().toLower() + "/lastExpanded" ).toString();
+    mInitPath =  settings.value( lastExpandedKey() ).toString();
 
     // expand root favourites item
     for ( int i = 0; i < mModel->rowCount(); i++ )
@@ -317,18 +318,14 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
       QModelIndex index = mModel->index( i, 0 );
       QgsDataItem* item = mModel->dataItem( index );
       if ( item && item->type() == QgsDataItem::Favourites )
-        mBrowserView->expand( index );
+      {
+        QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
+        mBrowserView->expand( proxyIndex );
+      }
     }
 
     // expand last expanded path from previous session
-    QgsDebugMsg( "lastPath = " + lastPath );
-    if ( !lastPath.isEmpty() )
-    {
-      expandPath( lastPath );
-      // save again lastExpanded because QTreeView expands items from deepest and last expanded() signal
-      // is called from highest item and that is stored in settings
-      settings.setValue( "/" + objectName().toLower() + "/lastExpanded", lastPath );
-    }
+    expandPath( mInitPath );
   }
 
   QDockWidget::showEvent( e );
@@ -703,23 +700,73 @@ void QgsBrowserDockWidget::itemExpanded( const QModelIndex& index )
   if ( !item )
     return;
 
-  settings.setValue( "/" + objectName().toLower() + "/lastExpanded", item->path() );
+  settings.setValue( lastExpandedKey(), item->path() );
   QgsDebugMsg( "last expanded: " + item->path() );
 }
 
 void QgsBrowserDockWidget::expandPath( QString path )
 {
-  return; // debug
   QgsDebugMsg( "path = " + path );
+
+  if ( path.isEmpty() )
+    return;
 
   if ( !mModel || !mProxyModel )
     return;
+
   QModelIndex srcIndex = mModel->findPath( path, Qt::MatchStartsWith );
   QModelIndex index = mProxyModel->mapFromSource( srcIndex );
   QgsDebugMsg( QString( "srcIndex.isValid() = %1 index.isValid() = %2" ).arg( srcIndex.isValid() ).arg( index.isValid() ) );
-  if ( index.isValid() )
+
+  if ( !index.isValid() )
+    return;
+
+  QgsDataItem *item = mModel->dataItem( srcIndex );
+  if ( !item )
+    return;
+
+  if ( item->isPopulated() ) // may be already populated if children were added with grandchildren
   {
     mBrowserView->expand( index );
-    mBrowserView->scrollTo( index, QAbstractItemView::PositionAtTop );
   }
+  else
+  {
+    mModel->fetchMore( srcIndex ); // -> fetch in thread -> fetchFinished
+  }
+  mBrowserView->scrollTo( index, QAbstractItemView::PositionAtTop );
+}
+
+void QgsBrowserDockWidget::fetchFinished( const QModelIndex & index )
+{
+  Q_UNUSED( index );
+  QgsDebugMsg( "Entered" );
+  QSettings settings;
+
+  // Continue expanding mInitPath if user has not expanded another item
+  if ( mInitPath.isEmpty() )
+    return;
+
+  QString lastExpanded =  settings.value( lastExpandedKey() ).toString();
+
+  if ( !mInitPath.startsWith( lastExpanded ) )
+  {
+    // User expanded another -> stop mInitPath expansion
+    QgsDebugMsg( "Stop init path expansion" );
+    mInitPath.clear();
+    return;
+  }
+
+  // Expand fetched children in init path
+  QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
+  if ( index.isValid() )
+  {
+    mBrowserView->expand( proxyIndex );
+  }
+
+  expandPath( mInitPath );
+}
+
+QString QgsBrowserDockWidget::lastExpandedKey() const
+{
+  return "/" + objectName().toLower() + "/lastExpanded";
 }

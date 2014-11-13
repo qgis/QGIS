@@ -108,7 +108,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     // Refresh item childs
     void refresh( const QModelIndex &index = QModelIndex() );
 
-    /** Return index of item with given path.
+    /** Return index of item with given path. It only searches in currently fetched
+     * items, i.e. it does not fetch children.
      * @param path item path
      * @param matchFlag supported is Qt::MatchExactly and Qt::MatchStartsWith which has reverse meaning, i.e. find
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
@@ -121,6 +122,10 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void fetchMore( const QModelIndex & parent );
     static QVector<QgsDataItem*> createChildren( QgsDataItem *item );
     bool fetching( QgsDataItem *item ) const;
+
+  signals:
+    /** Emited when item children fetch was finished */
+    void fetchFinished( const QModelIndex & index );
 
   public slots:
     // Reload the whole model

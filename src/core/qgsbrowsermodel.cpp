@@ -329,11 +329,6 @@ QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
       // paths are slash separated identifier
       if ( path.startsWith( item->path() + "/" ) )
       {
-        // We have found a preceding item: stop searching on this level and go deeper.
-        // Currently some providers (e.g. Postgres) are using multithread in
-        // QgsDataItem::createChildren(), i.e. we cannot get to children here as they
-        // are not yet created by separate thread
-        item->populate();
         foundChild = true;
         theIndex = idx;
         break;
@@ -564,6 +559,7 @@ void QgsBrowserModel::childrenCreated( QgsDataItem* item, QVector <QgsDataItem*>
     return;
   item->populate( children );
   emit dataChanged( index, index );
+  emit fetchFinished( index );
 }
 
 void QgsBrowserModel::refreshChildrenCreated( QgsDataItem* item, QVector <QgsDataItem*> children )
@@ -594,6 +590,7 @@ void QgsBrowserModel::loadingFrameChanged()
   {
     if ( watcher->isFinished() )
     {
+      delete watcher;
       mWatchers.removeOne( watcher );
       continue;
     }

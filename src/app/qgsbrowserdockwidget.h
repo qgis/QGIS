@@ -31,6 +31,8 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
   public:
     explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
     void addFavouriteDirectory( QString favDir );
+
+    /* Expand next not expanded item in path */
     void expandPath( QString path );
 
   public slots:
@@ -55,6 +57,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void toggleFastScan();
 
     void itemExpanded( const QModelIndex& index );
+    void fetchFinished( const QModelIndex & index );
 
   protected:
     void refreshModel( const QModelIndex& index );
@@ -63,9 +66,12 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
 
     void addLayer( QgsLayerItem *layerItem );
 
+    QString lastExpandedKey() const;
+
     QgsBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
     QgsBrowserTreeFilterProxyModel* mProxyModel;
+    QString mInitPath;
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H
