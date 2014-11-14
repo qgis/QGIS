@@ -20,12 +20,14 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
 
-class QgsCompositionChecker(QgsRenderChecker):
+class QgsCompositionChecker(QgsMultiRenderChecker):
     def __init__(self,  mTestName, mComposition ):
-        self.mExpectedImageFile = ""
+        super(QgsCompositionChecker, self).__init__()
         self.mComposition = mComposition
         self.mTestName = mTestName
-        super(QgsCompositionChecker, self).__init__()
+        self.mDotsPerMeter = 96 / 25.4 * 1000
+        self.mSize = QSize( 1122, 794 )
+        self.setColorTolerance( 1 )
 
     def testComposition(self, page=0, pixelDiff=0 ):
         if ( self.mComposition == None):
@@ -34,17 +36,14 @@ class QgsCompositionChecker(QgsRenderChecker):
 
         #load expected image
         self.setControlName("expected_"+self.mTestName);
-        expectedImage = QImage( self.expectedImageFile() )
 
          #get width/height, create image and render the composition to it
-        width = expectedImage.width();
-        height = expectedImage.height();
-        outputImage = QImage( QSize( width, height ), QImage.Format_RGB32 )
+        outputImage = QImage( self.mSize, QImage.Format_RGB32 )
 
         self.mComposition.setPlotStyle( QgsComposition.Print )
-        outputImage.setDotsPerMeterX( expectedImage.dotsPerMeterX() )
-        outputImage.setDotsPerMeterY( expectedImage.dotsPerMeterX() )
-        self.drawBackround( outputImage )
+        outputImage.setDotsPerMeterX( self.mDotsPerMeter )
+        outputImage.setDotsPerMeterY( self.mDotsPerMeter )
+        QgsMultiRenderChecker.drawBackround( outputImage )
         p = QPainter( outputImage )
         self.mComposition.renderPage( p, page )
         p.end()
@@ -52,27 +51,9 @@ class QgsCompositionChecker(QgsRenderChecker):
         renderedFilePath = QDir.tempPath() + QDir.separator() + QFileInfo(self.mTestName).baseName() + "_rendered.png"
         outputImage.save( renderedFilePath, "PNG" )
 
-        diffFilePath = QDir.tempPath() + QDir.separator() + QFileInfo(self.mTestName).baseName() + "_result_diff.png"
-        testResult = self.compareImages( self.mTestName, pixelDiff, renderedFilePath )
+        self.setRenderedImage( renderedFilePath )
 
-        myDashMessage = (('<DartMeasurementFile name="Rendered Image '
-                         '%s" type="image/png">'
-                         '%s</DartMeasurementFile>'
-                         '<DartMeasurementFile name="Expected Image '
-                         '%s" type="image/png">'
-                         '%s</DartMeasurementFile>\n'
-                         '<DartMeasurementFile name="Difference Image '
-                         '%s" type="image/png">'
-                         '%s</DartMeasurementFile>') %
-                         (self.mTestName, renderedFilePath, self.mTestName,
-                          self.expectedImageFile(), self.mTestName, diffFilePath )
-                         )
-        qDebug( myDashMessage )
-        if not testResult:
-            myMessage = ('Expected: %s\nGot: %s\nDifference: %s\n' %
-                         (self.expectedImageFile(), renderedFilePath, diffFilePath))
-        else:
-            myMessage = 'Control and test images matched.'
+        testResult = self.runTest( self.mTestName, pixelDiff )
 
-        return testResult, myMessage
+        return testResult, self.report()
 

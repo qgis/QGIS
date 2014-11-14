@@ -127,7 +127,12 @@ class CORE_EXPORT QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
-    QString expectedImageFile() { return mExpectedImageFile; };
+    QString expectedImageFile() { return mExpectedImageFile; }
+
+    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+     * without requiring a transparent background for the image
+     */
+    static void drawBackround( QImage* image );
 
   protected:
     QString mReport;
@@ -135,11 +140,6 @@ class CORE_EXPORT QgsRenderChecker
     int mElapsedTime;
     QString mRenderedImageFile;
     QString mExpectedImageFile;
-
-    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
-     * without requiring a transparent background for the image
-     */
-    void drawBackround( QImage* image );
 
   private:
     QString mControlName;

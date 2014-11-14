@@ -40,27 +40,6 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
-void QgsCompositionChecker::drawBackround( QImage* image )
-{
-  // create a 2x2 checker-board image
-  uchar pixDataRGB[] = { 255, 255, 255, 255,
-                         127, 127, 127, 255,
-                         127, 127, 127, 255,
-                         255, 255, 255, 255
-                       };
-
-  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
-  QPixmap pix = QPixmap::fromImage( img.scaled( 20, 20 ) );
-
-  // fill image with texture
-  QBrush brush;
-  brush.setTexture( pix );
-  QPainter p( image );
-  p.setRenderHint( QPainter::Antialiasing, false );
-  p.fillRect( QRect( 0, 0, image->width(), image->height() ), brush );
-  p.end();
-}
-
 bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
 {
   if ( !mComposition )

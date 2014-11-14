@@ -87,5 +87,9 @@ class QgsMultiRenderChecker
      */
     const QString controlImagePath() const;
 
+    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+     * without requiring a transparent background for the image
+     */
+    static void drawBackround( QImage* image );
 };
 
