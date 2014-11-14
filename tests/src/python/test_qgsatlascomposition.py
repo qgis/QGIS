@@ -161,9 +161,9 @@ class TestQgsAtlasComposition(unittest.TestCase):
         self.mAtlasMap.setAtlasDriven( False )
 
     def fixedscale_render_test( self ):
-        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) )
         self.mAtlasMap.setAtlasDriven( True )
         self.mAtlasMap.setAtlasScalingMode( QgsComposerMap.Fixed )
+        self.mAtlasMap.setNewExtent( QgsRectangle( 209838.166, 6528781.020, 610491.166, 6920530.620 ) )
 
         self.mAtlas.beginRender()
 

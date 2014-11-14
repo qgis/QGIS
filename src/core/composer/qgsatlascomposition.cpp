@@ -514,7 +514,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   double ya1 = mTransformedFeatureBounds.yMinimum();
   double ya2 = mTransformedFeatureBounds.yMaximum();
   QgsRectangle newExtent = mTransformedFeatureBounds;
-  QgsRectangle mOrigExtent = map->extent();
+  QgsRectangle mOrigExtent( map->extent() );
 
   //sanity check - only allow fixed scale mode for point layers
   bool isPointLayer = false;

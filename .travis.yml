@@ -14,4 +14,4 @@ before_script:
   - cmake -DWITH_MAPSERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF -DSUPPRESS_QT_WARNINGS=ON ..
   - make -j2
 
-script: xvfb-run ctest -j2 --output-on-failure -E PyQgsPalLabelingCanvas -D Experimental
+script: xvfb-run ctest -j2 --output-on-failure -E 'PyQgsPalLabelingCanvas|qgis_atlascompositiontest|PyQgsAtlasComposition' -D Experimental
