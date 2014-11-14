@@ -171,8 +171,8 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
       QPixmap pix;
       if ( mItem.symbol() )
       {
-        double scale, mupp;
-        int dpi;
+        double scale, mupp = 0;
+        int dpi = 0;
         if ( model() )
           model()->legendMapViewData( &mupp, &dpi, &scale );
         bool validData = mupp != 0 && dpi != 0 && scale != 0;
