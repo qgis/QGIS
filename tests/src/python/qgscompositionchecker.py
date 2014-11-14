@@ -39,12 +39,12 @@ class QgsCompositionChecker(QgsRenderChecker):
          #get width/height, create image and render the composition to it
         width = expectedImage.width();
         height = expectedImage.height();
-        outputImage = QImage( QSize( width, height ), QImage.Format_ARGB32 )
+        outputImage = QImage( QSize( width, height ), QImage.Format_RGB32 )
 
         self.mComposition.setPlotStyle( QgsComposition.Print )
         outputImage.setDotsPerMeterX( expectedImage.dotsPerMeterX() )
         outputImage.setDotsPerMeterY( expectedImage.dotsPerMeterX() )
-        outputImage.fill( 0 )
+        self.drawBackround( outputImage )
         p = QPainter( outputImage )
         self.mComposition.renderPage( p, page )
         p.end()

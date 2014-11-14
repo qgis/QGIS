@@ -73,7 +73,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
 #if 0
   //fake mode to generate expected image
   //assume 96 dpi and size of the control image 1122 * 794
-  QImage newImage( QSize( 1122, 794 ), QImage::Format_ARGB32 );
+  QImage newImage( QSize( 1122, 794 ), QImage::Format_RGB32 );
   mComposition->setPlotStyle( QgsComposition::Print );
   newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
   newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
@@ -87,7 +87,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
   return true;
 #endif //0
 
-  QImage outputImage( mSize, QImage::Format_ARGB32 );
+  QImage outputImage( mSize, QImage::Format_RGB32 );
 
   mComposition->setPlotStyle( QgsComposition::Print );
   outputImage.setDotsPerMeterX( mDotsPerMeter );

@@ -34,11 +34,6 @@ class QgsCompositionChecker : public QgsMultiRenderChecker
   private:
     QgsCompositionChecker(); //forbidden
 
-    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
-     * without requiring a transparent background for the image
-     */
-    void drawBackround( QImage* image );
-
     QString mTestName;
     QgsComposition* mComposition;
     QSize mSize;

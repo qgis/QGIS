@@ -136,6 +136,11 @@ class CORE_EXPORT QgsRenderChecker
     QString mRenderedImageFile;
     QString mExpectedImageFile;
 
+    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+     * without requiring a transparent background for the image
+     */
+    void drawBackround( QImage* image );
+
   private:
     QString mControlName;
     unsigned int mMismatchCount;
