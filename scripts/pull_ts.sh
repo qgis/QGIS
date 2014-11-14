@@ -54,8 +54,13 @@ cleanup() {
 PATH=$QTDIR/bin:$PATH
 
 if ! type tx >/dev/null 2>&1; then
-      echo "tx not found"
-      exit 1
+	echo "tx not found"
+	exit 1
+fi
+
+if ! type lrelease >/dev/null 2>&1; then
+	echo "lrelease not found"
+	exit 1
 fi
 
 trap cleanup EXIT
