@@ -65,28 +65,27 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
   return res;
 }
 
-bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer) const
+bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
 {
   bool res = true;
 
   if ( layer->isModified() )
   {
-		if ( !layer->commitChanges() )
-		{
-		  commitError( layer );
-		  // Leave the in-memory editing state alone,
-		  // to give the user a chance to enter different values
-		  // and try the commit again later
-		  res = false;
-		}
-    layer->triggerRepaint();
-		layer->startEditing();
+    if ( !layer->commitChanges() )
+    {
+      commitError( layer );
+      // Leave the in-memory editing state alone,
+      // to give the user a chance to enter different values
+      // and try the commit again later
+      res = false;
+    }
+    layer->startEditing();
   }
   else //layer not modified
-	{
-	  res = true;
-	  layer->triggerRepaint();
-	}
+  {
+    res = true;
+    layer->triggerRepaint();
+  }
   return res;
 }
 
