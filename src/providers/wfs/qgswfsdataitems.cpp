@@ -29,7 +29,7 @@ QgsWFSLayerItem::QgsWFSLayerItem( QgsDataItem* parent, QString name, QgsDataSour
 {
   mUri = QgsWFSCapabilities( uri.encodedUri() ).uriGetFeature( featureType, crsString );
   mPopulated = true;
-  mIconName = "mIconWfs.svg";
+  mIconName = "mIconConnect.png";
 }
 
 QgsWFSLayerItem::~QgsWFSLayerItem()
@@ -155,7 +155,6 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
     QgsOWSConnection connection( "WFS", connName );
     QString path = "wfs:/" + connName;
     QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, path, connection.uri().encodedUri() );
-    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
   }
   return connections;

@@ -235,8 +235,6 @@ QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
   {
     QgsOWSConnection connection( "WCS", connName );
     QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName, connection.uri().encodedUri() );
-
-    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
   }
   return connections;

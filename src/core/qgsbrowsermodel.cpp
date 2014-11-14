@@ -535,7 +535,10 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
 QVector<QgsDataItem*> QgsBrowserModel::createChildren( QgsDataItem* item )
 {
   QgsDebugMsg( "Entered" );
+  QTime time;
+  time.start();
   QVector <QgsDataItem*> children = item->createChildren();
+  QgsDebugMsg( QString( "Children created in %1 ms" ).arg( time.elapsed() ) );
   // Children objects must be pushed to main thread.
   foreach ( QgsDataItem* child, children )
   {

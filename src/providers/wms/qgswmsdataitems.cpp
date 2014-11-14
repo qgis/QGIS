@@ -32,7 +32,7 @@ QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, Q
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
 {
-  mIconName = "mIconWms.svg";
+  mIconName = "mIconConnect.png";
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
@@ -374,7 +374,6 @@ QVector<QgsDataItem*> QgsWMSRootItem::createChildren()
     QgsWMSConnection connection( connName );
     QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, mPath + "/" + connName, connection.uri().encodedUri() );
 
-    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
   }
   return connections;
