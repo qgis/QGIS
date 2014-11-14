@@ -29,10 +29,15 @@ class QgsCompositionChecker : public QgsMultiRenderChecker
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
     ~QgsCompositionChecker();
 
-    bool testComposition( QString &report, int page = 0, int pixelDiff = 0 );
+    bool testComposition( QString &theReport, int page = 0, int pixelDiff = 0 );
 
   private:
     QgsCompositionChecker(); //forbidden
+
+    /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
+     * without requiring a transparent background for the image
+     */
+    void drawBackround( QImage* image );
 
     QString mTestName;
     QgsComposition* mComposition;

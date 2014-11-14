@@ -40,6 +40,27 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
+void QgsCompositionChecker::drawBackround( QImage* image )
+{
+  // create a 2x2 checker-board image
+  uchar pixDataRGB[] = { 255, 255, 255, 255,
+                         127, 127, 127, 255,
+                         127, 127, 127, 255,
+                         255, 255, 255, 255
+                       };
+
+  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  QPixmap pix = QPixmap::fromImage( img.scaled( 20, 20 ) );
+
+  // fill image with texture
+  QBrush brush;
+  brush.setTexture( pix );
+  QPainter p( image );
+  p.setRenderHint( QPainter::Antialiasing, false );
+  p.fillRect( QRect( 0, 0, image->width(), image->height() ), brush );
+  p.end();
+}
+
 bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
 {
   if ( !mComposition )
@@ -56,7 +77,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
   mComposition->setPlotStyle( QgsComposition::Print );
   newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
   newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
-  newImage.fill( 0 );
+  drawBackround( &newImage );
   QPainter expectedPainter( &newImage );
   //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
   //QRectF targetArea( 0, 0, 3507, 2480 );
@@ -71,7 +92,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
   mComposition->setPlotStyle( QgsComposition::Print );
   outputImage.setDotsPerMeterX( mDotsPerMeter );
   outputImage.setDotsPerMeterY( mDotsPerMeter );
-  outputImage.fill( 0 );
+  drawBackround( &outputImage );
   QPainter p( &outputImage );
   mComposition->renderPage( &p, page );
   p.end();

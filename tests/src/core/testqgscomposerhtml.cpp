@@ -95,7 +95,7 @@ void TestQgsComposerHtml::sourceMode()
   htmlItem->loadHtml();
 
   QgsCompositionChecker checker( "composerhtml_manual", mComposition );
-  bool result = checker.testComposition( mReport );
+  bool result = checker.testComposition( mReport, 0, 100 );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
   QVERIFY( result );
@@ -116,7 +116,7 @@ void TestQgsComposerHtml::userStylesheets()
   htmlItem->setUserStylesheetEnabled( true );
 
   QgsCompositionChecker checker( "composerhtml_userstylesheet", mComposition );
-  bool result = checker.testComposition( mReport );
+  bool result = checker.testComposition( mReport, 0, 100 );
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;
   QVERIFY( result );
