@@ -49,11 +49,14 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
     subDirs << "";
   }
 
+  QVector<QgsDartMeasurement> dartMeasurements;
+
   Q_FOREACH( const QString& suffix, subDirs )
   {
     qDebug() << "Checking subdir " << suffix;
     bool result;
     QgsRenderChecker checker;
+    checker.enableDashBuffering( true );
     checker.setColorTolerance( mColorTolerance );
     checker.setControlPathPrefix( mControlPathPrefix );
     checker.setControlPathSuffix( suffix );
@@ -71,14 +74,22 @@ bool QgsMultiRenderChecker::runTest( const QString& theTestName, unsigned int th
       mRenderedImage = checker.renderedImage();
     }
 
-    qDebug() << " * Subdir check " << suffix << ": " << result;
     successful |= result;
+
+    dartMeasurements << checker.dartMeasurements();
 
     mReport += checker.report();
   }
 
   if ( !successful )
-    qDebug() << "No matching image found. If you think that this result should be considered ok, please copy it into a new subdirectory inside " << baseDir;
+  {
+    Q_FOREACH( const QgsDartMeasurement& measurement, dartMeasurements )
+    measurement.send();
+
+    QgsDartMeasurement msg( "Image not accepted by test", QgsDartMeasurement::Text, "This may be caused because the test is supposed to fail or rendering inconsistencies."
+                            "If this is a rendering inconsistency, please add another control image folder, add an anomaly image or increase the color tolerance." );
+    msg.send();
+  }
 
   return successful;
 }

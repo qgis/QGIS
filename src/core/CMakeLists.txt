@@ -69,6 +69,7 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscredentials.cpp
+  qgsdartmeasurement.cpp
   qgscrscache.cpp
   qgsdatadefined.cpp
   qgsdatasourceuri.cpp
@@ -470,6 +471,7 @@ SET(QGIS_CORE_HDRS
   qgscredentials.h
   qgscrscache.h
   qgscsexception.h
+  qgsdartmeasurement.h
   qgsdatadefined.h
   qgsdatasourceuri.h
   qgsdataitem.h

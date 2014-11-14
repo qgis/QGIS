@@ -25,6 +25,7 @@
 #include <qgsmaprenderer.h>
 #include <qgslogger.h>
 #include <qgsmapsettings.h>
+#include "qgsdartmeasurement.h"
 
 class QImage;
 
@@ -127,12 +128,34 @@ class CORE_EXPORT QgsRenderChecker
     */
     bool isKnownAnomaly( QString theDiffImageFile );
 
-    QString expectedImageFile() { return mExpectedImageFile; }
-
     /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
     static void drawBackround( QImage* image );
+
+    /**
+     * Returns the path to the expected image file
+     *
+     * @return Path to the expected image file
+     */
+    const QString& expectedImageFile() const { return mExpectedImageFile; }
+
+    /**
+     * Call this to enable internal buffering of dash messages. You may later call
+     * dashMessages() to get access to the buffered messages. If disabled (default)
+     * dash messages will be sent immediately.
+     *
+     * @param enable Enable or disable buffering
+     */
+    void enableDashBuffering( bool enable ) { mBufferDashMessages = enable; }
+
+    /**
+     * Get access to buffered dash messages.
+     * Only will return something if you call enableDashBuffering( true ); before.
+     *
+     * @return buffered dash messages
+     */
+    const QVector<QgsDartMeasurement>& dartMeasurements() const { return mDashMessages; }
 
   protected:
     QString mReport;
@@ -142,6 +165,9 @@ class CORE_EXPORT QgsRenderChecker
     QString mExpectedImageFile;
 
   private:
+    void emitDashMessage( const QgsDartMeasurement& dashMessage );
+    void emitDashMessage( const QString& name, QgsDartMeasurement::Type type, const QString& value );
+
     QString mControlName;
     unsigned int mMismatchCount;
     unsigned int mColorTolerance;
@@ -149,7 +175,8 @@ class CORE_EXPORT QgsRenderChecker
     QgsMapSettings mMapSettings;
     QString mControlPathPrefix;
     QString mControlPathSuffix;
-
+    QVector<QgsDartMeasurement> mDashMessages;
+    bool mBufferDashMessages;
 }; // class QgsRenderChecker
 
 
