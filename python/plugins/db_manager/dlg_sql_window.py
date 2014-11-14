@@ -305,3 +305,4 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
     api.prepare()
     self.editSql.lexer().setAPIs(api)
+    self.editSql.setAutoCompletionCaseSensitivity(False)
