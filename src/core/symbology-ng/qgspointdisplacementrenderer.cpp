@@ -196,11 +196,79 @@ void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r 
   mRenderer = r;
 }
 
+QList<QString> QgsPointDisplacementRenderer::usedAttributes()
+{
+  QList<QString> attributeList;
+  if ( !mLabelAttributeName.isEmpty() )
+  {
+    attributeList.push_back( mLabelAttributeName );
+  }
+  if ( mRenderer )
+  {
+    attributeList += mRenderer->usedAttributes();
+  }
+  return attributeList;
+}
+
+int QgsPointDisplacementRenderer::capabilities()
+{
+  if ( !mRenderer )
+  {
+    return 0;
+  }
+  return mRenderer->capabilities();
+}
+
+QgsSymbolV2List QgsPointDisplacementRenderer::symbols()
+{
+  if ( !mRenderer )
+  {
+    return QgsSymbolV2List();
+  }
+  return mRenderer->symbols();
+}
+
 QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature )
 {
-  Q_UNUSED( feature );
-  return 0; //not used any more
+  if ( !mRenderer )
+  {
+    return 0;
+  }
+  return mRenderer->symbolForFeature( feature );
 }
+
+QgsSymbolV2* QgsPointDisplacementRenderer::originalSymbolForFeature( QgsFeature& feat )
+{
+  if ( !mRenderer )
+    return 0;
+  return mRenderer->originalSymbolForFeature( feat );
+}
+
+QgsSymbolV2List QgsPointDisplacementRenderer::symbolsForFeature( QgsFeature& feature )
+{
+  if ( !mRenderer )
+  {
+    return QgsSymbolV2List();
+  }
+  return mRenderer->symbolsForFeature( feature );
+}
+
+QgsSymbolV2List QgsPointDisplacementRenderer::originalSymbolsForFeature( QgsFeature& feat )
+{
+  if ( !mRenderer )
+    return QgsSymbolV2List();
+  return mRenderer->originalSymbolsForFeature( feat );
+}
+
+bool QgsPointDisplacementRenderer::willRenderFeature( QgsFeature& feat )
+{
+  if ( !mRenderer )
+  {
+    return false;
+  }
+  return mRenderer->willRenderFeature( feat );
+}
+
 
 void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const QgsFields& fields )
 {
@@ -254,32 +322,6 @@ void QgsPointDisplacementRenderer::stopRender( QgsRenderContext& context )
   if ( mCenterSymbol )
   {
     mCenterSymbol->stopRender( context );
-  }
-}
-
-QList<QString> QgsPointDisplacementRenderer::usedAttributes()
-{
-  QList<QString> attributeList;
-  if ( !mLabelAttributeName.isEmpty() )
-  {
-    attributeList.push_back( mLabelAttributeName );
-  }
-  if ( mRenderer )
-  {
-    attributeList += mRenderer->usedAttributes();
-  }
-  return attributeList;
-}
-
-QgsSymbolV2List QgsPointDisplacementRenderer::symbols()
-{
-  if ( mRenderer )
-  {
-    return mRenderer->symbols();
-  }
-  else
-  {
-    return QgsSymbolV2List();
   }
 }
 
