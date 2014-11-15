@@ -415,6 +415,14 @@ class ParameterRange(Parameter):
         self.default = default
         self.value = None
 
+        values = default.split(',')
+        try:
+            minVal = int(values[0])
+            maxVal = int(values[1])
+            self.isInteger = True
+        except:
+            self.isInteger = False
+
     def setValue(self, text):
         if text is None:
             self.value = self.default

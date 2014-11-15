@@ -36,9 +36,22 @@ class RangePanel(QWidget, Ui_Form):
         QWidget.__init__(self)
         self.setupUi(self)
 
+        self.isInteger = param.isInteger
+        if self.isInteger:
+            self.spnMin.setDecimals(0)
+            self.spnMax.setDecimals(0)
+
         values = param.default.split(',')
-        self.spnMin.setValue(float(values[0]))
-        self.spnMax.setValue(float(values[1]))
+        minVal = float(values[0])
+        maxVal = float(values[1])
+        self.spnMin.setValue(minVal)
+        self.spnMax.setValue(maxVal)
+
+        self.spnMin.setMaximum(maxVal)
+        self.spnMin.setMinimum(minVal)
+
+        self.spnMax.setMaximum(maxVal)
+        self.spnMax.setMinimum(minVal)
 
     def getValue(self):
         return '{},{}'.format(self.spnMin.value(), self.spnMax.value())
