@@ -69,6 +69,7 @@ class QgsRequestHandler
     virtual void appendBody( const QByteArray &body ) = 0;
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
+    /**Return the response body*/
     virtual QByteArray* body( ) { return &mBody; }
     virtual void setInfoFormat( const QString &format ) = 0;
     /**Check if the response headers or the response body are not empty*/
@@ -84,7 +85,6 @@ class QgsRequestHandler
     virtual int removeParameter( const QString &key ) = 0;
     /**Return a request parameter*/
     virtual QString parameter( const QString &key ) const = 0;
-    /**Return the response body*/
     /**Return the requested format string*/
     QString format() const { return mFormat; }
     /**Return the mime type for the response*/
