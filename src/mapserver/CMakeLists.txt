@@ -161,13 +161,18 @@ ENDIF (WITH_INTERNAL_SPATIALITE)
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   qgis_core
   qgis_analysis
-  qgispython
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
 )
 
+IF (WITH_SERVER_PLUGINS)
+TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
+  qgispython
+)
+
+ENDIF (WITH_SERVER_PLUGINS)
 
 ########################################################
 # Install
