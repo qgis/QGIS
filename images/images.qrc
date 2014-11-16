@@ -461,8 +461,6 @@
         <file>flags/sq.png</file>
         <file>flags/nb.png</file>
         <file>flags/sr.png</file>
-        <file>flags/sr_Cyrl.png</file>
-        <file>flags/sr_Latn.png</file>
         <file>flags/te.png</file>
         <file>flags/tl.png</file>
         <file>themes/default/mActionZoomToArea.svg</file>
@@ -470,6 +468,7 @@
         <file>themes/default/mActionHighlightFeature.svg</file>
         <file>themes/default/mActionScaleHighlightFeature.svg</file>
         <file>themes/default/mActionPanHighlightFeature.svg</file>
+        <file>flags/sr@latin.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

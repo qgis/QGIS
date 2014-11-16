@@ -77,8 +77,8 @@ my $translators= {
 	sk => 'Lubos Balazovic, Jana Kormanikova, Ivan Mincik',
 	sl => 'Jože Detečnik, Dejan Gregor, Jaka Kranjc',
 	sq => '',
-	sr_Latn => 'Goran Ivanković',
-	sr_Cyrl => 'Goran Ivanković',
+	'sr@latin' => 'Goran Ivanković',
+	sr => 'Goran Ivanković',
 	sv => 'Lars Luthman, Magnus Homann, Victor Axbom',
 	sw => '',
 	ta => '',
@@ -102,14 +102,10 @@ for my $i (<i18n/qgis_*.ts>) {
 
 	my $charset = "";
 	my $lc = $langcode;
-	if( $langcode =~ /(.*)_Latn/ ) {
+	if( $langcode =~ /(.*)\@latin/ ) {
 		$charset = " (latin)";
 		$langcode = $1;
-	} elsif( $langcode =~ /(.*)_Cyrl/ ) {
-		$charset = " (cyrillic)";
-		$langcode = $1;
 	}
-
 	my $name;
 	if($langcode =~ /(.*)_(.*)/) {
 		my $lang = code2language(lc $1);
