@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgscapabilitiescache.sip
+                       qgscapabilitiescache.sip
 
   A cache for capabilities xml documents (by configuration file path)
   -------------------

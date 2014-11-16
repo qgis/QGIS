@@ -1,7 +1,8 @@
 /***************************************************************************
                           qgsseerverfilter.h
- Server I/O filters class for Qgis Mapserver for use by plugins
-                             -------------------
+
+  Server I/O filters class for Qgis Mapserver for use by plugins
+  -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
   email                : a dot pasotti at itopen dot it
@@ -23,7 +24,9 @@
  *
  * Filters can define any (or none) of the following hooks:
  *  * requestReady() - called when request is ready
- *  * responseReady() - called when the response is ready
+ *  * responseComplete() - called when the response is complete
+ *    after core services have returned to main loop
+ *  * sendResponse() - called just before sending output to FGCI
  */
 
 class QgsServerFilter
