@@ -32,8 +32,8 @@
 #include <QUrl>
 #include <fcgi_stdio.h>
 
-QgsHttpRequestHandler::QgsHttpRequestHandler():
-    QgsRequestHandler()
+QgsHttpRequestHandler::QgsHttpRequestHandler()
+    : QgsRequestHandler()
 {
   mException = NULL;
   mHeadersSent = FALSE;
