@@ -54,7 +54,7 @@ SET (qgis_mapserv_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
   qgsmslayercache.h
-  qgsserverlogger.h  
+  qgsserverlogger.h
 )
 
 SET (qgis_mapserv_RCCS
@@ -150,7 +150,7 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/layertree
   ../analysis/interpolation
-  ../plugins/diagram_overlay  
+  ../plugins/diagram_overlay
   .
 )
 
