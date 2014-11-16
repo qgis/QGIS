@@ -1,7 +1,8 @@
 /***************************************************************************
-                          qgsmapserviceexception.sip
+                       qgsmapserviceexception.sip
+
   QGIS Server exception
-                             -------------------
+  -------------------
   begin                : 2014-09-10
   copyright            : (C) 2014 by Alessandro Pasotti
   email                : a dot pasotti at itopen dot it
