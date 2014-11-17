@@ -42,6 +42,9 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+S</string>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -54,6 +57,9 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+Shift+S</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -95,6 +101,9 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>F5</string>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -115,6 +124,9 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+X</string>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -128,6 +140,9 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+C</string>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -140,6 +155,9 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+V</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -161,6 +179,9 @@
        <property name="text">
         <string>...</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+Z</string>
+       </property>
        <property name="autoRaise">
         <bool>true</bool>
        </property>
@@ -173,6 +194,9 @@
        </property>
        <property name="text">
         <string>...</string>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+Shift+Z</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
