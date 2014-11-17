@@ -44,6 +44,7 @@
 #include <QSettings>
 #include <QStandardItemModel>
 #include <QSvgRenderer>
+#include <QMessageBox>
 
 QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryName )
 {
@@ -2911,4 +2912,333 @@ void QgsCentroidFillSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( in
 {
   mLayer->setPointOnSurface( state == Qt::Checked );
   emit changed();
+}
+
+///////////////
+
+QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorLayer *vl, QWidget *parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
+{
+  mLayer = 0;
+  setupUi( this );
+
+  mWidthUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
+  mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
+
+  connect( cboCoordinateMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setCoordinateMode( int ) ) );
+  connect( mSpinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+  connect( mSpinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+}
+
+void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2 *layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  if ( layer->layerType() != "RasterFill" )
+  {
+    return;
+  }
+
+  mLayer = dynamic_cast<QgsRasterFillSymbolLayer*>( layer );
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  mImageLineEdit->blockSignals( true );
+  mImageLineEdit->setText( mLayer->imageFilePath() );
+  mImageLineEdit->blockSignals( false );
+
+  cboCoordinateMode->blockSignals( true );
+  switch ( mLayer->coordinateMode() )
+  {
+    case QgsRasterFillSymbolLayer::Viewport:
+      cboCoordinateMode->setCurrentIndex( 1 );
+      break;
+    case QgsRasterFillSymbolLayer::Feature:
+    default:
+      cboCoordinateMode->setCurrentIndex( 0 );
+      break;
+  }
+  cboCoordinateMode->blockSignals( false );
+  mSpinTransparency->blockSignals( true );
+  mSpinTransparency->setValue( mLayer->alpha() * 100.0 );
+  mSpinTransparency->blockSignals( false );
+  mSliderTransparency->blockSignals( true );
+  mSliderTransparency->setValue( mLayer->alpha() * 100.0 );
+  mSliderTransparency->blockSignals( false );
+  mRotationSpinBox->blockSignals( true );
+  mRotationSpinBox->setValue( mLayer->angle() );
+  mRotationSpinBox->blockSignals( false );
+
+  mSpinOffsetX->blockSignals( true );
+  mSpinOffsetX->setValue( mLayer->offset().x() );
+  mSpinOffsetX->blockSignals( false );
+  mSpinOffsetY->blockSignals( true );
+  mSpinOffsetY->setValue( mLayer->offset().y() );
+  mSpinOffsetY->blockSignals( false );
+  mOffsetUnitWidget->blockSignals( true );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  mOffsetUnitWidget->blockSignals( false );
+
+  mWidthSpinBox->blockSignals( true );
+  mWidthSpinBox->setValue( mLayer->width() );
+  mWidthSpinBox->blockSignals( false );
+  mWidthUnitWidget->blockSignals( true );
+  switch ( mLayer->widthUnit() )
+  {
+    case QgsSymbolV2::MM:
+      mWidthUnitWidget->setUnit( 1 );
+      break;
+    case QgsSymbolV2::MapUnit:
+      mWidthUnitWidget->setUnit( 2 );
+      break;
+    case QgsSymbolV2::Pixel:
+    default:
+      mWidthUnitWidget->setUnit( 0 );
+      break;
+  }
+  mWidthUnitWidget->setMapUnitScale( mLayer->widthMapUnitScale() );
+  mWidthUnitWidget->blockSignals( false );
+  updatePreviewImage();
+}
+
+QgsSymbolLayerV2 *QgsRasterFillSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mBrowseToolButton_clicked()
+{
+  QSettings s;
+  QString openDir;
+  QString lineEditText = mImageLineEdit->text();
+  if ( !lineEditText.isEmpty() )
+  {
+    QFileInfo openDirFileInfo( lineEditText );
+    openDir = openDirFileInfo.path();
+  }
+
+  if ( openDir.isEmpty() )
+  {
+    openDir = s.value( "/UI/lastRasterFillImageDir", "" ).toString();
+  }
+
+  //show file dialog
+  QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select image file" ), openDir );
+  if ( !filePath.isNull() )
+  {
+    //check if file exists
+    QFileInfo fileInfo( filePath );
+    if ( !fileInfo.exists() || !fileInfo.isReadable() )
+    {
+      QMessageBox::critical( 0, "Invalid file", "Error, file does not exist or is not readable" );
+      return;
+    }
+
+    s.setValue( "/UI/lastRasterFillImageDir", fileInfo.absolutePath() );
+    mImageLineEdit->setText( filePath );
+    on_mImageLineEdit_editingFinished();
+  }
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mImageLineEdit_editingFinished()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QFileInfo fi( mImageLineEdit->text() );
+  if ( !fi.exists() )
+  {
+    QUrl url( mImageLineEdit->text() );
+    if ( !url.isValid() )
+    {
+      return;
+    }
+  }
+
+  QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+  mLayer->setImageFilePath( mImageLineEdit->text() );
+  updatePreviewImage();
+  QApplication::restoreOverrideCursor();
+
+  emit changed();
+}
+
+void QgsRasterFillSymbolLayerWidget::setCoordinateMode( int index )
+{
+  switch ( index )
+  {
+    case 0:
+      //feature coordinate mode
+      mLayer->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
+      break;
+    case 1:
+      //viewport coordinate mode
+      mLayer->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+      break;
+  }
+
+  emit changed();
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mSpinTransparency_valueChanged( int value )
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  mLayer->setAlpha( value / 100.0 );
+  emit changed();
+  updatePreviewImage();
+}
+
+void QgsRasterFillSymbolLayerWidget::offsetChanged()
+{
+  mLayer->setOffset( QPointF( mSpinOffsetX->value(), mSpinOffsetY->value() ) );
+  emit changed();
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mOffsetUnitWidget->getUnit() );
+  mLayer->setOffsetUnit( unit );
+  mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mRotationSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setAngle( d );
+    emit changed();
+  }
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mWidthUnitWidget_changed()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QgsSymbolV2::OutputUnit unit;
+  switch ( mWidthUnitWidget->getUnit() )
+  {
+    case 0:
+      unit = QgsSymbolV2::Pixel;
+      break;
+    case 1:
+      unit = QgsSymbolV2::MM;
+      break;
+    case 2:
+      unit = QgsSymbolV2::MapUnit;
+      break;
+  }
+
+  mLayer->setWidthUnit( unit );
+  mLayer->setWidthMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mWidthSpinBox_valueChanged( double d )
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  mLayer->setWidth( d );
+  emit changed();
+}
+
+void QgsRasterFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "file", tr( "File" ), mLayer->dataDefinedPropertyString( "file" ),
+      QgsDataDefinedSymbolDialog::fileNameHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "alpha", tr( "Opacity" ), mLayer->dataDefinedPropertyString( "alpha" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
+  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width", tr( "Width" ), mLayer->dataDefinedPropertyString( "width" ),
+      QgsDataDefinedSymbolDialog::doubleHelpText() );
+  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //empty all existing properties first
+    mLayer->removeDataDefinedProperties();
+
+    QMap<QString, QString> properties = d.dataDefinedProperties();
+    QMap<QString, QString>::const_iterator it = properties.constBegin();
+    for ( ; it != properties.constEnd(); ++it )
+    {
+      if ( !it.value().isEmpty() )
+      {
+        mLayer->setDataDefinedProperty( it.key(), it.value() );
+      }
+    }
+    emit changed();
+  }
+}
+
+void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QImage image( mLayer->imageFilePath() );
+  if ( image.isNull() )
+  {
+    mLabelImagePreview->setPixmap( 0 );
+    return;
+  }
+
+  if ( image.height() > 150 || image.width() > 150 )
+  {
+    image = image.scaled( 150, 150, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+  }
+
+  QImage previewImage( 150, 150, QImage::Format_ARGB32 );
+  previewImage.fill( Qt::transparent );
+  QRect imageRect(( 150 - image.width() ) / 2.0, ( 150 - image.height() ) / 2.0, image.width(), image.height() );
+  QPainter p;
+  p.begin( &previewImage );
+  //draw a checkerboard background
+  uchar pixDataRGB[] = { 150, 150, 150, 150,
+                         100, 100, 100, 150,
+                         100, 100, 100, 150,
+                         150, 150, 150, 150
+                       };
+  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  QPixmap pix = QPixmap::fromImage( img.scaled( 8, 8 ) );
+  QBrush checkerBrush;
+  checkerBrush.setTexture( pix );
+  p.fillRect( imageRect, checkerBrush );
+
+  if ( mLayer->alpha() < 1.0 )
+  {
+    p.setOpacity( mLayer->alpha() );
+  }
+
+  p.drawImage( imageRect.left(), imageRect.top(), image );
+  p.end();
+  mLabelImagePreview->setPixmap( QPixmap::fromImage( previewImage ) );
 }

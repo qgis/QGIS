@@ -23,7 +23,8 @@ class QgsSymbolV2
     {
       MM,
       MapUnit,
-      Mixed //mixed units in symbol layers
+      Mixed, //mixed units in symbol layers
+      Pixel
     };
 
     enum SymbolType

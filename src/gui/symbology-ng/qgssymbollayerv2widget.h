@@ -320,6 +320,43 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     QgsSvgMarkerSymbolLayerV2* mLayer;
 };
 
+///////////
+
+#include "ui_widget_rasterfill.h"
+
+class QgsRasterFillSymbolLayer;
+
+class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetRasterFill
+{
+    Q_OBJECT
+
+  public:
+    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsRasterFillSymbolLayerWidget( vl ); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  protected:
+    QgsRasterFillSymbolLayer* mLayer;
+
+  private slots:
+    void on_mBrowseToolButton_clicked();
+    void on_mImageLineEdit_editingFinished();
+    void setCoordinateMode( int index );
+    void on_mSpinTransparency_valueChanged( int value );
+    void offsetChanged();
+    void on_mOffsetUnitWidget_changed();
+    void on_mRotationSpinBox_valueChanged( double d );
+    void on_mWidthUnitWidget_changed();
+    void on_mWidthSpinBox_valueChanged( double d );
+    void on_mDataDefinedPropertiesButton_clicked();
+
+  private:
+    void updatePreviewImage();
+};
 
 ///////////
 

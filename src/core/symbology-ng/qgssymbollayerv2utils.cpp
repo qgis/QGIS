@@ -347,6 +347,8 @@ QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
       return "MM";
     case QgsSymbolV2::MapUnit:
       return "MapUnit";
+    case QgsSymbolV2::Pixel:
+      return "Pixel";
     default:
       return "MM";
   }
@@ -361,6 +363,10 @@ QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( QString str )
   else if ( str == "MapUnit" )
   {
     return QgsSymbolV2::MapUnit;
+  }
+  else if ( str == "Pixel" )
+  {
+    return QgsSymbolV2::Pixel;
   }
 
   // millimeters are default
@@ -3260,6 +3266,10 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( const QgsRenderContext& c, Q
   if ( u == QgsSymbolV2::MM )
   {
     return ( c.scaleFactor() * c.rasterScaleFactor() );
+  }
+  else if ( u == QgsSymbolV2::Pixel )
+  {
+    return 1.0;
   }
   else //QgsSymbol::MapUnit
   {

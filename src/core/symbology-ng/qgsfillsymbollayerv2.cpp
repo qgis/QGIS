@@ -3445,3 +3445,288 @@ QgsMapUnitScale QgsCentroidFillSymbolLayerV2::mapUnitScale() const
 }
 
 
+
+
+QgsRasterFillSymbolLayer::QgsRasterFillSymbolLayer( const QString &imageFilePath )
+    : QgsImageFillSymbolLayer()
+    , mImageFilePath( imageFilePath )
+    , mCoordinateMode( QgsRasterFillSymbolLayer::Feature )
+    , mAlpha( 1.0 )
+    , mOffsetUnit( QgsSymbolV2::MM )
+    , mWidth( 0.0 )
+    , mWidthUnit( QgsSymbolV2::Pixel )
+{
+  QgsImageFillSymbolLayer::setSubSymbol( 0 ); //disable sub symbol
+}
+
+QgsRasterFillSymbolLayer::~QgsRasterFillSymbolLayer()
+{
+
+}
+
+QgsSymbolLayerV2 *QgsRasterFillSymbolLayer::create( const QgsStringMap &properties )
+{
+  FillCoordinateMode mode = QgsRasterFillSymbolLayer::Feature;
+  double alpha = 1.0;
+  QPointF offset;
+  double angle = 0.0;
+  double width = 0.0;
+
+  QString imagePath;
+  if ( properties.contains( "imageFile" ) )
+  {
+    imagePath = properties["imageFile"];
+  }
+  if ( properties.contains( "coordinate_mode" ) )
+  {
+    mode = ( FillCoordinateMode )properties["coordinate_mode"].toInt();
+  }
+  if ( properties.contains( "alpha" ) )
+  {
+    alpha = properties["alpha"].toDouble();
+  }
+  if ( properties.contains( "offset" ) )
+  {
+    offset = QgsSymbolLayerV2Utils::decodePoint( properties["offset"] );
+  }
+  if ( properties.contains( "angle" ) )
+  {
+    angle = properties["angle"].toDouble();
+  }
+  if ( properties.contains( "width" ) )
+  {
+    width = properties["width"].toDouble();
+  }
+  QgsRasterFillSymbolLayer* symbolLayer = new QgsRasterFillSymbolLayer( imagePath );
+  symbolLayer->setCoordinateMode( mode );
+  symbolLayer->setAlpha( alpha );
+  symbolLayer->setOffset( offset );
+  symbolLayer->setAngle( angle );
+  symbolLayer->setWidth( width );
+  if ( properties.contains( "offset_unit" ) )
+  {
+    symbolLayer->setOffsetUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["offset_unit"] ) );
+  }
+  if ( properties.contains( "offset_map_unit_scale" ) )
+  {
+    symbolLayer->setOffsetMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["offset_map_unit_scale"] ) );
+  }
+  if ( properties.contains( "width_unit" ) )
+  {
+    symbolLayer->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( properties["width_unit"] ) );
+  }
+  if ( properties.contains( "width_map_unit_scale" ) )
+  {
+    symbolLayer->setWidthMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( properties["width_map_unit_scale"] ) );
+  }
+
+  //data defined
+  if ( properties.contains( "file_expression" ) )
+  {
+    symbolLayer->setDataDefinedProperty( "file", properties["file_expression"] );
+  }
+  if ( properties.contains( "alpha_expression" ) )
+  {
+    symbolLayer->setDataDefinedProperty( "alpha", properties["alpha_expression"] );
+  }
+  if ( properties.contains( "angle_expression" ) )
+  {
+    symbolLayer->setDataDefinedProperty( "angle", properties["angle_expression"] );
+  }
+  if ( properties.contains( "width_expression" ) )
+  {
+    symbolLayer->setDataDefinedProperty( "width", properties["width_expression"] );
+  }
+  return symbolLayer;
+}
+
+bool QgsRasterFillSymbolLayer::setSubSymbol( QgsSymbolV2 *symbol )
+{
+  Q_UNUSED( symbol );
+  return true;
+}
+
+QString QgsRasterFillSymbolLayer::layerType() const
+{
+  return "RasterFill";
+}
+
+void QgsRasterFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolV2RenderContext &context )
+{
+  QPainter* p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  QPointF offset;
+  if ( !mOffset.isNull() )
+  {
+    offset.setX( mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale ) );
+    offset.setY( mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOffsetUnit, mOffsetMapUnitScale ) );
+    p->translate( offset );
+  }
+  if ( mCoordinateMode == Feature )
+  {
+    QRectF boundingRect = points.boundingRect();
+    mBrush.setTransform( mBrush.transform().translate( boundingRect.left() - mBrush.transform().dx(),
+                         boundingRect.top() - mBrush.transform().dy() ) );
+  }
+
+  QgsImageFillSymbolLayer::renderPolygon( points, rings, context );
+  if ( !mOffset.isNull() )
+  {
+    p->translate( -offset );
+  }
+}
+
+void QgsRasterFillSymbolLayer::startRender( QgsSymbolV2RenderContext &context )
+{
+  prepareExpressions( context.fields(), context.renderContext().rendererScale() );
+  applyPattern( mBrush, mImageFilePath, mWidth, mAlpha, context );
+}
+
+void QgsRasterFillSymbolLayer::stopRender( QgsSymbolV2RenderContext &context )
+{
+  Q_UNUSED( context );
+}
+
+QgsStringMap QgsRasterFillSymbolLayer::properties() const
+{
+  QgsStringMap map;
+  map["imageFile"] = mImageFilePath;
+  map["coordinate_mode"] = QString::number( mCoordinateMode );
+  map["alpha"] = QString::number( mAlpha );
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
+  map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
+  map["angle"] = QString::number( mAngle );
+  map["width"] = QString::number( mWidth );
+  map["width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mWidthUnit );
+  map["width_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mWidthMapUnitScale );
+
+  saveDataDefinedProperties( map );
+  return map;
+}
+
+QgsSymbolLayerV2 *QgsRasterFillSymbolLayer::clone() const
+{
+  QgsRasterFillSymbolLayer* sl = new QgsRasterFillSymbolLayer( mImageFilePath );
+  sl->setCoordinateMode( mCoordinateMode );
+  sl->setAlpha( mAlpha );
+  sl->setOffset( mOffset );
+  sl->setOffsetUnit( mOffsetUnit );
+  sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  sl->setAngle( mAngle );
+  sl->setWidth( mWidth );
+  sl->setWidthUnit( mWidthUnit );
+  sl->setWidthMapUnitScale( mWidthMapUnitScale );
+  copyDataDefinedProperties( sl );
+  return sl;
+}
+
+double QgsRasterFillSymbolLayer::estimateMaxBleed() const
+{
+  return mOffset.x() > mOffset.y() ? mOffset.x() : mOffset.y();
+}
+
+void QgsRasterFillSymbolLayer::setImageFilePath( const QString &imagePath )
+{
+  mImageFilePath = imagePath;
+}
+
+void QgsRasterFillSymbolLayer::setCoordinateMode( const QgsRasterFillSymbolLayer::FillCoordinateMode mode )
+{
+  mCoordinateMode = mode;
+}
+
+void QgsRasterFillSymbolLayer::setAlpha( const double alpha )
+{
+  mAlpha = alpha;
+}
+
+void QgsRasterFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderContext &context )
+{
+  if ( mDataDefinedProperties.isEmpty() )
+    return; // shortcut
+
+  QgsExpression* widthExpression = expression( "width" );
+  QgsExpression* fileExpression = expression( "file" );
+  QgsExpression* alphaExpression = expression( "alpha" );
+  QgsExpression* angleExpression = expression( "angle" );
+
+  if ( !widthExpression && !angleExpression && !alphaExpression && !fileExpression )
+  {
+    return; //no data defined settings
+  }
+
+  if ( angleExpression )
+  {
+    mNextAngle = angleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+
+  if ( !widthExpression && !alphaExpression && !fileExpression )
+  {
+    return; //nothing further to do
+  }
+
+  double width = mWidth;
+  if ( widthExpression )
+  {
+    width = widthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  double alpha = mAlpha;
+  if ( alphaExpression )
+  {
+    alpha = alphaExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  QString file = mImageFilePath;
+  if ( fileExpression )
+  {
+    file = fileExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+  }
+  applyPattern( mBrush, file, width, alpha, context );
+}
+
+void QgsRasterFillSymbolLayer::applyPattern( QBrush &brush, const QString &imageFilePath, const double width, const double alpha, const QgsSymbolV2RenderContext &context )
+{
+  QImage image( imageFilePath );
+  if ( image.isNull() )
+  {
+    return;
+  }
+  if ( !image.hasAlphaChannel() )
+  {
+    image = image.convertToFormat( QImage::Format_ARGB32 );
+  }
+
+  double pixelWidth;
+  if ( width > 0 )
+  {
+    pixelWidth = width * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
+  }
+  else
+  {
+    pixelWidth = image.width();
+  }
+
+  //reduce alpha of image
+  if ( alpha < 1.0 )
+  {
+    QPainter p;
+    p.begin( &image );
+    p.setCompositionMode( QPainter::CompositionMode_DestinationIn );
+    QColor alphaColor( 0, 0, 0 );
+    alphaColor.setAlphaF( alpha );
+    p.fillRect( image.rect(), alphaColor );
+    p.end();
+  }
+
+  //resize image if required
+  if ( !qgsDoubleNear( pixelWidth, image.width() ) )
+  {
+    image = image.scaledToWidth( pixelWidth, Qt::SmoothTransformation );
+  }
+
+  brush.setTextureImage( image );
+}

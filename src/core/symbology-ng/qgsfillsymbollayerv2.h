@@ -550,6 +550,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
 {
   public:
+
     QgsImageFillSymbolLayer();
     virtual ~QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
@@ -588,6 +589,190 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     QgsLineSymbolV2* mOutline;
 
     virtual void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context ) { Q_UNUSED( context ); }
+};
+
+/** \ingroup core
+ * \class QgsRasterFillSymbolLayer
+ * \brief A class for filling symbols with a repeated raster image.
+ * \note Added in version 2.7
+ */
+class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
+{
+  public:
+
+    enum FillCoordinateMode
+    {
+      Feature,
+      Viewport
+    };
+
+    QgsRasterFillSymbolLayer( const QString& imageFilePath = QString() );
+    ~QgsRasterFillSymbolLayer();
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    // implemented from base classes
+    QString layerType() const;
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context );
+    QgsStringMap properties() const;
+    QgsSymbolLayerV2* clone() const;
+    virtual double estimateMaxBleed() const;
+
+    //override QgsImageFillSymbolLayer's support for sub symbols
+    virtual QgsSymbolV2* subSymbol() { return 0; }
+    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+
+    /**Sets the path to the raster image used for the fill.
+     * @param imagePath path to image file
+     * @see imageFilePath
+    */
+    void setImageFilePath( const QString& imagePath );
+    /**The path to the raster image used for the fill.
+     * @returns path to image file
+     * @see setImageFilePath
+    */
+    QString imageFilePath() const { return mImageFilePath; }
+
+    /**Set the coordinate mode for fill. Controls how the top left corner of the image
+     * fill is positioned relative to the feature.
+     * @param mode coordinate mode
+     * @see coordinateMode
+    */
+    void setCoordinateMode( const FillCoordinateMode mode );
+    /**Coordinate mode for fill. Controls how the top left corner of the image
+     * fill is positioned relative to the feature.
+     * @returns coordinate mode
+     * @see setCoordinateMode
+    */
+    FillCoordinateMode coordinateMode() const { return mCoordinateMode; }
+
+    /**Sets the opacity for the raster image used in the fill.
+     * @param alpha opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * @see alpha
+    */
+    void setAlpha( const double alpha );
+    /**The opacity for the raster image used in the fill.
+     * @returns opacity value between 0 (fully transparent) and 1 (fully opaque)
+     * @see setAlpha
+    */
+    double alpha() const { return mAlpha; }
+
+    /**Sets the offset for the fill.
+     * @param offset offset for fill
+     * @see offset
+     * @see setOffsetUnit
+     * @see setOffsetMapUnitScale
+    */
+    void setOffset( const QPointF& offset ) { mOffset = offset; }
+    /**Returns the offset for the fill.
+     * @returns offset for fill
+     * @see setOffset
+     * @see offsetUnit
+     * @see offsetMapUnitScale
+    */
+    QPointF offset() const { return mOffset; }
+
+    /**Sets the units for the fill's offset.
+     * @param unit units for offset
+     * @see offsetUnit
+     * @see setOffset
+     * @see setOffsetMapUnitScale
+    */
+    void setOffsetUnit( const QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    /**Returns the units for the fill's offset.
+     * @returns units for offset
+     * @see setOffsetUnit
+     * @see offset
+     * @see offsetMapUnitScale
+    */
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+
+    /**Sets the map unit scale for the fill's offset.
+     * @param scale map unit scale for offset
+     * @see offsetMapUnitScale
+     * @see setOffset
+     * @see setOffsetUnit
+    */
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    /**Returns the map unit scale for the fill's offset.
+     * @returns map unit scale for offset
+     * @see setOffsetMapUnitScale
+     * @see offset
+     * @see offsetUnit
+    */
+    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+
+    /**Sets the width for scaling the image used in the fill. The image's height will also be
+     * scaled to maintain the image's aspect ratio.
+     * @param width width for scaling the image
+     * @see width
+     * @see setWidthUnit
+     * @see setWidthMapUnitScale
+    */
+    void setWidth( const double width ) { mWidth = width; }
+    /**Returns the width used for scaling the image used in the fill. The image's height is
+     * scaled to maintain the image's aspect ratio.
+     * @returns width used for scaling the image
+     * @see setWidth
+     * @see widthUnit
+     * @see widthMapUnitScale
+    */
+    double width() const { return mWidth; }
+
+    /**Sets the units for the image's width.
+     * @param unit units for width
+     * @see widthUnit
+     * @see setWidth
+     * @see setWidthMapUnitScale
+    */
+    void setWidthUnit( const QgsSymbolV2::OutputUnit unit ) { mWidthUnit = unit; }
+    /**Returns the units for the image's width.
+     * @returns units for width
+     * @see setWidthUnit
+     * @see width
+     * @see widthMapUnitScale
+    */
+    QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
+
+    /**Sets the map unit scale for the image's width.
+     * @param scale map unit scale for width
+     * @see widthMapUnitScale
+     * @see setWidth
+     * @see setWidthUnit
+    */
+    void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
+    /**Returns the map unit scale for the image's width.
+     * @returns map unit scale for width
+     * @see setWidthMapUnitScale
+     * @see width
+     * @see widthUnit
+    */
+    const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
+
+  protected:
+
+    /**Path to the image file*/
+    QString mImageFilePath;
+    FillCoordinateMode mCoordinateMode;
+    double mAlpha;
+
+    QPointF mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
+    QgsMapUnitScale mOffsetMapUnitScale;
+
+    double mWidth;
+    QgsSymbolV2::OutputUnit mWidthUnit;
+    QgsMapUnitScale mWidthMapUnitScale;
+
+    void applyDataDefinedSettings( const QgsSymbolV2RenderContext& context );
+
+  private:
+
+    /**Applies the image pattern to the brush*/
+    void applyPattern( QBrush& brush, const QString& imageFilePath, const double width, const double alpha,
+                       const QgsSymbolV2RenderContext& context );
 };
 
 /**A class for svg fill patterns. The class automatically scales the pattern to
