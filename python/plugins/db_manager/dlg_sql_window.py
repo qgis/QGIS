@@ -24,6 +24,7 @@ The content of this file is based on
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from PyQt4.Qsci import *
 from qgis.core import *
 
 from .db_plugins.plugin import BaseError
@@ -49,7 +50,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
     self.editSql.setFocus()
     self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
-    self.editSql.initCompleter(self.db)
+    self.initCompleter()
 
     # allow to copy results
     copyAction = QAction("copy", self)
@@ -284,3 +285,24 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     QApplication.clipboard().setText( text, QClipboard.Selection )
     QApplication.clipboard().setText( text, QClipboard.Clipboard )
 
+  def initCompleter(self):
+    dictionary = None
+    if self.db:
+        dictionary = self.db.connector.getSqlDictionary()
+    if not dictionary:
+        # use the generic sql dictionary
+        from .sql_dictionary import getSqlDictionary
+        dictionary = getSqlDictionary()
+
+    wordlist = []
+    for name, value in dictionary.iteritems():
+        wordlist += value   # concat lists
+    wordlist = list(set(wordlist))  # remove duplicates
+
+    api = QsciAPIs(self.editSql.lexer())
+    for word in wordlist:
+        api.add(word)
+
+    api.prepare()
+    self.editSql.lexer().setAPIs(api)
+    self.editSql.setAutoCompletionCaseSensitivity(False)

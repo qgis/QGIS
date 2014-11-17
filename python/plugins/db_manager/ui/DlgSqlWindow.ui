@@ -70,7 +70,7 @@
         </layout>
        </item>
        <item>
-        <widget class="SqlEdit" name="editSql"/>
+        <widget class="QgsCodeEditorSQL" name="editSql"/>
        </item>
        <item>
         <layout class="QHBoxLayout">
@@ -356,9 +356,9 @@ columns</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>SqlEdit</class>
+   <class>QgsCodeEditorSQL</class>
    <extends>QTextEdit</extends>
-   <header>..sqledit</header>
+   <header>qgscodeeditorsql.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
