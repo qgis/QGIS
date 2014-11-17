@@ -1,5 +1,7 @@
-README for QGIS
-----------------------------------------
+# About QGIS
+
+[![Build Status](https://travis-ci.org/qgis/QGIS.svg?branch=master)](https://travis-ci.org/qgis/QGIS)
+
 QGIS is an Open Source Geographic Information System. The project was born in
 May of 2002 and was established as a project on SourceForge in June of the same
 year. We've worked hard to make GIS software (which is traditionally expensive
@@ -22,42 +24,45 @@ modify the source code and guarantees that you, our happy user will always
 have access to a GIS program that is free of cost and can be freely
 modified.
 
-Supported raster formats include:
-  Grass
-  USGS DEM
-  ArcInfo binary grid
-  ArcInfo ASCII grid
-  ERDAS Imagine
-  SDTS
-  GeoTiff
-  Tiff with world file
+## Supported raster formats include:
 
-Supported vector formats include:
-  ESRI Shapefiles
-  PostgreSQL/PostGIS
-  GRASS
-  Spatialite
-  Other OGR supported formats
+ * Grass
+ * USGS DEM
+ * ArcInfo binary grid
+ * ArcInfo ASCII grid
+ * ERDAS Imagine
+ * SDTS
+ * GeoTiff
+ * Tiff with world file
 
-NOTE -- Please follow the installation instructions carefully.
+## Supported vector formats include:
+
+ * ESRI Shapefiles
+ * PostgreSQL/PostGIS
+ * GRASS
+ * Spatialite
+ * Other OGR supported formats
+
+## Note
+
+Please follow the installation instructions carefully.
 After extracting the distribution, you can find the HTML version of the
 installation document in qgis/doc/index.html. The installation document is
 also available as PDF in the same directory.
 
-HELP US --  Please submit bug reports using the QGIS bug tracker at:
-            http://hub.qgis.org/
-            When reporting a bug, either login or, if you don't
-            have a qgis trac, provide an email address where we can
-            request additional information.
- 
-SUPPORT -   You can get support in the following ways:
-            1.  Using the QGIS community site at http://qgis.org
-            2.  Joining the qgis-users mailing list at:
-                http://lists.osgeo.org/mailman/listinfo/qgis-user
-            3.  Using IRC by joining the #qgis channel on irc.freenode.net.
-                Please wait around for a response to your question as many
-                folks on the channel are doing other things and it may take a
-                while for them to notice your question.
+## Help us
+Please submit bug reports using the [QGIS bug tracker](http://hub.qgis.org/)
+When reporting a bug, either login or, if you don't have a qgis trac, provide
+an email address where we can request additional information.
+
+## Support
+You can get support in the following ways:
+
+ -  Using the QGIS community site at http://qgis.org
+ -  Joining the [qgis-users mailing list](http://lists.osgeo.org/mailman/listinfo/qgis-user)
+ -  Using IRC by joining the #qgis channel on irc.freenode.net. Please wait
+    around for a response to your question as many folks on the channel are
+    doing other things and it may take a while for them to notice your question.
 
 QGIS is on GitHub at http://github.com/qgis/QGIS. If you wish to contribute
 patches you can fork the project, make your changes, commit to your
