@@ -306,8 +306,6 @@ IF (SUPPRESS_QT_WARNINGS)
   INCLUDE_DIRECTORIES(SYSTEM ${QT_INCLUDE_DIR})
 ENDIF (SUPPRESS_QT_WARNINGS)
 
-INCLUDE( ${QT_USE_FILE} )
-
 # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
 # (Keeps code compatible with Qt/Mac/64bit)
 ADD_DEFINITIONS(-DQT_NO_CAST_TO_ASCII)
