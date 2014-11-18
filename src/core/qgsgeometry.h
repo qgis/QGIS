@@ -359,9 +359,6 @@ class CORE_EXPORT QgsGeometry
     * and for point based geometries, the point itself is returned */
     QgsGeometry* centroid();
 
-    /** Returns a point within a geometry */
-    QgsGeometry* pointOnSurface();
-
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull();
 

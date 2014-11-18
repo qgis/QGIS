@@ -100,7 +100,6 @@ class GeometryDialog( QDialog, Ui_Dialog ):
 
     self.chkUseSelection.setVisible( False )
     self.chkByFeatures.setVisible( False )
-    self.chkEnsurePointInPolygon.setVisible( False )
 
     self.chkWriteShapefile.setVisible( False )
     if self.myFunction == 1: # Singleparts to multipart
@@ -147,7 +146,6 @@ class GeometryDialog( QDialog, Ui_Dialog ):
       self.label_3.setText( self.tr( "Input polygon vector layer" ) )
       self.label.setVisible( False )
       self.lineEdit.setVisible( False )
-      self.chkEnsurePointInPolygon.setVisible( True )
     else:
       if self.myFunction == 8: # Delaunay triangulation
         self.setWindowTitle( self.tr( "Delaunay triangulation" ) )
@@ -246,8 +244,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction,
                                       vlayer, myParam, myField, self.shapefileName, self.encoding,
                                       self.cmbCalcType.currentIndex(), self.chkWriteShapefile.isChecked(),
-                                      self.chkByFeatures.isChecked(), self.chkUseSelection.isChecked(),
-                                      self.chkEnsurePointInPolygon.isChecked() )
+                                      self.chkByFeatures.isChecked(), self.chkUseSelection.isChecked() )
     QObject.connect( self.testThread, SIGNAL( "runFinished( PyQt_PyObject )" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus( PyQt_PyObject )" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange( PyQt_PyObject )" ), self.runRangeFromThread )
@@ -306,7 +303,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
 class geometryThread( QThread ):
   def __init__( self, parentThread, parentObject, function, vlayer, myParam,
                 myField, myName, myEncoding, myCalcType, myNewShape, myByFeatures,
-                myUseSelection, myEnsurePointInPolygon ):
+                myUseSelection ):
     QThread.__init__( self, parentThread )
     self.parent = parentObject
     self.running = False
@@ -320,7 +317,6 @@ class geometryThread( QThread ):
     self.writeShape = myNewShape
     self.byFeatures = myByFeatures
     self.useSelection = myUseSelection
-    self.ensurePointInPolygon = myEnsurePointInPolygon
 
   def run( self ):
     self.running = True
@@ -610,8 +606,6 @@ class geometryThread( QThread ):
       outGeom = inGeom.centroid()
       if outGeom is None:
         return "math_error"
-      if self.ensurePointInPolygon and not inGeom.contains(outGeom.asPoint()):
-        outGeom = inGeom.pointOnSurface()
       outFeat.setAttributes( atMap )
       outFeat.setGeometry( QgsGeometry( outGeom ) )
       writer.addFeature( outFeat )
