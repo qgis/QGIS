@@ -132,7 +132,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       {
         /* This may happen (one layer only) in GRASS 7 with points (no topo layers) */
         QgsLayerItem *layer = new QgsLayerItem( this, name + " " + baseLayerName, path, uri, layerType, "grass" );
-        layer->populate(); // does nothing, but sets mPopulated to true to show non expandable in browser
+        layer->setPopulated();
         items.append( layer );
       }
       else
@@ -154,7 +154,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QgsDebugMsg( "uri = " + uri );
 
     QgsLayerItem *layer = new QgsLayerItem( this, name, path, uri, QgsLayerItem::Raster, "grassraster" );
-    layer->populate(); // does nothing, but sets mPopulated to true to show non expandable in browser
+    layer->setPopulated();
 
     items.append( layer );
   }

@@ -67,6 +67,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void populate( QVector<QgsDataItem*> children );
     bool isPopulated() { return mPopulated; }
 
+    // Set as populated without populating
+    void setPopulated() { mPopulated = true; }
+
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
     virtual void addChildItem( QgsDataItem *child, bool refresh = false );
@@ -221,7 +224,6 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path = QString::null );
     ~QgsDataCollectionItem();
 
-    void setPopulated() { mPopulated = true; }
     void addChild( QgsDataItem *item ) { mChildren.append( item ); }
 
     static const QIcon &iconDir(); // shared icon: open/closed directory

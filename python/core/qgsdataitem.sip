@@ -30,6 +30,7 @@ class QgsDataItem : QObject
     // Populate children using children vector created by createChildren()
     virtual void populate();
     bool isPopulated();
+    void setPopulated();
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
@@ -54,8 +55,6 @@ class QgsDataItem : QObject
 
     // try to process the data dropped on this item
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ );
-
-    //
 
     enum Capability
     {
@@ -162,7 +161,6 @@ class QgsDataCollectionItem : QgsDataItem
     QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path = QString::null );
     ~QgsDataCollectionItem();
 
-    void setPopulated();
     void addChild( QgsDataItem *item /Transfer/ );
 
     static const QIcon &iconDir(); // shared icon: open/closed directory
