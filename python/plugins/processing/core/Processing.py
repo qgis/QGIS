@@ -151,7 +151,10 @@ class Processing:
         ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
         Processing.loadFromProviders()
-
+        
+        # Inform registered listeners that all providers' algorithms have been loaded
+        Processing.fireAlgsListHasChanged()
+        
     @staticmethod
     def updateAlgsList():
         """Call this method when there has been any change that
@@ -182,6 +185,13 @@ class Processing:
         called for all registered listeners.
         """
         Processing.listeners.append(listener)
+        
+    @staticmethod
+    def removeAlgListListener(listener):
+        try:
+            Processing.listeners.remove(listener)
+        except:
+            pass
 
     @staticmethod
     def fireAlgsListHasChanged():

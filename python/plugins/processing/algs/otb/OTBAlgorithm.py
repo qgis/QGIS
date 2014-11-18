@@ -148,7 +148,7 @@ class OTBAlgorithm(GeoAlgorithm):
             try:
                 if line.startswith("Parameter") or line.startswith("*Parameter"):
                     if line.startswith("*Parameter"):
-                        param = ParameterFactory.getFromString(line[1:])
+                        param = getParameterFromString(line[1:])
                         param.isAdvanced = True
                     else:
                         param = getParameterFromString(line)

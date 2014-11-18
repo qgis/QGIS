@@ -42,6 +42,7 @@ from rgb2pct import rgb2pct
 from translate import translate
 from pct2rgb import pct2rgb
 from merge import merge
+from buildvrt import buildvrt
 from polygonize import polygonize
 from gdaladdo import gdaladdo
 from ClipByExtent import ClipByExtent
@@ -114,7 +115,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         # extending GeoAlgorithm directly (those that execute GDAL
         # using the console)
         self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-            rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
+            rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
             ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
             sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
             hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
