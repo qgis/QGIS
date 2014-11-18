@@ -2438,13 +2438,8 @@ bool QgsSymbolLayerV2Utils::createFunctionElement( QDomDocument &doc, QDomElemen
 
 bool QgsSymbolLayerV2Utils::functionFromSldElement( QDomElement &element, QString &function )
 {
-  QgsDebugMsg( "Entered." );
-  QDomElement elem;
-  if ( element.tagName() == "Filter" )
-  {
-    elem = element;
-  }
-  else
+  QDomElement elem = element;
+  if ( element.tagName() != "Filter" )
   {
     QDomNodeList filterNodes = element.elementsByTagName( "Filter" );
     if ( filterNodes.size() > 0 )
