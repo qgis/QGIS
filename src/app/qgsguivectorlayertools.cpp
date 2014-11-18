@@ -84,7 +84,6 @@ bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
   else //layer not modified
   {
     res = true;
-    layer->triggerRepaint();
   }
   return res;
 }
