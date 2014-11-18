@@ -1148,7 +1148,7 @@
             <item>
              <widget class="QPushButton" name="mAddOverviewPushButton">
               <property name="toolTip">
-               <string>Add a new grid</string>
+               <string>Add a new overview</string>
               </property>
               <property name="text">
                <string/>
@@ -1162,7 +1162,7 @@
             <item>
              <widget class="QPushButton" name="mRemoveOverviewPushButton">
               <property name="toolTip">
-               <string>Remove selected grid</string>
+               <string>Remove selected overview</string>
               </property>
               <property name="text">
                <string/>
@@ -1176,7 +1176,7 @@
             <item>
              <widget class="QPushButton" name="mOverviewUpButton">
               <property name="toolTip">
-               <string>Move selected grid up</string>
+               <string>Move selected overview up</string>
               </property>
               <property name="text">
                <string/>
@@ -1190,7 +1190,7 @@
             <item>
              <widget class="QPushButton" name="mOverviewDownButton">
               <property name="toolTip">
-               <string>Move selected grid down</string>
+               <string>Move selected overview down</string>
               </property>
               <property name="text">
                <string/>
