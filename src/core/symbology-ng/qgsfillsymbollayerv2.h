@@ -359,14 +359,14 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @see useWholeShape
      * @see setMaxDistance
     */
-    void setUseWholeShape( double useWholeShape ) { mUseWholeShape = useWholeShape; }
+    void setUseWholeShape( bool useWholeShape ) { mUseWholeShape = useWholeShape; }
     /**Returns whether the shapeburst fill is set to cover the entire shape.
      * @returns True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
      * @note added in 2.3
      * @see setUseWholeShape
      * @see maxDistance
     */
-    double useWholeShape() const { return mUseWholeShape; }
+    bool useWholeShape() const { return mUseWholeShape; }
 
     /**Sets the maximum distance to shape inside of the shape from the polygon's boundary.
      * @param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
@@ -460,13 +460,13 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayerV2 : public QgsFillSymbolLayerV2
      * @note added in 2.3
      * @see ignoreRings
     */
-    void setIgnoreRings( double ignoreRings ) { mIgnoreRings = ignoreRings; }
+    void setIgnoreRings( bool ignoreRings ) { mIgnoreRings = ignoreRings; }
     /**Returns whether the shapeburst fill is set to ignore polygon interior rings.
      * @returns True if the shapeburst fill will ignore interior rings when calculating buffered shading.
      * @note added in 2.3
      * @see setIgnoreRings
     */
-    double ignoreRings() const { return mIgnoreRings; }
+    bool ignoreRings() const { return mIgnoreRings; }
 
     /**Sets the offset for the shapeburst fill.
      * @param offset QPointF indicating the horizontal/vertical offset amount
