@@ -22,7 +22,7 @@
    </property>
    <widget class="QMenu" name="mProjectMenu">
     <property name="title">
-     <string>P&amp;roject</string>
+     <string>Pro&amp;ject</string>
     </property>
     <widget class="QMenu" name="mRecentProjectsMenu">
      <property name="title">
@@ -560,7 +560,7 @@
      <normaloff>:/images/themes/default/mActionSaveMapAsImage.png</normaloff>:/images/themes/default/mActionSaveMapAsImage.png</iconset>
    </property>
    <property name="text">
-    <string>Save as Image...</string>
+    <string>Save as &amp;Image...</string>
    </property>
   </action>
   <action name="mActionNewPrintComposer">
@@ -569,7 +569,7 @@
      <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;New Print Composer</string>
+    <string>New &amp;Print Composer</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
@@ -835,7 +835,7 @@
   </action>
   <action name="mActionSnappingOptions">
    <property name="text">
-    <string>Snapping Options...</string>
+    <string>&amp;Snapping Options...</string>
    </property>
   </action>
   <action name="mActionPan">
@@ -1003,7 +1003,7 @@
      <normaloff>:/images/themes/default/mActionZoomFullExtent.svg</normaloff>:/images/themes/default/mActionZoomFullExtent.svg</iconset>
    </property>
    <property name="text">
-    <string>Zoom Full</string>
+    <string>Zoom &amp;Full</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+F</string>
@@ -1015,7 +1015,7 @@
      <normaloff>:/images/themes/default/mActionZoomToLayer.svg</normaloff>:/images/themes/default/mActionZoomToLayer.svg</iconset>
    </property>
    <property name="text">
-    <string>Zoom to Layer</string>
+    <string>Zoom to &amp;Layer</string>
    </property>
   </action>
   <action name="mActionZoomToSelected">
@@ -1024,7 +1024,7 @@
      <normaloff>:/images/themes/default/mActionZoomToSelected.svg</normaloff>:/images/themes/default/mActionZoomToSelected.svg</iconset>
    </property>
    <property name="text">
-    <string>Zoom to Selection</string>
+    <string>Zoom to &amp;Selection</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+J</string>
@@ -1282,7 +1282,7 @@
      <normaloff>:/images/themes/default/mActionOpenTable.png</normaloff>:/images/themes/default/mActionOpenTable.png</iconset>
    </property>
    <property name="text">
-    <string>Open Attribute Table</string>
+    <string>Open &amp;Attribute Table</string>
    </property>
   </action>
   <action name="mActionToggleEditing">
@@ -1314,7 +1314,7 @@
   </action>
   <action name="mActionLayerSaveAs">
    <property name="text">
-    <string>Save As...</string>
+    <string>&amp;Save As...</string>
    </property>
   </action>
   <action name="mActionRemoveLayer">
@@ -1347,7 +1347,7 @@
   </action>
   <action name="mActionLayerProperties">
    <property name="text">
-    <string>Properties...</string>
+    <string>&amp;Properties...</string>
    </property>
   </action>
   <action name="mActionLayerSubsetString">
@@ -1432,7 +1432,7 @@
      <normaloff>:/images/themes/default/mActionProjectProperties.png</normaloff>:/images/themes/default/mActionProjectProperties.png</iconset>
    </property>
    <property name="text">
-    <string>Project Properties...</string>
+    <string>&amp;Project Properties...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
@@ -1444,7 +1444,7 @@
      <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
    </property>
    <property name="text">
-    <string>Options...</string>
+    <string>&amp;Options...</string>
    </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
