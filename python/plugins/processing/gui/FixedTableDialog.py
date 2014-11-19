@@ -58,7 +58,7 @@ class FixedTableDialog(QDialog, Ui_DlgFixedTable):
         self.btnRemove.clicked.connect(lambda: self.removeRows())
         self.btnRemoveAll.clicked.connect(lambda: self.removeRows(True))
 
-        if self.param.fixedNumOfRows:
+        if not self.param.fixedNumOfRows:
             self.btnAdd.setEnabled(False)
             self.btnRemove.setEnabled(False)
             self.btnRemoveAll.setEnabled(False)
@@ -106,5 +106,5 @@ class FixedTableDialog(QDialog, Ui_DlgFixedTable):
             self.tblView.setUpdatesEnabled(True)
 
     def addRow(self):
-        items = [QStandardItem('') for i in xrange(self.tblView.model().columnCount())]
+        items = [QStandardItem('0') for i in xrange(self.tblView.model().columnCount())]
         self.tblView.model().appendRow(items)
