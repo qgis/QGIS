@@ -91,10 +91,8 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
                         value and try again.")
             value = value / 100.0
 
-
-        output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(layer.fields(),
-                layer.geometryType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            layer.pendingFields().toList(), layer.wkbType(), layer.crs())
 
         selran = []
         current = 0

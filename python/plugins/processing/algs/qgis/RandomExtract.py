@@ -85,9 +85,8 @@ class RandomExtract(GeoAlgorithm):
 
         selran = random.sample(xrange(0, featureCount), value)
 
-        output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(layer.fields(),
-                layer.geometryType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            layer.pendingFields().toList(), layer.wkbType(), layer.crs())
 
         for (i, feat) in enumerate(features):
             if i in selran:
