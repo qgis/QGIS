@@ -117,6 +117,7 @@ from ImportIntoPostGIS import ImportIntoPostGIS
 from SetVectorStyle import SetVectorStyle
 from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
+from HypsometricCurves import HypsometricCurves
 # from VectorLayerHistogram import VectorLayerHistogram
 # from VectorLayerScatterplot import VectorLayerScatterplot
 # from MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -166,7 +167,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
-                        SetVectorStyle(), SetRasterStyle(), SelectByExpression()
+                        SetVectorStyle(), SetRasterStyle(),
+                        SelectByExpression(), HypsometricCurves(),
                         # ------ raster ------
                         # CreateConstantRaster(),
                         # ------ graphics ------
