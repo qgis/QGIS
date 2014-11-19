@@ -308,11 +308,6 @@ extern "C"
 
 class QTreeWidgetItem;
 
-
-// IDs for locating particular menu items
-const int BEFORE_RECENT_PATHS = 123;
-const int AFTER_RECENT_PATHS = 321;
-
 /** set the application title bar text
 
   If the current project title is null

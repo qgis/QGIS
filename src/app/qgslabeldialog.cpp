@@ -28,15 +28,12 @@
 #include <QDoubleValidator>
 
 
-const int PIXMAP_WIDTH = 200;
-const int PIXMAP_HEIGHT = 20;
-
 QgsLabelDialog::QgsLabelDialog( QgsLabel *label, QWidget *parent )
-    : QWidget( parent ),
-    mLabel( label ),
-    mFontColor( Qt::black ),
-    mBufferColor( Qt::black ),
-    mFont( "Helvetica" )
+    : QWidget( parent )
+    , mLabel( label )
+    , mFontColor( Qt::black )
+    , mBufferColor( Qt::black )
+    , mFont( "Helvetica" )
 {
   setupUi( this );
   QgsDebugMsg( "entering." );

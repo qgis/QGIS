@@ -93,9 +93,6 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     // The current sql query
     QSqlQuery* mQuery;
 
-    // Use query on provider (no new connection added)
-    bool mUseProviderQuery;
-
     // The current sql statement
     QString mStatement;
 

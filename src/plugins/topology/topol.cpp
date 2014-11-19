@@ -30,7 +30,6 @@
 #include "topol.h"
 #include "checkDock.h"
 
-static const char * const sIdent = "$Id: plugin.cpp 8053 2008-01-26 13:59:53Z timlinux $";
 static const QString sName = QObject::tr( "Topology Checker" );
 static const QString sDescription = QObject::tr( "A Plugin for finding topological errors in vector layers" );
 static const QString sCategory = QObject::tr( "Vector" );
