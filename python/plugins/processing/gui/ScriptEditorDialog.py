@@ -64,6 +64,8 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                             Qt.WindowCloseButtonHint)
 
         # Set icons
+        self.btnOpen.setIcon(
+                QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.btnSave.setIcon(
                 QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(
@@ -79,6 +81,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.btnRedo.setIcon(QgsApplication.getThemeIcon('/mActionRedo.png'))
 
         # Connect signals and slots
+        self.btnOpen.clicked.connect(self.openScript)
         self.btnSave.clicked.connect(self.save)
         self.btnSaveAs.clicked.connect(self.saveAs)
         self.btnEditHelp.clicked.connect(self.editHelp)
@@ -106,6 +109,18 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.editor.setLexerType(self.algType)
 
+    def closeEvent(self, evt):
+        if self.hasChanged:
+            ret = QMessageBox.question(self, self.tr('Unsaved changes'),
+                    self.tr('There are unsaved changes in script. Continue?'),
+                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if ret == QMessageBox.Yes:
+                evt.accept()
+            else:
+                evt.ignore()
+        else:
+            evt.accept()
+
     def editHelp(self):
         if self.alg is None:
             if self.algType == self.SCRIPT_PYTHON:
@@ -122,6 +137,34 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         # because there was no filename defined yet
         if self.alg is None and dlg.descriptions:
             self.help = dlg.descriptions
+
+    def openScript(self):
+        if self.hasChanged:
+            ret = QMessageBox.warning(self, self.tr('Unsaved changes'),
+                self.tr('There are unsaved changes in script. Continue?'),
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if ret == QMessageBox.No:
+                return
+
+        if self.algType == self.SCRIPT_PYTHON:
+            scriptDir = ScriptUtils.scriptsFolder()
+            filterName = self.tr('Python scripts (*.py)')
+        elif self.algType == self.SCRIPT_R:
+            scriptDir = RUtils.RScriptsFolder()
+            filterName = self.tr('Processing R script (*.rsx)')
+
+        self.filename = QFileDialog.getOpenFileName(
+            self, self.tr('Save script'), scriptDir, filterName)
+
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        with codecs.open(self.filename, 'r', encoding='utf-8') as f:
+            txt = f.read()
+
+        self.editor.setText(txt)
+        self.hasChanged = False
+        self.editor.setModified(False)
+        self.editor.recolor()
+        QApplication.restoreOverrideCursor()
 
     def save(self):
         self.saveScript(False)

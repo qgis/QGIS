@@ -203,11 +203,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
     def closeEvent(self, evt):
         if self.hasChanged:
-            ret = QMessageBox.question(self, self.tr('Message'),
-                    self.tr('There are unsaved changes in model. Close '
-                            'modeler without saving?'),
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No)
+            ret = QMessageBox.question(self, self.tr('Unsaved changes'),
+                    self.tr('There are unsaved changes in model. Continue?'),
+                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if ret == QMessageBox.Yes:
                 evt.accept()
