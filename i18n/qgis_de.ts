@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="de" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de">
 <context>
     <name>@default</name>
     <message>
@@ -486,7 +488,7 @@ Das Logfile hat mehr Information darüber</translation>
         <translation>Bibliothek:</translation>
     </message>
     <message>
-        <source>&lt;warning&gt; geometry_columns table doesn't exist!
+        <source>&lt;warning&gt; geometry_columns table doesn&apos;t exist!
 This table is essential for many GIS applications for enumeration of tables.</source>
         <translation>&lt;warning&gt; Tabelle geometry_columns existiert nicht!
 Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle unverzichtbar.</translation>
@@ -696,12 +698,12 @@ Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle u
         <translation>Skripte:</translation>
     </message>
     <message>
-        <source>&lt;warning&gt; Version of installed scripts doesn't match version of released scripts!
+        <source>&lt;warning&gt; Version of installed scripts doesn&apos;t match version of released scripts!
 This is probably a result of incorrect PostGIS upgrade.</source>
         <translation>&lt;warning&gt; Version der installierten Skripte entspricht nicht der der aktuellen Skripte!  Die ist wahrscheinlich Folge einer falschen PostGIS-Aktualisierung.</translation>
     </message>
     <message>
-        <source>&lt;warning&gt; This user doesn't have privileges to read contents of geometry_columns table!
+        <source>&lt;warning&gt; This user doesn&apos;t have privileges to read contents of geometry_columns table!
 This table is essential for many GIS applications for enumeration of tables.</source>
         <translation>&lt;warning&gt; Der Benutzer hat keine Rechte die Tabelle geometry_columns zu lesen!
 Diese Tabelle ist für viele GIS-Applikationen für die Bestimmung der Tabelle unverzichtbar.</translation>
@@ -2069,7 +2071,7 @@ Dies kann zu unerwarteten Ergebnissen führen.</translation>
         <translation>Längenfeld</translation>
     </message>
     <message>
-        <source>Can't delete existing shapefile
+        <source>Can&apos;t delete existing shapefile
 %s</source>
         <translation>Kann vorhandene Shapedateien nicht löschen
 %s</translation>
@@ -3351,7 +3353,7 @@ Erweiterung wird nicht aktiviert.</translation>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -4414,7 +4416,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
-Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don't support color indexed datasets. 
+Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
         <translation>Um einkanaligen Datensatz mit einer Farbtabelle als Datensatz mit 3 (RGB-) oder 4 (RGBA-)Kanälen auszugeben.
 Nützlich für Ausgabetreiber wie JPEG, JPEG2000, MrSID oder ECW, die keine farbindizierten Datensätze unterstützen.
@@ -8586,7 +8588,10 @@ Fehler(%2): %3</translation>
     <message numerus="yes">
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation><numerusform>Linie %1 enthält einen doppelten Knoten bei %2</numerusform><numerusform>Linie %1 enthält %n doppelte Knoten bei %2</numerusform></translation>
+        <translation>
+            <numerusform>Linie %1 enthält einen doppelten Knoten bei %2</numerusform>
+            <numerusform>Linie %1 enthält %n doppelte Knoten bei %2</numerusform>
+        </translation>
     </message>
     <message>
         <source>segments %1 and %2 of line %3 intersect at %4</source>
@@ -9919,7 +9924,7 @@ Nur %1 von %2 Objekten geschrieben.</translation>
         <translation>GRASS-Erweiterung</translation>
     </message>
     <message>
-        <source>QGIS couldn't find your GRASS installation.
+        <source>QGIS couldn&apos;t find your GRASS installation.
 Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>QGIS konnte Ihre GRASS-Installation nicht finden. Wollen Sie den Pfad zu Ihrer GRASS-Installation (GISBASE) angeben?</translation>
     </message>
@@ -11193,12 +11198,18 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     <message numerus="yes">
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
-        <translation><numerusform>Eintrag der Legende löschen?</numerusform><numerusform>%n Einträge der Legende löschen?</numerusform></translation>
+        <translation>
+            <numerusform>Eintrag der Legende löschen?</numerusform>
+            <numerusform>%n Einträge der Legende löschen?</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
-        <translation><numerusform>Eintrag der Legende gelöscht.</numerusform><numerusform>%n Einträge der Legende gelöscht.</numerusform></translation>
+        <translation>
+            <numerusform>Eintrag der Legende gelöscht.</numerusform>
+            <numerusform>%n Einträge der Legende gelöscht.</numerusform>
+        </translation>
     </message>
     <message>
         <source>%1 (%2 type unsupported)</source>
@@ -11614,7 +11625,10 @@ Fehler: %1</translation>
     <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation><numerusform>Ein Objekt löschen?</numerusform><numerusform>%n Objekte löschen?</numerusform></translation>
+        <translation>
+            <numerusform>Ein Objekt löschen?</numerusform>
+            <numerusform>%n Objekte löschen?</numerusform>
+        </translation>
     </message>
     <message>
         <source>Features deleted</source>
@@ -11631,7 +11645,10 @@ Fehler: %1</translation>
     <message numerus="yes">
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
-        <translation><numerusform>Ein Objekt gelöscht.</numerusform><numerusform>%n Objekte gelöscht.</numerusform></translation>
+        <translation>
+            <numerusform>Ein Objekt gelöscht.</numerusform>
+            <numerusform>%n Objekte gelöscht.</numerusform>
+        </translation>
     </message>
     <message>
         <source>Merging features...</source>
@@ -11997,7 +12014,10 @@ Fehler: %3
     <message numerus="yes">
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation><numerusform>Ein Objekt auf dem Layer %1 gewählt.</numerusform><numerusform>%n Objekte auf dem Layer %1 gewählt.</numerusform></translation>
+        <translation>
+            <numerusform>Ein Objekt auf dem Layer %1 gewählt.</numerusform>
+            <numerusform>%n Objekte auf dem Layer %1 gewählt.</numerusform>
+        </translation>
     </message>
     <message>
         <source>Open a GDAL Supported Raster Data Source</source>
@@ -12091,7 +12111,10 @@ Diese Fehler immer ignorieren?</translation>
     <message numerus="yes">
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation><numerusform>Ein SSL-Fehler aufgetreten</numerusform><numerusform>%n SSL-Fehler aufgetreten</numerusform></translation>
+        <translation>
+            <numerusform>Ein SSL-Fehler aufgetreten</numerusform>
+            <numerusform>%n SSL-Fehler aufgetreten</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -12125,7 +12148,7 @@ Diese Fehler immer ignorieren?</translation>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;QGIS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -12524,7 +12547,7 @@ Benutzer-DB-Pfad:		%9
         <translation>Konnte Dateinamenmuster nicht auswerten</translation>
     </message>
     <message>
-        <source>Could not set filename pattern as '%1'.
+        <source>Could not set filename pattern as &apos;%1&apos;.
 Parser error:
 %2</source>
         <translation>Konnte Dateinamenmuster &apos;%1&apos; nicht setzen.
@@ -13089,7 +13112,10 @@ Ausdruckfehler:
     <message numerus="yes">
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation><numerusform>Attributtabelle - %1 (ein Objekt gefunden)</numerusform><numerusform>Attributtabelle - %1 (%n Objekte gefunden)</numerusform></translation>
+        <translation>
+            <numerusform>Attributtabelle - %1 (ein Objekt gefunden)</numerusform>
+            <numerusform>Attributtabelle - %1 (%n Objekte gefunden)</numerusform>
+        </translation>
     </message>
     <message>
         <source>Failed to add field</source>
@@ -13321,7 +13347,10 @@ Datenbank: %2</translation>
     <message numerus="yes">
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
-        <translation><numerusform>Sind Sie sicher, daß Sie das Lesezeichen löschen wollen?</numerusform><numerusform>Sind Sie sicher, daß Sie %n Lesezeichen löschen wollen?</numerusform></translation>
+        <translation>
+            <numerusform>Sind Sie sicher, daß Sie das Lesezeichen löschen wollen?</numerusform>
+            <numerusform>Sind Sie sicher, daß Sie %n Lesezeichen löschen wollen?</numerusform>
+        </translation>
     </message>
     <message>
         <source>Empty extent</source>
@@ -13759,7 +13788,7 @@ Datenbank: %2</translation>
         <translation>Löschbestätigung</translation>
     </message>
     <message>
-        <source>The classification field was changed from '%1' to '%2'.
+        <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
         <translation>Das Klassifizierungsfeld wurde von &apos;%1&apos; auf &apos;%2&apos; geändert.
 Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</translation>
@@ -13861,7 +13890,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>Pick color</source>
-        <translation>Farbe wählen</translation>
+        <translation>Farbe aufnehmen</translation>
     </message>
 </context>
 <context>
@@ -20045,7 +20074,7 @@ und aktuelle Datei ist [%3]</translation>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt;&quot;&gt;© QGIS 2013&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -21412,7 +21441,7 @@ Leer lassen um das Maximum automatisch bestimmen zu lassen.</translation>
         <translation>Konnte Voransichtsspalte nicht setzen</translation>
     </message>
     <message>
-        <source>Could not set column '%1' as preview column.
+        <source>Could not set column &apos;%1&apos; as preview column.
 Parser error:
 %2</source>
         <translation>Konnte Spalte &apos;%1&apos; nicht als Voransichtsspalte setzen.
@@ -21709,7 +21738,7 @@ Parser-Fehler:
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Summary&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -21721,7 +21750,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Detailed report.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -22655,7 +22684,7 @@ MyForms.py muß im PYTHONPATH, .qgis/python oder im Projektverzeichnis vorhanden
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%babel&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the path to GPSBabel&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%in&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%out&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the port when uploading or the GPX filename when downloading&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -23681,7 +23710,7 @@ Bitte wählen Sie eine gültige Datei.</translation>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -24716,7 +24745,10 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation><numerusform>Sind Sie sicher, dass Sie den gewählten Layer löschen wollen?</numerusform><numerusform>Sind Sie sicher, dass Sie die %n gewählten Layer löschen wollen?</numerusform></translation>
+        <translation>
+            <numerusform>Sind Sie sicher, dass Sie den gewählten Layer löschen wollen?</numerusform>
+            <numerusform>Sind Sie sicher, dass Sie die %n gewählten Layer löschen wollen?</numerusform>
+        </translation>
     </message>
     <message>
         <source>Cannot delete map %1</source>
@@ -26004,7 +26036,7 @@ in Zeile %2, Spalte %3</translation>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;GRASS data are stored in tree directory structure. The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -26052,7 +26084,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS location is a collection of maps for a particular territory or project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -26084,7 +26116,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -26144,7 +26176,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS mapset is a collection of maps used by one user. A user can read maps from all mapsets in the location but he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -26728,7 +26760,10 @@ in Zeile %2, Spalte %3</translation>
     <message numerus="yes">
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation><numerusform>Es gibt noch einen unbehandelte Layer, die verlorengehen wenn nun geschlossen wird.</numerusform><numerusform>Es gibt noch %n unbehandelte Layer, die verlorengehen, wenn nun geschlossen wird.</numerusform></translation>
+        <translation>
+            <numerusform>Es gibt noch einen unbehandelte Layer, die verlorengehen wenn nun geschlossen wird.</numerusform>
+            <numerusform>Es gibt noch %n unbehandelte Layer, die verlorengehen, wenn nun geschlossen wird.</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -26836,9 +26871,12 @@ in Zeile %2, Spalte %3</translation>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation><numerusform>Netzwerk-Timeout nach einer Sekunde Inaktivität.
-Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</numerusform><numerusform>Netzwerk-Timeout nach %n Sekunden Inaktivität.
-Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</numerusform></translation>
+        <translation>
+            <numerusform>Netzwerk-Timeout nach einer Sekunde Inaktivität.
+Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</numerusform>
+            <numerusform>Netzwerk-Timeout nach %n Sekunden Inaktivität.
+Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -29676,7 +29714,10 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message numerus="yes">
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation><numerusform>eine weitere</numerusform><numerusform>%n weitere</numerusform></translation>
+        <translation>
+            <numerusform>eine weitere</numerusform>
+            <numerusform>%n weitere</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -29772,7 +29813,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Verbindung testen</translation>
     </message>
     <message>
-        <source>Connection failed - Host name hasn't been specified.
+        <source>Connection failed - Host name hasn&apos;t been specified.
 
 </source>
         <translation>Verbindung gescheitert - Es wurde kein Hostname angegeben.
@@ -29780,7 +29821,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 </translation>
     </message>
     <message>
-        <source>Connection failed - Database name hasn't been specified.
+        <source>Connection failed - Database name hasn&apos;t been specified.
 
 </source>
         <translation>Verbindung gescheitert - Es wurde kein Datenbankname angegeben.
@@ -31007,7 +31048,10 @@ Primärschlüssel erzeugen</translation>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation><numerusform>Koordinatenbezugssystem (eins verfügbar)</numerusform><numerusform>Koordinatenbezugssystem (%n verfügbar)</numerusform></translation>
+        <translation>
+            <numerusform>Koordinatenbezugssystem (eins verfügbar)</numerusform>
+            <numerusform>Koordinatenbezugssystem (%n verfügbar)</numerusform>
+        </translation>
     </message>
     <message>
         <source>Coordinate Reference System</source>
@@ -34600,7 +34644,7 @@ Fehler: %2</translation>
         <translation>Erweiterung ist verschwunden</translation>
     </message>
     <message>
-        <source>The plugin seems to have been installed but I don't know where. Probably the plugin package contained a wrong named directory.
+        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
         <translation>Die Eweiterung scheint installiert worden zu sein, wohin ist allerdings unbekannt.  Wahrscheinlich enthielt die Erweiterung ein falsch benanntes Verzeichnis.
 Bitte durchsuchen Sie die installierten Erweiterungen.  Es ist fast sicher, das Sie die Erweiterung dort finden werden, jedoch war nicht feststellbar, welche es ist. Dies bedeutet auch, dass nicht feststellbar ist, ob die Erweiterung installiert ist und ob es Aktualsierungen dafür gibt.  Die Erweiterung kann jedoch trotzdem funktionieren.  Bitte verständigen Sie den Autor der Erweiterung.</translation>
@@ -35212,7 +35256,7 @@ QGIS muß neugestartet werden, um sie erneut zu laden.</translation>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, QGIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Manager window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -35228,7 +35272,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -35244,7 +35288,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:600;&quot;&gt;Note:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt;&quot;&gt; Deprecated plugins are generally unsuitable for production use. These plugins are unmaintained, and should be considered &apos;obsolete&apos; tools. QGIS does not recommend installing these plugins unless you still need it and there are no other alternatives available.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -36585,7 +36629,10 @@ Daher wird die Projektionsauswahl nicht funktionieren...</translation>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation><numerusform>Die Where-Klausel gab eine Zeile zurück.</numerusform><numerusform>Die Where-Klausel gab %n Zeilen zurück.</numerusform></translation>
+        <translation>
+            <numerusform>Die Where-Klausel gab eine Zeile zurück.</numerusform>
+            <numerusform>Die Where-Klausel gab %n Zeilen zurück.</numerusform>
+        </translation>
     </message>
     <message>
         <source>Query Failed</source>
@@ -36628,7 +36675,7 @@ The data provider said:
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of fields in this vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -36642,7 +36689,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of values for the current field.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -36652,7 +36699,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Take a &lt;span style=&quot; font-weight:600;&quot;&gt;sample&lt;/span&gt; of records in the vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -36666,7 +36713,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Retrieve &lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; the record in the vector file (&lt;span style=&quot; font-style:italic;&quot;&gt;if the table is big, the operation can consume some time&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -37716,7 +37763,7 @@ Auf Hilfeknopf klicken um die gültigen Erzeugungsoptionen diese Formats zu erfa
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Droid Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -38902,7 +38949,10 @@ standard deviation ×</source>
     <message numerus="yes">
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
-        <translation><numerusform>Filter ergab ein Objekt</numerusform><numerusform>Filter ergab %n Objekte</numerusform></translation>
+        <translation>
+            <numerusform>Filter ergab ein Objekt</numerusform>
+            <numerusform>Filter ergab %n Objekte</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -39467,7 +39517,10 @@ standard deviation ×</source>
     <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation><numerusform>Ein passendes Objekt gefunden.</numerusform><numerusform>%n passende Objekte gefunden.</numerusform></translation>
+        <translation>
+            <numerusform>Ein passendes Objekt gefunden.</numerusform>
+            <numerusform>%n passende Objekte gefunden.</numerusform>
+        </translation>
     </message>
     <message>
         <source>Search string parsing error</source>
@@ -39543,7 +39596,10 @@ standard deviation ×</source>
     <message numerus="yes">
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
-        <translation><numerusform>Prüfung abgeschlossen (ein Fehler gefunden).</numerusform><numerusform>Prüfung abgeschlossen (%n Fehler gefunden).</numerusform></translation>
+        <translation>
+            <numerusform>Prüfung abgeschlossen (ein Fehler gefunden).</numerusform>
+            <numerusform>Prüfung abgeschlossen (%n Fehler gefunden).</numerusform>
+        </translation>
     </message>
     <message>
         <source>ring %1, vertex %2</source>
@@ -40487,7 +40543,10 @@ aber führt danach zu größerer Geschwindigkeit.</translation>
     <message numerus="yes">
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation><numerusform>Eine gewählte Geometrie</numerusform><numerusform>%n gewählte Geometrien</numerusform></translation>
+        <translation>
+            <numerusform>Eine gewählte Geometrie</numerusform>
+            <numerusform>%n gewählte Geometrien</numerusform>
+        </translation>
     </message>
     <message>
         <source>Selected geometries</source>
@@ -40656,7 +40715,7 @@ KBS der Karte ist %1.
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will only consider selected geometries of the target layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -40692,7 +40751,7 @@ p, li { white-space: pre-wrap; }
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will be only consider selected geometries of the reference layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -41163,8 +41222,8 @@ Wollen Sie die Beziehung [%2] überschreiben?</translation>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Cantarell'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.&lt;br /&gt;&lt;br /&gt;Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Ubuntu'; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big 'thank you' to you all!&lt;/span&gt;&lt;/p&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? QGIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of QGIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.&lt;br /&gt;&lt;br /&gt;Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/getinvolved/governance/sponsorship/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/site/about/sponsorship.html#list-of-sponsors&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Sponsors page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/gold.png&quot; /&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;img src=&quot;:/images/sponsors/sponsors/aas_300wide.png&quot; /&gt;&lt;/p&gt;
@@ -41300,12 +41359,12 @@ p, li { white-space: pre-wrap; }
         <translation>Doppelte Namen</translation>
     </message>
     <message>
-        <source>Symbol with name '%1' already exists.
+        <source>Symbol with name &apos;%1&apos; already exists.
 Overwrite?</source>
         <translation>Symbol names &apos;%1&apos; existiert bereits. Ersetzen?</translation>
     </message>
     <message>
-        <source>Color ramp with name '%1' already exists.
+        <source>Color ramp with name &apos;%1&apos; already exists.
 Overwrite?</source>
         <translation>Farbverlauf names &apos;%1&apos; existiert bereits.
 Ersetzen?</translation>
@@ -42244,7 +42303,7 @@ Es gab ein Problem mit Ihrer Symboldatenbank.</translation>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;A nice tip goes here...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -42868,22 +42927,34 @@ Fehler war:%2</translation>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation><numerusform>ERFOLG: Ein Attribut gelöscht.</numerusform><numerusform>ERFOLG: %n Attribute gelöscht.</numerusform></translation>
+        <translation>
+            <numerusform>ERFOLG: Ein Attribut gelöscht.</numerusform>
+            <numerusform>ERFOLG: %n Attribute gelöscht.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation><numerusform>FEHLER: Ein Attribut nicht gelöscht.</numerusform><numerusform>FEHLER: %n Attribute nicht gelöscht.</numerusform></translation>
+        <translation>
+            <numerusform>FEHLER: Ein Attribut nicht gelöscht.</numerusform>
+            <numerusform>FEHLER: %n Attribute nicht gelöscht.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation><numerusform>ERFOLG: Ein Attribut hinzugefügt.</numerusform><numerusform>ERFOLG: %n Attribute hinzugefügt.</numerusform></translation>
+        <translation>
+            <numerusform>ERFOLG: Ein Attribut hinzugefügt.</numerusform>
+            <numerusform>ERFOLG: %n Attribute hinzugefügt.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation><numerusform>FEHLER: Ein Attribut nicht hinzugefügt</numerusform><numerusform>FEHLER: %n Attribute nicht hinzugefügt</numerusform></translation>
+        <translation>
+            <numerusform>FEHLER: Ein Attribut nicht hinzugefügt</numerusform>
+            <numerusform>FEHLER: %n Attribute nicht hinzugefügt</numerusform>
+        </translation>
     </message>
     <message>
         <source>ERROR: the count of fields is incorrect after addition/removal of fields!</source>
@@ -42912,47 +42983,74 @@ Fehler war:%2</translation>
     <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation><numerusform>ERFOLG: Ein Attributwert geändert.</numerusform><numerusform>ERFOLG: %n Attributwerte geändert.</numerusform></translation>
+        <translation>
+            <numerusform>ERFOLG: Ein Attributwert geändert.</numerusform>
+            <numerusform>ERFOLG: %n Attributwerte geändert.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation><numerusform>FEHLER: Eine Attributwertänderung nicht angewendet.</numerusform><numerusform>FEHLER: %n Attributwertänderungen nicht angewendet.</numerusform></translation>
+        <translation>
+            <numerusform>FEHLER: Eine Attributwertänderung nicht angewendet.</numerusform>
+            <numerusform>FEHLER: %n Attributwertänderungen nicht angewendet.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation><numerusform>ERFOLG: Ein Objekt gelöscht.</numerusform><numerusform>ERFOLG: %n Objekte gelöscht.</numerusform></translation>
+        <translation>
+            <numerusform>ERFOLG: Ein Objekt gelöscht.</numerusform>
+            <numerusform>ERFOLG: %n Objekte gelöscht.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation><numerusform>FEHLER: Ein Objekt nicht gelöscht.</numerusform><numerusform>FEHLER: %n Objekte nicht gelöscht.</numerusform></translation>
+        <translation>
+            <numerusform>FEHLER: Ein Objekt nicht gelöscht.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht gelöscht.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation><numerusform>ERFOLG: Ein Objekt hinzugefügt.</numerusform><numerusform>ERFOLG: %n Objekte hinzugefügt.</numerusform></translation>
+        <translation>
+            <numerusform>ERFOLG: Ein Objekt hinzugefügt.</numerusform>
+            <numerusform>ERFOLG: %n Objekte hinzugefügt.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation><numerusform>FEHLER: Ein Objekt nicht hinzugefügt.</numerusform><numerusform>FEHLER: %n Objekte nicht hinzugefügt.</numerusform></translation>
+        <translation>
+            <numerusform>FEHLER: Ein Objekt nicht hinzugefügt.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht hinzugefügt.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
-        <translation><numerusform>FEHLER: Ein Objekt nicht hinzugefügt - Datenlieferant unterstützt das Hinzufügen nicht.</numerusform><numerusform>FEHLER: %n Objekte nicht hinzugefügt - Datenlieferant unterstützt das Hinzufügen nicht.</numerusform></translation>
+        <translation>
+            <numerusform>FEHLER: Ein Objekt nicht hinzugefügt - Datenlieferant unterstützt das Hinzufügen nicht.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht hinzugefügt - Datenlieferant unterstützt das Hinzufügen nicht.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation><numerusform>ERFOLG: Eine Geometrie geändert.</numerusform><numerusform>ERFOLG: %n Geometrien geändert.</numerusform></translation>
+        <translation>
+            <numerusform>ERFOLG: Eine Geometrie geändert.</numerusform>
+            <numerusform>ERFOLG: %n Geometrien geändert.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation><numerusform>FEHLER: Eine Geometrie nicht geändert.</numerusform><numerusform>FEHLER: %n Geometrien nicht geändert.</numerusform></translation>
+        <translation>
+            <numerusform>FEHLER: Eine Geometrie nicht geändert.</numerusform>
+            <numerusform>FEHLER: %n Geometrien nicht geändert.</numerusform>
+        </translation>
     </message>
     <message>
         <source>
@@ -43842,7 +43940,10 @@ Fehler war:%2</translation>
     <message numerus="yes">
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation><numerusform>Optionen (Ein Koordinatenbezugssystem verfügbar)</numerusform><numerusform>Optionen (%n Koordinatenbezugssysteme verfügbar)</numerusform></translation>
+        <translation>
+            <numerusform>Optionen (Ein Koordinatenbezugssystem verfügbar)</numerusform>
+            <numerusform>Optionen (%n Koordinatenbezugssysteme verfügbar)</numerusform>
+        </translation>
     </message>
     <message>
         <source>Select layer(s)</source>
@@ -43859,7 +43960,10 @@ Fehler war:%2</translation>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation><numerusform>Koordinatenbezugssystem (eins verfügbar)</numerusform><numerusform>Koordinatenbezugssystem (%n verfügbar)</numerusform></translation>
+        <translation>
+            <numerusform>Koordinatenbezugssystem (eins verfügbar)</numerusform>
+            <numerusform>Koordinatenbezugssystem (%n verfügbar)</numerusform>
+        </translation>
     </message>
     <message>
         <source>No common CRS for selected layers.</source>
@@ -43876,7 +43980,10 @@ Fehler war:%2</translation>
     <message numerus="yes">
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation><numerusform>Ein Layer gewählt</numerusform><numerusform>%n Layer gewählt</numerusform></translation>
+        <translation>
+            <numerusform>Ein Layer gewählt</numerusform>
+            <numerusform>%n Layer gewählt</numerusform>
+        </translation>
     </message>
     <message>
         <source>Tileset selected</source>
@@ -44385,7 +44492,10 @@ Antwort war:
     <message numerus="yes">
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation><numerusform>(und ein weiteres)</numerusform><numerusform>(und %n weitere)</numerusform></translation>
+        <translation>
+            <numerusform>(und ein weiteres)</numerusform>
+            <numerusform>(und %n weitere)</numerusform>
+        </translation>
     </message>
     <message>
         <source>Available in format</source>
@@ -44593,22 +44703,34 @@ Antwort war:
     <message numerus="yes">
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation><numerusform>Eine Tile-Anfrage im Hintergrund</numerusform><numerusform>%n Tile-Anfragen im Hintergrund</numerusform></translation>
+        <translation>
+            <numerusform>Eine Tile-Anfrage im Hintergrund</numerusform>
+            <numerusform>%n Tile-Anfragen im Hintergrund</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation><numerusform>, ein Cache-Treffer</numerusform><numerusform>, %n Cache-Treffer</numerusform></translation>
+        <translation>
+            <numerusform>, ein Cache-Treffer</numerusform>
+            <numerusform>, %n Cache-Treffer</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation><numerusform>, ein Cache-Fehlgriff.</numerusform><numerusform>, %n Cache-Fehlgriffe.</numerusform></translation>
+        <translation>
+            <numerusform>, ein Cache-Fehlgriff.</numerusform>
+            <numerusform>, %n Cache-Fehlgriffe.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation><numerusform>, ein Fehler.</numerusform><numerusform>, %n Fehler.</numerusform></translation>
+        <translation>
+            <numerusform>, ein Fehler.</numerusform>
+            <numerusform>, %n Fehler.</numerusform>
+        </translation>
     </message>
     <message>
         <source>image is NULL</source>
@@ -44767,7 +44889,10 @@ Grund: %2</translation>
     <message numerus="yes">
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation><numerusform>(und ein weiteres)</numerusform><numerusform>(und %n weitere)</numerusform></translation>
+        <translation>
+            <numerusform>(und ein weiteres)</numerusform>
+            <numerusform>(und %n weitere)</numerusform>
+        </translation>
     </message>
     <message>
         <source>Available in style</source>
@@ -44979,7 +45104,10 @@ Antwort war:
     </message>
     <message numerus="yes">
         <source>%n missing row(s)</source>
-        <translation><numerusform>Eine fehlende Zeile</numerusform><numerusform>%n fehlende Zeilen</numerusform></translation>
+        <translation>
+            <numerusform>Eine fehlende Zeile</numerusform>
+            <numerusform>%n fehlende Zeilen</numerusform>
+        </translation>
     </message>
     <message>
         <source>Layer&apos;s upper bound: %1</source>
@@ -44987,7 +45115,10 @@ Antwort war:
     </message>
     <message numerus="yes">
         <source>%n missing column(s)</source>
-        <translation><numerusform>Eine fehlende Spalte</numerusform><numerusform>%n fehlende Spalten</numerusform></translation>
+        <translation>
+            <numerusform>Eine fehlende Spalte</numerusform>
+            <numerusform>%n fehlende Spalten</numerusform>
+        </translation>
     </message>
     <message>
         <source>Layer&apos;s left bound: %1</source>
@@ -45113,22 +45244,34 @@ Grund: %2</translation>
     <message numerus="yes">
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation><numerusform>Eine Kachelabfrage im Hintergrund</numerusform><numerusform>%n Kachelabfragen im Hintergrund</numerusform></translation>
+        <translation>
+            <numerusform>Eine Kachelabfrage im Hintergrund</numerusform>
+            <numerusform>%n Kachelabfragen im Hintergrund</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation><numerusform>, ein Cache-Treffer</numerusform><numerusform>, %n Cache-Treffer</numerusform></translation>
+        <translation>
+            <numerusform>, ein Cache-Treffer</numerusform>
+            <numerusform>, %n Cache-Treffer</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation><numerusform>, ein Cache-Fehlgriff.</numerusform><numerusform>, %n Cache-Fehlgriffe.</numerusform></translation>
+        <translation>
+            <numerusform>, ein Cache-Fehlgriff.</numerusform>
+            <numerusform>, %n Cache-Fehlgriffe.</numerusform>
+        </translation>
     </message>
     <message numerus="yes">
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation><numerusform>, ein Fehler.</numerusform><numerusform>, %n Fehler.</numerusform></translation>
+        <translation>
+            <numerusform>, ein Fehler.</numerusform>
+            <numerusform>, %n Fehler.</numerusform>
+        </translation>
     </message>
     <message>
         <source>Not logging more than 100 request errors.</source>
@@ -47059,7 +47202,7 @@ This dialog allows you to define the settings for a connection to a Oracle datab
 
 &lt;li&gt; &lt;label&gt;Only look in meta data table&lt;/label&gt; Restricts the displayed tables to those that are in the all_sdo_geom_metadata view. This can speed up the initial display of spatial tables.
 
-&lt;li&gt; &lt;label&gt;Only look for user's tables&lt;/label&gt; When searching for spatial tables restrict the search to tables that are owner by the user.
+&lt;li&gt; &lt;label&gt;Only look for user&apos;s tables&lt;/label&gt; When searching for spatial tables restrict the search to tables that are owner by the user.
 
 &lt;li&gt; &lt;label&gt;Also list tables with no geometry&lt;/label&gt;  Indicates that tables without geometry should also be listed by default.
 
@@ -47074,7 +47217,7 @@ the SDO_TUNE.EXTENTS_OF function even if a layer filter is applied. The table
 geometry is determined from the first 100 non-null geometry rows in the table.
 
 &lt;li&gt; &lt;label&gt;Only existing geometry types&lt;/label&gt; Only list the existing
-geometry types and don't offer to add others.
+geometry types and don&apos;t offer to add others.
 
 &lt;/ul&gt;
 </source>
@@ -47228,10 +47371,10 @@ The field calculator allows you to update fields with expressions.
   &lt;/td&gt;
   &lt;td&gt;value of field &lt;tt&gt;column_name&lt;/tt&gt;&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;'&lt;tt&gt;string&lt;/tt&gt;'&lt;/td&gt;&lt;td&gt;literal string value&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&apos;&lt;tt&gt;string&lt;/tt&gt;&apos;&lt;/td&gt;&lt;td&gt;literal string value&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;&lt;tt&gt;number&lt;/tt&gt;&lt;/td&gt;&lt;td&gt;number&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;NULL&lt;/td&gt;&lt;td&gt;null value&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Euler's number e to the power of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;exp(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;Euler&apos;s number e to the power of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;ln(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;natural log (i.e. base e) of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;log10(&lt;tt&gt;a&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base 10 of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;log(&lt;tt&gt;a&lt;/tt&gt;,&lt;tt&gt;b&lt;/tt&gt;)&lt;/td&gt;&lt;td&gt;log base &lt;tt&gt;b&lt;/tt&gt; of &lt;tt&gt;a&lt;/tt&gt;&lt;/td&gt;&lt;/tr&gt;
@@ -47377,8 +47520,8 @@ Draws a scale bar on the map.
 &lt;p&gt;
 You can control the style and placement, as well as the labeling of the bar.
 QGIS only supports displaying the scale in the same units as your map frame. So
-if the units of your layers are in meters, you can't create a scale bar in
-feet. Likewise if you are using decimal degrees, you can't create a scale bar
+if the units of your layers are in meters, you can&apos;t create a scale bar in
+feet. Likewise if you are using decimal degrees, you can&apos;t create a scale bar
 to display distance in meters.&lt;/p&gt; &lt;p&gt;
 To add a scale bar:
 &lt;ol&gt;
@@ -47568,7 +47711,7 @@ The history will be saved into the file ~/.qgis2/console_history.txt&lt;/li&gt;
 &lt;/tr&gt;
 &lt;table&gt;
 &lt;b&gt;&lt;i&gt;Toolbar:&lt;/i&gt;&lt;/b&gt;
-&lt;table width=&quot;100%&quot; id='toolbarConsole'&gt;
+&lt;table width=&quot;100%&quot; id=&apos;toolbarConsole&apos;&gt;
 &lt;tr&gt;
 &lt;td&gt;&lt;img src=&quot;qrc:/images/themes/default/console/iconClearConsole.png&quot; /&gt;&lt;/td&gt;
 &lt;td colspan=&quot;2&quot;&gt;Clear python console&lt;/td&gt;
@@ -47663,8 +47806,8 @@ that will be automatically deleted after running.&lt;/li&gt;
 &lt;br&gt;
 &lt;li&gt;&lt;label&gt;Using prepared APIs file:&lt;/label&gt; If checked the *.pap file will be used for code completion. To generate a prepared APIs file you have to load least an *.api file and then compile it by clicking on &lt;label&gt;Compile Apis...&lt;/label&gt; button.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p style='border: 1px solid; background:#f6f6f6;' align='justify'&gt;
-&lt;b&gt;Note:&lt;/b&gt; To save the state of console's widgets you have to close the Python Console 
+&lt;p style=&apos;border: 1px solid; background:#f6f6f6;&apos; align=&apos;justify&apos;&gt;
+&lt;b&gt;Note:&lt;/b&gt; To save the state of console&apos;s widgets you have to close the Python Console 
 from the close button. This allows you to save the geometry to be restored to the next start.
 &lt;/p&gt;
 </source>
@@ -47848,8 +47991,8 @@ To avoid digitizing all vertices of the common boundary select &lt;label&gt;Avoi
 &lt;a name=&quot;crs&quot;&gt;
 &lt;h4&gt;Coordinate Reference System (CRS) Tab&lt;/h4&gt;
 &lt;/a&gt;
-The Coordinate Reference System (CRS) tab allows you to set the projection for the current project and enable on the fly transformation. You do not need to have a saved project to setup and enable 'on the fly' CRS transformation.
-&lt;p&gt;To use 'on the fly' CRS transformation, click the &lt;label&gt;Enable 'on the fly' CRS transformation&lt;/label&gt; check box. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
+The Coordinate Reference System (CRS) tab allows you to set the projection for the current project and enable on the fly transformation. You do not need to have a saved project to setup and enable &apos;on the fly&apos; CRS transformation.
+&lt;p&gt;To use &apos;on the fly&apos; CRS transformation, click the &lt;label&gt;Enable &apos;on the fly&apos; CRS transformation&lt;/label&gt; check box. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
 &lt;p&gt;You can find a coordinate system by entering its name, EPSG code or the QGIS ID and clicking the &lt;label&gt;Find&lt;/label&gt; button.
 &lt;p&gt;The list of recently used coordinate systems will be available on the bottom for quick access.
 
@@ -48265,7 +48408,7 @@ Um ein Lesezeichen im Dialog zu löschen, klicken Sie auf &lt;label&gt;Löschen&
 &lt;p&gt;&lt;label&gt;Topology tolerance&lt;/label&gt; - the distance in units of the project. If the distance of two points falls short the topological tolerance, they are considered to be the vertex. A topological tolerance value greater than zero slows down the plugin, but you can use not ideal data sources.&lt;/p&gt;
 
 &lt;h5&gt;Note&lt;/h5&gt;
-&lt;p&gt;The Road graph plugin considers two roads as linked, if they have a common node. A Node is uniquely identified by it's coordinates. However, in the process of digitizing errors may occur. The errors sometimes occur when the network is transformed from one coordinate reference system to another. This might cause the Road graph plugin to consider connected roads as disconnected. In that case the topological tolerance should be set to a value greater than zero.&lt;/p&gt;
+&lt;p&gt;The Road graph plugin considers two roads as linked, if they have a common node. A Node is uniquely identified by it&apos;s coordinates. However, in the process of digitizing errors may occur. The errors sometimes occur when the network is transformed from one coordinate reference system to another. This might cause the Road graph plugin to consider connected roads as disconnected. In that case the topological tolerance should be set to a value greater than zero.&lt;/p&gt;
 
 &lt;a name=&quot;LayerSettings&quot;&gt;
 &lt;h4&gt;Transport layer settings&lt;/h4&gt;
@@ -48414,7 +48557,7 @@ To create a new CRS, click the &lt;label&gt;New&lt;/label&gt; button and enter:
 Note that the Parameters must begin with a +proj=-block, to represent the new coordinate reference
 system.
 &lt;p&gt;
-Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User's Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
+Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the &lt;a href=&quot;ftp://ftp.remotesensing.org/proj/OF90-284.pdf&quot;&gt;Cartographic Projection Procedures for the UNIX Environment&lt;/a&gt; - A User&apos;s Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the &lt;i&gt;proj.4&lt;/i&gt; and related command line utilities. The cartographic parameters used with &lt;i&gt;proj.4&lt;/i&gt; are described in the user manual, and are the same as those used by QGIS.
 </source>
         <translation>&lt;h3&gt;Definition eines Benutzerkoordinatensystems&lt;/h3&gt;
 Wenn QGIS ein benötigtes Koordinatensystem nicht zur Verfügung stellt, können Sie ein Benutzer-KBS definieren.
@@ -48607,7 +48750,7 @@ It is safer to use an explicit coding if the QGIS project needs to be portable.
     or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
     A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
     (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
-    generally discarded.  For example &lt;tt&gt;N41d54'01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
     &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
@@ -48657,8 +48800,8 @@ are escaped.&lt;/p&gt;
 (that is, to stop it being treated as a new line, delimiter, or quote character).  
 &lt;/p&gt;
 &lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
-&lt;tt&gt;'&lt;/tt&gt; is a quote and escape character, then the string
-&lt;tt&gt;'Smith''s&amp;nbsp;Creek'&lt;/tt&gt; will represent the value Smith's&amp;nbsp;Creek.
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
 &lt;/p&gt;
 
 
@@ -49054,7 +49197,7 @@ Die folgenden Optionen können verwendet werden
         <source>&lt;h3&gt;Create a New SpatiaLite Layer&lt;/h3&gt;
 You can use this dialog to create a new SpatiaLite database and/or an empty SpatiaLite layer for editing. See below for an explanation of the dialog inputs.
 &lt;h4&gt;Database&lt;/h4&gt;
-Choose the database from the drop-down list. This list is created from your saved SpatiaLite connections. If you don't have a saved connection or want to create a new database, click on the button (&lt;label&gt;...&lt;/label&gt;) to the right of the drop-down.
+Choose the database from the drop-down list. This list is created from your saved SpatiaLite connections. If you don&apos;t have a saved connection or want to create a new database, click on the button (&lt;label&gt;...&lt;/label&gt;) to the right of the drop-down.
 &lt;h4&gt;Layer name&lt;/h4&gt;
 Enter a name for the layer you want to create. The name should be one word. You can use underscores in the name if you like.
 &lt;h4&gt;Geometry column&lt;/h4&gt;
@@ -49064,7 +49207,7 @@ Choose the type of layer you want to create.
 &lt;h4&gt;EPSG SRID&lt;/h4&gt;
 Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on &lt;label&gt;Find SRID&lt;/label&gt; button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your SpatiaLite database. You can search for the SRID using partial matches on both name and SRID.
 &lt;h4&gt;Create an auto-incrementing Primary Key&lt;/h4&gt;
-Clicking this check box will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don't have to enter a value for it when adding features to the attribute table of the layer.
+Clicking this check box will add a primary key to the new layer. This key field will be auto-incrementing, meaning you don&apos;t have to enter a value for it when adding features to the attribute table of the layer.
 &lt;h4&gt;New attribute&lt;/h4&gt;
 Add the desired attributes by clicking on the &lt;label&gt;Add to attributes list&lt;/label&gt; button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.&lt;br/&gt;
 Width and precision are irrelevant in a SpatiaLite database so you do not have to specify these.
@@ -49106,7 +49249,7 @@ Klicken Sie auf &lt;label&gt;OK&lt;/label&gt; um den Layer anzulegen und den Dia
 The open vector layer dialog is used to add vector data to the QGIS map view. Vector data are spatial data described using geometries of points, lines and polygons (enclosed areas).&lt;/p&gt;
 QGIS supports vector data in a number of formats, including those supported by the OGR library data provider plugin, such as ESRI shape files, MapInfo MIF (interchange format) and MapInfo TAB (native format).&lt;/p&gt;
 QGIS supports PostGIS layers in a PostgreSQL database and SpatiaLite layers. Support for additional data types (eg. delimited text) is provided by additional data provider plugins. A list of OGR supported vector formats can be found in Appendix A.1 of the User Guide.&lt;/p&gt;
-Detailed description how to proceed with vector data is described in chapter 5 'Working with Vector Data'.
+Detailed description how to proceed with vector data is described in chapter 5 &apos;Working with Vector Data&apos;.
 </source>
         <translation>&lt;h3&gt;Vektorlayer hinzufügen&lt;/h3&gt;
 
@@ -49142,7 +49285,7 @@ This dialog allows you to define the settings for a connection to a PostgreSQL/P
 
 &lt;li&gt; &lt;label&gt;Only look in the geometry_columns table&lt;/label&gt; Indicates that only &quot;listed&quot; geometry columns should be used - opposed to scanning all tables for geometry columns.
 
-&lt;li&gt; &lt;label&gt;Only look in the 'public' schema&lt;/label&gt; Indicates that only tables in the 'public' schema should be considers - opposed to all accessible tables.
+&lt;li&gt; &lt;label&gt;Only look in the &apos;public&apos; schema&lt;/label&gt; Indicates that only tables in the &apos;public&apos; schema should be considers - opposed to all accessible tables.
 
 &lt;li&gt; &lt;label&gt;Also list tables with no geometry&lt;/label&gt;  Indicates that tables without geometry should also be listed by default.
 
@@ -49262,10 +49405,10 @@ It is possible to check how often QGIS will download the list and update informa
 from the available repositories.
 &lt;/p&gt;
 &lt;p&gt;
-By checking the 'Show experimental plugins' checkbox, all plugins will be shown
-in the lists, even the ones that are considered 'experimental' by the author.
+By checking the &apos;Show experimental plugins&apos; checkbox, all plugins will be shown
+in the lists, even the ones that are considered &apos;experimental&apos; by the author.
 
-&lt;table border=1 width='95%' align='center'&gt;&lt;tr&gt;&lt;td&gt;
+&lt;table border=1 width=&apos;95%&apos; align=&apos;center&apos;&gt;&lt;tr&gt;&lt;td&gt;
 Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of development, and should be considered &quot;incomplete&quot; or &quot;proof of concept&quot; tools. The QGIS development team does not recommend installing these plugins unless you intend to use them for testing purposes.
 &lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;
 
@@ -49444,7 +49587,7 @@ Define placement algorithm for labels. Choose between &lt;label&gt;central point
 In the &lt;label&gt;Digitizing&lt;/label&gt; tab you can define settings for digitizing line width and color.
 &lt;h5&gt;Snapping&lt;/h5&gt;
 Here you can define a general, project wide snapping tolerance. &lt;p&gt;
-You can select between &lt;label&gt;To vertex&lt;/label&gt;, &lt;label&gt;To segment&lt;/label&gt; or &lt;label&gt;To vertex and segment&lt;/label&gt; as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn't have to be changed after zoom operations.&lt;p&gt;
+You can select between &lt;label&gt;To vertex&lt;/label&gt;, &lt;label&gt;To segment&lt;/label&gt; or &lt;label&gt;To vertex and segment&lt;/label&gt; as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn&apos;t have to be changed after zoom operations.&lt;p&gt;
 A layer based snapping tolerance can be defined by choosing &lt;label&gt;Settings&lt;/label&gt; (or &lt;label&gt;File&lt;/label&gt;) &gt; &lt;label&gt;Project Properties...&lt;/label&gt;. In the &lt;label&gt;General&lt;/label&gt; tab, section &lt;label&gt;Digitize&lt;/label&gt; you can click on &lt;label&gt;Snapping options...&lt;/label&gt; to enable and adjust snapping mode and tolerance on a layer basis.
 &lt;h5&gt;Vertex markers&lt;/h5&gt;
 You can define marker style as &lt;label&gt;Semi transparent circle&lt;/label&gt;, &lt;label&gt;Cross&lt;/label&gt; or &lt;label&gt;None&lt;/label&gt; and size; you can also set showing markers only for selected features.
@@ -49678,7 +49821,7 @@ For more complex searches, this mode offers a powerful expression builder, which
 &lt;h4&gt;Editing&lt;/h4&gt;
 &lt;/a&gt;
 To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  &lt;br&gt;
-You can also edit a field's value for many rows at once. You need to select the rows you want to edit and then use the &lt;label&gt;Field Calculator&lt;/label&gt; or the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. If no row is selected, the edition will apply on all the features.
+You can also edit a field&apos;s value for many rows at once. You need to select the rows you want to edit and then use the &lt;label&gt;Field Calculator&lt;/label&gt; or the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. If no row is selected, the edition will apply on all the features.
 
 &lt;a name=&quot;FieldCalc&quot;&gt;
 &lt;h4&gt;Field Calculator&lt;/h4&gt;
@@ -49980,7 +50123,7 @@ Unterstützung unter scala@itc.cnr.it</translation>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -50632,9 +50775,9 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;week('2012-05-12') &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;week(tointerval('3 weeks')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;week(age('2012-01-01','2010-01-01')) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(&apos;2012-05-12&apos;) &amp;rarr; 19&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(tointerval(&apos;3 weeks&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;week(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 104.285...&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion week()&lt;/h3&gt;
@@ -50683,7 +50826,7 @@ return a result.
 &lt;!-- Show example of function.--&gt;
 &lt;pre&gt;
     CASE
-        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;'None'&lt;/i&gt;
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
         ELSE &lt;i&gt;&quot;column&quot;&lt;/i&gt;
     END
 &lt;/pre&gt;
@@ -50732,7 +50875,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; rightmost characters 
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;right('Hello World',5) &amp;rarr; 'World'&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;right(&apos;Hello World&apos;,5) &amp;rarr; &apos;World&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion right()&lt;/h3&gt;
@@ -50773,7 +50916,7 @@ Returns the length of a string.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     length('HELLO') &amp;rarr; 5&lt;/p&gt;
+     length(&apos;HELLO&apos;) &amp;rarr; 5&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion length()&lt;/h3&gt;
 Liefert die L&amp;auml;nge einer Zeichenkette.
@@ -50803,7 +50946,7 @@ Converts a string to upper case letters.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     upper('hello WOrld') &amp;rarr; 'HELLO WORLD'&lt;/p&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;HELLO WORLD&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion upper()&lt;/h3&gt;
 Wandelt eine Zeichenkette in Gro&amp;szlig;buchstaben.
@@ -50822,7 +50965,7 @@ Wandelt eine Zeichenkette in Gro&amp;szlig;buchstaben.
     </message>
     <message>
         <source>&lt;h3&gt;bbox function&lt;/h3&gt;
-Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don't.
+Returns 1 if the geometries spatially intersect the bounding box defined and 0 if they don&apos;t.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
 &lt;pre&gt;bbox( a, b )&lt;/pre&gt;
@@ -50832,8 +50975,8 @@ a &amp;rarr; geometry
 b &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;bbox( geomFromWKT( 'POINT(4 5)' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' )) &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt;bbox( geomFromWKT( 'POINT(6 5)' ) , geomFromWKT( 'POLYGON((3 3 , 4 4 , 5 5, 3 3))' )) &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt;bbox( geomFromWKT( &apos;POINT(6 5)&apos; ) , geomFromWKT( &apos;POLYGON((3 3 , 4 4 , 5 5, 3 3))&apos; )) &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion bbox&lt;/h3&gt;
 Gibt 1 zurück, wenn sich die Ausmaße der beiden Geometrien räumlich überschneiden und anderenfalls 0 zurück.
@@ -50863,7 +51006,7 @@ Returns a substring that contains the &lt;i&gt;n&lt;/i&gt; leftmost characters o
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;left('Hello World',5) &amp;rarr; 'Hello'&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;left(&apos;Hello World&apos;,5) &amp;rarr; &apos;Hello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion left()&lt;/h3&gt;
@@ -50944,7 +51087,7 @@ Rundet eine Zahl auf.
     </message>
     <message>
         <source>&lt;h3&gt;toreal() function&lt;/h3&gt;
-Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g '123.56asd' is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g &apos;123.56asd&apos; is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
      toreal(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
@@ -50955,7 +51098,7 @@ Converts a string to real number. Nothing changed if a value cannot be converted
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     toreal('123.45') &amp;rarr; 123.45&lt;/p&gt;
+     toreal(&apos;123.45&apos;) &amp;rarr; 123.45&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion toreal()&lt;/h3&gt;
 Wandelt eine Zeichenkette in eine Flie&amp;szlig;kommazahl.  Nichts &amp;auml;ndert sich, wenn die
@@ -51036,7 +51179,7 @@ Return the index of a regular expression in a string.
 &lt;h4&gt;Syntax&lt;/h4&gt;
      strpos(&lt;i&gt;haystack&lt;/i&gt;, &lt;i&gt;needle&lt;/i&gt;)
 &lt;br&gt;&lt;br&gt;
-Returns -1 if the expression isn't found.
+Returns -1 if the expression isn&apos;t found.
 
 &lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
@@ -51045,8 +51188,8 @@ Returns -1 if the expression isn't found.
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     strpos('HELLO WORLD','WORLD') &amp;rarr; 6&lt;br&gt;
-     strpos('HELLO WORLD','GOODBYE') &amp;rarr; -1&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;WORLD&apos;) &amp;rarr; 6&lt;br&gt;
+     strpos(&apos;HELLO WORLD&apos;,&apos;GOODBYE&apos;) &amp;rarr; -1&lt;br&gt;
 </source>
         <translation>&lt;h3&gt;Funktion strpos()&lt;/h3&gt;
 Bestimmt die Position eines regul&amp;auml;ren Ausdrucks in einer Zeichenkette.
@@ -51256,7 +51399,7 @@ geom &amp;rarr; eine Geometrie
     </message>
     <message>
         <source>&lt;h3&gt;toint() function&lt;/h3&gt;
-Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g '123asd' is invalid).
+Converts a string to integer number. Nothing changed if a value cannot be converted to integer (e.g &apos;123asd&apos; is invalid).
 
 &lt;p&gt;&lt;h4&gt;Syntax&lt;/h4&gt;
      toint(&lt;i&gt;string&lt;/i&gt;)&lt;/p&gt;
@@ -51267,7 +51410,7 @@ Converts a string to integer number. Nothing changed if a value cannot be conver
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     toint('123') &amp;rarr; 123&lt;/p&gt;
+     toint(&apos;123&apos;) &amp;rarr; 123&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion toint()&lt;/h3&gt;
 Wandelt eine Zeichenkette in eine ganze Zahl um.  Bricht ab, wenn die Zeichenkette nicht in eine Zahl umgewandelt werden kann (&apos;123asd&apos; ist z.B. ung&amp;uuml;ltig).
@@ -51323,7 +51466,7 @@ Converts a number to string.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     tostring(123) &amp;rarr; '123'&lt;/p&gt;
+     tostring(123) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion tostring()&lt;/h3&gt;
 Wandelt eine Zahl in eine Zeichenkette um.
@@ -51443,9 +51586,9 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;month('2012-05-12') &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;month(tointerval('3 months')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;month(age('2012-01-01','2010-01-01')) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(&apos;2012-05-12&apos;) &amp;rarr; 05&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(tointerval(&apos;3 months&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;month(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 4.033...&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;month() function&lt;/h3&gt;
@@ -51512,9 +51655,9 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;day('2012-05-12') &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;day(tointerval('3 days')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;day(age('2012-01-01','2010-01-01')) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(&apos;2012-05-12&apos;) &amp;rarr; 12&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(tointerval(&apos;3 days&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 730&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion day()&lt;/h3&gt;
@@ -51541,7 +51684,7 @@ Tag eines Datum oder Anzahl der Tage eines &lt;code&gt;Intervalls&lt;/code&gt;.
 Convert a string into Qt data type.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;todate('string')&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;todate(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;code&gt;string&lt;/code&gt; - is string in Qt date format.
@@ -51582,7 +51725,7 @@ using the fill character.
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;lpad('Hello', 10, 'x') &amp;rarr; 'Helloxxxxx'&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;lpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;Helloxxxxx&apos;&lt;/code&gt;&lt;br&gt;
 </source>
         <translation>&lt;h3&gt;Funktion lpad()&lt;/h3&gt;
 Ergibt eine mit einem am Ende mit einem Zeichen auf eine bestimmte L&amp;auml;nge aufgef&amp;uuml;llte Zeichenkette.
@@ -51636,7 +51779,7 @@ Contains a list of fields from the layer.  Sample values can also be accessed vi
 Select the field name from the list then right-click to access context menu with options to load sample values from the selected field.
 
 &lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-Loading field values from WFS layers isn't supported, before the layer is
+Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
@@ -51702,7 +51845,7 @@ Double click to add field name to expression string.
 Right-Click on field name to open context menu sample value loading options.
 
 &lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
-Loading field values from WFS layers isn't supported, before the layer is
+Loading field values from WFS layers isn&apos;t supported, before the layer is
 actually inserted, ie. when building queries.
 &lt;/p&gt;
 </source>
@@ -51787,7 +51930,7 @@ using the fill character.
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;rpad('Hello', 10, 'x') &amp;rarr; 'xxxxxHello'&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;rpad(&apos;Hello&apos;, 10, &apos;x&apos;) &amp;rarr; &apos;xxxxxHello&apos;&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion rpad()&lt;/h3&gt;
@@ -51893,7 +52036,7 @@ Returns a string representation of a color based on its hue, saturation, and lig
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_hsl(100,50,70) &amp;rarr; '166,217,140'&lt;/p&gt;
+     color_hsl(100,50,70) &amp;rarr; &apos;166,217,140&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_hsl()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung und Helligkeit zur&amp;uuml;ck.
@@ -51922,8 +52065,8 @@ of the specified output range.
 &lt;i&gt;  val&lt;/i&gt; &amp;rarr; is a value in the input domain. The function will return a corresponding scaled value in the output range.&lt;br&gt;
 &lt;i&gt;  domain_min, domain_max&lt;/i&gt; &amp;rarr; specify the input domain, the smallest and largest values the input &lt;i&gt;val&lt;/i&gt; should take.&lt;br&gt;
 &lt;i&gt;  range_min, range_max&lt;/i&gt; &amp;rarr; specify the output range, the smallest and largest values which should be output by the function.&lt;br&gt;
-&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; a positive value (greater than 0), which dictates the way input values are mapped to the output range. Large exponents will cause the output values to 'ease in', starting slowly before
-accelerating as the input values approach the domain maximum. Smaller exponents (less than 1) will cause output values to 'ease out', where the mapping starts quickly but slows as it approaches the domain maximum.&lt;br&gt;
+&lt;i&gt;  exponent&lt;/i&gt; &amp;rarr; a positive value (greater than 0), which dictates the way input values are mapped to the output range. Large exponents will cause the output values to &apos;ease in&apos;, starting slowly before
+accelerating as the input values approach the domain maximum. Smaller exponents (less than 1) will cause output values to &apos;ease out&apos;, where the mapping starts quickly but slows as it approaches the domain maximum.&lt;br&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
@@ -51976,7 +52119,7 @@ a &amp;rarr; geometry
 a &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( 'LINESTRING(3 3 , 4 4 , 4 10)' )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
+&lt;pre&gt;  geomToWKT( convexHull( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 4 10)&apos; )) )   &amp;rarr; returns POLYGON((3 3,4 10,4 4,3 3)) &lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion convexHull&lt;/h3&gt;
 Gibt die konvexe Hülle einer Geometrie zurück. Es stellt die minimale konvexe Geometrie dar, sie alle Geometrien des Satzes umfassen.
@@ -52003,7 +52146,7 @@ a &amp;rarr; geometry
 b &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( union( geomFromWKT( 'POINT(4 4)' ) , geomFromWKT( 'POINT(5 5)' ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
+&lt;pre&gt; geomToWKT( union( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))  )   &amp;rarr; returns MULTIPOINT(4 4, 5 5)&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion union&lt;/h3&gt;
 Gibt eine Geometrie zurück, die alle Punkte beider Geometrien abdeckt.
@@ -52114,8 +52257,8 @@ geometry &amp;rarr; geometry
 geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; contains( geomFromWKT( 'POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))' ) , geomFromWKT( 'POINT( 0.5 0.5 )' ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; contains( geomFromWKT( 'POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))          &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;POINT( 0.5 0.5 )&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; contains( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))          &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion contains&lt;/h3&gt;
  Gibt dann und nur dann true zurück, wenn keine Punkte von b außerhalb von a liegen und mindestens ein innerer Punkt von b innerhalb von a liegt.
@@ -52147,8 +52290,8 @@ Returns a string wrapped to a maximum/minimum number of characters.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     wordwrap('UNIVERSITY OF QGIS',13) &amp;rarr; 'UNIVERSITY OF&amp;#92;nQGIS'&lt;br&gt;
-     wordwrap('UNIVERSITY OF QGIS',-3) &amp;rarr; 'UNIVERSITY&amp;#92;nOF QGIS'&lt;/p&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,13) &amp;rarr; &apos;UNIVERSITY OF&amp;#92;nQGIS&apos;&lt;br&gt;
+     wordwrap(&apos;UNIVERSITY OF QGIS&apos;,-3) &amp;rarr; &apos;UNIVERSITY&amp;#92;nOF QGIS&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion wordwrap()&lt;/h3&gt;
 Gibt eine auf eine maximal/minimale Länge umgebrochene Zeichenkette zurück.
@@ -52184,7 +52327,7 @@ Returns a string representation of a color based on its red, green, and blue com
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_rgb(255,127,0) &amp;rarr; '255,127,0'&lt;/p&gt;
+     color_rgb(255,127,0) &amp;rarr; &apos;255,127,0&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_rgb()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Rot-, Gr&amp;uuml;n-, Blauanteil zur&amp;uuml;ck.
@@ -52218,7 +52361,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow an
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_cmyk(100,50,0,10) &amp;rarr; '0,115,230'&lt;/p&gt;
+     color_cmyk(100,50,0,10) &amp;rarr; &apos;0,115,230&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_cmyk()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Cyan-, Magenta- Gelb- und Schwarzanteil zur&amp;uuml;ck.
@@ -52248,7 +52391,7 @@ geometry &amp;rarr; geometry
 geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( intersection( geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 )' ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
+&lt;pre&gt; geomToWKT( intersection( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 )&apos; ))  )   &amp;rarr; returns LINESTRING(3 3, 4 4)&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion intersection&lt;/h3&gt;
 Gibt eine Geometrie zurück, die den gemeinsamen Teil der Geometrien a und b darstellt.
@@ -52273,12 +52416,12 @@ Returns a string representing a color from a color ramp.
 
 &lt;p&gt;&lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;!-- List args for functions here--&gt;
-&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example 'Spectral'.&lt;br&gt;
+&lt;i&gt;  ramp_name&lt;/i&gt; &amp;rarr; the name of the color ramp as a string, for example &apos;Spectral&apos;.&lt;br&gt;
 &lt;i&gt;  value&lt;/i&gt; &amp;rarr; the position on the ramp to select the color from as a real number between 0 and 1.&lt;br&gt;
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     ramp_color('Spectral',0.3) &amp;rarr; '253,190,115,255'&lt;/p&gt;
+     ramp_color(&apos;Spectral&apos;,0.3) &amp;rarr; &apos;253,190,115,255&apos;&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;Note:&lt;/h4&gt;
 The color ramps available vary between QGIS installations.  This function
@@ -52317,8 +52460,8 @@ Returns 1 if a is the same as b.
 None
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; 'A' IS 'A'  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 'A' IS 'a'  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IS &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; 4 IS 4      &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 IS 2+2    &amp;rarr; returns 1 &lt;/pre&gt;
 &lt;pre&gt; 4 IS 2      &amp;rarr; returns 0 &lt;/pre&gt;
@@ -52358,7 +52501,7 @@ Returns a string representation of a color based on its hue, saturation, and val
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_hsv(40,100,100) &amp;rarr; '255,170,0'&lt;/p&gt;
+     color_hsv(40,100,100) &amp;rarr; &apos;255,170,0&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_hsl()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung und ihres Betrag zur&amp;uuml;ck.
@@ -52385,9 +52528,9 @@ Returns 1 if the first parameter matches case-insensitive the supplied pattern. 
 None
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; 'A' ILIKE 'A'  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 'A' ILIKE 'a'  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 'A' ILIKE 'B'  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;a&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; ILIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Ausdruck ILIKE&lt;/h3&gt;
 Liefert 1, wenn der erste Parameter dem gegebenen Muster (ohne Berücksichtung der Groß-/Kleinschreibung) entspricht. LIKE kann statt ILIKE kann verwendet werden, wenn die Groß-/Kleinschreibung berücksichtigt werden soll. Funktioniert auch mit Zahlen.
@@ -52414,9 +52557,9 @@ Returns 1 if the first parameter matches the supplied pattern. Works with number
 None
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; 'A' LIKE 'A'  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 'A' LIKE 'a'  &amp;rarr; returns 0 &lt;/pre&gt;
-&lt;pre&gt; 'A' LIKE 'B'  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;A&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; LIKE &apos;B&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Ausdruck LIKE&lt;/h3&gt;
 Ergibt 1m wenn der erste Parameter dem gegebenen Muster entspricht. Funktioniert auch mit Zahlen.
@@ -52472,7 +52615,7 @@ Returns a geometry from a GML representation of geometry
 text &amp;rarr; GML representation of a geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomFromGML( '&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;') &amp;rarr; returns a geometry&lt;/pre&gt;
+&lt;pre&gt; geomFromGML( &apos;&lt;gml:LineString srsName=&quot;EPSG:4326&quot;&gt;&lt;gml:coordinates&gt;4,4 5,5 6,6&lt;/gml:coordinates&gt;&lt;/gml:LineString&gt;&apos;) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion geomFromGML&lt;/h3&gt;
@@ -52508,8 +52651,8 @@ geometry &amp;rarr; geometry
 geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( combine( geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5 )' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4,  2 1 )' ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
-&lt;pre&gt; geomToWKT( combine( geomFromWKT( 'LINESTRING(3 3 , 4 4  )' ) , geomFromWKT( 'LINESTRING(3 3 , 6 6,  2 1 )' ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5 )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4,  2 1 )&apos; ))  )    &amp;rarr; returns MULTILINESTRING((4 4, 2 1), (3 3, 4 4), (4 4, 5 5)) &lt;/pre&gt;
+&lt;pre&gt; geomToWKT( combine( geomFromWKT( &apos;LINESTRING(3 3 , 4 4  )&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 6 6,  2 1 )&apos; ))  )  &amp;rarr; returns LINESTRING(3 3, 4 4, 6 6, 2 1) &lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion combine&lt;/h3&gt;
 Ergibt die Kombination der Geometrien a und b.
@@ -52527,7 +52670,7 @@ geometry &amp;rarr; Geometrie
     </message>
     <message>
         <source>&lt;h3&gt;intersects function&lt;/h3&gt;
-Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don't.
+Returns 1 if the geometries spatially intersect (share any portion of space) and 0 if they don&apos;t.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
 &lt;pre&gt;intersects( a, b )&lt;/pre&gt;
@@ -52537,8 +52680,8 @@ a &amp;rarr; geometry
 b &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; intersects( geomFromWKT( 'POINT(4 4)' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; intersects( geomFromWKT( 'POINT(4 5)' ) , geomFromWKT( 'POINT(5 5)' ))             &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; intersects( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion intersects&lt;/h3&gt;
 Gibt 1 zurück, wenn die Geometrien sich räumlich überschneiden (d.h. einen Raum gemeinsam haben) und 0, wenn das nicht der Fall ist.
@@ -52608,8 +52751,8 @@ a &amp;rarr; geometry
 b &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; disjoint( geomFromWKT( 'POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' )) &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; disjoint( geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ) , geomFromWKT( 'POINT(4 4)' ))                              &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; )) &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; disjoint( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;POINT(4 4)&apos; ))                              &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion disjoint&lt;/h3&gt;
 Gibt 1 zurück, wenn die Geometrien sich nicht räumlich überschneiden - d.h. wenn sie keinen gemeinsamen Raum haben.
@@ -52637,7 +52780,7 @@ Returns a geometry created from a Well-Known Text (WKT) representation.
 text &amp;rarr; Well-Known Text (WKT) representation of a geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomFromWKT( 'POINT(4 5)' ) &amp;rarr; returns a geometry&lt;/pre&gt;
+&lt;pre&gt; geomFromWKT( &apos;POINT(4 5)&apos; ) &amp;rarr; returns a geometry&lt;/pre&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion geomFromWKT&lt;/h3&gt;
@@ -52685,7 +52828,7 @@ b    &amp;rarr; Distanz
     </message>
     <message>
         <source>&lt;h3&gt;$atlasfeature function&lt;/h3&gt;
-In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the 'attribute' function
+In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the &apos;attribute&apos; function
 to return attribute values from the current atlas feature.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -52695,7 +52838,7 @@ to return attribute values from the current atlas feature.
 None
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $atlasfeature, 'name' ) &amp;rarr; returns value stored in 'name' attribute for the current atlas feature&lt;/pre&gt;
+&lt;pre&gt;attribute( $atlasfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current atlas feature&lt;/pre&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion $atlasfeature&lt;/h3&gt;
@@ -52713,7 +52856,7 @@ Kein
     </message>
     <message>
         <source>&lt;h3&gt;$currentfeature function&lt;/h3&gt;
-Returns the current feature being evaluated. This can be used with the 'attribute' function
+Returns the current feature being evaluated. This can be used with the &apos;attribute&apos; function
 to evaluate attribute values from the current feature.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -52723,7 +52866,7 @@ to evaluate attribute values from the current feature.
 None
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $currentfeature, 'name' ) &amp;rarr; returns value stored in 'name' attribute for the current feature&lt;/pre&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion $currentfeature&lt;/h3&gt;
@@ -52769,7 +52912,7 @@ Keine
     <message>
         <source>&lt;h3&gt;$uuid function&lt;/h3&gt;
 Generates a Universally Unique Identifier (UUID) for each row using the Qt
-&lt;a href='http://qt-project.org/doc/qt-4.8/quuid.html#createUuid'&gt;QUuid::createUuid&lt;/a&gt;
+&lt;a href=&apos;http://qt-project.org/doc/qt-4.8/quuid.html#createUuid&apos;&gt;QUuid::createUuid&lt;/a&gt;
 method.  Each UUID is 38 characters long.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
@@ -52798,14 +52941,14 @@ Keine
 Returns 1 if value is found within a list of values
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;pre&gt;'a' IN ('a', 'b')&lt;/pre&gt;
+&lt;pre&gt;&apos;a&apos; IN (&apos;a&apos;, &apos;b&apos;)&lt;/pre&gt;
 
 &lt;h4&gt;Arguments&lt;/h4&gt;
 None
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; 'A' IN ('A','B&quot;) &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 'A' IN ('C','B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;A&apos;,&apos;B&quot;) &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;A&apos; IN (&apos;C&apos;,&apos;B&quot;) &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
         <translation>&lt;h3&gt;IN Asudruck&lt;/h3&gt;
@@ -52834,7 +52977,7 @@ feature &amp;rarr; a feature&lt;br /&gt;
 attribute_name &amp;rarr; name of attribute to be returned
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt;attribute( $currentfeature, 'name' ) &amp;rarr; returns value stored in 'name' attribute for the current feature&lt;/pre&gt;
+&lt;pre&gt;attribute( $currentfeature, &apos;name&apos; ) &amp;rarr; returns value stored in &apos;name&apos; attribute for the current feature&lt;/pre&gt;
 
 </source>
         <translation>&lt;h3&gt;Function attribut&lt;/h3&gt;
@@ -52862,8 +53005,8 @@ geometry &amp;rarr; geometry
 geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; crosses( geomFromWKT( 'LINESTRING(3 5 , 4 4 , 5 3)' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; crosses( geomFromWKT( 'POINT(4 5)' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))             &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 3)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; crosses( geomFromWKT( &apos;POINT(4 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))             &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion crosses&lt;/h3&gt;
 Gibt 1 zurück, wenn die übergebenen Geometrien einige aber nicht alle innere Punkten gemeinsam haben.
@@ -52934,8 +53077,8 @@ a &amp;rarr; geometry
 b &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; touches( geomFromWKT( 'LINESTRING(5 3 , 4 4)'  ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; touches( geomFromWKT( 'POINT(4 4)' ) , geomFromWKT( 'POINT(5 5)' ))                     &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;LINESTRING(5 3 , 4 4)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; touches( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(5 5)&apos; ))                     &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion touches&lt;/h3&gt;
 Gibt 1 zurück, wenn die übergebenen Geometrie mindestens einen Punkt gemeinsam haben, aber es keine gemeinsamen inneren Punkte gibt.
@@ -52963,8 +53106,8 @@ a &amp;rarr; geometry
 b &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; overlaps( geomFromWKT( 'LINESTRING(3 5 , 4 4 , 5 5 , 5 3)'  ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))   &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; overlaps( geomFromWKT( 'LINESTRING(0 0 , 1 1)'  ) , geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ))    &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(3 5 , 4 4 , 5 5 , 5 3)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))   &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; overlaps( geomFromWKT( &apos;LINESTRING(0 0 , 1 1)&apos;  ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ))    &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion overlaps&lt;/h3&gt;
 Gibt 1 zurück, wenn die Geometrien gemeinsamen Raum haben, von gleicher Dimension, aber nicht komplett ineinander enthalten sind.
@@ -53106,8 +53249,8 @@ geometry &amp;rarr; geometry
 geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; within( geomFromWKT( 'POINT( 0.5 0.5 )') , geomFromWKT('POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))' ) )    &amp;rarr; returns 1&lt;/pre&gt;
-&lt;pre&gt; within( geomFromWKT( 'POINT( 5 5 )') , geomFromWKT('POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))' ) )        &amp;rarr; returns 0&lt;/pre&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 0.5 0.5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )    &amp;rarr; returns 1&lt;/pre&gt;
+&lt;pre&gt; within( geomFromWKT( &apos;POINT( 5 5 )&apos;) , geomFromWKT(&apos;POLYGON((0 0 , 0 1 , 1 1 , 1 0 , 0 0 ))&apos; ) )        &amp;rarr; returns 0&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion within&lt;/h3&gt;
 Gibt 1 zurück, wenn die Geometire a komplett innerhalb der Geometrie b liegt
@@ -53171,7 +53314,7 @@ a &amp;rarr; geometry
 b &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; distance( geomFromWKT( 'POINT(4 4)' ) , geomFromWKT( 'POINT(4 8)' ))    &amp;rarr; returns 4&lt;/pre&gt;
+&lt;pre&gt; distance( geomFromWKT( &apos;POINT(4 4)&apos; ) , geomFromWKT( &apos;POINT(4 8)&apos; ))    &amp;rarr; returns 4&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion distance&lt;/h3&gt;
  Gibt den minimalen Abstand (basierend auf dem Raumbezug) zwischen zwei Geometrien in projiizierten Einheiten.
@@ -53199,7 +53342,7 @@ geometry &amp;rarr; geometry
 geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( difference( geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ) , geomFromWKT( 'LINESTRING(3 3 , 4 4)' ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
+&lt;pre&gt; geomToWKT( difference( geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 4 4)&apos; ))  )   &amp;rarr; returns LINESTRING(4 4, 5 5)&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion difference&lt;/h3&gt;
 Gibt eine Geometrie zurück, die den Teil der Geometrie a repräsentiert, der die Geometrie b nicht schneidet.
@@ -53226,8 +53369,8 @@ Returns 1 if a is not the same as b.
 None
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; 'a' IS NOT 'b'  &amp;rarr; returns 1 &lt;/pre&gt;
-&lt;pre&gt; 'a' IS NOT 'a'  &amp;rarr; returns 0 &lt;/pre&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;b&apos;  &amp;rarr; returns 1 &lt;/pre&gt;
+&lt;pre&gt; &apos;a&apos; IS NOT &apos;a&apos;  &amp;rarr; returns 0 &lt;/pre&gt;
 &lt;pre&gt; 4 IS NOT 2+2    &amp;rarr; returns 0 &lt;/pre&gt;
 
 </source>
@@ -53259,7 +53402,7 @@ geometry &amp;rarr; geometry
 geometry &amp;rarr; geometry
 
 &lt;h4&gt;Example&lt;/h4&gt;
-&lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( 'LINESTRING(3 3 , 4 4 , 5 5)' ) , geomFromWKT( 'LINESTRING(3 3 , 8 8)' ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
+&lt;pre&gt; geomToWKT( symDifference(  geomFromWKT( &apos;LINESTRING(3 3 , 4 4 , 5 5)&apos; ) , geomFromWKT( &apos;LINESTRING(3 3 , 8 8)&apos; ))   )   &amp;rarr; returns LINESTRING(5 5, 8 8)&lt;/pre&gt;
 </source>
         <translation>&lt;h3&gt;Funktion symDifference&lt;/h3&gt;
 Gibt eine Geometrie zurück, die die Teile der Geometrien a und b darstellen, die sich nicht schneiden.
@@ -53308,7 +53451,7 @@ Keine
 Converts a string to a interval type.  Can be used to take days, hours, month, etc off a date. 
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;tointerval('string')&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;tointerval(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;code&gt;string&lt;/code&gt; - is string. Format {n} days {n} hours {n} months
@@ -53348,10 +53491,10 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;hour('2012-07-22T13:24:57') &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;hour(tointerval('3 hours')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;hour(age('2012-07-22T13:00:00','2012-07-22T10:00:00')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;hour(age('2012-01-01','2010-01-01')) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 13&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(tointerval(&apos;3 hours&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-07-22T13:00:00&apos;,&apos;2012-07-22T10:00:00&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;hour(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 17520&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion hour()&lt;/h3&gt;
@@ -53392,7 +53535,7 @@ Returns a string representation of a color based on its hue, saturation, lightne
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_hsla(100,50,70,200) &amp;rarr; '166,217,140,200'&lt;/p&gt;
+     color_hsla(100,50,70,200) &amp;rarr; &apos;166,217,140,200&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_hsl()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung, ihrer Helligkeit und ihrer Transparenz zur&amp;uuml;ck.
@@ -53449,7 +53592,7 @@ Diese Gruppe enth&amp;auml;lt Funktionen, die mit Datensatzkennungen arbeiten.
 Convert a string into Qt time type.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;totime('string')&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;totime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;code&gt;string&lt;/code&gt; - is string in Qt time format.
@@ -53488,7 +53631,7 @@ Returns a string with the the supplied string replaced.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     replace('QGIS SHOULD ROCK','SHOULD','DOES') &amp;rarr; 'QGIS DOES ROCK'&lt;/p&gt;
+     replace(&apos;QGIS SHOULD ROCK&apos;,&apos;SHOULD&apos;,&apos;DOES&apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion replace()&lt;/h3&gt;
 Liefert eine Zeichenkette in der die angegebene Zeichenkette ersetzt ist.
@@ -53626,7 +53769,7 @@ Returns a string representation of a color based on its cyan, magenta, yellow, b
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_cmyka(100,50,0,10,200) &amp;rarr; '0,115,230,200'&lt;/p&gt;
+     color_cmyka(100,50,0,10,200) &amp;rarr; &apos;0,115,230,200&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_cmyka()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Cyan-, Magenta- Gelb-,
@@ -53697,9 +53840,9 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;year('2012-05-12') &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;year(tointerval('3 Years')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;year(age('2012-01-01','2010-01-01')) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(&apos;2012-05-12&apos;) &amp;rarr; 2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(tointerval(&apos;3 Years&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;year(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1.9986..&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion year()&lt;/h3&gt;
@@ -53746,7 +53889,7 @@ return a result.
 &lt;!-- Show example of function.--&gt;
 &lt;pre&gt;
     CASE
-        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;'None'&lt;/i&gt;
+        WHEN &lt;i&gt;&quot;column&quot; IS NULL&lt;/i&gt; THEN &lt;i&gt;&apos;None&apos;&lt;/i&gt;
     END
 &lt;/pre&gt;
 </source>
@@ -53895,7 +54038,7 @@ Removes all leading and trailing whitespace (spaces, tabs, etc) from a string.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     trim('   hello world    ') &amp;rarr; 'hello world'&lt;/p&gt;
+     trim(&apos;   hello world    &apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion trim()&lt;/h3&gt;
 Entfernt f&amp;uuml;hrende und schlie&amp;szlig;ende Leerzeichen (Leerzeichen, Tabs usw.) aus einer Zeichenkette.
@@ -53928,10 +54071,10 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;minute('2012-07-22T13:24:57') &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;minute(tointerval('3 minutes')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;minute(age('2012-07-22T00:20:00','2012-07-22T00:00:00')) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;minute(age('2012-01-01','2010-01-01')) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 24&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(tointerval(&apos;3 minutes&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 20&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;minute(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 1051200&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion minute()&lt;/h3&gt;
@@ -53983,9 +54126,9 @@ in order to extract useful information:
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;age('2012-05-12','2012-05-2') &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;) &amp;rarr; Interval&lt;/code&gt;&lt;br&gt;
 use &lt;code&gt;day&lt;/code&gt; to extract number of days&lt;br&gt;
-&lt;code&gt;day(age('2012-05-12','2012-05-2')) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;day(age(&apos;2012-05-12&apos;,&apos;2012-05-2&apos;)) &amp;rarr; 10&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion age()&lt;/h3&gt;
@@ -54112,10 +54255,10 @@ from a &lt;code&gt;Interval&lt;/code&gt;
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;second('2012-07-22T13:24:57') &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;second(tointerval('3 seconds')) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;second(age('2012-07-22T00:20:00','2012-07-22T00:00:00')) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
-&lt;code&gt;second(age('2012-01-01','2010-01-01')) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(&apos;2012-07-22T13:24:57&apos;) &amp;rarr; 57&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(tointerval(&apos;3 seconds&apos;)) &amp;rarr; 3&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-07-22T00:20:00&apos;,&apos;2012-07-22T00:00:00&apos;)) &amp;rarr; 1200&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;second(age(&apos;2012-01-01&apos;,&apos;2010-01-01&apos;)) &amp;rarr; 63072000&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion second()&lt;/h3&gt;
@@ -54208,7 +54351,7 @@ capital letter).
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     upper('hello WOrld') &amp;rarr; 'Hello World'&lt;/p&gt;
+     upper(&apos;hello WOrld&apos;) &amp;rarr; &apos;Hello World&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion title()&lt;/h3&gt;
 Wandelt alle Worte einer Zeichenkette in Kleinbuchstaben mit gro&amp;szlig;em Anfangsbuchstaben um.
@@ -54239,7 +54382,7 @@ Returns true if any part of a string matches the supplied regular expression.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     regexp_match('QGIS ROCKS','&amp;#92;&amp;#92;sROCKS') &amp;rarr; 1&lt;/p&gt;
+     regexp_match(&apos;QGIS ROCKS&apos;,&apos;&amp;#92;&amp;#92;sROCKS&apos;) &amp;rarr; 1&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion regexp_match()&lt;/h3&gt;
 Gibt 1 zur&amp;uuml;ck, wenn irgendein Teil der Zeichenkette dem gegebenen regul&amp;auml;ren Ausdruck entspricht.
@@ -54272,7 +54415,7 @@ Return a part of a string
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     substr('HELLO WORLD',3,5) &amp;rarr; 'LLO W'&lt;/p&gt;
+     substr(&apos;HELLO WORLD&apos;,3,5) &amp;rarr; &apos;LLO W&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion substr()&lt;/h3&gt;
 Liefert einen Teil einer Zeichenkette
@@ -54296,7 +54439,7 @@ Liefert einen Teil einer Zeichenkette
 Format a string using supplied arguments. 
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;format('string', arg, [arg...n])&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;format(&apos;string&apos;, arg, [arg...n])&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;code&gt;string&lt;/code&gt; - is string.  String with Qt QString place holders.  Use %1, %2, etc for placeholders. Placeholders can be repeated. 
@@ -54337,7 +54480,7 @@ Returns a string with the supplied regular expression replaced.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     regexp_replace('QGIS SHOULD ROCK','&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s',' DOES ') &amp;rarr; 'QGIS DOES ROCK'&lt;/p&gt;
+     regexp_replace(&apos;QGIS SHOULD ROCK&apos;,&apos;&amp;#92;&amp;#92;sSHOULD&amp;#92;&amp;#92;s&apos;,&apos; DOES &apos;) &amp;rarr; &apos;QGIS DOES ROCK&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion regexp_replace()&lt;/h3&gt;
 Liefert eine Zeichenkette in der der angegebene regul&amp;auml;re Ausdruck ersetzt wurde.
@@ -54370,7 +54513,7 @@ Returns the portion of a string which matches a supplied regular expression.
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     regexp_substr('abc123','(&amp;#92;&amp;#92;d+)') &amp;rarr; '123'&lt;/p&gt;
+     regexp_substr(&apos;abc123&apos;,&apos;(&amp;#92;&amp;#92;d+)&apos;) &amp;rarr; &apos;123&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion regexp_substr()&lt;/h3&gt;
 Liefert den Teil einer Zeichenkette zur&amp;uuml;ck, die dem gegebenen regul&amp;auml;ren Ausdruck entspricht.
@@ -54433,7 +54576,7 @@ Returns a string representation of a color based on its red, green, blue, and al
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_rgba(255,127,0,200) &amp;rarr; '255,127,0,200'&lt;/p&gt;
+     color_rgba(255,127,0,200) &amp;rarr; &apos;255,127,0,200&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_rgba()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Rot-, Gr&amp;uuml;n-, Blauanteil und ihrer Transparenz zur&amp;uuml;ck.
@@ -54528,7 +54671,7 @@ Converts a string to lower case letters.
 &lt;i&gt;  string&lt;/i&gt; &amp;rarr; is string.  The String to convert to lower case.&lt;/p&gt;
 
 &lt;p&gt;&lt;h4&gt;  Example&lt;/h4&gt;
-     lower('HELLO World') &amp;rarr; 'hello world'&lt;/p&gt;
+     lower(&apos;HELLO World&apos;) &amp;rarr; &apos;hello world&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion lower()&lt;/h3&gt;
 Wandelt eine Zeichenkette in Kleinbuchstaben um.
@@ -54592,7 +54735,7 @@ Concatenates several strings to one.
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     concat('a','b','c','d','e') &amp;rarr; 'abcde'
+     concat(&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;,&apos;e&apos;) &amp;rarr; &apos;abcde&apos;
 </source>
         <translation>&lt;h3&gt;Funktion concat()&lt;/h3&gt;
 F&amp;uuml;gt Zeichenketten zu einer zusammen.
@@ -54626,8 +54769,8 @@ This function can take any number of arguments.
 &lt;code&gt;coalesce(NULL, 2) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;coalesce(NULL, 2, 3) &amp;rarr; 2&lt;/code&gt;&lt;br&gt;
 &lt;code&gt;coalesce(7, NULL, 3*2) &amp;rarr; 7&lt;/code&gt;&lt;br&gt;&lt;br&gt;
-&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, 'ERROR') &amp;rarr; value of fieldA if it is non-NULL
- else the value of &quot;fallbackField&quot; or the string 'ERROR' if both are NULL&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;coalesce(&quot;fieldA&quot;, &quot;fallbackField&quot;, &apos;ERROR&apos;) &amp;rarr; value of fieldA if it is non-NULL
+ else the value of &quot;fallbackField&quot; or the string &apos;ERROR&apos; if both are NULL&lt;/code&gt;&lt;br&gt;
 
 </source>
         <translation>&lt;h3&gt;Funktion coalesce()&lt;/h3&gt;
@@ -54683,7 +54826,7 @@ Gibt den Arcussinus eines Werts im Bogenma&amp;szlig; zur&amp;uuml;ck.
 Convert a string into Qt data time type.
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;todatetime('string')&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;todatetime(&apos;string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;code&gt;string&lt;/code&gt; - is string in Qt date time format.
@@ -54709,10 +54852,10 @@ Wandelt eine Zeichenkette in einen Qt-Datum&amp;amp;Zeit-Typ.
     </message>
     <message>
         <source>&lt;h3&gt;format_date() function&lt;/h3&gt;
-Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href='http://qt-project.org/doc/qt-4.8/qdatetime.html#toString'&gt;QDateTime::toString&lt;/a&gt;
+Format a date type or string into a custom string format. Uses Qt data time format strings.  See &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
 
 &lt;h4&gt;Syntax&lt;/h4&gt;
-&lt;code&gt;format_date('string', 'format_string')&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;format_date(&apos;string&apos;, &apos;format_string&apos;)&lt;/code&gt;&lt;br&gt;
 
 &lt;h4&gt;Arguments&lt;/h4&gt;
 &lt;code&gt;string&lt;/code&gt; - is string. Date/Time/DateTime string.
@@ -54743,14 +54886,14 @@ Format a date type or string into a custom string format. Uses Qt data time form
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;ddd&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized day name (e.g. 'Mon' to 'Sun'). Uses &lt;a href=
+      &lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos; to &apos;Sun&apos;). Uses &lt;a href=
       &quot;qdate.html#shortDayName&quot;&gt;QDate::shortDayName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;dddd&lt;/td&gt;
 
-      &lt;td&gt;the long localized day name (e.g. 'Monday' to 'Sunday'). Uses &lt;a href=
+      &lt;td&gt;the long localized day name (e.g. &apos;Monday&apos; to &apos;Sunday&apos;). Uses &lt;a href=
       &quot;qdate.html#longDayName&quot;&gt;QDate::longDayName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
@@ -54769,14 +54912,14 @@ Format a date type or string into a custom string format. Uses Qt data time form
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMM&lt;/td&gt;
 
-      &lt;td&gt;the abbreviated localized month name (e.g. 'Jan' to 'Dec'). Uses &lt;a href=
+      &lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos; to &apos;Dec&apos;). Uses &lt;a href=
       &quot;qdate.html#shortMonthName&quot;&gt;QDate::shortMonthName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
     &lt;tr valign=&quot;top&quot;&gt;
       &lt;td&gt;MMMM&lt;/td&gt;
 
-      &lt;td&gt;the long localized month name (e.g. 'January' to 'December'). Uses &lt;a href=
+      &lt;td&gt;the long localized month name (e.g. &apos;January&apos; to &apos;December&apos;). Uses &lt;a href=
       &quot;qdate.html#longMonthName&quot;&gt;QDate::longMonthName&lt;/a&gt;().&lt;/td&gt;
     &lt;/tr&gt;
 
@@ -54881,7 +55024,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
 
 &lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-&lt;code&gt;format_date('2012-05-15','dd.mm.yyyy') &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
+&lt;code&gt;format_date(&apos;2012-05-15&apos;,&apos;dd.mm.yyyy&apos;) &amp;rarr; 15.05.2012&lt;/code&gt;&lt;br&gt;
 </source>
         <translation>&lt;h3&gt;Funktion format_date()&lt;/h3&gt;
 Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt Datum- und Zeitformate. Siehe &lt;a href=&apos;http://qt-project.org/doc/qt-4.8/qdatetime.html#toString&apos;&gt;QDateTime::toString&lt;/a&gt;
@@ -55161,7 +55304,7 @@ Returns a string representation of a color based on its hue, saturation, value a
 
 &lt;p&gt;&lt;h4&gt;Example&lt;/h4&gt;
 &lt;!-- Show example of function.--&gt;
-     color_hsva(40,100,100,200) &amp;rarr; '255,170,0,200'&lt;/p&gt;
+     color_hsva(40,100,100,200) &amp;rarr; &apos;255,170,0,200&apos;&lt;/p&gt;
 </source>
         <translation>&lt;h3&gt;Funktion color_hsla()&lt;/h3&gt;
 Gibt eine Farbe als Zeichenkette basierend auf ihrem Farbton, ihrer S&amp;auml;ttigung, ihres Betrags und Alpha/Transparenz zur&amp;uuml;ck.
