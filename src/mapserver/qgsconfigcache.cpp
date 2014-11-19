@@ -42,19 +42,12 @@ QgsConfigCache::~QgsConfigCache()
 
 QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
 {
-  QgsServerProjectParser* p = mServerConfigCache.object( filePath );
-  if ( !p )
+  QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
   {
-    QDomDocument* doc = xmlDocument( filePath );
-    if ( !doc )
-    {
-      return 0;
-    }
-    p = new QgsServerProjectParser( doc, filePath );
-    mServerConfigCache.insert( filePath, p );
-    mFileSystemWatcher.addPath( filePath );
+    return 0;
   }
-  return p;
+  return new QgsServerProjectParser( doc, filePath );
 }
 
 QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
@@ -62,6 +55,11 @@ QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
   QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
   if ( !p )
   {
+    QDomDocument* doc = xmlDocument( filePath );
+    if ( !doc )
+    {
+      return 0;
+    }
     p = new QgsWCSProjectParser( filePath );
     mWCSConfigCache.insert( filePath, p );
     mFileSystemWatcher.addPath( filePath );
@@ -76,6 +74,11 @@ QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
   QgsWFSProjectParser* p = mWFSConfigCache.object( filePath );
   if ( !p )
   {
+    QDomDocument* doc = xmlDocument( filePath );
+    if ( !doc )
+    {
+      return 0;
+    }
     p = new QgsWFSProjectParser( filePath );
     mWFSConfigCache.insert( filePath, p );
     mFileSystemWatcher.addPath( filePath );
@@ -117,12 +120,6 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, c
 
 QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
 {
-  // first get cache
-  QDomDocument* xmlDoc = mXmlDocumentCache.object( filePath );
-  if ( xmlDoc )
-    return xmlDoc;
-    
-  // i it's first access
   //first open file
   QFile configFile( filePath );
   if ( !configFile.exists() )
@@ -136,26 +133,31 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
     QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", "Server", QgsMessageLog::CRITICAL );
     return 0;
   }
-
-  //then create xml document
-  xmlDoc = new QDomDocument();
-  QString errorMsg;
-  int line, column;
-  if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
+  
+  // first get cache
+  QDomDocument* xmlDoc = mXmlDocumentCache.object( filePath );
+  if ( !xmlDoc )
   {
-    QgsMessageLog::logMessage( "Error parsing file '" + filePath +
-                               QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
-    delete xmlDoc;
-    return 0;
+    //then create xml document
+	xmlDoc = new QDomDocument();
+	QString errorMsg;
+	int line, column;
+	if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
+	{
+	  QgsMessageLog::logMessage( "Error parsing file '" + filePath +
+		  					     QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
+	  delete xmlDoc;
+	  return 0;
+	}
+    mXmlDocumentCache.insert( filePath, xmlDoc );
+    mFileSystemWatcher.addPath( filePath );
   }
-  mXmlDocumentCache.insert( filePath, xmlDoc );
   return xmlDoc;
 }
 
 void QgsConfigCache::removeChangedEntry( const QString& path )
 {
   mXmlDocumentCache.remove( path );
-  mServerConfigCache.remove( path );
   mWMSConfigCache.remove( path );
   mWFSConfigCache.remove( path );
   mWCSConfigCache.remove( path );

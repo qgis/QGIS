@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgswfsprojectparser.h"
+#include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
 #include "qgsconfigcache.h"
 #include "qgsmaplayerregistry.h"
@@ -23,7 +24,7 @@
 
 QgsWFSProjectParser::QgsWFSProjectParser( const QString& filePath )
 {
-  QgsServerProjectParser* mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
+  mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
 
 QgsWFSProjectParser::~QgsWFSProjectParser()

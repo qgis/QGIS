@@ -42,7 +42,7 @@
 QgsWMSProjectParser::QgsWMSProjectParser( const QString& filePath )
     : QgsWMSConfigParser()
 {
-  QgsServerProjectParser* mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
+  mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
   mLegendLayerFont.fromString( mProjectParser->firstComposerLegendElement().attribute( "layerFont" ) );
   mLegendItemFont.fromString( mProjectParser->firstComposerLegendElement().attribute( "itemFont" ) );
   createTextAnnotationItems();

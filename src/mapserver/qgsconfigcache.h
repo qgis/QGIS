@@ -53,7 +53,6 @@ class QgsConfigCache: public QObject
     QDomDocument* xmlDocument( const QString& filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
-    QCache<QString, QgsServerProjectParser> mServerConfigCache;
     QCache<QString, QgsWMSConfigParser> mWMSConfigCache;
     QCache<QString, QgsWFSProjectParser> mWFSConfigCache;
     QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
