@@ -22,8 +22,8 @@ public:
     struct t_legendData
     {
         int frameWidth;
-        int vScrollBarWidth;
-        int hScrollBarHeight;
+        int hScrollExtent;
+        int vScrollExtent;
         QSizeF hint;
     } legend;
 
@@ -48,10 +48,10 @@ void QwtPolarLayout::LayoutData::init(
             && plot->legend() )
     {
         legend.frameWidth = plot->legend()->frameWidth();
-        legend.vScrollBarWidth =
-            plot->legend()->verticalScrollBar()->sizeHint().width();
-        legend.hScrollBarHeight =
-            plot->legend()->horizontalScrollBar()->sizeHint().height();
+        legend.hScrollExtent =
+            plot->legend()->scrollExtent( Qt::Horizontal );
+        legend.vScrollExtent =
+            plot->legend()->scrollExtent( Qt::Vertical );
 
         const QSizeF hint = plot->legend()->sizeHint();
 
@@ -61,7 +61,7 @@ void QwtPolarLayout::LayoutData::init(
             h = hint.height();
 
         if ( h > rect.height() )
-            w += legend.vScrollBarWidth;
+            w += legend.hScrollExtent;
 
         legend.hint = QSizeF( w, h );
     }
@@ -278,7 +278,7 @@ QRectF QwtPolarLayout::layoutLegend( Options options, QRectF &rect ) const
         // We don't allow vertical legends to take more than
         // half of the available space.
 
-        dim = qMin( hint.width(), (qreal)(rect.width() * d_data->legendRatio) );
+        dim = qMin( double( hint.width() ), rect.width() * d_data->legendRatio );
 
         if ( !( options & IgnoreScrollbars ) )
         {
@@ -287,14 +287,14 @@ QRectF QwtPolarLayout::layoutLegend( Options options, QRectF &rect ) const
                 // The legend will need additional
                 // space for the vertical scrollbar.
 
-                dim += d_data->layoutData.legend.vScrollBarWidth;
+                dim += d_data->layoutData.legend.hScrollExtent;
             }
         }
     }
     else
     {
-        dim = qMin( hint.height(), (qreal)(rect.height() * d_data->legendRatio) );
-        dim = qMax( dim, d_data->layoutData.legend.hScrollBarHeight );
+        dim = qMin( double( hint.height() ), rect.height() * d_data->legendRatio );
+        dim = qMax( dim, d_data->layoutData.legend.vScrollExtent );
     }
 
     QRectF legendRect = rect;

@@ -7,13 +7,12 @@
  *****************************************************************************/
 
 #include "qwt_polar_curve.h"
+#include "qwt_polar.h"
 #include <qwt_painter.h>
-#include <qwt_polar.h>
 #include <qwt_scale_map.h>
 #include <qwt_math.h>
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
-#include <qwt_legend_item.h>
 #include <qwt_curve_fitter.h>
 #include <qwt_clipper.h>
 #include <qpainter.h>
@@ -173,7 +172,7 @@ QwtPolarCurve::CurveStyle QwtPolarCurve::style() const
   \param symbol Symbol
   \sa symbol()
 */
-void QwtPolarCurve::setSymbol( const QwtSymbol *symbol )
+void QwtPolarCurve::setSymbol( QwtSymbol *symbol )
 {
     if ( symbol != d_data->symbol )
     {
@@ -388,7 +387,7 @@ void QwtPolarCurve::drawLines( QPainter *painter,
         polyline.resize( points.size() );
 
         QPointF *polylineData = polyline.data();
-        QPointF *pointsData = polyline.data();
+        QPointF *pointsData = points.data();
 
         for ( int i = 0; i < points.size(); i++ )
         {
@@ -433,7 +432,7 @@ void QwtPolarCurve::drawLines( QPainter *painter,
 
     if ( !clipRect.isEmpty() )
     {
-        double off = qCeil( qMax((qreal)1.0,painter->pen().widthF() ) );
+        double off = qCeil( qMax( qreal( 1.0 ), painter->pen().widthF() ) );
         clipRect = clipRect.toRect().adjusted( -off, -off, off, off );
         polyline = QwtClipper::clipPolygonF( clipRect, polyline );
     }
@@ -500,116 +499,76 @@ size_t QwtPolarCurve::dataSize() const
     return d_series->size();
 }
 
-//!  Update the widget that represents the curve on the legend
-void QwtPolarCurve::updateLegend( QwtLegend *legend ) const
-{
-    if ( legend && testItemAttribute( QwtPolarCurve::Legend )
-            && ( d_data->legendAttributes & QwtPolarCurve::LegendShowSymbol )
-            && d_data->symbol
-            && d_data->symbol->style() != QwtSymbol::NoSymbol )
-    {
-        QWidget *lgdItem = legend->find( this );
-        if ( lgdItem == NULL )
-        {
-            lgdItem = legendItem();
-            if ( lgdItem )
-                legend->insert( this, lgdItem );
-        }
-
-        QwtLegendItem *l = qobject_cast<QwtLegendItem *>( lgdItem );
-        if ( l )
-        {
-            QSize sz = d_data->symbol->boundingSize();
-            sz += QSize( 2, 2 ); // margin
-
-            if ( d_data->legendAttributes & QwtPolarCurve::LegendShowLine )
-            {
-                // Avoid, that the line is completely covered by the symbol
-
-                int w = qCeil( 1.5 * sz.width() );
-                if ( w % 2 )
-                    w++;
-
-                sz.setWidth( qMax( 8, w ) );
-            }
-
-            l->setIdentifierSize( sz );
-        }
-    }
-
-    QwtPolarItem::updateLegend( legend );
-}
-
 /*!
-  \brief Draw the identifier representing the curve on the legend
+   \return Icon representing the curve on the legend
 
-  \param painter Qt Painter
-  \param rect Bounding rectangle for the identifier
+   \param index Index of the legend entry 
+                ( ignored as there is only one )
+   \param size Icon size
 
-  \sa setLegendAttribute
-*/
-void QwtPolarCurve::drawLegendIdentifier(
-    QPainter *painter, const QRectF &rect ) const
+   \sa QwtPolarItem::setLegendIconSize(), QwtPolarItem::legendData()
+ */
+QwtGraphic QwtPolarCurve::legendIcon( int index,
+    const QSizeF &size ) const
 {
-    if ( rect.isEmpty() )
-        return;
+    Q_UNUSED( index );
 
-    const double dim = qMin( rect.width(), rect.height() );
+    if ( size.isEmpty() )
+        return QwtGraphic();
 
-    QSizeF size( dim, dim );
+    QwtGraphic graphic;
+    graphic.setDefaultSize( size );
+    graphic.setRenderHint( QwtGraphic::RenderPensUnscaled, true );
 
-    QRectF r( 0, 0, size.width(), size.height() );
-    r.moveCenter( rect.center() );
+    QPainter painter( &graphic );
+    painter.setRenderHint( QPainter::Antialiasing,
+        testRenderHint( QwtPolarItem::RenderAntialiased ) );
 
     if ( d_data->legendAttributes == 0 )
     {
         QBrush brush;
+
         if ( style() != QwtPolarCurve::NoCurve )
+        {
             brush = QBrush( pen().color() );
+        }
         else if ( d_data->symbol &&
             ( d_data->symbol->style() != QwtSymbol::NoSymbol ) )
         {
             brush = QBrush( d_data->symbol->pen().color() );
         }
+
         if ( brush.style() != Qt::NoBrush )
-            painter->fillRect( r, brush );
+        {
+            QRectF r( 0, 0, size.width(), size.height() );
+            painter.fillRect( r, brush );
+        }
     }
+
     if ( d_data->legendAttributes & QwtPolarCurve::LegendShowLine )
     {
         if ( pen() != Qt::NoPen )
         {
-            painter->setPen( pen() );
-            QwtPainter::drawLine( painter, rect.left(), rect.center().y(),
-                rect.right() - 1.0, rect.center().y() );
+            QPen pn = pen();
+            pn.setCapStyle( Qt::FlatCap );
+
+            painter.setPen( pn );
+
+            const double y = 0.5 * size.height();
+            QwtPainter::drawLine( &painter, 0.0, y, size.width(), y );
         }
     }
+
     if ( d_data->legendAttributes & QwtPolarCurve::LegendShowSymbol )
     {
-        if ( d_data->symbol &&
-            ( d_data->symbol->style() != QwtSymbol::NoSymbol ) )
+        if ( d_data->symbol )
         {
-            QSize symbolSize = d_data->symbol->boundingSize();
-            symbolSize -= QSize( 2, 2 );
-
-            // scale the symbol size down if it doesn't fit into rect.
-
-            double xRatio = 1.0;
-            if ( rect.width() < symbolSize.width() )
-                xRatio = rect.width() / symbolSize.width();
-            double yRatio = 1.0;
-            if ( rect.height() < symbolSize.height() )
-                yRatio = rect.height() / symbolSize.height();
-
-            const double ratio = qMin( xRatio, yRatio );
-
-            painter->save();
-            painter->scale( ratio, ratio );
-
-            d_data->symbol->drawSymbol( painter, rect.center() / ratio );
-
-            painter->restore();
+            QRectF r( 0, 0, size.width(), size.height() );
+            d_data->symbol->drawSymbol( &painter, r );
         }
     }
+
+    return graphic;
 }
 
 /*!
@@ -633,3 +592,5 @@ QwtInterval QwtPolarCurve::boundingInterval( int scaleId ) const
 
     return QwtInterval();
 }
+
+

@@ -11,9 +11,9 @@
 
 #include "qwt_polar_global.h"
 #include <qobject.h>
+#include <qsize.h>
 
 class QwtPolarPlot;
-class QSizeF;
 class QRectF;
 class QPainter;
 class QPrinter;
@@ -51,17 +51,18 @@ public:
 #endif
 #endif
     void renderTo( QwtPolarPlot *, QPrinter & ) const;
-    void renderTo( QwtPolarPlot *, QPaintDevice &p ) const;
+    void renderTo( QwtPolarPlot *, QPaintDevice & ) const;
 
     virtual void render( QwtPolarPlot *,
         QPainter *, const QRectF &rect ) const;
 
-protected:
-    virtual void renderTitle( QPainter *, const QRectF & ) const;
-    virtual void renderLegend( QPainter *, const QRectF & ) const;
+    bool exportTo( QwtPolarPlot *, const QString &documentName,
+        const QSizeF &sizeMM = QSizeF( 200, 200 ), int resolution = 85 );
 
-    virtual void renderLegendItem( QPainter *,
-        const QWidget *, const QRectF & ) const;
+    virtual void renderTitle( QPainter *, const QRectF & ) const;
+
+    virtual void renderLegend(
+        const QwtPolarPlot *, QPainter *, const QRectF & ) const;
 
 private:
     class PrivateData;

@@ -57,8 +57,7 @@ public:
         a color representing the curve and paints a rectangle with it.
         In the default setting all attributes are off.
 
-        \sa setLegendAttribute(), testLegendAttribute(),
-            drawLegendIdentifier()
+        \sa setLegendAttribute(), testLegendAttribute()
      */
 
     enum LegendAttribute
@@ -100,7 +99,7 @@ public:
     void setStyle( CurveStyle style );
     CurveStyle style() const;
 
-    void setSymbol( const QwtSymbol * );
+    void setSymbol( QwtSymbol * );
     const QwtSymbol *symbol() const;
 
     void setCurveFitter( QwtCurveFitter * );
@@ -115,10 +114,9 @@ public:
         const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
         const QPointF &pole, int from, int to ) const;
 
-    virtual void updateLegend( QwtLegend * ) const;
     virtual QwtInterval boundingInterval( int scaleId ) const;
 
-    virtual void drawLegendIdentifier( QPainter *, const QRectF & ) const;
+    virtual QwtGraphic legendIcon( int index, const QSizeF & ) const;
 
 protected:
 
@@ -143,7 +141,7 @@ private:
     PrivateData *d_data;
 };
 
-//! \return the curve data
+//! \return the the curve data
 inline const QwtSeriesData<QwtPointPolar> *QwtPolarCurve::data() const
 {
     return d_series;
