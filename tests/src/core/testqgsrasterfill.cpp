@@ -45,10 +45,14 @@ class TestQgsRasterFill: public QObject
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
 
     void rasterFillSymbol();
+    void coordinateMode();
+    void alpha();
+    void offset();
+    void width();
 
   private:
     bool mTestHasError;
@@ -119,12 +123,58 @@ void TestQgsRasterFill::cleanupTestCase()
   }
 }
 
+void TestQgsRasterFill::init()
+{
+  mRasterFill->setImageFilePath( mTestDataDir + QString( "sample_image.png" ) );
+  mRasterFill->setWidth( 30.0 );
+  mRasterFill->setWidthUnit( QgsSymbolV2::Pixel );
+  mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
+  mRasterFill->setAlpha( 1.0 );
+  mRasterFill->setOffset( QPointF( 0, 0 ) );
+}
+
+void TestQgsRasterFill::cleanup()
+{
+
+}
+
 void TestQgsRasterFill::rasterFillSymbol()
 {
   mReport += "<h2>Raster fill symbol renderer test</h2>\n";
-  mRasterFill->setImageFilePath( mTestDataDir + QString( "sample_image.png" ) );
-  mRasterFill->setWidth( 30.0 );
   bool result = imageCheck( "rasterfill" );
+  QVERIFY( result );
+}
+
+void TestQgsRasterFill::coordinateMode()
+{
+  mReport += "<h2>Raster fill viewport mode</h2>\n";
+  mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Viewport );
+  bool result = imageCheck( "rasterfill_viewport" );
+  QVERIFY( result );
+}
+
+void TestQgsRasterFill::alpha()
+{
+  mReport += "<h2>Raster fill alpha</h2>\n";
+  mRasterFill->setAlpha( 0.5 );
+  bool result = imageCheck( "rasterfill_alpha" );
+  QVERIFY( result );
+}
+
+void TestQgsRasterFill::offset()
+{
+  mReport += "<h2>Raster fill offset</h2>\n";
+  mRasterFill->setOffset( QPointF( 5, 10 ) );;
+  bool result = imageCheck( "rasterfill_offset" );
+  QVERIFY( result );
+}
+
+void TestQgsRasterFill::width()
+{
+  mReport += "<h2>Raster fill width</h2>\n";
+  mRasterFill->setWidthUnit( QgsSymbolV2::MM );
+  mRasterFill->setWidth( 5.0 );
+  bool result = imageCheck( "rasterfill_width" );
   QVERIFY( result );
 }
 
