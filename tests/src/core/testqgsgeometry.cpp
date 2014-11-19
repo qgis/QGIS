@@ -431,7 +431,7 @@ bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment , int
   QgsRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestName );
   myChecker.setRenderedImage( myFileName );
-  bool myResultFlag = myChecker.compareImages( theTestName );
+  bool myResultFlag = myChecker.compareImages( theTestName, mismatchCount );
   mReport += myChecker.report();
   return myResultFlag;
 }
