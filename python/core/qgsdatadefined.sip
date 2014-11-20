@@ -24,6 +24,13 @@ class QgsDataDefined
                     const QString& field = QString() );
 
     ~QgsDataDefined();
+    
+    /**Returns whether the data defined container is set to all the default
+     * values, ie, disabled, with empty expression and no assigned field
+     * @returns true if data defined container is set to default values
+     * @note added in QGIS 2.7
+     */
+    bool hasDefaultValues() const;   
 
     bool isActive() const;
     void setActive( bool active );

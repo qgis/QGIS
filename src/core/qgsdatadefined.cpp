@@ -39,6 +39,11 @@ QgsDataDefined::~QgsDataDefined()
   delete mExpression;
 }
 
+bool QgsDataDefined::hasDefaultValues() const
+{
+  return ( !mActive && !mUseExpression && mExpressionString.isEmpty() && mField.isEmpty() );
+}
+
 void QgsDataDefined::setExpressionString( const QString &expr )
 {
   mExpressionString = expr;
