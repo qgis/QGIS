@@ -137,8 +137,8 @@ void QgsWFSConnectionItem::deleteConnection()
 QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
+  mCapabilities |= Fast;
   mIconName = "mIconWfs.svg";
-
   populate();
 }
 

@@ -219,8 +219,8 @@ QString QgsWCSLayerItem::createUri()
 QgsWCSRootItem::QgsWCSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
+  mCapabilities |= Fast;
   mIconName = "mIconWcs.svg";
-
   populate();
 }
 

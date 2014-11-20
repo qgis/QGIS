@@ -916,20 +916,26 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
     }
   }
 
-  // add topology layers
-  if ( Vect_get_num_primitives( &map, GV_POINTS ) > 0 )
+  // TODO: add option in GUI to set listTopoLayers
+  QSettings settings;
+  bool listTopoLayers =  settings.value( "/GRASS/listTopoLayers", false ).toBool();
+  if ( listTopoLayers )
   {
+    // add topology layers
+    if ( Vect_get_num_primitives( &map, GV_POINTS ) > 0 )
+    {
 #if GRASS_VERSION_MAJOR < 7 /* no more point in GRASS 7 topo */
-    list.append( "topo_point" );
+      list.append( "topo_point" );
 #endif
-  }
-  if ( Vect_get_num_primitives( &map, GV_LINES ) > 0 )
-  {
-    list.append( "topo_line" );
-  }
-  if ( Vect_get_num_nodes( &map ) > 0 )
-  {
-    list.append( "topo_node" );
+    }
+    if ( Vect_get_num_primitives( &map, GV_LINES ) > 0 )
+    {
+      list.append( "topo_line" );
+    }
+    if ( Vect_get_num_nodes( &map ) > 0 )
+    {
+      list.append( "topo_node" );
+    }
   }
 
   Vect_close( &map );

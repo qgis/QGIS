@@ -22,12 +22,11 @@
 #include <QFileInfo>
 #include <QDir>
 
-QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString path )
-    : QgsDataCollectionItem( parent, "", path )
+QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString dirPath, QString path )
+    : QgsDirectoryItem( parent, "", dirPath, path )
 {
   // modify path to distinguish from directory, so that it can be expanded by path in browser
-  mPath = markPath( path );
-  QDir dir( path );
+  QDir dir( mDirPath );
   mName = dir.dirName();
 
   mIconName = "grass_location.png";
@@ -47,7 +46,7 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
 {
   QVector<QgsDataItem*> mapsets;
 
-  QDir dir( clearPath( mPath ) );
+  QDir dir( mDirPath );
 
   QStringList entries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name );
   foreach ( QString name, entries )
@@ -56,30 +55,17 @@ QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
 
     if ( QgsGrassMapsetItem::isMapset( path ) )
     {
-      QgsGrassMapsetItem * mapset = new QgsGrassMapsetItem( this, mPath + QDir::separator() + name );
+      QgsGrassMapsetItem * mapset = new QgsGrassMapsetItem( this, path, mPath + QDir::separator() + name );
       mapsets.append( mapset );
     }
   }
   return mapsets;
 }
 
-QString QgsGrassLocationItem::markPath( QString path )
+QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path )
+    : QgsDirectoryItem( parent, "", dirPath, path )
 {
-  QDir dir( path );
-  QString name = dir.dirName();
-  dir.cdUp();
-  return dir.path() + QDir::separator() + "gl:" + name;
-}
-
-QString QgsGrassLocationItem::clearPath( QString path )
-{
-  return path.remove( "gl:" );
-}
-
-QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString path )
-    : QgsDataCollectionItem( parent, "", path )
-{
-  QDir dir( QgsGrassLocationItem::clearPath( path ) );
+  QDir dir( mDirPath );
   mName = dir.dirName();
   dir.cdUp();
   mLocation = dir.dirName();
@@ -100,23 +86,25 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 {
   QgsDebugMsg( "Entered" );
 
-  QString clearPath = QgsGrassLocationItem::clearPath( mPath );
   QVector<QgsDataItem*> items;
 
-  QStringList vectorNames = QgsGrass::vectors( clearPath );
+  QStringList vectorNames = QgsGrass::vectors( mDirPath );
 
   foreach ( QString name, vectorNames )
   {
     QStringList layerNames = QgsGrass::vectorLayers( mGisdbase, mLocation, mName, name );
 
-    QString path = mPath + QDir::separator() + "vector" + QDir::separator() + name;
+    QString mapPath = mPath + QDir::separator() + "vector" + QDir::separator() + name;
 
     QgsDataCollectionItem *map = 0;
-    if ( layerNames.size() != 1 )
-      map = new QgsDataCollectionItem( this, name, path );
+    if ( layerNames.size() > 1 )
+    {
+      map = new QgsDataCollectionItem( this, name, mapPath );
+      map->setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
+    }
     foreach ( QString layerName, layerNames )
     {
-      QString uri = clearPath + QDir::separator() + name + QDir::separator() + layerName;
+      QString uri = mDirPath + QDir::separator() + name + QDir::separator() + layerName;
       QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
       QString typeName = layerName.split( "_" )[1];
       QString baseLayerName = layerName.split( "_" )[0];
@@ -128,16 +116,17 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       else if ( typeName == "polygon" )
         layerType = QgsLayerItem::Polygon;
 
+      QString layerPath = mapPath + QDir::separator() + layerName;
       if ( layerNames.size() == 1 )
       {
         /* This may happen (one layer only) in GRASS 7 with points (no topo layers) */
-        QgsLayerItem *layer = new QgsLayerItem( this, name + " " + baseLayerName, path, uri, layerType, "grass" );
+        QgsLayerItem *layer = new QgsLayerItem( this, name + " " + baseLayerName, layerPath, uri, layerType, "grass" );
         layer->setPopulated();
         items.append( layer );
       }
       else
       {
-        QgsLayerItem *layer = new QgsGrassVectorLayerItem( map, name, baseLayerName, path, uri, layerType, "grass" );
+        QgsLayerItem *layer = new QgsGrassVectorLayerItem( map, name, baseLayerName, layerPath, uri, layerType, "grass" );
         map->addChild( layer );
       }
     }
@@ -145,12 +134,12 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       items.append( map );
   }
 
-  QStringList rasterNames = QgsGrass::rasters( clearPath );
+  QStringList rasterNames = QgsGrass::rasters( mDirPath );
 
   foreach ( QString name, rasterNames )
   {
-    QString path = mPath + QDir::separator() + "cellhd" + QDir::separator() + name;
-    QString uri = clearPath + QDir::separator() + "cellhd" + QDir::separator() + name;
+    QString path = mPath + QDir::separator() + "raster" + QDir::separator() + name;
+    QString uri = mDirPath + QDir::separator() + "cellhd" + QDir::separator() + name;
     QgsDebugMsg( "uri = " + uri );
 
     QgsLayerItem *layer = new QgsLayerItem( this, name, path, uri, QgsLayerItem::Raster, "grassraster" );
@@ -180,11 +169,24 @@ QGISEXTERN int dataCapabilities()
   return QgsDataProvider::Dir;
 }
 
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString theDirPath, QgsDataItem* parentItem )
 {
-  if ( QgsGrassLocationItem::isLocation( thePath ) )
+  if ( QgsGrassLocationItem::isLocation( theDirPath ) )
   {
-    QgsGrassLocationItem * location = new QgsGrassLocationItem( parentItem, thePath );
+    QString path;
+    QDir dir( theDirPath );
+    QString dirName = dir.dirName();
+    if ( parentItem )
+    {
+      path = parentItem->path();
+    }
+    else
+    {
+      dir.cdUp();
+      path = dir.path();
+    }
+    path = path + QDir::separator() + "grass:" + dirName;
+    QgsGrassLocationItem * location = new QgsGrassLocationItem( parentItem, theDirPath, path );
     return location;
   }
   return 0;

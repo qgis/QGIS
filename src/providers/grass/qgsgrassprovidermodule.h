@@ -18,26 +18,25 @@
 
 #include "qgsdataitem.h"
 
-class QgsGrassLocationItem : public QgsDataCollectionItem
+class QgsGrassLocationItem : public QgsDirectoryItem
 {
   public:
-    QgsGrassLocationItem( QgsDataItem* parent, QString path );
+    QgsGrassLocationItem( QgsDataItem* parent, QString dirPath, QString path );
     ~QgsGrassLocationItem();
+
+    QIcon icon() { return QgsDataItem::icon(); }
 
     static bool isLocation( QString path );
     QVector<QgsDataItem*> createChildren();
-
-    /* Add mark to path to distinguish that from directory path */
-    static QString markPath( QString path );
-    /* Remove location mark from path */
-    static QString clearPath( QString path );
 };
 
-class QgsGrassMapsetItem : public QgsDataCollectionItem
+class QgsGrassMapsetItem : public QgsDirectoryItem
 {
   public:
-    QgsGrassMapsetItem( QgsDataItem* parent, QString path );
+    QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
     ~QgsGrassMapsetItem();
+
+    QIcon icon() { return QgsDataItem::icon(); }
 
     static bool isMapset( QString path );
     QVector<QgsDataItem*> createChildren();

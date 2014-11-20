@@ -70,6 +70,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 
   QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
 
+#if 0
   QWidget *mainWindow = 0;
 
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();
@@ -86,6 +87,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   {
     connect( &capDownload, SIGNAL( statusChanged( QString ) ), mainWindow, SLOT( showStatusMessage( QString ) ) );
   }
+#endif
 
   bool res = capDownload.downloadCapabilities();
 
@@ -102,7 +104,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     return children;
   }
 
-  // Attention: supportedLayers() gives tree leafes, not top level
+  // Attention: supportedLayers() gives tree leafs, not top level
   QVector<QgsWmsLayerProperty> layerProperties = caps.supportedLayers();
   if ( layerProperties.count() )
   {
@@ -253,7 +255,8 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
     QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
     QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
-    mChildren.append( layer );
+    //mChildren.append( layer );
+    addChildItem( layer );
   }
 
   mIconName = "mIconWms.svg";
@@ -356,8 +359,8 @@ QString QgsWMTSLayerItem::createUri()
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
+  mCapabilities |= Fast;
   mIconName = "mIconWms.svg";
-
   populate();
 }
 
