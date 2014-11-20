@@ -102,6 +102,12 @@ class CORE_EXPORT QgsMapToPixel
     //! Return current map units per pixel
     double mapUnitsPerPixel() const;
 
+    //! Set map rotation in degrees (clockwise)
+    void setMapRotation( double degrees );
+
+    //! Return current map rotation in degrees
+    double mapRotation() const;
+
     //! Set maximum y value
     void setYMaximum( double ymax );
     //! Set minimum y value
@@ -123,6 +129,8 @@ class CORE_EXPORT QgsMapToPixel
     double yMax;
     double yMin;
     double xMin;
+    //! Map rotation around Z axis on map center as clockwise degrees
+    double mMapRotation;
 };
 
 

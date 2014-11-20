@@ -19,6 +19,7 @@
 #include <QPoint>
 #include <QTextStream>
 #include <QVector>
+#include <QTransform>
 
 #include "qgslogger.h"
 
@@ -30,6 +31,7 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
     , yMax( ymax )
     , yMin( ymin )
     , xMin( xmin )
+    , mMapRotation( 45 ) // XXX strk reset to 0
 {
 }
 
@@ -41,7 +43,13 @@ QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
 {
   double mx = x * mMapUnitsPerPixel + xMin;
   double my = -1 * (( y - yMax ) * mMapUnitsPerPixel - yMin );
-  return QgsPoint( mx, my );
+
+  double rmx, rmy;
+  QTransform rot;
+  rot.rotate(mapRotation());
+  rot.map(mx, my, &rmx, &rmy);
+
+  return QgsPoint(rmx, rmy);
 }
 
 QgsPoint QgsMapToPixel::toMapCoordinates( QPoint p ) const
@@ -68,6 +76,16 @@ void QgsMapToPixel::setMapUnitsPerPixel( double mapUnitsPerPixel )
 double QgsMapToPixel::mapUnitsPerPixel() const
 {
   return mMapUnitsPerPixel;
+}
+
+void QgsMapToPixel::setMapRotation( double degrees )
+{
+  mMapRotation = degrees;
+}
+
+double QgsMapToPixel::mapRotation() const
+{
+  return mMapRotation;
 }
 
 void QgsMapToPixel::setYMaximum( double ymax )
@@ -98,7 +116,8 @@ QString QgsMapToPixel::showParameters()
 {
   QString rep;
   QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel
-  << " X minimum: " << xMin << " Y minimum: " << yMin << " Y maximum: " << yMax;
+  << " X minimum: " << xMin << " Y minimum: " << yMin
+  << " Y maximum: " << yMax << " Rotation: " << mMapRotation;
   return rep;
 
 }
@@ -134,13 +153,19 @@ void QgsMapToPixel::transform( QgsPoint* p ) const
 
 void QgsMapToPixel::transformInPlace( double& x, double& y ) const
 {
-  x = ( x - xMin ) / mMapUnitsPerPixel;
-  y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
+  double x1, y1;
+  QTransform rot;
+  rot = rot.rotate(mapRotation()).inverted();
+  rot.map(x, y, &x1, &y1);
+
+  x = ( x1 - xMin ) / mMapUnitsPerPixel;
+  y = yMax - ( y1 - yMin ) / mMapUnitsPerPixel;
 }
 
 #ifdef QT_ARCH_ARM
 void QgsMapToPixel::transformInPlace( qreal& x, qreal& y ) const
 {
+  // TODO: add support for rotation
   x = ( x - xMin ) / mMapUnitsPerPixel;
   y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
 }
@@ -157,6 +182,7 @@ void QgsMapToPixel::transformInPlace( QVector<double>& x,
 #ifdef ANDROID
 void QgsMapToPixel::transformInPlace( float& x, float& y ) const
 {
+  // TODO: add support for rotation
   x = ( x - xMin ) / mMapUnitsPerPixel;
   y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
 }
