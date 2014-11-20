@@ -57,7 +57,7 @@ void QgsMapToolPan::canvasReleaseEvent( QMouseEvent * e )
     {
       // transform the mouse pos to map coordinates
       QgsPoint center = mCanvas->getCoordinateTransform()->toMapPoint( e->x(), e->y() );
-      mCanvas->setExtent( QgsRectangle( center, center ) );
+      mCanvas->setCenter( center );
       mCanvas->refresh();
     }
   }
