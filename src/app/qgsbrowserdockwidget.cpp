@@ -333,7 +333,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
   {
     QSettings settings;
     QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
-    bool inFavDirs = favDirs.contains( item->path() );
+    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favourites;
 
     if ( item->parent() && !inFavDirs )
     {
@@ -388,10 +388,11 @@ void QgsBrowserDockWidget::addFavourite()
   if ( !item )
     return;
 
-  if ( item->type() != QgsDataItem::Directory )
+  QgsDirectoryItem * dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  if ( !dirItem )
     return;
 
-  addFavouriteDirectory( item->path() );
+  addFavouriteDirectory( dirItem->dirPath() );
 }
 
 void QgsBrowserDockWidget::addFavouriteDirectory()

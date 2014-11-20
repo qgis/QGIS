@@ -271,6 +271,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren();
 
+    QString dirPath() const { return mDirPath; }
     virtual bool equal( const QgsDataItem *other );
     virtual QIcon icon();
     virtual QWidget *paramWidget();
