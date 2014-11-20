@@ -72,6 +72,12 @@ class QgsMapToPixel
     //! Return current map units per pixel
     double mapUnitsPerPixel() const;
 
+    //! Set map rotation in degrees (clockwise)
+    void setMapRotation( double degrees );
+
+    //! Return current map rotation in degrees
+    double mapRotation() const;
+
     //! Set maximum y value
     void setYMaximum( double ymax );
     //! Set minimum y value
