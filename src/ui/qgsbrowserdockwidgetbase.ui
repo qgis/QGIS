@@ -24,13 +24,13 @@
     <item>
      <layout class="QHBoxLayout" name="mLayoutHeader">
       <property name="spacing">
-       <number>5</number>
+       <number>6</number>
       </property>
       <property name="leftMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>5</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="QToolButton" name="mBtnRefresh">
@@ -58,14 +58,14 @@
          <string>Add Selected Layers</string>
         </property>
         <property name="text">
-         <string>Add</string>
+         <string/>
         </property>
         <property name="icon">
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/mActionAdd.svg</normaloff>:/images/themes/default/mActionAdd.svg</iconset>
         </property>
         <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
+         <enum>Qt::ToolButtonIconOnly</enum>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
@@ -148,7 +148,7 @@
           </sizepolicy>
          </property>
          <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
+          <enum>QFrame::NoFrame</enum>
          </property>
          <property name="frameShadow">
           <enum>QFrame::Raised</enum>
@@ -193,32 +193,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QToolButton" name="mBtnFilter">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Filter files</string>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="icon">
-             <iconset resource="../../images/images.qrc">
-              <normaloff>:/images/themes/default/mActionFilter.png</normaloff>:/images/themes/default/mActionFilter.png</iconset>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QgsFilterLineEdit" name="mLeFilter">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -227,12 +204,6 @@
              <size>
               <width>0</width>
               <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>200</width>
-              <height>16777215</height>
              </size>
             </property>
             <property name="baseSize">
@@ -245,22 +216,6 @@
           </item>
          </layout>
         </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeType">
-          <enum>QSizePolicy::MinimumExpanding</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>0</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

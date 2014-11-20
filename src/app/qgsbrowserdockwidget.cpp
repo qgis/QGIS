@@ -245,9 +245,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
 
   mWidgetFilter->hide();
+  mLeFilter->setPlaceholderText( tr( "Type here to filter current item..." ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
-  mBtnFilterShow->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
-  mBtnFilter->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
 
   QMenu* menu = new QMenu( this );
   menu->setSeparatorsCollapsible( false );
@@ -280,10 +279,9 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   connect( mBtnAddLayers, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
   connect( mBtnCollapse, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
   connect( mBtnFilterShow, SIGNAL( toggled( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
-  connect( mBtnFilter, SIGNAL( clicked() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( cleared() ), this, SLOT( setFilter() ) );
-  // connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
+  connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
   connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( setFilterSyntax( QAction * ) ) );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
