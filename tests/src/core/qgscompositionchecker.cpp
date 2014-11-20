@@ -56,7 +56,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
   mComposition->setPlotStyle( QgsComposition::Print );
   newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
   newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
-  drawBackround( &newImage );
+  drawBackground( &newImage );
   QPainter expectedPainter( &newImage );
   //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
   //QRectF targetArea( 0, 0, 3507, 2480 );
@@ -71,7 +71,7 @@ bool QgsCompositionChecker::testComposition( QString &theReport, int page, int p
   mComposition->setPlotStyle( QgsComposition::Print );
   outputImage.setDotsPerMeterX( mDotsPerMeter );
   outputImage.setDotsPerMeterY( mDotsPerMeter );
-  drawBackround( &outputImage );
+  drawBackground( &outputImage );
   QPainter p( &outputImage );
   mComposition->renderPage( &p, page );
   p.end();

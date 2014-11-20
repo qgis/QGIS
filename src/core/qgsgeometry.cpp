@@ -6307,7 +6307,7 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart )
 
     case QGis::Polygon:
     {
-      // can only transfrom if destination is multipoint
+      // can only transform if destination is multipoint
       if ( !destMultipart )
         return 0;
 

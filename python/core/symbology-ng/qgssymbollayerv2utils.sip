@@ -66,7 +66,7 @@ class QgsSymbolLayerV2Utils
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
-    static void drawStippledBackround( QPainter* painter, QRect rect );
+    static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = 0 );
@@ -216,7 +216,7 @@ class QgsSymbolLayerV2Utils
      * @see colorFromMimeData
      * @note added in 2.5
      */
-    static QMimeData * colorToMimeData( const QColor color );
+    static QMimeData *colorToMimeData( const QColor &color );
 
     /**
      * Attempts to parse mime data as a color
@@ -227,7 +227,7 @@ class QgsSymbolLayerV2Utils
      * invalid color
      * @note added in 2.5
      */
-    static QColor colorFromMimeData( const QMimeData * mimeData, bool& hasAlpha );
+    static QColor colorFromMimeData( const QMimeData *data, bool& hasAlpha );
 
     /**
      * Attempts to parse mime data as a list of named colors
@@ -297,9 +297,7 @@ class QgsSymbolLayerV2Utils
     /**Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
-    /** Blurs an image in place, e.g. creating Qt-independent drop shadows
-     * @note added in 1.9
-     */
+    /** Blurs an image in place, e.g. creating Qt-independent drop shadows */
     static void blurImageInPlace( QImage& image, const QRect& rect, int radius, bool alphaOnly );
 
     /** Converts a QColor into a premultiplied ARGB QColor value using a specified alpha value
@@ -330,6 +328,12 @@ class QgsSymbolLayerV2Utils
     //! Calculate the centroid point of a QPolygonF
     static QPointF polygonCentroid( const QPolygonF& points );
 
+    //! Calculate a point within of a QPolygonF
+    static QPointF polygonPointOnSurface( const QPolygonF& points );
+
+    //! Calculate whether a point is within of a QPolygonF
+    static bool pointInPolygon( const QPolygonF &points, const QPointF &point );
+
     /** Return a new valid expression instance for given field or expression string.
      * If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
      * If the string is empty, returns null pointer.
@@ -345,4 +349,5 @@ class QgsSymbolLayerV2Utils
      * @note added in 2.2
      */
     static QString fieldOrExpressionFromExpression( QgsExpression* expression );
+
 };

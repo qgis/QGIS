@@ -94,7 +94,7 @@ class QgsCoordinateTransform : QObject
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsPoint in Destination Coordinate System
      */
-    QgsPoint transform( const QgsPoint p, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+    QgsPoint transform( const QgsPoint &p, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -118,12 +118,12 @@ class QgsCoordinateTransform : QObject
      * longitude line is required
      * @return QgsRectangle in Destination Coordinate System
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle theRect, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const throw (QgsCsException);
+    QgsRectangle transformBoundingBox( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const throw (QgsCsException);
 
     // Same as for the other transform() functions, but alters the x
     // and y variables in place. The second one works with good old-fashioned
     // C style arrays.
-    void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform) const throw (QgsCsException);
+    void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
     //! @note not available in python bindings
     // void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
@@ -142,7 +142,7 @@ class QgsCoordinateTransform : QObject
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsRectangle in Destination Coordinate System
      */
-    QgsRectangle transform( const QgsRectangle theRect, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+    QgsRectangle transform( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
 
     /*! Transform an array of coordinates to a different Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,

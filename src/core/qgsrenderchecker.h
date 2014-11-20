@@ -61,12 +61,12 @@ class CORE_EXPORT QgsRenderChecker
       * suffixed) the path to the image will be constructed like this:
       * controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
       */
-    void setControlName( const QString theName );
+    void setControlName( const QString &theName );
 
     /** Prefix where the control images are kept.
      * This will be appended to controlImagePath
       */
-    void setControlPathPrefix( const QString theName ) { mControlPathPrefix = theName + QDir::separator(); }
+    void setControlPathPrefix( const QString &theName ) { mControlPathPrefix = theName + QDir::separator(); }
 
     void setControlPathSuffix( const QString& theName ) { mControlPathSuffix = theName + QDir::separator(); }
 
@@ -82,6 +82,7 @@ class CORE_EXPORT QgsRenderChecker
      * @return The path to the rendered image
      */
     const QString& renderedImage() { return mRenderedImageFile; }
+
     //! @deprecated since 2.4 - use setMapSettings()
     Q_DECL_DEPRECATED void setMapRenderer( QgsMapRenderer *  thepMapRenderer );
 
@@ -131,7 +132,7 @@ class CORE_EXPORT QgsRenderChecker
     /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
-    static void drawBackround( QImage* image );
+    static void drawBackground( QImage* image );
 
     /**
      * Returns the path to the expected image file
@@ -154,6 +155,7 @@ class CORE_EXPORT QgsRenderChecker
      * Only will return something if you call enableDashBuffering( true ); before.
      *
      * @return buffered dash messages
+     * @note not available in python bindings
      */
     const QVector<QgsDartMeasurement>& dartMeasurements() const { return mDashMessages; }
 

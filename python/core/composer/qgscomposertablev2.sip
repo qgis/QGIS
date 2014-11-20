@@ -27,7 +27,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
 
   public:
 
-/*! Controls how headers are horizontally aligned in a table
+    /*! Controls how headers are horizontally aligned in a table
      */
     enum HeaderHAlignment
     {
@@ -318,7 +318,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
 
   protected:
 
-      /**Calculates the maximum width of text shown in columns.
+    /**Calculates the maximum width of text shown in columns.
      */
     virtual bool calculateMaxColumnWidths();
 
@@ -355,7 +355,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @param frameIndex index number for frame
      * @returns row range
      */
-    QPair<int, int> rowRange( const QRectF extent, const int frameIndex ) const;
+    QPair<int, int> rowRange( const QRectF &extent, const int frameIndex ) const;
 
     /**Draws the horizontal grid lines for the table.
      * @param painter destination painter for grid lines

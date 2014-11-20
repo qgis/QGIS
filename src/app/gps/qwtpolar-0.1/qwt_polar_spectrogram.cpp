@@ -68,10 +68,15 @@ class QwtPolarSpectrogram::PrivateData
 
     ~PrivateData()
     {
+      delete data;
+      delete colorMap;
     }
 
     QwtRasterData *data;
     QwtColorMap *colorMap;
+
+  private:
+    Q_DISABLE_COPY(PrivateData)
 };
 
 //!  Constructor

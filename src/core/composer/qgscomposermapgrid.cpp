@@ -1665,7 +1665,7 @@ int QgsComposerMapGrid::xGridLinesCRSTransform( const QgsRectangle& bbox, const 
 
     QList<QPolygonF> lineSegments = trimLinesToMap( gridLine, QgsRectangle( mComposerMap->rect() ) );
     QList<QPolygonF>::const_iterator lineIt = lineSegments.constBegin();
-    for ( ; lineIt != lineSegments.constEnd(); lineIt ++ )
+    for ( ; lineIt != lineSegments.constEnd(); ++lineIt )
     {
       if (( *lineIt ).size() > 0 )
       {
@@ -1731,7 +1731,7 @@ int QgsComposerMapGrid::yGridLinesCRSTransform( const QgsRectangle& bbox, const 
     //clip grid line to map polygon
     QList<QPolygonF> lineSegments = trimLinesToMap( gridLine, QgsRectangle( mComposerMap->rect() ) );
     QList<QPolygonF>::const_iterator lineIt = lineSegments.constBegin();
-    for ( ; lineIt != lineSegments.constEnd(); lineIt ++ )
+    for ( ; lineIt != lineSegments.constEnd(); ++lineIt )
     {
       if (( *lineIt ).size() > 0 )
       {
@@ -2331,7 +2331,7 @@ QList<QPolygonF> QgsComposerMapGrid::trimLinesToMap( const QPolygonF& line, cons
 
   QList<QPolygonF> trimmedLines;
   QList<QgsGeometry*>::const_iterator geomIt = intersectedParts.constBegin();
-  for ( ; geomIt != intersectedParts.constEnd(); geomIt++ )
+  for ( ; geomIt != intersectedParts.constEnd(); ++geomIt )
   {
     trimmedLines << ( *geomIt )->asQPolygonF();
   }

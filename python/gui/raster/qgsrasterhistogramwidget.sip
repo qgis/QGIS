@@ -20,7 +20,7 @@ class QgsRasterHistogramWidget : QWidget
     bool computeHistogram( bool forceComputeFlag );
 
     /** Apply a histoActionTriggered() event. */
-    void histoAction( const QString actionName, bool actionFlag = true );
+    void histoAction( const QString &actionName, bool actionFlag = true );
 
     /** Apply a histoActionTriggered() event. */
     void setSelectedBand( int index );

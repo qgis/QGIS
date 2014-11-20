@@ -92,9 +92,9 @@ QSize QgsDetailedItemDelegate::sizeHint(
   }
 }
 
-void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
-    const QStyleOptionViewItem & theOption,
-    const QgsDetailedItemData theData ) const
+void QgsDetailedItemDelegate::paintManually( QPainter *thepPainter,
+    const QStyleOptionViewItem &theOption,
+    const QgsDetailedItemData &theData ) const
 {
   //
   // Get the strings and check box properties
@@ -238,9 +238,9 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
 } //render by manual painting
 
 
-void QgsDetailedItemDelegate::paintAsWidget( QPainter * thepPainter,
-    const QStyleOptionViewItem & theOption,
-    const QgsDetailedItemData theData ) const
+void QgsDetailedItemDelegate::paintAsWidget( QPainter *thepPainter,
+    const QStyleOptionViewItem &theOption,
+    const QgsDetailedItemData &theData ) const
 {
 
   mpWidget->setChecked( theData.isChecked() );
@@ -276,8 +276,8 @@ void QgsDetailedItemDelegate::drawHighlight( const QStyleOptionViewItem &theOpti
   thepPainter->fillRect( theOption.rect, QBrush( myGradient ) );
 }
 
-int QgsDetailedItemDelegate::height( const QStyleOptionViewItem & theOption,
-                                     const QgsDetailedItemData theData ) const
+int QgsDetailedItemDelegate::height( const QStyleOptionViewItem &theOption,
+                                     const QgsDetailedItemData &theData ) const
 {
   QFontMetrics myTitleMetrics( titleFont( theOption ) );
   QFontMetrics myDetailMetrics( detailFont( theOption ) );

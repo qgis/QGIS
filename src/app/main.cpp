@@ -165,6 +165,7 @@ void myPrint( const char *fmt, ... )
 #else
   vfprintf( stderr, fmt, ap );
 #endif
+  va_end( ap );
 }
 
 static void dumpBacktrace( unsigned int depth )

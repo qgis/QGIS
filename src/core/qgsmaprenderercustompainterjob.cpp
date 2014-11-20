@@ -298,7 +298,7 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
 
     if ( settings.hasCrsTransformEnabled() )
     {
-      ct = settings.layerTransfrom( ml );
+      ct = settings.layerTransform( ml );
       if ( ct )
         reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
     }

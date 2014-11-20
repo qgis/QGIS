@@ -337,7 +337,7 @@ void QgsColorButtonV2::setValidColor( const QColor& newColor )
   }
 }
 
-QPixmap QgsColorButtonV2::createMenuIcon( const QColor color, const bool showChecks )
+QPixmap QgsColorButtonV2::createMenuIcon( const QColor &color, const bool showChecks )
 {
   //create an icon pixmap
   QPixmap pixmap( 16, 16 );
@@ -542,7 +542,7 @@ void QgsColorButtonV2::addRecentColor( const QColor& color )
   settings.setValue( QString( "/colors/recent" ), recentColorVariants );
 }
 
-void QgsColorButtonV2::setButtonBackground( const QColor color )
+void QgsColorButtonV2::setButtonBackground( const QColor &color )
 {
   QColor backgroundColor = color;
 

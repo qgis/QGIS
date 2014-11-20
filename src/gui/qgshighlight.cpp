@@ -88,7 +88,7 @@ void QgsHighlight::init()
 {
   if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
-    const QgsCoordinateTransform* ct = mMapCanvas->mapSettings().layerTransfrom( mLayer );
+    const QgsCoordinateTransform* ct = mMapCanvas->mapSettings().layerTransform( mLayer );
     if ( ct )
     {
       if ( mGeometry )

@@ -25,9 +25,21 @@ class QgsAttributeForm : QWidget
 
     const QgsFeature& feature();
 
+    /**
+     * Hides the button box (Ok/Cancel) and enables auto-commit
+     */
     void hideButtonBox();
 
+    /**
+     * Shows the button box (Ok/Cancel) and disables auto-commit
+     */
     void showButtonBox();
+
+    /**
+     * Disconnects the button box (Ok/Cancel) from the accept/resetValues slots
+     * If this method is called, you have to create these connections from outside
+     */
+    void disconnectButtonBox();
 
     /**
      * Takes ownership
@@ -35,8 +47,18 @@ class QgsAttributeForm : QWidget
      */
     void addInterface( QgsAttributeFormInterface* iface /Transfer/ );
 
+    /**
+     * Returns the layer for which this form is shown
+     *
+     * @return  Layer
+     */
     QgsVectorLayer* layer();
 
+    /**
+     * Returns if the form is currently in editable mode.
+     *
+     * @return Editable mode of this form
+     */
     bool editable();
 
     /**
@@ -54,6 +76,16 @@ class QgsAttributeForm : QWidget
      * @param message The message
      */
     void setEditCommandMessage( const QString& message );
+
+    /**
+     * Intercepts keypress on custom form (escape should not close it)
+     *
+     * @param object   The object for which the event has been sent
+     * @param event    The event which is being filtered
+     *
+     * @return         true if the event has been handled (key was ESC)
+     */
+    bool eventFilter( QObject* object, QEvent* event );
 
   signals:
     /**
@@ -80,9 +112,28 @@ class QgsAttributeForm : QWidget
     void featureSaved( const QgsFeature& feature );
 
   public slots:
+    /**
+     * Call this to change the content of a given attribute. Will update the editor(s) related to this field.
+     *
+     * @param field The field to change
+     * @param value The new value
+     */
     void changeAttribute( const QString& field, const QVariant& value );
+
+    /**
+     * Update all editors to correspond to a different feature.
+     *
+     * @param feature The feature which will be represented by the form
+     */
     void setFeature( const QgsFeature& feature );
+
+    /**
+     * Save all the values from the editors to the layer.
+     *
+     * @return True if successful
+     */
     bool save();
+
     /**
      * Alias for save()
      *
@@ -97,5 +148,8 @@ class QgsAttributeForm : QWidget
      */
     void reject() /Deprecated/;
 
+    /**
+     * Sets all values to the values of the current feature
+     */
     void resetValues();
 };

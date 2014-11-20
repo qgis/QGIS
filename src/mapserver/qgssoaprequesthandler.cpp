@@ -53,7 +53,6 @@ void QgsSOAPRequestHandler::parseInput()
     QgsDebugMsg( "the xml string was:" );
     QgsDebugMsg( inputString );
     throw QgsMapServiceException( "InvalidXML", "XML error: " + errorMsg );
-    return;
   }
 
   // if xml reading was successfull, save the inputXML in a file
@@ -66,7 +65,6 @@ void QgsSOAPRequestHandler::parseInput()
   {
     QgsDebugMsg( "Envelope element not found" );
     throw QgsMapServiceException( "SOAPError", "Element <Envelope> not found" );
-    return;
   }
 
   QDomNodeList bodyNodeList = envelopeNodeList.item( 0 ).toElement().elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Body" );
@@ -74,7 +72,6 @@ void QgsSOAPRequestHandler::parseInput()
   {
     QgsDebugMsg( "body node not found" );
     throw QgsMapServiceException( "SOAPError", "Element <Body> not found" );
-    return;
   }
   QDomElement bodyElement = bodyNodeList.item( 0 ).toElement();
   QDomElement firstChildElement = bodyElement.firstChild().toElement();

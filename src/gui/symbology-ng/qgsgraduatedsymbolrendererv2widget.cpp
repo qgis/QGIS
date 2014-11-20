@@ -585,15 +585,13 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   mRenderer->setClassAttribute( attrName );
   mRenderer->setMode( mode );
   mRenderer->setSourceColorRamp( ramp->clone() );
-  bool updateUiCount = true;
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mRenderer->updateClasses( mLayer, mode, nclasses );
   mRenderer->calculateLabelPrecision();
   QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
-  updateUiCount = false;
-  updateUiFromRenderer( updateUiCount );
+  updateUiFromRenderer( false );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()

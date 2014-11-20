@@ -1799,18 +1799,19 @@ ControlNodeBin::draw( const ControlContext& context, bool newContext, int bin )
 
     if ( _sortingEnabled && _sortByDistance )
     {
-        for( ControlNodeCollection::iterator i = _controlNodes.begin(); i != _controlNodes.end(); ++i )
+        for( ControlNodeCollection::iterator i = _controlNodes.begin(); i != _controlNodes.end(); )
         {
             ControlNode* node = i->second.get();
             if ( node->getNumParents() == 0 )
             {
               _renderNodes.erase( node );
-              _controlNodes.erase( i );
+              i = _controlNodes.erase( i );
             }
             else
 	    {
 	      ControlNode::PerViewData& nodeData = node->getData( context._view );
 	      byDepth.insert( ControlNodePair(nodeData._screenPos.z(), node) );
+              ++i;
 	    }
         }
 

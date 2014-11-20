@@ -432,7 +432,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
      * @param frameIndex index number for frame
      * @returns row range
      */
-    QPair<int, int> rowRange( const QRectF extent, const int frameIndex ) const;
+    QPair<int, int> rowRange( const QRectF &extent, const int frameIndex ) const;
 
     /**Draws the horizontal grid lines for the table.
      * @param painter destination painter for grid lines

@@ -35,6 +35,8 @@ public:
     const QwtSymbol *symbol;
 
     QwtPointPolar pos;
+private:
+    Q_DISABLE_COPY(PrivateData)
 };
 
 //! Sets alignment to Qt::AlignCenter, and style to NoLine

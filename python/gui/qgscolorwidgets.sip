@@ -60,7 +60,7 @@ class QgsColorWidget : QWidget
     /**Create an icon for dragging colors
      * @param color for icon
      */
-    static QPixmap createDragIcon( const QColor color );
+    static QPixmap createDragIcon( const QColor &color );
 
   public slots:
 
@@ -69,7 +69,7 @@ class QgsColorWidget : QWidget
      * @param emitSignals set to true to emit the colorChanged signal after setting color
      * @see color
      */
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
     /**Sets the color component which the widget controls
      * @param component color component for widget
@@ -92,7 +92,7 @@ class QgsColorWidget : QWidget
     /**Emitted when the widget's color changes
      * @param color new widget color
      */
-    void colorChanged( const QColor color );
+    void colorChanged( const QColor &color );
 
   protected:
 
@@ -167,7 +167,7 @@ class QgsColorWheel : QgsColorWidget
 
   public slots:
 
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
 
@@ -211,8 +211,7 @@ class QgsColorBox : QgsColorWidget
     virtual void setComponent( const ColorComponent component );
 
   public slots:
-
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
 
@@ -339,7 +338,7 @@ class QgsColorSliderWidget : QgsColorWidget
 
     virtual void setComponent( const ColorComponent component );
     virtual void setComponentValue( const int value );
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
 };
 
@@ -366,7 +365,7 @@ class QgsColorTextWidget : QgsColorWidget
 
     virtual ~QgsColorTextWidget();
 
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
     void resizeEvent( QResizeEvent * event );

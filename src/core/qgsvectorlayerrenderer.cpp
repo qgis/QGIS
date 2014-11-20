@@ -338,7 +338,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       mCache->cacheGeometry( fet.id(), *fet.geometry() );
     }
 
-    if ( sym && mContext.labelingEngine() )
+    if ( mContext.labelingEngine() )
     {
       if ( mLabeling )
       {

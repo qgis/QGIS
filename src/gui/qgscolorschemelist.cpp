@@ -27,7 +27,7 @@
 //For model testing
 //#include "modeltest.h"
 
-QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString context, const QColor baseColor )
+QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
     : QTreeView( parent )
     , mScheme( scheme )
 {
@@ -54,7 +54,7 @@ QgsColorSchemeList::~QgsColorSchemeList()
 
 }
 
-void QgsColorSchemeList::setScheme( QgsColorScheme *scheme, const QString context, const QColor baseColor )
+void QgsColorSchemeList::setScheme( QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
 {
   mScheme = scheme;
   mModel->setScheme( scheme, context, baseColor );
@@ -89,7 +89,7 @@ void QgsColorSchemeList::removeSelection()
   }
 }
 
-void QgsColorSchemeList::addColor( const QColor color, const QString label )
+void QgsColorSchemeList::addColor( const QColor &color, const QString &label )
 {
   mModel->addColor( color, label );
 }
@@ -233,7 +233,7 @@ bool QgsColorSchemeList::isDirty() const
 // QgsColorSchemeModel
 //
 
-QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString context, const QColor baseColor, QObject *parent )
+QgsColorSchemeModel::QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context, const QColor &baseColor, QObject *parent )
     : QAbstractItemModel( parent )
     , mScheme( scheme )
     , mContext( context )
@@ -522,7 +522,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
   return true;
 }
 
-void QgsColorSchemeModel::setScheme( QgsColorScheme *scheme, const QString context, const QColor baseColor )
+void QgsColorSchemeModel::setScheme( QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
 {
   mScheme = scheme;
   mContext = context;
@@ -581,7 +581,7 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& par
   return true;
 }
 
-void QgsColorSchemeModel::addColor( const QColor color, const QString label )
+void QgsColorSchemeModel::addColor( const QColor &color, const QString &label )
 {
   if ( !mScheme->isEditable() )
   {

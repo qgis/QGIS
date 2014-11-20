@@ -258,6 +258,9 @@ class DL_CreationInterface
   protected:
     DL_Attributes attributes;
     DL_Extrusion *extrusion;
+
+    DL_CreationInterface(const DL_CreationInterface &);
+    DL_CreationInterface&operator=(const DL_CreationInterface&);
 };
 
 #endif

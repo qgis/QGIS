@@ -75,6 +75,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
         QgsVectorLayerCache* mCache;
 
         friend class QgsVectorLayerCache;
+        Q_DISABLE_COPY( QgsCachedFeature )
     };
 
   public:

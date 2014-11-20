@@ -105,7 +105,7 @@ void Bezier3D::calcSecDer( float t, Vector3D* v )
 }
 
 
-void Bezier3D::changeDirection()//does this work correctli? more testing is needed.
+void Bezier3D::changeDirection()//does this work correctly? more testing is needed.
 {
   if ( mControlPoly )
   {
@@ -119,6 +119,7 @@ void Bezier3D::changeDirection()//does this work correctli? more testing is need
     {
       mControlPoly->insert( i, pointer[( mControlPoly->count()-1 )-i] );
     }
+    delete [] pointer;
   }
 
   else

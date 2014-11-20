@@ -38,7 +38,7 @@ void QgsMapHitTest::run()
 
     if ( mSettings.hasCrsTransformEnabled() )
     {
-      context.setCoordinateTransform( mSettings.layerTransfrom( vl ) );
+      context.setCoordinateTransform( mSettings.layerTransform( vl ) );
       context.setExtent( mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() ) );
     }
 

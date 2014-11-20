@@ -87,7 +87,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual bool equal( const QgsDataItem *other );
 
-    virtual QWidget * paramWidget() { return 0; }
+    virtual QWidget *paramWidget() { return 0; }
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction*> actions() { return QList<QAction*>(); }
@@ -132,7 +132,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual QIcon icon();
     QString name() const { return mName; }
     QString path() const { return mPath; }
-    void setPath( const QString path ) { mPath = path; }
+    void setPath( const QString &path ) { mPath = path; }
 
     // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
     // not possible to set mIcon in constructor. Either use mIconName/setIconName()

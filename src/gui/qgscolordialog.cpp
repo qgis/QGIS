@@ -782,7 +782,7 @@ void QgsColorDialogV2::stopPicking( const QPoint &eventPos, const bool takeSampl
   mColorPreview->setColor( snappedColor, true );
 }
 
-void QgsColorDialogV2::setColor( const QColor color )
+void QgsColorDialogV2::setColor( const QColor &color )
 {
   if ( !color.isValid() )
   {

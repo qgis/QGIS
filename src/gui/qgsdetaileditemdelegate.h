@@ -65,14 +65,14 @@ class GUI_EXPORT QgsDetailedItemDelegate :
     QStringList wordWrap( QString theString,
                           QFontMetrics theMetrics,
                           int theWidth ) const;
-    void paintManually( QPainter * thePainter,
-                        const QStyleOptionViewItem & theOption,
-                        const QgsDetailedItemData theData ) const;
-    void paintAsWidget( QPainter * thePainter,
-                        const QStyleOptionViewItem & theOption,
-                        const QgsDetailedItemData theData ) const;
-    int height( const QStyleOptionViewItem & theOption,
-                const QgsDetailedItemData theData ) const;
+    void paintManually( QPainter *thePainter,
+                        const QStyleOptionViewItem &theOption,
+                        const QgsDetailedItemData &theData ) const;
+    void paintAsWidget( QPainter *thePainter,
+                        const QStyleOptionViewItem &theOption,
+                        const QgsDetailedItemData &theData ) const;
+    int height( const QStyleOptionViewItem &theOption,
+                const QgsDetailedItemData &theData ) const;
     QgsDetailedItemWidget * mpWidget;
     QCheckBox * mpCheckBox;
     int mVerticalSpacing;

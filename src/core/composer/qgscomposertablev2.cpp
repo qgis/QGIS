@@ -191,7 +191,7 @@ int QgsComposerTableV2::rowsVisible( const double frameHeight, const bool includ
   return qMax( floor( contentHeight / rowHeight ), 0.0 );
 }
 
-QPair< int, int > QgsComposerTableV2::rowRange( const QRectF extent, const int frameIndex ) const
+QPair< int, int > QgsComposerTableV2::rowRange( const QRectF &extent, const int frameIndex ) const
 {
   //calculate row height
   if ( frameIndex >= frameCount() )

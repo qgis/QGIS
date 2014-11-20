@@ -660,7 +660,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
   return layers;
 }
 
-QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
+QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString &qlrfile )
 {
   QFile file( qlrfile );
   if ( !file.open( QIODevice::ReadOnly ) )
@@ -860,8 +860,6 @@ QString QgsMapLayer::styleURI()
       myURI.chop( 7 );
     else if ( myURI.endsWith( ".tgz", Qt::CaseInsensitive ) )
       myURI.chop( 4 );
-    else if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
-      myURI.chop( 3 );
     myFileInfo.setFile( myURI );
     // get the file name for our .qml style file
     key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";

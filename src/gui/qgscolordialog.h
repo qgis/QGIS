@@ -130,7 +130,7 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
     /**Sets the current color for the dialog
      * @param color desired color
      */
-    void setColor( const QColor color );
+    void setColor( const QColor &color );
 
   protected:
 
