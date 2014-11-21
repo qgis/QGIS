@@ -78,7 +78,8 @@ void TestQgsComposerLabel::initTestCase()
 void TestQgsComposerLabel::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerLabel::init()

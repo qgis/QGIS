@@ -59,6 +59,11 @@ class TestQgsExpression: public QObject
       QgsApplication::showSettings();
     }
 
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
+
     void parsing_data()
     {
       QTest::addColumn<QString>( "string" );

@@ -76,7 +76,6 @@ void TestQgsComposerMap::initTestCase()
 void TestQgsComposerMap::cleanupTestCase()
 {
   delete mComposition;
-  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -86,6 +85,8 @@ void TestQgsComposerMap::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerMap::init()

@@ -105,7 +105,7 @@ void Regression992::cleanupTestCase()
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
-  delete mpRasterLayer;
+  QgsApplication::exitQgis();
 }
 
 void Regression992::regression992()

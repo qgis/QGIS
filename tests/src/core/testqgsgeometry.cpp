@@ -320,6 +320,7 @@ void TestQgsGeometry::cleanupTestCase()
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
+  QgsApplication::exitQgis();
 }
 
 // MK, Disabled 14.11.2014

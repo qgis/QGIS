@@ -68,6 +68,7 @@ void TestQgsDualView::cleanupTestCase()
 {
   delete mPointsLayer;
   delete mCanvas;
+  QgsApplication::exitQgis();
 }
 
 void TestQgsDualView::init()

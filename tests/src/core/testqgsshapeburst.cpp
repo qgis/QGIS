@@ -125,6 +125,8 @@ void TestQgsShapeburst::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsShapeburst::shapeburstSymbol()

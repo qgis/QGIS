@@ -101,6 +101,8 @@ void TestQgsInvertedPolygon::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsInvertedPolygon::singleSubRenderer()

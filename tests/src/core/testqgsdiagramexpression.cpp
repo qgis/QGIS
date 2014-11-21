@@ -114,6 +114,7 @@ class TestQgsDiagramExpression: public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
+      QgsApplication::exitQgis();
       QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )

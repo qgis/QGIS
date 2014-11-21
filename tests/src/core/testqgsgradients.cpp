@@ -128,6 +128,8 @@ void TestQgsGradients::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsGradients::gradientSymbol()

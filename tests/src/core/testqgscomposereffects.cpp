@@ -77,6 +77,8 @@ void TestQgsComposerEffects::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerEffects::init()

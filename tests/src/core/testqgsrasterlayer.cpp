@@ -152,6 +152,8 @@ void TestQgsRasterLayer::initTestCase()
 //runs after all tests
 void TestQgsRasterLayer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -580,7 +582,6 @@ void TestQgsRasterLayer::setRenderer()
   mpRasterLayer->setRenderer( renderer );
   QCOMPARE( receiver.rendererChanged, true );
   QCOMPARE( mpRasterLayer->renderer(), renderer );
-  delete renderer;
 }
 
 QTEST_MAIN( TestQgsRasterLayer )

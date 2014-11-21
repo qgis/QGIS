@@ -121,6 +121,8 @@ void TestQgsRasterFill::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsRasterFill::init()

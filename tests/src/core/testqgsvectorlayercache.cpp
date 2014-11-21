@@ -119,7 +119,6 @@ void TestVectorLayerCache::cleanupTestCase()
 
 
   delete mPointsLayer;
-  mPointsLayer = NULL;
 
   // Clean tmp files
   QMap<QString, QString>::const_iterator it;
@@ -137,6 +136,8 @@ void TestVectorLayerCache::cleanupTestCase()
 
   // also clean up newly created .qix file
   QFile::remove( QString( TEST_DATA_DIR ) + QDir::separator() + "points.qix" );
+
+  QgsApplication::exitQgis();
 }
 
 void TestVectorLayerCache::testCacheOverflow()

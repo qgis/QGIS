@@ -112,7 +112,7 @@ void TestQgsBlendModes::initTestCase()
                                       rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 2, 3, 4 );
   mRasterLayer1->setRenderer( rasterRenderer );
-  mRasterLayer2->setRenderer( rasterRenderer );
+  mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mRasterLayer1 );
   QgsMapLayerRegistry::instance()->addMapLayers(
@@ -131,6 +131,8 @@ void TestQgsBlendModes::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsBlendModes::vectorBlending()

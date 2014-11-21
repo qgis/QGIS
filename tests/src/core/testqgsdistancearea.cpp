@@ -30,6 +30,7 @@ class TestQgsDistanceArea: public QObject
     Q_OBJECT;
   private slots:
     void initTestCase();
+    void cleanupTestCase();
     void basic();
     void test_distances();
     void unit_conversions();
@@ -44,6 +45,11 @@ void TestQgsDistanceArea::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+}
+
+void TestQgsDistanceArea::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsDistanceArea::basic()

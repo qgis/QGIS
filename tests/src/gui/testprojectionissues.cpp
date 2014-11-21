@@ -81,7 +81,8 @@ void TestProjectionIssues::initTestCase()
 void TestProjectionIssues::cleanupTestCase()
 {
   delete mMapCanvas;
-  delete mRasterLayer;
+
+  QgsApplication::exitQgis();
 };
 
 void TestProjectionIssues::init()

@@ -34,6 +34,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     Q_OBJECT
   private slots:
     void initTestCase();
+    void cleanupTestCase();
     void wktCtor();
     void idCtor();
     void copyCtor();
@@ -99,6 +100,11 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   }
 #endif
 
+}
+
+void TestQgsCoordinateReferenceSystem::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsCoordinateReferenceSystem::wktCtor()

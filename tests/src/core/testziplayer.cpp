@@ -291,6 +291,8 @@ void TestZipLayer::initTestCase()
 
 void TestZipLayer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   // restore zipSetting
   QSettings settings;
   settings.setValue( mSettingsKey, mScanZipSetting );

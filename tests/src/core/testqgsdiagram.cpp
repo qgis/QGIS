@@ -109,6 +109,7 @@ class TestQgsDiagram: public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
+      QgsApplication::exitQgis();
       QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -118,10 +119,6 @@ class TestQgsDiagram: public QObject
         myFile.close();
         //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
-
-      delete mComposerMap;
-      delete mComposition;
-      delete mPointsLayer;
     }
     void init() {};// will be called before each testfunction is executed.
     void cleanup() {};// will be called after every testfunction.

@@ -78,7 +78,7 @@ void  TestQgsVectorAnalyzer::initTestCase()
 }
 void  TestQgsVectorAnalyzer::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 void  TestQgsVectorAnalyzer::init()
 {

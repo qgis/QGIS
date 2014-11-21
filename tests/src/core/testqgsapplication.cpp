@@ -30,6 +30,7 @@ class TestQgsApplication: public QObject
     void checkPaths();
     void checkGdalSkip();
     void initTestCase();
+    void cleanupTestCase();
   private:
     QString getQgisPath();
 };
@@ -45,6 +46,11 @@ void TestQgsApplication::initTestCase()
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
 };
+
+void TestQgsApplication::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsApplication::checkPaths()
 {

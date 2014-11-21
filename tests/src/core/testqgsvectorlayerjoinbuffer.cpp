@@ -113,7 +113,7 @@ void TestVectorLayerJoinBuffer::cleanup()
 
 void TestVectorLayerJoinBuffer::cleanupTestCase()
 {
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  QgsApplication::exitQgis();
 }
 
 void TestVectorLayerJoinBuffer::testJoinBasic_data()

@@ -84,6 +84,8 @@ void TestQgsComposerUtils::initTestCase()
 
 void TestQgsComposerUtils::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   delete mComposition;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";

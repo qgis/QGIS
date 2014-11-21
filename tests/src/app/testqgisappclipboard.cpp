@@ -63,6 +63,7 @@ void TestQgisAppClipboard::initTestCase()
 //runs after all tests
 void TestQgisAppClipboard::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgisAppClipboard::copyPaste()

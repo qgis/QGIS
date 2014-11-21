@@ -105,7 +105,6 @@ void TestQgsComposerDD::initTestCase()
 void TestQgsComposerDD::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -115,6 +114,7 @@ void TestQgsComposerDD::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerDD::init()

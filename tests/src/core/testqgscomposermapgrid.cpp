@@ -91,6 +91,8 @@ void TestQgsComposerMapGrid::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerMapGrid::init()

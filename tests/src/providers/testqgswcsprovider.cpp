@@ -89,6 +89,8 @@ void TestQgsWcsProvider::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsWcsProvider::read()

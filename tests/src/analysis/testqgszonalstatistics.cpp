@@ -28,7 +28,7 @@ class TestQgsZonalStatistics: public QObject
     Q_OBJECT;
   private slots:
     void initTestCase();
-    void cleanupTestCase() {};
+    void cleanupTestCase();
     void init() {};
     void cleanup() {};
 
@@ -60,6 +60,11 @@ void TestQgsZonalStatistics::initTestCase()
 
   mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", "poly", "ogr" );
   mRasterPath = myTempPath + "edge_problem.asc";
+}
+
+void TestQgsZonalStatistics::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsZonalStatistics::testStatistics()

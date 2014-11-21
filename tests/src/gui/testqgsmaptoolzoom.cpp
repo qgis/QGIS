@@ -45,7 +45,10 @@ void TestQgsMapToolZoom::initTestCase()
   QgsApplication::showSettings();
 }
 
-void TestQgsMapToolZoom::cleanupTestCase() {};
+void TestQgsMapToolZoom::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsMapToolZoom::init()
 {

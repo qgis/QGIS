@@ -41,6 +41,11 @@ class TestQgsRuleBasedRenderer: public QObject
       QgsApplication::initQgis();
     }
 
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
+
     void test_load_xml()
     {
       QDomDocument doc;

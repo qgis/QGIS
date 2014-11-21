@@ -97,10 +97,9 @@ void TestQgsComposerRotation::initTestCase()
 
   mReport = "<h1>Composer Rotation Tests</h1>\n";
 }
+
 void TestQgsComposerRotation::cleanupTestCase()
 {
-  delete mComposition;
-
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -109,6 +108,8 @@ void TestQgsComposerRotation::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerRotation::init()

@@ -92,7 +92,8 @@ void TestQgsComposerTable::initTestCase()
 void TestQgsComposerTable::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerTable::init()

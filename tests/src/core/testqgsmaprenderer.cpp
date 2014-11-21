@@ -171,6 +171,8 @@ void TestQgsMapRenderer::initTestCase()
 
 void TestQgsMapRenderer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )

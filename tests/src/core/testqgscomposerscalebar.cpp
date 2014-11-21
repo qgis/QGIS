@@ -101,7 +101,6 @@ void TestQgsComposerScaleBar::initTestCase()
 void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
-  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -111,6 +110,8 @@ void TestQgsComposerScaleBar::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 };
 
 void TestQgsComposerScaleBar::init()

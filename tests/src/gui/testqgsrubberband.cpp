@@ -72,6 +72,8 @@ void TestQgsRubberband::cleanupTestCase()
   delete mRubberband;
   delete mPolygonLayer;
   delete mCanvas;
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsRubberband::init()

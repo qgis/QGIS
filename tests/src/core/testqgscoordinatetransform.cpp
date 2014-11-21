@@ -25,6 +25,7 @@ class TestQgsCoordinateTransform: public QObject
 
   private slots:
     void initTestCase();
+    void cleanupTestCase();
     void transformBoundingBox();
 
   private:
@@ -37,6 +38,11 @@ void TestQgsCoordinateTransform::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
+}
+
+void TestQgsCoordinateTransform::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsCoordinateTransform::transformBoundingBox()

@@ -119,6 +119,8 @@ void TestQgsRenderers::initTestCase()
 }
 void TestQgsRenderers::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -128,7 +130,6 @@ void TestQgsRenderers::cleanupTestCase()
     myFile.close();
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
-
 }
 
 void TestQgsRenderers::singleSymbol()
