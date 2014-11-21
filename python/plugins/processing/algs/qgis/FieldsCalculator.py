@@ -101,8 +101,8 @@ class FieldsCalculator(GeoAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs().srsid())
-        canvas = iface.mapCanvas()
-        da.setEllipsoidalMode(canvas.mapRenderer().hasCrsTransformEnabled())
+        #canvas = iface.mapCanvas()
+        #da.setEllipsoidalMode(iface.mapCanvas().mapRenderer().hasCrsTransformEnabled())
         da.setEllipsoid(QgsProject.instance().readEntry('Measure',
                                                         '/Ellipsoid',
                                                         GEO_NONE)[0])
