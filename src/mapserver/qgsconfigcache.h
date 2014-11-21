@@ -52,6 +52,7 @@ class QgsConfigCache: public QObject
     /**Returns xml document for project file / sld or 0 in case of errors*/
     QDomDocument* xmlDocument( const QString& filePath );
 
+    QCache<QString, QDomDocument> mXmlDocumentCache;
     QCache<QString, QgsWMSConfigParser> mWMSConfigCache;
     QCache<QString, QgsWFSProjectParser> mWFSConfigCache;
     QCache<QString, QgsWCSProjectParser> mWCSConfigCache;

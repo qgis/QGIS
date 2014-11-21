@@ -28,7 +28,7 @@ class QSvgRenderer;
 class QgsWMSProjectParser : public QgsWMSConfigParser
 {
   public:
-    QgsWMSProjectParser( QDomDocument* xmlDoc, const QString& filePath );
+    QgsWMSProjectParser( const QString& filePath );
     virtual ~QgsWMSProjectParser();
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
@@ -107,10 +107,10 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
-    bool useLayerIDs() const { return mProjectParser.useLayerIDs(); }
+    bool useLayerIDs() const { return mProjectParser->useLayerIDs(); }
 
   private:
-    QgsServerProjectParser mProjectParser;
+    QgsServerProjectParser* mProjectParser;
 
     mutable QFont mLegendLayerFont;
     mutable QFont mLegendItemFont;

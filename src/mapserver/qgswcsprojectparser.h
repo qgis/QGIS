@@ -23,7 +23,7 @@
 class QgsWCSProjectParser
 {
   public:
-    QgsWCSProjectParser( QDomDocument* xmlDoc, const QString& filePath );
+    QgsWCSProjectParser( const QString& filePath );
     ~QgsWCSProjectParser();
 
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
@@ -35,7 +35,7 @@ class QgsWCSProjectParser
     QList<QgsMapLayer*> mapLayerFromCoverage( const QString& cName, bool useCache = true ) const;
 
   private:
-    QgsServerProjectParser mProjectParser;
+    QgsServerProjectParser* mProjectParser;
 };
 
 #endif // QGSWCSPROJECTPARSER_H
