@@ -69,8 +69,6 @@ class OgrAlgorithm(GdalAlgorithm):
         return ogrstr
 
     def ogrLayerName(self, uri):
-        layerName = None
-
         if 'host' in uri:
             regex = re.compile('(table=")(.+?)(\.)(.+?)"')
             r = regex.search(uri)
