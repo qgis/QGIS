@@ -1744,7 +1744,7 @@ void QgisApp::createStatusBar()
   mRotationEdit->setObjectName( "mRotationEdit" );
   mRotationEdit->setFont( myFont );
   mRotationEdit->setMinimumWidth( 10 );
-  mRotationEdit->setMaximumWidth( 300 );
+  mRotationEdit->setMaximumWidth( 100 );
   mRotationEdit->setMaximumHeight( 20 );
   mRotationEdit->setContentsMargins( 0, 0, 0, 0 );
   mRotationEdit->setAlignment( Qt::AlignCenter );
@@ -1757,6 +1757,7 @@ void QgisApp::createStatusBar()
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
   connect( mRotationEdit, SIGNAL( returnPressed() ), this, SLOT( userRotation() ) );
+  showRotation();
 
 
   // render suppression status bar widget
@@ -2001,6 +2002,8 @@ void QgisApp::setupConnections()
            this, SLOT( showExtents() ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
            this, SLOT( showScale( double ) ) );
+  connect( mMapCanvas, SIGNAL( rotationChanged() ),
+           this, SLOT( showRotation() ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
            this, SLOT( updateMouseCoordinatePrecision() ) );
   connect( mMapCanvas, SIGNAL( mapToolSet( QgsMapTool *, QgsMapTool * ) ),
@@ -8775,6 +8778,17 @@ void QgisApp::showExtents()
     mCoordsEdit->setMinimumWidth( mCoordsEdit->width() );
   }
 } // QgisApp::showExtents
+
+void QgisApp::showRotation()
+{
+  // update the statusbar with the current rotation.
+  double myrotation = mMapCanvas->rotation();
+  QString lbl;
+  QTextStream ot( &lbl );
+  ot.setRealNumberPrecision( 2 );
+  ot << myrotation;
+  mRotationEdit->setText( lbl ); 
+} // QgisApp::showRotation
 
 
 void QgisApp::updateMouseCoordinatePrecision()

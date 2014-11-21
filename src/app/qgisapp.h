@@ -1022,6 +1022,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showProgress( int theProgress, int theTotalSteps );
     void extentsViewToggled( bool theFlag );
     void showExtents();
+    void showRotation();
     void showStatusMessage( QString theMessage );
     void displayMapToolMessage( QString message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
     void removeMapToolMessage();

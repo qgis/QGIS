@@ -132,6 +132,7 @@ class CORE_EXPORT QgsMapToPixel
     double yMin;
     double xMin;
     //! Map rotation around Z axis on map center as clockwise degrees
+    //! @note added in 2.8
     double mMapRotation;
 };
 

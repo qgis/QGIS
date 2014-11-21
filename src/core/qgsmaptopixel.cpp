@@ -157,9 +157,10 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   QTransform rot;
   rot = rot.rotate(mapRotation()).inverted();
   rot.map(x, y, &x1, &y1);
+  x = x1; y = y1;
 
-  x = ( x1 - xMin ) / mMapUnitsPerPixel;
-  y = yMax - ( y1 - yMin ) / mMapUnitsPerPixel;
+  x = ( x - xMin ) / mMapUnitsPerPixel;
+  y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
 }
 
 #ifdef QT_ARCH_ARM
