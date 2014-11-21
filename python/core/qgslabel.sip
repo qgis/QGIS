@@ -36,7 +36,7 @@ class QgsLabel
       BorderColor,
       BorderStyle,
       MultilineEnabled,
-      StrikeOut,     // added in 1.5
+      StrikeOut,
       LabelFieldCount
     };
 
@@ -51,7 +51,6 @@ class QgsLabel
      *  \param feature feature to render the label for
      *  \param selected feature is selected
      *  \param classAttributes attributes to create the label from
-     *  \note added in 1.2
      */
     void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0 );
 

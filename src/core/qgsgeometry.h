@@ -157,13 +157,13 @@ class CORE_EXPORT QgsGeometry
     /** Returns true if wkb of the geometry is of WKBMulti* type */
     bool isMultipart();
 
-    /** compare geometries using GEOS  */
+    /** compare geometries using GEOS */
     bool isGeosEqual( QgsGeometry & );
 
     /** check validity using GEOS */
     bool isGeosValid();
 
-    /** check if geometry is empty using GEOS  */
+    /** check if geometry is empty using GEOS */
     bool isGeosEmpty();
 
     /** get area of geometry using GEOS */
@@ -420,7 +420,6 @@ class CORE_EXPORT QgsGeometry
      */
     QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false );
 
-
     /* Accessor functions for getting geometry data */
 
     /** return contents of the geometry as a point
@@ -465,13 +464,11 @@ class CORE_EXPORT QgsGeometry
 
     /** delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
-      @return true on success
-       */
+      @return true on success */
     bool deleteRing( int ringNum, int partNum = 0 );
 
     /** delete part identified by the part number
-      @return true on success
-       */
+      @return true on success */
     bool deletePart( int partNum );
 
     /**Converts single type geometry into multitype geometry

@@ -1,7 +1,6 @@
 /** \ingroup core
  * \class QgsDataDefined
  * A container class for data source field mapping or expression.
- * @note added in QGIS 1.9
  */
 
 class QgsDataDefined
@@ -24,13 +23,13 @@ class QgsDataDefined
                     const QString& field = QString() );
 
     ~QgsDataDefined();
-    
+
     /**Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
      * @returns true if data defined container is set to default values
      * @note added in QGIS 2.7
      */
-    bool hasDefaultValues() const;   
+    bool hasDefaultValues() const;
 
     bool isActive() const;
     void setActive( bool active );

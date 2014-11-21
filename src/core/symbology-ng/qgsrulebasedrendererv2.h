@@ -87,7 +87,6 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! Constructor takes ownership of the symbol
         Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
               QString label = QString(), QString description = QString(), bool elseRule = false );
-        //Rule( const Rule& other );
         ~Rule();
         QString dump( int offset = 0 ) const;
         QSet<QString> usedAttributes();

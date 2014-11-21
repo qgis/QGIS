@@ -385,8 +385,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Returns true if a composition should use advanced effects such as blend modes */
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
-    /**Used to enable or disable advanced effects such as blend modes in a composition
-      */
+    /**Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/

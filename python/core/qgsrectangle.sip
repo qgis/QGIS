@@ -17,7 +17,6 @@ class QgsRectangle
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRectangle( const QgsPoint & p1, const QgsPoint & p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
-    //! @note added in 2.0
     QgsRectangle( const QRectF & qRectF );
     //! Copy constructor
     QgsRectangle( const QgsRectangle &other );
@@ -67,16 +66,14 @@ class QgsRectangle
     //! returns true when rectangle intersects with other rectangle
     bool intersects( const QgsRectangle& rect ) const;
     //! return true when rectangle contains other rectangle
-    //! @note added in version 1.1
     bool contains( const QgsRectangle& rect ) const;
     //! return true when rectangle contains a point
-    //! @note added in version 1.3
     bool contains( const QgsPoint &p ) const;
     //! expand the rectangle so that covers both the original rectangle and the given rectangle
     void combineExtentWith( QgsRectangle *rect );
     //! expand the rectangle so that covers both the original rectangle and the given point
     void combineExtentWith( double x, double y );
-    //! test if rectangle is empty
+    //! test if rectangle is empty.
     //! Empty rectangle may still be non-null if it contains valid information (e.g. bounding box of a point)
     bool isEmpty() const;
     //! test if the rectangle is null (all coordinates zero or after call to setMinimal()).
@@ -86,10 +83,8 @@ class QgsRectangle
     //! returns string representation in Wkt form
     QString asWktCoordinates() const;
     //! returns string representation as WKT Polygon
-    //! @note added in 2.0
     QString asWktPolygon() const;
     //! returns a QRectF with same coordinates.
-    //! @note added in 2.0
     QRectF toRectF() const;
     //! returns string representation of form xmin,ymin xmax,ymax
     QString toString( bool automaticPrecision = false ) const;
@@ -113,6 +108,5 @@ class QgsRectangle
     bool isFinite() const;
 
     //! swap x/y
-    //! @note added in 1.9
     void invert();
 };

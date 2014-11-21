@@ -81,7 +81,7 @@ class CORE_EXPORT QgsApplication : public QApplication
 
     /** Returns the path to the contributors file.
      * Contributors are people who have submitted patches
-     * but don't have svn write access. */
+     * but don't have commit access. */
     static const QString contributorsFilePath();
 
     /**Returns the path to the sponsors file.*/
@@ -223,11 +223,9 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void registerOgrDrivers();
 
-    /**Converts absolute path to path relative to target
-      */
+    /**Converts absolute path to path relative to target */
     static QString absolutePathToRelativePath( QString apath, QString targetPath );
-    /**Converts path relative to target to an absolute path
-      */
+    /**Converts path relative to target to an absolute path */
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
     /** Indicates whether running from build directory (not installed) */

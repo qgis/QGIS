@@ -60,8 +60,7 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** add an attribute field (but does not commit it)
-        returns true if the field was added
-       */
+        returns true if the field was added */
     bool addAttribute( const QgsField &field );
 
     /** delete an attribute field (but does not commit it) */

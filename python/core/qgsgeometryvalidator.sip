@@ -12,9 +12,7 @@ class QgsGeometryValidator : QThread
     void run();
     void stop();
 
-    /** Validate geometry and produce a list of geometry errors
-     * @note added in 1.9
-     **/
+    /** Validate geometry and produce a list of geometry errors */
     static void validateGeometry( QgsGeometry *g, QList<QgsGeometry::Error> &errors );
 
   signals:

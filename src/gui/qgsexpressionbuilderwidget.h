@@ -123,8 +123,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadFieldNames( const QgsFields& fields );
 
-    /** Sets geometry calculator used in distance/area calculations.
-      */
+    /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
 
     /** Gets the expression string that has been set in the expression area.

@@ -141,6 +141,8 @@ class QgsSymbolLayerV2
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
     virtual Qt::PenStyle dxfPenStyle() const;
+    virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
+    virtual Qt::BrushStyle dxfBrushStyle() const;
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
@@ -228,6 +230,8 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     //handles marker offset and anchor point shift together
     void markerOffset( const QgsSymbolV2RenderContext& context, double& offsetX, double& offsetY ) const;
 
+    void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height, double& offsetX, double& offsetY ) const /PyName=markerOffsetWithWidthAndHeight/;
+
     //! @note available in python bindings as markerOffset2
     void markerOffset( const QgsSymbolV2RenderContext& context, double width, double height,
                        QgsSymbolV2::OutputUnit widthUnit, QgsSymbolV2::OutputUnit heightUnit,
@@ -246,7 +250,6 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
   public:
     virtual void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) = 0;
 
-    //! @note added in v1.7
     virtual void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     virtual void setWidth( double width );

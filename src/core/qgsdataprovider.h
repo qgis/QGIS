@@ -67,7 +67,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * We need this so the subclass destructors get called
      */
-    virtual ~QgsDataProvider() {};
+    virtual ~QgsDataProvider() {}
 
 
     /*! Get the QgsCoordinateReferenceSystem for this layer

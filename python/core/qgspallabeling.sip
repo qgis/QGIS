@@ -455,12 +455,12 @@ class QgsPalLayerSettings
     void writeToLayer( QgsVectorLayer* layer );
 
     /** Get a data defined property pointer
-     * @note added in 1.9, helpful for Python access
+     * @note helpful for Python access
      */
     QgsDataDefined* dataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
 
     /** Set a property as data defined
-     * @note added in 1.9, helpful for Python access
+     * @note helpful for Python access
      */
     void setDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p,
                                  bool active, bool useExpr, const QString& expr, const QString& field );
@@ -469,24 +469,24 @@ class QgsPalLayerSettings
     void removeDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
 
     /** Convert old property value to new one as delimited values
-     * @note not available in python bindings; added in 1.9, as temporary solution until refactoring of project settings
+     * @note not available in python bindings; as temporary solution until refactoring of project settings
      */
     QString updateDataDefinedString( const QString& value );
 
     /** Get property value as separate values split into Qmap
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings
      */
     QMap<QString, QString> dataDefinedMap( QgsPalLayerSettings::DataDefinedProperties p ) const;
 
     /** Get data defined property value from expression string or attribute field name
      * @returns value inside QVariant
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings
      */
     QVariant dataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QgsFeature& f, const QgsFields& fields ) const;
 
     /** Get data defined property value from expression string or attribute field name
      * @returns true/false whether result is null or invalid
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings
      */
     bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal ) const;
 
@@ -511,7 +511,7 @@ class QgsPalLayerSettings
      * @param mapUnitScale a mapUnitScale clamper
      * @return font pixel size
      */
-    int sizeToPixel( double size, const QgsRenderContext& c , SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
+    int sizeToPixel( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
     /** Calculates size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
      * @param size size to convert
@@ -520,13 +520,12 @@ class QgsPalLayerSettings
      * @param rasterfactor whether to consider oversampling
      * @param mapUnitScale a mapUnitScale clamper
      * @return size that will render, as double
-     * @note added in 1.9, as a better precision replacement for sizeToPixel
      */
     double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
     /** Map of data defined enum to names and old-style indecies
      * The QPair contains a new string for layer property key, and a reference to old-style numeric key (< QGIS 2.0)
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings;
      */
     // QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const;
 };
@@ -686,10 +685,8 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     static bool staticWillUseLayer( const QString& layerID );
 
     //! clears all PAL layer settings for registered layers
-    //! @note: this method was added in version 1.9
     virtual void clearActiveLayers();
     //! clears data defined objects from PAL layer settings for a registered layer
-    //! @note: this method was added in version 1.9
     virtual void clearActiveLayer( const QString& layerID );
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx );
@@ -736,7 +733,6 @@ class QgsPalLabeling : QgsLabelingEngineInterface
                                  const QgsPalLayerSettings& tmpLyr );
 
     //! load/save engine settings to project file
-    //! @note added in QGIS 1.9
     void loadEngineSettings();
     void saveEngineSettings();
     void clearEngineSettings();

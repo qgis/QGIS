@@ -78,8 +78,7 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     //! Check if a layer is visible
     virtual bool isLayerVisible( QgsMapLayer * ml ) = 0;
 
-    /** Add action for layers in the legend
-     */
+    /** Add action for layers in the legend */
     virtual void addLegendLayerAction( QAction* action, QString menu, QString id,
                                        QgsMapLayer::LayerType type, bool allLayers ) = 0;
 
@@ -147,7 +146,6 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     virtual void setLayerVisible( QgsMapLayer * ml, bool visible ) = 0;
 
     //! Refresh layer symbology
-
     virtual void refreshLayerSymbology( QgsMapLayer *ml ) = 0;
 };
 

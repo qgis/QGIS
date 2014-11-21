@@ -1,6 +1,5 @@
 /** \ingroup gui
  * A generic message for displaying QGIS log messages.
- * \note added in 1.8
  */
 class QgsMessageLogViewer: QDialog
 {

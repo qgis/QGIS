@@ -65,6 +65,7 @@ class QGis
     static bool isSingleType( WkbType type );
     static bool isMultiType( WkbType type );
     static int wkbDimensions( WkbType type );
+
     enum GeometryType
     {
       Point,
@@ -123,13 +124,10 @@ class QGis
     };
 
     //! Provides the canonical name of the type value
-    // Added in version 2.0
     static QString toLiteral( QGis::UnitType unit );
     //! Converts from the canonical name to the type value
-    // Added in version 2.0
     static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
     //! Provides translated version of the type value
-    // Added in version 2.0
     static QString tr( QGis::UnitType unit );
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
@@ -173,7 +171,7 @@ class QGis
 
 
 /** Wkt string that represents a geographic coord sys
- * @note added in 1.8 to replace GEOWkt
+ * @note added to replace GEOWkt
  */
 const QString GEOWKT;
 const QString PROJECT_SCALES;
@@ -199,7 +197,6 @@ const int LAT_PREFIX_LEN;
 const int USER_CRS_START_ID;
 
 //! Constant that holds the string representation for "No ellips/No CRS"
-// Added in version 2.0
 const QString GEO_NONE;
 
 //
@@ -212,7 +209,7 @@ const double MINIMUM_POINT_SIZE;
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;
 
-/** default snapping tolerance for segments (@note added in 1.8) */
+/** default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON;
 
 /** qgssize is used instead of size_t, because size_t is stdlib type, unknown

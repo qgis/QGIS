@@ -173,7 +173,6 @@ class QgsComposerMultiFrame: QgsComposerObject
 
     /**Returns the number of frames associated with this multiframe.
      * @returns number of child frames
-     * @note added in QGIS 2.0, replaces nFrames
     **/
     int frameCount() const;
 

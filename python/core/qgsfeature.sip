@@ -243,7 +243,18 @@ class QgsFeature
 
     const QgsAttributes& attributes() const;
     //QgsAttributes& attributes();
-    void setAttributes(const QgsAttributes& attrs);
+    void setAttributes( const QgsAttributes& attrs );
+
+    /**
+     * Set an attribute by id
+     *
+     * @param field  The index of the field to set
+     * @param attr   The value of the attribute
+     *
+     * @return false, if the field id does not exist
+     *
+     * @note For Python: raises a KeyError exception instead of returning false
+     */
     bool setAttribute( int field, const QVariant& attr /GetWrapper/);
 %MethodCode
   bool rv;
@@ -336,14 +347,12 @@ class QgsFeature
      *  @param initAttributes If true, attributes are initialized. Clears any data previously assigned.
      *                        C++: Defaults to false
      *                        Python: Defaults to true
-     *  @note added in 2.0
      *
      * TODO: QGIS3 - take reference, not pointer
      */
     void setFields( const QgsFields* fields, bool initAttributes = true );
 
     /** Get associated field map.
-     *  @note added in 2.0
      *
      * TODO: QGIS 3 - return reference or value, not pointer
      */
@@ -358,7 +367,6 @@ class QgsFeature
      *  @return false if attribute name could not be converted to index (C++ only)
      *
      *  @note For Python: raises a KeyError exception instead of returning false
-     *  @note added in 2.0
      */
     void setAttribute( const QString& name, QVariant value /GetWrapper/ );
 %MethodCode
@@ -389,7 +397,6 @@ class QgsFeature
      *  @return false if attribute name could not be converted to index (C++ only)
      *
      *  @note For Python: raises a KeyError exception instead of returning false
-     *  @note added in 2.0
      */
     bool deleteAttribute( const QString& name );
 %MethodCode
@@ -413,7 +420,6 @@ class QgsFeature
      *  @return The value of the attribute (C++: Invalid variant if no such name exists )
      *
      *  @note For Python: raises a KeyError exception if field is not found
-     *  @note added in 2.0
      */
     SIP_PYOBJECT attribute( const QString& name ) const;
 %MethodCode
@@ -431,8 +437,6 @@ class QgsFeature
 %End
     /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
      *  Field map must be associated to make this work.
-     *
-     *  @note added in 2.0
      */
     int fieldNameIndex( const QString& fieldName ) const;
 

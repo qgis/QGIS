@@ -147,9 +147,7 @@ class CORE_EXPORT QgsLabel
     bool scaleBasedVisibility() const;
 
   private:
-    /** Does the actual rendering of a label at the given point
-     *
-     */
+    /** Does the actual rendering of a label at the given point */
     void renderLabel( QgsRenderContext &renderContext, QgsPoint point,
                       QString text, QFont font, QPen pen,
                       int dx, int dy,

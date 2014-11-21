@@ -124,11 +124,9 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     */
     void setMarginY( const double margin );
 
-    /**Sets text color
-        */
+    /**Sets text color */
     void setFontColor( const QColor& c ) { mFontColor = c; }
-    /**Get font color
-        */
+    /**Get font color */
     QColor fontColor() const { return mFontColor; }
 
     /** stores state in Dom element

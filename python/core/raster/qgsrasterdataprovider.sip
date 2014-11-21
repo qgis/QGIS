@@ -171,19 +171,13 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      */
     virtual QString lastError() = 0;
 
-    /**
-     * \brief   Returns the format of the error text for the last error in this provider
-     *
-     * \note added in 1.6
-     */
+    /** Returns the format of the error text for the last error in this provider */
     virtual QString lastErrorFormat();
 
-    /**Returns the dpi of the output device.
-      @note: this method was added in version 1.2*/
+    /**Returns the dpi of the output device. */
     int dpi() const;
 
-    /**Sets the output device resolution.
-      @note: this method was added in version 1.2*/
+    /**Sets the output device resolution. */
     void setDpi( int dpi );
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */

@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVector
 };
 
 /** \ingroup core
- * A class to represent a point geometry.
+ * A class to represent a point.
  * Currently no Z axis / 2.5D support is implemented.
  */
 class CORE_EXPORT QgsPoint

@@ -326,9 +326,10 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      */
     const QList< NativeType > &nativeTypes() const;
 
-    /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          */
+    /**
+     * Returns true if the provider is strict about the type of inserted features
+     * (e.g. no multipolygon in a polygon layer)
+     */
     virtual bool doesStrictFeatureTypeCheck() const { return true;}
 
     /** Returns a list of available encodings */

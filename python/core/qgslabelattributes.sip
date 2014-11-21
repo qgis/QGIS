@@ -48,7 +48,6 @@ public:
     bool underlineIsSet() const;
     bool underline() const;
 
-    /* strikeout added in 1.5 */
     void setStrikeOut( bool enable );
     bool strikeOutIsSet() const;
     bool strikeOut() const;
@@ -114,9 +113,7 @@ public:
     bool  multilineEnabled() const;
     void  setMultilineEnabled( bool useMultiline );
 
-    /* label only selected features
-     * added in 1.5
-     */
+    /* label only selected features */
     bool  selectedOnly() const;
     void  setSelectedOnly( bool selectedonly );
 };

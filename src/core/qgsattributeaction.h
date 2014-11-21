@@ -146,7 +146,7 @@ class  CORE_EXPORT QgsAttributeAction
      *  @note available in python bindings as doActionFeatureWithSubstitution
      */
     void doAction( int index,
-                   const QgsFeature& feat,
+                   const QgsFeature &feat,
                    const QMap<QString, QVariant> *substitutionMap );
 
     //! Removes all actions

@@ -164,12 +164,11 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
     const QgsRenderContext& renderContext() const { return mRenderContext; }
-    //void setRenderContext( QgsRenderContext& c ) { mRenderContext = c;}
 
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }

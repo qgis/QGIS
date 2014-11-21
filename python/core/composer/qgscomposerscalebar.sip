@@ -10,7 +10,6 @@ class QgsComposerScaleBar: QgsComposerItem
 
   public:
 
-    /**Added in version 1.8*/
     enum Alignment
     {
       Left,
@@ -18,7 +17,6 @@ class QgsComposerScaleBar: QgsComposerItem
       Right
     };
 
-    /**Added in version 1.9*/
     enum ScaleBarUnits
     {
       MapUnits,
@@ -30,7 +28,7 @@ class QgsComposerScaleBar: QgsComposerItem
     QgsComposerScaleBar( QgsComposition* composition /TransferThis/ );
     ~QgsComposerScaleBar();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -129,17 +127,13 @@ class QgsComposerScaleBar: QgsComposerItem
 
     double segmentMillimeters() const;
 
-    /**Left / Middle/ Right
-      @note: this method was added in version 1.8*/
+    /**Left / Middle/ Right */
     Alignment alignment() const;
 
-    /**@note: this method was added in version 1.8*/
     void setAlignment( Alignment a );
 
-    /**@note: this method was added in version 1.9*/
     ScaleBarUnits units() const;
 
-    /**@note: this method was added in version 1.9*/
     void setUnits( ScaleBarUnits u );
 
     /** Returns the join style used for drawing lines in the scalebar
@@ -172,8 +166,7 @@ class QgsComposerScaleBar: QgsComposerItem
 
     /**Apply default settings*/
     void applyDefaultSettings();
-    /**Apply default size (scale bar 1/5 of map item width)
-      @note this method was added in version 1.7*/
+    /**Apply default size (scale bar 1/5 of map item width) */
     void applyDefaultSize( ScaleBarUnits u = Meters );
 
     /**Sets style by name
@@ -214,6 +207,9 @@ class QgsComposerScaleBar: QgsComposerItem
 
     /**Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
+
+    //overriden to apply minimum size
+    void setSceneRect( const QRectF &rectangle );
 
   public slots:
     void updateSegmentSize();

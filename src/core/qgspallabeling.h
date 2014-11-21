@@ -460,13 +460,13 @@ class CORE_EXPORT QgsPalLayerSettings
 
     /** Get data defined property value from expression string or attribute field name
      * @returns value inside QVariant
-     * @note not available in python bindings;
+     * @note not available in python bindings
      */
     QVariant dataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QgsFeature& f, const QgsFields& fields ) const;
 
     /** Get data defined property value from expression string or attribute field name
      * @returns true/false whether result is null or invalid
-     * @note not available in python bindings;
+     * @note not available in python bindings
      */
     bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal ) const;
 
@@ -500,7 +500,6 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param rasterfactor whether to consider oversampling
      * @param mapUnitScale a mapUnitScale clamper
      * @return size that will render, as double
-     * @note added in 1.9, as a better precision replacement for sizeToPixel
      */
     double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
