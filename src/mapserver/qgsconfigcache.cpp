@@ -62,7 +62,6 @@ QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
     }
     p = new QgsWCSProjectParser( filePath );
     mWCSConfigCache.insert( filePath, p );
-    mFileSystemWatcher.addPath( filePath );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->wcsLayers().size() );
@@ -81,7 +80,6 @@ QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
     }
     p = new QgsWFSProjectParser( filePath );
     mWFSConfigCache.insert( filePath, p );
-    mFileSystemWatcher.addPath( filePath );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->wfsLayers().size() );
@@ -111,7 +109,6 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, c
       p = new QgsWMSProjectParser( filePath );
     }
     mWMSConfigCache.insert( filePath, p );
-    mFileSystemWatcher.addPath( filePath );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->nLayers() );
@@ -133,22 +130,22 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
     QgsMessageLog::logMessage( "Error, cannot open configuration file '" + filePath + "'", "Server", QgsMessageLog::CRITICAL );
     return 0;
   }
-  
+
   // first get cache
   QDomDocument* xmlDoc = mXmlDocumentCache.object( filePath );
   if ( !xmlDoc )
   {
     //then create xml document
-	xmlDoc = new QDomDocument();
-	QString errorMsg;
-	int line, column;
-	if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
-	{
-	  QgsMessageLog::logMessage( "Error parsing file '" + filePath +
-		  					     QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
-	  delete xmlDoc;
-	  return 0;
-	}
+    xmlDoc = new QDomDocument();
+    QString errorMsg;
+    int line, column;
+    if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
+    {
+      QgsMessageLog::logMessage( "Error parsing file '" + filePath +
+                                 QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
+      delete xmlDoc;
+      return 0;
+    }
     mXmlDocumentCache.insert( filePath, xmlDoc );
     mFileSystemWatcher.addPath( filePath );
   }
