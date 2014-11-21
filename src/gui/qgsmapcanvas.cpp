@@ -99,6 +99,9 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
   connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsC2R() ) );
   connect( mRenderer, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsR2C() ) );
 
+  connect( mCanvas, SIGNAL( mapRotationChanged() ), this, SLOT( onMapRotationC2R() ) );
+  connect( mRenderer, SIGNAL( mapRotationChanged() ), this, SLOT( onMapRotationR2C() ) );
+
   connect( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( onCrsTransformC2R() ) );
   connect( mRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( onCrsTransformR2C() ) );
 
@@ -140,6 +143,16 @@ void QgsMapCanvasRendererSync::onMapUnitsC2R()
 void QgsMapCanvasRendererSync::onMapUnitsR2C()
 {
   mCanvas->setMapUnits( mRenderer->mapUnits() );
+}
+
+void QgsMapCanvasRendererSync::onMapRotationR2C()
+{
+  mCanvas->setRotation( mRenderer->rotation() );
+}
+
+void QgsMapCanvasRendererSync::onMapRotationC2R()
+{
+  mRenderer->setRotation( mCanvas->rotation() );
 }
 
 void QgsMapCanvasRendererSync::onCrsTransformC2R()
@@ -856,6 +869,28 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   updateCanvasItemPositions();
 
 } // setExtent
+
+double QgsMapCanvas::rotation() const
+{
+  return mapSettings().rotation();
+} // rotation
+
+void QgsMapCanvas::setRotation( double degrees )
+{
+  double current = rotation();
+
+  if ( degrees == current )
+    return;
+
+  mSettings.setRotation( degrees );
+  emit rotationChanged( degrees );
+
+  // TODO: update extents ?
+
+  // notify canvas items of change (needed?)
+  updateCanvasItemPositions();
+
+} // setRotation
 
 
 void QgsMapCanvas::updateScale()

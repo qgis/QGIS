@@ -34,6 +34,7 @@ QgsMapSettings::QgsMapSettings()
     : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
     , mSize( QSize( 0, 0 ) )
     , mExtent()
+    , mRotation( 0.0 )
     , mProjectionsEnabled( false )
     , mDestCRS( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId )  // WGS 84
     , mDatumTransformStore( mDestCRS )
@@ -59,6 +60,18 @@ void QgsMapSettings::setExtent( const QgsRectangle& extent )
   mExtent = extent;
 
   updateDerived();
+}
+
+double QgsMapSettings::rotation() const
+{
+  return mRotation;
+}
+
+void QgsMapSettings::setRotation( double degrees )
+{
+  mRotation = degrees;
+
+  updateDerived(); // should it update extent ?
 }
 
 
@@ -142,6 +155,7 @@ void QgsMapSettings::updateDerived()
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   mMapToPixel = QgsMapToPixel( mapUnitsPerPixel(), outputSize().height(), visibleExtent().yMinimum(), visibleExtent().xMinimum() );
+  mMapToPixel.setMapRotation( mRotation );
 
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
   QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );

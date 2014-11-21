@@ -184,6 +184,15 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! returns current extent
     QgsRectangle extent() const;
 
+    //! sets rotation
+    //! value in clockwise degrees
+    //! @note added in 2.8
+    void setRotation( double degrees );
+
+    //! returns current rotation in clockwise degrees
+    //! @note added in 2.8
+    double rotation() const;
+
     const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
 
     //! Scale denominator
@@ -375,6 +384,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! Map scale denominator at its current zoom level
     double mScale;
+
+    //! Map rotation
+    double mRotation;
 
     //! scale calculator
     QgsScaleCalculator * mScaleCalculator;

@@ -70,6 +70,16 @@ class CORE_EXPORT QgsMapSettings
     //! Set the size of the resulting map image
     void setOutputSize( const QSize& size );
 
+    //! Return the rotation of the resulting map image
+    //! Units are clockwise degrees
+    //! @note added in 2.8
+    double rotation() const;
+    //! Set the rotation of the resulting map image
+    //! Units are clockwise degrees
+    //! TODO: define relation between extent and rotation
+    //! @note added in 2.8
+    void setRotation( double degrees );
+
     //! Return DPI used for conversion between real world units (e.g. mm) and pixels
     //! Default value is 96
     int outputDpi() const;
@@ -216,6 +226,8 @@ class CORE_EXPORT QgsMapSettings
     QSize mSize;
 
     QgsRectangle mExtent;
+
+    double mRotation;
 
     QStringList mLayers;
 
