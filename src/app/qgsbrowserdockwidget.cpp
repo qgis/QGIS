@@ -811,6 +811,9 @@ QStringList QgsBrowserDockWidget::expandedPathsList( const QModelIndex & proxyIn
 {
   QStringList paths;
 
+  if ( !proxyIndex.isValid() )
+    return paths;
+
   for ( int i = 0; i < mProxyModel->rowCount( proxyIndex ); i++ )
   {
     QModelIndex childProxyIndex = mProxyModel->index( i, 0, proxyIndex );
