@@ -21,7 +21,7 @@
 
 class Test[testClassCamelCaseName]: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     [TestMethods]
 };

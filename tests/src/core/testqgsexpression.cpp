@@ -43,7 +43,7 @@ static void _parseAndEvalExpr( int arg )
 
 class TestQgsExpression: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
 
     void initTestCase()

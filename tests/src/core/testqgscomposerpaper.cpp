@@ -31,7 +31,7 @@
 
 class TestQgsComposerPaper: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

@@ -49,7 +49,7 @@
  */
 class TestQgsDiagram: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private:
     bool mTestHasError;
     QgsMapSettings mMapSettings;

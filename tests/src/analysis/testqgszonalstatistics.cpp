@@ -25,7 +25,7 @@
  */
 class TestQgsZonalStatistics: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();
     void cleanupTestCase();

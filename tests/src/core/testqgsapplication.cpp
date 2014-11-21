@@ -25,7 +25,7 @@ Email                : sherman at mrcc dot com
 
 class TestQgsApplication: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void checkPaths();
     void checkGdalSkip();

@@ -38,7 +38,7 @@
 
 class TestSignalReceiver : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     TestSignalReceiver() : QObject( 0 ),
@@ -69,7 +69,7 @@ class TestSignalReceiver : public QObject
  */
 class TestQgsVectorLayer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private:
     bool mTestHasError;
     QgsMapRenderer * mpMapRenderer;

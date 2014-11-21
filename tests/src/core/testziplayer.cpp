@@ -34,7 +34,7 @@
  */
 class TestZipLayer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   private:
 
