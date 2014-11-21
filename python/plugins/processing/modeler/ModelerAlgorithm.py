@@ -185,7 +185,16 @@ class ModelerAlgorithm(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def defineCharacteristics(self):
-        self.parameters = [inp.param for inp in self.inputs.values()]
+        classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,
+                   ParameterBoolean, ParameterString, ParameterNumber]
+        self.parameters = []
+        for c in classes:
+            for inp in self.inputs.values():
+                if isinstance(inp.param, c):
+                    self.parameters.append(inp.param)
+        for inp in self.inputs.values():
+            if inp.param not in self.parameters:
+                self.parameters.append(inp.param)
         self.outputs = []
         for alg in self.algs.values():
             if alg.active:
