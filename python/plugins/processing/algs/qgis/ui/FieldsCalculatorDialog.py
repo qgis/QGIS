@@ -47,7 +47,7 @@ from ui_DlgFieldsCalculator import Ui_FieldsCalculator
 class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
     def __init__(self, alg):
         QDialog.__init__(self)
-        self.setupUi( self )
+        self.setupUi(self)
 
         self.executed = False
         self.alg = alg
@@ -196,26 +196,21 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
                                      self.alg.getAsCommand())
-                ret = runalg(self.alg, self)
-                QApplication.restoreOverrideCursor()
-                if ret:
+
+                self.executed =  runalg(self.alg, self)
+                if self.executed:
                     handleAlgorithmResults(self.alg,
                                                           self,
                                                           not keepOpen)
-                self.executed = True
-                QDialog.reject(self)
+                if not keepOpen:
+                    QDialog.reject(self)
             else:
                 QMessageBox.critical(self,
                                      self.tr('Unable to execute algorithm'),
                                      self.tr('Wrong or missing parameter '
                                              'values'))
-                return
-        except GeoAlgorithmExecutionException, e:
+        finally:
             QApplication.restoreOverrideCursor()
-            QMessageBox.critical(self, "Error",e.msg)
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
-            self.executed = False
-            QDialog.reject(self)
 
     def reject(self):
         self.executed = False
@@ -228,4 +223,5 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         pass
 
     def error(self, text):
+        QMessageBox.critical(self, "Error", text)
         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, text)
