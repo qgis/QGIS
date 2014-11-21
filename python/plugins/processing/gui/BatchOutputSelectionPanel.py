@@ -66,10 +66,16 @@ class BatchOutputSelectionPanel(QWidget):
 
     def showSelectionDialog(self):
         filefilter = self.output.getFileFilter(self.alg)
-        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), '',
+        settings = QSettings()
+        if settings.contains('/Processing/LastBatchOutputPath'):
+            path = unicode(settings.value('/Processing/LastBatchOutputPath'))
+        else:
+            path = ''
+        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), path,
                 filefilter)
         if filename:
             filename = unicode(filename)
+            settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
             dlg = AutofillDialog(self.alg)
             dlg.exec_()
             if dlg.mode is not None:
