@@ -358,7 +358,7 @@ columns</string>
   <customwidget>
    <class>QgsCodeEditorSQL</class>
    <extends>QTextEdit</extends>
-   <header>qgscodeeditorsql.h</header>
+   <header>qgis.gui</header>
   </customwidget>
  </customwidgets>
  <tabstops>
