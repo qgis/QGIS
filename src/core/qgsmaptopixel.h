@@ -103,9 +103,11 @@ class CORE_EXPORT QgsMapToPixel
     double mapUnitsPerPixel() const;
 
     //! Set map rotation in degrees (clockwise)
+    //! @note added in 2.8
     void setMapRotation( double degrees );
 
     //! Return current map rotation in degrees
+    //! @note added in 2.8
     double mapRotation() const;
 
     //! Set maximum y value

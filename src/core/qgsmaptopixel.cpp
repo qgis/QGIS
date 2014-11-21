@@ -31,7 +31,7 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
     , yMax( ymax )
     , yMin( ymin )
     , xMin( xmin )
-    , mMapRotation( 45 ) // XXX strk reset to 0
+    , mMapRotation( 0 )
 {
 }
 

@@ -1728,6 +1728,37 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
+  // add a widget to show/set current rotation
+  mRotationLabel = new QLabel( QString(), statusBar() );
+  mRotationLabel->setObjectName( "mRotationLabel" );
+  mRotationLabel->setFont( myFont );
+  mRotationLabel->setMinimumWidth( 10 );
+  mRotationLabel->setMaximumHeight( 20 );
+  mRotationLabel->setMargin( 3 );
+  mRotationLabel->setAlignment( Qt::AlignCenter );
+  mRotationLabel->setFrameStyle( QFrame::NoFrame );
+  mRotationLabel->setText( tr( "Rotation:" ) );
+  mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationLabel, 0 );
+  mRotationEdit = new QLineEdit( QString(), statusBar() );
+  mRotationEdit->setObjectName( "mRotationEdit" );
+  mRotationEdit->setFont( myFont );
+  mRotationEdit->setMinimumWidth( 10 );
+  mRotationEdit->setMaximumWidth( 300 );
+  mRotationEdit->setMaximumHeight( 20 );
+  mRotationEdit->setContentsMargins( 0, 0, 0, 0 );
+  mRotationEdit->setAlignment( Qt::AlignCenter );
+  mRotationEdit->setAlignment( Qt::AlignCenter );
+  QRegExp rotValidator( "\\d+" );
+  mRotationEditValidator = new QRegExpValidator( rotValidator, mRotationEdit );
+  mRotationEdit->setWhatsThis( tr( "Shows the current map clockwise rotation "
+                                 "in degrees. It also allows editing to set "
+                                 "the rotation") );
+  mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationEdit, 0 );
+  connect( mRotationEdit, SIGNAL( returnPressed() ), this, SLOT( userRotation() ) );
+
+
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox( tr( "Render" ), statusBar() );
   mRenderSuppressionCBox->setObjectName( "mRenderSuppressionCBox" );
@@ -6846,6 +6877,18 @@ void QgisApp::userCenter()
       x + r.width() / 2.0, y + r.height() / 2.0
     )
   );
+  mMapCanvas->refresh();
+}
+
+void QgisApp::userRotation()
+{
+  QString rots = mRotationEdit->text();
+
+  bool ok;
+  double degrees = rots.toDouble( &ok );
+  if ( !ok ) return;
+
+  mMapCanvas->setRotation(degrees);
   mMapCanvas->refresh();
 }
 
