@@ -15,7 +15,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
    <item row="0" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0,0">
      <item>
       <widget class="QgsColorRampComboBox" name="mRampComboBox"/>
      </item>
@@ -32,16 +32,23 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QCheckBox" name="mInvertCheckBox">
+       <property name="text">
+        <string>Invert</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Radius</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QgsDoubleSpinBox" name="mRadiusSpinBox">
@@ -67,14 +74,14 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Maximum value</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="3" column="1">
     <widget class="QgsDoubleSpinBox" name="mMaxSpinBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -96,14 +103,14 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>Rendering quality</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_4">
@@ -152,7 +159,7 @@
      </item>
     </layout>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -188,6 +195,7 @@
  <tabstops>
   <tabstop>mRampComboBox</tabstop>
   <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>mInvertCheckBox</tabstop>
   <tabstop>mRadiusSpinBox</tabstop>
   <tabstop>mMaxSpinBox</tabstop>
   <tabstop>mQualitySlider</tabstop>

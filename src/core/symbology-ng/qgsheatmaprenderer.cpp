@@ -34,6 +34,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer( )
     , mRadius( 10 )
     , mRadiusUnit( QgsSymbolV2::MM )
     , mGradientRamp( 0 )
+    , mInvertRamp( false )
     , mExplicitMax( 0.0 )
     , mRenderQuality( 1 )
 {
@@ -208,7 +209,7 @@ void QgsHeatmapRenderer::renderImage( QgsRenderContext& context )
       pixVal = mValues.at( idx ) > 0 ? qMin(( mValues.at( idx ) / scaleMax ), 1.0 ) : 0;
 
       //convert value to color from ramp
-      pixColor = mGradientRamp->color( pixVal );
+      pixColor = mGradientRamp->color( mInvertRamp ? 1 - pixVal : pixVal );
 
       scanLine[widthIndex] = pixColor.rgba();
       idx++;
@@ -239,6 +240,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::clone() const
   {
     newRenderer->setColorRamp( mGradientRamp->clone() );
   }
+  newRenderer->setInvertRamp( mInvertRamp );
   newRenderer->setRadius( mRadius );
   newRenderer->setRadiusUnit( mRadiusUnit );
   newRenderer->setRadiusMapUnitScale( mRadiusMapUnitScale );
@@ -286,6 +288,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::create( QDomElement& element )
   {
     r->setColorRamp( QgsSymbolLayerV2Utils::loadColorRamp( sourceColorRampElem ) );
   }
+  r->setInvertRamp( element.attribute( "invert_ramp", "0" ).toInt() );
   return r;
 }
 
@@ -303,6 +306,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
     QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mGradientRamp, doc );
     rendererElem.appendChild( colorRampElem );
   }
+  rendererElem.setAttribute( "invert_ramp", QString::number( mInvertRamp ) );
 
   return rendererElem;
 }

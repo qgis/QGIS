@@ -54,6 +54,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererV2Widget, private 
     void on_mRadiusSpinBox_valueChanged( double d );
     void on_mMaxSpinBox_valueChanged( double d );
     void on_mQualitySlider_valueChanged( int v );
+    void on_mInvertCheckBox_toggled( bool v );
 
 };
 

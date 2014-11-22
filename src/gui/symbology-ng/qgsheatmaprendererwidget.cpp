@@ -97,6 +97,9 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   mQualitySlider->blockSignals( true );
   mQualitySlider->setValue( mRenderer->renderQuality() );
   mQualitySlider->blockSignals( false );
+  mInvertCheckBox->blockSignals( true );
+  mInvertCheckBox->setChecked( mRenderer->invertRamp() );
+  mInvertCheckBox->blockSignals( false );
 }
 
 QgsFeatureRendererV2* QgsHeatmapRendererWidget::renderer()
@@ -192,4 +195,14 @@ void QgsHeatmapRendererWidget::on_mQualitySlider_valueChanged( int v )
   }
 
   mRenderer->setRenderQuality( v );
+}
+
+void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
+{
+  if ( !mRenderer )
+  {
+    return;
+  }
+
+  mRenderer->setInvertRamp( v );
 }
