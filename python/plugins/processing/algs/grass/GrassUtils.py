@@ -274,6 +274,7 @@ class GrassUtils:
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             ).stdout
+        progress.setInfo('GRASS commands output:')
         for line in iter(proc.readline, ''):
             if 'GRASS_INFO_PERCENT' in line:
                 try:

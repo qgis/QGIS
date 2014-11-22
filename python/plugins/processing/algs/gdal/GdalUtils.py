@@ -69,7 +69,8 @@ class GdalUtils:
         loglines = []
         loglines.append('GDAL execution console output')
         fused_command = ''.join(['%s ' % c for c in commands])
-        print fused_command
+        progress.setInfo('GDAL command:')
+        progress.setCommand(fused_command)
         proc = subprocess.Popen(
             fused_command,
             shell=True,
@@ -78,8 +79,9 @@ class GdalUtils:
             stderr=subprocess.STDOUT,
             universal_newlines=True,
             ).stdout
+        progress.setInfo('GDAL command output:')
         for line in iter(proc.readline, ''):
-            print line
+            progress.setConsoleInfo(line)
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         GdalUtils.consoleOutput = loglines
