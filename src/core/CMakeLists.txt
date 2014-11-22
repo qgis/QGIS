@@ -30,6 +30,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgscategorizedsymbolrendererv2.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2.cpp
   symbology-ng/qgsrulebasedrendererv2.cpp
+  symbology-ng/qgsheatmaprenderer.cpp
   symbology-ng/qgsinvertedpolygonrenderer.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgscptcityarchive.cpp
@@ -650,6 +651,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsrendererv2registry.h
   symbology-ng/qgsrulebasedrendererv2.h
   symbology-ng/qgssinglesymbolrendererv2.h
+  symbology-ng/qgsheatmaprenderer.h
   symbology-ng/qgsinvertedpolygonrenderer.h
   symbology-ng/qgsstylev2.h
   symbology-ng/qgssvgcache.h
