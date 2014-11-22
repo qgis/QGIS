@@ -625,7 +625,8 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
   {
     QgsVectorLayer* vLayer = static_cast<QgsVectorLayer*>( currentLayer );
     const QSet<QString>& excludedAttributes = vLayer->excludeAttributesWMS();
-    QString displayField = vLayer->displayField();
+    int displayFieldIdx = vLayer->fieldNameIndex( vLayer->displayField() );
+    QString displayField = displayFieldIdx < 0 ? "maptip" : vLayer->displayField();
 
     //attributes
     QDomElement attributesElem = doc.createElement( "Attributes" );
@@ -638,7 +639,7 @@ void QgsServerProjectParser::addLayerProjectSettings( QDomElement& layerElem, QD
         continue;
       }
       // field alias in case of displayField
-      if ( field.name() == displayField )
+      if ( idx == displayFieldIdx )
       {
         displayField = vLayer->attributeDisplayName( idx );
       }
