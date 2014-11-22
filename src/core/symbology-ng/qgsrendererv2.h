@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsrectangle.h"
+#include "qgsrendercontext.h"
 
 #include <QList>
 #include <QString>
@@ -28,7 +29,6 @@
 #include <QDomElement>
 
 class QgsSymbolV2;
-class QgsRenderContext;
 class QgsFeature;
 class QgsFields;
 class QgsVectorLayer;
