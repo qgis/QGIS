@@ -165,6 +165,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone.name = self.name
         newone.group = self.group
         newone.descriptionFile = self.descriptionFile
+        newone.helpContent = copy.deepcopy(self.helpContent)
         return newone
 
     def __init__(self):
@@ -473,13 +474,14 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.modelerdialog.repaintModel()
 
     def help(self):
+        print self.helpContent
         try:
-            return True, getHtmlFromDescriptionsDict(self, self.help())
+            return True, getHtmlFromDescriptionsDict(self, self.helpContent)
         except:
             return False, None
 
     def todict(self):
-        keys = ["inputs", "group", "name", "algs"]
+        keys = ["inputs", "group", "name", "algs", "helpContent"]
         return {k:v for k,v in self.__dict__.iteritems() if k in keys}
 
     def toJson(self):
@@ -492,6 +494,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             except Exception, e:
                 pass
         return json.dumps(self, default=todict, indent=4)
+
 
     @staticmethod
     def fromJson(s):

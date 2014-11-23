@@ -84,6 +84,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                         alg = ModelerAlgorithm.fromFile(fullpath)
                         if alg.name:
                             alg.provider = self
+                            alg.descriptionFile = fullpath
                             self.algs.append(alg)
                         else:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
