@@ -65,6 +65,14 @@ void QgsHeatmapRenderer::startRender( QgsRenderContext& context, const QgsFields
     return;
   }
 
+  // find out classification attribute index from name
+  mWeightAttrNum = fields.fieldNameIndex( mWeightExpressionString );
+  if ( mWeightAttrNum == -1 )
+  {
+    mWeightExpression.reset( new QgsExpression( mWeightExpressionString ) );
+    mWeightExpression->prepare( fields );
+  }
+
   initializeValues( context );
 }
 
@@ -101,6 +109,28 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
     return false;
   }
 
+  double weight = 1.0;
+  if ( !mWeightExpressionString.isEmpty() )
+  {
+    QVariant value;
+    if ( mWeightAttrNum == -1 )
+    {
+      Q_ASSERT( mWeightExpression.data() );
+      value = mWeightExpression->evaluate( &feature );
+    }
+    else
+    {
+      const QgsAttributes& attrs = feature.attributes();
+      value = attrs.value( mWeightAttrNum );
+    }
+    bool ok = false;
+    double evalWeight = value.toDouble( &ok );
+    if ( ok )
+    {
+      weight = evalWeight;
+    }
+  }
+
   int width = context.painter()->device()->width() / mRenderQuality;
   int height = context.painter()->device()->height() / mRenderQuality;
 
@@ -128,7 +158,7 @@ bool QgsHeatmapRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& c
           continue;
         }
 
-        double score = quarticKernel( sqrt( distanceSquared ), mRadiusPixels );
+        double score = weight * quarticKernel( sqrt( distanceSquared ), mRadiusPixels );
         double value = mValues[ index ] + score;
         if ( value > mCalculatedMaxValue )
         {
@@ -181,6 +211,7 @@ double QgsHeatmapRenderer::triangularKernel( const double distance, const int ba
 void QgsHeatmapRenderer::stopRender( QgsRenderContext& context )
 {
   renderImage( context );
+  mWeightExpression.reset();
 }
 
 void QgsHeatmapRenderer::renderImage( QgsRenderContext& context )
@@ -246,6 +277,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::clone() const
   newRenderer->setRadiusMapUnitScale( mRadiusMapUnitScale );
   newRenderer->setMaximumValue( mExplicitMax );
   newRenderer->setRenderQuality( mRenderQuality );
+  newRenderer->setWeightExpression( mWeightExpressionString );
 
   return newRenderer;
 }
@@ -282,6 +314,7 @@ QgsFeatureRendererV2* QgsHeatmapRenderer::create( QDomElement& element )
   r->setRadiusMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( element.attribute( "radius_map_unit_scale", QString() ) ) );
   r->setMaximumValue( element.attribute( "max_value", "0.0" ).toFloat() );
   r->setRenderQuality( element.attribute( "quality", "0" ).toInt() );
+  r->setWeightExpression( element.attribute( "weight_expression" ) );
 
   QDomElement sourceColorRampElem = element.firstChildElement( "colorramp" );
   if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( "name" ) == "[source]" )
@@ -301,6 +334,7 @@ QDomElement QgsHeatmapRenderer::save( QDomDocument& doc )
   rendererElem.setAttribute( "radius_map_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mRadiusMapUnitScale ) );
   rendererElem.setAttribute( "max_value", QString::number( mExplicitMax ) );
   rendererElem.setAttribute( "quality", QString::number( mRenderQuality ) );
+  rendererElem.setAttribute( "weight_expression", mWeightExpressionString );
   if ( mGradientRamp )
   {
     QDomElement colorRampElem = QgsSymbolLayerV2Utils::saveColorRamp( "[source]", mGradientRamp, doc );
@@ -324,8 +358,19 @@ QgsSymbolV2List QgsHeatmapRenderer::symbols()
 
 QList<QString> QgsHeatmapRenderer::usedAttributes()
 {
-  QList<QString> attributeList;
-  return attributeList;
+  QSet<QString> attributes;
+
+  // mAttrName can contain either attribute name or an expression.
+  // Sometimes it is not possible to distinguish between those two,
+  // e.g. "a - b" can be both a valid attribute name or expression.
+  // Since we do not have access to fields here, try both options.
+  attributes << mWeightExpressionString;
+
+  QgsExpression testExpr( mWeightExpressionString );
+  if ( !testExpr.hasParserError() )
+    attributes.unite( testExpr.referencedColumns().toSet() );
+
+  return attributes.toList();
 }
 
 QgsHeatmapRenderer* QgsHeatmapRenderer::convertFromRenderer( const QgsFeatureRendererV2 *renderer )

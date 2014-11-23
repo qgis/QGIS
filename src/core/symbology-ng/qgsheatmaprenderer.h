@@ -151,6 +151,18 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     */
     void setRenderQuality( const int quality ) { mRenderQuality = quality; }
 
+    /**Returns the expression used for weighting points when generating the heatmap.
+     * @returns point weight expression. If empty, all points are equally weighted.
+     * @see setWeightExpression
+    */
+    QString weightExpression() const { return mWeightExpressionString; }
+
+    /**Sets the expression used for weighting points when generating the heatmap.
+     * @param expression point weight expression. If set to empty, all points are equally weighted.
+     * @see weightExpression
+    */
+    void setWeightExpression( const QString& expression ) { mWeightExpressionString = expression; }
+
   private:
     /** Private copy constructor. @see clone() */
     QgsHeatmapRenderer( const QgsHeatmapRenderer& );
@@ -166,6 +178,10 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     double mRadiusSquared;
     QgsSymbolV2::OutputUnit mRadiusUnit;
     QgsMapUnitScale mRadiusMapUnitScale;
+
+    QString mWeightExpressionString;
+    int mWeightAttrNum;
+    QScopedPointer<QgsExpression> mWeightExpression;
 
     QgsVectorColorRampV2* mGradientRamp;
     bool mInvertRamp;

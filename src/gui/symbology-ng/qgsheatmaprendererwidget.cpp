@@ -23,6 +23,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
 #include "qgsstylev2.h"
+#include "qgsproject.h"
 #include <QGridLayout>
 #include <QLabel>
 
@@ -100,6 +101,10 @@ QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsSt
   mInvertCheckBox->blockSignals( true );
   mInvertCheckBox->setChecked( mRenderer->invertRamp() );
   mInvertCheckBox->blockSignals( false );
+
+  mWeightExpressionWidget->setLayer( layer );
+  mWeightExpressionWidget->setField( mRenderer->weightExpression() );
+  connect( mWeightExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( weightExpressionChanged( QString ) ) );
 }
 
 QgsFeatureRendererV2* QgsHeatmapRendererWidget::renderer()
@@ -205,4 +210,9 @@ void QgsHeatmapRendererWidget::on_mInvertCheckBox_toggled( bool v )
   }
 
   mRenderer->setInvertRamp( v );
+}
+
+void QgsHeatmapRendererWidget::weightExpressionChanged( QString expression )
+{
+  mRenderer->setWeightExpression( expression );
 }

@@ -121,5 +121,17 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @see renderQuality
     */
     void setRenderQuality( const int quality );
+    
+    /**Returns the expression used for weighting points when generating the heatmap.
+     * @returns point weight expression. If empty, all points are equally weighted.
+     * @see setWeightExpression
+    */
+    QString weightExpression() const;
+
+    /**Sets the expression used for weighting points when generating the heatmap.
+     * @param expression point weight expression. If set to empty, all points are equally weighted.
+     * @see weightExpression
+    */
+    void setWeightExpression( const QString& expression );
 
 };
