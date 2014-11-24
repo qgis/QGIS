@@ -4061,7 +4061,18 @@ void QgisApp::openProject( QAction *action )
   int myProjectionEnabledFlag =
     QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 );
   mMapCanvas->setCrsTransformEnabled( myProjectionEnabledFlag );
-} // QgisApp::openProject
+}
+
+void QgisApp::runScript( const QString &filePath )
+{
+  if ( !mPythonUtils || !mPythonUtils->isEnabled() )
+    return;
+
+  mPythonUtils->runString(
+    QString( "import sys\n"
+             "execfile(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding()))\n" ).arg( filePath )
+    , tr( "Failed to run Python script:" ), false );
+}
 
 
 /**
@@ -4153,6 +4164,10 @@ void QgisApp::openFile( const QString & fileName )
   else if ( fi.completeSuffix() == "qlr" )
   {
     openLayerDefinition( fileName );
+  }
+  else if ( fi.completeSuffix() == "py" )
+  {
+    runScript( fileName );
   }
   else
   {
