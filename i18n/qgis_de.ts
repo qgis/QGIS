@@ -3126,7 +3126,7 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
     <name>GdalTools</name>
     <message>
         <source>&amp;Input directory</source>
-        <translation>&amp;Eingabeverzeichnis</translation>
+        <translation>E&amp;ingabeverzeichnis</translation>
     </message>
     <message>
         <source>&amp;Output directory</source>
@@ -3176,71 +3176,71 @@ Erweiterung wird nicht aktiviert.</translation>
     </message>
     <message>
         <source>Warp (Reproject)...</source>
-        <translation>Transformieren (Reprojizieren)</translation>
+        <translation>Transformieren (Reprojizieren)...</translation>
     </message>
     <message>
         <source>Assign Projection...</source>
-        <translation>Projektion zuweisen</translation>
+        <translation>Projektion zuweisen...</translation>
     </message>
     <message>
         <source>Extract Projection...</source>
-        <translation>Projektion extrahieren</translation>
+        <translation>Projektion extrahieren...</translation>
     </message>
     <message>
         <source>Rasterize (Vector to Raster)...</source>
-        <translation>Rastern (Vektor nach Raster)</translation>
+        <translation>Rastern (Vektor nach Raster)...</translation>
     </message>
     <message>
         <source>Polygonize (Raster to Vector)...</source>
-        <translation>Vektorisieren (Raster nach Vektor)</translation>
+        <translation>Vektorisieren (Raster nach Vektor)...</translation>
     </message>
     <message>
         <source>Translate (Convert Format)...</source>
-        <translation>Übersetzen (Format konvertieren)</translation>
+        <translation>Übersetzen (Format konvertieren)...</translation>
     </message>
     <message>
         <source>RGB to PCT...</source>
-        <translation>RGB nach PCT</translation>
+        <translation>RGB nach PCT...</translation>
     </message>
     <message>
         <source>PCT to RGB...</source>
-        <translation>RGB nach PCT</translation>
+        <translation>RGB nach PCT...</translation>
     </message>
     <message>
         <source>Contour...</source>
-        <translation>Kontur</translation>
+        <translation>Kontur...</translation>
     </message>
     <message>
         <source>Clipper...</source>
-        <translation>Clipper</translation>
+        <translation>Clipper...</translation>
     </message>
     <message>
         <source>Sieve...</source>
-        <translation>Sieben</translation>
+        <translation>Sieben...</translation>
     </message>
     <message>
         <source>Near Black...</source>
-        <translation>Fast schwarz</translation>
+        <translation>Fast schwarz...</translation>
     </message>
     <message>
         <source>Fill nodata...</source>
-        <translation>&quot;Leerwert&quot; füllen</translation>
+        <translation>&quot;Leerwert&quot; füllen...</translation>
     </message>
     <message>
         <source>Proximity (Raster Distance)...</source>
-        <translation>Nachbarschaft (Rasterabstand)</translation>
+        <translation>Nachbarschaft (Rasterabstand)...</translation>
     </message>
     <message>
         <source>Grid (Interpolation)...</source>
-        <translation>Gitter (Interpolation)</translation>
+        <translation>Gitter (Interpolation)...</translation>
     </message>
     <message>
         <source>DEM (Terrain Models)...</source>
-        <translation>DHM (Geländemodelle)</translation>
+        <translation>DHM (Geländemodelle)...</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)...</source>
-        <translation>Virtuelles Raster erzeugen (Katalog)</translation>
+        <translation>Virtuelles Raster erzeugen (Katalog)...</translation>
     </message>
     <message>
         <source>Merge...</source>
@@ -3248,19 +3248,19 @@ Erweiterung wird nicht aktiviert.</translation>
     </message>
     <message>
         <source>Information...</source>
-        <translation>Information</translation>
+        <translation>Informationen...</translation>
     </message>
     <message>
         <source>Build Overviews (Pyramids)...</source>
-        <translation>Übersichten erzeugen (Pyramiden)</translation>
+        <translation>Übersichten erzeugen (Pyramiden)...</translation>
     </message>
     <message>
         <source>Tile Index...</source>
-        <translation>Kachelindex</translation>
+        <translation>Kachelindex...</translation>
     </message>
     <message>
         <source>GdalTools Settings...</source>
-        <translation>GdalTools-Einstellungen</translation>
+        <translation>GdalTools-Einstellungen...</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
@@ -5072,7 +5072,7 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     </message>
     <message>
         <source>Could not download file: %s</source>
-        <translation>Datei %s konnte nicht runtergeladen werden.</translation>
+        <translation>Datei %s konnte nicht runtergeladen werden</translation>
     </message>
 </context>
 <context>
@@ -5114,7 +5114,7 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     </message>
     <message>
         <source>Heatmap...</source>
-        <translation>Heatmap</translation>
+        <translation>Heatmap...</translation>
     </message>
     <message>
         <source>Creates a heatmap raster for the input point vector.</source>
@@ -5323,7 +5323,7 @@ are stored on the installation folder</source>
 Bitte die Berechtigungen überprüfen. Möglicherweise 
 wurde die Hilfe eines Beispielskripts verändert und 
 versucht zu Speichern was aufgrund der Berechtigungen 
-im Installationsverzeichnis nicht erlaubt ist.</translation>
+im Installationsverzeichnis nicht erlaubt ist</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Algorithm description&lt;/h2&gt;
@@ -5651,7 +5651,7 @@ Zum Überprüfen Ergebnis Dialog öffnen.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Zuletzt verwendetes</translation>
+        <translation type="obsolete">&amp;Zuletzt verwendetes</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6075,15 +6075,15 @@ Zum Überprüfen Ergebnis Dialog öffnen.</translation>
     </message>
     <message>
         <source>&amp;Download Data...</source>
-        <translation>&amp;Daten herunterladen</translation>
+        <translation>&amp;Daten herunterladen...</translation>
     </message>
     <message>
         <source>&amp;Import Topology from XML...</source>
-        <translation>&amp;Topologie aus XML importieren</translation>
+        <translation>Topologie aus XML &amp;importieren...</translation>
     </message>
     <message>
         <source>&amp;Export Topology to SpatiaLite...</source>
-        <translation>Topologie nach SpatiaLite e&amp;xportieren</translation>
+        <translation>Topologie nach SpatiaLite &amp;exportieren...</translation>
     </message>
     <message>
         <source>Increase Brightness</source>
@@ -6103,7 +6103,7 @@ Zum Überprüfen Ergebnis Dialog öffnen.</translation>
     </message>
     <message>
         <source>Select By Expression...</source>
-        <translation>Nach Ausdruck wählen</translation>
+        <translation>Nach Ausdruck wählen...</translation>
     </message>
     <message>
         <source>Need Commercial Support?</source>
@@ -6111,7 +6111,7 @@ Zum Überprüfen Ergebnis Dialog öffnen.</translation>
     </message>
     <message>
         <source>Open Field Calculator...</source>
-        <translation>Feldrechner öffnen</translation>
+        <translation>Feldrechner öffnen...</translation>
     </message>
     <message>
         <source>Add from Layer Definition File...</source>
@@ -6622,6 +6622,10 @@ Funktioniert auf allen ändernbaren Layern</translation>
         <source>Fill Ring</source>
         <translation>Ring füllen</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation>Zuletzt geöffnet</translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6920,7 +6924,7 @@ Funktioniert auf allen ändernbaren Layern</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Zeige %d - %d von %d Ergebnissen%s</translation>
+        <translation type="obsolete">Zeige %d - %d von %d Ergebnissen%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6969,6 +6973,13 @@ Funktioniert auf allen ändernbaren Layern</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>CSW-Verbindungsfehler</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation>
+            <numerusform>Zeige %d - %d von einem Ergebnis</numerusform>
+            <numerusform>Zeige %d - %d von %n Ergebnissen</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -7591,7 +7602,7 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Select a table for vacuum analyze.</source>
-        <translation>Auszuräumende und zu analysierende Tabelle wählen</translation>
+        <translation>Auszuräumende und zu analysierende Tabelle wählen.</translation>
     </message>
 </context>
 <context>
@@ -7731,27 +7742,27 @@ Mehr Informationen.im Protokoll.</translation>
     </message>
     <message>
         <source>Pro&amp;cessing</source>
-        <translation>Verarbeitung</translation>
+        <translation>Verarbeitung (&amp;c)</translation>
     </message>
     <message>
         <source>&amp;Toolbox</source>
-        <translation>Werkzeugkiste</translation>
+        <translation>Werkzeugkis&amp;te</translation>
     </message>
     <message>
         <source>Graphical &amp;Modeler...</source>
-        <translation>Grafische Modellierung</translation>
+        <translation>Grafische &amp;Modellierung...</translation>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation>Historie und Protokoll speichern</translation>
+        <translation>&amp;Historie und Protokoll speichern...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation>Optionen...</translation>
+        <translation>&amp;Optionen...</translation>
     </message>
     <message>
         <source>&amp;Results Viewer...</source>
-        <translation>&amp;Ergebnisanzeige</translation>
+        <translation>E&amp;rgebnisanzeige...</translation>
     </message>
     <message>
         <source>&amp;Commander</source>
@@ -10879,6 +10890,62 @@ Antwort war:
         <source>Legend</source>
         <translation>Legende</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation>Klassifikation</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation>Bereich</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation>Eindeutige Werte</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation>Dateiname</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation>Wertabbildung</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation>Aufzählung</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation>Kontrollkästchen</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation>Texteditor</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation>Wertbeziehung</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation>UUID-Generator</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation>Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation>Webansicht</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation>Beziehungsreferenz</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation>Datum/Zeit</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11768,7 +11835,7 @@ Fehler: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Der aktuelle Layer hat keine gewählten Objekte</translation>
+        <translation type="obsolete">Der aktuelle Layer hat keine gewählten Objekte</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12267,6 +12334,10 @@ Diese Fehler immer ignorieren?</translation>
             <numerusform>Ein SSL-Fehler aufgetreten</numerusform>
             <numerusform>%n SSL-Fehler aufgetreten</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation>Der aktuelle Layer hat keine gewählten objekte</translation>
     </message>
 </context>
 <context>
@@ -14446,11 +14517,11 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>&amp;Composer</source>
-        <translation>Zusammenstellung</translation>
+        <translation>Zusammenstellung (&amp;c)</translation>
     </message>
     <message>
         <source>Print &amp;Composers</source>
-        <translation>Druckzusammenstellungen</translation>
+        <translation>Druckzusammenstellungen (&amp;c)</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -14458,23 +14529,23 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>&amp;Normal</source>
-        <translation>Normal</translation>
+        <translation>&amp;Normal</translation>
     </message>
     <message>
         <source>Simulate Photocopy (&amp;Grayscale)</source>
-        <translation>Fotokopie simulieren (Graustufen)</translation>
+        <translation>Fotokopie simulieren (&amp;Graustufen)</translation>
     </message>
     <message>
         <source>Simulate Fax (&amp;Mono)</source>
-        <translation>Fax simulieren (Mono)</translation>
+        <translation>Fax simulieren (&amp;Mono)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (&amp;Protanope)</source>
-        <translation>Farbenblindheit simulieren (Rotblinde)</translation>
+        <translation>Farbenblindheit simulieren (Rotblinde; &amp;p)</translation>
     </message>
     <message>
         <source>Simulate Color Blindness (&amp;Deuteranope)</source>
-        <translation>Farbenblindheit simulieren (Grünblinde)</translation>
+        <translation>Farbenblin&amp;dheit simulieren (Grünblinde)</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -14482,19 +14553,19 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     </message>
     <message>
         <source>P&amp;anels</source>
-        <translation>Bedienfelder</translation>
+        <translation>Bedienfelder (&amp;a)</translation>
     </message>
     <message>
         <source>&amp;Toolbars</source>
-        <translation>Werkzeugkästen</translation>
+        <translation>Werkzeugkästen (&amp;t)</translation>
     </message>
     <message>
         <source>&amp;Layout</source>
-        <translation>Anordnung</translation>
+        <translation>Anordnung (&amp;l)</translation>
     </message>
     <message>
         <source>&amp;Atlas</source>
-        <translation>Atlas</translation>
+        <translation>&amp;Atlas</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -15756,51 +15827,51 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <source>Zoom &amp;Full</source>
-        <translation>Volle Ausdehnung</translation>
+        <translation>Volle Ausdehnung (&amp;f)</translation>
     </message>
     <message>
         <source>Zoom &amp;In</source>
-        <translation>Hineinzoomen</translation>
+        <translation>Hineinzoomen (&amp;i)</translation>
     </message>
     <message>
         <source>Zoom &amp;Out</source>
-        <translation>Hinauszoomen</translation>
+        <translation>Hinausz&amp;oomen</translation>
     </message>
     <message>
         <source>Zoom to &amp;100%</source>
-        <translation>Zoom auf 100%</translation>
+        <translation>Zoom auf &amp;100%</translation>
     </message>
     <message>
         <source>Add &amp;Map</source>
-        <translation>Karte hinzufügen</translation>
+        <translation>Karte hinzufügen (&amp;m)</translation>
     </message>
     <message>
         <source>Add Lab&amp;el</source>
-        <translation>Beschriftung hinzufügen</translation>
+        <translation>B&amp;eschriftung hinzufügen</translation>
     </message>
     <message>
         <source>Add Legen&amp;d</source>
-        <translation>Legende hinzufügen</translation>
+        <translation>Legen&amp;de hinzufügen</translation>
     </message>
     <message>
         <source>Move &amp;Item</source>
-        <translation>Element verschieben</translation>
+        <translation>Element versch&amp;ieben</translation>
     </message>
     <message>
         <source>Export as &amp;Image...</source>
-        <translation>Speichern als Rasterbild...</translation>
+        <translation>Spe&amp;ichern als Rasterbild...</translation>
     </message>
     <message>
         <source>&amp;Export as PDF...</source>
-        <translation>Als PDF exportieren...</translation>
+        <translation>Als PDF &amp;exportieren...</translation>
     </message>
     <message>
         <source>Export as S&amp;VG...</source>
-        <translation>Speichern als SVG...</translation>
+        <translation>Speichern als S&amp;VG...</translation>
     </message>
     <message>
         <source>Add &amp;Scalebar</source>
-        <translation>Maßstab hinzufügen</translation>
+        <translation>Maß&amp;stab hinzufügen</translation>
     </message>
     <message>
         <source>&amp;Refresh</source>
@@ -15820,55 +15891,55 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <source>&amp;Snap to Guides</source>
-        <translation>An Führung ausrichten</translation>
+        <translation>An Führung au&amp;srichten</translation>
     </message>
     <message>
         <source>S&amp;mart Guides</source>
-        <translation>Schlaue Führungen</translation>
+        <translation>Schlaue Führungen (&amp;m)</translation>
     </message>
     <message>
         <source>&amp;Clear Guides</source>
-        <translation>Führung löschen</translation>
+        <translation>Führung lös&amp;chen</translation>
     </message>
     <message>
         <source>Add Im&amp;age</source>
-        <translation>Bild hinzufügen</translation>
+        <translation>Bild hinzufügen (&amp;a)</translation>
     </message>
     <message>
         <source>Move &amp;Content</source>
-        <translation>Inhalt verschieben</translation>
+        <translation>Inhalt vers&amp;chieben</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>Gruppen</translation>
+        <translation>&amp;Gruppieren</translation>
     </message>
     <message>
         <source>&amp;Ungroup</source>
-        <translation>Auflösen</translation>
+        <translation>Auflösen (&amp;u)</translation>
     </message>
     <message>
         <source>&amp;Raise</source>
-        <translation>Hervorholen</translation>
+        <translation>Höhe&amp;r</translation>
     </message>
     <message>
         <source>&amp;Lower</source>
-        <translation>Potenz</translation>
+        <translation>Tiefer (&amp;l)</translation>
     </message>
     <message>
         <source>Bring to &amp;Front</source>
-        <translation>In den Vordergrund holen</translation>
+        <translation>In den Vordergrund holen (&amp;f)</translation>
     </message>
     <message>
         <source>Send to &amp;Back</source>
-        <translation>In den Hintergrund schicken</translation>
+        <translation>In den Hintergrund schicken (&amp;b)</translation>
     </message>
     <message>
         <source>&amp;Add Items from Template...</source>
-        <translation>Elemente aus Vorlage hinzufügen</translation>
+        <translation>Elemente &amp;aus Vorlage hinzufügen...</translation>
     </message>
     <message>
         <source>Save as &amp;Template...</source>
-        <translation>Als Vorlage speichern</translation>
+        <translation>Als Vorlage speichern (&amp;t)...</translation>
     </message>
     <message>
         <source>Save as template</source>
@@ -15936,11 +16007,11 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <source>Paste in P&amp;lace</source>
-        <translation>Durch Einfügen ersetzen</translation>
+        <translation>Durch Einfügen ersetzen (&amp;l)</translation>
     </message>
     <message>
         <source>D&amp;eselect All</source>
-        <translation>Alle abwählen</translation>
+        <translation>All&amp;e abwählen</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
@@ -15948,51 +16019,51 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <source>Composer &amp;Options...</source>
-        <translation>Zusammenstellungseinstellungen...</translation>
+        <translation>Zusammenstellungseinstellungen (&amp;o)...</translation>
     </message>
     <message>
         <source>Show Ru&amp;lers</source>
-        <translation>Lineale anzeigen</translation>
+        <translation>&amp;Lineale anzeigen</translation>
     </message>
     <message>
         <source>&amp;First Feature</source>
-        <translation>Erstes Objekt</translation>
+        <translation>Erstes Objekt (&amp;f)</translation>
     </message>
     <message>
         <source>P&amp;revious Feature</source>
-        <translation>Vorheriges Objekt</translation>
+        <translation>Vo&amp;rheriges Objekt</translation>
     </message>
     <message>
         <source>&amp;Next Feature</source>
-        <translation>Nächstes Objekt</translation>
+        <translation>&amp;Nächstes Objekt</translation>
     </message>
     <message>
         <source>&amp;Last Feature</source>
-        <translation>Letztes Objekt</translation>
+        <translation>&amp;Letztes Objekt</translation>
     </message>
     <message>
         <source>Preview &amp;Atlas</source>
-        <translation>Atlas-Vorschau anzeigen</translation>
+        <translation>&amp;Atlas-Vorschau anzeigen</translation>
     </message>
     <message>
         <source>&amp;Print Atlas...</source>
-        <translation>Atlas drucken...</translation>
+        <translation>Atlas drucken (&amp;p)...</translation>
     </message>
     <message>
         <source>Export Atlas as &amp;Images...</source>
-        <translation>Atlas als Bilder exportieren...</translation>
+        <translation>Atlas als B&amp;ilder exportieren...</translation>
     </message>
     <message>
         <source>Export Atlas as S&amp;VG...</source>
-        <translation>Atlas als SVG exportieren...</translation>
+        <translation>Atlas als S&amp;VG exportieren...</translation>
     </message>
     <message>
         <source>&amp;Export Atlas as PDF...</source>
-        <translation>Atlas als PDF exportieren...</translation>
+        <translation>Atlas als PDF &amp;exportieren...</translation>
     </message>
     <message>
         <source>Atlas &amp;Settings</source>
-        <translation>Atlas-Einstellungen</translation>
+        <translation>Atlas-Ein&amp;stellungen</translation>
     </message>
     <message>
         <source>Add Arrow</source>
@@ -16040,27 +16111,27 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <source>Add &amp;HTML</source>
-        <translation>HTML hinzufügen</translation>
+        <translation>&amp;HTML hinzufügen</translation>
     </message>
     <message>
         <source>Composer &amp;Manager...</source>
-        <translation>Druckzusammenstellungen verwalten...</translation>
+        <translation>Druckzusa&amp;mmenstellungen verwalten...</translation>
     </message>
     <message>
         <source>&amp;New Composer...</source>
-        <translation>&amp;Neue Zusammenstellung</translation>
+        <translation>&amp;Neue Zusammenstellung...</translation>
     </message>
     <message>
         <source>&amp;Duplicate Composer...</source>
-        <translation>&amp;Zusammenstellung kopieren</translation>
+        <translation>Zusammenstellung kopieren (&amp;d)...</translation>
     </message>
     <message>
         <source>Loc&amp;k Selected Items</source>
-        <translation>Gewählte Elemente fixieren</translation>
+        <translation>Gewählte Elemente fixieren (&amp;k)</translation>
     </message>
     <message>
         <source>Unl&amp;ock All</source>
-        <translation>Alle Fixierungen aufheben</translation>
+        <translation>Alle Fixierungen aufheben (&amp;o)</translation>
     </message>
     <message>
         <source>Ctrl+Shift+L</source>
@@ -16248,15 +16319,15 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     </message>
     <message>
         <source>Add Arro&amp;w</source>
-        <translation>Pfeil hinzufügen</translation>
+        <translation>Pfeil hinzufügen (&amp;w)</translation>
     </message>
     <message>
         <source>Add Attribute &amp;Table</source>
-        <translation>Attributtabelle hinzufügen</translation>
+        <translation>Attribut&amp;tabelle hinzufügen</translation>
     </message>
     <message>
         <source>Pa&amp;ge Setup...</source>
-        <translation>Seiteneinstellungen</translation>
+        <translation>Seiteneinstellungen (&amp;g)...</translation>
     </message>
     <message>
         <source>Ctrl+Z</source>
@@ -18057,6 +18128,22 @@ Bitte versuchen Sie eine niedrigere Auflösung oder ein kleineres Papierformat</
     <message>
         <source>Change...</source>
         <translation>Ändern...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation>Neue Übersicht hinzufügen</translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation>Gewählte Übersicht entfernen</translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation>Gewählte Übersicht hochschieben</translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation>Gewählte Übersicht nach unten verschieben</translation>
     </message>
 </context>
 <context>
@@ -24079,7 +24166,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGeorefPlugin</name>
     <message>
         <source>&amp;Georeferencer...</source>
-        <translation>&amp;Georeferenzierung</translation>
+        <translation>&amp;Georeferenzierung...</translation>
     </message>
     <message>
         <source>&amp;Georeferencer</source>
@@ -39036,19 +39123,19 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Aspect...</source>
-        <translation>Perspektive</translation>
+        <translation>Perspektive...</translation>
     </message>
     <message>
         <source>Hillshade...</source>
-        <translation>Schummerung</translation>
+        <translation>Schummerung...</translation>
     </message>
     <message>
         <source>Relief...</source>
-        <translation>Relief</translation>
+        <translation>Relief...</translation>
     </message>
     <message>
         <source>Ruggedness Index...</source>
-        <translation>Rauhigkeitsindex</translation>
+        <translation>Rauhigkeitsindex...</translation>
     </message>
     <message>
         <source>Relief</source>
@@ -48008,91 +48095,6 @@ Um Flächen zu messen, wählen Sie das Werkzeug und klicken dann um die Fläche 
 </translation>
     </message>
     <message>
-        <source>&lt;h3&gt;Attribute table&lt;/h3&gt;
-The attribute table displays features of a selected layer. Each row in the table represents one map feature with its attributes shown in several columns. The features in the table can be searched, selected, moved or even edited.  By default the attribute table is a separate window. If you opened it and cannot see it anymore, it is most likely hidden under the main QGIS window. You can make it also a docked window, by checking &lt;label&gt;Open attribute table in a dock window&lt;/label&gt; in &lt;label&gt;Settings &gt; Options &gt; General&lt;/label&gt;.&lt;p&gt;
-
-The number of total number of layer features, filtered features and selected features is printed on the window header.&lt;p&gt;
-&lt;p&gt;
-&lt;a href=&quot;#Selecting&quot;&gt;Selecting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Sorting&quot;&gt;Sorting&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Filtering&quot;&gt;Filtering&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Editing&quot;&gt;Editing&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#FieldCalc&quot;&gt;Field Calculator&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;Selecting&quot;&gt;
-&lt;h4&gt;Selecting&lt;/h4&gt;
-&lt;/a&gt;
-Rows can be selected by clicking on the row number on the left side of the row. Subsequent rows can be selected by holding the mouse button down and moving the mouse to the other end of the selection. Multiple non-subsequent rows can be selected by holding the &lt;label&gt;Ctrl&lt;/label&gt; key.&lt;br&gt;
-A continuous selection can be made by holding the &lt;label&gt;Shift&lt;/label&gt; key and clicking on several row headers on the left side of the rows. All rows between the current cursor position and the clicked row are selected.
-
-&lt;a name=&quot;Sorting&quot;&gt;
-&lt;h4&gt;Sorting&lt;/h4&gt;
-&lt;/a&gt;
-Each column can be sorted by clicking on its column header. A small arrow indicates the sort order (downward pointing means descending values from the top row down, upward pointing means ascending values from the top row down).&lt;br&gt;
-Activate the &lt;label&gt;Selected on top&lt;/label&gt; button to show the selected rows always on top, regardless of the current sort column.
-
-&lt;a name=&quot;Filtering&quot;&gt;
-&lt;h4&gt;Filtering&lt;/h4&gt;
-&lt;/a&gt;
-To only navigate through parts of your data, you can use the filter button on the bottom left. The following options are available.
-&lt;h5&gt;Show All Features&lt;/h5&gt;
-Shows all features of the layer.
-&lt;h5&gt;Show Selected Features&lt;/h5&gt;
-Shows all features which are currently selected.
-&lt;h5&gt;Show Features Visible on Map&lt;/h5&gt;
-Shows all features which are currently visible on the map canvas, taking the currently visible extent and scale based visibility into account.
-&lt;h5&gt;Show Edited and New Features&lt;/h5&gt;
-Shows only edited and new features. In this mode, features with uncommitted changes are shown and this is therefore a good filter to review changes, before committing them. Please note, that deleted features are not shown in this mode.
-&lt;h5&gt;Column Filter&lt;/h5&gt;
-A simple filter, which lets you filter by an attribute. If the attribute contains text, it looks for sub-strings also. Searching for &lt;b&gt;man&lt;/b&gt; will therefore also show records containing &lt;b&gt;woman&lt;/b&gt;. After changing the filter text, press &lt;label&gt;Enter&lt;/label&gt; or click on &lt;label&gt;Apply&lt;/label&gt;. You can also toggle the check-box &lt;label&gt;Case sensitive&lt;/label&gt;, so your filter will also match &lt;b&gt;Night&lt;/b&gt; when your search text is &lt;b&gt;night&lt;/b&gt;.   
-&lt;h5&gt;Advanced Filter&lt;/h5&gt;
-For more complex searches, this mode offers a powerful expression builder, which is similar to a SQL WHERE clause. Please refer to the built-in help of the expression builder for details on the syntax.
-
-&lt;a name=&quot;Editing&quot;&gt;
-&lt;h4&gt;Editing&lt;/h4&gt;
-&lt;/a&gt;
-To edit values, you first have to switch the layer to editing mode. To switch to editing mode click on the &lt;label&gt;Toggle editing mode&lt;/label&gt; (pencil) button or press &lt;label&gt;Ctrl + E&lt;/label&gt;. Afterwards double-click on the value you want to edit or place the cursor on it and use the &lt;label&gt;Space&lt;/label&gt;-Key. You can customize the widgets used for field editing in &lt;label&gt;Vector Layer Properties &gt; Fields&lt;/label&gt;  
-
-&lt;a name=&quot;FieldCalc&quot;&gt;
-&lt;h4&gt;Field Calculator&lt;/h4&gt;
-&lt;/a&gt;
-The &lt;label&gt;Field Calculator&lt;/label&gt; button in the attribute table allows performing calculations on basis of existing attribute values or defined functions, e.g. to calculate length or area of geometry features.&lt;br&gt;
-The results can be written to a new attribute column or it can be used to update values in an already existing column.&lt;br&gt;
-The vector layer needs to be in editing mode, before you can click on the &lt;label&gt;Field calculator&lt;/label&gt; icon to open the dialog.
-</source>
-        <translation type="obsolete">&lt;h3&gt;Attributtabelle&lt;/h3&gt;
-Die Attributtabelle zeigt Objekte des gewählten Layers an.  Jede Zeile stelle ein Objekt auf der Karte mit seinem Attributen in mehreren Spalten.  Die Objekt in der Tabelle können durchsucht, ausgewählt, verschieben und auch bearbeitet werden.  Die Attributtabelle erscheint normalerweise als separates Fenster.   Wenn Sie es geöffnet haben, aber es nicht mehr sehen können, ist es vermutlich unter dem QGIS-Hauptfenster verschwunden.  Sie können das Fenster auch gedockt anzeigen indem Sie unter &lt;label&gt;Einstellungen &gt; Optionen &gt; Allgemein&lt;/label&gt; ein Häkchen bei &lt;label&gt;Attributtabelle gedockt öffnen&lt;/label&gt; setzen.&lt;p&gt;
-
-Die Nummer des Tabellenobjekts ist in der führenden Spalte angegeben.&lt;p&gt;
-Unten rechts im Dialog kann zwischen Formular- und Tabellenansicht umgeschaltet werden.&lt;p&gt;
-&lt;a href=&quot;#Selecting&quot;&gt;Auswählen&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Sorting&quot;&gt;Sortieren&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Searching&quot;&gt;Suchen&lt;/a&gt;&lt;br/&gt;
-&lt;a href=&quot;#Field&quot;&gt;Feldrechner&lt;/a&gt;&lt;br/&gt;
-
-&lt;a name=&quot;Selecting&quot;&gt;
-&lt;h4&gt;Auswählen&lt;/h4&gt;
-&lt;/a&gt;
-Zeilen können durch Klicken auf die Zeilennummer auf der linken Seite der Zeile ausgewählt werden.  Die Auswahl einer Zeile ändern die aktuelle Cursorposition nicht.  Mehrere Zeilen können durch Drücken der Taste &lt;label&gt;Strg&lt;/label&gt; gewählt werden.  Eine fortlaufende Auswahl kann durch Drücken der Taste &lt;label&gt;Umschalt&lt;/label&gt; und Klicken auf mehrere Zeilentitel auf der linken Seite der Zeile erreicht werden.   Damit werden alle Zeilen zwischen der aktuellen und der angeklickten Zeile werden gewählt.
-
-&lt;a name=&quot;Sorting&quot;&gt;
-&lt;h4&gt;Sortieren&lt;/h4&gt;
-&lt;/a&gt;
-Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).
-
-&lt;a name=&quot;Searching&quot;&gt;
-&lt;h4&gt;Suchen&lt;/h4&gt;
-&lt;/a&gt;
-Für eine einfache Suche nach Attribute einer Spalte kann das &lt;label&gt;Suche nach&lt;/label&gt; eingesetzt werden.  Wählen Sie das Feld (Spalte), das durchsucht werden soll aus der Auswahlliste und klicken Sie auf den Knopf &lt;label&gt;Suchen&lt;/label&gt;.&lt;br&gt; Für komplexere Suche verwenden Sie bitte &lt;label&gt;Erweitere Suche&lt;/label&gt; Dieser Knopf öffnet den Abfrageeditor und erlaubt Ihnen Zeilen zu wählen, die zu einer SQL-ähnlichen Where-Klausel passen.
-
-&lt;a name=&quot;Field&quot;&gt;
-&lt;h4&gt;Feldrechner&lt;/h4&gt;
-&lt;/a&gt;
-Der Knopf &lt;label&gt;Feldrechner&lt;/label&gt; in der Attributtabelle ermöglicht Berechnungen auf mit vorhandenen Attributwerten oder definierten Funktionen.  Z.B.  kann die Länge oder Fläche von Geometrieobjekten berechnet werden.&lt;br/&gt;
-Die Ergebnisse können in eine neue Attributspalte geschrieben oder eine vorhandene Spalte damit überschrieben werden.&lt;br/&gt;
-Um den Feldrechner zu öffnen, müssen Sie den Vektorlayer zuvor in den Bearbeitungsmodus versetzen.</translation>
-    </message>
-    <message>
         <source>&lt;h3&gt;Heatmap Plugin Help&lt;/h3&gt;
 &lt;p&gt;The Heatmap plugin uses Kernel Density Estimation to create a density (heatmap)
 raster of an input point vector layer.  The density is calculated based on the
@@ -50692,7 +50694,37 @@ The vector layer needs to be in editing mode, before you can click on the &lt;la
 When you toggle to edition the layer, a new row of functions appears in the attribute table: the &lt;label&gt;Field Calculator Bar&lt;/label&gt;. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.&lt;br&gt;
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Attributtabelle&lt;/h3&gt;
+Die Attributtabelle zeigt Objekte des gewählten Layers an.  Jede Zeile stelle ein Objekt auf der Karte mit seinem Attributen in mehreren Spalten.  Die Objekt in der Tabelle können durchsucht, ausgewählt, verschieben und auch bearbeitet werden.  Die Attributtabelle erscheint normalerweise als separates Fenster.   Wenn Sie es geöffnet haben, aber es nicht mehr sehen können, ist es vermutlich unter dem QGIS-Hauptfenster verschwunden.  Sie können das Fenster auch gedockt anzeigen indem Sie unter &lt;label&gt;Einstellungen &gt; Optionen &gt; Allgemein&lt;/label&gt; ein Häkchen bei &lt;label&gt;Attributtabelle gedockt öffnen&lt;/label&gt; setzen.&lt;p&gt;
+
+Die Nummer des Tabellenobjekts ist in der führenden Spalte angegeben.&lt;p&gt;
+Unten rechts im Dialog kann zwischen Formular- und Tabellenansicht umgeschaltet werden.&lt;p&gt;
+&lt;a href=&quot;#Selecting&quot;&gt;Auswählen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Sorting&quot;&gt;Sortieren&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Searching&quot;&gt;Suchen&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#Field&quot;&gt;Feldrechner&lt;/a&gt;&lt;br/&gt;
+
+&lt;a name=&quot;Selecting&quot;&gt;
+&lt;h4&gt;Auswählen&lt;/h4&gt;
+&lt;/a&gt;
+Zeilen können durch Klicken auf die Zeilennummer auf der linken Seite der Zeile ausgewählt werden.  Die Auswahl einer Zeile ändern die aktuelle Cursorposition nicht.  Mehrere Zeilen können durch Drücken der Taste &lt;label&gt;Strg&lt;/label&gt; gewählt werden.  Eine fortlaufende Auswahl kann durch Drücken der Taste &lt;label&gt;Umschalt&lt;/label&gt; und Klicken auf mehrere Zeilentitel auf der linken Seite der Zeile erreicht werden.   Damit werden alle Zeilen zwischen der aktuellen und der angeklickten Zeile werden gewählt.
+
+&lt;a name=&quot;Sorting&quot;&gt;
+&lt;h4&gt;Sortieren&lt;/h4&gt;
+&lt;/a&gt;
+Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).
+
+&lt;a name=&quot;Searching&quot;&gt;
+&lt;h4&gt;Suchen&lt;/h4&gt;
+&lt;/a&gt;
+Für eine einfache Suche nach Attribute einer Spalte kann das &lt;label&gt;Suche nach&lt;/label&gt; eingesetzt werden.  Wählen Sie das Feld (Spalte), das durchsucht werden soll aus der Auswahlliste und klicken Sie auf den Knopf &lt;label&gt;Suchen&lt;/label&gt;.&lt;br&gt; Für komplexere Suche verwenden Sie bitte &lt;label&gt;Erweitere Suche&lt;/label&gt; Dieser Knopf öffnet den Abfrageeditor und erlaubt Ihnen Zeilen zu wählen, die zu einer SQL-ähnlichen Where-Klausel passen.
+
+&lt;a name=&quot;Field&quot;&gt;
+&lt;h4&gt;Feldrechner&lt;/h4&gt;
+&lt;/a&gt;
+Der Knopf &lt;label&gt;Feldrechner&lt;/label&gt; in der Attributtabelle ermöglicht Berechnungen auf mit vorhandenen Attributwerten oder definierten Funktionen.  Z.B.  kann die Länge oder Fläche von Geometrieobjekten berechnet werden.&lt;br/&gt;
+Die Ergebnisse können in eine neue Attributspalte geschrieben oder eine vorhandene Spalte damit überschrieben werden.&lt;br/&gt;
+Um den Feldrechner zu öffnen, müssen Sie den Vektorlayer zuvor in den Bearbeitungsmodus versetzen.&lt;br/&gt;</translation>
     </message>
     <message>
         <source>&lt;h3&gt;Measure Tools&lt;/h3&gt;
@@ -50706,7 +50738,13 @@ A single right mouse click stops the measuring, while two right mouse clicks sta
 &lt;h4&gt;Measuring Angles&lt;/h4&gt;
 To measure angles, select the tool and click on three points to create an angle between these points. The second point selected is the vertex of the angle. The angle is dynamically displayed once you clicked the second point.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h3&gt;Messwerkzeuge&lt;/h3&gt; 
+Es gibt Messwerkzeuge für Länge, Fläche.  Zur Zeit liefern sie nur metrische Ergebnisse. Ein einfacher Rechtsklick beendet die Messung, während zwei Rechtsklicks eine neue Messung einleiten.
+&lt;h4&gt;Längen messen&lt;/h4&gt;
+Um Längen zu messen, wählen Sie das Werkzeug und klicken entlang eines Weges, den Sie messen möchten.  Außer den Längen der einzelnen Segmente wird auch die Gesamtlänge des Weges angezeigt.
+&lt;h4&gt;Flächen messen&lt;/h4&gt;
+Um Flächen zu messen, wählen Sie das Werkzeug und klicken dann um die Fläche zu erzeugen. Die Gesamtgröße wird währenddessen laufend angezeigt.
+</translation>
     </message>
 </context>
 <context>
