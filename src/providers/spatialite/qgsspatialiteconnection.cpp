@@ -800,6 +800,18 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
   handle = NULL;
 }
 
+void QgsSqliteHandle::closeAll()
+{
+  QMap < QString, QgsSqliteHandle * >::iterator i;
+  for ( i = handles.begin(); i != handles.end(); ++i )
+  {
+    i.value()->sqliteClose();
+    delete i.value();
+  }
+
+  handles.clear();
+}
+
 void QgsSqliteHandle::sqliteClose()
 {
   if ( sqlite_handle )
