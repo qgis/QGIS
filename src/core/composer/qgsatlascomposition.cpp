@@ -514,7 +514,8 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
   double ya1 = mTransformedFeatureBounds.yMinimum();
   double ya2 = mTransformedFeatureBounds.yMaximum();
   QgsRectangle newExtent = mTransformedFeatureBounds;
-  QgsRectangle mOrigExtent( map->extent() );
+  QgsRectangle originalExtent( map->extent() );
+  QgsRectangle currentExtent( *map->currentMapExtent() );
 
   //sanity check - only allow fixed scale mode for point layers
   bool isPointLayer = false;
@@ -536,19 +537,19 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
     QgsScaleCalculator calc;
     calc.setMapUnits( composition()->mapSettings().mapUnits() );
     calc.setDpi( 25.4 );
-    double originalScale = calc.calculate( mOrigExtent, map->rect().width() );
+    double originalScale = calc.calculate( currentExtent, map->rect().width() );
     double geomCenterX = ( xa1 + xa2 ) / 2.0;
     double geomCenterY = ( ya1 + ya2 ) / 2.0;
 
     if ( map->atlasScalingMode() == QgsComposerMap::Fixed || isPointLayer )
     {
       // only translate, keep the original scale (i.e. width x height)
-      double xMin = geomCenterX - mOrigExtent.width() / 2.0;
-      double yMin = geomCenterY - mOrigExtent.height() / 2.0;
+      double xMin = geomCenterX - currentExtent.width() / 2.0;
+      double yMin = geomCenterY - currentExtent.height() / 2.0;
       newExtent = QgsRectangle( xMin,
                                 yMin,
-                                xMin + mOrigExtent.width(),
-                                yMin + mOrigExtent.height() );
+                                xMin + currentExtent.width(),
+                                yMin + currentExtent.height() );
 
       //scale newExtent to match original scale of map
       //this is required for geographic coordinate systems, where the scale varies by extent
@@ -558,14 +559,14 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
     else if ( map->atlasScalingMode() == QgsComposerMap::Predefined )
     {
       // choose one of the predefined scales
-      double newWidth = mOrigExtent.width();
-      double newHeight = mOrigExtent.height();
+      double newWidth = currentExtent.width();
+      double newHeight = currentExtent.height();
       const QVector<qreal>& scales = mPredefinedScales;
       for ( int i = 0; i < scales.size(); i++ )
       {
         double ratio = scales[i] / originalScale;
-        newWidth = mOrigExtent.width() * ratio;
-        newHeight = mOrigExtent.height() * ratio;
+        newWidth = currentExtent.width() * ratio;
+        newHeight = currentExtent.height() * ratio;
 
         // compute new extent, centered on feature
         double xMin = geomCenterX - newWidth / 2.0;
@@ -593,12 +594,12 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
     // auto scale
 
     double geomRatio = mTransformedFeatureBounds.width() / mTransformedFeatureBounds.height();
-    double mapRatio = mOrigExtent.width() / mOrigExtent.height();
+    double mapRatio = originalExtent.width() / originalExtent.height();
 
     // geometry height is too big
     if ( geomRatio < mapRatio )
     {
-      // extent the bbox's width
+      //extend the bbox's width
       double adjWidth = ( mapRatio * mTransformedFeatureBounds.height() - mTransformedFeatureBounds.width() ) / 2.0;
       xa1 -= adjWidth;
       xa2 += adjWidth;
@@ -606,7 +607,7 @@ void QgsAtlasComposition::prepareMap( QgsComposerMap* map )
     // geometry width is too big
     else if ( geomRatio > mapRatio )
     {
-      // extent the bbox's height
+      //extend the bbox's height
       double adjHeight = ( mTransformedFeatureBounds.width() / mapRatio - mTransformedFeatureBounds.height() ) / 2.0;
       ya1 -= adjHeight;
       ya2 += adjHeight;
