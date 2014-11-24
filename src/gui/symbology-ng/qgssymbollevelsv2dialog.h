@@ -21,6 +21,7 @@
 #include "qgsrendererv2.h"
 
 #include "ui_qgssymbollevelsv2dialogbase.h"
+#include "qgscontexthelp.h"
 
 
 class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbolLevelsV2DialogBase
@@ -42,6 +43,8 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
 
     void renderingPassChanged( int row, int column );
 
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+ 
   protected:
     void populateTable();
     void setDefaultLevels();

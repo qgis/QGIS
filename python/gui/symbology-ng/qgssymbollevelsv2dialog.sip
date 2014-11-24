@@ -18,6 +18,8 @@ class QgsSymbolLevelsV2Dialog : QDialog
 
     void renderingPassChanged( int row, int column );
 
+    void on_buttonBox_helpRequested();
+
   protected:
     void populateTable();
     void setDefaultLevels();
