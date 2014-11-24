@@ -354,7 +354,7 @@ class SagaAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         msg = SagaUtils.checkSagaIsInstalled()
         if msg is not None:
-            print msg
+            return msg
             html = '<p>This algorithm requires SAGA to be run.Unfortunately, \
                    it seems that SAGA is not installed in your system, or it \
                    is not correctly configured to be used from QGIS</p>'
