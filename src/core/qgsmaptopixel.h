@@ -18,6 +18,7 @@
 #define QGSMAPTOPIXEL
 
 #include "qgspoint.h"
+#include <QTransform>
 #include <vector>
 
 #include <cassert>
@@ -111,6 +112,7 @@ class CORE_EXPORT QgsMapToPixel
     double mapRotation() const;
 
     //! Set maximum y value
+    // @note this really sets the viewport height, not ymax
     void setYMaximum( double ymax );
     //! Set minimum y value
     void setYMinimum( double ymin );
@@ -134,6 +136,9 @@ class CORE_EXPORT QgsMapToPixel
     //! Map rotation around Z axis on map center as clockwise degrees
     //! @note added in 2.8
     double mMapRotation;
+
+    // Matrix to map from map (geographical) to screen (pixels) units
+    QTransform getMatrix() const;
 };
 
 
