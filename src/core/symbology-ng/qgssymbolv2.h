@@ -80,8 +80,29 @@ class CORE_EXPORT QgsSymbolV2
 
     // symbol layers handling
 
+    /**Returns list of symbol layers contained in the symbol.
+     * @returns symbol layers list
+     * @note added in QGIS 2.7
+     * @see symbolLayer
+     * @see symbolLayerCount
+     */
+    QgsSymbolLayerV2List symbolLayers() { return mLayers; }
+
+    /**Returns a specific symbol layers contained in the symbol.
+     * @param layer layer number
+     * @returns corresponding symbol layer
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayerCount
+     */
     QgsSymbolLayerV2* symbolLayer( int layer );
 
+    /**Returns total number of symbol layers contained in the symbol.
+     * @returns count of symbol layers
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayer
+     */
     int symbolLayerCount() { return mLayers.count(); }
 
     //! insert symbol layer to specified index

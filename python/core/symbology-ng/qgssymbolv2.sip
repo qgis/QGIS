@@ -54,9 +54,30 @@ class QgsSymbolV2
     SymbolType type() const;
 
     // symbol layers handling
+    
+    /**Returns list of symbol layers contained in the symbol.
+     * @returns symbol layers list
+     * @note added in QGIS 2.7
+     * @see symbolLayer
+     * @see symbolLayerCount
+     */
+    QgsSymbolLayerV2List symbolLayers();
 
+    /**Returns a specific symbol layers contained in the symbol.
+     * @param layer layer number
+     * @returns corresponding symbol layer
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayerCount
+     */
     QgsSymbolLayerV2* symbolLayer( int layer );
 
+    /**Returns total number of symbol layers contained in the symbol.
+     * @returns count of symbol layers
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayer
+     */
     int symbolLayerCount();
 
     //! insert symbol layer to specified index
