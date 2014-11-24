@@ -557,6 +557,7 @@ SET(QGIS_CORE_HDRS
   qgssimplifymethod.h
   qgssnapper.h
   qgsspatialindex.h
+  qgssingleton.h
   qgstolerance.h
   qgsvectordataprovider.h
   qgsvectorlayercache.h
