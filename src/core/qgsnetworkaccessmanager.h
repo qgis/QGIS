@@ -24,6 +24,8 @@
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
+#include "qgssingleton.h"
+
 /*
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
@@ -41,15 +43,11 @@
  * that the fallback proxy should not be used for, then no proxy will be used.
  *
  */
-class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
+class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager, public QgsSingleton<QgsNetworkAccessManager>
 {
     Q_OBJECT
 
   public:
-    //! returns a pointer to the single instance
-    // and creates that instance on the first call.
-    static QgsNetworkAccessManager* instance();
-
     QgsNetworkAccessManager( QObject *parent = 0 );
 
     //! destructor
@@ -100,7 +98,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
-    static QgsNetworkAccessManager* sInstance;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
