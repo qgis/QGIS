@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Saturday November 22, 2014</H3>
+<H3>Monday November 24, 2014</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Saturday November 22, 2014
-Last Change : Saturday November 22, 2014
+Last Updated: Monday November 24, 2014
+Last Change : Monday November 24, 2014
 </P>
 <DIV CLASS="toc">
 
@@ -195,7 +195,7 @@ Required build tools:
 
 <UL>
 <LI>CMake &gt;= 2.8.6
-<LI>Flex
+<LI>Flex &gt;= 2.5.6
 <LI>Bison &gt;= 2.4
 </UL>
 
@@ -571,19 +571,11 @@ Download and install following packages:
 </TR>
 <TR>
 <TD>CMake</TD>
-<TD><A HREF="http://www.cmake.org/files/v2.8/cmake-2.8.12.2-win32-x86.exe">http://www.cmake.org/files/v2.8/cmake-2.8.12.2-win32-x86.exe</A></TD>
+<TD><A HREF="http://www.cmake.org/files/v3.0/cmake-3.0.2-win32-x86.exe">http://www.cmake.org/files/v3.0/cmake-3.0.2-win32-x86.exe</A></TD>
 </TR>
 <TR>
-<TD>Flex</TD>
-<TD><A HREF="http://gnuwin32.sourceforge.net/downlinks/flex.php">http://gnuwin32.sourceforge.net/downlinks/flex.php</A></TD>
-</TR>
-<TR>
-<TD>Bison</TD>
-<TD><A HREF="http://gnuwin32.sourceforge.net/downlinks/bison.php">http://gnuwin32.sourceforge.net/downlinks/bison.php</A></TD>
-</TR>
-<TR>
-<TD>GIT</TD>
-<TD><A HREF="https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe">https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe</A></TD>
+<TD>GNU flex, GNU bison and GIT</TD>
+<TD><A HREF="http://cygwin.com/setup-x86.exe">http://cygwin.com/setup-x86.exe</A> (32bit) or <A HREF="http://cygwin.com/setup-x86_64.exe">http://cygwin.com/setup-x86_64.exe</A> (64bit)</TD>
 </TR>
 <TR>
 <TD>OSGeo4W</TD>
@@ -592,19 +584,22 @@ Download and install following packages:
 </TABLE>
 
 <P>
-You can also use flex, bison &amp; git from
-</P>
-	<BLOCKQUOTE>
-	<A HREF="http://cygwin.com">http://cygwin.com</A>
-	</BLOCKQUOTE>
-<P>
 OSGeo4W does not only provide ready packages for the current QGIS release and
 nightly builds of master, but also offers most of the dependencies needs to
 build it.
 </P>
 <P>
-For the QGIS build you need to install following packages from OSGeo4W (select
-<I>Advanced Installation</I>):
+For the QGIS build you need to install following packages from cygwin:
+</P>
+
+<UL>
+<LI>bison
+<LI>flex
+<LI>git
+</UL>
+
+<P>
+and from OSGeo4W (select <I>Advanced Installation</I>):
 </P>
 
 <UL>
@@ -653,7 +648,7 @@ set LIB=%LIB%;%PROGRAMFILES%\Microsoft SDKs\Windows\v7.1\lib
 
 set OSGEO4W_ROOT=C:\OSGeo4W
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
-path %PATH%;%PROGRAMFILES%\CMake 2.8\bin;%PROGRAMFILES%\GnuWin32\bin
+path %PATH%;%PROGRAMFILES%\CMake\bin;c:\cygwin\bin
 
 @set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.4
 @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include

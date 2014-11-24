@@ -9,7 +9,7 @@ Following a summary of the required dependencies for building:
 Required build tools:
 
 - CMake >= 2.8.6
-- Flex
+- Flex >= 2.5.6
 - Bison >= 2.4
 -
 
