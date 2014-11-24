@@ -473,10 +473,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         position = self.catalog.results['returned'] + self.startfrom
 
-        msg = self.tr('Showing %d - %d of %d result%s') % (
-                      self.startfrom + 1, position,
-                       self.catalog.results['matches'],
-                       's'[self.catalog.results['matches'] == 1:])
+        msg = self.tr('Showing %d - %d of %n result(s)', 'number of results',
+                      self.catalog.results['matches']) % (self.startfrom + 1,
+                                                          position)
 
         self.lblResults.setText(msg)
 
