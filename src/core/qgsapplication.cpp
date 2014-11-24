@@ -14,13 +14,12 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscrscache.h"
-#include "qgsexception.h"
-#include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
-#include "qgsnetworkaccessmanager.h"
 #include "qgsproviderregistry.h"
+#include "qgsnetworkaccessmanager.h"
+#include "qgsexception.h"
+#include "qgsgeometry.h"
 
 #include <QDir>
 #include <QFile>
@@ -608,13 +607,11 @@ void QgsApplication::initQgis()
 
 void QgsApplication::exitQgis()
 {
-  // Cleanup providers
+  delete QgsMapLayerRegistry::instance();
+
   delete QgsProviderRegistry::instance();
 
-  // Cleanup known singletons
-  QgsMapLayerRegistry::cleanup();
-  QgsNetworkAccessManager::cleanup();
-  QgsCoordinateTransformCache::cleanup();
+  delete QgsNetworkAccessManager::instance();
 }
 
 QString QgsApplication::showSettings()

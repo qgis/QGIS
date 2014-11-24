@@ -86,6 +86,19 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
     }
 };
 
+//
+// Static calls to enforce singleton behaviour
+//
+QgsNetworkAccessManager* QgsNetworkAccessManager::sInstance = 0;
+QgsNetworkAccessManager* QgsNetworkAccessManager::instance()
+{
+  if ( sInstance == 0 )
+  {
+    sInstance = new QgsNetworkAccessManager();
+  }
+  return sInstance;
+}
+
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
     : QNetworkAccessManager( parent )
     , mUseSystemProxy( false )
