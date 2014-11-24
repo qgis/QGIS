@@ -630,7 +630,7 @@ QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2Widget::getColorRamp()
   {
     if ( cboCategorizedColorRamp->count() == 0 )
       QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
-    else
+    else if ( !cboCategorizedColorRamp->createNewColorRampSelected() )
       QMessageBox::critical( this, tr( "Error" ), tr( "The selected color ramp is not available." ) );
   }
   return ramp;

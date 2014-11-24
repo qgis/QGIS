@@ -74,6 +74,12 @@ QgsVectorColorRampV2* QgsColorRampComboBox::currentColorRamp()
     return mStyle->colorRamp( rampName );
 }
 
+bool QgsColorRampComboBox::createNewColorRampSelected() const
+{
+  int index = currentIndex();
+  return index == count() - 1; //create new ramp is last item in combobox
+}
+
 void QgsColorRampComboBox::setSourceColorRamp( QgsVectorColorRampV2* sourceRamp )
 {
   mSourceColorRamp = sourceRamp->clone();

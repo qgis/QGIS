@@ -17,6 +17,12 @@ class QgsColorRampComboBox : QComboBox
     //! return new instance of the current color ramp or NULL if there is no active color ramp
     QgsVectorColorRampV2* currentColorRamp();
 
+    /**Returns true if the current selection in the combo box is the option for creating
+     * a new color ramp
+     * @note added in QGIS 2.7
+     */
+    bool createNewColorRampSelected() const;
+
     //! @note not available in python bindings
     // static QSize rampIconSize;
 
