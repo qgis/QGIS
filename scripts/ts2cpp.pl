@@ -49,6 +49,11 @@ foreach my $context ( @{ $xml->{context} } ) {
 			print F ",\"$context->{comment}->[0]\"";
 		}
 
+		if( exists $message->{numerus} && $message->{numerus} eq "yes" ) {
+			print '"",' unless exists $message->{comment} && $message->{comment}->[0] ne "";
+			print F ",1"
+		}
+
 		print F ");\n";
 	}
 }
