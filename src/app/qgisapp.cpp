@@ -5193,7 +5193,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
   if ( numberOfDeletedFeatures == 0 )
   {
     messageBar()->pushMessage( tr( "No Features Selected" ),
-                               tr( "The current layer has not selected features" ),
+                               tr( "The current layer has no selected features" ),
                                QgsMessageBar::INFO, messageTimeout() );
     return;
   }
