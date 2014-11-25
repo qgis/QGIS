@@ -129,9 +129,13 @@ void QgsMapSettings::updateDerived()
     return;
   }
 
-  // If there's a rotation, rotate the extent back first
+  // Handle rotation
   if ( mRotation ) {
-    //mExtent
+    QgsRectangle vp(0,0,myWidth,myHeight);
+    vp.rotate(-mRotation);
+    QgsDebugMsg( QString("preRot:%1x%2 pstRot(%3):%4x%5").arg(myWidth).arg(myHeight).arg(mRotation).arg(vp.width()).arg(vp.height()) );
+    myWidth = vp.width();
+    myHeight = vp.height();
   }
 
   // calculate the translation and scaling parameters
@@ -166,7 +170,7 @@ void QgsMapSettings::updateDerived()
   mMapToPixel.setMapRotation( mRotation, visibleExtent().center().x(), visibleExtent().center().y() );
 
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ) ).arg( qgsDoubleToString( mSize.height() ) ) );
   QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
   QgsDebugMsg( mExtent.toString() );
   QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ) ).arg( qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
