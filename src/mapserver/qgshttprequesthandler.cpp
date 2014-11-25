@@ -276,10 +276,13 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
     else if ( infoFormat == "text/html" )
     {
       featureInfoString.append( "<HEAD>\n" );
+      featureInfoString.append( "<link href=\"../qgis_getfeatureinfo_response.css\" rel=\"stylesheet\" type=\"text/css\">\n" );
       featureInfoString.append( "<TITLE> GetFeatureInfo results </TITLE>\n" );
       featureInfoString.append( "<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">\n" );
       featureInfoString.append( "</HEAD>\n" );
       featureInfoString.append( "<BODY>\n" );
+      featureInfoString.append( "<div class=\"header\">\n" );
+      featureInfoString.append( "</div>\n" );
     }
 
     QDomNodeList layerList = infoDoc.elementsByTagName( "Layer" );
@@ -294,8 +297,8 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
       }
       else if ( infoFormat == "text/html" )
       {
-        featureInfoString.append( "<TABLE border=1 width=100%>\n" );
-        featureInfoString.append( "<TR><TH width=25%>Layer</TH><TD>" + layerElem.attribute( "name" ) + "</TD></TR>\n" );
+        featureInfoString.append( "<TABLE class=\"table_layer\">\n" );
+        featureInfoString.append( "<TR class=\"table_layer_tr\"><TH class=\"table_layer_th\">Layer</TH><TD class=\"table_layer_td\">" + layerElem.attribute( "name" ) + "</TD></TR>\n" );
         featureInfoString.append( "</BR>" );
       }
 
@@ -332,8 +335,8 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
           }
           else if ( infoFormat == "text/html" )
           {
-            featureInfoString.append( "<TABLE border=1 width=100%>\n" );
-            featureInfoString.append( "<TR><TH>Feature</TH><TD>" + featureElement.attribute( "id" ) + "</TD></TR>\n" );
+            featureInfoString.append( "<TABLE class=\"table_feature\">\n" );
+            featureInfoString.append( "<TR class=\"table_feature_tr_id\"><TH class=\"table_feature_th_id\">Feature</TH><TD class=\"table_feature_td_id\">" + featureElement.attribute( "id" ) + "</TD></TR>\n" );
           }
           //attribute loop
           QDomNodeList attributeNodeList = featureElement.elementsByTagName( "Attribute" );
@@ -347,13 +350,13 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
             }
             else if ( infoFormat == "text/html" )
             {
-              featureInfoString.append( "<TR><TH>" + attributeElement.attribute( "name" ) + "</TH><TD>" + attributeElement.attribute( "value" ) + "</TD></TR>\n" );
+              featureInfoString.append( "<TR class=\"table_feature_field\"><TH class=\"table_feature_th_field\">" + attributeElement.attribute( "name" ) + "</TH><TD class=\"table_feature_td_field\">" + attributeElement.attribute( "value" ) + "</TD></TR>\n" );
             }
           }
 
           if ( infoFormat == "text/html" )
           {
-            featureInfoString.append( "</TABLE>\n</BR>\n" );
+            featureInfoString.append( "</TABLE>\n<HR class=\"break_between_features\" />\n" );
           }
         }
       }
