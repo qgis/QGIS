@@ -222,7 +222,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Whether this item has a frame or not.
      * @returns true if there is a frame around this item, otherwise false.
-     * @note introduced since 1.8
      * @see setFrameEnabled
      * @see frameOutlineWidth
      * @see frameJoinStyle
@@ -232,7 +231,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Set whether this item has a frame drawn around it or not.
      * @param drawFrame draw frame
-     * @note introduced in 1.8
      * @see hasFrame
      * @see setFrameOutlineWidth
      * @see setFrameJoinStyle
@@ -321,7 +319,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Whether this item has a Background or not.
      * @returns true if there is a Background around this item, otherwise false.
-     * @note introduced since 2.0
      * @see setBackgroundEnabled
      * @see backgroundColor
      */
@@ -330,7 +327,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /**Set whether this item has a Background drawn around it or not.
      * @param drawBackground draw Background
      * @returns nothing
-     * @note introduced in 2.0
      * @see hasBackground
      * @see setBackgroundColor
      */
@@ -338,7 +334,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Gets the background color for this item
      * @returns background color
-     * @note introduced in 2.0
      * @see setBackgroundColor
      * @see hasBackground
      */
@@ -347,7 +342,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     /**Sets the background color for this item
      * @param backgroundColor new background color
      * @returns nothing
-     * @note introduced in 2.0
      * @see backgroundColor
      * @see setBackgroundEnabled
      */
@@ -379,7 +373,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Returns whether effects (eg blend modes) are enabled for the item
      * @returns true if effects are enabled
-     * @note introduced in 2.0
      * @see setEffectsEnabled
      * @see transparency
      * @see blendMode
@@ -388,7 +381,6 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Sets whether effects (eg blend modes) are enabled for the item
      * @param effectsEnabled set to true to enable effects
-     * @note introduced in 2.0
      * @see effectsEnabled
      * @see setTransparency
      * @see setBlendMode
@@ -686,12 +678,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
 
     /**Draws arrowhead
      * @deprecated use QgsComposerUtils::drawArrowHead instead
-    */
+     */
     Q_DECL_DEPRECATED void drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const;
 
-    /**Returns angle of the line from p1 to p2 (clockwise, starting at N)
-     * @deprecated use QgsComposerUtils::angle instead
-    */
+    /**Returns angle of the line from p1 to p2 (clockwise, starting at N)*/
     Q_DECL_DEPRECATED double angle( const QPointF& p1, const QPointF& p2 ) const;
 
     /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the

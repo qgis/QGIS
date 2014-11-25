@@ -180,7 +180,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
 
     if ( mSettings.hasCrsTransformEnabled() )
     {
-      ct = mSettings.layerTransfrom( ml );
+      ct = mSettings.layerTransform( ml );
       if ( ct )
       {
         reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );

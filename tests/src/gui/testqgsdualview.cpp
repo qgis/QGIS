@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>
@@ -26,7 +26,7 @@
 
 class TestQgsDualView: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -68,6 +68,7 @@ void TestQgsDualView::cleanupTestCase()
 {
   delete mPointsLayer;
   delete mCanvas;
+  QgsApplication::exitQgis();
 }
 
 void TestQgsDualView::init()

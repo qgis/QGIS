@@ -16,13 +16,15 @@
  ***************************************************************************/
 
 #include "qgswfsprojectparser.h"
+#include "qgsconfigcache.h"
 #include "qgsconfigparserutils.h"
+#include "qgsconfigcache.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectordataprovider.h"
 
-QgsWFSProjectParser::QgsWFSProjectParser( QDomDocument* xmlDoc, const QString& filePath ):
-    mProjectParser( xmlDoc, filePath )
+QgsWFSProjectParser::QgsWFSProjectParser( const QString& filePath )
 {
+  mProjectParser = QgsConfigCache::instance()->serverConfiguration( filePath );
 }
 
 QgsWFSProjectParser::~QgsWFSProjectParser()
@@ -31,24 +33,24 @@ QgsWFSProjectParser::~QgsWFSProjectParser()
 
 void QgsWFSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  mProjectParser.serviceCapabilities( parentElement, doc, "WFS" );
+  mProjectParser->serviceCapabilities( parentElement, doc, "WFS" );
 }
 
 QString QgsWFSProjectParser::serviceUrl() const
 {
-  return mProjectParser.serviceUrl();
+  return mProjectParser->serviceUrl();
 }
 
 QString QgsWFSProjectParser::wfsServiceUrl() const
 {
   QString url;
 
-  if ( !mProjectParser.xmlDocument() )
+  if ( !mProjectParser->xmlDocument() )
   {
     return url;
   }
 
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
   if ( !propertiesElem.isNull() )
   {
     QDomElement wfsUrlElem = propertiesElem.firstChildElement( "WFSUrl" );
@@ -62,13 +64,13 @@ QString QgsWFSProjectParser::wfsServiceUrl() const
 
 void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
+  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
   if ( projectLayerElements.size() < 1 )
   {
     return;
   }
 
-  QStringList wfsLayersId = mProjectParser.wfsLayers();
+  QStringList wfsLayersId = mProjectParser->wfsLayers();
   QSet<QString> wfstUpdateLayersId = wfstUpdateLayers();
   QSet<QString> wfstInsertLayersId = wfstInsertLayers();
   QSet<QString> wfstDeleteLayersId = wfstDeleteLayers();
@@ -80,7 +82,7 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      QgsMapLayer *layer = mProjectParser.createLayerFromElement( elem );
+      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
       if ( layer && wfsLayersId.contains( layer->id() ) )
       {
         QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
@@ -203,12 +205,12 @@ QSet<QString> QgsWFSProjectParser::wfstUpdateLayers() const
 {
   QSet<QString> publishedIds = wfsLayerSet();
   QSet<QString> wfsList;
-  if ( !mProjectParser.xmlDocument() )
+  if ( !mProjectParser->xmlDocument() )
   {
     return wfsList;
   }
 
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
   if ( propertiesElem.isNull() )
   {
     return wfsList;
@@ -239,12 +241,12 @@ QSet<QString> QgsWFSProjectParser::wfstInsertLayers() const
 {
   QSet<QString> publishedIds = wfsLayerSet();
   QSet<QString> wfsList;
-  if ( !mProjectParser.xmlDocument() )
+  if ( !mProjectParser->xmlDocument() )
   {
     return wfsList;
   }
 
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
   if ( propertiesElem.isNull() )
   {
     return wfsList;
@@ -275,12 +277,12 @@ QSet<QString> QgsWFSProjectParser::wfstDeleteLayers() const
 {
   QSet<QString> publishedIds = wfsLayerSet();
   QSet<QString> wfsList;
-  if ( !mProjectParser.xmlDocument() )
+  if ( !mProjectParser->xmlDocument() )
   {
     return wfsList;
   }
 
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
   if ( propertiesElem.isNull() )
   {
     return wfsList;
@@ -309,13 +311,13 @@ QSet<QString> QgsWFSProjectParser::wfstDeleteLayers() const
 
 void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomElement& parentElement, QDomDocument& doc ) const
 {
-  const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
+  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
   if ( projectLayerElements.size() < 1 )
   {
     return;
   }
 
-  QStringList wfsLayersId = mProjectParser.wfsLayers();
+  QStringList wfsLayersId = mProjectParser->wfsLayers();
   QStringList typeNameList;
   if ( aTypeName != "" )
   {
@@ -334,7 +336,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      QgsMapLayer *mLayer = mProjectParser.createLayerFromElement( elem );
+      QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;
@@ -460,7 +462,7 @@ void QgsWFSProjectParser::describeFeatureType( const QString& aTypeName, QDomEle
 
 QStringList QgsWFSProjectParser::wfsLayers() const
 {
-  return mProjectParser.wfsLayers();
+  return mProjectParser->wfsLayers();
 }
 
 QSet<QString> QgsWFSProjectParser::wfsLayerSet() const
@@ -470,13 +472,13 @@ QSet<QString> QgsWFSProjectParser::wfsLayerSet() const
 
 int QgsWFSProjectParser::wfsLayerPrecision( const QString& aLayerId ) const
 {
-  QStringList wfsLayersId = mProjectParser.wfsLayers();
+  QStringList wfsLayersId = mProjectParser->wfsLayers();
   if ( !wfsLayersId.contains( aLayerId ) )
   {
     return -1;
   }
   int prec = 8;
-  QDomElement propertiesElem = mProjectParser.propertiesElem();
+  QDomElement propertiesElem = mProjectParser->propertiesElem();
   if ( !propertiesElem.isNull() )
   {
     QDomElement wfsPrecElem = propertiesElem.firstChildElement( "WFSLayersPrecision" );
@@ -498,7 +500,7 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
   Q_UNUSED( useCache );
 
   QList<QgsMapLayer*> layerList;
-  const QList<QDomElement>& projectLayerElements = mProjectParser.projectLayerElements();
+  const QList<QDomElement>& projectLayerElements = mProjectParser->projectLayerElements();
 
   if ( projectLayerElements.size() < 1 )
   {
@@ -524,7 +526,7 @@ QList<QgsMapLayer*> QgsWFSProjectParser::mapLayerFromTypeName( const QString& aT
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      QgsMapLayer *mLayer = mProjectParser.createLayerFromElement( elem );
+      QgsMapLayer *mLayer = mProjectParser->createLayerFromElement( elem );
       QgsVectorLayer* layer = dynamic_cast<QgsVectorLayer*>( mLayer );
       if ( !layer )
         continue;

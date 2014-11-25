@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -49,7 +49,7 @@
  */
 class TestQgsDiagramExpression: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private:
     bool mTestHasError;
     QgsMapSettings * mMapSettings;
@@ -114,6 +114,7 @@ class TestQgsDiagramExpression: public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
+      QgsApplication::exitQgis();
       QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )

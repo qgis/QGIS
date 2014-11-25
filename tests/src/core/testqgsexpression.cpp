@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
@@ -43,7 +43,7 @@ static void _parseAndEvalExpr( int arg )
 
 class TestQgsExpression: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
 
     void initTestCase()
@@ -57,6 +57,11 @@ class TestQgsExpression: public QObject
       // Will make sure the settings dir with the style file for color ramp is created
       QgsApplication::createDB();
       QgsApplication::showSettings();
+    }
+
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
     }
 
     void parsing_data()

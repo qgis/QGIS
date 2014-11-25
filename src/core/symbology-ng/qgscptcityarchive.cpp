@@ -811,7 +811,7 @@ QIcon QgsCptCityColorRampItem::icon( const QSize& size )
       return icon;
   }
 
-  QIcon icon( size );
+  QIcon icon;
 
   init();
 

@@ -185,7 +185,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void columnBoxInit();
 
+    void runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds = QgsFeatureIds());
     void updateFieldFromExpression();
+    void updateFieldFromExpressionSelected();
 
   private:
     QMenu* mMenuActions;

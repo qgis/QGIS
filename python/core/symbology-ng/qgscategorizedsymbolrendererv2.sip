@@ -62,11 +62,9 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    //! \note added in 2.0
     virtual int capabilities();
 
     virtual QgsSymbolV2List symbols();
-    //! @note added in 2.0
     void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() const;
@@ -108,7 +106,6 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     //! return a list of item text / symbol
-    //! @note this method was added in version 1.5
     //! @note not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
@@ -126,23 +123,17 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
     //! @note added in 2.5
     void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
 
-    //! @note added in 1.6
     void setRotationField( QString fieldOrExpression );
-    //! @note added in 1.6
     QString rotationField() const;
 
-    //! @note added in 1.6
     void setSizeScaleField( QString fieldOrExpression );
-    //! @note added in 1.6
     QString sizeScaleField() const;
 
-    //! @note added in 2.0
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const;
 
     //! items of symbology items in legend should be checkable
-    // @note added in 2.5
+    //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const;
 
     //! item in symbology was checked

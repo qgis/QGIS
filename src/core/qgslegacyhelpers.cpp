@@ -17,7 +17,7 @@
 
 #include "qgsvectorlayer.h"
 
-const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editType, QgsEditorWidgetConfig& cfg, QgsVectorLayer* vl, const QString& name, const QDomElement editTypeElement )
+const QString QgsLegacyHelpers::convertEditType( QgsVectorLayer::EditType editType, QgsEditorWidgetConfig& cfg, QgsVectorLayer* vl, const QString& name, const QDomElement &editTypeElement )
 {
   QString widgetType = "TextEdit"; // Fallback
 

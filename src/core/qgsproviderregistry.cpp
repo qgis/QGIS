@@ -208,7 +208,7 @@ QgsProviderRegistry::~QgsProviderRegistry()
 
   while ( it != mProviders.end() )
   {
-    QgsDebugMsg( QString( "cleanup:%1" ).arg( it->first ) );
+    QgsDebugMsg( QString( "cleanup: %1" ).arg( it->first ) );
     QString lib = it->second->library();
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
@@ -403,6 +403,25 @@ QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
   return selectFactory( parent, fl );
 }
 
+#if QT_VERSION >= 0x050000
+QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
+    QString const & functionName )
+{
+  QLibrary myLib( library( providerKey ) );
+
+  QgsDebugMsg( "Library name is " + myLib.fileName() );
+
+  if ( myLib.load() )
+  {
+    return myLib.resolve( functionName.toAscii().data() );
+  }
+  else
+  {
+    QgsDebugMsg( "Cannot load library: " + myLib.errorString() );
+    return 0;
+  }
+}
+#else
 void *QgsProviderRegistry::function( QString const & providerKey,
                                      QString const & functionName )
 {
@@ -420,6 +439,7 @@ void *QgsProviderRegistry::function( QString const & providerKey,
     return 0;
   }
 }
+#endif
 
 QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) const
 {

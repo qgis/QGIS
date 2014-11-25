@@ -165,6 +165,7 @@ class ModelerAlgorithm(GeoAlgorithm):
         newone.name = self.name
         newone.group = self.group
         newone.descriptionFile = self.descriptionFile
+        newone.helpContent = copy.deepcopy(self.helpContent)
         return newone
 
     def __init__(self):
@@ -185,7 +186,16 @@ class ModelerAlgorithm(GeoAlgorithm):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def defineCharacteristics(self):
-        self.parameters = [inp.param for inp in self.inputs.values()]
+        classes = [ParameterRaster, ParameterVector, ParameterTable, ParameterTableField,
+                   ParameterBoolean, ParameterString, ParameterNumber]
+        self.parameters = []
+        for c in classes:
+            for inp in self.inputs.values():
+                if isinstance(inp.param, c):
+                    self.parameters.append(inp.param)
+        for inp in self.inputs.values():
+            if inp.param not in self.parameters:
+                self.parameters.append(inp.param)
         self.outputs = []
         for alg in self.algs.values():
             if alg.active:
@@ -464,13 +474,14 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.modelerdialog.repaintModel()
 
     def help(self):
+        print self.helpContent
         try:
-            return True, getHtmlFromDescriptionsDict(self, self.help())
+            return True, getHtmlFromDescriptionsDict(self, self.helpContent)
         except:
             return False, None
 
     def todict(self):
-        keys = ["inputs", "group", "name", "algs"]
+        keys = ["inputs", "group", "name", "algs", "helpContent"]
         return {k:v for k,v in self.__dict__.iteritems() if k in keys}
 
     def toJson(self):
@@ -483,6 +494,7 @@ class ModelerAlgorithm(GeoAlgorithm):
             except Exception, e:
                 pass
         return json.dumps(self, default=todict, indent=4)
+
 
     @staticmethod
     def fromJson(s):

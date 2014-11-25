@@ -55,7 +55,7 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QWidget, private Ui::QgsRaste
     bool computeHistogram( bool forceComputeFlag );
 
     /** Apply a histoActionTriggered() event. */
-    void histoAction( const QString actionName, bool actionFlag = true );
+    void histoAction( const QString &actionName, bool actionFlag = true );
 
     /** Apply a histoActionTriggered() event. */
     void setSelectedBand( int index );

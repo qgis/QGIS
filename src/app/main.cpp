@@ -29,7 +29,9 @@
 #include <QString>
 #include <QStringList>
 #include <QStyle>
+#if QT_VERSION < 0x050000
 #include <QPlastiqueStyle>
+#endif
 #include <QTranslator>
 #include <QImageReader>
 #include <QMessageBox>
@@ -165,6 +167,7 @@ void myPrint( const char *fmt, ... )
 #else
   vfprintf( stderr, fmt, ap );
 #endif
+  va_end( ap );
 }
 
 static void dumpBacktrace( unsigned int depth )
@@ -753,8 +756,10 @@ int main( int argc, char *argv[] )
   if ( !style.isNull() )
     QApplication::setStyle( style );
 #ifdef Q_WS_WIN
+#if QT_VERSION < 0x050000
   else
     QApplication::setStyle( new QPlastiqueStyle );
+#endif
 #endif
 
   /* Translation file for QGIS.

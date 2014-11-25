@@ -189,8 +189,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /**Apply default settings*/
     void applyDefaultSettings();
-    /**Apply default size (scale bar 1/5 of map item width)
-      */
+    /**Apply default size (scale bar 1/5 of map item width) */
     void applyDefaultSize( ScaleBarUnits u = Meters );
 
     /**Sets style by name

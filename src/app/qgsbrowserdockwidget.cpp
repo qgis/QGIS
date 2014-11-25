@@ -245,9 +245,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
 
   mWidgetFilter->hide();
+  mLeFilter->setPlaceholderText( tr( "Type here to filter current item..." ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
-  mBtnFilterShow->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
-  mBtnFilter->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
 
   QMenu* menu = new QMenu( this );
   menu->setSeparatorsCollapsible( false );
@@ -280,15 +279,13 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   connect( mBtnAddLayers, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
   connect( mBtnCollapse, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
   connect( mBtnFilterShow, SIGNAL( toggled( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
-  connect( mBtnFilter, SIGNAL( clicked() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( cleared() ), this, SLOT( setFilter() ) );
-  // connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
+  connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
   connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( setFilterSyntax( QAction * ) ) );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( addLayerAtIndex( const QModelIndex& ) ) );
-  connect( mBrowserView, SIGNAL( expanded( const QModelIndex& ) ), this, SLOT( itemExpanded( const QModelIndex& ) ) );
 }
 
 void QgsBrowserDockWidget::showEvent( QShowEvent * e )
@@ -309,26 +306,18 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
 
-    QSettings settings;
-    mInitPath =  settings.value( lastExpandedKey() ).toString();
-
-    // expand root favourites item
-    for ( int i = 0; i < mModel->rowCount(); i++ )
-    {
-      QModelIndex index = mModel->index( i, 0 );
-      QgsDataItem* item = mModel->dataItem( index );
-      if ( item && item->type() == QgsDataItem::Favourites )
-      {
-        QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
-        mBrowserView->expand( proxyIndex );
-      }
-    }
-
-    // expand last expanded path from previous session
-    expandPath( mInitPath );
+    restoreState();
   }
 
   QDockWidget::showEvent( e );
+}
+
+// closeEvent is not called when application is closed
+void QgsBrowserDockWidget::hideEvent( QHideEvent * e )
+{
+  QgsDebugMsg( "Entered" );
+  saveState();
+  QDockWidget::hideEvent( e );
 }
 
 void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
@@ -344,7 +333,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
   {
     QSettings settings;
     QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
-    bool inFavDirs = favDirs.contains( item->path() );
+    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favourites;
 
     if ( item->parent() && !inFavDirs )
     {
@@ -399,10 +388,11 @@ void QgsBrowserDockWidget::addFavourite()
   if ( !item )
     return;
 
-  if ( item->type() != QgsDataItem::Directory )
+  QgsDirectoryItem * dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  if ( !dirItem )
     return;
 
-  addFavouriteDirectory( item->path() );
+  addFavouriteDirectory( dirItem->dirPath() );
 }
 
 void QgsBrowserDockWidget::addFavouriteDirectory()
@@ -426,38 +416,61 @@ void QgsBrowserDockWidget::removeFavourite()
 
 void QgsBrowserDockWidget::refresh()
 {
-  //QApplication::setOverrideCursor( Qt::WaitCursor );
   refreshModel( QModelIndex() );
-  //QApplication::restoreOverrideCursor();
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
 {
   QgsDebugMsg( "Entered" );
-  if ( index.isValid() )
+  QgsDataItem *item = mModel->dataItem( index );
+  if ( item )
   {
-    QgsDataItem *item = mModel->dataItem( index );
-    if ( item )
-    {
-      QgsDebugMsg( "path = " + item->path() );
-    }
-    else
-    {
-      QgsDebugMsg( "invalid item" );
-    }
+    QgsDebugMsg( "path = " + item->path() );
+  }
+  else
+  {
+    QgsDebugMsg( "invalid item" );
   }
 
-  mModel->refresh( index );
+  if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+  {
+    mModel->refresh( index );
+  }
 
   for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
     QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
-    if ( mBrowserView->isExpanded( proxyIdx ) || !mProxyModel->hasChildren( proxyIdx ) )
+    QgsDataItem *child = mModel->dataItem( idx );
+
+    // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
+    // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
+    if ( mBrowserView->isExpanded( proxyIdx ) || hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
     {
       refreshModel( idx );
     }
+    else
+    {
+      if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+      {
+        child->depopulate();
+      }
+    }
   }
+}
+
+bool QgsBrowserDockWidget::hasExpandedDescendant( const QModelIndex& proxyIndex ) const
+{
+  for ( int i = 0 ; i < mProxyModel->rowCount( proxyIndex ); i++ )
+  {
+    QModelIndex proxyIdx = mProxyModel->index( i, 0, proxyIndex );
+    if ( mBrowserView->isExpanded( proxyIdx ) )
+      return true;
+
+    if ( hasExpandedDescendant( proxyIdx ) )
+      return true;
+  }
+  return false;
 }
 
 void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
@@ -690,83 +703,137 @@ void QgsBrowserDockWidget::setCaseSensitive( bool caseSensitive )
   mProxyModel->setCaseSensitive( caseSensitive );
 }
 
-void QgsBrowserDockWidget::itemExpanded( const QModelIndex& index )
+void QgsBrowserDockWidget::saveState()
 {
-  if ( !mModel || !mProxyModel )
-    return;
+  QgsDebugMsg( "Entered" );
   QSettings settings;
-  QModelIndex srcIndex = mProxyModel->mapToSource( index );
-  QgsDataItem *item = mModel->dataItem( srcIndex );
-  if ( !item )
-    return;
-
-  settings.setValue( lastExpandedKey(), item->path() );
-  QgsDebugMsg( "last expanded: " + item->path() );
+  QStringList expandedPaths = expandedPathsList( QModelIndex() );
+  settings.setValue( expandedPathsKey(), expandedPaths );
+  QgsDebugMsg( "expandedPaths = " + expandedPaths.join( " " ) );
 }
 
-void QgsBrowserDockWidget::expandPath( QString path )
+void QgsBrowserDockWidget::restoreState()
 {
-  QgsDebugMsg( "path = " + path );
+  QgsDebugMsg( "Entered" );
+  QSettings settings;
+  QStringList expandedPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
 
-  if ( path.isEmpty() )
-    return;
-
-  if ( !mModel || !mProxyModel )
-    return;
-
-  QModelIndex srcIndex = mModel->findPath( path, Qt::MatchStartsWith );
-  QModelIndex index = mProxyModel->mapFromSource( srcIndex );
-  QgsDebugMsg( QString( "srcIndex.isValid() = %1 index.isValid() = %2" ).arg( srcIndex.isValid() ).arg( index.isValid() ) );
-
-  if ( !index.isValid() )
-    return;
-
-  QgsDataItem *item = mModel->dataItem( srcIndex );
-  if ( !item )
-    return;
-
-  if ( item->isPopulated() ) // may be already populated if children were added with grandchildren
+  if ( !expandedPaths.isEmpty() )
   {
-    mBrowserView->expand( index );
+    QSet<QModelIndex> expandIndexSet;
+    foreach ( QString path, expandedPaths )
+    {
+      QModelIndex expandIndex = mModel->findPath( path, Qt::MatchStartsWith );
+      if ( expandIndex.isValid() )
+        expandIndexSet.insert( expandIndex );
+    }
+    foreach ( QModelIndex expandIndex, expandIndexSet )
+    {
+      QModelIndex proxyExpandIndex = mProxyModel->mapFromSource( expandIndex );
+      expand( proxyExpandIndex );
+    }
   }
   else
   {
-    mModel->fetchMore( srcIndex ); // -> fetch in thread -> fetchFinished
+    // expand root favourites item
+    QModelIndex index = mModel->findPath( "favourites:" );
+    QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
+    mBrowserView->expand( proxyIndex );
   }
-  mBrowserView->scrollTo( index, QAbstractItemView::PositionAtTop );
 }
 
 void QgsBrowserDockWidget::fetchFinished( const QModelIndex & index )
 {
-  Q_UNUSED( index );
-  QgsDebugMsg( "Entered" );
+  QgsDataItem *item = mModel->dataItem( index );
+  if ( !item )
+    return;
+
+  QgsDebugMsg( "path = " + item->path() );
+
   QSettings settings;
+  QStringList expandedPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
 
-  // Continue expanding mInitPath if user has not expanded another item
-  if ( mInitPath.isEmpty() )
-    return;
-
-  QString lastExpanded =  settings.value( lastExpandedKey() ).toString();
-
-  if ( !mInitPath.startsWith( lastExpanded ) )
-  {
-    // User expanded another -> stop mInitPath expansion
-    QgsDebugMsg( "Stop init path expansion" );
-    mInitPath.clear();
-    return;
-  }
-
-  // Expand fetched children in init path
+  // Check if user did not collapse it in the meantime
   QModelIndex proxyIndex = mProxyModel->mapFromSource( index );
-  if ( index.isValid() )
+  if ( !treeExpanded( proxyIndex ) )
   {
-    mBrowserView->expand( proxyIndex );
+    foreach ( QString path, expandedPaths )
+    {
+      if ( path.startsWith( item->path() + "/" ) )
+        expandedPaths.removeOne( path );
+    }
+    settings.setValue( expandedPathsKey(), expandedPaths );
+    return;
   }
 
-  expandPath( mInitPath );
+  QSet<QModelIndex> expandIndexSet;
+  foreach ( QString path, expandedPaths )
+  {
+    if ( path.startsWith( item->path() + "/" ) )
+    {
+      QModelIndex expandIndex = mModel->findPath( path, Qt::MatchStartsWith );
+      if ( expandIndex.isValid() )
+        expandIndexSet.insert( expandIndex );
+    }
+  }
+  foreach ( QModelIndex expandIndex, expandIndexSet )
+  {
+    QModelIndex proxyExpandIndex = mProxyModel->mapFromSource( expandIndex );
+    expand( proxyExpandIndex );
+  }
 }
 
-QString QgsBrowserDockWidget::lastExpandedKey() const
+void QgsBrowserDockWidget::expand( const QModelIndex & proxyIndex )
 {
-  return "/" + objectName().toLower() + "/lastExpanded";
+  mBrowserView->expand( proxyIndex );
+  QModelIndex parentIndex = mProxyModel->parent( proxyIndex );
+  if ( parentIndex.isValid() )
+    expand( parentIndex );
+}
+
+bool QgsBrowserDockWidget::treeExpanded( const QModelIndex & proxyIndex )
+{
+  if ( !mBrowserView->isExpanded( proxyIndex ) )
+    return false;
+  QModelIndex parentIndex = mProxyModel->parent( proxyIndex );
+  if ( parentIndex.isValid() )
+    return treeExpanded( parentIndex );
+
+  return true; // root
+}
+
+QString QgsBrowserDockWidget::expandedPathsKey() const
+{
+  return "/" + objectName().toLower() + "/expandedPaths";
+}
+
+QStringList QgsBrowserDockWidget::expandedPathsList( const QModelIndex & proxyIndex )
+{
+  QStringList paths;
+
+  if ( !proxyIndex.isValid() )
+    return paths;
+
+  for ( int i = 0; i < mProxyModel->rowCount( proxyIndex ); i++ )
+  {
+    QModelIndex childProxyIndex = mProxyModel->index( i, 0, proxyIndex );
+    if ( mBrowserView->isExpanded( childProxyIndex ) )
+    {
+      QStringList childrenPaths = expandedPathsList( childProxyIndex );
+      if ( !childrenPaths.isEmpty() )
+      {
+        paths.append( childrenPaths );
+      }
+      else
+      {
+        QModelIndex childIndex = mProxyModel->mapToSource( childProxyIndex );
+        QgsDataItem* item = mModel->dataItem( childIndex );
+        if ( item )
+        {
+          paths.append( item->path() );
+        }
+      }
+    }
+  }
+  return paths;
 }

@@ -87,6 +87,9 @@ namespace pal
 
 
       int getId( int key );
+    private:
+      PriorityQueue( const PriorityQueue & );
+      PriorityQueue &operator=( const PriorityQueue & );
   };
 
 } // namespace

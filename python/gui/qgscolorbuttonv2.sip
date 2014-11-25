@@ -33,6 +33,8 @@ class QgsColorButtonV2: QToolButton
 
     virtual ~QgsColorButtonV2();
 
+    virtual QSize sizeHint() const;
+
     /**Return the currently selected color.
      * @returns currently selected color
      * @see setColor
@@ -206,7 +208,7 @@ class QgsColorButtonV2: QToolButton
      * @param color Color for button background. If no color is specified, the button's current
      * color will be used
      */
-    void setButtonBackground( const QColor color = QColor() );
+    void setButtonBackground( const QColor &color = QColor() );
 
     /**Copies the current color to the clipboard
      * @see pasteColor
@@ -248,7 +250,7 @@ class QgsColorButtonV2: QToolButton
      * @see setBehaviour
      * @see behaviour
      */
-    void colorClicked( const QColor color );
+    void colorClicked( const QColor &color );
 
   protected:
 

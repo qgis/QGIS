@@ -264,7 +264,6 @@ class CORE_EXPORT QgsStyleV2 : public QObject
     //! change ramp's name
     bool renameColorRamp( QString oldName, QString newName );
 
-
     //! load a file into the style
     bool load( QString filename );
 

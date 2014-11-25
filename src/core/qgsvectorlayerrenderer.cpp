@@ -127,8 +127,11 @@ bool QgsVectorLayerRenderer::render()
 
   mRendererV2->startRender( mContext, mFields );
 
+  QgsRectangle requestExtent = mContext.extent();
+  mRendererV2->modifyRequestExtent( requestExtent, mContext );
+
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
-                                     .setFilterRect( mContext.extent() )
+                                     .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields );
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
@@ -338,7 +341,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       mCache->cacheGeometry( fet.id(), *fet.geometry() );
     }
 
-    if ( sym && mContext.labelingEngine() )
+    if ( mContext.labelingEngine() )
     {
       if ( mLabeling )
       {

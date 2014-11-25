@@ -74,8 +74,8 @@ class CORE_EXPORT QgsColorScheme
      * to colors related to the base color.
      * @returns a list of QPairs of color and color name
     */
-    virtual QgsNamedColorList fetchColors( const QString context = QString(),
-                                           const QColor baseColor = QColor() ) = 0;
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                           const QColor &baseColor = QColor() ) = 0;
 
     /**Returns whether the color scheme is editable
      * @returns true if scheme is editable
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsColorScheme
      * @returns true if colors were set successfully
      * @see isEditable
     */
-    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /**Clones a color scheme
      * @returns copy of color scheme
@@ -113,10 +113,10 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 
     virtual ~QgsGplColorScheme();
 
-    virtual QgsNamedColorList fetchColors( const QString context = QString(),
-                                           const QColor baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                           const QColor &baseColor = QColor() );
 
-    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
   protected:
 
@@ -140,7 +140,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     /**Constructs a new user color scheme, using a specified gpl palette file
      * @param filename filename of gpl palette file stored in the users "palettes" folder
     */
-    QgsUserColorScheme( const QString filename );
+    QgsUserColorScheme( const QString &filename );
 
     virtual ~QgsUserColorScheme();
 
@@ -153,7 +153,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
     /**Sets the name for the scheme
      * @param name new name
     */
-    void setName( const QString name ) { mName = name; }
+    void setName( const QString &name ) { mName = name; }
 
     /**Erases the associated gpl palette file from the users "palettes" folder
      * @returns true if erase was successful
@@ -187,8 +187,8 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
-    virtual QgsNamedColorList fetchColors( const QString context = QString(),
-                                           const QColor baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                           const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const;
 };
@@ -210,12 +210,12 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
-    virtual QgsNamedColorList fetchColors( const QString context = QString(),
-                                           const QColor baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                           const QColor &baseColor = QColor() );
 
     virtual bool isEditable() const { return true; }
 
-    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const;
 };
@@ -237,12 +237,12 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual SchemeFlags flags() const { return ShowInAllContexts; }
 
-    virtual QgsNamedColorList fetchColors( const QString context = QString(),
-                                           const QColor baseColor = QColor() );
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                           const QColor &baseColor = QColor() );
 
     virtual bool isEditable() const { return true; }
 
-    virtual bool setColors( const QgsNamedColorList colors, const QString context = QString(), const QColor baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const;
 };

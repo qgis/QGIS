@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
@@ -23,7 +23,7 @@
 
 class TestQgsRectangle: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void manipulate();
     void regression6194();

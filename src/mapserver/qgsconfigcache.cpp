@@ -43,6 +43,10 @@ QgsConfigCache::~QgsConfigCache()
 QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& filePath )
 {
   QDomDocument* doc = xmlDocument( filePath );
+  if ( !doc )
+  {
+    return 0;
+  }
   return new QgsServerProjectParser( doc, filePath );
 }
 
@@ -56,9 +60,8 @@ QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
     {
       return 0;
     }
-    p = new QgsWCSProjectParser( doc, filePath );
+    p = new QgsWCSProjectParser( filePath );
     mWCSConfigCache.insert( filePath, p );
-    mFileSystemWatcher.addPath( filePath );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->wcsLayers().size() );
@@ -75,10 +78,8 @@ QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
     {
       return 0;
     }
-
-    p = new QgsWFSProjectParser( doc, filePath );
+    p = new QgsWFSProjectParser( filePath );
     mWFSConfigCache.insert( filePath, p );
-    mFileSystemWatcher.addPath( filePath );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->wfsLayers().size() );
@@ -105,10 +106,9 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, c
     }
     else
     {
-      p = new QgsWMSProjectParser( doc, filePath );
+      p = new QgsWMSProjectParser( filePath );
     }
     mWMSConfigCache.insert( filePath, p );
-    mFileSystemWatcher.addPath( filePath );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->nLayers() );
@@ -131,22 +131,30 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
     return 0;
   }
 
-  //then create xml document
-  QDomDocument* xmlDoc = new QDomDocument();
-  QString errorMsg;
-  int line, column;
-  if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
+  // first get cache
+  QDomDocument* xmlDoc = mXmlDocumentCache.object( filePath );
+  if ( !xmlDoc )
   {
-    QgsMessageLog::logMessage( "Error parsing file '" + filePath +
-                               QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
-    delete xmlDoc;
-    return 0;
+    //then create xml document
+    xmlDoc = new QDomDocument();
+    QString errorMsg;
+    int line, column;
+    if ( !xmlDoc->setContent( &configFile, true, &errorMsg, &line, &column ) )
+    {
+      QgsMessageLog::logMessage( "Error parsing file '" + filePath +
+                                 QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
+      delete xmlDoc;
+      return 0;
+    }
+    mXmlDocumentCache.insert( filePath, xmlDoc );
+    mFileSystemWatcher.addPath( filePath );
   }
   return xmlDoc;
 }
 
 void QgsConfigCache::removeChangedEntry( const QString& path )
 {
+  mXmlDocumentCache.remove( path );
   mWMSConfigCache.remove( path );
   mWFSConfigCache.remove( path );
   mWCSConfigCache.remove( path );

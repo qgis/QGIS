@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.ModelerUtils import ModelerUtils
 
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
@@ -29,6 +28,7 @@ __revision__ = '$Format:%H$'
 import codecs
 import sys
 import json
+import os
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -37,12 +37,13 @@ from PyQt4.Qsci import *
 from qgis.core import *
 from qgis.utils import iface
 
+from processing.modeler.ModelerUtils import ModelerUtils
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.script.ScriptUtils import ScriptUtils
+from processing.script import ScriptUtils
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
 import processing.resources_rc
@@ -62,7 +63,6 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
-
         # Set icons
         self.btnOpen.setIcon(
                 QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
@@ -79,6 +79,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                 QgsApplication.getThemeIcon('/mActionEditPaste.png'))
         self.btnUndo.setIcon(QgsApplication.getThemeIcon('/mActionUndo.png'))
         self.btnRedo.setIcon(QgsApplication.getThemeIcon('/mActionRedo.png'))
+        self.btnSnippets.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
 
         # Connect signals and slots
         self.btnOpen.clicked.connect(self.openScript)
@@ -86,6 +87,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.btnSaveAs.clicked.connect(self.saveAs)
         self.btnEditHelp.clicked.connect(self.editHelp)
         self.btnRun.clicked.connect(self.runAlgorithm)
+        self.btnSnippets.clicked.connect(self.showSnippets)
         self.btnCut.clicked.connect(self.editor.cut)
         self.btnCopy.clicked.connect(self.editor.copy)
         self.btnPaste.clicked.connect(self.editor.paste)
@@ -95,6 +97,27 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.alg = alg
         self.algType = algType
+
+        self.snippets = {}
+        if self.algType == self.SCRIPT_PYTHON:
+            path = os.path.join(os.path.dirname(ScriptUtils.__file__), "snippets.py")
+            with open(path) as f:
+                lines = f.readlines()
+            snippetlines = []
+            name = None
+            for line in lines:
+                if line.startswith("##"):
+                    if snippetlines:
+                        self.snippets[name] = "".join(snippetlines)
+                    name = line[2:]
+                    snippetlines = []
+                else:
+                    snippetlines.append(line)
+            if snippetlines:
+                self.snippets[name] = "".join(snippetlines)
+
+        if not self.snippets:
+            self.btnSnippets.setVisible(False)
 
         if self.alg is not None:
             self.filename = self.alg.descriptionFile
@@ -108,6 +131,14 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
         self.setHasChanged(False)
 
         self.editor.setLexerType(self.algType)
+
+    def showSnippets(self, evt):
+        popupmenu = QMenu()
+        for name, snippet in self.snippets.iteritems():
+            action = QAction(self.tr(name), self.btnSnippets)
+            action.triggered[()].connect(lambda snippet=snippet: self.editor.insert(snippet))
+            popupmenu.addAction(action)
+        popupmenu.exec_(QCursor.pos())
 
     def closeEvent(self, evt):
         if self.hasChanged:

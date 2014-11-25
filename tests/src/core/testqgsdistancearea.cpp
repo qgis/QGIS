@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QFile>
 #include <QTextStream>
 #include <QObject>
@@ -27,9 +27,10 @@
 class TestQgsDistanceArea: public QObject
 {
 
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();
+    void cleanupTestCase();
     void basic();
     void test_distances();
     void unit_conversions();
@@ -44,6 +45,11 @@ void TestQgsDistanceArea::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+}
+
+void TestQgsDistanceArea::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsDistanceArea::basic()

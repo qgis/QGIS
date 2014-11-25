@@ -203,6 +203,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mFieldModel->setLayer( mLayer );
   mFieldCombo->setModel( mFieldModel );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
+  connect( mRunFieldCalcSelected, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpressionSelected() ) );
   // NW TODO Fix in 2.6 - Doesn't work with field model for some reason.
 //  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
   connect( mUpdateExpressionText, SIGNAL( fieldChanged( QString, bool ) ), this, SLOT( updateButtonStatus( QString, bool ) ) );
@@ -230,6 +231,9 @@ void QgsAttributeTableDialog::updateTitle()
     mRunFieldCalc->setText( tr( "Update All" ) );
   else
     mRunFieldCalc->setText( tr( "Update Filtered" ) );
+
+  bool enabled = mLayer->selectedFeatureCount() > 0;
+  mRunFieldCalcSelected->setEnabled( enabled );
 }
 
 void QgsAttributeTableDialog::updateButtonStatus( QString fieldName, bool isValid )
@@ -297,49 +301,51 @@ void QgsAttributeTableDialog::columnBoxInit()
   }
 }
 
+
 void QgsAttributeTableDialog::updateFieldFromExpression()
+{
+
+  bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
+  QgsFeatureIds filteredIds = filtered ? mMainView->filteredFeatures() : QgsFeatureIds();
+  this->runFieldCalculation(mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds);
+}
+
+void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
+{
+  QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
+  this->runFieldCalculation(mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds);
+}
+
+void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds )
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   mLayer->beginEditCommand( "Field calculator" );
 
-  QModelIndex modelindex = mFieldModel->indexFromName( mFieldCombo->currentText() );
+  QModelIndex modelindex = mFieldModel->indexFromName( fieldName );
   int fieldindex = modelindex.data( QgsFieldModel::FieldIndexRole ).toInt();
 
   bool calculationSuccess = true;
   QString error;
 
 
-  QgsExpression exp( mUpdateExpressionText->currentField() );
+  QgsExpression exp( expression );
   exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
 
   QgsFeatureRequest request;
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
-  QgsFeatureIds filteredIds = mMainView->filteredFeatures();
-  QgsDebugMsg( QString( filteredIds.size() ) );
 
-  // This would be nice but doesn't work on all providers
-//  if ( mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll )
-//  {
-//    QgsDebugMsg( " Updating only selected features " );
-//    request.setFilterFids( mMainView->filteredFeatures() );
-//  }
-
-  bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
   int rownum = 1;
 
   //go through all the features and change the new attributes
-  QgsFeatureIterator fit = mLayer->getFeatures( request );
+  QgsFeatureIterator fit = layer->getFeatures( request );
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
-    if ( filtered )
+    if ( !filteredIds.isEmpty() && !filteredIds.contains( feature.id() ) )
     {
-      if ( !filteredIds.contains( feature.id() ) )
-      {
         continue;
-      }
     }
 
     exp.setCurrentRowNumber( rownum );

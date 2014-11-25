@@ -105,7 +105,7 @@ class QgsVectorDataProvider : QgsDataProvider
     /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
-     * @see QgsFieldMap
+     * @see QgsFields
      */
     virtual const QgsFields &fields() const = 0;
 
@@ -139,7 +139,7 @@ class QgsVectorDataProvider : QgsDataProvider
      * Return unique values of an attribute
      * @param index the index of the attribute
      * @param uniqueValues values reference to the list to fill
-     * @param limit maxmum number of the values to return (added in 1.4)
+     * @param limit maxmum number of the values to return
      *
      * Default implementation simply iterates the features
      */
@@ -150,7 +150,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * or if the given attribute is not an enum type.
      * @param index the index of the attribute
      * @param enumList reference to the list to fill
-     * @note: added in version 1.2
      */
     virtual void enumValues( int index, QStringList& enumList /Out/ );
 
@@ -171,7 +170,6 @@ class QgsVectorDataProvider : QgsDataProvider
      * Adds new attributes
      * @param attributes list of new attributes
      * @return true in case of success and false in case of failure
-     * @note added in 1.2
      */
     virtual bool addAttributes( const QList<QgsField> &attributes );
 
@@ -251,7 +249,6 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Return list of indexes of fields that make up the primary key
-     * @note added in 2.0
      */
     virtual QList<int> pkAttributeIndexes();
 
@@ -262,7 +259,6 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * check if provider supports type of field
-     * @note added in 1.2
      */
     bool supportedType( const QgsField &field ) const;
 
@@ -281,13 +277,13 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Returns the names of the supported types
-     * @note added in 1.2
      */
     const QList< QgsVectorDataProvider::NativeType > &nativeTypes() const;
 
-    /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          @note: added in version 1.4*/
+    /**
+     * Returns true if the provider is strict about the type of inserted features
+     * (e.g. no multipolygon in a polygon layer)
+     */
     bool doesStrictFeatureTypeCheck() const;
 
     /** Returns a list of available encodings */
@@ -295,19 +291,16 @@ class QgsVectorDataProvider : QgsDataProvider
 
     /**
      * Provider has errors to report
-     * @note added in 1.7
      */
     bool hasErrors();
 
     /**
      * Clear recorded errors
-     * @note added in 1.7
      */
     void clearErrors();
 
     /**
      * Get recorded errors
-     * @note added in 1.7
      */
     QStringList errors();
 

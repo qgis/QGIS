@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 '''
 qgscompositionchecker.py - check rendering of Qgscomposition against an expected image
-                     --------------------------------------
-               Date                 : 31 Juli 2012
-               Copyright            : (C) 2012 by Dr. Horst Düster / Dr. Marco Hugentobler
-               email                : horst.duester@sourcepole.ch
+ --------------------------------------
+  Date                 : 31 Juli 2012
+  Copyright            : (C) 2012 by Dr. Horst Düster / Dr. Marco Hugentobler
+  email                : horst.duester@sourcepole.ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -43,7 +43,7 @@ class QgsCompositionChecker(QgsMultiRenderChecker):
         self.mComposition.setPlotStyle( QgsComposition.Print )
         outputImage.setDotsPerMeterX( self.mDotsPerMeter )
         outputImage.setDotsPerMeterY( self.mDotsPerMeter )
-        QgsMultiRenderChecker.drawBackround( outputImage )
+        QgsMultiRenderChecker.drawBackground( outputImage )
         p = QPainter( outputImage )
         self.mComposition.renderPage( p, page )
         p.end()

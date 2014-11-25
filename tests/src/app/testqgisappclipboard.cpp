@@ -20,7 +20,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStringList>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include <qgisapp.h>
 #include <qgsapplication.h>
@@ -35,7 +35,7 @@
  */
 class TestQgisAppClipboard: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -63,6 +63,7 @@ void TestQgisAppClipboard::initTestCase()
 //runs after all tests
 void TestQgisAppClipboard::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgisAppClipboard::copyPaste()

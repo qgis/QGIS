@@ -96,7 +96,6 @@ class QgsFeatureRendererV2
     };
 
     //! returns bitwise OR-ed capabilities of the renderer
-    //! \note added in 2.0
     virtual int capabilities();
 
     //! for symbol levels
@@ -112,7 +111,6 @@ class QgsFeatureRendererV2
     virtual QDomElement save( QDomDocument& doc );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs
-    //! @note added in 1.9
     virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const;
 
     /** create a new renderer according to the information contained in
@@ -124,12 +122,10 @@ class QgsFeatureRendererV2
      * @param errorMessage it will contain the error message if something
      * went wrong
      * @return the renderer
-     * @note added in 1.9
      */
     static QgsFeatureRendererV2* loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage ) /Factory/;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
-    //! @note added in 1.9
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! return a list of symbology items for the legend
@@ -148,7 +144,6 @@ class QgsFeatureRendererV2
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
     //! return a list of item text / symbol
-    //! @note: this method was added in version 1.5
     //! @note not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
 
@@ -165,28 +160,32 @@ class QgsFeatureRendererV2
     void setVertexMarkerAppearance( int type, int size );
 
     //! return rotation field name (or empty string if not set or not supported by renderer)
-    //! @note added in 1.9
     virtual QString rotationField() const;
     //! sets rotation field of renderer (if supported by the renderer)
-    //! @note added in 1.9
     virtual void setRotationField( QString fieldName );
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.
     //! Default implementation uses symbolForFeature().
-    //! @note added in 1.9
     virtual bool willRenderFeature( QgsFeature& feat );
 
     //! return list of symbols used for rendering the feature.
     //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
     //! to use symbolForFeature()
-    //! @note added in 1.9
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
     //! Equivalent of originalSymbolsForFeature() call
     //! extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
     //! @note added in 2.6
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
+
+    /**Allows for a renderer to modify the extent of a feature request prior to rendering
+     * @param extent reference to request's filter extent. Modify extent to change the
+     * extent of feature request
+     * @param context render context
+     * @note added in QGIS 2.7
+     */
+    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context );
 
   protected:
     QgsFeatureRendererV2( QString type );

@@ -25,11 +25,11 @@
 #include "qgsmapsettings.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 class TestQgsComposition: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

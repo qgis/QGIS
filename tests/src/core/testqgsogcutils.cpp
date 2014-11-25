@@ -14,7 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest>
+#include <QtTest/QtTest>
 
 //qgis includes...
 #include <qgsgeometry.h>

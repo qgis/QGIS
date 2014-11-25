@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
 #include <QObject>
@@ -33,7 +33,7 @@
  */
 class TestStyleV2: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   private:
 

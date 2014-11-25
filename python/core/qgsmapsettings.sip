@@ -152,7 +152,7 @@ class QgsMapSettings
      * @param layer
      * @return transform - may be null if the transform is not needed
      */
-    const QgsCoordinateTransform* layerTransfrom( QgsMapLayer *layer ) const;
+    const QgsCoordinateTransform* layerTransform( QgsMapLayer *layer ) const;
 
     //! returns current extent of layer set
     QgsRectangle fullExtent() const;

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
@@ -21,7 +21,7 @@
 
 class Test[testClassCamelCaseName]: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     [TestMethods]
 };

@@ -218,7 +218,7 @@ QModelIndex QgsGraduatedSymbolRendererV2Model::index( int row, int column, const
 {
   if ( hasIndex( row, column, parent ) )
   {
-    return createIndex( row, column, 0 );
+    return createIndex( row, column );
   }
   return QModelIndex();
 }
@@ -293,7 +293,7 @@ bool QgsGraduatedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Qt:
     // removed under 'to' so the target shifted down
     if ( rows[i] < to ) to--;
   }
-  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
   emit rowsMoved();
   return false;
 }
@@ -331,13 +331,13 @@ void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
     mRenderer->sortByLabel( order );
   }
   emit rowsMoved();
-  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
   QgsDebugMsg( "Done" );
 }
 
 void QgsGraduatedSymbolRendererV2Model::updateSymbology()
 {
-  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
 }
 
 void QgsGraduatedSymbolRendererV2Model::updateLabels()
@@ -585,15 +585,13 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   mRenderer->setClassAttribute( attrName );
   mRenderer->setMode( mode );
   mRenderer->setSourceColorRamp( ramp->clone() );
-  bool updateUiCount = true;
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mRenderer->updateClasses( mLayer, mode, nclasses );
   mRenderer->calculateLabelPrecision();
   QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
-  updateUiCount = false;
-  updateUiFromRenderer( updateUiCount );
+  updateUiFromRenderer( false );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()

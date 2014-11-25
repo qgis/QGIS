@@ -9,11 +9,11 @@ Following a summary of the required dependencies for building:
 Required build tools:
 
 - CMake >= 2.8.6
-- Flex
+- Flex >= 2.5.6
 - Bison >= 2.4
 -
 
-Required build deps:
+Required build dependencies:
 
 - Qt >= 4.7.0
 - Proj >= 4.4.x
@@ -34,5 +34,14 @@ Optional dependencies:
 - for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
 - for python support - SIP >= 4.12, PyQt >= 4.8.3 must match Qt version, Qscintilla2
 - for qgis mapserver - FastCGI
+- for oracle provider - Oracle OCI library
 -
+
+Indirect dependencies:
+
+Some proprietary formats (eg. ECW and MrSid) supported by GDAL require
+proprietary third party libraries.  QGIS doesn't need any of those itself to
+build, but will only support those formats if GDAL is built accordingly.  Refer
+to http://gdal.org/formats_list.html ff. for instructions how to include
+those formats in GDAL.
 

@@ -67,13 +67,13 @@ QSize QgsColorSwatchGrid::sizeHint() const
   return QSize( mWidth, calculateHeight() );
 }
 
-void QgsColorSwatchGrid::setContext( const QString context )
+void QgsColorSwatchGrid::setContext( const QString &context )
 {
   mContext = context;
   refreshColors();
 }
 
-void QgsColorSwatchGrid::setBaseColor( const QColor baseColor )
+void QgsColorSwatchGrid::setBaseColor( const QColor &baseColor )
 {
   mBaseColor = baseColor;
   refreshColors();
@@ -380,7 +380,7 @@ QgsColorSwatchGridAction::~QgsColorSwatchGridAction()
 
 }
 
-void QgsColorSwatchGridAction::setBaseColor( const QColor baseColor )
+void QgsColorSwatchGridAction::setBaseColor( const QColor &baseColor )
 {
   mColorSwatchGrid->setBaseColor( baseColor );
 }
@@ -395,7 +395,7 @@ QString QgsColorSwatchGridAction::context() const
   return mColorSwatchGrid->context();
 }
 
-void QgsColorSwatchGridAction::setContext( const QString context )
+void QgsColorSwatchGridAction::setContext( const QString &context )
 {
   mColorSwatchGrid->setContext( context );
 }

@@ -172,19 +172,15 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
   {
     case ShowAll:
       return true;
-      break;
 
     case ShowFilteredList:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
-      break;
 
     case ShowSelected:
       return layer()->selectedFeaturesIds().contains( masterModel()->rowToId( sourceRow ) );
-      break;
 
     case ShowVisible:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
-      break;
 
     case ShowEdited:
     {
@@ -197,13 +193,11 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
         return addedFeatures.contains( fid ) || changedFeatures.contains( fid );
       }
       return false;
-      break;
     }
 
     default:
       Q_ASSERT( false ); // In debug mode complain
       return true; // In release mode accept row
-      break;
   }
   // returns are handled in their respective case statement above
 }

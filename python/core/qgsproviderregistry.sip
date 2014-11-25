@@ -85,21 +85,14 @@ class QgsProviderRegistry
       This walks through all data providers appending calls to their
       buildSupportedRasterFileFilter to a string, which is then returned.
 
-      @note this method was added in QGIS 2.0
       @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
     */
     virtual QString fileRasterFilters() const;
-    /** return a string containing the available database drivers
-    * @note this method was added in QGIS 1.1
-    */
+    /** return a string containing the available database drivers */
     virtual QString databaseDrivers() const;
-    /** return a string containing the available directory drivers
-     * @note this method was added in QGIS 1.1
-     */
+    /** return a string containing the available directory drivers */
     virtual QString directoryDrivers() const;
-    /** return a string containing the available protocol drivers
-     * @note this method was added in QGIS 1.1
-     */
+    /** return a string containing the available protocol drivers */
     virtual QString protocolDrivers() const;
 
     void registerGuis( QWidget *widget );

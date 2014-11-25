@@ -318,6 +318,14 @@ QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
   int h, s, v;
   QList<QColor> colors;
 
+  //normalize values
+  int safeHueMax = qMax( hueMin, hueMax );
+  int safeHueMin = qMin( hueMin, hueMax );
+  int safeSatMax = qMax( satMin, satMax );
+  int safeSatMin = qMin( satMin, satMax );
+  int safeValMax = qMax( valMin, valMax );
+  int safeValMin = qMin( valMin, valMax );
+
   //start hue at random angle
   double currentHueAngle = 360.0 * ( double )rand() / RAND_MAX;
 
@@ -328,9 +336,9 @@ QList<QColor> QgsVectorRandomColorRampV2::randomColors( int count,
     //see http://basecase.org/env/on-rainbows for more details
     currentHueAngle += 137.50776;
     //scale hue to between hueMax and hueMin
-    h = ( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( hueMax - hueMin ) + hueMin;
-    s = ( rand() % ( satMax - satMin + 1 ) ) + satMin;
-    v = ( rand() % ( valMax - valMin + 1 ) ) + valMin;
+    h = qBound( 0, qRound(( fmod( currentHueAngle, 360.0 ) / 360.0 ) * ( safeHueMax - safeHueMin ) + safeHueMin ), 359 );
+    s = qBound( 0, ( rand() % ( safeSatMax - safeSatMin + 1 ) ) + safeValMax, 255 );
+    v = qBound( 0, ( rand() % ( safeValMax - safeValMin + 1 ) ) + safeValMin, 255 );
     colors.append( QColor::fromHsv( h, s, v ) );
   }
   return colors;

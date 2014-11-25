@@ -273,7 +273,7 @@ void QgsCoordinateTransform::initialise()
 //
 
 
-QgsPoint QgsCoordinateTransform::transform( const QgsPoint thePoint, TransformDirection direction ) const
+QgsPoint QgsCoordinateTransform::transform( const QgsPoint &thePoint, TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return thePoint;
@@ -296,7 +296,7 @@ QgsPoint QgsCoordinateTransform::transform( const QgsPoint thePoint, TransformDi
 }
 
 
-QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY = 0, TransformDirection direction ) const
+QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, TransformDirection direction ) const
 {
   try
   {
@@ -310,7 +310,7 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle theRect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return theRect;
@@ -520,7 +520,7 @@ void QgsCoordinateTransform::transformInPlace(
 #endif //ANDROID
 
 
-QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle rect, TransformDirection direction, const bool handle180Crossover ) const
+QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &rect, TransformDirection direction, const bool handle180Crossover ) const
 {
   // Calculate the bounding box of a QgsRectangle in the source CRS
   // when projected to the destination CRS (or the inverse).

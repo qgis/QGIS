@@ -295,6 +295,9 @@ class CORE_EXPORT QGis
 // retrieved from QLibrary::resolve to function pointers.
 // It's assumed that this works on all systems supporting
 // QLibrary
+#if QT_VERSION >= 0x050000
+  #define cast_to_fptr(f) f
+#else
 inline void ( *cast_to_fptr( void *p ) )()
 {
   union
@@ -306,6 +309,7 @@ inline void ( *cast_to_fptr( void *p ) )()
   u.p = p;
   return u.f;
 }
+#endif
 
 //
 // return a string representation of a double

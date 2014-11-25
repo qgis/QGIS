@@ -27,13 +27,13 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 
 class TestQgsComposerRotation: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -97,10 +97,9 @@ void TestQgsComposerRotation::initTestCase()
 
   mReport = "<h1>Composer Rotation Tests</h1>\n";
 }
+
 void TestQgsComposerRotation::cleanupTestCase()
 {
-  delete mComposition;
-
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -109,6 +108,8 @@ void TestQgsComposerRotation::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerRotation::init()

@@ -585,7 +585,7 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ram
   painter.begin( &pixmap );
 
   //draw stippled background, for transparent images
-  drawStippledBackround( &painter, QRect( 0, 0, size.width(), size.height() ) );
+  drawStippledBackground( &painter, QRect( 0, 0, size.width(), size.height() ) );
 
   // antialising makes the colors duller, and no point in antialiasing a color ramp
   // painter.setRenderHint( QPainter::Antialiasing );
@@ -599,7 +599,7 @@ QPixmap QgsSymbolLayerV2Utils::colorRampPreviewPixmap( QgsVectorColorRampV2* ram
   return pixmap;
 }
 
-void QgsSymbolLayerV2Utils::drawStippledBackround( QPainter* painter, QRect rect )
+void QgsSymbolLayerV2Utils::drawStippledBackground( QPainter* painter, QRect rect )
 {
   // create a 2x2 checker-board image
   uchar pixDataRGB[] = { 255, 255, 255, 255,
@@ -2817,7 +2817,7 @@ QList<QColor> QgsSymbolLayerV2Utils::parseColorList( const QString colorStr )
   return colors;
 }
 
-QMimeData * QgsSymbolLayerV2Utils::colorToMimeData( const QColor color )
+QMimeData * QgsSymbolLayerV2Utils::colorToMimeData( const QColor &color )
 {
   //set both the mime color data (which includes alpha channel), and the text (which is the color's hex
   //value, and can be used when pasting colors outside of QGIS).

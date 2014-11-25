@@ -669,6 +669,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   if ( geomList.size() == 0 )
   {
     //qDebug() << "geometry list is empty!";
+    delete [] geomArray;
     return errorList;
   }
 

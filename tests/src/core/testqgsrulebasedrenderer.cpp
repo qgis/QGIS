@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QDomDocument>
 #include <QFile>
 //header for class being tested
@@ -39,6 +39,11 @@ class TestQgsRuleBasedRenderer: public QObject
       // we need memory provider, so make sure to load providers
       QgsApplication::init();
       QgsApplication::initQgis();
+    }
+
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
     }
 
     void test_load_xml()

@@ -240,7 +240,7 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
      * @param color Color for button background. If no color is specified, the button's current
      * color will be used
      */
-    void setButtonBackground( const QColor color = QColor() );
+    void setButtonBackground( const QColor &color = QColor() );
 
     /**Copies the current color to the clipboard
      * @see pasteColor
@@ -282,7 +282,7 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
      * @see setBehaviour
      * @see behaviour
      */
-    void colorClicked( const QColor color );
+    void colorClicked( const QColor &color );
 
   protected:
 
@@ -374,7 +374,7 @@ class GUI_EXPORT QgsColorButtonV2: public QToolButton
      * @param showChecks set to true to display a checkboard pattern behind
      * transparent colors
      */
-    QPixmap createMenuIcon( const QColor color, const bool showChecks = true );
+    QPixmap createMenuIcon( const QColor &color, const bool showChecks = true );
 
   private slots:
 

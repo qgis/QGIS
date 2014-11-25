@@ -69,9 +69,9 @@ class DL_Extrusion
      * Constructor for DXF extrusion.
      *
      * @param direction Vector of axis along which the entity shall be extruded
-    *                  this is also the Z axis of the Entity coordinate system
+     *                  this is also the Z axis of the Entity coordinate system
      * @param elevation Distance of the entities XY plane from the origin of the
-    *                  world coordinate system
+     *                  world coordinate system
      */
     DL_Extrusion( double dx, double dy, double dz, double elevation )
     {
@@ -152,6 +152,8 @@ class DL_Extrusion
   private:
     double *direction;
     double elevation;
+
+    DL_Extrusion(const DL_Extrusion &);
 };
 
 #endif

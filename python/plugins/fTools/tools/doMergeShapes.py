@@ -317,8 +317,9 @@ class ShapeMergeThread( QThread ):
             mergedAttrs[ fieldMap[shapeIndex][fieldIndex] ] = v
           fieldIndex += 1
 
-        inGeom = QgsGeometry( inFeat.geometry() )
-        outFeat.setGeometry( inGeom )
+        if inFeat.geometry() is not None:
+            inGeom = QgsGeometry( inFeat.geometry() )
+            outFeat.setGeometry( inGeom )
         outFeat.setAttributes( mergedAttrs )
         writer.addFeature( outFeat )
         self.emit( SIGNAL( "featureProcessed()" ) )

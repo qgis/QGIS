@@ -27,6 +27,8 @@ class QgsComposerMap : QgsComposerItem
       Rectangle    // Display only rectangle
     };
 
+    //grid enums are moved to QgsComposerMapGrid
+    //TODO - remove for QGIS 3.0
     enum GridStyle
     {
       Solid, //solid lines
@@ -177,7 +179,9 @@ class QgsComposerMap : QgsComposerItem
     */
     void setNewAtlasFeatureExtent( const QgsRectangle& extent );
 
-    /**Called when atlas preview is toggled, to force map item to update its extent and redraw*/
+    /**Called when atlas preview is toggled, to force map item to update its extent and redraw
+     * @deprecated no longer required
+    */
     void toggleAtlasPreview();
 
     /**Returns a pointer to the current map extent, which is either the original user specified
@@ -186,23 +190,20 @@ class QgsComposerMap : QgsComposerItem
      * @returns pointer to current map extent
      * @see visibleExtentPolygon
     */
+    // QgsRectangle* currentMapExtent();
     const QgsRectangle* currentMapExtent() const;
 
     PreviewMode previewMode() const;
     void setPreviewMode( PreviewMode m );
 
-    /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
-    @note this function was added in version 1.2*/
+    /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas */
     bool keepLayerSet() const;
-    /**Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
-    @note this function was added in version 1.2*/
+    /**Setter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas */
     void setKeepLayerSet( bool enabled );
 
-    /**Getter for stored layer set that is used if mKeepLayerSet is true
-    @note this function was added in version 1.2*/
+    /**Getter for stored layer set that is used if mKeepLayerSet is true */
     QStringList layerSet() const;
-    /**Setter for stored layer set that is used if mKeepLayerSet is true
-    @note this function was added in version 1.2*/
+    /**Setter for stored layer set that is used if mKeepLayerSet is true */
     void setLayerSet( const QStringList& layerSet );
     /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
@@ -237,7 +238,6 @@ class QgsComposerMap : QgsComposerItem
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
     /**Enables a coordinate grid that is shown on top of this composermap.
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setEnabled() or grids() instead
      */
     void setGridEnabled( bool enabled ) /Deprecated/;
@@ -248,7 +248,6 @@ class QgsComposerMap : QgsComposerItem
     bool gridEnabled() const /Deprecated/;
 
     /**Sets coordinate grid style to solid or cross
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setStyle() or grids() instead
     */
     void setGridStyle( GridStyle style ) /Deprecated/;
@@ -259,7 +258,6 @@ class QgsComposerMap : QgsComposerItem
     GridStyle gridStyle() const /Deprecated/;
 
     /**Sets coordinate interval in x-direction for composergrid.
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setIntervalX() or grids() instead
     */
     void setGridIntervalX( double interval ) /Deprecated/;
@@ -270,7 +268,6 @@ class QgsComposerMap : QgsComposerItem
     double gridIntervalX() const /Deprecated/;
 
     /**Sets coordinate interval in y-direction for composergrid.
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setIntervalY() or grids() instead
     */
     void setGridIntervalY( double interval ) /Deprecated/;
@@ -281,7 +278,6 @@ class QgsComposerMap : QgsComposerItem
     double gridIntervalY() const /Deprecated/;
 
     /**Sets x-coordinate offset for composer grid
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setOffsetX() or grids() instead
     */
     void setGridOffsetX( double offset ) /Deprecated/;
@@ -292,7 +288,6 @@ class QgsComposerMap : QgsComposerItem
     double gridOffsetX() const /Deprecated/;
 
     /**Sets y-coordinate offset for composer grid
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setOffsetY() or grids() instead
     */
     void setGridOffsetY( double offset ) /Deprecated/;
@@ -303,7 +298,6 @@ class QgsComposerMap : QgsComposerItem
     double gridOffsetY() const /Deprecated/;
 
     /**Sets the pen to draw composer grid
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setPenWidth(), grid()->setPenColor() or grids() instead
     */
     void setGridPen( const QPen& p ) /Deprecated/;
@@ -314,19 +308,16 @@ class QgsComposerMap : QgsComposerItem
     QPen gridPen() const /Deprecated/;
 
     /**Sets width of grid pen
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setPenWidth() or grids() instead
     */
     void setGridPenWidth( double w ) /Deprecated/;
 
     /**Sets the color of the grid pen
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setPenColor() or grids() instead
     */
     void setGridPenColor( const QColor& c ) /Deprecated/;
 
     /**Sets font for grid annotations
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setAnnotationFont() or grids() instead
     */
     void setGridAnnotationFont( const QFont& f ) /Deprecated/;
@@ -337,19 +328,16 @@ class QgsComposerMap : QgsComposerItem
     QFont gridAnnotationFont() const /Deprecated/;
 
     /**Sets font color for grid annotations
-     * @note this function was added in version 2.0
      * @deprecated use grid()->setAnnotationFontColor() or grids() instead
     */
     void setAnnotationFontColor( const QColor& c ) /Deprecated/;
 
     /**Get font color for grid annotations
-     * @note: this function was added in version 2.0
      * @deprecated use grid()->annotationFontColor() or grids() instead
     */
     QColor annotationFontColor() const /Deprecated/;
 
     /**Sets coordinate precision for grid annotations
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setAnnotationPrecision or grids() instead
     */
     void setGridAnnotationPrecision( int p ) /Deprecated/;
@@ -360,7 +348,6 @@ class QgsComposerMap : QgsComposerItem
     int gridAnnotationPrecision() const /Deprecated/;
 
     /**Sets flag if grid annotation should be shown
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setAnnotationEnabled() or grids() instead
     */
     void setShowGridAnnotation( bool show ) /Deprecated/;
@@ -381,7 +368,6 @@ class QgsComposerMap : QgsComposerItem
     GridAnnotationPosition gridAnnotationPosition( QgsComposerMap::Border border ) const /Deprecated/;
 
     /**Sets distance between map frame and annotations
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setAnnotationFrameDistance() or grids() instead
     */
     void setAnnotationFrameDistance( double d ) /Deprecated/;
@@ -412,7 +398,6 @@ class QgsComposerMap : QgsComposerItem
     GridAnnotationFormat gridAnnotationFormat() const /Deprecated/;
 
     /**Set grid frame style (NoGridFrame or Zebra)
-     * @note: this function was added in version 1.9
      * @deprecated use grid()->setFrameStyle() or grids() instead
     */
     void setGridFrameStyle( GridFrameStyle style ) /Deprecated/;
@@ -423,7 +408,6 @@ class QgsComposerMap : QgsComposerItem
     GridFrameStyle gridFrameStyle() const /Deprecated/;
 
     /**Set grid frame width
-     * @note: this function was added in version 1.9
      * @deprecated use grid()->setFrameWidth() or grids() instead
     */
     void setGridFrameWidth( double w ) /Deprecated/;
@@ -481,7 +465,6 @@ class QgsComposerMap : QgsComposerItem
     QColor gridFrameFillColor2() const /Deprecated/;
 
     /**Sets length of the cross segments (if grid style is cross)
-     * @note this function was added in version 1.4
      * @deprecated use grid()->setCrossLength() or grids() instead
     */
     void setCrossLength( double l ) /Deprecated/;
@@ -541,13 +524,8 @@ class QgsComposerMap : QgsComposerItem
      */
     QgsComposerMapOverview* overview();
 
-    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle
-    @note this function was added in version 1.4*/
-
+    /**In case of annotations, the bounding rectangle can be larger than the map item rectangle */
     QRectF boundingRect() const;
-    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
-    @note this function was added in version 1.4*/
-    void updateBoundingRect();
 
     /* reimplement setFrameOutlineWidth, so that updateBoundingRect() is called after setting the frame width */
     virtual void setFrameOutlineWidth( const double outlineWidth );
@@ -588,13 +566,11 @@ class QgsComposerMap : QgsComposerItem
     double mapUnitsToMM() const;
 
     /**Sets overview frame map. -1 disables the overview frame
-     * @note: this function was added in version 1.9
      * @deprecated use overview()->setFrameMap() or overviews() instead
     */
     void setOverviewFrameMap( int mapId ) /Deprecated/;
 
     /**Returns id of overview frame (or -1 if no overfiew frame)
-     * @note: this function was added in version 1.9
      * @deprecated use overview()->frameMapId() or overviews() instead
     */
     int overviewFrameMapId() const /Deprecated/;
@@ -774,6 +750,10 @@ class QgsComposerMap : QgsComposerItem
     /**Call updateCachedImage if item is in render mode*/
     void renderModeUpdateCachedImage();
 
+    /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle */
+    void updateBoundingRect();
+
+    /**@deprecated use QgsComposerMapOverview::overviewExtentChanged instead*/
     void overviewExtentChanged();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );

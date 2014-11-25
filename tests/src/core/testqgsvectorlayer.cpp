@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -38,7 +38,7 @@
 
 class TestSignalReceiver : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     TestSignalReceiver() : QObject( 0 ),
@@ -69,7 +69,7 @@ class TestSignalReceiver : public QObject
  */
 class TestQgsVectorLayer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private:
     bool mTestHasError;
     QgsMapRenderer * mpMapRenderer;

@@ -40,7 +40,6 @@ class QgsSymbolV2
       ScaleDiameter
     };
 
-    //! @note added in 1.5
     enum RenderHint
     {
       DataDefinedSizeScale,
@@ -55,9 +54,30 @@ class QgsSymbolV2
     SymbolType type() const;
 
     // symbol layers handling
+    
+    /**Returns list of symbol layers contained in the symbol.
+     * @returns symbol layers list
+     * @note added in QGIS 2.7
+     * @see symbolLayer
+     * @see symbolLayerCount
+     */
+    QgsSymbolLayerV2List symbolLayers();
 
+    /**Returns a specific symbol layers contained in the symbol.
+     * @param layer layer number
+     * @returns corresponding symbol layer
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayerCount
+     */
     QgsSymbolLayerV2* symbolLayer( int layer );
 
+    /**Returns total number of symbol layers contained in the symbol.
+     * @returns count of symbol layers
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayer
+     */
     int symbolLayerCount();
 
     //! insert symbol layer to specified index
@@ -107,9 +127,7 @@ class QgsSymbolV2
     //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha );
 
-    //! @note added in 1.5
     void setRenderHints( int hints );
-    //! @note added in 1.5
     int renderHints() const;
 
     QSet<QString> usedAttributes() const;
@@ -124,7 +142,6 @@ class QgsSymbolV2
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
-    //! @note added in 1.7
     bool isSymbolLayerCompatible( SymbolType t );
 };
 
@@ -137,7 +154,7 @@ class QgsSymbolV2RenderContext
 %End
 
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
@@ -157,9 +174,7 @@ class QgsSymbolV2RenderContext
     bool selected() const;
     void setSelected( bool selected );
 
-    //! @note added in 1.5
     int renderHints() const;
-    //! @note added in 1.5
     void setRenderHints( int hints );
 
     void setFeature( const QgsFeature* f );
@@ -194,7 +209,6 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
   public:
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
       This is a convenience method for easier creation of marker symbols.
-      \note added in v1.7
     */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
@@ -225,7 +239,6 @@ class QgsLineSymbolV2 : QgsSymbolV2
   public:
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
       This is a convenience method for easier creation of line symbols.
-      \note added in v1.7
     */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 
@@ -250,7 +263,6 @@ class QgsFillSymbolV2 : QgsSymbolV2
   public:
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
       This is a convenience method for easier creation of fill symbols.
-      \note added in v1.7
     */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties ) /Factory/;
 

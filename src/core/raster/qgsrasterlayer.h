@@ -317,7 +317,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *  @param theLimits Limits
      *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
      *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param theGenerateLookupTableFlag Generate llokup table. */
+     *  @param theGenerateLookupTableFlag Generate lookup table. */
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,

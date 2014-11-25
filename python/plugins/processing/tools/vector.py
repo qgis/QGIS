@@ -358,7 +358,8 @@ GEOM_TYPE_MAP = {
 TYPE_MAP = {
     str : QVariant.String,
     float: QVariant.Double,
-    int: QVariant.Int
+    int: QVariant.Int,
+    bool: QVariant.Bool
     }
 
 def _fieldName(f):

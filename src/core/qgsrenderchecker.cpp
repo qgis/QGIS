@@ -47,7 +47,7 @@ QString QgsRenderChecker::controlImagePath() const
   return myControlImageDir;
 }
 
-void QgsRenderChecker::setControlName( const QString theName )
+void QgsRenderChecker::setControlName( const QString &theName )
 {
   mControlName = theName;
   mExpectedImageFile = controlImagePath() + theName + QDir::separator() + mControlPathSuffix
@@ -77,7 +77,7 @@ void QgsRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
   mMapSettings = mapSettings;
 }
 
-void QgsRenderChecker::drawBackround( QImage* image )
+void QgsRenderChecker::drawBackground( QImage* image )
 {
   // create a 2x2 checker-board image
   uchar pixDataRGB[] = { 255, 255, 255, 255,

@@ -19,6 +19,8 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 
+#include <QtConcurrentMap>
+
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings& settings )
     : QgsMapRendererQImageJob( settings )

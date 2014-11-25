@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -50,7 +50,7 @@
  */
 class TestQgsRasterLayer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -90,7 +90,7 @@ class TestQgsRasterLayer: public QObject
 
 class TestSignalReceiver : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     TestSignalReceiver() : QObject( 0 ),
@@ -152,6 +152,8 @@ void TestQgsRasterLayer::initTestCase()
 //runs after all tests
 void TestQgsRasterLayer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -580,7 +582,6 @@ void TestQgsRasterLayer::setRenderer()
   mpRasterLayer->setRenderer( renderer );
   QCOMPARE( receiver.rendererChanged, true );
   QCOMPARE( mpRasterLayer->renderer(), renderer );
-  delete renderer;
 }
 
 QTEST_MAIN( TestQgsRasterLayer )

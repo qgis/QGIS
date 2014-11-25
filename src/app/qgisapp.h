@@ -856,6 +856,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Open the project file corresponding to the
     //! text)= of the given action.
     void openProject( QAction *action );
+    /** Attempts to run a python script
+     * @param filePath full path to python script
+     * @note added in QGIS 2.7
+     */
+    void runScript( const QString& filePath );
     //! Save the map view as an image - user is prompted for image name using a dialog
     void saveMapAsImage();
     //! Open a project

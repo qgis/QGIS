@@ -17,8 +17,7 @@
 
 #include <Qt>
 #include <QPair>
-
-class QStringList;
+#include <QStringList>
 
 /** \ingroup gui
  * /namespace QgisGui

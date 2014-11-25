@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -37,7 +37,7 @@
  */
 class TestQgsBlendModes: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -112,7 +112,7 @@ void TestQgsBlendModes::initTestCase()
                                       rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 2, 3, 4 );
   mRasterLayer1->setRenderer( rasterRenderer );
-  mRasterLayer2->setRenderer( rasterRenderer );
+  mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mRasterLayer1 );
   QgsMapLayerRegistry::instance()->addMapLayers(
@@ -131,6 +131,8 @@ void TestQgsBlendModes::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsBlendModes::vectorBlending()

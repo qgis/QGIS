@@ -226,7 +226,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Creates a new layer from a layer defininition document
     */
     static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
-    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString qlrfile );
+    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString& key, const QVariant& value );

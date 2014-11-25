@@ -90,6 +90,6 @@ class QgsMultiRenderChecker
     /**Draws a checkboard pattern for image backgrounds, so that transparency is visible
      * without requiring a transparent background for the image
      */
-    static void drawBackround( QImage* image );
+    static void drawBackground( QImage* image );
 };
 

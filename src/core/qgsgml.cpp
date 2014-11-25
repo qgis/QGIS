@@ -334,7 +334,7 @@ void QgsGml::endElement( const XML_Char* el )
 
   if (( theParseMode == coordinate && elementName == GML_NAMESPACE + NS_SEPARATOR + "coordinates" )
       || ( theParseMode == posList && (
-             elementName == GML_NAMESPACE + NS_SEPARATOR + "posList"
+             elementName == GML_NAMESPACE + NS_SEPARATOR + "pos"
              || elementName == GML_NAMESPACE + NS_SEPARATOR + "posList" ) ) )
   {
     mParseModeStack.pop();

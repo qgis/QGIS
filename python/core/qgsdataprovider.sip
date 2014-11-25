@@ -83,10 +83,7 @@ class QgsDataProvider : QObject
      */
     virtual bool setSubsetString( QString subset, bool updateFeatureCount = true );
 
-    /**
-     * provider supports setting of subset strings
-     * @note added in 1.4
-     */
+    /** provider supports setting of subset strings */
     virtual bool supportsSubsetString();
 
     /**
@@ -223,14 +220,12 @@ class QgsDataProvider : QObject
     /**
      *   This is emitted whenever an asynchronous operation has finished
      *   and the data should be redrawn
-     *   @note added in 1.5
      */
     void dataChanged();
 
     /**
      *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
      *   @param changed binary combination of changes
-     *   @note added in 1.7
      */
     void dataChanged( int changed );
 

@@ -87,7 +87,8 @@ class FieldsCalculator(GeoAlgorithm):
 
         if output.value == '':
             ext = output.getDefaultFileExtension(self)
-            output.value = system.getTempFilenameInTempFolder(output.name + '.' + ext)
+            output.value = system.getTempFilenameInTempFolder(
+                output.name + '.' + ext)
 
         provider = layer.dataProvider()
         fields = layer.pendingFields()
@@ -102,10 +103,10 @@ class FieldsCalculator(GeoAlgorithm):
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs().srsid())
         canvas = iface.mapCanvas()
-        da.setEllipsoidalMode(canvas.mapRenderer().hasCrsTransformEnabled())
-        da.setEllipsoid(QgsProject.instance().readEntry('Measure',
-                                                        '/Ellipsoid',
-                                                        GEO_NONE)[0])
+        da.setEllipsoidalMode(
+            iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
+        da.setEllipsoid(QgsProject.instance().readEntry(
+            'Measure', '/Ellipsoid', GEO_NONE)[0])
         exp.setGeomCalculator(da)
 
         if not exp.prepare(layer.pendingFields()):

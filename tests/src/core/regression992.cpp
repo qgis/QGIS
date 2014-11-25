@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -42,7 +42,7 @@
  */
 class Regression992: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -105,7 +105,7 @@ void Regression992::cleanupTestCase()
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
-  delete mpRasterLayer;
+  QgsApplication::exitQgis();
 }
 
 void Regression992::regression992()

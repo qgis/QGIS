@@ -4095,7 +4095,18 @@ void QgisApp::openProject( QAction *action )
   int myProjectionEnabledFlag =
     QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 );
   mMapCanvas->setCrsTransformEnabled( myProjectionEnabledFlag );
-} // QgisApp::openProject
+}
+
+void QgisApp::runScript( const QString &filePath )
+{
+  if ( !mPythonUtils || !mPythonUtils->isEnabled() )
+    return;
+
+  mPythonUtils->runString(
+    QString( "import sys\n"
+             "execfile(\"%1\".replace(\"\\\\\", \"/\").encode(sys.getfilesystemencoding()))\n" ).arg( filePath )
+    , tr( "Failed to run Python script:" ), false );
+}
 
 
 /**
@@ -4187,6 +4198,10 @@ void QgisApp::openFile( const QString & fileName )
   else if ( fi.completeSuffix() == "qlr" )
   {
     openLayerDefinition( fileName );
+  }
+  else if ( fi.completeSuffix() == "py" )
+  {
+    runScript( fileName );
   }
   else
   {
@@ -5190,7 +5205,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent, bool promptCo
   if ( numberOfDeletedFeatures == 0 )
   {
     messageBar()->pushMessage( tr( "No Features Selected" ),
-                               tr( "The current layer has not selected features" ),
+                               tr( "The current layer has no selected features" ),
                                QgsMessageBar::INFO, messageTimeout() );
     return;
   }

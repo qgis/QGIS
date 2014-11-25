@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -30,7 +30,7 @@
 
 class TestSignalReceiver : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     TestSignalReceiver() : QObject( 0 ), blendMode( QPainter::CompositionMode_SourceOver ) {}
@@ -47,10 +47,10 @@ class TestSignalReceiver : public QObject
  */
 class TestQgsMapLayer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase() {};// will be called after the last testfunction was executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void init() {};// will be called before each testfunction is executed.
     void cleanup() {};// will be called after every testfunction.
 
@@ -78,6 +78,11 @@ void TestQgsMapLayer::initTestCase()
   QFileInfo myMapFileInfo( myFileName );
   mpLayer = new QgsVectorLayer( myMapFileInfo.filePath(),
                                 myMapFileInfo.completeBaseName(), "ogr" );
+}
+
+void TestQgsMapLayer::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsMapLayer::isValid()

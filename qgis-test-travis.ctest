@@ -30,7 +30,16 @@ ${CTEST_BINARY_DIRECTORY}/CMakeCache.txt
 # Requires a track on the CDash server
 #ctest_start(Experimental TRACK Travis)
 ctest_start(Experimental)
-ctest_build (BUILD "${CTEST_BINARY_DIRECTORY}")
-ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 2)
+ctest_build (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE BUILDRES)
+IF(NOT ${BUILDRES} EQUAL 0)
+  ctest_submit ()
+  MESSAGE( FATAL_ERROR "Build failed." )
+ENDIF(NOT ${BUILDRES} EQUAL 0)
+ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 2 RETURN_VALUE TESTRES)
+IF(NOT ${TESTRES} EQUAL 0)
+  ctest_submit ()
+  MESSAGE( FATAL_ERROR "Test failed." )
+ENDIF(NOT ${TESTRES} EQUAL 0)
+
 ctest_submit ()
 

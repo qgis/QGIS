@@ -106,7 +106,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
-    static void drawStippledBackround( QPainter* painter, QRect rect );
+    static void drawStippledBackground( QPainter* painter, QRect rect );
 
     //! @note customContext parameter added in 2.6
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size, QgsRenderContext* customContext = 0 );
@@ -254,7 +254,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      * @see colorFromMimeData
      * @note added in 2.5
      */
-    static QMimeData * colorToMimeData( const QColor color );
+    static QMimeData *colorToMimeData( const QColor &color );
 
     /**
      * Attempts to parse mime data as a color

@@ -275,7 +275,7 @@ bool QgsMapToPixelSimplifier::simplifyWkbGeometry(
         // approximate the geometry's shape by its bounding box
         // (rect for linear ring / one segment for line string)
         unsigned char* targetTempWkb = targetWkb;
-        int targetWkbTempSize = targetWkbSize;
+        size_t targetWkbTempSize = targetWkbSize;
 
         sourceWkb = sourcePrevWkb;
         targetWkb = targetPrevWkb;

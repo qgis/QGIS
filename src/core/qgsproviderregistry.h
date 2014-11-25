@@ -77,6 +77,15 @@ class CORE_EXPORT QgsProviderRegistry
     QWidget *selectWidget( const QString & providerKey,
                            QWidget * parent = 0, Qt::WindowFlags fl = 0 );
 
+#if QT_VERSION >= 0x050000
+    /** Get pointer to provider function
+        @param providerKey identificator of the provider
+        @param functionName name of function
+        @return pointer to function or NULL on error
+     */
+    QFunctionPointer function( const QString & providerKey,
+                               const QString & functionName );
+#else
     /** Get pointer to provider function
         @param providerKey identificator of the provider
         @param functionName name of function
@@ -84,6 +93,7 @@ class CORE_EXPORT QgsProviderRegistry
      */
     void *function( const QString & providerKey,
                     const QString & functionName );
+#endif
 
     QLibrary *providerLibrary( const QString & providerKey ) const;
 

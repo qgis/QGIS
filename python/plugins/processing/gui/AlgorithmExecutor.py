@@ -54,11 +54,6 @@ def runalg(alg, progress=None):
         ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
         progress.error(e.msg)
         return False
-    except Exception:
-        msg = tr('Uncaught error executing %s.\nSee log for more information') % unicode(alg.name)
-        ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
-        progress.error(msg)
-        return False
 
 def runalgIterating(alg, paramToIter, progress):
     # Generate all single-feature layers

@@ -17,6 +17,8 @@
 #define QGSRENDERERV2_H
 
 #include "qgis.h"
+#include "qgsrectangle.h"
+#include "qgsrendercontext.h"
 
 #include <QList>
 #include <QString>
@@ -27,7 +29,6 @@
 #include <QDomElement>
 
 class QgsSymbolV2;
-class QgsRenderContext;
 class QgsFeature;
 class QgsFields;
 class QgsVectorLayer;
@@ -204,6 +205,14 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
     //! @note added in 2.6
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
+
+    /**Allows for a renderer to modify the extent of a feature request prior to rendering
+     * @param extent reference to request's filter extent. Modify extent to change the
+     * extent of feature request
+     * @param context render context
+     * @note added in QGIS 2.7
+     */
+    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context ) { Q_UNUSED( extent ); Q_UNUSED( context ); }
 
   protected:
     QgsFeatureRendererV2( QString type );

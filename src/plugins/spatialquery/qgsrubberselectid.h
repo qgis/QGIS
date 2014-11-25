@@ -74,6 +74,8 @@ class QgsRubberSelectId
     int mWidth;
     QGis::GeometryType mGeometryType;
     QgsMapCanvas* mMapCanvas;
+
+    Q_DISABLE_COPY( QgsRubberSelectId )
 };
 
 #endif

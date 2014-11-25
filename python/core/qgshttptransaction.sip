@@ -6,7 +6,6 @@ class QgsHttpTransaction : QObject
   public:
     /**
     * Constructor.
-    * \note userName and password added in 1.1
     */
     QgsHttpTransaction( QString uri,
                         QString proxyHost = QString(),
@@ -53,11 +52,7 @@ class QgsHttpTransaction : QObject
     @return true if proxy settings was applied, false else*/
     static bool applyProxySettings( QHttp& http, const QString& url );
 
-    /**
-     * Set the credentials (username and password)
-     * \note added in 1.1
-     */
-
+    /** Set the credentials (username and password) */
     void setCredentials( const QString& username, const QString &password );
 
     /**Returns the network timeout in msec*/

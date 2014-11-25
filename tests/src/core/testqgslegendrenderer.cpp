@@ -1,5 +1,5 @@
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 
 #include "qgsapplication.h"

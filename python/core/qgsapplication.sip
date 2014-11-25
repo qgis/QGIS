@@ -107,21 +107,17 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     /** Returns the path to the contributors file.
      * Contributors are people who have submitted patches
-     * but don't have svn write access.
-     * @note this function was added in version 1.3 */
+     * but don't have commit access. */
     static const QString contributorsFilePath();
 
-    /**Returns the path to the sponsors file.
-      @note this function was added in version 1.2*/
+    /**Returns the path to the sponsors file.*/
     static const QString sponsorsFilePath();
 
-    /** Returns the path to the donors file.
-      @note this function was added in version 1.2*/
+    /** Returns the path to the donors file. */
     static const QString donorsFilePath();
 
     /**
      * Returns the path to the sponsors file.
-     * @note This was added in QGIS 1.1
      */
     static const QString translatorsFilePath();
 
@@ -155,11 +151,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     static const QString srsDbFilePath();
 
     //! Returns the pathes to svg directories.
-    //! @note added in 1.4
     static const QStringList svgPaths();
 
     //! Returns the system environment variables passed to application.
-    //! @note added in 1.9
     static const QMap<QString, QString> systemEnvVars();
 
     //! Returns the path to the application prefix directory.
@@ -179,31 +173,26 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     //! Returns path to the desired icon file.
     //! First it tries to use the active theme path, then default theme path
-    //! @note Added in 1.5
     static QString iconPath( QString iconFile );
 
     //! Helper to get a theme icon. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    //! @note Added in 2.0
     static QIcon getThemeIcon( const QString &theName );
 
     //! Helper to get a theme icon as a pixmap. It will fall back to the
     //! default theme if the active theme does not have the required icon.
-    //! @note Added in 2.0
     static QPixmap getThemePixmap( const QString &theName );
 
-    //! Returns the path to user's style. Added in QGIS 1.4
+    //! Returns the path to user's style.
     static const QString userStyleV2Path();
 
-    //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
+    //! Returns the path to default style (works as a starting point).
     static const QString defaultStyleV2Path();
 
     //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
-    //! @note Added in 2.0
     static const QString libraryPath();
 
     //! Returns the path with utility executables (help viewer, crssync, ...)
-    //! @note Added in 2.0
     static const QString libexecPath();
 
     //! Alters prefix path - used by 3rd party apps
@@ -215,7 +204,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Alters pkg data path - used by 3rd party apps
     static void setPkgDataPath( const QString &thePkgDataPath );
 
-    //! Alters default svg paths - used by 3rd party apps. Added in QGIS 1.5
+    //! Alters default svg paths - used by 3rd party apps.
     static void setDefaultSvgPaths( const QStringList& pathList );
 
     //! loads providers
@@ -259,48 +248,39 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static void registerOgrDrivers();
 
-    /**Converts absolute path to path relative to target
-      @note: this method was added in version 1.6*/
+    /**Converts absolute path to path relative to target */
     static QString absolutePathToRelativePath( QString apath, QString targetPath );
-    /**Converts path relative to target to an absolute path
-      @note: this method was added in version 1.6*/
+    /**Converts path relative to target to an absolute path */
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
-    /** Indicates whether running from build directory (not installed)
-       @note added in 2.0 */
+    /** Indicates whether running from build directory (not installed) */
     static bool isRunningFromBuildDir();
-    /** Returns path to the source directory. Valid only when running from build directory
-        @note added in 2.0 */
+    /** Returns path to the source directory. Valid only when running from build directory */
     static QString buildSourcePath();
-    /** Returns path to the build output directory. Valid only when running from build directory
-        @note added in 2.0 */
+    /** Returns path to the build output directory. Valid only when running from build directory */
     static QString buildOutputPath();
 
     /** Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
-     * @note added in 2.0
      */
     static void skipGdalDriver( QString theDriver );
 
     /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
-     * @note added in 2.0
      */
     static void restoreGdalDriver( QString theDriver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
      * GDAL_SKIP environment variable)
-     * @note added in 2.0
      */
     static QStringList skippedGdalDrivers();
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
      * @see restoreGdalDriver
-     * @see skippedGdalDrivers
-     * @note added in 2.0 */
+     * @see skippedGdalDrivers */
     static void applyGdalSkippedDrivers();
 
     /** Get maximum concurrent thread count

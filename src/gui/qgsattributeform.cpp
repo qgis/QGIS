@@ -37,7 +37,7 @@
 
 int QgsAttributeForm::sFormCounter = 0;
 
-QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature feature, QgsAttributeEditorContext context, QWidget* parent )
+QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, QgsAttributeEditorContext context, QWidget* parent )
     : QWidget( parent )
     , mLayer( vl )
     , mContext( context )

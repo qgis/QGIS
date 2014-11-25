@@ -12,7 +12,7 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 
 //header for class being tested
 #include <qgsgeometryanalyzer.h>
@@ -21,7 +21,7 @@ Email                : sherman at mrcc dot com
 
 class TestQgsVectorAnalyzer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -78,7 +78,7 @@ void  TestQgsVectorAnalyzer::initTestCase()
 }
 void  TestQgsVectorAnalyzer::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 void  TestQgsVectorAnalyzer::init()
 {

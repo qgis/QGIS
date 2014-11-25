@@ -104,7 +104,6 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    //! \note added in 2.0
     virtual int capabilities();
 
     virtual QgsSymbolV2List symbols();
@@ -181,7 +180,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
       QgsVectorColorRampV2* ramp /Transfer/,
       bool inverted = false,
       QgsRendererRangeV2LabelFormat labelFormat=QgsRendererRangeV2LabelFormat()
-      );
+    );
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
@@ -193,9 +192,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
     //! return a list of item text / symbol
-    //! @note: this method was added in version 1.5
     //! @note not available in python bindings
-    // virtual QgsLegendSymbolList legendSymbolItems();
+    // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym /Transfer/ );
@@ -214,31 +212,25 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     /** Update all the symbols but leave breaks and colors. */
     void updateSymbols( QgsSymbolV2* sym /Transfer/ );
 
-    //! @note added in 1.6
     void setRotationField( QString fieldOrExpression );
-    //! @note added in 1.6
     QString rotationField() const;
 
-    //! @note added in 1.6
     void setSizeScaleField( QString fieldOrExpression );
-    //! @note added in 1.6
     QString sizeScaleField() const;
 
-    //! @note added in 2.0
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    //! @note added in 2.0
     QgsSymbolV2::ScaleMethod scaleMethod() const;
 
     //! items of symbology items in legend should be checkable
-    // @note added in 2.5
+    //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const;
 
     //! item in symbology was checked
-    // @note added in 2.5
+    //! @note added in 2.6
     virtual bool legendSymbolItemChecked( QString key );
 
     //! item in symbology was checked
-    // @note added in 2.5
+    //! @note added in 2.6
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
     //! If supported by the renderer, return classification attribute for the use in legend
@@ -246,7 +238,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     virtual QString legendClassificationAttribute();
 
     //! creates a QgsGraduatedSymbolRendererV2 from an existing renderer.
-    //! @note added in 2.5
+    //! @note added in 2.6
     //! @returns a new renderer if the conversion was possible, otherwise 0.
     static QgsGraduatedSymbolRendererV2* convertFromRenderer( const QgsFeatureRendererV2 *renderer ) /Factory/;
 

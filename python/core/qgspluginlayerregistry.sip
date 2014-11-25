@@ -23,8 +23,6 @@ class QgsPluginLayerType
 
 /** \ingroup core
     a registry of plugin layers types
-
-  \note added in v1.5
 */
 class QgsPluginLayerRegistry
 {

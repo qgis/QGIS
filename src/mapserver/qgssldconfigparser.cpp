@@ -56,10 +56,13 @@
 #define TO8(x) (x).toLocal8Bit().constData()
 #endif
 
-QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters ):
-    QgsWMSConfigParser(), mXMLDoc( doc ), mParameterMap( parameters ), mFallbackParser( 0 )
+QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, QString>& parameters )
+    : QgsWMSConfigParser()
+    , mXMLDoc( doc )
+    , mParameterMap( parameters )
+    , mSLDNamespace( "http://www.opengis.net/sld" )
+    , mFallbackParser( 0 )
 {
-  mSLDNamespace = "http://www.opengis.net/sld";
 
   //set output units
   if ( mXMLDoc )
@@ -278,34 +281,30 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
 
   QgsFeatureRendererV2* theRenderer = 0;
 
-  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
-  if ( !theVectorLayer )
+  QgsRasterLayer* theRasterLayer = dynamic_cast<QgsRasterLayer*>( theMapLayer );
+  if ( theRasterLayer )
   {
-    //a raster layer
-    QgsRasterLayer* theRasterLayer = dynamic_cast<QgsRasterLayer*>( theMapLayer );
-    if ( theRasterLayer )
+    QgsDebugMsg( "Layer is a rasterLayer" );
+    if ( !userStyleElement.isNull() )
     {
-      QgsDebugMsg( "Layer is a rasterLayer" );
-      if ( !userStyleElement.isNull() )
+      QgsDebugMsg( "Trying to add raster symbology" );
+      rasterSymbologyFromUserStyle( userStyleElement, theRasterLayer );
+      //todo: possibility to have vector layer or raster layer
+      QgsDebugMsg( "Trying to find contour symbolizer" );
+      QgsVectorLayer* v = contourLayerFromRaster( userStyleElement, theRasterLayer );
+      if ( v )
       {
-        QgsDebugMsg( "Trying to add raster symbology" );
-        rasterSymbologyFromUserStyle( userStyleElement, theRasterLayer );
-        //todo: possibility to have vector layer or raster layer
-        QgsDebugMsg( "Trying to find contour symbolizer" );
-        QgsVectorLayer* v = contourLayerFromRaster( userStyleElement, theRasterLayer );
-        if ( v )
-        {
-          QgsDebugMsg( "Returning vector layer" );
-          resultList.push_back( v );
-          mLayersToRemove.push_back( v );
-        }
+        QgsDebugMsg( "Returning vector layer" );
+        resultList.push_back( v );
+        mLayersToRemove.push_back( v );
       }
-      resultList.push_back( theMapLayer );
-
-      return resultList;
     }
+    resultList.push_back( theMapLayer );
+
+    return resultList;
   }
 
+  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
   if ( userStyleElement.isNull() )//apply a default style
   {
     QgsSymbolV2* symbol = QgsSymbolV2::defaultSymbol( theVectorLayer->geometryType() );

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
@@ -27,7 +27,7 @@
 
 class TestQgsMapToolZoom: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -45,7 +45,10 @@ void TestQgsMapToolZoom::initTestCase()
   QgsApplication::showSettings();
 }
 
-void TestQgsMapToolZoom::cleanupTestCase() {};
+void TestQgsMapToolZoom::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsMapToolZoom::init()
 {

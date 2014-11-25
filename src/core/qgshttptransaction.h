@@ -87,10 +87,7 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     @return true if proxy settings was applied, false else*/
     static bool applyProxySettings( QHttp& http, const QString& url );
 
-    /**
-     * Set the credentials (username and password)
-     */
-
+    /** Set the credentials (username and password) */
     void setCredentials( const QString& username, const QString &password );
 
     /**Returns the network timeout in msec*/

@@ -148,6 +148,7 @@
 %Include symbology-ng/qgsellipsesymbollayerv2widget.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2widget.sip
 %Include symbology-ng/qgsinvertedpolygonrendererwidget.sip
+%Include symbology-ng/qgsheatmaprendererwidget.sip
 %Include symbology-ng/qgslayerpropertieswidget.sip
 %Include symbology-ng/qgspenstylecombobox.sip
 %Include symbology-ng/qgspointdisplacementrendererwidget.sip

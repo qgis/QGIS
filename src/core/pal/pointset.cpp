@@ -364,7 +364,7 @@ namespace pal
 
 
         // iterate on all shape points except points which are in the hole
-        double isValid;
+        bool isValid;
         int k, l;
         for ( i = ( cHull[holeE] + 1 ) % nbp; i != ( cHull[holeS] - 1 + nbp ) % nbp; i = j )
         {

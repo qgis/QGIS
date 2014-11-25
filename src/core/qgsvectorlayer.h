@@ -494,10 +494,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       FileName,
       Enumeration,
       Immutable,      /**< The attribute value should not be changed in the attribute form */
-      Hidden,         /**< The attribute value should not be shown in the attribute form  */
+      Hidden,         /**< The attribute value should not be shown in the attribute form */
       TextEdit,       /**< multiline edit */
-      Calendar,       /**< calendar widget  */
-      DialRange,      /**< dial range  */
+      Calendar,       /**< calendar widget */
+      DialRange,      /**< dial range */
       ValueRelation,  /**< value map from an table */
       UuidGenerator,  /**< uuid generator - readonly and automatically intialized */
       Photo,          /**< phote widget */
@@ -638,7 +638,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note since 2.6 returns bool indicating whether the join can be added */
     bool addJoin( const QgsVectorJoinInfo& joinInfo );
 
-    /** Removes  a vector layer join */
+    /** Removes a vector layer join */
     void removeJoin( const QString& joinLayerId );
 
     const QList< QgsVectorJoinInfo >& vectorJoins() const;
@@ -769,8 +769,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Return renderer V2. */
     QgsFeatureRendererV2* rendererV2();
-    /** Set renderer V2.
-     */
+    /** Set renderer V2. */
     void setRendererV2( QgsFeatureRendererV2* r );
 
     /** Returns point, line or polygon */
@@ -1033,8 +1032,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
 
-    /** Returns true if the provider is in read-only mode
-     */
+    /** Returns true if the provider is in read-only mode */
     virtual bool isReadOnly() const;
 
     /** Returns true if the provider has been modified since the last commit */
@@ -1123,8 +1121,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** add an attribute field (but does not commit it)
-        returns true if the field was added
-       */
+        returns true if the field was added */
     bool addAttribute( const QgsField &field );
 
     /** Sets an alias (a display name) for attributes to display in dialogs */
@@ -1383,7 +1380,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**is edit widget editable **/
     bool fieldEditable( int idx );
 
-    /**label widget on top  **/
+    /**label widget on top **/
     bool labelOnTop( int idx );
 
     /**set edit widget editable **/
@@ -1407,12 +1404,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Destroy active command and reverts all changes in it */
     void destroyEditCommand();
 
-    /** Returns the index of a field name or -1 if the field does not exist
-     */
+    /** Returns the index of a field name or -1 if the field does not exist */
     int fieldNameIndex( const QString& fieldName ) const;
 
-    /** Editing vertex markers
-       */
+    /** Editing vertex markers */
     enum VertexMarkerType
     {
       SemiTransparentCircle,
@@ -1420,8 +1415,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       NoMarker
     };
 
-    /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
-       */
+    /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.) */
     static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
     /** Assembles mUpdatedFields considering provider fields, joined fields and added fields */

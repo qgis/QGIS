@@ -778,7 +778,7 @@ void QgsRasterHistogramWidget::histoActionTriggered( QAction* action )
   histoAction( action->data().toString(), action->isChecked() );
 }
 
-void QgsRasterHistogramWidget::histoAction( const QString actionName, bool actionFlag )
+void QgsRasterHistogramWidget::histoAction( const QString &actionName, bool actionFlag )
 {
   if ( actionName == "" )
     return;

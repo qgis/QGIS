@@ -20,8 +20,6 @@ class QgsDataItem : QObject
 
     int rowCount();
 
-    //
-
     virtual void refresh();
 
     // Create vector of children
@@ -56,6 +54,8 @@ class QgsDataItem : QObject
     // try to process the data dropped on this item
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ );
 
+    //
+
     enum Capability
     {
       NoCapabilities,
@@ -83,6 +83,9 @@ class QgsDataItem : QObject
     QString path() const;
     void setPath( const QString );
 
+    // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
+    // not possible to set mIcon in constructor. Either use mIconName/setIconName()
+    // or implement icon().
     void setIcon( QIcon icon );
     void setIconName( const QString & icon );
 

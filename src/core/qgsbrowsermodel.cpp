@@ -83,25 +83,25 @@ void QgsBrowserModel::updateProjectHome()
   if ( mProjectHome && mProjectHome->path() == home )
     return;
 
-  emit layoutAboutToBeChanged();
-
   int idx = mRootItems.indexOf( mProjectHome );
+
+  // using layoutAboutToBeChanged() was messing expanded items
+  if ( idx >= 0 )
+  {
+    beginRemoveRows( QModelIndex(), idx, idx );
+    mRootItems.remove( idx );
+    endRemoveRows();
+  }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home );
+  mProjectHome = home.isNull() ? 0 : new QgsDirectoryItem( NULL, tr( "Project home" ), home, "project:" + home );
   if ( mProjectHome )
   {
     connectItem( mProjectHome );
-    if ( idx < 0 )
-      mRootItems.insert( 0, mProjectHome );
-    else
-      mRootItems.replace( idx, mProjectHome );
-  }
-  else if ( idx >= 0 )
-  {
-    mRootItems.remove( idx );
-  }
 
-  emit layoutChanged();
+    beginInsertRows( QModelIndex(), 0, 0 );
+    mRootItems.insert( 0, mProjectHome );
+    endInsertRows();
+  }
 }
 
 void QgsBrowserModel::addRootItems()
@@ -109,7 +109,7 @@ void QgsBrowserModel::addRootItems()
   updateProjectHome();
 
   // give the home directory a prominent second place
-  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
+  QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -519,7 +519,6 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
     return;
 
   QgsDebugMsg( "Refresh " + item->path() );
-  //item->refresh();
 
   QList<QgsDataItem*> itemList;
   itemList << item;
@@ -538,7 +537,7 @@ QVector<QgsDataItem*> QgsBrowserModel::createChildren( QgsDataItem* item )
   QTime time;
   time.start();
   QVector <QgsDataItem*> children = item->createChildren();
-  QgsDebugMsg( QString( "Children created in %1 ms" ).arg( time.elapsed() ) );
+  QgsDebugMsg( QString( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ) );
   // Children objects must be pushed to main thread.
   foreach ( QgsDataItem* child, children )
   {

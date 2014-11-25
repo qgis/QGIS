@@ -30,12 +30,12 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QSignalSpy>
-#include <QtTest>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
 class TestQgsAtlasComposition: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

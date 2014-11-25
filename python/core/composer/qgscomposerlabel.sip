@@ -10,7 +10,7 @@ class QgsComposerLabel : QgsComposerItem
     QgsComposerLabel( QgsComposition *composition /TransferThis/);
     ~QgsComposerLabel();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -25,8 +25,7 @@ class QgsComposerLabel : QgsComposerItem
     int htmlState();
     void setHtmlState( int state );
 
-    /**Returns the text as it appears on screen (with replaced data field)
-      @note this function was added in version 1.2*/
+    /**Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
@@ -101,11 +100,9 @@ class QgsComposerLabel : QgsComposerItem
     */
     void setMarginY( const double margin );
 
-    /**Sets text color
-        @note: this function was added in version 1.4*/
+    /**Sets text color */
     void setFontColor( const QColor& c );
-    /**Get font color
-        @note: this function was added in version 1.4*/
+    /**Get font color */
     QColor fontColor() const;
 
     /** stores state in Dom element
@@ -137,11 +134,5 @@ class QgsComposerLabel : QgsComposerItem
     virtual void setFrameOutlineWidth( const double outlineWidth );
 
   public slots:
-    /* Sets rotation for the label
-     * @deprecated Use setItemRotation( double rotation ) instead
-     */
-    virtual void setRotation( double r );
-
-    /* Sets rotation for the label */
-    virtual void setItemRotation( double r );
+    void refreshExpressionContext();
 };

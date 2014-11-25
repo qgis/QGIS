@@ -89,10 +89,9 @@ def getVectorLayers(shapetype=[-1], sorting=True):
     for layer in layers:
         mapLayer = layer.layer()
         if mapLayer.type() == QgsMapLayer.VectorLayer:
-            if shapetype == ALL_TYPES or mapLayer.geometryType() in shapetype:
-                uri = unicode(mapLayer.source())
-                if not uri.lower().endswith('csv') and not uri.lower().endswith('dbf'):
-                    vector.append(mapLayer)
+            if (mapLayer.hasGeometryType() and
+                    (shapetype == ALL_TYPES or mapLayer.geometryType() in shapetype)):
+                vector.append(mapLayer)
     if sorting:
         return sorted(vector,  key=lambda layer: layer.name().lower())
     else:

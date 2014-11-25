@@ -108,7 +108,6 @@ class QgsStyleV2 : QObject
     bool removeSymbol( QString name );
 
     //! change symbol's name
-    //! @note added in v1.7
     bool renameSymbol( QString oldName, QString newName );
 
     //! return a NEW copy of symbol
@@ -200,9 +199,7 @@ class QgsStyleV2 : QObject
     bool removeColorRamp( QString name );
 
     //! change ramp's name
-    //! @note added in v1.7
     bool renameColorRamp( QString oldName, QString newName );
-
 
     //! load a file into the style
     bool load( QString filename );

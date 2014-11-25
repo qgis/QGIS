@@ -83,7 +83,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /**Create an icon for dragging colors
      * @param color for icon
      */
-    static QPixmap createDragIcon( const QColor color );
+    static QPixmap createDragIcon( const QColor &color );
 
   public slots:
 
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
      * @param emitSignals set to true to emit the colorChanged signal after setting color
      * @see color
      */
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
     /**Sets the color component which the widget controls
      * @param component color component for widget
@@ -115,7 +115,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     /**Emitted when the widget's color changes
      * @param color new widget color
      */
-    void colorChanged( const QColor color );
+    void colorChanged( const QColor &color );
 
   protected:
 
@@ -197,7 +197,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
   public slots:
 
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
 
@@ -291,8 +291,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     virtual void setComponent( const ColorComponent component );
 
   public slots:
-
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
 
@@ -485,7 +484,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 
     virtual void setComponent( const ColorComponent component );
     virtual void setComponentValue( const int value );
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   private:
 
@@ -514,7 +513,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 
     /**Called when the color for the ramp changes
     */
-    void rampColorChanged( const QColor color );
+    void rampColorChanged( const QColor &color );
 
     /**Called when the value of the spin box changes
     */
@@ -547,7 +546,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     virtual ~QgsColorTextWidget();
 
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
     void resizeEvent( QResizeEvent * event );

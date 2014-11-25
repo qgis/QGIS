@@ -40,7 +40,7 @@ class QgsMapLayer : QObject
     {
       VectorLayer,
       RasterLayer,
-      PluginLayer // added in 1.5
+      PluginLayer
     };
 
     /** Constructor
@@ -58,9 +58,7 @@ class QgsMapLayer : QObject
      */
     QgsMapLayer::LayerType type() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
-     * @note added in 1.7
-     */
+    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry */
     QString id() const;
 
     /** Set the display name of the layer
@@ -73,9 +71,7 @@ class QgsMapLayer : QObject
      */
     const QString & name() const;
 
-    /** Get the original name of the layer
-     * @note added in 1.9
-     */
+    /** Get the original name of the layer */
     const QString & originalName() const;
 
     void setTitle( const QString& title );
@@ -113,7 +109,7 @@ class QgsMapLayer : QObject
     QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
-        @note added in version 1.6*/
+        */
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -190,6 +186,7 @@ class QgsMapLayer : QObject
     /** stores state in Dom node
        @param layerElement is a Dom element corresponding to ``maplayer'' tag
        @param document is a the dom document being written
+       @param relativeBasePath base path for relative paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element to be
@@ -202,28 +199,25 @@ class QgsMapLayer : QObject
 
        @returns true if successful
     */
-    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document );
+    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, QString relativeBasePath = QString::null );
 
     /** Returns the given layer as a layer definition document
         Layer definitions store the data source as well as styling and custom properties.
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers );
+    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers, QString relativeBasePath = QString::null );
 
     /** Creates a new layer from a layer defininition document
     */
     static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
-    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString qlrfile );
+    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
 
-    /** Set a custom property for layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Set a custom property for layer. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString& key, const QVariant& value );
-    /** Read a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Read a custom property from layer. Properties are stored in a map and saved in project file. */
     QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
-    /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Remove a custom property from layer. Properties are stored in a map and saved in project file. */
     void removeCustomProperty( const QString& key );
 
 
@@ -244,8 +238,7 @@ class QgsMapLayer : QObject
     */
     const QgsCoordinateReferenceSystem& crs() const;
 
-    /** Sets layer's spatial reference system
-    @note emitSignal added in 1.4 */
+    /** Sets layer's spatial reference system */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
     /** A convenience function to (un)capitalise the layer name */
@@ -256,7 +249,6 @@ class QgsMapLayer : QObject
      * record in the users style table in their personal qgis.db)
      * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
-     * @note This method was added in QGIS 1.8
      */
     virtual QString styleURI();
 
@@ -373,6 +365,7 @@ class QgsMapLayer : QObject
      */
     void setLegend( QgsMapLayerLegend* legend /Transfer/ );
     /**
+     * Can be null.
      * @note added in 2.6
      */
     QgsMapLayerLegend* legend() const;
@@ -423,9 +416,7 @@ class QgsMapLayer : QObject
     /** Emit a signal that the layer name has been changed */
     void layerNameChanged();
 
-    /** Emit a signal that layer's CRS has been reset
-     added in 1.4
-     */
+    /** Emit a signal that layer's CRS has been reset */
     void layerCrsChanged();
 
     /** By emitting this signal the layer tells that either appearance or content have been changed
@@ -439,8 +430,7 @@ class QgsMapLayer : QObject
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();
 
-    /** data of layer changed
-     * added in 1.5 */
+    /** data of layer changed */
     void dataChanged();
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
@@ -459,8 +449,7 @@ class QgsMapLayer : QObject
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );
 
-    /** set whether layer is valid or not - should be used in constructor.
-        \note added in v1.5 */
+    /** set whether layer is valid or not - should be used in constructor. */
     void setValid( bool valid );
 
     /** called by readLayerXML(), used by children to read state specific to them from
@@ -474,12 +463,12 @@ class QgsMapLayer : QObject
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
 
-    /** Read custom properties from project file. Added in v1.4
+    /** Read custom properties from project file.
       @param layerNode note to read from
       @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
     void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = "" );
 
-    /** Write custom properties to project file. Added in v1.4 */
+    /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */

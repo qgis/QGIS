@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
@@ -34,7 +34,7 @@
  */
 class TestZipLayer: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   private:
 
@@ -291,6 +291,8 @@ void TestZipLayer::initTestCase()
 
 void TestZipLayer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   // restore zipSetting
   QSettings settings;
   settings.setValue( mSettingsKey, mScanZipSetting );

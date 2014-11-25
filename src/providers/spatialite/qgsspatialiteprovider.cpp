@@ -5560,3 +5560,8 @@ QGISEXTERN QString getStyleById( const QString& uri, QString styleId, QString& e
   sqlite3_free_table( results );
   return style;
 }
+
+QGISEXTERN void cleanupProvider()
+{
+  QgsSqliteHandle::closeAll();
+}

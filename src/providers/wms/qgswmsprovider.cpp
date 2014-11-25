@@ -2256,7 +2256,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
     {
       QgsDebugMsg( QString( "res:%1 >= %2" ).arg( it.key() ).arg( vres ) );
       prev = it;
-      it++;
+      ++it;
     }
 
     if ( it == m.constEnd() ||

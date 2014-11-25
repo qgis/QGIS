@@ -350,7 +350,10 @@ class GeoAlgorithm:
             if isinstance(param, (ParameterRaster, ParameterVector,
                           ParameterMultipleInput)):
                 if param.value:
-                    inputlayers = param.value.split(';')
+                    if isinstance(param, ParameterMultipleInput):
+                        inputlayers = param.value.split(';')
+                    else:
+                        inputlayers = [param.value]
                     for inputlayer in inputlayers:
                         for layer in layers:
                             if layer.source() == inputlayer:
@@ -377,7 +380,10 @@ class GeoAlgorithm:
             if isinstance(param, (ParameterRaster, ParameterVector,
                           ParameterMultipleInput)):
                 if param.value:
-                    layers = param.value.split(';')
+                    if isinstance(param, ParameterMultipleInput):
+                        layers = param.value.split(';')
+                    else:
+                        layers = [param.value]
                     for item in layers:
                         crs = dataobjects.getObject(item).crs()
                         if crs not in crsList:
