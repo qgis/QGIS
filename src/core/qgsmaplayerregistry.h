@@ -241,7 +241,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject, public QgsSingleton<QgsM
     QMap<QString, QgsMapLayer*> mMapLayers;
     QSet<QgsMapLayer*> mOwnedLayers;
 
-    friend class QgsSingleton; // Let QgsSingleton access private constructor
+    friend class QgsSingleton<QgsMapLayerRegistry>; // Let QgsSingleton access private constructor
 }; // class QgsMapLayerRegistry
 
 #endif //QgsMapLayerRegistry_H
