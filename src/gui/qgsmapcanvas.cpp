@@ -1632,8 +1632,6 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
   setExtent( r );
 
-  r = mapSettings().visibleExtent();
-
   refresh();
 }
 
