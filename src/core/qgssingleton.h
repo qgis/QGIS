@@ -40,8 +40,6 @@ class QgsSingleton
 
     explicit QgsSingleton()
     {
-      Q_ASSERT( sInstance == 0 );
-      sInstance = static_cast<T*>( this );
     }
 
   private:
