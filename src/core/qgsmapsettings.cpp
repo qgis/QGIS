@@ -69,9 +69,12 @@ double QgsMapSettings::rotation() const
 
 void QgsMapSettings::setRotation( double degrees )
 {
+  if ( mRotation == degrees ) return;
+
   mRotation = degrees;
 
-  updateDerived(); // should it update extent ?
+  // TODO: update extent while keeping scale ?
+  updateDerived();
 }
 
 
@@ -126,6 +129,11 @@ void QgsMapSettings::updateDerived()
     return;
   }
 
+  // If there's a rotation, rotate the extent back first
+  if ( mRotation ) {
+    //mExtent
+  }
+
   // calculate the translation and scaling parameters
   double mapUnitsPerPixelY = mExtent.height() / myHeight;
   double mapUnitsPerPixelX = mExtent.width() / myWidth;
@@ -155,7 +163,7 @@ void QgsMapSettings::updateDerived()
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
   mMapToPixel = QgsMapToPixel( mapUnitsPerPixel(), outputSize().height(), visibleExtent().yMinimum(), visibleExtent().xMinimum() );
-  mMapToPixel.setMapRotation( mRotation );
+  mMapToPixel.setMapRotation( mRotation, visibleExtent().center().x(), visibleExtent().center().y() );
 
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
   QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( myWidth ) ).arg( qgsDoubleToString( myHeight ) ) );
