@@ -14,7 +14,16 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <property name="spacing">
@@ -640,6 +649,13 @@
        <widget class="QToolButton" name="mRunFieldCalc">
         <property name="text">
          <string>Update All</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mRunFieldCalcSelected">
+        <property name="text">
+         <string>Update Selected</string>
         </property>
        </widget>
       </item>
