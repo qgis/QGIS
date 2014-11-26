@@ -70,7 +70,7 @@ class QgsRequestHandler
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
     /**Return the response body*/
-    virtual QByteArray* body( ) { return &mBody; }
+    virtual QByteArray body( ) { return mBody; }
     virtual void setInfoFormat( const QString &format ) = 0;
     /**Check if the response headers or the response body are not empty*/
     virtual bool responseReady() const = 0;
