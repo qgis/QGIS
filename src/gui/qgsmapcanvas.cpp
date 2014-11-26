@@ -99,8 +99,8 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
   connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsC2R() ) );
   connect( mRenderer, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsR2C() ) );
 
-  connect( mCanvas, SIGNAL( mapRotationChanged() ), this, SLOT( onMapRotationC2R() ) );
-  connect( mRenderer, SIGNAL( mapRotationChanged() ), this, SLOT( onMapRotationR2C() ) );
+  connect( mCanvas, SIGNAL( rotationChanged( double ) ), this, SLOT( onMapRotationC2R() ) );
+  connect( mRenderer, SIGNAL( rotationChanged( double ) ), this, SLOT( onMapRotationR2C() ) );
 
   connect( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( onCrsTransformC2R() ) );
   connect( mRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( onCrsTransformR2C() ) );
