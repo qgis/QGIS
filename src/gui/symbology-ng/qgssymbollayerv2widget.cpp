@@ -3207,7 +3207,7 @@ void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
   QImage image( mLayer->imageFilePath() );
   if ( image.isNull() )
   {
-    mLabelImagePreview->setPixmap( 0 );
+    mLabelImagePreview->setPixmap( QPixmap() );
     return;
   }
 
