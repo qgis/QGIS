@@ -130,7 +130,7 @@ void QgsMapSettings::updateDerived()
   }
 
   // Handle rotation
-  if ( mRotation ) {
+  if ( 0 && mRotation ) {
     QgsRectangle vp(0,0,myWidth,myHeight);
     vp.rotate(-mRotation);
     QgsDebugMsg( QString("preRot:%1x%2 pstRot(%3):%4x%5").arg(myWidth).arg(myHeight).arg(mRotation).arg(vp.width()).arg(vp.height()) );

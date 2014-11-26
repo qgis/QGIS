@@ -45,20 +45,25 @@ QTransform QgsMapToPixel::getMatrix() const
 
   QTransform matrix;
 
+  double cy = mHeight/2.0;
+  double mWidth = ((xCenter-xMin)*2)/mMapUnitsPerPixel;
+  double cx = mWidth/2.0;
+  double rotation = mapRotation();
+
   // NOTE: operations are done in the reverse order in which
   //       they are configured, so rotation happens first,
   //       then scaling, then translation
 
   matrix.translate( xCenter, yCenter );
   matrix.scale( mMapUnitsPerPixel, -mMapUnitsPerPixel );
-
   // Rotate around viewport center
-  double cy = mHeight/2.0;
-  double cx = (xCenter-xMin)/mMapUnitsPerPixel;
-  matrix.rotate( -mapRotation() );
+  matrix.rotate( -rotation );
   matrix.translate( -cx, -cy );
 
   //QgsDebugMsg(QString("XXX xMin:%1 yMin:%2 mHeight:%3 uPP:%4").arg(xMin).arg(yMin).arg(mHeight).arg(mMapUnitsPerPixel));
+  QgsDebugMsg(QString("XXX xCent:%1 yCent:%2 mWidth:%3 mHeight:%4 uPP:%5 rot:%6")
+    .arg(xCenter).arg(yCenter).arg(mWidth).arg(mHeight)
+    .arg(mMapUnitsPerPixel).arg(rotation));
 
   return matrix;
 }
@@ -70,7 +75,7 @@ QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
   matrix.map(x, y, &mx, &my);
   QgsPoint ret( mx, my );
 
-QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
+  //QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
 
   return ret;
 }
@@ -188,6 +193,7 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   assert(invertible);
   double mx, my;
   matrix.map(x, y, &mx, &my);
+ QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
   x = mx; y = my;
 }
 
