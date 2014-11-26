@@ -51,8 +51,9 @@ QTransform QgsMapToPixel::getMatrix() const
     .arg(mMapUnitsPerPixel).arg(rotation).arg((quintptr)this,QT_POINTER_SIZE *2, 15, QChar('0')));
 
   // NOTE: operations are done in the reverse order in which
-  //       they are configured, so rotation happens first,
-  //       then scaling, then translation
+  //       they are configured, so translation to geographical
+  //       center happens first, then scaling, then rotation
+  //       and finally translation to output viewport center
 
   return QTransform::fromTranslate( cx, cy )
          .rotate( rotation )
