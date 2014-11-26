@@ -103,15 +103,16 @@ class CORE_EXPORT QgsExpression
     //! Get the expression ready for evaluation - find out column indexes.
     bool prepare( const QgsFields &fields );
 
-    /**Get list of columns referenced by the expression.
+    /**
+     * Get list of columns referenced by the expression.
      * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      */
-    QStringList referencedColumns();
+    QStringList referencedColumns() const;
 
     //! Returns true if the expression uses feature geometry for some computation
-    bool needsGeometry();
+    bool needsGeometry() const;
 
     // evaluation
 

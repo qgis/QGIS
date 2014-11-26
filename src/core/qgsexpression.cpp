@@ -1891,7 +1891,7 @@ QgsExpression::~QgsExpression()
   delete mRootNode;
 }
 
-QStringList QgsExpression::referencedColumns()
+QStringList QgsExpression::referencedColumns() const
 {
   if ( !mRootNode )
     return QStringList();
@@ -1915,7 +1915,7 @@ QStringList QgsExpression::referencedColumns()
   return columns;
 }
 
-bool QgsExpression::needsGeometry()
+bool QgsExpression::needsGeometry() const
 {
   if ( !mRootNode )
     return false;
