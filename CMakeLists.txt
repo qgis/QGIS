@@ -47,7 +47,7 @@ IF(WITH_MAPSERVER)
 ENDIF(WITH_MAPSERVER)
 
 
-SET (WITH_SERVER_PLUGINS FALSE CACHE BOOL "Determines whether QGIS mapserver support for python plugins should be built")
+SET (WITH_SERVER_PLUGINS TRUE CACHE BOOL "Determines whether QGIS mapserver support for python plugins should be built")
 IF(WITH_SERVER_PLUGINS)
   SET(MAPSERVER_HAVE_PYTHON_PLUGINS TRUE)
 ENDIF(WITH_SERVER_PLUGINS)
