@@ -64,7 +64,6 @@ SET (qgis_mapserv_RCCS
 
 
 
-IF (WITH_SERVER_PLUGINS)
 #############################################################
 # qgis_server library
 
@@ -102,6 +101,7 @@ TARGET_LINK_LIBRARIES(qgis_server
   ${GDAL_LIBRARY}
 )
 
+IF (WITH_SERVER_PLUGINS)
 # install
 
 INSTALL(TARGETS qgis_server
@@ -166,13 +166,6 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   ${POSTGRES_LIBRARY}
   ${GDAL_LIBRARY}
 )
-
-IF (WITH_SERVER_PLUGINS)
-TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
-  qgispython
-)
-
-ENDIF (WITH_SERVER_PLUGINS)
 
 ########################################################
 # Install
