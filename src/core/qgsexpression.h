@@ -162,7 +162,13 @@ class CORE_EXPORT QgsExpression
     double scale() { return mScale; }
 
     //! Alias for dump()
-    const QString expression() const { return dump(); }
+    const QString expression() const
+    {
+      if ( !mExp.isNull() )
+        return mExp;
+      else
+        return dump();
+    }
 
     //! Return the expression string that represents this QgsExpression.
     QString dump() const;
@@ -620,7 +626,9 @@ class CORE_EXPORT QgsExpression
     static QString group( QString group );
 
   protected:
-    // internally used to create an empty expression
+    /**
+     * Used by QgsOgcUtils to create an empty
+     */
     QgsExpression() : mRootNode( 0 ), mRowNumber( 0 ), mCalc( 0 ) {}
 
     void initGeomCalculator();
@@ -634,16 +642,17 @@ class CORE_EXPORT QgsExpression
     double mScale;
     QString mExp;
 
+    QgsDistanceArea *mCalc;
+
     static QMap<QString, QVariant> gmSpecialColumns;
     static QMap<QString, QString> gmSpecialColumnGroups;
 
-    QgsDistanceArea *mCalc;
-
-    friend class QgsOgcUtils;
-
-    static void initFunctionHelp();
     static QHash<QString, QString> gFunctionHelpTexts;
     static QHash<QString, QString> gGroups;
+
+    static void initFunctionHelp();
+
+    friend class QgsOgcUtils;
 
   private:
     Q_DISABLE_COPY( QgsExpression )  // for now - until we have proper copy constructor / implicit sharing
