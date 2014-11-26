@@ -95,7 +95,9 @@ static QLocale cLocale("C");
 
 %}
 
-%s IN_COMMENT
+%s BLOCK_COMMENT
+
+line_comment \-\-[^\r\n]*[\r\n]?
 
 white       [ \t\r\n]+
 
@@ -120,9 +122,9 @@ string      "'"{str_char}*"'"
 %%
 
 <INITIAL>{
-  "/*" BEGIN(IN_COMMENT);
+  "/*" BEGIN(BLOCK_COMMENT);
 }
-<IN_COMMENT>{
+<BLOCK_COMMENT>{
   "*/" BEGIN(INITIAL);
   [^*\n]+   // eat comment in chunks
   "*"       // eat the lone star
@@ -194,6 +196,8 @@ string      "'"{str_char}*"'"
 {column_ref_quoted}  { TEXT_FILTER(stripColumnRef); return COLUMN_REF; }
 
 {white}    /* skip blanks and tabs */
+
+{line_comment} /* skip line comments */
 
 .       { return Unknown_CHARACTER; }
 
