@@ -6,4 +6,4 @@ ParameterRaster|-dm|Decay Multiplier Grid|False
 ParameterRaster|-wg|Weight Grid|True
 ParameterVector|-o|Outlets Shapefile|0|True
 ParameterBoolean|-nc|Check for edge contamination|True
-OutputRaster|-dsca|Upslope Dependence Grid
+OutputRaster|-dsca|Decayed Specific Catchment Area Grid

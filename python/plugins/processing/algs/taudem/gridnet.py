@@ -71,7 +71,7 @@ class GridNet(GeoAlgorithm):
                           [ParameterVector.VECTOR_TYPE_POINT], True))
         self.addParameter(ParameterRaster(self.MASK_GRID, 'Mask Grid', True))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-                          'Proportion Threshold', 0, None, 100))
+                          'Mask Threshold', 0, None, 100))
 
         self.addOutput(OutputRaster(self.LONGEST_LEN_GRID,
                        'Longest Upslope Length Grid'))
