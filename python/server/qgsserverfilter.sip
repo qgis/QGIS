@@ -42,7 +42,7 @@ public:
     * QgsServerInterface passed to plugins constructors
     * and must be passed to QgsServerFilter instances.
     */
-   QgsServerFilter( QgsServerInterface* serverInterface /Transfer/);
+   QgsServerFilter( QgsServerInterface* serverInterface);
    /** Destructor */
    virtual ~QgsServerFilter();
    /** Return the QgsServerInterface instance*/
