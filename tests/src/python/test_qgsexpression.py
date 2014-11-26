@@ -87,5 +87,27 @@ class TestQgsExpressionCustomFunctions(TestCase):
 		for txt in ["id", u"idä", "\"id abc\"", "\"id	abc\""]:
 			self.assertEqual( txt, QgsExpression(txt).expression() )
 
+	def testBlockComment(self):
+		expressions = {
+			"'test' /* comment */": 'test',
+			"/* comment */'test'": 'test',
+		    "/* comment */'test*/'": 'test*/',
+			"/** comment */'test*/'": 'test*/',
+			"/* comment **/'test*/' /* comment */": 'test*/',
+			"'test/*'/* comment */": 'test/*',
+			"""/**
+			comment
+			**/
+			'test*/'""": 'test*/',
+			"""'test*/'
+			/**
+			comment
+			**/""": 'test*/'
+		}
+		for e, exp_res in expressions.iteritems():
+			exp = QgsExpression(e)
+			result = exp.evaluate()
+			self.assertEqual(exp_res, result)
+
 if __name__ == "__main__":
 	unittest.main()
