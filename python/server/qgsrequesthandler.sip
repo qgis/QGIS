@@ -36,7 +36,7 @@ class QgsRequestHandler
     /**Delete all HTTP headers*/
     virtual void clearHeaders( ) = 0;
     /**Returns the response body*/
-    virtual QByteArray* body();
+    virtual QByteArray body();
     /**Append the bytestream to response body*/
     virtual void appendBody( const QByteArray &body) = 0;
     /**Clears the response body*/
