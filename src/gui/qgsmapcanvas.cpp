@@ -725,7 +725,11 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    mMap->setContent( img, mSettings.visibleExtent() );
+    QgsRectangle rect = mSettings.visibleExtent();
+    // TODO: should QgsMapSetting::visibleExtent()
+    //       return the pre-rotated bbox instead ?
+    rect.rotate( mSettings.rotation() );
+    mMap->setContent( img, rect );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
