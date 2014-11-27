@@ -120,7 +120,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   }
 
   mUrl = url;
-  loadHtml();
+  loadHtml( true );
   emit changed();
 }
 
@@ -136,11 +136,11 @@ void QgsComposerHtml::setHtml( const QString html )
 void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
 {
   mEvaluateExpressions = evaluateExpressions;
-  loadHtml();
+  loadHtml( true );
   emit changed();
 }
 
-void QgsComposerHtml::loadHtml()
+void QgsComposerHtml::loadHtml( const bool useCache )
 {
   if ( !mWebPage )
   {
@@ -166,7 +166,7 @@ void QgsComposerHtml::loadHtml()
       {
         return;
       }
-      if ( currentUrl != mLastFetchedUrl )
+      if ( !( useCache && currentUrl == mLastFetchedUrl ) )
       {
         loadedHtml = fetchHtml( QUrl( currentUrl ) );
         mLastFetchedUrl = currentUrl;
@@ -459,7 +459,7 @@ void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
   if ( mEnableUserStylesheet != stylesheetEnabled )
   {
     mEnableUserStylesheet = stylesheetEnabled;
-    loadHtml();
+    loadHtml( true );
     emit changed();
   }
 }
@@ -518,7 +518,7 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   {
     mUrl = urlString;
   }
-  loadHtml();
+  loadHtml( true );
 
   //since frames had to be created before, we need to emit a changed signal to refresh the widget
   emit changed();
@@ -562,7 +562,7 @@ void QgsComposerHtml::refreshExpressionContext()
   }
 
   setExpressionContext( feature, vl );
-  loadHtml();
+  loadHtml( true );
 }
 
 void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
@@ -570,7 +570,7 @@ void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataD
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )
   {
-    loadHtml();
+    loadHtml( true );
   }
   QgsComposerObject::refreshDataDefinedProperty( property );
 }
