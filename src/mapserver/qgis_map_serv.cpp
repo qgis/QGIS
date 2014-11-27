@@ -38,6 +38,12 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
 
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#include "qgsserverplugins.h"
+#include "qgsserverfilter.h"
+#include "qgsserverinterfaceimpl.h"
+#endif
+
 #include <QDomDocument>
 #include <QNetworkDiskCache>
 #include <QImage>
@@ -89,7 +95,7 @@ void printRequestInfos()
   }
   if ( getenv( "REMOTE_HOST" ) != NULL )
   {
-    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_ADDR" ) ), "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( "remote ip: " + QString( getenv( "REMOTE_HOST" ) ), "Server", QgsMessageLog::INFO );
   }
   if ( getenv( "REMOTE_USER" ) != NULL )
   {
@@ -315,6 +321,22 @@ int main( int argc, char * argv[] )
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
 
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+  // Create the interface
+  QgsServerInterfaceImpl serverIface( &capabilitiesCache );
+  // Init plugins
+  if ( ! QgsServerPlugins::initPlugins( &serverIface ) )
+  {
+    QgsMessageLog::logMessage( "No server python plugins are available", "Server", QgsMessageLog::INFO );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( "Server python plugins loaded", "Server", QgsMessageLog::INFO );
+  }
+  // Store plugin filters for faster access
+  QMultiMap<int, QgsServerFilter*> pluginFilters = serverIface.filters();
+#endif
+
   while ( fcgi_accept() >= 0 )
   {
     QgsMapLayerRegistry::instance()->removeAllMapLayers();
@@ -339,6 +361,25 @@ int main( int argc, char * argv[] )
       QgsMessageLog::logMessage( "Parse input exception: " + e.message(), "Server", QgsMessageLog::CRITICAL );
       theRequestHandler->setServiceException( e );
     }
+
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+    // Set the request handler into the interface for plugins to manipulate it
+    serverIface.setRequestHandler( theRequestHandler.data() );
+    // Iterate filters and call their requestReady() method
+    QgsServerFiltersMap::const_iterator filtersIterator;
+    for ( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator )
+    {
+      filtersIterator.value()->requestReady();
+    }
+
+    //Pass the filters to the requestHandler, this is needed for the following reasons:
+    // 1. allow core services to access plugin filters and implement thir own plugin hooks
+    // 2. allow requestHandler to call sendResponse plugin hook
+
+    //TODO: implement this in the requestHandler ctor (far easier if we will get rid of
+    //      MAPSERVER_HAVE_PYTHON_PLUGINS
+    theRequestHandler->setPluginFilters( pluginFilters );
+#endif
 
     // Copy the parameters map
     QMap<QString, QString> parameterMap( theRequestHandler->parameterMap() );
@@ -398,6 +439,13 @@ int main( int argc, char * argv[] )
       } // end switch
     } // end if not exception raised
 
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+    // Iterate filters and call their responseComplete() method
+    for ( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator )
+    {
+      filtersIterator.value()->responseComplete();
+    }
+#endif
     theRequestHandler->sendResponse();
 
     if ( logLevel < 1 )

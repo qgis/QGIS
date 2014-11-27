@@ -93,7 +93,14 @@ void QgsApplication::init( QString customConfigPath )
 {
   if ( customConfigPath.isEmpty() )
   {
-    customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( QGis::QGIS_VERSION_INT / 10000 );
+    if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+    {
+      customConfigPath = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+    }
+    else
+    {
+      customConfigPath = QString( "%1/.qgis%2/" ).arg( QDir::homePath() ).arg( QGis::QGIS_VERSION_INT / 10000 );
+    }
   }
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );

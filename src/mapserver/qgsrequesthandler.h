@@ -22,9 +22,16 @@
 #ifndef QGSREQUESTHANDLER_H
 #define QGSREQUESTHANDLER_H
 
+//Needed for MAPSERVER_HAVE_PYTHON_PLUGINS
+#include "qgsconfig.h"
+
 #include <QMap>
 #include <QString>
 #include <QStringList>
+
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#include "qgsserverfilter.h"
+#endif
 
 class QDomDocument;
 class QImage;
@@ -62,10 +69,13 @@ class QgsRequestHandler
     virtual void appendBody( const QByteArray &body ) = 0;
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
+    /**Return the response body*/
+    virtual QByteArray body( ) { return mBody; }
     virtual void setInfoFormat( const QString &format ) = 0;
+    /**Check if the response headers or the response body are not empty*/
+    virtual bool responseReady() const = 0;
     /**Send out HTTP headers and flush output buffer*/
     virtual void sendResponse( ) = 0;
-    virtual bool responseReady() const = 0;
     /**Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
     QMap<QString, QString> parameterMap( ) { return mParameterMap; }
@@ -75,13 +85,23 @@ class QgsRequestHandler
     virtual int removeParameter( const QString &key ) = 0;
     /**Return a request parameter*/
     virtual QString parameter( const QString &key ) const = 0;
+    /**Return the requested format string*/
     QString format() const { return mFormat; }
+    /**Return the mime type for the response*/
+    QString infoFormat() const { return mInfoFormat; }
+    /**Return true if the HTTP headers were already sent to the client*/
     bool headersSent() { return mHeadersSent; }
-
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+    /**Allow core services to call plugin hooks through sendResponse() */
+    virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
+#endif
   protected:
-
     virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+    QgsServerFiltersMap mPluginFilters;
+#endif
+    QByteArray mBody; // The response payload
     /**This is set by the parseInput methods of the subclasses (parameter FORMAT, e.g. 'FORMAT=PNG')*/
     QString mFormat;
     QString mFormatString; //format string as it is passed in the request (with base)
@@ -93,6 +113,7 @@ class QgsRequestHandler
     /** Response headers. They can be empty, in this case headers are
         automatically generated from the content mFormat */
     QMap<QString, QString> mHeaders;
+
 };
 
 #endif

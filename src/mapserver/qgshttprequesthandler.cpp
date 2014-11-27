@@ -57,14 +57,13 @@ void QgsHttpRequestHandler::setHttpResponse( QByteArray *ba, const QString &form
     return;
   }
   QgsDebugMsg( "Byte array looks good, setting response..." );
-
   appendBody( *ba );
   mInfoFormat = format;
 }
 
 bool QgsHttpRequestHandler::responseReady() const
 {
-  return mHeaders.count() || ( mBody.size() && mInfoFormat.length() );
+  return mHeaders.count() || mBody.size();
 }
 
 bool QgsHttpRequestHandler::exceptionRaised() const
@@ -133,24 +132,45 @@ void QgsHttpRequestHandler::sendHeaders()
     printf( "\n" );
   }
   printf( "\n" );
+  mHeaders.clear();
   mHeadersSent = TRUE;
 }
 
 void QgsHttpRequestHandler::sendBody() const
 {
-  fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
-  QgsDebugMsg( QString( "Sent %1 bytes" ).arg( mBody.size() ) );
+  size_t result = fwrite(( void* )mBody.data(), mBody.size(), 1, FCGI_stdout );
+#ifdef QGISDEBUG
+  QgsDebugMsg( QString( "Sent %1 blocks of %2 bytes" ).arg( result ).arg( mBody.size() ) );
+#else
+  Q_UNUSED( result );
+#endif
 }
+
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+void QgsHttpRequestHandler::setPluginFilters( QgsServerFiltersMap pluginFilters )
+{
+  mPluginFilters = pluginFilters;
+}
+#endif
 
 void QgsHttpRequestHandler::sendResponse()
 {
   QgsDebugMsg( QString( "Sending HTTP response" ) );
   if ( ! responseReady() )
   {
-    QgsDebugMsg( QString( "Trying to send out an empty reponse" ) );
+    QgsDebugMsg( QString( "Trying to send out an invalid response" ) );
     return;
   }
-  if ( ! mHeadersSent )
+#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+  // Plugin hook
+  // Iterate filters and call their sendResponse() method
+  QgsServerFiltersMap::const_iterator filtersIterator;
+  for ( filtersIterator = mPluginFilters.constBegin(); filtersIterator != mPluginFilters.constEnd(); ++filtersIterator )
+  {
+    filtersIterator.value()->sendResponse();
+  }
+#endif
+  if ( ! headersSent() )
   {
     sendHeaders();
   }
@@ -398,6 +418,10 @@ void QgsHttpRequestHandler::setServiceException( QgsMapServiceException ex )
   serviceExceptionReportElem.appendChild( serviceExceptionElem );
 
   QByteArray ba = exceptionDoc.toByteArray();
+  // Clear response headers and body and set new exception
+  // TODO: check for headersSent()
+  clearHeaders();
+  clearBody();
   setHttpResponse( &ba, "text/xml" );
 }
 
