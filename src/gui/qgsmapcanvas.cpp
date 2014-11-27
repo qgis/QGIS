@@ -726,9 +726,6 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     QgsRectangle rect = mSettings.visibleExtent();
-    // TODO: should QgsMapSetting::visibleExtent()
-    //       return the pre-rotated bbox instead ?
-    rect.rotate( mSettings.rotation() );
     mMap->setContent( img, rect );
   }
 
