@@ -302,6 +302,12 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
+  //size scaling by field
+  if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
+  {
+    applySizeScale( context, mPen, mSelPen );
+  }
+
   double offset = mOffset;
   applyDataDefinedSymbology( context, mPen, mSelPen, offset );
 
@@ -458,24 +464,24 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::createFromSld( QDomElement &elemen
   return l;
 }
 
+void QgsSimpleLineSymbolLayerV2::applySizeScale( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen )
+{
+  double scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
+  pen.setWidthF( scaledWidth );
+  selPen.setWidthF( scaledWidth );
+}
+
 void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset )
 {
   if ( mDataDefinedProperties.isEmpty() )
     return; // shortcut
 
   //data defined properties
-  double scaledWidth = 0;
   QgsExpression* strokeWidthExpression = expression( "width" );
   if ( strokeWidthExpression )
   {
-    scaledWidth = strokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble()
-                  * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
-    pen.setWidthF( scaledWidth );
-    selPen.setWidthF( scaledWidth );
-  }
-  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
-  {
-    scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
+    double scaledWidth = strokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble()
+                         * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
     pen.setWidthF( scaledWidth );
     selPen.setWidthF( scaledWidth );
   }

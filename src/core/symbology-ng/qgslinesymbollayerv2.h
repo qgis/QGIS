@@ -137,6 +137,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
   private:
     //helper functions for data defined symbology
     void applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen, double& offset );
+    void applySizeScale( QgsSymbolV2RenderContext& context, QPen& pen, QPen& selPen );
 };
 
 /////////
