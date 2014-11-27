@@ -119,7 +119,6 @@ ENDIF (WITH_SERVER_PLUGINS) # end qgis_server library
 
 QT4_WRAP_UI (qgis_mapserv_UIS_H  ${qgis_mapserv_UIS})
 
-QT4_WRAP_CPP (qgis_mapserv_MOC_SRCS  ${qgis_mapserv_MOC_HDRS})
 
 QT4_ADD_RESOURCES(qgis_mapserv_RCC_SRCS ${qgis_mapserv_RCCS})
 
