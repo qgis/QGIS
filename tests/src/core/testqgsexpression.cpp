@@ -89,7 +89,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "string literal" ) << "'test'" << true;
       QTest::newRow( "column reference" ) << "my_col" << true;
       QTest::newRow( "quoted column" ) << "\"my col\"" << true;
-      QTest::newRow( "unary minus" ) << "--3" << true;
+      QTest::newRow( "unary minus" ) << "-(-3)" << true;
       QTest::newRow( "function" ) << "cos(0)" << true;
       QTest::newRow( "function2" ) << "atan2(0,1)" << true;
       QTest::newRow( "operator IN" ) << "x in (a,b)" << true;
