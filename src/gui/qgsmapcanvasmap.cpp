@@ -64,7 +64,7 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   }
 
   // For debugging:
-#if 1
+#if 0
   QRectF br = boundingRect();
   QPointF c = br.center();
   double rad = std::max(br.width(),br.height())/10;
