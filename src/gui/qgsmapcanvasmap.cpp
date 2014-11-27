@@ -64,7 +64,22 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   }
 
   // For debugging:
-  // painter->drawRect( boundingRect() ); 
+#if 1
+  QRectF br = boundingRect();
+  QPointF c = br.center();
+  double rad = std::max(br.width(),br.height())/10;
+  painter->drawRoundedRect( br, rad, rad );
+  painter->drawLine( QLineF(0, 0, br.width(), br.height()) );
+  painter->drawLine( QLineF(br.width(), 0, 0, br.height()) );
+
+  double nw = br.width()*0.5; double nh = br.height()*0.5;
+  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  painter->drawRoundedRect( br, rad, rad );
+
+  nw = br.width()*0.5; nh = br.height()*0.5;
+  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  painter->drawRoundedRect( br, rad, rad );
+#endif
 }
 
 QPaintDevice& QgsMapCanvasMap::paintDevice()
