@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.0" language="lv_LV">
 <context>
     <name>@default</name>
     <message>
@@ -43,12 +43,12 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Uncaught error executing %s.
-See log for more information</source>
+        <source>Executing iteration %s/%s...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Executing iteration %s/%s...</source>
+        <source>Uncaught error executing %s.
+See log for more information</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -63,103 +63,125 @@ See log for more information</source>
     <name>AddModelFromFileAction</name>
     <message>
         <source>Add model from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot modeli no faila</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Rīki</translation>
+        <translation>Rīki</translation>
     </message>
     <message>
         <source>Open model</source>
-        <translation type="unfinished">Atvērt modeli</translation>
+        <translation>Atvērt modeli</translation>
     </message>
     <message>
         <source>Processing model files (*.model *.MODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Apstrādes modeļu faili (*.model *.MODEL)</translation>
     </message>
     <message>
         <source>Error reading model</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda modeļa nolasīšanā</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid model</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlētais fails nesatur derīgu modeli</translation>
     </message>
     <message>
         <source>Cannot read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar nolasīt modeli</translation>
     </message>
 </context>
 <context>
     <name>AddScriptFromFileAction</name>
     <message>
         <source>Add script from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot skriptu no faila</translation>
     </message>
     <message>
         <source>Tools</source>
-        <translation type="unfinished">Rīki</translation>
+        <translation>Rīki</translation>
     </message>
     <message>
         <source>Script files</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriptu faili</translation>
     </message>
     <message>
         <source>Script files (*.py *.PY)</source>
-        <translation type="unfinished"></translation>
+        <translation>Skriptu faili (*.py *.PY)</translation>
     </message>
     <message>
         <source>Error reading script</source>
-        <translation type="unfinished"></translation>
+        <translation>Kļūda noslasot skriptu</translation>
     </message>
     <message>
         <source>The selected file does not contain a valid script</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlētais fails nesatur derīgu skriptu</translation>
+    </message>
+</context>
+<context>
+    <name>AlgorithmDialog</name>
+    <message>
+        <source>Unable to execute algorithm</source>
+        <translation type="obsolete">Nebija iespējams izpildīt algoritmu</translation>
+    </message>
+    <message>
+        <source>Wrong or missing parameter values</source>
+        <translation type="obsolete">Nepareiza  vai trūkstoša parametra vērtība</translation>
     </message>
 </context>
 <context>
     <name>AlgorithmProvider</name>
     <message>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktivēt</translation>
     </message>
     <message>
         <source>Generic algorithm provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Vispārēju algoritmu sniedzējs</translation>
     </message>
 </context>
 <context>
     <name>BatchInputSelectionPanel</name>
     <message>
         <source>Select from open layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlēties no atvērtajiem slāņiem</translation>
     </message>
     <message>
         <source>Select from filesystem</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlēties no failu sistēmas</translation>
     </message>
     <message>
         <source>Open file</source>
-        <translation type="unfinished">Atvērt failu</translation>
+        <translation>Atvērt failu</translation>
     </message>
     <message>
         <source>All files(*.*);;</source>
-        <translation type="unfinished">Visi faili (*)</translation>
+        <translation>Visi faili (*);;</translation>
     </message>
 </context>
 <context>
     <name>BatchOutputSelectionPanel</name>
     <message>
         <source>Save file</source>
-        <translation type="unfinished">Saglabāt failu</translation>
+        <translation>Saglabāt failu</translation>
+    </message>
+</context>
+<context>
+    <name>BatchPanel</name>
+    <message>
+        <source>Load in QGIS</source>
+        <translation type="obsolete">Ielādēt QGIS</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="obsolete">Jā</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="obsolete">Nē</translation>
     </message>
 </context>
 <context>
     <name>BatchProcessingDialog</name>
-    <message>
-        <source>Batch Processing - %s</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>Show advanced parameters</source>
         <translation type="unfinished">Rādīt paplašinātos parametrus</translation>
@@ -170,10 +192,26 @@ See log for more information</source>
     </message>
     <message>
         <source>Delete row</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dzēst rindu</translation>
     </message>
     <message>
         <source>Load in QGIS</source>
+        <translation type="unfinished">Ielādēt QGIS</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Jā</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Nē</translation>
+    </message>
+    <message>
+        <source>Hide advanced parameters</source>
+        <translation type="unfinished">Slēpt paplašinātos parametrus</translation>
+    </message>
+    <message>
+        <source>Batch Processing - %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -204,40 +242,28 @@ See log for more information</source>
         <source>Batch processing successfully completed!</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Yes</source>
-        <translation type="unfinished">Jā</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="unfinished">Nē</translation>
-    </message>
-    <message>
-        <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>CalculatorModelerAlgorithm</name>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulators</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Tikai modelētāja rīki</translation>
     </message>
     <message>
         <source>Formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Formula</translation>
     </message>
     <message>
         <source>Result</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezultāts</translation>
     </message>
     <message>
         <source>Wrong formula: %s</source>
-        <translation type="unfinished"></translation>
+        <translation>Nederīga formula: %s</translation>
     </message>
 </context>
 <context>
@@ -254,11 +280,11 @@ See log for more information</source>
     </message>
     <message>
         <source>[Enter your formula here]</source>
-        <translation type="unfinished">[Šeit ievadiet savu formulu]</translation>
+        <translation>[Šeit ievadiet savu formulu]</translation>
     </message>
     <message>
         <source>Calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulators</translation>
     </message>
 </context>
 <context>
@@ -375,11 +401,11 @@ See log for more information</source>
     <name>CouldNotLoadResultsDialog</name>
     <message>
         <source>Problem loading output layers</source>
-        <translation>Problēma ielādējot izvades slāņus</translation>
+        <translation type="unfinished">Problēma ielādējot izvades slāņus</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Aizvērt</translation>
+        <translation type="unfinished">Aizvērt</translation>
     </message>
 </context>
 <context>
@@ -766,7 +792,7 @@ This table is essential for many GIS applications for enumeration of tables.</so
         <source>Error:
 %s</source>
         <translation>Kļūda:
-%1</translation>
+%s</translation>
     </message>
     <message>
         <source>
@@ -856,7 +882,7 @@ Vaicājums:
     </message>
     <message>
         <source>Select a TABLE/VIEW for deletion.</source>
-        <translation type="obsolete">Izvēlies TABULU/SKATU dzēsanai.</translation>
+        <translation type="obsolete">Izvēlies TABULU/SKATU dzēšanai.</translation>
     </message>
     <message>
         <source>Really delete table/view %s?</source>
@@ -1467,30 +1493,30 @@ kolonnas</translation>
     <name>DeleteModelAction</name>
     <message>
         <source>Delete model</source>
-        <translation type="unfinished"></translation>
+        <translation>Dzēst modeli</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Apstiprinājums</translation>
+        <translation>Apstiprinājums</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this model?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai tiešām vēlaties dzēst modeli?</translation>
     </message>
 </context>
 <context>
     <name>DeleteScriptAction</name>
     <message>
         <source>Delete script</source>
-        <translation type="unfinished"></translation>
+        <translation>Dzēst skriptu</translation>
     </message>
     <message>
         <source>Confirmation</source>
-        <translation type="unfinished">Apstiprinājums</translation>
+        <translation>Apstiprinājums</translation>
     </message>
     <message>
         <source>Are you sure you want to delete this script?</source>
-        <translation type="unfinished"></translation>
+        <translation>Vai tiešām vēlaties dzēst šo skriptu?</translation>
     </message>
 </context>
 <context>
@@ -1911,7 +1937,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Grid Spacing</source>
-        <translation>Tīklu intervāls</translation>
+        <translation>Tīkla intervāls</translation>
     </message>
     <message>
         <source>Use this point spacing</source>
@@ -2785,6 +2811,14 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
         <source>Only selected features</source>
         <translation>Tikai izvēlētie objekti</translation>
     </message>
+    <message>
+        <source>Dialog</source>
+        <translation type="obsolete">Dialogs</translation>
+    </message>
+    <message>
+        <source>about:blank</source>
+        <translation type="obsolete">about:blank</translation>
+    </message>
 </context>
 <context>
     <name>DlgAbout</name>
@@ -3370,6 +3404,22 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
         <source>1</source>
         <translation type="obsolete">1</translation>
     </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation type="obsolete">Ctrl+O</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="obsolete">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation type="obsolete">Ctrl+Shift+S</translation>
+    </message>
+    <message>
+        <source>F5</source>
+        <translation type="obsolete">F5</translation>
+    </message>
 </context>
 <context>
     <name>DlgMultipleSelection</name>
@@ -3472,6 +3522,38 @@ vienkāršošanas samazinājās uz %s virsotnēm</translation>
     <message>
         <source>Redo</source>
         <translation>Pārdarīt</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="obsolete">Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation type="obsolete">Ctrl+Shift+S</translation>
+    </message>
+    <message>
+        <source>F5</source>
+        <translation type="obsolete">F5</translation>
+    </message>
+    <message>
+        <source>Ctrl+X</source>
+        <translation type="obsolete">Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Ctrl+C</source>
+        <translation type="obsolete">Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Ctrl+V</source>
+        <translation type="obsolete">Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Ctrl+Z</source>
+        <translation type="obsolete">Ctrl+Z</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+Z</source>
+        <translation type="obsolete">Ctrl+Shift+Z</translation>
     </message>
 </context>
 <context>
@@ -3890,7 +3972,7 @@ geometry column - column with unique integer values</source>
     <name>FileSelectionPanel</name>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <source>Select folder</source>
@@ -3898,14 +3980,18 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Open file</source>
-        <translation>Atvērt failu</translation>
+        <translation type="unfinished">Atvērt failu</translation>
+    </message>
+    <message>
+        <source>Select file</source>
+        <translation type="obsolete">Izvēlies failu</translation>
     </message>
 </context>
 <context>
     <name>FixedTableDialog</name>
     <message>
         <source>Fixed Table</source>
-        <translation>Fiksēta tabula</translation>
+        <translation type="unfinished">Fiksēta tabula</translation>
     </message>
     <message>
         <source>Add row</source>
@@ -3913,7 +3999,7 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>Remove row</source>
-        <translation>Noņemt rindu</translation>
+        <translation type="unfinished">Noņemt rindu</translation>
     </message>
 </context>
 <context>
@@ -3924,7 +4010,34 @@ geometry column - column with unique integer values</source>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
+    </message>
+</context>
+<context>
+    <name>Form</name>
+    <message>
+        <source>Form</source>
+        <translation type="obsolete">Forma</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <source>Add row</source>
+        <translation type="obsolete">Pievienot rindu</translation>
+    </message>
+    <message>
+        <source>Open number input dialog</source>
+        <translation type="obsolete">Atvērt skaitļu ievades dialogu</translation>
+    </message>
+    <message>
+        <source>Min</source>
+        <translation type="obsolete">Min</translation>
+    </message>
+    <message>
+        <source>Max</source>
+        <translation type="obsolete">Maks</translation>
     </message>
 </context>
 <context>
@@ -4237,11 +4350,11 @@ Instalējiet to un mēģiniet vēlreiz.</translation>
     </message>
     <message>
         <source>Assign Projection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Piešķirt projekciju...</translation>
     </message>
     <message>
         <source>Extract Projection...</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvilkt projekciju...</translation>
     </message>
     <message>
         <source>Rasterize (Vector to Raster)...</source>
@@ -4289,23 +4402,23 @@ Instalējiet to un mēģiniet vēlreiz.</translation>
     </message>
     <message>
         <source>Grid (Interpolation)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīkls (interpolācija)...</translation>
     </message>
     <message>
         <source>DEM (Terrain Models)...</source>
-        <translation type="unfinished"></translation>
+        <translation>DEM (reljefa modeļi)...</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Veidot virtuālo rastru (katalogs)...</translation>
     </message>
     <message>
         <source>Merge...</source>
-        <translation type="unfinished"></translation>
+        <translation>Apvienot...</translation>
     </message>
     <message>
         <source>Information...</source>
-        <translation type="unfinished"></translation>
+        <translation>Informācija...</translation>
     </message>
     <message>
         <source>Build Overviews (Pyramids)...</source>
@@ -4317,7 +4430,7 @@ Instalējiet to un mēģiniet vēlreiz.</translation>
     </message>
     <message>
         <source>GdalTools Settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>GdalTools iestatījumi...</translation>
     </message>
 </context>
 <context>
@@ -6587,7 +6700,11 @@ are stored on the installation folder</source>
     <name>InputLayerSelectorPanel</name>
     <message>
         <source>All files(*.*);;</source>
-        <translation>Visi faili (*)</translation>
+        <translation type="unfinished">Visi faili (*)</translation>
+    </message>
+    <message>
+        <source>Select file</source>
+        <translation type="obsolete">Izvēlies failu</translation>
     </message>
 </context>
 <context>
@@ -6598,11 +6715,7 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>Parameters</source>
-        <translation>Parametri</translation>
-    </message>
-    <message>
-        <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Parametri</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
@@ -6610,6 +6723,18 @@ are stored on the installation folder</source>
     </message>
     <message>
         <source>&lt;h2&gt;Could not open help file :-( &lt;/h2&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to execute algorithm</source>
+        <translation type="unfinished">Nebija iespējams izpildīt algoritmu</translation>
+    </message>
+    <message>
+        <source>Wrong or missing parameter values</source>
+        <translation type="unfinished">Nepareiza  vai trūkstoša parametra vērtība</translation>
+    </message>
+    <message>
+        <source>Log</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6622,10 +6747,6 @@ Do you want to continue?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to execute algorithm</source>
-        <translation>Nebija iespējams izpildīt algoritmu</translation>
-    </message>
-    <message>
         <source>Processing algorithm...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6636,10 +6757,6 @@ Do you want to continue?</source>
     <message>
         <source>&lt;b&gt;Missing parameter value: %s&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Nepareiza  vai trūkstoša parametra vērtība</translation>
     </message>
     <message>
         <source>HTML output has been generated by this algorithm.
@@ -6794,11 +6911,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Save as Image...</source>
-        <translation>Saglabāt kā attēlu...</translation>
+        <translation type="unfinished">Saglabāt kā attēlu...</translation>
     </message>
     <message>
         <source>&amp;New Print Composer</source>
-        <translation>&amp;Jauns drukas veidotājs</translation>
+        <translation type="unfinished">&amp;Jauns drukas veidotājs</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -6934,7 +7051,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Snapping Options...</source>
-        <translation>Pielipšanas iespējas...</translation>
+        <translation type="unfinished">Pielipšanas iespējas...</translation>
     </message>
     <message>
         <source>Pan Map</source>
@@ -7010,7 +7127,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Zoom Full</source>
-        <translation>Tuvināt kopskatu</translation>
+        <translation type="unfinished">Tuvināt kopskatu</translation>
     </message>
     <message>
         <source>Ctrl+Shift+F</source>
@@ -7018,11 +7135,11 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Zoom to Layer</source>
-        <translation>Tuvina līdz slānim</translation>
+        <translation type="unfinished">Tuvina līdz slānim</translation>
     </message>
     <message>
         <source>Zoom to Selection</source>
-        <translation>Tuvināt līdz izvēlei</translation>
+        <translation type="unfinished">Tuvināt līdz izvēlei</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
@@ -7150,7 +7267,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Open Attribute Table</source>
-        <translation>Atvērt atribūtu tabulu</translation>
+        <translation type="unfinished">Atvērt atribūtu tabulu</translation>
     </message>
     <message>
         <source>Toggle editing</source>
@@ -7202,7 +7319,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Properties...</source>
-        <translation>Īpašības...</translation>
+        <translation type="unfinished">Īpašības...</translation>
     </message>
     <message>
         <source>Query...</source>
@@ -7254,7 +7371,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Project Properties...</source>
-        <translation>Projekta īpašības...</translation>
+        <translation type="unfinished">Projekta īpašības...</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
@@ -7262,7 +7379,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Options...</source>
-        <translation>Opcijas...</translation>
+        <translation type="unfinished">Opcijas...</translation>
     </message>
     <message>
         <source>Custom CRS...</source>
@@ -7494,7 +7611,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>Save As...</source>
-        <translation>Saglabāt kā...</translation>
+        <translation type="unfinished">Saglabāt kā...</translation>
     </message>
     <message>
         <source>Save Selection as Vector File...</source>
@@ -7706,7 +7823,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>P&amp;roject</source>
-        <translation>&amp;Projekts</translation>
+        <translation type="unfinished">&amp;Projekts</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
@@ -7947,6 +8064,62 @@ Acts on currently active editable layer</source>
     <message>
         <source>Open Field Calculator...</source>
         <translation>Atvērt lauka kalkulatoru</translation>
+    </message>
+    <message>
+        <source>Pro&amp;ject</source>
+        <translation type="obsolete">&amp;Projekts</translation>
+    </message>
+    <message>
+        <source>Open &amp;Recent</source>
+        <translation type="obsolete">&amp;Atvērt neseno</translation>
+    </message>
+    <message>
+        <source>Save as &amp;Image...</source>
+        <translation type="obsolete">Saglabāt kā &amp;attēlu...</translation>
+    </message>
+    <message>
+        <source>New &amp;Print Composer</source>
+        <translation type="obsolete">&amp;Jauns drukas veidotājs</translation>
+    </message>
+    <message>
+        <source>&amp;Snapping Options...</source>
+        <translation type="obsolete">Pielipšana&amp;s iespējas...</translation>
+    </message>
+    <message>
+        <source>Zoom &amp;Full</source>
+        <translation type="obsolete">Tuvināt &amp;kopskatu</translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;Layer</source>
+        <translation type="obsolete">&amp;Tuvināt līdz slānim</translation>
+    </message>
+    <message>
+        <source>Zoom to &amp;Selection</source>
+        <translation type="obsolete">Tuvināt līdz i&amp;zvēlei</translation>
+    </message>
+    <message>
+        <source>Open &amp;Attribute Table</source>
+        <translation type="obsolete">&amp;Atvērt atribūtu tabulu</translation>
+    </message>
+    <message>
+        <source>&amp;Save As...</source>
+        <translation type="obsolete">Saglabāt &amp;kā...</translation>
+    </message>
+    <message>
+        <source>&amp;Properties...</source>
+        <translation type="obsolete">Ī&amp;pašības</translation>
+    </message>
+    <message>
+        <source>&amp;Project Properties...</source>
+        <translation type="obsolete">P&amp;rojekta īpašības...</translation>
+    </message>
+    <message>
+        <source>&amp;Options...</source>
+        <translation type="obsolete">&amp;Opcijas...</translation>
+    </message>
+    <message>
+        <source>Ctrl+Alt+P</source>
+        <translation type="obsolete">Ctrl+Alt+P</translation>
     </message>
     <message>
         <source>Open Recent</source>
@@ -8316,11 +8489,17 @@ Acts on currently active editable layer</source>
         <source>Showing %d - %d of %n result(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
 <context>
     <name>MissingDependencyDialog</name>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Aizvērt</translation>
+    </message>
     <message>
         <source>&lt;h3&gt;Missing dependency.This algorithm cannot be run :-( &lt;/h3&gt;
 %s</source>
@@ -8329,10 +8508,6 @@ Acts on currently active editable layer</source>
     <message>
         <source>Missing dependency</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation>Aizvērt</translation>
     </message>
 </context>
 <context>
@@ -8459,11 +8634,11 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Message</source>
-        <translation>Paziņojums</translation>
+        <translation type="unfinished">Paziņojums</translation>
     </message>
     <message>
         <source>There are unsaved changes in model. Close modeler without saving?</source>
-        <translation>Modelim ir nesaglabātas izmaiņas. Aizvērt modelētāju bez saglabāšanas? </translation>
+        <translation type="unfinished">Modelim ir nesaglabātas izmaiņas. Aizvērt modelētāju bez saglabāšanas? </translation>
     </message>
     <message>
         <source>Save Model As Image</source>
@@ -8526,7 +8701,7 @@ See the log for more information.</source>
     <name>ModelerOnlyAlgorithmProvider</name>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tikai modelētāja rīki</translation>
     </message>
 </context>
 <context>
@@ -8553,11 +8728,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Jā</translation>
+        <translation>Jā</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nē</translation>
+        <translation>Nē</translation>
     </message>
     <message>
         <source>Shape type</source>
@@ -8565,27 +8740,27 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Any</source>
-        <translation type="unfinished"></translation>
+        <translation>Jebkurš</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punkts</translation>
+        <translation>Punkts</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Līnija</translation>
+        <translation>Līnija</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Poligons</translation>
+        <translation>Poligons</translation>
     </message>
     <message>
         <source>Mandatory</source>
-        <translation type="unfinished"></translation>
+        <translation>Obilgāts</translation>
     </message>
     <message>
         <source>Data type</source>
-        <translation type="unfinished"></translation>
+        <translation>Datu tips</translation>
     </message>
     <message>
         <source>Vector (any)</source>
@@ -8605,11 +8780,11 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Raster</source>
-        <translation type="unfinished">Rastrs</translation>
+        <translation>Rastrs</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished">Tabula</translation>
+        <translation>Tabula</translation>
     </message>
     <message>
         <source>Min/Max values</source>
@@ -8617,23 +8792,23 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Default value</source>
-        <translation type="unfinished">Noklusējuma vērtība</translation>
+        <translation>Noklusējuma vērtība</translation>
     </message>
     <message>
         <source>0</source>
-        <translation type="unfinished">0</translation>
+        <translation>0</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tips</translation>
+        <translation>Tips</translation>
     </message>
     <message>
         <source>File</source>
-        <translation type="unfinished">Fails</translation>
+        <translation>Fails</translation>
     </message>
     <message>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Mape</translation>
     </message>
     <message>
         <source>Unable to define parameter</source>
@@ -8645,18 +8820,18 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Nepareiza  vai trūkstoša parametra vērtība</translation>
+        <translation>Nepareiza vai trūkstoša parametra vērtība</translation>
     </message>
 </context>
 <context>
     <name>ModelerParametersDialog</name>
     <message>
         <source>Description</source>
-        <translation type="unfinished">Apraksts</translation>
+        <translation>Apraksts</translation>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation type="unfinished">Rādīt paplašinātos parametrus</translation>
+        <translation>Rādīt paplašinātos parametrus</translation>
     </message>
     <message>
         <source>Parent algorithms</source>
@@ -8664,7 +8839,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Parameters</source>
-        <translation type="unfinished">Parametri</translation>
+        <translation>Parametri</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Sorry, no help is available for this algorithm.&lt;/h2&gt;</source>
@@ -8676,7 +8851,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Slēpt paplašinātos parametrus</translation>
     </message>
     <message>
         <source>&apos;%s&apos; from algorithm &apos;%s&apos;</source>
@@ -8688,7 +8863,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Wrong or missing parameter values</source>
-        <translation type="unfinished">Nepareiza  vai trūkstoša parametra vērtība</translation>
+        <translation>Nepareiza vai trūkstoša parametra vērtība</translation>
     </message>
 </context>
 <context>
@@ -8702,11 +8877,11 @@ See the log for more information.</source>
     <name>MultipleFileInputDialog</name>
     <message>
         <source>Multiple selection</source>
-        <translation>Vairāku izvēle</translation>
+        <translation type="unfinished">Vairāku izvēle</translation>
     </message>
     <message>
         <source>Select the file(s) to use</source>
-        <translation>Izvēlieties izmantojamos failus</translation>
+        <translation type="unfinished">Izvēlieties izmantojamos failus</translation>
     </message>
     <message>
         <source>All files (*.*)</source>
@@ -8717,15 +8892,15 @@ See the log for more information.</source>
     <name>MultipleFileInputPanel</name>
     <message>
         <source>0 elements selected</source>
-        <translation>Izvēlēti 0 elementi</translation>
+        <translation type="unfinished">Izvēlēti 0 elementi</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <source>%d elements selected</source>
-        <translation>Izvēlēti %d elementi</translation>
+        <translation type="unfinished">Izvēlēti %d elementi</translation>
     </message>
 </context>
 <context>
@@ -8741,6 +8916,17 @@ See the log for more information.</source>
     <message>
         <source>Toggle selection</source>
         <translation>Pārslēgt izvēlēto</translation>
+    </message>
+</context>
+<context>
+    <name>MultipleInputPanel</name>
+    <message>
+        <source>0 elements selected</source>
+        <translation type="obsolete">Izvēlēti 0 elementi</translation>
+    </message>
+    <message>
+        <source>%d elements selected</source>
+        <translation type="obsolete">Izvēlēti %d elementi</translation>
     </message>
 </context>
 <context>
@@ -9745,7 +9931,7 @@ See the log for more information.</source>
     <name>ParametersDialog</name>
     <message>
         <source>[Not selected]</source>
-        <translation>[Nav izvēlēts]</translation>
+        <translation type="unfinished">[Nav izvēlēts]</translation>
     </message>
 </context>
 <context>
@@ -9756,7 +9942,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Show advanced parameters</source>
-        <translation>Rādīt paplašinātos parametrus</translation>
+        <translation type="unfinished">Rādīt paplašinātos parametrus</translation>
     </message>
     <message>
         <source> [optional]</source>
@@ -9771,12 +9957,12 @@ See the log for more information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Hide advanced parameters</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>[not set]</source>
         <translation>[neiestatīts]</translation>
+    </message>
+    <message>
+        <source>Hide advanced parameters</source>
+        <translation type="unfinished">Slēpt paplašinātos parametrus</translation>
     </message>
 </context>
 <context>
@@ -9798,6 +9984,10 @@ See the log for more information.</source>
     <message>
         <source>Loading resulting layers</source>
         <translation>Ielādē iegūtos slāņus</translation>
+    </message>
+    <message>
+        <source>Problem loading output layers</source>
+        <translation type="obsolete">Problēma ielādējot izvades slāņus</translation>
     </message>
 </context>
 <context>
@@ -9856,34 +10046,34 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Pro&amp;cessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Aps&amp;trāde</translation>
     </message>
     <message>
         <source>&amp;Toolbox</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rīkkopa</translation>
     </message>
     <message>
         <source>Graphical &amp;Modeler...</source>
-        <translation type="unfinished"></translation>
+        <translation>Grafiskais &amp;modelētājs...</translation>
     </message>
     <message>
         <source>&amp;History and Log...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vēsture un žurnāls...</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opcijas...</translation>
     </message>
     <message>
         <source>&amp;Results Viewer...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rezultātu skatīklis...</translation>
     </message>
 </context>
 <context>
     <name>ProcessingConfig</name>
     <message>
         <source>General</source>
-        <translation type="unfinished"></translation>
+        <translation>Vispārēji</translation>
     </message>
     <message>
         <source>Show extra info in Log panel</source>
@@ -9907,7 +10097,7 @@ See the log for more information.</source>
     </message>
     <message>
         <source>Output folder</source>
-        <translation type="unfinished">Izvades mape</translation>
+        <translation>Izvades mape</translation>
     </message>
     <message>
         <source>Show layer CRS definition in selection boxes</source>
@@ -10036,20 +10226,20 @@ See the log for more information.</source>
         <translation>Nevar ielādēt spraudni %s</translation>
     </message>
     <message>
-        <source>%s due an error when calling its classFactory() method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>%s due an error when calling its initGui() method</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Error while unloading plugin %s</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Python warning</source>
         <translation>Python brīdinājums</translation>
+    </message>
+    <message>
+        <source>%s due an error when calling its classFactory() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%s due an error when calling its initGui() method</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -10290,15 +10480,15 @@ lieto qgis.utils.iface objektu (QgisInterface instances klase).
     </message>
     <message>
         <source>Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt kļūdu</translation>
     </message>
     <message>
         <source>Save File As</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt failu kā</translation>
     </message>
     <message>
         <source>History saved successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vēsture ir saglabāta.</translation>
     </message>
     <message>
         <source>Session and file history cleared successfully.</source>
@@ -10310,19 +10500,19 @@ lieto qgis.utils.iface objektu (QgisInterface instances klase).
     </message>
     <message>
         <source>Command History</source>
-        <translation type="unfinished"></translation>
+        <translation>Komandu vēsture</translation>
     </message>
     <message>
         <source>Show</source>
-        <translation type="unfinished">Rādīt</translation>
+        <translation>Rādīt</translation>
     </message>
     <message>
         <source>Clear File</source>
-        <translation type="unfinished"></translation>
+        <translation>Veidot failu</translation>
     </message>
     <message>
         <source>Clear Session</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīrīt sesiju</translation>
     </message>
     <message>
         <source>Python Console - Command History</source>
@@ -10402,19 +10592,19 @@ lieto qgis.utils.iface objektu (QgisInterface instances klase).
     </message>
     <message>
         <source>Close Tab</source>
-        <translation type="unfinished"></translation>
+        <translation>Aizvērt cilni</translation>
     </message>
     <message>
         <source>Close All</source>
-        <translation type="unfinished"></translation>
+        <translation>Aizvērt visu</translation>
     </message>
     <message>
         <source>Close Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Aizvērt citas</translation>
     </message>
     <message>
         <source>Save As</source>
-        <translation type="unfinished">Saglabāt kā</translation>
+        <translation>Saglabāt kā</translation>
     </message>
     <message>
         <source>Python Console 
@@ -11270,10 +11460,13 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
         <source>Rule-based</source>
         <translation>Noteikumu bāzēts</translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%n geometry error(s) found.</source>
         <comment>number of geometry errors</comment>
         <translation type="obsolete">
+            <numerusform>Atrasta %n ģeometrijas kļūda.</numerusform>
+            <numerusform>Atrastas %n ģeometrijas kļūdas.</numerusform>
+            <numerusform>Atrasts %n ģeometrijas kļūdu.</numerusform>
         </translation>
     </message>
     <message>
@@ -11303,12 +11496,10 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
     <message numerus="yes">
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation type="unfinished">
-            <numerusform>līnija %1 satur %n dublētu mezglu %2       
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -11742,11 +11933,11 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>Keyhole Markup Language [KML]</source>
-        <translation type="unfinished"></translation>
+        <translation>Keyhole Markup Language [KML]</translation>
     </message>
     <message>
         <source>Spatial Data Transfer Standard [SDTS]</source>
-        <translation type="unfinished"></translation>
+        <translation>Spatial Data Transfer Standard [SDTS]</translation>
     </message>
     <message>
         <source>STA</source>
@@ -11935,7 +12126,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Unable to load %1 provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar ielādēt %1 sniedzēju</translation>
     </message>
     <message>
         <source>Loading of layer failed</source>
@@ -11947,7 +12138,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Only %1 of %2 features written.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tika ierakstīti tikai %1 objekti no %2.</translation>
     </message>
     <message>
         <source>Point displacement</source>
@@ -12115,7 +12306,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>MSSQL</source>
-        <translation type="unfinished">MSSQL</translation>
+        <translation>MSSQL</translation>
     </message>
     <message utf8="true">
         <source> m²</source>
@@ -12161,15 +12352,15 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Console</source>
-        <translation type="unfinished">Konsole</translation>
+        <translation>Konsole</translation>
     </message>
     <message>
         <source>ESRI FileGDB</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI FileGDB</translation>
     </message>
     <message>
         <source>GDAL/OGR VSIFileHandler</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL/OGR VSIFileHandler</translation>
     </message>
     <message>
         <source>Creating the data source %1 failed: %2</source>
@@ -12181,7 +12372,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Ingres</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingres</translation>
     </message>
     <message>
         <source>second</source>
@@ -12215,39 +12406,39 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Column &apos;%1&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolona &apos;%1&apos; nav atrasta</translation>
     </message>
     <message>
         <source>Multiband color</source>
-        <translation type="unfinished"></translation>
+        <translation>Daudzkanālu krāsu</translation>
     </message>
     <message>
         <source>Paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>Paletēts</translation>
     </message>
     <message>
         <source>Singleband gray</source>
-        <translation type="unfinished"></translation>
+        <translation>Vienkanāla pelēktoņu</translation>
     </message>
     <message>
         <source>Singleband pseudocolor</source>
-        <translation type="unfinished"></translation>
+        <translation>Vienkanāla pseidokrāsu</translation>
     </message>
     <message>
         <source>Singleband color data</source>
-        <translation type="unfinished"></translation>
+        <translation>Vienkanāla krāsu dati</translation>
     </message>
     <message>
         <source>Imported from GDAL</source>
-        <translation type="unfinished"></translation>
+        <translation>Importēts no GDAL</translation>
     </message>
     <message>
         <source>Conditionals</source>
-        <translation type="unfinished"></translation>
+        <translation>Nosacījumi</translation>
     </message>
     <message>
         <source>Date and Time</source>
-        <translation type="unfinished"></translation>
+        <translation>Datums un laiks</translation>
     </message>
     <message>
         <source>GEOS prior to 3.2 doesn&apos;t support GEOSInterpolate</source>
@@ -12255,11 +12446,11 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Reading raster part %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nolasa %1 rastra daļu no %2</translation>
     </message>
     <message>
         <source>Building pyramids failed - write access denied</source>
-        <translation type="unfinished"></translation>
+        <translation>Nevar izveidot piramīdas, jo rakstīšana nav atļauta</translation>
     </message>
     <message>
         <source>Write access denied. Adjust the file permissions and try again.</source>
@@ -12283,7 +12474,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Lai izvēlētos objektus, vispirms ir jāizvēlas kartes slānis</translation>
     </message>
     <message>
         <source>Undefined</source>
@@ -12311,7 +12502,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Symbol label</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbola nosaukums</translation>
     </message>
     <message>
         <source>Failed to transform a point while drawing a feature with ID &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
@@ -12319,11 +12510,11 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Mapinfo TAB</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo TAB</translation>
     </message>
     <message>
         <source>Mapinfo MIF</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapinfo MIF</translation>
     </message>
     <message>
         <source>SpatiaLite</source>
@@ -12339,7 +12530,7 @@ Error(%2): %3</source>
     </message>
     <message>
         <source>Building Pyramids...</source>
-        <translation type="unfinished"></translation>
+        <translation>Veido piramīdas...</translation>
     </message>
     <message>
         <source>All Ramps</source>
@@ -12546,7 +12737,7 @@ It will be disabled.</source>
     </message>
     <message>
         <source>Loaded from Provider</source>
-        <translation type="unfinished">Ielādēt no sniedzēja</translation>
+        <translation>Ielādēts no sniedzēja</translation>
     </message>
     <message>
         <source>Nearest Neighbour</source>
@@ -12959,35 +13150,35 @@ It will be disabled.</source>
     </message>
     <message>
         <source>linear</source>
-        <translation type="unfinished"></translation>
+        <translation>lineārs</translation>
     </message>
     <message>
         <source>radial</source>
-        <translation type="unfinished"></translation>
+        <translation>radiāls</translation>
     </message>
     <message>
         <source>conical</source>
-        <translation type="unfinished"></translation>
+        <translation>konisks</translation>
     </message>
     <message>
         <source>feature</source>
-        <translation type="unfinished"></translation>
+        <translation>objekts</translation>
     </message>
     <message>
         <source>viewport</source>
-        <translation type="unfinished"></translation>
+        <translation>skats</translation>
     </message>
     <message>
         <source>pad</source>
-        <translation type="unfinished"></translation>
+        <translation>aizpildīt</translation>
     </message>
     <message>
         <source>repeat</source>
-        <translation type="unfinished"></translation>
+        <translation>atkārtot</translation>
     </message>
     <message>
         <source>reflect</source>
-        <translation type="unfinished"></translation>
+        <translation>spoguļot</translation>
     </message>
     <message>
         <source>Gradient fill</source>
@@ -13055,11 +13246,11 @@ It will be disabled.</source>
     </message>
     <message>
         <source>empty capabilities document</source>
-        <translation type="unfinished">tukšs iespēju dokuments</translation>
+        <translation>tukšs iespēju dokuments</translation>
     </message>
     <message>
         <source>Dom Exception</source>
-        <translation type="unfinished">DOM izņēmums</translation>
+        <translation>DOM izņēmums</translation>
     </message>
     <message>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
@@ -13118,16 +13309,12 @@ Response was:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 and hopefully will be fixed in higher GRASS versions. Error message: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>GeoPackage</source>
-        <translation type="unfinished"></translation>
+        <translation>GeoPackage</translation>
     </message>
     <message>
         <source>OpenFileGDB</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenFileGDB</translation>
     </message>
     <message>
         <source>Systematic Organization of Spatial Information [SOSI]</source>
@@ -13135,7 +13322,7 @@ Response was:
     </message>
     <message>
         <source>SQLite/SpatiaLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite/SpatiaLite</translation>
     </message>
     <message>
         <source>Inverted polygons</source>
@@ -13194,7 +13381,7 @@ Response was:
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished">-</translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>Empty filename given</source>
@@ -13299,6 +13486,10 @@ Response was:
     <message>
         <source>Date/Time</source>
         <translation type="unfinished">Datums/Laiks</translation>
+    </message>
+    <message>
+        <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 and hopefully will be fixed in higher GRASS versions. Error message: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -14798,8 +14989,10 @@ Kļūdas:  %2
     <message numerus="yes">
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>%1 slānī ir izvēlēts %n objekts.</numerusform>
             <numerusform>%1 slānī ir izvēlēti %n objekti.</numerusform>
+            <numerusform>%1 slānī ir izvēlēts %n objektu.</numerusform>
         </translation>
     </message>
     <message>
@@ -14837,8 +15030,10 @@ Ignorēt kļūdas?</translation>
     <message numerus="yes">
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>Dzēst %n objektu?</numerusform>
             <numerusform>Dzēst %n objektus?</numerusform>
+            <numerusform>Dzēst %n objektu?</numerusform>
         </translation>
     </message>
     <message>
@@ -15002,8 +15197,10 @@ This copy of QGIS has been built with QWT %1.</source>
     <message numerus="yes">
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation type="unfinished">
-            <numerusform>notikušas %n SSL kļūdas</numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -15319,8 +15516,10 @@ Vienmēr ignorēt šīs kļūdas?</translation>
     <message numerus="yes">
         <source>%n feature(s) deleted.</source>
         <comment>number of features deleted</comment>
-        <translation type="unfinished">
-            <numerusform>%n objekti ir dzēsti.</numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -15330,52 +15529,56 @@ Vienmēr ignorēt šīs kļūdas?</translation>
     <message numerus="yes">
         <source>Remove %n legend entries?</source>
         <comment>number of legend items to remove</comment>
-        <translation type="unfinished">
-            <numerusform>Noņemt %n leģendas vienumus?</numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>%n legend entries removed.</source>
         <comment>number of removed legend entries</comment>
-        <translation type="unfinished">
-            <numerusform>Ir noņemti %n leģendas vienumi.</numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <source>Classification</source>
-        <translation>Klasifikācija</translation>
+        <translation type="unfinished">Klasifikācija</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation>Diapazons</translation>
+        <translation type="unfinished">Diapazons</translation>
     </message>
     <message>
         <source>Unique Values</source>
-        <translation>Unikālās vērtības</translation>
+        <translation type="unfinished">Unikālās vērtības</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation>Faila nosaukums</translation>
+        <translation type="unfinished">Faila nosaukums</translation>
     </message>
     <message>
         <source>Value Map</source>
-        <translation>Vērtību karte</translation>
+        <translation type="unfinished">Vērtību karte</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation>Pārskaitījums</translation>
+        <translation type="unfinished">Pārskaitījums</translation>
     </message>
     <message>
         <source>Hidden</source>
-        <translation>Slēpts</translation>
+        <translation type="unfinished">Slēpts</translation>
     </message>
     <message>
         <source>Color</source>
-        <translation>Krāsa</translation>
+        <translation type="unfinished">Krāsa</translation>
     </message>
     <message>
         <source>Date/Time</source>
-        <translation>Datums/Laiks</translation>
+        <translation type="unfinished">Datums/Laiks</translation>
     </message>
     <message>
         <source>Add Group</source>
@@ -15405,35 +15608,15 @@ Vienmēr ignorēt šīs kļūdas?</translation>
         <source>Multiple instances of QGIS application object detected.
 Please contact the developers.
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check Box</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Text Edit</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Value Relation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Uuid Generator</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Photo</source>
-        <translation>Foto</translation>
+        <translation type="unfinished">Foto</translation>
     </message>
     <message>
         <source>Web View</source>
-        <translation>Tīmekļa skats</translation>
-    </message>
-    <message>
-        <source>Relation Reference</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tīmekļa skats</translation>
     </message>
     <message>
         <source>Toggles between a predefined size and the window size set by the user</source>
@@ -15585,7 +15768,7 @@ Please contact the developers.
     </message>
     <message>
         <source>Could not commit changes to layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nebija iespējams iesūtīt izmaiņas slānī %1</translation>
     </message>
     <message>
         <source>Please select a vector layer first</source>
@@ -15609,7 +15792,7 @@ Please contact the developers.
     </message>
     <message>
         <source>To select features, choose a vector layer in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lai izvēlētos objektus, vispirms ir jāizvēlas kartes slānis</translation>
     </message>
     <message>
         <source>no features could be successfully pasted.</source>
@@ -15625,11 +15808,11 @@ Please contact the developers.
     </message>
     <message>
         <source>New memory layer name</source>
-        <translation type="unfinished"></translation>
+        <translation>Jaunā atmiņas slāņa nosaukums</translation>
     </message>
     <message>
         <source>No features in clipboard.</source>
-        <translation type="unfinished"></translation>
+        <translation>Starpliktuvē nav objektu.</translation>
     </message>
     <message>
         <source>No features with geometry found, point type layer will be created.</source>
@@ -15676,7 +15859,7 @@ Errors: %3
     </message>
     <message>
         <source>Remove layers and groups</source>
-        <translation type="unfinished"></translation>
+        <translation>Noņemt slāņus un grupas</translation>
     </message>
     <message>
         <source>%1 (%2 type unsupported)</source>
@@ -15753,6 +15936,26 @@ Errors: %3
     </message>
     <message>
         <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -16232,12 +16435,12 @@ User DB Path:	%9
     </message>
     <message>
         <source>Could not open qgis.db</source>
-        <translation type="unfinished">Nebija iespējams atvērt qgis.db</translation>
+        <translation>Nebija iespējams atvērt qgis.db</translation>
     </message>
     <message>
         <source>Migration of private qgis.db failed.
 %1</source>
-        <translation type="unfinished">Privātā qgis.db faila migrācija bija nesekmīga.
+        <translation>Privātā qgis.db faila migrācija bija nesekmīga.
 %1</translation>
     </message>
     <message>
@@ -16605,7 +16808,7 @@ Parser error:
     </message>
     <message>
         <source>Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikona</translation>
     </message>
 </context>
 <context>
@@ -16805,17 +17008,19 @@ Parser error:
     <message numerus="yes">
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform>Atribūtu tabula - %1 (%n objekti)        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Atribūtu tabula - %1 (%n objekts)</numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n objekti)</numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n objektu)</numerusform>
         </translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation type="obsolete">Atribūtu tabula - %1 (%n atbilstošu objektu)
+        <translation type="obsolete">
+            <numerusform>Atribūtu tabula - %1 (%n atbilstošs objekts)</numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n atbilstoši objekti)</numerusform>
+            <numerusform>Atribūtu tabula - %1 (%n atbilstošu objektu)</numerusform>
         </translation>
     </message>
     <message>
@@ -16957,12 +17162,6 @@ Parser error:
     <message>
         <source>?</source>
         <translation>?</translation>
-    </message>
-    <message>
-        <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
-        <comment>feature count</comment>
-        <translation type="obsolete">Atribūtu tabula - %1 :: %n / %2 objektu ir izvēlēts
-        </translation>
     </message>
     <message>
         <source>Unselect all (Ctrl+U)</source>
@@ -17414,11 +17613,11 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Edit Widget Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediģēt logdaļas īpašības</translation>
     </message>
     <message>
         <source>Edit Widget Properties - %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rediģēt logdaļas īpašības - %1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -17436,11 +17635,11 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Lighten</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaišāku</translation>
     </message>
     <message>
         <source>Screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekrāns</translation>
     </message>
     <message>
         <source>Dodge</source>
@@ -17448,39 +17647,39 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Addition</source>
-        <translation type="unfinished">Pieskaitīt</translation>
+        <translation>Pieskaitīt</translation>
     </message>
     <message>
         <source>Darken</source>
-        <translation type="unfinished"></translation>
+        <translation>Tumšāku</translation>
     </message>
     <message>
         <source>Multiply</source>
-        <translation type="unfinished"></translation>
+        <translation>Rēzināt</translation>
     </message>
     <message>
         <source>Burn</source>
-        <translation type="unfinished"></translation>
+        <translation>Iededzināt</translation>
     </message>
     <message>
         <source>Overlay</source>
-        <translation type="unfinished">Pārklāt</translation>
+        <translation>Pārklāt</translation>
     </message>
     <message>
         <source>Soft light</source>
-        <translation type="unfinished"></translation>
+        <translation>Maiga gaisma</translation>
     </message>
     <message>
         <source>Hard light</source>
-        <translation type="unfinished"></translation>
+        <translation>Asa gaisma</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Starpība</translation>
+        <translation>Starpība</translation>
     </message>
     <message>
         <source>Subtract</source>
-        <translation type="unfinished"></translation>
+        <translation>Atņemt</translation>
     </message>
 </context>
 <context>
@@ -17567,12 +17766,10 @@ Database:%2</source>
     <message numerus="yes">
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Vai tiešām vēlaties dzēst %n grāmatzīmi?</numerusform>
+            <numerusform>Vai tiešām vēlaties dzēst %n grāmatzīmes?</numerusform>
+            <numerusform>Vai tiešām vēlaties dzēst %n grāmatzīmju?</numerusform>
         </translation>
     </message>
     <message>
@@ -17799,7 +17996,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Add</source>
-        <translation>Pievienot</translation>
+        <translation type="unfinished">Pievienot</translation>
     </message>
     <message>
         <source>Filter Files</source>
@@ -17819,7 +18016,7 @@ Database:%2</source>
     </message>
     <message>
         <source>Filter files</source>
-        <translation>Filtrēt failus</translation>
+        <translation type="unfinished">Filtrēt failus</translation>
     </message>
 </context>
 <context>
@@ -18099,28 +18296,28 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <name>QgsCodeEditorCSS</name>
     <message>
         <source>CSS Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>CSS redaktors</translation>
     </message>
 </context>
 <context>
     <name>QgsCodeEditorHTML</name>
     <message>
         <source>HTML Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML redaktors</translation>
     </message>
 </context>
 <context>
     <name>QgsCodeEditorPython</name>
     <message>
         <source>Python Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Python redaktors</translation>
     </message>
 </context>
 <context>
     <name>QgsCodeEditorSQL</name>
     <message>
         <source>SQL Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>SQL redaktors</translation>
     </message>
 </context>
 <context>
@@ -18224,27 +18421,27 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>H</source>
-        <translation type="unfinished"></translation>
+        <translation>H</translation>
     </message>
     <message>
         <source>S</source>
-        <translation type="unfinished">D</translation>
+        <translation>S</translation>
     </message>
     <message>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation>V</translation>
     </message>
     <message>
         <source>R</source>
-        <translation type="unfinished"></translation>
+        <translation>R</translation>
     </message>
     <message>
         <source>G</source>
-        <translation type="unfinished"></translation>
+        <translation>G</translation>
     </message>
     <message>
         <source>B</source>
-        <translation type="unfinished">B</translation>
+        <translation>B</translation>
     </message>
     <message>
         <source>Opacity</source>
@@ -18268,7 +18465,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Sample average radius</source>
@@ -18858,7 +19055,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>No matching atlas features found!</source>
-        <translation type="unfinished">Nav atrasti atbilstoši atlanta objekti!</translation>
+        <translation>Nav atrasti atbilstoši atlanta objekti!</translation>
     </message>
     <message>
         <source>Item properties</source>
@@ -19045,35 +19242,35 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Arrow head outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Bultas galvas malas platums</translation>
     </message>
     <message>
         <source>Arrow head fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Bultas galvas aizpildījuma krāsa</translation>
     </message>
     <message>
         <source>Arrow head outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Bultas galvas malas krāsa</translation>
     </message>
     <message>
         <source>Select arrow head fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties bultas galvas aizpildījuma krāsu</translation>
     </message>
     <message>
         <source>Arrow line style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Bultas līnijas stils ir mainīts</translation>
     </message>
     <message>
         <source>Select arrow head outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties bultas galvas malas krāsu</translation>
     </message>
     <message>
         <source>Transparent outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Caurspīdīga mala</translation>
     </message>
     <message>
         <source>Transparent fill</source>
-        <translation type="unfinished">Caurspīdīgs aizpildījums</translation>
+        <translation>Caurspīdīgs aizpildījums</translation>
     </message>
 </context>
 <context>
@@ -19160,19 +19357,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Line style...</source>
-        <translation type="unfinished"></translation>
+        <translation>Līnijas stils...</translation>
     </message>
     <message>
         <source>Arrow outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Bultas malas krāsa</translation>
     </message>
     <message>
         <source>Arrow fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Bultas aizpildījuma krāsa</translation>
     </message>
     <message>
         <source>Arrow outline width</source>
-        <translation type="unfinished">Bultas malas līnijas platums</translation>
+        <translation>Bultas malas līnijas platums</translation>
     </message>
 </context>
 <context>
@@ -19252,23 +19449,23 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerAttributeTableWidget</name>
     <message>
         <source>Use existing frames</source>
-        <translation type="unfinished"></translation>
+        <translation>Lietot esošos rāmjus</translation>
     </message>
     <message>
         <source>Extend to next page</source>
-        <translation type="unfinished"></translation>
+        <translation>Paplašināt uz nākamo lapu</translation>
     </message>
     <message>
         <source>Repeat until finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Atkārtot līdz tiek pabeigts</translation>
     </message>
     <message>
         <source>Draw headers only</source>
-        <translation type="unfinished"></translation>
+        <translation>Zīmēt tikai galvenes</translation>
     </message>
     <message>
         <source>Hide entire table</source>
-        <translation type="unfinished"></translation>
+        <translation>Slēpt visu tabulu</translation>
     </message>
     <message>
         <source>Show set message</source>
@@ -19276,7 +19473,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Layer features</source>
-        <translation type="unfinished"></translation>
+        <translation>Slāņa objekti</translation>
     </message>
     <message>
         <source>Select header font color</source>
@@ -19288,67 +19485,67 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select grid color</source>
-        <translation type="unfinished">Izvēlieties režģa krāsu</translation>
+        <translation>Izvēlieties tīkla krāsu</translation>
     </message>
     <message>
         <source>Map %1</source>
-        <translation type="unfinished">Karte %1</translation>
+        <translation>Karte %1</translation>
     </message>
     <message>
         <source>Table attribute settings</source>
-        <translation type="unfinished">Tabulas atribūtu iestatījumi</translation>
+        <translation>Tabulas atribūtu iestatījumi</translation>
     </message>
     <message>
         <source>Table map changed</source>
-        <translation type="unfinished">Tabulas karte ir izmainīta</translation>
+        <translation>Tabulas karte ir izmainīta</translation>
     </message>
     <message>
         <source>Table maximum columns</source>
-        <translation type="unfinished">Tabulā maksimāli kolonnas</translation>
+        <translation>Maksimāli kolonas tabulai</translation>
     </message>
     <message>
         <source>Table margin changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabulas apmale ir mainīta</translation>
     </message>
     <message>
         <source>Select Font</source>
-        <translation type="unfinished">Izvēlies fontu</translation>
+        <translation>Izvēlies fontu</translation>
     </message>
     <message>
         <source>Table header font</source>
-        <translation type="unfinished">Tabulas galvenes fonts</translation>
+        <translation>Tabulas galvenes fonts</translation>
     </message>
     <message>
         <source>Table header font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabulas galvenes fonta krāsa</translation>
     </message>
     <message>
         <source>Table content font</source>
-        <translation type="unfinished">Tabulas satura fonts</translation>
+        <translation>Tabulas satura fonts</translation>
     </message>
     <message>
         <source>Table content font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabulas satura fonta krāsa</translation>
     </message>
     <message>
         <source>Table grid stroke</source>
-        <translation type="unfinished">Tabulas režģa līnija</translation>
+        <translation>Tabulas tīkla līnija</translation>
     </message>
     <message>
         <source>Table grid color</source>
-        <translation type="unfinished">Tabulas režģa krāsa</translation>
+        <translation>Tabulas tīkla krāsa</translation>
     </message>
     <message>
         <source>Table grid toggled</source>
-        <translation type="unfinished">Tabulas režģis ir pārslēgts</translation>
+        <translation>Tabulas tīkls ir pārslēgts</translation>
     </message>
     <message>
         <source>Current atlas feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Pašreizējais atlanta objekts</translation>
     </message>
     <message>
         <source>Relation children</source>
-        <translation type="unfinished"></translation>
+        <translation>Relācijas bērni</translation>
     </message>
     <message>
         <source>Table visible only toggled</source>
@@ -19535,11 +19732,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Rādīt tīklu</translation>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="unfinished"></translation>
+        <translation>Līnijas platums</translation>
     </message>
     <message>
         <source>Color</source>
@@ -19547,11 +19744,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Fonts and text styling</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonti un teksta stili</translation>
     </message>
     <message>
         <source>Table heading</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabulas galvene</translation>
     </message>
     <message>
         <source>Follow column alignment</source>
@@ -19587,7 +19784,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Frames</source>
-        <translation type="unfinished"></translation>
+        <translation>Rāmji</translation>
     </message>
     <message>
         <source>Resize mode</source>
@@ -20210,7 +20407,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Delete selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Dzēst izvēlētos vienumus</translation>
     </message>
     <message>
         <source>Del</source>
@@ -20218,7 +20415,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Deselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Neizvēlēties visus</translation>
     </message>
     <message>
         <source>Ctrl+Shift+A</source>
@@ -20226,7 +20423,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select all items</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlēties visus</translation>
     </message>
     <message>
         <source>Ctrl+A</source>
@@ -20234,7 +20431,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>&amp;Invert Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pretēja &amp;izvēle</translation>
     </message>
     <message>
         <source>Invert selection</source>
@@ -20286,11 +20483,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Export Atlas as PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportēt atlantu kā PDF</translation>
     </message>
     <message>
         <source>Add items from template</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot vienumus no šablona</translation>
     </message>
     <message>
         <source>Z</source>
@@ -20298,7 +20495,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>V</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">V</translation>
     </message>
     <message>
         <source>F5</source>
@@ -20334,7 +20531,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Zoom &amp;Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuvināt &amp;kopskatu</translation>
     </message>
     <message>
         <source>Zoom &amp;In</source>
@@ -20410,11 +20607,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Add Im&amp;age</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;ievienot attēlu</translation>
     </message>
     <message>
         <source>Move &amp;Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot &amp;saturu</translation>
     </message>
     <message>
         <source>&amp;Group</source>
@@ -20434,55 +20631,55 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Bring to &amp;Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot uz &amp;priekšu</translation>
     </message>
     <message>
         <source>Send to &amp;Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot uz &amp;aizmuguri</translation>
     </message>
     <message>
         <source>&amp;Add Items from Template...</source>
-        <translation type="unfinished"></translation>
+        <translation>P&amp;ievienot vienumus no šablona</translation>
     </message>
     <message>
         <source>Save as &amp;Template...</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabā&amp;t kā šablonu</translation>
     </message>
     <message>
         <source>Add Arro&amp;w</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot &amp;bultu</translation>
     </message>
     <message>
         <source>Add Attribute &amp;Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot atribūtu &amp;tabulu</translation>
     </message>
     <message>
         <source>Pa&amp;ge Setup...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapa&amp;s iestatījumi</translation>
     </message>
     <message>
         <source>Add &amp;HTML</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot &amp;HTML</translation>
     </message>
     <message>
         <source>Composer &amp;Manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Veidotāju &amp;pārvaldnieks</translation>
     </message>
     <message>
         <source>&amp;New Composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Jauns veidotājs...</translation>
     </message>
     <message>
         <source>&amp;Duplicate Composer...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Duplicēt veidotāju...</translation>
     </message>
     <message>
         <source>Loc&amp;k Selected Items</source>
-        <translation type="unfinished"></translation>
+        <translation>Slē&amp;gt izvēlētos vienumus</translation>
     </message>
     <message>
         <source>Unl&amp;ock All</source>
-        <translation type="unfinished"></translation>
+        <translation>Ats&amp;lēgt visus</translation>
     </message>
     <message>
         <source>Paste in P&amp;lace</source>
@@ -20490,15 +20687,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>D&amp;eselect All</source>
-        <translation type="unfinished"></translation>
+        <translation>Nei&amp;zvēlēties</translation>
     </message>
     <message>
         <source>&amp;Select All</source>
-        <translation type="unfinished">&amp;Izvēlēties visus</translation>
+        <translation>&amp;Izvēlēties visus</translation>
     </message>
     <message>
         <source>Composer &amp;Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Veidotāja &amp;opcijas...</translation>
     </message>
     <message>
         <source>Show Ru&amp;lers</source>
@@ -20522,64 +20719,76 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Preview &amp;Atlas</source>
-        <translation type="unfinished"></translation>
+        <translation>Priekšskatīt &amp;atlantu</translation>
     </message>
     <message>
         <source>&amp;Print Atlas...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Drukāt atlantu...</translation>
     </message>
     <message>
         <source>Export Atlas as &amp;Images...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportēt atlantu kā &amp;attēlus</translation>
     </message>
     <message>
         <source>Export Atlas as S&amp;VG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksportēt atlantu kā S&amp;VG</translation>
     </message>
     <message>
         <source>&amp;Export Atlas as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Eksportēt atlantu kā PDF</translation>
     </message>
     <message>
         <source>Atlas &amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Atlanta ie&amp;statījumi</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+B</source>
+        <translation type="obsolete">Ctrl+Shift+B</translation>
+    </message>
+    <message>
+        <source>F11</source>
+        <translation type="obsolete">F11</translation>
+    </message>
+    <message>
+        <source>F10</source>
+        <translation type="obsolete">F10</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerColumnAlignmentDelegate</name>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Pa kreisi</translation>
+        <translation>Pa kreisi</translation>
     </message>
     <message>
         <source>Center</source>
-        <translation type="unfinished">Centrā</translation>
+        <translation>Centrā</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Pa labi</translation>
+        <translation>Pa labi</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerColumnSortOrderDelegate</name>
     <message>
         <source>Ascending</source>
-        <translation type="unfinished">Augoši</translation>
+        <translation>Augoši</translation>
     </message>
     <message>
         <source>Descending</source>
-        <translation type="unfinished">Dilstoši</translation>
+        <translation>Dilstoši</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerColumnWidthDelegate</name>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Automatic</source>
-        <translation type="unfinished">Automātiska</translation>
+        <translation>Automātiska</translation>
     </message>
 </context>
 <context>
@@ -20600,11 +20809,11 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerHtmlWidget</name>
     <message>
         <source>Use existing frames</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lietot esošos rāmjus</translation>
     </message>
     <message>
         <source>Extend to next page</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Paplašināt uz nākamo lapu</translation>
     </message>
     <message>
         <source>Repeat on every page</source>
@@ -20612,7 +20821,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Repeat until finished</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atkārtot līdz tiek pabeigts</translation>
     </message>
     <message>
         <source>Change html url</source>
@@ -20743,7 +20952,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Frames</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Rāmji</translation>
     </message>
     <message>
         <source>User stylesheet</source>
@@ -20770,55 +20979,55 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>&lt;arrow&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;bulta&gt;</translation>
     </message>
     <message>
         <source>&lt;group&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;grupa&gt;</translation>
     </message>
     <message>
         <source>&lt;label&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;birka&gt;</translation>
     </message>
     <message>
         <source>&lt;legend&gt;</source>
-        <translation type="unfinished">&lt;leģenda&gt;</translation>
+        <translation>&lt;leģenda&gt;</translation>
     </message>
     <message>
         <source>&lt;map&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;karte&gt;</translation>
     </message>
     <message>
         <source>&lt;picture&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;attēls&gt;</translation>
     </message>
     <message>
         <source>&lt;scale bar&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;mērogjosla&gt;</translation>
     </message>
     <message>
         <source>&lt;shape&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;forma&gt;</translation>
     </message>
     <message>
         <source>&lt;table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tabula&gt;</translation>
     </message>
     <message>
         <source>&lt;attribute table&gt;</source>
-        <translation type="unfinished">&lt;atribūtu tabula&gt;</translation>
+        <translation>&lt;atribūtu tabula&gt;</translation>
     </message>
     <message>
         <source>&lt;text table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;teksta tabula&gt;</translation>
     </message>
     <message>
         <source>&lt;frame&gt;</source>
-        <translation type="unfinished">&lt;rāmis&gt;</translation>
+        <translation>&lt;rāmis&gt;</translation>
     </message>
     <message>
         <source>&lt;item&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;vienums&gt;</translation>
     </message>
 </context>
 <context>
@@ -20928,35 +21137,35 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Position and size</source>
-        <translation type="unfinished"></translation>
+        <translation>Novietojums un izmērs</translation>
     </message>
     <message>
         <source>Reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Atskaties punkts</translation>
     </message>
     <message>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Platums</translation>
+        <translation>Platums</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Augstums</translation>
+        <translation>Augstums</translation>
     </message>
     <message>
         <source>Frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Rāmis</translation>
     </message>
     <message>
         <source>Thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Biezums</translation>
     </message>
     <message>
         <source>Color...</source>
@@ -20964,31 +21173,31 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Background</source>
-        <translation type="unfinished">Fons</translation>
+        <translation>Fons</translation>
     </message>
     <message>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <source>Rendering</source>
-        <translation type="unfinished">Renderēšana</translation>
+        <translation>Renderēšana</translation>
     </message>
     <message>
         <source>Blending mode</source>
-        <translation type="unfinished">Sapludināšanas režīms</translation>
+        <translation>Sapludināšanas režīms</translation>
     </message>
     <message>
         <source>Transparency</source>
-        <translation type="unfinished">Caurspīdīgums</translation>
+        <translation>Caurspīdīgums</translation>
     </message>
     <message>
         <source>Rotation</source>
-        <translation type="unfinished">Rotācija</translation>
+        <translation>Rotācija</translation>
     </message>
     <message utf8="true">
         <source> °</source>
-        <translation type="unfinished"> °</translation>
+        <translation> °</translation>
     </message>
     <message>
         <source>Join style</source>
@@ -20996,42 +21205,42 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapa</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Frame color</source>
-        <translation type="unfinished">Rāmja krāsa</translation>
+        <translation>Rāmja krāsa</translation>
     </message>
     <message>
         <source>Background color</source>
-        <translation type="unfinished">Fona krāsa</translation>
+        <translation>Fona krāsa</translation>
     </message>
     <message>
         <source>Exclude item from exports</source>
-        <translation type="unfinished"></translation>
+        <translation>Neeksportēt vienumu</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerLabel</name>
     <message>
         <source>&lt;HTML label&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;HTML iezīme&gt;</translation>
     </message>
     <message>
         <source>&lt;label&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;birka&gt;</translation>
     </message>
     <message>
         <source>%1...</source>
-        <translation type="unfinished">%1...</translation>
+        <translation>%1...</translation>
     </message>
 </context>
 <context>
@@ -21066,7 +21275,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Insert expression</source>
-        <translation type="unfinished">Ievietot izteiksmi</translation>
+        <translation>Ievietot izteiksmi</translation>
     </message>
     <message>
         <source>Label color changed</source>
@@ -21074,7 +21283,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select font color</source>
-        <translation type="unfinished">Izvēlēties fonta krāsu</translation>
+        <translation>Izvēlēties fonta krāsu</translation>
     </message>
 </context>
 <context>
@@ -21149,7 +21358,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Galvenās īpašības</translation>
+        <translation>Galvenās īpašības</translation>
     </message>
     <message>
         <source>Render as HTML</source>
@@ -21177,31 +21386,31 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Insert an expression...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ievietot izteiksmi</translation>
     </message>
     <message>
         <source>Font...</source>
-        <translation type="unfinished">Fonts...</translation>
+        <translation>Fonts...</translation>
     </message>
     <message>
         <source>Font color</source>
-        <translation type="unfinished">Fonta krasa</translation>
+        <translation>Fonta krasa</translation>
     </message>
     <message>
         <source>Appearance</source>
-        <translation type="unfinished">Izskats</translation>
+        <translation>Izskats</translation>
     </message>
     <message>
         <source>Horizontal alignment</source>
-        <translation type="unfinished">Horizontālā līdzināšana</translation>
+        <translation>Horizontālā līdzināšana</translation>
     </message>
     <message>
         <source>Vertical alignment</source>
-        <translation type="unfinished">Vertikālā līdzināšana</translation>
+        <translation>Vertikālā līdzināšana</translation>
     </message>
 </context>
 <context>
@@ -21241,7 +21450,7 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerLegendMenuProvider</name>
     <message>
         <source>Reset to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation>Atiestatīt</translation>
     </message>
 </context>
 <context>
@@ -21368,15 +21577,15 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select font color</source>
-        <translation type="unfinished">Izvēlēties fonta krāsu</translation>
+        <translation>Izvēlēties fonta krāsu</translation>
     </message>
     <message>
         <source>Legend item properties</source>
-        <translation type="unfinished">Leģendas ieraksta īpašības</translation>
+        <translation>Leģendas ieraksta īpašības</translation>
     </message>
     <message>
         <source>Item text</source>
-        <translation type="unfinished">Ieraksta teksts</translation>
+        <translation>Ieraksta teksts</translation>
     </message>
     <message>
         <source>Group</source>
@@ -21487,19 +21696,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Wrap text on</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplauzt tekstu pie</translation>
     </message>
     <message>
         <source>Legend Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Leģendas īpašības</translation>
     </message>
     <message>
         <source>Legend</source>
-        <translation type="unfinished">Leģenda</translation>
+        <translation>Leģenda</translation>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Galvenās īpašības</translation>
+        <translation>Galvenās īpašības</translation>
     </message>
     <message>
         <source>Show feature count for each class of vector layer.</source>
@@ -21507,7 +21716,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Fonts</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonts</translation>
     </message>
     <message>
         <source>Font color...</source>
@@ -21515,11 +21724,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Columns</source>
-        <translation type="unfinished">Kolonnas</translation>
+        <translation>Kolonnas</translation>
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation>Skaits</translation>
     </message>
     <message>
         <source>Equal column widths</source>
@@ -21535,19 +21744,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Symbol</source>
-        <translation type="unfinished">Simbols</translation>
+        <translation>Simbols</translation>
     </message>
     <message>
         <source>Symbol width</source>
-        <translation type="unfinished">Simbola platums</translation>
+        <translation>Simbola platums</translation>
     </message>
     <message>
         <source>Symbol height</source>
-        <translation type="unfinished">Simbola augstums</translation>
+        <translation>Simbola augstums</translation>
     </message>
     <message>
         <source>Spacing</source>
-        <translation type="unfinished">Attālums</translation>
+        <translation>Attālums</translation>
     </message>
     <message>
         <source>Space above text using group style.</source>
@@ -21599,7 +21808,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <source>Space below title.</source>
@@ -21722,11 +21931,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Error, could not read file</source>
-        <translation type="unfinished">Kļūda, nevar nolasīt failu</translation>
+        <translation>Kļūda, nevar nolasīt failu</translation>
     </message>
     <message>
         <source>Composer error</source>
-        <translation type="unfinished">Veidotāja kļūda</translation>
+        <translation>Veidotāja kļūda</translation>
     </message>
     <message>
         <source>Error, could not create composer</source>
@@ -21734,7 +21943,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Loading template into composer...</source>
-        <translation type="unfinished">Veidotāja šablona ielāde...</translation>
+        <translation>Veidotāja šablona ielāde...</translation>
     </message>
     <message>
         <source>Error, could not load template file</source>
@@ -21746,7 +21955,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Composer templates</source>
-        <translation type="unfinished">Drukas veidotāja paraugi</translation>
+        <translation>Drukas veidotāja šabloni</translation>
     </message>
     <message>
         <source>File system error</source>
@@ -21758,19 +21967,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source> copy</source>
-        <translation type="unfinished"> kopēt</translation>
+        <translation> kopēt</translation>
     </message>
     <message>
         <source>Duplicating composer...</source>
-        <translation type="unfinished">Duplicē veidotāju...</translation>
+        <translation>Duplicē veidotāju...</translation>
     </message>
     <message>
         <source>Duplicate Composer</source>
-        <translation type="unfinished">Duplicēt veidotāju</translation>
+        <translation>Duplicēt veidotāju</translation>
     </message>
     <message>
         <source>Composer duplication failed.</source>
-        <translation type="unfinished">Nesekmīga veidotāja duplicēšana.</translation>
+        <translation>Nesekmīga veidotāja duplicēšana.</translation>
     </message>
 </context>
 <context>
@@ -21859,7 +22068,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Vertical</source>
-        <translation>Vertikāls</translation>
+        <translation type="unfinished">Vertikāls</translation>
     </message>
     <message>
         <source>Horizontal and Vertical</source>
@@ -21955,7 +22164,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Changed grid frame style</source>
-        <translation type="unfinished"></translation>
+        <translation>Mainīts tīkla rāmja stils</translation>
     </message>
     <message>
         <source>Disabled</source>
@@ -21979,7 +22188,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Annotation format changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mainīts anotācijas formāts</translation>
     </message>
     <message>
         <source>Select font color</source>
@@ -21991,19 +22200,19 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select grid frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties tīkla rāmja krāsu</translation>
     </message>
     <message>
         <source>Select grid frame fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties tīkla rāmja aizpildījuma krāsu</translation>
     </message>
     <message>
         <source>Changed grid frame line thickness</source>
-        <translation type="unfinished"></translation>
+        <translation>Mainīts tīkla rāmja līnijas biezums</translation>
     </message>
     <message>
         <source>Grid frame color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mainīta tīkla rāmja krāsa</translation>
     </message>
     <message>
         <source>Grid frame first fill color changed</source>
@@ -22019,7 +22228,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Grid line style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mainīts tīkla līnijas stils</translation>
     </message>
     <message>
         <source>Markers</source>
@@ -22035,7 +22244,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Draw &quot;%1&quot; grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Zīmēt tīklu &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Map unit</source>
@@ -22087,11 +22296,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Add map overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Pievienot kartes pārskatu</translation>
     </message>
     <message>
         <source>Draw &quot;%1&quot; overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Zīmēt pārskatu &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Overview checkbox toggled</source>
@@ -22192,6 +22401,10 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Line border</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>All</source>
+        <translation type="obsolete">Viss</translation>
     </message>
 </context>
 <context>
@@ -22506,11 +22719,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Move selected grid up</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot izvēlēto augšup</translation>
     </message>
     <message>
         <source>Move selected grid down</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārvietot izvēlēto lejup</translation>
     </message>
     <message>
         <source>Draw grid</source>
@@ -22659,18 +22872,18 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerMultiFrame</name>
     <message>
         <source>&lt;frame&gt;</source>
-        <translation type="unfinished">&lt;rāmis&gt;</translation>
+        <translation>&lt;rāmis&gt;</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerNameDelegate</name>
     <message>
         <source>Rename composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārdēvēt drukas veidotāju</translation>
     </message>
     <message>
         <source>There is already a composer named &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Drukas veidotājs ar nosaukumu &quot;%1&quot; jau eksistē</translation>
     </message>
 </context>
 <context>
@@ -22831,11 +23044,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Image rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Attēla rotēšana</translation>
     </message>
     <message>
         <source>Image source</source>
-        <translation type="unfinished"></translation>
+        <translation>Attēla avots</translation>
     </message>
     <message>
         <source>Placement</source>
@@ -22851,11 +23064,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Izstiept</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Izgriezt</translation>
+        <translation>Apgriezt</translation>
     </message>
     <message>
         <source>Zoom and resize frame</source>
@@ -23089,7 +23302,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select fill color</source>
-        <translation type="unfinished">Izvēlieties aizpildījuma krāsu</translation>
+        <translation>Izvēlieties aizpildījuma krāsu</translation>
     </message>
     <message>
         <source>Select alternate fill color</source>
@@ -23097,7 +23310,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select font color</source>
-        <translation type="unfinished">Izvēlēties fonta krāsu</translation>
+        <translation>Izvēlēties fonta krāsu</translation>
     </message>
     <message>
         <source>Select stroke color</source>
@@ -23109,7 +23322,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Transparent fill</source>
-        <translation type="unfinished">Caurspīdīgs aizpildījums</translation>
+        <translation>Caurspīdīgs aizpildījums</translation>
     </message>
     <message>
         <source>Transparent stroke</source>
@@ -23256,7 +23469,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Cap style</source>
-        <translation type="unfinished">Galu stils</translation>
+        <translation>Galu stils</translation>
     </message>
     <message>
         <source>Font color</source>
@@ -23279,19 +23492,19 @@ Please try a lower resolution or a smaller papersize</source>
     <name>QgsComposerShape</name>
     <message>
         <source>&lt;ellipse&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;elipse&gt;</translation>
     </message>
     <message>
         <source>&lt;rectangle&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;taisnstūris&gt;</translation>
     </message>
     <message>
         <source>&lt;triangle&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;trīsstūris&gt;</translation>
     </message>
     <message>
         <source>&lt;shape&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;forma&gt;</translation>
     </message>
 </context>
 <context>
@@ -23390,7 +23603,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Main properties</source>
-        <translation type="unfinished">Galvenās īpašības</translation>
+        <translation>Galvenās īpašības</translation>
     </message>
     <message>
         <source>Rotation</source>
@@ -23398,64 +23611,64 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Corner radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Stūru rādiuss</translation>
     </message>
     <message>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <source>Style</source>
-        <translation type="unfinished">Stils</translation>
+        <translation>Stils</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Mainīt...</translation>
+        <translation>Mainīt...</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerTableSortColumnsProxyModel</name>
     <message>
         <source>Descending</source>
-        <translation type="unfinished">Dilstoši</translation>
+        <translation>Dilstoši</translation>
     </message>
     <message>
         <source>Ascending</source>
-        <translation type="unfinished">Augoši</translation>
+        <translation>Augoši</translation>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished">Atribūts</translation>
+        <translation>Atribūts</translation>
     </message>
     <message>
         <source>Sort Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Kārtošanas secība</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerTableSortColumnsProxyModelV2</name>
     <message>
         <source>Descending</source>
-        <translation type="unfinished">Dilstoši</translation>
+        <translation>Dilstoši</translation>
     </message>
     <message>
         <source>Ascending</source>
-        <translation type="unfinished">Augoši</translation>
+        <translation>Augoši</translation>
     </message>
     <message>
         <source>Attribute</source>
-        <translation type="unfinished">Atribūts</translation>
+        <translation>Atribūts</translation>
     </message>
     <message>
         <source>Sort Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Kārtošanas secība</translation>
     </message>
 </context>
 <context>
     <name>QgsComposerTableV2</name>
     <message>
         <source>No matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav atbilstošu ierakstu</translation>
     </message>
 </context>
 <context>
@@ -23474,7 +23687,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Select grid color</source>
-        <translation>Izvēlieties režģa krāsu</translation>
+        <translation>Izvēlieties tīkla krāsu</translation>
     </message>
     <message>
         <source>Table layer changed</source>
@@ -23526,7 +23739,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Expression based filter</source>
-        <translation type="unfinished">Izteiksmju bāzēts filtrs</translation>
+        <translation>Izteiksmju bāzēts filtrs</translation>
     </message>
     <message>
         <source>Table header alignment changed</source>
@@ -23542,11 +23755,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Table header font color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabulas galvenes fonta krāsa</translation>
     </message>
     <message>
         <source>Table content font color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabulas satura fonta krāsa</translation>
     </message>
 </context>
 <context>
@@ -23617,7 +23830,7 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Stroke width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Līnijas platums</translation>
     </message>
     <message>
         <source>Color...</source>
@@ -23665,11 +23878,11 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Fonts and text styling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fonti un teksta stili</translation>
     </message>
     <message>
         <source>Table heading</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tabulas galvene</translation>
     </message>
     <message>
         <source>Alignment</source>
@@ -25138,7 +25351,7 @@ and current file is [%3]</source>
     </message>
     <message>
         <source>Activate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Aktivēt</translation>
     </message>
     <message>
         <source>Attribute field</source>
@@ -25652,7 +25865,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select text color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izvēlieties teksta krāsu</translation>
     </message>
 </context>
 <context>
@@ -25750,27 +25963,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Līnija</translation>
+        <translation>Līnija</translation>
     </message>
     <message>
         <source>Marker</source>
-        <translation type="unfinished">Marķieris</translation>
+        <translation>Marķieris</translation>
     </message>
     <message>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontāls</translation>
+        <translation>Horizontāls</translation>
     </message>
     <message>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikāls</translation>
+        <translation>Vertikāls</translation>
     </message>
     <message>
         <source>Boundary direction</source>
-        <translation type="unfinished">Robežas virziens</translation>
+        <translation>Robežas virziens</translation>
     </message>
     <message>
         <source>Horizontal and Vertical</source>
-        <translation type="unfinished">Horizontals un vertikāls</translation>
+        <translation>Horizontals un vertikāls</translation>
     </message>
     <message>
         <source>Grid properties</source>
@@ -25848,7 +26061,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Pixmap not found</source>
-        <translation type="unfinished">Pikseļkarte nav atrasta</translation>
+        <translation>Pikseļkarte nav atrasta</translation>
     </message>
 </context>
 <context>
@@ -26006,19 +26219,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source> metres/km</source>
-        <translation type="unfinished"> metri/km</translation>
+        <translation> metri/km</translation>
     </message>
     <message>
         <source> feet/miles</source>
-        <translation type="unfinished"> pēdas/jūdzes</translation>
+        <translation> pēdas/jūdzes</translation>
     </message>
     <message>
         <source> degrees</source>
-        <translation type="unfinished"> grādi</translation>
+        <translation> grādi</translation>
     </message>
     <message>
         <source>Select scalebar color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties mērogjoslas krāsu</translation>
     </message>
 </context>
 <context>
@@ -27083,7 +27296,7 @@ not displayed</source>
     </message>
     <message>
         <source>Transparent outline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Caurspīdīga mala</translation>
     </message>
 </context>
 <context>
@@ -27561,6 +27774,46 @@ Parser error:
         <source>Could not save unknown editor widget type &apos;%1&apos;.</source>
         <translation>Nevar saglabāt nezināma atribūtu rediģēšanas sīkrīka tipu &apos;%1&apos;.</translation>
     </message>
+    <message>
+        <source>Range</source>
+        <translation type="obsolete">Diapazons</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="obsolete">Unikālās vērtības</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="obsolete">Faila nosaukums</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="obsolete">Vērtību karte</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="obsolete">Pārskaitījums</translation>
+    </message>
+    <message>
+        <source>Hidden</source>
+        <translation type="obsolete">Slēpts</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="obsolete">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="obsolete">Tīmekļa skats</translation>
+    </message>
+    <message>
+        <source>Color</source>
+        <translation type="obsolete">Krāsa</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="obsolete">Datums/Laiks</translation>
+    </message>
 </context>
 <context>
     <name>QgsEllipseSymbolLayerV2Widget</name>
@@ -27614,7 +27867,7 @@ Parser error:
     </message>
     <message>
         <source>Select border color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izvēlieties robežas krāsu</translation>
     </message>
     <message>
         <source>Transparent border</source>
@@ -30627,7 +30880,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Reset to defaults</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Atiestatīt</translation>
     </message>
     <message>
         <source>Split stereo horizontal eye mapping</source>
@@ -31144,12 +31397,10 @@ Press cancel to abort breaks calculation or OK to continue.</source>
     <message numerus="yes">
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="unfinished">
-            <numerusform>Vai tiešām vēlaties dzēst %n izvēlētos slāņus?
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Vai tiešām vēlaties dzēst %n izvēlēto slāni?</numerusform>
+            <numerusform>Vai tiešām vēlaties dzēst %n izvēlētos slāņus?</numerusform>
+            <numerusform>Vai tiešām vēlaties dzēst %n izvēlēto slāņu?</numerusform>
         </translation>
     </message>
     <message>
@@ -33224,11 +33475,11 @@ rindā %2 kolonnā %3</translation>
     </message>
     <message>
         <source>Commit errors</source>
-        <translation type="unfinished">Ievietošanas kļūdas</translation>
+        <translation>Ievietošanas kļūdas</translation>
     </message>
     <message>
         <source>Could not commit changes to layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebija iespējams iesūtīt izmaiņas slānī %1</translation>
     </message>
     <message>
         <source>Errors: %1
@@ -33294,12 +33545,10 @@ rindā %2 kolonnā %3</translation>
     <message numerus="yes">
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation type="unfinished">
-            <numerusform>Joprojām ir %n neapstrādāti slāņi, kuri tiks zaudēti, ja aizvērsi logu.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Vēl ir atlicis %n nesakārtots slānis, kas tiks zaudēts, ja tagad aizvērsiet logu.</numerusform>
+            <numerusform>Vēl ir atlikuši %n nesakārtoti slāņi, kas tiks zaudēti, ja tagad aizvērsiet logu.</numerusform>
+            <numerusform>Vēl ir atlicis %n nesakārtotu slāņu, kas tiks zaudēti, ja tagad aizvērsiet logu.</numerusform>
         </translation>
     </message>
     <message>
@@ -33355,6 +33604,44 @@ rindā %2 kolonnā %3</translation>
     <message>
         <source>Handle bad layers</source>
         <translation>Pārvaldīt sliktus slāņus</translation>
+    </message>
+</context>
+<context>
+    <name>QgsHeatmapRendererWidget</name>
+    <message>
+        <source>Pixels</source>
+        <translation type="obsolete">Pikseļi</translation>
+    </message>
+</context>
+<context>
+    <name>QgsHeatmapRendererWidgetBase</name>
+    <message>
+        <source>Form</source>
+        <translation type="obsolete">Forma</translation>
+    </message>
+    <message>
+        <source>Automatic</source>
+        <translation type="obsolete">Automātiska</translation>
+    </message>
+    <message>
+        <source>Radius</source>
+        <translation type="obsolete">Rādiuss</translation>
+    </message>
+    <message>
+        <source>Rendering quality</source>
+        <translation type="obsolete">Renderēšanas kvalitāte</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation type="obsolete">Rediģēt</translation>
+    </message>
+    <message>
+        <source>Invert</source>
+        <translation type="obsolete">Inversēt</translation>
+    </message>
+    <message>
+        <source>Maximum value</source>
+        <translation type="obsolete">Maksimālā vērtība</translation>
     </message>
 </context>
 <context>
@@ -33506,13 +33793,10 @@ rindā %2 kolonnā %3</translation>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="unfinished">
-            <numerusform>Pēc %n sekunžu ilga aktivitātes trūkuma iestājās tīkla noildze.
-Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -33697,7 +33981,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Select view mode for raster layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties rastra slāņu attēlošanas režīmu</translation>
     </message>
     <message>
         <source>View</source>
@@ -33705,11 +33989,11 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Expand tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvērst koku</translation>
     </message>
     <message>
         <source>Collapse tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Sakļaut koku</translation>
     </message>
 </context>
 <context>
@@ -33832,7 +34116,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Toggle feature selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pārslēgt objektu izvēli</translation>
     </message>
     <message>
         <source>Table</source>
@@ -34687,23 +34971,23 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Select fill color</source>
-        <translation type="unfinished">Izvēlieties aizpildījuma krāsu</translation>
+        <translation>Izvēlieties aizpildījuma krāsu</translation>
     </message>
     <message>
         <source>Select text color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties teksta krāsu</translation>
     </message>
     <message>
         <source>Select buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties bufera krāsu</translation>
     </message>
     <message>
         <source>Select border color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties robežas krāsu</translation>
     </message>
     <message>
         <source>Select shadow color</source>
-        <translation type="unfinished"></translation>
+        <translation>Izvēlieties ēnas krāsu</translation>
     </message>
 </context>
 <context>
@@ -35516,7 +35800,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>Blur radius</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izpludināšanas rādiuss</translation>
     </message>
     <message>
         <source>Blur only alpha pixels</source>
@@ -37652,7 +37936,9 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     <message numerus="yes">
         <source>%n more</source>
         <comment>unread messages</comment>
-        <translation type="unfinished">
+        <translation>
+            <numerusform>vēl %n</numerusform>
+            <numerusform>vēl %n</numerusform>
             <numerusform>vēl %n</numerusform>
         </translation>
     </message>
@@ -38112,11 +38398,11 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
     </message>
     <message>
         <source>No Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nav ģeometrijas</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nezināma ģeometrija</translation>
     </message>
 </context>
 <context>
@@ -39076,7 +39362,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skaits</translation>
     </message>
     <message>
         <source>SQLite databases (*.db)</source>
@@ -39211,12 +39497,10 @@ p, li { white-space: pre-wrap; }
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>Koordinātu atskaites sistēma (%n pieejamu)
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Koordinātu sistēma (%n pieejama)</numerusform>
+            <numerusform>Koordinātu sistēma (%n pieejamas)</numerusform>
+            <numerusform>Koordinātu sistēma (%n pieejamu)</numerusform>
         </translation>
     </message>
     <message>
@@ -41339,7 +41623,7 @@ Always network: always load from network and do not check if the cache has a val
     </message>
     <message>
         <source>Grid appearance</source>
-        <translation type="unfinished"></translation>
+        <translation>Tīkla izskats</translation>
     </message>
     <message>
         <source>Grid style</source>
@@ -41626,11 +41910,11 @@ error:%2
     </message>
     <message>
         <source>No Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nav ģeometrijas</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nezināma ģeometrija</translation>
     </message>
 </context>
 <context>
@@ -42473,6 +42757,10 @@ Error: %4</source>
         <source>Refresh</source>
         <translation>Atsvaidzināt</translation>
     </message>
+    <message>
+        <source>Connection failed</source>
+        <translation type="obsolete">Savienošanās neizdevās</translation>
+    </message>
 </context>
 <context>
     <name>QgsPGLayerItem</name>
@@ -42501,6 +42789,10 @@ Error: %4</source>
     <message>
         <source>as geometryless table</source>
         <translation>kā bezģeometriju tabulu</translation>
+    </message>
+    <message>
+        <source>Connection failed</source>
+        <translation type="obsolete">Savienošanās neizdevās</translation>
     </message>
 </context>
 <context>
@@ -42602,7 +42894,7 @@ Error: %4</source>
     </message>
     <message>
         <source>Dash Dot Dot Line</source>
-        <translation>Pārtraukti punktēta pārtraukta līnija</translation>
+        <translation>Pārtraukti punktēta pārtraukta</translation>
     </message>
     <message>
         <source>No Pen</source>
@@ -44665,15 +44957,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsPostgresConn</name>
     <message>
         <source>Connection to database failed</source>
-        <translation type="unfinished">Kļūda pieslēdzoties datu bāzei</translation>
+        <translation>Kļūda pieslēdzoties datubāzei</translation>
     </message>
     <message>
         <source>PostGIS</source>
-        <translation type="unfinished">PostGIS</translation>
+        <translation>PostGIS</translation>
     </message>
     <message>
         <source>error in setting encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>kļūda iestatot kodējumu</translation>
     </message>
     <message>
         <source>undefined return value from encoding setting</source>
@@ -44759,35 +45051,35 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punkts</translation>
+        <translation>Punkts</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Līnija</translation>
+        <translation>Līnija</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Poligons</translation>
+        <translation>Poligons</translation>
     </message>
     <message>
         <source>No Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Nav ģeometrijas</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation type="unfinished">Multipunkts</translation>
+        <translation>Multipunkts</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation type="unfinished">Multilīnija</translation>
+        <translation>Multilīnija</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation type="unfinished">Multipoligons</translation>
+        <translation>Multipoligons</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Nezināma ģeometrija</translation>
     </message>
     <message>
         <source>Connection error: %1 returned %2 [%3]</source>
@@ -44807,15 +45099,15 @@ Result: %3 (%4)</source>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Neviens</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">Ģeometrija</translation>
+        <translation>Ģeometrija</translation>
     </message>
     <message>
         <source>Geography</source>
-        <translation type="unfinished"></translation>
+        <translation>Ģeogrāfija</translation>
     </message>
     <message>
         <source>TopoGeometry</source>
@@ -46049,12 +46341,10 @@ Because of this the projection selector will not work...</source>
     <message numerus="yes">
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform>WHERE klauzula deva %n rindu.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>WHERE klauzula deva %n rindu.</numerusform>
+            <numerusform>WHERE klauzula deva %n rindas.</numerusform>
+            <numerusform>WHERE klauzula deva %n rindu.</numerusform>
         </translation>
     </message>
     <message>
@@ -46565,6 +46855,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRasterFillSymbolLayerWidget</name>
+    <message>
+        <source>Pixels</source>
+        <translation type="obsolete">Pikseļi</translation>
+    </message>
+    <message>
+        <source>File</source>
+        <translation type="obsolete">Fails</translation>
+    </message>
+    <message>
+        <source>Opacity</source>
+        <translation type="obsolete">Necaurredzamība</translation>
+    </message>
+    <message>
+        <source>Angle</source>
+        <translation type="obsolete">Leņķis</translation>
+    </message>
+    <message>
+        <source>Width</source>
+        <translation type="obsolete">Platums</translation>
+    </message>
+</context>
+<context>
     <name>QgsRasterFormatSaveOptionsWidget</name>
     <message>
         <source>Default</source>
@@ -46856,7 +47169,7 @@ Click on help button to get valid creation options for this format.</source>
     </message>
     <message>
         <source>Band</source>
-        <translation type="unfinished">Kanāls</translation>
+        <translation>Kanāls</translation>
     </message>
 </context>
 <context>
@@ -48181,11 +48494,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Load Style...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ielādēt stilu</translation>
     </message>
     <message>
         <source>Save Style...</source>
-        <translation type="unfinished"></translation>
+        <translation>Saglabāt stilu</translation>
     </message>
 </context>
 <context>
@@ -48416,7 +48729,7 @@ datasets with maximum width and height specified below.</source>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Mainīt...</translation>
+        <translation>Mainīt...</translation>
     </message>
 </context>
 <context>
@@ -49144,24 +49457,21 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Kļūda</translation>
+        <translation>Kļūda</translation>
     </message>
     <message numerus="yes">
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
-        <translation type="unfinished">
-            <numerusform>Filtrs deva %n objektus
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Filtrs deva %n objektu</numerusform>
+            <numerusform>Filtrs deva %n objektus</numerusform>
+            <numerusform>Filtrs deva %n objektu</numerusform>
         </translation>
     </message>
     <message>
         <source>Filter expression parsing error:
 </source>
-        <translation type="unfinished">Filtra izteiksmes parsēšanas kļūda:
-</translation>
+        <translation>Filtra izteiksmes parsēšanas kļūda:</translation>
     </message>
     <message>
         <source>Filter is empty</source>
@@ -49181,7 +49491,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Evaluation error</source>
-        <translation type="unfinished">Novērtējuma kļūta</translation>
+        <translation>Izpildes kļūda</translation>
     </message>
 </context>
 <context>
@@ -49219,15 +49529,15 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Scale area</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērogot platību</translation>
     </message>
     <message>
         <source>Scale diameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Mērogot diametru</translation>
     </message>
     <message>
         <source>- expression -</source>
-        <translation type="unfinished"></translation>
+        <translation>- izteiksme -</translation>
     </message>
 </context>
 <context>
@@ -49265,11 +49575,11 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Layer rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Slāņa renderēšana</translation>
     </message>
     <message>
         <source>Layer transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Slāņa caurspīdīgums</translation>
     </message>
     <message>
         <source>Feature blending mode</source>
@@ -49379,7 +49689,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Skaits</translation>
     </message>
     <message>
         <source>Duplicate count</source>
@@ -49749,7 +50059,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>Select border color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izvēlieties robežas krāsu</translation>
     </message>
 </context>
 <context>
@@ -50072,12 +50382,10 @@ standard deviation ×</source>
     <message numerus="yes">
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation type="unfinished">
-            <numerusform>Atrasts %n atbilstošu objektu.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Atrasts %n atbilstošs objekts.</numerusform>
+            <numerusform>Atrasti %n atbilstoši objekti.</numerusform>
+            <numerusform>Atrasts %n atbilstou objektu.</numerusform>
         </translation>
     </message>
     <message>
@@ -50178,12 +50486,10 @@ standard deviation ×</source>
     <message numerus="yes">
         <source>Validation finished (%n error(s) found).</source>
         <comment>number of geometry errors</comment>
-        <translation type="unfinished">
-            <numerusform>Validācija pabeigta (%n kļūdas atrastas).
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Validācija ir pabeigta (atrasta %n kļūda).</numerusform>
+            <numerusform>Validācija ir pabeigta (atrastas %n kļūdas).</numerusform>
+            <numerusform>Validācija ir pabeigta (atrasts %n kļūdu).</numerusform>
         </translation>
     </message>
 </context>
@@ -50226,19 +50532,19 @@ Kļūda bija:
     <name>QgsShapeburstFillSymbolLayerV2Widget</name>
     <message>
         <source>Color (start)</source>
-        <translation type="unfinished">Krāsa (sākums)</translation>
+        <translation>Krāsa (sākums)</translation>
     </message>
     <message>
         <source>Color (end)</source>
-        <translation type="unfinished">Krāsa (beigas)</translation>
+        <translation>Krāsa (beigas)</translation>
     </message>
     <message>
         <source>Blur radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Izpludināšanas rādiuss</translation>
     </message>
     <message>
         <source>Integer between 0 and 18</source>
-        <translation type="unfinished"></translation>
+        <translation>Vesels skaitlis robežās no 0 līdz 18</translation>
     </message>
     <message>
         <source>Use whole shape</source>
@@ -50254,11 +50560,11 @@ Kļūda bija:
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Milimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished">Kartes vienība</translation>
+        <translation>Kartes vienības</translation>
     </message>
     <message>
         <source>Select gradient color</source>
@@ -50266,7 +50572,7 @@ Kļūda bija:
     </message>
     <message>
         <source>Transparent</source>
-        <translation type="unfinished">Caurspīdīgs</translation>
+        <translation>Caurspīdīgs</translation>
     </message>
 </context>
 <context>
@@ -50293,23 +50599,23 @@ Kļūda bija:
     </message>
     <message>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Milimetri</translation>
     </message>
     <message>
         <source>Map unit</source>
-        <translation type="unfinished">Kartes vienība</translation>
+        <translation>Kartes vienības</translation>
     </message>
     <message>
         <source>Select fill color</source>
-        <translation type="unfinished">Izvēlieties aizpildījuma krāsu</translation>
+        <translation>Izvēlieties aizpildījuma krāsu</translation>
     </message>
     <message>
         <source>Transparent fill</source>
-        <translation type="unfinished">Caurspīdīgs aizpildījums</translation>
+        <translation>Caurspīdīgs aizpildījums</translation>
     </message>
     <message>
         <source>Select border color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izvēlieties robežas krāsu</translation>
     </message>
     <message>
         <source>Transparent border</source>
@@ -50411,7 +50717,7 @@ Kļūda bija:
     </message>
     <message>
         <source>Select border color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izvēlieties robežas krāsu</translation>
     </message>
     <message>
         <source>Transparent border</source>
@@ -51292,12 +51598,10 @@ but implies better performance thereafter.</source>
     <message numerus="yes">
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation type="unfinished">
-            <numerusform>%n izvēlētu ģeometriju 
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Izvēlēta %n ģeometrija</numerusform>
+            <numerusform>Izvēlētas %n ģeometrijas</numerusform>
+            <numerusform>Izvēlēts %n ģeometriju</numerusform>
         </translation>
     </message>
     <message>
@@ -52820,7 +53124,7 @@ There was a problem with your symbol database.</source>
     </message>
     <message>
         <source>Select border color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Izvēlieties robežas krāsu</translation>
     </message>
 </context>
 <context>
@@ -53980,78 +54284,6 @@ Kļūda bija %2</translation>
         <translation type="obsolete">nav renedrētājs</translation>
     </message>
     <message>
-        <source>SUCCESS: %n attribute(s) deleted.</source>
-        <comment>deleted attributes count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>ERROR: %n attribute(s) not deleted.</source>
-        <comment>not deleted attributes count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>SUCCESS: %n attribute(s) added.</source>
-        <comment>added attributes count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>ERROR: %n new attribute(s) not added</source>
-        <comment>not added attributes count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>SUCCESS: %n attribute value(s) changed.</source>
-        <comment>changed attribute values count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>ERROR: %n attribute value change(s) not applied.</source>
-        <comment>not changed attribute values count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>SUCCESS: %n feature(s) added.</source>
-        <comment>added features count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>ERROR: %n feature(s) not added.</source>
-        <comment>not added features count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>SUCCESS: %n geometries were changed.</source>
-        <comment>changed geometries count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>ERROR: %n geometries not changed.</source>
-        <comment>not changed geometries count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>SUCCESS: %n feature(s) deleted.</source>
-        <comment>deleted features count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
-        <source>ERROR: %n feature(s) not deleted.</source>
-        <comment>not deleted features count</comment>
-        <translation type="obsolete">
-        </translation>
-    </message>
-    <message>
         <source>Unknown renderer</source>
         <translation type="obsolete">Nezināms renderētājs</translation>
     </message>
@@ -54230,45 +54462,37 @@ Kļūda bija %2</translation>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>Kļūda: %n atribūtu nav dzēsti.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation type="unfinished">
-            <numerusform>Sekmīgi: %n atribūti ir pievienoti.
-        
-        
-        
-        </numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>Kļūda: %n jauni atribūti nav pievienoti
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -54282,100 +54506,82 @@ Kļūda bija %2</translation>
     <message numerus="yes">
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>Sekmīgi: %n atribūtu vērtības ir mainītas.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>Sekmīgi: %n atribūtu vērtības ir mainītas.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>Sekmīgi: %n objekti ir dzēsti.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>Kļūda: %n objekti nav dzēsti.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="unfinished">
-            <numerusform>Sekmīgi: %n objekti ir pievienoti.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
-            <numerusform>Kļūda: %n objekti nav pievienoti.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
-            <numerusform>Kļūda: %n objekti nav pievienoti - formāts neatbalsta objektu pievienošanu.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>Sekmīgi: %n ģeometrijas ir mainītas.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>Kļūda: %n ģeometrijas nav mainītas.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -55332,11 +55538,11 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Load Style...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ielādēt stilu</translation>
     </message>
     <message>
         <source>Save Style...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Saglabāt stilu</translation>
     </message>
 </context>
 <context>
@@ -55626,11 +55832,11 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>WFS</source>
-        <translation type="unfinished">WFS</translation>
+        <translation>WFS</translation>
     </message>
     <message>
         <source>empty response</source>
-        <translation type="unfinished"></translation>
+        <translation>tukša atbilde</translation>
     </message>
     <message>
         <source>WFS service exception:%1</source>
@@ -55868,15 +56074,15 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebija iespējams parsēt WMS URI</translation>
     </message>
     <message>
         <source>Failed to download capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebija iespējams lejupielādēt iespēju dokumentu</translation>
     </message>
     <message>
         <source>Failed to parse capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebija iespējams parsēt iespēju dokumentu</translation>
     </message>
 </context>
 <context>
@@ -55943,12 +56149,10 @@ Kļūda bija %2</translation>
     <message numerus="yes">
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>Koordinātu atskaites sistēma (%n pieejamu)
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -55978,12 +56182,10 @@ Kļūda bija %2</translation>
     <message numerus="yes">
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation type="unfinished">
-            <numerusform>izvēlēts %n slāņu
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>Izvēlēts %n slānis</numerusform>
+            <numerusform>Izvēlēti %n slāņi</numerusform>
+            <numerusform>Izvēlēts %n slāņu</numerusform>
         </translation>
     </message>
     <message>
@@ -56038,22 +56240,20 @@ Kļūda bija %2</translation>
     <message numerus="yes">
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>Opcijas (pieejams %n koordinātu atskaites sistēmu)
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
         <source>Failed to parse WMS URI</source>
-        <translation type="unfinished"></translation>
+        <translation>Neizdevās parsēt WMS URI</translation>
     </message>
     <message>
         <source>Failed to download capabilities:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Neizdevās lejupielādēt iespēju dokumentu:</translation>
     </message>
     <message>
         <source>The server you are trying to connect to does not seem to be a WMS server. Please check the URL.</source>
@@ -56068,7 +56268,8 @@ Kļūda bija %2</translation>
     <message>
         <source>Could not understand the response. The %1 provider said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nebija iespējams saprast saņemto atbildi. Sniedzējs %1 ziņoja:
+%2</translation>
     </message>
 </context>
 <context>
@@ -56263,7 +56464,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <source>Change...</source>
-        <translation type="unfinished">Mainīt...</translation>
+        <translation>Mainīt...</translation>
     </message>
 </context>
 <context>
@@ -56547,12 +56748,10 @@ Response was:
     <message numerus="yes">
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation type="unfinished">
-            <numerusform>(un vēl %n) 
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform>(un vēl %n)</numerusform>
+            <numerusform>(un vēl %n)</numerusform>
+            <numerusform>(un vēl %n)</numerusform>
         </translation>
     </message>
     <message>
@@ -56984,45 +57183,37 @@ Response was:
     <message numerus="yes">
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
-            <numerusform>Fonā pieprasīts %n daļu
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
-            <numerusform>, %n keša trāpījumu 
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
-            <numerusform>, %n iztrūkst kešā 
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
-            <numerusform>, %n kļūdu.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57082,12 +57273,10 @@ Tika mēģināts URL: %1</translation>
     <message numerus="yes">
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation type="unfinished">
-            <numerusform>(un vēl %n) 
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57381,12 +57570,10 @@ Response was:
     </message>
     <message numerus="yes">
         <source>%n missing row(s)</source>
-        <translation type="unfinished">
-            <numerusform>
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57395,12 +57582,10 @@ Response was:
     </message>
     <message numerus="yes">
         <source>%n missing column(s)</source>
-        <translation type="unfinished">
-            <numerusform>
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57420,7 +57605,7 @@ Response was:
     <name>QgsWmsTiledImageDownloadHandler</name>
     <message>
         <source>Tile request error</source>
-        <translation type="unfinished"></translation>
+        <translation>Flīžu pieprasījuma kļūda</translation>
     </message>
     <message>
         <source>Status: %1
@@ -57433,7 +57618,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>WMS</source>
-        <translation type="unfinished">WMS</translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <source>Tile request error (Status:%1; Content-Type:%2; Length:%3; URL: %4)</source>
@@ -57446,45 +57631,37 @@ Reason phrase: %2</source>
     <message numerus="yes">
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
-            <numerusform>Fonā pieprasīts %n daļu
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
-            <numerusform>, %n keša trāpījumu 
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
-            <numerusform>, %n iztrūkst kešā 
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
-            <numerusform>, %n kļūdu.
-        
-        
-        
-        </numerusform>
+        <translation>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -57653,7 +57830,7 @@ Reason phrase: %2</source>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tikai modelētāja rīki</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -58171,12 +58348,6 @@ Apraksts: %2</translation>
     <message>
         <source>Query Result</source>
         <translation type="obsolete">Pieprasīt rezultātu</translation>
-    </message>
-    <message>
-        <source>The where clause returned %n row(s).</source>
-        <comment>returned test rows</comment>
-        <translation type="obsolete">
-        </translation>
     </message>
     <message>
         <source>Query Failed</source>
@@ -58822,15 +58993,15 @@ Problem with line %d</source>
     <name>UndoWidget</name>
     <message>
         <source>Undo/Redo</source>
-        <translation type="unfinished">Atsaukt/Pārdarīt</translation>
+        <translation>Atsaukt/Pārdarīt</translation>
     </message>
     <message>
         <source>Undo</source>
-        <translation type="unfinished">Atsaukt</translation>
+        <translation>Atsaukt</translation>
     </message>
     <message>
         <source>Redo</source>
-        <translation type="unfinished">Pārdarīt</translation>
+        <translation>Pārdarīt</translation>
     </message>
 </context>
 <context>
@@ -58920,7 +59091,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Modeler-only tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tikai modelētāja rīki</translation>
     </message>
     <message>
         <source>Layer</source>
@@ -59503,6 +59674,45 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
 </context>
 <context>
+    <name>WidgetRasterFill</name>
+    <message>
+        <source>Form</source>
+        <translation type="obsolete">Forma</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="obsolete">...</translation>
+    </message>
+    <message>
+        <source>Object</source>
+        <translation type="obsolete">Objekts</translation>
+    </message>
+    <message>
+        <source>Viewport</source>
+        <translation type="obsolete">Skatupunkts</translation>
+    </message>
+    <message>
+        <source>Rotation</source>
+        <translation type="obsolete">Rotācija</translation>
+    </message>
+    <message>
+        <source>%</source>
+        <translation type="obsolete">%</translation>
+    </message>
+    <message>
+        <source>Opacity</source>
+        <translation type="obsolete">Necaurredzamība</translation>
+    </message>
+    <message>
+        <source>Offset X,Y</source>
+        <translation type="obsolete">Nobīde X, Y</translation>
+    </message>
+    <message>
+        <source>Data defined properties...</source>
+        <translation type="obsolete">Datu definētas īpašības...</translation>
+    </message>
+</context>
+<context>
     <name>WidgetSVGFill</name>
     <message>
         <source>Form</source>
@@ -59727,7 +59937,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Use custom dash pattern</source>
-        <translation>Lietot pielāgotu punktētu apzīmejumu</translation>
+        <translation>Pielāgots punktējums</translation>
     </message>
     <message>
         <source>Millimeter</source>
@@ -62833,7 +63043,7 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>Vector Grid...</source>
-        <translation type="unfinished"></translation>
+        <translation>Vektoru tīkls...</translation>
     </message>
     <message>
         <source>Select by Location...</source>
@@ -67682,26 +67892,26 @@ None
     <name>widgetNumberInput</name>
     <message>
         <source>Form</source>
-        <translation>Forma</translation>
+        <translation type="unfinished">Forma</translation>
     </message>
     <message>
         <source>Open number input dialog</source>
-        <translation>Atvērt skaitļu ievades dialogu</translation>
+        <translation type="unfinished">Atvērt skaitļu ievades dialogu</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 <context>
     <name>widgetOutputSelect</name>
     <message>
         <source>Form</source>
-        <translation>Forma</translation>
+        <translation type="unfinished">Forma</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="unfinished">...</translation>
     </message>
 </context>
 </TS>
