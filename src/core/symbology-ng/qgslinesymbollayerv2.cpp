@@ -139,6 +139,8 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
     //pre 2.5 projects used "width_unit"
     l->setWidthUnit( QgsSymbolLayerV2Utils::decodeOutputUnit( props["width_unit"] ) );
   }
+  if ( props.contains( "width_map_unit_scale" ) )
+    l->setWidthMapUnitScale( QgsSymbolLayerV2Utils::decodeMapUnitScale( props["width_map_unit_scale"] ) );
   if ( props.contains( "offset" ) )
     l->setOffset( props["offset"].toDouble() );
   if ( props.contains( "offset_unit" ) )
