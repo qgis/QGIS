@@ -5542,7 +5542,7 @@ Otevřete dialog výstupů pro jeho kontrolu.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Otevřít nedávný</translation>
+        <translation type="obsolete">&amp;Otevřít nedávný</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6454,6 +6454,10 @@ Funguje pro všechny editovatelné vrstvy</translation>
         <source>Fill Ring</source>
         <translation>Vyplnit prstenec</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6752,7 +6756,7 @@ Funguje pro všechny editovatelné vrstvy</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Zobrazuji %d - %d z %d výsledků%s</translation>
+        <translation type="obsolete">Zobrazuji %d - %d z %d výsledků%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6801,6 +6805,14 @@ Funguje pro všechny editovatelné vrstvy</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Chyba připojení CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10677,6 +10689,62 @@ Response was:
         <source>Legend</source>
         <translation>Legenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Klasifikace</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Rozsah</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Jedinečné hodnoty</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Jméno souboru</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Mapa hodnot</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Výčet</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Zaškrtávací pole</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Úprava textu</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Vztah hodnoty</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">UUID generátor</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Web zobrazení</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Reference vztahů</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Datum/čas</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11568,7 +11636,7 @@ Chyba: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Aktuální vrstva nemá vybrané prvky</translation>
+        <translation type="obsolete">Aktuální vrstva nemá vybrané prvky</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12070,6 +12138,10 @@ Vždy ignorovat tyto chyby?</translation>
             <numerusform>Vyskytly se %n chyby SSL</numerusform>
             <numerusform>Vyskytlo se %n chyb SSL</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17566,6 +17638,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Change...</source>
         <translation>Změnit...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

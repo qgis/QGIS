@@ -5542,7 +5542,7 @@ Abra o diálogo de resultados para comprobalas.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>Abrir &amp;Recentes</translation>
+        <translation type="obsolete">Abrir &amp;Recentes</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6454,6 +6454,10 @@ Actúa sobre a capa editable activa actual</translation>
         <source>Fill Ring</source>
         <translation>Encher Anel</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6752,7 +6756,7 @@ Actúa sobre a capa editable activa actual</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Amosar %d - %d de %d resultado%s</translation>
+        <translation type="obsolete">Amosar %d - %d de %d resultado%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6801,6 +6805,13 @@ Actúa sobre a capa editable activa actual</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Erro de conexión CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10686,6 +10697,62 @@ A resposta foi:
         <source>Legend</source>
         <translation>Lenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Clasificación</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Rango</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Valores Únicos</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Mapa de Valores</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumeración</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Caixa de Selección</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Edición de Texto</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Relación de Valores</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">Xerador de UUID</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Vista de Web</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Referencia da relación</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Data/Hora</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11576,7 +11643,7 @@ Erro: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>A capa actual non ten entidades seleccionadas</translation>
+        <translation type="obsolete">A capa actual non ten entidades seleccionadas</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12075,6 +12142,10 @@ Always ignore these errors?</source>
             <numerusform>Ocorreu un %n erro SSL</numerusform>
             <numerusform>Ocorreron %n erros SSL</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17572,6 +17643,22 @@ Ténteo cunha resolución baixa ou cun tamaño de papel menor</translation>
     <message>
         <source>Change...</source>
         <translation>Cambiar...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

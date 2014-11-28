@@ -6452,7 +6452,7 @@ Actúa sobre la capa actual en edición</translation>
         <translation>Rellenar anillo</translation>
     </message>
     <message>
-        <source>&amp;Open Recent</source>
+        <source>Open Recent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6753,7 +6753,7 @@ Actúa sobre la capa actual en edición</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Mostrando %d - %d de %d resultados</translation>
+        <translation type="obsolete">Mostrando %d - %d de %d resultados</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6802,6 +6802,13 @@ Actúa sobre la capa actual en edición</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Error de conexión CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10691,55 +10698,59 @@ La respuesta fue:
     </message>
     <message>
         <source>Classification</source>
-        <translation type="obsolete">Clasificación</translation>
+        <translation type="unfinished">Clasificación</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="obsolete">Intervalo</translation>
+        <translation type="unfinished">Intervalo</translation>
     </message>
     <message>
         <source>Unique Values</source>
-        <translation type="obsolete">Valores únicos</translation>
+        <translation type="unfinished">Valores únicos</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="obsolete">Nombre de archivo</translation>
+        <translation type="unfinished">Nombre de archivo</translation>
     </message>
     <message>
         <source>Value Map</source>
-        <translation type="obsolete">Mapa de valor</translation>
+        <translation type="unfinished">Mapa de valor</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation type="obsolete">Enumeración</translation>
+        <translation type="unfinished">Enumeración</translation>
     </message>
     <message>
         <source>Check Box</source>
-        <translation type="obsolete">Casilla de verificación</translation>
+        <translation type="unfinished">Casilla de verificación</translation>
     </message>
     <message>
         <source>Text Edit</source>
-        <translation type="obsolete">Edición de texto</translation>
+        <translation type="unfinished">Edición de texto</translation>
     </message>
     <message>
         <source>Value Relation</source>
-        <translation type="obsolete">Relación de valores</translation>
+        <translation type="unfinished">Relación de valores</translation>
     </message>
     <message>
         <source>Uuid Generator</source>
-        <translation type="obsolete">Generador de UUID</translation>
+        <translation type="unfinished">Generador de UUID</translation>
     </message>
     <message>
         <source>Photo</source>
-        <translation type="obsolete">Foto</translation>
+        <translation type="unfinished">Foto</translation>
     </message>
     <message>
         <source>Web View</source>
-        <translation type="obsolete">Vista Web</translation>
+        <translation type="unfinished">Vista Web</translation>
     </message>
     <message>
         <source>Date/Time</source>
-        <translation type="obsolete">Fecha/Hora</translation>
+        <translation type="unfinished">Fecha/Hora</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Referencia de la relación</translation>
     </message>
 </context>
 <context>
@@ -11630,7 +11641,7 @@ Error: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>La capa actual no tiene objetos espaciales seleccionados</translation>
+        <translation type="obsolete">La capa actual no tiene objetos espaciales seleccionados</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12128,6 +12139,10 @@ Always ignore these errors?</source>
             <numerusform>Ocurrió 1 error de SSL</numerusform>
             <numerusform>Ocurrieron %n errores de SSL</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17634,6 +17649,22 @@ Por favor, pruebe una resolución menor o un tamaño de papel más pequeño.</tr
     <message>
         <source>Change...</source>
         <translation>Cambiar...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

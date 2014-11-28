@@ -5540,7 +5540,7 @@ Deschide dialogul rezultatelor, pentru verificare.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>Deschidere pr&amp;oiect recent</translation>
+        <translation type="obsolete">Deschidere pr&amp;oiect recent</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6452,6 +6452,10 @@ Funcționează pentru stratul editabil, activ în prezent</translation>
         <source>Fill Ring</source>
         <translation>Umplere inel</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6750,7 +6754,7 @@ Funcționează pentru stratul editabil, activ în prezent</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Arată %d - %d din %d rezultat%e</translation>
+        <translation type="obsolete">Arată %d - %d din %d rezultat%e</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6799,6 +6803,14 @@ Funcționează pentru stratul editabil, activ în prezent</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Eroare de conectare la CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10680,6 +10692,62 @@ Response was:
         <source>Legend</source>
         <translation>Legendă</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Clasificare</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Valori Unice</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Hartă cu valori</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumerare</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Casetă de bifare</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Editare Text</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Relație Valori</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">Generator Uuid</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Data/Ora</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11571,7 +11639,7 @@ Eroare: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Stratul curent nu conține entități selectate</translation>
+        <translation type="obsolete">Stratul curent nu conține entități selectate</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12074,6 +12142,10 @@ Ignorați întotdeauna aceste erori?</translation>
             <numerusform>Au apărut %n erori SSL:</numerusform>
             <numerusform>Au apărut %n erori SSL:</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17560,6 +17632,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Change...</source>
         <translation>Schimbare...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

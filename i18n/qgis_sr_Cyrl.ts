@@ -6733,10 +6733,6 @@ Open the results dialog to check it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Open Recent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>New From Template</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7663,6 +7659,10 @@ Ctl (Cmd) increments by 15 deg.</source>
         <source>Stretch histogram to full dataset</source>
         <translation type="obsolete">Хистограм на све податке</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -7964,10 +7964,6 @@ Ctl (Cmd) increments by 15 deg.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Showing %d - %d of %d result%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Coordinate Transformation Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8014,6 +8010,14 @@ Ctl (Cmd) increments by 15 deg.</source>
     <message>
         <source>CSW Connection error</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -14234,6 +14238,62 @@ Response was:
         <source>Legend</source>
         <translation type="unfinished">Каталог</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Класификација</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Ранг</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Назив датотеке</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Побројавање</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QPSQLDriver</name>
@@ -16888,10 +16948,6 @@ Greška: %1</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Delete features</source>
         <translation>Брисање елемената</translation>
     </message>
@@ -17703,6 +17759,10 @@ Greške: %2
     <message>
         <source>&amp;Raster</source>
         <translation>&amp;Растер</translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24418,6 +24478,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Cross width</source>
         <translation>Величина крстића</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

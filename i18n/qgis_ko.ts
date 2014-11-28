@@ -5541,7 +5541,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>최근 열기(&amp;O)</translation>
+        <translation type="obsolete">최근 열기(&amp;O)</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6452,6 +6452,10 @@ Acts on currently active editable layer</source>
         <source>Fill Ring</source>
         <translation>링 채우기</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6750,7 +6754,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Showing %d - %d of %d result%s</translation>
+        <translation type="obsolete">Showing %d - %d of %d result%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6799,6 +6803,12 @@ Acts on currently active editable layer</source>
     <message>
         <source>CSW Connection error</source>
         <translation>CSW 연결 오류</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10682,6 +10692,62 @@ Response was:
         <source>Legend</source>
         <translation>범례</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">분류</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">범위</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">고유값</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">파일 이름</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">값 맵</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">열거값</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">체크박스</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">텍스트 편집</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">값 릴래이션</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">UUID 생성기</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">사진</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">웹 보기</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">릴레이션 레퍼런스</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">일자/시간</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11570,7 +11636,7 @@ Error: %1</source>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>현재 레이어에 선택된 객체가 없음</translation>
+        <translation type="obsolete">현재 레이어에 선택된 객체가 없음</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12065,6 +12131,10 @@ Always ignore these errors?</source>
         <translation>
             <numerusform>%n개의 SSL 오류가 발생됨</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17561,6 +17631,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Change...</source>
         <translation>변경...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

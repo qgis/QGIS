@@ -6438,7 +6438,7 @@ Acts on currently active editable layer</source>
         <translation>घेरा भरें</translation>
     </message>
     <message>
-        <source>&amp;Open Recent</source>
+        <source>Open Recent</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -6739,7 +6739,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>%d - %d of %d दिखा रहा है परिणाम%s</translation>
+        <translation type="obsolete">%d - %d of %d दिखा रहा है परिणाम%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6788,6 +6788,13 @@ Acts on currently active editable layer</source>
     <message>
         <source>CSW Connection error</source>
         <translation>CSW संपर्क गलती</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10677,59 +10684,59 @@ Response was:
     </message>
     <message>
         <source>Classification</source>
-        <translation type="obsolete">श्रेणीविभाजन</translation>
+        <translation type="unfinished">श्रेणीविभाजन</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="obsolete">रेंज</translation>
+        <translation type="unfinished">रेंज</translation>
     </message>
     <message>
         <source>Unique Values</source>
-        <translation type="obsolete">अद्वितीय मान</translation>
+        <translation type="unfinished">अद्वितीय मान</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="obsolete">फाइल का नाम</translation>
+        <translation type="unfinished">फाइल का नाम</translation>
     </message>
     <message>
         <source>Value Map</source>
-        <translation type="obsolete"> मान मैप</translation>
+        <translation type="unfinished"> मान मैप</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation type="obsolete">गणना</translation>
+        <translation type="unfinished">गणना</translation>
     </message>
     <message>
         <source>Check Box</source>
-        <translation type="obsolete">चेक बॉक्‍स</translation>
+        <translation type="unfinished">चेक बॉक्‍स</translation>
     </message>
     <message>
         <source>Text Edit</source>
-        <translation type="obsolete">वाक्‍य संपादन</translation>
+        <translation type="unfinished">वाक्‍य संपादन</translation>
     </message>
     <message>
         <source>Value Relation</source>
-        <translation type="obsolete">मान संबंध</translation>
+        <translation type="unfinished">मान संबंध</translation>
     </message>
     <message>
         <source>Uuid Generator</source>
-        <translation type="obsolete">Uuid उत्पादक</translation>
+        <translation type="unfinished">Uuid उत्पादक</translation>
     </message>
     <message>
         <source>Photo</source>
-        <translation type="obsolete">फोटो</translation>
+        <translation type="unfinished">फोटो</translation>
     </message>
     <message>
         <source>Web View</source>
-        <translation type="obsolete">वेब दर्शन</translation>
+        <translation type="unfinished">वेब दर्शन</translation>
     </message>
     <message>
         <source>Relation Reference</source>
-        <translation type="obsolete">संबंध संदर्भ</translation>
+        <translation type="unfinished">संबंध संदर्भ</translation>
     </message>
     <message>
         <source>Date/Time</source>
-        <translation type="obsolete">दिनांक/समय</translation>
+        <translation type="unfinished">दिनांक/समय</translation>
     </message>
 </context>
 <context>
@@ -11621,7 +11628,7 @@ Error: %1</source>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>वर्तमान लेयर में चयनित नक्‍शा-अनुभाग नहीं</translation>
+        <translation type="obsolete">वर्तमान लेयर में चयनित नक्‍शा-अनुभाग नहीं</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12120,6 +12127,10 @@ Always ignore these errors?</source>
             <numerusform>%n SSL गलतियां आयी</numerusform>
             <numerusform>%n SSL गलतियां आयी</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17616,6 +17627,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Change...</source>
         <translation>बदलें...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

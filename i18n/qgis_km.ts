@@ -5531,7 +5531,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>បើក​ថ្មីៗ</translation>
+        <translation type="obsolete">បើក​ថ្មីៗ</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6439,6 +6439,10 @@ Shift+click នៅ​លើ​ស្លាក​ដើម្បី​លាក�
         <source>Fill Ring</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6737,7 +6741,7 @@ Shift+click នៅ​លើ​ស្លាក​ដើម្បី​លាក�
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>បង្ហាញ %d - %d នៃ %d លទ្ធផល %s</translation>
+        <translation type="obsolete">បង្ហាញ %d - %d នៃ %d លទ្ធផល %s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6786,6 +6790,13 @@ Shift+click នៅ​លើ​ស្លាក​ដើម្បី​លាក�
     <message>
         <source>CSW Connection error</source>
         <translation>កំហុស​ក្នុង​ការ​តភ្ជាប់ CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10671,6 +10682,62 @@ Response was:
         <source>Legend</source>
         <translation>តាង</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">ការ​ចាត់​ថ្នាក់</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">តម្លៃ​ដែល​មាន​តែមួយ</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">ឈ្មោះ​ឯកសារ</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">តម្លៃ​របស់​ផែនទី</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">គូស​ធីក​ប្រអប់</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">កែសម្រួល​អត្ថបទ</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">ការ​ទាក់ទង​តម្លៃ</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">រូបថត</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">ទិដ្ឋភាព​បណ្ដាញ</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">ចំណូលចិត្ត​ទំនាក់ទំនង</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">ពេលវេលា/កាលបរិច្ឆេទ</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11562,7 +11629,7 @@ Error: %1</source>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>ស្រទាប់​បច្ចុប្បន្ន​មិន​ត្រូវ​បាន​ជ្រើស​លក្ខណៈ​ពិសេស</translation>
+        <translation type="obsolete">ស្រទាប់​បច្ចុប្បន្ន​មិន​ត្រូវ​បាន​ជ្រើស​លក្ខណៈ​ពិសេស</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12061,6 +12128,10 @@ Always ignore these errors?</source>
             <numerusform>%n SSL កំហុស​បាន​កើត​ឡើង</numerusform>
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17558,6 +17629,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Change...</source>
         <translation>ផ្លាស់ប្ដូរ...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

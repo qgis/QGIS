@@ -5530,7 +5530,7 @@ Ireki emaitzen koadroa hura egiaztatzeko.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>Ireki a&amp;zkenak</translation>
+        <translation type="obsolete">Ireki a&amp;zkenak</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6442,6 +6442,10 @@ Uneko geruza editagarrian du eragina</translation>
         <source>Fill Ring</source>
         <translation>Bete eraztuna</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6740,7 +6744,7 @@ Uneko geruza editagarrian du eragina</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>%d - %d erakusten %d emaitzatik%s</translation>
+        <translation type="obsolete">%d - %d erakusten %d emaitzatik%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6789,6 +6793,13 @@ Uneko geruza editagarrian du eragina</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>CWS konexio-errorea</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10667,6 +10678,62 @@ Erantzuna hau izan da:
         <source>Legend</source>
         <translation>Legenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Sailkapena</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Tartea</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Balio bakarrak</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Fitxategi-izena</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Balio-mapa</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumerazioa</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Kontrol-laukia</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Testu-edizioa</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Balio-erlazioa</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">UUID sortzailea</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Argazkia</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Web ikuspegia</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Erlazio-erreferentzia</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Data/ordua</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11556,7 +11623,7 @@ Errorea: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Uneko geruzak ez dauka elementu hautaturik</translation>
+        <translation type="obsolete">Uneko geruzak ez dauka elementu hautaturik</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12053,6 +12120,10 @@ Beti ezikusi errore hauek?</translation>
             <numerusform>SSL errorre %n gertatu da</numerusform>
             <numerusform>%n SSL errorre gertatu dira</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17549,6 +17620,22 @@ Saiatu bereizmen txikiagoarekin edo paper-tamaina txikiagoarekin</translation>
     <message>
         <source>Change...</source>
         <translation>Aldatu...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

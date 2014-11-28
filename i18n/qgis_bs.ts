@@ -6189,7 +6189,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Otvori zadnje korištene</translation>
+        <translation type="obsolete">&amp;Otvori zadnje korištene</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -7189,6 +7189,10 @@ Radi na trenutno ativnom editabilnom sloju</translation>
         <source>Hide Selected Layers</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -7490,10 +7494,6 @@ Radi na trenutno ativnom editabilnom sloju</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Showing %d - %d of %d result%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Coordinate Transformation Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7540,6 +7540,14 @@ Radi na trenutno ativnom editabilnom sloju</translation>
     <message>
         <source>CSW Connection error</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -12620,6 +12628,62 @@ Odgovor je bio:
         <source>Legend</source>
         <translation type="unfinished">Legenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Klasifikacija</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Raspon</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Naziv fajla</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumeracija</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Fotografija</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Referenca relacije</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -13601,10 +13665,6 @@ Greška: %1</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Delete features</source>
         <translation>Briši objekte</translation>
     </message>
@@ -14130,6 +14190,10 @@ Uvijek zanemariti ove greške?</translation>
             <numerusform>%n SSL greške se desile</numerusform>
             <numerusform>%n SSL grešaka se desilo</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20972,6 +21036,22 @@ Pokušajte sa nižom rezolucijom ili manjom veličinom papira</translation>
     <message>
         <source>Coordinate precision</source>
         <translation>Preciznost koordinata</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

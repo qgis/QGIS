@@ -5543,7 +5543,7 @@ Bekijk het in het resultaatvenster.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Open Recent</translation>
+        <translation type="obsolete">&amp;Open Recent</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6454,6 +6454,10 @@ Werkt voor huidige actieve bewerkbare laag</translation>
         <source>Fill Ring</source>
         <translation>Ring Vullen</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6752,7 +6756,7 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Toon %d - %d van %d resultaat %s</translation>
+        <translation type="obsolete">Toon %d - %d van %d resultaat %s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6801,6 +6805,13 @@ Werkt voor huidige actieve bewerkbare laag</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>CSW Verbindingsfout</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10686,6 +10697,62 @@ Antwoord was:
         <source>Legend</source>
         <translation>Legenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Classificatie</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Range</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Unieke Waarden</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Bestandsnaam</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Aanwezige waarden</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumeratie</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Aanvinkvak</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Tekstbewerken</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Waarde-relatie</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">UUID-generator</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Web View</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Relatie Referentie</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Datum/Tijd</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11578,7 +11645,7 @@ Fout: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>De huidige laag bevat geen geselecteerde objecten</translation>
+        <translation type="obsolete">De huidige laag bevat geen geselecteerde objecten</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12075,6 +12142,10 @@ Always ignore these errors?</source>
             <numerusform>%n SSL-fout opgetreden</numerusform>
             <numerusform>%n SSL-fouten opgetreden</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17572,6 +17643,22 @@ Probeer alstublieft een lagere resolutie of een kleiner papiergrootte</translati
     <message>
         <source>Change...</source>
         <translation>Wijzigen...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

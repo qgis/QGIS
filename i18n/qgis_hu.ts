@@ -7174,7 +7174,7 @@ Nyisd meg az eredmény ablakot és ellenőrizd.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>K&amp;orábbi megnyitása</translation>
+        <translation type="obsolete">K&amp;orábbi megnyitása</translation>
     </message>
     <message>
         <source>&amp;Decorations</source>
@@ -8403,6 +8403,10 @@ Az aktuális szerkeszthető rétegen működik</translation>
         <source>Full histogram stretch</source>
         <translation type="obsolete">Teljes hisztogram kiterjesztés</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -8713,7 +8717,7 @@ Az aktuális szerkeszthető rétegen működik</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>%d - %d a %d eredményből %s</translation>
+        <translation type="obsolete">%d - %d a %d eredményből %s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -8770,6 +8774,12 @@ Az aktuális szerkeszthető rétegen működik</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>CSW kapcsolódási hiba</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -14031,6 +14041,62 @@ A válasz:
         <source>Legend</source>
         <translation>Jelmagyarázat</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Osztályozás</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Tartomány</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Egyedi értékek</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Fájlnév</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Érték térkép</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Felsorolás</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Jelölőnégyzet</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Szöveg szerkesztés</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Érték kapcsolat</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">Uuid generátor</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Fénykép</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Web nézet</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Dátum és idő</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -15225,7 +15291,7 @@ Hiba: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Az aktuális rétegben nincs szelektált elem</translation>
+        <translation type="obsolete">Az aktuális rétegben nincs szelektált elem</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
@@ -16882,6 +16948,10 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <source>&amp;Raster</source>
         <translation>&amp;Raszter</translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24096,6 +24166,22 @@ Próbálj kisebb felbontást vagy kisebb papírméretet használni</translation>
     <message>
         <source>Update preview</source>
         <translation>Előnézet frissítés</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -5522,7 +5522,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>開啟最近的(&amp;O)</translation>
+        <translation type="obsolete">開啟最近的(&amp;O)</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6434,6 +6434,10 @@ Shift+點擊或框選標記以隱藏標記
         <source>Fill Ring</source>
         <translation>填滿環形</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6732,7 +6736,7 @@ Shift+點擊或框選標記以隱藏標記
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>顯示 %d - %d 的 %d 結果%s</translation>
+        <translation type="obsolete">顯示 %d - %d 的 %d 結果%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6781,6 +6785,12 @@ Shift+點擊或框選標記以隱藏標記
     <message>
         <source>CSW Connection error</source>
         <translation>CSW連線錯誤</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10654,6 +10664,62 @@ Response was:
         <source>Legend</source>
         <translation type="unfinished">圖例</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">分類</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">範圍</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">唯一值</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">檔案名稱</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">值地圖</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">列舉</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">核取方塊</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">文字編輯</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">值關聯</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">產生UUID</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">照片</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">網頁檢視</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">關聯參考</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">日期/時間</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11538,10 +11604,6 @@ Error: %1</source>
         <translation>無已選取的圖徵</translation>
     </message>
     <message>
-        <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Delete features</source>
         <translation>刪除圖徵</translation>
     </message>
@@ -12031,6 +12093,10 @@ Always ignore these errors?</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17504,6 +17570,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Change...</source>
         <translation>變更...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

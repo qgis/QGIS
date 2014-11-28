@@ -5533,7 +5533,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Buka Terakhir</translation>
+        <translation type="obsolete">&amp;Buka Terakhir</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6444,6 +6444,10 @@ Berlaku pada layer aktif yang dapat diedit</translation>
         <source>Fill Ring</source>
         <translation>Isi Ring</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6742,7 +6746,7 @@ Berlaku pada layer aktif yang dapat diedit</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Menampilkan %d - %d dari %d result%s</translation>
+        <translation type="obsolete">Menampilkan %d - %d dari %d result%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6791,6 +6795,12 @@ Berlaku pada layer aktif yang dapat diedit</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Koneksi CSW eror</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10660,6 +10670,62 @@ Response was:
         <source>Legend</source>
         <translation type="unfinished">Legenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Klasifikasi</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Rentang</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Nilai unik</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Nama Berkas</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Nilai Peta</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumerasi</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Kotak Centang</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Edit Teks</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Relasi Nilai</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">Penghasil UUID</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Tampilan Web</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Relasi Referensi</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Tanggal/Waktu</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11548,7 +11614,7 @@ Kesalahan: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Lapisan saat ini belum memilih fitur</translation>
+        <translation type="obsolete">Lapisan saat ini belum memilih fitur</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12042,6 +12108,10 @@ Selalu abaikan kesalahan ini?</translation>
         <translation>
             <numerusform>%n Terjadi kesalahan SSL</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17538,6 +17608,22 @@ Silahkan coba turunkan resolusi atau gunakan ukuran kertas yang lebih kecil</tra
     <message>
         <source>Change...</source>
         <translation>Ubah...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

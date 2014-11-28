@@ -5537,7 +5537,7 @@ Apri il visualizzatore risultati per vederlo.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Apri recenti</translation>
+        <translation type="obsolete">&amp;Apri recenti</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6451,6 +6451,10 @@ Agisce su tutti i vettori editabili attivi al momento
         <source>Fill Ring</source>
         <translation>Riempi buco</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6749,7 +6753,7 @@ Agisce su tutti i vettori editabili attivi al momento
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Sto mostrando %d - %d di %d risultato%i</translation>
+        <translation type="obsolete">Sto mostrando %d - %d di %d risultato%i</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6798,6 +6802,13 @@ Agisce su tutti i vettori editabili attivi al momento
     <message>
         <source>CSW Connection error</source>
         <translation>Errore di connessione CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10682,6 +10693,62 @@ La risposta è stata:
         <source>Legend</source>
         <translation>Legenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Classificazione</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Intervallo</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Valori univoci</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Nome file</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Mappa valori</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Enumerazione</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Casella di controllo</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Modifica testo</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Relazione valore</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">Generatore UUID</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Vista web</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Riferimento della relazione</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Data/ora</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11571,7 +11638,7 @@ Errore: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Questo vettore non ha geometrie selezionate</translation>
+        <translation type="obsolete">Questo vettore non ha geometrie selezionate</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12070,6 +12137,10 @@ Ignora sempre questi errori?</translation>
             <numerusform>si è verificato un errore SSL</numerusform>
             <numerusform>sono avvenuti %n errori SSL</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17567,6 +17638,22 @@ Prova una risoluzione minore o una minor dimensione di stampa</translation>
     <message>
         <source>Change...</source>
         <translation>Cambia ...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

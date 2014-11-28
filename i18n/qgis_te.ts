@@ -5320,10 +5320,6 @@ Open the results dialog to check it.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Open Recent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Print Composers</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6362,6 +6358,10 @@ Acts on currently active editable layer</source>
         <source>Fill Ring</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6659,10 +6659,6 @@ Acts on currently active editable layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Showing %d - %d of %d result%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Coordinate Transformation Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6709,6 +6705,13 @@ Acts on currently active editable layer</source>
     <message>
         <source>CSW Connection error</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10552,6 +10555,62 @@ Response was:
         <source>Legend</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11390,10 +11449,6 @@ Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Delete features</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11931,6 +11986,10 @@ Always ignore these errors?</source>
     </message>
     <message>
         <source>A network request timed out, any data received is likely incomplete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -17403,6 +17462,22 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Center on overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

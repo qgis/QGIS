@@ -5541,7 +5541,7 @@ Ouvrez la fenêtre de résultats pour la vérifier.</translation>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Ouvrir un projet récent</translation>
+        <translation type="obsolete">&amp;Ouvrir un projet récent</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6453,6 +6453,10 @@ Agit sur toutes les couches actives courantes</translation>
         <source>Fill Ring</source>
         <translation>Remplir l&apos;anneau</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6751,7 +6755,7 @@ Agit sur toutes les couches actives courantes</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Affiche %d - %d sur %d résultats%s</translation>
+        <translation type="obsolete">Affiche %d - %d sur %d résultats%s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6800,6 +6804,13 @@ Agit sur toutes les couches actives courantes</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Erreur de connexion CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10679,6 +10690,62 @@ La réponse est :
         <source>Legend</source>
         <translation>Légende</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Classification</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Plage</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Valeurs Uniques</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Nom de fichier</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Liste de valeurs</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Énumération</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Boîte à cocher</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Édition de texte</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Valeur relationnelle</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">Générateur d&apos;UUID</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Photo</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Vue Web</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Référence de la relation</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Date/Heure</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11569,7 +11636,7 @@ Erreur : %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>La couche active n&apos;a pas d&apos;entité sélectionnée</translation>
+        <translation type="obsolete">La couche active n&apos;a pas d&apos;entité sélectionnée</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12066,6 +12133,10 @@ Toujours ignorer ces erreurs ?</translation>
             <numerusform>%n erreurs SSL se sont produites</numerusform>
             <numerusform>%n erreurs SSL se sont produites</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -17560,6 +17631,22 @@ Essayez une résolution ou une taille de papier inférieur.</translation>
     <message>
         <source>Change...</source>
         <translation>Modification...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -7129,7 +7129,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Otwórz ostatnie</translation>
+        <translation type="obsolete">&amp;Otwórz ostatnie</translation>
     </message>
     <message>
         <source>&amp;Decorations</source>
@@ -8373,6 +8373,10 @@ Działa na aktualnie edytowanej warstwie</translation>
         <source>Stretch histogram to full dataset</source>
         <translation type="obsolete">Rozciągnij kontrast do pełnego zakresu danych</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -8700,7 +8704,7 @@ Działa na aktualnie edytowanej warstwie</translation>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Wyświetlane %d - %d z %d wyników %s</translation>
+        <translation type="obsolete">Wyświetlane %d - %d z %d wyników %s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -8757,6 +8761,14 @@ Działa na aktualnie edytowanej warstwie</translation>
     <message>
         <source>CSW Connection error</source>
         <translation>Błąd połączenia CSW</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -13263,6 +13275,62 @@ Odpowiedź:
         <source>Legend</source>
         <translation>Legenda</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Klasyfikacja</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Zakres</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Unikalne wartości</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Nazwa pliku</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Mapa wartości</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished">Pole wyboru</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished">Pole edycji</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished">Relacja</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished">Generator UUID</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Zdjęcie</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Widok web</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished">Relacja</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Data/czas</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -15783,7 +15851,7 @@ Błąd: %1</translation>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>Na aktualnej warstwie nie wybrano obiektów</translation>
+        <translation type="obsolete">Na aktualnej warstwie nie wybrano obiektów</translation>
     </message>
     <message>
         <source>Features deleted</source>
@@ -16644,6 +16712,10 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     <message>
         <source>&amp;Raster</source>
         <translation>&amp;Raster</translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23894,6 +23966,22 @@ Zmniejsz rozdzielczość lub rozmiar papieru.</translation>
     <message>
         <source>Update preview</source>
         <translation>Odśwież</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

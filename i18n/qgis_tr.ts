@@ -6659,7 +6659,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;En Son Projelerden Birini Aç</translation>
+        <translation type="obsolete">&amp;En Son Projelerden Birini Aç</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -7428,6 +7428,10 @@ Acts on currently active editable layer</source>
         <source>Python Console</source>
         <translation>Python işletmen uçbirimi</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -7729,10 +7733,6 @@ Acts on currently active editable layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Showing %d - %d of %d result%s</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Coordinate Transformation Error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7779,6 +7779,12 @@ Acts on currently active editable layer</source>
     <message>
         <source>CSW Connection error</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -12435,6 +12441,62 @@ Response was:
         <source>Legend</source>
         <translation type="unfinished">Lejand</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished">Sınıflandırma</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Aralık</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Dosya Adı</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Numaralama</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -14349,10 +14411,6 @@ Hata: %1</translation>
         <translation>Hiçbir Obje Seçilmedi</translation>
     </message>
     <message>
-        <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Features deleted</source>
         <translation>Objeler silindi</translation>
     </message>
@@ -14918,6 +14976,10 @@ Bu QGIS kopyası  SpatiaLite desteği ile derlenmedi.</translation>
     <message>
         <source>&amp;Raster</source>
         <translation>&amp;Raster</translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -21636,6 +21698,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Update preview</source>
         <translation>Önizlemeyi güncelle</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

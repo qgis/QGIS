@@ -7710,7 +7710,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>&amp;Atvērt neseno</translation>
+        <translation type="obsolete">&amp;Atvērt neseno</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -7947,6 +7947,10 @@ Acts on currently active editable layer</source>
     <message>
         <source>Open Field Calculator...</source>
         <translation>Atvērt lauka kalkulatoru</translation>
+    </message>
+    <message>
+        <source>Open Recent</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -8230,7 +8234,7 @@ Acts on currently active editable layer</source>
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>Rāda %d - %d no %d rezultātiem</translation>
+        <translation type="obsolete">Rāda %d - %d no %d rezultātiem</translation>
     </message>
     <message>
         <source>End of results. Go to start?</source>
@@ -8307,6 +8311,12 @@ Acts on currently active editable layer</source>
     <message>
         <source>Coordinate Transformation Error</source>
         <translation>Koordinātu transformēšanas kļūda</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -13234,6 +13244,62 @@ Response was:
         <source>path to the GCT : the GCT file describe the GeoConcept types definitions: In this file, every line must start with //# followed by a keyword. Lines starting with // are comments.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation type="unfinished">Diapazons</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation type="unfinished">Unikālās vērtības</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation type="unfinished">Faila nosaukums</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation type="unfinished">Vērtību karte</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation type="unfinished">Pārskaitījums</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation type="unfinished">Foto</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation type="unfinished">Tīmekļa skats</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation type="unfinished">Datums/Laiks</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -15530,10 +15596,6 @@ Please contact the developers.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The current layer has not selected features</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Create unique print composer title</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15687,6 +15749,10 @@ Errors: %3
     </message>
     <message>
         <source> Please check the &lt;a href=&quot;#messageLog&quot;&gt;message log&lt;/a&gt; for further info.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22536,6 +22602,22 @@ Please try a lower resolution or a smaller papersize</source>
     </message>
     <message>
         <source>Line border</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
