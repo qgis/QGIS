@@ -184,6 +184,17 @@ Description: QGIS custom widgets for Qt Designer
  .
  This package contains a library to use specific QGIS widgets in Qt Designer.
 
+Package: libqgis-server{QGIS_ABI}
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS - shared server library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared server library.
+
 Package: libqgis-dev
 Architecture: any
 Section: libdevel
