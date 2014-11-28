@@ -5538,7 +5538,7 @@ Open the results dialog to check it.</source>
     </message>
     <message>
         <source>&amp;Open Recent</source>
-        <translation>最近使用したプロジェクト(&amp;O)</translation>
+        <translation type="obsolete">最近使用したプロジェクト(&amp;O)</translation>
     </message>
     <message>
         <source>New From Template</source>
@@ -6450,6 +6450,10 @@ Shift+クリックで非表示
         <source>Fill Ring</source>
         <translation>リング塗りつぶし</translation>
     </message>
+    <message>
+        <source>Open Recent</source>
+        <translation>最近使用したプロジェクト</translation>
+    </message>
 </context>
 <context>
     <name>ManageConnectionsDialog</name>
@@ -6748,7 +6752,7 @@ Shift+クリックで非表示
     </message>
     <message>
         <source>Showing %d - %d of %d result%s</source>
-        <translation>表示中 %d - %d / %d 結果 %s</translation>
+        <translation type="obsolete">表示中 %d - %d / %d 結果 %s</translation>
     </message>
     <message>
         <source>Coordinate Transformation Error</source>
@@ -6797,6 +6801,12 @@ Shift+クリックで非表示
     <message>
         <source>CSW Connection error</source>
         <translation>CSW接続エラー</translation>
+    </message>
+    <message numerus="yes">
+        <source>Showing %d - %d of %n result(s)</source>
+        <translation>
+            <numerusform>%d - %d / %n 結果を表示中</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -10681,6 +10691,62 @@ Response was:
         <source>Legend</source>
         <translation>凡例</translation>
     </message>
+    <message>
+        <source>Classification</source>
+        <translation>分類</translation>
+    </message>
+    <message>
+        <source>Range</source>
+        <translation>範囲</translation>
+    </message>
+    <message>
+        <source>Unique Values</source>
+        <translation>ユニーク値</translation>
+    </message>
+    <message>
+        <source>File Name</source>
+        <translation>ファイル名</translation>
+    </message>
+    <message>
+        <source>Value Map</source>
+        <translation>バリューマップ</translation>
+    </message>
+    <message>
+        <source>Enumeration</source>
+        <translation>列挙</translation>
+    </message>
+    <message>
+        <source>Check Box</source>
+        <translation>チェックボックス</translation>
+    </message>
+    <message>
+        <source>Text Edit</source>
+        <translation>テキスト編集</translation>
+    </message>
+    <message>
+        <source>Value Relation</source>
+        <translation>値のリレーション</translation>
+    </message>
+    <message>
+        <source>Uuid Generator</source>
+        <translation>Uuidジェネレータ</translation>
+    </message>
+    <message>
+        <source>Photo</source>
+        <translation>写真</translation>
+    </message>
+    <message>
+        <source>Web View</source>
+        <translation>Web ビュー</translation>
+    </message>
+    <message>
+        <source>Relation Reference</source>
+        <translation>リレーションの参照</translation>
+    </message>
+    <message>
+        <source>Date/Time</source>
+        <translation>日付/時刻</translation>
+    </message>
 </context>
 <context>
     <name>QSpatiaLiteDriver</name>
@@ -11569,7 +11635,7 @@ Error: %1</source>
     </message>
     <message>
         <source>The current layer has not selected features</source>
-        <translation>カレントレイヤには選択された地物はありません</translation>
+        <translation type="obsolete">カレントレイヤには選択された地物はありません</translation>
     </message>
     <message>
         <source>Delete features</source>
@@ -12063,6 +12129,10 @@ Always ignore these errors?</source>
         <translation>
             <numerusform>%n SSLエラーが発生しました</numerusform>
         </translation>
+    </message>
+    <message>
+        <source>The current layer has no selected features</source>
+        <translation>カレントレイヤには選択された地物はありません</translation>
     </message>
 </context>
 <context>
@@ -17558,6 +17628,22 @@ Please try a lower resolution or a smaller papersize</source>
     <message>
         <source>Change...</source>
         <translation>変更...</translation>
+    </message>
+    <message>
+        <source>Add a new overview</source>
+        <translation>新しい全体図を追加</translation>
+    </message>
+    <message>
+        <source>Remove selected overview</source>
+        <translation>選択された全体図を削除</translation>
+    </message>
+    <message>
+        <source>Move selected overview up</source>
+        <translation>選択された全体図を上に移動</translation>
+    </message>
+    <message>
+        <source>Move selected overview down</source>
+        <translation>選択された全体図を下に移動</translation>
     </message>
 </context>
 <context>
