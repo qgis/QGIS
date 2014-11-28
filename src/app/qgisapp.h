@@ -30,6 +30,7 @@ class QProgressBar;
 class QPushButton;
 class QRect;
 class QSettings;
+class QSpinBox;
 class QSplashScreen;
 class QStringList;
 class QToolButton;
@@ -1435,7 +1436,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Widget that will live on the statusbar to display "Rotation"
     QLabel * mRotationLabel;
     //! Widget that will live in the statusbar to display and edit rotation
-    QLineEdit * mRotationEdit;
+    QSpinBox * mRotationEdit;
     //! The validator for the mCoordsEdit
     QValidator * mRotationEditValidator;
     //! Widget that will live in the statusbar to show progress of operations

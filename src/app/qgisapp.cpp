@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QBitmap>
 #include <QCheckBox>
+#include <QSpinBox>
 #include <QClipboard>
 #include <QColor>
 #include <QCursor>
@@ -1740,23 +1741,21 @@ void QgisApp::createStatusBar()
   mRotationLabel->setText( tr( "Rotation:" ) );
   mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationLabel, 0 );
-  mRotationEdit = new QLineEdit( QString(), statusBar() );
+
+  mRotationEdit = new QSpinBox( statusBar() );
   mRotationEdit->setObjectName( "mRotationEdit" );
-  mRotationEdit->setFont( myFont );
-  mRotationEdit->setMinimumWidth( 10 );
   mRotationEdit->setMaximumWidth( 100 );
   mRotationEdit->setMaximumHeight( 20 );
-  mRotationEdit->setContentsMargins( 0, 0, 0, 0 );
-  mRotationEdit->setAlignment( Qt::AlignCenter );
-  mRotationEdit->setAlignment( Qt::AlignCenter );
-  QRegExp rotValidator( "\\d+" );
-  mRotationEditValidator = new QRegExpValidator( rotValidator, mRotationEdit );
+  mRotationEdit->setRange(-180, 180);
+  mRotationEdit->setSingleStep(5.0);
+  mRotationEdit->setFont( myFont );
   mRotationEdit->setWhatsThis( tr( "Shows the current map clockwise rotation "
                                  "in degrees. It also allows editing to set "
                                  "the rotation") );
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
-  connect( mRotationEdit, SIGNAL( returnPressed() ), this, SLOT( userRotation() ) );
+  connect( mRotationEdit, SIGNAL( valueChanged(int) ), this, SLOT( userRotation() ) );
+
   showRotation();
 
 
@@ -6885,12 +6884,7 @@ void QgisApp::userCenter()
 
 void QgisApp::userRotation()
 {
-  QString rots = mRotationEdit->text();
-
-  bool ok;
-  double degrees = rots.toDouble( &ok );
-  if ( !ok ) return;
-
+  double degrees = mRotationEdit->value();
   mMapCanvas->setRotation(degrees);
   mMapCanvas->refresh();
 }
@@ -8783,11 +8777,7 @@ void QgisApp::showRotation()
 {
   // update the statusbar with the current rotation.
   double myrotation = mMapCanvas->rotation();
-  QString lbl;
-  QTextStream ot( &lbl );
-  ot.setRealNumberPrecision( 2 );
-  ot << myrotation;
-  mRotationEdit->setText( lbl ); 
+  mRotationEdit->setValue( myrotation ); 
 } // QgisApp::showRotation
 
 
