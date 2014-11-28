@@ -22,14 +22,14 @@
 #ifndef QGSREQUESTHANDLER_H
 #define QGSREQUESTHANDLER_H
 
-//Needed for MAPSERVER_HAVE_PYTHON_PLUGINS
+//Needed for HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsconfig.h"
 
 #include <QMap>
 #include <QString>
 #include <QStringList>
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverfilter.h"
 #endif
 
@@ -91,14 +91,14 @@ class QgsRequestHandler
     QString infoFormat() const { return mInfoFormat; }
     /**Return true if the HTTP headers were already sent to the client*/
     bool headersSent() { return mHeadersSent; }
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     /**Allow core services to call plugin hooks through sendResponse() */
     virtual void setPluginFilters( QgsServerFiltersMap pluginFilters ) = 0;
 #endif
   protected:
     virtual void sendHeaders( ) = 0;
     virtual void sendBody( ) const = 0;
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsServerFiltersMap mPluginFilters;
 #endif
     QByteArray mBody; // The response payload

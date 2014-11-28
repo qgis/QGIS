@@ -181,8 +181,8 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 }
 
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
-void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface)
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+void QgsPythonUtilsImpl::initServerPython( QgsServerInterface* interface )
 {
   // initialize python
   Py_Initialize();
@@ -330,7 +330,7 @@ bool QgsPythonUtilsImpl::startServerPlugin( QString packageName )
   return ( output == "True" );
 }
 
-#endif // End MAPSERVER_HAVE_PYTHON_PLUGINS
+#endif // End HAVE_SERVER_PYTHON_PLUGINS
 
 void QgsPythonUtilsImpl::exitPython()
 {

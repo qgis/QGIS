@@ -25,7 +25,7 @@
 
 
 class QgisInterface;
-#ifdef  MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef  HAVE_SERVER_PYTHON_PLUGINS
 class QgsServerInterface;
 #endif
 
@@ -52,7 +52,7 @@ class PYTHON_EXPORT QgsPythonUtils
     //! initialize python and import bindings
     virtual void initPython( QgisInterface* interface ) = 0;
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! initialize python and import server bindings
     virtual void initServerPython( QgsServerInterface* interface ) = 0;
 

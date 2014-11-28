@@ -166,10 +166,10 @@ ADD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip qgis_core qgis_gui)
 SET(PY_MODULES core gui analysis networkanalysis)
 
 # server module
-IF (WITH_MAPSERVER AND WITH_SERVER_PLUGINS)
+IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
   INCLUDE_DIRECTORIES(
-    ../src/mapserver
-   ${CMAKE_BINARY_DIR}/src/mapserver
+    ../src/server
+   ${CMAKE_BINARY_DIR}/src/server
   )
 
   SET(PY_MODULES ${PY_MODULES} server)
@@ -180,7 +180,7 @@ IF (WITH_MAPSERVER AND WITH_SERVER_PLUGINS)
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
   SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
   ADD_SIP_PYTHON_MODULE(qgis._server server/server.sip qgis_core qgis_server)
-ENDIF (WITH_MAPSERVER AND WITH_SERVER_PLUGINS)
+ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(

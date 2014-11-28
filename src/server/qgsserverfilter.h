@@ -30,7 +30,7 @@ class QgsServerInterface;
  *
  */
 
-class QgsServerFilter
+class SERVER_EXPORT QgsServerFilter
 {
 
   public:

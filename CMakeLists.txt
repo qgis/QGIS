@@ -40,16 +40,16 @@ ENDIF (WITH_GRASS)
 
 SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
-# mapserver by us disabled default because it needs FastCGI (which is optional dependency)
-SET (WITH_MAPSERVER FALSE CACHE BOOL "Determines whether QGIS mapserver should be built")
-IF(WITH_MAPSERVER)
-  SET (MAPSERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS mapserver should disable ECW (ECW in server apps requires a special license)")
+# server disabled default because it needs FastCGI (which is optional dependency)
+SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
+IF(WITH_SERVER)
+  SET (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
 
-  SET (WITH_SERVER_PLUGINS TRUE CACHE BOOL "Determines whether QGIS mapserver support for python plugins should be built")
+  SET (WITH_SERVER_PLUGINS TRUE CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
   IF(WITH_SERVER_PLUGINS)
-    SET(MAPSERVER_HAVE_PYTHON_PLUGINS TRUE)
+    SET(HAVE_SERVER_PYTHON_PLUGINS TRUE)
   ENDIF(WITH_SERVER_PLUGINS)
-ENDIF(WITH_MAPSERVER)
+ENDIF(WITH_SERVER)
 
 # Custom widgets
 SET (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
@@ -540,6 +540,7 @@ ADD_DEFINITIONS("-DPYTHON_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DANALYSIS_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLIMPORT}")
+ADD_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
 
 #############################################################
 # user-changeable settings which can be used to customize

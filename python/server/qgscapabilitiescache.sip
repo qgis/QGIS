@@ -21,7 +21,7 @@
 * \class QgsCapabilitiesCache
 * \brief A cache for capabilities xml documents (by configuration file path)
 */
-class QgsCapabilitiesCache: public QObject
+class QgsCapabilitiesCache: QObject
 {
 %TypeHeaderCode
 #include "qgscapabilitiescache.h"

@@ -146,7 +146,7 @@ void QgsHttpRequestHandler::sendBody() const
 #endif
 }
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsHttpRequestHandler::setPluginFilters( QgsServerFiltersMap pluginFilters )
 {
   mPluginFilters = pluginFilters;
@@ -161,7 +161,7 @@ void QgsHttpRequestHandler::sendResponse()
     QgsDebugMsg( QString( "Trying to send out an invalid response" ) );
     return;
   }
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Plugin hook
   // Iterate filters and call their sendResponse() method
   QgsServerFiltersMap::const_iterator filtersIterator;

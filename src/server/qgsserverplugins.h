@@ -22,7 +22,7 @@
 #include "qgspythonutils.h"
 #include "qgsserverinterface.h"
 
-class QgsServerPlugins
+class SERVER_EXPORT QgsServerPlugins
 {
   public:
     explicit QgsServerPlugins();

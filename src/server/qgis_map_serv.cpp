@@ -38,7 +38,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
 #include "qgsserverfilter.h"
 #include "qgsserverinterfaceimpl.h"
@@ -270,7 +270,7 @@ int main( int argc, char * argv[] )
   QgsApplication::setPrefixPath( CMAKE_INSTALL_PREFIX, TRUE );
 #endif
 
-#if defined(MAPSERVER_SKIP_ECW)
+#if defined(SERVER_SKIP_ECW)
   QgsDebugMsg( "Skipping GDAL ECW drivers in server." );
   QgsApplication::skipGdalDriver( "ECW" );
   QgsApplication::skipGdalDriver( "JP2ECW" );
@@ -321,7 +321,7 @@ int main( int argc, char * argv[] )
   int logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
   // Create the interface
   QgsServerInterfaceImpl serverIface( &capabilitiesCache );
   // Init plugins
@@ -362,7 +362,7 @@ int main( int argc, char * argv[] )
       theRequestHandler->setServiceException( e );
     }
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     // Set the request handler into the interface for plugins to manipulate it
     serverIface.setRequestHandler( theRequestHandler.data() );
     // Iterate filters and call their requestReady() method
@@ -377,7 +377,7 @@ int main( int argc, char * argv[] )
     // 2. allow requestHandler to call sendResponse plugin hook
 
     //TODO: implement this in the requestHandler ctor (far easier if we will get rid of
-    //      MAPSERVER_HAVE_PYTHON_PLUGINS
+    //      HAVE_SERVER_PYTHON_PLUGINS
     theRequestHandler->setPluginFilters( pluginFilters );
 #endif
 
@@ -439,7 +439,7 @@ int main( int argc, char * argv[] )
       } // end switch
     } // end if not exception raised
 
-#ifdef MAPSERVER_HAVE_PYTHON_PLUGINS
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     // Iterate filters and call their responseComplete() method
     for ( filtersIterator = pluginFilters.constBegin(); filtersIterator != pluginFilters.constEnd(); ++filtersIterator )
     {

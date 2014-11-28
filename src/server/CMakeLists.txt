@@ -68,9 +68,7 @@ SET (qgis_mapserv_RCCS
 # qgis_server library
 
 
-SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS}
-
-)
+SET(qgis_mapserv_MOC_HDRS ${qgis_mapserv_MOC_HDRS})
 
 SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverplugins.cpp
@@ -78,6 +76,15 @@ SET(qgis_mapserv_SRCS ${qgis_mapserv_SRCS}
     qgsserverfilter.cpp
     qgsserverinterfaceimpl.cpp
 )
+
+IF (WIN32)
+  IF (MSVC)
+    ADD_DEFINITIONS("-DSERVER_EXPORT=${DLLEXPORT}")
+  ELSE (MSVC)
+    ADD_DEFINITIONS("-USERVER_EXPORT \"-DSERVER_EXPORT=${DLLEXPORT}\"")
+  ENDIF (MSVC)
+ENDIF (WIN32)
+
 
 QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
 
@@ -169,7 +176,7 @@ TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
 ########################################################
 # Install
 
-INSTALL(CODE "MESSAGE(\"Installing mapserver...\")")
+INSTALL(CODE "MESSAGE(\"Installing server...\")")
 INSTALL(TARGETS
   qgis_mapserv.fcgi
   DESTINATION ${QGIS_CGIBIN_DIR}

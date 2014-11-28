@@ -26,7 +26,7 @@
 "LayerNotDefined" / "StyleNotDefined"
 "OperationNotSupported"*/
 
-class QgsMapServiceException
+class SERVER_EXPORT QgsMapServiceException
 {
   public:
     QgsMapServiceException( const QString& code, const QString& message );
