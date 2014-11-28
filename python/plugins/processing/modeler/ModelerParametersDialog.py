@@ -198,11 +198,11 @@ class ModelerParametersDialog(QDialog):
         opts = []
         for alg in self.model.algs.values():
             if alg.name not in dependent:
-                opts.append(alg.algorithm.name)
+                opts.append(alg)
         return opts
 
     def getDependenciesPanel(self):
-        return MultipleInputPanel(self.getAvailableDependencies())
+        return MultipleInputPanel([alg.algorithm.name for alg in self.getAvailableDependencies()])
 
     def showAdvancedParametersClicked(self):
         self.showAdvanced = not self.showAdvanced
@@ -468,10 +468,8 @@ class ModelerParametersDialog(QDialog):
 
         selectedOptions = self.dependenciesPanel.selectedoptions
         availableDependencies = self.getAvailableDependencies()
-        self.dependencies = []
         for selected in selectedOptions:
-            s = availableDependencies[selected]
-            alg.dependencies.append(s)
+            alg.dependencies.append(availableDependencies[selected].name)
 
         return alg
 
