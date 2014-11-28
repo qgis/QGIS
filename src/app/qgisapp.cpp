@@ -4993,6 +4993,10 @@ void QgisApp::saveAsRasterFile()
                             QMessageBox::Ok );
 
     }
+    else
+    {
+      emit layerSavedAs( rasterLayer, d.outputFileName() );
+    }
     delete pipe;
   }
 }
@@ -5139,6 +5143,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
       {
         addVectorLayers( QStringList( newFilename ), encoding, "file" );
       }
+      emit layerSavedAs( vlayer, vectorFilename );
       messageBar()->pushMessage( tr( "Saving done" ),
                                  tr( "Export to vector file has been completed" ),
                                  QgsMessageBar::INFO, messageTimeout() );

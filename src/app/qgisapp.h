@@ -1254,6 +1254,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void customSrsValidation( QgsCoordinateReferenceSystem &crs );
 
+    /**This signal is emitted when a layer has been saved using save as
+       @note added in version 2.7
+    */
+    void layerSavedAs( QgsMapLayer* l, QString path );
+
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * @returns true if any items were loaded
