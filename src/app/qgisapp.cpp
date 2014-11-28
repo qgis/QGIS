@@ -1747,6 +1747,7 @@ void QgisApp::createStatusBar()
   mRotationEdit->setMaximumWidth( 100 );
   mRotationEdit->setMaximumHeight( 20 );
   mRotationEdit->setRange(-180, 180);
+  mRotationEdit->setWrapping(true);
   mRotationEdit->setSingleStep(5.0);
   mRotationEdit->setFont( myFont );
   mRotationEdit->setWhatsThis( tr( "Shows the current map clockwise rotation "
