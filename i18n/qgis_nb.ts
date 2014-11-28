@@ -6454,7 +6454,7 @@ Virker på alle redigerbare lag</translation>
     </message>
     <message>
         <source>Open Recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Åpne nylig brukte</translation>
     </message>
 </context>
 <context>
@@ -6806,9 +6806,9 @@ Virker på alle redigerbare lag</translation>
     </message>
     <message numerus="yes">
         <source>Showing %d - %d of %n result(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Viser %d - %d av %n resultat</numerusform>
+            <numerusform>Viser %d - %d av %n resultat</numerusform>
         </translation>
     </message>
 </context>
@@ -10697,59 +10697,59 @@ Svaret var:
     </message>
     <message>
         <source>Classification</source>
-        <translation type="unfinished">Klassifisering</translation>
+        <translation>Klassifisering</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished">Intervall</translation>
+        <translation>Intervall</translation>
     </message>
     <message>
         <source>Unique Values</source>
-        <translation type="unfinished">Unike verdier</translation>
+        <translation>Unike verdier</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished">Filnavn</translation>
+        <translation>Filnavn</translation>
     </message>
     <message>
         <source>Value Map</source>
-        <translation type="unfinished">Verdikart</translation>
+        <translation>Verdikart</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation type="unfinished">Opptelling</translation>
+        <translation>Opptelling</translation>
     </message>
     <message>
         <source>Check Box</source>
-        <translation type="unfinished">Avkrysningsboks</translation>
+        <translation>Avkrysningsboks</translation>
     </message>
     <message>
         <source>Text Edit</source>
-        <translation type="unfinished">Tekstredigering</translation>
+        <translation>Tekstredigering</translation>
     </message>
     <message>
         <source>Value Relation</source>
-        <translation type="unfinished">Verdirelasjon</translation>
+        <translation>Verdirelasjon</translation>
     </message>
     <message>
         <source>Uuid Generator</source>
-        <translation type="unfinished">Uuid generator</translation>
+        <translation>Uuid generator</translation>
     </message>
     <message>
         <source>Photo</source>
-        <translation type="unfinished">Foto</translation>
+        <translation>Foto</translation>
     </message>
     <message>
         <source>Web View</source>
-        <translation type="unfinished">Webvisning</translation>
+        <translation>Webvisning</translation>
     </message>
     <message>
         <source>Relation Reference</source>
-        <translation type="unfinished">Referanse til relasjon</translation>
+        <translation>Referanse til relasjon</translation>
     </message>
     <message>
         <source>Date/Time</source>
-        <translation type="unfinished">Dato/tid</translation>
+        <translation>Dato/tid</translation>
     </message>
 </context>
 <context>
@@ -12143,7 +12143,7 @@ Ignorer alltid disse feilene?</translation>
     </message>
     <message>
         <source>The current layer has no selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Nåværende lag har ingen valgte objekter</translation>
     </message>
 </context>
 <context>
@@ -17646,19 +17646,19 @@ Vennligst prøv en lavere oppløsning eller et mindre papirformat</translation>
     </message>
     <message>
         <source>Add a new overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Legg til ny oversikt</translation>
     </message>
     <message>
         <source>Remove selected overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjern valgt oversikt</translation>
     </message>
     <message>
         <source>Move selected overview up</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytt valgt oversikt opp</translation>
     </message>
     <message>
         <source>Move selected overview down</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytt valgt oversikt ned</translation>
     </message>
 </context>
 <context>
