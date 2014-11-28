@@ -6457,7 +6457,7 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     </message>
     <message>
         <source>Open Recent</source>
-        <translation type="unfinished"></translation>
+        <translation>Viimeksi avatut</translation>
     </message>
 </context>
 <context>
@@ -6809,9 +6809,9 @@ Toimii nyt aktiivisesti muokattavalle tasolle</translation>
     </message>
     <message numerus="yes">
         <source>Showing %d - %d of %n result(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Näytetään %d - %d kaikkiaan %n tuloksesta</numerusform>
+            <numerusform>Näytetään %d - %d kaikkiaan %n tuloksesta</numerusform>
         </translation>
     </message>
 </context>
@@ -10697,59 +10697,59 @@ Vastaus oli:
     </message>
     <message>
         <source>Classification</source>
-        <translation type="unfinished">Luokittelu</translation>
+        <translation>Luokittelu</translation>
     </message>
     <message>
         <source>Range</source>
-        <translation type="unfinished"></translation>
+        <translation>Rajat</translation>
     </message>
     <message>
         <source>Unique Values</source>
-        <translation type="unfinished">Yksilölliset arvot</translation>
+        <translation>Yksilölliset arvot</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished">Tiedostonimi</translation>
+        <translation>Tiedostonimi</translation>
     </message>
     <message>
         <source>Value Map</source>
-        <translation type="unfinished">Arvokartta</translation>
+        <translation>Arvokartta</translation>
     </message>
     <message>
         <source>Enumeration</source>
-        <translation type="unfinished">Luokittelu</translation>
+        <translation>Luokittelu</translation>
     </message>
     <message>
         <source>Check Box</source>
-        <translation type="unfinished">Valintaruutu</translation>
+        <translation>Valintaruutu</translation>
     </message>
     <message>
         <source>Text Edit</source>
-        <translation type="unfinished">Tekstin muokkaus</translation>
+        <translation>Tekstin muokkaus</translation>
     </message>
     <message>
         <source>Value Relation</source>
-        <translation type="unfinished">Arvojen suhde</translation>
+        <translation>Arvojen suhde</translation>
     </message>
     <message>
         <source>Uuid Generator</source>
-        <translation type="unfinished">UUID generaattori</translation>
+        <translation>UUID generaattori</translation>
     </message>
     <message>
         <source>Photo</source>
-        <translation type="unfinished">Kuva</translation>
+        <translation>Kuva</translation>
     </message>
     <message>
         <source>Web View</source>
-        <translation type="unfinished">Web näyttö</translation>
+        <translation>Web näyttö</translation>
     </message>
     <message>
         <source>Relation Reference</source>
-        <translation type="unfinished">Relaation viite</translation>
+        <translation>Relaation viite</translation>
     </message>
     <message>
         <source>Date/Time</source>
-        <translation type="unfinished">Päivä/Aika</translation>
+        <translation>Päivä/Aika</translation>
     </message>
 </context>
 <context>
@@ -12142,7 +12142,7 @@ Ohita nämä virheet aina?</translation>
     </message>
     <message>
         <source>The current layer has no selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Nykyisellä tasolla ei ole valittuja ominaisuuksia</translation>
     </message>
 </context>
 <context>
@@ -17644,19 +17644,19 @@ Ole ystävällinen ja yritä pienemmällä resoluutiolla tai pienemmällä paper
     </message>
     <message>
         <source>Add a new overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Lisää uusi yleiskatsaus</translation>
     </message>
     <message>
         <source>Remove selected overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Poista valitut yleiskatsaukset</translation>
     </message>
     <message>
         <source>Move selected overview up</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä valitut yleiskatsaukset ylöspäin</translation>
     </message>
     <message>
         <source>Move selected overview down</source>
-        <translation type="unfinished"></translation>
+        <translation>Siirrä valitut yleiskatsaukset alaspäin</translation>
     </message>
 </context>
 <context>
