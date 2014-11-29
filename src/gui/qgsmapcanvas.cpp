@@ -903,8 +903,7 @@ void QgsMapCanvas::setRotation( double degrees )
 
   mSettings.setRotation( degrees );
   emit rotationChanged( degrees );
-
-  // TODO: update extents ?
+  emit extentsChanged(); // visible extent changes with rotation
 
   // notify canvas items of change (needed?)
   updateCanvasItemPositions();
