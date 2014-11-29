@@ -47,7 +47,8 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     if arg_count == 0 and not name[0] == '$':
         name = '${0}'.format(name)
 
-    if QgsExpression.isFunctionName(name):
+    register = kwargs.get('register', True)
+    if register and QgsExpression.isFunctionName(name):
         if not QgsExpression.unregisterFunction(name):
             raise TypeError("Unable to unregister function")
 
@@ -57,7 +58,6 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
 
     # This doesn't really make any sense here but does when used from a decorator context
     # so it can stay.
-    register = kwargs.get('register', True)
     if register:
         QgsExpression.registerFunction(f)
     return f
