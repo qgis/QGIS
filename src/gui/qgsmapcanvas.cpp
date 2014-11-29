@@ -832,10 +832,8 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
 
   if ( r.isEmpty() )
   {
-    QgsDebugMsg( "Empty extent - keeping old extent with new center!" );
-    QgsRectangle e( QgsPoint( r.center().x() - current.width() / 2.0, r.center().y() - current.height() / 2.0 ),
-                    QgsPoint( r.center().x() + current.width() / 2.0, r.center().y() + current.height() / 2.0 ) );
-    mSettings.setExtent( e );
+    QgsDebugMsg( "Empty extent - keeping old scale with new center!" );
+    setCenter( r.center() );
   }
   else
   {
@@ -870,6 +868,26 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   updateCanvasItemPositions();
 
 } // setExtent
+
+void QgsMapCanvas::setCenter( const QgsPoint& center )
+{
+  QgsRectangle r = mapSettings().extent();
+  double x = center.x();
+  double y = center.y();
+  setExtent(
+    QgsRectangle(
+      x - r.width() / 2.0, y - r.height() / 2.0,
+      x + r.width() / 2.0, y + r.height() / 2.0
+    )
+  );
+} // setCenter
+
+QgsPoint QgsMapCanvas::center() const
+{
+  QgsRectangle r = mapSettings().extent();
+  return r.center();
+}
+
 
 double QgsMapCanvas::rotation() const
 {
