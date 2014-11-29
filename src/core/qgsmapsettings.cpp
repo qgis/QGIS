@@ -169,6 +169,20 @@ void QgsMapSettings::updateDerived()
   mMapToPixel = QgsMapToPixel( mapUnitsPerPixel(), outputSize().height(), visibleExtent().yMinimum(), visibleExtent().xMinimum() );
   mMapToPixel.setMapRotation( mRotation, visibleExtent().center().x(), visibleExtent().center().y() );
 
+#if 1 // set visible extent taking rotation in consideration
+  if ( mRotation ) {
+    QgsPoint p1 = mMapToPixel.toMapCoordinates( QPoint(0,0) );
+    QgsPoint p2 = mMapToPixel.toMapCoordinates( QPoint(0,myHeight) );
+    QgsPoint p3 = mMapToPixel.toMapCoordinates( QPoint(myWidth,0) );
+    QgsPoint p4 = mMapToPixel.toMapCoordinates( QPoint(myWidth,myHeight) );
+    dxmin = std::min(p1.x(), std::min(p2.x(), std::min(p3.x(), p4.x())));
+    dymin = std::min(p1.y(), std::min(p2.y(), std::min(p3.y(), p4.y())));
+    dxmax = std::max(p1.x(), std::max(p2.x(), std::max(p3.x(), p4.x())));
+    dymax = std::max(p1.y(), std::max(p2.y(), std::max(p3.y(), p4.y())));
+    mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
+  }
+#endif
+
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
   QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ) ).arg( qgsDoubleToString( mSize.height() ) ) );
   QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
