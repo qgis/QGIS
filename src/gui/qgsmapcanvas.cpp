@@ -1363,16 +1363,12 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
       // zoom map to mouse cursor
       double scaleFactor = e->delta() > 0 ? 1 / mWheelZoomFactor : mWheelZoomFactor;
 
-      QgsPoint oldCenter( mapSettings().visibleExtent().center() );
+      QgsPoint oldCenter = center();
       QgsPoint mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
       QgsPoint newCenter( mousePos.x() + (( oldCenter.x() - mousePos.x() ) * scaleFactor ),
                           mousePos.y() + (( oldCenter.y() - mousePos.y() ) * scaleFactor ) );
 
-      // same as zoomWithCenter (no coordinate transformations are needed)
-      QgsRectangle extent = mapSettings().visibleExtent();
-      extent.scale( scaleFactor, &newCenter );
-      setExtent( extent );
-      refresh();
+      zoomByFactor( scaleFactor, &newCenter );
       break;
     }
 
@@ -1844,7 +1840,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint* center )
 {
-  QgsRectangle r = mapSettings().visibleExtent();
+  QgsRectangle r = mapSettings().extent();
   r.scale( scaleFactor, center );
   setExtent( r );
   refresh();
