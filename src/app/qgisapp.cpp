@@ -6872,14 +6872,7 @@ void QgisApp::userCenter()
   if ( !yOk )
     return;
 
-  QgsRectangle r = mMapCanvas->extent();
-
-  mMapCanvas->setExtent(
-    QgsRectangle(
-      x - r.width() / 2.0, y - r.height() / 2.0,
-      x + r.width() / 2.0, y + r.height() / 2.0
-    )
-  );
+  mMapCanvas->setCenter( QgsPoint( x, y ) );
   mMapCanvas->refresh();
 }
 

@@ -208,6 +208,14 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.8
     void setRotation( double degrees );
 
+    //! Set the center of the map canvas, in geographical coordinates
+    //! @note added in 2.8
+    void setCenter( const QgsPoint& center );
+
+    //! Get map center, in geographical coordinates
+    //! @note added in 2.8
+    QgsPoint center() const;
+
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
 
