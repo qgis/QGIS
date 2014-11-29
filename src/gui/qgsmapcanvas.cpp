@@ -1654,37 +1654,12 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
   QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
-  double dx = qAbs( end.x() - start.x() );
-  double dy = qAbs( end.y() - start.y() );
-
-  // modify the extent
-  QgsRectangle r = mapSettings().visibleExtent();
-
-  if ( end.x() < start.x() )
-  {
-    r.setXMinimum( r.xMinimum() + dx );
-    r.setXMaximum( r.xMaximum() + dx );
-  }
-  else
-  {
-    r.setXMinimum( r.xMinimum() - dx );
-    r.setXMaximum( r.xMaximum() - dx );
-  }
-
-  if ( end.y() < start.y() )
-  {
-    r.setYMaximum( r.yMaximum() + dy );
-    r.setYMinimum( r.yMinimum() + dy );
-
-  }
-  else
-  {
-    r.setYMaximum( r.yMaximum() - dy );
-    r.setYMinimum( r.yMinimum() - dy );
-
-  }
-
-  setExtent( r );
+  // modify the center
+  double dx = end.x() - start.x();
+  double dy = end.y() - start.y();
+  QgsPoint c = center();
+  c.set( c.x() - dx, c.y() - dy );
+  setCenter( c );
 
   refresh();
 }
