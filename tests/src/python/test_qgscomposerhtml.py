@@ -47,7 +47,7 @@ class TestQgsComposerHtml(TestCase):
 
     def htmlUrl(self):
         """Helper to get the url of the html doc."""
-        myPath = os.path.join(TEST_DATA_DIR, "html_table.html")
+        myPath = os.path.join(TEST_DATA_DIR, "test_html.html")
         myUrl = QUrl("file:///" + myPath)
         return myUrl
 
@@ -119,7 +119,7 @@ class TestQgsComposerHtml(TestCase):
         print "Checking page 2"
         myPage = 1
         checker2 = QgsCompositionChecker('composerhtml_smartbreaks2', self.mComposition)
-        myTestResult, myMessage = checker2.testComposition( myPage )
+        myTestResult, myMessage = checker2.testComposition( myPage, 3000 )
         assert myTestResult, myMessage
 
         self.mComposition.removeMultiFrame( composerHtml )
