@@ -32,6 +32,7 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import \
         GeoAlgorithmExecutionException
+from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
@@ -40,6 +41,7 @@ from processing.core.outputs import OutputVector
 
 class Grid(GeoAlgorithm):
     TYPE = 'TYPE'
+    EXTENT = 'EXTENT'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
     HSPACING = 'HSPACING'
@@ -61,30 +63,28 @@ class Grid(GeoAlgorithm):
 
         self.addParameter(ParameterSelection(
             self.TYPE, 'Grid type', self.TYPES))
-        self.addParameter(ParameterNumber(
-            self.WIDTH, 'Width', default=360.0))
-        self.addParameter(ParameterNumber(
-            self.HEIGHT, 'Height', default=180.0))
+        self.addParameter(ParameterExtent(
+            self.EXTENT, 'Grid extent'))
         self.addParameter(ParameterNumber(
             self.HSPACING, 'Horizontal spacing', default=10.0))
         self.addParameter(ParameterNumber(
             self.VSPACING, 'Vertical spacing', default=10.0))
-        self.addParameter(ParameterNumber(
-            self.CENTERX, 'Center X', default=0.0))
-        self.addParameter(ParameterNumber(
-            self.CENTERY, 'Center Y', default=0.0))
-        self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
 
         self.addOutput(OutputVector(self.OUTPUT, 'Output'))
 
     def processAlgorithm(self, progress):
         idx = self.getParameterValue(self.TYPE)
-        width = self.getParameterValue(self.WIDTH)
-        height = self.getParameterValue(self.HEIGHT)
+        extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
-        centerX = self.getParameterValue(self.CENTERX)
-        centerY = self.getParameterValue(self.CENTERY)
+
+        bbox = QgsRectangle(float(extent[0]), float(extent[2]),
+                            float(extent[1]), float(extent[3]))
+
+        width = bbox.width()
+        height = bbox.height()
+        centerX = bbox.center().x()
+        centerY = bbox.center().y()
         originX = centerX - width / 2.0
         originY = centerY - height / 2.0
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
