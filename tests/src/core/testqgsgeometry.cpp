@@ -420,7 +420,7 @@ void TestQgsGeometry::bufferCheck()
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   dumpPolygon( myPolygon );
   delete mypBufferGeometry;
-  QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B" ) );
+  QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
 }
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment , int mismatchCount )
 {
