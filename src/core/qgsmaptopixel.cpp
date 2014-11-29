@@ -46,9 +46,11 @@ QTransform QgsMapToPixel::getMatrix() const
   double cx = mWidth/2.0;
   double rotation = mapRotation();
 
+#if 0 // debugging
   QgsDebugMsg(QString("XXX %7 -- xCent:%1 yCent:%2 mWidth:%3 mHeight:%4 uPP:%5 rot:%6")
     .arg(xCenter).arg(yCenter).arg(mWidth).arg(mHeight)
     .arg(mMapUnitsPerPixel).arg(rotation).arg((quintptr)this,QT_POINTER_SIZE *2, 15, QChar('0')));
+#endif
 
   // NOTE: operations are done in the reverse order in which
   //       they are configured, so translation to geographical
@@ -187,7 +189,7 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   QTransform matrix = getMatrix();
   double mx, my;
   matrix.map(x, y, &mx, &my);
- QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
+  //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
   x = mx; y = my;
 }
 
