@@ -220,7 +220,7 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
   myChecker.setColorTolerance( 1 );
-  bool myResultFlag = myChecker.runTest( theTestType );
+  bool myResultFlag = myChecker.runTest( theTestType, 20 );
   mReport += myChecker.report();
   return myResultFlag;
 }
