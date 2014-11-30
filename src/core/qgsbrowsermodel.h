@@ -24,7 +24,7 @@
 
 #include "qgsdataitem.h"
 
-class CORE_EXPORT QgsBrowserWatcher : public QObject
+class CORE_EXPORT QgsBrowserWatcher : public QFutureWatcher<QVector <QgsDataItem*> >
 {
     Q_OBJECT
 
@@ -32,20 +32,13 @@ class CORE_EXPORT QgsBrowserWatcher : public QObject
     QgsBrowserWatcher( QgsDataItem * item );
     ~QgsBrowserWatcher();
 
-    void setFuture( QFuture<QVector <QgsDataItem*> > future );
-    bool isFinished() { return mFinished; }
     QgsDataItem* item() const { return mItem; }
 
   signals:
     void finished( QgsDataItem* item, QVector <QgsDataItem*> items );
 
-  public slots:
-    void finished();
-
   private:
-    bool mFinished;
     QgsDataItem *mItem;
-    QFutureWatcher<QVector <QgsDataItem*> > mFutureWatcher;
 };
 
 class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
@@ -139,8 +132,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void removeFavourite( const QModelIndex &index );
 
     void updateProjectHome();
-    void childrenCreated( QgsDataItem* item, QVector <QgsDataItem*> items );
-    void refreshChildrenCreated( QgsDataItem* item, QVector <QgsDataItem*> items );
+    void childrenCreated();
+    void refreshChildrenCreated();
     void loadingFrameChanged();
 
   protected:
