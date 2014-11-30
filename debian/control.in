@@ -111,8 +111,7 @@ Section: libs
 Depends:
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces:
- libqgis{QGIS_ABI}
+Replaces: libqgis{QGIS_ABI}
 Description: QGIS - shared gui library
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -197,7 +196,7 @@ Depends:
  python-qt4-dev (>=4.1.0),
  qt4-designer,
  ${misc:Depends}
-Recommends: libqgis-customwidgets{QGIS_ABI}
+Recommends: libqgis-customwidgets
 Provides: qgis-dev
 Replaces:
  libqgis1-dev
@@ -276,7 +275,7 @@ Depends:
  gdal-bin,
  python-gdal,
  python-matplotlib,
- libqgis-customwidgets{QGIS_ABI},
+ libqgis-customwidgets,
  ${python:Depends},
  ${misc:Depends},
  ${sip:Depends}
@@ -319,6 +318,7 @@ Package: qgis-server
 Architecture: any
 Provides: qgis-mapserver
 Replaces: qgis-mapserver
+Conflicts: qgis-mapserver
 Depends:
  qgis-providers (= ${binary:Version}),
  ${shlibs:Depends},
@@ -329,12 +329,15 @@ Description: QGIS server providing various OGC services
  .
  This package contains the QGIS server.
 
-Package: libqgis-customwidgets{QGIS_ABI}
+Package: libqgis-customwidgets
 Architecture: any
 Depends:
  qt4-designer,
  ${shlibs:Depends},
  ${misc:Depends}
+Replaces: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
+Conflicts: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
+Provides: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
 Description: QGIS custom widgets for Qt Designer
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.

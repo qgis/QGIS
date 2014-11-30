@@ -1,3 +1,9 @@
+qgis (2.6.1.1) unstable; urgency=medium
+
+  * rename libqgis-customwidgets{QGIS_ABI} to libqgis-customwidgets
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 30 Nov 2014 15:25:38 +0100
+
 qgis (2.6.1) unstable; urgency=medium
 
   * Release of 2.6.1
