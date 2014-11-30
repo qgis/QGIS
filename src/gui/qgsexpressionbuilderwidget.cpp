@@ -18,6 +18,7 @@
 #include "qgsexpression.h"
 #include "qgsmessageviewer.h"
 #include "qgsapplication.h"
+#include "qgspythonrunner.h"
 
 #include <QSettings>
 #include <QMenu>
@@ -112,6 +113,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   splitter_2->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter2" ).toByteArray() );
 
   txtExpressionString->setFoldingVisible( false );
+  customFunctionBotton->setVisible( QgsPythonRunner::isValid() );
+  txtPython->setVisible( false );
+  txtPython->setText("@qgsfunction(args=-1, group='Custom')\n"
+                     "def func(values, feature, parent):\n"
+                     "    return str(values)");
 }
 
 
@@ -292,6 +298,10 @@ void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
 
 QString QgsExpressionBuilderWidget::expressionText()
 {
+  if ( QgsPythonRunner::isValid() ) {
+      QString pythontext = txtPython->text();
+      QgsPythonRunner::run( pythontext );
+  }
   return txtExpressionString->text();
 }
 
@@ -302,7 +312,7 @@ void QgsExpressionBuilderWidget::setExpressionText( const QString& expression )
 
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 {
-  QString text = txtExpressionString->text();
+  QString text = expressionText();
 
   // If the string is empty the expression will still "fail" although
   // we don't show the user an error as it will be confusing.
@@ -315,8 +325,6 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     emit expressionParsed( false );
     return;
   }
-
-
 
   QgsExpression exp( text );
 

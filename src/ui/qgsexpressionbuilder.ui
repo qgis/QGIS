@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>447</height>
+    <width>538</width>
+    <height>535</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -453,7 +453,7 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item row="1" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_2">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -469,7 +469,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1">
+          <item row="3" column="1">
            <widget class="QLabel" name="lblPreview">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -514,8 +514,24 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
+          <item row="2" column="0" colspan="2">
            <widget class="QgsCodeEditorSQL" name="txtExpressionString" native="true"/>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QgsCodeEditorPython" name="txtPython" native="true"/>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QToolButton" name="customFunctionBotton">
+            <property name="text">
+             <string>Define custom function</string>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -544,7 +560,30 @@
    <header>qgscodeeditorsql.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>customFunctionBotton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtPython</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>74</x>
+     <y>468</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>116</x>
+     <y>485</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
