@@ -25,16 +25,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import codecs
 
 def postProcessResults(alg):
     htmlFile = alg.getOutputFromName('html').value
     grassName = alg.grassName
-    found = False
-    f = open(htmlFile, 'w')
-    f.write('<h2>' + grassName + '</h2>\n')
-    for line in alg.consoleOutput:
-        if found and not line.strip().endswith('exit'):
-            f.write(line + '<br>\n')
-        if grassName in line and not line.startswith('GRASS'):
-            found = True
-    f.close()
+    with codecs.open(htmlFile, 'w') as f:
+        f.write('<h2>{}</h2>\n'.format(grassName))
+        f.write('<pre>\n')
+        for line in alg.consoleOutput:
+            if not line.startswith('GRASS') and not line.isspace():
+                f.write('{}\n'.format(line))
+        f.write('</pre>\n')
