@@ -121,7 +121,7 @@ void QgsDualView::columnBoxInit()
       // ... If there are primary key(s) defined
       QStringList pkFields;
 
-      Q_FOREACH( int attr, pkAttrs )
+      Q_FOREACH ( int attr, pkAttrs )
       {
         pkFields.append( "COALESCE(\"" + fields[attr].name() + "\", '<NULL>')" );
       }
@@ -152,7 +152,7 @@ void QgsDualView::columnBoxInit()
   mFeatureListPreviewButton->addAction( mActionExpressionPreview );
   mFeatureListPreviewButton->addAction( mActionPreviewColumnsMenu );
 
-  Q_FOREACH( const QgsField& field, fields )
+  Q_FOREACH ( const QgsField& field, fields )
   {
     if ( mLayerCache->layer()->editorWidgetV2( mLayerCache->layer()->fieldNameIndex( field.name() ) ) != "Hidden" )
     {

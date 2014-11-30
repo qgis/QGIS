@@ -17,7 +17,7 @@ class QgsHeatmapRendererWidget : QgsRendererV2Widget
      * @param renderer the mask renderer (will take ownership)
      */
     QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
-    
+
     /** @returns the current feature renderer */
     virtual QgsFeatureRendererV2* renderer();
 };

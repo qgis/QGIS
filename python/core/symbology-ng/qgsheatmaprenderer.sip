@@ -37,7 +37,7 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @see colorRamp
     */
     void setColorRamp( QgsVectorColorRampV2* ramp /Transfer/ );
-    
+
     /**Returns whether the ramp is inverted
      * @returns true if color ramp is inverted
      * @see setInvertRamp
@@ -121,7 +121,7 @@ class QgsHeatmapRenderer : QgsFeatureRendererV2
      * @see renderQuality
     */
     void setRenderQuality( const int quality );
-    
+
     /**Returns the expression used for weighting points when generating the heatmap.
      * @returns point weight expression. If empty, all points are equally weighted.
      * @see setWeightExpression

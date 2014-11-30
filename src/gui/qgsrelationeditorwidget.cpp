@@ -267,7 +267,7 @@ void QgsRelationEditorWidget::toggleEditing( bool state )
 
 void QgsRelationEditorWidget::saveEdits()
 {
-	 mEditorContext.vectorLayerTools()->saveEdits(mRelation.referencingLayer() );
+  mEditorContext.vectorLayerTools()->saveEdits( mRelation.referencingLayer() );
 }
 
 void QgsRelationEditorWidget::onCollapsedStateChanged( bool collapsed )

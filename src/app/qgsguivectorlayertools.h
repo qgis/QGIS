@@ -67,7 +67,7 @@ class QgsGuiVectorLayerTools : public QgsVectorLayerTools, public QObject
      * @param layer       The layer to commit
      * @return            True if successful
      */
-    bool saveEdits( QgsVectorLayer* layer) const;
+    bool saveEdits( QgsVectorLayer* layer ) const;
 
   private:
     void commitError( QgsVectorLayer* vlayer ) const;

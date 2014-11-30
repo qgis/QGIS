@@ -115,9 +115,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->setFoldingVisible( false );
   customFunctionBotton->setVisible( QgsPythonRunner::isValid() );
   txtPython->setVisible( false );
-  txtPython->setText("@qgsfunction(args=-1, group='Custom')\n"
-                     "def func(values, feature, parent):\n"
-                     "    return str(values)");
+  txtPython->setText( "@qgsfunction(args=-1, group='Custom')\n"
+                      "def func(values, feature, parent):\n"
+                      "    return str(values)" );
 }
 
 
@@ -298,9 +298,10 @@ void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
 
 QString QgsExpressionBuilderWidget::expressionText()
 {
-  if ( QgsPythonRunner::isValid() ) {
-      QString pythontext = txtPython->text();
-      QgsPythonRunner::run( pythontext );
+  if ( QgsPythonRunner::isValid() )
+  {
+    QString pythontext = txtPython->text();
+    QgsPythonRunner::run( pythontext );
   }
   return txtExpressionString->text();
 }

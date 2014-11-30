@@ -307,13 +307,13 @@ void QgsAttributeTableDialog::updateFieldFromExpression()
 
   bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
   QgsFeatureIds filteredIds = filtered ? mMainView->filteredFeatures() : QgsFeatureIds();
-  this->runFieldCalculation(mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds);
+  this->runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
 }
 
 void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
 {
   QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
-  this->runFieldCalculation(mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds);
+  this->runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
 }
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds )
@@ -345,7 +345,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   {
     if ( !filteredIds.isEmpty() && !filteredIds.contains( feature.id() ) )
     {
-        continue;
+      continue;
     }
 
     exp.setCurrentRowNumber( rownum );

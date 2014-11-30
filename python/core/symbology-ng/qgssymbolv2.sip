@@ -54,7 +54,7 @@ class QgsSymbolV2
     SymbolType type() const;
 
     // symbol layers handling
-    
+
     /**Returns list of symbol layers contained in the symbol.
      * @returns symbol layers list
      * @note added in QGIS 2.7
