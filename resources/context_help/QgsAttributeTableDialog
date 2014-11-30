@@ -55,5 +55,5 @@ The vector layer needs to be in editing mode, before you can click on the <label
 <a name="FieldCalcBar">
 <h4>Field Calculator Bar</h4>
 </a>
-When you toggle to edition the layer, a new row of functions appears in the attribute table: the <label>Field Calculator Bar</label>. This allows to quickly edit values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.<br>
+When you toggle to edition the layer, a new row of functions appears in the attribute table: the <label>Field Calculator Bar</label>. This allows quick editing values of existing fields by performing calculations on basis of existing attribute values or defined functions button in the attribute table, e.g. to calculate length or area of geometry features.<br>
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press <label>Update all</label> button to update all the rows of the attribute table or <label>Update selected</label> button if some features are selected or a filter is applied on the attribute table display. You can also use the <label>Expression builder</label> button to calculate the new value in the column.<br>

@@ -149,7 +149,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
     virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
     /**
-     * This method allows to disable this editor widget type for a certain field.
+     * This method allows disabling this editor widget type for a certain field.
      * By default, it returns true for all fields.
      * Reimplement this if you only support certain fields.
      *

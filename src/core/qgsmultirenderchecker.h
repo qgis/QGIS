@@ -19,7 +19,7 @@
 #include "qgsrenderchecker.h"
 
 /**
- * This class allows to check rendered images against comparison images.
+ * This class allows checking rendered images against comparison images.
  * Its main purpose is for the unit testing framework.
  *
  * It will either
