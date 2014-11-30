@@ -411,8 +411,8 @@ class RAlgorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         msg = RUtils.checkRIsInstalled()
         if msg is not None:
-            html = '<p>This algorithm requires R to be run.Unfortunately, \
-                   it seems that R is not installed in your system, or it \
+            html = '<p>This algorithm requires R to be run. Unfortunately \
+                   it seems that R is not installed in your system or it \
                    is not correctly configured to be used from QGIS</p>'
             html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure R to be used with QGIS</p>'
             return html
