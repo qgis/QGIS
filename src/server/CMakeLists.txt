@@ -184,6 +184,7 @@ INSTALL(TARGETS
 INSTALL(FILES
   admin.sld
   wms_metadata.xml
+  schemaExtension.xsd
   DESTINATION ${QGIS_CGIBIN_DIR}
   )
 

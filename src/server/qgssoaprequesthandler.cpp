@@ -394,7 +394,7 @@ void QgsSOAPRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
   setHttpResponse( &ba, "text/xml" );
 }
 
-void QgsSOAPRequestHandler::setGetStyleResponse( const QDomDocument& infoDoc )
+void QgsSOAPRequestHandler::setXmlResponse( const QDomDocument& infoDoc )
 {
   QDomDocument featureInfoResponseDoc;
 
@@ -413,6 +413,12 @@ void QgsSOAPRequestHandler::setGetStyleResponse( const QDomDocument& infoDoc )
   //now set message
   QByteArray ba = featureInfoResponseDoc.toByteArray();
   setHttpResponse( &ba, "text/xml" );
+}
+
+void QgsSOAPRequestHandler::setXmlResponse( const QDomDocument& infoDoc, const QString& mimeType )
+{
+  Q_UNUSED( mimeType );
+  setXmlResponse( infoDoc );
 }
 
 void QgsSOAPRequestHandler::setGetPrintResponse( QByteArray* ba ) const

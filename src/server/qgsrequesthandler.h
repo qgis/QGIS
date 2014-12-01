@@ -53,7 +53,8 @@ class QgsRequestHandler
     virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) = 0;
     virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
     virtual void setServiceException( QgsMapServiceException ex ) = 0;
-    virtual void setGetStyleResponse( const QDomDocument& doc ) = 0;
+    virtual void setXmlResponse( const QDomDocument& doc ) = 0;
+    virtual void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) = 0;
     virtual void setGetPrintResponse( QByteArray* b ) = 0;
     virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) = 0;
     virtual void setGetFeatureResponse( QByteArray* ba ) = 0;
