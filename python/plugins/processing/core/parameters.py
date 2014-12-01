@@ -75,7 +75,7 @@ class Parameter:
         return True
 
     def __str__(self):
-        return self.name + ' <' + self.__module__.split('.')[-1] + '>'
+        return self.name + ' <' + self.__class__.__name__ + '>'
 
     def getValueAsCommandLineParameter(self):
         """
