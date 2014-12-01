@@ -362,6 +362,10 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! @note added in 2.4
     void extentsChanged();
 
+    //! emitted when the current rotation gets changed
+    //! @note added in 2.8
+    void rotationChanged( double );
+
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
     void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
