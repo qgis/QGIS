@@ -162,13 +162,20 @@ static QVariant tvl2variant( TVL v )
 inline bool isIntSafe( const QVariant& v )
 {
   if ( v.type() == QVariant::Int ) return true;
+  if ( v.type() == QVariant::UInt ) return true;
+  if ( v.type() == QVariant::LongLong ) return true;
+  if ( v.type() == QVariant::ULongLong ) return true;
   if ( v.type() == QVariant::Double ) return false;
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toInt( &ok ); return ok; }
   return false;
 }
 inline bool isDoubleSafe( const QVariant& v )
 {
-  if ( v.type() == QVariant::Double || v.type() == QVariant::Int ) return true;
+  if ( v.type() == QVariant::Double ) return true;
+  if ( v.type() == QVariant::Int ) return true;
+  if ( v.type() == QVariant::UInt ) return true;
+  if ( v.type() == QVariant::LongLong ) return true;
+  if ( v.type() == QVariant::ULongLong ) return true;
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toDouble( &ok ); return ok; }
   return false;
 }
