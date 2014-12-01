@@ -118,7 +118,7 @@ FUNCTION(SETUP_TARGET_FOR_COVERAGE _targetname _testrunner _outputname)
 			COMMAND ${LCOV_PATH} --rc lcov_branch_coverage=1 --directory . --capture --output-file ${_outputname}.info
 			COMMAND ${LCOV_PATH} --rc lcov_branch_coverage=1 --remove ${_outputname}.info 'tests/*' '/usr/*' '*.cxx' '*.sip' 'ui_*' --output-file ${_outputname}.info.cleaned
 			COMMAND ${GENHTML_PATH} --branch-coverage --rc lcov_branch_coverage=1 -o ${_outputname} ${_outputname}.info.cleaned
-			COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info ${_outputname}.info.cleaned
+			COMMAND ${CMAKE_COMMAND} -E remove ${_outputname}.info.cleaned
 			COMMENT "Resetting code coverage counters to zero.\nProcessing code coverage counters and generating report."
 
 			WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
