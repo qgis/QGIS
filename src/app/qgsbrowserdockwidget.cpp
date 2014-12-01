@@ -316,7 +316,9 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 void QgsBrowserDockWidget::hideEvent( QHideEvent * e )
 {
   QgsDebugMsg( "Entered" );
-  saveState();
+  // hideEvent() may be called (Mac) before showEvent
+  if ( mModel )
+    saveState();
   QDockWidget::hideEvent( e );
 }
 
@@ -810,6 +812,9 @@ QString QgsBrowserDockWidget::expandedPathsKey() const
 QStringList QgsBrowserDockWidget::expandedPathsList( const QModelIndex & proxyIndex )
 {
   QStringList paths;
+
+  if ( !mModel || !mProxyModel || !mBrowserView )
+    return paths;
 
   for ( int i = 0; i < mProxyModel->rowCount( proxyIndex ); i++ )
   {
