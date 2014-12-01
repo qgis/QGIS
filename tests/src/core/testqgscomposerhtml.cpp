@@ -200,7 +200,7 @@ void TestQgsComposerHtml::tableMultiFrame()
 void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
 {
   QgsComposerHtml* htmlItem = new QgsComposerHtml( mComposition, false );
-  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 50 );
+  QgsComposerFrame* htmlFrame = new QgsComposerFrame( mComposition, htmlItem, 10, 10, 100, 52 );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setResizeMode( QgsComposerMultiFrame::RepeatUntilFinished );
   htmlItem->setUseSmartBreaks( true );
@@ -209,7 +209,7 @@ void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
   htmlItem->setUrl( QUrl( QString( "file:///%1" ).arg( QString( TEST_DATA_DIR ) + QDir::separator() +  "test_html.html" ) ) );
   htmlItem->frame( 0 )->setFrameEnabled( true );
   QgsCompositionChecker checker1( "composerhtml_smartbreaks1", mComposition );
-  bool result = checker1.testComposition( mReport );
+  bool result = checker1.testComposition( mReport, 0, 200 );
 
   //page2
   QgsCompositionChecker checker2( "composerhtml_smartbreaks2", mComposition );

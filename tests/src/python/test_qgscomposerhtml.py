@@ -102,7 +102,7 @@ class TestQgsComposerHtml(TestCase):
         """Test rendering to multiframes with smart breaks."""
         composerHtml = QgsComposerHtml(self.mComposition, False)
         htmlFrame = QgsComposerFrame(self.mComposition, composerHtml,
-                                     10, 10, 100, 50)
+                                     10, 10, 100, 52)
         composerHtml.addFrame(htmlFrame)
         composerHtml.setResizeMode(
             QgsComposerMultiFrame.RepeatUntilFinished)
@@ -113,7 +113,7 @@ class TestQgsComposerHtml(TestCase):
         print "Checking page 1"
         myPage = 0
         checker1 = QgsCompositionChecker('composerhtml_smartbreaks1', self.mComposition)
-        myTestResult, myMessage = checker1.testComposition( myPage )
+        myTestResult, myMessage = checker1.testComposition( myPage, 200 )
         assert myTestResult, myMessage
 
         print "Checking page 2"
