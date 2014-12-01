@@ -130,6 +130,7 @@ void TestQgsComposerTableV2::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerTableV2::init()

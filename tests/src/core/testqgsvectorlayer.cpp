@@ -163,6 +163,7 @@ class TestQgsVectorLayer: public QObject
         myFile.close();
         //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
+      QgsApplication::exitQgis();
 
     }
     void init() {};// will be called before each testfunction is executed.

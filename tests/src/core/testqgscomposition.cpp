@@ -75,6 +75,7 @@ void TestQgsComposition::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposition::init()

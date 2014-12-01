@@ -97,6 +97,7 @@ void TestQgsComposerPicture::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerPicture::init()

@@ -51,6 +51,7 @@ void TestQgsScaleComboBox::initTestCase()
 void TestQgsScaleComboBox::cleanupTestCase()
 {
   delete s;
+  QgsApplication::exitQgis();
 };
 
 void TestQgsScaleComboBox::init()
