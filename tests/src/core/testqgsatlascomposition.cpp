@@ -189,6 +189,7 @@ void TestQgsAtlasComposition::init()
 void TestQgsAtlasComposition::cleanup()
 {
   delete mComposition;
+  mComposition = 0;
 }
 
 void TestQgsAtlasComposition::filename()

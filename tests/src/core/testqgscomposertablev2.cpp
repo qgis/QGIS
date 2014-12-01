@@ -61,10 +61,8 @@ class TestQgsComposerTableV2: public QObject
 
   private:
     QgsComposition* mComposition;
-    QgsComposerMap* mComposerMap;
     QgsMapSettings mMapSettings;
     QgsVectorLayer* mVectorLayer;
-    QgsVectorLayer* mVectorLayer2;
     QgsComposerAttributeTableV2* mComposerAttributeTable;
     QgsComposerFrame* mFrame1;
     QgsComposerFrame* mFrame2;
@@ -85,12 +83,9 @@ void TestQgsComposerTableV2::initTestCase()
                                      vectorFileInfo.completeBaseName(),
                                      "ogr" );
   QgsMapLayerRegistry::instance()->addMapLayer( mVectorLayer );
-  mVectorLayer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
-                                      vectorFileInfo.completeBaseName(),
-                                      "ogr" );
 
   //create composition with composer map
-  mMapSettings.setLayers( QStringList() << mVectorLayer->id() << mVectorLayer2->id() );
+  mMapSettings.setLayers( QStringList() << mVectorLayer->id() );
   mMapSettings.setCrsTransformEnabled( false );
   mComposition = new QgsComposition( mMapSettings );
   mComposition->setPaperSize( 297, 210 ); //A4 portrait
@@ -120,7 +115,6 @@ void TestQgsComposerTableV2::initTestCase()
 void TestQgsComposerTableV2::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -283,12 +277,11 @@ void TestQgsComposerTableV2::attributeTableVisibleOnly()
 {
   //test displaying only visible attributes
 
-  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
-  mComposerMap->setFrameEnabled( true );
-  mComposition->addComposerMap( mComposerMap );
-  mComposerMap->setNewExtent( QgsRectangle( -131.767, 30.558, -110.743, 41.070 ) );
+  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  composerMap->setFrameEnabled( true );
+  composerMap->setNewExtent( QgsRectangle( -131.767, 30.558, -110.743, 41.070 ) );
 
-  mComposerAttributeTable->setComposerMap( mComposerMap );
+  mComposerAttributeTable->setComposerMap( composerMap );
   mComposerAttributeTable->setDisplayOnlyVisibleFeatures( true );
 
   QList<QStringList> expectedRows;
@@ -307,7 +300,7 @@ void TestQgsComposerTableV2::attributeTableVisibleOnly()
 
   mComposerAttributeTable->setDisplayOnlyVisibleFeatures( false );
   mComposerAttributeTable->setComposerMap( 0 );
-  mComposition->removeItem( mComposerMap );
+  delete composerMap;
 }
 
 void TestQgsComposerTableV2::attributeTableRender()
@@ -411,7 +404,13 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
   table->setSource( QgsComposerAttributeTableV2::AtlasFeature );
 
   //setup atlas
-  mComposition->atlasComposition().setCoverageLayer( mVectorLayer2 );
+  QgsVectorLayer* vectorLayer;
+  QFileInfo vectorFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "points.shp" );
+  vectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
+                                    vectorFileInfo.completeBaseName(),
+                                    "ogr" );
+  QgsMapLayerRegistry::instance()->addMapLayer( vectorLayer );
+  mComposition->atlasComposition().setCoverageLayer( vectorLayer );
   mComposition->atlasComposition().setEnabled( true );
   QVERIFY( mComposition->atlasComposition().beginRender() );
 
@@ -452,7 +451,7 @@ void TestQgsComposerTableV2::attributeTableAtlasSource()
   mComposition->atlasComposition().endRender();
 
   //try for a crash when removing current atlas layer
-  QgsMapLayerRegistry::instance()->removeMapLayer( mVectorLayer2->id() );
+  QgsMapLayerRegistry::instance()->removeMapLayer( vectorLayer->id() );
   table->refreshAttributes();
 
   mComposition->removeMultiFrame( table );

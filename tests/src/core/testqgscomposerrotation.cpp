@@ -54,7 +54,6 @@ class TestQgsComposerRotation: public QObject
     QgsComposition* mComposition;
     QgsComposerShape* mComposerRect;
     QgsComposerLabel* mComposerLabel;
-    QgsComposerMap* mComposerMap;
     QgsMapSettings mMapSettings;
     QgsRasterLayer* mRasterLayer;
     QString mReport;
@@ -91,9 +90,6 @@ void TestQgsComposerRotation::initTestCase()
   mComposerLabel->adjustSizeToText();
   mComposerLabel->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
   mComposerLabel->setBackgroundEnabled( true );
-
-  mComposerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
-  mComposerMap->setFrameEnabled( true );
 
   mReport = "<h1>Composer Rotation Tests</h1>\n";
 }
@@ -184,46 +180,34 @@ void TestQgsComposerRotation::oldLabelRotationApi()
 void TestQgsComposerRotation::mapRotation()
 {
   //test map rotation
-  mComposition->addComposerMap( mComposerMap );
-  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setMapRotation( 90 );
+  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  composerMap->setFrameEnabled( true );
+  mComposition->addItem( composerMap );
+  composerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  composerMap->setMapRotation( 90 );
 
   QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
   QVERIFY( checker.testComposition( mReport, 0, 0 ) );
 
-  mComposition->removeItem( mComposerMap );
-  mComposerMap->setMapRotation( 0 );
+  mComposition->removeItem( composerMap );
+  delete composerMap;
 }
 
 void TestQgsComposerRotation::mapItemRotation()
 {
   //test map item rotation
-  mComposition->addComposerMap( mComposerMap );
-  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setItemRotation( 90, true );
+  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  composerMap->setFrameEnabled( true );
+  mComposition->addItem( composerMap );
+  composerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  composerMap->setItemRotation( 90, true );
 
   QgsCompositionChecker checker( "composerrotation_mapitemrotation", mComposition );
   QVERIFY( checker.testComposition( mReport ) );
 
-  mComposition->removeItem( mComposerMap );
-  mComposerMap->setItemRotation( 0, true );
+  mComposition->removeItem( composerMap );
+  delete composerMap;
 }
-
-#if 0
-void TestQgsComposerRotation::oldMapRotationApi()
-{
-  //test old style deprecated rotation api - remove test after 2.0 series
-  mComposition->addComposerMap( mComposerMap );
-  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setRotation( 90 );
-
-  QgsCompositionChecker checker( "composerrotation_maprotation_oldapi", mComposition );
-  QVERIFY( checker.testComposition( mReport ) );
-
-  mComposition->removeItem( mComposerMap );
-  mComposerMap->setRotation( 0 );
-}
-#endif
 
 QTEST_MAIN( TestQgsComposerRotation )
 #include "testqgscomposerrotation.moc"
