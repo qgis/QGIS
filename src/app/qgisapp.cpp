@@ -2002,7 +2002,7 @@ void QgisApp::setupConnections()
            this, SLOT( showExtents() ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
            this, SLOT( showScale( double ) ) );
-  connect( mMapCanvas, SIGNAL( rotationChanged() ),
+  connect( mMapCanvas, SIGNAL( rotationChanged( double ) ),
            this, SLOT( showRotation() ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
            this, SLOT( updateMouseCoordinatePrecision() ) );
