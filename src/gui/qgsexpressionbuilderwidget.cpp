@@ -110,10 +110,10 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   QSettings settings;
   splitter->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter" ).toByteArray() );
-  splitter_2->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter2" ).toByteArray() );
+//  splitter_2->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter2" ).toByteArray() );
 
   txtExpressionString->setFoldingVisible( false );
-  customFunctionBotton->setVisible( QgsPythonRunner::isValid() );
+//  customFunctionBotton->setVisible( QgsPythonRunner::isValid() );
   txtPython->setVisible( false );
   txtPython->setText( "@qgsfunction(args=-1, group='Custom')\n"
                       "def func(values, feature, parent):\n"
@@ -125,7 +125,7 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 {
   QSettings settings;
   settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter", splitter->saveState() );
-  settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter2", splitter_2->saveState() );
+//  settings.setValue( "/windows/QgsExpressionBuilderWidget/splitter2", splitter_2->saveState() );
 }
 
 void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
