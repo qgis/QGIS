@@ -126,6 +126,8 @@ void QgsMapRenderer::setRotation( double rotation )
 {
   mRotation = rotation;
   // TODO: adjust something ?
+
+  emit rotationChanged( rotation );
 }
 
 double QgsMapRenderer::rotation( ) const
