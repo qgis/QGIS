@@ -24,68 +24,92 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import codecs
+
 from processing.core.Processing import Processing
+from processing.core.parameters import *
+
 from processing.tools.system import mkdir
-from processing.core.parameters import ParameterSelection
 
 
 def createBaseHelpFile(alg, folder):
-    folder = os.path.join(folder, alg.provider.getName().lower())
-    mkdir(folder)
-    cmdLineName = alg.commandLineName()[
-            alg.commandLineName().find(':') + 1:].lower()
-    validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
-    safeFilename = ''.join(c for c in cmdLineName if c in validChars)
-    filepath = os.path.join(folder, safeFilename + '.rst')
-    file = open(filepath, 'w')
-    file.write(alg.name.upper())
-    file.write('\n')
-    file.write('=' * len(alg.name))
-    file.write('\n\n')
-    file.write('Description\n')
-    file.write('-----------\n\n')
-    file.write('Parameters\n')
-    file.write('----------\n\n')
-    for param in alg.parameters:
-        file.write('- ``' + param.description + '[' +
-                   param.parameterName()[9:] + ']``:\n')
-    file.write('\nOutputs\n')
-    file.write('-------\n\n')
-    for out in alg.outputs:
-        file.write('- ``' + out.description + '[' +
-                   out.outputTypeName()[6:] + ']``:\n')
-    file.write('\nSee also\n')
-    file.write('---------\n\n')
-    file.write('\nConsole usage\n')
-    file.write('-------------\n\n')
-    file.write('\n::\n\n')
-    s = "\tprocessing.runalg('" + alg.commandLineName() + "', "
-    for param in alg.parameters:
-        s += str(param.name.lower().strip()) + ', '
-    for out in alg.outputs:
-        if not out.hidden:
-            s += str(out.name.lower().strip()) + ', '
-    s = s[:-2] + ')\n'
-    file.write(s)
+    baseDir = os.path.join(folder, alg.provider.getName().lower())
+    mkdir(baseDir)
 
-    s = ''
-    hasSelection = False
-    for param in alg.parameters:
-        if isinstance(param, ParameterSelection):
-            hasSelection = True
-            s += '\n\t' + param.name.lower() + '(' + param.description + ')\n'
-            i = 0
-            for option in param.options:
-                s += '\t\t' + str(i) + ' - ' + str(option) + '\n'
-                i += 1
-    if hasSelection:
-        file.write('\n\tAvailable options for selection parameters:\n')
-        file.write(s)
-    file.close()
+    groupName = alg.group.lower()
+    groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')
+    groupName = groupName.replace(' ', '_')
+    cmdLineName = alg.commandLineName()
+    algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
+    validChars = \
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+    safeGroupName = ''.join(c for c in groupName if c in validChars)
+    safeAlgName = ''.join(c for c in algName if c in validChars)
+
+    dirName = os.path.join(baseDir, safeGroupName)
+    mkdir(dirName)
+    filePath = os.path.join(dirName, safeAlgName + '.rst')
+
+    with codecs.open(filePath, 'w', encoding='utf-8') as f:
+        f.write('{}\n'.format(alg.name))
+        f.write('{}\n\n'.format('=' * len(alg.name)))
+        f.write('Description\n')
+        f.write('-----------\n\n<put algortithm description here>\n\n')
+
+        # Algorithm parameters
+        f.write('Parameters\n')
+        f.write('----------\n\n')
+        for p in alg.parameters:
+            if isinstance(p, (ParameterMultipleInput,
+                    ParameterTableField, ParameterVector)):
+                f.write('``{}`` [{}: {}]\n'.format(p.description, p.typeName(), p.dataType()))
+            else:
+                f.write('``{}`` [{}]\n'.format(p.description, p.typeName()))
+
+            if hasattr(p, 'optional'):
+                if p.optional:
+                    f.write('  Optional.\n\n')
+
+            f.write('  <put parameter description here>\n\n')
+
+            if isinstance(p, ParameterSelection):
+                f.write('  Options:\n\n')
+                for count, opt in enumerate(p.options):
+                    f.write('  * {} --- {}\n'.format(count, opt))
+                f.write('\n')
+
+            if hasattr(p, 'default'):
+                f.write('  Default: *{}*\n\n'.format(p.default if p.default != '' else '(not set)'))
+
+        # Algorithm outputs
+        f.write('Outputs\n')
+        f.write('-------\n\n')
+        for o in alg.outputs:
+            f.write('``{}`` [{}]\n'.format(o.description, o.typeName()))
+            f.write('  <put output description here>\n\n')
+
+        # Console usage
+        f.write('Console usage\n')
+        f.write('-------------\n')
+        f.write('\n::\n\n')
+        cmd = "  processing.runalg('{}', ".format(alg.commandLineName())
+        for p in alg.parameters:
+            cmd += '{}, '.format(p.name.lower().strip())
+
+        for o in alg.outputs:
+            if not o.hidden:
+                cmd += '{}, '.format(o.name.lower().strip())
+        cmd = cmd[:-2] + ')\n\n'
+        f.write(cmd)
+
+        f.write('See also\n')
+        f.write('--------\n\n')
 
 
 def createBaseHelpFiles(folder):
     for provider in Processing.providers:
+        if 'grass' in provider.getName():
+            continue
+
         for alg in provider.algs:
             createBaseHelpFile(alg, folder)

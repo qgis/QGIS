@@ -95,6 +95,7 @@ void TestStyleV2::cleanupTestCase()
   // don't save
   // mStyle->save();
   delete mStyle;
+  QgsApplication::exitQgis();
 }
 
 bool TestStyleV2::testValidColor( QgsVectorColorRampV2 *ramp, double value, QColor expected )

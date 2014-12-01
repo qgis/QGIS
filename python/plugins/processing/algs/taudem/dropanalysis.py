@@ -77,7 +77,7 @@ class DropAnalysis(GeoAlgorithm):
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID,
                           'Pit Filled Elevation Grid', False))
         self.addParameter(ParameterRaster(self.ACCUM_STREAM_SOURCE_GRID,
-                          'Contributing Area Grid', False))
+                          'Accumulated Stream Source Grid', False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
                           'Outlets Shapefile',
                           [ParameterVector.VECTOR_TYPE_POINT], False))

@@ -42,7 +42,7 @@ class buildvrt(GdalAlgorithm):
     RESOLUTION = 'RESOLUTION'
     SEPARATE = 'SEPARATE'
     PROJ_DIFFERENCE = 'PROJ_DIFFERENCE'
-    
+
     RESOLUTION_OPTIONS = ['average', 'highest', 'lowest']
 
     def defineCharacteristics(self):

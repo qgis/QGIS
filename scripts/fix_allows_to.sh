@@ -14,6 +14,7 @@ create:creating
 customize:customizing
 define:defining
 determine:determining
+disable:disabling
 discard:discarding
 display:displaying
 drop:dropping
@@ -26,6 +27,7 @@ exit:exiting
 export:exporting
 extract:extracgin
 filter:filtering
+fix:fixing
 first sub-sample:sub-sampling first
 fuse:fusing
 generate:generating
@@ -49,6 +51,7 @@ reproject:reprojecting
 restrict:restricting
 retrieve:retrieving
 save:saving
+scroll:scrolling
 select:selecting
 selecting:selecting
 set:setting
@@ -62,6 +65,8 @@ write:writing
 you to show:showing
 compute:computing
 optimize:optimizing
+check:checking
+quickly edit:quick editing
 EOF
 while read v i; do
 	echo "$v => $i"

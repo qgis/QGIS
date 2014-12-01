@@ -883,7 +883,7 @@ component on Leopard and Snow, add the following line before the last line in
 the above configuration:
 
 ```
--D WITH_MAPSERVER=TRUE \
+-D WITH_SERVER=TRUE \
 ```
 
 On Lion you are on your own to figure out how to install libfcgi and add fcgi

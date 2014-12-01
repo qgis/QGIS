@@ -24,10 +24,10 @@ class QgsExpression
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
      */
-    QStringList referencedColumns();
+    QStringList referencedColumns() const;
 
     //! Returns true if the expression uses feature geometry for some computation
-    bool needsGeometry();
+    bool needsGeometry() const;
 
     // evaluation
 

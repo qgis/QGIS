@@ -88,6 +88,7 @@ void Regression1141::cleanupTestCase()
   //
   // Runs after all tests are done
   //
+  QgsApplication::exitQgis();
 }
 
 

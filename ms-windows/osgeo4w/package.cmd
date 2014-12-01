@@ -134,8 +134,8 @@ set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 cmake %CMAKE_OPT% ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
-	-D WITH_MAPSERVER=TRUE ^
-	-D MAPSERVER_SKIP_ECW=TRUE ^
+	-D WITH_SERVER=TRUE ^
+	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
@@ -268,8 +268,11 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-server/%PACKAGENAME
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/bin/qgis_mapserv.fcgi.exe" ^
+	"apps/%PACKAGENAME%/bin/qgis_server.dll" ^
 	"apps/%PACKAGENAME%/bin/admin.sld" ^
 	"apps/%PACKAGENAME%/bin/wms_metadata.xml" ^
+	"apps/%PACKAGENAME%/python/_server.pyd" ^
+	"apps/%PACKAGENAME%/python/server" ^
 	"httpd.d/httpd_%PACKAGENAME%.conf.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%-server.bat" ^
 	"etc/preremove/%PACKAGENAME%-server.bat"
@@ -298,6 +301,8 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
+	--exclude "apps/%PACKAGENAME%/python/_server.pyd" ^
+	--exclude "apps/%PACKAGENAME%/python/server" ^
 	"bin/%PACKAGENAME%-browser-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^

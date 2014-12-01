@@ -211,10 +211,12 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
   public slots:
 
     /**Reloads the html source from the url and redraws the item.
+     * @param useCache set to true to use a cached copy of remote html
+     * content
      * @see setUrl
      * @see url
      */
-    void loadHtml();
+    void loadHtml( const bool useCache = false );
 
     /**Recalculates the frame sizes for the current viewport dimensions*/
     void recalculateFrameSizes();

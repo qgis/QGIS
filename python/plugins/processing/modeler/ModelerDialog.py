@@ -413,7 +413,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                             * ModelerGraphicItem.BOX_HEIGHT)
                 self.alg.addAlgorithm(dlg.alg)
                 self.repaintModel()
-                #self.view.ensureVisible(self.scene.getLastAlgorithmItem())
                 self.hasChanged = True
 
     def getPositionForAlgorithmItem(self):

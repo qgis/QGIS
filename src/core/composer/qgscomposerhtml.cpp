@@ -120,7 +120,7 @@ void QgsComposerHtml::setUrl( const QUrl& url )
   }
 
   mUrl = url;
-  loadHtml();
+  loadHtml( true );
   emit changed();
 }
 
@@ -136,11 +136,11 @@ void QgsComposerHtml::setHtml( const QString html )
 void QgsComposerHtml::setEvaluateExpressions( bool evaluateExpressions )
 {
   mEvaluateExpressions = evaluateExpressions;
-  loadHtml();
+  loadHtml( true );
   emit changed();
 }
 
-void QgsComposerHtml::loadHtml()
+void QgsComposerHtml::loadHtml( const bool useCache )
 {
   if ( !mWebPage )
   {
@@ -166,7 +166,7 @@ void QgsComposerHtml::loadHtml()
       {
         return;
       }
-      if ( currentUrl != mLastFetchedUrl )
+      if ( !( useCache && currentUrl == mLastFetchedUrl ) )
       {
         loadedHtml = fetchHtml( QUrl( currentUrl ) );
         mLastFetchedUrl = currentUrl;
@@ -376,6 +376,8 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   //of maxSearchDistance
   int changes = 0;
   QRgb currentColor;
+  bool currentPixelTransparent = false;
+  bool previousPixelTransparent = false;
   QRgb pixelColor;
   QList< QPair<int, int> > candidates;
   int minRow = qMax( idealPos - maxSearchDistance, 0 );
@@ -391,12 +393,14 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
       //since this is likely a line break, or gap between table cells, etc
       //but very unlikely to be midway through a text line or picture
       pixelColor = mRenderedPage->pixel( col, candidateRow );
-      if ( pixelColor != currentColor )
+      currentPixelTransparent = qAlpha( pixelColor ) == 0;
+      if ( pixelColor != currentColor && !( currentPixelTransparent && previousPixelTransparent ) )
       {
         //color has changed
         currentColor = pixelColor;
         changes++;
       }
+      previousPixelTransparent = currentPixelTransparent;
     }
     candidates.append( qMakePair( candidateRow, changes ) );
   }
@@ -459,7 +463,7 @@ void QgsComposerHtml::setUserStylesheetEnabled( const bool stylesheetEnabled )
   if ( mEnableUserStylesheet != stylesheetEnabled )
   {
     mEnableUserStylesheet = stylesheetEnabled;
-    loadHtml();
+    loadHtml( true );
     emit changed();
   }
 }
@@ -518,7 +522,7 @@ bool QgsComposerHtml::readXML( const QDomElement& itemElem, const QDomDocument& 
   {
     mUrl = urlString;
   }
-  loadHtml();
+  loadHtml( true );
 
   //since frames had to be created before, we need to emit a changed signal to refresh the widget
   emit changed();
@@ -562,7 +566,7 @@ void QgsComposerHtml::refreshExpressionContext()
   }
 
   setExpressionContext( feature, vl );
-  loadHtml();
+  loadHtml( true );
 }
 
 void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property )
@@ -570,7 +574,7 @@ void QgsComposerHtml::refreshDataDefinedProperty( const QgsComposerObject::DataD
   //updates data defined properties and redraws item to match
   if ( property == QgsComposerObject::SourceUrl || property == QgsComposerObject::AllProperties )
   {
-    loadHtml();
+    loadHtml( true );
   }
   QgsComposerObject::refreshDataDefinedProperty( property );
 }

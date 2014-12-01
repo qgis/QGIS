@@ -16,11 +16,19 @@
 #ifndef QGSPYTHONUTILS_H
 #define QGSPYTHONUTILS_H
 
+// Needed for CMake variables defines
+#include "qgsconfig.h"
+
+
 #include <QString>
 #include <QStringList>
 
 
 class QgisInterface;
+#ifdef  HAVE_SERVER_PYTHON_PLUGINS
+class QgsServerInterface;
+#endif
+
 
 /**
  All calls to Python functions in QGIS come here.
@@ -43,6 +51,14 @@ class PYTHON_EXPORT QgsPythonUtils
 
     //! initialize python and import bindings
     virtual void initPython( QgisInterface* interface ) = 0;
+
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //! initialize python and import server bindings
+    virtual void initServerPython( QgsServerInterface* interface ) = 0;
+
+    //! start server plugin: call plugin's classServerFactory(serverInterface) add to active plugins
+    virtual bool startServerPlugin( QString packageName ) = 0;
+#endif
 
     //! close python interpreter
     virtual void exitPython() = 0;

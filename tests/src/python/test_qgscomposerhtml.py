@@ -47,7 +47,7 @@ class TestQgsComposerHtml(TestCase):
 
     def htmlUrl(self):
         """Helper to get the url of the html doc."""
-        myPath = os.path.join(TEST_DATA_DIR, "html_table.html")
+        myPath = os.path.join(TEST_DATA_DIR, "test_html.html")
         myUrl = QUrl("file:///" + myPath)
         return myUrl
 
@@ -102,7 +102,7 @@ class TestQgsComposerHtml(TestCase):
         """Test rendering to multiframes with smart breaks."""
         composerHtml = QgsComposerHtml(self.mComposition, False)
         htmlFrame = QgsComposerFrame(self.mComposition, composerHtml,
-                                     10, 10, 100, 50)
+                                     10, 10, 100, 52)
         composerHtml.addFrame(htmlFrame)
         composerHtml.setResizeMode(
             QgsComposerMultiFrame.RepeatUntilFinished)
@@ -113,13 +113,13 @@ class TestQgsComposerHtml(TestCase):
         print "Checking page 1"
         myPage = 0
         checker1 = QgsCompositionChecker('composerhtml_smartbreaks1', self.mComposition)
-        myTestResult, myMessage = checker1.testComposition( myPage )
+        myTestResult, myMessage = checker1.testComposition( myPage, 200 )
         assert myTestResult, myMessage
 
         print "Checking page 2"
         myPage = 1
         checker2 = QgsCompositionChecker('composerhtml_smartbreaks2', self.mComposition)
-        myTestResult, myMessage = checker2.testComposition( myPage )
+        myTestResult, myMessage = checker2.testComposition( myPage, 3000 )
         assert myTestResult, myMessage
 
         self.mComposition.removeMultiFrame( composerHtml )

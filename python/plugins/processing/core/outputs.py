@@ -80,8 +80,8 @@ class Output(object):
         except:
             return False
 
-    def outputTypeName(self):
-        return self.__module__.split('.')[-1]
+    def typeName(self):
+        return self.__class__.__name__.replace('Output', '').lower()
 
     def tr(self, string, context=''):
         if context == '':

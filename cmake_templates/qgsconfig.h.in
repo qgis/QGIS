@@ -54,7 +54,9 @@
 
 #cmakedefine HAVE_OSGEARTHQT
 
-#cmakedefine MAPSERVER_SKIP_ECW
+#cmakedefine SERVER_SKIP_ECW
+
+#cmakedefine HAVE_SERVER_PYTHON_PLUGINS
 
 #endif
 

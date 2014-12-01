@@ -106,6 +106,7 @@ void TestQgsAtlasComposition::initTestCase()
 
 void TestQgsAtlasComposition::cleanupTestCase()
 {
+  delete mComposition;
   QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
@@ -188,6 +189,7 @@ void TestQgsAtlasComposition::init()
 void TestQgsAtlasComposition::cleanup()
 {
   delete mComposition;
+  mComposition = 0;
 }
 
 void TestQgsAtlasComposition::filename()

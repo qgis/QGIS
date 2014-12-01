@@ -95,6 +95,10 @@ static QLocale cLocale("C");
 
 %}
 
+%s BLOCK_COMMENT
+
+line_comment \-\-[^\r\n]*[\r\n]?
+
 white       [ \t\r\n]+
 
 non_ascii    [\x80-\xFF]
@@ -116,6 +120,16 @@ str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
 
 %%
+
+<INITIAL>{
+  "/*" BEGIN(BLOCK_COMMENT);
+}
+<BLOCK_COMMENT>{
+  "*/" BEGIN(INITIAL);
+  [^*\n]+   // eat comment in chunks
+  "*"       // eat the lone star
+  \n        yylineno++;
+}
 
 "NOT"   { U_OP(uoNot); return NOT; }
 "AND"   { B_OP(boAnd); return AND; }
@@ -183,6 +197,9 @@ string      "'"{str_char}*"'"
 
 {white}    /* skip blanks and tabs */
 
+{line_comment} /* skip line comments */
+
 .       { return Unknown_CHARACTER; }
+
 
 %%

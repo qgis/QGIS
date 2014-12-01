@@ -296,7 +296,7 @@ class CORE_EXPORT QGis
 // It's assumed that this works on all systems supporting
 // QLibrary
 #if QT_VERSION >= 0x050000
-  #define cast_to_fptr(f) f
+#define cast_to_fptr(f) f
 #else
 inline void ( *cast_to_fptr( void *p ) )()
 {

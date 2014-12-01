@@ -115,7 +115,7 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QBINDIR}/${QA}.app/Contents/MacOS/${QA}")
         ENDFOREACH (QA)
         # qgis-mapserver
-        IF (${WITH_MAPSERVER})
+        IF (${WITH_SERVER})
             IF (${OSX_HAVE_LOADERPATH})
                 SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_CGIBIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
             ENDIF ()

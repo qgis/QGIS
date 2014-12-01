@@ -30,27 +30,12 @@
 #include <QSettings>
 
 QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem * item )
-    : mFinished( false )
-    , mItem( item )
+    : mItem( item )
 {
-  connect( &mFutureWatcher, SIGNAL( finished() ), SLOT( finished() ) );
 }
 
 QgsBrowserWatcher::~QgsBrowserWatcher()
 {
-  mFutureWatcher.cancel();
-}
-
-void QgsBrowserWatcher::setFuture( QFuture<QVector <QgsDataItem*> > future )
-{
-  mFutureWatcher.setFuture( future );
-}
-
-void QgsBrowserWatcher::finished()
-{
-  QgsDebugMsg( "Entered" );
-  emit finished( mItem, mFutureWatcher.result() );
-  mFinished = true;
 }
 
 // sort function for QList<QgsDataItem*>, e.g. sorted/grouped provider listings
@@ -497,7 +482,7 @@ void QgsBrowserModel::fetchMore( const QModelIndex & parent )
   QList<QgsDataItem*> itemList;
   itemList << item;
   QgsBrowserWatcher * watcher = new QgsBrowserWatcher( item );
-  connect( watcher, SIGNAL( finished( QgsDataItem*, QVector <QgsDataItem*> ) ), SLOT( childrenCreated( QgsDataItem*, QVector <QgsDataItem*> ) ) );
+  connect( watcher, SIGNAL( finished() ), SLOT( childrenCreated() ) );
   watcher->setFuture( QtConcurrent::mapped( itemList, QgsBrowserModel::createChildren ) );
   mWatchers.append( watcher );
   mLoadingMovie.setPaused( false );
@@ -523,7 +508,7 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
   QList<QgsDataItem*> itemList;
   itemList << item;
   QgsBrowserWatcher * watcher = new QgsBrowserWatcher( item );
-  connect( watcher, SIGNAL( finished( QgsDataItem*, QVector <QgsDataItem*> ) ), SLOT( refreshChildrenCreated( QgsDataItem*, QVector <QgsDataItem*> ) ) );
+  connect( watcher, SIGNAL( finished() ), SLOT( refreshChildrenCreated() ) );
   watcher->setFuture( QtConcurrent::mapped( itemList, QgsBrowserModel::createChildren ) );
   mWatchers.append( watcher );
   mLoadingMovie.setPaused( false );
@@ -553,9 +538,14 @@ QVector<QgsDataItem*> QgsBrowserModel::createChildren( QgsDataItem* item )
   return children;
 }
 
-void QgsBrowserModel::childrenCreated( QgsDataItem* item, QVector <QgsDataItem*> children )
+void QgsBrowserModel::childrenCreated()
 {
-  QgsDebugMsg( QString( "children.size() = %1" ).arg( children.size() ) );
+  QgsBrowserWatcher *watcher = dynamic_cast<QgsBrowserWatcher *>( sender() );
+  if ( !watcher )
+    return;
+  QgsDataItem* item = watcher->item();
+  QVector <QgsDataItem*> children = watcher->result();
+  QgsDebugMsg( QString( "path = %1 children.size() = %2" ).arg( item->path() ).arg( children.size() ) );
   QModelIndex index = findItem( item );
   if ( !index.isValid() ) // check if item still exists
     return;
@@ -564,8 +554,13 @@ void QgsBrowserModel::childrenCreated( QgsDataItem* item, QVector <QgsDataItem*>
   emit fetchFinished( index );
 }
 
-void QgsBrowserModel::refreshChildrenCreated( QgsDataItem* item, QVector <QgsDataItem*> children )
+void QgsBrowserModel::refreshChildrenCreated()
 {
+  QgsBrowserWatcher *watcher = dynamic_cast<QgsBrowserWatcher *>( sender() );
+  if ( !watcher )
+    return;
+  QgsDataItem* item = watcher->item();
+  QVector <QgsDataItem*> children = watcher->result();
   QgsDebugMsg( QString( "path = %1 children.size() = %2" ).arg( item->path() ).arg( children.size() ) );
   QModelIndex index = findItem( item );
   if ( !index.isValid() ) // check if item still exists

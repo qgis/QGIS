@@ -39,6 +39,12 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! initialize python and import bindings
     void initPython( QgisInterface* interface );
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
+    //! initialize python for server and import bindings
+    void initServerPython( QgsServerInterface* interface );
+    bool startServerPlugin( QString packageName );
+#endif
+
     //! close python interpreter
     void exitPython();
 

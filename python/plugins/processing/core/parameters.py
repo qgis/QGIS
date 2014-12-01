@@ -85,8 +85,8 @@ class Parameter:
         """
         return unicode(self.value)
 
-    def parameterName(self):
-        return self.__module__.split('.')[-1]
+    def typeName(self):
+        return self.__class__.__name__.replace('Parameter', '').lower()
 
     def todict(self):
         return self.__dict__
@@ -201,6 +201,12 @@ class ParameterFile(Parameter):
         if self.ext is not None and self.value != '':
             return self.value.endswith(self.ext)
         return True
+
+    def typeName(self):
+        if self.isFolder:
+            return 'directory'
+        else:
+            return 'file'
 
 
 class ParameterFixedTable(Parameter):
@@ -365,6 +371,19 @@ class ParameterMultipleInput(ParameterDataObject):
             exts[i] = self.tr('%s files(*.%s)', 'ParameterMultipleInput') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
 
+    def dataType(self):
+        if self.datatype == self.TYPE_VECTOR_POINT:
+            return 'points'
+        elif self.datatype == self.TYPE_VECTOR_LINE:
+            return 'lines'
+        elif self.datatype == self.TYPE_VECTOR_POLYGON:
+            return 'polygons'
+        elif self.datatype == self.TYPE_RASTER:
+            return 'rasters'
+        elif self.datatype == self.TYPE_FILE:
+            return 'files'
+        else:
+            return 'any vectors'
 
 class ParameterNumber(Parameter):
 
@@ -652,6 +671,14 @@ class ParameterTableField(Parameter):
         return self.name + ' <' + self.__module__.split('.')[-1] + ' from ' \
             + self.parent + '>'
 
+    def dataType(self):
+        if self.datatype == self.DATA_TYPE_NUMBER:
+            return 'numeric'
+        elif self.datatype == self.DATA_TYPE_STRING:
+            return 'string'
+        else:
+            return 'any'
+
 
 class ParameterVector(ParameterDataObject):
 
@@ -729,3 +756,17 @@ class ParameterVector(ParameterDataObject):
         for i in range(len(exts)):
             exts[i] = self.tr('%s files(*.%s)', 'ParameterVector') % (exts[i].upper(), exts[i].lower())
         return ';;'.join(exts)
+
+    def dataType(self):
+        types = ''
+        for shp in self.shapetype:
+            if shp == self.VECTOR_TYPE_POINT:
+                types += 'point, '
+            elif shp == self.VECTOR_TYPE_LINE:
+                types += 'line, '
+            elif shp == self.VECTOR_TYPE_POLYGON:
+                types += 'polygon, '
+            else:
+                types += 'any, '
+
+        return types[:-2]

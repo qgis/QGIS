@@ -76,14 +76,14 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
     ADDFIELDS = 'ADDFIELDS'
     LAUNDER = 'LAUNDER'
     INDEX = 'INDEX'
-    SKIPFAILURES = 'SKIPFAILURES'    
+    SKIPFAILURES = 'SKIPFAILURES'
     OPTIONS = 'OPTIONS'
 
     def dbConnectionNames(self):
         settings = QSettings()
         settings.beginGroup('/PostgreSQL/connections/')
         return settings.childGroups()
-   
+
     def defineCharacteristics(self):
         self.name = 'Import Vector into PostGIS database (available connections)'
         self.group = '[OGR] Miscellaneous'
@@ -115,15 +115,15 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         self.addParameter(ParameterBoolean(self.CLIP,
                           'Clip the input layer using the above (rectangle) extent', False))
         self.addParameter(ParameterString(self.WHERE, 'Select features using a SQL "WHERE" statement (Ex: column="value")',
-                          '', optional=True))        
+                          '', optional=True))
         self.addParameter(ParameterString(self.GT, 'Group "n" features per transaction (Default: 20000)',
                           '', optional=True))
         self.addParameter(ParameterBoolean(self.OVERWRITE,
-                          'Overwrite existing table?', True))        
+                          'Overwrite existing table?', True))
         self.addParameter(ParameterBoolean(self.APPEND,
-                          'Append to existing table?', False)) 
+                          'Append to existing table?', False))
         self.addParameter(ParameterBoolean(self.ADDFIELDS,
-                          'Append and add new fields to existing table?', False)) 
+                          'Append and add new fields to existing table?', False))
         self.addParameter(ParameterBoolean(self.LAUNDER,
                           'Do not launder columns/table name/s?', False))
         self.addParameter(ParameterBoolean(self.INDEX,
@@ -146,9 +146,9 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         ogrLayer = self.ogrConnectionString(inLayer)
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
-        schema = unicode(self.getParameterValue(self.SCHEMA))        
+        schema = unicode(self.getParameterValue(self.SCHEMA))
         schemastring = "-lco SCHEMA="+schema
-        table = unicode(self.getParameterValue(self.TABLE))      
+        table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
         pkstring = "-lco FID="+pk
         geocolumn = unicode(self.getParameterValue(self.GEOCOLUMN))
@@ -156,13 +156,13 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         dim = self.DIMLIST[self.getParameterValue(self.DIM)]
         dimstring = "-lco DIM="+dim
         simplify = unicode(self.getParameterValue(self.SIMPLIFY))
-        segmentize = unicode(self.getParameterValue(self.SEGMENTIZE)) 
+        segmentize = unicode(self.getParameterValue(self.SEGMENTIZE))
         spat = self.getParameterValue(self.SPAT)
         ogrspat = self.ogrConnectionString(spat)
-        clip = self.getParameterValue(self.CLIP)        
+        clip = self.getParameterValue(self.CLIP)
         where = unicode(self.getParameterValue(self.WHERE))
         wherestring = "-where '"+where+"'"
-        gt = unicode(self.getParameterValue(self.GT))        
+        gt = unicode(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
         addfields = self.getParameterValue(self.ADDFIELDS)
@@ -175,7 +175,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
 
         arguments = []
         arguments.append('-progress')
-        arguments.append('--config PG_USE_COPY YES')        
+        arguments.append('--config PG_USE_COPY YES')
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"host=')
@@ -189,7 +189,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         arguments.append('password=')
         arguments.append(password)
         arguments.append('"')
-        arguments.append(dimstring)        
+        arguments.append(dimstring)
         arguments.append(ogrLayer)
         if index:
            arguments.append(indexstring)
@@ -212,13 +212,13 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append(pkstring)
         if len(table) > 0:
             arguments.append('-nln')
-            arguments.append(table) 
+            arguments.append(table)
         if len(ssrs) > 0:
             arguments.append('-s_srs')
-            arguments.append(ssrs)        
+            arguments.append(ssrs)
         if len(tsrs) > 0:
             arguments.append('-t_srs')
-            arguments.append(tsrs) 
+            arguments.append(tsrs)
         if len(spat) > 0:
             regionCoords = ogrspat.split(',')
             arguments.append('-spat')
@@ -231,7 +231,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         if skipfailures:
            arguments.append('-skipfailures')
         if where:
-           arguments.append(wherestring) 
+           arguments.append(wherestring)
         if len(simplify) > 0:
             arguments.append('-simplify')
             arguments.append(simplify)

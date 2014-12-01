@@ -22,7 +22,7 @@ SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_PYTHON_OUTPUT_DIRECTORY})
 #
 # NOTE: regular project 'make install' is unaffected
 
-# Other target dependenciess will be added, per staged resource
+# Other target dependencies will be added, per staged resource
 ADD_CUSTOM_TARGET(staged-plugins)
 
 # Plugins can also be staged with CMake option at build time
@@ -163,6 +163,25 @@ ENDIF(UNIX AND NOT SIP_VERSION_NUM LESS 265984)
 
 ADD_SIP_PYTHON_MODULE(qgis._gui gui/gui.sip qgis_core qgis_gui)
 
+SET(PY_MODULES core gui analysis networkanalysis)
+
+# server module
+IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
+  INCLUDE_DIRECTORIES(
+    ../src/server
+   ${CMAKE_BINARY_DIR}/src/server
+  )
+
+  SET(PY_MODULES ${PY_MODULES} server)
+
+  FILE(GLOB sip_files_server
+    server/*.sip
+  )
+  SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
+  SET(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
+  ADD_SIP_PYTHON_MODULE(qgis._server server/server.sip qgis_core qgis_server)
+ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
+
 # additional analysis includes
 INCLUDE_DIRECTORIES(
   ../src/analysis/vector
@@ -234,7 +253,7 @@ ENDIF(WITH_CUSTOM_WIDGETS)
 # Plugin utilities files to copy to staging or install
 SET(PY_FILES
   __init__.py
-  utils.py
+  utils.py  
 )
 
 ADD_CUSTOM_TARGET(pyutils ALL)
@@ -251,7 +270,7 @@ FOREACH(pyfile ${PY_FILES})
   PY_COMPILE(pyutils "${QGIS_PYTHON_OUTPUT_DIRECTORY}/${pyfile}")
 ENDFOREACH(pyfile)
 
-FOREACH(module core gui analysis networkanalysis)
+FOREACH(module ${PY_MODULES})
   ADD_CUSTOM_TARGET(py${module} ALL)
   ADD_DEPENDENCIES(py${module} python_module_qgis__${module})
   FILE(GLOB_RECURSE PY_FILES "${module}/*.py")

@@ -4,5 +4,6 @@ usr/lib/python*/*-packages/qgis/core/*
 usr/lib/python*/*-packages/qgis/gui/*
 usr/lib/python*/*-packages/qgis/analysis/*
 usr/lib/python*/*-packages/qgis/networkanalysis/*
+usr/lib/python*/*-packages/qgis/server/*
 #wheezy precise saucy#usr/lib/python*/*-packages/pyspatialite/*.py
 #wheezy precise saucy#usr/lib/python*/*-packages/pyspatialite/*.so
