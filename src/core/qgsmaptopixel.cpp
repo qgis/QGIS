@@ -57,14 +57,6 @@ QTransform QgsMapToPixel::getMatrix() const
   //       center happens first, then scaling, then rotation
   //       and finally translation to output viewport center
 
-  if ( ! rotation ) {
-    // Returning a simplified matrix in hope it'll give expected
-    // results from an existing test, see
-    // https://travis-ci.org/qgis/QGIS/builds/42508945
-    return QTransform::fromScale( 1/mMapUnitsPerPixel, -1/mMapUnitsPerPixel )
-      .translate( -xMin, -yMin - mHeight*mMapUnitsPerPixel );
-  }
-
   return QTransform::fromTranslate( cx, cy )
          .rotate( rotation )
          .scale( 1/mMapUnitsPerPixel, -1/mMapUnitsPerPixel )
@@ -194,6 +186,16 @@ void QgsMapToPixel::transform( QgsPoint* p ) const
 void QgsMapToPixel::transformInPlace( double& x, double& y ) const
 {
   // Map 2 Pixel
+
+  if ( ! mMapRotation ) {
+    // Returning a simplified matrix in hope it'll give expected
+    // results from an existing test, see
+    // https://travis-ci.org/qgis/QGIS/builds/42508945
+    x = ( x - xMin ) / mMapUnitsPerPixel;
+    y = mHeight - ( y - yMin ) / mMapUnitsPerPixel;
+    return;
+  }
+
   QTransform matrix = getMatrix();
   double mx, my;
   matrix.map(x, y, &mx, &my);
