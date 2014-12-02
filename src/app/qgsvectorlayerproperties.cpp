@@ -319,7 +319,7 @@ void QgsVectorLayerProperties::insertExpression()
     selText = selText.mid( 2, selText.size() - 4 );
 
   // display the expression builder
-  QgsExpressionBuilderDialog dlg( layer, selText, this );
+  QgsExpressionBuilderDialog dlg( layer, selText.replace( QChar::ParagraphSeparator, '\n' ), this );
   dlg.setWindowTitle( tr( "Insert expression" ) );
   if ( dlg.exec() == QDialog::Accepted )
   {
