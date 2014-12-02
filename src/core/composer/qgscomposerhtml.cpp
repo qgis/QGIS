@@ -273,6 +273,7 @@ void QgsComposerHtml::renderCachedImage()
   {
     return;
   }
+  mRenderedPage->fill( Qt::transparent );
   QPainter painter;
   painter.begin( mRenderedPage );
   mWebPage->mainFrame()->render( &painter );
