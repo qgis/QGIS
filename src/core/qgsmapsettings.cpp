@@ -129,15 +129,6 @@ void QgsMapSettings::updateDerived()
     return;
   }
 
-  // Handle rotation
-  if ( 0 && mRotation ) {
-    QgsRectangle vp(0,0,myWidth,myHeight);
-    vp.rotate(-mRotation);
-    QgsDebugMsg( QString("preRot:%1x%2 pstRot(%3):%4x%5").arg(myWidth).arg(myHeight).arg(mRotation).arg(vp.width()).arg(vp.height()) );
-    myWidth = vp.width();
-    myHeight = vp.height();
-  }
-
   // calculate the translation and scaling parameters
   double mapUnitsPerPixelY = mExtent.height() / myHeight;
   double mapUnitsPerPixelX = mExtent.width() / myWidth;
@@ -190,6 +181,7 @@ void QgsMapSettings::updateDerived()
   QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ) ).arg( qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
   QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
   QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
+  QgsDebugMsg( QString( "Rotation: %1 degrees" ).arg( mRotation ) );
 
   mValid = true;
 }
@@ -552,6 +544,14 @@ void QgsMapSettings::readXML( QDomNode& theNode )
   QgsRectangle aoi = QgsXmlUtils::readRectangle( extentNode.toElement() );
   setExtent( aoi );
 
+  // set rotation
+  QDomNode rotationNode = theNode.namedItem( "rotation" );
+  QString rotationVal = rotationNode.toElement().text();
+  if ( ! rotationVal.isEmpty() ) {
+    double rot = rotationVal.toDouble();
+    setRotation( rot );
+  }
+
   mDatumTransformStore.readXML( theNode );
 }
 
@@ -564,6 +564,13 @@ void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
 
   // Write current view extents
   theNode.appendChild( QgsXmlUtils::writeRectangle( extent(), theDoc ) );
+
+  // Write current view rotation
+  QDomElement rotNode = theDoc.createElement( "rotation" );
+  rotNode.appendChild(
+      theDoc.createTextNode( qgsDoubleToString( rotation() ) )
+  );
+  theNode.appendChild(rotNode);
 
   // projections enabled
   QDomElement projNode = theDoc.createElement( "projections" );

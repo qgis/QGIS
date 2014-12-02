@@ -1739,6 +1739,7 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
     setCrsTransformEnabled( tmpSettings.hasCrsTransformEnabled() );
     setDestinationCrs( tmpSettings.destinationCrs() );
     setExtent( tmpSettings.extent() );
+    setRotation( tmpSettings.rotation() );
     mSettings.datumTransformStore() = tmpSettings.datumTransformStore();
 
     clearExtentHistory(); // clear the extent history on project load
