@@ -31,6 +31,7 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   }
   setMarginVisible( false );
   setFoldingVisible( true );
+  setAutoCompletionCaseSensitivity( false );
   setSciLexerSQL();
 }
 
