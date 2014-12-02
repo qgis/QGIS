@@ -21,6 +21,7 @@
 #include <QRectF>
 #include <QString>
 #include <QTextStream>
+#include <QTransform>
 #include <QRegExp>
 #include <qnumeric.h>
 
@@ -120,6 +121,30 @@ void QgsRectangle::scale( double scaleFactor, double centerX, double centerY )
   xmax = centerX + newWidth / 2.0;
   ymin = centerY - newHeight / 2.0;
   ymax = centerY + newHeight / 2.0;
+}
+
+void QgsRectangle::rotate( double degrees )
+{
+  rotate( degrees, center().x(), center().y() );
+}
+
+void QgsRectangle::rotate( double degrees, double centerX, double centerY )
+{
+  QTransform rot;
+  rot.translate(-centerX, -centerY);
+  rot.rotate(degrees);
+  rot.translate(centerX, centerY);
+
+  double x1,y1,x2,y2,x3,y3,x4,y4;
+  rot.map(xmin, ymin, &x1, &y1);
+  rot.map(xmin, ymax, &x2, &y2);
+  rot.map(xmax, ymin, &x3, &y3);
+  rot.map(xmax, ymax, &x4, &y4);
+
+  xmin = std::min(x1, std::min(x2, std::min(x3, x4)));
+  xmax = std::max(x1, std::max(x2, std::max(x3, x4)));
+  ymin = std::min(y1, std::min(y2, std::min(y3, y4)));
+  ymax = std::max(y1, std::max(y2, std::max(y3, y4)));
 }
 
 QgsRectangle QgsRectangle::buffer( double width )

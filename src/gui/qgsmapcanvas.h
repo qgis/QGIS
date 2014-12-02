@@ -201,6 +201,21 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Set the extent of the map canvas
     void setExtent( const QgsRectangle &r );
 
+    //! Get the current map canvas rotation in clockwise degrees
+    double rotation() const;
+
+    //! Set the rotation of the map canvas in clockwise degrees
+    //! @note added in 2.8
+    void setRotation( double degrees );
+
+    //! Set the center of the map canvas, in geographical coordinates
+    //! @note added in 2.8
+    void setCenter( const QgsPoint& center );
+
+    //! Get map center, in geographical coordinates
+    //! @note added in 2.8
+    QgsPoint center() const;
+
     //! Zoom to the full extent of all layers
     void zoomToFullExtent();
 
@@ -429,6 +444,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Emitted when the extents of the map change
     void extentsChanged();
 
+    //! Emitted when the rotation of the map changes
+    //! @note added in 2.8
+    void rotationChanged( double );
+
     /** Emitted when the canvas has rendered.
 
      Passes a pointer to the painter on which the map was drawn. This is
@@ -647,6 +666,11 @@ class QgsMapCanvasRendererSync : public QObject
 
     void onMapUnitsC2R();
     void onMapUnitsR2C();
+
+    //! @note added in 2.8
+    void onMapRotationC2R();
+    //! @note added in 2.8
+    void onMapRotationR2C();
 
     void onCrsTransformC2R();
     void onCrsTransformR2C();

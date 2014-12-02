@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QBitmap>
 #include <QCheckBox>
+#include <QSpinBox>
 #include <QClipboard>
 #include <QColor>
 #include <QCursor>
@@ -1728,6 +1729,37 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
+  // add a widget to show/set current rotation
+  mRotationLabel = new QLabel( QString(), statusBar() );
+  mRotationLabel->setObjectName( "mRotationLabel" );
+  mRotationLabel->setFont( myFont );
+  mRotationLabel->setMinimumWidth( 10 );
+  mRotationLabel->setMaximumHeight( 20 );
+  mRotationLabel->setMargin( 3 );
+  mRotationLabel->setAlignment( Qt::AlignCenter );
+  mRotationLabel->setFrameStyle( QFrame::NoFrame );
+  mRotationLabel->setText( tr( "Rotation:" ) );
+  mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationLabel, 0 );
+
+  mRotationEdit = new QSpinBox( statusBar() );
+  mRotationEdit->setObjectName( "mRotationEdit" );
+  mRotationEdit->setMaximumWidth( 100 );
+  mRotationEdit->setMaximumHeight( 20 );
+  mRotationEdit->setRange(-180, 180);
+  mRotationEdit->setWrapping(true);
+  mRotationEdit->setSingleStep(5.0);
+  mRotationEdit->setFont( myFont );
+  mRotationEdit->setWhatsThis( tr( "Shows the current map clockwise rotation "
+                                 "in degrees. It also allows editing to set "
+                                 "the rotation") );
+  mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
+  statusBar()->addPermanentWidget( mRotationEdit, 0 );
+  connect( mRotationEdit, SIGNAL( valueChanged(int) ), this, SLOT( userRotation() ) );
+
+  showRotation();
+
+
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox( tr( "Render" ), statusBar() );
   mRenderSuppressionCBox->setObjectName( "mRenderSuppressionCBox" );
@@ -1970,6 +2002,8 @@ void QgisApp::setupConnections()
            this, SLOT( showExtents() ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
            this, SLOT( showScale( double ) ) );
+  connect( mMapCanvas, SIGNAL( rotationChanged( double ) ),
+           this, SLOT( showRotation() ) );
   connect( mMapCanvas, SIGNAL( scaleChanged( double ) ),
            this, SLOT( updateMouseCoordinatePrecision() ) );
   connect( mMapCanvas, SIGNAL( mapToolSet( QgsMapTool *, QgsMapTool * ) ),
@@ -6838,14 +6872,14 @@ void QgisApp::userCenter()
   if ( !yOk )
     return;
 
-  QgsRectangle r = mMapCanvas->extent();
+  mMapCanvas->setCenter( QgsPoint( x, y ) );
+  mMapCanvas->refresh();
+}
 
-  mMapCanvas->setExtent(
-    QgsRectangle(
-      x - r.width() / 2.0, y - r.height() / 2.0,
-      x + r.width() / 2.0, y + r.height() / 2.0
-    )
-  );
+void QgisApp::userRotation()
+{
+  double degrees = mRotationEdit->value();
+  mMapCanvas->setRotation(degrees);
   mMapCanvas->refresh();
 }
 
@@ -8732,6 +8766,13 @@ void QgisApp::showExtents()
     mCoordsEdit->setMinimumWidth( mCoordsEdit->width() );
   }
 } // QgisApp::showExtents
+
+void QgisApp::showRotation()
+{
+  // update the statusbar with the current rotation.
+  double myrotation = mMapCanvas->rotation();
+  mRotationEdit->setValue( myrotation ); 
+} // QgisApp::showRotation
 
 
 void QgisApp::updateMouseCoordinatePrecision()

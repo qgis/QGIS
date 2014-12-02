@@ -30,6 +30,7 @@ class QProgressBar;
 class QPushButton;
 class QRect;
 class QSettings;
+class QSpinBox;
 class QSplashScreen;
 class QStringList;
 class QToolButton;
@@ -687,6 +688,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void userScale();
     //! Slot to handle user center input;
     void userCenter();
+    //! Slot to handle user rotation input;
+    //! @note added in 2.8
+    void userRotation();
     //! Remove a layer from the map and legend
     void removeLayer();
     /** Duplicate map layer(s) in legend */
@@ -1019,6 +1023,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showProgress( int theProgress, int theTotalSteps );
     void extentsViewToggled( bool theFlag );
     void showExtents();
+    void showRotation();
     void showStatusMessage( QString theMessage );
     void displayMapToolMessage( QString message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
     void removeMapToolMessage();
@@ -1428,6 +1433,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QLineEdit * mCoordsEdit;
     //! The validator for the mCoordsEdit
     QValidator * mCoordsEditValidator;
+    //! Widget that will live on the statusbar to display "Rotation"
+    QLabel * mRotationLabel;
+    //! Widget that will live in the statusbar to display and edit rotation
+    QSpinBox * mRotationEdit;
+    //! The validator for the mCoordsEdit
+    QValidator * mRotationEditValidator;
     //! Widget that will live in the statusbar to show progress of operations
     QProgressBar * mProgressBar;
     //! Widget used to suppress rendering

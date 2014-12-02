@@ -99,6 +99,9 @@ QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMap
   connect( mCanvas, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsC2R() ) );
   connect( mRenderer, SIGNAL( mapUnitsChanged() ), this, SLOT( onMapUnitsR2C() ) );
 
+  connect( mCanvas, SIGNAL( rotationChanged( double ) ), this, SLOT( onMapRotationC2R() ) );
+  connect( mRenderer, SIGNAL( rotationChanged( double ) ), this, SLOT( onMapRotationR2C() ) );
+
   connect( mCanvas, SIGNAL( hasCrsTransformEnabledChanged( bool ) ), this, SLOT( onCrsTransformC2R() ) );
   connect( mRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( onCrsTransformR2C() ) );
 
@@ -140,6 +143,16 @@ void QgsMapCanvasRendererSync::onMapUnitsC2R()
 void QgsMapCanvasRendererSync::onMapUnitsR2C()
 {
   mCanvas->setMapUnits( mRenderer->mapUnits() );
+}
+
+void QgsMapCanvasRendererSync::onMapRotationR2C()
+{
+  mCanvas->setRotation( mRenderer->rotation() );
+}
+
+void QgsMapCanvasRendererSync::onMapRotationC2R()
+{
+  mRenderer->setRotation( mCanvas->rotation() );
 }
 
 void QgsMapCanvasRendererSync::onCrsTransformC2R()
@@ -712,7 +725,8 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    mMap->setContent( img, mSettings.visibleExtent() );
+    QgsRectangle rect = mSettings.visibleExtent();
+    mMap->setContent( img, rect );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -818,10 +832,8 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
 
   if ( r.isEmpty() )
   {
-    QgsDebugMsg( "Empty extent - keeping old extent with new center!" );
-    QgsRectangle e( QgsPoint( r.center().x() - current.width() / 2.0, r.center().y() - current.height() / 2.0 ),
-                    QgsPoint( r.center().x() + current.width() / 2.0, r.center().y() + current.height() / 2.0 ) );
-    mSettings.setExtent( e );
+    QgsDebugMsg( "Empty extent - keeping old scale with new center!" );
+    setCenter( r.center() );
   }
   else
   {
@@ -856,6 +868,47 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   updateCanvasItemPositions();
 
 } // setExtent
+
+void QgsMapCanvas::setCenter( const QgsPoint& center )
+{
+  QgsRectangle r = mapSettings().extent();
+  double x = center.x();
+  double y = center.y();
+  setExtent(
+    QgsRectangle(
+      x - r.width() / 2.0, y - r.height() / 2.0,
+      x + r.width() / 2.0, y + r.height() / 2.0
+    )
+  );
+} // setCenter
+
+QgsPoint QgsMapCanvas::center() const
+{
+  QgsRectangle r = mapSettings().extent();
+  return r.center();
+}
+
+
+double QgsMapCanvas::rotation() const
+{
+  return mapSettings().rotation();
+} // rotation
+
+void QgsMapCanvas::setRotation( double degrees )
+{
+  double current = rotation();
+
+  if ( degrees == current )
+    return;
+
+  mSettings.setRotation( degrees );
+  emit rotationChanged( degrees );
+  emit extentsChanged(); // visible extent changes with rotation
+
+  // notify canvas items of change (needed?)
+  updateCanvasItemPositions();
+
+} // setRotation
 
 
 void QgsMapCanvas::updateScale()
@@ -1309,16 +1362,12 @@ void QgsMapCanvas::wheelEvent( QWheelEvent *e )
       // zoom map to mouse cursor
       double scaleFactor = e->delta() > 0 ? 1 / mWheelZoomFactor : mWheelZoomFactor;
 
-      QgsPoint oldCenter( mapSettings().visibleExtent().center() );
+      QgsPoint oldCenter = center();
       QgsPoint mousePos( getCoordinateTransform()->toMapPoint( e->x(), e->y() ) );
       QgsPoint newCenter( mousePos.x() + (( oldCenter.x() - mousePos.x() ) * scaleFactor ),
                           mousePos.y() + (( oldCenter.y() - mousePos.y() ) * scaleFactor ) );
 
-      // same as zoomWithCenter (no coordinate transformations are needed)
-      QgsRectangle extent = mapSettings().visibleExtent();
-      extent.scale( scaleFactor, &newCenter );
-      setExtent( extent );
-      refresh();
+      zoomByFactor( scaleFactor, &newCenter );
       break;
     }
 
@@ -1600,37 +1649,12 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );
   QgsPoint end = getCoordinateTransform()->toMapCoordinates( releasePoint );
 
-  double dx = qAbs( end.x() - start.x() );
-  double dy = qAbs( end.y() - start.y() );
-
-  // modify the extent
-  QgsRectangle r = mapSettings().visibleExtent();
-
-  if ( end.x() < start.x() )
-  {
-    r.setXMinimum( r.xMinimum() + dx );
-    r.setXMaximum( r.xMaximum() + dx );
-  }
-  else
-  {
-    r.setXMinimum( r.xMinimum() - dx );
-    r.setXMaximum( r.xMaximum() - dx );
-  }
-
-  if ( end.y() < start.y() )
-  {
-    r.setYMaximum( r.yMaximum() + dy );
-    r.setYMinimum( r.yMinimum() + dy );
-
-  }
-  else
-  {
-    r.setYMaximum( r.yMaximum() - dy );
-    r.setYMinimum( r.yMinimum() - dy );
-
-  }
-
-  setExtent( r );
+  // modify the center
+  double dx = end.x() - start.x();
+  double dy = end.y() - start.y();
+  QgsPoint c = center();
+  c.set( c.x() - dx, c.y() - dy );
+  setCenter( c );
 
   refresh();
 }
@@ -1815,7 +1839,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsMapLayer* ml, const QString& 
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPoint* center )
 {
-  QgsRectangle r = mapSettings().visibleExtent();
+  QgsRectangle r = mapSettings().extent();
   r.scale( scaleFactor, center );
   setExtent( r );
   refresh();

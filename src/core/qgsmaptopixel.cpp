@@ -19,6 +19,7 @@
 #include <QPoint>
 #include <QTextStream>
 #include <QVector>
+#include <QTransform>
 
 #include "qgslogger.h"
 
@@ -27,9 +28,10 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
                               double ymin,
                               double xmin )
     : mMapUnitsPerPixel( mapUnitsPerPixel )
-    , yMax( ymax )
+    , mHeight( ymax )
     , yMin( ymin )
     , xMin( xmin )
+    , mMapRotation( 0 )
 {
 }
 
@@ -37,11 +39,43 @@ QgsMapToPixel::~QgsMapToPixel()
 {
 }
 
+QTransform QgsMapToPixel::getMatrix() const
+{
+  double cy = mHeight/2.0;
+  double mWidth = ((xCenter-xMin)*2)/mMapUnitsPerPixel;
+  double cx = mWidth/2.0;
+  double rotation = mapRotation();
+
+#if 0 // debugging
+  QgsDebugMsg(QString("XXX %7 -- xCent:%1 yCent:%2 mWidth:%3 mHeight:%4 uPP:%5 rot:%6")
+    .arg(xCenter).arg(yCenter).arg(mWidth).arg(mHeight)
+    .arg(mMapUnitsPerPixel).arg(rotation).arg((quintptr)this,QT_POINTER_SIZE *2, 15, QChar('0')));
+#endif
+
+  // NOTE: operations are done in the reverse order in which
+  //       they are configured, so translation to geographical
+  //       center happens first, then scaling, then rotation
+  //       and finally translation to output viewport center
+
+  return QTransform::fromTranslate( cx, cy )
+         .rotate( rotation )
+         .scale( 1/mMapUnitsPerPixel, -1/mMapUnitsPerPixel )
+         .translate ( -xCenter, -yCenter )
+         ;
+}
+
 QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
 {
-  double mx = x * mMapUnitsPerPixel + xMin;
-  double my = -1 * (( y - yMax ) * mMapUnitsPerPixel - yMin );
-  return QgsPoint( mx, my );
+  bool invertible;
+  QTransform matrix = getMatrix().inverted(&invertible);
+  assert(invertible);
+  double mx, my;
+  matrix.map(x, y, &mx, &my);
+  QgsPoint ret( mx, my );
+
+  //QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
+
+  return ret;
 }
 
 QgsPoint QgsMapToPixel::toMapCoordinates( QPoint p ) const
@@ -70,9 +104,24 @@ double QgsMapToPixel::mapUnitsPerPixel() const
   return mMapUnitsPerPixel;
 }
 
-void QgsMapToPixel::setYMaximum( double ymax )
+void QgsMapToPixel::setMapRotation( double degrees, double cx, double cy )
 {
-  yMax = ymax;
+  mMapRotation = degrees;
+  xCenter = cx;
+  yCenter = cy;
+  assert(xCenter >= xMin);
+  assert(yCenter >= yMin);
+  //assert(yCenter <= yMin + mHeight*mMapUnitsPerPixel;
+}
+
+double QgsMapToPixel::mapRotation() const
+{
+  return mMapRotation;
+}
+
+void QgsMapToPixel::setViewportHeight( double height )
+{
+  mHeight = height;
 }
 
 void QgsMapToPixel::setYMinimum( double ymin )
@@ -90,7 +139,7 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel, double xmin, double 
   mMapUnitsPerPixel = mapUnitsPerPixel;
   xMin = xmin;
   yMin = ymin;
-  yMax = ymax;
+  mHeight = ymax;
 
 }
 
@@ -98,7 +147,9 @@ QString QgsMapToPixel::showParameters()
 {
   QString rep;
   QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel
-  << " X minimum: " << xMin << " Y minimum: " << yMin << " Y maximum: " << yMax;
+  << " X minimum: " << xMin << " Y minimum: " << yMin
+  << " Height: " << mHeight << " Rotation: " << mMapRotation
+  << " X center: " << xCenter << " Y center: " << yCenter;
   return rep;
 
 }
@@ -134,21 +185,30 @@ void QgsMapToPixel::transform( QgsPoint* p ) const
 
 void QgsMapToPixel::transformInPlace( double& x, double& y ) const
 {
-  x = ( x - xMin ) / mMapUnitsPerPixel;
-  y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
+  // Map 2 Pixel
+
+  QTransform matrix = getMatrix();
+  double mx, my;
+  matrix.map(x, y, &mx, &my);
+  //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
+  x = mx; y = my;
 }
 
 #ifdef QT_ARCH_ARM
 void QgsMapToPixel::transformInPlace( qreal& x, qreal& y ) const
 {
-  x = ( x - xMin ) / mMapUnitsPerPixel;
-  y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
+  double xd = y, yd = y;
+  transformInPlace(xd, yd);
+  x = xd; y = yd;
+  //x = ( x - xMin ) / mMapUnitsPerPixel;
+  //y = mHeight - ( y - yMin ) / mMapUnitsPerPixel;
 }
 #endif
 
 void QgsMapToPixel::transformInPlace( QVector<double>& x,
                                       QVector<double>& y ) const
 {
+  assert(0);
   assert( x.size() == y.size() );
   for ( int i = 0; i < x.size(); ++i )
     transformInPlace( x[i], y[i] );
@@ -157,8 +217,11 @@ void QgsMapToPixel::transformInPlace( QVector<double>& x,
 #ifdef ANDROID
 void QgsMapToPixel::transformInPlace( float& x, float& y ) const
 {
-  x = ( x - xMin ) / mMapUnitsPerPixel;
-  y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
+  double xd = y, yd = y;
+  transformInPlace(xd, yd);
+  x = xd; y = yd;
+  //x = ( x - xMin ) / mMapUnitsPerPixel;
+  //y = mHeight - ( y - yMin ) / mMapUnitsPerPixel;
 }
 
 void QgsMapToPixel::transformInPlace( QVector<float>& x,
