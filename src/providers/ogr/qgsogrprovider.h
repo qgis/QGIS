@@ -248,7 +248,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual bool doesStrictFeatureTypeCheck() const { return false;}
 
     /** return OGR geometry type */
-    static int getOgrGeomType( OGRLayerH ogrLayer );
+    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
 
     /** Get single flatten geometry type */
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
@@ -325,7 +325,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool valid;
     //! Flag to indicate that spatial intersect should be used in selecting features
     bool mUseIntersect;
-    int geomType;
+    OGRwkbGeometryType geomType;
     long featuresCounted;
 
     //! Data has been modified - REPACK before creating a spatialindex

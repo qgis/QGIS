@@ -140,7 +140,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  int ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
+  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
   switch ( ogrType )
   {
     case wkbUnknown:

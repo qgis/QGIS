@@ -695,10 +695,10 @@ void QgsOgrProvider::setEncoding( const QString& e )
 }
 
 // This is reused by dataItem
-int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
+OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
 {
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
-  int geomType = wkbUnknown;
+  OGRwkbGeometryType geomType = wkbUnknown;
   if ( fdef )
   {
     geomType = OGR_FD_GetGeomType( fdef );
@@ -935,7 +935,7 @@ size_t QgsOgrProvider::layerCount() const
  */
 QGis::WkbType QgsOgrProvider::geometryType() const
 {
-  return ( QGis::WkbType ) geomType;
+  return static_cast<QGis::WkbType>( geomType );
 }
 
 /**
