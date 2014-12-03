@@ -169,7 +169,7 @@ class PGDatabase(Database):
 		QApplication.restoreOverrideCursor()
 		try:
 			if not isinstance(item, Table) or item.isView:
-				parent.infoBar().pushMessage(self.tr("Select a table for vacuum analyze."), QgsMessageBar.INFO, parent.iface.messageTimeout())
+				parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), QgsMessageBar.INFO, parent.iface.messageTimeout())
 				return
 		finally:
 			QApplication.setOverrideCursor(Qt.WaitCursor)
