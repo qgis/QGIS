@@ -27,7 +27,7 @@ class QgsCompositionChecker(QgsMultiRenderChecker):
         self.mTestName = mTestName
         self.mDotsPerMeter = 96 / 25.4 * 1000
         self.mSize = QSize( 1122, 794 )
-        self.setColorTolerance( 1 )
+        self.setColorTolerance( 5 )
 
     def testComposition(self, page=0, pixelDiff=0 ):
         if ( self.mComposition == None):
