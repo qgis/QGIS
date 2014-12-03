@@ -89,13 +89,13 @@ void QgsRasterDrawer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsM
       }
     }
 
-    drawImage( p, viewPort, img, topLeftCol, topLeftRow );
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, theQgsMapToPixel );
 
     delete block;
   }
 }
 
-void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow ) const
+void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow, const QgsMapToPixel* theQgsMapToPixel ) const
 {
   if ( !p || !viewPort )
   {
@@ -112,6 +112,9 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
 
+  if ( theQgsMapToPixel ) {
+    p->rotate( theQgsMapToPixel->mapRotation() );
+  }
   p->drawImage( tlPoint, img );
   p->restore();
 }

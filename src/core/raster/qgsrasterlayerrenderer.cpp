@@ -104,8 +104,35 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
+
+#if 1
+  // TODO: does this sound like a rect = QgsMapToPixel.transform( rect ) ?
+  double xmin = myRasterExtent.xMinimum();
+  double xmax = myRasterExtent.xMaximum();
+  double ymin = myRasterExtent.yMinimum();
+  double ymax = myRasterExtent.yMaximum();
+  QgsPoint p1 = theQgsMapToPixel.transform( xmin, ymin );
+  QgsPoint p2 = theQgsMapToPixel.transform( xmin, ymax );
+  QgsPoint p3 = theQgsMapToPixel.transform( xmax, ymin );
+  QgsPoint p4 = theQgsMapToPixel.transform( xmax, ymax );
+  double dxmin = std::min(p1.x(), std::min(p2.x(), std::min(p3.x(), p4.x())));
+  double dymin = std::min(p1.y(), std::min(p2.y(), std::min(p3.y(), p4.y())));
+  double dxmax = std::max(p1.x(), std::max(p2.x(), std::max(p3.x(), p4.x())));
+  double dymax = std::max(p1.y(), std::max(p2.y(), std::max(p3.y(), p4.y())));
+
+  mRasterViewPort->mTopLeftPoint = QgsPoint(dxmin,dymin);
+  mRasterViewPort->mBottomRightPoint = QgsPoint(dxmax,dymax);
+#else
   mRasterViewPort->mTopLeftPoint = theQgsMapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
   mRasterViewPort->mBottomRightPoint = theQgsMapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
+#endif
+
+  QgsDebugMsg( QString("XXX topLeft:%1,%2, bottomRight:%3,%4")
+    .arg(mRasterViewPort->mTopLeftPoint.x())
+    .arg(mRasterViewPort->mTopLeftPoint.y())
+    .arg(mRasterViewPort->mBottomRightPoint.x())
+    .arg(mRasterViewPort->mBottomRightPoint.y())
+  );
 
   // align to output device grid, i.e. floor/ceil to integers
   // TODO: this should only be done if paint device is raster - screen, image
