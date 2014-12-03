@@ -18,7 +18,7 @@ before_install:
 install:
   - mkdir build
   - cd build
-  - cmake -DCMAKE_BUILD_TYPE=Debug -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF -DSUPPRESS_QT_WARNINGS=ON ..
+  - cmake -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF -DSUPPRESS_QT_WARNINGS=ON ..
 
 script: xvfb-run ctest -V -E 'PyQgsPalLabelingCanvas|PyQgsPalLabelingServer|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
 
