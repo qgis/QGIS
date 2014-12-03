@@ -20,7 +20,9 @@
 #include <QToolButton>
 
 /**
- * @brief The QgsSpinBox is a spin box with a clear button that will set the value to the minimum. This minum can then be handled by a special value text.
+ * @brief The QgsSpinBox is a spin box with a clear button that will set the value to the defined clear value.
+ * The clear value can be either the minimum or the maiximum value of the spin box or a custom value.
+ * This value can then be handled by a special value text.
  */
 class GUI_EXPORT QgsSpinBox : public QSpinBox
 {
@@ -28,15 +30,29 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
 
   public:
+    enum ClearValue
+    {
+      MinimumValue,
+      MaximumValue,
+      CustomValue
+    };
+
     explicit QgsSpinBox( QWidget *parent = 0 );
 
     //! determines if the widget will show a clear button
-    //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const {return mShowClearButton;}
 
-    //! Set the current value to the minimum
+    //! Set the current value to the value defined by the clear value.
     virtual void clear();
+
+    /**
+     * @brief setClearValue defines if the clear value should be the minimum or maximum values of the widget or a custom value
+     * @param customValue if type is CustomValue, defines the numerical value used as the clear value
+     */
+    void setClearValue( ClearValue type, int customValue = 0 );
+    //! returns the value used when clear() is called.
+    int clearValue();
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );
@@ -49,6 +65,8 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     int frameWidth() const;
 
     bool mShowClearButton;
+    ClearValue mClearValueType;
+    int mCustomClearValue;
 
     QToolButton* mClearButton;
 };

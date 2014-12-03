@@ -27,6 +27,8 @@
 QgsSpinBox::QgsSpinBox( QWidget *parent )
     : QSpinBox( parent )
     , mShowClearButton( true )
+    , mClearValueType( MinimumValue )
+    , mCustomClearValue( 0 )
 {
   mClearButton = new QToolButton( this );
   mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
@@ -62,7 +64,23 @@ void QgsSpinBox::changed( const int& value )
 
 void QgsSpinBox::clear()
 {
-  setValue( minimum() );
+  setValue( clearValue() );
+}
+
+void QgsSpinBox::setClearValue( QgsSpinBox::ClearValue type, int customValue )
+{
+  mClearValueType = type;
+  mCustomClearValue = customValue;
+}
+
+int QgsSpinBox::clearValue()
+{
+  if ( mClearValueType == MinimumValue )
+    return minimum() ;
+  else if ( mClearValueType == MaximumValue )
+    return maximum();
+  else
+    return mCustomClearValue;
 }
 
 int QgsSpinBox::frameWidth() const

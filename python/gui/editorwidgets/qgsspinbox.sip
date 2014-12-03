@@ -5,6 +5,13 @@ class QgsSpinBox : QSpinBox
 %End
 
   public:
+    enum ClearValue
+    {
+      MinimumValue,
+      MaximumValue,
+      CustomValue
+    };  
+  
     explicit QgsSpinBox( QWidget *parent /TransferThis/ = 0 );
 
     //! determines if the widget will show a clear button
@@ -12,8 +19,16 @@ class QgsSpinBox : QSpinBox
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const;
 
-    //! Set the current value to the minimum
+    //! Set the current value to the value defined by the clear value.
     virtual void clear();
+
+    /**
+     * @brief setClearValue defines if the clear value should be the minimum or maximum values of the widget or a custom value
+     * @param customValue if type is CustomValue, defines the numerical value used as the clear value
+     */
+    void setClearValue( ClearValue type, int customValue = 0 );
+    //! returns the value used when clear() is called.
+    int clearValue();
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );
