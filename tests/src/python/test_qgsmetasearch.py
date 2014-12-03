@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from qgis import util
+from qgis import utils
 
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
