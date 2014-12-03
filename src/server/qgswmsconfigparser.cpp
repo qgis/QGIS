@@ -22,6 +22,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
+#include "qgscomposermapgrid.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposerframe.h"
 #include "qgscomposition.h"
@@ -161,8 +162,8 @@ QgsComposition* QgsWMSConfigParser::createPrintComposition( const QString& compo
     }
 
     //grid space x / y
-    currentMap->setGridIntervalX( parameterMap.value( mapId + ":GRID_INTERVAL_X" ).toDouble() );
-    currentMap->setGridIntervalY( parameterMap.value( mapId + ":GRID_INTERVAL_Y" ).toDouble() );
+    currentMap->grid()->setIntervalX( parameterMap.value( mapId + ":GRID_INTERVAL_X" ).toDouble() );
+    currentMap->grid()->setIntervalY( parameterMap.value( mapId + ":GRID_INTERVAL_Y" ).toDouble() );
   }
   //update legend
   // if it has an auto-update model

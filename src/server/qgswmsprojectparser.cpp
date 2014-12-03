@@ -30,6 +30,7 @@
 #include "qgscomposerlabel.h"
 #include "qgscomposerlegend.h"
 #include "qgscomposermap.h"
+#include "qgscomposerframe.h"
 #include "qgscomposerhtml.h"
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
@@ -435,14 +436,22 @@ QgsComposition* QgsWMSProjectParser::initComposition( const QString& composerTem
     QgsComposerPicture* pic = dynamic_cast< QgsComposerPicture *>( *itemIt );
     if ( pic )
     {
-      pic->setPictureFile( mProjectParser->convertToAbsolutePath(( pic )->pictureFile() ) );
+      pic->setPicturePath( mProjectParser->convertToAbsolutePath(( pic )->picturePath() ) );
       continue;
     }
-    const QgsComposerHtml* html = composition->getComposerHtmlByItem( *itemIt );
-    if ( html )
+
+    // an html item will be a composer frame and if it is we can try to get
+    // its multiframe parent and then try to cast that to a composer html
+    const QgsComposerFrame* frame = dynamic_cast<const QgsComposerFrame *>( *itemIt );
+    if ( frame )
     {
-      htmlList.push_back( html );
-      continue;
+      const QgsComposerMultiFrame * multiFrame = frame->multiFrame();
+      const QgsComposerHtml* composerHtml = dynamic_cast<const QgsComposerHtml *>( multiFrame );
+      if ( composerHtml )
+      {
+        htmlList.push_back( composerHtml );
+        continue;
+      }
     }
   }
 
