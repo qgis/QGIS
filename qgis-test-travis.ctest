@@ -41,5 +41,6 @@ IF(NOT ${TESTRES} EQUAL 0)
   MESSAGE( FATAL_ERROR "Test failed." )
 ENDIF(NOT ${TESTRES} EQUAL 0)
 
-ctest_submit ()
+ctest_submit (RETRY_COUNT 3 RETRY_DELAY 30)
+
 
