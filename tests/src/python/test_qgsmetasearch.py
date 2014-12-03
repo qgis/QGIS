@@ -39,7 +39,7 @@ class TestQgsMetaSearch(TestCase):
         assert myExpectedValue == myActualValue, myMessage
 
         myExpectedValue = 'MetaSearch Catalogue Client'
-        myActualValue = self.plugin.context.metadata.get('general, 'name')
+        myActualValue = self.plugin.context.metadata.get('general', 'name')
         myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myActualValue)
         assert myExpectedValue == myActualValue, myMessage
 
