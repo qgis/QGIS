@@ -378,7 +378,7 @@ class Grass7Algorithm(GeoAlgorithm):
                 filename = out.value
                 # FIXME: check if needed: -c   Also export features without category (not labeled). Otherwise only features with category are exported.
                 command = 'v.out.ogr -s -e input=' + out.name + uniqueSufix
-                command += ' dsn="' + os.path.dirname(out.value) + '"'
+                command += ' output="' + os.path.dirname(out.value) + '"'
                 command += ' format=ESRI_Shapefile'
                 command += ' olayer=' + os.path.basename(out.value)[:-4]
                 typeidx = \
@@ -446,7 +446,7 @@ class Grass7Algorithm(GeoAlgorithm):
         command += ' min_area=' + str(min_area)
         snap = self.getParameterValue(self.GRASS_SNAP_TOLERANCE_PARAMETER)
         command += ' snap=' + str(snap)
-        command += ' dsn="' + os.path.dirname(filename) + '"'
+        command += ' input="' + os.path.dirname(filename) + '"'
         command += ' layer=' + os.path.basename(filename)[:-4]
         command += ' output=' + destFilename
         command += ' --overwrite -o'
