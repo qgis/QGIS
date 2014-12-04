@@ -27,7 +27,7 @@
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
     : QDoubleSpinBox( parent )
     , mShowClearButton( true )
-    , mClearValueType( MinimumValue )
+    , mClearValueMode( MinimumValue )
     , mCustomClearValue( 0.0 )
 {
   mClearButton = new QToolButton( this );
@@ -67,17 +67,39 @@ void QgsDoubleSpinBox::clear()
   setValue( clearValue() );
 }
 
-void QgsDoubleSpinBox::setClearValue( QgsDoubleSpinBox::ClearValue type, double customValue )
+void QgsDoubleSpinBox::setClearValue( double customValue , QString specialValueText )
 {
-  mClearValueType = type;
+  mClearValueMode = CustomValue;
   mCustomClearValue = customValue;
+
+  if ( !specialValueText.isEmpty() )
+  {
+    double v = value();
+    clear();
+    setSpecialValueText( specialValueText );
+    setValue( v );
+  }
+}
+
+void QgsDoubleSpinBox::setClearValueMode(QgsDoubleSpinBox::ClearValueMode mode, QString clearValueText )
+{
+  mClearValueMode = mode;
+  mCustomClearValue = 0;
+
+  if ( !clearValueText.isEmpty() )
+  {
+    double v = value();
+    clear();
+    setSpecialValueText( clearValueText );
+    setValue( v );
+  }
 }
 
 double QgsDoubleSpinBox::clearValue()
 {
-  if ( mClearValueType == MinimumValue )
+  if ( mClearValueMode == MinimumValue )
     return minimum() ;
-  else if ( mClearValueType == MaximumValue )
+  else if ( mClearValueMode == MaximumValue )
     return maximum();
   else
     return mCustomClearValue;

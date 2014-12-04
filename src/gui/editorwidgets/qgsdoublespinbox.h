@@ -30,7 +30,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
 
   public:
-    enum ClearValue
+    enum ClearValueMode
     {
       MinimumValue,
       MaximumValue,
@@ -47,10 +47,17 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     virtual void clear();
 
     /**
-     * @brief setClearValue defines if the clear value should be the minimum or maximum values of the widget or a custom value
-     * @param customValue if type is CustomValue, defines the numerical value used as the clear value
+     * @brief setClearValue defines the clear value as a custom value and will automatically set the clear value mode to CustomValue
+     * @param defines the numerical value used as the clear value
+     * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
-    void setClearValue( ClearValue type, double customValue = 0 );
+    void setClearValue( double customValue, QString clearValueText = QString() );
+    /**
+     * @brief setClearValueMode defines if the clear value should be the minimum or maximum values of the widget or a custom value
+     * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
+     */
+    void setClearValueMode( ClearValueMode mode, QString clearValueText = QString() );
+
     //! returns the value used when clear() is called.
     double clearValue();
 
@@ -65,7 +72,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     int frameWidth() const;
 
     bool mShowClearButton;
-    ClearValue mClearValueType;
+    ClearValueMode mClearValueMode;
     double mCustomClearValue;
 
     QToolButton* mClearButton;
