@@ -103,6 +103,12 @@ class CORE_EXPORT QgsMapToPixel
     //! Return current map units per pixel
     double mapUnitsPerPixel() const;
 
+    //! Return current map width in pixels
+    int mapWidth() const;
+
+    //! Return current map height in pixels
+    int mapHeight() const;
+
     //! Set map rotation in degrees (clockwise)
     //! @param degrees clockwise rotation in degrees
     //! @param cx X ordinate of map center in geographical units

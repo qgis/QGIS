@@ -112,8 +112,44 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
 
+  int w = theQgsMapToPixel->mapWidth();
+  int h = theQgsMapToPixel->mapHeight();
+
   if ( theQgsMapToPixel ) {
+    // both viewPort and image sizes are dependent on scale
+    double cx = w/2.0;
+    double cy = h/2.0;
+
+    QgsDebugMsg( QString("XXX img w:%1 h:%2").arg(img.width()).arg(img.height()) );
+
+    p->translate( cx, cy );
     p->rotate( theQgsMapToPixel->mapRotation() );
+    p->translate( -cx, -cy );
+  }
+
+  if ( w && h && img.width() && img.height() )
+  {
+    double irat = img.width() / img.height(); // input ratio
+    double orat = w / h; // output ratio
+    if ( irat != orat )  {
+      QgsDebugMsg( QString( "map paint DIFFERENT aspect ratio: img %1,%2  item %3,%4" ).arg( img.width() ).arg( img.height() ).arg( w ).arg( h ) );
+#if 0
+      QImage scaledImage;
+      if ( orat > 1 ) scaledImage = img.scaledToWidth(w);
+      else scaledImage = img.scaledToHeight(h);
+      // TODO: clip image ? see src/gui/qgsmapcanvasmap.cpp
+      int tX = (w-scaledImage.width())/2.0;
+      int tY = (h-scaledImage.height())/2.0;
+      int fX = 0;
+      int fY = 0;
+      int fW = w;
+      int fH = h;
+      p->drawImage(tX, tY, scaledImage, fX, fY, fW, fH);
+      p->restore()
+      // p->resetTransform(); // could be needed if the painter is reused
+      return;
+#endif
+    }
   }
   p->drawImage( tlPoint, img );
   p->restore();

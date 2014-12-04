@@ -39,11 +39,20 @@ QgsMapToPixel::~QgsMapToPixel()
 {
 }
 
+int QgsMapToPixel::mapHeight() const
+{
+  return mHeight;
+}
+
+int QgsMapToPixel::mapWidth() const
+{
+  return ((xCenter-xMin)*2)/mMapUnitsPerPixel;
+}
+
 QTransform QgsMapToPixel::getMatrix() const
 {
-  double cy = mHeight/2.0;
-  double mWidth = ((xCenter-xMin)*2)/mMapUnitsPerPixel;
-  double cx = mWidth/2.0;
+  double cy = mapHeight()/2.0;
+  double cx = mapWidth()/2.0;
   double rotation = mapRotation();
 
 #if 0 // debugging
