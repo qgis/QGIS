@@ -437,18 +437,21 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
-  //wms:GetPrint
-  elem = doc.createElement( ( version == "1.1.1" ? "GetPrint" : "qgs:GetPrint" ) /*wms:GetPrint*/ );
-  appendFormats( doc, elem, QStringList() << "svg" << "png" << "pdf" );
-  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
-  requestElement.appendChild( elem );
+  if ( fullProjectInformation ) //remove composer templates from GetCapabilities in the long term
+  {
+    //wms:GetPrint
+    elem = doc.createElement( "GetPrint" /*wms:GetPrint*/ );
+    appendFormats( doc, elem, QStringList() << "svg" << "png" << "pdf" );
+    elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
+    requestElement.appendChild( elem );
+  }
 
   //Exception element is mandatory
   elem = doc.createElement( "Exception" );
   appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
   capabilityElement.appendChild( elem );
 
-  if ( mConfigParser /*&& fullProjectInformation*/ ) //remove composer templates from GetCapabilities in the long term
+  if ( mConfigParser && fullProjectInformation ) //remove composer templates from GetCapabilities in the long term
   {
     //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
     mConfigParser->printCapabilities( capabilityElement, doc );
