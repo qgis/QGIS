@@ -200,6 +200,16 @@ class CORE_EXPORT QgsExpression
                                           const QMap<QString, QVariant> *substitutionMap = 0,
                                           const QgsDistanceArea* distanceArea = 0
                                         );
+
+    /**Attempts to evaluate a text string as an expression to a resultant double
+     * value.
+     * @param text text to evaluate as expression
+     * @param fallbackValue value to return if text can not be evaluated as a double
+     * @returns evaluated double value, or fallback value
+     * @note added in QGIS 2.7
+    */
+    static double evaluateToDouble( const QString& text, const double fallbackValue );
+
     enum UnaryOperator
     {
       uoNot,

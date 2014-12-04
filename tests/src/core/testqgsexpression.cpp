@@ -285,6 +285,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "max(1,3.5,-2.1)" ) << "max(1,3.5,-2.1)" << false << QVariant( 3.5 );
       QTest::newRow( "min(-1.5)" ) << "min(-1.5)" << false << QVariant( -1.5 );
       QTest::newRow( "min(-16.6,3.5,-2.1)" ) << "min(-16.6,3.5,-2.1)" << false << QVariant( -16.6 );
+      QTest::newRow( "min(5,3.5,-2.1)" ) << "min(5,3.5,-2.1)" << false << QVariant( -2.1 );
       QTest::newRow( "clamp(-2,1,5)" ) << "clamp(-2,1,5)" << false << QVariant( 1.0 );
       QTest::newRow( "clamp(-2,-10,5)" ) << "clamp(-2,-10,5)" << false << QVariant( -2.0 );
       QTest::newRow( "clamp(-2,100,5)" ) << "clamp(-2,100,5)" << false << QVariant( 5.0 );
@@ -327,6 +328,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr outside" ) << "substr('HeLLo', -5,2)" << false << QVariant( "" );
       QTest::newRow( "regexp_substr" ) << "regexp_substr('abc123','(\\\\d+)')" << false << QVariant( "123" );
+      QTest::newRow( "regexp_substr no hit" ) << "regexp_substr('abcdef','(\\\\d+)')" << false << QVariant( "" );
       QTest::newRow( "regexp_substr invalid" ) << "regexp_substr('abc123','([[[')" << true << QVariant();
       QTest::newRow( "strpos" ) << "strpos('Hello World','World')" << false << QVariant( 6 );
       QTest::newRow( "strpos outside" ) << "strpos('Hello World','blah')" << false << QVariant( -1 );
@@ -345,6 +347,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis',-3,' ')" << false << QVariant( "university\nof qgis" );
       QTest::newRow( "wordwrap" ) << "wordwrap('university of qgis\nsupports many multiline',-5,' ')" << false << QVariant( "university\nof qgis\nsupports\nmany multiline" );
       QTest::newRow( "format" ) << "format('%1 %2 %3 %1', 'One', 'Two', 'Three')" << false << QVariant( "One Two Three One" );
+      QTest::newRow( "concat" ) << "concat('a', 'b', 'c', 'd')" << false << QVariant( "abcd" );
+      QTest::newRow( "concat single" ) << "concat('a')" << false << QVariant( "a" );
 
       // implicit conversions
       QTest::newRow( "implicit int->text" ) << "length(123)" << false << QVariant( 3 );
@@ -976,6 +980,15 @@ class TestQgsExpression: public QObject
       for ( int i = 0; i < 10; ++i )
         lst << i;
       QtConcurrent::blockingMap( lst, _parseAndEvalExpr );
+    }
+
+    void evaluateToDouble()
+    {
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5" ), 0.0 ), 5.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5+6" ), 0.0 ), 11.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "5*" ), 7.0 ), 7.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0 ), 9.0 );
+      QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0 ), 9.0 );
     }
 };
 

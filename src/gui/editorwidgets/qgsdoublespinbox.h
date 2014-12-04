@@ -28,6 +28,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 {
     Q_OBJECT
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
+    Q_PROPERTY( bool expressionsEnabled READ expressionsEnabled WRITE setExpressionsEnabled )
 
   public:
     enum ClearValueMode
@@ -43,23 +44,40 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const {return mShowClearButton;}
 
+    /**Sets if the widget will allow entry of simple expressions, which are
+     * evaluated and then discarded.
+     * @param enabled set to true to allow expression entry
+     * @note added in QGIS 2.7
+     */
+    void setExpressionsEnabled( const bool enabled );
+    /**Returns whether the widget will allow entry of simple expressions, which are
+     * evaluated and then discarded.
+     * @returns true if spin box allows expression entry
+     * @note added in QGIS 2.7
+     */
+    bool expressionsEnabled() const {return mExpressionsEnabled;}
+
     //! Set the current value to the value defined by the clear value.
     virtual void clear();
 
     /**
      * @brief setClearValue defines the clear value as a custom value and will automatically set the clear value mode to CustomValue
-     * @param defines the numerical value used as the clear value
+     * @param customValue defines the numerical value used as the clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
     void setClearValue( double customValue, QString clearValueText = QString() );
     /**
      * @brief setClearValueMode defines if the clear value should be the minimum or maximum values of the widget or a custom value
+     * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
     void setClearValueMode( ClearValueMode mode, QString clearValueText = QString() );
 
     //! returns the value used when clear() is called.
     double clearValue() const;
+
+    virtual double valueFromText( const QString & text ) const;
+    virtual QValidator::State validate( QString & input, int & pos ) const;
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );
@@ -76,7 +94,10 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     ClearValueMode mClearValueMode;
     double mCustomClearValue;
 
+    bool mExpressionsEnabled;
+
     QToolButton* mClearButton;
+    QString stripped( const QString &originalText ) const;
 };
 
 #endif // QGSDOUBLESPPINBOX_H

@@ -2074,6 +2074,27 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsFe
   return expr_action;
 }
 
+double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
+{
+  bool ok;
+  //first test if text is directly convertible to double
+  double convertedValue = text.toDouble( &ok );
+  if ( ok )
+  {
+    return convertedValue;
+  }
+
+  //otherwise try to evalute as expression
+  QgsExpression expr( text );
+  QVariant result = expr.evaluate();
+  convertedValue = result.toDouble( &ok );
+  if ( expr.hasEvalError() || !ok )
+  {
+    return fallbackValue;
+  }
+  return convertedValue;
+}
+
 
 ///////////////////////////////////////////////
 // nodes

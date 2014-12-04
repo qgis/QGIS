@@ -20,7 +20,7 @@
 #include <QToolButton>
 
 #include "qgsdoublespinbox.h"
-
+#include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
@@ -29,6 +29,7 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
     , mShowClearButton( true )
     , mClearValueMode( MinimumValue )
     , mCustomClearValue( 0.0 )
+    , mExpressionsEnabled( true )
 {
   mClearButton = new QToolButton( this );
   mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
@@ -49,6 +50,11 @@ void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;
   mClearButton->setVisible( shouldShowClearForValue( value() ) );
+}
+
+void QgsDoubleSpinBox::setExpressionsEnabled( const bool enabled )
+{
+  mExpressionsEnabled = enabled;
 }
 
 void QgsDoubleSpinBox::changeEvent( QEvent *event )
@@ -103,6 +109,63 @@ double QgsDoubleSpinBox::clearValue() const
     return maximum();
   else
     return mCustomClearValue;
+}
+
+QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
+{
+  //adapted from QAbstractSpinBoxPrivate::stripped
+  //trims whitespace, prefix and suffix from spin box text
+  QString text = originalText;
+  if ( specialValueText().size() == 0 || text != specialValueText() )
+  {
+    int from = 0;
+    int size = text.size();
+    bool changed = false;
+    if ( prefix().size() && text.startsWith( prefix() ) )
+    {
+      from += prefix().size();
+      size -= from;
+      changed = true;
+    }
+    if ( suffix().size() && text.endsWith( suffix() ) )
+    {
+      size -= suffix().size();
+      changed = true;
+    }
+    if ( changed )
+      text = text.mid( from, size );
+  }
+
+  text = text.trimmed();
+
+  return text;
+}
+
+double QgsDoubleSpinBox::valueFromText( const QString &text ) const
+{
+  if ( !mExpressionsEnabled )
+  {
+    return QDoubleSpinBox::valueFromText( text );
+  }
+
+  QString trimmedText = stripped( text );
+  if ( trimmedText.isEmpty() )
+  {
+    return clearValue();
+  }
+
+  return QgsExpression::evaluateToDouble( trimmedText, value() );
+}
+
+QValidator::State QgsDoubleSpinBox::validate( QString &input, int &pos ) const
+{
+  if ( !mExpressionsEnabled )
+  {
+    QValidator::State r = QDoubleSpinBox::validate( input, pos );
+    return r;
+  }
+
+  return QValidator::Acceptable;
 }
 
 int QgsDoubleSpinBox::frameWidth() const

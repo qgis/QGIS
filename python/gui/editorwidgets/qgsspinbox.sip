@@ -23,13 +23,14 @@ class QgsSpinBox : QSpinBox
     virtual void clear();
 
     /**
-     * @brief setClearValue defines the clear value as a custom value and will automatically set the clear value mode to CustomValue
-     * @param defines the numerical value used as the clear value
+     * @brief setClearValue defines the clear value for the widget and will automatically set the clear value mode to CustomValue
+     * @param customValue defines the numerical value used as the clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
     void setClearValue( int customValue, QString clearValueText = QString() );
     /**
      * @brief setClearValueMode defines if the clear value should be the minimum or maximum values of the widget or a custom value
+     * @param mode mode to user for clear value
      * @param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
      */
     void setClearValueMode( ClearValueMode mode, QString clearValueText = QString() );
