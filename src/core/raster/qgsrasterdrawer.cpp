@@ -152,6 +152,25 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
     }
   }
   p->drawImage( tlPoint, img );
+
+#if 0
+  // For debugging:
+  QRectF br = QRectF(tlPoint, img.size());
+  QPointF c = br.center();
+  double rad = std::max(br.width(),br.height())/10;
+  p->drawRoundedRect( br, rad, rad );
+  p->drawLine( QLineF(br.x(), br.y(), br.x()+br.width(), br.y()+br.height()) );
+  p->drawLine( QLineF(br.x()+br.width(), br.y(), br.x(), br.y()+br.height()) );
+
+  double nw = br.width()*0.5; double nh = br.height()*0.5;
+  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  p->drawRoundedRect( br, rad, rad );
+
+  nw = br.width()*0.5; nh = br.height()*0.5;
+  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  p->drawRoundedRect( br, rad, rad );
+#endif
+
   p->restore();
 }
 
