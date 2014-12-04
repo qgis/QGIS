@@ -35,7 +35,7 @@ class QgsDoubleSpinBox : QDoubleSpinBox
     void setClearValueMode( ClearValueMode mode, QString clearValueText = QString() );
 
     //! returns the value used when clear() is called.
-    double clearValue();
+    double clearValue() const;
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );

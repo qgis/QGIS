@@ -59,7 +59,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     void setClearValueMode( ClearValueMode mode, QString clearValueText = QString() );
 
     //! returns the value used when clear() is called.
-    int clearValue();
+    int clearValue() const;
 
   protected:
     virtual void resizeEvent( QResizeEvent* event );
@@ -70,6 +70,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
   private:
     int frameWidth() const;
+    bool shouldShowClearForValue( const int value ) const;
 
     bool mShowClearButton;
     ClearValueMode mClearValueMode;

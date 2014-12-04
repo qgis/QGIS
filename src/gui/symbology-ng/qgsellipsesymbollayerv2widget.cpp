@@ -39,6 +39,10 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
   btnChangeColorBorder->setShowNoColor( true );
   btnChangeColorBorder->setNoColorString( tr( "Transparent border" ) );
 
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
+  mRotationSpinBox->setClearValue( 0.0 );
+
   QStringList names;
   names << "circle" << "rectangle" << "cross" << "triangle";
   QSize iconSize = mShapeListWidget->iconSize();

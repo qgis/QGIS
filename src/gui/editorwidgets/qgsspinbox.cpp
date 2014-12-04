@@ -48,18 +48,18 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
 void QgsSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value() != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
 }
 
 void QgsSpinBox::changeEvent( QEvent *event )
 {
   QSpinBox::changeEvent( event );
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value() != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
 }
 
 void QgsSpinBox::changed( const int& value )
 {
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value ) );
 }
 
 void QgsSpinBox::clear()
@@ -81,7 +81,7 @@ void QgsSpinBox::setClearValue( int customValue, QString specialValueText )
   }
 }
 
-void QgsSpinBox::setClearValueMode(QgsSpinBox::ClearValueMode mode, QString specialValueText )
+void QgsSpinBox::setClearValueMode( QgsSpinBox::ClearValueMode mode, QString specialValueText )
 {
   mClearValueMode = mode;
   mCustomClearValue = 0;
@@ -95,7 +95,7 @@ void QgsSpinBox::setClearValueMode(QgsSpinBox::ClearValueMode mode, QString spec
   }
 }
 
-int QgsSpinBox::clearValue()
+int QgsSpinBox::clearValue() const
 {
   if ( mClearValueMode == MinimumValue )
     return minimum() ;
@@ -108,6 +108,15 @@ int QgsSpinBox::clearValue()
 int QgsSpinBox::frameWidth() const
 {
   return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+}
+
+bool QgsSpinBox::shouldShowClearForValue( const int value ) const
+{
+  if ( !mShowClearButton || !isEnabled() )
+  {
+    return false;
+  }
+  return value != clearValue();
 }
 
 void QgsSpinBox::resizeEvent( QResizeEvent * event )

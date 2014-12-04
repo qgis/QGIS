@@ -48,18 +48,18 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value() != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
 }
 
 void QgsDoubleSpinBox::changeEvent( QEvent *event )
 {
   QDoubleSpinBox::changeEvent( event );
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value() != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
 }
 
 void QgsDoubleSpinBox::changed( const double& value )
 {
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value ) );
 }
 
 void QgsDoubleSpinBox::clear()
@@ -81,7 +81,7 @@ void QgsDoubleSpinBox::setClearValue( double customValue , QString specialValueT
   }
 }
 
-void QgsDoubleSpinBox::setClearValueMode(QgsDoubleSpinBox::ClearValueMode mode, QString clearValueText )
+void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, QString clearValueText )
 {
   mClearValueMode = mode;
   mCustomClearValue = 0;
@@ -95,7 +95,7 @@ void QgsDoubleSpinBox::setClearValueMode(QgsDoubleSpinBox::ClearValueMode mode, 
   }
 }
 
-double QgsDoubleSpinBox::clearValue()
+double QgsDoubleSpinBox::clearValue() const
 {
   if ( mClearValueMode == MinimumValue )
     return minimum() ;
@@ -108,6 +108,15 @@ double QgsDoubleSpinBox::clearValue()
 int QgsDoubleSpinBox::frameWidth() const
 {
   return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+}
+
+bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
+{
+  if ( !mShowClearButton || !isEnabled() )
+  {
+    return false;
+  }
+  return value != clearValue();
 }
 
 void QgsDoubleSpinBox::resizeEvent( QResizeEvent * event )
