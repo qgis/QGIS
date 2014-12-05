@@ -268,10 +268,16 @@ void QgsHttpRequestHandler::setGetCapabilitiesResponse( const QDomDocument& doc 
   setHttpResponse( &ba, "text/xml" );
 }
 
-void QgsHttpRequestHandler::setGetStyleResponse( const QDomDocument& doc )
+void QgsHttpRequestHandler::setXmlResponse( const QDomDocument& doc )
 {
   QByteArray ba = doc.toByteArray();
   setHttpResponse( &ba, "text/xml" );
+}
+
+void QgsHttpRequestHandler::setXmlResponse( const QDomDocument& doc, const QString& mimeType )
+{
+  QByteArray ba = doc.toByteArray();
+  setHttpResponse( &ba, mimeType );
 }
 
 void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat )
