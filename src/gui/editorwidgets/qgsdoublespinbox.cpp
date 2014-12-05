@@ -151,7 +151,7 @@ double QgsDoubleSpinBox::valueFromText( const QString &text ) const
   QString trimmedText = stripped( text );
   if ( trimmedText.isEmpty() )
   {
-    return clearValue();
+    return mShowClearButton ? clearValue() : value();
   }
 
   return QgsExpression::evaluateToDouble( trimmedText, value() );

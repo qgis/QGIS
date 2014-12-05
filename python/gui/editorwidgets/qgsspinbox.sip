@@ -18,6 +18,19 @@ class QgsSpinBox : QSpinBox
     //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const;
+    
+    /**Sets if the widget will allow entry of simple expressions, which are
+     * evaluated and then discarded.
+     * @param enabled set to true to allow expression entry
+     * @note added in QGIS 2.7
+     */
+    void setExpressionsEnabled( const bool enabled );
+    /**Returns whether the widget will allow entry of simple expressions, which are
+     * evaluated and then discarded.
+     * @returns true if spin box allows expression entry
+     * @note added in QGIS 2.7
+     */
+    bool expressionsEnabled() const;
 
     //! Set the current value to the value defined by the clear value.
     virtual void clear();
@@ -38,6 +51,9 @@ class QgsSpinBox : QSpinBox
     //! returns the value used when clear() is called.
     int clearValue() const;
 
+    virtual int valueFromText( const QString & text ) const;
+    virtual QValidator::State validate( QString & input, int & pos ) const;
+    
   protected:
     virtual void resizeEvent( QResizeEvent* event );
     virtual void changeEvent( QEvent* event );

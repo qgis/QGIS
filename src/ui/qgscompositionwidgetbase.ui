@@ -52,7 +52,7 @@
         <x>0</x>
         <y>0</y>
         <width>327</width>
-        <height>591</height>
+        <height>586</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -230,9 +230,12 @@
           <item row="4" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
-             <widget class="QSpinBox" name="mNumPagesSpinBox">
+             <widget class="QgsSpinBox" name="mNumPagesSpinBox">
               <property name="minimum">
                <number>1</number>
+              </property>
+              <property name="showClearButton">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -304,7 +307,7 @@
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QSpinBox" name="mResolutionSpinBox">
+           <widget class="QgsSpinBox" name="mResolutionSpinBox">
             <property name="suffix">
              <string> dpi</string>
             </property>
@@ -313,6 +316,9 @@
             </property>
             <property name="maximum">
              <number>3000</number>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -453,12 +459,15 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="mSnapToleranceSpinBox">
+           <widget class="QgsSpinBox" name="mSnapToleranceSpinBox">
             <property name="suffix">
              <string> px</string>
             </property>
             <property name="maximum">
              <number>200</number>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -495,6 +504,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>

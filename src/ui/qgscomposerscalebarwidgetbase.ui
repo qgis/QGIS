@@ -51,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-73</y>
         <width>340</width>
-        <height>823</height>
+        <height>819</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -208,7 +208,7 @@
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QSpinBox" name="mSegmentsLeftSpinBox">
+             <widget class="QgsSpinBox" name="mSegmentsLeftSpinBox">
               <property name="suffix">
                <string/>
               </property>
@@ -218,12 +218,15 @@
              </widget>
             </item>
             <item>
-             <widget class="QSpinBox" name="mNumberOfSegmentsSpinBox">
+             <widget class="QgsSpinBox" name="mNumberOfSegmentsSpinBox">
               <property name="suffix">
                <string/>
               </property>
               <property name="prefix">
                <string>right </string>
+              </property>
+              <property name="value">
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -266,12 +269,15 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="mHeightSpinBox">
+           <widget class="QgsSpinBox" name="mHeightSpinBox">
             <property name="suffix">
              <string> mm</string>
             </property>
             <property name="prefix">
              <string/>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -616,6 +622,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>

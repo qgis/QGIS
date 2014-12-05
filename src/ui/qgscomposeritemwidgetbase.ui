@@ -98,9 +98,12 @@
          </widget>
         </item>
         <item row="0" column="1" colspan="3">
-         <widget class="QSpinBox" name="mPageSpinBox">
+         <widget class="QgsSpinBox" name="mPageSpinBox">
           <property name="minimum">
            <number>1</number>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -646,7 +649,13 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="mTransparencySpnBx">
+         <widget class="QgsSpinBox" name="mTransparencySpnBx">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>25</height>
+           </size>
+          </property>
           <property name="maximum">
            <number>100</number>
           </property>
@@ -716,6 +725,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>

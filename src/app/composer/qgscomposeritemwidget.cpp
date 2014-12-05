@@ -115,6 +115,7 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
     , mFreezeYPosSpin( false )
     , mFreezeWidthSpin( false )
     , mFreezeHeightSpin( false )
+    , mFreezePageSpin( false )
 {
 
   setupUi( this );
@@ -138,7 +139,6 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mItem, SIGNAL( itemChanged() ), this, SLOT( setValuesForGuiNonPositionElements() ) );
 
   connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
-  connect( mTransparencySpnBx, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
 
   //connect atlas signals to data defined buttons
   QgsAtlasComposition* atlas = atlasComposition();
@@ -464,7 +464,8 @@ void QgsComposerItemWidget::setValuesForGuiPositionElements()
     mWidthSpin->setValue( mItem->rect().width() );
   if ( !mFreezeHeightSpin )
     mHeightSpin->setValue( mItem->rect().height() );
-  mPageSpinBox->setValue( mItem->page() );
+  if ( !mFreezePageSpin )
+    mPageSpinBox->setValue( mItem->page() );
 
   mXPosSpin->blockSignals( false );
   mYPosSpin->blockSignals( false );
@@ -640,8 +641,11 @@ void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
   }
 }
 
-void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
+void QgsComposerItemWidget::on_mTransparencySpnBx_valueChanged( int value )
 {
+  mTransparencySlider->blockSignals( true );
+  mTransparencySlider->setValue( value );
+  mTransparencySlider->blockSignals( false );
   if ( mItem )
   {
     mItem->beginCommand( tr( "Item transparency changed" ), QgsComposerMergeCommand::ItemTransparency );
@@ -659,6 +663,13 @@ void QgsComposerItemWidget::on_mItemIdLineEdit_editingFinished()
     mItemIdLineEdit->setText( mItem->id() );
     mItem->endCommand();
   }
+}
+
+void QgsComposerItemWidget::on_mPageSpinBox_valueChanged( int )
+{
+  mFreezePageSpin = true;
+  changeItemPosition();
+  mFreezePageSpin = false;
 }
 
 void QgsComposerItemWidget::on_mXPosSpin_valueChanged( double )

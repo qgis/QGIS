@@ -47,7 +47,7 @@
         <x>0</x>
         <y>0</y>
         <width>392</width>
-        <height>1204</height>
+        <height>1202</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -152,9 +152,12 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="mMaximumRowsSpinBox">
+           <widget class="QgsSpinBox" name="mMaximumRowsSpinBox">
             <property name="maximum">
              <number>99999</number>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -726,6 +729,11 @@
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>

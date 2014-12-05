@@ -522,7 +522,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="mColumnCountSpinBox">
+           <widget class="QgsSpinBox" name="mColumnCountSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -891,6 +891,11 @@
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
