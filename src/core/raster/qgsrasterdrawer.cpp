@@ -120,7 +120,7 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
     double cx = w/2.0;
     double cy = h/2.0;
 
-    QgsDebugMsg( QString("XXX img w:%1 h:%2").arg(img.width()).arg(img.height()) );
+    //QgsDebugMsg( QString("XXX img w:%1 h:%2").arg(img.width()).arg(img.height()) );
 
     p->translate( cx, cy );
     p->rotate( theQgsMapToPixel->mapRotation() );

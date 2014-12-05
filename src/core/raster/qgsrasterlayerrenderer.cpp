@@ -117,16 +117,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   }
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
-
   mRasterViewPort->mTopLeftPoint = mapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
   mRasterViewPort->mBottomRightPoint = mapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
-
-  QgsDebugMsg( QString("XXX topLeft:%1,%2, bottomRight:%3,%4")
-    .arg(mRasterViewPort->mTopLeftPoint.x())
-    .arg(mRasterViewPort->mTopLeftPoint.y())
-    .arg(mRasterViewPort->mBottomRightPoint.x())
-    .arg(mRasterViewPort->mBottomRightPoint.y())
-  );
 
   // align to output device grid, i.e. floor/ceil to integers
   // TODO: this should only be done if paint device is raster - screen, image
