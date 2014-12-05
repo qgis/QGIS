@@ -48,7 +48,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="spinInterval">
+         <widget class="QgsDoubleSpinBox" name="spinInterval">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>1</horstretch>
@@ -66,6 +66,9 @@
           </property>
           <property name="value">
            <double>1.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -214,15 +217,15 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

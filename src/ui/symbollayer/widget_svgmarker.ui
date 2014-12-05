@@ -32,7 +32,7 @@
      <item row="0" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QDoubleSpinBox" name="spinSize">
+        <widget class="QgsDoubleSpinBox" name="spinSize">
          <property name="sizePolicy">
           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -50,6 +50,9 @@
          </property>
          <property name="value">
           <double>1.000000000000000</double>
+         </property>
+         <property name="showClearButton">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -179,7 +182,7 @@
      <item row="3" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_5">
        <item>
-        <widget class="QDoubleSpinBox" name="mBorderWidthSpinBox">
+        <widget class="QgsDoubleSpinBox" name="mBorderWidthSpinBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>1</horstretch>
@@ -191,6 +194,9 @@
          </property>
          <property name="singleStep">
           <double>0.200000000000000</double>
+         </property>
+         <property name="showClearButton">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -412,6 +418,7 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>

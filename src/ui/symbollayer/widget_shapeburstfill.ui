@@ -145,7 +145,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="mSpinMaxDistance">
+         <widget class="QgsDoubleSpinBox" name="mSpinMaxDistance">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
             <horstretch>1</horstretch>
@@ -157,6 +157,9 @@
           </property>
           <property name="value">
            <double>5.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -302,6 +305,12 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -313,11 +322,6 @@
    <class>QgsColorRampComboBox</class>
    <extends>QComboBox</extends>
    <header>qgscolorrampcombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
