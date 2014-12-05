@@ -495,7 +495,7 @@ void QgsVectorLayerProperties::apply()
   }
 
   // set up the scale based layer visibility stuff....
-  layer->toggleScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
+  layer->setScaleBasedVisibility( mScaleVisibilityGroupBox->isChecked() );
   // caution: layer uses scale denoms, widget uses true scales
   layer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );
   layer->setMinimumScale( 1.0 / mScaleRangeWidget->maximumScale() );

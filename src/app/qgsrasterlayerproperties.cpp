@@ -847,7 +847,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setLayerName( mLayerOrigNameLineEd->text() );
 
   // set up the scale based layer visibility stuff....
-  mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
   // caution: layer uses scale denoms, widget uses true scales
   mRasterLayer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );
   mRasterLayer->setMinimumScale( 1.0 / mScaleRangeWidget->maximumScale() );

@@ -7082,7 +7082,7 @@ void QgisApp::setLayerScaleVisibility()
     mMapCanvas->freeze();
     foreach ( QgsMapLayer* layer, layers )
     {
-      layer->toggleScaleBasedVisibility( dlg->hasScaleVisibility() );
+      layer->setScaleBasedVisibility( dlg->hasScaleVisibility() );
       layer->setMinimumScale( 1.0 / dlg->maximumScale() );
       layer->setMaximumScale( 1.0 / dlg->minimumScale() );
     }

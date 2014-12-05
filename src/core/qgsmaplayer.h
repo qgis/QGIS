@@ -387,22 +387,67 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerLegend* legend() const;
 
+    /**Returns the minimum scale denominator at which the layer is visible.
+     * Scale based visibility is only used if hasScaleBasedVisibility is true.
+     * @returns minimum scale denominator at which the layer will render
+     * @see setMinimumScale
+     * @see maximumScale
+     * @see hasScaleBasedVisibility
+     */
+    float minimumScale() const;
+
+    /**Returns the maximum scale denominator at which the layer is visible.
+     * Scale based visibility is only used if hasScaleBasedVisibility is true.
+     * @returns minimum scale denominator at which the layer will render
+     * @see setMaximumScale
+     * @see minimumScale
+     * @see hasScaleBasedVisibility
+     */
+    float maximumScale() const;
+
+    /**Returns whether scale based visibility is enabled for the layer.
+     * @returns true if scale based visibility is enabled
+     * @see minimumScale
+     * @see maximumScale
+     * @see setScaleBasedVisibility
+    */
+    bool hasScaleBasedVisibility() const;
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale denominator member */
-    void setMinimumScale( float theMinScale );
-    float minimumScale() const;
+    /**Sets the minimum scale denominator at which the layer will be visible.
+     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
+     * @param theMinScale minimum scale denominator at which the layer should render
+     * @see minimumScale
+     * @see setMaximumScale
+     * @see setScaleBasedVisibility
+     */
+    void setMinimumScale( const float theMinScale );
 
-    /** Accessor and mutator for the maximum scale denominator member */
-    void setMaximumScale( float theMaxScale );
-    float maximumScale() const;
+    /**Sets the maximum scale denominator at which the layer will be visible.
+     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
+     * @param theMaxScale maximum scale denominator at which the layer should render
+     * @see maximumScale
+     * @see setMinimumScale
+     * @see setScaleBasedVisibility
+     */
+    void setMaximumScale( const float theMaxScale );
 
-    /** Accessor and mutator for the scale based visilibility flag */
-    void toggleScaleBasedVisibility( bool theVisibilityFlag );
-    bool hasScaleBasedVisibility() const;
+    /**Sets whether scale based visibility is enabled for the layer.
+     * @param enabled set to true to enable scale based visibility
+     * @see setMinimumScale
+     * @see setMaximumScale
+     * @see scaleBasedVisibility
+     */
+    void setScaleBasedVisibility( const bool enabled );
+
+    /**Accessor for the scale based visilibility flag
+     * @deprecated use setScaleBasedVisibility instead
+    */
+    Q_DECL_DEPRECATED void toggleScaleBasedVisibility( bool theVisibilityFlag );
 
     /** Clear cached image
      *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
