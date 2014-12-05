@@ -31,6 +31,19 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
   mMapToPixel = &theQgsMapToPixel;
 
+  QgsMapToPixel mapToPixel = theQgsMapToPixel;
+  if ( mapToPixel.mapRotation() ) {
+    // unset rotation for the sake of local computations.
+    // Rotation will be handled by QPainter later
+    // TODO: provide a method of QgsMapToPixel to fetch map center
+    //       in geographical units
+    QgsPoint center = mapToPixel.toMapCoordinates(
+      mapToPixel.mapWidth()/2.0,
+      mapToPixel.mapHeight()/2.0
+    );
+    mapToPixel.setMapRotation(0, center.x(), center.y());
+  }
+
   QgsRectangle myProjectedViewExtent;
   QgsRectangle myProjectedLayerExtent;
 
@@ -105,27 +118,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
 
   // get dimensions of clipped raster image in device coordinate space (this is the size of the viewport)
 
-#if 1
-  // TODO: does this sound like a rect = QgsMapToPixel.transform( rect ) ?
-  double xmin = myRasterExtent.xMinimum();
-  double xmax = myRasterExtent.xMaximum();
-  double ymin = myRasterExtent.yMinimum();
-  double ymax = myRasterExtent.yMaximum();
-  QgsPoint p1 = theQgsMapToPixel.transform( xmin, ymin );
-  QgsPoint p2 = theQgsMapToPixel.transform( xmin, ymax );
-  QgsPoint p3 = theQgsMapToPixel.transform( xmax, ymin );
-  QgsPoint p4 = theQgsMapToPixel.transform( xmax, ymax );
-  double dxmin = std::min(p1.x(), std::min(p2.x(), std::min(p3.x(), p4.x())));
-  double dymin = std::min(p1.y(), std::min(p2.y(), std::min(p3.y(), p4.y())));
-  double dxmax = std::max(p1.x(), std::max(p2.x(), std::max(p3.x(), p4.x())));
-  double dymax = std::max(p1.y(), std::max(p2.y(), std::max(p3.y(), p4.y())));
-
-  mRasterViewPort->mTopLeftPoint = QgsPoint(dxmin,dymin);
-  mRasterViewPort->mBottomRightPoint = QgsPoint(dxmax,dymax);
-#else
-  mRasterViewPort->mTopLeftPoint = theQgsMapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
-  mRasterViewPort->mBottomRightPoint = theQgsMapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
-#endif
+  mRasterViewPort->mTopLeftPoint = mapToPixel.transform( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() );
+  mRasterViewPort->mBottomRightPoint = mapToPixel.transform( myRasterExtent.xMaximum(), myRasterExtent.yMinimum() );
 
   QgsDebugMsg( QString("XXX topLeft:%1,%2, bottomRight:%3,%4")
     .arg(mRasterViewPort->mTopLeftPoint.x())
@@ -146,9 +140,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mRasterViewPort->mBottomRightPoint.setY( ceil( mRasterViewPort->mBottomRightPoint.y() ) );
   // recalc myRasterExtent to aligned values
   myRasterExtent.set(
-    theQgsMapToPixel.toMapCoordinatesF( mRasterViewPort->mTopLeftPoint.x(),
+    mapToPixel.toMapCoordinatesF( mRasterViewPort->mTopLeftPoint.x(),
                                         mRasterViewPort->mBottomRightPoint.y() ),
-    theQgsMapToPixel.toMapCoordinatesF( mRasterViewPort->mBottomRightPoint.x(),
+    mapToPixel.toMapCoordinatesF( mRasterViewPort->mBottomRightPoint.x(),
                                         mRasterViewPort->mTopLeftPoint.y() )
   );
 
@@ -156,12 +150,11 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mRasterViewPort->mWidth = static_cast<int>( mRasterViewPort->mBottomRightPoint.x() - mRasterViewPort->mTopLeftPoint.x() );
   mRasterViewPort->mHeight = static_cast<int>( mRasterViewPort->mBottomRightPoint.y() - mRasterViewPort->mTopLeftPoint.y() );
 
-
   //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
-  //theQgsMapToPixel.mapUnitsPerPixel() is less then 1,
+  //mapToPixel.mapUnitsPerPixel() is less then 1,
   //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
 
-  QgsDebugMsgLevel( QString( "mapUnitsPerPixel = %1" ).arg( theQgsMapToPixel.mapUnitsPerPixel() ), 3 );
+  QgsDebugMsgLevel( QString( "mapUnitsPerPixel = %1" ).arg( mapToPixel.mapUnitsPerPixel() ), 3 );
   QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( layer->width() ), 3 );
   QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( layer->height() ), 3 );
   QgsDebugMsgLevel( QString( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ), 3 );
