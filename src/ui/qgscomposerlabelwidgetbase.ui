@@ -172,7 +172,7 @@
            </layout>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mMarginXDoubleSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mMarginXDoubleSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -302,7 +302,7 @@
            </layout>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="mMarginYDoubleSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mMarginYDoubleSpinBox">
             <property name="suffix">
              <string> mm</string>
             </property>
@@ -340,6 +340,11 @@
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -51,9 +51,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-427</y>
-        <width>369</width>
-        <height>817</height>
+        <y>0</y>
+        <width>340</width>
+        <height>823</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -165,12 +165,15 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
             <property name="decimals">
              <number>6</number>
             </property>
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -240,7 +243,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="mSegmentSizeSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mSegmentSizeSpinBox">
             <property name="suffix">
              <string> units</string>
             </property>
@@ -249,6 +252,9 @@
             </property>
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -295,7 +301,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mBoxSizeSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mBoxSizeSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -312,7 +318,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="mLabelBarSpaceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mLabelBarSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -329,7 +335,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mLineWidthSpinBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -350,6 +356,9 @@
             </property>
             <property name="value">
              <double>0.200000000000000</double>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -598,16 +607,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
@@ -618,6 +626,12 @@
    <class>QgsPenCapStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

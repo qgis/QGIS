@@ -36,6 +36,9 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsCo
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setContext( "composer" );
 
+  mMarginXDoubleSpinBox->setClearValue( 0.0 );
+  mMarginYDoubleSpinBox->setClearValue( 0.0 );
+
   if ( mComposerLabel )
   {
     setGuiElementValues();

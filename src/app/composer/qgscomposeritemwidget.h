@@ -91,10 +91,10 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
 
     //adjust coordinates in line edits
     void on_mPageSpinBox_valueChanged( int ) { changeItemPosition(); }
-    void on_mXPosSpin_valueChanged( double ) { changeItemPosition(); }
-    void on_mYPosSpin_valueChanged( double ) { changeItemPosition(); }
-    void on_mWidthSpin_valueChanged( double ) { changeItemPosition(); }
-    void on_mHeightSpin_valueChanged( double ) { changeItemPosition(); }
+    void on_mXPosSpin_valueChanged( double );
+    void on_mYPosSpin_valueChanged( double );
+    void on_mWidthSpin_valueChanged( double );
+    void on_mHeightSpin_valueChanged( double );
 
     void on_mUpperLeftCheckBox_stateChanged( int state );
     void on_mUpperMiddleCheckBox_stateChanged( int state );
@@ -129,6 +129,11 @@ class QgsComposerItemWidget: public QgsComposerItemBaseWidget, private Ui::QgsCo
     QgsComposerItemWidget();
 
     QgsComposerItem* mItem;
+
+    bool mFreezeXPosSpin;
+    bool mFreezeYPosSpin;
+    bool mFreezeWidthSpin;
+    bool mFreezeHeightSpin;
 
 //    void changeItemTransparency( int value );
     void changeItemPosition();
