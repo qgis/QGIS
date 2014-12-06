@@ -17,7 +17,6 @@
 
 #include <QtDebug>
 #include <QDomDocument>
-#include <QSettings>
 #include <QDate>
 #include <QRegExp>
 #include <QColor>
@@ -2173,14 +2172,14 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
     case boMul:
     case boDiv:
     case boMod:
+    {
       if ( isNull( vL ) || isNull( vR ) )
         return QVariant();
-      else if ( isIntSafe( vL ) && isIntSafe( vR ) )
+      else if ( mOp != boDiv && isIntSafe( vL ) && isIntSafe( vR ) )
       {
         // both are integers - let's use integer arithmetics
         int iL = getIntValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
         int iR = getIntValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
-        if ( mOp == boDiv && iR == 0 ) return QVariant(); // silently handle division by zero and return NULL
         return QVariant( computeInt( iL, iR ) );
       }
       else if ( isDateTimeSafe( vL ) && isIntervalSafe( vR ) )
@@ -2203,7 +2202,16 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
           return QVariant(); // silently handle division by zero and return NULL
         return QVariant( computeDouble( fL, fR ) );
       }
-
+    }
+    case boIntDiv:
+    {
+      //integer division
+      double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+      double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+      if ( fR == 0 )
+        return QVariant(); // silently handle division by zero and return NULL
+      return QVariant( qFloor( fL / fR ) );
+    }
     case boPow:
       if ( isNull( vL ) || isNull( vR ) )
         return QVariant();
@@ -2421,6 +2429,7 @@ int QgsExpression::NodeBinaryOperator::precedence() const
 
     case boMul:
     case boDiv:
+    case boIntDiv:
     case boMod:
       return 5;
 

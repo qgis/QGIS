@@ -172,7 +172,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "plus invalid" ) << "1+'foo'" << true << QVariant();
       QTest::newRow( "minus int" ) << "1-3" << false << QVariant( -2 );
       QTest::newRow( "mul int" ) << "8*7" << false << QVariant( 56 );
-      QTest::newRow( "div int" ) << "20/6" << false << QVariant( 3 );
+      QTest::newRow( "div int" ) << "5/2" << false << QVariant( 2.5 );
       QTest::newRow( "mod int" ) << "20%6" << false << QVariant( 2 );
       QTest::newRow( "minus double" ) << "5.2-3.1" << false << QVariant( 2.1 );
       QTest::newRow( "mul double" ) << "2.1*5" << false << QVariant( 10.5 );
@@ -181,6 +181,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "pow" ) << "2^8" << false << QVariant( 256. );
       QTest::newRow( "division by zero" ) << "1/0" << false << QVariant();
       QTest::newRow( "division by zero" ) << "1.0/0.0" << false << QVariant();
+      QTest::newRow( "int division" ) << "5//2" << false << QVariant( 2 );
+      QTest::newRow( "int division with doubles" ) << "5.0//2.0" << false << QVariant( 2 );
+      QTest::newRow( "negative int division" ) << "-5//2" << false << QVariant( -3 );
+      QTest::newRow( "negative int division with doubles" ) << "-5.0//2.0" << false << QVariant( -3 );
+      QTest::newRow( "int division by zero" ) << "1//0" << false << QVariant();
+      QTest::newRow( "int division by zero with floats" ) << "1.0//0.0" << false << QVariant();
 
       // comparison
       QTest::newRow( "eq int" ) << "1+1 = 2" << false << QVariant( 1 );
