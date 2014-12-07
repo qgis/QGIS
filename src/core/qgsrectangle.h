@@ -81,12 +81,6 @@ class CORE_EXPORT QgsRectangle
     //! Scale the rectangle around its center point
     void scale( double scaleFactor, const QgsPoint *c = 0 );
     void scale( double scaleFactor, double centerX, double centerY );
-    //! Rotate the rectangle around its center
-    //! @note added in 2.8
-    void rotate( double degrees );
-    //! Rotate the rectangle around the given point
-    //! @note added in 2.8
-    void rotate( double degrees, double centerX, double centerY );
     /** Get rectangle enlarged by buffer.
      * @note added in 2.1 */
     QgsRectangle buffer( double width );
