@@ -139,7 +139,6 @@ class GeoAlgorithm:
         safeAlgName = ''.join(c for c in algName if c in validChars)
 
         helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
-        print 'HELP', helpUrl
         return False, helpUrl
 
         #name = self.commandLineName().split(':')[1].lower()
