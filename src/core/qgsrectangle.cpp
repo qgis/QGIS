@@ -21,6 +21,7 @@
 #include <QRectF>
 #include <QString>
 #include <QTextStream>
+#include <QTransform>
 #include <QRegExp>
 #include <qnumeric.h>
 

@@ -42,6 +42,7 @@
 QgsMapRenderer::QgsMapRenderer()
 {
   mScale = 1.0;
+  mRotation = 0.0;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
 
@@ -121,6 +122,18 @@ bool QgsMapRenderer::setExtent( const QgsRectangle& extent )
   return true;
 }
 
+void QgsMapRenderer::setRotation( double rotation )
+{
+  mRotation = rotation;
+  // TODO: adjust something ?
+
+  emit rotationChanged( rotation );
+}
+
+double QgsMapRenderer::rotation( ) const
+{
+  return mRotation;
+}
 
 
 void QgsMapRenderer::setOutputSize( QSize size, int dpi )

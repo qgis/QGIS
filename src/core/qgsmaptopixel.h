@@ -18,6 +18,7 @@
 #define QGSMAPTOPIXEL
 
 #include "qgspoint.h"
+#include <QTransform>
 #include <vector>
 
 #include <cassert>
@@ -35,11 +36,11 @@ class CORE_EXPORT QgsMapToPixel
   public:
     /* Constructor
     * @param mapUnitsPerPixel Map units per pixel
-    * @param ymax Maximum y value of the map canvas
+    * @param height Map canvas height, in pixels 
     * @param ymin Minimum y value of the map canvas
     * @param xmin Minimum x value of the map canvas
     */
-    QgsMapToPixel( double mapUnitsPerPixel = 0, double ymax = 0, double ymin = 0,
+    QgsMapToPixel( double mapUnitsPerPixel = 0, double height = 0, double ymin = 0,
                    double xmin = 0 );
     //! destructor
     ~QgsMapToPixel();
@@ -65,22 +66,19 @@ class CORE_EXPORT QgsMapToPixel
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */
-    void transformInPlace( double& x, double& y ) const;
-#ifdef QT_ARCH_ARM
     void transformInPlace( qreal& x, qreal& y ) const;
-#endif
 
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform.
        @note not available in python bindings
      */
-    void transformInPlace( QVector<double>& x, QVector<double>& y ) const;
-
-#ifdef ANDROID
-    void transformInPlace( float& x, float& y ) const;
-    void transformInPlace( QVector<float>& x, QVector<float>& y ) const;
-#endif
+    template <class T>
+    void transformInPlace( QVector<T>& x, QVector<T>& y ) const {
+      assert( x.size() == y.size() );
+      for ( int i = 0; i < x.size(); ++i )
+        transformInPlace( x[i], y[i] );
+    }
 
     QgsPoint toMapCoordinates( int x, int y ) const;
 
@@ -102,8 +100,30 @@ class CORE_EXPORT QgsMapToPixel
     //! Return current map units per pixel
     double mapUnitsPerPixel() const;
 
+    //! Return current map width in pixels
+    int mapWidth() const;
+
+    //! Return current map height in pixels
+    int mapHeight() const;
+
+    //! Set map rotation in degrees (clockwise)
+    //! @param degrees clockwise rotation in degrees
+    //! @param cx X ordinate of map center in geographical units
+    //! @param cy Y ordinate of map center in geographical units
+    //! @note added in 2.8
+    void setMapRotation( double degrees, double cx, double cy );
+
+    //! Return current map rotation in degrees
+    //! @note added in 2.8
+    double mapRotation() const;
+
     //! Set maximum y value
-    void setYMaximum( double ymax );
+    // @deprecated in 2.8, use setViewportHeight
+    // @note this really sets the viewport height, not ymax
+    void setYMaximum( double yMax ) { setViewportHeight(yMax); }
+    //! Set viewport height
+    //! @note added in 2.8
+    void setViewportHeight( double height );
     //! Set minimum y value
     void setYMinimum( double ymin );
     //! set minimum x value
@@ -112,17 +132,25 @@ class CORE_EXPORT QgsMapToPixel
     * @param mapUnitsPerPixel Map units per pixel
     * @param xmin Minimum x value
     * @param ymin Minimum y value
-    * @param ymax Maximum y value
+    * @param height Map height, in pixels
     */
-    void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double ymax );
+    void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double height );
     //! String representation of the parameters used in the transform
     QString showParameters();
 
   private:
     double mMapUnitsPerPixel;
-    double yMax;
+    double mHeight;
     double yMin;
     double xMin;
+    //! Map rotation around Z axis on map center as clockwise degrees
+    //! @note added in 2.8
+    double mMapRotation;
+    double xCenter;
+    double yCenter;
+
+    // Matrix to map from map (geographical) to screen (pixels) units
+    QTransform getMatrix() const;
 };
 
 
