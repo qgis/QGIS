@@ -24,11 +24,11 @@
 #include "qgslogger.h"
 
 QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
-                              double ymax,
+                              double height,
                               double ymin,
                               double xmin )
     : mMapUnitsPerPixel( mapUnitsPerPixel )
-    , mHeight( ymax )
+    , mHeight( height )
     , yMin( ymin )
     , xMin( xmin )
     , mMapRotation( 0 )
@@ -202,7 +202,7 @@ void QgsMapToPixel::transform( QgsPoint* p ) const
   p->set( x, y );
 }
 
-void QgsMapToPixel::transformInPlace( double& x, double& y ) const
+void QgsMapToPixel::transformInPlace( qreal& x, qreal& y ) const
 {
   // Map 2 Pixel
 
@@ -212,43 +212,3 @@ void QgsMapToPixel::transformInPlace( double& x, double& y ) const
   //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
   x = mx; y = my;
 }
-
-#ifdef QT_ARCH_ARM
-void QgsMapToPixel::transformInPlace( qreal& x, qreal& y ) const
-{
-  double xd = y, yd = y;
-  transformInPlace(xd, yd);
-  x = xd; y = yd;
-  //x = ( x - xMin ) / mMapUnitsPerPixel;
-  //y = mHeight - ( y - yMin ) / mMapUnitsPerPixel;
-}
-#endif
-
-void QgsMapToPixel::transformInPlace( QVector<double>& x,
-                                      QVector<double>& y ) const
-{
-  assert(0);
-  assert( x.size() == y.size() );
-  for ( int i = 0; i < x.size(); ++i )
-    transformInPlace( x[i], y[i] );
-}
-
-#ifdef ANDROID
-void QgsMapToPixel::transformInPlace( float& x, float& y ) const
-{
-  double xd = y, yd = y;
-  transformInPlace(xd, yd);
-  x = xd; y = yd;
-  //x = ( x - xMin ) / mMapUnitsPerPixel;
-  //y = mHeight - ( y - yMin ) / mMapUnitsPerPixel;
-}
-
-void QgsMapToPixel::transformInPlace( QVector<float>& x,
-                                      QVector<float>& y ) const
-{
-  assert( x.size() == y.size() );
-  for ( unsigned int i = 0; i < x.size(); ++i )
-    transformInPlace( x[i], y[i] );
-}
-#endif
-

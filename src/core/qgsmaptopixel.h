@@ -66,22 +66,19 @@ class CORE_EXPORT QgsMapToPixel
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */
-    void transformInPlace( double& x, double& y ) const;
-#ifdef QT_ARCH_ARM
     void transformInPlace( qreal& x, qreal& y ) const;
-#endif
 
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform.
        @note not available in python bindings
      */
-    void transformInPlace( QVector<double>& x, QVector<double>& y ) const;
-
-#ifdef ANDROID
-    void transformInPlace( float& x, float& y ) const;
-    void transformInPlace( QVector<float>& x, QVector<float>& y ) const;
-#endif
+    template <class T>
+    void transformInPlace( QVector<T>& x, QVector<T>& y ) const {
+      assert( x.size() == y.size() );
+      for ( int i = 0; i < x.size(); ++i )
+        transformInPlace( x[i], y[i] );
+    }
 
     QgsPoint toMapCoordinates( int x, int y ) const;
 
@@ -121,9 +118,11 @@ class CORE_EXPORT QgsMapToPixel
     double mapRotation() const;
 
     //! Set maximum y value
-    // @deprecated in 2.8, use setHeight
+    // @deprecated in 2.8, use setViewportHeight
     // @note this really sets the viewport height, not ymax
     void setYMaximum( double yMax ) { setViewportHeight(yMax); }
+    //! Set viewport height
+    //! @note added in 2.8
     void setViewportHeight( double height );
     //! Set minimum y value
     void setYMinimum( double ymin );
