@@ -202,6 +202,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void setExtent( const QgsRectangle &r );
 
     //! Get the current map canvas rotation in clockwise degrees
+    //! @note added in 2.8
     double rotation() const;
 
     //! Set the rotation of the map canvas in clockwise degrees
