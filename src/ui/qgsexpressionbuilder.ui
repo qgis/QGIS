@@ -300,7 +300,7 @@
            </layout>
           </item>
           <item row="2" column="0">
-           <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+           <widget class="QgsCollapsibleGroupBox" name="cgbCustomFunction">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>0</horstretch>
