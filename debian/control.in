@@ -334,7 +334,6 @@ Depends:
  python-gdal,
  python-matplotlib,
  libqgis-customwidgets,
- ${python:Depends},
  ${misc:Depends}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
