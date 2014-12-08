@@ -118,6 +118,7 @@ from SetVectorStyle import SetVectorStyle
 from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
 from HypsometricCurves import HypsometricCurves
+from SplitLinesWithLines import SplitLinesWithLines
 # from VectorLayerHistogram import VectorLayerHistogram
 # from VectorLayerScatterplot import VectorLayerScatterplot
 # from MeanAndStdDevPlot import MeanAndStdDevPlot
@@ -169,6 +170,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
+                        SplitLinesWithLines()
                         # ------ raster ------
                         # CreateConstantRaster(),
                         # ------ graphics ------
