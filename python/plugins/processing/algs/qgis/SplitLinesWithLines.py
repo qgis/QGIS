@@ -31,6 +31,7 @@ from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
+from processing.core.ProcessingLog import ProcessingLog
 from processing.tools import dataobjects
 from processing.tools import vector
 
@@ -106,7 +107,8 @@ class SplitLinesWithLines(GeoAlgorithm):
                                 try:
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
-                                    QgsMessageLog.logMessage("exception")
+                                    ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                                        'Geometry exception while splitting')
                                     result = 1
 
                                 # splitGeometry: If there are several intersections
