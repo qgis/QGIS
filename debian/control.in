@@ -177,9 +177,15 @@ Depends:
  qt4-designer,
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
-Conflicts: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
-Provides: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
+Replaces: libqgis-customwidgets2.4.0,
+ libqgis-customwidgets2.6.0,
+ libqgis-customwidgets2.6.1
+Conflicts: libqgis-customwidgets2.4.0,
+ libqgis-customwidgets2.6.0,
+ libqgis-customwidgets2.6.1
+Provides: libqgis-customwidgets2.4.0,
+ libqgis-customwidgets2.6.0,
+ libqgis-customwidgets2.6.1
 Description: QGIS custom widgets for Qt Designer
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
