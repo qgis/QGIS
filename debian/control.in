@@ -335,8 +335,7 @@ Depends:
  python-matplotlib,
  libqgis-customwidgets,
  ${python:Depends},
- ${misc:Depends},
- ${sip:Depends}
+ ${misc:Depends}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
