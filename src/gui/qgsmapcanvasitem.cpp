@@ -73,10 +73,10 @@ QRectF QgsMapCanvasItem::toCanvasCoordinates( const QRectF& rect )
   QPointF bl( toCanvasCoordinates( rect.bottomLeft() ) );
   QPointF br( toCanvasCoordinates( rect.bottomRight() ) );
   QPointF tr( toCanvasCoordinates( rect.topRight() ) );
-  double xmin = std::min(tl.x(), std::min(bl.x(), std::min(br.x(), tr.x())));
-  double ymin = std::min(tl.y(), std::min(bl.y(), std::min(br.y(), tr.y())));
-  double xmax = std::max(tl.x(), std::max(bl.x(), std::max(br.x(), tr.x())));
-  double ymax = std::max(tl.y(), std::max(bl.y(), std::max(br.y(), tr.y())));
+  double xmin = std::min( tl.x(), std::min( bl.x(), std::min( br.x(), tr.x() ) ) );
+  double ymin = std::min( tl.y(), std::min( bl.y(), std::min( br.y(), tr.y() ) ) );
+  double xmax = std::max( tl.x(), std::max( bl.x(), std::max( br.x(), tr.x() ) ) );
+  double ymax = std::max( tl.y(), std::max( bl.y(), std::max( br.y(), tr.y() ) ) );
   return QRectF( QPointF( xmin, ymin ), QPointF( xmax, ymax ) );
 }
 

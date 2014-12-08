@@ -10,15 +10,15 @@ class QgsSpinBox : QSpinBox
       MinimumValue,
       MaximumValue,
       CustomValue
-    };  
-  
+    };
+
     explicit QgsSpinBox( QWidget *parent /TransferThis/ = 0 );
 
     //! determines if the widget will show a clear button
     //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const;
-    
+
     /**Sets if the widget will allow entry of simple expressions, which are
      * evaluated and then discarded.
      * @param enabled set to true to allow expression entry
@@ -53,7 +53,7 @@ class QgsSpinBox : QSpinBox
 
     virtual int valueFromText( const QString & text ) const;
     virtual QValidator::State validate( QString & input, int & pos ) const;
-    
+
   protected:
     virtual void resizeEvent( QResizeEvent* event );
     virtual void changeEvent( QEvent* event );

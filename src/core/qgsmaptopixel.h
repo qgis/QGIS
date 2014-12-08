@@ -74,7 +74,8 @@ class CORE_EXPORT QgsMapToPixel
        @note not available in python bindings
      */
     template <class T>
-    void transformInPlace( QVector<T>& x, QVector<T>& y ) const {
+    void transformInPlace( QVector<T>& x, QVector<T>& y ) const
+    {
       assert( x.size() == y.size() );
       for ( int i = 0; i < x.size(); ++i )
         transformInPlace( x[i], y[i] );
@@ -120,7 +121,7 @@ class CORE_EXPORT QgsMapToPixel
     //! Set maximum y value
     // @deprecated in 2.8, use setViewportHeight
     // @note this really sets the viewport height, not ymax
-    void setYMaximum( double yMax ) { setViewportHeight(yMax); }
+    void setYMaximum( double yMax ) { setViewportHeight( yMax ); }
     //! Set viewport height
     //! @note added in 2.8
     void setViewportHeight( double height );

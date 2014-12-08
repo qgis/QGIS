@@ -50,13 +50,13 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   if ( mImage.size() != QSize( w, h ) )
   {
     QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
-    int tX = (w-mImage.width())/2.0;
-    int tY = (h-mImage.height())/2.0;
+    int tX = ( w - mImage.width() ) / 2.0;
+    int tY = ( h - mImage.height() ) / 2.0;
     int fX = 0;
     int fY = 0;
     int fW = w;
     int fH = h;
-    painter->drawImage(tX, tY, mImage, fX, fY, fW, fH);
+    painter->drawImage( tX, tY, mImage, fX, fY, fW, fH );
   }
   else
   {
@@ -67,17 +67,17 @@ void QgsMapCanvasMap::paint( QPainter* painter )
 #if 0
   QRectF br = boundingRect();
   QPointF c = br.center();
-  double rad = std::max(br.width(),br.height())/10;
+  double rad = std::max( br.width(), br.height() ) / 10;
   painter->drawRoundedRect( br, rad, rad );
-  painter->drawLine( QLineF(0, 0, br.width(), br.height()) );
-  painter->drawLine( QLineF(br.width(), 0, 0, br.height()) );
+  painter->drawLine( QLineF( 0, 0, br.width(), br.height() ) );
+  painter->drawLine( QLineF( br.width(), 0, 0, br.height() ) );
 
-  double nw = br.width()*0.5; double nh = br.height()*0.5;
-  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  double nw = br.width() * 0.5; double nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   painter->drawRoundedRect( br, rad, rad );
 
-  nw = br.width()*0.5; nh = br.height()*0.5;
-  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  nw = br.width() * 0.5; nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   painter->drawRoundedRect( br, rad, rad );
 #endif
 }

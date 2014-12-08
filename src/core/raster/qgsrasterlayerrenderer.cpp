@@ -32,16 +32,17 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   mMapToPixel = &theQgsMapToPixel;
 
   QgsMapToPixel mapToPixel = theQgsMapToPixel;
-  if ( mapToPixel.mapRotation() ) {
+  if ( mapToPixel.mapRotation() )
+  {
     // unset rotation for the sake of local computations.
     // Rotation will be handled by QPainter later
     // TODO: provide a method of QgsMapToPixel to fetch map center
     //       in geographical units
     QgsPoint center = mapToPixel.toMapCoordinates(
-      mapToPixel.mapWidth()/2.0,
-      mapToPixel.mapHeight()/2.0
-    );
-    mapToPixel.setMapRotation(0, center.x(), center.y());
+                        mapToPixel.mapWidth() / 2.0,
+                        mapToPixel.mapHeight() / 2.0
+                      );
+    mapToPixel.setMapRotation( 0, center.x(), center.y() );
   }
 
   QgsRectangle myProjectedViewExtent;
@@ -133,9 +134,9 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   // recalc myRasterExtent to aligned values
   myRasterExtent.set(
     mapToPixel.toMapCoordinatesF( mRasterViewPort->mTopLeftPoint.x(),
-                                        mRasterViewPort->mBottomRightPoint.y() ),
+                                  mRasterViewPort->mBottomRightPoint.y() ),
     mapToPixel.toMapCoordinatesF( mRasterViewPort->mBottomRightPoint.x(),
-                                        mRasterViewPort->mTopLeftPoint.y() )
+                                  mRasterViewPort->mTopLeftPoint.y() )
   );
 
   //raster viewport top left / bottom right are already rounded to int

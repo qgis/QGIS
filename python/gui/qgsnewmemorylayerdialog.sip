@@ -25,6 +25,6 @@ class QgsNewMemoryLayerDialog : QDialog
     QString layerName() const;
 
   protected slots:
-  
+
     void on_mChangeSrsButton_clicked();
 };

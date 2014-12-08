@@ -115,12 +115,14 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   int w = theQgsMapToPixel->mapWidth();
   int h = theQgsMapToPixel->mapHeight();
 
-  if ( theQgsMapToPixel ) {
+  if ( theQgsMapToPixel )
+  {
     double rotation = theQgsMapToPixel->mapRotation();
-    if ( rotation ) {
+    if ( rotation )
+    {
       // both viewPort and image sizes are dependent on scale
-      double cx = w/2.0;
-      double cy = h/2.0;
+      double cx = w / 2.0;
+      double cy = h / 2.0;
       p->translate( cx, cy );
       p->rotate( rotation );
       p->translate( -cx, -cy );
@@ -131,19 +133,19 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
 
 #if 0
   // For debugging:
-  QRectF br = QRectF(tlPoint, img.size());
+  QRectF br = QRectF( tlPoint, img.size() );
   QPointF c = br.center();
-  double rad = std::max(br.width(),br.height())/10;
+  double rad = std::max( br.width(), br.height() ) / 10;
   p->drawRoundedRect( br, rad, rad );
-  p->drawLine( QLineF(br.x(), br.y(), br.x()+br.width(), br.y()+br.height()) );
-  p->drawLine( QLineF(br.x()+br.width(), br.y(), br.x(), br.y()+br.height()) );
+  p->drawLine( QLineF( br.x(), br.y(), br.x() + br.width(), br.y() + br.height() ) );
+  p->drawLine( QLineF( br.x() + br.width(), br.y(), br.x(), br.y() + br.height() ) );
 
-  double nw = br.width()*0.5; double nh = br.height()*0.5;
-  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  double nw = br.width() * 0.5; double nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 
-  nw = br.width()*0.5; nh = br.height()*0.5;
-  br = QRectF(c-QPointF(nw/2,nh/2), QSize(nw, nh));
+  nw = br.width() * 0.5; nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
   p->drawRoundedRect( br, rad, rad );
 #endif
 

@@ -161,15 +161,16 @@ void QgsMapSettings::updateDerived()
   mMapToPixel.setMapRotation( mRotation, visibleExtent().center().x(), visibleExtent().center().y() );
 
 #if 1 // set visible extent taking rotation in consideration
-  if ( mRotation ) {
-    QgsPoint p1 = mMapToPixel.toMapCoordinates( QPoint(0,0) );
-    QgsPoint p2 = mMapToPixel.toMapCoordinates( QPoint(0,myHeight) );
-    QgsPoint p3 = mMapToPixel.toMapCoordinates( QPoint(myWidth,0) );
-    QgsPoint p4 = mMapToPixel.toMapCoordinates( QPoint(myWidth,myHeight) );
-    dxmin = std::min(p1.x(), std::min(p2.x(), std::min(p3.x(), p4.x())));
-    dymin = std::min(p1.y(), std::min(p2.y(), std::min(p3.y(), p4.y())));
-    dxmax = std::max(p1.x(), std::max(p2.x(), std::max(p3.x(), p4.x())));
-    dymax = std::max(p1.y(), std::max(p2.y(), std::max(p3.y(), p4.y())));
+  if ( mRotation )
+  {
+    QgsPoint p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
+    QgsPoint p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
+    QgsPoint p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
+    QgsPoint p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
+    dxmin = std::min( p1.x(), std::min( p2.x(), std::min( p3.x(), p4.x() ) ) );
+    dymin = std::min( p1.y(), std::min( p2.y(), std::min( p3.y(), p4.y() ) ) );
+    dxmax = std::max( p1.x(), std::max( p2.x(), std::max( p3.x(), p4.x() ) ) );
+    dymax = std::max( p1.y(), std::max( p2.y(), std::max( p3.y(), p4.y() ) ) );
     mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
   }
 #endif
@@ -547,7 +548,8 @@ void QgsMapSettings::readXML( QDomNode& theNode )
   // set rotation
   QDomNode rotationNode = theNode.namedItem( "rotation" );
   QString rotationVal = rotationNode.toElement().text();
-  if ( ! rotationVal.isEmpty() ) {
+  if ( ! rotationVal.isEmpty() )
+  {
     double rot = rotationVal.toDouble();
     setRotation( rot );
   }
@@ -568,9 +570,9 @@ void QgsMapSettings::writeXML( QDomNode& theNode, QDomDocument& theDoc )
   // Write current view rotation
   QDomElement rotNode = theDoc.createElement( "rotation" );
   rotNode.appendChild(
-      theDoc.createTextNode( qgsDoubleToString( rotation() ) )
+    theDoc.createTextNode( qgsDoubleToString( rotation() ) )
   );
-  theNode.appendChild(rotNode);
+  theNode.appendChild( rotNode );
 
   // projections enabled
   QDomElement projNode = theDoc.createElement( "projections" );

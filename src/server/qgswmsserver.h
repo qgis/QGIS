@@ -100,7 +100,7 @@ class QgsWMSServer: public QgsOWSServer
 
     /**Sets configuration parser for administration settings. Does not take ownership*/
     void setAdminConfigParser( QgsWMSConfigParser* parser ) { mConfigParser = parser; }
-    
+
     /**Returns the schemaExtension for WMS 1.3.0 capabilities*/
     QDomDocument getSchemaExtension();
 

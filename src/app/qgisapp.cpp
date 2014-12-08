@@ -1750,16 +1750,16 @@ void QgisApp::createStatusBar()
   mRotationEdit->setObjectName( "mRotationEdit" );
   mRotationEdit->setMaximumWidth( 100 );
   mRotationEdit->setMaximumHeight( 20 );
-  mRotationEdit->setRange(-180, 180);
-  mRotationEdit->setWrapping(true);
-  mRotationEdit->setSingleStep(5.0);
+  mRotationEdit->setRange( -180, 180 );
+  mRotationEdit->setWrapping( true );
+  mRotationEdit->setSingleStep( 5.0 );
   mRotationEdit->setFont( myFont );
   mRotationEdit->setWhatsThis( tr( "Shows the current map clockwise rotation "
-                                 "in degrees. It also allows editing to set "
-                                 "the rotation") );
+                                   "in degrees. It also allows editing to set "
+                                   "the rotation" ) );
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
-  connect( mRotationEdit, SIGNAL( valueChanged(int) ), this, SLOT( userRotation() ) );
+  connect( mRotationEdit, SIGNAL( valueChanged( int ) ), this, SLOT( userRotation() ) );
 
   showRotation();
 
@@ -6900,7 +6900,7 @@ void QgisApp::userCenter()
 void QgisApp::userRotation()
 {
   double degrees = mRotationEdit->value();
-  mMapCanvas->setRotation(degrees);
+  mMapCanvas->setRotation( degrees );
   mMapCanvas->refresh();
 }
 
