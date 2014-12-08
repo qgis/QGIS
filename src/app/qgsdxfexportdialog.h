@@ -24,12 +24,12 @@
 
 #include <QList>
 #include <QPair>
+#include <QSet>
+#include <QItemDelegate>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 
-#if 0
-#include <QItemDelegate>
 class FieldSelectorDelegate : public QItemDelegate
 {
     Q_OBJECT
@@ -40,7 +40,6 @@ class FieldSelectorDelegate : public QItemDelegate
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
 };
-#endif
 
 class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 {
@@ -49,21 +48,24 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
     ~QgsVectorLayerAndAttributeModel();
 
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const;
-    QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &index ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
     Qt::ItemFlags flags( const QModelIndex &index ) const;
-    QVariant data( const QModelIndex& index, int role ) const;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
-    QList< QPair<QgsVectorLayer *, int> > layers( const QModelIndexList &selectedIndexes ) const;
+    QList< QPair<QgsVectorLayer *, int> > layers() const;
+
+    QgsVectorLayer *vectorLayer( const QModelIndex &index ) const;
+
+    void applyVisibilityPreset( const QString &name );
 
   private:
     QHash<QgsVectorLayer *, int> mAttributeIdx;
+    QModelIndexList mCheckedIndexes;
 
-#if 0
+    void applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node );
+
     friend FieldSelectorDelegate;
-#endif
 };
 
 
@@ -86,20 +88,16 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void selectAll();
     void unSelectAll();
 
-    void on_mTreeView_clicked( const QModelIndex & current );
-    void on_mLayerAttributeComboBox_fieldChanged( QString );
-
   private slots:
     void on_mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
+    void on_mVisibilityPresets_currentIndexChanged( int index );
 
   private:
     void cleanGroup( QgsLayerTreeNode *node );
     QgsLayerTreeGroup *mLayerTreeGroup;
-#if 0
     FieldSelectorDelegate *mFieldSelectorDelegate;
-#endif
 };
 
 #endif // QGSDXFEXPORTDIALOG_H

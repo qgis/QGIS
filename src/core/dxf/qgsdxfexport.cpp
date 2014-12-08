@@ -1024,8 +1024,6 @@ void QgsDxfExport::writeEndFile()
   // From GDAL trailer.dxf
   mTextStream << "\
   0\n\
-ENDSEC\n\
-  0\n\
 SECTION\n\
   2\n\
 OBJECTS\n\

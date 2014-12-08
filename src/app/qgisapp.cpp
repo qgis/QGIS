@@ -4078,6 +4078,7 @@ void QgisApp::dxfExport()
     if ( !fileName.endsWith( ".dxf", Qt::CaseInsensitive ) )
       fileName += ".dxf";
     QFile dxfFile( fileName );
+    QApplication::setOverrideCursor( Qt::BusyCursor );
     if ( dxfExport.writeToFile( &dxfFile ) == 0 )
     {
       messageBar()->pushMessage( tr( "DXF export completed" ), QgsMessageBar::INFO, 4 );
@@ -4086,6 +4087,7 @@ void QgisApp::dxfExport()
     {
       messageBar()->pushMessage( tr( "DXF export failed" ), QgsMessageBar::CRITICAL, 4 );
     }
+    QApplication::restoreOverrideCursor();
   }
 }
 

@@ -278,7 +278,7 @@ void QgsVisibilityPresets::applyState( const QString& presetName )
 
   applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), mPresets[presetName] );
 
-  // also make sure that the preset is up-to-date (not containing any non-existant legend items)
+  // also make sure that the preset is up-to-date (not containing any non-existent legend items)
   if ( mPresets[presetName] == currentState() )
     return; // no need for update
 

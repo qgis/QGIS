@@ -82,15 +82,10 @@ QModelIndex QgsLayerTreeModel::legendNode2index( QgsLayerTreeModelLegendNode* le
 int QgsLayerTreeModel::rowCount( const QModelIndex &parent ) const
 {
   if ( index2legendNode( parent ) )
-  {
     return 0; // they are leaves
-  }
 
   QgsLayerTreeNode* n = index2node( parent );
   if ( !n )
-    return 0;
-
-  if ( parent.isValid() && parent.column() != 0 )
     return 0;
 
   if ( QgsLayerTree::isLayer( n ) )
@@ -116,14 +111,13 @@ int QgsLayerTreeModel::columnCount( const QModelIndex &parent ) const
 
 QModelIndex QgsLayerTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( column != 0 || row < 0 || row >= rowCount( parent ) )
+  if ( column < 0 || column >= columnCount( parent ) ||
+       row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsLayerTreeNode* n = index2node( parent );
+  QgsLayerTreeNode *n = index2node( parent );
   if ( !n )
-  {
     return QModelIndex(); // have no children
-  }
 
   if ( testFlag( ShowLegend ) && QgsLayerTree::isLayer( n ) )
   {
@@ -140,8 +134,8 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
   if ( !child.isValid() )
     return QModelIndex();
 
-  QgsLayerTreeNode* parentNode = 0;
-  QgsLayerTreeNode* n = index2node( child );
+  QgsLayerTreeNode *parentNode = 0;
+  QgsLayerTreeNode *n = index2node( child );
   if ( !n )
   {
     QgsLayerTreeModelLegendNode* sym = index2legendNode( child );
@@ -149,7 +143,9 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
     parentNode = sym->layerNode();
   }
   else
+  {
     parentNode = n->parent(); // must not be null
+  }
 
   Q_ASSERT( parentNode );
 
@@ -165,7 +161,7 @@ QModelIndex QgsLayerTreeModel::parent( const QModelIndex &child ) const
 
 QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() )
+  if ( !index.isValid() || index.column() > 1 )
     return QVariant();
 
   if ( QgsLayerTreeModelLegendNode* sym = index2legendNode( index ) )
@@ -406,6 +402,7 @@ QModelIndex QgsLayerTreeModel::node2index( QgsLayerTreeNode* node ) const
 {
   if ( !node->parent() )
     return QModelIndex(); // this is the only root item -> invalid index
+
   QModelIndex parentIndex = node2index( node->parent() );
 
   int row = node->parent()->children().indexOf( node );
@@ -432,6 +429,7 @@ static bool _isChildOfNodes( QgsLayerTreeNode* child, QList<QgsLayerTreeNode*> n
     if ( _isChildOfNode( child, n ) )
       return true;
   }
+
   return false;
 }
 
@@ -989,7 +987,7 @@ bool QgsLayerTreeModel::dropMimeData( const QMimeData* data, Qt::DropAction acti
   if ( !data->hasFormat( "application/qgis.layertreemodeldata" ) )
     return false;
 
-  if ( column > 0 )
+  if ( column >= columnCount( parent ) )
     return false;
 
   QgsLayerTreeNode* nodeParent = index2node( parent );
@@ -1063,7 +1061,6 @@ bool QgsLayerTreeModel::testFlag( QgsLayerTreeModel::Flag f ) const
   return mFlags.testFlag( f );
 }
 
-
 const QIcon& QgsLayerTreeModel::iconGroup()
 {
   static QIcon icon;
@@ -1104,6 +1101,9 @@ QList<QgsLayerTreeModelLegendNode*> QgsLayerTreeModel::filterLegendNodes( const 
     }
   }
   else
+  {
     return nodes;
+  }
+
   return filtered;
 }
