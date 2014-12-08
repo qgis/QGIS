@@ -261,10 +261,12 @@ class ModelerParametersDialog(QDialog):
                 item.addItem(self.resolveValueDescription(layer), layer)
         elif isinstance(param, ParameterTable):
             item = QComboBox()
-            item.setEditable(True)
-            layers = self.getAvailableValuesOfType(ParameterTable, OutputTable)
+            tables = self.getAvailableValuesOfType(ParameterTable, OutputTable)
+            layers = self.getAvailableValuesOfType(ParameterVector, OutputVector)
             if param.optional:
                 item.addItem(self.NOT_SELECTED, None)
+            for table in tables:
+                item.addItem(self.resolveValueDescription(table), table)
             for layer in layers:
                 item.addItem(self.resolveValueDescription(layer), layer)
         elif isinstance(param, ParameterBoolean):
