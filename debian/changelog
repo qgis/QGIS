@@ -3,10 +3,10 @@ qgis (2.7.0) UNRELEASED; urgency=medium
   * New development version 2.7 after branch of 2.6
   * run tests in en_US.UTF-8 locale
   * add build dependency to python-qscintilla2 for tests
-  * merge some downstream debian changes
   * rename libqgis-customwidgets{QGIS_ABI} to libqgis-customwidgets
+  * merge some downstream debian changes
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sun, 30 Nov 2014 16:49:54 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 09 Dec 2014 09:37:11 +0100
 
 qgis (2.6.0) unstable; urgency=medium
 
