@@ -157,8 +157,12 @@ void QgsMapSettings::updateDerived()
   mScaleCalculator.setDpi( mDpi );
   mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
 
-  mMapToPixel = QgsMapToPixel( mapUnitsPerPixel(), outputSize().height(), visibleExtent().yMinimum(), visibleExtent().xMinimum() );
-  mMapToPixel.setMapRotation( mRotation, visibleExtent().center().x(), visibleExtent().center().y() );
+  mMapToPixel.setParameters( mapUnitsPerPixel(),
+                             visibleExtent().center().x(),
+                             visibleExtent().center().y(),
+                             outputSize().width(),
+                             outputSize().height(),
+                             mRotation);
 
 #if 1 // set visible extent taking rotation in consideration
   if ( mRotation )
