@@ -610,6 +610,7 @@ void TestQgsComposerTableV2::removeDuplicates()
   QCOMPARE( table->contents()->length(), 4 );
 
   mComposition->removeMultiFrame( table );
+  delete table;
   delete dupesLayer;
 }
 
