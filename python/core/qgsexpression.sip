@@ -150,6 +150,7 @@ class QgsExpression
       boMinus,
       boMul,
       boDiv,
+      boIntDiv,
       boMod,
       boPow,
 

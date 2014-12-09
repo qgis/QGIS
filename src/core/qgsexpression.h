@@ -241,6 +241,7 @@ class CORE_EXPORT QgsExpression
       boMinus,
       boMul,
       boDiv,
+      boIntDiv,
       boMod,
       boPow,
 
