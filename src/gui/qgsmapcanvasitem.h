@@ -76,7 +76,6 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
 
     //! transformation from map coordinates to screen coordinates
     QPointF toCanvasCoordinates( const QgsPoint& point );
-    QRectF toCanvasCoordinates( const QRectF& rect );
 
   protected:
 
@@ -92,6 +91,14 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;
+
+  private:
+
+    //! transformation from map coordinates to screen coordinates
+    //! if rotation is set it is taken in consideration so that
+    //! the returned rectangle is the bounding box of the rotated input
+    QRectF toCanvasCoordinates( const QRectF& rect );
+
 };
 
 

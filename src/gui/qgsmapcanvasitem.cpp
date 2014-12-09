@@ -67,6 +67,7 @@ QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point )
   return QPointF( x, y ) + mPanningOffset;
 }
 
+// private
 QRectF QgsMapCanvasItem::toCanvasCoordinates( const QRectF& rect )
 {
   QPointF tl( toCanvasCoordinates( rect.topLeft() ) );
