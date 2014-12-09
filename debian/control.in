@@ -177,9 +177,15 @@ Depends:
  qt4-designer,
  ${shlibs:Depends},
  ${misc:Depends}
-Replaces: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
-Conflicts: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
-Provides: libqgis-customwidgets2.6.0, libqgis-customwidgets2.6.1
+Conflicts: libqgis-customwidgets2.4.0,
+ libqgis-customwidgets2.6.0,
+ libqgis-customwidgets2.6.1
+Provides: libqgis-customwidgets2.4.0,
+ libqgis-customwidgets2.6.0,
+ libqgis-customwidgets2.6.1
+Replaces: libqgis-customwidgets2.4.0,
+ libqgis-customwidgets2.6.0,
+ libqgis-customwidgets2.6.1
 Description: QGIS custom widgets for Qt Designer
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -328,9 +334,7 @@ Depends:
  python-gdal,
  python-matplotlib,
  libqgis-customwidgets,
- ${python:Depends},
- ${misc:Depends},
- ${sip:Depends}
+ ${misc:Depends}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to QGIS - architecture-independent files
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
@@ -368,13 +372,13 @@ Description: collection of data providers to QGIS - architecture-independent fil
 
 Package: qgis-server
 Architecture: any
-Provides: qgis-mapserver
-Replaces: qgis-mapserver
-Conflicts: qgis-mapserver
 Depends:
  qgis-providers (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends}
+Conflicts: qgis-mapserver
+Provides: qgis-mapserver
+Replaces: qgis-mapserver
 Description: QGIS server providing various OGC services
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
