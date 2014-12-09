@@ -229,7 +229,7 @@ void QgsMapToPixel::setParameters( double mapUnitsPerPixel,
   updateMatrix();
 }
 
-QString QgsMapToPixel::showParameters()
+QString QgsMapToPixel::showParameters() const
 {
   QString rep;
   QTextStream( &rep ) << "Map units/pixel: " << mMapUnitsPerPixel

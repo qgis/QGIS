@@ -174,7 +174,7 @@ class CORE_EXPORT QgsMapToPixel
     void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation  );
 
     //! String representation of the parameters used in the transform
-    QString showParameters();
+    QString showParameters() const;
 
   private:
     double mMapUnitsPerPixel;
