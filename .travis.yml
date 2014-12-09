@@ -5,11 +5,6 @@ compiler:
 
 cache: apt
 
-notifications:
-  irc: "chat.freenode.net#qgis"
-  on_failure: change
-  on_success: change
-
 before_install:
   - sudo apt-get update -qq
   - sudo add-apt-repository ppa:ubuntugis/ppa -y
@@ -20,5 +15,6 @@ install:
   - cd build
   - cmake -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF -DSUPPRESS_QT_WARNINGS=ON ..
 
-script: xvfb-run ctest -V -E 'PyQgsPalLabelingCanvas|PyQgsPalLabelingServer|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
+script:
+  - xvfb-run ctest -V -E 'PyQgsPalLabelingCanvas|PyQgsPalLabelingServer|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
 
