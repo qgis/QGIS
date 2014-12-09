@@ -82,9 +82,7 @@ class QgsMapCanvas::CanvasProperties
 
     //! Flag to indicate the pan selector key is held down by user
     bool panSelectorDown;
-
 };
-
 
 
 QgsMapCanvasRendererSync::QgsMapCanvasRendererSync( QgsMapCanvas* canvas, QgsMapRenderer* renderer )
@@ -1201,8 +1199,10 @@ void QgsMapCanvas::mouseDoubleClickEvent( QMouseEvent * e )
 {
   // call handler of current map tool
   if ( mMapTool )
+  {
     mMapTool->canvasDoubleClickEvent( e );
-} // mouseDoubleClickEvent
+  }
+}// mouseDoubleClickEvent
 
 
 void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
@@ -1218,7 +1218,9 @@ void QgsMapCanvas::mousePressEvent( QMouseEvent * e )
 
     // call handler of current map tool
     if ( mMapTool )
+    {
       mMapTool->canvasPressEvent( e );
+    }
   }
 
   if ( mCanvasProperties->panSelectorDown )
@@ -1422,7 +1424,9 @@ void QgsMapCanvas::mouseMoveEvent( QMouseEvent * e )
   {
     // call handler of current map tool
     if ( mMapTool )
+    {
       mMapTool->canvasMoveEvent( e );
+    }
   }
 
   // show x y on status bar

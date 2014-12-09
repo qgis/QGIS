@@ -43,13 +43,19 @@ QgsSnapper::~QgsSnapper()
 
 int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
 {
+  QgsPoint mapCoordPoint = mMapSettings.mapToPixel().toMapCoordinates( startPoint.x(), startPoint.y() );
+  return snapPoint( mapCoordPoint, snappingResult, excludePoints);
+}
+
+int QgsSnapper::snapPoint( const QgsPoint& mapCoordPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
+  {
   snappingResult.clear();
 
   QMultiMap<double, QgsSnappingResult> snappingResultList;//all snapping results
   QMultiMap<double, QgsSnappingResult> currentResultList; //snapping results of examined layer
 
   //start point in (output) map coordinates
-  QgsPoint mapCoordPoint = mMapSettings.mapToPixel().toMapCoordinates( startPoint.x(), startPoint.y() );
+
   QgsPoint layerCoordPoint; //start point in layer coordinates
   QgsSnappingResult newResult;
 

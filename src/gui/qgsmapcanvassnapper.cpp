@@ -116,6 +116,12 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
 
 int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
 {
+  const QgsPoint mapCoordPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p.x(), p.y() );
+  return snapToBackgroundLayers(mapCoordPoint,results,excludePoints);
+}
+
+int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
+{
   results.clear();
 
   if ( !mSnapper )
@@ -251,7 +257,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
+  if ( mSnapper->snapPoint( point, results, excludePoints ) != 0 )
     return 4;
 
   if ( intersectionSnapping != 1 )
@@ -317,7 +323,6 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
             toleranceB = QgsTolerance::toleranceInMapUnits( snapLayers[i].mTolerance, snapLayers[i].mLayer, mMapCanvas->mapSettings(), snapLayers[i].mUnitType );
           }
         }
-        QgsPoint point = mMapCanvas->getCoordinateTransform()->toMapCoordinates( p );
         QgsGeometry* cursorPoint = QgsGeometry::fromPoint( point );
         double distance = intersectionPoint->distance( *cursorPoint );
         if ( distance < toleranceA && distance < toleranceB )

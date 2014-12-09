@@ -54,6 +54,7 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
+class QgsMapToolAdvancedDigitizing;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
@@ -68,6 +69,7 @@ class QNetworkProxy;
 class QAuthenticator;
 
 class QgsBrowserDockWidget;
+class QgsAdvancedDigitizingDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
@@ -419,6 +421,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *vectorToolBar() { return mVectorToolBar; }
     QToolBar *databaseToolBar() { return mDatabaseToolBar; }
     QToolBar *webToolBar() { return mWebToolBar; }
+
+    //! return CAD dock widget
+    QgsAdvancedDigitizingDockWidget* cadDockWidget() { return mAdvancedDigitizingDockWidget; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -1090,6 +1095,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! shows label settings dialog (for labeling-ng)
     void labeling();
 
+    //! set the CAD dock widget visible
+    void setCadDockVisible( bool visible );
+
     /** Check if deprecated labels are used in project, and flag projects that use them */
     void checkForDeprecatedLabelsInProject();
 
@@ -1542,6 +1550,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsBrowserDockWidget* mBrowserWidget;
     QgsBrowserDockWidget* mBrowserWidget2;
+
+    QgsAdvancedDigitizingDockWidget* mAdvancedDigitizingDockWidget;
 
     QgsSnappingDialog* mSnappingDialog;
 

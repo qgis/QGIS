@@ -21,6 +21,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmapmouseevent.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -62,7 +63,7 @@ void QgsMapToolAddFeature::activate()
   QgsMapTool::activate();
 }
 
-void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
 {
   QgsDebugMsg( "entered." );
 
@@ -104,24 +105,18 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     }
 
 
-    QgsPoint idPoint; //point in map coordinates
-    QList<QgsSnappingResult> snapResults;
-    QgsPoint savePoint; //point in layer coordinates
 
-    if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
+    QgsPoint savePoint; //point in layer coordinates
+    try
     {
-      idPoint = snapPointFromResults( snapResults, e->pos() );
-      try
-      {
-        savePoint = toLayerCoordinates( vlayer, idPoint );
-        QgsDebugMsg( "savePoint = " + savePoint.toString() );
-      }
-      catch ( QgsCsException &cse )
-      {
-        Q_UNUSED( cse );
-        emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
-        return;
-      }
+      savePoint = toLayerCoordinates( vlayer, e->mapPoint() );
+      QgsDebugMsg( "savePoint = " + savePoint.toString() );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      emit messageEmitted( tr( "Cannot transform the point to the layers coordinate system" ), QgsMessageBar::WARNING );
+      return;
     }
 
     //only do the rest for provider with feature addition support
@@ -169,7 +164,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     //add point to list and to rubber band
     if ( e->button() == Qt::LeftButton )
     {
-      int error = addVertex( e->pos() );
+      int error = addVertex( e->mapPoint() );
       if ( error == 1 )
       {
         //current layer is not a vector layer

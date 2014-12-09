@@ -32,6 +32,7 @@
 #include "qgscomposerview.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgslayertreeview.h"

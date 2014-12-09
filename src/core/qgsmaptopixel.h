@@ -93,6 +93,7 @@ class CORE_EXPORT QgsMapToPixel
     QgsPoint toMapCoordinates( QPoint p ) const;
 
     QgsPoint toMapPoint( double x, double y ) const;
+
     /*! Set map units per pixel
     * @param mapUnitsPerPixel Map units per pixel
     */

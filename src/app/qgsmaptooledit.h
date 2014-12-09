@@ -16,14 +16,13 @@
 #ifndef QGSMAPTOOLEDIT_H
 #define QGSMAPTOOLEDIT_H
 
-#include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
+#include "qgsmaptooladvanceddigitizing.h"
 
 class QgsRubberBand;
 class QKeyEvent;
 
 /**Base class for map tools that edit vector geometry*/
-class APP_EXPORT QgsMapToolEdit: public QgsMapTool
+class APP_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
 {
   public:
     QgsMapToolEdit( QgsMapCanvas* canvas );
@@ -32,10 +31,6 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapTool
     virtual bool isEditTool() { return true; }
 
   protected:
-    /**Snapper object that reads the settings from project and option
-     and applies it to the map canvas*/
-    QgsMapCanvasSnapper mSnapper;
-
     /**Inserts vertices to the snapped segments of the editing layer.
      This is useful for topological editing if snap to segment is enabled.
      @param snapResults results collected from the snapping operation
@@ -47,7 +42,9 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapTool
        This is useful for snapping operations that just require a position to snap to and not all the
        snapping results. If the list is empty, the screen coordinates are transformed into map coordinates and returned
        @param snapResults results collected from the snapping operation.
-       @return the snapped point in map coordinates*/
+       @return the snapped point in map coordinates
+    CADTODO to be removed
+    */
     QgsPoint snapPointFromResults( const QList<QgsSnappingResult>& snapResults, const QPoint& screenCoords );
 
     /** Creates a rubber band with the color/line width from
