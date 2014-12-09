@@ -39,9 +39,27 @@ class CORE_EXPORT QgsMapToPixel
     * @param height Map canvas height, in pixels
     * @param ymin Minimum y value of the map canvas
     * @param xmin Minimum x value of the map canvas
+    * @deprecated in 2.8, use version with all parameters
     */
-    QgsMapToPixel( double mapUnitsPerPixel = 0, double height = 0, double ymin = 0,
-                   double xmin = 0 );
+    QgsMapToPixel( double mapUnitsPerPixel, double height = 0, double ymin = 0, double xmin = 0 );
+
+    /* Constructor
+    * @param mapUnitsPerPixel Map units per pixel
+    * @param xc X ordinate of map center, in geographical units
+    * @param yc Y ordinate of map center, in geographical units
+    * @param width Output width, in pixels
+    * @param height Output height, in pixels
+    * @param degrees clockwise rotation in degrees
+    * @note added in 2.8
+    */
+    QgsMapToPixel( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
+
+    /*! Constructor
+     *
+     * Use setParameters to fill
+     */
+    QgsMapToPixel();
+
     //! destructor
     ~QgsMapToPixel();
     /*! Transform the point from map (world) coordinates to device coordinates
@@ -103,9 +121,12 @@ class CORE_EXPORT QgsMapToPixel
     double mapUnitsPerPixel() const;
 
     //! Return current map width in pixels
+    //! The information is only known if setRotation was used
+    //! @note added in 2.8
     int mapWidth() const;
 
     //! Return current map height in pixels
+    //! @note added in 2.8
     int mapHeight() const;
 
     //! Set map rotation in degrees (clockwise)
@@ -120,39 +141,56 @@ class CORE_EXPORT QgsMapToPixel
     double mapRotation() const;
 
     //! Set maximum y value
-    // @deprecated in 2.8, use setViewportHeight
+    // @deprecated in 2.8, use setParameters
     // @note this really sets the viewport height, not ymax
-    void setYMaximum( double yMax ) { setViewportHeight( yMax ); }
-    //! Set viewport height
-    //! @note added in 2.8
-    void setViewportHeight( double height );
+    void setYMaximum( double yMax ) { mHeight = yMax; }
+
     //! Set minimum y value
+    // @deprecated in 2.8, use setParameters
     void setYMinimum( double ymin );
+
     //! set minimum x value
+    // @deprecated in 2.8, use setParameters
     void setXMinimum( double xmin );
+
     /*! Set parameters for use in transforming coordinates
     * @param mapUnitsPerPixel Map units per pixel
     * @param xmin Minimum x value
     * @param ymin Minimum y value
     * @param height Map height, in pixels
+    * @deprecated in 2.8, use the version with full parameters
     */
     void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double height );
+
+    /*! Set parameters for use in transforming coordinates
+    * @param mapUnitsPerPixel Map units per pixel
+    * @param xc X ordinate of map center, in geographical units
+    * @param yc Y ordinate of map center, in geographical units
+    * @param width Output width, in pixels
+    * @param height Output height, in pixels
+    * @param degrees clockwise rotation in degrees
+    * @note added in 2.8
+    */
+    void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation  );
+
     //! String representation of the parameters used in the transform
     QString showParameters();
 
   private:
     double mMapUnitsPerPixel;
-    double mHeight;
-    double yMin;
-    double xMin;
-    //! Map rotation around Z axis on map center as clockwise degrees
-    //! @note added in 2.8
-    double mMapRotation;
+    int mWidth;
+    int mHeight;
+    double mRotation;
     double xCenter;
     double yCenter;
+    double xMin; // @deprecated in 2.8
+    double yMin; // @deprecated in 2.8
+    QTransform mMatrix;
 
     // Matrix to map from map (geographical) to screen (pixels) units
-    QTransform getMatrix() const;
+    const QTransform& getMatrix() const;
+
+    void updateMatrix();
 };
 
 
