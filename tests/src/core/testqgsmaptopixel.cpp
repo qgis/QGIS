@@ -27,6 +27,7 @@ class TestQgsMapToPixel: public QObject
     Q_OBJECT
   private slots:
     void legacy();
+    void rotation();
 };
 
 void TestQgsMapToPixel::legacy()
@@ -57,7 +58,51 @@ void TestQgsMapToPixel::legacy()
   d = m2p.transform(p);
   QCOMPARE( d, QgsPoint(20, 20) );
 
-};
+}
+
+void TestQgsMapToPixel::rotation()
+{
+  QgsMapToPixel m2p(1,5,5,10,10,90);
+
+  QgsPoint p(5,5); // in geographical units
+  QgsPoint d = m2p.transform(p); // to device pixels
+  QCOMPARE( d.x(), 5.0 ); // center doesn't move
+  QCOMPARE( d.y(), 5.0 );
+
+  QgsPoint b = m2p.toMapCoordinatesF( d.x(), d.y() ); // transform back
+  QCOMPARE( p, b );
+
+  m2p.transform(&p); // in place transform
+  QCOMPARE( p, d );
+
+  m2p.setParameters(0.1,5,5,10,10,-90);
+  p = m2p.toMapCoordinates( 5, 5 );
+  QCOMPARE( p.x(), 5.0 ); // center doesn't move
+  QCOMPARE( p.y(), 5.0 );
+  d = m2p.transform(p);
+  QCOMPARE( d, QgsPoint(5, 5) );
+
+  p = m2p.toMapCoordinates( 10, 0 );
+  QCOMPARE( p.x(), 5.5 ); // corner scales and rotates
+  QCOMPARE( p.y(), 4.5 );
+  d = m2p.transform(p);
+  QCOMPARE( d, QgsPoint(10, 0) );
+
+  m2p.setParameters(0.1,5,5,10,10,360);
+  p = m2p.toMapCoordinates( 10, 0 );
+  QCOMPARE( p.x(), 5.5 ); // corner scales
+  QCOMPARE( p.y(), 5.5 );
+  d = m2p.transform(p);
+  QCOMPARE( d, QgsPoint(10, 0) );
+
+  m2p.setParameters(0.1,5,5,10,10,0);
+  p = m2p.toMapCoordinates( 10, 0 );
+  QCOMPARE( p.x(), 5.5 ); // corner scales
+  QCOMPARE( p.y(), 5.5 );
+  d = m2p.transform(p);
+  QCOMPARE( d, QgsPoint(10, 0) );
+
+}
 
 QTEST_MAIN( TestQgsMapToPixel )
 #include "testqgsmaptopixel.moc"
