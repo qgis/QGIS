@@ -76,7 +76,6 @@ class CORE_EXPORT QgsMapSettings
     double rotation() const;
     //! Set the rotation of the resulting map image
     //! Units are clockwise degrees
-    //! TODO: define relation between extent and rotation
     //! @note added in 2.8
     void setRotation( double degrees );
 
