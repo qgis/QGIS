@@ -1415,10 +1415,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
   }
   w /= rasterCompressFactor;
-  QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
 
+#if 0 // XXX strk
+  QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
   labelX = qAbs( ptSize.x() - ptZero.x() );
   labelY = qAbs( ptSize.y() - ptZero.y() );
+#else
+  double uPP = xform->mapUnitsPerPixel();
+  labelX = w * uPP;
+  labelY = h * uPP;
+#endif
 }
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
