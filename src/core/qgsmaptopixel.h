@@ -168,10 +168,10 @@ class CORE_EXPORT QgsMapToPixel
     * @param yc Y ordinate of map center, in geographical units
     * @param width Output width, in pixels
     * @param height Output height, in pixels
-    * @param degrees clockwise rotation in degrees
+    * @param rotation clockwise rotation in degrees
     * @note added in 2.8
     */
-    void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation  );
+    void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
 
     //! String representation of the parameters used in the transform
     QString showParameters() const;
