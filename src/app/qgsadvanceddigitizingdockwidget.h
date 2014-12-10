@@ -120,7 +120,6 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     ~QgsAdvancedDigitizingDockWidget();
 
-    void showEvent( QShowEvent* );
     void hideEvent( QHideEvent* );
 
     virtual bool canvasPressEventFilter( QgsMapMouseEvent* e );
@@ -157,6 +156,9 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     bool pointSnapped() const {return mPointSnapped;}
     const QList<QgsPoint>& snappedSegment() const {return mSnappedSegment;}
 
+    //! return the action used to enable/disable the tools
+    QAction* enableAction() { return mEnableAction; }
+
   public slots:
     //! whenever a map tool changes, determines if the dock shall be activated or not
     void mapToolChanged( QgsMapTool* tool );
@@ -174,7 +176,8 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     //! set the relative properties of constraints
     void setConstraintRelative( bool activate );
 
-    //! activates/deactivates CAD for the current map tool
+    //! activate/deactuvate tools. It is called when tools are activated manually (from the GUI)
+    //! it will call setCadEnabled to properly update the UI.
     void activateCad( bool enabled );
 
     //! enable/disable construction mode (events are not forwarded to the map tool)
@@ -184,7 +187,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     void settingsButtonTriggered( QAction* action );
 
   private:
-    //! used to update the UI when CAD is activated/deactivated
+    //! updates the UI depending on activation of the tools and clear points / release locks.
     void setCadEnabled( bool enabled );
 
     /**
@@ -255,6 +258,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     bool mErrorMessageDisplayed;
 
     // UI
+    QAction* mEnableAction;
     QMap< QAction*, int > mCommonAngleActions; // map the common angle actions with their angle values
     QAction* mSnappingEnabledAction;
 };

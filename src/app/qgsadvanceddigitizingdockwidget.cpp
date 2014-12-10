@@ -20,6 +20,7 @@
 #include "qgisapp.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsadvanceddigitizingcanvasitem.h"
+#include "qgsapplication.h"
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -108,11 +109,19 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   mXLineEdit->installEventFilter( this );
   mYLineEdit->installEventFilter( this );
 
+  // this action is also used in the advanced digitizing tool bar
+  mEnableAction = new QAction( this );
+  mEnableAction->setText( tr( "Enable advanced digitizing tools" ) );
+  mEnableAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.png" ) );
+  mEnableAction->setCheckable( true );
+  mEnabledButton->addAction( mEnableAction );
+  mEnabledButton->setDefaultAction( mEnableAction );
+
   // enable/disable on map tool change
   connect( canvas, SIGNAL( mapToolSet( QgsMapTool* ) ), this, SLOT( mapToolChanged( QgsMapTool* ) ) );
 
   // Connect the UI to the event filter to update constraints
-  connect( mEnabledButton, SIGNAL( clicked( bool ) ), this, SLOT( activateCad( bool ) ) );
+  connect( mEnableAction, SIGNAL( triggered( bool ) ), this, SLOT( activateCad( bool ) ) );
   connect( mConstructionModeButton, SIGNAL( clicked( bool ) ), this, SLOT( setConstructionMode( bool ) ) );
   connect( mParallelButton, SIGNAL( clicked( bool ) ), this, SLOT( addtionalConstraintClicked( bool ) ) );
   connect( mPerpendicularButton, SIGNAL( clicked( bool ) ), this, SLOT( addtionalConstraintClicked( bool ) ) );
@@ -171,12 +180,6 @@ QgsAdvancedDigitizingDockWidget::~QgsAdvancedDigitizingDockWidget()
   delete mErrorMessage;
 }
 
-void QgsAdvancedDigitizingDockWidget::showEvent( QShowEvent* )
-{
-  // when showing dock enable CAD if it used to be enabled
-  activateCad( QSettings().value( "/Cad/SessionActive", false ).toBool() );
-}
-
 void QgsAdvancedDigitizingDockWidget::hideEvent( QHideEvent* )
 {
   // disable CAD but do not unset map event filter
@@ -213,25 +216,22 @@ void QgsAdvancedDigitizingDockWidget::mapToolChanged( QgsMapTool* tool )
 
   if ( mCurrentMapTool )
   {
+    mEnableAction->setEnabled( true );
     mErrorLabel->hide();
     mCadWidget->show();
     setMaximumSize( 5000, 220 );
 
-    if ( toolMap->cadAllowed() )
+    // restore previous status
+    const bool enabled = QSettings().value( "/Cad/SessionActive", false ).toBool();
+    if ( enabled && !isVisible() )
     {
-      if ( isVisible() )
-      {
-        const bool enabled = QSettings().value( "/Cad/SessionActive", false ).toBool();
-        setCadEnabled( enabled );
-      }
+      show();
     }
-    else
-    {
-      setCadEnabled( false );
-    }
+    setCadEnabled( enabled );
   }
   else
   {
+    mEnableAction->setEnabled( false );
     mErrorLabel->setText( lblText );
     mErrorLabel->show();
     mCadWidget->hide();
@@ -244,22 +244,31 @@ void QgsAdvancedDigitizingDockWidget::mapToolChanged( QgsMapTool* tool )
 void QgsAdvancedDigitizingDockWidget::setCadEnabled( bool enabled )
 {
   mCadEnabled = enabled;
-  mEnabledButton->setChecked( enabled );
+  mEnableAction->setChecked( enabled );
   mCadButtons->setEnabled( enabled );
   mInputWidgets->setEnabled( enabled );
 
   clearPoints();
   releaseLocks();
+  setConstructionMode( false );
 }
 
 void QgsAdvancedDigitizingDockWidget::activateCad( bool enabled )
 {
+  enabled &= mCurrentMapTool != 0;
+
   if ( mErrorMessageDisplayed )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
   }
   QSettings().setValue( "/Cad/SessionActive", enabled );
-  setCadEnabled( enabled && mCurrentMapTool );
+
+  if ( enabled && !isVisible() )
+  {
+    show();
+  }
+
+  setCadEnabled( enabled );
 }
 
 void QgsAdvancedDigitizingDockWidget::addtionalConstraintClicked( bool activated )
@@ -490,9 +499,6 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
 
 bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
 {
-  if ( !mCadEnabled )
-    return true;
-
   bool res = true;
 
   QgsDebugMsg( "Contraints (locked / relative / value" );
@@ -834,11 +840,14 @@ bool QgsAdvancedDigitizingDockWidget::canvasPressEventFilter( QgsMapMouseEvent* 
 {
   Q_UNUSED( e );
 
-  return mConstructionMode;
+  return mCadEnabled && mConstructionMode;
 }
 
 bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent* e )
 {
+  if ( !mCadEnabled )
+    return false;
+
   if ( mErrorMessageDisplayed )
   {
     QgisApp::instance()->messageBar()->popWidget( mErrorMessage );
@@ -883,6 +892,9 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
 
 bool QgsAdvancedDigitizingDockWidget::canvasMoveEventFilter( QgsMapMouseEvent* e )
 {
+  if ( !mCadEnabled )
+    return false;
+
   if ( !applyConstraints( e ) )
   {
     if ( !mErrorMessageDisplayed )
@@ -908,6 +920,10 @@ bool QgsAdvancedDigitizingDockWidget::canvasMoveEventFilter( QgsMapMouseEvent* e
 bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent* e )
 {
   // event on map tool
+
+  if ( !mCadEnabled )
+    return false;
+
   switch ( e->key() )
   {
     case Qt::Key_Backspace:
@@ -935,6 +951,10 @@ bool QgsAdvancedDigitizingDockWidget::canvasKeyPressEventFilter( QKeyEvent* e )
 void QgsAdvancedDigitizingDockWidget::keyPressEvent( QKeyEvent *e )
 {
   // event on dock (this)
+
+  if ( !mCadEnabled )
+    return;
+
   switch ( e->key() )
   {
     case Qt::Key_Backspace:

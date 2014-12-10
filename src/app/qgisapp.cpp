@@ -587,7 +587,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // Advanced Digitizing dock
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
-  mAdvancedDigitizingDockWidget->setObjectName( "Cad" );
+  mAdvancedDigitizingDockWidget->setObjectName( "AdvancedDigitizingTools" );
 
   createActions();
   createActionGroups();
@@ -1641,10 +1641,7 @@ void QgisApp::createToolBars()
   mHelpToolBar->addAction( actionWhatsThis );
 
   // Cad toolbar
-  QAction* cadAction = mAdvancedDigitizingDockWidget->toggleViewAction();
-  cadAction->setText( tr( "Show CAD tools" ) );
-  cadAction->setIcon( QgsApplication::getThemeIcon( "/cadtools/cad.png" ) );
-  mAdvancedDigitizeToolBar->insertAction( mActionUndo, cadAction );
+  mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
 }
 
 void QgisApp::createStatusBar()
