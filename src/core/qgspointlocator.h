@@ -64,7 +64,8 @@ class QgsPointLocator : public QObject
       //! consruct invalid match
       Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( 0 ), mFid( 0 ), mVertexIndex( 0 ) {}
 
-      Match( Type t, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0 ) : mType( t ), mDist( dist ), mPoint( pt ), mLayer( 0 ), mFid( fid ), mVertexIndex( vertexIndex ) {}
+      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0 )
+          : mType( t ), mDist( dist ), mPoint( pt ), mLayer( vl ), mFid( fid ), mVertexIndex( vertexIndex ) {}
 
       Type type() const { return mType; }
 

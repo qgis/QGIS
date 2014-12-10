@@ -284,12 +284,12 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
 {
   public:
     //! constructor for NN queries
-    QgsPointLocator_VisitorVertexEdge( bool vertexTree, const QgsPoint& origPt, QgsPointLocator::MatchList& list )
-        : mVertexTree( vertexTree ), mNNQuery( true ), mOrigPt( origPt ), mList( list ) {}
+    QgsPointLocator_VisitorVertexEdge( QgsVectorLayer* vl, bool vertexTree, const QgsPoint& origPt, QgsPointLocator::MatchList& list )
+        : mLayer( vl ), mVertexTree( vertexTree ), mNNQuery( true ), mOrigPt( origPt ), mList( list ) {}
 
     //! constructor for range queries
-    QgsPointLocator_VisitorVertexEdge( bool vertexTree, const QgsRectangle& origRect, QgsPointLocator::MatchList& list )
-        : mVertexTree( vertexTree ), mNNQuery( false ), mOrigRect( origRect ), mList( list ) {}
+    QgsPointLocator_VisitorVertexEdge( QgsVectorLayer* vl, bool vertexTree, const QgsRectangle& origRect, QgsPointLocator::MatchList& list )
+        : mLayer( vl ), mVertexTree( vertexTree ), mNNQuery( false ), mOrigRect( origRect ), mList( list ) {}
 
     void visitNode( const INode& n ) { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
@@ -336,10 +336,11 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
       }
       QgsPointLocator::Type t = mVertexTree ? QgsPointLocator::Vertex : QgsPointLocator::Edge;
       int vertexIndex = *reinterpret_cast<int*>( dd.m_pData );
-      mList << QgsPointLocator::Match( t, d.getIdentifier(), dist, pt, vertexIndex );
+      mList << QgsPointLocator::Match( t, mLayer, d.getIdentifier(), dist, pt, vertexIndex );
     }
 
   private:
+    QgsVectorLayer* mLayer;
     bool mVertexTree;
     bool mNNQuery;
     QgsPoint mOrigPt; // only for NN queries
@@ -356,8 +357,8 @@ class QgsPointLocator_VisitorArea : public IVisitor
 {
   public:
     //! constructor
-    QgsPointLocator_VisitorArea( const QgsPoint& origPt, QgsPointLocator::MatchList& list )
-        : mList( list )
+    QgsPointLocator_VisitorArea( QgsVectorLayer* vl, const QgsPoint& origPt, QgsPointLocator::MatchList& list )
+        : mLayer( vl ), mList( list )
     {
       GEOSContextHandle_t geosH = QgsGeometry::getGEOSHandler();
       GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosH, 1, 2 );
@@ -380,9 +381,10 @@ class QgsPointLocator_VisitorArea : public IVisitor
       GEOSGeometry* g = *reinterpret_cast<GEOSGeometry**>( dd.m_pData );
       // TODO: handle exceptions
       if ( GEOSIntersects_r( QgsGeometry::getGEOSHandler(), g, geomPt ) )
-        mList << QgsPointLocator::Match( QgsPointLocator::Area, d.getIdentifier(), 0, QgsPoint() );
+        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLayer, d.getIdentifier(), 0, QgsPoint() );
     }
   private:
+    QgsVectorLayer* mLayer;
     QgsPointLocator::MatchList& mList;
     GEOSGeometry* geomPt;
 };
@@ -577,7 +579,7 @@ QgsPointLocator::MatchList QgsPointLocator::nearestVertices( const QgsPoint& poi
   plow[1] = point.y();
   Point query( plow, 2 );
   MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( true, point, lst );
+  QgsPointLocator_VisitorVertexEdge visitor( mLayer, true, point, lst );
   mRTreeVertex->nearestNeighborQuery( maxMatches, query, visitor );
   return lst;
 }
@@ -593,7 +595,7 @@ QgsPointLocator::MatchList QgsPointLocator::nearestEdges( const QgsPoint& point,
   }
 
   MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( false, point, lst );
+  QgsPointLocator_VisitorVertexEdge visitor( mLayer, false, point, lst );
   EdgeNNComparator edgeNNC;
   mRTreeEdge->nearestNeighborQuery( maxMatches, point2point( point ), visitor, edgeNNC );
   return lst;
@@ -610,7 +612,7 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle& 
   }
 
   MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( true, rect, lst );
+  QgsPointLocator_VisitorVertexEdge visitor( mLayer, true, rect, lst );
   mRTreeVertex->intersectsWithQuery( rect2region( rect ), visitor );
   return lst;
 }
@@ -626,7 +628,7 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rec
   }
 
   MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( false, rect, lst );
+  QgsPointLocator_VisitorVertexEdge visitor( mLayer, false, rect, lst );
   mRTreeEdge->intersectsWithQuery( rect2region( rect ), visitor );
   return lst;
 }
@@ -642,7 +644,7 @@ QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPoint& poin
   }
 
   MatchList lst;
-  QgsPointLocator_VisitorArea visitor( point, lst );
+  QgsPointLocator_VisitorArea visitor( mLayer, point, lst );
   mRTreeArea->intersectsWithQuery( point2point( point ), visitor );
   return lst;
 }

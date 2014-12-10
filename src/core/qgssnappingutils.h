@@ -65,9 +65,9 @@ class QgsSnappingUtils : public QObject
     };
 
     /** Set how the snapping to map is done */
-    void setSnapToMapMode( SnapToMapMode mode );
+    void setSnapToMapMode( SnapToMapMode mode ) { mSnapToMapMode = mode; }
     /** Find out how the snapping to map is done */
-    SnapToMapMode snapToMapMode() const;
+    SnapToMapMode snapToMapMode() const { return mSnapToMapMode; }
 
     struct LayerConfig
     {
