@@ -62,6 +62,7 @@ class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsDoubleSpinBox;
 
 class QDomDocument;
 class QNetworkReply;
@@ -1446,7 +1447,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Widget that will live on the statusbar to display "Rotation"
     QLabel * mRotationLabel;
     //! Widget that will live in the statusbar to display and edit rotation
-    QSpinBox * mRotationEdit;
+    QgsDoubleSpinBox * mRotationEdit;
     //! The validator for the mCoordsEdit
     QValidator * mRotationEditValidator;
     //! Widget that will live in the statusbar to show progress of operations

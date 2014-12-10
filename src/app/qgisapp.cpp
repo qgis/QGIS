@@ -1759,11 +1759,14 @@ void QgisApp::createStatusBar()
   mRotationLabel->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationLabel, 0 );
 
-  mRotationEdit = new QSpinBox( statusBar() );
+  mRotationEdit = new QgsDoubleSpinBox( statusBar() );
   mRotationEdit->setObjectName( "mRotationEdit" );
-  mRotationEdit->setMaximumWidth( 100 );
+  mRotationEdit->setClearValue( 0.0 );
+  mRotationEdit->setKeyboardTracking( false );
+  mRotationEdit->setMaximumWidth( 120 );
+  mRotationEdit->setDecimals( 1 );
   mRotationEdit->setMaximumHeight( 20 );
-  mRotationEdit->setRange( -180, 180 );
+  mRotationEdit->setRange( -180.0, 180.0 );
   mRotationEdit->setWrapping( true );
   mRotationEdit->setSingleStep( 5.0 );
   mRotationEdit->setFont( myFont );
@@ -1772,7 +1775,7 @@ void QgisApp::createStatusBar()
                                    "the rotation" ) );
   mRotationEdit->setToolTip( tr( "Current clockwise map rotation in degrees" ) );
   statusBar()->addPermanentWidget( mRotationEdit, 0 );
-  connect( mRotationEdit, SIGNAL( valueChanged( int ) ), this, SLOT( userRotation() ) );
+  connect( mRotationEdit, SIGNAL( valueChanged( double ) ), this, SLOT( userRotation() ) );
 
   showRotation();
 
