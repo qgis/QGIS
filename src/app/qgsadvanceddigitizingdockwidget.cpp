@@ -235,7 +235,7 @@ void QgsAdvancedDigitizingDockWidget::mapToolChanged( QgsMapTool* tool )
     mErrorLabel->setText( lblText );
     mErrorLabel->show();
     mCadWidget->hide();
-    setMaximumSize( 5000, 70 );
+    setMaximumSize( 5000, 80 );
 
     setCadEnabled( false );
   }
@@ -870,8 +870,10 @@ bool QgsAdvancedDigitizingDockWidget::canvasReleaseEventFilter( QgsMapMouseEvent
 
   if ( e->button() == Qt::LeftButton )
   {
-    // continue digitizing if line or polygon
-    if ( e->mapTool()->mode() == QgsMapToolCapture::CaptureNone || e->mapTool()->mode() == QgsMapToolCapture::CapturePoint )
+    // stop digitizing if not intermediate point and if line or polygon
+    if ( !mConstructionMode &&
+         ( e->mapTool()->mode() == QgsMapToolCapture::CaptureNone ||
+           e->mapTool()->mode() == QgsMapToolCapture::CapturePoint ) )
     {
       clearPoints();
     }
