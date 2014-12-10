@@ -23,8 +23,8 @@
 QgsDataDefined::QgsDataDefined( bool active,
                                 bool useexpr,
                                 const QString& expr,
-                                const QString& field ) :
-    mActive( active )
+                                const QString& field )
+    : mActive( active )
     , mUseExpression( useexpr )
     , mExpressionString( expr )
     , mField( field )
@@ -135,4 +135,39 @@ QMap< QString, QString > QgsDataDefined::toMap()
   map.insert( "field", mField );
 
   return map;
+}
+
+QDomElement QgsDataDefined::toXmlElement( QDomDocument &document, const QString& elementName ) const
+{
+  QDomElement element = document.createElement( elementName );
+  element.setAttribute( "active", mActive ? "true" : "false" );
+  element.setAttribute( "useExpr", mUseExpression ? "true" : "false" );
+  element.setAttribute( "expr", mExpressionString );
+  element.setAttribute( "field", mField );
+  return element;
+}
+
+bool QgsDataDefined::setFromXmlElement( const QDomElement &element )
+{
+  if ( element.isNull() )
+  {
+    return false;
+  }
+
+  mActive = element.attribute( "active" ).compare( "true", Qt::CaseInsensitive ) == 0;
+  mUseExpression = element.attribute( "useExpr" ).compare( "true", Qt::CaseInsensitive ) == 0;
+  mField = element.attribute( "field" );
+  setExpressionString( element.attribute( "expr" ) );
+  return true;
+}
+
+bool QgsDataDefined::operator==( const QgsDataDefined &other )
+{
+  return other.isActive() == mActive && other.useExpression() == mUseExpression &&
+         other.field() == mField && other.expressionString() == mExpressionString;
+}
+
+bool QgsDataDefined::operator!=( const QgsDataDefined &other )
+{
+  return !( *this == other );
 }

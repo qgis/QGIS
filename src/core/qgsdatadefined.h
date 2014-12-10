@@ -80,6 +80,27 @@ class CORE_EXPORT QgsDataDefined
     // @note not available in python bindings
     QMap< QString, QString > toMap();
 
+    /**Returns a DOM element containing the properties of the data defined container.
+     * @param DOM document
+     * @param elementName name for DOM element
+     * @returns DOM element corresponding to data defined container
+     * @note added in QGIS 2.7
+     * @see setFromXmlElement
+     */
+    QDomElement toXmlElement( QDomDocument &document, const QString &elementName ) const;
+
+    /**Sets the properties of the data defined container from an XML element. Calling
+     * this will overwrite all the current properties of the container.
+     * @param element DOM element
+     * @returns true if properties were successfully read from element
+     * @note added in QGIS 2.7
+     * @see toXmlElement
+     */
+    bool setFromXmlElement( const QDomElement& element );
+
+    bool operator==( const QgsDataDefined &other );
+    bool operator!=( const QgsDataDefined &other );
+
   private:
     QgsExpression* mExpression;
 

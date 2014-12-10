@@ -35,6 +35,8 @@ class TestQgsDataDefined: public QObject
     void create();//test creating a data defined container
     void gettersSetters(); //test getters and setters
     void defaultValues(); //test hasDefaultValues method
+    void equality(); //test equality operators
+    void xmlMethods(); //test saving and reading from xml
 
   private:
 };
@@ -108,6 +110,66 @@ void TestQgsDataDefined::defaultValues()
   dd->setField( QString( "field" ) );
   QVERIFY( !dd->hasDefaultValues() );
   delete dd;
+}
+
+void TestQgsDataDefined::equality()
+{
+  QgsDataDefined dd1;
+  dd1.setActive( true );
+  dd1.setField( QString( "field" ) );
+  dd1.setExpressionString( QString( "expression" ) );
+  dd1.setUseExpression( true );
+  QgsDataDefined dd2;
+  dd2.setActive( true );
+  dd2.setField( QString( "field" ) );
+  dd2.setExpressionString( QString( "expression" ) );
+  dd2.setUseExpression( true );
+  QVERIFY( dd1 == dd2 );
+  QVERIFY( !( dd1 != dd2 ) );
+
+  //test that all applicable components contribute to equality
+  dd2.setActive( false );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd2.setActive( true );
+  dd2.setField( QString( "a" ) );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd2.setField( QString( "field" ) );
+  dd2.setExpressionString( QString( "b" ) );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+  dd2.setExpressionString( QString( "expression" ) );
+  dd2.setUseExpression( false );
+  QVERIFY( !( dd1 == dd2 ) );
+  QVERIFY( dd1 != dd2 );
+}
+
+void TestQgsDataDefined::xmlMethods()
+{
+  //create a test dom element
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      "qgis", "http://mrcc.com/qgis.dtd", "SYSTEM" );
+  QDomDocument doc( documentType );
+
+  QgsDataDefined dd1;
+  dd1.setActive( true );
+  dd1.setField( QString( "field" ) );
+  dd1.setExpressionString( QString( "expression" ) );
+  dd1.setUseExpression( true );
+  QDomElement ddElem = dd1.toXmlElement( doc, "test" );
+
+  //test reading
+  QgsDataDefined dd2;
+  QVERIFY( dd2 != dd1 );
+  QVERIFY( dd2.setFromXmlElement( ddElem ) );
+  QVERIFY( dd2 == dd1 );
+
+  //test reading from null element
+  QDomElement badElem;
+  QVERIFY( !dd2.setFromXmlElement( badElem ) );
 }
 
 QTEST_MAIN( TestQgsDataDefined )
