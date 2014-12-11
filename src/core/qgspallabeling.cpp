@@ -4126,32 +4126,10 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
 
   double rotation = xform->mapRotation();
   QRectF rect;
-  if ( rotation ) {
-    double w = lp->getWidth();
-    double h = lp->getHeight();
-    double cx = lp->getX() + w/2.0;
-    double cy = lp->getY() + h/2.0;
-    double scale = 1.0/xform->mapUnitsPerPixel();
-    double sw = w * scale;
-    double sh = h * scale;
-    rect = QRectF( -sw/2, -sh/2, sw, sh );
-
-    painter->translate( xform->transform( QPointF(cx, cy) ).toQPointF() );
-    if ( rotation ) {
-      // Only if not horizontal
-      if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ ) {
-        painter->rotate( rotation );
-      }
-    }
-    painter->translate( rect.bottomLeft() );
-    painter->rotate( -lp->getAlpha() * 180 / M_PI );
-    painter->translate( -rect.bottomLeft() );
-  } else {
     QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
     rect = QRectF( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
     painter->translate( QPointF( outPt.x(), outPt.y() ) );
     painter->rotate( -lp->getAlpha() * 180 / M_PI );
-  }
 
   painter->drawRect( rect );
   painter->restore();
@@ -4287,30 +4265,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     for ( int i = 0; i < lines; ++i )
     {
       painter->save();
-      double rotation = xform->mapRotation();
-      if ( rotation ) {
-        LabelPosition* lp = label;
-        double w = lp->getWidth();
-        double h = lp->getHeight();
-        double cx = lp->getX() + w/2.0;
-        double cy = lp->getY() + h/2.0;
-        double scale = 1.0/xform->mapUnitsPerPixel();
-        double sw = w * scale;
-        double sh = h * scale;
-        QRectF rect( -sw/2, -sh/2, sw, sh );
-        painter->translate( xform->transform( QPointF(cx, cy) ).toQPointF() );
-        if ( rotation ) {
-          // Only if not horizontal
-          if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ ) {
-            painter->rotate( rotation );
-          }
-        }
-        painter->translate( rect.bottomLeft() );
-        painter->rotate( -lp->getAlpha() * 180 / M_PI );
-      } else {
         painter->translate( QPointF( outPt.x(), outPt.y() ) );
         painter->rotate( -label->getAlpha() * 180 / M_PI );
-      }
 
       // scale down painter: the font size has been multiplied by raster scale factor
       // to workaround a Qt font scaling bug with small font sizes
