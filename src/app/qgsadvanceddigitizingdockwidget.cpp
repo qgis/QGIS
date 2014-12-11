@@ -356,7 +356,7 @@ void QgsAdvancedDigitizingDockWidget::triggerMouseMoveEvent()
 void QgsAdvancedDigitizingDockWidget::lockConstraint( bool activate /* default true */ )
 {
   QObject* obj = sender();
-  CadConstraint* constraint;
+  CadConstraint* constraint = NULL;
   if ( obj == mAngleLineEdit || obj == mLockAngleButton )
   {
     constraint = mAngleConstraint;
@@ -747,7 +747,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   // --- angle
   if ( !mAngleConstraint->isLocked() && previousPointExist )
   {
-    double angle;
+    double angle = 0.0;
     if ( penulPointExist && mAngleConstraint->relative() )
     {
       // previous angle
