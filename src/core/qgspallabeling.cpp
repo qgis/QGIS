@@ -1416,7 +1416,7 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
   w /= rasterCompressFactor;
 
-#if 0 // XXX strk
+#if 1 // XXX strk
   QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
   labelX = qAbs( ptSize.x() - ptZero.x() );
   labelY = qAbs( ptSize.y() - ptZero.y() );
