@@ -371,23 +371,23 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, in
   int minDistAt = -1;
   int minDist = INT_MAX;
 
-  for ( int i = 1; i < ( int )( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ); ++i )
+  for ( int i = 1; i < ( int )( sizeof( mDxfColors ) / sizeof( *mDxfColors ) ) && minDist > 0; ++i )
   {
     int dist = color_distance( color.rgba(), i );
-    if ( dist == 0 )
-    {
-      writeGroup( exactMatchCode, i );
-      return;
-    }
+    if ( dist >= minDist )
+      continue;
 
-    if ( dist < minDist )
-    {
-      minDistAt = i;
-      minDist = dist;
-    }
+    minDistAt = i;
+    minDist = dist;
   }
 
   writeGroup( exactMatchCode, minDistAt );
+  if ( minDist == 0 && color.alpha() == 255 )
+  {
+    // exact full opaque match
+    return;
+  }
+
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
   writeGroup( rgbCode, c );
   if ( transparencyCode != -1 && color.alpha() < 255 )
