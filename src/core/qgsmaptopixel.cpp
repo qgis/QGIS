@@ -268,10 +268,8 @@ void QgsMapToPixel::transform( QgsPoint* p ) const
 void QgsMapToPixel::transformInPlace( qreal& x, qreal& y ) const
 {
   // Map 2 Pixel
-
-  QTransform matrix = mMatrix;
   double mx, my;
-  matrix.map( x, y, &mx, &my );
+  mMatrix.map( x, y, &mx, &my );
   //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
   x = mx; y = my;
 }
