@@ -56,6 +56,11 @@ void QgsMapRendererJob::setCache( QgsMapRendererCache* cache )
   mCache = cache;
 }
 
+const QgsMapSettings& QgsMapRendererJob::mapSettings() const
+{
+  return mSettings;
+}
+
 
 bool QgsMapRendererJob::reprojectToLayerExtent( const QgsCoordinateTransform* ct, bool layerCrsGeographic, QgsRectangle& extent, QgsRectangle& r2 )
 {
