@@ -187,9 +187,6 @@ class CORE_EXPORT QgsMapToPixel
     double yMin; // @deprecated in 2.8
     QTransform mMatrix;
 
-    // Matrix to map from map (geographical) to screen (pixels) units
-    const QTransform& getMatrix() const;
-
     void updateMatrix();
 };
 
