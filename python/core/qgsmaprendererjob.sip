@@ -89,6 +89,13 @@ class QgsMapRendererJob : QObject
     //! Find out how log it took to finish the job (in miliseconds)
     int renderingTime() const;
 
+    /**
+     * Return map settings with which this job was started.
+     * @return A QgsMapSettings instance with render settings
+     * @note added in 2.8
+     */
+    const QgsMapSettings& mapSettings() const;
+
   signals:
 
     //! emitted when asynchronous rendering is finished (or canceled).
