@@ -20,5 +20,5 @@ install:
   - cd build
   - cmake -DWITH_SERVER=ON -DWITH_STAGED_PLUGINS=OFF -DWITH_GRASS=OFF -DSUPPRESS_QT_WARNINGS=ON ..
 
-script: xvfb-run ctest -V -E 'PyQgsPalLabelingCanvas|PyQgsPalLabelingServer|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
+script: xvfb-run ctest -V -E 'Atlas|atlas|PyQgsPalLabelingCanvas|PyQgsPalLabelingServer|qgis_wcsprovidertest' -S ../qgis-test-travis.ctest --output-on-failure
 
