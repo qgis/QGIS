@@ -98,8 +98,8 @@ class CORE_EXPORT QgsDataDefined
      */
     bool setFromXmlElement( const QDomElement& element );
 
-    bool operator==( const QgsDataDefined &other );
-    bool operator!=( const QgsDataDefined &other );
+    bool operator==( const QgsDataDefined &other ) const;
+    bool operator!=( const QgsDataDefined &other ) const;
 
   private:
     QgsExpression* mExpression;

@@ -161,13 +161,13 @@ bool QgsDataDefined::setFromXmlElement( const QDomElement &element )
   return true;
 }
 
-bool QgsDataDefined::operator==( const QgsDataDefined &other )
+bool QgsDataDefined::operator==( const QgsDataDefined &other ) const
 {
   return other.isActive() == mActive && other.useExpression() == mUseExpression &&
          other.field() == mField && other.expressionString() == mExpressionString;
 }
 
-bool QgsDataDefined::operator!=( const QgsDataDefined &other )
+bool QgsDataDefined::operator!=( const QgsDataDefined &other ) const
 {
   return !( *this == other );
 }
