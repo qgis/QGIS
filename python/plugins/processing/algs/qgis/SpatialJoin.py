@@ -60,7 +60,7 @@ class SpatialJoin(GeoAlgorithm):
     ]
 
     def defineCharacteristics(self):
-        self.name = "Join atributes by location"
+        self.name = "Join attributes by location"
         self.group = "Vector general tools"
 
         self.addParameter(ParameterVector(self.TARGET,
@@ -83,7 +83,7 @@ class SpatialJoin(GeoAlgorithm):
             self.getParameterValue(self.JOIN))
 
         summary = self.getParameterValue(self.SUMMARY) == 1
-        keep = self.getParameterValue(self.KEEP) == 0
+        keep = self.getParameterValue(self.KEEP) == 1
 
         sumList = self.getParameterValue(self.STATS).lower().split(',')
 
@@ -129,27 +129,21 @@ class SpatialJoin(GeoAlgorithm):
 
         index = vector.spatialindex(join)
 
-
-        # cache all features from provider2 to avoid huge number
-        # of feature requests in the inner loop
-        mapP2 = {}
+        mapP2 = dict()
         features = vector.features(join)
         for f in features:
             mapP2[f.id()] = QgsFeature(f)
 
         features = vector.features(target)
-
-        count = 0
         total = 100.0 / len(features)
-
-        for f in features:
+        for c, f in enumerate(features):
             inGeom = f.geometry()
             atMap1 = f.attributes()
             outFeat.setGeometry(inGeom)
             none = True
             joinList = []
             if inGeom.type() == QGis.Point:
-                joinList = index.intersects(inGeom.buffer(10,2).boundingBox())
+                joinList = index.intersects(inGeom.buffer(10, 2).boundingBox())
                 if len(joinList) > 0:
                     check = 0
                 else:
@@ -164,9 +158,9 @@ class SpatialJoin(GeoAlgorithm):
             if check == 0:
                 count = 0
                 for i in joinList:
-                    inFeatB = mapP2[i]  # cached feature from provider2
+                    inFeatB = mapP2[i]
                     if inGeom.intersects(inFeatB.geometry()):
-                        count += 1
+                        count = count + 1
                         none = False
                         atMap2 = inFeatB.attributes()
                         if not summary:
@@ -178,69 +172,66 @@ class SpatialJoin(GeoAlgorithm):
                         else:
                             for j in numFields.keys():
                                 numFields[j].append(atMap2[j])
+
                 if summary and not none:
                     atMap = atMap1
                     for j in numFields.keys():
                         for k in sumList:
                             if k == 'sum':
-                                atMap.append(sum(self._filter_null(numFields[j])))
+                                atMap.append(sum(self._filterNull(numFields[j])))
                             elif k == 'mean':
                                 try:
-                                    nn_count = sum(1 for _ in self._filter_null(numFields[j]))
-                                    atMap.append(sum(self._filter_null(numFields[j])) / nn_count)
+                                    nn_count = sum( 1 for _ in self._filterNull(numFields[j]) )
+                                    atMap.append(sum(self._filterNull(numFields[j])) / nn_count)
                                 except ZeroDivisionError:
                                     atMap.append(NULL)
                             elif k == 'min':
                                 try:
-                                    atMap.append(min(self._filter_null(numFields[j])))
+                                    atMap.append(min(self._filterNull(numFields[j])))
                                 except ValueError:
                                     atMap.append(NULL)
                             elif k == 'median':
-                                atMap.append(self._myself(numFields[j]))
+                                atMap.append(self._median(numFields[j]))
                             else:
                                 try:
-                                    atMap.append(max(self._filter_null(numFields[j])))
+                                    atMap.append(max(self._filterNull(numFields[j])))
                                 except ValueError:
                                     atMap.append(NULL)
 
                         numFields[j] = []
                     atMap.append(count)
                     atMap = dict(zip(seq, atMap))
-
             if none:
                 outFeat.setAttributes(atMap1)
             else:
                 outFeat.setAttributes(atMap.values())
 
-            if keep: # keep all records
+            if keep:
                 writer.addFeature(outFeat)
-            else: # keep only matching records
+            else:
                 if not none:
                     writer.addFeature(outFeat)
 
-            count += 1
-            progress.setPercentage(int(count * total))
-
+            progress.setPercentage(int(c * total))
         del writer
 
-    def _filter_null(self, vals):
+
+    def _filterNull(self, values):
         """Takes an iterator of values and returns a new iterator
         returning the same values but skipping any NULL values"""
-        return (v for v in vals if v != NULL)
+        return (v for v in values if v != NULL)
 
-    def _myself(self, L):
-        #median computation
-        nVal = len(L)
-        if nVal == 1:
-            return L[0]
-        L.sort()
-        #test for list length
-        medianVal = 0
-        if nVal > 1:
-            if ( nVal % 2 ) == 0:
-                #index begin at 0
-                #remove 1 to index in standard median computation
-                medianVal = 0.5 * ( (L[ (nVal) / 2  - 1]) + (L[ (nVal) / 2 ] ))
+    def _median(self, data):
+        count = len(data)
+        if count == 1:
+            return data[0]
+        data.sort()
+
+        median = 0
+        if count > 1:
+            if ( count % 2 ) == 0:
+                median = 0.5 * ((data[count / 2  - 1]) + (data[count / 2]))
             else:
-                medianVal = L[ (nVal + 1) / 2 - 1]
-        return medianVal
+                median = data[(count + 1) / 2 - 1]
+
+        return median
