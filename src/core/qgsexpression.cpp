@@ -336,6 +336,15 @@ static QgsFeature getFeature( const QVariant& value, QgsExpression* parent )
   return 0;
 }
 
+static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.canConvert<QgsExpression::Node*>() )
+    return value.value<QgsExpression::Node*>();
+
+  parent->setEvalErrorString( "Cannot convert to Node" );
+  return 0;
+}
+
 // this handles also NULL values
 static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
 {
@@ -1353,6 +1362,24 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsFeature *, Qgs
   return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
 }
 
+static QVariant fcnIf( const QVariantList &values, const QgsFeature *f, QgsExpression *parent )
+{
+  QgsExpression::Node* node = getNode( values.at( 0 ), parent );
+  ENSURE_NO_EVAL_ERROR;
+  QVariant value = node->eval( parent, f );
+  if ( value.toBool() ) {
+    node = getNode( values.at( 1 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    value = node->eval( parent, f );
+  }
+  else {
+    node = getNode( values.at( 2 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    value = node->eval( parent, f );
+  }
+  return value;
+}
+
 static QVariant fncColorRgba( const QVariantList &values, const QgsFeature *, QgsExpression *parent )
 {
   int red = getIntValue( values.at( 0 ), parent );
@@ -1658,6 +1685,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "totime", 1, fcnToTime, "Conversions" )
     << new StaticFunction( "tointerval", 1, fcnToInterval, "Conversions" )
     << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals" )
+    << new StaticFunction( "if", 3, fcnIf, "Conditionals", "", False, QStringList(), true )
     << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, "Conditionals" )
     << new StaticFunction( "$now", 0, fcnNow, "Date and Time" )
     << new StaticFunction( "age", 2, fcnAge, "Date and Time" )
@@ -2531,10 +2559,17 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, const QgsFeat
   {
     foreach ( Node* n, mArgs->list() )
     {
-      QVariant v = n->eval( parent, f );
-      ENSURE_NO_EVAL_ERROR;
-      if ( isNull( v ) && fd->name() != "coalesce" )
-        return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
+      QVariant v;
+      if ( fd->lazyEval() ) {
+        // Pass in the node for the function to eval as it needs.
+        v = QVariant::fromValue( n );
+      }
+      else {
+        v = n->eval( parent, f );
+        ENSURE_NO_EVAL_ERROR;
+        if ( isNull( v ) && fd->name() != "coalesce" )
+                return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
+      }
       argValues.append( v );
     }
   }

@@ -377,6 +377,8 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp match invalid" ) << "regexp_match('abc DEF','[[[')" << true << QVariant();
       QTest::newRow( "regexp match escaped" ) << "regexp_match('abc DEF','\\\\s[A-Z]+')" << false << QVariant( 1 );
       QTest::newRow( "regexp match false" ) << "regexp_match('abc DEF','\\\\s[a-z]+')" << false << QVariant( 0 );
+      QTest::newRow( "if true" ) << "if(1=1, 1, 0)" << false << QVariant( 1 );
+      QTest::newRow( "if false" ) << "if(1=2, 1, 0)" << false << QVariant( 0 );
 
       // Datetime functions
       QTest::newRow( "to date" ) << "todate('2012-06-28')" << false << QVariant( QDate( 2012, 6, 28 ) );
