@@ -4121,16 +4121,14 @@ QgsPalLabeling::Search QgsPalLabeling::searchMethod() const
 void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
 {
   QgsPoint outPt = xform->transform( lp->getX(), lp->getY() );
+  QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
 
   painter->save();
 
-  double rotation = xform->mapRotation();
   QRectF rect;
-    QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
-    rect = QRectF( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
-    painter->translate( QPointF( outPt.x(), outPt.y() ) );
-    painter->rotate( -lp->getAlpha() * 180 / M_PI );
-
+  painter->translate( QPointF( outPt.x(), outPt.y() ) );
+  painter->rotate( -lp->getAlpha() * 180 / M_PI );
+  rect = QRectF( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
   painter->drawRect( rect );
   painter->restore();
 
@@ -4182,7 +4180,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     drawLabelBackground( context, component, tmpLyr );
   }
 
-  else if ( drawType == QgsPalLabeling::LabelBuffer
+  if ( drawType == QgsPalLabeling::LabelBuffer
        || drawType == QgsPalLabeling::LabelText )
   {
 
@@ -4265,8 +4263,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     for ( int i = 0; i < lines; ++i )
     {
       painter->save();
-        painter->translate( QPointF( outPt.x(), outPt.y() ) );
-        painter->rotate( -label->getAlpha() * 180 / M_PI );
+      painter->translate( QPointF( outPt.x(), outPt.y() ) );
+      painter->rotate( -label->getAlpha() * 180 / M_PI );
 
       // scale down painter: the font size has been multiplied by raster scale factor
       // to workaround a Qt font scaling bug with small font sizes
