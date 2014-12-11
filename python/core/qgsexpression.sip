@@ -378,6 +378,8 @@ class QgsExpression
         virtual void accept( QgsExpression::Visitor& v ) const;
 
         int precedence() const;
+        bool leftAssociative() const;
+        bool rightAssociative() const;
     };
 
     class NodeInOperator : QgsExpression::Node
