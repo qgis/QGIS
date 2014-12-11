@@ -63,7 +63,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 continue
             if not self.setParamValue(
                     param, self.mainWidget.valueItems[param.name]):
-                raise algHelp.InvalidParameterValue(param,
+                raise AlgorithmDialogBase.InvalidParameterValue(param,
                         self.mainWidget.valueItems[param.name])
 
         for param in params:
