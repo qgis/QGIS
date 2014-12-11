@@ -479,6 +479,9 @@ class TestQgsExpression: public QObject
 
       QgsExpression e2( e1.dump() );
       QCOMPARE( e2.evaluate().toInt(), 21 );
+
+      QgsExpression e3( "(2^3)^2" );
+      QCOMPARE( QgsExpression( e3.dump() ).evaluate().toInt(), 64 );
     }
 
     void eval_columns()

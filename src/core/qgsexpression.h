@@ -487,6 +487,8 @@ class CORE_EXPORT QgsExpression
         virtual void accept( Visitor& v ) const { v.visit( *this ); }
 
         int precedence() const;
+        bool leftAssociative() const;
+        bool rightAssociative() const;
 
       protected:
         bool compare( double diff );
