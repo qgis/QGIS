@@ -12,6 +12,11 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import os
+import sys
+
+from PyQt4 import QtCore
+
 from qgis import utils
 
 from utilities import (unitTestDataPath,
@@ -23,6 +28,7 @@ from utilities import (unitTestDataPath,
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
+
 class TestQgsMetaSearch(TestCase):
 
     def __init__(self, methodName):
@@ -30,7 +36,12 @@ class TestQgsMetaSearch(TestCase):
         unittest.TestCase.__init__(self, methodName)
 
     def setUp(self):
-        self.plugin = utils.plugins['MetaSearch']
+        python_plugins = '%s%s%s' % (os.environ['PYTHONPATH'][:-1], os.sep, 'plugins')
+        sys.path.insert(0, python_plugins)
+        QtCore.QCoreApplication.setApplicationName('QGIS2')
+        import MetaSearch
+        self.plugin = MetaSearch.classFactory(IFACE)
+        #self.plugin = utils.plugins['MetaSearch']
 
     def test_plugin_metadata(self):
         myExpectedValue = '&MetaSearch'
@@ -42,7 +53,6 @@ class TestQgsMetaSearch(TestCase):
         myActualValue = self.plugin.context.metadata.get('general', 'name')
         myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myActualValue)
         assert myExpectedValue == myActualValue, myMessage
-
 
 
 if __name__ == '__main__':

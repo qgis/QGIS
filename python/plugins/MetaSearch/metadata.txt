@@ -14,6 +14,6 @@ repository=https://github.com/qgis/QGIS/tree/master/python/plugins/MetaSearch
 experimental=False
 deprecated=False
 changelog=Version 0.3.2 (2014-11-04)
-- fix message formatting
-- add server timeout as plugin setting
-- bump OWSLib dependency
+    - fix message formatting
+    - add server timeout as plugin setting
+    - bump OWSLib dependency
