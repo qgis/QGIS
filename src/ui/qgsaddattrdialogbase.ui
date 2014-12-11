@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>225</width>
-    <height>190</height>
+    <width>243</width>
+    <height>201</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,32 +17,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="textLabel1">
-     <property name="text">
-      <string>N&amp;ame</string>
-     </property>
-     <property name="buddy">
-      <cstring>mNameEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mNameEdit"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="textLabel1_2">
-     <property name="text">
-      <string>Comment</string>
-     </property>
-     <property name="buddy">
-      <cstring>mCommentEdit</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="mCommentEdit"/>
-   </item>
    <item row="2" column="0">
     <widget class="QLabel" name="textLabel2">
      <property name="text">
@@ -53,8 +27,8 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
-    <widget class="QComboBox" name="mTypeBox"/>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="mCommentEdit"/>
    </item>
    <item row="3" column="1">
     <widget class="QLabel" name="mTypeName">
@@ -66,18 +40,22 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mLengthLabel">
+   <item row="0" column="0">
+    <widget class="QLabel" name="textLabel1">
      <property name="text">
-      <string>Width</string>
+      <string>N&amp;ame</string>
      </property>
      <property name="buddy">
-      <cstring>mLength</cstring>
+      <cstring>mNameEdit</cstring>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <widget class="QSpinBox" name="mLength"/>
+   <item row="7" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
    </item>
    <item row="5" column="0">
     <widget class="QLabel" name="mPrecLabel">
@@ -89,13 +67,55 @@
      </property>
     </widget>
    </item>
+   <item row="4" column="1">
+    <widget class="QSpinBox" name="mLength"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="textLabel1_2">
+     <property name="text">
+      <string>Comment</string>
+     </property>
+     <property name="buddy">
+      <cstring>mCommentEdit</cstring>
+     </property>
+    </widget>
+   </item>
    <item row="5" column="1">
     <widget class="QSpinBox" name="mPrec"/>
    </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mLengthLabel">
+     <property name="text">
+      <string>Width</string>
+     </property>
+     <property name="buddy">
+      <cstring>mLength</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="mNameEdit"/>
+   </item>
+   <item row="2" column="1">
+    <widget class="QComboBox" name="mTypeBox"/>
+   </item>
    <item row="6" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Provider type</string>
      </property>
     </widget>
    </item>
