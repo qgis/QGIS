@@ -41,7 +41,7 @@ class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup
     Q_OBJECT
 
   public:
-    QgsSpatiaLiteConnPoolGroup( QString name ) : QgsConnectionPoolGroup( name ) { initTimer( this ); }
+    QgsSpatiaLiteConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsSqliteHandle*>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }

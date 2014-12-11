@@ -27,7 +27,7 @@ const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
     , mFeatureQueueSize( sFeatureQueueSize )
 {
   mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );

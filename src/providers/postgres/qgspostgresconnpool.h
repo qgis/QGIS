@@ -42,7 +42,7 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
     Q_OBJECT
 
   public:
-    QgsPostgresConnPoolGroup( QString name ) : QgsConnectionPoolGroup( name ) { initTimer( this ); }
+    QgsPostgresConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
