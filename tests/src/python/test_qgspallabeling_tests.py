@@ -57,6 +57,8 @@ class TestPointBase(object):
 
     def test_default_label(self):
         # Default label placement, with text size in points
+        self._Mismatches['TestCanvasPoint'] = 776;
+        self._ColorTols['TestComposerPdfPoint'] = 2;
         self.checkTest()
 
     def test_text_size_map_unit(self):
@@ -65,15 +67,21 @@ class TestPointBase(object):
         font = QFont(self._TestFont)
         font.setPointSizeF(460)
         self.lyr.textFont = font
+        self._Mismatches['TestCanvasPoint'] = 776;
+        self._ColorTols['TestComposerPdfPoint'] = 2;
         self.checkTest()
 
     def test_text_color(self):
+        self._Mismatches['TestCanvasPoint'] = 774;
+        self._ColorTols['TestComposerPdfPoint'] = 2;
         # Label color change
         self.lyr.textColor = Qt.blue
         self.checkTest()
 
     def test_background_rect(self):
         self.lyr.shapeDraw = True
+        self._Mismatches['TestCanvasPoint'] = 776;
+        self._ColorTols['TestComposerPdfPoint'] = 1;
         self.checkTest()
 
     def test_background_rect_w_offset(self):
@@ -89,6 +97,9 @@ class TestPointBase(object):
         self.lyr.shapeDraw = True
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
+
+        self._Mismatches['TestCanvasPoint'] = 774;
+        self._ColorTols['TestComposerPdfPoint'] = 2;
         self.checkTest()
 
     def test_background_svg(self):
@@ -107,6 +118,8 @@ class TestPointBase(object):
         self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
         self.lyr.shapeSize = QPointF(100.0, 0.0)
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 580
+        self._Mismatches['TestCanvasPoint'] = 776;
+        self._ColorTols['TestComposerPdfPoint'] = 2;
         self.checkTest()
 
     def test_background_svg_w_offset(self):
@@ -128,6 +141,8 @@ class TestPointBase(object):
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 760
+        self._Mismatches['TestCanvasPoint'] = 776;
+        self._ColorTols['TestComposerPdfPoint'] = 2;
         self.checkTest()
 
     def test_partials_labels_enabled(self):
@@ -138,6 +153,8 @@ class TestPointBase(object):
         # Enable partials labels
         self._Pal.setShowingPartialsLabels(True)
         self._Pal.saveEngineSettings()
+        self._Mismatches['TestCanvasPoint'] = 779;
+        self._ColorTols['TestComposerPdfPoint'] = 2;
         self.checkTest()
 
     def test_partials_labels_disabled(self):
