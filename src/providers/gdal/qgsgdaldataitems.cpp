@@ -34,10 +34,10 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
   if ( theSublayers && theSublayers->size() > 0 )
   {
     sublayers = *theSublayers;
-    mPopulated = false;
+    setState( NotPopulated );
   }
   else
-    mPopulated = true;
+    setState( Populated );
 }
 
 QgsGdalLayerItem::~QgsGdalLayerItem()

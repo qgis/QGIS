@@ -392,7 +392,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction 
     QMessageBox::information( 0, tr( "Import to MSSQL database" ), tr( "Import was successful." ) );
   }
 
-  if ( mPopulated )
+  if ( state() == Populated )
     refresh();
   else
     populate();
@@ -407,7 +407,7 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem* parent, QString name, QString
     , mLayerProperty( layerProperty )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsMssqlLayerItem::~QgsMssqlLayerItem()

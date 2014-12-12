@@ -141,7 +141,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
   {
     mIconName = "mIconWcs.svg";
   }
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWCSLayerItem::~QgsWCSLayerItem()

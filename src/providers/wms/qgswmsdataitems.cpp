@@ -261,7 +261,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
 
   mIconName = "mIconWms.svg";
 
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWMSLayerItem::~QgsWMSLayerItem()
@@ -335,7 +335,7 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
     , mTitle( title )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWMTSLayerItem::~QgsWMTSLayerItem()

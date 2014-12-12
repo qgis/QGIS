@@ -113,8 +113,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     bool canFetchMore( const QModelIndex & parent ) const;
     void fetchMore( const QModelIndex & parent );
-    static QVector<QgsDataItem*> createChildren( QgsDataItem *item );
-    bool fetching( QgsDataItem *item ) const;
 
   signals:
     /** Emitted when item children fetch was finished */
@@ -127,14 +125,11 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
+    void dataItemChanged( QgsDataItem * item );
 
     void addFavouriteDirectory( QString favDir );
     void removeFavourite( const QModelIndex &index );
-
     void updateProjectHome();
-    void childrenCreated();
-    void refreshChildrenCreated();
-    void loadingFrameChanged();
 
   protected:
     // populates the model
@@ -144,11 +139,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     QVector<QgsDataItem*> mRootItems;
     QgsFavouritesItem *mFavourites;
     QgsDirectoryItem *mProjectHome;
-
-  private:
-    QList<QgsBrowserWatcher *> mWatchers;
-    QMovie mLoadingMovie;
-    QIcon mLoadingIcon;
 };
 
 #endif // QGSBROWSERMODEL_H

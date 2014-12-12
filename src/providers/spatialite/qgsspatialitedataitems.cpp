@@ -32,7 +32,7 @@ QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QS
 QgsSLLayerItem::QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType )
     : QgsLayerItem( parent, name, path, uri, layerType, "spatialite" )
 {
-  mPopulated = true; // no children are expected
+  setState( Populated ); // no children are expected
 }
 
 QList<QAction*> QgsSLLayerItem::actions()

@@ -217,7 +217,7 @@ QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
     , mLayerProperty( layerProperty )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
   Q_ASSERT( mLayerProperty.size() == 1 );
 }
 

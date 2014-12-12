@@ -36,7 +36,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
     : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
 {
   mToolTip = uri;
-  mPopulated = true; // children are not expected
+  setState( Populated ); // children are not expected
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem()

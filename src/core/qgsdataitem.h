@@ -17,13 +17,15 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
+#include <QFutureWatcher>
 #include <QIcon>
 #include <QLibrary>
+#include <QMovie>
 #include <QObject>
 #include <QPixmap>
 #include <QString>
-#include <QVector>
 #include <QTreeWidget>
+#include <QVector>
 
 #include "qgsapplication.h"
 #include "qgsmaplayer.h"
@@ -57,22 +59,31 @@ class CORE_EXPORT QgsDataItem : public QObject
     int rowCount();
 
     virtual void refresh();
-    virtual void refresh( QVector<QgsDataItem*> children );
 
     // Create vector of children
     virtual QVector<QgsDataItem*> createChildren();
 
     // Populate children using children vector created by createChildren()
     virtual void populate();
-    virtual void populate( QVector<QgsDataItem*> children );
 
     /** Remove children recursively and set as not populated. This is used when refreshing collapsed items. */
     virtual void depopulate();
 
-    bool isPopulated() { return mPopulated; }
+    enum State
+    {
+      NotPopulated, //!< Children not yet created
+      Populating,   //!< Creating children in separate thread (populating or refreshing)
+      Populated     //!< children created
+    };
 
-    /** Set as populated without populating. */
-    void setPopulated() { mPopulated = true; }
+    State state() const;
+
+    /** Set item state. It also take care about starting/stopping loading icon animation.
+     * @param state */
+    void setState( State state );
+
+    //! @deprecated in 2.8, use state()
+    bool isPopulated() { return state() == Populated; }
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
@@ -144,11 +155,15 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString toolTip() const { return mToolTip; }
 
   protected:
+    virtual void populate( QVector<QgsDataItem*> children );
+    virtual void refresh( QVector<QgsDataItem*> children );
 
     Type mType;
     Capabilities mCapabilities;
     QgsDataItem* mParent;
     QVector<QgsDataItem*> mChildren; // easier to have it always
+    State mState;
+    //! @deprecated since 2.8, use mState
     bool mPopulated;
     QString mName;
     // Path is slash ('/') separated chain of item identifiers which are usually item names, but may be differen if it is
@@ -166,12 +181,26 @@ class CORE_EXPORT QgsDataItem : public QObject
     void emitEndInsertItems();
     void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
     void emitEndRemoveItems();
+    void emitDataChanged( QgsDataItem* item );
+    void emitDataChanged( );
+    void childrenCreated();
+    void setLoadingIcon();
 
   signals:
     void beginInsertItems( QgsDataItem* parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem* parent, int first, int last );
     void endRemoveItems();
+    void dataChanged( QgsDataItem * item );
+
+  private:
+    static QVector<QgsDataItem*> runCreateChildren( QgsDataItem* item );
+
+    QFutureWatcher< QVector <QgsDataItem*> > *mWatcher;
+    // number of items currently in loading (populating) state
+    static int mLoadingCount;
+    static QMovie * mLoadingMovie;
+    static QIcon mLoadingIcon;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
