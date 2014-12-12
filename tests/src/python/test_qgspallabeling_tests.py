@@ -73,11 +73,15 @@ class TestPointBase(object):
         self.checkTest()
 
     def test_background_rect(self):
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
+        self._Mismatches['TestComposerImagePoint'] = 800
         self.lyr.shapeDraw = True
         self.checkTest()
 
     def test_background_rect_w_offset(self):
         # Label rectangular background
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
+        self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
         #   http://hub.qgis.org/issues/9057
         #   http://gis.stackexchange.com/questions/86900
