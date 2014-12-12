@@ -31,7 +31,7 @@ class QgsSnappingUtils : public QObject
 {
     Q_OBJECT
   public:
-    QgsSnappingUtils();
+    QgsSnappingUtils( QObject* parent = 0 );
     ~QgsSnappingUtils();
 
     // main actions
@@ -41,13 +41,14 @@ class QgsSnappingUtils : public QObject
 
     /** snap to map according to the current configuration (mode) */
     QgsPointLocator::Match snapToMap( const QPoint& point );
+    QgsPointLocator::Match snapToMap( const QgsPoint& pointMap );
     // TODO: multi-variant
 
 
     // environment setup
 
     /** assign current map settings to the utils - used for conversion between screen coords to map coords */
-    void setMapSettings( const QgsMapSettings& settings ) { mMapSettings = settings; }
+    void setMapSettings( const QgsMapSettings& settings );
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
     /** set current layer so that if mode is SnapCurrentLayer we know which layer to use */
@@ -96,16 +97,23 @@ class QgsSnappingUtils : public QObject
     bool topologicalEditing() const;
 #endif
 
+  public slots:
     /** Read snapping configuration from the project */
-    void readFromProject();
+    void readConfigFromProject();
 
     // requirements:
     // - support existing configurations
     // - handle updates from QgsProject::setSnapSettingsForLayer()
 
+  private slots:
+    void onLayersWillBeRemoved( QStringList layerIds );
+
   private:
     //! get from map settings pointer to destination CRS - or 0 if projections are disabled
     const QgsCoordinateReferenceSystem* destCRS();
+
+    //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
+    void clearAllLocators();
 
   private:
     // environment
@@ -118,8 +126,9 @@ class QgsSnappingUtils : public QObject
     bool mSnapOnIntersection;
 
     // internal data
+    typedef QMap<QgsVectorLayer*, QgsPointLocator*> LocatorsMap;
     //! on-demand locators used (locators are owned)
-    QMap<QgsVectorLayer*, QgsPointLocator*> mLocators;
+    LocatorsMap mLocators;
 };
 
 

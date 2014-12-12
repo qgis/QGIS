@@ -64,8 +64,15 @@ class QgsPointLocator : public QObject
       //! consruct invalid match
       Match() : mType( Invalid ), mDist( 0 ), mPoint(), mLayer( 0 ), mFid( 0 ), mVertexIndex( 0 ) {}
 
-      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0 )
-          : mType( t ), mDist( dist ), mPoint( pt ), mLayer( vl ), mFid( fid ), mVertexIndex( vertexIndex ) {}
+      Match( Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0, QgsPoint* edgePoints = 0 )
+          : mType( t ), mDist( dist ), mPoint( pt ), mLayer( vl ), mFid( fid ), mVertexIndex( vertexIndex )
+      {
+        if ( edgePoints )
+        {
+          mEdgePoints[0] = edgePoints[0];
+          mEdgePoints[1] = edgePoints[1];
+        }
+      }
 
       Type type() const { return mType; }
 
@@ -107,6 +114,13 @@ class QgsPointLocator : public QObject
         *this = m; // the other match is better!
       }
 
+      //! Only for a valid edge match - obtain endpoints of the edge
+      void edgePoints( QgsPoint& pt1, QgsPoint& pt2 ) const
+      {
+        pt1 = mEdgePoints[0];
+        pt2 = mEdgePoints[1];
+      }
+
     protected:
       Type mType;
       double mDist;
@@ -114,6 +128,7 @@ class QgsPointLocator : public QObject
       QgsVectorLayer* mLayer;
       QgsFeatureId mFid;
       int mVertexIndex; // e.g. vertex index
+      QgsPoint mEdgePoints[2];
     };
 
     typedef struct QList<Match> MatchList;
@@ -163,6 +178,11 @@ class QgsPointLocator : public QObject
   protected:
     void rebuildIndex( int types );
     void destroyIndex( int types );
+
+  private slots:
+    void onFeatureAdded( QgsFeatureId fid );
+    void onFeatureDeleted( QgsFeatureId fid );
+    void onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom );
 
   private:
     /** storage manager */

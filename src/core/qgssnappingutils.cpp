@@ -22,19 +22,18 @@
 #include <QSettings>
 
 
-QgsSnappingUtils::QgsSnappingUtils()
-    : mCurrentLayer( 0 )
+QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
+    : QObject( parent )
+    , mCurrentLayer( 0 )
     , mSnapToMapMode( SnapCurrentLayer )
     , mSnapOnIntersection( false )
 {
-
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersWillBeRemoved( QStringList ) ) );
 }
 
 QgsSnappingUtils::~QgsSnappingUtils()
 {
-  foreach ( QgsPointLocator* vlpl, mLocators )
-    delete vlpl;
-  mLocators.clear();
+  clearAllLocators();
 }
 
 
@@ -49,6 +48,13 @@ QgsPointLocator* QgsSnappingUtils::locatorForLayer( QgsVectorLayer* vl )
     mLocators.insert( vl, vlpl );
   }
   return mLocators.value( vl );
+}
+
+void QgsSnappingUtils::clearAllLocators()
+{
+  foreach ( QgsPointLocator* vlpl, mLocators )
+    delete vlpl;
+  mLocators.clear();
 }
 
 
@@ -84,14 +90,16 @@ static double _defaultSnapTolerance( const QgsMapSettings& mapSettings )
                          mapSettings );
 }
 
-
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point )
+{
+  return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ) );
+}
+
+QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
 {
   Q_ASSERT( mMapSettings.hasValidSettings() );
 
   // TODO: snapping on intersection
-
-  QgsPoint pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
 
   if ( mSnapToMapMode == SnapCurrentLayer )
   {
@@ -137,13 +145,23 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point )
   return QgsPointLocator::Match();
 }
 
+void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
+{
+  QString oldDestCRS = mMapSettings.hasCrsTransformEnabled() ? mMapSettings.destinationCrs().authid() : QString();
+  QString newDestCRS = settings.hasCrsTransformEnabled() ? settings.destinationCrs().authid() : QString();
+  mMapSettings = settings;
+
+  if ( newDestCRS != oldDestCRS )
+    clearAllLocators();
+}
+
 const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
 {
   return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : 0;
 }
 
 
-void QgsSnappingUtils::readFromProject()
+void QgsSnappingUtils::readConfigFromProject()
 {
   mSnapToMapMode = SnapCurrentLayer;
   mLayers.clear();
@@ -196,3 +214,18 @@ void QgsSnappingUtils::readFromProject()
 
 }
 
+void QgsSnappingUtils::onLayersWillBeRemoved( QStringList layerIds )
+{
+  // remove locators for layers that are going to be deleted
+  foreach ( QString layerId, layerIds )
+  {
+    for ( LocatorsMap::const_iterator it = mLocators.constBegin(); it != mLocators.constEnd(); ++it )
+    {
+      if ( it.key()->id() == layerId )
+      {
+        delete mLocators.take( it.key() );
+        continue;
+      }
+    }
+  }
+}

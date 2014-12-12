@@ -59,6 +59,7 @@ class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRectangle;
+class QgsSnappingUtils;
 class QgsUndoWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
@@ -1213,6 +1214,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateFilterLegendByMap();
     void setFilterLegendByMapEnabled( bool enabled );
 
+  public:
+    QgsSnappingUtils* snappingUtils() { return mSnappingUtils; }
+  private slots:
+    void updateSnappingUtilsMapSettings();
+
     /** Make the user feel dizzy */
     void dizzy();
 
@@ -1604,6 +1610,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayerTools* mVectorLayerTools;
 
     QToolButton* mBtnFilterLegend;
+
+    QgsSnappingUtils* mSnappingUtils;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

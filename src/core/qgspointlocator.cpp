@@ -110,6 +110,10 @@ static SpatialIndex::Region rect2region( const QgsRectangle& rect )
   return SpatialIndex::Region( pLow, pHigh, 2 );
 }
 
+static QgsRectangle region2rect( const SpatialIndex::Region& region )
+{
+  return QgsRectangle( region.m_pLow[0], region.m_pLow[1], region.m_pHigh[0], region.m_pHigh[1] );
+}
 
 static void addPolylineToEdgeData( QLinkedList<RTree::Data*>& edgeDataList, const QgsPolyline& pl, id_type id, int& vertexIndex )
 {
@@ -122,13 +126,15 @@ static void addPolylineToEdgeData( QLinkedList<RTree::Data*>& edgeDataList, cons
     QgsPoint pt = pl[i];
 
     bool edgeDirection = ( pt.x() < lastPt.x() && pt.y() < lastPt.y() ) || ( pt.x() > lastPt.x() && pt.y() > lastPt.y() );
+    bool isReversed = pt.x() < lastPt.x() || ( pt.x() == lastPt.x() && lastPt.y() < pt.y() );
     double pLow[2], pHigh[2];
     pLow[0]  = qMin( pt.x(), lastPt.x() );
     pHigh[0] = qMax( pt.x(), lastPt.x() );
     pLow[1]  = qMin( pt.y(), lastPt.y() );
     pHigh[1] = qMax( pt.y(), lastPt.y() );
     SpatialIndex::Region r( pLow, pHigh, 2 );
-    int extraData[2] = { vertexIndex, edgeDirection };
+    int edgeFlags = edgeDirection | ( isReversed << 1 );
+    int extraData[2] = { vertexIndex, edgeFlags };
     edgeDataList << new RTree::Data( sizeof( int )*2, reinterpret_cast<byte*>( extraData ), r, id );
 
     lastPt = pt;
@@ -226,7 +232,8 @@ static void edgeGetEndpoints( const RTree::Data& dd, double&x1, double&y1, doubl
 {
   x1 = dd.m_region.m_pLow[0];
   x2 = dd.m_region.m_pHigh[0];
-  if ( reinterpret_cast<int*>( dd.m_pData )[1] )  // direction bottom-left to top-right
+  int flags = reinterpret_cast<int*>( dd.m_pData )[1];
+  if ( flags & 1 )  // direction bottom-left to top-right
   {
     y1 = dd.m_region.m_pLow[1];
     y2 = dd.m_region.m_pHigh[1];
@@ -235,6 +242,13 @@ static void edgeGetEndpoints( const RTree::Data& dd, double&x1, double&y1, doubl
   {
     y1 = dd.m_region.m_pHigh[1];
     y2 = dd.m_region.m_pLow[1];
+  }
+
+  // the other flag tells the direction of the edge: whether it is [x1,y1]->[x2,y2] or reversed
+  if ( flags & 2 )
+  {
+    qSwap( x1, x2 );
+    qSwap( y1, y2 );
   }
 }
 
@@ -299,6 +313,7 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
       const RTree::Data& dd = static_cast<const RTree::Data&>( d );
       QgsPoint pt;
       double dist;
+      QgsPoint edgePoints[2];
       if ( mNNQuery )
       {
         // neirest neighbor query
@@ -312,10 +327,8 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
           double x1, x2, y1, y2;
           edgeGetEndpoints( dd, x1, y1, x2, y2 );
           dist = sqrt( mOrigPt.sqrDistToSegment( x1, y1, x2, y2, pt ) );
-          double coords[2];
-          coords[0] = mOrigPt.x(); coords[1] = mOrigPt.y();
-          Point queryP( coords, 2 );
-          //qDebug("%f VS %f", dist, edgeMinDist(dd, queryP));
+          edgePoints[0].set( x1, y1 );
+          edgePoints[1].set( x2, y2 );
         }
       }
       else
@@ -332,11 +345,13 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
           LineSegment ls( pStart, pEnd, 2 );
           if ( !r.intersectsLineSegment( ls ) )
             return;
+          edgePoints[0].set( pStart[0], pStart[1] );
+          edgePoints[1].set( pEnd[0], pEnd[1] );
         }
       }
       QgsPointLocator::Type t = mVertexTree ? QgsPointLocator::Vertex : QgsPointLocator::Edge;
       int vertexIndex = *reinterpret_cast<int*>( dd.m_pData );
-      mList << QgsPointLocator::Match( t, mLayer, d.getIdentifier(), dist, pt, vertexIndex );
+      mList << QgsPointLocator::Match( t, mLayer, d.getIdentifier(), dist, pt, vertexIndex, t == QgsPointLocator::Edge ? edgePoints : 0 );
     }
 
   private:
@@ -428,6 +443,10 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateRefe
   }
 
   mStorage = StorageManager::createNewMemoryStorageManager();
+
+  connect( mLayer, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( onFeatureAdded( QgsFeatureId ) ) );
+  connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( onFeatureDeleted( QgsFeatureId ) ) );
+  connect( mLayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry& ) ), this, SLOT( onGeometryChanged( QgsFeatureId, QgsGeometry& ) ) );
 }
 
 
@@ -562,6 +581,61 @@ void QgsPointLocator::destroyIndex( int types )
       GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), g );
     mAreaGeomList.clear();
   }
+}
+
+void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
+{
+  QgsFeature f;
+  QgsFeatureRequest request;
+  request.setFilterFid( fid );
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureIterator fi = mLayer->getFeatures( request );
+  if ( fi.nextFeature( f ) && f.geometry() )
+  {
+    QGis::GeometryType geomType = f.geometry()->type();
+
+    if ( mTransform )
+      f.geometry()->transform( *mTransform );
+
+    if ( mRTreeVertex && ( geomType == QGis::Polygon || geomType == QGis::Line || geomType == QGis::Point ) )
+    {
+      QLinkedList<RTree::Data*> vertexDataList;
+      addVertexData( vertexDataList, f );
+      foreach ( RTree::Data* d, vertexDataList )
+      {
+        mRTreeVertex->insertData( d->m_dataLength, d->m_pData, d->m_region, d->m_id );
+        delete d;
+      }
+    }
+
+    // TODO: edge, area
+  }
+}
+
+void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
+{
+#if 0
+  if ( mRTreeVertex )
+  {
+    MyQueryStrategy qq( fid );
+    mRTreeVertex->queryStrategy( qq );
+    foreach ( const SpatialIndex::Region& r, qq.regions )
+    {
+      bool res = mRTreeVertex->deleteData( r, fid );
+      qDebug( "del: %d %f,%f - %f,%f", res, r.m_pLow[0], r.m_pLow[1], r.m_pHigh[0], r.m_pHigh[1] );
+    }
+    qDebug( "isvalid %d", mRTreeVertex->isIndexValid() );
+  }
+
+  // TODO: edge, area
+#endif
+}
+
+void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
+{
+  Q_UNUSED( geom );
+  onFeatureDeleted( fid );
+  onFeatureAdded( fid );
 }
 
 

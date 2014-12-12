@@ -78,6 +78,7 @@
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip
+%Include qgspointlocator.sip
 %Include qgsproject.sip
 %Include qgsprojectproperty.sip
 %Include qgsprojectversion.sip
@@ -96,6 +97,7 @@
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
+%Include qgssnappingutils.sip
 %Include qgsspatialindex.sip
 %Include qgstolerance.sip
 %Include qgsvectordataprovider.sip

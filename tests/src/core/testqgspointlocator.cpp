@@ -91,6 +91,10 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m.point(), QgsPoint( 1, 0.5 ) );
       QCOMPARE( m.distance(), 0.1 );
       QCOMPARE( m.vertexIndex(), 1 );
+      QgsPoint pt1, pt2;
+      m.edgePoints( pt1, pt2 );
+      QCOMPARE( pt1, QgsPoint( 1, 0 ) );
+      QCOMPARE( pt2, QgsPoint( 1, 1 ) );
     }
 
     void testPointInPolygon()
@@ -109,6 +113,56 @@ class TestQgsPointLocator : public QObject
     }
 
     // TODO: intersection tests
+
+    void testLayerUpdates()
+    {
+      QgsPointLocator loc( mVL );
+
+      mVL->startEditing();
+
+      QgsPointLocator::Match mAddV0 = loc.nearestVertex( QgsPoint( 12, 12 ) );
+      QVERIFY( mAddV0.isValid() );
+      QCOMPARE( mAddV0.point(), QgsPoint( 1, 1 ) );
+
+      // add a new feature
+      QgsFeature ff( 0 );
+      QgsPolygon polygon;
+      QgsPolyline polyline;
+      polyline << QgsPoint( 10, 11 ) << QgsPoint( 11, 10 ) << QgsPoint( 11, 11 ) << QgsPoint( 10, 11 );
+      polyline << QgsPoint( 101, 11 ) << QgsPoint( 111, 10 ) << QgsPoint( 111, 11 ) << QgsPoint( 110, 11 );
+      polyline << QgsPoint( 10, 111 ) << QgsPoint( 11, 110 ) << QgsPoint( 11, 111 ) << QgsPoint( 10, 111 );
+      polygon << polyline;
+      ff.setGeometry( QgsGeometry::fromPolygon( polygon ) );
+      QgsFeatureList flist;
+      flist << ff;
+      bool resA = mVL->addFeature( ff );
+      QVERIFY( resA );
+
+      // verify it is added in the point locator
+      QgsPointLocator::Match mAddV = loc.nearestVertex( QgsPoint( 12, 12 ) );
+      QVERIFY( mAddV.isValid() );
+      qDebug( "%f,%f", mAddV.point().x(), mAddV.point().y() );
+      QCOMPARE( mAddV.point(), QgsPoint( 11, 11 ) );
+      QgsPointLocator::Match mAddE = loc.nearestEdge( QgsPoint( 11.1, 10.5 ) );
+      QVERIFY( mAddE.isValid() );
+      QCOMPARE( mAddE.point(), QgsPoint( 11, 10.5 ) );
+      QgsPointLocator::MatchList mAddA = loc.pointInPolygon( QgsPoint( 10.8, 10.8 ) );
+      QVERIFY( mAddA.count() == 1 );
+
+#if 0
+      // delete feature
+      bool resD = mVL->deleteFeature( ff.id() );
+      QVERIFY( resD );
+
+      // verify it is deleted from the point locator
+      QgsPointLocator::Match mDelV = loc.nearestVertex( QgsPoint( 12, 12 ) );
+      QVERIFY( mDelV.isValid() );
+      qDebug( "%f,%f", mDelV.point().x(), mDelV.point().y() );
+      QCOMPARE( mDelV.point(), QgsPoint( 1, 1 ) );
+#endif
+
+      mVL->rollBack();
+    }
 };
 
 QTEST_MAIN( TestQgsPointLocator )

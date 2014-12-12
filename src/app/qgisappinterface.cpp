@@ -88,6 +88,11 @@ QgsLayerTreeView*QgisAppInterface::layerTreeView()
   return qgis->layerTreeView();
 }
 
+QgsSnappingUtils* QgisAppInterface::snappingUtils()
+{
+  return qgis->snappingUtils();
+}
+
 void QgisAppInterface::zoomFull()
 {
   qgis->zoomFull();

@@ -20,6 +20,7 @@
 
 #include "qgsmapcanvassnapper.h"
 #include "qgspoint.h"
+#include "qgspointlocator.h"
 
 class QgsMapToolAdvancedDigitizing;
 
@@ -61,10 +62,9 @@ class APP_EXPORT QgsMapMouseEvent : public QMouseEvent
     QgsPoint mMapPoint;
 
     QgsPoint mOriginalPoint;
-    bool mSnapped;
 
     QgsMapToolAdvancedDigitizing* mMapTool;
-    QList<QgsSnappingResult> mSnapResults;
+    QgsPointLocator::Match mSnapMatch;
 };
 
 #endif // QGSMAPMOUSEEVENT_H
