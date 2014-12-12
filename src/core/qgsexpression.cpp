@@ -212,6 +212,7 @@ inline bool isNull( const QVariant& v ) { return v.isNull(); }
 
 const char* QgsExpression::BinaryOperatorText[] =
 {
+  // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
   "OR", "AND",
   "=", "<>", "<=", ">=", "<", ">", "~", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
   "+", "-", "*", "/", "//", "%", "^",
@@ -220,6 +221,7 @@ const char* QgsExpression::BinaryOperatorText[] =
 
 const char* QgsExpression::UnaryOperatorText[] =
 {
+  // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
   "NOT", "-"
 };
 
