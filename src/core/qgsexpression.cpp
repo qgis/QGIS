@@ -214,7 +214,7 @@ const char* QgsExpression::BinaryOperatorText[] =
 {
   "OR", "AND",
   "=", "<>", "<=", ">=", "<", ">", "~", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
-  "+", "-", "*", "/", "%", "^",
+  "+", "-", "*", "/", "//", "%", "^",
   "||"
 };
 
