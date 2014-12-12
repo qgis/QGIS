@@ -148,13 +148,22 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   QFileInfo myFileInfo( myFileName );
   QgsZipItem *myZipItem = new QgsZipItem( NULL, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
+  // wait until populated in separate thread
+  QTime time;
+  time.start();
+  while ( myZipItem->state() != QgsDataItem::Populated && time.elapsed() < 5000 )
+  {
+    QTest::qSleep ( 100 );
+    QCoreApplication::processEvents();
+  }
+  QgsDebugMsg( QString( "time.elapsed() = %1 ms" ).arg ( time.elapsed() ) );
   bool ok = false;
   QString driverName;
   QVector<QgsDataItem*> myChildren = myZipItem->children();
 
+  QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
   if ( myChildren.size() > 0 )
   {
-    QgsDebugMsg( QString( "has %1 items" ).arg( myChildren.size() ) );
     foreach ( QgsDataItem* item, myChildren )
     {
       QgsDebugMsg( QString( "child name=%1" ).arg( item->name() ) );
