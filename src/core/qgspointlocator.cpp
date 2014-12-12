@@ -427,6 +427,49 @@ class EdgeNNComparator : public INearestNeighborComparator
 
 
 ////////////////////////////////////////////////////////////////////////////
+#include <QStack>
+
+/** Helper class to dump the R-index nodes and their content */
+class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
+{
+  private:
+    QStack<id_type> ids;
+
+  public:
+
+    void getNextEntry( const IEntry& entry, id_type& nextEntry, bool& hasNext )
+    {
+      const INode* n = dynamic_cast<const INode*>( &entry );
+      qDebug( "NODE: %ld", n->getIdentifier() );
+      if ( n->getLevel() > 0 )
+      {
+        // inner nodes
+        for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
+        {
+          qDebug( "- CH: %ld", n->getChildIdentifier( cChild ) );
+          ids.push( n->getChildIdentifier( cChild ) );
+        }
+      }
+      else
+      {
+        // leaves
+        for ( uint32_t cChild = 0; cChild < n->getChildrenCount(); cChild++ )
+        {
+          qDebug( "- L: %ld", n->getChildIdentifier( cChild ) );
+        }
+      }
+
+      if ( ! ids.empty() )
+      {
+        nextEntry = ids.back(); ids.pop();
+        hasNext = true;
+      }
+      else
+        hasNext = false;
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////
 
 
 QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS )
@@ -585,57 +628,21 @@ void QgsPointLocator::destroyIndex( int types )
 
 void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 {
-  QgsFeature f;
-  QgsFeatureRequest request;
-  request.setFilterFid( fid );
-  request.setSubsetOfAttributes( QgsAttributeList() );
-  QgsFeatureIterator fi = mLayer->getFeatures( request );
-  if ( fi.nextFeature( f ) && f.geometry() )
-  {
-    QGis::GeometryType geomType = f.geometry()->type();
-
-    if ( mTransform )
-      f.geometry()->transform( *mTransform );
-
-    if ( mRTreeVertex && ( geomType == QGis::Polygon || geomType == QGis::Line || geomType == QGis::Point ) )
-    {
-      QLinkedList<RTree::Data*> vertexDataList;
-      addVertexData( vertexDataList, f );
-      foreach ( RTree::Data* d, vertexDataList )
-      {
-        mRTreeVertex->insertData( d->m_dataLength, d->m_pData, d->m_region, d->m_id );
-        delete d;
-      }
-    }
-
-    // TODO: edge, area
-  }
+  Q_UNUSED( fid );
+  destroyIndex( All );
 }
 
 void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 {
-#if 0
-  if ( mRTreeVertex )
-  {
-    MyQueryStrategy qq( fid );
-    mRTreeVertex->queryStrategy( qq );
-    foreach ( const SpatialIndex::Region& r, qq.regions )
-    {
-      bool res = mRTreeVertex->deleteData( r, fid );
-      qDebug( "del: %d %f,%f - %f,%f", res, r.m_pLow[0], r.m_pLow[1], r.m_pHigh[0], r.m_pHigh[1] );
-    }
-    qDebug( "isvalid %d", mRTreeVertex->isIndexValid() );
-  }
-
-  // TODO: edge, area
-#endif
+  Q_UNUSED( fid );
+  destroyIndex( All );
 }
 
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 {
+  Q_UNUSED( fid );
   Q_UNUSED( geom );
-  onFeatureDeleted( fid );
-  onFeatureAdded( fid );
+  destroyIndex( All );
 }
 
 
