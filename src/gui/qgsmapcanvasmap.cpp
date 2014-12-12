@@ -50,6 +50,14 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   if ( mImage.size() != QSize( w, h ) )
   {
     QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
+  }
+
+  // TODO: this is an hack, we should instead make sure that
+  //       the image passed here from QgsMapCanvas, via setContent,
+  //       is pre-clipped in case of rotation.
+  //       See http://hub.qgis.org/issues/11811
+  if ( ( mImage.width() > w && mImage.height() < h ) ||
+       ( mImage.height() > h && mImage.width() < w ) ) {
     int tX = ( w - mImage.width() ) / 2.0;
     int tY = ( h - mImage.height() ) / 2.0;
     int fX = 0;
