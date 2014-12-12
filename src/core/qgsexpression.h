@@ -374,7 +374,6 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Node
     {
       public:
-        Node() {}
         virtual ~Node() {}
         virtual NodeType nodeType() const = 0;
         // abstract virtual eval function
