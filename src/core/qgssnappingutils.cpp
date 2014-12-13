@@ -15,6 +15,7 @@
 
 #include "qgssnappingutils.h"
 
+#include "qgsgeometry.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -90,6 +91,70 @@ static double _defaultSnapTolerance( const QgsMapSettings& mapSettings )
                          mapSettings );
 }
 
+
+static QgsPointLocator::Match _findClosestSegmentIntersection(const QgsPoint& pt, const QgsPointLocator::MatchList& segments)
+{
+  QSet<QgsPoint> endpoints;
+
+  // make a geometry
+  QList<QgsGeometry*> geoms;
+  foreach (const QgsPointLocator::Match& m, segments)
+  {
+    if (m.hasEdge())
+    {
+      QgsPolyline pl(2);
+      m.edgePoints(pl[0], pl[1]);
+      geoms << QgsGeometry::fromPolyline(pl);
+      endpoints << pl[0] << pl[1];
+    }
+  }
+
+  QgsGeometry* g = QgsGeometry::unaryUnion( geoms );
+  qDeleteAll(geoms);
+
+  // get intersection points
+  QList<QgsPoint> newPoints;
+  if (g->wkbType() == QGis::WKBLineString)
+  {
+    foreach (const QgsPoint& p, g->asPolyline())
+    {
+      if (!endpoints.contains(p))
+        newPoints << p;
+    }
+  }
+  if (g->wkbType() == QGis::WKBMultiLineString)
+  {
+    foreach (const QgsPolyline& pl, g->asMultiPolyline())
+    {
+      foreach (const QgsPoint& p, pl)
+      {
+        if (!endpoints.contains(p))
+          newPoints << p;
+      }
+    }
+  }
+  delete g;
+
+  if (newPoints.isEmpty())
+    return QgsPointLocator::Match();
+
+  // find the closest points
+  QgsPoint minP;
+  double minSqrDist = 1e20;  // "infinity"
+  foreach (const QgsPoint& p, newPoints)
+  {
+    double sqrDist = pt.sqrDist(p.x(), p.y());
+    if (sqrDist < minSqrDist)
+    {
+      minSqrDist = sqrDist;
+      minP = p;
+    }
+  }
+
+  return QgsPointLocator::Match( QgsPointLocator::Vertex, 0, 0, sqrt(minSqrDist), minP );
+}
+
+
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point )
 {
   return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ) );
@@ -98,8 +163,6 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point )
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
 {
   Q_ASSERT( mMapSettings.hasValidSettings() );
-
-  // TODO: snapping on intersection
 
   if ( mSnapToMapMode == SnapCurrentLayer )
   {
@@ -121,11 +184,20 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
       bestMatch.replaceIfBetter( loc->nearestVertex( pointMap ), tolerance );
     if ( type & QgsPointLocator::Edge )
       bestMatch.replaceIfBetter( loc->nearestEdge( pointMap ), tolerance );
+
+    if ( mSnapOnIntersection )
+    {
+      QgsPointLocator::MatchList edges = locatorForLayer( mCurrentLayer )->edgesInTolerance( pointMap, tolerance );
+      bestMatch.replaceIfBetter( _findClosestSegmentIntersection( pointMap, edges ), tolerance );
+    }
+
     return bestMatch;
   }
   else if ( mSnapToMapMode == SnapPerLayerConfig )
   {
     QgsPointLocator::Match bestMatch;
+    QgsPointLocator::MatchList edges; // for snap on intersection
+    double maxSnapIntTolerance = 0;
 
     foreach ( const LayerConfig& layerConfig, mLayers )
     {
@@ -137,8 +209,18 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
           bestMatch.replaceIfBetter( loc->nearestVertex( pointMap ), tolerance );
         if ( layerConfig.type & QgsPointLocator::Edge )
           bestMatch.replaceIfBetter( loc->nearestEdge( pointMap ), tolerance );
+
+        if ( mSnapOnIntersection )
+        {
+          edges << loc->edgesInTolerance( pointMap, tolerance );
+          maxSnapIntTolerance = qMax(maxSnapIntTolerance, tolerance);
+        }
       }
     }
+
+    if ( mSnapOnIntersection )
+      bestMatch.replaceIfBetter( _findClosestSegmentIntersection( pointMap, edges ), maxSnapIntTolerance );
+
     return bestMatch;
   }
 
@@ -229,3 +311,4 @@ void QgsSnappingUtils::onLayersWillBeRemoved( QStringList layerIds )
     }
   }
 }
+
