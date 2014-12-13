@@ -23,7 +23,7 @@
 #include <QPainter>
 
 QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
-    : QgsMapCanvasItem( canvas ), mRotation(0.0)
+    : QgsMapCanvasItem( canvas )
 {
   setZValue( -10 );
 }
@@ -32,9 +32,8 @@ QgsMapCanvasMap::~QgsMapCanvasMap()
 {
 }
 
-void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect, double rotation )
+void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect )
 {
-  mRotation = rotation;
   mImage = image;
 
   // For true retro fans: this is approximately how the graphics looked like in 1990
@@ -48,27 +47,12 @@ void QgsMapCanvasMap::setContent( const QImage& image, const QgsRectangle& rect,
 void QgsMapCanvasMap::paint( QPainter* painter )
 {
   int w = qRound( boundingRect().width() ) - 2, h = qRound( boundingRect().height() ) - 2; // setRect() makes the size +2 :-(
-  int wi = mImage.width();
-  int hi = mImage.height();
-
-  double ar = h ? double(w)/h : 0.0; // aspect ratio of bounding rect
-  double ari = hi ? double(wi)/hi : 0.0; // aspect ratio of image
-  double ard = fabs(ari-ar); // aspect ratio difference
-
-#if 0
-  QgsDebugMsg( QString( "XXXX img %1,%2 (%3) item %4,%5 (%6) ardiff %7" )
-    .arg( wi ).arg( hi ).arg( ari )
-    .arg( w ).arg( h ).arg( ar )
-    .arg ( ard )
-  );
-#endif
-
   if ( mImage.size() != QSize( w, h ) )
   {
-    QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( wi ).arg( hi ).arg( w ).arg( h ) );
+    QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
   }
 
-  if ( mRotation )
+  if ( mMapCanvas->getCoordinateTransform()->mapRotation() )
   {
     int tX = ( w - mImage.width() ) / 2.0;
     int tY = ( h - mImage.height() ) / 2.0;
