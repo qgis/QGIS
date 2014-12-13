@@ -723,7 +723,13 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    QgsRectangle rect = mSettings.visibleExtent();
+    // This is an hack to pass QgsMapCanvasItem::setRect what it
+    // expects (encoding of position and size of the item)
+    const QgsMapToPixel& m2p = mSettings.mapToPixel();
+    QgsPoint topLeft = m2p.toMapPoint(0,0);
+    double res = m2p.mapUnitsPerPixel();
+    QgsRectangle rect(topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res);
+
     mMap->setContent( img, rect );
   }
 

@@ -52,20 +52,7 @@ void QgsMapCanvasMap::paint( QPainter* painter )
     QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
   }
 
-  if ( mMapCanvas->getCoordinateTransform()->mapRotation() )
-  {
-    int tX = ( w - mImage.width() ) / 2.0;
-    int tY = ( h - mImage.height() ) / 2.0;
-    int fX = 0;
-    int fY = 0;
-    int fW = w;
-    int fH = h;
-    painter->drawImage( tX, tY, mImage, fX, fY, fW, fH );
-  }
-  else
-  {
-    painter->drawImage( QRect( 0, 0, w, h ), mImage );
-  }
+  painter->drawImage( QRect( 0, 0, w, h ), mImage );
 
   // For debugging:
 #if 0
