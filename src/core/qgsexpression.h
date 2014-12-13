@@ -282,14 +282,16 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() )
-            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ), mReferencedColumns( referencedColumns ) {}
+        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
+            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ), mReferencedColumns( referencedColumns ), mLazyEval( lazyEval ) {}
         /** The name of the function. */
         QString name() { return mName; }
         /** The number of parameters this function takes. */
         int params() { return mParams; }
         /** Does this function use a geometry object. */
         bool usesgeometry() { return mUsesGeometry; }
+
+        bool lazyEval() { return mLazyEval; }
 
         virtual QStringList referencedColumns() const { return mReferencedColumns; }
 
@@ -315,13 +317,14 @@ class CORE_EXPORT QgsExpression
         QString mGroup;
         QString mHelpText;
         QStringList mReferencedColumns;
+        bool mLazyEval;
     };
 
     class StaticFunction : public Function
     {
       public:
-        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns ), mFnc( fcn ) {}
+        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
+            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval ), mFnc( fcn ) {}
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent )
         {
@@ -680,5 +683,6 @@ class CORE_EXPORT QgsExpression
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );
+Q_DECLARE_METATYPE( QgsExpression::Node* );
 
 #endif // QGSEXPRESSION_H
