@@ -302,8 +302,8 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
         : mLayer( vl ), mVertexTree( vertexTree ), mNNQuery( true ), mOrigPt( origPt ), mList( list ) {}
 
     //! constructor for range queries
-    QgsPointLocator_VisitorVertexEdge( QgsVectorLayer* vl, bool vertexTree, const QgsRectangle& origRect, QgsPointLocator::MatchList& list )
-        : mLayer( vl ), mVertexTree( vertexTree ), mNNQuery( false ), mOrigRect( origRect ), mList( list ) {}
+    QgsPointLocator_VisitorVertexEdge( QgsVectorLayer* vl, bool vertexTree, const QgsRectangle& origRect, QgsPointLocator::MatchList& list, const QgsPoint* distToPoint = 0 )
+        : mLayer( vl ), mVertexTree( vertexTree ), mNNQuery( false ), mOrigRect( origRect ), mList( list ), mDistToPoint( distToPoint ) {}
 
     void visitNode( const INode& n ) { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
@@ -334,9 +334,17 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
       else
       {
         // range query
-        // distance + point do not make sense here... keep them empty
+        // distance + point make sense only if mDistToPoint is specified
         dist = 0;
-        if ( !mVertexTree )
+        if ( mVertexTree )
+        {
+          if ( mDistToPoint )
+          {
+            pt = QgsPoint( dd.m_region.m_pLow[0], dd.m_region.m_pLow[1] );
+            dist = sqrt( pt.sqrDist( *mDistToPoint ) );
+          }
+        }
+        else
         {
           // need to check if the edge actually intersects the region
           SpatialIndex::Region r( rect2region( mOrigRect ) );
@@ -347,6 +355,8 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
             return;
           edgePoints[0].set( pStart[0], pStart[1] );
           edgePoints[1].set( pEnd[0], pEnd[1] );
+          if ( mDistToPoint )
+            dist = sqrt( mDistToPoint->sqrDistToSegment( pStart[0], pStart[1], pEnd[0], pEnd[1], pt ) );
         }
       }
       QgsPointLocator::Type t = mVertexTree ? QgsPointLocator::Vertex : QgsPointLocator::Edge;
@@ -361,6 +371,7 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
     QgsPoint mOrigPt; // only for NN queries
     QgsRectangle mOrigRect; // only for range queries
     QgsPointLocator::MatchList& mList;
+    const QgsPoint* mDistToPoint; // optionally for range queries
 };
 
 
@@ -682,8 +693,34 @@ QgsPointLocator::MatchList QgsPointLocator::nearestEdges( const QgsPoint& point,
   return lst;
 }
 
+QgsPointLocator::MatchList QgsPointLocator::verticesInTolerance( const QgsPoint& point, double tolerance )
+{
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  MatchList lst = verticesInRect( rect, &point );
+  // make sure that only matches strictly within the tolerance are returned
+  // (the intersection with rect may yield matches outside of tolerance)
+  while ( !lst.isEmpty() && lst.last().distance() > tolerance )
+    lst.removeLast();
+  return lst;
+}
 
-QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle& rect )
+QgsPointLocator::MatchList QgsPointLocator::edgesInTolerance( const QgsPoint& point, double tolerance )
+{
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  MatchList lst = edgesInRect( rect, &point );
+  // make sure that only matches strictly within the tolerance are returned
+  // (the intersection with rect may yield matches outside of tolerance)
+  while ( !lst.isEmpty() && lst.last().distance() > tolerance )
+    lst.removeLast();
+  return lst;
+}
+
+static bool matchDistanceLessThan( const QgsPointLocator::Match& m1, const QgsPointLocator::Match& m2 )
+{
+  return m1.distance() < m2.distance();
+}
+
+QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint )
 {
   if ( !mRTreeVertex )
   {
@@ -693,13 +730,18 @@ QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle& 
   }
 
   MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( mLayer, true, rect, lst );
+  QgsPointLocator_VisitorVertexEdge visitor( mLayer, true, rect, lst, distToPoint );
   mRTreeVertex->intersectsWithQuery( rect2region( rect ), visitor );
+
+  // if there is no distToPoint, all distances are zero, so no need to sort
+  if ( distToPoint )
+    qSort( lst.begin(), lst.end(), matchDistanceLessThan );
+
   return lst;
 }
 
 
-QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rect )
+QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint )
 {
   if ( !mRTreeEdge )
   {
@@ -709,8 +751,13 @@ QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rec
   }
 
   MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( mLayer, false, rect, lst );
+  QgsPointLocator_VisitorVertexEdge visitor( mLayer, false, rect, lst, distToPoint );
   mRTreeEdge->intersectsWithQuery( rect2region( rect ), visitor );
+
+  // if there is no distToPoint, all distances are zero, so no need to sort
+  if ( distToPoint )
+    qSort( lst.begin(), lst.end(), matchDistanceLessThan );
+
   return lst;
 }
 

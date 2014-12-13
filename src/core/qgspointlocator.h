@@ -159,14 +159,19 @@ class QgsPointLocator : public QObject
 
     // intersection queries
 
-    inline MatchList verticesInRect( const QgsPoint& point, double tolerance )
-    {
-      return verticesInRect( QgsRectangle( point.x() - tolerance, point.y() - tolerance,
-                                           point.x() + tolerance, point.y() + tolerance ) );
-    }
+    //! find nearest vertices to the specified point - sorted by distance
+    //! will return matches up to distance given by tolerance
+    MatchList verticesInTolerance( const QgsPoint& point, double tolerance );
+    //! find nearest edges to the specified point - sorted by distance
+    //! will return matches up to distance given by tolerance
+    MatchList edgesInTolerance( const QgsPoint& point, double tolerance );
 
-    MatchList verticesInRect( const QgsRectangle& rect );
-    MatchList edgesInRect( const QgsRectangle& rect );
+    //! find vertices within given rectangle
+    //! if distToPoint is given, the matches will be sorted by distance to that point
+    MatchList verticesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0 );
+    //! find edges within given rectangle
+    //! if distToPoint is given, the matches will be sorted by distance to that point
+    MatchList edgesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0 );
 
     // point-in-polygon query
 

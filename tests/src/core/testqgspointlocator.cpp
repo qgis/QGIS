@@ -112,7 +112,38 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( mInvalid.count(), 0 );
     }
 
-    // TODO: intersection tests
+    void testVerticesInTolerance()
+    {
+      QgsPointLocator loc( mVL );
+      QgsPointLocator::MatchList lst = loc.verticesInTolerance( QgsPoint( 1, 0 ), 2 );
+      QCOMPARE( lst.count(), 4 );
+      QCOMPARE( lst[0].point(), QgsPoint( 1, 0 ) );
+      QCOMPARE( lst[0].distance(), 0. );
+      QCOMPARE( lst[1].point(), QgsPoint( 1, 1 ) );
+      QCOMPARE( lst[1].distance(), 1. );
+      QCOMPARE( lst[2].point(), QgsPoint( 0, 1 ) );
+      QCOMPARE( lst[2].distance(), sqrt( 2 ) );
+
+      QgsPointLocator::MatchList lst2 = loc.verticesInTolerance( QgsPoint( 1, 0 ), 1 );
+      QCOMPARE( lst2.count(), 2 );
+    }
+
+    void testEdgesInTolerance()
+    {
+      QgsPointLocator loc( mVL );
+      QgsPointLocator::MatchList lst = loc.edgesInTolerance( QgsPoint( 0, 0 ), 2 );
+      QCOMPARE( lst.count(), 3 );
+      QCOMPARE( lst[0].point(), QgsPoint( 0.5, 0.5 ) );
+      QCOMPARE( lst[0].distance(), sqrt( 2 ) / 2 );
+      QVERIFY( lst[1].point() == QgsPoint( 0, 1 ) || lst[1].point() == QgsPoint( 1, 0 ) );
+      QCOMPARE( lst[1].distance(), 1. );
+      QVERIFY( lst[2].point() == QgsPoint( 0, 1 ) || lst[2].point() == QgsPoint( 1, 0 ) );
+      QCOMPARE( lst[2].distance(), 1. );
+
+      QgsPointLocator::MatchList lst2 = loc.edgesInTolerance( QgsPoint( 0, 0 ), 0.9 );
+      QCOMPARE( lst2.count(), 1 );
+    }
+
 
     void testLayerUpdates()
     {
