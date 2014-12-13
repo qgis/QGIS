@@ -263,11 +263,19 @@ static LineSegment edge2lineSegment( const RTree::Data& dd )
   return LineSegment( pStart, pEnd, 2 );
 }
 
+// Ahh.... another magic number. Taken from QgsVectorLayer::snapToGeometry() call to closestSegmentWithContext().
+// The default epsilon used for sqrDistToSegment (1e-8) is too high when working with lat/lon coordinates
+// I still do not fully understand why the sqrDistToSegment() code uses epsilon and if the square distance
+// is lower than epsilon it will have a special logic...
+static const double POINT_LOC_EPSILON = 1e-12;
 
 // for a Data in the edge tree, find out distance from a point
 static double edgeMinDist( const RTree::Data& dd, const Point& queryP )
 {
-  return edge2lineSegment( dd ).getMinimumDistance( queryP );
+  double x1, x2, y1, y2;
+  QgsPoint p;
+  edgeGetEndpoints( dd, x1, y1, x2, y2 );
+  return sqrt( QgsPoint( queryP.m_pCoords[0], queryP.m_pCoords[1] ).sqrDistToSegment( x1, y1, x2, y2, p, POINT_LOC_EPSILON ) );
 }
 
 
@@ -329,7 +337,7 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
         {
           double x1, x2, y1, y2;
           edgeGetEndpoints( dd, x1, y1, x2, y2 );
-          dist = sqrt( mOrigPt.sqrDistToSegment( x1, y1, x2, y2, pt ) );
+          dist = sqrt( mOrigPt.sqrDistToSegment( x1, y1, x2, y2, pt, POINT_LOC_EPSILON ) );
           edgePoints[0].set( x1, y1 );
           edgePoints[1].set( x2, y2 );
         }
@@ -359,7 +367,7 @@ class QgsPointLocator_VisitorVertexEdge : public IVisitor
           edgePoints[0].set( pStart[0], pStart[1] );
           edgePoints[1].set( pEnd[0], pEnd[1] );
           if ( mDistToPoint )
-            dist = sqrt( mDistToPoint->sqrDistToSegment( pStart[0], pStart[1], pEnd[0], pEnd[1], pt ) );
+            dist = sqrt( mDistToPoint->sqrDistToSegment( pStart[0], pStart[1], pEnd[0], pEnd[1], pt, POINT_LOC_EPSILON ) );
         }
       }
       QgsPointLocator::Type t = mVertexTree ? QgsPointLocator::Vertex : QgsPointLocator::Edge;
