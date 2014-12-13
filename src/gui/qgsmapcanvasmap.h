@@ -41,7 +41,8 @@ class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, p
     ~QgsMapCanvasMap();
 
     //! @note added in 2.4
-    void setContent( const QImage& image, const QgsRectangle& rect );
+    //! @note rotation parameter added in 2.8
+    void setContent( const QImage& image, const QgsRectangle& rect, double rotation=0.0 );
 
     //! @note added in 2.4
     QImage contentImage() const { return mImage; }
@@ -75,6 +76,8 @@ class GUI_EXPORT QgsMapCanvasMap : public QgsMapCanvasItem  // public QObject, p
   private:
 
     QImage mImage;
+
+    double mRotation;
 };
 
 #endif

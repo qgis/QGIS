@@ -724,7 +724,7 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     QgsRectangle rect = mSettings.visibleExtent();
-    mMap->setContent( img, rect );
+    mMap->setContent( img, rect, mSettings.rotation() );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
