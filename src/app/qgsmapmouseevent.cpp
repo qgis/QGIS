@@ -54,7 +54,7 @@ void QgsMapMouseEvent::setPoint( const QgsPoint& point )
 
 bool QgsMapMouseEvent::snapPoint()
 {
-  mSnapMatch = QgisApp::instance()->snappingUtils()->snapToMap( mMapPoint );
+  mSnapMatch = mMapTool->canvas()->snappingUtils()->snapToMap( mMapPoint );
   mMapPoint = mSnapMatch.isValid() ? mSnapMatch.point() : mOriginalPoint;
   return mSnapMatch.isValid();
 }

@@ -44,6 +44,7 @@ email                : sherman at mrcc.com
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
+#include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptoolpan.h"
@@ -190,6 +191,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mDrawRenderingStats( false )
     , mCache( 0 )
     , mPreviewEffect( 0 )
+    , mSnappingUtils( 0 )
 {
   setObjectName( name );
   mScene = new QGraphicsScene();
@@ -340,6 +342,7 @@ QgsMapLayer* QgsMapCanvas::layer( int index )
 void QgsMapCanvas::setCurrentLayer( QgsMapLayer* layer )
 {
   mCurrentLayer = layer;
+  emit currentLayerChanged( layer );
 }
 
 double QgsMapCanvas::scale()
@@ -1741,6 +1744,22 @@ QgsPreviewEffect::PreviewMode QgsMapCanvas::previewMode() const
   }
 
   return mPreviewEffect->mode();
+}
+
+QgsSnappingUtils* QgsMapCanvas::snappingUtils() const
+{
+  if ( !mSnappingUtils )
+  {
+    // associate a dummy instance, but better than null pointer
+    QgsMapCanvas* c = const_cast<QgsMapCanvas*>( this );
+    c->mSnappingUtils = new QgsMapCanvasSnappingUtils( c, c );
+  }
+  return mSnappingUtils;
+}
+
+void QgsMapCanvas::setSnappingUtils( QgsSnappingUtils* utils )
+{
+  mSnappingUtils = utils;
 }
 
 void QgsMapCanvas::readProject( const QDomDocument & doc )

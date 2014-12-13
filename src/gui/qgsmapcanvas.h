@@ -65,6 +65,7 @@ class QgsMapSettings;
 class QgsMapCanvasMap;
 class QgsMapOverviewCanvas;
 class QgsMapTool;
+class QgsSnappingUtils;
 
 /** \ingroup gui
   * A class that stores visibility and presence in overview flags together
@@ -378,6 +379,23 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      * @note added in 2.3 */
     QgsPreviewEffect::PreviewMode previewMode() const;
 
+    /** Return snapping utility class that is associated with map canvas.
+     *  If no snapping utils instance has been associated previously, an internal will be created for convenience
+     *  (so map tools do not need to test for existence of the instance).
+     *
+     * Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
+     *  @note added in 2.8
+     */
+    QgsSnappingUtils* snappingUtils() const;
+    /** Assign an instance of snapping utils to the map canvas.
+     * The instance is not owned by the canvas, so it is possible to use one instance in multiple canvases.
+     *
+     * For main canvas in QGIS, do not associate a different instance from the existing one (it is updated from
+     * the project's snapping configuration).
+     * @note added in 2.8
+     */
+    void setSnappingUtils( QgsSnappingUtils* utils );
+
   public slots:
 
     /**Repaints the canvas map*/
@@ -517,6 +535,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! @note added in 2.4
     void mapUnitsChanged();
 
+    //! Emitted when the current layer is changed
+    //! @note added in 2.8
+    void currentLayerChanged( QgsMapLayer* layer );
+
   protected:
 #ifdef HAVE_TOUCH
     //! Overridden standard event to be gestures aware
@@ -652,6 +674,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     QgsPreviewEffect* mPreviewEffect;
 
     QgsRectangle imageRect( const QImage& img );
+
+    QgsSnappingUtils* mSnappingUtils;
+
 }; // class QgsMapCanvas
 
 

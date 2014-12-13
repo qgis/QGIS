@@ -17,7 +17,6 @@
 #define QGSMAPTOOLMEASUREANGLE_H
 
 #include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
 #include "qgspoint.h"
 #include "qgsdistancearea.h"
 
@@ -49,7 +48,6 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     QList<QgsPoint> mAnglePoints;
     QgsRubberBand* mRubberBand;
     QgsDisplayAngle* mResultDisplay;
-    QgsMapCanvasSnapper mSnapper;
 
     /**Creates a new rubber band and deletes the old one*/
     void createRubberBand();

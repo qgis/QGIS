@@ -97,8 +97,6 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // project projection
     bool mWrongProjectProjection;
 
-    QgsMapCanvasSnapper mSnapper;
-
     //! Returns the snapped (map) coordinate
     //@param p (pixel) coordinate
     QgsPoint snapPoint( const QPoint& p );

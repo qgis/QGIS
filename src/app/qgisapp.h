@@ -1214,11 +1214,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateFilterLegendByMap();
     void setFilterLegendByMapEnabled( bool enabled );
 
-  public:
-    QgsSnappingUtils* snappingUtils() { return mSnappingUtils; }
-  private slots:
-    void updateSnappingUtilsMapSettings();
-
     /** Make the user feel dizzy */
     void dizzy();
 

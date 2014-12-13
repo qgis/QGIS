@@ -148,6 +148,7 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
@@ -192,7 +193,6 @@
 #include "qgsshortcutsmanager.h"
 #include "qgssinglebandgrayrenderer.h"
 #include "qgssnappingdialog.h"
-#include "qgssnappingutils.h"
 #include "qgssponsors.h"
 #include "qgssvgannotationitem.h"
 #include "qgstextannotationitem.h"
@@ -405,8 +405,6 @@ void QgisApp::activeLayerChanged( QgsMapLayer* layer )
 {
   if ( mMapCanvas )
     mMapCanvas->setCurrentLayer( layer );
-  if ( mSnappingUtils )
-    mSnappingUtils->setCurrentLayer( qobject_cast<QgsVectorLayer*>( layer ) );
 }
 
 /**
@@ -571,12 +569,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mAdvancedDigitizingDockWidget->setObjectName( "AdvancedDigitizingTools" );
 
-  mSnappingUtils = new QgsSnappingUtils( this );
+  mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
+  mMapCanvas->setSnappingUtils( mSnappingUtils );
   connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
   connect( this, SIGNAL( newProject() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
   connect( this, SIGNAL( projectRead() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
-  connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( updateSnappingUtilsMapSettings() ) );
-  connect( mMapCanvas, SIGNAL( destinationCrsChanged() ), this, SLOT( updateSnappingUtilsMapSettings() ) );
 
   createActions();
   createActionGroups();
@@ -4367,11 +4364,6 @@ void QgisApp::setFilterLegendByMapEnabled( bool enabled )
 void QgisApp::updateFilterLegendByMap()
 {
   layerTreeView()->layerTreeModel()->setLegendFilterByMap( &mMapCanvas->mapSettings() );
-}
-
-void QgisApp::updateSnappingUtilsMapSettings()
-{
-  mSnappingUtils->setMapSettings( mMapCanvas->mapSettings() );
 }
 
 void QgisApp::saveMapAsImage()

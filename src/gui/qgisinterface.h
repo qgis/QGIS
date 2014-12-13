@@ -78,13 +78,6 @@ class GUI_EXPORT QgisInterface : public QObject
 
     virtual QgsLayerTreeView* layerTreeView() = 0;
 
-    /**
-     * Get access to snapping utilities - for use in map tools
-     *
-     * @note added in 2.8
-     */
-    virtual QgsSnappingUtils* snappingUtils() = 0;
-
   public slots: // TODO: do these functions really need to be slots?
 
     /* Exposed functions */
