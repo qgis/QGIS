@@ -125,6 +125,9 @@ static void addPolylineToEdgeData( QLinkedList<RTree::Data*>& edgeDataList, cons
     vertexIndex++;
     QgsPoint pt = pl[i];
 
+    if ( pt == lastPt )
+      continue; // ignore duplicate vertices (not forming a proper edge)
+
     bool edgeDirection = ( pt.x() < lastPt.x() && pt.y() < lastPt.y() ) || ( pt.x() > lastPt.x() && pt.y() > lastPt.y() );
     bool isReversed = pt.x() < lastPt.x() || ( pt.x() == lastPt.x() && lastPt.y() < pt.y() );
     double pLow[2], pHigh[2];
