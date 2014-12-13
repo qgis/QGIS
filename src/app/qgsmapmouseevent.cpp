@@ -73,7 +73,7 @@ QgsPoint QgsMapMouseEvent::mapPoint( bool* snappedPoint ) const
 {
   if ( snappedPoint )
   {
-    *snappedPoint = mSnapMatch.hasVertex();
+    *snappedPoint = mSnapMatch.isValid();
   }
   return mMapPoint;
 }
