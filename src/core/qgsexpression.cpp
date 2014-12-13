@@ -1367,15 +1367,18 @@ static QVariant fcnIf( const QVariantList &values, const QgsFeature *f, QgsExpre
   QgsExpression::Node* node = getNode( values.at( 0 ), parent );
   ENSURE_NO_EVAL_ERROR;
   QVariant value = node->eval( parent, f );
+  ENSURE_NO_EVAL_ERROR;
   if ( value.toBool() ) {
     node = getNode( values.at( 1 ), parent );
     ENSURE_NO_EVAL_ERROR;
     value = node->eval( parent, f );
+    ENSURE_NO_EVAL_ERROR;
   }
   else {
     node = getNode( values.at( 2 ), parent );
     ENSURE_NO_EVAL_ERROR;
     value = node->eval( parent, f );
+    ENSURE_NO_EVAL_ERROR;
   }
   return value;
 }
