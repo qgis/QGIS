@@ -50,6 +50,8 @@ void QgsMapCanvasMap::paint( QPainter* painter )
   if ( mImage.size() != QSize( w, h ) )
   {
     QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
+    // This happens on zoom events when ::paint is called before
+    // the renderer has completed
   }
 
   painter->drawImage( QRect( 0, 0, w, h ), mImage );
