@@ -20,13 +20,14 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-#include <QSettings>
-
 
 QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     : QObject( parent )
     , mCurrentLayer( 0 )
     , mSnapToMapMode( SnapCurrentLayer )
+    , mDefaultType( QgsPointLocator::Vertex )
+    , mDefaultTolerance( 10 )
+    , mDefaultUnit( QgsTolerance::Pixels )
     , mSnapOnIntersection( false )
 {
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( onLayersWillBeRemoved( QStringList ) ) );
@@ -59,20 +60,6 @@ void QgsSnappingUtils::clearAllLocators()
 }
 
 
-static int _defaultSnapMode()
-{
-  QSettings settings;
-  QString defaultSnapString = settings.value( "/qgis/digitizing/default_snap_mode", "off" ).toString();
-  if ( defaultSnapString == "to segment" )
-    return QgsPointLocator::Edge;
-  else if ( defaultSnapString == "to vertex and segment" )
-    return QgsPointLocator::Edge | QgsPointLocator::Vertex;
-  else if ( defaultSnapString == "to vertex" )
-    return QgsPointLocator::Vertex;
-  else
-    return 0;
-}
-
 // return snap tolerance in map units (not in layer units as from QgsTolerance)
 static double _snapTolerance( double tolerance, QgsTolerance::UnitType units, const QgsMapSettings& mapSettings )
 {
@@ -82,76 +69,67 @@ static double _snapTolerance( double tolerance, QgsTolerance::UnitType units, co
     return tolerance * mapSettings.mapUnitsPerPixel();
 }
 
-// return default snap tolerance in map units (not in layer units as from QgsTolerance)
-static double _defaultSnapTolerance( const QgsMapSettings& mapSettings )
-{
-  QSettings settings;
-  return _snapTolerance( settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble(),
-                         ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt(),
-                         mapSettings );
-}
 
-
-static QgsPointLocator::Match _findClosestSegmentIntersection(const QgsPoint& pt, const QgsPointLocator::MatchList& segments)
+static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& pt, const QgsPointLocator::MatchList& segments )
 {
   QSet<QgsPoint> endpoints;
 
   // make a geometry
   QList<QgsGeometry*> geoms;
-  foreach (const QgsPointLocator::Match& m, segments)
+  foreach ( const QgsPointLocator::Match& m, segments )
   {
-    if (m.hasEdge())
+    if ( m.hasEdge() )
     {
-      QgsPolyline pl(2);
-      m.edgePoints(pl[0], pl[1]);
-      geoms << QgsGeometry::fromPolyline(pl);
+      QgsPolyline pl( 2 );
+      m.edgePoints( pl[0], pl[1] );
+      geoms << QgsGeometry::fromPolyline( pl );
       endpoints << pl[0] << pl[1];
     }
   }
 
   QgsGeometry* g = QgsGeometry::unaryUnion( geoms );
-  qDeleteAll(geoms);
+  qDeleteAll( geoms );
 
   // get intersection points
   QList<QgsPoint> newPoints;
-  if (g->wkbType() == QGis::WKBLineString)
+  if ( g->wkbType() == QGis::WKBLineString )
   {
-    foreach (const QgsPoint& p, g->asPolyline())
+    foreach ( const QgsPoint& p, g->asPolyline() )
     {
-      if (!endpoints.contains(p))
+      if ( !endpoints.contains( p ) )
         newPoints << p;
     }
   }
-  if (g->wkbType() == QGis::WKBMultiLineString)
+  if ( g->wkbType() == QGis::WKBMultiLineString )
   {
-    foreach (const QgsPolyline& pl, g->asMultiPolyline())
+    foreach ( const QgsPolyline& pl, g->asMultiPolyline() )
     {
-      foreach (const QgsPoint& p, pl)
+      foreach ( const QgsPoint& p, pl )
       {
-        if (!endpoints.contains(p))
+        if ( !endpoints.contains( p ) )
           newPoints << p;
       }
     }
   }
   delete g;
 
-  if (newPoints.isEmpty())
+  if ( newPoints.isEmpty() )
     return QgsPointLocator::Match();
 
   // find the closest points
   QgsPoint minP;
   double minSqrDist = 1e20;  // "infinity"
-  foreach (const QgsPoint& p, newPoints)
+  foreach ( const QgsPoint& p, newPoints )
   {
-    double sqrDist = pt.sqrDist(p.x(), p.y());
-    if (sqrDist < minSqrDist)
+    double sqrDist = pt.sqrDist( p.x(), p.y() );
+    if ( sqrDist < minSqrDist )
     {
       minSqrDist = sqrDist;
       minP = p;
     }
   }
 
-  return QgsPointLocator::Match( QgsPointLocator::Vertex, 0, 0, sqrt(minSqrDist), minP );
+  return QgsPointLocator::Match( QgsPointLocator::Vertex, 0, 0, sqrt( minSqrDist ), minP );
 }
 
 
@@ -169,9 +147,9 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
     if ( !mCurrentLayer )
       return QgsPointLocator::Match();
 
-    // data from QSettings
-    double tolerance = _defaultSnapTolerance( mMapSettings );
-    int type = _defaultSnapMode();
+    // data from project
+    double tolerance = _snapTolerance( mDefaultTolerance, mDefaultUnit, mMapSettings );
+    int type = mDefaultType;
 
     // use ad-hoc locator
     QgsPointLocator* loc = locatorForLayer( mCurrentLayer );
@@ -213,7 +191,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
         if ( mSnapOnIntersection )
         {
           edges << loc->edgesInTolerance( pointMap, tolerance );
-          maxSnapIntTolerance = qMax(maxSnapIntTolerance, tolerance);
+          maxSnapIntTolerance = qMax( maxSnapIntTolerance, tolerance );
         }
       }
     }
@@ -237,6 +215,20 @@ void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
     clearAllLocators();
 }
 
+void QgsSnappingUtils::setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit )
+{
+  mDefaultType = type;
+  mDefaultTolerance = tolerance;
+  mDefaultUnit = unit;
+}
+
+void QgsSnappingUtils::defaultSettings( int& type, double& tolerance, QgsTolerance::UnitType& unit )
+{
+  type = mDefaultType;
+  tolerance = mDefaultTolerance;
+  unit = mDefaultUnit;
+}
+
 const QgsCoordinateReferenceSystem* QgsSnappingUtils::destCRS()
 {
   return mMapSettings.hasCrsTransformEnabled() ? &mMapSettings.destinationCrs() : 0;
@@ -247,6 +239,20 @@ void QgsSnappingUtils::readConfigFromProject()
 {
   mSnapToMapMode = SnapCurrentLayer;
   mLayers.clear();
+
+  QString snapMode = QgsProject::instance()->readEntry( "Digitizing", "/SnappingMode" );
+
+  int type = 0;
+  QString snapType = QgsProject::instance()->readEntry( "Digitizing", "/DefaultSnapType", QString( "off" ) );
+  if ( snapType == "to segment" )
+    type = QgsPointLocator::Edge;
+  else if ( snapType == "to vertex and segment" )
+    type = QgsPointLocator::Vertex | QgsPointLocator::Edge;
+  else if ( snapType == "to vertex" )
+    type = QgsPointLocator::Vertex;
+  double tolerance = QgsProject::instance()->readDoubleEntry( "Digitizing", "/DefaultSnapTolerance", 0 );
+  QgsTolerance::UnitType unit = ( QgsTolerance::UnitType ) QgsProject::instance()->readNumEntry( "Digitizing", "/DefaultSnapToleranceUnit", 0 );
+  setDefaultSettings( type, tolerance, unit );
 
   //snapping on intersection on?
   setSnapOnIntersections( QgsProject::instance()->readNumEntry( "Digitizing", "/IntersectionSnapping", 0 ) );
@@ -270,7 +276,12 @@ void QgsSnappingUtils::readConfigFromProject()
     return; // nothing defined in project - use current layer
 
   // Use snapping information from the project
-  mSnapToMapMode = SnapPerLayerConfig;
+  if ( snapMode == "current_layer" )
+    mSnapToMapMode = SnapCurrentLayer;
+  else   // either "advanced" or empty (for background compatibility)
+    mSnapToMapMode = SnapPerLayerConfig;
+
+
 
   // load layers, tolerances, snap type
   QStringList::const_iterator layerIt( layerIdList.constBegin() );

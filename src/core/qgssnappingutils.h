@@ -70,6 +70,11 @@ class QgsSnappingUtils : public QObject
     /** Find out how the snapping to map is done */
     SnapToMapMode snapToMapMode() const { return mSnapToMapMode; }
 
+    /** configure options used when the mode is snap to current layer */
+    void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
+    /** query options used when the mode is snap to current layer */
+    void defaultSettings( int& type, double& tolerance, QgsTolerance::UnitType& unit );
+
     struct LayerConfig
     {
       LayerConfig( QgsVectorLayer* l, int t, double tol, QgsTolerance::UnitType u ) : layer( l ), type( t ), tolerance( tol ), unit( u ) {}
@@ -122,6 +127,9 @@ class QgsSnappingUtils : public QObject
 
     // configuration
     SnapToMapMode mSnapToMapMode;
+    int mDefaultType;
+    double mDefaultTolerance;
+    QgsTolerance::UnitType mDefaultUnit;
     QList<LayerConfig> mLayers;
     bool mSnapOnIntersection;
 
