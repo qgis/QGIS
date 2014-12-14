@@ -785,6 +785,12 @@ double QgsDistanceArea::getQbar( double x )
 
 void QgsDistanceArea::computeAreaInit()
 {
+  //don't try to perform calculations if no ellipsoid
+  if ( mEllipsoid == GEO_NONE )
+  {
+    return;
+  }
+
   double a2 = ( mSemiMajor * mSemiMajor );
   double e2 = 1 - ( a2 / ( mSemiMinor * mSemiMinor ) );
   double e4, e6;
