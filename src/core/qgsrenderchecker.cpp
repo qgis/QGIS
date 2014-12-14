@@ -35,7 +35,8 @@ QgsRenderChecker::QgsRenderChecker() :
     mExpectedImageFile( "" ),
     mMismatchCount( 0 ),
     mColorTolerance( 0 ),
-    mElapsedTimeTarget( 0 )
+    mElapsedTimeTarget( 0 ),
+    mBufferDashMessages( false )
 {
 }
 
