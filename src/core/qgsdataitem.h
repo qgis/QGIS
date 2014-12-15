@@ -17,6 +17,7 @@
 #ifndef QGSDATAITEM_H
 #define QGSDATAITEM_H
 
+#include <QFileSystemWatcher>
 #include <QFutureWatcher>
 #include <QIcon>
 #include <QLibrary>
@@ -62,17 +63,9 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     int rowCount();
 
-    virtual void refresh();
-
     /** Create children. Children are not expected to have parent set.
      * This method MUST BE THREAD SAFE. */
     virtual QVector<QgsDataItem*> createChildren();
-
-    // Populate children using children vector created by createChildren()
-    virtual void populate();
-
-    /** Remove children recursively and set as not populated. This is used when refreshing collapsed items. */
-    virtual void depopulate();
 
     enum State
     {
@@ -85,7 +78,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     /** Set item state. It also take care about starting/stopping loading icon animation.
      * @param state */
-    void setState( State state );
+    virtual void setState( State state );
 
     //! @deprecated in 2.8, use state()
     bool isPopulated() { return state() == Populated; }
@@ -163,6 +156,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setToolTip( QString msg ) { mToolTip = msg; }
     QString toolTip() const { return mToolTip; }
 
+    // deleteLater() items anc clear the vector
+    static void deleteLater( QVector<QgsDataItem*> &items );
+
   protected:
     virtual void populate( QVector<QgsDataItem*> children );
     virtual void refresh( QVector<QgsDataItem*> children );
@@ -202,6 +198,15 @@ class CORE_EXPORT QgsDataItem : public QObject
      *   - calls QObject::deleteLater()
      */
     virtual void deleteLater();
+
+    // Populate children using children vector created by createChildren()
+    virtual void populate();
+
+    /** Remove children recursively and set as not populated. This is used when refreshing collapsed items. */
+    virtual void depopulate();
+
+    virtual void refresh();
+
     void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
     void emitEndInsertItems();
     void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
@@ -209,7 +214,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     void emitDataChanged( QgsDataItem* item );
     void emitDataChanged( );
     void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
-    void childrenCreated();
+    virtual void childrenCreated();
     void setPopulatingIcon();
 
   signals:
@@ -225,7 +230,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // Set to true if object has to be deleted when possible (nothing running in threads)
     bool mDeferredDelete;
-    QFutureWatcher< QVector <QgsDataItem*> > *mWatcher;
+    QFutureWatcher< QVector <QgsDataItem*> > *mFutureWatcher;
     // number of items currently in loading (populating) state
     static int mPopulatingCount;
     static QMovie * mPopulatingMovie;
@@ -327,6 +332,8 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem* parent, QString name, QString dirPath, QString path );
     ~QgsDirectoryItem();
 
+    virtual void setState( State state );
+
     QVector<QgsDataItem*> createChildren();
 
     QString dirPath() const { return mDirPath; }
@@ -338,9 +345,17 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     //! @note not available via python bindings
     static QVector<QLibrary*> mLibraries;
 
+  public slots:
+    virtual void childrenCreated();
+    void directoryChanged();
+
   protected:
     void init();
     QString mDirPath;
+
+  private:
+    QFileSystemWatcher * mFileSystemWatcher;
+    bool mRefreshLater;
 };
 
 /**

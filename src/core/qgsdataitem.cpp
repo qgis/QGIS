@@ -166,7 +166,7 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString n
     , mName( name )
     , mPath( path )
     , mDeferredDelete( false )
-    , mWatcher( 0 )
+    , mFutureWatcher( 0 )
 {
   Q_UNUSED( parent );
 }
@@ -182,12 +182,12 @@ QgsDataItem::~QgsDataItem()
   }
   mChildren.clear();
 
-  if ( mWatcher && !mWatcher->isFinished() )
+  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
     // this should not usually happen (until the item was deleted directly when createChildren was running)
-    QgsDebugMsg( "mWatcher not finished (should not happen) -> waitForFinished()" );
+    QgsDebugMsg( "mFutureWatcher not finished (should not happen) -> waitForFinished()" );
     mDeferredDelete = true;
-    mWatcher->waitForFinished();
+    mFutureWatcher->waitForFinished();
   }
 }
 
@@ -203,15 +203,26 @@ void QgsDataItem::deleteLater()
   }
   mChildren.clear();
 
-  if ( mWatcher && !mWatcher->isFinished() )
+  if ( mFutureWatcher && !mFutureWatcher->isFinished() )
   {
-    QgsDebugMsg( "mWatcher not finished -> schedule to delete later" );
+    QgsDebugMsg( "mFutureWatcher not finished -> schedule to delete later" );
     mDeferredDelete = true;
   }
   else
   {
     QObject::deleteLater();
   }
+}
+
+void QgsDataItem::deleteLater( QVector<QgsDataItem*> &items )
+{
+  foreach ( QgsDataItem *item, items )
+  {
+    if ( !item ) // should not happen
+      continue;
+    item->deleteLater();
+  }
+  items.clear();
 }
 
 QIcon QgsDataItem::icon()
@@ -283,12 +294,12 @@ void QgsDataItem::populate()
   {
     setState( Populating );
     // The watcher must not be created with item (in constructor) because the item may be created in thread and the watcher created in thread does not work correctly.
-    if ( !mWatcher )
+    if ( !mFutureWatcher )
     {
-      mWatcher = new QFutureWatcher< QVector <QgsDataItem*> >( this );
+      mFutureWatcher = new QFutureWatcher< QVector <QgsDataItem*> >( this );
     }
-    connect( mWatcher, SIGNAL( finished() ), SLOT( childrenCreated() ) );
-    mWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
+    connect( mFutureWatcher, SIGNAL( finished() ), SLOT( childrenCreated() ) );
+    mFutureWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
   }
 }
 
@@ -317,7 +328,7 @@ QVector<QgsDataItem*> QgsDataItem::runCreateChildren( QgsDataItem* item )
 
 void QgsDataItem::childrenCreated()
 {
-  QgsDebugMsg( QString( "path = %1 children.size() = %2" ).arg( path() ).arg( mWatcher->result().size() ) );
+  QgsDebugMsg( QString( "path = %1 children.size() = %2" ).arg( path() ).arg( mFutureWatcher->result().size() ) );
 
   if ( deferredDelete() )
   {
@@ -328,13 +339,13 @@ void QgsDataItem::childrenCreated()
 
   if ( mChildren.size() == 0 ) // usually populating but may also be refresh if originaly there were no children
   {
-    populate( mWatcher->result() );
+    populate( mFutureWatcher->result() );
   }
   else // refreshing
   {
-    refresh( mWatcher->result() );
+    refresh( mFutureWatcher->result() );
   }
-  disconnect( mWatcher, SIGNAL( finished() ), this, SLOT( childrenCreated() ) );
+  disconnect( mFutureWatcher, SIGNAL( finished() ), this, SLOT( childrenCreated() ) );
   emit dataChanged( this ); // to replace loading icon by normal icon
 }
 
@@ -379,12 +390,12 @@ void QgsDataItem::refresh()
   else
   {
     setState( Populating );
-    if ( !mWatcher )
+    if ( !mFutureWatcher )
     {
-      mWatcher = new QFutureWatcher< QVector <QgsDataItem*> >( this );
+      mFutureWatcher = new QFutureWatcher< QVector <QgsDataItem*> >( this );
     }
-    connect( mWatcher, SIGNAL( finished() ), SLOT( childrenCreated() ) );
-    mWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
+    connect( mFutureWatcher, SIGNAL( finished() ), SLOT( childrenCreated() ) );
+    mFutureWatcher->setFuture( QtConcurrent::run( runCreateChildren, this ) );
   }
 }
 
@@ -676,6 +687,8 @@ QVector<QLibrary*> QgsDirectoryItem::mLibraries = QVector<QLibrary*>();
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
     , mDirPath( path )
+    , mFileSystemWatcher( 0 )
+    , mRefreshLater( false )
 {
   mType = Directory;
   init();
@@ -684,6 +697,8 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString p
 QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString dirPath, QString path )
     : QgsDataCollectionItem( parent, name, path )
     , mDirPath( dirPath )
+    , mFileSystemWatcher( 0 )
+    , mRefreshLater( false )
 {
   mType = Directory;
   init();
@@ -746,6 +761,11 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
   QStringList entries = dir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot, QDir::Name | QDir::IgnoreCase );
   foreach ( QString subdir, entries )
   {
+    if ( mRefreshLater )
+    {
+      deleteLater( children );
+      return children;
+    }
     QString subdirPath = dir.absoluteFilePath( subdir );
     QgsDebugMsgLevel( QString( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
@@ -759,6 +779,12 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
   QStringList fileEntries = dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot | QDir::Files, QDir::Name );
   foreach ( QString name, fileEntries )
   {
+    if ( mRefreshLater )
+    {
+      deleteLater( children );
+      return children;
+    }
+
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
@@ -808,6 +834,61 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
   }
 
   return children;
+}
+
+void QgsDirectoryItem::setState( State state )
+{
+  QgsDebugMsg( "Entered" );
+  QgsDataCollectionItem::setState( state );
+
+  if ( state == Populated )
+  {
+    if ( !mFileSystemWatcher )
+    {
+      mFileSystemWatcher = new QFileSystemWatcher( this );
+      mFileSystemWatcher->addPath( mDirPath );
+      connect( mFileSystemWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( directoryChanged() ) );
+    }
+  }
+  else if ( state == NotPopulated )
+  {
+    if ( mFileSystemWatcher )
+    {
+      delete mFileSystemWatcher;
+      mFileSystemWatcher = 0;
+    }
+  }
+}
+
+void QgsDirectoryItem::directoryChanged()
+{
+  QgsDebugMsg( "Entered" );
+  if ( state() == Populating )
+  {
+    // schedule to refresh later, because refres() simply returns if Populating
+    mRefreshLater = true;
+  }
+  else
+  {
+    refresh();
+  }
+}
+
+void QgsDirectoryItem::childrenCreated()
+{
+  QgsDebugMsg( QString( "mRefreshLater = %1" ).arg( mRefreshLater ) );
+
+  if ( mRefreshLater )
+  {
+    QgsDebugMsg( "directory changed during createChidren() -> refresh() again" );
+    mRefreshLater = false;
+    setState( Populated );
+    refresh();
+  }
+  else
+  {
+    QgsDataCollectionItem::childrenCreated();
+  }
 }
 
 bool QgsDirectoryItem::equal( const QgsDataItem *other )
