@@ -69,7 +69,7 @@ void FieldSelectorDelegate::setEditorData( QWidget *editor, const QModelIndex &i
   if ( !fcb )
     return;
 
-  int idx = m->mAttributeIdx.value( vl, -1 );
+  int idx = m->attributeIndex( vl );
   if ( vl->pendingFields().exists( idx ) )
     fcb->setField( vl->pendingFields()[ idx ].name() );
 }
@@ -125,6 +125,11 @@ QgsVectorLayer *QgsVectorLayerAndAttributeModel::vectorLayer( const QModelIndex 
     return 0;
 
   return dynamic_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( n )->layer() );
+}
+
+int QgsVectorLayerAndAttributeModel::attributeIndex( const QgsVectorLayer *vl ) const
+{
+  return mAttributeIdx.value( vl, -1 );
 }
 
 QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role ) const
