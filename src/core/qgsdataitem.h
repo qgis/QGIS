@@ -41,6 +41,8 @@ typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 class CORE_EXPORT QgsDataItem : public QObject
 {
     Q_OBJECT
+    Q_ENUMS( Type )
+    Q_ENUMS( State )
   public:
     enum Type
     {
@@ -157,6 +159,7 @@ class CORE_EXPORT QgsDataItem : public QObject
   protected:
     virtual void populate( QVector<QgsDataItem*> children );
     virtual void refresh( QVector<QgsDataItem*> children );
+    QIcon populatingIcon() { return mPopulatingIcon; }
 
     Type mType;
     Capabilities mCapabilities;
@@ -183,8 +186,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     void emitEndRemoveItems();
     void emitDataChanged( QgsDataItem* item );
     void emitDataChanged( );
+    void emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState );
     void childrenCreated();
-    void setLoadingIcon();
+    void setPopulatingIcon();
 
   signals:
     void beginInsertItems( QgsDataItem* parent, int first, int last );
@@ -192,15 +196,16 @@ class CORE_EXPORT QgsDataItem : public QObject
     void beginRemoveItems( QgsDataItem* parent, int first, int last );
     void endRemoveItems();
     void dataChanged( QgsDataItem * item );
+    void stateChanged( QgsDataItem * item, QgsDataItem::State oldState );
 
   private:
     static QVector<QgsDataItem*> runCreateChildren( QgsDataItem* item );
 
     QFutureWatcher< QVector <QgsDataItem*> > *mWatcher;
     // number of items currently in loading (populating) state
-    static int mLoadingCount;
-    static QMovie * mLoadingMovie;
-    static QIcon mLoadingIcon;
+    static int mPopulatingCount;
+    static QMovie * mPopulatingMovie;
+    static QIcon mPopulatingIcon;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDataItem::Capabilities )
@@ -366,7 +371,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     Q_OBJECT
 
   protected:
-    QString mDirPath;
+    QString mFilePath;
     QString mVsiPrefix;
     QStringList mZipFileList;
 

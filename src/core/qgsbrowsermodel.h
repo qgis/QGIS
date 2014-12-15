@@ -116,7 +116,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
   signals:
     /** Emitted when item children fetch was finished */
-    void fetchFinished( const QModelIndex & index );
+    void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
 
   public slots:
     // Reload the whole model
@@ -125,7 +125,8 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
-    void dataItemChanged( QgsDataItem * item );
+    void itemDataChanged( QgsDataItem * item );
+    void itemStateChanged( QgsDataItem * item, QgsDataItem::State oldState );
 
     void addFavouriteDirectory( QString favDir );
     void removeFavourite( const QModelIndex &index );

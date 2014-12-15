@@ -296,7 +296,7 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
     mModel = new QgsBrowserModel( mBrowserView );
 
     connect( QgisApp::instance(), SIGNAL( newProject() ), mModel, SLOT( updateProjectHome() ) );
-    connect( mModel, SIGNAL( fetchFinished( const QModelIndex & ) ), SLOT( fetchFinished( const QModelIndex & ) ) );
+    connect( mModel, SIGNAL( stateChanged( const QModelIndex &, QgsDataItem::State ) ), SLOT( stateChanged( const QModelIndex &, QgsDataItem::State ) ) );
 
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
@@ -744,10 +744,13 @@ void QgsBrowserDockWidget::restoreState()
   }
 }
 
-void QgsBrowserDockWidget::fetchFinished( const QModelIndex & index )
+void QgsBrowserDockWidget::stateChanged( const QModelIndex & index, QgsDataItem::State oldState )
 {
   QgsDataItem *item = mModel->dataItem( index );
   if ( !item )
+    return;
+
+  if ( oldState != QgsDataItem::Populating || item->state() != QgsDataItem::Populated )
     return;
 
   QgsDebugMsg( "path = " + item->path() );

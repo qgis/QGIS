@@ -151,9 +151,9 @@ const QIcon &QgsZipItem::iconZip()
 
 QMap<QString, QIcon> QgsDataItem::mIconMap = QMap<QString, QIcon>();
 
-int QgsDataItem::mLoadingCount = 0;
-QMovie * QgsDataItem::mLoadingMovie = 0;
-QIcon QgsDataItem::mLoadingIcon = QIcon();
+int QgsDataItem::mPopulatingCount = 0;
+QMovie * QgsDataItem::mPopulatingMovie = 0;
+QIcon QgsDataItem::mPopulatingIcon = QIcon();
 
 QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path )
 // Do not pass parent to QObject, Qt would delete this when parent is deleted
@@ -177,7 +177,7 @@ QgsDataItem::~QgsDataItem()
 QIcon QgsDataItem::icon()
 {
   if ( state() == Populating )
-    return mLoadingIcon;
+    return mPopulatingIcon;
 
   if ( !mIcon.isNull() )
     return mIcon;
@@ -215,6 +215,14 @@ void QgsDataItem::emitDataChanged()
   emit dataChanged( this );
 }
 
+void QgsDataItem::emitStateChanged( QgsDataItem* item, QgsDataItem::State oldState )
+{
+  if ( !item )
+    return;
+  QgsDebugMsg( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ) );
+  emit stateChanged( item, oldState );
+}
+
 QVector<QgsDataItem*> QgsDataItem::createChildren()
 {
   return QVector<QgsDataItem*>();
@@ -248,10 +256,10 @@ void QgsDataItem::populate()
 QVector<QgsDataItem*> QgsDataItem::runCreateChildren( QgsDataItem* item )
 {
   QgsDebugMsg( "path = " + item->path() );
-  //QTime time;
-  //time.start();
+  QTime time;
+  time.start();
   QVector <QgsDataItem*> children = item->createChildren();
-  //QgsDebugMsg( QString( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ) );
+  QgsDebugMsg( QString( "%1 children created in %2 ms" ).arg( children.size() ).arg( time.elapsed() ) );
   // Children objects must be pushed to main thread.
   foreach ( QgsDataItem* child, children )
   {
@@ -425,6 +433,8 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
            this, SLOT( emitEndRemoveItems() ) );
   connect( child, SIGNAL( dataChanged( QgsDataItem* ) ),
            this, SLOT( emitDataChanged( QgsDataItem* ) ) );
+  connect( child, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
+           this, SLOT( emitStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
 
   if ( refresh )
     emit endInsertItems();
@@ -458,6 +468,8 @@ QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
               this, SLOT( emitEndRemoveItems() ) );
   disconnect( child, SIGNAL( dataChanged( QgsDataItem* ) ),
               this, SLOT( emitDataChanged( QgsDataItem* ) ) );
+  disconnect( child, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
+              this, SLOT( emitStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
   child->setParent( 0 );
   return child;
 }
@@ -483,9 +495,9 @@ bool QgsDataItem::equal( const QgsDataItem *other )
   return false;
 }
 
-void QgsDataItem::setLoadingIcon()
+void QgsDataItem::setPopulatingIcon()
 {
-  mLoadingIcon = QIcon( mLoadingMovie->currentPixmap() );
+  mPopulatingIcon = QIcon( mPopulatingMovie->currentPixmap() );
 }
 
 QgsDataItem::State QgsDataItem::state() const
@@ -499,30 +511,33 @@ QgsDataItem::State QgsDataItem::state() const
 
 void QgsDataItem::setState( State state )
 {
+  QgsDebugMsg( QString( "item %1 set state %2 -> %3" ).arg( path() ).arg( this->state() ).arg( state ) );
   if ( state == mState )
     return;
 
+  State oldState = mState;
+
   if ( state == Populating ) // start loading
   {
-    if ( !mLoadingMovie )
+    if ( !mPopulatingMovie )
     {
       // QApplication as parent to ensure that it is deleted before QApplication
-      mLoadingMovie = new QMovie( QApplication::instance() );
-      mLoadingMovie->setFileName( QgsApplication::iconPath( "/mIconLoading.gif" ) );
-      mLoadingMovie->setCacheMode( QMovie::CacheAll );
-      connect( mLoadingMovie, SIGNAL( frameChanged( int ) ), SLOT( setLoadingIcon() ) );
+      mPopulatingMovie = new QMovie( QApplication::instance() );
+      mPopulatingMovie->setFileName( QgsApplication::iconPath( "/mIconLoading.gif" ) );
+      mPopulatingMovie->setCacheMode( QMovie::CacheAll );
+      connect( mPopulatingMovie, SIGNAL( frameChanged( int ) ), SLOT( setPopulatingIcon() ) );
     }
-    connect( mLoadingMovie, SIGNAL( frameChanged( int ) ), SLOT( emitDataChanged() ) );
-    mLoadingCount++;
-    mLoadingMovie->setPaused( false );
+    connect( mPopulatingMovie, SIGNAL( frameChanged( int ) ), SLOT( emitDataChanged() ) );
+    mPopulatingCount++;
+    mPopulatingMovie->setPaused( false );
   }
-  else if ( mState == Populating && mLoadingMovie ) // stop loading
+  else if ( mState == Populating && mPopulatingMovie ) // stop loading
   {
-    disconnect( mLoadingMovie, SIGNAL( frameChanged( int ) ), this, SLOT( emitDataChanged() ) );
-    mLoadingCount--;
-    if ( mLoadingCount == 0 )
+    disconnect( mPopulatingMovie, SIGNAL( frameChanged( int ) ), this, SLOT( emitDataChanged() ) );
+    mPopulatingCount--;
+    if ( mPopulatingCount == 0 )
     {
-      mLoadingMovie->setPaused( true );
+      mPopulatingMovie->setPaused( true );
     }
   }
 
@@ -530,6 +545,8 @@ void QgsDataItem::setState( State state )
   // for backward compatibility (if subclass access mPopulated directly)
   // TODO: remove in 3.0
   mPopulated = state == Populated;
+
+  emit stateChanged( this, oldState );
 }
 
 // ---------------------------------------------------------------------
@@ -657,6 +674,8 @@ QgsDirectoryItem::~QgsDirectoryItem()
 
 QIcon QgsDirectoryItem::icon()
 {
+  if ( state() == Populating )
+    return populatingIcon();
   return iconDir();
 }
 
@@ -969,13 +988,13 @@ QVector<dataItem_t *> QgsZipItem::mDataItemPtr = QVector<dataItem_t*>();
 QgsZipItem::QgsZipItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mDirPath = path;
+  mFilePath = path;
   init();
 }
 
-QgsZipItem::QgsZipItem( QgsDataItem* parent, QString name, QString dirPath, QString path )
+QgsZipItem::QgsZipItem( QgsDataItem* parent, QString name, QString filePath, QString path )
     : QgsDataCollectionItem( parent, name, path )
-    , mDirPath( dirPath )
+    , mFilePath( filePath )
 {
   init();
 }
@@ -984,7 +1003,7 @@ void QgsZipItem::init()
 {
   mType = Collection; //Zip??
   mIconName = "/mIconZip.png";
-  mVsiPrefix = vsiPrefix( mDirPath );
+  mVsiPrefix = vsiPrefix( mFilePath );
 
   if ( mProviderNames.size() == 0 )
   {
@@ -1137,7 +1156,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
   foreach ( QString fileName, mZipFileList )
   {
     QFileInfo info( fileName );
-    tmpPath = mVsiPrefix + path() + "/" + fileName;
+    tmpPath = mVsiPrefix + mFilePath + "/" + fileName;
     QgsDebugMsgLevel( "tmpPath = " + tmpPath, 3 );
 
     // foreach( dataItem_t *dataItem, mDataItemPtr )
@@ -1295,7 +1314,7 @@ const QStringList & QgsZipItem::getZipFileList()
   QSettings settings;
   QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
 
-  QgsDebugMsgLevel( QString( "mDirPath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( mDirPath ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 3 );
+  QgsDebugMsgLevel( QString( "mFIlePath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( mFilePath ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 3 );
 
   // if scanZipBrowser == no: skip to the next file
   if ( scanZipSetting == "no" )
@@ -1305,7 +1324,7 @@ const QStringList & QgsZipItem::getZipFileList()
 
   // get list of files inside zip file
   QgsDebugMsgLevel( QString( "Open file %1 with gdal vsi" ).arg( mVsiPrefix + path() ), 3 );
-  char **papszSiblingFiles = VSIReadDirRecursive1( QString( mVsiPrefix + mDirPath ).toLocal8Bit().constData() );
+  char **papszSiblingFiles = VSIReadDirRecursive1( QString( mVsiPrefix + mFilePath ).toLocal8Bit().constData() );
   if ( papszSiblingFiles )
   {
     for ( int i = 0; i < CSLCount( papszSiblingFiles ); i++ )
@@ -1320,7 +1339,7 @@ const QStringList & QgsZipItem::getZipFileList()
   }
   else
   {
-    QgsDebugMsg( QString( "Error reading %1" ).arg( mDirPath ) );
+    QgsDebugMsg( QString( "Error reading %1" ).arg( mFilePath ) );
   }
 
   return mZipFileList;

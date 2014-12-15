@@ -392,13 +392,24 @@ void QgsBrowserModel::endRemoveItems()
   QgsDebugMsgLevel( "Entered", 3 );
   endRemoveRows();
 }
-void QgsBrowserModel::dataItemChanged( QgsDataItem * item )
+void QgsBrowserModel::itemDataChanged( QgsDataItem * item )
 {
   QgsDebugMsgLevel( "Entered", 3 );
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
   emit dataChanged( idx, idx );
+}
+void QgsBrowserModel::itemStateChanged( QgsDataItem * item, QgsDataItem::State oldState )
+{
+  QgsDebugMsg( "Entered" );
+  if ( !item )
+    return;
+  QModelIndex idx = findItem( item );
+  if ( !idx.isValid() )
+    return;
+  QgsDebugMsg( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ) );
+  emit stateChanged( idx, oldState );
 }
 void QgsBrowserModel::connectItem( QgsDataItem* item )
 {
@@ -411,7 +422,9 @@ void QgsBrowserModel::connectItem( QgsDataItem* item )
   connect( item, SIGNAL( endRemoveItems() ),
            this, SLOT( endRemoveItems() ) );
   connect( item, SIGNAL( dataChanged( QgsDataItem* ) ),
-           this, SLOT( dataItemChanged( QgsDataItem* ) ) );
+           this, SLOT( itemDataChanged( QgsDataItem* ) ) );
+  connect( item, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
+           this, SLOT( itemStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
 }
 
 QStringList QgsBrowserModel::mimeTypes() const
