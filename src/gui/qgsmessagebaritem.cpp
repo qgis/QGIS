@@ -112,7 +112,7 @@ void QgsMessageBarItem::writeContent()
         msgIcon = QString( "/mIconWarn.png" );
         break;
       case QgsMessageBar::SUCCESS:
-        msgIcon = QString( "/mActionCheckQgisVersion.png" );
+        msgIcon = QString( "/mIconSuccess.png" );
         break;
       default:
         break;
