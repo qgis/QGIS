@@ -53,6 +53,8 @@ class CORE_EXPORT QgsDataItem : public QObject
       Favourites
     };
 
+    /** Create new data item.
+     * @param parent - the param is ignored, children created by createChildren() do not have parent, parent is set later by setParent if the item really becomes a parent child */
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
     virtual ~QgsDataItem();
 
@@ -62,7 +64,8 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual void refresh();
 
-    // Create vector of children
+    /** Create children. Children are not expected to have parent set.
+     * This method MUST BE THREAD SAFE. */
     virtual QVector<QgsDataItem*> createChildren();
 
     // Populate children using children vector created by createChildren()
@@ -139,8 +142,12 @@ class CORE_EXPORT QgsDataItem : public QObject
     // members
 
     Type type() const { return mType; }
+    /** Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
+     *  QObject hierarchy. */
     QgsDataItem* parent() const { return mParent; }
-    void setParent( QgsDataItem* parent ) { mParent = parent; }
+    /** Set item parent and connect / disconnect parent to / from item signals.
+     *  It does not add itself to parents children (mChildren) */
+    void setParent( QgsDataItem* parent );
     QVector<QgsDataItem*> children() const { return mChildren; }
     virtual QIcon icon();
     QString name() const { return mName; }
@@ -160,6 +167,13 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void populate( QVector<QgsDataItem*> children );
     virtual void refresh( QVector<QgsDataItem*> children );
     QIcon populatingIcon() { return mPopulatingIcon; }
+    /** The item is scheduled to be deleted. E.g. if deleteLater() is called when
+     * item is in Populating state (createChildren() running in another thread),
+     * the deferredDelete() returns true and item will be deleted once Populating finished.
+     * Items with slow reateChildren() (for example network or database based) may
+     * check during createChildren() if deferredDelete() returns true and return from
+     * createChildren() immediately because result will be useless. */
+    bool deferredDelete() { return mDeferredDelete; }
 
     Type mType;
     Capabilities mCapabilities;
@@ -180,6 +194,14 @@ class CORE_EXPORT QgsDataItem : public QObject
     static QMap<QString, QIcon> mIconMap;
 
   public slots:
+    /** Safely delete the item:
+     *   - disconnects parent
+     *   - unsets parent (but does not remove itself)
+     *   - deletes all its descendants recursively
+     *   - waits until Populating state (createChildren() in thread) finished without blocking main thread
+     *   - calls QObject::deleteLater()
+     */
+    virtual void deleteLater();
     void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
     void emitEndInsertItems();
     void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );
@@ -201,6 +223,8 @@ class CORE_EXPORT QgsDataItem : public QObject
   private:
     static QVector<QgsDataItem*> runCreateChildren( QgsDataItem* item );
 
+    // Set to true if object has to be deleted when possible (nothing running in threads)
+    bool mDeferredDelete;
     QFutureWatcher< QVector <QgsDataItem*> > *mWatcher;
     // number of items currently in loading (populating) state
     static int mPopulatingCount;

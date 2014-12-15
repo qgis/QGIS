@@ -47,6 +47,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
   QVector<QgsDataItem*>items;
 
   QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  // TODO: wee need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo() );
   if ( !conn )
   {
@@ -302,6 +303,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
                                    QgsPostgresConn::geometryColumnsOnly( mName ),
                                    QgsPostgresConn::publicSchemaOnly( mName ),
                                    QgsPostgresConn::allowGeometrylessTables( mName ) );
+
   if ( !ok )
   {
     items.append( new QgsErrorItem( this, tr( "Failed to get layers" ), mPath + "/error" ) );

@@ -160,18 +160,58 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString n
     : QObject()
     , mType( type )
     , mCapabilities( NoCapabilities )
-    , mParent( parent )
+    , mParent( 0 ) // items are created without parent, parent is set later by setParent()
     , mState( NotPopulated )
     , mPopulated( false )
     , mName( name )
     , mPath( path )
+    , mDeferredDelete( false )
     , mWatcher( 0 )
 {
+  Q_UNUSED( parent );
 }
 
 QgsDataItem::~QgsDataItem()
 {
-  QgsDebugMsgLevel( "mName = " + mName + " mPath = " + mPath, 2 );
+  QgsDebugMsgLevel( QString( "mName = %1 mPath = %2 mChildren.size() = %3" ).arg( mName ).arg( mPath ).arg( mChildren.size() ) , 2 );
+  foreach ( QgsDataItem *child, mChildren )
+  {
+    if ( !child ) // should not happen
+      continue;
+    child->deleteLater();
+  }
+  mChildren.clear();
+
+  if ( mWatcher && !mWatcher->isFinished() )
+  {
+    // this should not usually happen (until the item was deleted directly when createChildren was running)
+    QgsDebugMsg( "mWatcher not finished (should not happen) -> waitForFinished()" );
+    mDeferredDelete = true;
+    mWatcher->waitForFinished();
+  }
+}
+
+void QgsDataItem::deleteLater()
+{
+  QgsDebugMsg( "path = " + path() );
+  setParent( 0 ); // also disconnects parent
+  foreach ( QgsDataItem *child, mChildren )
+  {
+    if ( !child ) // should not happen
+      continue;
+    child->deleteLater();
+  }
+  mChildren.clear();
+
+  if ( mWatcher && !mWatcher->isFinished() )
+  {
+    QgsDebugMsg( "mWatcher not finished -> schedule to delete later" );
+    mDeferredDelete = true;
+  }
+  else
+  {
+    QObject::deleteLater();
+  }
 }
 
 QIcon QgsDataItem::icon()
@@ -278,6 +318,14 @@ QVector<QgsDataItem*> QgsDataItem::runCreateChildren( QgsDataItem* item )
 void QgsDataItem::childrenCreated()
 {
   QgsDebugMsg( QString( "path = %1 children.size() = %2" ).arg( path() ).arg( mWatcher->result().size() ) );
+
+  if ( deferredDelete() )
+  {
+    QgsDebugMsg( "Item was scheduled to be deleted later" );
+    QObject::deleteLater();
+    return;
+  }
+
   if ( mChildren.size() == 0 ) // usually populating but may also be refresh if originaly there were no children
   {
     populate( mWatcher->result() );
@@ -376,7 +424,7 @@ void QgsDataItem::refresh( QVector<QgsDataItem*> children )
         mChildren.value( index )->refresh( child->children() );
       }
 
-      delete child;
+      child->deleteLater();
       continue;
     }
     addChildItem( child, true );
@@ -391,6 +439,41 @@ int QgsDataItem::rowCount()
 bool QgsDataItem::hasChildren()
 {
   return ( state() == Populated ? mChildren.count() > 0 : true );
+}
+
+void QgsDataItem::setParent( QgsDataItem* parent )
+{
+  if ( mParent )
+  {
+    disconnect( this, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
+                mParent, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
+    disconnect( this, SIGNAL( endInsertItems() ),
+                mParent, SLOT( emitEndInsertItems() ) );
+    disconnect( this, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
+                mParent, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
+    disconnect( this, SIGNAL( endRemoveItems() ),
+                mParent, SLOT( emitEndRemoveItems() ) );
+    disconnect( this, SIGNAL( dataChanged( QgsDataItem* ) ),
+                mParent, SLOT( emitDataChanged( QgsDataItem* ) ) );
+    disconnect( this, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
+                mParent, SLOT( emitStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
+  }
+  if ( parent )
+  {
+    connect( this, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
+             parent, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
+    connect( this, SIGNAL( endInsertItems() ),
+             parent, SLOT( emitEndInsertItems() ) );
+    connect( this, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
+             parent, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
+    connect( this, SIGNAL( endRemoveItems() ),
+             parent, SLOT( emitEndRemoveItems() ) );
+    connect( this, SIGNAL( dataChanged( QgsDataItem* ) ),
+             parent, SLOT( emitDataChanged( QgsDataItem* ) ) );
+    connect( this, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
+             parent, SLOT( emitStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
+  }
+  mParent = parent;
 }
 
 void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
@@ -423,19 +506,6 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
   mChildren.insert( i, child );
   child->setParent( this );
 
-  connect( child, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
-           this, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
-  connect( child, SIGNAL( endInsertItems() ),
-           this, SLOT( emitEndInsertItems() ) );
-  connect( child, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
-           this, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
-  connect( child, SIGNAL( endRemoveItems() ),
-           this, SLOT( emitEndRemoveItems() ) );
-  connect( child, SIGNAL( dataChanged( QgsDataItem* ) ),
-           this, SLOT( emitDataChanged( QgsDataItem* ) ) );
-  connect( child, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
-           this, SLOT( emitStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
-
   if ( refresh )
     emit endInsertItems();
 }
@@ -446,7 +516,7 @@ void QgsDataItem::deleteChildItem( QgsDataItem * child )
   Q_ASSERT( i >= 0 );
   emit beginRemoveItems( this, i, i );
   mChildren.remove( i );
-  delete child; // deleting QObject child removes it from QObject parent
+  child->deleteLater();
   emit endRemoveItems();
 }
 
@@ -458,18 +528,6 @@ QgsDataItem * QgsDataItem::removeChildItem( QgsDataItem * child )
   emit beginRemoveItems( this, i, i );
   mChildren.remove( i );
   emit endRemoveItems();
-  disconnect( child, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
-              this, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
-  disconnect( child, SIGNAL( endInsertItems() ),
-              this, SLOT( emitEndInsertItems() ) );
-  disconnect( child, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
-              this, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
-  disconnect( child, SIGNAL( endRemoveItems() ),
-              this, SLOT( emitEndRemoveItems() ) );
-  disconnect( child, SIGNAL( dataChanged( QgsDataItem* ) ),
-              this, SLOT( emitDataChanged( QgsDataItem* ) ) );
-  disconnect( child, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
-              this, SLOT( emitStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
   child->setParent( 0 );
   return child;
 }
