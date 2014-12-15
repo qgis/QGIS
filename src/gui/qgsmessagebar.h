@@ -48,7 +48,8 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     {
       INFO = 0,
       WARNING = 1,
-      CRITICAL = 2
+      CRITICAL = 2,
+      SUCCESS = 3
     };
 
     QgsMessageBar( QWidget *parent = 0 );
@@ -63,7 +64,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     /*! display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
      * @param widget message widget to display
-     * @param level is QgsMessageBar::INFO, WARNING or CRITICAL
+     * @param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
      * @param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
     QgsMessageBarItem *pushWidget( QWidget *widget, MessageLevel level = INFO, int duration = 0 );
