@@ -84,6 +84,7 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
     ~QgsPGSchemaItem();
 
     QVector<QgsDataItem*> createChildren();
+    virtual QList<QAction*> actions();
 
   private:
     QgsPGLayerItem * createLayer( QgsPostgresLayerProperty layerProperty );

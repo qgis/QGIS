@@ -50,6 +50,14 @@ enum QgsPostgresPrimaryKeyType
   pktFidMap
 };
 
+/** Schema properties structure */
+struct QgsPostgresSchemaProperty
+{
+  QString name;
+  QString description;
+  QString owner;
+};
+
 /** Layer Property structure */
 // TODO: Fill to Postgres/PostGIS specifications
 struct QgsPostgresLayerProperty
@@ -230,16 +238,40 @@ class QgsPostgresConn : public QObject
      */
     static QString quotedValue( QVariant value );
 
-    //! Get the list of supported layers
+    /**Get the list of supported layers
+     * @param layers list to store layers in
+     * @param searchGeometryColumnsOnly only look for geometry columns which are
+     * contained in the geometry_columns metatable
+     * @param searchPublicOnly
+     * @param allowGeometrylessTables
+     * @param schema restrict layers to layers within specified schema
+     * @returns true if layers were fetched successfully
+     */
     bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
                           bool searchGeometryColumnsOnly = true,
                           bool searchPublicOnly = true,
-                          bool allowGeometrylessTables = false );
+                          bool allowGeometrylessTables = false,
+                          const QString schema = QString() );
+
+    /**Get the list of database schemas
+     * @param schemas list to store schemas in
+     * @returns true if schemas where fetched successfully
+     * @note added in QGIS 2.7
+     */
+    bool getSchemas( QList<QgsPostgresSchemaProperty> &schemas );
 
     void retrieveLayerTypes( QgsPostgresLayerProperty &layerProperty, bool useEstimatedMetadata );
 
-    /** Gets information about the spatial tables */
-    bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables );
+    /**Gets information about the spatial tables
+     * @param searchGeometryColumnsOnly only look for geometry columns which are
+     * contained in the geometry_columns metatable
+     * @param searchPublicOnly
+     * @param allowGeometrylessTables
+     * @param schema restrict tables to those within specified schema
+     * @returns true if tables were successfully queried
+    */
+    bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables,
+                       const QString schema = QString() );
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 

@@ -302,7 +302,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
   QString sql = QString( "SELECT attname, CASE WHEN typname = ANY(ARRAY['geometry','geography','topogeometry']) THEN 1 ELSE null END AS isSpatial FROM pg_attribute JOIN pg_type ON atttypid=pg_type.oid WHERE attrelid=regclass('%1.%2')" )
                 .arg( quotedIdentifier( schemaName ) )
                 .arg( quotedIdentifier( viewName ) );
-  QgsDebugMsg( sql );
+  //QgsDebugMsg( sql );
   QgsPostgresResult colRes = PQexec( sql );
 
   layerProperty.pkCols.clear();
@@ -314,7 +314,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
     {
       if ( fetchPkCandidates )
       {
-        QgsDebugMsg( colRes.PQgetvalue( i, 0 ) );
+        //QgsDebugMsg( colRes.PQgetvalue( i, 0 ) );
         layerProperty.pkCols << colRes.PQgetvalue( i, 0 );
       }
 
@@ -331,14 +331,14 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
 
 }
 
-bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
+bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString schema )
 {
   int nColumns = 0;
   int foundInTables = 0;
   QgsPostgresResult result;
   QgsPostgresLayerProperty layerProperty;
 
-  QgsDebugMsg( "Entering." );
+  //QgsDebugMsg( "Entering." );
 
   mLayersSupported.clear();
 
@@ -401,9 +401,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( searchPublicOnly )
       sql += " AND n.nspname='public'";
 
+    if ( !schema.isEmpty() )
+      sql += QString( " AND %1='%2'" ).arg( schemaName ).arg( schema );
+
     sql += QString( " ORDER BY n.nspname,c.relname,%1" ).arg( columnName );
 
-    QgsDebugMsg( "getting table info: " + sql );
+    //QgsDebugMsg( "getting table info: " + sql );
     result = PQexec( sql, i == 0 );
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
     {
@@ -429,13 +432,13 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         srid = INT_MIN;
       }
 
-      QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7 %8" )
+      /*QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7 %8" )
                    .arg( gtableName )
                    .arg( schemaName ).arg( tableName ).arg( column )
                    .arg( type )
                    .arg( srid )
                    .arg( relkind )
-                   .arg( dim ) );
+                   .arg( dim ) );*/
 
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -449,7 +452,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
       if ( isView && layerProperty.pkCols.empty() )
       {
-        QgsDebugMsg( "no key columns found." );
+        //QgsDebugMsg( "no key columns found." );
         continue;
       }
 
@@ -458,11 +461,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     }
 
     foundInTables |= 1 << i;
-  }
-
-  if ( nColumns == 0 )
-  {
-    QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined." ), tr( "PostGIS" ) );
   }
 
   //search for geometry columns in tables that are not in the geometry_columns metatable
@@ -489,6 +487,9 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( searchPublicOnly )
       sql += " AND n.nspname='public'";
 
+    if ( !schema.isEmpty() )
+      sql += QString( " AND n.nspname='%2'" ).arg( schema );
+
     // skip columns of which we already derived information from the metadata tables
     if ( nColumns > 0 )
     {
@@ -508,7 +509,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       }
     }
 
-    QgsDebugMsg( "sql: " + sql );
+    //QgsDebugMsg( "sql: " + sql );
 
     result = PQexec( sql );
 
@@ -537,7 +538,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString coltype    = result.PQgetvalue( i, 4 ); // column type
       bool isView = relkind == "v" || relkind == "m";
 
-      QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
+      //QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schemaName ).arg( tableName ).arg( column ).arg( relkind ) );
 
       layerProperty.types.clear();
       layerProperty.srids.clear();
@@ -564,7 +565,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       addColumnInfo( layerProperty, schemaName, tableName, isView );
       if ( isView && layerProperty.pkCols.empty() )
       {
-        QgsDebugMsg( "no key columns found." );
+        //QgsDebugMsg( "no key columns found." );
         continue;
       }
 
@@ -593,7 +594,10 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( searchPublicOnly )
       sql += " AND pg_namespace.nspname='public'";
 
-    QgsDebugMsg( "sql: " + sql );
+    if ( !schema.isEmpty() )
+      sql += QString( " AND pg_namespace.nspname='%2'" ).arg( schema );
+
+    //QgsDebugMsg( "sql: " + sql );
 
     result = PQexec( sql );
 
@@ -612,7 +616,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QString relkind = result.PQgetvalue( i, 2 ); // relation kind
       bool isView = relkind == "v" || relkind == "m";
 
-      QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
+      //QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
       layerProperty.types = QList<QGis::WkbType>() << QGis::WKBNoGeometry;
       layerProperty.srids = QList<int>() << INT_MIN;
@@ -620,6 +624,21 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.tableName = table;
       layerProperty.geometryColName = QString::null;
       layerProperty.geometryColType = sctNone;
+
+      //check if we've already added this layer in some form
+      bool alreadyFound = false;
+      foreach ( QgsPostgresLayerProperty foundLayer, mLayersSupported )
+      {
+        if ( foundLayer.schemaName == schema && foundLayer.tableName == table )
+        {
+          //already found this table
+          alreadyFound = true;
+          break;
+        }
+      }
+      if ( alreadyFound )
+        continue;
+
       addColumnInfo( layerProperty, schema, table, isView );
       layerProperty.sql = "";
 
@@ -628,18 +647,18 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     }
   }
 
-  if ( nColumns == 0 )
+  if ( nColumns == 0 && schema.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "Database connection was successful, but no accessible tables were found. Please verify that you have SELECT privilege on a table carrying PostGIS geometry." ), tr( "PostGIS" ) );
+    QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined." ), tr( "PostGIS" ) );
   }
 
   return true;
 }
 
-bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString schema )
 {
   // Get the list of supported tables
-  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
+  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema ) )
   {
     QgsMessageLog::logMessage( tr( "Unable to get list of spatially enabled tables from the database" ), tr( "PostGIS" ) );
     return false;
@@ -647,8 +666,33 @@ bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers
 
   layers = mLayersSupported;
 
-  QgsDebugMsg( "Exiting." );
+  //QgsDebugMsg( "Exiting." );
 
+  return true;
+}
+
+bool QgsPostgresConn::getSchemas( QList<QgsPostgresSchemaProperty> &schemas )
+{
+  schemas.clear();
+  QgsPostgresResult result;
+
+  QString sql = QString( "SELECT nspname, pg_get_userbyid(nspowner), pg_catalog.obj_description(oid) FROM pg_namespace WHERE nspname !~ '^pg_' AND nspname != 'information_schema' ORDER BY nspname" );
+
+  result = PQexec( sql, true );
+  if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+  {
+    PQexecNR( "COMMIT" );
+    return false;
+  }
+
+  for ( int idx = 0; idx < result.PQntuples(); idx++ )
+  {
+    QgsPostgresSchemaProperty schema;
+    schema.name = result.PQgetvalue( idx, 0 );
+    schema.owner = result.PQgetvalue( idx, 1 );
+    schema.description = result.PQgetvalue( idx, 2 );
+    schemas << schema;
+  }
   return true;
 }
 
@@ -1193,7 +1237,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
     query += " FROM " + table;
 
-    QgsDebugMsg( "Retrieving geometry types: " + query );
+    //QgsDebugMsg( "Retrieving geometry types: " + query );
 
     QgsPostgresResult gresult = PQexec( query );
 
