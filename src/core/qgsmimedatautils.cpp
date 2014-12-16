@@ -46,6 +46,8 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
   QChar escape = '\\';
   QString part;
   bool inEscape = false;
+  if ( encData.isEmpty() )
+    return;
   for ( int i = 0; i < encData.length(); ++i )
   {
     if ( encData.at( i ) == escape && !inEscape )
@@ -70,17 +72,17 @@ QgsMimeDataUtils::Uri::Uri( QString& encData )
 
   if ( parts.size() <= 5 ) // PostGISTRaster layers yields five parts
   {
-    layerType = parts[0];
-    providerKey = parts[1];
-    name = parts[2];
+    layerType = parts.value( 0 );
+    providerKey = parts.value( 1 );
+    name = parts.value( 2 );
     // fetchs PostGISRaster layers
-    if ( parts[3] == "PG" )
+    if ( parts.value( 3 ) == "PG" )
     {
-      uri = parts[3] + ":" + parts[4];
+      uri = parts.value( 3 ) + ":" + parts.value( 4 );
     }
     else
     {
-      uri = parts[3];
+      uri = parts.value( 3 );
     }
     QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
   }
