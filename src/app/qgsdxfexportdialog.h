@@ -62,7 +62,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 
   private:
     QHash<const QgsVectorLayer *, int> mAttributeIdx;
-    QModelIndexList mCheckedIndexes;
+    QSet<QModelIndex> mCheckedLeafs;
 
     void applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node );
 };

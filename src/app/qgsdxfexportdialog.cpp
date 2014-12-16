@@ -137,7 +137,51 @@ QVariant QgsVectorLayerAndAttributeModel::data( const QModelIndex& idx, int role
   if ( idx.column() == 0 )
   {
     if ( role == Qt::CheckStateRole )
-      return mCheckedIndexes.contains( idx ) ? Qt::Checked : Qt::Unchecked;
+    {
+      if ( !idx.isValid() )
+        return QVariant();
+
+      if ( mCheckedLeafs.contains( idx ) )
+        return Qt::Checked;
+
+      bool hasChecked = false, hasUnchecked = false;
+      int n;
+      for ( n = 0; !hasChecked || !hasUnchecked; n++ )
+      {
+        QVariant v = data( idx.child( n, 0 ), role );
+        if ( !v.isValid() )
+          break;
+
+        switch ( v.toInt() )
+        {
+          case Qt::PartiallyChecked:
+            // parent of partially checked child shared state
+            return Qt::PartiallyChecked;
+
+          case Qt::Checked:
+            hasChecked = true;
+            break;
+
+          case Qt::Unchecked:
+            hasUnchecked = true;
+            break;
+        }
+      }
+
+      // unchecked leaf
+      if ( n == 0 )
+        return Qt::Unchecked;
+
+      // both
+      if ( hasChecked && hasUnchecked )
+        return Qt::PartiallyChecked;
+
+      if ( hasChecked )
+        return Qt::Checked;
+
+      Q_ASSERT( hasUnchecked );
+      return Qt::Unchecked;
+    }
     else
       return QgsLayerTreeModel::data( idx, role );
   }
@@ -165,10 +209,28 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
 {
   if ( index.column() == 0 && role == Qt::CheckStateRole )
   {
-    if ( value.toInt() == Qt::Checked )
-      mCheckedIndexes.append( index );
-    else
-      mCheckedIndexes.removeAll( index );
+    int i = 0;
+    for ( i = 0; ; i++ )
+    {
+      QModelIndex child = index.child( i, 0 );
+      if ( !child.isValid() )
+        break;
+
+      setData( child, value, role );
+    }
+
+    if ( i == 0 )
+    {
+      if ( value.toInt() == Qt::Checked )
+        mCheckedLeafs.insert( index );
+      else if ( value.toInt() == Qt::Unchecked )
+        mCheckedLeafs.remove( index );
+      else
+        Q_ASSERT( "expected checked or unchecked" );
+
+      emit dataChanged( QModelIndex(), index );
+    }
+
     return true;
   }
 
@@ -194,7 +256,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
   QList< QPair<QgsVectorLayer *, int> > layers;
   QHash< QgsMapLayer *, int > layerIdx;
 
-  foreach ( const QModelIndex &idx, mCheckedIndexes )
+  foreach ( const QModelIndex &idx, mCheckedLeafs )
   {
     QgsLayerTreeNode *node = index2node( idx );
     if ( QgsLayerTree::isGroup( node ) )
@@ -245,7 +307,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
   if ( visibleLayers.isEmpty() )
     return;
 
-  mCheckedIndexes.clear();
+  mCheckedLeafs.clear();
   applyVisibility( visibleLayers, rootGroup() );
 
   emit dataChanged( QModelIndex(), QModelIndex() );
@@ -265,7 +327,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLay
       if ( vl && visibleLayers.contains( vl->id() ) )
       {
         visibleLayers.remove( vl->id() );
-        mCheckedIndexes.append( node2index( child ) );
+        mCheckedLeafs.insert( node2index( child ) );
       }
       continue;
     }
