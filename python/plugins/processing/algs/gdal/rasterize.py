@@ -86,6 +86,8 @@ class rasterize(GdalAlgorithm):
 	     if dimType == 0:
 		# size in pixels
 		arguments.append('-ts')
+		arguments.append(str(self.getParameterValue(self.WIDTH)))
+		arguments.append(str(self.getParameterValue(self.HEIGHT)))
 	     else:
 		    # resolution in map units per pixel
 		arguments.append('-tr')
