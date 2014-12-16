@@ -42,6 +42,10 @@ QgsMapSettings::QgsMapSettings()
     , mSelectionColor( Qt::yellow )
     , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
     , mImageFormat( QImage::Format_ARGB32_Premultiplied )
+    , mValid( false )
+    , mVisibleExtent()
+    , mMapUnitsPerPixel( 1 )
+    , mScale( 1 )
 {
   updateDerived();
 
