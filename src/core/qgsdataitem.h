@@ -38,7 +38,8 @@ class QgsDataItem;
 typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
 
-/** base class for all items in the model */
+/** Base class for all items in the model.
+ *  Parent/children hierarchy is not based on QObject. */
 class CORE_EXPORT QgsDataItem : public QObject
 {
     Q_OBJECT
@@ -157,6 +158,9 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // deleteLater() items anc clear the vector
     static void deleteLater( QVector<QgsDataItem*> &items );
+
+    /** Move object and all its descendants to thread */
+    void moveToThread( QThread * targetThread );
 
   protected:
     virtual void populate( QVector<QgsDataItem*> children );

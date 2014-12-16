@@ -121,7 +121,8 @@ void QgsPGConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    if ( mParent )
+      mParent->refresh();
   }
 }
 
@@ -129,7 +130,8 @@ void QgsPGConnectionItem::deleteConnection()
 {
   QgsPostgresConn::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  if ( mParent )
+    mParent->refresh();
 }
 
 void QgsPGConnectionItem::refreshConnection()
@@ -248,7 +250,8 @@ void QgsPGLayerItem::deleteLayer()
   else
   {
     QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
-    mParent->refresh();
+    if ( mParent )
+      mParent->refresh();
   }
 }
 

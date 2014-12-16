@@ -224,6 +224,20 @@ void QgsDataItem::deleteLater( QVector<QgsDataItem*> &items )
   items.clear();
 }
 
+void QgsDataItem::moveToThread( QThread * targetThread )
+{
+  // QObject::moveToThread() cannot move objects with parent, but QgsDataItem is not using paren/children from QObject
+  foreach ( QgsDataItem* child, mChildren )
+  {
+    if ( !child ) // should not happen
+      continue;
+    QgsDebugMsg( "moveToThread child " + child->path() );
+    child->QObject::setParent( 0 ); // to be sure
+    child->moveToThread( targetThread );
+  }
+  QObject::moveToThread( targetThread );
+}
+
 QIcon QgsDataItem::icon()
 {
   if ( state() == Populating )
@@ -315,11 +329,8 @@ QVector<QgsDataItem*> QgsDataItem::runCreateChildren( QgsDataItem* item )
   {
     if ( !child ) // should not happen
       continue;
-    // The object cannot be moved if it has a parent.
     QgsDebugMsg( "moveToThread child " + child->path() );
-    child->setParent( 0 );
     child->moveToThread( QApplication::instance()->thread() ); // moves also children
-    child->setParent( item );
   }
   QgsDebugMsg( "finished path = " + item->path() );
   return children;
@@ -455,18 +466,7 @@ void QgsDataItem::setParent( QgsDataItem* parent )
 {
   if ( mParent )
   {
-    disconnect( this, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
-                mParent, SLOT( emitBeginInsertItems( QgsDataItem*, int, int ) ) );
-    disconnect( this, SIGNAL( endInsertItems() ),
-                mParent, SLOT( emitEndInsertItems() ) );
-    disconnect( this, SIGNAL( beginRemoveItems( QgsDataItem*, int, int ) ),
-                mParent, SLOT( emitBeginRemoveItems( QgsDataItem*, int, int ) ) );
-    disconnect( this, SIGNAL( endRemoveItems() ),
-                mParent, SLOT( emitEndRemoveItems() ) );
-    disconnect( this, SIGNAL( dataChanged( QgsDataItem* ) ),
-                mParent, SLOT( emitDataChanged( QgsDataItem* ) ) );
-    disconnect( this, SIGNAL( stateChanged( QgsDataItem*, QgsDataItem::State ) ),
-                mParent, SLOT( emitStateChanged( QgsDataItem*, QgsDataItem::State ) ) );
+    disconnect( this, 0, mParent, 0 );
   }
   if ( parent )
   {
