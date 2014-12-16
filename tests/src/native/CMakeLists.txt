@@ -1,28 +1,16 @@
+# Standard includes and utils to compile into all tests.
+
 #####################################################
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_SOURCE_DIR}/src/core/composer
-  ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${CMAKE_SOURCE_DIR}/src/python
-  ${CMAKE_SOURCE_DIR}/src/app
-  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${QT_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-  ${PROJ_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
   )
 
-IF(USE_NATIVE_LIB)
-  IF(APPLE)
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
-  ENDIF(APPLE)
-ENDIF(USE_NATIVE_LIB)
+IF(APPLE)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
+ENDIF(APPLE)
 
 #############################################################
 # Compiler defines
@@ -33,6 +21,7 @@ ENDIF(USE_NATIVE_LIB)
 ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
+
 #############################################################
 # libraries
 
@@ -53,45 +42,27 @@ ENDIF (APPLE)
 #qtests in the executable file list as the moc is
 #directly included in the sources
 #and should not be compiled twice. Trying to include
-#them in will cause an error at build time 
+#them in will cause an error at build time
 
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
+  SET(qgis_${testname}_MOC_CPPS ${testsrc})
+  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
+  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
   TARGET_LINK_LIBRARIES(qgis_${testname}
-    ${QT_QTXML_LIBRARY}
     ${QT_QTCORE_LIBRARY}
-    ${QT_QTSQL_LIBRARY}
-    ${QT_QTSVG_LIBRARY}
     ${QT_QTTEST_LIBRARY}
-    ${PROJ_LIBRARY}
-    ${GEOS_LIBRARY}
-    ${GDAL_LIBRARY}
-    ${QWT_LIBRARY}
-    ${QWTPOLAR_LIBRARY}
-    qgis_core
-    qgis_gui
-    qgis_analysis
-    qgis_app)
-  IF(WIN32)
-    ADD_DEFINITIONS(-DQWT_DLL)
-    TARGET_LINK_LIBRARIES(qgis_${testname} DbgHelp)
-  ENDIF(WIN32)
-  IF(USE_NATIVE_LIB)
-    TARGET_LINK_LIBRARIES(qgis_${testname} qgis_native)
-  ENDIF(USE_NATIVE_LIB)
+    qgis_app
+    qgis_native)
   ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
-  #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
-  #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
-  #  INSTALL_RPATH_USE_LINK_PATH true )
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
-ADD_QGIS_TEST(qgisappclipboard testqgisappclipboard.cpp)
+ADD_QGIS_TEST(macnativetest testqgsmacnative.cpp)
