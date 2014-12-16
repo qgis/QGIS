@@ -54,8 +54,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Favourites
     };
 
-    /** Create new data item.
-     * @param parent - the param is ignored, children created by createChildren() do not have parent, parent is set later by setParent if the item really becomes a parent child */
+    /** Create new data item. */
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
     virtual ~QgsDataItem();
 

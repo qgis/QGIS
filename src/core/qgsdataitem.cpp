@@ -160,7 +160,7 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString n
     : QObject()
     , mType( type )
     , mCapabilities( NoCapabilities )
-    , mParent( 0 ) // items are created without parent, parent is set later by setParent()
+    , mParent( parent )
     , mState( NotPopulated )
     , mPopulated( false )
     , mName( name )
@@ -168,7 +168,6 @@ QgsDataItem::QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString n
     , mDeferredDelete( false )
     , mFutureWatcher( 0 )
 {
-  Q_UNUSED( parent );
 }
 
 QgsDataItem::~QgsDataItem()
