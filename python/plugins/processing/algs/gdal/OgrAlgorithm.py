@@ -65,8 +65,8 @@ class OgrAlgorithm(GdalAlgorithm):
             s = re.sub(''' sslmode=.+''', '', unicode(layer.source()))
             ogrstr = 'PG:%s' % s
         else:
-            ogrstr = unicode(layer.source())
-        return ogrstr
+            ogrstr = unicode(layer.source()).split("|")[0]
+        return '"' + ogrstr + '"'
 
     def ogrLayerName(self, uri):
         if 'host' in uri:
