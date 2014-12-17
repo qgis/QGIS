@@ -42,5 +42,8 @@ IF(NOT ${TESTRES} EQUAL 0)
 ENDIF(NOT ${TESTRES} EQUAL 0)
 
 ctest_submit (RETRY_COUNT 3 RETRY_DELAY 30)
-
+# CDash on OTB requires the date to be set for the search to work and that's the timezone this requires
+SET(ENV{TZ} "UTC-6")
+EXECUTE_PROCESS(COMMAND date +%Y-%m-%d OUTPUT_VARIABLE CDASH_DATE)
+MESSAGE("Test results submitted to\n   http://dash.orfeo-toolbox.org/queryTests.php?project=QGIS&date=${CDASH_DATE}&filtercount=1&field1=buildname/string&compare1=63&value1=$ENV{TRAVIS_COMMIT}" )
 
