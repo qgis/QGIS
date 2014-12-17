@@ -1,5 +1,5 @@
-FILE(GLOB PY_FILES *.py)
-PLUGIN_INSTALL(MetaSearch . ${PY_FILES} metadata.txt)
+FILE(GLOB PY_FILES __init__.py link_types.py plugin.py util.py)
+PLUGIN_INSTALL(MetaSearch . ${PY_FILES} metadata.txt LICENSE.txt)
 
 FOREACH(dir ui dialogs images resources resources/templates)
   FILE(GLOB _items ${dir}/*)
