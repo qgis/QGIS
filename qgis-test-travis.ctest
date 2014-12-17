@@ -43,4 +43,4 @@ ENDIF(NOT ${TESTRES} EQUAL 0)
 
 ctest_submit (RETRY_COUNT 3 RETRY_DELAY 30)
 
-
+MESSAGE(STATUS "Test results submitted to\n   http://dash.orfeo-toolbox.org/queryTests.php?project=QGIS&filtercount=1&field1=buildname/string&compare1=63&value1=$ENV{TRAVIS_COMMIT}" )
