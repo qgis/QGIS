@@ -8972,7 +8972,10 @@ void QgisApp::selectionChanged( QgsMapLayer *layer )
   {
     showStatusMessage( tr( "%n feature(s) selected on layer %1.", "number of selected features", vlayer->selectedFeatureCount() ).arg( vlayer->name() ) );
   }
-  activateDeactivateLayerRelatedActions( layer );
+  if ( layer == activeLayer() )
+  {
+    activateDeactivateLayerRelatedActions( layer );
+  }
 }
 
 void QgisApp::legendLayerSelectionChanged( void )
