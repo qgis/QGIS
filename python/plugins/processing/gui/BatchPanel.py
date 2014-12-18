@@ -198,9 +198,9 @@ class BatchPanel(QWidget, Ui_Form):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):
                 if widgetValue is not None:
-                    self.tblParameters.cellWidget(row, column).text.setText(widgetValue)
+                    self.tblParameters.cellWidget(row, column).setExtentFromString(widgetValue)
                 else:
-                    self.tblParameters.cellWidget(row, column).text.setText('')
+                    self.tblParameters.cellWidget(row, column).setExtentFromString('')
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):

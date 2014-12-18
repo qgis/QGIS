@@ -177,3 +177,6 @@ class ExtentSelectionPanel(QWidget, Ui_Form):
             return unicode(self.leText.text())
         else:
             return self.getMinCoveringExtent()
+
+    def setExtentFromString(self, s):
+        self.leText.setText(s)
