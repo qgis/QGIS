@@ -386,15 +386,15 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
   }
   QDomElement annotationElem = doc.createElement( "AnnotationItem" );
   annotationElem.setAttribute( "mapPositionFixed", mMapPositionFixed );
-  annotationElem.setAttribute( "mapPosX", QString::number( mMapPosition.x() ) );
-  annotationElem.setAttribute( "mapPosY", QString::number( mMapPosition.y() ) );
-  annotationElem.setAttribute( "offsetX", QString::number( mOffsetFromReferencePoint.x() ) );
-  annotationElem.setAttribute( "offsetY", QString::number( mOffsetFromReferencePoint.y() ) );
+  annotationElem.setAttribute( "mapPosX", qgsDoubleToString( mMapPosition.x() ) );
+  annotationElem.setAttribute( "mapPosY", qgsDoubleToString( mMapPosition.y() ) );
+  annotationElem.setAttribute( "offsetX", qgsDoubleToString( mOffsetFromReferencePoint.x() ) );
+  annotationElem.setAttribute( "offsetY", qgsDoubleToString( mOffsetFromReferencePoint.y() ) );
   annotationElem.setAttribute( "frameWidth", QString::number( mFrameSize.width() ) );
   annotationElem.setAttribute( "frameHeight", QString::number( mFrameSize.height() ) );
   QPointF canvasPos = pos();
-  annotationElem.setAttribute( "canvasPosX", QString::number( canvasPos.x() ) );
-  annotationElem.setAttribute( "canvasPosY", QString::number( canvasPos.y() ) );
+  annotationElem.setAttribute( "canvasPosX", qgsDoubleToString( canvasPos.x() ) );
+  annotationElem.setAttribute( "canvasPosY", qgsDoubleToString( canvasPos.y() ) );
   annotationElem.setAttribute( "frameBorderWidth", QString::number( mFrameBorderWidth ) );
   annotationElem.setAttribute( "frameColor", mFrameColor.name() );
   annotationElem.setAttribute( "frameColorAlpha", mFrameColor.alpha() );
