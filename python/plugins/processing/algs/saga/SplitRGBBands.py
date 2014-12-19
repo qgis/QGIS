@@ -31,7 +31,7 @@ from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
 from processing.tools.system import *
-from SagaUtils import SagaUtils
+import SagaUtils
 
 
 class SplitRGBBands(GeoAlgorithm):

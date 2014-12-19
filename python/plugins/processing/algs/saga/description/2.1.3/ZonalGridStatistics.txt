@@ -1,0 +1,8 @@
+Zonal Grid Statistics
+geostatistics_grid
+ParameterRaster|ZONES|Zone Grid|False
+ParameterMultipleInput|CATLIST|Categorial Grids|3|True
+ParameterMultipleInput|STATLIST|Grids to analyse|3|True
+ParameterRaster|ASPECT|Aspect|True
+ParameterBoolean|SHORTNAMES|Short Field Names|True
+OutputTable|OUTTAB|Zonal Statistics

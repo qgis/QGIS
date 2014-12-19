@@ -1,0 +1,7 @@
+Contour Lines from Grid
+shapes_grid
+ParameterRaster|INPUT|Grid|False
+ParameterNumber|ZMIN|Minimum Contour Value|None|None|0.0
+ParameterNumber|ZMAX|Maximum Contour Value|None|None|10000.0
+ParameterNumber|ZSTEP|Equidistance|None|None|100.0
+OutputVector|CONTOUR|Contour Lines

@@ -1,0 +1,7 @@
+Soil Texture Classification
+grid_analysis
+ParameterRaster|SAND|Sand|True
+ParameterRaster|SILT|Silt|True
+ParameterRaster|CLAY|Clay|True
+OutputRaster|TEXTURE|Soil Texture
+OutputRaster|SUM|Sum

@@ -31,14 +31,17 @@ from PyQt4.QtGui import *
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
-from SagaAlgorithm import SagaAlgorithm
+from SagaAlgorithm212 import SagaAlgorithm212
+from SagaAlgorithm213 import SagaAlgorithm213
 from SplitRGBBands import SplitRGBBands
-from RasterCalculator import RasterCalculator
-from SagaUtils import SagaUtils
+import SagaUtils
 from processing.tools.system import *
 
-
 class SagaAlgorithmProvider(AlgorithmProvider):
+
+    supportedVersions = {"2.1.2": ("2.1.2", SagaAlgorithm212),
+                          "2.1.3": ("2.1.3", SagaAlgorithm213),
+                          "2.1.4": ("2.1.3", SagaAlgorithm213)}
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
@@ -46,27 +49,23 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        if SagaUtils.findSagaFolder() is None:
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                        SagaUtils.SAGA_208,
-                                        'Use SAGA 2.0.8 syntax', not isMac()))
-            if isWindows() or isMac():
-                ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                            SagaUtils.SAGA_FOLDER, 'SAGA folder', ''))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        if isWindows() or isMac():
+            ProcessingConfig.addSetting(Setting("SAGA",
+                                    SagaUtils.SAGA_FOLDER, 'SAGA folder', ''))
+        ProcessingConfig.addSetting(Setting("SAGA",
                                     SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION,
                                     'Enable SAGA Import/Export optimizations',
                                     False))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting("SAGA",
                                     SagaUtils.SAGA_LOG_COMMANDS,
                                     'Log execution commands', True))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting("SAGA",
                                     SagaUtils.SAGA_LOG_CONSOLE,
                                     'Log console output', True))
 
     def unload(self):
         AlgorithmProvider.unload(self)
-        if isWindows():
+        if isWindows() or isMac():
             ProcessingConfig.removeSetting(SagaUtils.SAGA_FOLDER)
 
         ProcessingConfig.removeSetting(SagaUtils.SAGA_LOG_CONSOLE)
@@ -75,32 +74,39 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     def _loadAlgorithms(self):
         self.algs = []
+        version = SagaUtils.getSagaInstalledVersion(True)
+        if version is None:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                        'Problem with SAGA installation: SAGA was not found or is not correctly installed')
+            return
+        if version not in self.supportedVersions:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                        'Problem with SAGA installation: installed SAGA version (%s) is not supported' % version)
+            return
+
         folder = SagaUtils.sagaDescriptionPath()
+        folder = os.path.join(folder, self.supportedVersions[SagaUtils.getSagaInstalledVersion()][0])
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith('txt'):
-                if not SagaUtils.isSaga208():
-                    if descriptionFile.startswith('2.0.8'):
-                        continue
-                else:
-                    if descriptionFile.startswith('2.1'):
-                        continue
-                try:
-                    alg = SagaAlgorithm(os.path.join(folder, descriptionFile))
-                    if alg.name.strip() != '':
-                        self.algs.append(alg)
-                    else:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not open SAGA algorithm: '
-                                + descriptionFile)
-                except Exception, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not open SAGA algorithm: '
-                            + descriptionFile + '\n' + str(e))
+                f = os.path.join(folder, descriptionFile)
+                self._loadAlgorithm(f)
         self.algs.append(SplitRGBBands())
-        self.algs.append(RasterCalculator())
 
+    def _loadAlgorithm(self, descriptionFile):
+        try:
+            alg = self.supportedVersions[SagaUtils.getSagaInstalledVersion()][1](descriptionFile)
+            if alg.name.strip() != '':
+                self.algs.append(alg)
+            else:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                        'Could not open SAGA algorithm: '
+                        + descriptionFile)
+        except Exception, e:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                    'Could not open SAGA algorithm: '
+                    + descriptionFile + '\n' + str(e))
     def getDescription(self):
-        return 'SAGA'
+        return 'SAGA (%s)' % SagaUtils.getSagaInstalledVersion()
 
     def getName(self):
         return 'saga'

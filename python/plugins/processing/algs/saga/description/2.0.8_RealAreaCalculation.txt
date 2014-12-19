@@ -1,4 +1,0 @@
-Real Area Calculation
-ta_morphometry
-ParameterRaster|DEM|Elevation|False
-OutputRaster|AREA|Real Area Grid

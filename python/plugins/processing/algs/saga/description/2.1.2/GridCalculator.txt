@@ -1,0 +1,7 @@
+Raster calculator|Grid calcualtor
+grid_calculus
+AllowUnmatching
+ParameterRaster|XGRID|Main input layer|False
+ParameterMultipleInput|GRIDS|Additional layers|3|False
+ParameterString|FORMULA|Formula|
+OutputRaster|RESULT|Result layer
