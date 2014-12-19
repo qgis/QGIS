@@ -12,7 +12,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslayertreeregistrybridge.h"
-
+#include "qgsmapcanvas.h"
 
 QgsAppLayerTreeViewMenuProvider::QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas )
     : mView( view )
@@ -86,6 +86,10 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       // assign layer crs to project
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+
+      // define layer datum transform
+      if ( mCanvas->mapSettings().hasCrsTransformEnabled() && ( layer->crs() != mCanvas->mapSettings().destinationCrs() ) )
+        menu->addAction( QgsApplication::getThemeIcon( "/mActionSetDatumTransform.png" ), tr( "Set Layer Datum Transform" ), QgisApp::instance(), SLOT( setLayerDatumTransform() ) );
 
       menu->addSeparator();
 

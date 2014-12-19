@@ -205,6 +205,7 @@ void QgsCoordinateTransform::initialise()
   if ( !useDefaultDatumTransform )
   {
     addNullGridShifts( sourceProjString, destProjString );
+    addWGS84Parameters( sourceProjString, destProjString );
   }
 
   mSourceProjection = pj_init_plus( sourceProjString.toUtf8() );
@@ -823,23 +824,26 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
   int srcAuthCode = srcSplit.at( 1 ).toInt();
   int destAuthCode = destSplit.at( 1 ).toInt();
 
-  if ( srcAuthCode == destAuthCode )
+  if ( srcAuthCode == destAuthCode || srcAuthCode == 0 || destAuthCode == 0)
   {
-    return transformations; //crs have the same datum
+    return transformations; //crs have the same datum or no datum
   }
 
   QList<int> directTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( destAuthCode ),
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code=%1 AND target_crs_code=%2" ).arg( srcAuthCode ).arg( destAuthCode ),
                         directTransforms );
   QList<int> reverseDirectTransforms;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2 ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( srcAuthCode ),
+  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE source_crs_code = %1 AND target_crs_code=%2" ).arg( destAuthCode ).arg( srcAuthCode ),
                         reverseDirectTransforms );
-  QList<int> srcToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( srcAuthCode ).arg( 4326 ),
-                        srcToWgs84 );
-  QList<int> destToWgs84;
-  searchDatumTransform( QString( "SELECT coord_op_code FROM tbl_datum_transform WHERE (source_crs_code=%1 AND target_crs_code=%2) OR (source_crs_code=%2 AND target_crs_code=%1) ORDER BY deprecated ASC,preferred DESC" ).arg( destAuthCode ).arg( 4326 ),
-                        destToWgs84 );
+  //concatenated tranforms
+  QList< QList< int > > concatenatedTransforms;
+
+  searchDatumTransform2( QString( "SELECT src.coord_op_code, dest.coord_op_code  FROM ") +
+                         QString( "(SELECT coord_op_code, target_crs_code FROM tbl_datum_transform WHERE source_crs_code=%1) as src " ).arg( srcAuthCode ) +
+                         QString( "INNER JOIN ") +
+                         QString( "(SELECT coord_op_code, target_crs_code FROM tbl_datum_transform WHERE source_crs_code=%2) as dest " ).arg( destAuthCode ) +
+                         QString( "ON src.target_crs_code=dest.target_crs_code ;" ),
+                         concatenatedTransforms );
 
   //add direct datum transformations
   QList<int>::const_iterator directIt = directTransforms.constBegin();
@@ -855,15 +859,8 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
     transformations.push_back( QList<int>() << -1 << *directIt );
   }
 
-  QList<int>::const_iterator srcWgsIt = srcToWgs84.constBegin();
-  for ( ; srcWgsIt != srcToWgs84.constEnd(); ++srcWgsIt )
-  {
-    QList<int>::const_iterator dstWgsIt = destToWgs84.constBegin();
-    for ( ; dstWgsIt != destToWgs84.constEnd(); ++dstWgsIt )
-    {
-      transformations.push_back( QList<int>() << *srcWgsIt << *dstWgsIt );
-    }
-  }
+  //append concatenated datum transformations
+  transformations.append( concatenatedTransforms );
 
   return transformations;
 }
@@ -912,6 +909,39 @@ void QgsCoordinateTransform::searchDatumTransform( const QString& sql, QList< in
     cOpCode = ( const char * ) sqlite3_column_text( stmt, 0 );
     transforms.push_back( cOpCode.toInt() );
   }
+
+  sqlite3_finalize( stmt ); sqlite3_close( db );
+}
+
+void QgsCoordinateTransform::searchDatumTransform2( const QString& sql, QList< QList< int > >& transforms )
+{
+  sqlite3* db;
+  int openResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &db );
+  if ( openResult != SQLITE_OK )
+  {
+    sqlite3_close( db );
+    return;
+  }
+
+  sqlite3_stmt* stmt;
+  int prepareRes = sqlite3_prepare( db, sql.toAscii(), sql.size(), &stmt, NULL );
+  if ( prepareRes != SQLITE_OK )
+  {
+    sqlite3_finalize( stmt ); sqlite3_close( db );
+    return;
+  }
+
+  QString cOpCode;
+  int t1, t2;
+  while ( sqlite3_step( stmt ) == SQLITE_ROW )
+  {
+    cOpCode = ( const char * ) sqlite3_column_text( stmt, 0 );
+    t1=cOpCode.toInt();
+    cOpCode = ( const char * ) sqlite3_column_text( stmt, 1 );
+    t2=cOpCode.toInt();
+    transforms.push_back( QList<int>() << t1 << t2 );
+  }
+
   sqlite3_finalize( stmt ); sqlite3_close( db );
 }
 
@@ -1040,4 +1070,20 @@ void QgsCoordinateTransform::addNullGridShifts( QString& srcProjString, QString&
   {
     destProjString += " +nadgrids=@null";
   }
+}
+
+void QgsCoordinateTransform::addWGS84Parameters( QString& srcProjString, QString& destProjString )
+{
+  // Fixes http://hub.qgis.org/issues/10800
+  if ( mDestinationDatumTransform == -1 && srcProjString.contains( "+towgs84" ) ) //add null grid if source transformation is ntv2
+  {
+    destProjString += " +towgs84=0,0,0,0,0,0,0";
+    return;
+  }
+  if ( mSourceDatumTransform == -1 && destProjString.contains( "+towgs84" ) )
+  {
+    srcProjString += " +towgs84=0,0,0,0,0,0,0";
+    return;
+  }
+
 }

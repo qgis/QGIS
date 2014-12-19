@@ -707,6 +707,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
+    //! Define layer datum transform
+    void setLayerDatumTransform();
 
     /**Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
         Only works on raster layers*/
@@ -1253,6 +1255,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void initializationCompleted();
 
     void customSrsValidation( QgsCoordinateReferenceSystem &crs );
+
+    /**This signal is emmited when layer datum transformation is changed */
+    void changedDatumTransformation();
 
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load

@@ -28,7 +28,7 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
     ~QgsDatumTransformDialog();
 
     //! @note added in 2.4
-    void setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId );
+    void setDatumTransformInfo( const QString& srcCRSauthId, const QString& destCRSauthId, int srcTransform = -1, int destTransform = -1 );
 
     QList< int > selectedDatumTransform();
 
@@ -45,6 +45,7 @@ class GUI_EXPORT QgsDatumTransformDialog: public QDialog, private Ui::QgsDatumTr
     /**Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there*/
     bool testGridShiftFileAvailability( QTreeWidgetItem* item, int col ) const;
     void load();
+    void updateStatus();
 
     const QList< QList< int > > &mDt;
     QString mLayerName;

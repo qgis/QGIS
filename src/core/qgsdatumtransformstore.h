@@ -40,13 +40,13 @@ class CORE_EXPORT QgsDatumTransformStore
 
     void addEntry( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform );
 
-    bool hasEntryForLayer( QgsMapLayer* layer ) const;
+    bool hasEntryForLayer( const QgsMapLayer* layer ) const;
 
     /** will return transform from layer's CRS to current destination CRS.
      *  Will emit datumTransformInfoRequested signal if the layer has no entry.
      *  Returns an instance from QgsCoordinateTransformCache
      */
-    const QgsCoordinateTransform* transformation( QgsMapLayer* layer ) const;
+    const QgsCoordinateTransform* transformation( const QgsMapLayer* layer ) const;
 
     void readXML( const QDomNode& parentNode );
 

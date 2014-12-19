@@ -7209,6 +7209,30 @@ void QgisApp::setProjectCRSFromLayer()
   mMapCanvas->refresh();
 }
 
+void QgisApp::setLayerDatumTransform()
+{
+  if ( !mLayerTreeView )
+  {
+    return;
+  }
+
+  QgsMapLayer* currentLayer = mLayerTreeView->currentLayer();
+  if ( !currentLayer )
+    return;
+
+  int oldSrcDT = mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->sourceDatumTransform();
+  int oldDestDT = mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->destinationDatumTransform();
+  mMapCanvas->getDatumTransformInfo( currentLayer, currentLayer->crs().authid(), mMapCanvas->mapSettings().destinationCrs().authid(), true);
+  if (oldSrcDT != mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->sourceDatumTransform() ||
+      oldDestDT != mMapCanvas->mapSettings().datumTransformStore().transformation(currentLayer)->destinationDatumTransform() )
+  {
+    QgsProject::instance()->setDirty( true );
+    //currentLayer->clearCacheImage();
+    connect( this, SIGNAL( changedDatumTransformation() ), currentLayer, SIGNAL( repaintRequested()) );
+    emit changedDatumTransformation();
+    disconnect( this, SIGNAL( changedDatumTransformation() ), currentLayer, SIGNAL( repaintRequested()) );
+  }
+}
 
 void QgisApp::legendLayerZoomNative()
 {
@@ -8906,8 +8930,10 @@ void QgisApp::projectPropertiesProjections()
 {
   // Driver to display the project props dialog and switch to the
   // projections tab
+  mOnTheFlyProjectionStatusButton->setEnabled( false );
   mShowProjectionTab = true;
   projectProperties();
+  mOnTheFlyProjectionStatusButton->setEnabled( true );
 }
 
 void QgisApp::projectProperties()
@@ -8940,20 +8966,22 @@ void QgisApp::projectProperties()
   connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
 
   // Display the modal dialog box.
-  pp->exec();
+  if ( pp->exec() == QDialog::Accepted)
+  {
 
-  int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
-  int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
-  int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
-  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
+    int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
+    int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
+    int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
+    QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+    mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
 
-  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
-  qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
-  qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureDist )->updateSettings();
+    qobject_cast<QgsMeasureTool*>( mMapTools.mMeasureArea )->updateSettings();
+    qobject_cast<QgsMapToolMeasureAngle*>( mMapTools.mMeasureAngle )->updateSettings();
 
-  // Set the window title.
-  setTitleBarText_( *this );
+    // Set the window title.
+    setTitleBarText_( *this );
+  }
 
   // delete the property sheet object
   delete pp;

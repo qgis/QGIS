@@ -46,12 +46,12 @@ void QgsDatumTransformStore::addEntry( const QString& layerId, const QString& sr
   mEntries.insert( layerId, lt );
 }
 
-bool QgsDatumTransformStore::hasEntryForLayer( QgsMapLayer* layer ) const
+bool QgsDatumTransformStore::hasEntryForLayer( const QgsMapLayer* layer ) const
 {
   return mEntries.contains( layer->id() );
 }
 
-const QgsCoordinateTransform* QgsDatumTransformStore::transformation( QgsMapLayer* layer ) const
+const QgsCoordinateTransform* QgsDatumTransformStore::transformation( const QgsMapLayer* layer ) const
 {
   QString srcAuthId = layer->crs().authid();
   QString dstAuthId = mDestCRS.authid();
