@@ -301,7 +301,7 @@ Qt::ItemFlags QgsLayerTreeModel::flags( const QModelIndex& index ) const
 {
   if ( !index.isValid() )
   {
-    Qt::ItemFlags rootFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    Qt::ItemFlags rootFlags = 0;
     if ( testFlag( AllowNodeReorder ) )
       rootFlags |= Qt::ItemIsDropEnabled;
     return rootFlags;
