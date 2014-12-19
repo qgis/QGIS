@@ -599,18 +599,9 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionselectiondialogbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgssublayersdialogbase.h
 )
 
-# ModelTest
-#SET(MODELTEST_SRCS
-#  ../../tests/qt_modeltest/modeltest.cpp
-#  ../../tests/qt_modeltest/dynamictreemodel.cpp
-#)
-#SET(MODELTEST_MOC_HDRS
-#  ../../tests/qt_modeltest/modeltest.h
-#  ../../tests/qt_modeltest/dynamictreemodel.h
-#)
-#QT4_WRAP_CPP(MODELTEST_MOC_SRCS ${MODELTEST_MOC_HDRS})
-#INCLUDE_DIRECTORIES(../../tests/qt_modeltest)
-
+IF(ENABLE_MODELTEST)
+  INCLUDE_DIRECTORIES(../../tests/qt_modeltest)
+ENDIF(ENABLE_MODELTEST)
 
 INCLUDE_DIRECTORIES(
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -668,7 +659,6 @@ ENDIF(MSVC)
 
 ADD_LIBRARY(qgis_gui SHARED
      ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS}
-     #${MODELTEST_SRCS} ${MODELTEST_MOC_SRCS}  # for ModelTest
 )
 
 IF(NOT APPLE)
@@ -703,7 +693,6 @@ TARGET_LINK_LIBRARIES(qgis_gui
   ${QT_QTUITOOLS_LIBRARY}
   ${QWT_LIBRARY}
   ${QSCINTILLA_LIBRARY}
-  #${QT_QTTEST_LIBRARY}  # for ModelTest
 )
 
 IF(WIN32)

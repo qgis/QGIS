@@ -91,8 +91,9 @@
 #include <QProgressDialog>
 #include <QShortcut>
 
-//For model testing
-//#include "modeltest.h"
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 // sort function for QList<QAction*>, e.g. menu listings
 static bool cmpByText_( QAction* a, QAction* b )
@@ -554,8 +555,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   //items tree widget
   mItemsTreeView = new QTreeView( mItemsDock );
   mItemsTreeView->setModel( mComposition->itemsModel() );
-  //for testing:
-  //new ModelTest( mComposition->itemsModel(), this );
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mComposition->itemsModel(), this );
+#endif
 
   mItemsTreeView->setColumnWidth( 0, 30 );
   mItemsTreeView->setColumnWidth( 1, 30 );

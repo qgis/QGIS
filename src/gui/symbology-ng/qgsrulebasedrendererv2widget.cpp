@@ -34,7 +34,9 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 
-//#include "modeltest.h"
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -64,7 +66,9 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   setupUi( this );
 
   mModel = new QgsRuleBasedRendererV2Model( mRenderer );
-  //new ModelTest( mModel, this ); // for model validity checking
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mModel, this ); // for model validity checking
+#endif
   viewRules->setModel( mModel );
 
   mDeleteAction = new QAction( tr( "Remove Rule" ), this );

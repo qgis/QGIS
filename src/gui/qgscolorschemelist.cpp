@@ -24,16 +24,18 @@
 #include <QClipboard>
 #include <QKeyEvent>
 
-//For model testing
-//#include "modeltest.h"
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 QgsColorSchemeList::QgsColorSchemeList( QWidget *parent, QgsColorScheme *scheme, const QString &context, const QColor &baseColor )
     : QTreeView( parent )
     , mScheme( scheme )
 {
   mModel = new QgsColorSchemeModel( scheme, context, baseColor, this );
-  //for testing:
-  //new ModelTest( mModel, this );
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mModel, this );
+#endif
   setModel( mModel );
 
   mSwatchDelegate = new QgsColorSwatchDelegate( this );
