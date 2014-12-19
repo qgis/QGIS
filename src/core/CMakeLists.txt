@@ -270,6 +270,21 @@ SET(QGIS_CORE_SRCS
   raster/qgshuesaturationfilter.cpp  
 )
 
+IF(ENABLE_MODELTEST)
+  SET(MODELTEST_SRCS
+    ../../tests/qt_modeltest/modeltest.cpp
+    ../../tests/qt_modeltest/dynamictreemodel.cpp
+  )
+  SET(MODELTEST_MOC_HDRS
+    ../../tests/qt_modeltest/modeltest.h
+    ../../tests/qt_modeltest/dynamictreemodel.h
+  )
+  QT4_WRAP_CPP(MODELTEST_MOC_SRCS ${MODELTEST_MOC_HDRS})
+  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
+    ${MODELTEST_SRCS} ${MODELTEST_MOC_SRCS}
+  )
+ENDIF(ENABLE_MODELTEST)
+
 IF (NOT QT5_BUILD)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
     qgshttptransaction.cpp
@@ -732,6 +747,10 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 # qgis_core library
 
 ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
+
+IF(ENABLE_MODELTEST)
+  TARGET_LINK_LIBRARIES(qgis_core ${QT_QTTEST_LIBRARY})
+ENDIF(ENABLE_MODELTEST)
 
 IF(NOT APPLE)
   INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
