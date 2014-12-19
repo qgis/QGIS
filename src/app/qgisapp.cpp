@@ -211,6 +211,10 @@
 #include "qgsosmimportdialog.h"
 #include "qgsosmexportdialog.h"
 
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
+
 //
 // GDAL/OGR includes
 //
@@ -2324,6 +2328,9 @@ void QgisApp::initLayerTreeView()
   mLayerTreeDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
 
   QgsLayerTreeModel* model = new QgsLayerTreeModel( QgsProject::instance()->layerTreeRoot(), this );
+#ifdef ENABLE_MODELTEST
+  new ModelTest( model, this );
+#endif
   model->setFlag( QgsLayerTreeModel::AllowNodeReorder );
   model->setFlag( QgsLayerTreeModel::AllowNodeRename );
   model->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility );
