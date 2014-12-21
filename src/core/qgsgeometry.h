@@ -152,7 +152,7 @@ class CORE_EXPORT QgsGeometry
     QGis::WkbType wkbType() const;
 
     /** Returns type of the vector */
-    QGis::GeometryType type();
+    QGis::GeometryType type() const;
 
     /** Returns true if wkb of the geometry is of WKBMulti* type */
     bool isMultipart();

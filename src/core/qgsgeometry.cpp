@@ -649,7 +649,7 @@ QGis::WkbType QgsGeometry::wkbType() const
 }
 
 
-QGis::GeometryType QgsGeometry::type()
+QGis::GeometryType QgsGeometry::type() const
 {
   if ( mDirtyWkb )
     exportGeosToWkb();
