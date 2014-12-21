@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 
 #include <QFileInfo>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
 #include <QPushButton>
@@ -47,10 +48,20 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WindowFlags fl )
   QPushButton *btnAdd    = new QPushButton( tr( "&Add" ) );
   QPushButton *btnDelete = new QPushButton( tr( "&Delete" ) );
   QPushButton *btnZoomTo = new QPushButton( tr( "&Zoom to" ) );
+  QPushButton *btnImpExp = new QPushButton( tr( "&Share" ) );
+
   btnZoomTo->setDefault( true );
   buttonBox->addButton( btnAdd, QDialogButtonBox::ActionRole );
   buttonBox->addButton( btnDelete, QDialogButtonBox::ActionRole );
   buttonBox->addButton( btnZoomTo, QDialogButtonBox::ActionRole );
+  buttonBox->addButton( btnImpExp, QDialogButtonBox::ActionRole );
+
+  QMenu *share = new QMenu();
+  QAction *btnExport = share->addAction( tr( "&Export" ) );
+  QAction *btnImport = share->addAction( tr( "&Import" ) );
+  connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXML() ) );
+  connect( btnImport, SIGNAL( triggered() ), this, SLOT( importFromXML() ) );
+  btnImpExp->setMenu( share );
 
   connect( btnAdd, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
   connect( btnDelete, SIGNAL( clicked() ), this, SLOT( deleteClicked() ) );
@@ -250,4 +261,131 @@ void QgsBookmarks::zoomToBookmark()
   // set the extent to the bookmark and refresh
   QgisApp::instance()->setExtent( rect );
   QgisApp::instance()->mapCanvas()->refresh();
+}
+
+void QgsBookmarks::importFromXML()
+{
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), ".",
+                     tr( "XML files (*.xml *XML)" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  QFile f( fileName );
+  if ( !f.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    return;
+  }
+
+  QDomDocument doc;
+  if ( !doc.setContent( &f ) )
+  {
+    return;
+  }
+  f.close();
+
+  QDomElement docElem = doc.documentElement();
+  QDomNodeList nodeList = docElem.elementsByTagName( "bookmark" );
+
+  QSqlTableModel *model = qobject_cast<QSqlTableModel *>( lstBookmarks->model() );
+  Q_ASSERT( model );
+
+  QString queries;
+
+  for ( int i = 0;i < nodeList.count(); i++ )
+  {
+    QDomNode bookmark = nodeList.at( i );
+    QDomElement name = bookmark.firstChildElement( "Name" );
+    QDomElement prjname = bookmark.firstChildElement( "Project" );
+    QDomElement xmin = bookmark.firstChildElement( "xMin" );
+    QDomElement xmax = bookmark.firstChildElement( "xMax" );
+    QDomElement ymin = bookmark.firstChildElement( "yMin" );
+    QDomElement ymax = bookmark.firstChildElement( "yMax" );
+    QDomElement srid = bookmark.firstChildElement( "SRID" );
+
+    queries += "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
+               "  VALUES (NULL,"
+               "'" + name.text() + "',"
+               "'" + prjname.text() + "',"
+               + xmin.text() + ","
+               + xmax.text() + ","
+               + ymin.text() + ","
+               + ymax.text() + ","
+               + srid.text() + ");";
+  }
+
+  QStringList queriesList = queries.split( ";" );
+  QSqlQuery query( model->database() );
+
+  foreach ( QString queryTxt, queriesList )
+  {
+    if ( queryTxt.trimmed().isEmpty() )
+    {
+      continue;
+    }
+    if ( !query.exec( queryTxt ) )
+    {
+      QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
+                            .arg( query.lastError().driverText() )
+                            .arg( query.lastError().databaseText() ) );
+    }
+    query.finish();
+  }
+  model->setSort( 0, Qt::AscendingOrder );
+  model->select();
+}
+
+void QgsBookmarks::exportToXML()
+{
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), ".",
+                     tr( "XML files( *.xml *.XML )" ) );
+  if ( fileName.isEmpty() )
+  {
+    return;
+  }
+
+  // ensure the user never ommited the extension from the file name
+  if ( !fileName.toLower().endsWith( ".xml" ) )
+  {
+    fileName += ".xml";
+  }
+
+  QDomDocument doc( "qgis_bookmarks" );
+  QDomElement root = doc.createElement( "qgis_bookmarks" );
+  doc.appendChild( root );
+
+  int rowCount = lstBookmarks->model()->rowCount();
+  int colCount = lstBookmarks->model()->columnCount();
+
+  for ( int i = 0; i < rowCount; ++i )
+  {
+    QDomElement bookmark = doc.createElement( "bookmark" );
+    root.appendChild( bookmark );
+    for ( int j = 0; j < colCount; j++ )
+    {
+      QModelIndex idx = lstBookmarks->model()->index( i, j );
+      if ( idx.isValid() )
+      {
+        QString value = idx.data( Qt::DisplayRole ).toString();
+        QDomText idText = doc.createTextNode( value );
+        QVariant header = lstBookmarks->model()->headerData( j, Qt::Horizontal );
+        QDomElement id = doc.createElement( header.toString() );
+        id.appendChild( idText );
+        bookmark.appendChild( id );
+      }
+    }
+  }
+
+  QFile f( fileName );
+  if ( !f.open( QFile::WriteOnly ) )
+  {
+    f.close();
+    return;
+  }
+
+  QTextStream out( &f );
+  out.setCodec( "UTF - 8" );
+  doc.save( out, 2 );
+  f.close();
 }
