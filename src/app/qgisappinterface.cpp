@@ -65,6 +65,8 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( newProjectCreated() ) );
   connect( qgis, SIGNAL( projectRead() ),
            this, SIGNAL( projectRead() ) );
+  connect( qgis, SIGNAL( layerSavedAs( QgsMapLayer*, QString ) ),
+           this, SIGNAL( layerSavedAs(QgsMapLayer*, QString ) ) );
 }
 
 QgisAppInterface::~QgisAppInterface()
