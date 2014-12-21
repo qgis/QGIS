@@ -130,7 +130,13 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.editSql.setFocus()
 
   def executeSql(self):
-    sql = self.editSql.text()
+      
+    sql = ""
+    if self.editSql.hasSelectedText():
+        sql = self.editSql.selectedText()
+    else:
+        sql = self.editSql.text()
+    
     if sql == "":
         return
 
