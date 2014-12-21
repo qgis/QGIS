@@ -12,8 +12,9 @@
 <body>
   <div id="developers-map"></div>
   <script>
-  var developersMapTiles = L.tileLayer('http://a.tiles.mapbox.com/v3/lyzidiamond.map-ietb6srb/{z}/{x}/{y}.png', {
-    maxZooom: 18  
+  var developersMapTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    maxZooom: 18,
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'  
   });
 
   $.getJSON($('link[rel="points"]').attr("href"), function(data) {
