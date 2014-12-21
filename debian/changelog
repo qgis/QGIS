@@ -5,8 +5,9 @@ qgis (2.7.0) UNRELEASED; urgency=medium
   * add build dependency to python-qscintilla2 for tests
   * rename libqgis-customwidgets{QGIS_ABI} to libqgis-customwidgets
   * merge some downstream debian changes
+  * drop support for ubuntu saucy and add vivid
 
- -- Jürgen E. Fischer <jef@norbit.de>  Tue, 09 Dec 2014 09:37:11 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 21 Dec 2014 21:13:48 +0100
 
 qgis (2.6.0) unstable; urgency=medium
 

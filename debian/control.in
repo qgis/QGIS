@@ -6,13 +6,13 @@ Priority: optional
 Build-Depends:
  bison,
  cmake (>= 2.8),
-#sid jessie wheezy saucy sid-oracle trusty utopic# debhelper (>= 9),
+#sid jessie wheezy saucy sid-oracle trusty utopic vivid# debhelper (>= 9),
 #precise# debhelper (>= 7),
  flex,
  grass-dev,
  libexpat1-dev,
  libfcgi-dev,
-#sid jessie sid-oracle trusty utopic# libgdal-dev (>= 1.10.1-0~),
+#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
@@ -24,7 +24,7 @@ Build-Depends:
  libqt4-opengl-dev,
  libqtwebkit-dev,
 #sid jessie wheezy sid-oracle# libqwt-dev,
-#precise saucy trusty utopic# libqwt5-qt4-dev,
+#precise saucy trusty utopic vivid# libqwt5-qt4-dev,
  libspatialite-dev,
  libsqlite3-dev,
  libspatialindex-dev,
@@ -35,8 +35,8 @@ Build-Depends:
 #precise saucy# python-central (>=0.5),
 #saucy wheezy# python-dev,
 #saucy# libpython2.7-dev,
-#sid jessie sid-oracle trusty utopic# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
-#sid jessie wheezy precise saucy sid-oracle trusty utopic# python-qt4 (>= 4.1.0), python-qt4-dev,
+#sid jessie sid-oracle trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
+#sid jessie wheezy precise saucy sid-oracle trusty utopic vivid# python-qt4 (>= 4.1.0), python-qt4-dev,
 #sid# pyqt4.qsci-dev,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
@@ -52,11 +52,11 @@ Build-Depends:
 #sid-oracle# oracle-instantclient11.2-devel,
  spawn-fcgi, lighttpd, poppler-utils, locales
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid jessie sid-oracle#Standards-Version: 3.9.6
+#sid jessie sid-oracle vivid#Standards-Version: 3.9.6
 #wheezy#Standards-Version: 3.9.3
 #precise saucy trusty utopic#Standards-Version: 3.8.4
 #sid jessie sid-oracle#X-Python-Version: >= 2.7, << 2.8
-#wheezy precise saucy trusty utopic#XS-Python-Version: current
+#wheezy precise saucy trusty utopic vivid#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -212,7 +212,7 @@ Section: libdevel
 Depends:
  grass-dev,
  libexpat1-dev,
-#sid jessie sid-oracle trusty utopic# libgdal-dev (>= 1.10.1-0~),
+#sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
 #saucy# libgdal-dev (>= 1.9.0),
 #wheezy# libgdal1-dev,
@@ -314,7 +314,7 @@ Depends:
  python-dateutil,
  python-tz,
  python-six,
-#sid jessie trusty utopic sid-oracle# python-pyspatialite,
+#sid jessie trusty utopic vivid sid-oracle# python-pyspatialite,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
