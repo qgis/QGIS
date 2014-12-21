@@ -82,22 +82,23 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! pointer to map canvas
     QgsMapCanvas* mMapCanvas;
 
-    //! canvas item rectangle (in map coordinates)
+    //! cached canvas item rectangle in map coordinates
+    //! encodes position (xmin,ymax) and size (width/height)
+    //! used to re-position and re-size the item on zoom/pan
+    //! while waiting for the renderer to complete.
+    //!
+    //! NOTE: does not include rotation information, so cannot
+    //!       be used to correctly present pre-rendered map
+    //!       on rotation change
     QgsRectangle mRect;
 
     //! offset from normal position due current panning operation,
     //! used when converting map coordinates to move map canvas items
+    //! @deprecated since v2.4
     QPoint mPanningOffset;
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;
-
-  private:
-
-    //! transformation from map coordinates to screen coordinates
-    //! if rotation is set it is taken in consideration so that
-    //! the returned rectangle is the bounding box of the rotated input
-    QRectF toCanvasCoordinates( const QRectF& rect );
 
 };
 
