@@ -400,7 +400,7 @@ class VectorTableInfo(TableInfo):
 
 		# is there an entry in geometry_columns?
 		if self.table.geomType.lower() == 'geometry':
-			ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> There isn't entry in geometry_columns!") ) )
+			ret.append( HtmlParagraph( QApplication.translate("DBManagerPlugin", "<warning> There is no entry in geometry_columns!") ) )
 
 		# find out whether the geometry column has spatial index on it
 		if not self.table.isView:
