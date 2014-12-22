@@ -133,6 +133,14 @@ class QgsPointLocator : public QObject
 
     typedef struct QList<Match> MatchList;
 
+    //! Interface that allows rejection of some matches in intersection queries
+    //! (e.g. a match can only belong to a particular feature / match must not be a particular point).
+    //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
+    struct MatchFilter
+    {
+      virtual bool acceptMatch( const Match& match ) = 0;
+    };
+
     // 1-NN queries
 
     //! find nearest vertex to the specified point
@@ -159,19 +167,23 @@ class QgsPointLocator : public QObject
 
     // intersection queries
 
-    //! find nearest vertices to the specified point - sorted by distance
-    //! will return matches up to distance given by tolerance
-    MatchList verticesInTolerance( const QgsPoint& point, double tolerance );
-    //! find nearest edges to the specified point - sorted by distance
-    //! will return matches up to distance given by tolerance
-    MatchList edgesInTolerance( const QgsPoint& point, double tolerance );
+    //! Find nearest vertices to the specified point - sorted by distance.
+    //! Will return matches up to distance given by tolerance.
+    //! Optional filter may discard unwanted matches.
+    MatchList verticesInTolerance( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    //! Find nearest edges to the specified point - sorted by distance.
+    //! Will return matches up to distance given by tolerance.
+    //! Optional filter may discard unwanted matches.
+    MatchList edgesInTolerance( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
 
-    //! find vertices within given rectangle
-    //! if distToPoint is given, the matches will be sorted by distance to that point
-    MatchList verticesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0 );
-    //! find edges within given rectangle
-    //! if distToPoint is given, the matches will be sorted by distance to that point
-    MatchList edgesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0 );
+    //! Find vertices within given rectangle.
+    //! If distToPoint is given, the matches will be sorted by distance to that point.
+    //! Optional filter may discard unwanted matches.
+    MatchList verticesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0, MatchFilter* filter = 0 );
+    //! Find edges within given rectangle.
+    //! If distToPoint is given, the matches will be sorted by distance to that point.
+    //! Optional filter may discard unwanted matches.
+    MatchList edgesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0, MatchFilter* filter = 0 );
 
     // point-in-polygon query
 

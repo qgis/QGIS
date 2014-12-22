@@ -133,12 +133,44 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
 }
 
 
-QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point )
+static void _updateBestMatch( QgsPointLocator::Match& bestMatch, const QgsPoint& pointMap, QgsPointLocator* loc, int type, double tolerance, QgsPointLocator::MatchFilter* filter )
 {
-  return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ) );
+  // when filter is used we can't use just the closest match (NN queries do not support filters)
+  // TODO: could be optimized with a new call nearestVertexInTolerance() / nearestEdgeInTolerance()
+  //       so that we do not waste time gathering matches that are not needed
+
+  if ( type & QgsPointLocator::Vertex )
+  {
+    if ( filter )
+    {
+      QgsPointLocator::MatchList lst = loc->verticesInTolerance( pointMap, tolerance, filter );
+      if ( !lst.isEmpty() )
+        bestMatch.replaceIfBetter( lst.first(), tolerance );
+    }
+    else
+      bestMatch.replaceIfBetter( loc->nearestVertex( pointMap ), tolerance );
+  }
+  if ( type & QgsPointLocator::Edge )
+  {
+    if ( filter )
+    {
+      QgsPointLocator::MatchList lst = loc->edgesInTolerance( pointMap, tolerance, filter );
+      if ( !lst.isEmpty() )
+        bestMatch.replaceIfBetter( lst.first(), tolerance );
+    }
+    else
+      bestMatch.replaceIfBetter( loc->nearestEdge( pointMap ), tolerance );
+  }
 }
 
-QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
+
+
+QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter )
+{
+  return snapToMap( mMapSettings.mapToPixel().toMapCoordinates( point ), filter );
+}
+
+QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter )
 {
   Q_ASSERT( mMapSettings.hasValidSettings() );
 
@@ -158,10 +190,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
       return QgsPointLocator::Match();
 
     QgsPointLocator::Match bestMatch;
-    if ( type & QgsPointLocator::Vertex )
-      bestMatch.replaceIfBetter( loc->nearestVertex( pointMap ), tolerance );
-    if ( type & QgsPointLocator::Edge )
-      bestMatch.replaceIfBetter( loc->nearestEdge( pointMap ), tolerance );
+    _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
 
     if ( mSnapOnIntersection )
     {
@@ -183,10 +212,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap )
       if ( QgsPointLocator* loc = locatorForLayer( layerConfig.layer ) )
       {
         loc->init( layerConfig.type );
-        if ( layerConfig.type & QgsPointLocator::Vertex )
-          bestMatch.replaceIfBetter( loc->nearestVertex( pointMap ), tolerance );
-        if ( layerConfig.type & QgsPointLocator::Edge )
-          bestMatch.replaceIfBetter( loc->nearestEdge( pointMap ), tolerance );
+
+        _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter );
 
         if ( mSnapOnIntersection )
         {

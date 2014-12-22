@@ -25,6 +25,16 @@
 #include "qgssnappingutils.h"
 
 
+struct FilterExcludePoint : public QgsPointLocator::MatchFilter
+{
+  FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+
+  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
+
+  QgsPoint mPoint;
+};
+
+
 class TestQgsSnappingUtils : public QObject
 {
     Q_OBJECT
@@ -72,22 +82,19 @@ class TestQgsSnappingUtils : public QObject
       mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
       QVERIFY( mapSettings.hasValidSettings() );
 
-      QSettings settings;
       QgsSnappingUtils u;
       u.setMapSettings( mapSettings );
       u.setCurrentLayer( mVL );
 
       // first try with no snapping enabled
-      settings.setValue( "/qgis/digitizing/default_snap_mode", "off" );
+      u.setDefaultSettings( 0, 10, QgsTolerance::Pixels );
 
       QgsPointLocator::Match m0 = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( !m0.isValid() );
       QVERIFY( !m0.hasVertex() );
 
       // now enable snapping
-      settings.setValue( "/qgis/digitizing/default_snap_mode", "to vertex and segment" );
-      settings.setValue( "/qgis/digitizing/default_snapping_tolerance", 10 );
-      settings.setValue( "/qgis/digitizing/default_snapping_tolerance_unit", 1 );
+      u.setDefaultSettings( QgsPointLocator::Vertex | QgsPointLocator::Edge, 10, QgsTolerance::Pixels );
 
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( m.isValid() );
@@ -97,6 +104,11 @@ class TestQgsSnappingUtils : public QObject
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 0, 100 ) );
       QVERIFY( !m2.isValid() );
       QVERIFY( !m2.hasVertex() );
+
+      // test with filtering
+      FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
+      QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
+      QVERIFY( !m3.isValid() );
     }
 
     void testSnapModePerLayer()
@@ -105,9 +117,6 @@ class TestQgsSnappingUtils : public QObject
       mapSettings.setOutputSize( QSize( 100, 100 ) );
       mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
       QVERIFY( mapSettings.hasValidSettings() );
-
-      QSettings settings;
-      settings.setValue( "/qgis/digitizing/default_snap_mode", "off" );
 
       QgsSnappingUtils u;
       u.setMapSettings( mapSettings );
@@ -121,6 +130,10 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m.hasVertex() );
       QCOMPARE( m.point(), QgsPoint( 1, 0 ) );
 
+      // test with filtering
+      FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
+      QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
+      QVERIFY( !m2.isValid() );
     }
 };
 

@@ -25,6 +25,16 @@
 #include "qgspointlocator.h"
 
 
+struct FilterExcludePoint : public QgsPointLocator::MatchFilter
+{
+  FilterExcludePoint( const QgsPoint& p ) : mPoint( p ) {}
+
+  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mPoint; }
+
+  QgsPoint mPoint;
+};
+
+
 class TestQgsPointLocator : public QObject
 {
     Q_OBJECT
@@ -126,6 +136,12 @@ class TestQgsPointLocator : public QObject
 
       QgsPointLocator::MatchList lst2 = loc.verticesInTolerance( QgsPoint( 1, 0 ), 1 );
       QCOMPARE( lst2.count(), 2 );
+
+      // test match filtering
+      FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
+      QgsPointLocator::MatchList lst3 = loc.verticesInTolerance( QgsPoint( 1, 0 ), 1, &myFilter );
+      QCOMPARE( lst3.count(), 1 );
+      QCOMPARE( lst3[0].point(), QgsPoint( 1, 1 ) );
     }
 
     void testEdgesInTolerance()
@@ -142,6 +158,12 @@ class TestQgsPointLocator : public QObject
 
       QgsPointLocator::MatchList lst2 = loc.edgesInTolerance( QgsPoint( 0, 0 ), 0.9 );
       QCOMPARE( lst2.count(), 1 );
+
+      // test match filtering
+      FilterExcludePoint myFilter( QgsPoint( 0.5, 0.5 ) );
+      QgsPointLocator::MatchList lst3 = loc.edgesInTolerance( QgsPoint( 0, 0 ), 2, &myFilter );
+      QCOMPARE( lst3.count(), 2 );
+      QVERIFY( lst3[0].point() == QgsPoint( 0, 1 ) || lst3[0].point() == QgsPoint( 1, 0 ) );
     }
 
 
