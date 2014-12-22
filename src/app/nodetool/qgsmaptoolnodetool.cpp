@@ -24,10 +24,20 @@
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
 #include <QRubberBand>
+
+//! Match filter that does not accept only one particular point
+struct QgsExcludePointFilter : public QgsPointLocator::MatchFilter
+{
+  QgsExcludePointFilter( const QgsPoint& exclPoint ) : mExclPoint( exclPoint ) {}
+  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mExclPoint; }
+  QgsPoint mExclPoint;
+};
+
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolVertexEdit( canvas )
@@ -256,26 +266,22 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
       }
       createMovingRubberBands();
 
-      QList<QgsSnappingResult> snapResults;
-      QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
-      mPosMapCoordBackup = posMapCoord;
+      mPosMapCoordBackup = toMapCoordinates( e->pos() );
     }
     else
     {
       // move rubberband
-      QList<QgsSnappingResult> snapResults;
-      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestMapVertex );
-
-      // get correct coordinates to move to
-      QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
-
-      QgsPoint pressMapCoords;
-      if ( snapResults.size() > 0 )
+      QgsPoint posMapCoord, pressMapCoords;
+      QgsExcludePointFilter excludePointFilter( mClosestMapVertex );
+      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( e->pos(), &excludePointFilter );
+      if ( match.isValid() )
       {
+        posMapCoord = match.point();
         pressMapCoords = mClosestMapVertex;
       }
       else
       {
+        posMapCoord = toMapCoordinates( e->pos() );
         pressMapCoords = toMapCoordinates( mPressCoordinates );
       }
 
@@ -544,26 +550,32 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
     if ( mMoving )
     {
       mMoving = false;
+      QgsPoint releaseMapCoords, pressMapCoords;
 
-      QList<QgsSnappingResult> snapResults;
-      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, QList<QgsPoint>() << mClosestMapVertex );
+      QgsExcludePointFilter excludePointFilter( mClosestMapVertex );
+      QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( e->pos(), &excludePointFilter );
 
-      QgsPoint releaseLayerCoords = toLayerCoordinates( vlayer, snapPointFromResults( snapResults, e->pos() ) );
-
-      QgsPoint pressLayerCoords;
-      if ( snapResults.size() > 0 )
+      if ( match.isValid() )
       {
-        pressLayerCoords = toLayerCoordinates( vlayer, mClosestMapVertex );
-
-        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-        if ( topologicalEditing )
-        {
-          insertSegmentVerticesForSnap( snapResults, vlayer );
-        }
+        releaseMapCoords = match.point();
+        pressMapCoords = mClosestMapVertex;
       }
       else
       {
-        pressLayerCoords = toLayerCoordinates( vlayer, mPressCoordinates );
+        releaseMapCoords = toMapCoordinates( e->pos() );
+        pressMapCoords = toMapCoordinates( mPressCoordinates );
+      }
+
+      QgsPoint releaseLayerCoords = toLayerCoordinates( vlayer, releaseMapCoords );
+      QgsPoint pressLayerCoords = toLayerCoordinates( vlayer, pressMapCoords );
+
+      if ( match.isValid() )
+      {
+        int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+        if ( topologicalEditing )
+        {
+          addTopologicalPoints( QList<QgsPoint>() << releaseMapCoords );
+        }
       }
 
       mSelectedFeature->moveSelectedVertexes( releaseLayerCoords - pressLayerCoords );
