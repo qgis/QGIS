@@ -136,9 +136,9 @@ class SagaAlgorithm213(SagaAlgorithm212):
                 command += ' -' + param.name + ' "' + s + '"'
             elif isinstance(param, ParameterBoolean):
                 if param.value:
-                    command += ' -' + param.name + "=true"
+                    command += ' -' + param.name.strip() + " true"
                 else:
-                    command += ' -' + param.name + "=false"
+                    command += ' -' + param.name.strip() + " false"
             elif isinstance(param, ParameterFixedTable):
                 tempTableFile = getTempFilename('txt')
                 f = open(tempTableFile, 'w')
