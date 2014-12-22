@@ -149,7 +149,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     //! Force only display of legend nodes which are valid for given map settings.
     //! Setting null pointer or invalid map settings will disable the functionality.
-    //! Ownership of map settings pointer does not change.
+    //! Ownership of map settings pointer does not change, a copy is made.
     //! @note added in 2.6
     void setLegendFilterByMap( const QgsMapSettings* settings );
     const QgsMapSettings* legendFilterByMap() const { return mLegendFilterByMapSettings.data(); }

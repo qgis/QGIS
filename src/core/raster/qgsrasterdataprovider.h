@@ -4,6 +4,9 @@
     Date                 : Mar 11, 2005
     Copyright            : (C) 2005 by Brendan Morley
     email                : morb at ozemail dot com dot au
+
+    async legend fetcher : Sandro Santilli < strk at keybit dot net >
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -46,6 +49,31 @@ class QByteArray;
 
 class QgsPoint;
 class QgsRasterIdentifyResult;
+class QgsMapSettings;
+
+/**
+ * \class Handles asynchronous download of images
+ *
+ * \note added in 2.8
+ */
+class QgsImageFetcher : public QObject
+{
+    Q_OBJECT
+  public:
+
+    QgsImageFetcher() {};
+    virtual ~QgsImageFetcher( ) {}
+
+    // Make sure to connect to "finish" and "error" before starting
+    virtual void start() = 0;
+
+  signals:
+
+    void finish( const QImage& legend );
+    void progress( qint64 received, qint64 total );
+    void error( const QString& msg );
+};
+
 
 /** \ingroup core
  * Base class for raster data providers.
@@ -201,12 +229,37 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /** \brief Returns the legend rendered as pixmap
-     *  useful for that layer that need to get legend layer remotly as WMS */
-    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false )
+     *
+     *  useful for that layer that need to get legend layer remotely as WMS
+     * \param visibleExtent Visible extent for providers supporting
+     *                      contextual legends, in layer CRS
+     * \note visibleExtent parameter added in 2.8
+     */
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 )
     {
       Q_UNUSED( scale );
       Q_UNUSED( forceRefresh );
+      Q_UNUSED( visibleExtent );
       return QImage();
+    }
+
+    /**
+     * \class Get an image downloader for the raster legend
+     *
+     * \param mapSettings map settings for legend providers supporting
+     *                    contextual legends.
+     *
+     * \return a download handler or null if the provider does not support
+     *         legend at all. Ownership of the returned object is transferred
+     *         to caller.
+     *
+     * \note added in 2.8
+     *
+     */
+    virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings )
+    {
+      Q_UNUSED( mapSettings );
+      return 0;
     }
 
     /** \brief Create pyramid overviews */

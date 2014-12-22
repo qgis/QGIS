@@ -11,6 +11,8 @@
     tile retry support   : Luigi Pirelli < luipir at gmail dot com >
                            (funded by Regione Toscana-SITA)
 
+    contextual wms legend: Sandro Santilli < strk at keybit dot net >
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -21,6 +23,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
+#include <QTimer>
 
 #include <typeinfo>
 
@@ -86,7 +90,6 @@ static QString DEFAULT_LATLON_CRS = "CRS:84";
 
 QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
 
-
 QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* capabilities )
     : QgsRasterDataProvider( uri )
     , mHttpGetLegendGraphicResponse( 0 )
@@ -94,7 +97,6 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     , mGetLegendGraphicScale( 0.0 )
     , mImageCrs( DEFAULT_LATLON_CRS )
     , mCachedImage( 0 )
-    , mGetLegendGraphicReply( 0 )
     , mIdentifyReply( 0 )
     , mCachedViewExtent( 0 )
     , mExtentDirty( true )
@@ -472,18 +474,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   bool changeXY = mCaps.shouldInvertAxisOrientation( mImageCrs );
 
   // compose the URL query string for the WMS server.
-  QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
-  if ( mCaps.mCapabilities.version == "1.3.0" || mCaps.mCapabilities.version == "1.3" )
-  {
-    crsKey = "CRS";
-  }
 
-  // Bounding box in WMS format (Warning: does not work with scientific notation)
-  QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                 .arg( qgsDoubleToString( viewExtent.xMinimum() ) )
-                 .arg( qgsDoubleToString( viewExtent.yMinimum() ) )
-                 .arg( qgsDoubleToString( viewExtent.xMaximum() ) )
-                 .arg( qgsDoubleToString( viewExtent.yMaximum() ) );
+  QString bbox = toParamValue( viewExtent, changeXY );
 
   mCachedImage = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   mCachedImage->fill( 0 );
@@ -526,7 +518,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     setQueryItem( url, "VERSION", mCaps.mCapabilities.version );
     setQueryItem( url, "REQUEST", "GetMap" );
     setQueryItem( url, "BBOX", bbox );
-    setQueryItem( url, crsKey, mImageCrs );
+    setSRSQueryItem( url );
     setQueryItem( url, "WIDTH", QString::number( pixelWidth ) );
     setQueryItem( url, "HEIGHT", QString::number( pixelHeight ) );
     setQueryItem( url, "LAYERS", layers );
@@ -697,7 +689,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
         setQueryItem( url, "STYLES", mSettings.mActiveSubStyles.join( "," ) );
         setFormatQueryItem( url );
 
-        setQueryItem( url, crsKey, mImageCrs );
+        setSRSQueryItem( url );
 
         if ( mSettings.mTiled )
         {
@@ -2210,7 +2202,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
       setQueryItem( requestUrl, "VERSION", mCaps.mCapabilities.version );
       setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
       setQueryItem( requestUrl, "BBOX", bbox );
-      setQueryItem( requestUrl, crsKey, mImageCrs );
+      setSRSQueryItem( requestUrl );
       setQueryItem( requestUrl, "WIDTH", QString::number( theWidth ) );
       setQueryItem( requestUrl, "HEIGHT", QString::number( theHeight ) );
       setQueryItem( requestUrl, "LAYERS", *layers );
@@ -2959,24 +2951,19 @@ void QgsWmsProvider::showMessageBox( const QString& title, const QString& text )
   message->showMessage();
 }
 
-QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
+QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle& visibleExtent )
 {
-  // TODO manage return basing of getCapablity => avoid call if service is not available
-  // some services dowsn't expose getLegendGraphic in capabilities but adding LegendURL in
-  // the layer tags inside capabilities
-  QgsDebugMsg( "entering." );
+  bool useContextualWMSLegend = mSettings.mEnableContextualLegend;
 
   QString lurl = getLegendGraphicUrl();
 
   if ( lurl.isEmpty() )
   {
     QgsDebugMsg( "getLegendGraphic url is empty" );
-    return QImage();
+    return QUrl();
   }
 
-  forceRefresh |= mGetLegendGraphicImage.isNull() || mGetLegendGraphicScale != scale;
-  if ( !forceRefresh )
-    return mGetLegendGraphicImage;
+  QgsDebugMsg( QString( "visibleExtent is %1" ).arg( visibleExtent.toString() ) );
 
   QUrl url( lurl );
 
@@ -3015,22 +3002,54 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
     }
   }
 
-  mGetLegendGraphicScale = scale;
+  if ( useContextualWMSLegend )
+  {
+    setQueryItem( url, "BBOX", toParamValue( visibleExtent ) );
+    setSRSQueryItem( url );
+  }
+
+  QgsDebugMsg( QString( "getlegendgraphicrequest: %1" ).arg( url.toString() ) );
+  return QUrl( url );
+}
+
+QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh, const QgsRectangle* visibleExtent )
+{
+  // TODO manage return basing of getCapablity => avoid call if service is not available
+  // some services doesn't expose getLegendGraphic in capabilities but adding LegendURL in
+  // the layer tags inside capabilities
+  QgsDebugMsg( "entering." );
+
+  QString lurl = getLegendGraphicUrl();
+
+  if ( lurl.isEmpty() )
+  {
+    QgsDebugMsg( "getLegendGraphic url is empty" );
+    return QImage();
+  }
+
+  forceRefresh |= mGetLegendGraphicImage.isNull() || mGetLegendGraphicScale != scale;
+
+  QgsRectangle mapExtent = visibleExtent ? *visibleExtent : extent();
+  forceRefresh |= mGetLegendGraphicExtent != mapExtent;
+
+  if ( !forceRefresh )
+    return mGetLegendGraphicImage;
 
   mError = "";
 
-  QNetworkRequest request( url );
-  mSettings.authorization().setAuthorization( request );
-  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
-  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-
-  QgsDebugMsg( QString( "getlegendgraphics: %1" ).arg( url.toString() ) );
-  mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
-  connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
-  connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+  QUrl url( getLegendGraphicFullURL( scale, mGetLegendGraphicExtent ) );
+  if ( ! url.isValid() ) return QImage();
+  Q_ASSERT( ! mLegendGraphicFetcher ); // or we could just remove it instead, hopefully will cancel download
+  mLegendGraphicFetcher.reset( new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url ) );
+  if ( ! mLegendGraphicFetcher ) return QImage();
+  connect( mLegendGraphicFetcher.data(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage& ) ) );
+  connect( mLegendGraphicFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
+  mLegendGraphicFetcher->start( );
 
   QEventLoop loop;
-  mGetLegendGraphicReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( &loop ) ) );
+  mLegendGraphicFetcher->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( &loop ) ) );
+  mLegendGraphicFetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
+  mLegendGraphicFetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   QgsDebugMsg( "exiting." );
@@ -3038,84 +3057,68 @@ QImage QgsWmsProvider::getLegendGraphic( double scale, bool forceRefresh )
   return mGetLegendGraphicImage;
 }
 
-void QgsWmsProvider::getLegendGraphicReplyFinished()
+QgsImageFetcher* QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings* mapSettings )
 {
-  QgsDebugMsg( "entering." );
-
-  QEventLoop *loop = qobject_cast< QEventLoop *>( sender()->property( "eventLoop" ).value< QObject *>() );
-
-  if ( mGetLegendGraphicReply->error() == QNetworkReply::NoError )
+  double scale;
+  QgsRectangle mapExtent;
+  if ( mapSettings && mSettings.mEnableContextualLegend )
   {
-    QgsDebugMsg( "reply ok" );
-    QVariant redirect = mGetLegendGraphicReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
-    if ( !redirect.isNull() )
-    {
-      emit statusChanged( tr( "GetLegendGraphic request redirected." ) );
-
-      const QUrl& toUrl = redirect.toUrl();
-      mGetLegendGraphicReply->request();
-      if ( toUrl == mGetLegendGraphicReply->url() )
-      {
-        mErrorFormat = "text/plain";
-        mError = tr( "Redirect loop detected: %1" ).arg( toUrl.toString() );
-        QgsMessageLog::logMessage( mError, tr( "WMS" ) );
-        mHttpGetLegendGraphicResponse.clear();
-      }
-      else
-      {
-        QNetworkRequest request( toUrl );
-        mSettings.authorization().setAuthorization( request );
-        request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
-        request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-
-        mGetLegendGraphicReply->deleteLater();
-        QgsDebugMsg( QString( "redirected GetLegendGraphic: %1" ).arg( redirect.toString() ) );
-        mGetLegendGraphicReply = QgsNetworkAccessManager::instance()->get( request );
-        mGetLegendGraphicReply->setProperty( "eventLoop", QVariant::fromValue( qobject_cast<QObject *>( loop ) ) );
-
-        connect( mGetLegendGraphicReply, SIGNAL( finished() ), this, SLOT( getLegendGraphicReplyFinished() ) );
-        connect( mGetLegendGraphicReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( getLegendGraphicReplyProgress( qint64, qint64 ) ) );
-        return;
-      }
-    }
-
-    QVariant status = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
-    if ( !status.isNull() && status.toInt() >= 400 )
-    {
-      QVariant phrase = mGetLegendGraphicReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-      showMessageBox( tr( "GetLegendGraphic request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
-    }
-    else
-    {
-      QImage myLocalImage = QImage::fromData( mGetLegendGraphicReply->readAll() );
-      if ( myLocalImage.isNull() )
-      {
-        QgsMessageLog::logMessage( tr( "Returned legend image is flawed [URL: %1]" )
-                                   .arg( mGetLegendGraphicReply->url().toString() ), tr( "WMS" ) );
-      }
-      else
-      {
-        mGetLegendGraphicImage = myLocalImage;
-
-#ifdef QGISDEBUG
-        QString filename = QDir::tempPath() + "/GetLegendGraphic.png";
-        mGetLegendGraphicImage.save( filename );
-        QgsDebugMsg( "saved GetLegendGraphic result in debug file: " + filename );
-#endif
-      }
-    }
+    scale = mapSettings->scale();
+    mapExtent = mapSettings->extent();
   }
   else
   {
-    QgsMessageLog::logMessage( tr( "Download of GetLegendGraphic failed: %1" ).arg( mGetLegendGraphicReply->errorString() ), tr( "WMS" ) );
-    mHttpGetLegendGraphicResponse.clear();
+    scale = 0;
+    mapExtent = extent();
   }
 
-  if ( loop )
-    QMetaObject::invokeMethod( loop, "quit", Qt::QueuedConnection );
+  QUrl url = getLegendGraphicFullURL( scale, mapExtent );
+  if ( ! url.isValid() ) return 0;
 
-  mGetLegendGraphicReply->deleteLater();
-  mGetLegendGraphicReply = 0;
+  if ( mapExtent == mGetLegendGraphicExtent &&
+       scale == mGetLegendGraphicScale &&
+       ! mGetLegendGraphicImage.isNull() )
+  {
+    QgsDebugMsg( "XXX Emitting cached image fetcher" );
+    // return a cached image, skipping the load
+    return new QgsCachedImageFetcher( mGetLegendGraphicImage );
+  }
+  else
+  {
+    QgsImageFetcher* fetcher =  new QgsWmsLegendDownloadHandler( *QgsNetworkAccessManager::instance(), mSettings, url );
+    fetcher->setProperty( "legendScale", QVariant::fromValue( scale ) );
+    fetcher->setProperty( "legendExtent", QVariant::fromValue( mapExtent.toRectF() ) );
+    connect( fetcher, SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicReplyFinished( const QImage& ) ) );
+    return fetcher;
+  }
+}
+
+void QgsWmsProvider::getLegendGraphicReplyFinished( const QImage& img )
+{
+  QgsDebugMsg( "entering." );
+
+  QObject* reply = sender();
+
+  if ( ! img.isNull() )
+  {
+    mGetLegendGraphicImage = img;
+    mGetLegendGraphicExtent = QgsRectangle( reply->property( "legendExtent" ).value<QRectF>() );
+    mGetLegendGraphicScale = reply->property( "legendScale" ).value<double>();
+
+#ifdef QGISDEBUG
+    QString filename = QDir::tempPath() + "/GetLegendGraphic.png";
+    mGetLegendGraphicImage.save( filename );
+    QgsDebugMsg( "saved GetLegendGraphic result in debug file: " + filename );
+#endif
+  }
+
+  if ( reply == mLegendGraphicFetcher.data() )
+  {
+    QEventLoop *loop = qobject_cast< QEventLoop *>( reply->property( "eventLoop" ).value< QObject *>() );
+    if ( loop )
+      QMetaObject::invokeMethod( loop, "quit", Qt::QueuedConnection );
+    mLegendGraphicFetcher.reset();
+  }
 }
 
 void QgsWmsProvider::getLegendGraphicReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
@@ -3600,4 +3603,182 @@ void QgsWmsTiledImageDownloadHandler::repeatTileRequest( QNetworkRequest const &
   QNetworkReply *reply = mNAM->get( request );
   mReplies << reply;
   connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+}
+
+QString QgsWmsProvider::toParamValue( const QgsRectangle& rect, bool changeXY )
+{
+  // Warning: does not work with scientific notation
+  return QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+         .arg( qgsDoubleToString( rect.xMinimum() ) )
+         .arg( qgsDoubleToString( rect.yMinimum() ) )
+         .arg( qgsDoubleToString( rect.xMaximum() ) )
+         .arg( qgsDoubleToString( rect.yMaximum() ) );
+}
+
+void QgsWmsProvider::setSRSQueryItem( QUrl& url )
+{
+  QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
+  if ( mCaps.mCapabilities.version == "1.3.0" || mCaps.mCapabilities.version == "1.3" )
+  {
+    crsKey = "CRS";
+  }
+  setQueryItem( url, crsKey, mImageCrs );
+}
+
+// ----------
+
+QgsWmsLegendDownloadHandler::QgsWmsLegendDownloadHandler( QgsNetworkAccessManager& networkAccessManager, const QgsWmsSettings& settings, const QUrl& url )
+    : mNetworkAccessManager( networkAccessManager )
+    , mSettings( settings )
+    , mReply( 0 )
+    , mInitialUrl( url )
+{
+  QgsDebugMsg( QString( "XXXX constructed " ) );
+}
+
+QgsWmsLegendDownloadHandler::~QgsWmsLegendDownloadHandler()
+{
+  QgsDebugMsg( QString( "XXXX destroying " ) );
+  if ( mReply )
+  {
+    // Send finished if not done yet ?
+    QgsDebugMsg( "WMSLegendDownloader destroyed while still processing reply" );
+    mReply->deleteLater();
+  }
+  mReply = 0;
+}
+
+/* public */
+void
+QgsWmsLegendDownloadHandler::start( )
+{
+  QgsDebugMsg( QString( "XXXX started " ) );
+
+  Q_ASSERT( mVisitedUrls.empty() );
+  startUrl( mInitialUrl );
+}
+
+/* private */
+void
+QgsWmsLegendDownloadHandler::startUrl( const QUrl& url )
+{
+  Q_ASSERT( !mReply );  // don't call me twice from outside !
+  Q_ASSERT( url.isValid() );
+
+  if ( mVisitedUrls.contains( url ) )
+  {
+    QString err( tr( "Redirect loop detected: %1" ).arg( url.toString() ) );
+    QgsMessageLog::logMessage( err, tr( "WMS" ) );
+    sendError( err );
+    return;
+  }
+  mVisitedUrls.insert( url );
+
+  QgsDebugMsg( QString( "XXXX url is %1" ).arg( url.toString() ) );
+
+  QNetworkRequest request( url );
+  mSettings.authorization().setAuthorization( request );
+  request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
+  request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+
+  mReply = mNetworkAccessManager.get( request );
+  connect( mReply, SIGNAL( error( QNetworkReply::NetworkError ) ), this, SLOT( errored( QNetworkReply::NetworkError ) ) );
+  connect( mReply, SIGNAL( finished() ), this, SLOT( finished() ) );
+  connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( progressed( qint64, qint64 ) ) );
+}
+
+void
+QgsWmsLegendDownloadHandler::sendError( const QString& msg )
+{
+  QgsDebugMsg( QString( "XXXX error is %1" ).arg( msg ) );
+  QgsDebugMsg( QString( "XXXX sender is %1" ).arg(( long )sender() ) );
+  Q_ASSERT( mReply );
+  mReply->deleteLater();
+  mReply = 0;
+  QgsDebugMsg( QString( "XXXX emitting error" ) );
+  emit error( msg );
+}
+
+void
+QgsWmsLegendDownloadHandler::sendSuccess( const QImage& img )
+{
+  QgsDebugMsg( QString( "XXXX image is %1x%2" ).arg( img.width() ).arg( img.height() ) );
+  Q_ASSERT( mReply );
+  mReply->deleteLater();
+  mReply = 0;
+  emit finish( img );
+}
+
+void
+QgsWmsLegendDownloadHandler::errored( QNetworkReply::NetworkError /* code */ )
+{
+  if ( ! mReply ) return;
+
+  sendError( mReply->errorString() );
+}
+
+void
+QgsWmsLegendDownloadHandler::finished( )
+{
+  if ( ! mReply ) return;
+
+  // or ::errored() should have been called before ::finished
+  Q_ASSERT( mReply->error() == QNetworkReply::NoError );
+
+  QgsDebugMsg( "reply ok" );
+  QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+  if ( !redirect.isNull() )
+  {
+    mReply->deleteLater();
+    mReply = 0;
+    startUrl( redirect.toUrl() );
+    return;
+  }
+
+  QVariant status = mReply->attribute( QNetworkRequest::HttpStatusCodeAttribute );
+  if ( !status.isNull() && status.toInt() >= 400 )
+  {
+    QVariant phrase = mReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
+    QString msg( tr( "GetLegendGraphic request error" ) );
+    msg += QString( " - " );
+    msg += QString( tr( "Status: %1\nReason phrase: %2" ) ).arg( status.toInt() ).arg( phrase.toString() );
+    sendError( msg );
+    return;
+  }
+
+  QImage myLocalImage = QImage::fromData( mReply->readAll() );
+  if ( myLocalImage.isNull() )
+  {
+    QString msg( tr( "Returned legend image is flawed [URL: %1]" )
+                 .arg( mReply->url().toString() ) );
+    sendError( msg );
+    return;
+  }
+
+  sendSuccess( myLocalImage );
+}
+
+void
+QgsWmsLegendDownloadHandler::progressed( qint64 recv, qint64 tot )
+{
+  emit progress( recv, tot );
+}
+
+//------
+
+QgsCachedImageFetcher::QgsCachedImageFetcher( const QImage& img )
+    : _img( img )
+{
+  QgsDebugMsg( QString( "XXX created" ) );
+}
+
+QgsCachedImageFetcher::~QgsCachedImageFetcher()
+{
+  QgsDebugMsg( QString( "XXX destroyed" ) );
+}
+void
+QgsCachedImageFetcher::start()
+{
+  QgsDebugMsg( QString( "XXX start called, scheduled send() in 0 ms" ) );
+  QTimer::singleShot( 1, this, SLOT( send() ) );
 }

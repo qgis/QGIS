@@ -524,6 +524,8 @@ class QgsWmsSettings
 
     QString mCrsId;
 
+    bool mEnableContextualLegend;
+
     friend class QgsWmsProvider;
 };
 

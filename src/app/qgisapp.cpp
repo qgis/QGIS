@@ -393,7 +393,9 @@ void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
       QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( layer );
       if ( rlayer && rlayer->providerType() == "wms" )
       {
-        QImage img = rlayer->dataProvider()->getLegendGraphic( mMapCanvas->scale() );
+        const QgsMapCanvas* canvas = mapCanvas();
+        QgsRectangle visibleExtent = canvas->mapSettings().outputExtentToLayerExtent( rlayer, canvas->extent() ); // in layer projection
+        QImage img = rlayer->dataProvider()->getLegendGraphic( mMapCanvas->scale(), false, &visibleExtent );
 
         QFrame* popup = new QFrame();
         popup->setAttribute( Qt::WA_DeleteOnClose );
