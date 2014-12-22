@@ -16,7 +16,7 @@
 #include <QPushButton>
 
 #include "qgsmapcanvas.h"
-#include "qgsmapcanvassnapper.h"
+#include "qgssnappingutils.h"
 
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
@@ -97,21 +97,9 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button
     QgsPoint mapCoordPoint = xy;
     if ( mQgisCanvas && mSnapToBackgroundLayerBox->isChecked() )
     {
-      const QgsMapToPixel* mtp = mQgisCanvas->getCoordinateTransform();
-      if ( mtp )
-      {
-        QgsPoint canvasPos = mtp->transform( xy.x(), xy.y() );
-        QPoint snapStartPoint( canvasPos.x(), canvasPos.y() );
-        QgsMapCanvasSnapper snapper( mQgisCanvas );
-        QList<QgsSnappingResult> snapResults;
-        if ( snapper.snapToBackgroundLayers( snapStartPoint, snapResults ) == 0 )
-        {
-          if ( snapResults.size() > 0 )
-          {
-            mapCoordPoint = snapResults.at( 0 ).snappedVertex;
-          }
-        }
-      }
+      QgsPointLocator::Match m = mQgisCanvas->snappingUtils()->snapToMap( xy );
+      if ( m.isValid() )
+        mapCoordPoint = m.point();
     }
 
     leXCoord->clear();
