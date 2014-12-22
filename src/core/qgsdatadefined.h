@@ -81,7 +81,7 @@ class CORE_EXPORT QgsDataDefined
     QMap< QString, QString > toMap();
 
     /**Returns a DOM element containing the properties of the data defined container.
-     * @param DOM document
+     * @param document DOM document
      * @param elementName name for DOM element
      * @returns DOM element corresponding to data defined container
      * @note added in QGIS 2.7
