@@ -33,7 +33,7 @@ from processing.core.parameters import ParameterSelection
 class las2las_transform(LAStoolsAlgorithm):
 
     OPERATION = "OPERATION"
-    OPERATIONS = ["---", "set_point_type", "set_point_size", "set_version_minor", "set_version_major", "start_at_point", "stop_at_point", "remove_vlr", "auto_reoffset", "week_to_adjusted", "adjusted_to_week", "scale_rgb_up", "scale_rgb_down", "remove_all_vlrs", "remove_extra", "clip_to_bounding_box"]
+    OPERATIONS = ["---", "set_point_type", "set_point_size", "set_version_minor", "set_version_major", "start_at_point", "stop_at_point", "remove_vlr", "week_to_adjusted", "adjusted_to_week", "auto_reoffset", "scale_rgb_up", "scale_rgb_down", "remove_all_vlrs", "remove_extra", "clip_to_bounding_box"]
     OPERATIONARG = "OPERATIONARG"
 
     def defineCharacteristics(self):
@@ -45,13 +45,14 @@ class las2las_transform(LAStoolsAlgorithm):
         self.addParametersTransform2CoordinateGUI()
         self.addParametersTransform1OtherGUI()
         self.addParametersTransform2OtherGUI()
-        self.addParameter(ParameterSelection(las2las_transform.OPERATION, "operations (first 7 need an argument)", las2las_transform.OPERATIONS, 0))
+        self.addParameter(ParameterSelection(las2las_transform.OPERATION, "operations (first 8 need an argument)", las2las_transform.OPERATIONS, 0))
         self.addParameter(ParameterString(las2las_transform.OPERATIONARG, "argument for operation"))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersTransform1CoordinateCommands(commands)
@@ -61,9 +62,9 @@ class las2las_transform(LAStoolsAlgorithm):
         operation = self.getParameterValue(las2las_transform.OPERATION)
         if operation != 0:
             commands.append("-" + las2las_transform.OPERATIONS[operation])
-            if operation > 7:
+            if operation > 8:
                 commands.append(self.getParameterValue(las2las_transform.OPERATIONARG))
-
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

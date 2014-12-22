@@ -50,9 +50,10 @@ class lascontrol(LAStoolsAlgorithm):
         self.addParameter(ParameterSelection(lascontrol.OPERATION, "what to do with isolated points", lascontrol.OPERATIONS, 0))
         self.addParameter(ParameterNumber(lascontrol.CLASSIFY_AS, "classify as", 0, None, 12))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascontrol.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascontrol")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         poly = self.getParameterValue(lascontrol.POLYGON)
@@ -67,5 +68,6 @@ class lascontrol(LAStoolsAlgorithm):
             classify_as = self.getParameterValue(lascontrol.CLASSIFY_AS)
             commands.append(str(classify_as))
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -45,10 +45,12 @@ from processing.core.outputs import OutputVector
 class LAStoolsAlgorithm(GeoAlgorithm):
 
     VERBOSE = "VERBOSE"
+    GUI = "GUI"
     CORES = "CORES"
     INPUT_LASLAZ = "INPUT_LASLAZ"
     INPUT_DIRECTORY = "INPUT_DIRECTORY"
     INPUT_WILDCARDS = "INPUT_WILDCARDS"
+    MERGED = "MERGED"
     OUTPUT_LASLAZ = "OUTPUT_LASLAZ"
     OUTPUT_DIRECTORY = "OUTPUT_DIRECTORY"
     OUTPUT_APPENDIX = "OUTPUT_APPENDIX"
@@ -65,21 +67,22 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     HORIZONTAL_FEET = "HORIZONTAL_FEET"
     VERTICAL_FEET = "VERTICAL_FEET"
     FILES_ARE_FLIGHTLINES = "FILES_ARE_FLIGHTLINES"
+    APPLY_FILE_SOURCE_ID = "APPLY_FILE_SOURCE_ID"
     STEP = "STEP"
     FILTER_RETURN_CLASS_FLAGS1 = "FILTER_RETURN_CLASS_FLAGS1"
     FILTER_RETURN_CLASS_FLAGS2 = "FILTER_RETURN_CLASS_FLAGS2"
     FILTER_RETURN_CLASS_FLAGS3 = "FILTER_RETURN_CLASS_FLAGS3"
     FILTERS_RETURN_CLASS_FLAGS = ["---", "keep_last", "keep_first", "keep_middle", "keep_single", "drop_single",
                                   "keep_double", "keep_class 2", "keep_class 2 8", "keep_class 8", "keep_class 6",
-                                  "keep_class 9", "keep_class 3 4 5", "keep_class 2 6", "drop_class 7", "drop_withheld"]
+                                  "keep_class 9", "keep_class 3 4 5", "keep_class 2 6", "drop_class 7", "drop_withheld", "drop_synthetic"]
     FILTER_COORDS_INTENSITY1 = "FILTER_COORDS_INTENSITY1"
     FILTER_COORDS_INTENSITY2 = "FILTER_COORDS_INTENSITY2"
     FILTER_COORDS_INTENSITY3 = "FILTER_COORDS_INTENSITY3"
     FILTER_COORDS_INTENSITY1_ARG = "FILTER_COORDS_INTENSITY1_ARG"
     FILTER_COORDS_INTENSITY2_ARG = "FILTER_COORDS_INTENSITY2_ARG"
     FILTER_COORDS_INTENSITY3_ARG = "FILTER_COORDS_INTENSITY3_ARG"
-    FILTERS_COORDS_INTENSITY = ["---", "clip_x_above", "clip_x_below", "clip_y_above", "clip_y_below", "clip_z_above",
-                                "clip_z_below", "drop_intensity_above", "drop_intensity_below", "drop_gps_time_above",
+    FILTERS_COORDS_INTENSITY = ["---", "drop_x_above", "drop_x_below", "drop_y_above", "drop_y_below", "drop_z_above",
+                                "drop_z_below", "drop_intensity_above", "drop_intensity_below", "drop_gps_time_above",
                                 "drop_gps_time_below", "drop_scan_angle_above", "drop_scan_angle_below", "keep_point_source",
                                 "drop_point_source", "drop_point_source_above", "drop_point_source_below", "keep_user_data",
                                 "drop_user_data", "drop_user_data_above", "drop_user_data_below", "keep_every_nth",
@@ -110,10 +113,13 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersVerboseGUI(self):
         self.addParameter(ParameterBoolean(LAStoolsAlgorithm.VERBOSE, "verbose", False))
+        self.addParameter(ParameterBoolean(LAStoolsAlgorithm.GUI, "open LAStools GUI", False))
 
     def addParametersVerboseCommands(self, commands):
         if self.getParameterValue(LAStoolsAlgorithm.VERBOSE):
             commands.append("-v")
+        if self.getParameterValue(LAStoolsAlgorithm.GUI):
+            commands.append("-gui")
 
     def addParametersCoresGUI(self):
         self.addParameter(ParameterNumber(LAStoolsAlgorithm.CORES, "number of cores", 1, 32, 4))
@@ -125,7 +131,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(str(cores))
 
     def addParametersPointInputGUI(self):
-        self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file"))
+        self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_LASLAZ, "input LAS/LAZ file", False, False))
 
     def addParametersPointInputCommands(self, commands):
         input = self.getParameterValue(LAStoolsAlgorithm.INPUT_LASLAZ)
@@ -134,10 +140,31 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(input)
 
     def addParametersPointInputFolderGUI(self):
-        self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory", True))
+        self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory", True, False))
         self.addParameter(ParameterString(LAStoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", "*.laz"))
 
     def addParametersPointInputFolderCommands(self, commands):
+        input = self.getParameterValue(LAStoolsAlgorithm.INPUT_DIRECTORY)
+        wildcards = self.getParameterValue(LAStoolsAlgorithm.INPUT_WILDCARDS).split()
+        for wildcard in wildcards:
+            commands.append("-i")
+            if input != None:
+                commands.append('"' + input + "\\" + wildcard + '"')
+            else:
+                commands.append('"' + wildcard + '"')
+
+    def addParametersPointInputMergedGUI(self):
+        self.addParameter(ParameterBoolean(LAStoolsAlgorithm.MERGED, "merge all input files on-the-fly into one", False))
+
+    def addParametersPointInputMergedCommands(self, commands):
+        if self.getParameterValue(LAStoolsAlgorithm.MERGED):
+            commands.append("-merged")
+
+    def addParametersGenericInputFolderGUI(self, wildcard):
+        self.addParameter(ParameterFile(LAStoolsAlgorithm.INPUT_DIRECTORY, "input directory", True, False))
+        self.addParameter(ParameterString(LAStoolsAlgorithm.INPUT_WILDCARDS, "input wildcard(s)", wildcard))
+
+    def addParametersGenericInputFolderCommands(self, commands):
         input = self.getParameterValue(LAStoolsAlgorithm.INPUT_DIRECTORY)
         wildcards = self.getParameterValue(LAStoolsAlgorithm.INPUT_WILDCARDS).split()
         for wildcard in wildcards:
@@ -170,11 +197,18 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         self.addParametersVerticalFeetCommands(commands)
 
     def addParametersFilesAreFlightlinesGUI(self):
-        self.addParameter(ParameterBoolean(LAStoolsAlgorithm.FILES_ARE_FLIGHTLINES, "files are flightlines", True))
+        self.addParameter(ParameterBoolean(LAStoolsAlgorithm.FILES_ARE_FLIGHTLINES, "files are flightlines", False))
 
     def addParametersFilesAreFlightlinesCommands(self, commands):
         if self.getParameterValue(LAStoolsAlgorithm.FILES_ARE_FLIGHTLINES):
             commands.append("-files_are_flightlines")
+
+    def addParametersApplyFileSourceIdGUI(self):
+        self.addParameter(ParameterBoolean(LAStoolsAlgorithm.APPLY_FILE_SOURCE_ID, "apply file source ID", False))
+
+    def addParametersApplyFileSourceIdCommands(self, commands):
+        if self.getParameterValue(LAStoolsAlgorithm.APPLY_FILE_SOURCE_ID):
+            commands.append("-apply_file_source_ID")
 
     def addParametersStepGUI(self):
         self.addParameter(ParameterNumber(LAStoolsAlgorithm.STEP, "step size / pixel size", 0, None, 1.0))
@@ -252,7 +286,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
             commands.append(odix)
 
     def addParametersTemporaryDirectoryGUI(self):
-        self.addParameter(ParameterFile(LAStoolsAlgorithm.TEMPORARY_DIRECTORY, "empty temporary directory", True))
+        self.addParameter(ParameterFile(LAStoolsAlgorithm.TEMPORARY_DIRECTORY, "empty temporary directory", True, False))
 
     def addParametersTemporaryDirectoryAsOutputDirectoryCommands(self, commands):
         odir = self.getParameterValue(LAStoolsAlgorithm.TEMPORARY_DIRECTORY)

@@ -28,6 +28,7 @@ from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterBoolean
 
 class blast2dem(LAStoolsAlgorithm):
 
@@ -35,7 +36,7 @@ class blast2dem(LAStoolsAlgorithm):
     PRODUCT = "PRODUCT"
     ATTRIBUTES = ["elevation", "slope", "intensity", "rgb"]
     PRODUCTS = ["actual values", "hillshade", "gray", "false"]
-
+    USE_TILE_BB = "USE_TILE_BB"
 
     def defineCharacteristics(self):
         self.name = "blast2dem"
@@ -46,10 +47,12 @@ class blast2dem(LAStoolsAlgorithm):
         self.addParametersStepGUI()
         self.addParameter(ParameterSelection(blast2dem.ATTRIBUTE, "Attribute", blast2dem.ATTRIBUTES, 0))
         self.addParameter(ParameterSelection(blast2dem.PRODUCT, "Product", blast2dem.PRODUCTS, 0))
+        self.addParameter(ParameterBoolean(blast2dem.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
         self.addParametersRasterOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "blast2dem.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "blast2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
@@ -60,6 +63,9 @@ class blast2dem(LAStoolsAlgorithm):
         product = self.getParameterValue(blast2dem.PRODUCT)
         if product != 0:
             commands.append("-" + blast2dem.PRODUCTS[product])
+        if (self.getParameterValue(blast2dem.USE_TILE_BB)):
+            commands.append("-use_tile_bb")
         self.addParametersRasterOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

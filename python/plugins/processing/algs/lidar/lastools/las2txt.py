@@ -32,7 +32,7 @@ from processing.core.outputs import OutputFile
 
 class las2txt(LAStoolsAlgorithm):
 
-    PARSE_STRING = "PARSE_STRING"
+    PARSE = "PARSE"
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
@@ -40,18 +40,20 @@ class las2txt(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterString(las2txt.PARSE_STRING, "parse_string", "xyz"))
+        self.addParameter(ParameterString(las2txt.PARSE, "parse string", "xyz"))
         self.addOutput(OutputFile(las2txt.OUTPUT, "Output ASCII file"))
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2txt")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        parse_string = self.getParameterValue(las2txt.PARSE_STRING)
-        if parse_string != "xyz":
-            commands.append("-parse_string")
-            commands.append(parse_string)
+        parse = self.getParameterValue(las2txt.PARSE)
+        if parse != "xyz":
+            commands.append("-parse")
+            commands.append(parse)
         commands.append("-o")
         commands.append(self.getOutputValue(las2txt.OUTPUT))
+	self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

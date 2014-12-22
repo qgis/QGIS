@@ -8,7 +8,7 @@
     Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
     ---------------------
-    Date                 : April 2014
+    Date                 : April, October 2014
     Copyright            : (C) 2014 by Martin Isenburg
     Email                : martin near rapidlasso point com
     ---------------------
@@ -81,6 +81,30 @@ from lastools.lasoverlap import lasoverlap
 from lastools.lastilePro import lastilePro
 from lastools.lasgroundPro import lasgroundPro
 from lastools.las2demPro import las2demPro
+from lastools.lasheightPro import lasheightPro
+from lastools.laszipPro import laszipPro
+from lastools.lasgridPro import lasgridPro
+from lastools.lasduplicatePro import lasduplicatePro
+from lastools.lassortPro import lassortPro
+from lastools.lasclassifyPro import lasclassifyPro
+from lastools.lasthinPro import lasthinPro
+from lastools.lasnoisePro import lasnoisePro
+from lastools.lasindexPro import lasindexPro
+from lastools.lascanopyPro import lascanopyPro
+from lastools.blast2demPro import blast2demPro
+from lastools.lasboundaryPro import lasboundaryPro
+from lastools.lasinfoPro import lasinfoPro
+from lastools.las2lasPro_filter import las2lasPro_filter
+from lastools.las2lasPro_project import las2lasPro_project
+from lastools.las2lasPro_transform import las2lasPro_transform
+from lastools.lasoveragePro import lasoveragePro
+from lastools.txt2lasPro import txt2lasPro
+from lastools.las2txtPro import las2txtPro
+from lastools.blast2isoPro import blast2isoPro
+from lastools.lasvalidatePro import lasvalidatePro
+from lastools.lasmergePro import lasmergePro
+from lastools.lasviewPro import lasviewPro
+from lastools.lasoverlapPro import lasoverlapPro
 
 from lastools.flightlinesToDTMandDSM import flightlinesToDTMandDSM
 from lastools.flightlinesToCHM import flightlinesToCHM
@@ -105,7 +129,6 @@ from fusion.MergeData import MergeData
 from fusion.FilterData import FilterData
 from fusion.FusionUtils import FusionUtils
 
-
 class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
@@ -115,7 +138,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
         # LAStools for processing single files
 
-        if isWindows():
+        if (isWindows() or LAStoolsUtils.hasWine()):
             lastools = [
                 lasground(), lasheight(), lasclassify(), lasclip(), lastile(),
                 lascolor(), lasgrid(), las2dem(), blast2dem(), las2iso(), blast2iso(),
@@ -138,12 +161,19 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
         # LAStools Production for processing folders of files
 
-        if isWindows():
+        if (isWindows() or LAStoolsUtils.hasWine()):
             lastoolsPro = [
-                lastilePro(), lasgroundPro(), las2demPro()
+                lastilePro(), lasgroundPro(), las2demPro(), lasheightPro(), laszipPro(),
+                lasduplicatePro(), lasgridPro(), lassortPro(), lasclassifyPro(), lasthinPro(),
+                lasnoisePro(), lasindexPro(), lascanopyPro(), blast2demPro(), lasboundaryPro(),
+                lasinfoPro(), las2lasPro_filter(), las2lasPro_project(), las2lasPro_transform(),
+                lasoveragePro(), txt2lasPro(), las2txtPro(), blast2isoPro(), lasvalidatePro(),
+                lasmergePro(), lasviewPro(), lasoverlapPro()
                 ]
         else:
             lastoolsPro = [
+                laszipPro(), lasindexPro(), lasinfoPro(), las2lasPro_filter(), las2lasPro_project(),
+                las2lasPro_transform(), txt2lasPro(), las2txtPro(), lasvalidatePro(), lasmergePro()
                 ]
         for alg in lastoolsPro:
             alg.group = 'LAStools Production'
@@ -151,7 +181,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
 
         # some examples for LAStools Pipelines
 
-        if isWindows():
+        if (isWindows() or LAStoolsUtils.hasWine()):
             lastoolsPipe = [
                 flightlinesToDTMandDSM(), flightlinesToCHM(), flightlinesToSingleCHMpitFree(), hugeFileClassify(),
                 hugeFileGroundClassify(), hugeFileNormalize()

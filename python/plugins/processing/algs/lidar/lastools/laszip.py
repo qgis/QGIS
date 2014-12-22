@@ -32,6 +32,8 @@ from processing.core.parameters import ParameterBoolean
 class laszip(LAStoolsAlgorithm):
 
     REPORT_SIZE = "REPORT_SIZE"
+    CREATE_LAX = "CREATE_LAX"
+    APPEND_LAX = "APPEND_LAX"
 
     def defineCharacteristics(self):
         self.name = "laszip"
@@ -39,15 +41,23 @@ class laszip(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
+        self.addParameter(ParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
+        self.addParameter(ParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         if self.getParameterValue(laszip.REPORT_SIZE):
             commands.append("-size")
+        if self.getParameterValue(laszip.CREATE_LAX):
+            commands.append("-lax")
+        if self.getParameterValue(laszip.APPEND_LAX):
+            commands.append("-append")
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -28,15 +28,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4 import QtGui
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
+from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
 class lasboundary(LAStoolsAlgorithm):
 
+    MODE = "MODE"
+    MODES = ["points", "spatial index (the *.lax file)", "bounding box"]
     CONCAVITY = "CONCAVITY"
     DISJOINT = "DISJOINT"
     HOLES = "HOLES"
@@ -47,23 +49,33 @@ class lasboundary(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
+        self.addParameter(ParameterSelection(lasboundary.MODE, "compute boundary based on", lasboundary.MODES, 0))
         self.addParameter(ParameterNumber(lasboundary.CONCAVITY, "concavity", 0, None, 50.0))
         self.addParameter(ParameterBoolean(lasboundary.HOLES, "interior holes", False))
         self.addParameter(ParameterBoolean(lasboundary.DISJOINT, "disjoint polygon", False))
         self.addParametersVectorOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasboundary.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasboundary")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
-        concavity = self.getParameterValue(lasboundary.CONCAVITY)
-        commands.append("-concavity")
-        commands.append(str(concavity))
-        if self.getParameterValue(lasboundary.HOLES):
-            commands.append("-holes")
-        if self.getParameterValue(lasboundary.DISJOINT):
-            commands.append("-disjoint")
+        mode = self.getParameterValue(lasboundary.MODE)
+        if (mode != 0):
+            if (mode == 1):
+                commands.append("-use_lax")
+            else:
+                commands.append("-use_bb")
+        else:
+            concavity = self.getParameterValue(lasboundary.CONCAVITY)
+            commands.append("-concavity")
+            commands.append(str(concavity))
+            if self.getParameterValue(lasboundary.HOLES):
+                commands.append("-holes")
+            if self.getParameterValue(lasboundary.DISJOINT):
+                commands.append("-disjoint")
         self.addParametersVectorOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

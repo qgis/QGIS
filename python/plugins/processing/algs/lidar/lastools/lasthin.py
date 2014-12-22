@@ -37,6 +37,8 @@ class lasthin(LAStoolsAlgorithm):
     OPERATION = "OPERATION"
     OPERATIONS= ["lowest", "random", "highest"]
     WITHHELD = "WITHHELD"
+    CLASSIFY_AS = "CLASSIFY_AS"
+    CLASSIFY_AS_CLASS = "CLASSIFY_AS_CLASS"
 
     def defineCharacteristics(self):
         self.name = "lasthin"
@@ -45,12 +47,14 @@ class lasthin(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParameter(ParameterNumber(lasthin.THIN_STEP, "size of grid used for thinning", 0, None, 1.0))
         self.addParameter(ParameterSelection(lasthin.OPERATION, "keep particular point per cell", lasthin.OPERATIONS, 0))
-        self.addParameter(ParameterBoolean(lasthin.WITHHELD, "mark points as withheld", False))
+        self.addParameter(ParameterBoolean(lasthin.WITHHELD, "mark thinned-away points as withheld", False))
+        self.addParameter(ParameterBoolean(lasthin.CLASSIFY_AS, "classify surviving points as class", False))
+        self.addParameter(ParameterNumber(lasthin.CLASSIFY_AS_CLASS, "class", 0, None, 8))
         self.addParametersPointOutputGUI()
-
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasthin")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         step = self.getParameterValue(lasthin.THIN_STEP)
@@ -62,6 +66,10 @@ class lasthin(LAStoolsAlgorithm):
             commands.append("-" + self.OPERATIONS[operation])
         if self.getParameterValue(lasthin.WITHHELD):
             commands.append("-withheld")
+        if self.getParameterValue(lasthin.CLASSIFY_AS):
+            commands.append("-classify_as")
+            commands.append(str(self.getParameterValue(lasthin.CLASSIFY_AS_CLASS)))
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

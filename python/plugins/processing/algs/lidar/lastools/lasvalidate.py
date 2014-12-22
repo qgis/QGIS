@@ -26,24 +26,31 @@ __revision__ = '$Format:%H$'
 import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
+
+from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputFile
 
 class lasvalidate(LAStoolsAlgorithm):
 
+    ONE_REPORT_PER_FILE = "ONE_REPORT_PER_FILE"
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
         self.name = "lasvalidate"
         self.group = "LAStools"
-        self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
+        self.addParameter(ParameterBoolean(lasvalidate.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False))
         self.addOutput(OutputFile(lasvalidate.OUTPUT, "Output XML file"))
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasvalidate.exe")]
-        self.addParametersVerboseCommands(commands)
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasvalidate")]
         self.addParametersPointInputCommands(commands)
-        commands.append("-o")
-        commands.append(self.getOutputValue(lasvalidate.OUTPUT))
+        if self.getParameterValue(lasvalidate.ONE_REPORT_PER_FILE):
+            commands.append("-oxml")
+        else:
+            commands.append("-o")
+            commands.append(self.getOutputValue(lasvalidate.OUTPUT))
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

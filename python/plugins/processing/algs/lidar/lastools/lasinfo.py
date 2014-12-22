@@ -30,10 +30,24 @@ __revision__ = '$Format:%H$'
 import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
+
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputFile
+from processing.core.parameters import ParameterNumber
 
 class lasinfo(LAStoolsAlgorithm):
 
+    COMPUTE_DENSITY = "COMPUTE_DENSITY"
+    REPAIR_BB = "REPAIR_BB"
+    REPAIR_COUNTERS = "REPAIR_COUNTERS"
+    HISTO1 = "HISTO1"
+    HISTO2 = "HISTO2"
+    HISTO3 = "HISTO3"
+    HISTOGRAM = ["---", "x", "y", "z", "intensity", "classification", "scan_angle", "user_data", "point_source", "gps_time", "X", "Y", "Z"]
+    HISTO1_BIN = "HISTO1_BIN"
+    HISTO2_BIN = "HISTO2_BIN"
+    HISTO3_BIN = "HISTO3_BIN"
     OUTPUT = "OUTPUT"
 
     def defineCharacteristics(self):
@@ -41,13 +55,45 @@ class lasinfo(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
+        self.addParameter(ParameterBoolean(lasinfo.COMPUTE_DENSITY, "compute density", False))
+        self.addParameter(ParameterBoolean(lasinfo.REPAIR_BB, "repair bounding box", False))
+        self.addParameter(ParameterBoolean(lasinfo.REPAIR_COUNTERS, "repair counters", False))
+        self.addParameter(ParameterSelection(lasinfo.HISTO1, "histogram", lasinfo.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfo.HISTO1_BIN, "bin size", 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasinfo.HISTO2, "histogram", lasinfo.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfo.HISTO2_BIN, "bin size", 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasinfo.HISTO3, "histogram", lasinfo.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfo.HISTO3_BIN, "bin size", 0, None, 1.0))
         self.addOutput(OutputFile(lasinfo.OUTPUT, "Output ASCII file"))
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasinfo")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
+        if self.getParameterValue(lasinfo.COMPUTE_DENSITY):
+            commands.append("-cd")
+        if self.getParameterValue(lasinfo.REPAIR_BB):
+            commands.append("-repair_bb")
+        if self.getParameterValue(lasinfo.REPAIR_COUNTERS):
+            commands.append("-repair_counters")
+        histo = self.getParameterValue(lasinfo.HISTO1)
+        if histo != 0:
+            commands.append("-histo")
+            commands.append(lasinfo.HISTOGRAM[histo])
+            commands.append(str(self.getParameterValue(lasinfo.HISTO1_BIN)))
+        histo = self.getParameterValue(lasinfo.HISTO2)
+        if histo != 0:
+            commands.append("-histo")
+            commands.append(lasinfo.HISTOGRAM[histo])
+            commands.append(str(self.getParameterValue(lasinfo.HISTO2_BIN)))
+        histo = self.getParameterValue(lasinfo.HISTO3)
+        if histo != 0:
+            commands.append("-histo")
+            commands.append(lasinfo.HISTOGRAM[histo])
+            commands.append(str(self.getParameterValue(lasinfo.HISTO3_BIN)))
         commands.append("-o")
         commands.append(self.getOutputValue(lasinfo.OUTPUT))
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterSelection
 
 class lasground(LAStoolsAlgorithm):
 
-    AIRBORNE = "AIRBORNE"
+    NO_BULGE = "NO_BULGE"
     TERRAIN = "TERRAIN"
     TERRAINS = ["wilderness", "nature", "town", "city", "metro"]
     GRANULARITY = "GRANULARITY"
@@ -48,22 +48,26 @@ class lasground(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasground.AIRBORNE, "airborne LiDAR", True))
+        self.addParameter(ParameterBoolean(lasground.NO_BULGE, "no triangle bulging during TIN refinement", False))
         self.addParameter(ParameterSelection(lasground.TERRAIN, "terrain type", lasground.TERRAINS, 1))
         self.addParameter(ParameterSelection(lasground.GRANULARITY, "preprocessing", lasground.GRANULARITIES, 1))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersHorizontalAndVerticalFeetCommands(commands)
+        if (self.getParameterValue(lasground.NO_BULGE)):
+            commands.append("-no_bulge")
         method = self.getParameterValue(lasground.TERRAIN)
-        if method != 1:
+        if (method != 1):
             commands.append("-" + lasground.TERRAINS[method])
         granularity = self.getParameterValue(lasground.GRANULARITY)
-        if granularity != 1:
+        if (granularity != 1):
             commands.append("-" + lasground.GRANULARITIES[granularity])
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -36,7 +36,7 @@ from processing.core.parameters import ParameterSelection
 
 class lasgroundPro(LAStoolsAlgorithm):
 
-    AIRBORNE = "AIRBORNE"
+    NO_BULGE = "NO_BULGE"
     TERRAIN = "TERRAIN"
     TERRAINS = ["wilderness", "nature", "town", "city", "metro"]
     GRANULARITY = "GRANULARITY"
@@ -47,35 +47,34 @@ class lasgroundPro(LAStoolsAlgorithm):
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasgroundPro.AIRBORNE, "airborne LiDAR", True))
+        self.addParameter(ParameterBoolean(lasgroundPro.NO_BULGE, "no triangle bulging during TIN refinement", False))
         self.addParameter(ParameterSelection(lasgroundPro.TERRAIN, "terrain type", lasgroundPro.TERRAINS, 1))
         self.addParameter(ParameterSelection(lasgroundPro.GRANULARITY, "preprocessing", lasgroundPro.GRANULARITIES, 1))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
-        self.addParametersAdditionalGUI()
+	self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersHorizontalAndVerticalFeetCommands(commands)
-        airborne = self.getParameterValue(lasgroundPro.AIRBORNE)
-        if airborne != True:
-            commands.append("-not_airborne")
+        if (self.getParameterValue(lasgroundPro.NO_BULGE)):
+            commands.append("-no_bulge")
         method = self.getParameterValue(lasgroundPro.TERRAIN)
-        if method != 1:
+        if (method != 1):
             commands.append("-" + lasgroundPro.TERRAINS[method])
         granularity = self.getParameterValue(lasgroundPro.GRANULARITY)
-        if granularity != 1:
+        if (granularity != 1):
             commands.append("-" + lasgroundPro.GRANULARITIES[granularity])
         self.addParametersCoresCommands(commands)
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)
-        self.addParametersAdditionalCommands(commands)
+	self.addParametersAdditionalCommands(commands)
         self.addParametersCoresCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)
