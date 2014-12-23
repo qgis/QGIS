@@ -415,7 +415,7 @@ int main( int argc, char *argv[] )
   // we need to be sure we can find the qt image
   // plugins. In mac be sure to look in the
   // application bundle...
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif

@@ -34,7 +34,7 @@ email                : morb at ozemail dot com dot au
 
 #include <QDebug>
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
 #include <netinet/in.h>
 #else
 #include <winsock.h>

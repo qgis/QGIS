@@ -45,10 +45,10 @@ int main( int argc, char ** argv )
 
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
-#if defined(Q_WS_MACX)
+#if defined(Q_OS_MACX)
     // If we're on Mac, we have the resource library way above us...
     a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
-#elif defined(Q_WS_WIN)
+#elif defined(Q_OS_WIN)
     a.setPkgDataPath( QgsApplication::prefixPath() + "/" QGIS_DATA_SUBDIR );
 #else
     a.setPkgDataPath( QgsApplication::prefixPath() + "/../" QGIS_DATA_SUBDIR );

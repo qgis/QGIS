@@ -215,7 +215,7 @@ void QgsComposerTableWidget::on_mHeaderFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
+#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
   QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
 #else
@@ -250,7 +250,7 @@ void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
+#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
   QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
 #else

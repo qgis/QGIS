@@ -195,7 +195,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
 
   mActionAtlasPreview->setCheckable( true );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mActionQuit->setText( tr( "Close" ) );
   mActionQuit->setShortcut( QKeySequence::Close );
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
@@ -307,7 +307,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QShortcut* ctrlEquals = new QShortcut( QKeySequence( "Ctrl+=" ), this );
   connect( ctrlEquals, SIGNAL( activated() ), mActionZoomIn, SLOT( trigger() ) );
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
   //disabled for OSX - see #10761
   //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
   QMenu *previewMenu = viewMenu->addMenu( "&Preview" );
@@ -404,7 +404,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QMenu *settingsMenu = menuBar()->addMenu( tr( "&Settings" ) );
   settingsMenu->addAction( mActionOptions );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
   // QgsComposer::populateWithOtherMenu should work recursively with submenus and regardless of Qt version
   mWindowMenu = new QMenu( tr( "Window" ), this );
@@ -802,7 +802,7 @@ void QgsComposer::activate()
   }
 }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 void QgsComposer::changeEvent( QEvent* event )
 {
   QMainWindow::changeEvent( event );
@@ -2950,7 +2950,7 @@ void QgsComposer::showEvent( QShowEvent* event )
     restoreComposerMapStates();
   }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // add to menu if (re)opening window (event not due to unminimize)
   if ( !event->spontaneous() )
   {

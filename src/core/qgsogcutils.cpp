@@ -7,7 +7,7 @@
 #include <QStringList>
 #include <QTextStream>
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
 #include <netinet/in.h>
 #else
 #include <winsock.h>
