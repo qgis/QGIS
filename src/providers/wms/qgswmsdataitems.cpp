@@ -244,6 +244,8 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     , mDataSourceUri( dataSourceUri )
     , mLayerProperty( layerProperty )
 {
+  mSupportedCRS = mLayerProperty.crs;
+  mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
 
   mUri = createUri();
@@ -454,3 +456,4 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   return 0;
 }
+
