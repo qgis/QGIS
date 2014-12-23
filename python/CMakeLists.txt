@@ -42,6 +42,12 @@ ADD_CUSTOM_TARGET(clean-staged-plugins
   COMMAND ${CMAKE_COMMAND} -E remove_directory "${PYTHON_OUTPUT_DIRECTORY}/plugins"
 )
 
+IF(POLICY CMP0040) # in CMake 3.0.0+
+  # Skip 'TARGET signature of add_custom_command() must exist' warning, triggered by macro expansion
+  CMAKE_POLICY (PUSH) # see POP below (NOTE: must wrap related macros, which record policies)
+  CMAKE_POLICY (SET CMP0040 OLD) # temporary policy for staging/py_compile macros
+ENDIF(POLICY CMP0040)
+
 # Macro to byte-compile a target's staged Python resource(s)
 MACRO(PY_COMPILE TARGET_NAME RESOURCE_PATHS)
   IF(WITH_PY_COMPILE)
@@ -59,6 +65,10 @@ ADD_SUBDIRECTORY(qsci_apis)
 ADD_SUBDIRECTORY(console)
 ADD_SUBDIRECTORY(pyplugin_installer)
 ADD_SUBDIRECTORY(ext-libs)
+
+IF(POLICY CMP0040)
+  CMAKE_POLICY (POP) # see PUSH above
+ENDIF(POLICY CMP0040)
 
 INCLUDE_DIRECTORIES(
   ${PYTHON_INCLUDE_PATH}

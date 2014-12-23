@@ -32,7 +32,7 @@ ADD_CUSTOM_TARGET (translations ALL
                    DEPENDS ${QM_FILES})
 
 # first compile sources, then compile translations
-ADD_DEPENDENCIES (translations qgis)
+ADD_DEPENDENCIES (translations ${QGIS_APP_NAME})
 
 INSTALL (FILES ${QM_FILES}
          DESTINATION ${QGIS_DATA_DIR}/i18n)
