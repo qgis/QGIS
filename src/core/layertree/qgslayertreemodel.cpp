@@ -794,7 +794,9 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 
   QList<QgsLayerTreeModelLegendNode*> filteredLstNew = filterLegendNodes( lstNew );
 
-  beginInsertRows( node2index( nodeL ), 0, filteredLstNew.count() - 1 );
+  bool isEmbedded = filteredLstNew.count() == 1 && filteredLstNew[0]->isEmbeddedInParent();
+
+  if ( ! isEmbedded ) beginInsertRows( node2index( nodeL ), 0, filteredLstNew.count() - 1 );
 
   foreach ( QgsLayerTreeModelLegendNode* n, lstNew )
   {
@@ -805,7 +807,7 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
   mOriginalLegendNodes[nodeL] = lstNew;
   mLegendNodes[nodeL] = filteredLstNew;
 
-  endInsertRows();
+  if ( ! isEmbedded ) endInsertRows();
 }
 
 
