@@ -2119,6 +2119,10 @@ void QgisApp::setupConnections()
   connect( this, SIGNAL( projectRead() ),
            this, SLOT( checkForDeprecatedLabelsInProject() ) );
 
+  // reset rotation on new project
+  connect( this, SIGNAL( newProject() ),
+           this, SLOT( resetMapSettings() ) );
+
   // setup undo/redo actions
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
 }
@@ -3553,6 +3557,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
+  mMapCanvas->setRotation(0.0);
   mScaleEdit->updateScales();
 
   // set project CRS
