@@ -599,7 +599,7 @@ int main( int argc, char *argv[] )
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_UNIX
   bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
 #else
   bool myUseGuiFlag = true;
