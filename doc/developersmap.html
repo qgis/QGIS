@@ -20,7 +20,8 @@
   $.getJSON($('link[rel="points"]').attr("href"), function(data) {
     var geojson = L.geoJson(data, {
       onEachFeature: function (feature, layer) {
-        layer.bindPopup(feature.properties.Name);
+        layer.bindPopup("<b>Name:</b> " + feature.properties.Name +
+			"<br><b>Committer:</b> " + feature.properties.Committer);
       }
     });
     var map = L.map('developers-map').fitBounds(geojson.getBounds());
