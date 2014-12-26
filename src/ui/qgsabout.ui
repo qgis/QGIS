@@ -107,6 +107,11 @@
          </item>
          <item>
           <property name="text">
+           <string>Developers Map</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Translators</string>
           </property>
          </item>
@@ -191,8 +196,8 @@ p, li { white-space: pre-wrap; }
             </layout>
            </item>
            <item>
-            <widget class="QWebView" name="txtVersion" native="true">
-             <property name="url" stdset="0">
+            <widget class="QWebView" name="txtVersion">
+             <property name="url">
               <url>
                <string>about:blank</string>
               </url>
@@ -359,14 +364,30 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="developersMap">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QWebView" name="developersMapView">
+             <property name="url">
+              <url>
+               <string>about:blank</string>
+              </url>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
          <widget class="QWidget" name="page_5">
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <property name="margin">
             <number>0</number>
            </property>
            <item>
-            <widget class="QWebView" name="txtTranslators" native="true">
-             <property name="url" stdset="0">
+            <widget class="QWebView" name="txtTranslators">
+             <property name="url">
               <url>
                <string>about:blank</string>
               </url>
