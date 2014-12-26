@@ -66,6 +66,8 @@ class QgsSymbolLayerV2
 
   public:
 
+    virtual ~QgsSymbolLayerV2();
+    
     // not necessarily supported by all symbol layers...
     virtual QColor color() const;
     virtual void setColor( const QColor& color );
@@ -81,8 +83,6 @@ class QgsSymbolLayerV2
     /** Get fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual QColor fillColor() const;
-
-    virtual ~QgsSymbolLayerV2();
 
     virtual QString layerType() const = 0;
 
@@ -151,6 +151,20 @@ class QgsSymbolLayerV2
     virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
+    /** Returns the current paint effect for the layer.
+     * @returns paint effect
+     * @note added in QGIS 2.9
+     * @see setPaintEffect
+     */
+    QgsPaintEffect* paintEffect() const;
+
+    /** Sets the current paint effect for the layer.
+     * @param effect paint effect. Ownership is transferred to the layer.
+     * @note added in QGIS 2.9
+     * @see paintEffect
+     */
+    void setPaintEffect( QgsPaintEffect* effect /Transfer/);
+
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
@@ -160,6 +174,12 @@ class QgsSymbolLayerV2
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
+    /**Copies paint effect of this layer to another symbol layer
+     * @param destLayer destination layer
+     * @note added in QGIS 2.9
+     */
+    void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
+
 };
 
 //////////////////////

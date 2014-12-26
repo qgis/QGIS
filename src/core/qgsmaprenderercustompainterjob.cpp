@@ -20,7 +20,6 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 
-
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
     , mPainter( painter )

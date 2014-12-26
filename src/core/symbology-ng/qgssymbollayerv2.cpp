@@ -20,6 +20,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsdxfexport.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
 
 #include <QSize>
 #include <QPainter>
@@ -136,6 +138,29 @@ Qt::BrushStyle QgsSymbolLayerV2::dxfBrushStyle() const
   return Qt::NoBrush;
 }
 
+QgsPaintEffect *QgsSymbolLayerV2::paintEffect() const
+{
+  return mPaintEffect;
+}
+
+void QgsSymbolLayerV2::setPaintEffect( QgsPaintEffect *effect )
+{
+  delete mPaintEffect;
+  mPaintEffect = effect;
+}
+
+QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
+    : mType( type )
+    , mLocked( locked )
+    , mRenderingPass( 0 )
+    , mPaintEffect( 0 )
+{
+  QgsEffectStack* stack = new QgsEffectStack();
+  stack->appendEffect( new QgsDrawSourceEffect() );
+  mPaintEffect = stack;
+  mPaintEffect->setEnabled( false );
+}
+
 void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
 {
   if ( !fields )
@@ -155,6 +180,12 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale
       }
     }
   }
+}
+
+QgsSymbolLayerV2::~QgsSymbolLayerV2()
+{
+  removeDataDefinedProperties();
+  delete mPaintEffect;
 }
 
 QSet<QString> QgsSymbolLayerV2::usedAttributes() const
@@ -209,6 +240,13 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
   }
 }
 
+void QgsSymbolLayerV2::copyPaintEffect( QgsSymbolLayerV2 *destLayer ) const
+{
+  if ( !destLayer || !mPaintEffect )
+    return;
+
+  destLayer->setPaintEffect( mPaintEffect->clone() );
+}
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked )

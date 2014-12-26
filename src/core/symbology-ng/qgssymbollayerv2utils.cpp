@@ -20,6 +20,8 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsexpression.h"
+#include "qgspainteffect.h"
+#include "qgspainteffectregistry.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsogcutils.h"
@@ -942,6 +944,13 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer( QDomElement& element )
   {
     layer->setLocked( locked );
     layer->setRenderingPass( pass );
+
+    //restore layer effect
+    QDomElement effectElem = element.firstChildElement( "effect" );
+    if ( !effectElem.isNull() )
+    {
+      layer->setPaintEffect( QgsPaintEffectRegistry::instance()->createEffect( effectElem ) );
+    }
     return layer;
   }
   else
@@ -980,6 +989,8 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
     layerEl.setAttribute( "locked", layer->isLocked() );
     layerEl.setAttribute( "pass", layer->renderingPass() );
     saveProperties( layer->properties(), doc, layerEl );
+    layer->paintEffect()->saveProperties( doc, layerEl );
+
     if ( layer->subSymbol() != NULL )
     {
       QString subname = QString( "@%1@%2" ).arg( name ).arg( i );

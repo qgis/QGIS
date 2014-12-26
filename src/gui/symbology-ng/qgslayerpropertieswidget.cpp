@@ -109,6 +109,9 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, con
   // set the corresponding widget
   updateSymbolLayerWidget( layer );
   connect( cboLayerType, SIGNAL( currentIndexChanged( int ) ), this, SLOT( layerTypeChanged() ) );
+
+  connect( mEffectWidget, SIGNAL( changed() ), this, SLOT( emitSignalChanged() ) );
+  mEffectWidget->setPaintEffect( mLayer->paintEffect() );
 }
 
 void QgsLayerPropertiesWidget::populateLayerTypes()

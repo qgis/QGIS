@@ -23,6 +23,7 @@
 #include "qgsvectorlayer.h"
 #include "qgssymbollayerv2.h"
 #include "qgsogcutils.h"
+#include "qgspainteffect.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -337,6 +338,7 @@ QgsFeatureRendererV2* QgsInvertedPolygonRenderer::clone() const
     newRenderer = new QgsInvertedPolygonRenderer( mSubRenderer->clone() );
   }
   newRenderer->setPreprocessingEnabled( preprocessingEnabled() );
+  copyPaintEffect( newRenderer );
   return newRenderer;
 }
 
@@ -364,6 +366,9 @@ QDomElement QgsInvertedPolygonRenderer::save( QDomDocument& doc )
     QDomElement embeddedRendererElem = mSubRenderer->save( doc );
     rendererElem.appendChild( embeddedRendererElem );
   }
+
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;
 }

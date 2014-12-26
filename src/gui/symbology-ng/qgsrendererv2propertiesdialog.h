@@ -26,7 +26,7 @@ class QKeyEvent;
 class QgsVectorLayer;
 class QgsStyleV2;
 class QgsSymbolV2;
-
+class QgsPaintEffect;
 class QgsRendererV2Widget;
 
 class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::QgsRendererV2PropsDialogBase
@@ -35,6 +35,7 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
   public:
     QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded = false );
+    ~QgsRendererV2PropertiesDialog();
 
   public slots:
     //! called when user changes renderer type
@@ -53,6 +54,8 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
     QgsStyleV2* mStyle;
 
     QgsRendererV2Widget* mActiveWidget;
+
+    QgsPaintEffect* mPaintEffect;
 };
 
 

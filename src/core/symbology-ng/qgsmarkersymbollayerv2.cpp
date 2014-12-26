@@ -684,6 +684,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   copyDataDefinedProperties( m );
+  copyPaintEffect( m );
   return m;
 }
 
@@ -1501,6 +1502,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   copyDataDefinedProperties( m );
+  copyPaintEffect( m );
   return m;
 }
 
@@ -1828,6 +1830,7 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  copyPaintEffect( m );
   return m;
 }
 

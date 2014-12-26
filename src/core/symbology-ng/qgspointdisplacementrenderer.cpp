@@ -23,6 +23,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
 #include "qgssinglesymbolrendererv2.h"
+#include "qgspainteffect.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -66,6 +67,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone() const
   {
     r->setCenterSymbol( dynamic_cast<QgsMarkerSymbolV2*>( mCenterSymbol->clone() ) );
   }
+  copyPaintEffect( r );
   return r;
 }
 
@@ -379,6 +381,10 @@ QDomElement QgsPointDisplacementRenderer::save( QDomDocument& doc )
     QDomElement centerSymbolElem = QgsSymbolLayerV2Utils::saveSymbol( "centerSymbol", mCenterSymbol, doc );
     rendererElement.appendChild( centerSymbolElem );
   }
+
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElement );
+
   return rendererElement;
 }
 

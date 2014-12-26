@@ -264,7 +264,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>8</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -592,8 +592,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -693,8 +693,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>123</width>
-                <height>38</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -835,8 +835,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>721</width>
-                <height>171</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1232,8 +1232,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>537</height>
+                <width>90</width>
+                <height>113</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
