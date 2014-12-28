@@ -339,7 +339,7 @@ Qt::ItemFlags QgsColorSchemeModel::flags( const QModelIndex &index ) const
   {
     case ColorSwatch:
     case ColorLabel:
-      if ( mScheme->isEditable() )
+      if ( mScheme && mScheme->isEditable() )
       {
         flags = flags | Qt::ItemIsEditable;
       }
@@ -353,7 +353,7 @@ bool QgsColorSchemeModel::setData( const QModelIndex &index, const QVariant &val
 {
   Q_UNUSED( role );
 
-  if ( !mScheme->isEditable() )
+  if ( !mScheme || !mScheme->isEditable() )
     return false;
 
   if ( !index.isValid() )
@@ -416,7 +416,7 @@ QVariant QgsColorSchemeModel::headerData( int section, Qt::Orientation orientati
 
 Qt::DropActions QgsColorSchemeModel::supportedDropActions() const
 {
-  if ( mScheme->isEditable() )
+  if ( mScheme && mScheme->isEditable() )
   {
     return Qt::CopyAction | Qt::MoveAction;
   }
@@ -428,7 +428,7 @@ Qt::DropActions QgsColorSchemeModel::supportedDropActions() const
 
 QStringList QgsColorSchemeModel::mimeTypes() const
 {
-  if ( !mScheme->isEditable() )
+  if ( !mScheme || !mScheme->isEditable() )
   {
     return QStringList();
   }
@@ -462,7 +462,7 @@ bool QgsColorSchemeModel::dropMimeData( const QMimeData *data, Qt::DropAction ac
 {
   Q_UNUSED( column );
 
-  if ( !mScheme->isEditable() )
+  if ( !mScheme || !mScheme->isEditable() )
   {
     return false;
   }
@@ -537,7 +537,7 @@ void QgsColorSchemeModel::setScheme( QgsColorScheme *scheme, const QString &cont
 
 bool QgsColorSchemeModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  if ( !mScheme->isEditable() )
+  if ( !mScheme || !mScheme->isEditable() )
   {
     return false;
   }
@@ -567,7 +567,7 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& par
 {
   Q_UNUSED( parent );
 
-  if ( !mScheme->isEditable() )
+  if ( !mScheme || !mScheme->isEditable() )
   {
     return false;
   }
@@ -585,7 +585,7 @@ bool QgsColorSchemeModel::insertRows( int row, int count, const QModelIndex& par
 
 void QgsColorSchemeModel::addColor( const QColor &color, const QString &label )
 {
-  if ( !mScheme->isEditable() )
+  if ( !mScheme || !mScheme->isEditable() )
   {
     return;
   }
