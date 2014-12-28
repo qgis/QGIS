@@ -63,6 +63,9 @@ void QgsAbout::init()
   else
     mOptionsListWidget->item( DEVELOPERS_MAP_INDEX )->setHidden( true );
 
+  developersMapView->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
+  developersMapView->setContextMenuPolicy( Qt::NoContextMenu );
+
   // set the 60x60 icon pixmap
   QPixmap icon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" );
   qgisIcon->setPixmap( icon );
@@ -314,6 +317,12 @@ QString QgsAbout::fileSystemSafe( QString fileName )
   QgsDebugMsg( result );
 
   return result;
+}
+
+void QgsAbout::on_developersMapView_linkClicked( const QUrl &url )
+{
+  QString link = url.toString();
+  openUrl( link );
 }
 
 void QgsAbout::setDevelopersMap()
