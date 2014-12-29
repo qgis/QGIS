@@ -181,7 +181,7 @@ class SpatiaLiteDBConnector(DBConnector):
 		self._execute(c, sql)
 
 		for tbl in c.fetchall():
-			if tablenames.count( tbl[0] ) <= 0:
+			if tablenames.count( tbl[0] ) <= 0 and not (tbl[0].startswith('idx_') and tbl[0] in sys_tables):
 				item = list(tbl)
 				item.insert(0, Table.TableType)
 				items.append( item )
