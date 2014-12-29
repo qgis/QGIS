@@ -1067,6 +1067,8 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   OGR_F_Destroy( feature );
 
   setlocale( LC_NUMERIC, oldlocale );
+  if (oldlocale)
+    free(oldlocale);
 
   return returnValue;
 }
@@ -1265,6 +1267,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
     }
 
     setlocale( LC_NUMERIC, oldlocale );
+    if (oldlocale)
+      free(oldlocale);
   }
 
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
