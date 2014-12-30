@@ -27,7 +27,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposition: public QObject
+class TestQgsComposition : public QObject
 {
     Q_OBJECT
 

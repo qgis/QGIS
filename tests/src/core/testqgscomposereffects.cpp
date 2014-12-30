@@ -25,7 +25,7 @@
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerEffects: public QObject
+class TestQgsComposerEffects : public QObject
 {
     Q_OBJECT
   private slots:

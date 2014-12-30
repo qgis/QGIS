@@ -28,7 +28,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerScaleBar: public QObject
+class TestQgsComposerScaleBar : public QObject
 {
     Q_OBJECT
   private slots:

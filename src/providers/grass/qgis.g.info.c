@@ -212,7 +212,7 @@ int main( int argc, char **argv )
       G_get_cellhd( rast_opt->answer, "", &window );
       G_set_window( &window );
       fd = G_open_cell_old( rast_opt->answer, "" );
-      // wait for coors from stdin
+      // wait for coords from stdin
       while ( fgets( buff, 100, stdin ) != 0 )
       {
         if ( sscanf( buff, "%lf%lf", &x, &y ) != 2 )

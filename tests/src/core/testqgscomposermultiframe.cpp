@@ -23,7 +23,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerMultiFrame: public QObject
+class TestQgsComposerMultiFrame : public QObject
 {
     Q_OBJECT
   private slots:

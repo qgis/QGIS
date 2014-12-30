@@ -4127,18 +4127,20 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
 #if 1 // TODO: generalize some of this
   double w = lp->getWidth();
   double h = lp->getHeight();
-  double cx = lp->getX() + w/2.0;
-  double cy = lp->getY() + h/2.0;
-  double scale = 1.0/xform->mapUnitsPerPixel();
+  double cx = lp->getX() + w / 2.0;
+  double cy = lp->getY() + h / 2.0;
+  double scale = 1.0 / xform->mapUnitsPerPixel();
   double rotation = xform->mapRotation();
   double sw = w * scale;
   double sh = h * scale;
-  QRectF rect( -sw/2, -sh/2, sw, sh );
+  QRectF rect( -sw / 2, -sh / 2, sw, sh );
 
-  painter->translate( xform->transform( QPointF(cx, cy) ).toQPointF() );
-  if ( rotation ) {
+  painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
+  if ( rotation )
+  {
     // Only if not horizontal
-    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ ) {
+    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+    {
       painter->rotate( rotation );
     }
   }
@@ -4204,7 +4206,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   }
 
   else if ( drawType == QgsPalLabeling::LabelBuffer
-       || drawType == QgsPalLabeling::LabelText )
+            || drawType == QgsPalLabeling::LabelText )
   {
 
     // TODO: optimize access :)
@@ -4290,17 +4292,19 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
       LabelPosition* lp = label;
       double w = lp->getWidth();
       double h = lp->getHeight();
-      double cx = lp->getX() + w/2.0;
-      double cy = lp->getY() + h/2.0;
-      double scale = 1.0/xform->mapUnitsPerPixel();
+      double cx = lp->getX() + w / 2.0;
+      double cy = lp->getY() + h / 2.0;
+      double scale = 1.0 / xform->mapUnitsPerPixel();
       double rotation = xform->mapRotation();
       double sw = w * scale;
       double sh = h * scale;
-      QRectF rect( -sw/2, -sh/2, sw, sh );
-      painter->translate( xform->transform( QPointF(cx, cy) ).toQPointF() );
-      if ( rotation ) {
+      QRectF rect( -sw / 2, -sh / 2, sw, sh );
+      painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
+      if ( rotation )
+      {
         // Only if not horizontal
-        if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ ) {
+        if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+        {
           painter->rotate( rotation );
         }
       }

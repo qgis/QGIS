@@ -153,7 +153,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /** Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
      * @note added in 2.4
      */
-    QString crsAndFormatAdjustedLayerUri(const QString& uri, const QStringList& supportedCrs, const QStringList& supportedFormats) const;
+    QString crsAndFormatAdjustedLayerUri( const QString& uri, const QStringList& supportedCrs, const QStringList& supportedFormats ) const;
 
     /** Add a 'pre-made' map layer to the project */
     void addMapLayer( QgsMapLayer *theMapLayer );

@@ -24,7 +24,7 @@
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerPicture: public QObject
+class TestQgsComposerPicture : public QObject
 {
     Q_OBJECT
   private slots:

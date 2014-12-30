@@ -25,7 +25,7 @@
 #include <qgsmapcanvas.h>
 #include <qgslogger.h>
 
-class TestQgsMapToolZoom: public QObject
+class TestQgsMapToolZoom : public QObject
 {
     Q_OBJECT
   private slots:

@@ -153,10 +153,10 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
   time.start();
   while ( myZipItem->state() != QgsDataItem::Populated && time.elapsed() < 5000 )
   {
-    QTest::qSleep ( 100 );
+    QTest::qSleep( 100 );
     QCoreApplication::processEvents();
   }
-  QgsDebugMsg( QString( "time.elapsed() = %1 ms" ).arg ( time.elapsed() ) );
+  QgsDebugMsg( QString( "time.elapsed() = %1 ms" ).arg( time.elapsed() ) );
   bool ok = false;
   QString driverName;
   QVector<QgsDataItem*> myChildren = myZipItem->children();

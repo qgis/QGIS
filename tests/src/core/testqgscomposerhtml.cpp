@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerHtml: public QObject
+class TestQgsComposerHtml : public QObject
 {
     Q_OBJECT
   private slots:

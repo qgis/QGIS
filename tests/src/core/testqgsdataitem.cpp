@@ -27,7 +27,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the QgsDataItem class.
  */
-class TestQgsDataItem: public QObject
+class TestQgsDataItem : public QObject
 {
     Q_OBJECT
 

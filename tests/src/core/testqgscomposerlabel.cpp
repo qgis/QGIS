@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerLabel: public QObject
+class TestQgsComposerLabel : public QObject
 {
     Q_OBJECT
   private slots:

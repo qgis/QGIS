@@ -40,7 +40,7 @@
 /** \ingroup UnitTests
  * This is a regression test for ticket #992.
  */
-class Regression992: public QObject
+class Regression992 : public QObject
 {
     Q_OBJECT
   private slots:

@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestProjectionIssues: public QObject
+class TestProjectionIssues : public QObject
 {
     Q_OBJECT
   private slots:

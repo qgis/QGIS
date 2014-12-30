@@ -29,7 +29,7 @@
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerPaper: public QObject
+class TestQgsComposerPaper : public QObject
 {
     Q_OBJECT
   private slots:

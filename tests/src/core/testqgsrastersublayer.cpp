@@ -48,7 +48,7 @@
 /** \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
-class TestQgsRasterSubLayer: public QObject
+class TestQgsRasterSubLayer : public QObject
 {
     Q_OBJECT
   private slots:

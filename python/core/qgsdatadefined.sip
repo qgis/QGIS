@@ -57,7 +57,7 @@ class QgsDataDefined
 
     // @note not available in python bindings
     //QMap< QString, QString > toMap();
-    
+
     /**Returns a DOM element containing the properties of the data defined container.
      * @param DOM document
      * @param elementName name for DOM element
@@ -75,7 +75,7 @@ class QgsDataDefined
      * @see toXmlElement
      */
     bool setFromXmlElement( const QDomElement& element );
-    
+
     bool operator==( const QgsDataDefined &other ) const;
     bool operator!=( const QgsDataDefined &other ) const;
 

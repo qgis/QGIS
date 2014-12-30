@@ -48,7 +48,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
-class TestQgsRasterLayer: public QObject
+class TestQgsRasterLayer : public QObject
 {
     Q_OBJECT
   private slots:

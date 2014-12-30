@@ -1370,13 +1370,15 @@ static QVariant fcnIf( const QVariantList &values, const QgsFeature *f, QgsExpre
   ENSURE_NO_EVAL_ERROR;
   QVariant value = node->eval( parent, f );
   ENSURE_NO_EVAL_ERROR;
-  if ( value.toBool() ) {
+  if ( value.toBool() )
+  {
     node = getNode( values.at( 1 ), parent );
     ENSURE_NO_EVAL_ERROR;
     value = node->eval( parent, f );
     ENSURE_NO_EVAL_ERROR;
   }
-  else {
+  else
+  {
     node = getNode( values.at( 2 ), parent );
     ENSURE_NO_EVAL_ERROR;
     value = node->eval( parent, f );
@@ -2565,15 +2567,17 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, const QgsFeat
     foreach ( Node* n, mArgs->list() )
     {
       QVariant v;
-      if ( fd->lazyEval() ) {
+      if ( fd->lazyEval() )
+      {
         // Pass in the node for the function to eval as it needs.
         v = QVariant::fromValue( n );
       }
-      else {
+      else
+      {
         v = n->eval( parent, f );
         ENSURE_NO_EVAL_ERROR;
         if ( isNull( v ) && fd->name() != "coalesce" )
-                return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
+          return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
       }
       argValues.append( v );
     }

@@ -28,7 +28,7 @@
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerShapes: public QObject
+class TestQgsComposerShapes : public QObject
 {
     Q_OBJECT
   private slots:

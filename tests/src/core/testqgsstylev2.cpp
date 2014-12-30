@@ -31,7 +31,7 @@
 /** \ingroup UnitTests
  * This is a unit test to verify that styles are working correctly
  */
-class TestStyleV2: public QObject
+class TestStyleV2 : public QObject
 {
     Q_OBJECT
 

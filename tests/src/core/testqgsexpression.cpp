@@ -470,8 +470,8 @@ class TestQgsExpression: public QObject
 
     void eval_precedence()
     {
-      QCOMPARE(QgsExpression::BinaryOperatorText[QgsExpression::boDiv],"/");
-      QCOMPARE(QgsExpression::BinaryOperatorText[QgsExpression::boConcat],"||");
+      QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boDiv], "/" );
+      QCOMPARE( QgsExpression::BinaryOperatorText[QgsExpression::boConcat], "||" );
 
       QgsExpression e0( "1+2*3" );
       QCOMPARE( e0.evaluate().toInt(), 7 );

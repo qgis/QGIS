@@ -34,7 +34,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerTableV2: public QObject
+class TestQgsComposerTableV2 : public QObject
 {
     Q_OBJECT
   private slots:

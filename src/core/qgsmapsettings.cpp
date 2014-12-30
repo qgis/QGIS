@@ -166,7 +166,7 @@ void QgsMapSettings::updateDerived()
                              visibleExtent().center().y(),
                              outputSize().width(),
                              outputSize().height(),
-                             mRotation);
+                             mRotation );
 
 #if 1 // set visible extent taking rotation in consideration
   if ( mRotation )

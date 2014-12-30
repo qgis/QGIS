@@ -39,7 +39,7 @@
 /** \ingroup UnitTests
  * This is a unit test for raster fill types.
  */
-class TestQgsRasterFill: public QObject
+class TestQgsRasterFill : public QObject
 {
     Q_OBJECT
   private slots:

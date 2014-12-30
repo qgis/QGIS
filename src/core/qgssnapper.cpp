@@ -44,11 +44,11 @@ QgsSnapper::~QgsSnapper()
 int QgsSnapper::snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
 {
   QgsPoint mapCoordPoint = mMapSettings.mapToPixel().toMapCoordinates( startPoint.x(), startPoint.y() );
-  return snapPoint( mapCoordPoint, snappingResult, excludePoints);
+  return snapPoint( mapCoordPoint, snappingResult, excludePoints );
 }
 
 int QgsSnapper::snapPoint( const QgsPoint& mapCoordPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints )
-  {
+{
   snappingResult.clear();
 
   QMultiMap<double, QgsSnappingResult> snappingResultList;//all snapping results

@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerMapGrid: public QObject
+class TestQgsComposerMapGrid : public QObject
 {
     Q_OBJECT
   private slots:

@@ -28,7 +28,7 @@ class QgsAdvancedDigitizingDockWidget;
 class APP_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
 {
   public:
-    explicit QgsAdvancedDigitizingCanvasItem(QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
+    explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
 
     void paint( QPainter *painter );
 

@@ -83,10 +83,10 @@ void QgsMapCanvasItem::setRect( const QgsRectangle& rect )
   {
     // rect encodes origin of the item (xMin,yMax from map to canvas units)
     // and size (rect size / map units per pixel)
-    r.setTopLeft( toCanvasCoordinates( QPointF(mRect.xMinimum(), mRect.yMaximum()) ) );
+    r.setTopLeft( toCanvasCoordinates( QPointF( mRect.xMinimum(), mRect.yMaximum() ) ) );
     const QgsMapToPixel* m2p = mMapCanvas->getCoordinateTransform();
     double res = m2p->mapUnitsPerPixel();
-    r.setSize( QSizeF(mRect.width()/res, mRect.height()/res) );
+    r.setSize( QSizeF( mRect.width() / res, mRect.height() / res ) );
   }
 
   // set position in canvas where the item will have coordinate (0,0)

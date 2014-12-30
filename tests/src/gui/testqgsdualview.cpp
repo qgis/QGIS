@@ -24,7 +24,7 @@
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
 
-class TestQgsDualView: public QObject
+class TestQgsDualView : public QObject
 {
     Q_OBJECT
   private slots:

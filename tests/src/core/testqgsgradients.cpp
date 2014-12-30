@@ -40,7 +40,7 @@
 /** \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
-class TestQgsGradients: public QObject
+class TestQgsGradients : public QObject
 {
     Q_OBJECT
   private slots:
