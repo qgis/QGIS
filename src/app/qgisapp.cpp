@@ -1799,22 +1799,13 @@ void QgisApp::createStatusBar()
                                         "to add a large number of layers and symbolize them before rendering." ) );
   mRenderSuppressionCBox->setToolTip( tr( "Toggle map rendering" ) );
   statusBar()->addPermanentWidget( mRenderSuppressionCBox, 0 );
-  // On the fly projection active CRS label
-  mOnTheFlyProjectionStatusLabel = new QLabel( QString(), statusBar() );
-  mOnTheFlyProjectionStatusLabel->setObjectName( "mOnTheFlyProjectionStatusLabel" );
-  mOnTheFlyProjectionStatusLabel->setFont( myFont );
-  mOnTheFlyProjectionStatusLabel->setMinimumWidth( 10 );
-  mOnTheFlyProjectionStatusLabel->setMaximumHeight( 20 );
-  mOnTheFlyProjectionStatusLabel->setMargin( 3 );
-  mOnTheFlyProjectionStatusLabel->setAlignment( Qt::AlignCenter );
-  mOnTheFlyProjectionStatusLabel->setFrameStyle( QFrame::NoFrame );
-  statusBar()->addPermanentWidget( mOnTheFlyProjectionStatusLabel, 0 );
   // On the fly projection status bar icon
   // Changed this to a tool button since a QPushButton is
   // sculpted on OS X and the icon is never displayed [gsherman]
   mOnTheFlyProjectionStatusButton = new QToolButton( statusBar() );
+  mOnTheFlyProjectionStatusButton->setAutoRaise( true );
+  mOnTheFlyProjectionStatusButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   mOnTheFlyProjectionStatusButton->setObjectName( "mOntheFlyProjectionStatusButton" );
-  mOnTheFlyProjectionStatusButton->setMaximumWidth( 20 );
   // Maintain uniform widget height in status bar by setting button height same as labels
   // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
   mOnTheFlyProjectionStatusButton->setMaximumHeight( mScaleLabel->height() );
@@ -8691,19 +8682,17 @@ void QgisApp::removeWebToolBarIcon( QAction *qAction )
 
 void QgisApp::updateCRSStatusBar()
 {
-  mOnTheFlyProjectionStatusLabel->setText( mMapCanvas->mapSettings().destinationCrs().authid() );
+  mOnTheFlyProjectionStatusButton->setText( mMapCanvas->mapSettings().destinationCrs().authid() );
 
   if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
-    mOnTheFlyProjectionStatusLabel->setEnabled( true );
-    mOnTheFlyProjectionStatusLabel->setToolTip(
+    mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1 (OTFR enabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( "mIconProjectionEnabled.png" ) );
   }
   else
   {
-    mOnTheFlyProjectionStatusLabel->setEnabled( false );
-    mOnTheFlyProjectionStatusLabel->setToolTip(
+    mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1 (OTFR disabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( "mIconProjectionDisabled.png" ) );
   }
