@@ -223,16 +223,7 @@ void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent * e )
     QRect rect = mPanningWidget->geometry();
 
     QgsPoint center = cXf.toMapCoordinates( rect.center() );
-    QgsRectangle oldExtent = mMapCanvas->extent();
-    QgsRectangle ext;
-    ext.setXMinimum( center.x() - oldExtent.width() / 2 );
-    ext.setXMaximum( center.x() + oldExtent.width() / 2 );
-    ext.setYMinimum( center.y() - oldExtent.height() / 2 );
-    ext.setYMaximum( center.y() + oldExtent.height() / 2 );
-
-    QgsDebugMsg( QString( "panning: new position: [%1,%2] [%3x%4]" ).arg( rect.left() ).arg( rect.top() ).arg( rect.width() ).arg( rect.height() ) );
-
-    mMapCanvas->setExtent( ext );
+    mMapCanvas->setCenter( center );
     mMapCanvas->refresh();
   }
 }
