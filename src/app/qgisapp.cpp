@@ -656,8 +656,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
   mLogDock->setWidget( mLogViewer );
   mLogDock->hide();
-    connect( mMessageButton, SIGNAL( toggled( bool ) ), mLogDock, SLOT( setVisible(bool)) );
-    connect( mLogDock, SIGNAL( visibilityChanged( bool ) ), mMessageButton, SLOT( setChecked(bool)) );
+  connect( mMessageButton, SIGNAL( toggled( bool ) ), mLogDock, SLOT( setVisible( bool ) ) );
+  connect( mLogDock, SIGNAL( visibilityChanged( bool ) ), mMessageButton, SLOT( setChecked( bool ) ) );
   mVectorLayerTools = new QgsGuiVectorLayerTools();
 
   // Init the editor widget types
@@ -1752,7 +1752,8 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
-  if ( getenv( "QGIS_ENABLE_CANVAS_ROTATION" ) ) {
+  if ( getenv( "QGIS_ENABLE_CANVAS_ROTATION" ) )
+  {
     // add a widget to show/set current rotation
     mRotationLabel = new QLabel( QString(), statusBar() );
     mRotationLabel->setObjectName( "mRotationLabel" );
@@ -1821,15 +1822,15 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mOnTheFlyProjectionStatusButton, 0 );
   statusBar()->showMessage( tr( "Ready" ) );
 
-    mMessageButton = new QToolButton( statusBar() );
-    mMessageButton->setAutoRaise( true );
-    mMessageButton->setIcon( QgsApplication::getThemeIcon( "bubble.svg" ) );
-    mMessageButton->setText("Messages");
-    mMessageButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    mMessageButton->setObjectName( "mMessageLogViewerButton" );
+  mMessageButton = new QToolButton( statusBar() );
+  mMessageButton->setAutoRaise( true );
+  mMessageButton->setIcon( QgsApplication::getThemeIcon( "bubble.svg" ) );
+  mMessageButton->setText( "Messages" );
+  mMessageButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
+  mMessageButton->setObjectName( "mMessageLogViewerButton" );
   mMessageButton->setMaximumHeight( mScaleLabel->height() );
-    mMessageButton->setCheckable( true );
-    statusBar()->addPermanentWidget( mMessageButton, 0 );
+  mMessageButton->setCheckable( true );
+  statusBar()->addPermanentWidget( mMessageButton, 0 );
 }
 
 void QgisApp::setIconSizes( int size )
@@ -3562,7 +3563,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
-  mMapCanvas->setRotation(0.0);
+  mMapCanvas->setRotation( 0.0 );
   mScaleEdit->updateScales();
 
   // set project CRS
