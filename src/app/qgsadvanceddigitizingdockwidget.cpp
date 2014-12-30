@@ -154,7 +154,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
   commonAngles << QPair<int, QString>( 45, tr( "Snap to 45%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
   commonAngles << QPair<int, QString>( 90, tr( "Snap to 90%1 angles" ).arg( QString::fromUtf8( "°" ) ) );
   commonAngles << QPair<int, QString>( 0, tr( "Do not snap to common angles" ) );
-  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); it++ )
+  for ( QList< QPair< int, QString > >::const_iterator it = commonAngles.begin(); it != commonAngles.end(); ++it )
   {
     QAction* action = new QAction( it->second, menu );
     action->setCheckable( true );
@@ -643,6 +643,10 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
       {
         if ( sina == 0 )
         {
+          res = false;
+        }
+        else
+        {
           double y = mYConstraint->value();
           if ( !mYConstraint->relative() )
           {
@@ -1110,7 +1114,6 @@ bool QgsAdvancedDigitizingDockWidget::filterKeyPress( QKeyEvent* e )
     default:
     {
       return false; // continues
-      break;
     }
   }
   return true; // stop the event

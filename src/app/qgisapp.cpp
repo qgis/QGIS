@@ -2749,7 +2749,7 @@ QString QgisApp::crsAndFormatAdjustedLayerUri( const QString &uri , const QStrin
   foreach ( QString c, supportedCrs )
   {
     testCrs.createFromOgcWmsCrs( c );
-    if ( testCrs == mMapCanvas->mapRenderer()->destinationCrs() )
+    if ( testCrs == mMapCanvas->mapSettings().destinationCrs() )
     {
       newuri.replace( QRegExp( "crs=[^&]+" ), "crs=" + c );
       QgsDebugMsg( QString( "Changing layer crs to %1, new uri: %2" ).arg( c, uri ) );
