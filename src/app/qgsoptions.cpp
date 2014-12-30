@@ -585,6 +585,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   cbxCopyWKTGeomFromTable->setChecked( settings.value( "/qgis/copyGeometryAsWKT", true ).toBool() );
   leNullValue->setText( settings.value( "qgis/nullValue", "NULL" ).toString() );
   cbxIgnoreShapeEncoding->setChecked( settings.value( "/qgis/ignoreShapeEncoding", true ).toBool() );
+  cbxCanvasRotation->setChecked( settings.value( "/qgis/canvasRotation", false ).toBool() );
 
   cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
 
@@ -1112,6 +1113,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/legendDoubleClickAction", cmbLegendDoubleClickAction->currentIndex() );
   bool legendLayersCapitalise = settings.value( "/qgis/capitaliseLayerName", false ).toBool();
   settings.setValue( "/qgis/capitaliseLayerName", capitaliseCheckBox->isChecked() );
+  settings.setValue( "/qgis/canvasRotation", cbxCanvasRotation->isChecked() );
 
   // Default simplify drawing configuration
   QgsVectorSimplifyMethod::SimplifyHints simplifyHints = QgsVectorSimplifyMethod::NoSimplification;

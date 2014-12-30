@@ -1750,7 +1750,8 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
-  if ( getenv( "QGIS_ENABLE_CANVAS_ROTATION" ) ) {
+  if ( QSettings().value( "/qgis/canvasRotation", false ).toBool() )
+  {
     // add a widget to show/set current rotation
     mRotationLabel = new QLabel( QString(), statusBar() );
     mRotationLabel->setObjectName( "mRotationLabel" );
@@ -1784,7 +1785,6 @@ void QgisApp::createStatusBar()
 
     showRotation();
   }
-
 
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox( tr( "Render" ), statusBar() );
@@ -3559,7 +3559,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
-  mMapCanvas->setRotation(0.0);
+  mMapCanvas->setRotation( 0.0 );
   mScaleEdit->updateScales();
 
   // set project CRS

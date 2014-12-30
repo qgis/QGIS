@@ -283,8 +283,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>610</width>
-                <height>670</height>
+                <width>612</width>
+                <height>594</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -648,6 +648,13 @@
                       </property>
                      </widget>
                     </item>
+                    <item>
+                     <widget class="QCheckBox" name="cbxCanvasRotation">
+                      <property name="text">
+                       <string>Experimental canvas rotation support (restart required)</string>
+                      </property>
+                     </widget>
+                    </item>
                    </layout>
                   </item>
                  </layout>
@@ -954,8 +961,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>655</width>
-                <height>862</height>
+                <width>614</width>
+                <height>855</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1150,10 +1157,10 @@
                     <property name="title">
                      <string>Current environment variables (read-only - bold indicates modified at startup)</string>
                     </property>
-                    <property name="collapsed" stdset="0">
+                    <property name="collapsed">
                      <bool>false</bool>
                     </property>
-                    <property name="saveCollapsedState" stdset="0">
+                    <property name="saveCollapsedState">
                      <bool>true</bool>
                     </property>
                     <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -1329,8 +1336,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
-                <height>440</height>
+                <width>504</width>
+                <height>383</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1639,8 +1646,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>710</width>
-                <height>796</height>
+                <width>665</width>
+                <height>699</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_29">
@@ -2278,8 +2285,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>239</width>
-                <height>258</height>
+                <width>203</width>
+                <height>252</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2374,8 +2381,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>526</width>
-                <height>327</height>
+                <width>509</width>
+                <height>302</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -2703,8 +2710,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>684</width>
-                <height>625</height>
+                <width>638</width>
+                <height>576</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3199,8 +3206,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>504</width>
-                <height>307</height>
+                <width>469</width>
+                <height>288</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3395,8 +3402,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>501</width>
-                <height>640</height>
+                <width>473</width>
+                <height>566</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -3886,8 +3893,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>462</width>
-                <height>372</height>
+                <width>422</width>
+                <height>362</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4016,8 +4023,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>650</width>
-                <height>707</height>
+                <width>595</width>
+                <height>680</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4270,8 +4277,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>300</width>
-                <height>226</height>
+                <width>283</width>
+                <height>210</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -4360,8 +4367,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>531</width>
-                <height>685</height>
+                <width>487</width>
+                <height>595</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -4510,10 +4517,10 @@
                  <property name="checkable">
                   <bool>true</bool>
                  </property>
-                 <property name="collapsed" stdset="0">
+                 <property name="collapsed">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState" stdset="0">
+                 <property name="saveCollapsedState">
                   <bool>true</bool>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_1">
@@ -4712,15 +4719,15 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorSchemeList</class>
