@@ -656,6 +656,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
   mLogDock->setWidget( mLogViewer );
   mLogDock->hide();
+    connect( mMessageButton, SIGNAL( toggled( bool ) ), mLogDock, SLOT( setVisible(bool)) );
+    connect( mLogDock, SIGNAL( visibilityChanged( bool ) ), mMessageButton, SLOT( setChecked(bool)) );
   mVectorLayerTools = new QgsGuiVectorLayerTools();
 
   // Init the editor widget types
@@ -1827,6 +1829,16 @@ void QgisApp::createStatusBar()
            this, SLOT( projectPropertiesProjections() ) );//bring up the project props dialog when clicked
   statusBar()->addPermanentWidget( mOnTheFlyProjectionStatusButton, 0 );
   statusBar()->showMessage( tr( "Ready" ) );
+
+    mMessageButton = new QToolButton( statusBar() );
+    mMessageButton->setAutoRaise( true );
+    mMessageButton->setIcon( QgsApplication::getThemeIcon( "bubble.svg" ) );
+    mMessageButton->setText("Messages");
+    mMessageButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+    mMessageButton->setObjectName( "mMessageLogViewerButton" );
+  mMessageButton->setMaximumHeight( mScaleLabel->height() );
+    mMessageButton->setCheckable( true );
+    statusBar()->addPermanentWidget( mMessageButton, 0 );
 }
 
 void QgisApp::setIconSizes( int size )
