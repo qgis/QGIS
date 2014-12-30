@@ -46,18 +46,11 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
   public slots:
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
-  protected:
-    void showEvent( QShowEvent * );
-    void hideEvent( QHideEvent * );
-
   private:
-    QToolButton *mButton;
     bool mShowToolTips;
 
   private slots:
     void closeTab( int index );
-    void buttonToggled( bool checked );
-    void buttonDestroyed();
 };
 
 #endif

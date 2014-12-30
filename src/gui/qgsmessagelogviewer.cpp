@@ -29,43 +29,15 @@
 #include <QPlainTextEdit>
 #include <QScrollBar>
 
-static QIcon icon( QString icon )
-{
-  // try active theme
-  QString path = QgsApplication::activeThemePath();
-  if ( QFile::exists( path + icon ) )
-    path += icon;
-  else
-    path = QgsApplication::defaultThemePath() + icon;
-
-  return QIcon( path );
-}
 
 QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
-    , mButton( 0 )
     , mShowToolTips( true )
 {
   setupUi( this );
 
   connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
            this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
-
-  if ( statusBar )
-  {
-    mButton = new QToolButton( parent );
-    mButton->setObjectName( "mMessageLogViewerButton" );
-    mButton->setMaximumWidth( 20 );
-    mButton->setMaximumHeight( 20 );
-    mButton->setIcon( icon( "/mIconWarn.png" ) );
-#ifndef ANDROID
-    mButton->setToolTip( tr( "No messages." ) );
-#endif
-    mButton->setCheckable( true );
-    connect( mButton, SIGNAL( toggled( bool ) ), this, SLOT( buttonToggled( bool ) ) );
-    connect( mButton, SIGNAL( destroyed() ), this, SLOT( buttonDestroyed() ) );
-    statusBar->addPermanentWidget( mButton, 0 );
-  }
 
   connect( tabWidget, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
 }
@@ -74,52 +46,11 @@ QgsMessageLogViewer::~QgsMessageLogViewer()
 {
 }
 
-void QgsMessageLogViewer::hideEvent( QHideEvent * )
-{
-  if ( mButton )
-  {
-    mButton->setChecked( false );
-  }
-}
-
-void QgsMessageLogViewer::showEvent( QShowEvent * )
-{
-  if ( mButton )
-  {
-    mButton->setChecked( true );
-  }
-}
-
-void QgsMessageLogViewer::buttonToggled( bool checked )
-{
-  QWidget *w = qobject_cast<QDockWidget *>( parent() );
-
-  if ( !w )
-    w = this;
-
-  if ( checked )
-    w->show();
-  else
-    w->hide();
-}
-
-void QgsMessageLogViewer::buttonDestroyed()
-{
-  mButton = 0;
-}
-
 void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
 #ifdef ANDROID
   mButton->setToolTip( tr( "Message(s) logged." ) );
 #endif
-
-  if ( !isVisible() && level > QgsMessageLog::INFO )
-  {
-    mButton->show();
-    if ( mShowToolTips )
-      QToolTip::showText( mButton->mapToGlobal( QPoint( 0, 0 ) ), mButton->toolTip() );
-  }
 
   if ( tag.isNull() )
     tag = tr( "General" );

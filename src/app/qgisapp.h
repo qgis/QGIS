@@ -1470,6 +1470,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QLabel * mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton * mOnTheFlyProjectionStatusButton;
+    QToolButton * mMessageButton;
     //! Menu that contains the list of actions of the selected vector layer
     QMenu *mFeatureActionMenu;
     //! Popup menu
