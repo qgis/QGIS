@@ -43,7 +43,15 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
 
+  mUnitsCombo->addItem( "Meters");
+  mUnitsCombo->addItem( "Feet");
+  mUnitsCombo->addItem( "Degrees");
+  mUnitsCombo->addItem( "Nautical Miles");
+  mUnitsCombo->setCurrentIndex( 0 );
+
   updateSettings();
+
+  connect( mUnitsCombo, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( unitsChanged( const QString & ) ) );
 }
 
 void QgsMeasureDialog::updateSettings()
@@ -52,7 +60,7 @@ void QgsMeasureDialog::updateSettings()
 
   mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
-  mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
+  mDisplayUnits = QGis::fromLiteral( mUnitsCombo->currentText().toLower() );
   // Configure QgsDistanceArea
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
@@ -74,6 +82,14 @@ void QgsMeasureDialog::updateSettings()
   QgsDebugMsg( QString( "Canvas units : %1" ).arg( QGis::toLiteral( mCanvasUnits ) ) );
 
   mTotal = 0;
+  updateUi();
+}
+
+void QgsMeasureDialog::unitsChanged(const QString &units)
+{
+  mDisplayUnits = QGis::fromLiteral( units.toLower() );
+  mTable->clear();
+  mTotal = 0.;
   updateUi();
 }
 
@@ -221,6 +237,7 @@ QString QgsMeasureDialog::formatDistance( double distance )
   QSettings settings;
   bool baseUnit = settings.value( "/qgis/measure/keepbaseunit", false ).toBool();
 
+  QgsDebugMsg( mUnitsCombo->currentText().toLower() );
   QGis::UnitType newDisplayUnits;
   convertMeasurement( distance, newDisplayUnits, false );
   return QgsDistanceArea::textUnit( distance, mDecimalPlaces, newDisplayUnits, false, baseUnit );
@@ -269,6 +286,7 @@ void QgsMeasureDialog::updateUi()
 
   editTotal->setToolTip( toolTip );
   mTable->setToolTip( toolTip );
+  mNotesLabel->setText( toolTip );
 
   QGis::UnitType newDisplayUnits;
   double dummy = 1.0;
