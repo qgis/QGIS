@@ -1824,7 +1824,7 @@ void QgisApp::createStatusBar()
   mMessageButton = new QToolButton( statusBar() );
   mMessageButton->setAutoRaise( true );
   mMessageButton->setIcon( QgsApplication::getThemeIcon( "bubble.svg" ) );
-  mMessageButton->setText( "Messages" );
+  mMessageButton->setText( tr( "Messages" ) );
   mMessageButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   mMessageButton->setObjectName( "mMessageLogViewerButton" );
   mMessageButton->setMaximumHeight( mScaleLabel->height() );
