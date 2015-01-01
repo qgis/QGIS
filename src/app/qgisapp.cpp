@@ -8686,6 +8686,7 @@ void QgisApp::updateCRSStatusBar()
 
   if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
+    mOnTheFlyProjectionStatusButton->setText( QString("%1 (OTF)").arg( mOnTheFlyProjectionStatusButton->text() ) );
     mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1 (OTFR enabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( "mIconProjectionEnabled.png" ) );
