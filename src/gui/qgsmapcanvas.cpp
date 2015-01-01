@@ -899,7 +899,8 @@ double QgsMapCanvas::rotation() const
 
 void QgsMapCanvas::setRotation( double degrees )
 {
-  if ( ! getenv( "QGIS_ENABLE_CANVAS_ROTATION" ) ) return;
+  if ( !QSettings().value( "/qgis/canvasRotation", false ).toBool() )
+    return;
 
   double current = rotation();
 
