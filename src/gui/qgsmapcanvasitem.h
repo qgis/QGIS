@@ -72,10 +72,10 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     void setRect( const QgsRectangle& r );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( const QPoint& point );
+    QgsPoint toMapCoordinates( const QPoint& point ) const;
 
     //! transformation from map coordinates to screen coordinates
-    QPointF toCanvasCoordinates( const QgsPoint& point );
+    QPointF toCanvasCoordinates( const QgsPoint& point ) const;
 
   protected:
 
