@@ -383,38 +383,6 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
 
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 {
-  // temporary solution for WMS legend
-  if ( mLayerTreeView->layerTreeModel()->index2legendNode( index ) )
-  {
-    QModelIndex parent = mLayerTreeView->layerTreeModel()->parent( index );
-    QgsLayerTreeNode* node = mLayerTreeView->layerTreeModel()->index2node( parent );
-    if ( QgsLayerTree::isLayer( node ) )
-    {
-      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
-      QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( layer );
-      if ( rlayer && rlayer->providerType() == "wms" )
-      {
-        const QgsMapCanvas* canvas = mapCanvas();
-        QgsRectangle visibleExtent = canvas->mapSettings().outputExtentToLayerExtent( rlayer, canvas->extent() ); // in layer projection
-        QImage img = rlayer->dataProvider()->getLegendGraphic( mMapCanvas->scale(), false, &visibleExtent );
-
-        QFrame* popup = new QFrame();
-        popup->setAttribute( Qt::WA_DeleteOnClose );
-        popup->setFrameStyle( QFrame::Box | QFrame::Raised );
-        popup->setLineWidth( 2 );
-        popup->setAutoFillBackground( true );
-        QVBoxLayout *layout = new QVBoxLayout;
-        QLabel *label = new QLabel( popup );
-        label->setPixmap( QPixmap::fromImage( img ) );
-        layout->addWidget( label );
-        popup->setLayout( layout );
-        popup->move( mLayerTreeView->visualRect( index ).bottomLeft() );
-        popup->show();
-        return;
-      }
-    }
-  }
-
   QSettings settings;
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
   {
