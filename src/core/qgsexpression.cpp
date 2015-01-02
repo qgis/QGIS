@@ -1300,7 +1300,7 @@ static QVariant fcnGeomToWKT( const QVariantList& values, const QgsFeature*, Qgs
 {
   if ( values.length() < 1 || values.length() > 2 )
     return QVariant();
-    
+
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   int prec = 8;
   if ( values.length() == 2 )
@@ -1566,14 +1566,14 @@ static QVariant fcnTransformGeometry( const QVariantList& values, const QgsFeatu
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
   QString sAuthId = getStringValue( values.at( 1 ), parent );
   QString dAuthId = getStringValue( values.at( 2 ), parent );
-  
+
   QgsCoordinateReferenceSystem s;
   if ( ! s.createFromOgcWmsCrs( sAuthId ) )
     return QVariant::fromValue( fGeom );
   QgsCoordinateReferenceSystem d;
   if ( ! d.createFromOgcWmsCrs( dAuthId ) )
     return QVariant::fromValue( fGeom );
-    
+
   QgsCoordinateTransform t( s, d );
   if ( fGeom.transform( t ) == 0 )
     return QVariant::fromValue( fGeom );

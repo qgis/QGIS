@@ -745,33 +745,33 @@ class TestQgsExpression: public QObject
       QVariant vYMax = exp9.evaluate( &fPolygon );
       QCOMPARE( vYMax.toDouble(), 6.0 );
     }
-    
+
     void eval_geometry_wkt()
     {
       QgsPolyline polyline, polygon_ring;
       polyline << QgsPoint( 0, 0 ) << QgsPoint( 10, 0 );
       polygon_ring << QgsPoint( 2, 1 ) << QgsPoint( 10, 1 ) << QgsPoint( 10, 6 ) << QgsPoint( 2, 6 ) << QgsPoint( 2, 1 );
-      
+
       QgsPolygon polygon;
       polygon << polygon_ring;
-      
+
       QgsFeature fPoint, fPolygon, fPolyline;
       fPoint.setGeometry( QgsGeometry::fromPoint( QgsPoint( -1.23456789, 9.87654321 ) ) );
       fPolyline.setGeometry( QgsGeometry::fromPolyline( polyline ) );
       fPolygon.setGeometry( QgsGeometry::fromPolygon( polygon ) );
-      
+
       QgsExpression exp1( "geomToWKT($geometry)" );
       QVariant vWktLine = exp1.evaluate( &fPolyline );
       QCOMPARE( vWktLine.toString(), QString( "LINESTRING(0 0, 10 0)" ) );
-      
+
       QgsExpression exp2( "geomToWKT($geometry)" );
       QVariant vWktPolygon = exp2.evaluate( &fPolygon );
       QCOMPARE( vWktPolygon.toString(), QString( "POLYGON((2 1,10 1,10 6,2 6,2 1))" ) );
-      
+
       QgsExpression exp3( "geomToWKT($geometry)" );
       QVariant vWktPoint = exp3.evaluate( &fPoint );
       QCOMPARE( vWktPoint.toString(), QString( "POINT(-1.23456789 9.87654321)" ) );
-      
+
       QgsExpression exp4( "geomToWKT($geometry, 3)" );
       QVariant vWktPointSimplify = exp4.evaluate( &fPoint );
       QCOMPARE( vWktPointSimplify.toString(), QString( "POINT(-1.235 9.877)" ) );
@@ -834,7 +834,7 @@ class TestQgsExpression: public QObject
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QCOMPARE( geom->equals( &outGeom ), true );
     }
-    
+
     void eval_geometry_access_transform_data()
     {
       QTest::addColumn<QString>( "string" );
@@ -855,18 +855,18 @@ class TestQgsExpression: public QObject
       QTest::newRow( "geometry Line" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( line ) << false;
       QTest::newRow( "geometry Polyline" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolyline( polyline ) << false;
       QTest::newRow( "geometry Polygon" ) << "geometry( $currentfeature )" << ( void* ) QgsGeometry::fromPolygon( polygon ) << false;
-      
+
       QgsCoordinateReferenceSystem s;
       s.createFromOgcWmsCrs( "EPSG:4326" );
       QgsCoordinateReferenceSystem d;
       d.createFromOgcWmsCrs( "EPSG:3857" );
       QgsCoordinateTransform t( s, d );
-      
+
       QgsGeometry* tLine = QgsGeometry::fromPolyline( line );
       tLine->transform( t );
       QgsGeometry* tPolygon = QgsGeometry::fromPolygon( polygon );
       tPolygon->transform( t );
-      
+
       QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + QgsGeometry::fromPolyline( line )->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false;
       QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + QgsGeometry::fromPolygon( polygon )->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false;
     }
