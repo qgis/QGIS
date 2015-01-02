@@ -40,6 +40,63 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
 
+/**
+ * \class Handles asynchronous download of WMS legend
+ *
+ * \todo turn into a generic async image downloader ?
+ *
+ */
+class QgsWmsLegendDownloadHandler : public QgsImageFetcher
+{
+    Q_OBJECT
+  public:
+
+    QgsWmsLegendDownloadHandler( QgsNetworkAccessManager& networkAccessManager, const QgsWmsSettings& settings, const QUrl& url );
+    ~QgsWmsLegendDownloadHandler( );
+
+    // Make sure to connect to "finish" before starting
+    void start();
+
+  private:
+
+    // Make sure to connect to "finish" before starting
+    void startUrl( const QUrl& url );
+
+    // Delete reply (later), emit error and finish with empty image
+    void sendError( const QString& msg );
+    // Delete reply (later), emit finish
+    void sendSuccess( const QImage& img );
+
+    QgsNetworkAccessManager& mNetworkAccessManager;
+    const QgsWmsSettings& mSettings;
+    QNetworkReply* mReply;
+    QSet<QUrl> mVisitedUrls;
+    QUrl mInitialUrl;
+
+  private slots:
+
+    void errored( QNetworkReply::NetworkError code );
+    void finished();
+    void progressed( qint64, qint64 );
+};
+
+class QgsCachedImageFetcher: public QgsImageFetcher
+{
+    Q_OBJECT;
+  public:
+    QgsCachedImageFetcher( const QImage& img );
+    virtual ~QgsCachedImageFetcher();
+    virtual void start();
+  private:
+    const QImage _img; // copy is intentional
+  private slots:
+    void send()
+    {
+      QgsDebugMsg( QString( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
+      emit finish( _img );
+    }
+};
+
 
 /**
 
@@ -176,8 +233,26 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * in getCapability
      * \param scale Optional parameter that is the Scale of the wms layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
+     * \param visibleExtent Visible extent for providers supporting contextual legends
+     *
+     * \note visibleExtent parameter added in 2.8
      */
-    QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false );
+    QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 );
+
+    /**
+     * \class Get an image downloader for the raster legend
+     *
+     * \param mapSettings map settings for legend providers supporting
+     *                    contextual legends.
+     *
+     * \return a download handler or null if the provider does not support
+     *         legend at all. Ownership of the returned object is transferred
+     *         to caller.
+     *
+     * \note added in 2.8
+     *
+     */
+    virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings );
 
     // TODO: Get the WMS connection
 
@@ -294,7 +369,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private slots:
     void identifyReplyFinished();
-    void getLegendGraphicReplyFinished();
+    void getLegendGraphicReplyFinished( const QImage& );
     void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
@@ -347,7 +422,23 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     bool calculateExtent();
 
+    /* \brief Bounding box in WMS format
+     *
+     * \note it does not perform any escape
+     */
+    QString toParamValue( const QgsRectangle& rect, bool changeXY = false );
+
+    /* \brief add SRS or CRS parameter */
+    void setSRSQueryItem( QUrl& url );
+
   private:
+
+    /**Return the full url to request legend graphic
+     * The visibleExtent isi only used if provider supports contextual
+     * legends according to the QgsWmsSettings
+     * @added in 2.8
+     */
+    QUrl getLegendGraphicFullURL( double scale, const QgsRectangle& visibleExtent );
 
     //QStringList identifyAs( const QgsPoint &point, QString format );
 
@@ -392,6 +483,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     double mGetLegendGraphicScale;
 
+    QgsRectangle mGetLegendGraphicExtent;
+
+    QScopedPointer<QgsImageFetcher> mLegendGraphicFetcher;
+
     /**
      * Visibility status of the given active sublayer
      */
@@ -408,11 +503,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * with the same parameters.
      */
     QImage *mCachedImage;
-
-    /**
-     * The reply to the GetLegendGraphic request
-     */
-    QNetworkReply *mGetLegendGraphicReply;
 
     /**
      * The reply to the capabilities request
