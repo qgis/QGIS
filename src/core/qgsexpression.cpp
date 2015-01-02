@@ -1298,8 +1298,14 @@ static QVariant fcnCombine( const QVariantList& values, const QgsFeature*, QgsEx
 }
 static QVariant fcnGeomToWKT( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
+  if ( values.length() < 1 || values.length() > 2 )
+    return QVariant();
+    
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  QString wkt = fGeom.exportToWkt();
+  int prec = 8;
+  if ( values.length() == 2 )
+    prec = getIntValue( values.at( 1 ), parent );
+  QString wkt = fGeom.exportToWkt( prec );
   return QVariant( wkt );
 }
 
@@ -1546,6 +1552,34 @@ static QVariant fcnSpecialColumn( const QVariantList& values, const QgsFeature* 
   return QgsExpression::specialColumn( varName );
 }
 
+static QVariant fcnGetGeometry( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QgsFeature feat = getFeature( values.at( 0 ), parent );
+  QgsGeometry* geom = feat.geometry();
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+
+static QVariant fcnTransformGeometry( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QString sAuthId = getStringValue( values.at( 1 ), parent );
+  QString dAuthId = getStringValue( values.at( 2 ), parent );
+  
+  QgsCoordinateReferenceSystem s;
+  if ( ! s.createFromOgcWmsCrs( sAuthId ) )
+    return QVariant::fromValue( fGeom );
+  QgsCoordinateReferenceSystem d;
+  if ( ! d.createFromOgcWmsCrs( dAuthId ) )
+    return QVariant::fromValue( fGeom );
+    
+  QgsCoordinateTransform t( s, d );
+  if ( fGeom.transform( t ) == 0 )
+    return QVariant::fromValue( fGeom );
+  return QVariant();
+}
+
 static QVariant fcnGetFeature( const QVariantList& values, const QgsFeature *, QgsExpression* parent )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
@@ -1765,7 +1799,9 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "symDifference", 2, fcnSymDifference, "Geometry" )
     << new StaticFunction( "combine", 2, fcnCombine, "Geometry" )
     << new StaticFunction( "union", 2, fcnCombine, "Geometry" )
-    << new StaticFunction( "geomToWKT", 1, fcnGeomToWKT, "Geometry" )
+    << new StaticFunction( "geomToWKT", -1, fcnGeomToWKT, "Geometry" )
+    << new StaticFunction( "geometry", 1, fcnGetGeometry, "Geometry" )
+    << new StaticFunction( "transform", 3, fcnTransformGeometry, "Geometry" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
