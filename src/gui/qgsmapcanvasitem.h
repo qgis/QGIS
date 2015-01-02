@@ -65,10 +65,10 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
     Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point );
 
-    //! returns canvas item rectangle
+    //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
 
-    //! sets canvas item rectangle
+    //! sets canvas item rectangle in map units
     void setRect( const QgsRectangle& r );
 
     //! transformation from screen coordinates to map coordinates
