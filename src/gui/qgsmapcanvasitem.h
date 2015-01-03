@@ -69,7 +69,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     QgsRectangle rect() const;
 
     //! sets canvas item rectangle in map units
-    void setRect( const QgsRectangle& r );
+    void setRect( const QgsRectangle& r, bool updateRotation=true );
 
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoordinates( const QPoint& point ) const;
@@ -91,6 +91,8 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //!       be used to correctly present pre-rendered map
     //!       on rotation change
     QgsRectangle mRect;
+
+    double mRectRotation;
 
     //! offset from normal position due current panning operation,
     //! used when converting map coordinates to move map canvas items

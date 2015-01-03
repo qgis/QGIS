@@ -73,7 +73,7 @@ QgsRectangle QgsMapCanvasItem::rect() const
 }
 
 
-void QgsMapCanvasItem::setRect( const QgsRectangle& rect )
+void QgsMapCanvasItem::setRect( const QgsRectangle& rect, bool updateRotation )
 {
   mRect = rect;
   //updatePosition();
@@ -93,6 +93,11 @@ void QgsMapCanvasItem::setRect( const QgsRectangle& rect )
   prepareGeometryChange();
   setPos( r.topLeft() );
   mItemSize = QSizeF( r.width() + 2, r.height() + 2 );
+
+  if ( updateRotation ) {
+    mRectRotation = mMapCanvas->rotation();
+    setRotation( 0 );
+  }
 
   // QgsDebugMsg(QString("[%1,%2]-[%3x%4]").arg((int) r.left()).arg((int) r.top()).arg((int) r.width()).arg((int) r.height()));
 
@@ -132,7 +137,8 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext&
 void QgsMapCanvasItem::updatePosition()
 {
   // default implementation: recalculate position of the item
-  setRect( mRect );
+  setRect( mRect, false );
+  setRotation( mMapCanvas->rotation() - mRectRotation );
 }
 
 
