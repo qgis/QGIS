@@ -4139,7 +4139,9 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
   if ( rotation )
   {
     // Only if not horizontal
-    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
+         lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
+         lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
     {
       painter->rotate( rotation );
     }
@@ -4303,7 +4305,9 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
       if ( rotation )
       {
         // Only if not horizontal
-        if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+        if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
+             lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
+             lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
         {
           painter->rotate( rotation );
         }
