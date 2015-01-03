@@ -45,7 +45,7 @@ class QgsMapCanvasItem : QGraphicsItem
     QgsRectangle rect() const;
 
     //! sets canvas item rectangle in map units
-    void setRect( const QgsRectangle& r );
+    void setRect( const QgsRectangle& r, bool resetRotation = true );
 
     //! transformation from screen coordinates to map coordinates
     QgsPoint toMapCoordinates( const QPoint& point ) const;
