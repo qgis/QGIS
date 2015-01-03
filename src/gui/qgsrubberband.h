@@ -242,6 +242,8 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     QgsGeometry* asGeometry();
 
+    virtual void updatePosition();
+
   protected:
     virtual void paint( QPainter* p );
 
