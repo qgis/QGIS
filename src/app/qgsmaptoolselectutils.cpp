@@ -49,15 +49,17 @@ void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas* canvas, QRect& selectRe
 {
   const QgsMapToPixel* transform = canvas->getCoordinateTransform();
   QgsPoint ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
+  QgsPoint lr = transform->toMapCoordinates( selectRect.right(), selectRect.bottom() );
+  QgsPoint ul = transform->toMapCoordinates( selectRect.left(), selectRect.top() );
   QgsPoint ur = transform->toMapCoordinates( selectRect.right(), selectRect.top() );
 
   if ( rubberBand )
   {
     rubberBand->reset( QGis::Polygon );
     rubberBand->addPoint( ll, false );
-    rubberBand->addPoint( QgsPoint( ur.x(), ll.y() ), false );
+    rubberBand->addPoint( lr, false );
     rubberBand->addPoint( ur, false );
-    rubberBand->addPoint( QgsPoint( ll.x(), ur.y() ), true );
+    rubberBand->addPoint( ul, true );
   }
 }
 
