@@ -73,7 +73,7 @@ void QgsMapToolAddPart::canvasMapReleaseEvent( QgsMapMouseEvent * e )
     case CapturePoint:
     {
       QgsPoint layerPoint;
-      QgsPoint mapPoint;
+      QgsPoint mapPoint = e->mapPoint();
 
       if ( nextPoint( mapPoint, layerPoint ) != 0 )
       {
