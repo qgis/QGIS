@@ -16,13 +16,13 @@
 #ifndef QGSMAPTOOLDELETERING_H
 #define QGSMAPTOOLDELETERING_H
 
-#include "qgsmaptoolvertexedit.h"
+#include "qgsmaptooledit.h"
 #include "qgsrubberband.h"
 
 class QgsVertexMarker;
 /**Map tool to delete vertices from line/polygon features*/
 
-class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
+class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
 {
     Q_OBJECT
 

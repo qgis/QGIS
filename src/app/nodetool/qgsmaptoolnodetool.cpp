@@ -47,7 +47,7 @@ struct QgsFeatureIdFilter : public QgsPointLocator::MatchFilter
 };
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
-    : QgsMapToolVertexEdit( canvas )
+    : QgsMapToolEdit( canvas )
     , mSelectedFeature( 0 )
     , mMoving( true )
     , mClicked( false )

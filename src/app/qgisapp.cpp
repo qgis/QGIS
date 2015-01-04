@@ -267,7 +267,6 @@
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolsplitparts.h"
 #include "qgsmaptooltextannotation.h"
-#include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
