@@ -1,9 +1,9 @@
 QGIS
 Building QGIS from source - step by step
-Monday November 24, 2014
+Tuesday December 30, 2014
 
 
-Last Updated: Monday November 24, 2014
+Last Updated: Tuesday December 30, 2014
 Last Change : Monday November 24, 2014
 
 
@@ -1748,7 +1748,7 @@ Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
 component on Leopard and Snow, add the following line before the last line in
 the above configuration:
 
-  -D WITH_MAPSERVER=TRUE \
+  -D WITH_SERVER=TRUE \
 
 On Lion you are on your own to figure out how to install libfcgi and add fcgi
 support to the system Apache.  Not recommended for the average user.
