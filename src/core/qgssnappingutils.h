@@ -44,6 +44,8 @@ class QgsSnappingUtils : public QObject
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
     // TODO: multi-variant
 
+    /** snap to current layer */
+    QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
 
     // environment setup
 

@@ -60,16 +60,6 @@ void QgsSnappingUtils::clearAllLocators()
 }
 
 
-// return snap tolerance in map units (not in layer units as from QgsTolerance)
-static double _snapTolerance( double tolerance, QgsTolerance::UnitType units, const QgsMapSettings& mapSettings )
-{
-  if ( units == QgsTolerance::MapUnits )
-    return tolerance;
-  else // pixels
-    return tolerance * mapSettings.mapUnitsPerPixel();
-}
-
-
 static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& pt, const QgsPointLocator::MatchList& segments )
 {
   QSet<QgsPoint> endpoints;
@@ -180,7 +170,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
       return QgsPointLocator::Match();
 
     // data from project
-    double tolerance = _snapTolerance( mDefaultTolerance, mDefaultUnit, mMapSettings );
+    double tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
 
     // use ad-hoc locator
@@ -208,7 +198,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
 
     foreach ( const LayerConfig& layerConfig, mLayers )
     {
-      double tolerance = _snapTolerance( layerConfig.tolerance, layerConfig.unit, mMapSettings );
+      double tolerance = QgsTolerance::toleranceInMapUnits( layerConfig.tolerance, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator* loc = locatorForLayer( layerConfig.layer ) )
       {
         loc->init( layerConfig.type );
@@ -230,6 +220,25 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
   }
 
   return QgsPointLocator::Match();
+}
+
+
+QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter )
+{
+  if ( !mCurrentLayer )
+    return QgsPointLocator::Match();
+
+  QgsPointLocator* loc = locatorForLayer( mCurrentLayer );
+  loc->init( type );
+  if ( !loc )
+    return QgsPointLocator::Match();
+
+  QgsPoint pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
+  double tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
+
+  QgsPointLocator::Match bestMatch;
+  _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
+  return bestMatch;
 }
 
 void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
