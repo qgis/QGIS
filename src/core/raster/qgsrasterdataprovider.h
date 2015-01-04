@@ -56,7 +56,7 @@ class QgsMapSettings;
  *
  * \note added in 2.8
  */
-class QgsImageFetcher : public QObject
+class CORE_EXPORT QgsImageFetcher : public QObject
 {
     Q_OBJECT
   public:
