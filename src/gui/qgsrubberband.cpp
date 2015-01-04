@@ -536,7 +536,6 @@ void QgsRubberBand::updateRect()
   {
     QList<QgsPoint>::const_iterator it = mPoints.at( i ).constBegin(),
                                          itE = mPoints.at( i ).constEnd();
-    int j = 0;
     for ( ; it != itE; ++it )
     {
       QgsPoint p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
