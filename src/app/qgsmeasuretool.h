@@ -18,7 +18,6 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;

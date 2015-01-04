@@ -90,12 +90,12 @@ class QgsPointLocator : public QObject
       QgsPoint point() const { return mPoint; }
 
       //! for vertex / edge match (first vertex of the edge)
-      int vertexIndex() { return mVertexIndex; }
+      int vertexIndex() const { return mVertexIndex; }
 
       //! reference vector layer
-      QgsVectorLayer* layer() { return mLayer; }
+      QgsVectorLayer* layer() const { return mLayer; }
 
-      QgsFeatureId featureId() { return mFid; }
+      QgsFeatureId featureId() const { return mFid; }
 
       void replaceIfBetter( const Match& m, double maxDistance )
       {

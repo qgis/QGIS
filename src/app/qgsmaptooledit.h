@@ -16,9 +16,11 @@
 #ifndef QGSMAPTOOLEDIT_H
 #define QGSMAPTOOLEDIT_H
 
+#include "qgis.h"
 #include "qgsmaptooladvanceddigitizing.h"
 
 class QgsRubberBand;
+class QgsVectorLayer;
 class QKeyEvent;
 
 /**Base class for map tools that edit vector geometry*/

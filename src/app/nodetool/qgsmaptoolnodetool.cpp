@@ -38,6 +38,13 @@ struct QgsExcludePointFilter : public QgsPointLocator::MatchFilter
   QgsPoint mExclPoint;
 };
 
+//! Match filter that accepts only matches from a particular feature ID
+struct QgsFeatureIdFilter : public QgsPointLocator::MatchFilter
+{
+  QgsFeatureIdFilter( const QgsFeatureId& fid ) : mFid( fid ) {}
+  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.featureId() == mFid; }
+  QgsFeatureId mFid;
+};
 
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolVertexEdit( canvas )
@@ -357,7 +364,6 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 
   mClicked = true;
   mPressCoordinates = e->pos();
-  QList<QgsSnappingResult> snapResults;
   if ( !mSelectedFeature )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -365,9 +371,8 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
       return;
 
     mSelectAnother = false;
-    mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertexAndSegment, -1 );
-
-    if ( snapResults.size() < 1 )
+    QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex | QgsPointLocator::Edge );
+    if ( !m.isValid() )
     {
       emit messageEmitted( tr( "could not snap to a segment on the current layer." ) );
       return;
@@ -376,7 +381,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     // remove previous warning
     emit messageDiscarded();
 
-    mSelectedFeature = new QgsSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
+    mSelectedFeature = new QgsSelectedFeature( m.featureId(), vlayer, mCanvas );
     connect( QgisApp::instance()->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
     connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
@@ -401,7 +406,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( layerCoordPoint, atVertex, beforeVertex, afterVertex, dist );
     dist = sqrt( dist );
 
-    mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex, tol );
+    QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
     if ( dist <= tol )
     {
       // some vertex selected
@@ -426,7 +431,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
       else
       {
         // select another feature
-        mAnother = snapResults.first().snappedAtGeometry;
+        mAnother = m.featureId();
         mSelectAnother = true;
       }
     }
@@ -434,57 +439,53 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     {
       // no near vertex to snap
       //  unless point layer, try segment
-      if ( !mIsPoint )
-        mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment, tol );
+      QgsPointLocator::Match m2;
+      QgsFeatureIdFilter filterFid( mSelectedFeature->featureId() );
+      if ( mIsPoint )
+        m2 = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex, &filterFid );
+      else
+        m2 = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Edge, &filterFid );
 
-      if ( snapResults.size() > 0 )
+      if ( m2.isValid() )
       {
-        // need to check all if there is a point in the feature
-        mAnother = snapResults.first().snappedAtGeometry;
+        mAnother = 0;
+        mSelectAnother = false;
+      }
+      else
+      {
+        mAnother = m.featureId();
         mSelectAnother = true;
-        QList<QgsSnappingResult>::iterator it = snapResults.begin();
-        QgsSnappingResult snapResult;
-        for ( ; it != snapResults.end(); ++it )
-        {
-          if ( it->snappedAtGeometry == mSelectedFeature->featureId() )
-          {
-            snapResult = *it;
-            mAnother = 0;
-            mSelectAnother = false;
-            break;
-          }
-        }
+      }
 
-        if ( !mSelectAnother )
-        {
-          mMoving = true;
-          mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
+      if ( !mSelectAnother )
+      {
+        mMoving = true;
+        mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
 
-          if ( mIsPoint )
+        if ( mIsPoint )
+        {
+          if ( !mCtrl )
           {
-            if ( !mCtrl )
-            {
-              mSelectedFeature->deselectAllVertexes();
-              mSelectedFeature->selectVertex( snapResult.snappedVertexNr );
-            }
-            else
-            {
-              mSelectedFeature->invertVertexSelection( snapResult.snappedVertexNr );
-            }
+            mSelectedFeature->deselectAllVertexes();
+            mSelectedFeature->selectVertex( m2.vertexIndex() );
           }
           else
           {
-            if ( !mCtrl )
-            {
-              mSelectedFeature->deselectAllVertexes();
-              mSelectedFeature->selectVertex( snapResult.afterVertexNr );
-              mSelectedFeature->selectVertex( snapResult.beforeVertexNr );
-            }
-            else
-            {
-              mSelectedFeature->invertVertexSelection( snapResult.afterVertexNr );
-              mSelectedFeature->invertVertexSelection( snapResult.beforeVertexNr );
-            }
+            mSelectedFeature->invertVertexSelection( m2.vertexIndex() );
+          }
+        }
+        else
+        {
+          if ( !mCtrl )
+          {
+            mSelectedFeature->deselectAllVertexes();
+            mSelectedFeature->selectVertex( m2.vertexIndex() + 1 );
+            mSelectedFeature->selectVertex( m2.vertexIndex() );
+          }
+          else
+          {
+            mSelectedFeature->invertVertexSelection( m2.vertexIndex() + 1 );
+            mSelectedFeature->invertVertexSelection( m2.vertexIndex() );
           }
         }
       }
@@ -621,7 +622,6 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
     mDeselectOnRelease = -1;
   }
 
-  mRecentSnappingResults.clear();
   mExcludePoint.clear();
 }
 
@@ -690,17 +690,13 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   QMultiMap<double, QgsSnappingResult> currentResultList;
 
-  QList<QgsSnappingResult> snapResults;
   mMoving = false;
-  double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
-  mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment, tol );
-  if ( snapResults.size() < 1 ||
-       snapResults.first().snappedAtGeometry != mSelectedFeature->featureId() ||
-       snapResults.first().snappedVertexNr != -1 )
+  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Edge );
+  if ( !m.isValid() || m.featureId() != mSelectedFeature->featureId() )
     return;
 
   // some segment selected
-  QgsPoint layerCoords = toLayerCoordinates( vlayer, snapResults.first().snappedVertex );
+  QgsPoint layerCoords = toLayerCoordinates( vlayer, m.point() );
   if ( topologicalEditing )
   {
     // snap from adding position to this vertex when topological editing is enabled
@@ -711,7 +707,7 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
   vlayer->beginEditCommand( tr( "Inserted vertex" ) );
 
   // add vertex
-  vlayer->insertVertex( layerCoords.x(), layerCoords.y(), mSelectedFeature->featureId(), snapResults.first().afterVertexNr );
+  vlayer->insertVertex( layerCoords.x(), layerCoords.y(), mSelectedFeature->featureId(), m.vertexIndex() + 1 );
 
   if ( topologicalEditing )
   {

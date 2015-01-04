@@ -16,7 +16,9 @@
 #ifndef QGSMAPTOOLNODETOOL_H
 #define QGSMAPTOOLNODETOOL_H
 
+#include "qgsfeature.h"
 #include "qgsmaptoolvertexedit.h"
+#include "qgspoint.h"
 
 class QRubberBand;
 

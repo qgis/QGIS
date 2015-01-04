@@ -16,9 +16,7 @@
 #ifndef QGSMAPTOOLVERTEXEDIT_H
 #define QGSMAPTOOLVERTEXEDIT_H
 
-#include "qgsmapcanvassnapper.h"
 #include "qgsmaptooledit.h"
-#include "qgsgeometry.h"
 
 /**Base class for vertex manipulation tools.
  Inherited by QgsMapToolMoveVertex, QgsMapToolAddVertex,
@@ -35,9 +33,6 @@ class APP_EXPORT QgsMapToolVertexEdit: public QgsMapToolEdit
 
   protected:
 
-    /**Snapping results that are collected during the mouse press event
-     (search for vertices/segments to manipulate)*/
-    QList<QgsSnappingResult> mRecentSnappingResults;
 };
 
 #endif

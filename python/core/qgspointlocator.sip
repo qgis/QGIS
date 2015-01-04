@@ -43,12 +43,12 @@ class QgsPointLocator : QObject
       QgsPoint point() const;
 
       //! for vertex / edge match (first vertex of the edge)
-      int vertexIndex();
+      int vertexIndex() const;
 
       //! reference vector layer
-      QgsVectorLayer* layer();
+      QgsVectorLayer* layer() const;
 
-      QgsFeatureId featureId();
+      QgsFeatureId featureId() const;
 
       void replaceIfBetter( const QgsPointLocator::Match& m, double maxDistance );
 

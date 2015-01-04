@@ -19,7 +19,6 @@
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsmaptool.h"
-#include "qgsmapcanvassnapper.h"
 
 class QgsMapMouseEvent;
 
@@ -80,8 +79,6 @@ class APP_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
     CaptureMode mode() { return mCaptureMode; }
 
   protected:
-    // CADTODO: remove
-    QgsMapCanvasSnapper mSnapper;
 
     QgsAdvancedDigitizingDockWidget* mCadDockWidget;
 

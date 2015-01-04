@@ -18,10 +18,10 @@
 
 #include <QMouseEvent>
 
-#include "qgsmapcanvassnapper.h"
 #include "qgspoint.h"
 #include "qgspointlocator.h"
 
+class QgsMapCanvas;
 class QgsMapToolAdvancedDigitizing;
 
 class APP_EXPORT QgsMapMouseEvent : public QMouseEvent
