@@ -723,14 +723,7 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    // This is an hack to pass QgsMapCanvasItem::setRect what it
-    // expects (encoding of position and size of the item)
-    const QgsMapToPixel& m2p = mSettings.mapToPixel();
-    QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
-    double res = m2p.mapUnitsPerPixel();
-    QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
-
-    mMap->setContent( img, rect );
+    mMap->setContent( img, imageRect( img ) );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -741,9 +734,21 @@ void QgsMapCanvas::rendererJobFinished()
   emit mapCanvasRefreshed();
 }
 
+QgsRectangle QgsMapCanvas::imageRect( const QImage& img )
+{
+  // This is an hack to pass QgsMapCanvasItem::setRect what it
+  // expects (encoding of position and size of the item)
+  const QgsMapToPixel& m2p = mSettings.mapToPixel();
+  QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
+  double res = m2p.mapUnitsPerPixel();
+  QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
+  return rect;
+}
+
 void QgsMapCanvas::mapUpdateTimeout()
 {
-  mMap->setContent( mJob->renderedImage(), mJob->mapSettings().visibleExtent() );
+  const QImage& img = mJob->renderedImage();
+  mMap->setContent( img, imageRect( img ) );
 }
 
 void QgsMapCanvas::stopRendering()

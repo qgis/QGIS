@@ -643,6 +643,8 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     QgsPreviewEffect* mPreviewEffect;
 
+    QgsRectangle imageRect( const QImage& img );
+
 }; // class QgsMapCanvas
 
 
