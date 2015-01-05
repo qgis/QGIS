@@ -560,7 +560,7 @@ void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature fe
   // Check if we're running with an embedded frame we need to update
   if ( mAttributeEditorFrame )
   {
-    if ( feature.isValid() && mReferencedAttributeForm )
+    if ( mReferencedAttributeForm )
     {
       mReferencedAttributeForm->setFeature( feature );
     }
