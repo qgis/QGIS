@@ -277,7 +277,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           // find or create menu for given menu name
           // adapted from QgisApp::getPluginMenu( QString menuName )
           QString menuName = lyrActions[i].menu;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
           // Mac doesn't have '&' keyboard shortcuts.
           menuName.remove( QChar( '&' ) );
 #endif

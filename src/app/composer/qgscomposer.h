@@ -114,7 +114,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     virtual void showEvent( QShowEvent* event );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     //! Change event (update window menu on ActivationChange)
     virtual void changeEvent( QEvent * );
 #endif

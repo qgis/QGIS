@@ -369,7 +369,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionCustomProjection() { return mActionCustomProjection; }
     QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QAction *actionWindowMinimize() { return mActionWindowMinimize; }
     QAction *actionWindowZoom() { return mActionWindowZoom; }
     QAction *actionWindowAllToFront() { return mActionWindowAllToFront; }
@@ -399,7 +399,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
     QMenu *webMenu() { return mWebMenu; }
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
 #else
@@ -1354,7 +1354,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     // actions for menus and toolbars -----------------
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QAction *mActionWindowMinimize;
     QAction *mActionWindowZoom;
     QAction *mActionWindowSeparator1;
@@ -1373,7 +1373,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     // menus ------------------------------------------
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QMenu *mWindowMenu;
 #endif
     QMenu *mPanelMenu;
@@ -1386,7 +1386,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QDockWidget *mpGpsDock;
     QDockWidget *mLogDock;
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     //! Window menu action to select this window
     QAction *mWindowAction;
 #endif

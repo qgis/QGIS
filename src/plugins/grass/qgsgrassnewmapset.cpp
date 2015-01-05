@@ -62,7 +62,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   QgsDebugMsg( "QgsGrassNewMapset()" );
 
   setupUi( this );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWizardStyle( QWizard::ClassicStyle );
 #endif
 

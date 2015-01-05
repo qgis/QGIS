@@ -564,7 +564,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
     : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL )
 {
   setupUi( this );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
 

@@ -45,7 +45,7 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
     : QDialog( parent ), mStyle( style ), mModified( false )
 {
   setupUi( this );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
 

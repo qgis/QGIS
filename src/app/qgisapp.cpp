@@ -637,7 +637,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
@@ -1147,7 +1147,7 @@ void QgisApp::createActions()
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
@@ -1195,7 +1195,7 @@ void QgisApp::createActions()
 
   // Help Menu Items
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mActionHelpContents->setShortcut( QString( "Ctrl+?" ) );
   mActionQgisHomePage->setShortcut( QString() );
 #endif
@@ -1272,7 +1272,7 @@ void QgisApp::showPythonDialog()
     mPythonUtils->getError( className, text );
     messageBar()->pushMessage( tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text, QgsMessageBar::WARNING );
   }
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   else
   {
     addWindow( mActionShowPythonDialog );
@@ -1424,14 +1424,14 @@ void QgisApp::createMenus()
   }
 
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   //disabled for OSX - see #10761
   //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
   mMenuPreviewMode->menuAction()->setVisible( false );
 #endif
 
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 
   // keep plugins from hijacking About and Preferences application menus
   // these duplicate actions will be moved to application menus by Qt
@@ -4473,7 +4473,7 @@ void QgisApp::activate()
 
 void QgisApp::bringAllToFront()
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Bring forward all open windows while maintaining layering order
   ProcessSerialNumber psn;
   GetCurrentProcess( &psn );
@@ -4483,7 +4483,7 @@ void QgisApp::bringAllToFront()
 
 void QgisApp::addWindow( QAction *action )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mWindowActions->addAction( action );
   mWindowMenu->addAction( action );
   action->setCheckable( true );
@@ -4495,7 +4495,7 @@ void QgisApp::addWindow( QAction *action )
 
 void QgisApp::removeWindow( QAction *action )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mWindowActions->removeAction( action );
   mWindowMenu->removeAction( action );
 #else
@@ -7381,7 +7381,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( "qgispython" );
-#if defined(Q_WS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -8085,7 +8085,7 @@ void QgisApp::closeProject()
 void QgisApp::changeEvent( QEvent* event )
 {
   QMainWindow::changeEvent( event );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   switch ( event->type() )
   {
     case QEvent::ActivationChange:
@@ -8133,7 +8133,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
    * of the menu.
    */
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8205,7 +8205,7 @@ void QgisApp::removePluginMenu( QString name, QAction* action )
 
 QMenu* QgisApp::getDatabaseMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8245,7 +8245,7 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
 
 QMenu* QgisApp::getRasterMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8295,7 +8295,7 @@ QMenu* QgisApp::getRasterMenu( QString menuName )
 
 QMenu* QgisApp::getVectorMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8335,7 +8335,7 @@ QMenu* QgisApp::getVectorMenu( QString menuName )
 
 QMenu* QgisApp::getWebMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif

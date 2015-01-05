@@ -74,7 +74,7 @@ QgsColorButtonV2::~QgsColorButtonV2()
 QSize QgsColorButtonV2::sizeHint() const
 {
   //make sure height of button looks good under different platforms
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
   return QSize( 120, 22 );
 #else
   return QSize( 120, 28 );
@@ -439,7 +439,7 @@ void QgsColorButtonV2::prepareMenu()
   mMenu->addAction( pasteColorAction );
   connect( pasteColorAction, SIGNAL( triggered() ), this, SLOT( pasteColor() ) );
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
   //disabled for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
@@ -563,7 +563,7 @@ void QgsColorButtonV2::setButtonBackground( const QColor &color )
       QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
                          this );
       //make sure height of icon looks good under different platforms
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
 #else
       mIconSize = QSize( buttonSize.width() - 10, height() - 12 );
@@ -574,7 +574,7 @@ void QgsColorButtonV2::setButtonBackground( const QColor &color )
   else
   {
     //no menu
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     currentIconSize = QSize( width() - 10, height() - 6 );
 #else
     currentIconSize = QSize( width() - 10, height() - 12 );
