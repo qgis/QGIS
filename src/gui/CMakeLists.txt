@@ -202,6 +202,7 @@ qgsoptionsdialogbase.cpp
 qgsowssourceselect.cpp
 qgspluginmanagerinterface.cpp
 qgsprojectbadlayerguihandler.cpp
+qgsprojectionselectionwidget.cpp
 qgsprojectionselector.cpp
 qgsquerybuilder.cpp
 qgsrasterformatsaveoptionswidget.cpp
@@ -399,6 +400,7 @@ qgsoptionsdialogbase.h
 qgsowssourceselect.h
 qgspluginmanagerinterface.h
 qgsprojectbadlayerguihandler.h
+qgsprojectionselectionwidget.h
 qgsprojectionselector.h
 qgsquerybuilder.h
 qgsrasterformatsaveoptionswidget.h
@@ -482,6 +484,7 @@ qgsmessagebar.h
 qgsmessageviewer.h
 qgsoptionsdialogbase.h
 qgsowssourceselect.h
+qgsprojectionselectionwidget.h
 qgsprojectionselector.h
 qgsrelationeditorwidget.h
 qgsrubberband.h
