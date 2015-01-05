@@ -363,8 +363,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
   QString myLayerDefaultCrs = settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
   mLayerDefaultCrs.createFromOgcWmsCrs( myLayerDefaultCrs );
-  //display the crs as friendly text rather than in wkt
-  leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
+  leLayerGlobalCrs->setCrs( mLayerDefaultCrs );
 
   //on the fly CRS transformation settings
   //it would be logical to have single settings value but originaly the radio buttons were checkboxes
@@ -383,8 +382,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
 
   QString myDefaultCrs = settings.value( "/Projections/projectDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs.createFromOgcWmsCrs( myDefaultCrs );
-  //display the crs as friendly text rather than in wkt
-  leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
+  leProjectGlobalCrs->setCrs( mDefaultCrs );
 
   //default datum transformations
   settings.beginGroup( "/Projections" );
@@ -1454,49 +1452,14 @@ void QgsOptions::on_mBoldGroupBoxTitleChkBx_clicked( bool chkd )
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
-void QgsOptions::on_pbnSelectProjection_clicked()
+void QgsOptions::on_leProjectGlobalCrs_crsChanged(QgsCoordinateReferenceSystem crs)
 {
-  QSettings settings;
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-
-  //find out crs id of current proj4 string
-  mySelector->setSelectedCrsId( mLayerDefaultCrs.srsid() );
-
-  if ( mySelector->exec() )
-  {
-    mLayerDefaultCrs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
-    QgsDebugMsg( QString( "Setting default project CRS to : %1" ).arg( mySelector->selectedAuthId() ) );
-    leLayerGlobalCrs->setText( mLayerDefaultCrs.authid() + " - " + mLayerDefaultCrs.description() );
-    QgsDebugMsg( QString( "------ Global Layer Default Projection Selection set to ----------\n%1" ).arg( leLayerGlobalCrs->text() ) );
-  }
-  else
-  {
-    QgsDebugMsg( "------ Global Layer Default Projection Selection change cancelled ----------" );
-    QApplication::restoreOverrideCursor();
-  }
-
+  mDefaultCrs = crs;
 }
 
-void QgsOptions::on_pbnSelectOtfProjection_clicked()
+void QgsOptions::on_leLayerGlobalCrs_crsChanged(QgsCoordinateReferenceSystem crs)
 {
-  QSettings settings;
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-
-  //find out crs id of current proj4 string
-  mySelector->setSelectedCrsId( mDefaultCrs.srsid() );
-
-  if ( mySelector->exec() )
-  {
-    mDefaultCrs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
-    QgsDebugMsg( QString( "Setting default project CRS to : %1" ).arg( mySelector->selectedAuthId() ) );
-    leProjectGlobalCrs->setText( mDefaultCrs.authid() + " - " + mDefaultCrs.description() );
-    QgsDebugMsg( QString( "------ Global OTF Projection Selection set to ----------\n%1" ).arg( leProjectGlobalCrs->text() ) );
-  }
-  else
-  {
-    QgsDebugMsg( "------ Global OTF Projection Selection change cancelled ----------" );
-    QApplication::restoreOverrideCursor();
-  }
+mLayerDefaultCrs = crs;
 }
 
 void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )
