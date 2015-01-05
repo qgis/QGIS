@@ -383,6 +383,7 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
 
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 {
+  Q_UNUSED( index )
   QSettings settings;
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
   {
