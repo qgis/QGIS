@@ -344,6 +344,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
 
     friend class QgsOgrFeatureSource;
+
+    /** whether the file is opened in write mode*/
+    bool mWriteAccess;
 };
 
 
