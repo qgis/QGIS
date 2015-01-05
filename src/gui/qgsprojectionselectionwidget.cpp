@@ -23,19 +23,21 @@
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
     QWidget( parent )
 {
-
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   setLayout( layout );
 
   mCrsLineEdit = new QLineEdit( tr( "invalid projection" ), this );
-  mCrsLineEdit->setReadOnly(true);
+  mCrsLineEdit->setReadOnly( true );
   layout->addWidget( mCrsLineEdit );
 
   mButton = new QToolButton( this );
   mButton->setIcon( QgsApplication::getThemeIcon( "mActionSetProjection.svg" ) );
   layout->addWidget( mButton );
+
+  setFocusPolicy( Qt::StrongFocus );
+  setFocusProxy( mButton );
 
   connect( mButton, SIGNAL( clicked() ), this, SLOT( selectCrs() ) );
 }
@@ -64,7 +66,7 @@ void QgsProjectionSelectionWidget::selectCrs()
 }
 
 
-void QgsProjectionSelectionWidget::setCrs( QgsCoordinateReferenceSystem crs )
+void QgsProjectionSelectionWidget::setCrs( const QgsCoordinateReferenceSystem& crs )
 {
   if ( crs.isValid() )
   {

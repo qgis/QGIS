@@ -23,17 +23,38 @@
 
 #include "qgscoordinatereferencesystem.h"
 
+/**
+ * \class QgsProjectionSelectionWidget
+ * \ingroup gui
+ * \brief A widget for selecting a projection.
+ * \note added in QGIS 2.7
+ */
 class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 {
     Q_OBJECT
   public:
     explicit QgsProjectionSelectionWidget( QWidget *parent = 0 );
 
+    /* Returns the currently selected CRS for the widget
+     * @returns current CRS
+     */
+    QgsCoordinateReferenceSystem crs() const { return mCrs; }
+
   signals:
+
+    /* Emitted when the selected CRS is changed
+     */
     void crsChanged( QgsCoordinateReferenceSystem );
 
   public slots:
-    void setCrs( QgsCoordinateReferenceSystem crs );
+
+    /* Sets the current CRS for the widget
+     * @param crs new CRS
+     */
+    void setCrs( const QgsCoordinateReferenceSystem& crs );
+
+    /* Opens the dialog for selecting a new CRS
+     */
     void selectCrs();
 
   private:
