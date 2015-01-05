@@ -26,6 +26,7 @@
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
+#include "qgsprojectionselectionwidgetplugin.h"
 #include "qgsrelationeditorwidgetplugin.h"
 #include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
@@ -44,6 +45,7 @@ QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
   mWidgets.append( new QgsFieldComboBoxPlugin );
   mWidgets.append( new QgsFieldExpressionWidgetPlugin );
   mWidgets.append( new QgsMapLayerComboBoxPlugin );
+  mWidgets.append( new QgsProjectionSelectionWidgetPlugin );
   mWidgets.append( new QgsRelationEditorWidgetPlugin );
   mWidgets.append( new QgsRelationReferenceWidgetPlugin );
   mWidgets.append( new QgsScaleRangeWidgetPlugin );

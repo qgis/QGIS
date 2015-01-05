@@ -25,6 +25,7 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilterlineeditplugin.cpp
   qgsmaplayercomboboxplugin.cpp
+  qgsprojectionselectionwidgetplugin.cpp
   qgsrelationeditorwidgetplugin.cpp
   qgsrelationreferencewidgetplugin.cpp
   qgsscalerangewidgetplugin.cpp
@@ -43,6 +44,7 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
+  qgsprojectionselectionwidgetplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
@@ -69,6 +71,7 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
+  qgsprojectionselectionwidgetplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
