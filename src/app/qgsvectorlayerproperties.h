@@ -103,7 +103,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
     void on_pbnQueryBuilder_clicked();
     void on_pbnIndex_clicked();
-    void on_pbnChangeSpatialRefSys_clicked();
+    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
     void on_pbnLoadDefaultStyle_clicked();
     void on_pbnSaveDefaultStyle_clicked();
     void on_pbnLoadStyle_clicked();

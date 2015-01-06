@@ -182,7 +182,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -203,7 +203,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>615</width>
-                <height>508</height>
+                <height>509</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -218,7 +218,7 @@
                  <property name="title">
                   <string>Layer info</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastergeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_4">
@@ -324,30 +324,14 @@
                  <property name="title">
                   <string>Coordinate reference system</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastergeneral</string>
                  </property>
-                 <layout class="QGridLayout" name="_6">
-                  <property name="margin">
-                   <number>11</number>
-                  </property>
-                  <item row="0" column="1">
-                   <widget class="QPushButton" name="pbnChangeSpatialRefSys">
-                    <property name="toolTip">
-                     <string>Specify the coordinate reference system of the layer's geometry.</string>
-                    </property>
-                    <property name="whatsThis">
-                     <string>Specify the coordinate reference system of the layer's geometry.</string>
-                    </property>
-                    <property name="text">
-                     <string>Specify...</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="0">
-                   <widget class="QLineEdit" name="leSpatialRefSys">
-                    <property name="readOnly">
-                     <bool>true</bool>
+                 <layout class="QVBoxLayout" name="verticalLayout_13">
+                  <item>
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
                     </property>
                    </widget>
                   </item>
@@ -365,18 +349,18 @@
                  <property name="checked">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastergeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
-                  <property name="verticalSpacing">
-                   <number>6</number>
-                  </property>
                   <property name="margin">
                    <number>11</number>
                   </property>
+                  <property name="verticalSpacing">
+                   <number>6</number>
+                  </property>
                   <item row="0" column="0" colspan="2">
-                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
                     <property name="toolTip">
                      <string/>
                     </property>
@@ -426,7 +410,7 @@
                 <x>0</x>
                 <y>0</y>
                 <width>615</width>
-                <height>508</height>
+                <height>509</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -441,7 +425,7 @@
                  <property name="title">
                   <string>Band rendering</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -529,13 +513,13 @@
                  <property name="title">
                   <string>Color rendering</string>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_2">
@@ -831,13 +815,13 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="collapsed">
+                 <property name="collapsed" stdset="0">
                   <bool>false</bool>
                  </property>
-                 <property name="saveCollapsedState">
+                 <property name="saveCollapsedState" stdset="0">
                   <bool>true</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rasterstyle</string>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout">
@@ -1047,8 +1031,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>400</width>
-                <height>381</height>
+                <width>472</width>
+                <height>395</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1065,7 +1049,7 @@
                    <property name="title">
                     <string>Global transparency</string>
                    </property>
-                   <property name="syncGroup">
+                   <property name="syncGroup" stdset="0">
                     <string notr="true">rastertransp</string>
                    </property>
                    <layout class="QGridLayout" name="_3">
@@ -1149,7 +1133,7 @@
                    <property name="title">
                     <string>No data value</string>
                    </property>
-                   <property name="syncGroup">
+                   <property name="syncGroup" stdset="0">
                     <string notr="true">rastertransp</string>
                    </property>
                    <layout class="QGridLayout" name="gridLayout_11">
@@ -1223,7 +1207,7 @@
                  <property name="title">
                   <string>Custom transparency options</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastertransp</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_3">
@@ -1454,8 +1438,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>515</width>
-                <height>196</height>
+                <width>600</width>
+                <height>205</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1518,8 +1502,8 @@
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Droid Sans'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell';&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -1615,8 +1599,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>84</width>
+                <height>36</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1665,8 +1649,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>302</width>
-                <height>593</height>
+                <width>393</width>
+                <height>608</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -1675,7 +1659,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastermeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -1770,7 +1754,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -1802,7 +1786,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>MetadataUrl</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -1957,7 +1941,7 @@ p, li { white-space: pre-wrap; }
                  <property name="title">
                   <string>Properties</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">rastermeta</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -2066,6 +2050,12 @@ p, li { white-space: pre-wrap; }
    <header>qgscolorbuttonv2.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
@@ -2076,6 +2066,71 @@ p, li { white-space: pre-wrap; }
    <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>pbnSaveDefaultStyle</tabstop>
+  <tabstop>pbnLoadStyle</tabstop>
+  <tabstop>pbnLoadDefaultStyle</tabstop>
+  <tabstop>pbnSaveStyleAs</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>leDisplayName</tabstop>
+  <tabstop>mLayerOrigNameLineEd</tabstop>
+  <tabstop>leLayerSource</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
+  <tabstop>mRenderTypeComboBox</tabstop>
+  <tabstop>sliderSaturation</tabstop>
+  <tabstop>mSliderBrightness</tabstop>
+  <tabstop>mBrightnessSpinBox</tabstop>
+  <tabstop>mSliderContrast</tabstop>
+  <tabstop>mContrastSpinBox</tabstop>
+  <tabstop>spinBoxSaturation</tabstop>
+  <tabstop>mColorizeCheck</tabstop>
+  <tabstop>btnColorizeColor</tabstop>
+  <tabstop>sliderColorizeStrength</tabstop>
+  <tabstop>spinColorizeStrength</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mResetColorRenderingBtn</tabstop>
+  <tabstop>comboGrayscale</tabstop>
+  <tabstop>mZoomedInResamplingComboBox</tabstop>
+  <tabstop>mZoomedOutResamplingComboBox</tabstop>
+  <tabstop>mMaximumOversamplingSpinBox</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>sliderTransparency</tabstop>
+  <tabstop>mSrcNoDataValueCheckBox</tabstop>
+  <tabstop>leNoDataValue</tabstop>
+  <tabstop>tableTransparency</tabstop>
+  <tabstop>cboxTransparencyBand</tabstop>
+  <tabstop>pbnAddValuesManually</tabstop>
+  <tabstop>pbnAddValuesFromDisplay</tabstop>
+  <tabstop>pbnRemoveSelectedRow</tabstop>
+  <tabstop>pbnDefaultValues</tabstop>
+  <tabstop>pbnImportTransparentPixelValues</tabstop>
+  <tabstop>pbnExportTransparentPixelValues</tabstop>
+  <tabstop>scrollArea_5</tabstop>
+  <tabstop>lbxPyramidResolutions</tabstop>
+  <tabstop>tePyramidDescription</tabstop>
+  <tabstop>buttonBuildPyramids</tabstop>
+  <tabstop>cboResamplingMethod</tabstop>
+  <tabstop>cbxPyramidsFormat</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>mLayerTitleLineEdit</tabstop>
+  <tabstop>mLayerAbstractTextEdit</tabstop>
+  <tabstop>mLayerKeywordListLineEdit</tabstop>
+  <tabstop>mLayerDataUrlLineEdit</tabstop>
+  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerAttributionLineEdit</tabstop>
+  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
+  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerLegendUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>txtbMetadata</tabstop>
+  <tabstop>scrollArea</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

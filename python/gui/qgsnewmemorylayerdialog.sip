@@ -18,13 +18,10 @@ class QgsNewMemoryLayerDialog : QDialog
     /**Returns the selected geometry type*/
     QGis::WkbType selectedType() const;
 
-    /**Returns the selected crs id*/
-    QString selectedCrsId() const;
+    /**Returns the selected crs*/
+    QgsCoordinateReferenceSystem crs() const;
 
     /**Returns the layer name*/
     QString layerName() const;
 
-  protected slots:
-
-    void on_mChangeSrsButton_clicked();
 };

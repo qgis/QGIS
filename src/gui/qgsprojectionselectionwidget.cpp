@@ -23,6 +23,8 @@
 QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
     QWidget( parent )
 {
+  mDialog = new QgsGenericProjectionSelector( this );
+
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
@@ -34,6 +36,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
 
   mButton = new QToolButton( this );
   mButton->setIcon( QgsApplication::getThemeIcon( "mActionSetProjection.svg" ) );
+  mButton->setToolTip( tr( "Select CRS" ) );
   layout->addWidget( mButton );
 
   setFocusPolicy( Qt::StrongFocus );
@@ -44,18 +47,16 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
 
 void QgsProjectionSelectionWidget::selectCrs()
 {
-  QgsGenericProjectionSelector* mySelector = new QgsGenericProjectionSelector( this );
-
   //find out crs id of current proj4 string
   if ( mCrs.isValid() )
   {
-    mySelector->setSelectedCrsId( mCrs.srsid() );
+    mDialog->setSelectedCrsId( mCrs.srsid() );
   }
 
-  if ( mySelector->exec() )
+  if ( mDialog->exec() )
   {
     QgsCoordinateReferenceSystem crs;
-    crs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
+    crs.createFromOgcWmsCrs( mDialog->selectedAuthId() );
     setCrs( crs );
     emit crsChanged( crs );
   }

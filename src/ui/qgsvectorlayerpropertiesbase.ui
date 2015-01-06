@@ -279,7 +279,7 @@
                  <property name="title">
                   <string>Layer info</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout">
@@ -377,7 +377,7 @@
                  <property name="checkable">
                   <bool>false</bool>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectorgeneral</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -385,34 +385,11 @@
                    <number>6</number>
                   </property>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_3">
-                    <item>
-                     <widget class="QLineEdit" name="leSpatialRefSys">
-                      <property name="minimumSize">
-                       <size>
-                        <width>100</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="readOnly">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QPushButton" name="pbnChangeSpatialRefSys">
-                      <property name="toolTip">
-                       <string>Specify the coordinate reference system of the layer's geometry.</string>
-                      </property>
-                      <property name="whatsThis">
-                       <string>Specify the coordinate reference system of the layer's geometry.</string>
-                      </property>
-                      <property name="text">
-                       <string>Specify...</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
+                   <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+                    <property name="focusPolicy">
+                     <enum>Qt::StrongFocus</enum>
+                    </property>
+                   </widget>
                   </item>
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -465,7 +442,7 @@
                  </property>
                  <layout class="QGridLayout" name="gridLayout_6">
                   <item row="0" column="0">
-                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+                   <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
                     <property name="toolTip">
                      <string>A widget to define the scale visibility</string>
                     </property>
@@ -747,8 +724,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>702</width>
-                <height>171</height>
+                <width>684</width>
+                <height>165</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -841,7 +818,7 @@
                    </widget>
                   </item>
                   <item row="3" column="2">
-                   <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
+                   <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox" native="true">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -1099,7 +1076,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>90</width>
+                <width>98</width>
                 <height>113</height>
                </rect>
               </property>
@@ -1249,7 +1226,7 @@
                  <property name="title">
                   <string>Description</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_5">
@@ -1344,7 +1321,7 @@
                  <property name="title">
                   <string>Attribution</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -1376,7 +1353,7 @@
                  <property name="title">
                   <string>MetadataUrl</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_9">
@@ -1531,7 +1508,7 @@
                  <property name="title">
                   <string>Properties</string>
                  </property>
-                 <property name="syncGroup">
+                 <property name="syncGroup" stdset="0">
                   <string notr="true">vectormeta</string>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -1646,14 +1623,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QWidget</extends>
+   <header>qgsscalecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsScaleRangeWidget</class>
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>
