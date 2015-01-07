@@ -9,16 +9,20 @@
 #include "qgsmaplayerstylemanager.h"
 
 
-void QgsMapLayerStyleGuiUtils::addStyleManagerMenu( QMenu* menu, QgsMapLayer* layer )
+QMenu* QgsMapLayerStyleGuiUtils::createStyleManagerMenu( QgsMapLayer* layer )
 {
-  layer->enableStyleManager();
   QMenu* m = new QMenu( tr( "Styles" ) );
-  QAction* actionAdd = m->addAction( tr( "Add" ), this, SLOT( addStyle() ) );
+  QAction* actionAdd = m->addAction( tr( "Add..." ), this, SLOT( addStyle() ) );
   actionAdd->setData( QVariant::fromValue<QObject*>( layer ) );
+
+  QgsMapLayerStyleManager* mgr = layer->styleManager();
+
+  if ( !mgr )
+    return m;
+
   QMenu* mRemove = m->addMenu( tr( "Remove" ) );
   m->addSeparator();
 
-  QgsMapLayerStyleManager* mgr = layer->styleManager();
   foreach ( QString name, mgr->styles() )
   {
     bool active = name == mgr->currentStyle();
@@ -33,7 +37,7 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerMenu( QMenu* menu, QgsMapLayer* la
     actionRemove->setData( QVariant::fromValue<QObject*>( layer ) );
   }
 
-  menu->addMenu( m );
+  return m;
 }
 
 QString QgsMapLayerStyleGuiUtils::defaultStyleName()
@@ -57,6 +61,8 @@ void QgsMapLayerStyleGuiUtils::addStyle()
                                         "newstyle", &ok );
   if ( !ok || text.isEmpty() )
     return;
+
+  layer->enableStyleManager(); // make sure it exists
 
   bool res = layer->styleManager()->addStyleFromLayer( text );
   qDebug( "ADD: %d", res );
@@ -92,6 +98,14 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( a->data().value<QObject*>() );
   if ( !layer )
     return;
+
+  if ( layer->styleManager()->styles().count() == 1 )
+  {
+    // let's get rid of the style manager altogether
+    layer->enableStyleManager( false );
+    return;
+  }
+
   QString name = a->text();
   if ( name == defaultStyleName() )
     name.clear();

@@ -14,7 +14,7 @@ class QgsMapLayerStyleGuiUtils : public QObject, public QgsSingleton<QgsMapLayer
     Q_OBJECT
   public:
 
-    void addStyleManagerMenu( QMenu* menu, QgsMapLayer* layer );
+    QMenu* createStyleManagerMenu( QgsMapLayer* layer );
 
   private:
     QString defaultStyleName();
