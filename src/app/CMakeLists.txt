@@ -45,6 +45,7 @@ SET(QGIS_APP_SRCS
   qgslabelinggui.cpp
   qgslabelpreview.cpp
   qgsloadstylefromdbdialog.cpp
+  qgsmaplayerstyleguiutils.cpp
   qgsmapmouseevent.cpp
   qgssavestyletodbdialog.cpp
   qgsguivectorlayertools.cpp
@@ -200,6 +201,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelinggui.h
   qgslabelpropertydialog.h
   qgsloadstylefromdbdialog.h
+  qgsmaplayerstyleguiutils.h
   qgssavestyletodbdialog.h
   qgsshortcutsmanager.h
   qgsapplayertreeviewmenuprovider.h

@@ -7,6 +7,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
@@ -61,7 +62,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
     {
       QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
 
-      addStyleManagerStuff( menu, layer );
+      QgsMapLayerStyleGuiUtils::instance()->addStyleManagerMenu( menu, layer );
 
       menu->addAction( actions->actionZoomToLayer( mCanvas, menu ) );
       menu->addAction( actions->actionShowInOverview( menu ) );
@@ -320,92 +321,4 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
     }
     menu->addSeparator();
   }
-}
-
-#include <QInputDialog>
-#include "qgsmapcanvas.h"
-#include "qgsmaplayerstylemanager.h"
-void QgsAppLayerTreeViewMenuProvider::addStyleManagerStuff( QMenu* menu, QgsMapLayer* layer )
-{
-  layer->enableStyleManager();
-  QMenu* m = new QMenu( tr( "Styles" ) );
-  m->addAction( "Add", this, SLOT( addStyle() ) );
-  QMenu* mRemove = m->addMenu( "Remove" );
-  m->addSeparator();
-
-  QgsMapLayerStyleManager* mgr = layer->styleManager();
-  foreach ( QString name, mgr->styles() )
-  {
-    bool active = name == mgr->currentStyle();
-    if ( name.isEmpty() )
-      name = "(default)";
-    QAction* a = m->addAction( name, this, SLOT( useStyle() ) );
-    a->setCheckable( true );
-    a->setChecked( active );
-
-    mRemove->addAction( name, this, SLOT( removeStyle() ) );
-  }
-
-  menu->addMenu( m );
-}
-
-void QgsAppLayerTreeViewMenuProvider::addStyle()
-{
-  QgsMapLayer* layer = mView->currentLayer();
-  if ( !layer )
-    return;
-
-  bool ok;
-  QString text = QInputDialog::getText( 0, tr( "New style" ),
-                                        tr( "Style name:" ), QLineEdit::Normal,
-                                        "newstyle", &ok );
-  if ( !ok || text.isEmpty() )
-    return;
-
-  bool res = layer->styleManager()->addStyleFromLayer( text );
-  qDebug( "ADD: %d", res );
-
-  if ( res ) // make it active!
-    layer->styleManager()->setCurrentStyle( text );
-}
-
-void QgsAppLayerTreeViewMenuProvider::useStyle()
-{
-  QgsMapLayer* layer = mView->currentLayer();
-  if ( !layer )
-    return;
-
-  QAction* a = qobject_cast<QAction*>( sender() );
-  if ( !a )
-    return;
-  QString name = a->text();
-  if ( name == "(default)" )
-    name.clear();
-
-  bool res = layer->styleManager()->setCurrentStyle( name );
-  qDebug( "USE: %d", res );
-
-  layer->triggerRepaint();
-}
-
-void QgsAppLayerTreeViewMenuProvider::removeStyle()
-{
-  QgsMapLayer* layer = mView->currentLayer();
-  if ( !layer )
-    return;
-
-  QAction* a = qobject_cast<QAction*>( sender() );
-  if ( !a )
-    return;
-  QString name = a->text();
-  if ( name == "(default)" )
-    name.clear();
-
-  bool needsRefresh = ( layer->styleManager()->currentStyle() == name );
-
-  bool res = layer->styleManager()->removeStyle( name );
-  qDebug( "DEL: %d", res );
-
-  if ( needsRefresh )
-    layer->triggerRepaint();
 }
