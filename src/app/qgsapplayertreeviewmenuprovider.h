@@ -36,10 +36,16 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
     QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
 
+  protected slots:
+    void addStyle();
+    void useStyle();
+    void removeStyle();
 
   protected:
 
     void addCustomLayerActions( QMenu* menu, QgsMapLayer* layer );
+
+    void addStyleManagerStuff( QMenu* menu, QgsMapLayer* layer );
 
     QgsLayerTreeView* mView;
     QgsMapCanvas* mCanvas;

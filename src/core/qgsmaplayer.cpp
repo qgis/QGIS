@@ -36,6 +36,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
@@ -55,6 +56,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mLayerType( type ),
     mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
     , mLegend( 0 )
+    , mStyleManager( 0 )
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -1422,6 +1424,27 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
 QgsMapLayerLegend*QgsMapLayer::legend() const
 {
   return mLegend;
+}
+
+void QgsMapLayer::enableStyleManager( bool enable )
+{
+  if ( ( enable && mStyleManager ) || ( !enable && !mStyleManager ) )
+    return;
+
+  if ( enable )
+  {
+    mStyleManager = new QgsMapLayerStyleManager( this );
+  }
+  else
+  {
+    delete mStyleManager;
+    mStyleManager = 0;
+  }
+}
+
+QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
+{
+  return mStyleManager;
 }
 
 void QgsMapLayer::clearCacheImage()

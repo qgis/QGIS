@@ -36,6 +36,7 @@ class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
+class QgsMapLayerStyleManager;
 
 class QDomDocument;
 class QKeyEvent;
@@ -387,6 +388,21 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerLegend* legend() const;
 
+    /**
+     * Enable or disable layer's style manager. When disabled (default), the styleManager() will return null pointer.
+     * By enabling the style manager will be created with one default style (same as the layer's active style).
+     * By disabling the style manager all associated styles will be lost (only the layer's active style will stay).
+     * @note added in 2.8
+     */
+    void enableStyleManager( bool enable = true );
+
+    /**
+     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * If the style manager is not enabled, null pointer will be returned.
+     * @note added in 2.8
+     */
+    QgsMapLayerStyleManager* styleManager() const;
+
     /**Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
@@ -621,6 +637,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Controller of legend items of this layer
     QgsMapLayerLegend* mLegend;
+
+    //! Manager of multiple styles available for a layer (may be null)
+    QgsMapLayerStyleManager* mStyleManager;
 };
 
 #endif
