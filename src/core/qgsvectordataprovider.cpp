@@ -412,6 +412,9 @@ void QgsVectorDataProvider::fillMinMaxCache()
     {
       const QVariant& varValue = attrs[*it];
 
+      if ( varValue.isNull() )
+        continue;
+
       if ( flds[*it].type() == QVariant::Int )
       {
         int value = varValue.toInt();
