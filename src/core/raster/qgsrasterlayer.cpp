@@ -1435,6 +1435,8 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
     }
   }
 
+  readStyleManager( layer_node );
+
   return res;
 } // QgsRasterLayer::readXml( QDomNode & layer_node )
 
@@ -1522,6 +1524,8 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
   {
     layer_node.appendChild( noData );
   }
+
+  writeStyleManager( layer_node, document );
 
   //write out the symbology
   QString errorMsg;

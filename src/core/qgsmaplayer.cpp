@@ -704,6 +704,28 @@ void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc 
   mCustomProperties.writeXml( layerNode, doc );
 }
 
+void QgsMapLayer::readStyleManager( const QDomNode& layerNode )
+{
+  QDomElement styleMgrElem = layerNode.firstChildElement( "map-layer-style-manager" );
+  if ( !styleMgrElem.isNull() )
+  {
+    enableStyleManager();
+    styleManager()->readXml( styleMgrElem );
+  }
+  else
+    enableStyleManager( false );
+}
+
+void QgsMapLayer::writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const
+{
+  if ( mStyleManager )
+  {
+    QDomElement styleMgrElem = doc.createElement( "map-layer-style-manager" );
+    mStyleManager->writeXml( styleMgrElem );
+    layerNode.appendChild( styleMgrElem );
+  }
+}
+
 
 
 
@@ -1428,7 +1450,7 @@ QgsMapLayerLegend*QgsMapLayer::legend() const
 
 void QgsMapLayer::enableStyleManager( bool enable )
 {
-  if ( ( enable && mStyleManager ) || ( !enable && !mStyleManager ) )
+  if (( enable && mStyleManager ) || ( !enable && !mStyleManager ) )
     return;
 
   if ( enable )

@@ -549,6 +549,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
 
+    /** Read style manager's configuration (if any). To be called by subclasses. */
+    void readStyleManager( const QDomNode& layerNode );
+    /** Write style manager's configuration (if exists). To be called by subclasses. */
+    void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
+
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
 
