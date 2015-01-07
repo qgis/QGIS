@@ -31,7 +31,7 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     void setSelectedCrsId( long theID );
     void setSelectedAuthId( QString authId );
 
-    void on_buttonBox_helpRequested();
+    void on_mButtonBox_helpRequested();
 
     /**
      * \brief filters this dialog by the given CRSs
