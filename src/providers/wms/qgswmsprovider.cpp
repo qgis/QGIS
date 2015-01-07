@@ -3079,7 +3079,7 @@ QgsImageFetcher* QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
        scale == mGetLegendGraphicScale &&
        ! mGetLegendGraphicImage.isNull() )
   {
-    QgsDebugMsg( "XXX Emitting cached image fetcher" );
+    QgsDebugMsg( "Emitting cached image fetcher" );
     // return a cached image, skipping the load
     return new QgsCachedImageFetcher( mGetLegendGraphicImage );
   }
@@ -3633,12 +3633,10 @@ QgsWmsLegendDownloadHandler::QgsWmsLegendDownloadHandler( QgsNetworkAccessManage
     , mReply( 0 )
     , mInitialUrl( url )
 {
-  QgsDebugMsg( QString( "XXXX constructed " ) );
 }
 
 QgsWmsLegendDownloadHandler::~QgsWmsLegendDownloadHandler()
 {
-  QgsDebugMsg( QString( "XXXX destroying " ) );
   if ( mReply )
   {
     // Send finished if not done yet ?
@@ -3652,8 +3650,6 @@ QgsWmsLegendDownloadHandler::~QgsWmsLegendDownloadHandler()
 void
 QgsWmsLegendDownloadHandler::start( )
 {
-  QgsDebugMsg( QString( "XXXX started " ) );
-
   Q_ASSERT( mVisitedUrls.empty() );
   startUrl( mInitialUrl );
 }
@@ -3674,7 +3670,7 @@ QgsWmsLegendDownloadHandler::startUrl( const QUrl& url )
   }
   mVisitedUrls.insert( url );
 
-  QgsDebugMsg( QString( "XXXX url is %1" ).arg( url.toString() ) );
+  QgsDebugMsg( QString( "legend url: %1" ).arg( url.toString() ) );
 
   QNetworkRequest request( url );
   mSettings.authorization().setAuthorization( request );
@@ -3690,19 +3686,17 @@ QgsWmsLegendDownloadHandler::startUrl( const QUrl& url )
 void
 QgsWmsLegendDownloadHandler::sendError( const QString& msg )
 {
-  QgsDebugMsg( QString( "XXXX error is %1" ).arg( msg ) );
-  QgsDebugMsg( QString( "XXXX sender is %1" ).arg(( long )sender() ) );
+  QgsDebugMsg( QString( "emitting error: %1" ).arg( msg ) );
   Q_ASSERT( mReply );
   mReply->deleteLater();
   mReply = 0;
-  QgsDebugMsg( QString( "XXXX emitting error" ) );
   emit error( msg );
 }
 
 void
 QgsWmsLegendDownloadHandler::sendSuccess( const QImage& img )
 {
-  QgsDebugMsg( QString( "XXXX image is %1x%2" ).arg( img.width() ).arg( img.height() ) );
+  QgsDebugMsg( QString( "emitting finish: %1x%2 image" ).arg( img.width() ).arg( img.height() ) );
   Q_ASSERT( mReply );
   mReply->deleteLater();
   mReply = 0;
@@ -3769,16 +3763,13 @@ QgsWmsLegendDownloadHandler::progressed( qint64 recv, qint64 tot )
 QgsCachedImageFetcher::QgsCachedImageFetcher( const QImage& img )
     : _img( img )
 {
-  QgsDebugMsg( QString( "XXX created" ) );
 }
 
 QgsCachedImageFetcher::~QgsCachedImageFetcher()
 {
-  QgsDebugMsg( QString( "XXX destroyed" ) );
 }
 void
 QgsCachedImageFetcher::start()
 {
-  QgsDebugMsg( QString( "XXX start called, scheduled send() in 0 ms" ) );
   QTimer::singleShot( 1, this, SLOT( send() ) );
 }
