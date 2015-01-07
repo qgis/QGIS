@@ -86,7 +86,7 @@ void TestQgsMapLayerStyleManager::testStyle()
   mVL->setRendererV2( new QgsSingleSymbolRendererV2( sym1 ) );
 
   QgsMapLayerStyle st1;
-  st1.loadFromLayer( mVL );
+  st1.readFromLayer( mVL );
   QCOMPARE( st1.isValid(), true );
 
   qDebug( "CNT-1: %s", st1.dump().toAscii().data() );
@@ -94,17 +94,17 @@ void TestQgsMapLayerStyleManager::testStyle()
   mVL->setRendererV2( new QgsSingleSymbolRendererV2( sym2 ) );
 
   QgsMapLayerStyle st2;
-  st2.loadFromLayer( mVL );
+  st2.readFromLayer( mVL );
 
   qDebug( "CNT-2: %s", st2.dump().toAscii().data() );
 
-  st1.applyToLayer( mVL );
+  st1.writeToLayer( mVL );
 
   QgsSingleSymbolRendererV2* r1 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
   QVERIFY( r1 );
   QCOMPARE( r1->symbol()->color(), QColor( Qt::magenta ) );
 
-  st2.applyToLayer( mVL );
+  st2.writeToLayer( mVL );
 
   QgsSingleSymbolRendererV2* r2 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
   QVERIFY( r2 );

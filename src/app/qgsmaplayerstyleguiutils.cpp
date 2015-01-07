@@ -1,9 +1,25 @@
+/***************************************************************************
+  qgsmaplayerstyleguiutils.cpp
+  --------------------------------------
+  Date                 : January 2015
+  Copyright            : (C) 2015 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsmaplayerstyleguiutils.h"
 
 #include <QAction>
 #include <QInputDialog>
 #include <QMenu>
 
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstylemanager.h"
@@ -58,17 +74,18 @@ void QgsMapLayerStyleGuiUtils::addStyle()
   bool ok;
   QString text = QInputDialog::getText( 0, tr( "New style" ),
                                         tr( "Style name:" ), QLineEdit::Normal,
-                                        "newstyle", &ok );
+                                        "new style", &ok );
   if ( !ok || text.isEmpty() )
     return;
 
   layer->enableStyleManager(); // make sure it exists
 
   bool res = layer->styleManager()->addStyleFromLayer( text );
-  qDebug( "ADD: %d", res );
 
   if ( res ) // make it active!
     layer->styleManager()->setCurrentStyle( text );
+  else
+    QgsDebugMsg( "Failed to add style: " + text );
 }
 
 void QgsMapLayerStyleGuiUtils::useStyle()
@@ -84,7 +101,8 @@ void QgsMapLayerStyleGuiUtils::useStyle()
     name.clear();
 
   bool res = layer->styleManager()->setCurrentStyle( name );
-  qDebug( "USE: %d", res );
+  if ( !res )
+    QgsDebugMsg( "Failed to set current style: " + name );
 
   layer->triggerRepaint();
 }
@@ -113,7 +131,8 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   bool needsRefresh = ( layer->styleManager()->currentStyle() == name );
 
   bool res = layer->styleManager()->removeStyle( name );
-  qDebug( "DEL: %d", res );
+  if ( !res )
+    QgsDebugMsg( "Failed to remove style: " + name );
 
   if ( needsRefresh )
     layer->triggerRepaint();

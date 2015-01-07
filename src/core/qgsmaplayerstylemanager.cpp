@@ -1,5 +1,21 @@
+/***************************************************************************
+  qgsmaplayerstylemanager.cpp
+  --------------------------------------
+  Date                 : January 2015
+  Copyright            : (C) 2015 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #include "qgsmaplayerstylemanager.h"
 
+#include "qgslogger.h"
 #include "qgsmaplayer.h"
 
 #include <QDomElement>
@@ -10,7 +26,7 @@ QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
     : mLayer( layer )
 {
   QgsMapLayerStyle defaultStyle;
-  defaultStyle.loadFromLayer( mLayer );
+  defaultStyle.readFromLayer( mLayer );
   mStyles.insert( QString(), defaultStyle );
 }
 
@@ -74,7 +90,7 @@ bool QgsMapLayerStyleManager::addStyle( const QString& name, const QgsMapLayerSt
 bool QgsMapLayerStyleManager::addStyleFromLayer( const QString& name )
 {
   QgsMapLayerStyle style;
-  style.loadFromLayer( mLayer );
+  style.readFromLayer( mLayer );
   return addStyle( name, style );
 }
 
@@ -114,13 +130,13 @@ bool QgsMapLayerStyleManager::setCurrentStyle( const QString& name )
 
   syncCurrentStyle(); // sync before unloading it
   mCurrentStyle = name;
-  mStyles[mCurrentStyle].applyToLayer( mLayer );
+  mStyles[mCurrentStyle].writeToLayer( mLayer );
   return true;
 }
 
 void QgsMapLayerStyleManager::syncCurrentStyle()
 {
-  mStyles[mCurrentStyle].loadFromLayer( mLayer );
+  mStyles[mCurrentStyle].readFromLayer( mLayer );
 }
 
 // -----
@@ -139,14 +155,14 @@ QString QgsMapLayerStyle::dump() const
   return mXmlData;
 }
 
-void QgsMapLayerStyle::loadFromLayer( QgsMapLayer* layer )
+void QgsMapLayerStyle::readFromLayer( QgsMapLayer* layer )
 {
   QString errorMsg;
   QDomDocument doc;
   layer->exportNamedStyle( doc, errorMsg );
   if ( !errorMsg.isEmpty() )
   {
-    qDebug( " ERR: %s", errorMsg.toAscii().data() );
+    QgsDebugMsg( "Failed to export style from layer: " + errorMsg );
     return;
   }
 
@@ -154,7 +170,7 @@ void QgsMapLayerStyle::loadFromLayer( QgsMapLayer* layer )
   doc.save( stream, 0 );
 }
 
-void QgsMapLayerStyle::applyToLayer( QgsMapLayer* layer ) const
+void QgsMapLayerStyle::writeToLayer( QgsMapLayer* layer ) const
 {
   // QgsMapLayer does not have a importNamedStyle() method - working it around like this
   QTemporaryFile f;
@@ -164,9 +180,8 @@ void QgsMapLayerStyle::applyToLayer( QgsMapLayer* layer ) const
 
   bool res;
   QString status = layer->loadNamedStyle( f.fileName(), res );
-  qDebug( "APPLY: %s", status.toAscii().data() );
   if ( !res )
-    qDebug( " APPLY ERR!" );
+    QgsDebugMsg( "Failed to import style to layer: " + status );
 }
 
 void QgsMapLayerStyle::readXml( const QDomElement& styleElement )
