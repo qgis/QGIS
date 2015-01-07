@@ -2346,7 +2346,8 @@ QVariant QgsOgrProvider::minimumValue( int index )
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QByteArray sql = "SELECT MIN(" + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
+  QByteArray sql = "SELECT MIN(" + mEncoding->fromUnicode( fld.name() );
   sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
@@ -2384,7 +2385,8 @@ QVariant QgsOgrProvider::maximumValue( int index )
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QByteArray sql = "SELECT MAX(" + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
+  QByteArray sql = "SELECT MAX(" + mEncoding->fromUnicode( fld.name() );
   sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
