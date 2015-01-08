@@ -131,6 +131,7 @@ bool QgsMapLayerStyleManager::setCurrentStyle( const QString& name )
   syncCurrentStyle(); // sync before unloading it
   mCurrentStyle = name;
   mStyles[mCurrentStyle].writeToLayer( mLayer );
+  mLayer->triggerRepaint();
   return true;
 }
 

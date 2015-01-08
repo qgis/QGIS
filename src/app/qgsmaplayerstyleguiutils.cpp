@@ -103,8 +103,6 @@ void QgsMapLayerStyleGuiUtils::useStyle()
   bool res = layer->styleManager()->setCurrentStyle( name );
   if ( !res )
     QgsDebugMsg( "Failed to set current style: " + name );
-
-  layer->triggerRepaint();
 }
 
 
@@ -128,12 +126,7 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   if ( name == defaultStyleName() )
     name.clear();
 
-  bool needsRefresh = ( layer->styleManager()->currentStyle() == name );
-
   bool res = layer->styleManager()->removeStyle( name );
   if ( !res )
     QgsDebugMsg( "Failed to remove style: " + name );
-
-  if ( needsRefresh )
-    layer->triggerRepaint();
 }
