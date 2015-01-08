@@ -22,6 +22,7 @@ class TestQgsMapLayerStyleManager : public QObject
     void testDefault();
     void testStyle();
     void testReadWrite();
+    void testSwitchingStyles();
 
   private:
     QgsVectorLayer* mVL;
@@ -134,17 +135,17 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   sm0.writeXml( mgrElem );
 
   QString xml;
-  QTextStream ts(&xml);
-  doc.save(ts, 2);
-  qDebug("%s", xml.toAscii().data());
+  QTextStream ts( &xml );
+  doc.save( ts, 2 );
+  qDebug( "%s", xml.toAscii().data() );
 
   QgsMapLayerStyleManager sm1( mVL );
   sm1.readXml( mgrElem );
 
   QCOMPARE( sm1.styles().count(), 2 );
-  QCOMPARE( sm1.style(QString()).isValid(), true );
-  QCOMPARE( sm1.style("blue").isValid(), true );
-  QCOMPARE( sm1.currentStyle(), QString("blue") );
+  QCOMPARE( sm1.style( QString() ).isValid(), true );
+  QCOMPARE( sm1.style( "blue" ).isValid(), true );
+  QCOMPARE( sm1.currentStyle(), QString( "blue" ) );
 
   // now use the default style - the symbol should get red color
   sm1.setCurrentStyle( QString() );
@@ -152,6 +153,45 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   QgsSingleSymbolRendererV2* r2 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
   QCOMPARE( r2->symbol()->color(), QColor( Qt::red ) );
 }
+
+static void _setVLColor( QgsVectorLayer* vl, const QColor& c )
+{
+  dynamic_cast<QgsSingleSymbolRendererV2*>( vl->rendererV2() )->symbol()->setColor( c );
+}
+
+static QColor _getVLColor( QgsVectorLayer* vl )
+{
+  return dynamic_cast<QgsSingleSymbolRendererV2*>( vl->rendererV2() )->symbol()->color();
+}
+
+void TestQgsMapLayerStyleManager::testSwitchingStyles()
+{
+  _setVLColor( mVL, Qt::red );
+
+  mVL->enableStyleManager();
+  mVL->styleManager()->addStyleFromLayer( "s1" );
+  mVL->styleManager()->setCurrentStyle( "s1" );
+
+  QCOMPARE( mVL->styleManager()->currentStyle(), QString( "s1" ) );
+  QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
+
+  _setVLColor( mVL, Qt::green );
+
+  mVL->styleManager()->setCurrentStyle( QString() );
+  QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
+
+  mVL->styleManager()->setCurrentStyle( "s1" );
+  QCOMPARE( _getVLColor( mVL ), QColor( Qt::green ) );
+
+  _setVLColor( mVL, Qt::blue );
+
+  mVL->styleManager()->setCurrentStyle( QString() );
+  QCOMPARE( _getVLColor( mVL ), QColor( Qt::red ) );
+
+  mVL->styleManager()->setCurrentStyle( "s1" );
+  QCOMPARE( _getVLColor( mVL ), QColor( Qt::blue ) );
+}
+
 
 QTEST_MAIN( TestQgsMapLayerStyleManager )
 #include "testqgsmaplayerstylemanager.moc"
