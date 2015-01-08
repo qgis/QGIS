@@ -46,6 +46,12 @@ void QgsRelationWidgetWrapper::initWidget( QWidget* editor )
   if ( !w )
   {
     w = new QgsRelationEditorWidget( editor );
+    w->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    if ( ! editor->layout() )
+    {
+      editor->setLayout( new QGridLayout() );
+    }
+    editor->layout()->addWidget( w );
   }
 
   QgsAttributeEditorContext myContext( QgsAttributeEditorContext( context(), mRelation, QgsAttributeEditorContext::Multiple, QgsAttributeEditorContext::Embed ) );

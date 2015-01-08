@@ -34,6 +34,7 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
     : QDialog( parent, fl )
     , mShowToolTips( true )
 {
+  Q_UNUSED( statusBar )
   setupUi( this );
 
   connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),

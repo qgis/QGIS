@@ -7,6 +7,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
@@ -87,6 +88,21 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // assign layer crs to project
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
 
+      // style-related actions
+      if ( mView->selectedLayerNodes().count() == 1 )
+      {
+        QMenu* menuStyleManager = QgsMapLayerStyleGuiUtils::instance()->createStyleManagerMenu( layer );
+
+        QgisApp* app = QgisApp::instance();
+        menuStyleManager->addSeparator();
+        menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+        {
+          menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+        }
+        menu->addMenu( menuStyleManager );
+      }
+
       menu->addSeparator();
 
       if ( layer && layer->type() == QgsMapLayer::VectorLayer )
@@ -157,16 +173,6 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
-
-      if ( mView->selectedLayerNodes().count() == 1 )
-      {
-        QgisApp* app = QgisApp::instance();
-        menu->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
-        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
-        {
-          menu->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
-        }
-      }
     }
 
   }
@@ -277,7 +283,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           // find or create menu for given menu name
           // adapted from QgisApp::getPluginMenu( QString menuName )
           QString menuName = lyrActions[i].menu;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
           // Mac doesn't have '&' keyboard shortcuts.
           menuName.remove( QChar( '&' ) );
 #endif

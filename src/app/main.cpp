@@ -599,7 +599,7 @@ int main( int argc, char *argv[] )
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
-#ifdef Q_WS_X11
+#ifdef Q_OS_UNIX
   bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
 #else
   bool myUseGuiFlag = true;
@@ -631,7 +631,7 @@ int main( int argc, char *argv[] )
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
 // (if Windows/Mac, use icon from resource)
-#if !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MAC)
   myApp.setWindowIcon( QIcon( QgsApplication::iconsPath() + "qgis-icon-60x60.png" ) );
 #endif
 
@@ -727,7 +727,7 @@ int main( int argc, char *argv[] )
 
         if ( systemEnvVars.contains( envVarName ) && envVarApply == "unset" )
         {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
           putenv( envVarName.toUtf8().constData() );
 #else
           unsetenv( envVarName.toUtf8().constData() );
@@ -735,7 +735,7 @@ int main( int argc, char *argv[] )
         }
         else
         {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
           if ( envVarApply != "undefined" || !getenv( envVarName.toUtf8().constData() ) )
             putenv( QString( "%1=%2" ).arg( envVarName ).arg( envVarValue ).toUtf8().constData() );
 #else
@@ -755,7 +755,7 @@ int main( int argc, char *argv[] )
   QString style = mySettings.value( "/qgis/style" ).toString();
   if ( !style.isNull() )
     QApplication::setStyle( style );
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #if QT_VERSION < 0x050000
   else
     QApplication::setStyle( new QPlastiqueStyle );
@@ -828,7 +828,7 @@ int main( int argc, char *argv[] )
   // we need to be sure we can find the qt image
   // plugins. In mac be sure to look in the
   // application bundle...
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif
@@ -967,7 +967,7 @@ int main( int argc, char *argv[] )
 
   if ( !pythonfile.isEmpty() )
   {
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
     //replace backslashes with forward slashes
     pythonfile.replace( "\\", "/" );
 #endif

@@ -8,7 +8,6 @@ cd build
 cmake -D BUILDNAME="cygwin" \
         -D SITE="qgis.org" \
         -D PEDANTIC=TRUE \
-	-D WITH_INTERNAL_SPATIALITE=TRUE \
         -D WITH_GRASS=FALSE \
         -D WITH_SPATIALITE=TRUE \
         -D WITH_QSPATIALITE=TRUE \

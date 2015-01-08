@@ -4,6 +4,9 @@
   Date                 : August 2014
   Copyright            : (C) 2014 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
+
+  QgsWMSLegendNode     : Sandro Santilli < strk at keybit dot net >
+
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -477,4 +480,140 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
                                     settings.symbolSize().width(), settings.symbolSize().height() ) );
   }
   return settings.symbolSize();
+}
+
+// -------------------------------------------------------------------------
+
+QgsWMSLegendNode::QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent )
+    : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+    , mValid( false )
+{
+}
+
+const QImage& QgsWMSLegendNode::getLegendGraphic() const
+{
+  if ( ! mValid && ! mFetcher )
+  {
+    // or maybe in presence of a downloader we should just delete it
+    // and start a new one ?
+
+    QgsRasterLayer* layer = qobject_cast<QgsRasterLayer*>( mLayerNode->layer() );
+    const QgsLayerTreeModel* mod = model();
+    if ( ! mod ) return mImage;
+    const QgsMapSettings* ms = mod->legendFilterByMap();
+
+    QgsRasterDataProvider* prov = layer->dataProvider();
+
+    Q_ASSERT( ! mFetcher );
+    mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );
+    if ( mFetcher )
+    {
+      connect( mFetcher.data(), SIGNAL( finish( const QImage& ) ), this, SLOT( getLegendGraphicFinished( const QImage& ) ) );
+      connect( mFetcher.data(), SIGNAL( error( const QString& ) ), this, SLOT( getLegendGraphicErrored( const QString& ) ) );
+      connect( mFetcher.data(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicProgress( qint64, qint64 ) ) );
+      mFetcher->start();
+    } // else QgsDebugMsg("XXX No legend supported ?");
+
+  }
+
+  return mImage;
+}
+
+QVariant QgsWMSLegendNode::data( int role ) const
+{
+  //QgsDebugMsg( QString("XXX data called with role %1 -- mImage size is %2x%3").arg(role).arg(mImage.width()).arg(mImage.height()) );
+
+  if ( role == Qt::DecorationRole )
+  {
+    return QPixmap::fromImage( getLegendGraphic() );
+  }
+  else if ( role == Qt::SizeHintRole )
+  {
+    return getLegendGraphic().size();
+  }
+  return QVariant();
+}
+
+QSizeF QgsWMSLegendNode::drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const
+{
+  Q_UNUSED( itemHeight );
+
+  if ( ctx )
+  {
+    ctx->painter->drawImage( QRectF( ctx->point, settings.wmsLegendSize() ),
+                             mImage,
+                             QRectF( QPointF( 0, 0 ), mImage.size() ) );
+  }
+  return settings.wmsLegendSize();
+}
+
+/* private */
+QImage QgsWMSLegendNode::renderMessage( const QString& msg ) const
+{
+  const int fontHeight = 10;
+  const int margin = fontHeight / 2;
+  const int nlines = 1;
+
+  const int w = 512, h = fontHeight * nlines + margin * ( nlines + 1 );
+  QImage theImage( w, h, QImage::Format_ARGB32_Premultiplied );
+  QPainter painter;
+  painter.begin( &theImage );
+  painter.setPen( QColor( 255, 0, 0 ) );
+  painter.setFont( QFont( "Chicago", fontHeight ) );
+  painter.fillRect( 0, 0, w, h, QColor( 255, 255, 255 ) );
+  painter.drawText( 0, margin + fontHeight, msg );
+  //painter.drawText(0,2*(margin+fontHeight),QString("retrying in 5 seconds..."));
+  painter.end();
+
+  return theImage;
+}
+
+void QgsWMSLegendNode::getLegendGraphicProgress( qint64 cur, qint64 tot )
+{
+  QString msg = QString( "Downloading... %1/%2" ).arg( cur ).arg( tot );
+  //QgsDebugMsg ( QString("XXX %1").arg(msg) );
+  mImage = renderMessage( msg );
+  emit dataChanged();
+}
+
+void QgsWMSLegendNode::getLegendGraphicErrored( const QString& msg )
+{
+  if ( ! mFetcher ) return; // must be coming after finish
+
+  mImage = renderMessage( msg );
+  //QgsDebugMsg( QString("XXX emitting dataChanged after writing an image of %1x%2").arg(mImage.width()).arg(mImage.height()) );
+
+  emit dataChanged();
+
+  mFetcher.reset();
+
+  mValid = true; // we consider it valid anyway
+  // ... but remove validity after 5 seconds
+  //QTimer::singleShot(5000, this, SLOT(invalidateMapBasedData()));
+}
+
+void QgsWMSLegendNode::getLegendGraphicFinished( const QImage& theImage )
+{
+  if ( ! mFetcher ) return; // must be coming after error
+
+  //QgsDebugMsg( QString("XXX legend graphic finished, image is %1x%2").arg(theImage.width()).arg(theImage.height()) );
+  if ( ! theImage.isNull() )
+  {
+    if ( theImage != mImage )
+    {
+      mImage = theImage;
+      //QgsDebugMsg( QString("XXX emitting dataChanged") );
+      emit dataChanged();
+    }
+    mValid = true; // only if not null I guess
+  }
+  mFetcher.reset();
+}
+
+void QgsWMSLegendNode::invalidateMapBasedData()
+{
+  //QgsDebugMsg( QString("XXX invalidateMapBasedData called") );
+  // TODO: do this only if this extent != prev extent ?
+  mValid = false;
+  emit dataChanged();
 }

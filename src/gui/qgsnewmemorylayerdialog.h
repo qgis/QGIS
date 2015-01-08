@@ -21,6 +21,7 @@
 #include "qgisgui.h"
 #include "qgis.h"
 #include "qgsvectorlayer.h"
+#include "qgscoordinatereferencesystem.h"
 
 class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemoryLayerDialogBase
 {
@@ -40,17 +41,14 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     /**Returns the selected geometry type*/
     QGis::WkbType selectedType() const;
 
-    /**Returns the selected crs id*/
-    QString selectedCrsId() const;
+    /**Returns the selected crs*/
+    QgsCoordinateReferenceSystem crs() const;
 
     /**Returns the layer name*/
     QString layerName() const;
 
-  protected slots:
-
-    void on_mChangeSrsButton_clicked();
-
   private:
+
     QString mCrsId;
 };
 

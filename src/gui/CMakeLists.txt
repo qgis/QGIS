@@ -202,6 +202,7 @@ qgsoptionsdialogbase.cpp
 qgsowssourceselect.cpp
 qgspluginmanagerinterface.cpp
 qgsprojectbadlayerguihandler.cpp
+qgsprojectionselectionwidget.cpp
 qgsprojectionselector.cpp
 qgsquerybuilder.cpp
 qgsrasterformatsaveoptionswidget.cpp
@@ -399,6 +400,7 @@ qgsoptionsdialogbase.h
 qgsowssourceselect.h
 qgspluginmanagerinterface.h
 qgsprojectbadlayerguihandler.h
+qgsprojectionselectionwidget.h
 qgsprojectionselector.h
 qgsquerybuilder.h
 qgsrasterformatsaveoptionswidget.h
@@ -482,6 +484,7 @@ qgsmessagebar.h
 qgsmessageviewer.h
 qgsoptionsdialogbase.h
 qgsowssourceselect.h
+qgsprojectionselectionwidget.h
 qgsprojectionselector.h
 qgsrelationeditorwidget.h
 qgsrubberband.h
@@ -619,13 +622,8 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
 )
-IF (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(../core/spatialite/headers)
-  INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(${QSCINTILLA_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})

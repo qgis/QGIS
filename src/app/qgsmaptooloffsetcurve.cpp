@@ -304,7 +304,7 @@ void QgsMapToolOffsetCurve::createDistanceItem()
   mDistanceSpinBox->setMaximum( 99999999 );
   mDistanceSpinBox->setDecimals( 2 );
   mDistanceSpinBox->setPrefix( tr( "Offset: " ) );
-#ifndef Q_WS_X11
+#ifndef Q_OS_UNIX
   mDistanceItem = new QGraphicsProxyWidget();
   mDistanceItem->setWidget( mDistanceSpinBox );
   mCanvas->scene()->addItem( mDistanceItem );
@@ -326,7 +326,7 @@ void QgsMapToolOffsetCurve::deleteDistanceItem()
   }
   delete mDistanceItem;
   mDistanceItem = 0;
-#ifdef Q_WS_X11
+#ifdef Q_OS_UNIX
   QgisApp::instance()->statusBar()->removeWidget( mDistanceSpinBox );
   delete mDistanceSpinBox;
 #endif

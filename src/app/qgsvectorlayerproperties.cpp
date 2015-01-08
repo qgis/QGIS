@@ -205,8 +205,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     }
   }
 
-  leSpatialRefSys->setText( layer->crs().authid() + " - " + layer->crs().description() );
-  leSpatialRefSys->setCursorPosition( 0 );
+  mCrsSelector->setCrs( layer->crs() );
 
   //insert existing join info
   const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
@@ -652,24 +651,9 @@ void QgsVectorLayerProperties::on_mLayerOrigNameLineEdit_textEdited( const QStri
   txtDisplayName->setText( layer->capitaliseLayerName( text ) );
 }
 
-void QgsVectorLayerProperties::on_pbnChangeSpatialRefSys_clicked()
+void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs )
 {
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setMessage();
-  mySelector->setSelectedCrsId( layer->crs().srsid() );
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    layer->setCrs( srs );
-  }
-  else
-  {
-    QApplication::restoreOverrideCursor();
-  }
-  delete mySelector;
-
-  leSpatialRefSys->setText( layer->crs().authid() + " - " + layer->crs().description() );
-  leSpatialRefSys->setCursorPosition( 0 );
+  layer->setCrs( crs );
 }
 
 void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()

@@ -149,6 +149,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsmapoverviewcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsmapsettings.h"
@@ -383,36 +384,7 @@ void QgisApp::emitCustomSrsValidation( QgsCoordinateReferenceSystem &srs )
 
 void QgisApp::layerTreeViewDoubleClicked( const QModelIndex& index )
 {
-  // temporary solution for WMS legend
-  if ( mLayerTreeView->layerTreeModel()->index2legendNode( index ) )
-  {
-    QModelIndex parent = mLayerTreeView->layerTreeModel()->parent( index );
-    QgsLayerTreeNode* node = mLayerTreeView->layerTreeModel()->index2node( parent );
-    if ( QgsLayerTree::isLayer( node ) )
-    {
-      QgsMapLayer* layer = QgsLayerTree::toLayer( node )->layer();
-      QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer*>( layer );
-      if ( rlayer && rlayer->providerType() == "wms" )
-      {
-        QImage img = rlayer->dataProvider()->getLegendGraphic( mMapCanvas->scale() );
-
-        QFrame* popup = new QFrame();
-        popup->setAttribute( Qt::WA_DeleteOnClose );
-        popup->setFrameStyle( QFrame::Box | QFrame::Raised );
-        popup->setLineWidth( 2 );
-        popup->setAutoFillBackground( true );
-        QVBoxLayout *layout = new QVBoxLayout;
-        QLabel *label = new QLabel( popup );
-        label->setPixmap( QPixmap::fromImage( img ) );
-        layout->addWidget( label );
-        popup->setLayout( layout );
-        popup->move( mLayerTreeView->visualRect( index ).bottomLeft() );
-        popup->show();
-        return;
-      }
-    }
-  }
-
+  Q_UNUSED( index )
   QSettings settings;
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
   {
@@ -667,7 +639,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   connect( mInternalClipboard, SIGNAL( changed() ), this, SLOT( clipboardChanged() ) );
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
   mWindowAction = new QAction( this );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
@@ -926,6 +898,8 @@ QgisApp::~QgisApp()
   delete QgsProject::instance();
 
   delete mPythonUtils;
+
+  QgsMapLayerStyleGuiUtils::cleanup();
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
@@ -1177,7 +1151,7 @@ void QgisApp::createActions()
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
   connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Window Menu Items
 
   mActionWindowMinimize = new QAction( tr( "Minimize" ), this );
@@ -1225,7 +1199,7 @@ void QgisApp::createActions()
 
   // Help Menu Items
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mActionHelpContents->setShortcut( QString( "Ctrl+?" ) );
   mActionQgisHomePage->setShortcut( QString() );
 #endif
@@ -1302,7 +1276,7 @@ void QgisApp::showPythonDialog()
     mPythonUtils->getError( className, text );
     messageBar()->pushMessage( tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text, QgsMessageBar::WARNING );
   }
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   else
   {
     addWindow( mActionShowPythonDialog );
@@ -1454,14 +1428,14 @@ void QgisApp::createMenus()
   }
 
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   //disabled for OSX - see #10761
   //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
   mMenuPreviewMode->menuAction()->setVisible( false );
 #endif
 
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 
   // keep plugins from hijacking About and Preferences application menus
   // these duplicate actions will be moved to application menus by Qt
@@ -1824,7 +1798,7 @@ void QgisApp::createStatusBar()
   mMessageButton = new QToolButton( statusBar() );
   mMessageButton->setAutoRaise( true );
   mMessageButton->setIcon( QgsApplication::getThemeIcon( "bubble.svg" ) );
-  mMessageButton->setText( "Messages" );
+  mMessageButton->setText( tr( "Messages" ) );
   mMessageButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
   mMessageButton->setObjectName( "mMessageLogViewerButton" );
   mMessageButton->setMaximumHeight( mScaleLabel->height() );
@@ -4503,7 +4477,7 @@ void QgisApp::activate()
 
 void QgisApp::bringAllToFront()
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Bring forward all open windows while maintaining layering order
   ProcessSerialNumber psn;
   GetCurrentProcess( &psn );
@@ -4513,7 +4487,7 @@ void QgisApp::bringAllToFront()
 
 void QgisApp::addWindow( QAction *action )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mWindowActions->addAction( action );
   mWindowMenu->addAction( action );
   action->setCheckable( true );
@@ -4525,7 +4499,7 @@ void QgisApp::addWindow( QAction *action )
 
 void QgisApp::removeWindow( QAction *action )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mWindowActions->removeAction( action );
   mWindowMenu->removeAction( action );
 #else
@@ -7411,7 +7385,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
 void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( "qgispython" );
-#if defined(Q_WS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -8115,7 +8089,7 @@ void QgisApp::closeProject()
 void QgisApp::changeEvent( QEvent* event )
 {
   QMainWindow::changeEvent( event );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   switch ( event->type() )
   {
     case QEvent::ActivationChange:
@@ -8163,7 +8137,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
    * of the menu.
    */
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8235,7 +8209,7 @@ void QgisApp::removePluginMenu( QString name, QAction* action )
 
 QMenu* QgisApp::getDatabaseMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8275,7 +8249,7 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
 
 QMenu* QgisApp::getRasterMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8325,7 +8299,7 @@ QMenu* QgisApp::getRasterMenu( QString menuName )
 
 QMenu* QgisApp::getVectorMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8365,7 +8339,7 @@ QMenu* QgisApp::getVectorMenu( QString menuName )
 
 QMenu* QgisApp::getWebMenu( QString menuName )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   menuName.remove( QChar( '&' ) );
 #endif
@@ -8686,7 +8660,7 @@ void QgisApp::updateCRSStatusBar()
 
   if ( mMapCanvas->mapSettings().hasCrsTransformEnabled() )
   {
-    mOnTheFlyProjectionStatusButton->setText( QString("%1 (OTF)").arg( mOnTheFlyProjectionStatusButton->text() ) );
+    mOnTheFlyProjectionStatusButton->setText( tr( "%1 (OTF)" ).arg( mOnTheFlyProjectionStatusButton->text() ) );
     mOnTheFlyProjectionStatusButton->setToolTip(
       tr( "Current CRS: %1 (OTFR enabled)" ).arg( mMapCanvas->mapSettings().destinationCrs().description() ) );
     mOnTheFlyProjectionStatusButton->setIcon( QgsApplication::getThemeIcon( "mIconProjectionEnabled.png" ) );
@@ -9777,7 +9751,7 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
   // The following statement causes a crash on WIN32 and should be
   // enclosed in an #ifdef QGISDEBUG if its really necessary. Its
   // commented out for now. [gsherman]
-  // QgsDebugMsg(QString("%1 (keypress recevied)").arg(e->text()));
+  // QgsDebugMsg( QString( "%1 (keypress received)" ).arg( e->text() ) );
   emit keyPressed( e );
 
   //cancel rendering progress with esc key

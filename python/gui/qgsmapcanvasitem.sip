@@ -41,17 +41,17 @@ class QgsMapCanvasItem : QGraphicsItem
     //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
     void setPanningOffset( const QPoint& point ) /Deprecated/;
 
-    //! returns canvas item rectangle
+    //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
 
-    //! sets canvas item rectangle
-    void setRect( const QgsRectangle& r );
+    //! sets canvas item rectangle in map units
+    void setRect( const QgsRectangle& r, bool resetRotation = true );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( const QPoint& point );
+    QgsPoint toMapCoordinates( const QPoint& point ) const;
 
     //! transformation from map coordinates to screen coordinates
-    QPointF toCanvasCoordinates( const QgsPoint& point );
+    QPointF toCanvasCoordinates( const QgsPoint& point ) const;
 };
 
 

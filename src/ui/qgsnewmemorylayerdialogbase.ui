@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>255</height>
+    <height>293</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -89,28 +89,11 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QLineEdit" name="mSpatialRefSysEdit">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mChangeSrsButton">
-       <property name="toolTip">
-        <string>Specify the coordinate reference system of the layer's geometry.</string>
-       </property>
-       <property name="whatsThis">
-        <string>Specify the coordinate reference system of the layer's geometry.</string>
-       </property>
-       <property name="text">
-        <string>Specify CRS</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QLabel" name="label_2">
@@ -151,6 +134,14 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mNameLineEdit</tabstop>
   <tabstop>mPointRadioButton</tabstop>
@@ -159,8 +150,7 @@
   <tabstop>mMultiPointRadioButton</tabstop>
   <tabstop>mMultiLineRadioButton</tabstop>
   <tabstop>mMultiPolygonRadioButton</tabstop>
-  <tabstop>mSpatialRefSysEdit</tabstop>
-  <tabstop>mChangeSrsButton</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>

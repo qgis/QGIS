@@ -68,6 +68,8 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
 
     const QgsMapLayer *layer() const { return mLayer; }
 
+    virtual void updatePosition();
+
   protected:
     virtual void paint( QPainter* p );
 

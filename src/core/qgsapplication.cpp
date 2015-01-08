@@ -33,7 +33,7 @@
 #include <QPixmap>
 #include <QThreadPool>
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
 #include <netinet/in.h>
 #else
 #include <winsock.h>
@@ -153,7 +153,7 @@ void QgsApplication::init( QString customConfigPath )
     char *prefixPath = getenv( "QGIS_PREFIX_PATH" );
     if ( !prefixPath )
     {
-#if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
+#if defined(Q_OS_MACX) || defined(Q_OS_WIN32) || defined(WIN32)
       setPrefixPath( applicationDirPath(), true );
 #elif defined(ANDROID)
       // this is  "/data/data/org.qgis.qgis" in android
@@ -926,7 +926,7 @@ bool QgsApplication::createDB( QString *errorMessage )
     myDir.mkpath( myPamPath ); //fail silently
   }
 
-#if defined(Q_WS_WIN32) || defined(WIN32)
+#if defined(Q_OS_WIN32) || defined(WIN32)
   CPLSetConfigOption( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8() );
 #else
   //under other OS's we use an environment var so the user can

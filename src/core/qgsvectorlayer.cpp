@@ -1328,6 +1328,8 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     return false;
   }
 
+  readStyleManager( layer_node );
+
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   return mValid;               // should be true if read successfully
@@ -1477,6 +1479,8 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
+
+  writeStyleManager( layer_node, document );
 
   // renderer specific settings
   QString errorMsg;

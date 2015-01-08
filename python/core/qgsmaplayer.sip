@@ -370,6 +370,21 @@ class QgsMapLayer : QObject
      */
     QgsMapLayerLegend* legend() const;
 
+    /**
+     * Enable or disable layer's style manager. When disabled (default), the styleManager() will return null pointer.
+     * By enabling the style manager will be created with one default style (same as the layer's active style).
+     * By disabling the style manager all associated styles will be lost (only the layer's active style will stay).
+     * @note added in 2.8
+     */
+    void enableStyleManager( bool enable = true );
+
+    /**
+     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * If the style manager is not enabled, null pointer will be returned.
+     * @note added in 2.8
+     */
+    QgsMapLayerStyleManager* styleManager() const;
+
     /**Returns the minimum scale denominator at which the layer is visible.
      * Scale based visibility is only used if hasScaleBasedVisibility is true.
      * @returns minimum scale denominator at which the layer will render
@@ -516,6 +531,11 @@ class QgsMapLayer : QObject
 
     /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
+
+    /** Read style manager's configuration (if any). To be called by subclasses. */
+    void readStyleManager( const QDomNode& layerNode );
+    /** Write style manager's configuration (if exists). To be called by subclasses. */
+    void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );

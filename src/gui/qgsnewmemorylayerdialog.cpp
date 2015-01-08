@@ -19,7 +19,6 @@
 #include "qgsapplication.h"
 #include "qgis.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsgenericprojectionselector.h"
 #include "qgsproviderregistry.h"
 #include "qgsvectordataprovider.h"
 
@@ -38,7 +37,7 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
   }
 
   QGis::WkbType geometrytype = dialog.selectedType();
-  QString crsId = dialog.selectedCrsId();
+  QString crsId = dialog.crs().authid();
 
   QString geomType;
   switch ( geometrytype )
@@ -81,11 +80,10 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
 
   mPointRadioButton->setChecked( true );
 
-  QgsCoordinateReferenceSystem srs;
-  srs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
-  srs.validate();
-  mCrsId = srs.authid();
-  mSpatialRefSysEdit->setText( srs.authid() + " - " + srs.description() );
+  QgsCoordinateReferenceSystem defaultCrs;
+  defaultCrs.createFromOgcWmsCrs( settings.value( "/Projections/layerDefaultCrs", GEO_EPSG_CRS_AUTHID ).toString() );
+  defaultCrs.validate();
+  mCrsSelector->setCrs( defaultCrs );
 
   mNameLineEdit->setText( tr( "New scratch layer" ) );
 }
@@ -125,29 +123,12 @@ QGis::WkbType QgsNewMemoryLayerDialog::selectedType() const
   return QGis::WKBUnknown;
 }
 
+QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const
+{
+  return mCrsSelector->crs();
+}
+
 QString QgsNewMemoryLayerDialog::layerName() const
 {
   return mNameLineEdit->text();
-}
-
-QString QgsNewMemoryLayerDialog::selectedCrsId() const
-{
-  return mCrsId;
-}
-
-void QgsNewMemoryLayerDialog::on_mChangeSrsButton_clicked()
-{
-  QgsGenericProjectionSelector *selector = new QgsGenericProjectionSelector( this );
-  selector->setMessage();
-  selector->setSelectedAuthId( mCrsId );
-  if ( selector->exec() )
-  {
-    mCrsId = selector->selectedAuthId();
-    mSpatialRefSysEdit->setText( mCrsId );
-  }
-  else
-  {
-    QApplication::restoreOverrideCursor();
-  }
-  delete selector;
 }

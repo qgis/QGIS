@@ -268,6 +268,11 @@ void QgsHighlight::paintPolygon( QPainter *p, QgsPolygon polygon )
   p->drawPath( path );
 }
 
+void QgsHighlight::updatePosition( )
+{
+  // nothing to do here...
+}
+
 /*!
   Draw the shape in response to an update event.
   */
@@ -357,12 +362,6 @@ void QgsHighlight::paint( QPainter* p )
     QgsFeatureRendererV2 *renderer = getRenderer( context, tmpColor, tmpFillColor );
     if ( layer && renderer )
     {
-      QgsRectangle extent = mMapCanvas->extent();
-      if ( extent != rect() ) // catches also canvas resize as it is causing extent change
-      {
-        updateRect();
-        return; // it will be repainted after updateRect()
-      }
 
       QSize imageSize( mMapCanvas->mapSettings().outputSize() );
       QImage image = QImage( imageSize.width(), imageSize.height(), QImage::Format_ARGB32 );
@@ -429,7 +428,16 @@ void QgsHighlight::updateRect()
     // 1) currently there is no method in QgsFeatureRendererV2 to get rendered feature
     //    bounding box
     // 2) using different extent would result in shifted fill patterns
-    setRect( mMapCanvas->extent() );
+
+    // This is an hack to pass QgsMapCanvasItem::setRect what it
+    // expects (encoding of position and size of the item)
+    const QgsMapToPixel& m2p = mMapCanvas->mapSettings().mapToPixel();
+    QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
+    double res = m2p.mapUnitsPerPixel();
+    QSizeF imageSize = mMapCanvas->mapSettings().outputSize();
+    QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + imageSize.width()*res, topLeft.y() - imageSize.height()*res );
+    setRect( rect );
+
     setVisible( true );
   }
   else

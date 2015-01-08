@@ -106,6 +106,7 @@ SET(QGIS_CORE_SRCS
   qgsmaplayer.cpp
   qgsmaplayerlegend.cpp
   qgsmaplayerregistry.cpp
+  qgsmaplayerstylemanager.cpp
   qgsmaprenderer.cpp
   qgsmaprenderercache.cpp
   qgsmaprenderercustompainterjob.cpp
@@ -323,40 +324,6 @@ IF (QT_MOBILITY_LOCATION_FOUND)
   )
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
-IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE OR ANDROID OR CYGWIN)
-    INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
-  ENDIF (WIN32 OR APPLE OR ANDROID OR CYGWIN)
-  IF (WIN32)
-    ADD_DEFINITIONS(-DDLL_EXPORT)
-  ENDIF (WIN32)
-
-#
-# sqlite3 requires some extraflags to be defined
-# in order to support:
-# - huge database > 2 GB
-# - RTree Spatial Index
-#
-  ADD_DEFINITIONS(-D_LARGE_FILE=1 -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE=1)
-  ADD_DEFINITIONS(-DSQLITE_ENABLE_RTREE=1)
-
-  SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    spatialite/sqlite3.c
-    spatialite/spatialite.c
-    )
-
-  IF(MSVC)
-    # dirty code
-    SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS /W0)
-  ELSE(MSVC)
-    SET_SOURCE_FILES_PROPERTIES(spatialite/sqlite3.c spatialite/spatialite.c PROPERTIES COMPILE_FLAGS -w)
-  ENDIF(MSVC)
-
-  INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite spatialite/headers)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
-ENDIF (WITH_INTERNAL_SPATIALITE)
-
 ADD_FLEX_FILES(QGIS_CORE_SRCS qgsexpressionlexer.ll)
 
 ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
@@ -529,6 +496,7 @@ SET(QGIS_CORE_HDRS
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayerregistry.h
+  qgsmaplayerstylemanager.h
   qgsmaprenderer.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h
@@ -718,12 +686,10 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${EXPAT_INCLUDE_DIR}
+  ${SQLITE3_INCLUDE_DIR}
+  ${SPATIALITE_INCLUDE_DIR}
 )
 
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
 
 IF (WIN32)
   IF (MSVC)
@@ -812,21 +778,9 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${GDAL_LIBRARY}
   ${SPATIALINDEX_LIBRARY}
   ${EXPAT_LIBRARY}
+  ${SQLITE3_LIBRARY}
+  ${SPATIALITE_LIBRARY}
 )
-
-IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE OR CYGWIN)
-    TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
-  ENDIF (WIN32 OR APPLE OR CYGWIN)
-  IF (ANDROID)
-    TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY} ${CHARSET_LIBRARY})
-  ENDIF (ANDROID)
-  IF (UNIX AND NOT ANDROID)
-    TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
-  ENDIF (UNIX AND NOT ANDROID)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY} ${SPATIALITE_LIBRARY})
-ENDIF (WITH_INTERNAL_SPATIALITE)
 
 # install
 

@@ -672,11 +672,20 @@ QImage* QgsWMSServer::getLegendGraphics()
     }
   }
 
+  // Create the layer tree root
   QgsLayerTreeGroup rootGroup;
+  // Store layers' name to reset them
+  QMap<QString, QString> layerNameMap;
+  // Create tree layer node for each layer
   foreach ( QString layerId, layerIds )
   {
+    // get layer
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    // create tree layer node
     QgsLayerTreeLayer *layer = rootGroup.addLayer( ml );
+    // store the layer's name
+    layerNameMap.insert( layerId, ml->name() );
+    // set layer name with layer's title to have it in legend
     if ( !ml->title().isEmpty() )
       layer->setLayerName( ml->title() );
   }
@@ -808,6 +817,13 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   p.end();
 
+  // reset layers' name
+  foreach ( QString layerId, layerIds )
+  {
+    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    ml->setLayerName( layerNameMap[ layerId ] );
+  }
+  //  clear map layer registry
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
   return paintImage;
 }

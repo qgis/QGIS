@@ -93,6 +93,9 @@ bool QgsWmsSettings::parseUri( QString uriString )
 
   mCrsId = uri.param( "crs" );
 
+  mEnableContextualLegend = uri.param( "contextualWMSLegend" ).toInt();
+  QgsDebugMsg( QString( "Contextual legend: %1" ).arg( mEnableContextualLegend ) );
+
   mFeatureCount = uri.param( "featureCount" ).toInt(); // default to 0
 
   return true;
