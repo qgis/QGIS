@@ -200,14 +200,26 @@ void QgsVisibilityPresets::applyPresetCheckedLegendNodesToLayer( const QString& 
   if ( !mPresets.contains( name ) )
     return;
 
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+  QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+  if ( !layer )
+    return;
+
+  const PresetRecord& rec = mPresets[name];
+
+  if ( rec.mPerLayerCurrentStyle.contains( layerID ) )
+  {
+    // apply desired style first
+    if ( layer->styleManager() )
+      layer->styleManager()->setCurrentStyle( rec.mPerLayerCurrentStyle[layerID] );
+  }
+
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
   if ( !vlayer || !vlayer->rendererV2() )
     return;
 
   if ( !vlayer->rendererV2()->legendSymbolItemsCheckable() )
     return; // no need to do anything
 
-  const PresetRecord& rec = mPresets[name];
   bool someNodesUnchecked = rec.mPerLayerCheckedLegendSymbols.contains( layerID );
 
   foreach ( const QgsLegendSymbolItemV2& item, vlayer->rendererV2()->legendSymbolItemsV2() )
