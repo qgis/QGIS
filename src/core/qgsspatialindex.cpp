@@ -17,6 +17,7 @@
 
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
+#include "qgsfeatureiterator.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
@@ -73,6 +74,61 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
 };
 
 
+/** Utility class for bulk loading of R-trees. Not a part of public API. */
+class QgsFeatureIteratorDataStream : public IDataStream
+{
+  public:
+    //! constructor - needs to load all data to a vector for later access when bulk loading
+    QgsFeatureIteratorDataStream( const QgsFeatureIterator& fi ) : mFi( fi ), mNextData( 0 )
+    {
+      readNextEntry();
+    }
+
+    ~QgsFeatureIteratorDataStream()
+    {
+      delete mNextData;
+    }
+
+    //! returns a pointer to the next entry in the stream or 0 at the end of the stream.
+    virtual IData* getNext()
+    {
+      RTree::Data* ret = mNextData;
+      mNextData = 0;
+      readNextEntry();
+      return ret;
+    }
+
+    //! returns true if there are more items in the stream.
+    virtual bool hasNext() { return mNextData != 0; }
+
+    //! returns the total number of entries available in the stream.
+    virtual uint32_t size() { Q_ASSERT( 0 && "not available" ); return 0; }
+
+    //! sets the stream pointer to the first entry, if possible.
+    virtual void rewind() { Q_ASSERT( 0 && "not available" ); }
+
+  protected:
+    void readNextEntry()
+    {
+      QgsFeature f;
+      SpatialIndex::Region r;
+      QgsFeatureId id;
+      while ( mFi.nextFeature( f ) )
+      {
+        if ( QgsSpatialIndex::featureInfo( f, r, id ) )
+        {
+          mNextData = new RTree::Data( 0, 0, r, id );
+          return;
+        }
+      }
+    }
+
+  private:
+    QgsFeatureIterator mFi;
+    RTree::Data* mNextData;
+};
+
+
 /** Data of spatial index that may be implicitly shared */
 class QgsSpatialIndexData : public QSharedData
 {
@@ -80,6 +136,12 @@ class QgsSpatialIndexData : public QSharedData
     QgsSpatialIndexData()
     {
       initTree();
+    }
+
+    explicit QgsSpatialIndexData( const QgsFeatureIterator& fi )
+    {
+      QgsFeatureIteratorDataStream fids( fi );
+      initTree( &fids );
     }
 
     QgsSpatialIndexData( const QgsSpatialIndexData& other )
@@ -101,7 +163,7 @@ class QgsSpatialIndexData : public QSharedData
       delete mStorage;
     }
 
-    void initTree()
+    void initTree( IDataStream* inputStream = 0 )
     {
       // for now only memory manager
       mStorage = StorageManager::createNewMemoryStorageManager();
@@ -115,8 +177,13 @@ class QgsSpatialIndexData : public QSharedData
 
       // create R-tree
       SpatialIndex::id_type indexId;
-      mRTree = RTree::createNewRTree( *mStorage, fillFactor, indexCapacity,
-                                      leafCapacity, dimension, variant, indexId );
+
+      if ( inputStream )
+        mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, *inputStream, *mStorage, fillFactor, indexCapacity,
+                 leafCapacity, dimension, variant, indexId );
+      else
+        mRTree = RTree::createNewRTree( *mStorage, fillFactor, indexCapacity,
+                                        leafCapacity, dimension, variant, indexId );
     }
 
     /** storage manager */
@@ -132,6 +199,11 @@ class QgsSpatialIndexData : public QSharedData
 QgsSpatialIndex::QgsSpatialIndex()
 {
   d = new QgsSpatialIndexData;
+}
+
+QgsSpatialIndex::QgsSpatialIndex( const QgsFeatureIterator& fi )
+{
+  d = new QgsSpatialIndexData( fi );
 }
 
 QgsSpatialIndex::QgsSpatialIndex( const QgsSpatialIndex& other )

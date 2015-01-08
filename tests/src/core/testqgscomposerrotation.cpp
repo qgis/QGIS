@@ -31,7 +31,7 @@
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerRotation: public QObject
+class TestQgsComposerRotation : public QObject
 {
     Q_OBJECT
   private slots:

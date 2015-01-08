@@ -119,6 +119,8 @@ ADD_QGIS_TEST(zoomtest testqgsmaptoolzoom.cpp)
 ADD_QGIS_TEST(projectionissues testprojectionissues.cpp)
 ADD_QGIS_TEST(scalecombobox testqgsscalecombobox.cpp)
 ADD_QGIS_TEST(dualviewtest testqgsdualview.cpp )
+ADD_QGIS_TEST(doublespinbox testqgsdoublespinbox.cpp)
+ADD_QGIS_TEST(spinbox testqgsspinbox.cpp)
 ADD_QGIS_TEST(rubberbandtest testqgsrubberband.cpp )
 ADD_QGIS_TEST(mapcanvastest testqgsmapcanvas.cpp )
 

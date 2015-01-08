@@ -25,7 +25,9 @@
 #include "qgsdoublespinboxplugin.h"
 #include "qgsfieldcomboboxplugin.h"
 #include "qgsfieldexpressionwidgetplugin.h"
+#include "qgsfilterlineeditplugin.h"
 #include "qgsmaplayercomboboxplugin.h"
+#include "qgsprojectionselectionwidgetplugin.h"
 #include "qgsrelationeditorwidgetplugin.h"
 #include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
@@ -35,19 +37,21 @@
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
     : QObject( parent )
 {
-  mWidgets.append( new QgsCollapsibleGroupBoxPlugin );
-  mWidgets.append( new QgsColorButtonPlugin );
-  mWidgets.append( new QgsColorButtonV2Plugin );
-  mWidgets.append( new QgsDataDefinedButtonPlugin );
-  mWidgets.append( new QgsDateTimeEditPlugin );
-  mWidgets.append( new QgsDoubleSpinBoxPlugin );
-  mWidgets.append( new QgsFieldComboBoxPlugin );
-  mWidgets.append( new QgsFieldExpressionWidgetPlugin );
-  mWidgets.append( new QgsMapLayerComboBoxPlugin );
-  mWidgets.append( new QgsRelationEditorWidgetPlugin );
-  mWidgets.append( new QgsRelationReferenceWidgetPlugin );
-  mWidgets.append( new QgsScaleRangeWidgetPlugin );
-  mWidgets.append( new QgsSpinBoxPlugin );
+  mWidgets.append( new QgsCollapsibleGroupBoxPlugin(this) );
+  mWidgets.append( new QgsColorButtonPlugin(this) );
+  mWidgets.append( new QgsColorButtonV2Plugin(this) );
+  mWidgets.append( new QgsDataDefinedButtonPlugin(this) );
+  mWidgets.append( new QgsDateTimeEditPlugin(this) );
+  mWidgets.append( new QgsDoubleSpinBoxPlugin(this) );
+  mWidgets.append( new QgsFieldComboBoxPlugin(this) );
+  mWidgets.append( new QgsFieldExpressionWidgetPlugin(this) );
+  mWidgets.append( new QgsFilterLineEditPlugin(this) );
+  mWidgets.append( new QgsMapLayerComboBoxPlugin(this) );
+  mWidgets.append( new QgsProjectionSelectionWidgetPlugin(this) );
+  mWidgets.append( new QgsRelationEditorWidgetPlugin(this) );
+  mWidgets.append( new QgsRelationReferenceWidgetPlugin(this) );
+  mWidgets.append( new QgsScaleRangeWidgetPlugin(this) );
+  mWidgets.append( new QgsSpinBoxPlugin(this) );
 }
 
 QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
@@ -55,4 +59,6 @@ QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
   return mWidgets;
 }
 
-Q_EXPORT_PLUGIN2( customwidgetsplugin, QgisCustomWidgets )
+#if QT_VERSION < 0x050000
+  Q_EXPORT_PLUGIN2( customwidgetsplugin, QgisCustomWidgets )
+#endif

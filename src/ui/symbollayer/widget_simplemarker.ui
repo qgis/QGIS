@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>408</width>
+    <width>452</width>
     <height>424</height>
    </rect>
   </property>
@@ -106,7 +106,7 @@
    <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QDoubleSpinBox" name="spinSize">
+      <widget class="QgsDoubleSpinBox" name="spinSize">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -124,6 +124,9 @@
        </property>
        <property name="value">
         <double>1.000000000000000</double>
+       </property>
+       <property name="showClearButton">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -152,18 +155,21 @@
    <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mOutlineWidthSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
-       <property name="decimals">
-        <number>6</number>
+       <property name="showClearButton">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -180,7 +186,7 @@
     </widget>
    </item>
    <item row="4" column="1">
-    <widget class="QDoubleSpinBox" name="spinAngle">
+    <widget class="QgsDoubleSpinBox" name="spinAngle">
      <property name="suffix">
       <string> °</string>
      </property>
@@ -205,7 +211,7 @@
    <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetX">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -224,7 +230,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetY">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -359,6 +365,12 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>

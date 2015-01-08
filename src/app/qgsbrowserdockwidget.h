@@ -18,6 +18,8 @@
 #include <QDockWidget>
 #include <ui_qgsbrowserdockwidgetbase.h>
 
+#include "qgsdataitem.h"
+
 class QgsBrowserModel;
 class QModelIndex;
 class QgsBrowserTreeView;
@@ -54,7 +56,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void showProperties();
     void toggleFastScan();
 
-    void fetchFinished( const QModelIndex & index );
+    void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
 
   protected:
     void refreshModel( const QModelIndex& index );

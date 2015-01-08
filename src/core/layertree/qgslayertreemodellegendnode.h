@@ -4,6 +4,9 @@
   Date                 : August 2014
   Copyright            : (C) 2014 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
+
+  QgsWMSLegendNode     : Sandro Santilli < strk at keybit dot net >
+
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,9 +22,12 @@
 #include <QIcon>
 #include <QObject>
 
+#include "qgsrasterdataprovider.h" // for QgsImageFetcher dtor visibility
+
 class QgsLayerTreeLayer;
 class QgsLayerTreeModel;
 class QgsLegendSettings;
+class QgsMapSettings;
 class QgsSymbolV2;
 
 /**
@@ -220,6 +226,46 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
   private:
     QColor mColor;
     QString mLabel;
+};
+
+class QgsImageFetcher;
+
+/**
+ * Implementation of legend node interface for displaying WMS legend entries
+ *
+ * @note added in 2.8
+ */
+class CORE_EXPORT QgsWMSLegendNode : public QgsLayerTreeModelLegendNode
+{
+    Q_OBJECT
+
+  public:
+    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = 0 );
+
+    virtual QVariant data( int role ) const;
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual void invalidateMapBasedData();
+
+  private slots:
+
+    void getLegendGraphicFinished( const QImage& );
+    void getLegendGraphicErrored( const QString& );
+    void getLegendGraphicProgress( qint64, qint64 );
+
+  private:
+
+    // Lazily initializes mImage
+    const QImage& getLegendGraphic() const;
+
+    QImage renderMessage( const QString& msg ) const;
+
+    QImage mImage;
+
+    bool mValid;
+
+    mutable QScopedPointer<QgsImageFetcher> mFetcher;
 };
 
 #endif // QGSLAYERTREEMODELLEGENDNODE_H

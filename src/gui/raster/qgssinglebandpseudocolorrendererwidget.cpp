@@ -561,6 +561,8 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   const QgsSingleBandPseudoColorRenderer* pr = dynamic_cast<const QgsSingleBandPseudoColorRenderer*>( r );
   if ( pr )
   {
+    mBandComboBox->setCurrentIndex( mBandComboBox->findData( pr->band() ) );
+
     const QgsRasterShader* rasterShader = pr->shader();
     if ( rasterShader )
     {

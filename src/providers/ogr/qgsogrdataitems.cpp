@@ -36,7 +36,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
     : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
 {
   mToolTip = uri;
-  mPopulated = true; // children are not expected
+  setState( Populated ); // children are not expected
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem()
@@ -140,7 +140,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  int ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
+  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
   switch ( ogrType )
   {
     case wkbUnknown:

@@ -45,7 +45,7 @@ class TestSignalReceiver : public QObject
 /** \ingroup UnitTests
  * This is a unit test for the QgsMapLayer class.
  */
-class TestQgsMapLayer: public QObject
+class TestQgsMapLayer : public QObject
 {
     Q_OBJECT
   private slots:

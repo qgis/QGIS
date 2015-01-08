@@ -99,7 +99,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
                           'EPSG:4326'))
         self.addParameter(ParameterString(self.SCHEMA, 'Schema name',
                           'public', optional=True))
-	self.addParameter(ParameterString(self.TABLE, 'Table name, leave blank to use input name',
+        self.addParameter(ParameterString(self.TABLE, 'Table name, leave blank to use input name',
                           '', optional=True))
         self.addParameter(ParameterString(self.PK, 'Primary Key',
                           'id', optional=True))
@@ -192,9 +192,9 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         if index:
-           arguments.append(indexstring)
+            arguments.append(indexstring)
         if launder:
-           arguments.append(launderstring)
+            arguments.append(launderstring)
         if append:
             arguments.append('-append')
         if addfields:
@@ -227,11 +227,11 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append(regionCoords[1])
             arguments.append(regionCoords[3])
             if clip:
-	      arguments.append('-clipsrc spat_extent')
+                arguments.append('-clipsrc spat_extent')
         if skipfailures:
-           arguments.append('-skipfailures')
+            arguments.append('-skipfailures')
         if where:
-           arguments.append(wherestring)
+            arguments.append(wherestring)
         if len(simplify) > 0:
             arguments.append('-simplify')
             arguments.append(simplify)

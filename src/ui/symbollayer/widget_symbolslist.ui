@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>398</width>
+    <width>429</width>
     <height>429</height>
    </rect>
   </property>
@@ -14,20 +14,11 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
-    <number>0</number>
-   </property>
    <property name="verticalSpacing">
     <number>4</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
    </property>
    <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
@@ -121,7 +112,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinSize">
+          <widget class="QgsDoubleSpinBox" name="spinSize">
            <property name="decimals">
             <number>5</number>
            </property>
@@ -134,6 +125,9 @@
            <property name="value">
             <double>1.000000000000000</double>
            </property>
+           <property name="showClearButton">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
          <item row="1" column="0">
@@ -144,9 +138,9 @@
           </widget>
          </item>
          <item row="1" column="1">
-          <widget class="QDoubleSpinBox" name="spinAngle">
+          <widget class="QgsDoubleSpinBox" name="spinAngle">
            <property name="suffix">
-            <string>°</string>
+            <string> °</string>
            </property>
            <property name="decimals">
             <number>2</number>
@@ -171,7 +165,7 @@
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="spinWidth">
+          <widget class="QgsDoubleSpinBox" name="spinWidth">
            <property name="decimals">
             <number>5</number>
            </property>
@@ -184,22 +178,16 @@
            <property name="value">
             <double>1.000000000000000</double>
            </property>
+           <property name="showClearButton">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
        </widget>
        <widget class="QWidget" name="pageFill">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>0</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>0</number>
          </property>
         </layout>
@@ -333,6 +321,12 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>

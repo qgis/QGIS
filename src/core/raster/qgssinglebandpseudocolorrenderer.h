@@ -49,6 +49,11 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     QList<int> usesBands() const;
 
+    /**Returns the band used by the renderer
+     * @note added in QGIS 2.7
+     */
+    int band() const { return mBand; }
+
     double classificationMin() const { return mClassificationMin; }
     double classificationMax() const { return mClassificationMax; }
     void setClassificationMin( double min ) { mClassificationMin = min; }

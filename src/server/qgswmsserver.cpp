@@ -37,6 +37,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmapserviceexception.h"
 #include "qgssldconfigparser.h"
 #include "qgssymbolv2.h"
@@ -199,7 +200,20 @@ void QgsWMSServer::executeRequest()
     try
     {
       QDomDocument doc = getContext();
-      mRequestHandler->setGetStyleResponse( doc );
+      mRequestHandler->setXmlResponse( doc );
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->setServiceException( ex );
+    }
+  }
+  //GetSchemaExtension
+  else if ( request.compare( "GetSchemaExtension", Qt::CaseInsensitive ) == 0 )
+  {
+    try
+    {
+      QDomDocument doc = getSchemaExtension();
+      mRequestHandler->setXmlResponse( doc );
     }
     catch ( QgsMapServiceException& ex )
     {
@@ -212,7 +226,7 @@ void QgsWMSServer::executeRequest()
     try
     {
       QDomDocument doc = getStyle();
-      mRequestHandler->setGetStyleResponse( doc );
+      mRequestHandler->setXmlResponse( doc );
     }
     catch ( QgsMapServiceException& ex )
     {
@@ -222,22 +236,16 @@ void QgsWMSServer::executeRequest()
   //GetStyles
   else if ( request.compare( "GetStyles", Qt::CaseInsensitive ) == 0 )
   {
-    // GetStyles is only defined for WMS1.1.1/SLD1.0
-    if ( version != "1.1.1" )
+    // GetStyles is defined for WMS1.1.1/SLD1.0
+    // and in qgis-server WMS1.3.0 extension
+    try
     {
-      mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "GetStyles method is only available in WMS version 1.1.1" ) );
+      QDomDocument doc = getStyles();
+      mRequestHandler->setXmlResponse( doc );
     }
-    else
+    catch ( QgsMapServiceException& ex )
     {
-      try
-      {
-        QDomDocument doc = getStyles();
-        mRequestHandler->setGetStyleResponse( doc );
-      }
-      catch ( QgsMapServiceException& ex )
-      {
-        mRequestHandler->setServiceException( ex );
-      }
+      mRequestHandler->setServiceException( ex );
     }
   }
   //GetLegendGraphic
@@ -313,6 +321,13 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   QDomDocument doc;
   QDomElement wmsCapabilitiesElement;
 
+  //Prepare url
+  QString hrefString = mConfigParser->serviceUrl();
+  if ( hrefString.isEmpty() )
+  {
+    hrefString = serviceUrl();
+  }
+
   if ( version == "1.1.1" )
   {
     doc = QDomDocument( "WMT_MS_Capabilities SYSTEM 'http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd'" );  //WMS 1.1.1 needs DOCTYPE  "SYSTEM http://schemas.opengis.net/wms/1.1.1/WMS_MS_Capabilities.dtd"
@@ -324,8 +339,16 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
     addXMLDeclaration( doc );
     wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
     wmsCapabilitiesElement.setAttribute( "xmlns", "http://www.opengis.net/wms" );
+    wmsCapabilitiesElement.setAttribute( "xmlns:sld", "http://www.opengis.net/sld" );
+    wmsCapabilitiesElement.setAttribute( "xmlns:qgs", "http://www.qgis.org/wms" );
     wmsCapabilitiesElement.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-    wmsCapabilitiesElement.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/wms http://qgis.org/wms_1_3_0.xsd" );
+    QString schemaLocation = "http://www.opengis.net/wms";
+    schemaLocation += " http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd";
+    schemaLocation += " http://www.opengis.net/sld";
+    schemaLocation += " http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd";
+    schemaLocation += " http://www.qgis.org/wms";
+    schemaLocation += " " + hrefString + "SERVICE=WMS&REQUEST=GetSchemaExtension";
+    wmsCapabilitiesElement.setAttribute( "xsi:schemaLocation", schemaLocation );
   }
   wmsCapabilitiesElement.setAttribute( "version", version );
   doc.appendChild( wmsCapabilitiesElement );
@@ -354,14 +377,6 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.wms_xml" : "text/xml" ) );
   elem.appendChild( dcpTypeElement );
   requestElement.appendChild( elem );
-
-  //Prepare url
-  QString hrefString = mConfigParser->serviceUrl();
-  if ( hrefString.isEmpty() )
-  {
-    hrefString = serviceUrl();
-  }
-
 
   // SOAP platform
   //only give this information if it is not a WMS request to be in sync with the WMS capabilities schema
@@ -411,29 +426,32 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   requestElement.appendChild( elem );
 
   //wms:GetLegendGraphic
-  elem = doc.createElement( "GetLegendGraphic"/*wms:GetLegendGraphic*/ );
+  elem = doc.createElement(( version == "1.1.1" ? "GetLegendGraphic" : "sld:GetLegendGraphic" )/*wms:GetLegendGraphic*/ );
   appendFormats( doc, elem, QStringList() << "image/jpeg" << "image/png" );
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); // this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
   //wms:GetStyles
-  elem = doc.createElement( "GetStyles"/*wms:GetStyles*/ );
+  elem = doc.createElement(( version == "1.1.1" ? "GetStyles" : "qgs:GetStyles" )/*wms:GetStyles*/ );
   appendFormats( doc, elem, QStringList() << "text/xml" );
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
-  //wms:GetPrint
-  elem = doc.createElement( "GetPrint"/*wms:GetPrint*/ );
-  appendFormats( doc, elem, QStringList() << "svg" << "png" << "pdf" );
-  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
-  requestElement.appendChild( elem );
+  if ( fullProjectInformation ) //remove composer templates from GetCapabilities in the long term
+  {
+    //wms:GetPrint
+    elem = doc.createElement( "GetPrint" /*wms:GetPrint*/ );
+    appendFormats( doc, elem, QStringList() << "svg" << "png" << "pdf" );
+    elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
+    requestElement.appendChild( elem );
+  }
 
   //Exception element is mandatory
   elem = doc.createElement( "Exception" );
   appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
   capabilityElement.appendChild( elem );
 
-  if ( mConfigParser /*&& fullProjectInformation*/ ) //remove composer templates from GetCapabilities in the long term
+  if ( mConfigParser && fullProjectInformation ) //remove composer templates from GetCapabilities in the long term
   {
     //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
     mConfigParser->printCapabilities( capabilityElement, doc );
@@ -654,11 +672,20 @@ QImage* QgsWMSServer::getLegendGraphics()
     }
   }
 
+  // Create the layer tree root
   QgsLayerTreeGroup rootGroup;
+  // Store layers' name to reset them
+  QMap<QString, QString> layerNameMap;
+  // Create tree layer node for each layer
   foreach ( QString layerId, layerIds )
   {
+    // get layer
     QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    // create tree layer node
     QgsLayerTreeLayer *layer = rootGroup.addLayer( ml );
+    // store the layer's name
+    layerNameMap.insert( layerId, ml->name() );
+    // set layer name with layer's title to have it in legend
     if ( !ml->title().isEmpty() )
       layer->setLayerName( ml->title() );
   }
@@ -790,6 +817,13 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   p.end();
 
+  // reset layers' name
+  foreach ( QString layerId, layerIds )
+  {
+    QgsMapLayer *ml = QgsMapLayerRegistry::instance()->mapLayer( layerId );
+    ml->setLayerName( layerNameMap[ layerId ] );
+  }
+  //  clear map layer registry
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
   return paintImage;
 }
@@ -956,6 +990,42 @@ void QgsWMSServer::legendParameters( double& boxSpace, double& layerSpace, doubl
   }
 }
 
+QDomDocument QgsWMSServer::getSchemaExtension()
+{
+  QDomDocument xsdDoc;
+
+  QFileInfo xsdFileInfo( "schemaExtension.xsd" );
+  if ( !xsdFileInfo.exists() )
+  {
+    QgsMessageLog::logMessage( "Error, xsd file 'schemaExtension.xsd' does not exist", "Server", QgsMessageLog::CRITICAL );
+    return xsdDoc;
+  }
+
+  QString xsdFilePath = xsdFileInfo.absoluteFilePath();
+  QFile xsdFile( xsdFilePath );
+  if ( !xsdFile.exists() )
+  {
+    QgsMessageLog::logMessage( "Error, xsd file 'schemaExtension.xsd' does not exist", "Server", QgsMessageLog::CRITICAL );
+    return xsdDoc;
+  }
+
+  if ( !xsdFile.open( QIODevice::ReadOnly ) )
+  {
+    QgsMessageLog::logMessage( "Error, cannot open xsd file 'schemaExtension.xsd' does not exist", "Server", QgsMessageLog::CRITICAL );
+    return xsdDoc;
+  }
+
+  QString errorMsg;
+  int line, column;
+  if ( !xsdDoc.setContent( &xsdFile, true, &errorMsg, &line, &column ) )
+  {
+    QgsMessageLog::logMessage( "Error parsing file 'schemaExtension.xsd" +
+                               QString( "': parse error %1 at row %2, column %3" ).arg( errorMsg ).arg( line ).arg( column ), "Server", QgsMessageLog::CRITICAL );
+    return xsdDoc;
+  }
+  return xsdDoc;
+}
+
 QDomDocument QgsWMSServer::getStyle()
 {
   QDomDocument doc;
@@ -975,7 +1045,7 @@ QDomDocument QgsWMSServer::getStyle()
   return mConfigParser->getStyle( styleName, layerName );
 }
 
-// GetStyles is only defined for WMS1.1.1/SLD1.0
+// GetStyles is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
 QDomDocument QgsWMSServer::getStyles()
 {
   QDomDocument doc;

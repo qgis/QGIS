@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    lasduplicate.py
+    lasheight.py
     ---------------------
     Date                 : September 2013
     Copyright            : (C) 2013 by Martin Isenburg
@@ -17,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = 'Martin Isenburg'
+__date__ = 'September 2013'
+__copyright__ = '(C) 2013, Martin Isenburg'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
@@ -28,10 +28,15 @@ from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterNumber
 
 class lasheight(LAStoolsAlgorithm):
 
     REPLACE_Z = "REPLACE_Z"
+    DROP_ABOVE = "DROP_ABOVE"
+    DROP_ABOVE_HEIGHT = "DROP_ABOVE_HEIGHT"
+    DROP_BELOW = "DROP_BELOW"
+    DROP_BELOW_HEIGHT = "DROP_BELOW_HEIGHT"
 
     def defineCharacteristics(self):
         self.name = "lasheight"
@@ -39,16 +44,26 @@ class lasheight(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterBoolean(lasheight.REPLACE_Z, "replace z", False))
+        self.addParameter(ParameterBoolean(lasheight.DROP_ABOVE, "drop above", False))
+        self.addParameter(ParameterNumber(lasheight.DROP_ABOVE_HEIGHT, "drop above height", 0, None, 100.0))
+        self.addParameter(ParameterBoolean(lasheight.DROP_BELOW, "drop below", False))
+        self.addParameter(ParameterNumber(lasheight.DROP_BELOW_HEIGHT, "drop below height", 0, None, -2.0))
         self.addParametersPointOutputGUI()
-
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
-        replace_z = self.getParameterValue(lasheight.REPLACE_Z)
-        if replace_z == True:
+        if self.getParameterValue(lasheight.REPLACE_Z):
             commands.append("-replace_z")
+        if self.getParameterValue(lasheight.DROP_ABOVE):
+            commands.append("-drop_above")
+            commands.append(str(self.getParameterValue(lasheight.DROP_ABOVE_HEIGHT)))
+        if self.getParameterValue(lasheight.DROP_BELOW):
+            commands.append("-drop_below")
+            commands.append(str(self.getParameterValue(lasheight.DROP_BELOW_HEIGHT)))
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

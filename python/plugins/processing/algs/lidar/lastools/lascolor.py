@@ -44,9 +44,10 @@ class lascolor(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParameter(ParameterRaster(lascolor.ORTHO, "Input ortho"))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascolor.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lascolor")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         ortho = self.getParameterValue(lascolor.ORTHO)
@@ -54,5 +55,6 @@ class lascolor(LAStoolsAlgorithm):
             commands.append("-image")
             commands.append(ortho)
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

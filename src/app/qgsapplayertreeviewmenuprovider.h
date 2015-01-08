@@ -36,7 +36,6 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
     QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
 
-
   protected:
 
     void addCustomLayerActions( QMenu* menu, QgsMapLayer* layer );

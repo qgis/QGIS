@@ -193,30 +193,30 @@ class BatchPanel(QWidget, Ui_Form):
         if isinstance(widget, QComboBox):
             widgetValue = widget.currentIndex()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setCurrentIndex(widgetValue)
+                self.tblParameters.cellWidget(row, column).setCurrentIndex(widgetValue)
         elif isinstance(widget, ExtentSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):
                 if widgetValue is not None:
-                    self.tblParameters.cellWidget(row, col).text.setText(widgetValue)
+                    self.tblParameters.cellWidget(row, column).setExtentFromString(widgetValue)
                 else:
-                    self.tblParameters.cellWidget(row, col).text.setText('')
+                    self.tblParameters.cellWidget(row, column).setExtentFromString('')
         elif isinstance(widget, CrsSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setAuthId(widgetValue)
+                self.tblParameters.cellWidget(row, column).setAuthId(widgetValue)
         elif isinstance(widget, FileSelectionPanel):
             widgetValue = widget.getValue()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setText(widgetValue)
+                self.tblParameters.cellWidget(row, column).setText(widgetValue)
         elif isinstance(widget, QLineEdit):
             widgetValue = widget.text()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setText(widgetValue)
+                self.tblParameters.cellWidget(row, column).setText(widgetValue)
         elif isinstance(widget, BatchInputSelectionPanel):
             widgetValue = widget.getText()
             for row in range(1, self.tblParameters.rowCount()):
-                self.tblParameters.cellWidget(row, col).setText(widgetValue)
+                self.tblParameters.cellWidget(row, column).setText(widgetValue)
         else:
             pass
 

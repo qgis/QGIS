@@ -31,7 +31,7 @@
  *
  * @see QgsVectorLayerCache
  */
-class TestVectorLayerCache: public QObject
+class TestVectorLayerCache : public QObject
 {
     Q_OBJECT
 

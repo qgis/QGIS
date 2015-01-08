@@ -106,7 +106,7 @@ class BatchInputSelectionPanel(QWidget):
                 else:
                     rowdif = len(selected) - (self.table.rowCount() - self.row)
                     for i in range(rowdif):
-                        self.table.addRow()
+                        self.panel.addRow()
                     for i, layeridx in enumerate(selected):
                         self.table.cellWidget(i + self.row,
                                 self.col).setText(layers[layeridx].name())
@@ -139,7 +139,7 @@ class BatchInputSelectionPanel(QWidget):
                 else:
                     rowdif = len(files) - (self.table.rowCount() - self.row)
                     for i in range(rowdif):
-                        self.table.addRow()
+                        self.panel.addRow()
                     for i, f in enumerate(files):
                         self.table.cellWidget(i + self.row,
                                 self.col).setText(f)

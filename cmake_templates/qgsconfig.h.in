@@ -58,5 +58,7 @@
 
 #cmakedefine HAVE_SERVER_PYTHON_PLUGINS
 
+#cmakedefine ENABLE_MODELTEST
+
 #endif
 

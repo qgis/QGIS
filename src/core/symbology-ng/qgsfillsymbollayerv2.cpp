@@ -553,6 +553,15 @@ QString QgsGradientFillSymbolLayerV2::layerType() const
 
 void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderContext& context, const QPolygonF& points )
 {
+
+  if ( mDataDefinedProperties.isEmpty() && !mReferencePoint1IsCentroid && !mReferencePoint2IsCentroid )
+  {
+    //shortcut
+    applyGradient( context, mBrush, mColor, mColor2,  mGradientColorType, mGradientRamp, mGradientType, mCoordinateMode,
+                   mGradientSpread, mReferencePoint1, mReferencePoint2, mAngle );
+    return;
+  }
+
   //first gradient color
   QgsExpression* colorExpression = expression( "color" );
   QColor color = mColor;
@@ -812,11 +821,10 @@ void QgsGradientFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
     return;
   }
 
-  QPen mSelPen;
   applyDataDefinedSymbology( context, points );
 
   p->setBrush( context.selected() ? mSelBrush : mBrush );
-  p->setPen( QPen( Qt::NoPen ) );
+  p->setPen( Qt::NoPen );
 
   QPointF offset;
   if ( !mOffset.isNull() )

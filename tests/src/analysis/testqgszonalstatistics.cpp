@@ -23,7 +23,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the zonal statistics class
  */
-class TestQgsZonalStatistics: public QObject
+class TestQgsZonalStatistics : public QObject
 {
     Q_OBJECT
   private slots:

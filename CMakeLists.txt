@@ -3,6 +3,9 @@ SET(CPACK_PACKAGE_VERSION_MINOR "7")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
+IF (POLICY CMP0048) # in CMake 3.0.0+
+  CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
+ENDIF (POLICY CMP0048)
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
 IF (APPLE)
@@ -67,14 +70,7 @@ SET (WITH_INTERNAL_QWTPOLAR TRUE CACHE BOOL "Use internal build of QwtPolar")
 
 SET (WITH_INTERNAL_QEXTSERIALPORT TRUE CACHE BOOL "Use internal build of Qextserialport")
 
-SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
 SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
-IF(WITH_INTERNAL_SPATIALITE)
-  SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
-  IF(WIN32 OR APPLE OR CYGWIN)
-    FIND_PACKAGE(Iconv REQUIRED)
-  ENDIF(WIN32 OR APPLE OR CYGWIN)
-ENDIF (WITH_INTERNAL_SPATIALITE)
 
 SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 IF(WITH_ORACLE)
@@ -125,6 +121,12 @@ SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.
 
 # whether unit tests should be build
 SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
+
+# whether coverage tests should be performed
+SET (ENABLE_COVERAGE FALSE CACHE BOOL "Perform coverage tests?")
+
+# whether coverage documentation should be generated
+SET (GENERATE_COVERAGE_DOCS FALSE CACHE BOOL "Generate coverage docs (requires lcov)?")
 
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
@@ -191,21 +193,17 @@ ELSE (WITH_INTERNAL_QEXTSERIALPORT)
   FIND_PACKAGE(Qextserialport REQUIRED)
 ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
 
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  FIND_PACKAGE(Sqlite3)
-  IF (NOT SQLITE3_FOUND)
-    MESSAGE (SEND_ERROR "sqlite3 dependency was not found (try compiling with internal spatialite)!")
-  ENDIF (NOT SQLITE3_FOUND)
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+FIND_PACKAGE(Sqlite3)
+IF (NOT SQLITE3_FOUND)
+  MESSAGE (SEND_ERROR "sqlite3 dependency was not found!")
+ENDIF (NOT SQLITE3_FOUND)
 
 # optional
 IF (WITH_POSTGRESQL)
   FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
 ENDIF (WITH_POSTGRESQL)
 
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  FIND_PACKAGE(SPATIALITE REQUIRED)
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+FIND_PACKAGE(SPATIALITE REQUIRED)
 
 IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "Some dependencies were not found!")
@@ -242,8 +240,8 @@ IF (ENABLE_QT5)
   FIND_PACKAGE(Qt5Script REQUIRED)
   FIND_PACKAGE(Qt5Sql REQUIRED)
   SET(QT5_BUILD TRUE)
-
   INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
+  MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
 ELSE()
   FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} REQUIRED)
   SET(QT_USE_QTXML 1)
@@ -251,18 +249,14 @@ ELSE()
   SET(QT_USE_QTSVG 1)
   SET(QT_USE_QTSQL 1)
   SET(QT_USE_QTWEBKIT 1)
-  IF (WITH_CUSTOM_WIDGETS)
-    SET(QT_USE_QTDESIGNER 1)
-  ENDIF (WITH_CUSTOM_WIDGETS)
-
   IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
     MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
   ENDIF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
 
   INCLUDE( ${QT_USE_FILE} )
-ENDIF()
 
-MESSAGE(STATUS "Found Qt version: ${QTVERSION}")
+  MESSAGE(STATUS "Found Qt version: ${QTVERSION}")
+ENDIF()
 
 IF (WITH_QTMOBILITY)
     FIND_PACKAGE(QtMobility 1.1.0)
@@ -287,6 +281,9 @@ ENDIF (WITH_TOUCH)
 
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
+
+# ModelTest
+SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
 
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
@@ -399,6 +396,16 @@ IF(MSVC)
   ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
 
+IF(ENABLE_COVERAGE)
+  INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
+  SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
+ENDIF(ENABLE_COVERAGE)
+
 #############################################################
 # platform specific stuff
 
@@ -440,6 +447,9 @@ IF (WIN32)
 ELSE (WIN32)
 
   IF (APPLE)
+    IF (POLICY CMP0042) # in CMake 3.0.0+
+      SET (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
+    ENDIF (POLICY CMP0042)
     # for Mac OS X, everything is put inside an application bundle
     # save the root install prefix for the app later
     SET (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})

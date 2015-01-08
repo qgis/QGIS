@@ -26,7 +26,7 @@
 #include "qgsconfig.h"
 
 #ifndef CMAKE_SOURCE_DIR
-#error CMAKE_SOURCE_DIR undefinied
+#error CMAKE_SOURCE_DIR undefined
 #endif // CMAKE_SOURCE_DIR
 
 int QgsLogger::sDebugLevel = -999; // undefined value

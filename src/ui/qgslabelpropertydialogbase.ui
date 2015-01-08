@@ -34,59 +34,12 @@
       <string>Font</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="1" colspan="2">
-       <widget class="QComboBox" name="mFontStyleCmbBx">
-        <property name="toolTip">
-         <string>Available typeface styles</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QgsColorButton" name="mFontColorButton">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="0" colspan="3">
        <widget class="QFontComboBox" name="mFontFamilyCmbBx">
         <property name="editable">
          <bool>false</bool>
         </property>
        </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="mFontSizeLabel">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Size</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-          <property name="maximum">
-           <double>999999.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-       </layout>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
@@ -255,6 +208,65 @@
         </item>
        </layout>
       </item>
+      <item row="3" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="mFontSizeLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Size</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDoubleSpinBox" name="mFontSizeSpinBox">
+          <property name="maximum">
+           <double>999999.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="2">
+       <widget class="QgsColorButtonV2" name="mFontColorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>120</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2">
+       <widget class="QComboBox" name="mFontStyleCmbBx">
+        <property name="toolTip">
+         <string>Available typeface styles</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -280,10 +292,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="mMinScaleSpinBox">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
+         <widget class="QgsSpinBox" name="mMinScaleSpinBox">
           <property name="prefix">
            <string>Min </string>
           </property>
@@ -293,13 +302,13 @@
           <property name="maximum">
            <number>999999999</number>
           </property>
+          <property name="showClearButton">
+           <bool>false</bool>
+          </property>
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="mMaxScaleSpinBox">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
+         <widget class="QgsSpinBox" name="mMaxScaleSpinBox">
           <property name="prefix">
            <string>Max </string>
           </property>
@@ -311,6 +320,9 @@
           </property>
           <property name="value">
            <number>10000000</number>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -358,22 +370,34 @@
          </widget>
         </item>
         <item>
-         <widget class="QDoubleSpinBox" name="mBufferSizeSpinBox">
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
+         <widget class="QgsDoubleSpinBox" name="mBufferSizeSpinBox">
           <property name="maximum">
            <double>999999.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
        </layout>
       </item>
       <item row="0" column="1">
-       <widget class="QgsColorButton" name="mBufferColorButton">
+       <widget class="QgsColorButtonV2" name="mBufferColorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
-          <width>100</width>
+          <width>120</width>
           <height>16777215</height>
          </size>
         </property>
@@ -405,11 +429,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="mLabelDistanceSpinBox">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
+       <widget class="QgsDoubleSpinBox" name="mLabelDistanceSpinBox"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="mXCoordLabel">
@@ -425,15 +445,15 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="mXCoordSpinBox">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
+       <widget class="QgsDoubleSpinBox" name="mXCoordSpinBox">
         <property name="minimum">
          <double>-999999999.000000000000000</double>
         </property>
         <property name="maximum">
          <double>999999999.000000000000000</double>
+        </property>
+        <property name="showClearButton">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -451,15 +471,15 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="mYCoordSpinBox">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
+       <widget class="QgsDoubleSpinBox" name="mYCoordSpinBox">
         <property name="minimum">
          <double>-999999999.000000000000000</double>
         </property>
         <property name="maximum">
          <double>999999999.000000000000000</double>
+        </property>
+        <property name="showClearButton">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -477,11 +497,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="mHaliComboBox">
-        <property name="layoutDirection">
-         <enum>Qt::RightToLeft</enum>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="mHaliComboBox"/>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="mValiLabel">
@@ -497,11 +513,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QComboBox" name="mValiComboBox">
-        <property name="layoutDirection">
-         <enum>Qt::RightToLeft</enum>
-        </property>
-       </widget>
+       <widget class="QComboBox" name="mValiComboBox"/>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="mRotationLabel">
@@ -517,10 +529,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QDoubleSpinBox" name="mRotationSpinBox">
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
+       <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
         <property name="maximum">
          <double>360.000000000000000</double>
         </property>
@@ -543,11 +552,45 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mLabelTextLineEdit</tabstop>
+  <tabstop>mShowLabelChkbx</tabstop>
+  <tabstop>mMinScaleSpinBox</tabstop>
+  <tabstop>mMaxScaleSpinBox</tabstop>
+  <tabstop>mAlwaysShowChkbx</tabstop>
+  <tabstop>mFontFamilyCmbBx</tabstop>
+  <tabstop>mFontStyleCmbBx</tabstop>
+  <tabstop>mFontUnderlineBtn</tabstop>
+  <tabstop>mFontStrikethroughBtn</tabstop>
+  <tabstop>mFontBoldBtn</tabstop>
+  <tabstop>mFontItalicBtn</tabstop>
+  <tabstop>mFontSizeSpinBox</tabstop>
+  <tabstop>mFontColorButton</tabstop>
+  <tabstop>mBufferSizeSpinBox</tabstop>
+  <tabstop>mBufferColorButton</tabstop>
+  <tabstop>mLabelDistanceSpinBox</tabstop>
+  <tabstop>mXCoordSpinBox</tabstop>
+  <tabstop>mYCoordSpinBox</tabstop>
+  <tabstop>mHaliComboBox</tabstop>
+  <tabstop>mValiComboBox</tabstop>
+  <tabstop>mRotationSpinBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

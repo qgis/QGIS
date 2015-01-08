@@ -33,6 +33,8 @@ class APP_EXPORT QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
     void addClicked();
     void deleteClicked();
     void zoomToBookmark();
+    void exportToXML();
+    void importFromXML();
 
     void on_lstBookmarks_doubleClicked( const QModelIndex & );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

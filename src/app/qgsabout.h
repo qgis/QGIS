@@ -33,12 +33,14 @@ class APP_EXPORT QgsAbout : public QgsOptionsDialogBase, private Ui::QgsAbout
     void setWhatsNew();
     void setLicence();
     void setPluginInfo();
+    void setDevelopersMap();
     void init();
     void openUrl( QString url );
 
   private slots:
     void on_btnQgisUser_clicked();
     void on_btnQgisHome_clicked();
+    void on_developersMapView_linkClicked( const QUrl &url );
 };
 
 #endif

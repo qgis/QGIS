@@ -32,7 +32,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerDD: public QObject
+class TestQgsComposerDD : public QObject
 {
     Q_OBJECT
   private slots:

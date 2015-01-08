@@ -49,7 +49,7 @@
  * It will do some performance testing too
  *
  */
-class TestQgsMapRenderer: public QObject
+class TestQgsMapRenderer : public QObject
 {
     Q_OBJECT
   private slots:

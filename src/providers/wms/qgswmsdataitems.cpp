@@ -244,6 +244,8 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     , mDataSourceUri( dataSourceUri )
     , mLayerProperty( layerProperty )
 {
+  mSupportedCRS = mLayerProperty.crs;
+  mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
 
   mUri = createUri();
@@ -261,7 +263,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
 
   mIconName = "mIconWms.svg";
 
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWMSLayerItem::~QgsWMSLayerItem()
@@ -335,7 +337,7 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
     , mTitle( title )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWMTSLayerItem::~QgsWMTSLayerItem()
@@ -454,3 +456,4 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
   return 0;
 }
+

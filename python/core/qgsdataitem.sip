@@ -28,7 +28,6 @@ class QgsDataItem : QObject
     // Populate children using children vector created by createChildren()
     virtual void populate();
     bool isPopulated();
-    void setPopulated();
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
@@ -142,6 +141,15 @@ class QgsLayerItem : QgsDataItem
     // Returns provider key
     QString providerKey();
 
+    /** Returns the supported CRS
+     *  @note Added in 2.8
+     */
+    QStringList supportedCRS();
+
+    /** Returns the supported formats
+     *  @note Added in 2.8
+     */
+    QStringList supportedFormats();
   public:
     static const QIcon &iconPoint();
     static const QIcon &iconLine();

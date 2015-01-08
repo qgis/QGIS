@@ -283,7 +283,7 @@ QgsOracleLayerItem::QgsOracleLayerItem( QgsDataItem* parent, QString name, QStri
     , mLayerProperty( layerProperty )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsOracleLayerItem::~QgsOracleLayerItem()

@@ -539,6 +539,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     off = _rotatedOffset( off, angle );
 
   //data defined shape?
+  bool createdNewPath = false;
   if ( mNameExpression )
   {
     QString name = mNameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
@@ -546,6 +547,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     {
       preparePath( name ); // drawing as a painter path
     }
+    createdNewPath = true;
   }
 
   if ( mUsingCache )
@@ -565,17 +567,15 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     transform.translate( point.x() + off.x(), point.y() + off.y() );
 
     // resize if necessary
-    if ( hasDataDefinedSize )
+    if ( hasDataDefinedSize || createdNewPath )
     {
-
       double s = scaledSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale );
-
       double half = s / 2.0;
       transform.scale( half, half );
     }
 
     bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || mAngleExpression;
-    if ( angle != 0 && hasDataDefinedRotation )
+    if ( angle != 0 && ( hasDataDefinedRotation || createdNewPath ) )
       transform.rotate( angle );
 
     QgsExpression* colorExpression = expression( "color" );

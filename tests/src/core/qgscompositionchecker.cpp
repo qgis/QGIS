@@ -29,7 +29,7 @@ QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsCompos
     , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
   // The composer has some slight render inconsistencies on the whole image sometimes
-  setColorTolerance( 1 );
+  setColorTolerance( 5 );
 }
 
 QgsCompositionChecker::QgsCompositionChecker()

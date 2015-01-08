@@ -24,7 +24,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerHtml: public QObject
+class TestQgsComposerHtml : public QObject
 {
     Q_OBJECT
   private slots:
@@ -214,7 +214,7 @@ void TestQgsComposerHtml::htmlMultiFrameSmartBreak()
 
   //page2
   QgsCompositionChecker checker2( "composerhtml_smartbreaks2", mComposition );
-  result = checker2.testComposition( mReport, 1, 3000 ) && result;
+  result = checker2.testComposition( mReport, 1, 200 ) && result;
 
   mComposition->removeMultiFrame( htmlItem );
   delete htmlItem;

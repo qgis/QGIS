@@ -198,8 +198,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().toWkt() );
   QgsDebugMsg( "Setting crs to " + mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
-  leSpatialRefSys->setText( mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
-  leSpatialRefSys->setCursorPosition( 0 );
+  mCrsSelector->setCrs( mRasterLayer->crs() );
 
   // Set text for pyramid info box
   QString pyramidFormat( "<h2>%1</h2><p>%2 %3 %4</p><b><font color='red'><p>%5</p><p>%6</p>" );
@@ -702,14 +701,16 @@ void QgsRasterLayerProperties::sync()
   // TODO fix legend + palette pixmap
 
   //update the legend pixmap on this dialog
-  //pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
-  // pixmapLegend->setScaledContents( true );
-  // pixmapLegend->repaint();
+#if 0
+  pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
+  pixmapLegend->setScaledContents( true );
+  pixmapLegend->repaint();
 
   //set the palette pixmap
-  // pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
-  // pixmapPalette->setScaledContents( true );
-  // pixmapPalette->repaint();
+  pixmapPalette->setPixmap( mRasterLayer->paletteAsPixmap( mRasterLayer->bandNumber( mRasterLayer->grayBandName() ) ) );
+  pixmapPalette->setScaledContents( true );
+  pixmapPalette->repaint();
+#endif
 
   QgsDebugMsg( "populate metadata tab" );
   /*
@@ -847,7 +848,7 @@ void QgsRasterLayerProperties::apply()
   mRasterLayer->setLayerName( mLayerOrigNameLineEd->text() );
 
   // set up the scale based layer visibility stuff....
-  mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
+  mRasterLayer->setScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
   // caution: layer uses scale denoms, widget uses true scales
   mRasterLayer->setMaximumScale( 1.0 / mScaleRangeWidget->minimumScale() );
   mRasterLayer->setMinimumScale( 1.0 / mScaleRangeWidget->maximumScale() );
@@ -1084,24 +1085,9 @@ void QgsRasterLayerProperties::on_pbnAddValuesManually_clicked()
   tableTransparency->resizeRowsToContents();
 }
 
-void QgsRasterLayerProperties::on_pbnChangeSpatialRefSys_clicked()
+void QgsRasterLayerProperties::on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs )
 {
-
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
-  mySelector->setSelectedCrsId( mRasterLayer->crs().srsid() );
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    mRasterLayer->setCrs( srs );
-  }
-  else
-  {
-    QApplication::restoreOverrideCursor();
-  }
-  delete mySelector;
-
-  leSpatialRefSys->setText( mRasterLayer->crs().authid() + " - " + mRasterLayer->crs().description() );
-  leSpatialRefSys->setCursorPosition( 0 );
+  mRasterLayer->setCrs( crs );
 }
 
 void QgsRasterLayerProperties::on_pbnDefaultValues_clicked()

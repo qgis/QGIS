@@ -65,8 +65,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void on_pbnAddValuesFromDisplay_clicked();
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
-    /** Override the CRS specified when the layer was loaded */
-    void on_pbnChangeSpatialRefSys_clicked();
+    /** \brief slot executed when user changes the layer's CRS */
+    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */

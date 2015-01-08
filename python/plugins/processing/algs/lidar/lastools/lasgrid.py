@@ -32,6 +32,7 @@ from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterBoolean
 
 class lasgrid(LAStoolsAlgorithm):
 
@@ -39,6 +40,7 @@ class lasgrid(LAStoolsAlgorithm):
     METHOD = "METHOD"
     ATTRIBUTES = ["elevation", "intensity", "rgb", "classification"]
     METHODS = ["lowest", "highest", "average", "stddev"]
+    USE_TILE_BB = "USE_TILE_BB"
 
     def defineCharacteristics(self):
         self.name = "lasgrid"
@@ -49,10 +51,12 @@ class lasgrid(LAStoolsAlgorithm):
         self.addParametersStepGUI()
         self.addParameter(ParameterSelection(lasgrid.ATTRIBUTE, "Attribute", lasgrid.ATTRIBUTES, 0))
         self.addParameter(ParameterSelection(lasgrid.METHOD, "Method", lasgrid.METHODS, 0))
+        self.addParameter(ParameterBoolean(lasgrid.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
         self.addParametersRasterOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasgrid")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
@@ -63,6 +67,9 @@ class lasgrid(LAStoolsAlgorithm):
         method = self.getParameterValue(lasgrid.METHOD)
         if method != 0:
             commands.append("-" + lasgrid.METHODS[method])
+        if (self.getParameterValue(lasgrid.USE_TILE_BB)):
+            commands.append("-use_tile_bb")
         self.addParametersRasterOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

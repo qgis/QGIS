@@ -108,7 +108,14 @@ QgsVectorLayer* QgsComposerItemBaseWidget::atlasCoverageLayer() const
 
 //QgsComposerItemWidget
 
-QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item ): QgsComposerItemBaseWidget( parent, item ), mItem( item )
+QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* item )
+    : QgsComposerItemBaseWidget( parent, item )
+    , mItem( item )
+    , mFreezeXPosSpin( false )
+    , mFreezeYPosSpin( false )
+    , mFreezeWidthSpin( false )
+    , mFreezeHeightSpin( false )
+    , mFreezePageSpin( false )
 {
 
   setupUi( this );
@@ -132,7 +139,6 @@ QgsComposerItemWidget::QgsComposerItemWidget( QWidget* parent, QgsComposerItem* 
   connect( mItem, SIGNAL( itemChanged() ), this, SLOT( setValuesForGuiNonPositionElements() ) );
 
   connect( mTransparencySlider, SIGNAL( valueChanged( int ) ), mTransparencySpnBx, SLOT( setValue( int ) ) );
-  connect( mTransparencySpnBx, SIGNAL( valueChanged( int ) ), mTransparencySlider, SLOT( setValue( int ) ) );
 
   //connect atlas signals to data defined buttons
   QgsAtlasComposition* atlas = atlasComposition();
@@ -376,69 +382,90 @@ void QgsComposerItemWidget::setValuesForGuiPositionElements()
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperLeft )
   {
     mUpperLeftCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() );
-    mYPosSpin->setValue( pos.y() );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperMiddle )
   {
     mUpperMiddleCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
-    mYPosSpin->setValue( pos.y() );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::UpperRight )
   {
     mUpperRightCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() + mItem->rect().width() );
-    mYPosSpin->setValue( pos.y() );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() + mItem->rect().width() );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleLeft )
   {
     mMiddleLeftCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() );
-    mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::Middle )
   {
     mMiddleCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
-    mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::MiddleRight )
   {
     mMiddleRightCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() + mItem->rect().width() );
-    mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() + mItem->rect().width() );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() + mItem->rect().height() / 2.0 );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerLeft )
   {
     mLowerLeftCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() );
-    mYPosSpin->setValue( pos.y() + mItem->rect().height() );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() + mItem->rect().height() );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerMiddle )
   {
     mLowerMiddleCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
-    mYPosSpin->setValue( pos.y() + mItem->rect().height() );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() + mItem->rect().width() / 2.0 );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() + mItem->rect().height() );
   }
 
   if ( mItem->lastUsedPositionMode() == QgsComposerItem::LowerRight )
   {
     mLowerRightCheckBox->setChecked( true );
-    mXPosSpin->setValue( pos.x() + mItem->rect().width() );
-    mYPosSpin->setValue( pos.y() + mItem->rect().height() );
+    if ( !mFreezeXPosSpin )
+      mXPosSpin->setValue( pos.x() + mItem->rect().width() );
+    if ( !mFreezeYPosSpin )
+      mYPosSpin->setValue( pos.y() + mItem->rect().height() );
   }
 
-  mWidthSpin->setValue( mItem->rect().width() );
-  mHeightSpin->setValue( mItem->rect().height() );
-  mPageSpinBox->setValue( mItem->page() );
+  if ( !mFreezeWidthSpin )
+    mWidthSpin->setValue( mItem->rect().width() );
+  if ( !mFreezeHeightSpin )
+    mHeightSpin->setValue( mItem->rect().height() );
+  if ( !mFreezePageSpin )
+    mPageSpinBox->setValue( mItem->page() );
 
   mXPosSpin->blockSignals( false );
   mYPosSpin->blockSignals( false );
@@ -614,8 +641,11 @@ void QgsComposerItemWidget::on_mBlendModeCombo_currentIndexChanged( int index )
   }
 }
 
-void QgsComposerItemWidget::on_mTransparencySlider_valueChanged( int value )
+void QgsComposerItemWidget::on_mTransparencySpnBx_valueChanged( int value )
 {
+  mTransparencySlider->blockSignals( true );
+  mTransparencySlider->setValue( value );
+  mTransparencySlider->blockSignals( false );
   if ( mItem )
   {
     mItem->beginCommand( tr( "Item transparency changed" ), QgsComposerMergeCommand::ItemTransparency );
@@ -633,6 +663,41 @@ void QgsComposerItemWidget::on_mItemIdLineEdit_editingFinished()
     mItemIdLineEdit->setText( mItem->id() );
     mItem->endCommand();
   }
+}
+
+void QgsComposerItemWidget::on_mPageSpinBox_valueChanged( int )
+{
+  mFreezePageSpin = true;
+  changeItemPosition();
+  mFreezePageSpin = false;
+}
+
+void QgsComposerItemWidget::on_mXPosSpin_valueChanged( double )
+{
+  mFreezeXPosSpin = true;
+  changeItemPosition();
+  mFreezeXPosSpin = false;
+}
+
+void QgsComposerItemWidget::on_mYPosSpin_valueChanged( double )
+{
+  mFreezeYPosSpin = true;
+  changeItemPosition();
+  mFreezeYPosSpin = false;
+}
+
+void QgsComposerItemWidget::on_mWidthSpin_valueChanged( double )
+{
+  mFreezeWidthSpin = true;
+  changeItemPosition();
+  mFreezeWidthSpin = false;
+}
+
+void QgsComposerItemWidget::on_mHeightSpin_valueChanged( double )
+{
+  mFreezeHeightSpin = true;
+  changeItemPosition();
+  mFreezeHeightSpin = false;
 }
 
 void QgsComposerItemWidget::on_mUpperLeftCheckBox_stateChanged( int state )

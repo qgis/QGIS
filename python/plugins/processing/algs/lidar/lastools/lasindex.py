@@ -32,23 +32,28 @@ from processing.core.parameters import ParameterBoolean
 class lasindex(LAStoolsAlgorithm):
 
     MOBILE_OR_TERRESTRIAL = "MOBILE_OR_TERRESTRIAL"
+    APPEND_LAX = "APPEND_LAX"
 
     def defineCharacteristics(self):
         self.name = "lasindex"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
+        self.addParameter(ParameterBoolean(lasindex.APPEND_LAX, "append *.lax file to *.laz file", False))
         self.addParameter(ParameterBoolean(lasindex.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False))
-
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasindex")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
+        if self.getParameterValue(lasindex.APPEND_LAX):
+            commands.append("-append")
         if self.getParameterValue(lasindex.MOBILE_OR_TERRESTRIAL):
             commands.append("-tile_size")
             commands.append("10")
             commands.append("-maximum")
             commands.append("-100")
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

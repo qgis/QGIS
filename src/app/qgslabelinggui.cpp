@@ -64,6 +64,16 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mLineDistanceUnitWidget->setUnits( QStringList() << tr( "mm" ) << tr( "map units" ), 1 );
   mRepeatDistanceUnitWidget->setUnits( QStringList() << tr( "mm" ) << tr( "map units" ), 1 );
 
+  mFontLineHeightSpinBox->setClearValue( 1.0 );
+  mShapeRotationDblSpnBx->setClearValue( 0.0 );
+  mShapeOffsetXSpnBx->setClearValue( 0.0 );
+  mShapeOffsetYSpnBx->setClearValue( 0.0 );
+  mPointOffsetXSpinBox->setClearValue( 0.0 );
+  mPointOffsetYSpinBox->setClearValue( 0.0 );
+  mPointAngleSpinBox->setClearValue( 0.0 );
+  mFontLetterSpacingSpinBox->setClearValue( 0.0 );
+  mFontWordSpacingSpinBox->setClearValue( 0.0 );
+
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();

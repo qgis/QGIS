@@ -200,11 +200,30 @@ class CORE_EXPORT QgsExpression
                                           const QMap<QString, QVariant> *substitutionMap = 0,
                                           const QgsDistanceArea* distanceArea = 0
                                         );
+
+    /**Attempts to evaluate a text string as an expression to a resultant double
+     * value.
+     * @param text text to evaluate as expression
+     * @param fallbackValue value to return if text can not be evaluated as a double
+     * @returns evaluated double value, or fallback value
+     * @note added in QGIS 2.7
+    */
+    static double evaluateToDouble( const QString& text, const double fallbackValue );
+
+    /**
+     * @brief list of unary operators
+     * @note if any change is made here, the definition of QgsExpression::UnaryOperatorText[] must be adapted.
+     */
     enum UnaryOperator
     {
       uoNot,
       uoMinus,
     };
+
+    /**
+     * @brief list of binary operators
+     * @note if any change is made here, the definition of QgsExpression::BinaryOperatorText[] must be adapted.
+     */
     enum BinaryOperator
     {
       // logical
@@ -231,6 +250,7 @@ class CORE_EXPORT QgsExpression
       boMinus,
       boMul,
       boDiv,
+      boIntDiv,
       boMod,
       boPow,
 
@@ -262,14 +282,19 @@ class CORE_EXPORT QgsExpression
     class CORE_EXPORT Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() )
-            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ), mReferencedColumns( referencedColumns ) {}
+        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
+            : mName( fnname ), mParams( params ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ), mReferencedColumns( referencedColumns ), mLazyEval( lazyEval ) {}
         /** The name of the function. */
         QString name() { return mName; }
         /** The number of parameters this function takes. */
         int params() { return mParams; }
         /** Does this function use a geometry object. */
         bool usesgeometry() { return mUsesGeometry; }
+
+        /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
+         * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
+         * Functions are non lazy default and will be given the node return value when called **/
+        bool lazyEval() { return mLazyEval; }
 
         virtual QStringList referencedColumns() const { return mReferencedColumns; }
 
@@ -295,13 +320,14 @@ class CORE_EXPORT QgsExpression
         QString mGroup;
         QString mHelpText;
         QStringList mReferencedColumns;
+        bool mLazyEval;
     };
 
     class StaticFunction : public Function
     {
       public:
-        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns ), mFnc( fcn ) {}
+        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
+            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval ), mFnc( fcn ) {}
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent )
         {
@@ -660,5 +686,6 @@ class CORE_EXPORT QgsExpression
 };
 
 Q_DECLARE_METATYPE( QgsExpression::Interval );
+Q_DECLARE_METATYPE( QgsExpression::Node* );
 
 #endif // QGSEXPRESSION_H

@@ -35,6 +35,24 @@ from qgis.core import *
 from processing.core.ProcessingConfig import ProcessingConfig
 
 
+GEOM_TYPE_MAP = {
+    QGis.WKBPoint: 'Point',
+    QGis.WKBLineString: 'LineString',
+    QGis.WKBPolygon: 'Polygon',
+    QGis.WKBMultiPoint: 'MultiPoint',
+    QGis.WKBMultiLineString: 'MultiLineString',
+    QGis.WKBMultiPolygon: 'MultiPolygon',
+    }
+
+
+TYPE_MAP = {
+    str : QVariant.String,
+    float: QVariant.Double,
+    int: QVariant.Int,
+    bool: QVariant.Bool
+    }
+
+
 def features(layer):
     """This returns an iterator over features in a vector layer,
     considering the selection that might exist in the layer, and the
@@ -128,6 +146,7 @@ def values(layer, *attributes):
         ret[attr] = values
     return ret
 
+
 def testForUniqueness( fieldList1, fieldList2 ):
     '''Returns a modified version of fieldList2, removing naming
     collisions with fieldList1.'''
@@ -142,6 +161,7 @@ def testForUniqueness( fieldList1, fieldList2 ):
                     fieldList2[j] = QgsField(name, field.type(), len=field.length(), prec=field.precision(), comment=field.comment())
                     changed = True
     return fieldList2
+
 
 def spatialindex(layer):
     """Creates a spatial index for the passed vector layer.
@@ -175,6 +195,7 @@ def createUniqueFieldName(fieldName, fieldList):
     for newname in nextname(shortName):
         if not found(newname):
             return newname
+
 
 def findOrCreateField(layer, fieldList, fieldName, fieldLen=24, fieldPrec=15):
     idx = layer.fieldNameIndex(fieldName)
@@ -328,6 +349,7 @@ def duplicateInMemory(layer, newName='', addToRegistry=False):
 
     return memLayer
 
+
 def checkMinDistance(point, index, distance, points):
     """Check if distance from given point to all other points is greater
     than given value.
@@ -346,36 +368,22 @@ def checkMinDistance(point, index, distance, points):
 
     return True
 
-GEOM_TYPE_MAP = {
-    QGis.WKBPoint: 'Point',
-    QGis.WKBLineString: 'LineString',
-    QGis.WKBPolygon: 'Polygon',
-    QGis.WKBMultiPoint: 'MultiPoint',
-    QGis.WKBMultiLineString: 'MultiLineString',
-    QGis.WKBMultiPolygon: 'MultiPolygon',
-    }
-
-TYPE_MAP = {
-    str : QVariant.String,
-    float: QVariant.Double,
-    int: QVariant.Int,
-    bool: QVariant.Bool
-    }
 
 def _fieldName(f):
     if isinstance(f, basestring):
         return f
     return f.name()
 
+
 def _toQgsField(f):
     if isinstance(f, QgsField):
         return f
     return QgsField(f[0], TYPE_MAP.get(f[1], QVariant.String))
 
+
 class VectorWriter:
 
     MEMORY_LAYER_PREFIX = 'memory:'
-
 
     def __init__(self, fileName, encoding, fields, geometryType,
                  crs, options=None):
@@ -391,7 +399,7 @@ class VectorWriter:
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True
 
-            uri = self.GEOM_TYPE_MAP[geometryType]
+            uri = GEOM_TYPE_MAP[geometryType]
             if crs.isValid():
                 uri += '?crs=' + crs.authid() + '&'
             fieldsdesc = ['field=' + _fieldName(f) for f in fields]

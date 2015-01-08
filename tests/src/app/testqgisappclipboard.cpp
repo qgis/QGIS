@@ -33,7 +33,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the QgisApp clipboard.
  */
-class TestQgisAppClipboard: public QObject
+class TestQgisAppClipboard : public QObject
 {
     Q_OBJECT
   private slots:

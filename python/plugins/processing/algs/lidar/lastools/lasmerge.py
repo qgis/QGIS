@@ -43,6 +43,7 @@ class lasmerge(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersFilesAreFlightlinesGUI()
+        self.addParametersApplyFileSourceIdGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterFile(lasmerge.FILE2, "2nd file"))
         self.addParameter(ParameterFile(lasmerge.FILE3, "3rd file"))
@@ -51,12 +52,11 @@ class lasmerge(LAStoolsAlgorithm):
         self.addParameter(ParameterFile(lasmerge.FILE6, "6th file"))
         self.addParameter(ParameterFile(lasmerge.FILE7, "7th file"))
         self.addParametersPointOutputGUI()
-
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasmerge")]
         self.addParametersVerboseCommands(commands)
-        self.addParametersFilesAreFlightlinesCommands(commands)
         self.addParametersPointInputCommands(commands)
         file2 = self.getParameterValue(lasmerge.FILE2)
         if file2 != None:
@@ -82,6 +82,9 @@ class lasmerge(LAStoolsAlgorithm):
         if file7 != None:
             commands.append("-i")
             commands.append(file7)
+        self.addParametersFilesAreFlightlinesCommands(commands)
+        self.addParametersApplyFileSourceIdsCommands(commands)
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

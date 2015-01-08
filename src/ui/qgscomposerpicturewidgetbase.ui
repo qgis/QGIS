@@ -338,7 +338,7 @@
            <widget class="QComboBox" name="mComposerMapComboBox"/>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QDoubleSpinBox" name="mPictureRotationSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mPictureRotationSpinBox">
             <property name="suffix">
              <string> °</string>
             </property>
@@ -368,6 +368,11 @@
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
    <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

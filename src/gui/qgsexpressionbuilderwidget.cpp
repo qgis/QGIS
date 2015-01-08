@@ -115,6 +115,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->setFoldingVisible( false );
 //  customFunctionBotton->setVisible( QgsPythonRunner::isValid() );
   txtPython->setVisible( false );
+  cgbCustomFunction->setCollapsed( true );
   txtPython->setText( "@qgsfunction(args=-1, group='Custom')\n"
                       "def func(values, feature, parent):\n"
                       "    return str(values)" );

@@ -20,13 +20,16 @@
 #include <QToolButton>
 
 #include "qgsdoublespinbox.h"
-
+#include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
 QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
     : QDoubleSpinBox( parent )
     , mShowClearButton( true )
+    , mClearValueMode( MinimumValue )
+    , mCustomClearValue( 0.0 )
+    , mExpressionsEnabled( true )
 {
   mClearButton = new QToolButton( this );
   mClearButton->setIcon( QgsApplication::getThemeIcon( "/mIconClear.svg" ) );
@@ -46,28 +49,137 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
 void QgsDoubleSpinBox::setShowClearButton( const bool showClearButton )
 {
   mShowClearButton = showClearButton;
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value() != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
+}
+
+void QgsDoubleSpinBox::setExpressionsEnabled( const bool enabled )
+{
+  mExpressionsEnabled = enabled;
 }
 
 void QgsDoubleSpinBox::changeEvent( QEvent *event )
 {
   QDoubleSpinBox::changeEvent( event );
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value() != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value() ) );
 }
 
 void QgsDoubleSpinBox::changed( const double& value )
 {
-  mClearButton->setVisible( mShowClearButton && isEnabled() && value != minimum() );
+  mClearButton->setVisible( shouldShowClearForValue( value ) );
 }
 
 void QgsDoubleSpinBox::clear()
 {
-  setValue( minimum() );
+  setValue( clearValue() );
+}
+
+void QgsDoubleSpinBox::setClearValue( double customValue , QString specialValueText )
+{
+  mClearValueMode = CustomValue;
+  mCustomClearValue = customValue;
+
+  if ( !specialValueText.isEmpty() )
+  {
+    double v = value();
+    clear();
+    setSpecialValueText( specialValueText );
+    setValue( v );
+  }
+}
+
+void QgsDoubleSpinBox::setClearValueMode( QgsDoubleSpinBox::ClearValueMode mode, QString clearValueText )
+{
+  mClearValueMode = mode;
+  mCustomClearValue = 0;
+
+  if ( !clearValueText.isEmpty() )
+  {
+    double v = value();
+    clear();
+    setSpecialValueText( clearValueText );
+    setValue( v );
+  }
+}
+
+double QgsDoubleSpinBox::clearValue() const
+{
+  if ( mClearValueMode == MinimumValue )
+    return minimum() ;
+  else if ( mClearValueMode == MaximumValue )
+    return maximum();
+  else
+    return mCustomClearValue;
+}
+
+QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
+{
+  //adapted from QAbstractSpinBoxPrivate::stripped
+  //trims whitespace, prefix and suffix from spin box text
+  QString text = originalText;
+  if ( specialValueText().size() == 0 || text != specialValueText() )
+  {
+    int from = 0;
+    int size = text.size();
+    bool changed = false;
+    if ( prefix().size() && text.startsWith( prefix() ) )
+    {
+      from += prefix().size();
+      size -= from;
+      changed = true;
+    }
+    if ( suffix().size() && text.endsWith( suffix() ) )
+    {
+      size -= suffix().size();
+      changed = true;
+    }
+    if ( changed )
+      text = text.mid( from, size );
+  }
+
+  text = text.trimmed();
+
+  return text;
+}
+
+double QgsDoubleSpinBox::valueFromText( const QString &text ) const
+{
+  if ( !mExpressionsEnabled )
+  {
+    return QDoubleSpinBox::valueFromText( text );
+  }
+
+  QString trimmedText = stripped( text );
+  if ( trimmedText.isEmpty() )
+  {
+    return mShowClearButton ? clearValue() : value();
+  }
+
+  return QgsExpression::evaluateToDouble( trimmedText, value() );
+}
+
+QValidator::State QgsDoubleSpinBox::validate( QString &input, int &pos ) const
+{
+  if ( !mExpressionsEnabled )
+  {
+    QValidator::State r = QDoubleSpinBox::validate( input, pos );
+    return r;
+  }
+
+  return QValidator::Acceptable;
 }
 
 int QgsDoubleSpinBox::frameWidth() const
 {
   return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+}
+
+bool QgsDoubleSpinBox::shouldShowClearForValue( const double value ) const
+{
+  if ( !mShowClearButton || !isEnabled() )
+  {
+    return false;
+  }
+  return value != clearValue();
 }
 
 void QgsDoubleSpinBox::resizeEvent( QResizeEvent * event )

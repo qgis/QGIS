@@ -139,19 +139,6 @@ class CORE_EXPORT QgsDxfExport
     void writeSymbolLayerLinetype( const QgsSymbolLayerV2* symbolLayer );
     void writeLinetype( const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
 
-#if 0
-    //AC1018
-    void writeHeaderAC1018( QTextStream& stream );
-    void writeTablesAC1018( QTextStream& stream );
-    void writeEntitiesAC1018( QTextStream& stream );
-    void writeEntitiesSymbolLevelsAC1018( QTextStream& stream, QgsVectorLayer* layer );
-    void writeSymbolLayerLinetypeAC1018( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
-    void writeLinetypeAC1018( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
-    void writeVertexAC1018( QTextStream& stream, const QgsPoint& pt );
-    void writePolylineAC1018( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color,
-                              double width = -1, bool polygon = false );
-#endif
-
     QgsRectangle dxfExtent() const;
 
     void addFeature( const QgsSymbolV2RenderContext& ctx, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );

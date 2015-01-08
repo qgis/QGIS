@@ -64,9 +64,9 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void on_pbnTemplateFolderBrowse_pressed();
     void on_pbnTemplateFolderReset_pressed();
     //! Slot called when user chooses to change the project wide projection.
-    void on_pbnSelectProjection_clicked();
+    void on_leProjectGlobalCrs_crsChanged(QgsCoordinateReferenceSystem crs);
     //! Slot called when user chooses to change the default 'on the fly' projection.
-    void on_pbnSelectOtfProjection_clicked();
+    void on_leLayerGlobalCrs_crsChanged(QgsCoordinateReferenceSystem crs);
     void on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_pbnEditCreateOptions_pressed();
     void on_pbnEditPyramidsOptions_pressed();

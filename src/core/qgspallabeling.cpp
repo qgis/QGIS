@@ -1415,10 +1415,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
   }
   w /= rasterCompressFactor;
-  QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
 
+#if 0 // XXX strk
+  QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
   labelX = qAbs( ptSize.x() - ptZero.x() );
   labelY = qAbs( ptSize.y() - ptZero.y() );
+#else
+  double uPP = xform->mapUnitsPerPixel();
+  labelX = w * uPP;
+  labelY = h * uPP;
+#endif
 }
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
@@ -3548,7 +3554,7 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
     tmpLyr.wrapChar = ddValues.value( QgsPalLayerSettings::MultiLineWrapChar ).toString();
   }
 
-  if ( !tmpLyr.wrapChar.isEmpty() )
+  if ( !tmpLyr.wrapChar.isEmpty() || tmpLyr.getLabelExpression()->expression().contains( "wordwrap" ) )
   {
 
     if ( ddValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
@@ -4115,12 +4121,39 @@ QgsPalLabeling::Search QgsPalLabeling::searchMethod() const
 void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
 {
   QgsPoint outPt = xform->transform( lp->getX(), lp->getY() );
-  QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
 
   painter->save();
+
+#if 1 // TODO: generalize some of this
+  double w = lp->getWidth();
+  double h = lp->getHeight();
+  double cx = lp->getX() + w / 2.0;
+  double cy = lp->getY() + h / 2.0;
+  double scale = 1.0 / xform->mapUnitsPerPixel();
+  double rotation = xform->mapRotation();
+  double sw = w * scale;
+  double sh = h * scale;
+  QRectF rect( -sw / 2, -sh / 2, sw, sh );
+
+  painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
+  if ( rotation )
+  {
+    // Only if not horizontal
+    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+    {
+      painter->rotate( rotation );
+    }
+  }
+  painter->translate( rect.bottomLeft() );
+  painter->rotate( -lp->getAlpha() * 180 / M_PI );
+  painter->translate( -rect.bottomLeft() );
+#else
+  QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
+  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
   painter->translate( QPointF( outPt.x(), outPt.y() ) );
   painter->rotate( -lp->getAlpha() * 180 / M_PI );
-  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+#endif
+
   painter->drawRect( rect );
   painter->restore();
 
@@ -4172,8 +4205,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     drawLabelBackground( context, component, tmpLyr );
   }
 
-  if ( drawType == QgsPalLabeling::LabelBuffer
-       || drawType == QgsPalLabeling::LabelText )
+  else if ( drawType == QgsPalLabeling::LabelBuffer
+            || drawType == QgsPalLabeling::LabelText )
   {
 
     // TODO: optimize access :)
@@ -4255,8 +4288,32 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     for ( int i = 0; i < lines; ++i )
     {
       painter->save();
+#if 1 // TODO: generalize some of this
+      LabelPosition* lp = label;
+      double w = lp->getWidth();
+      double h = lp->getHeight();
+      double cx = lp->getX() + w / 2.0;
+      double cy = lp->getY() + h / 2.0;
+      double scale = 1.0 / xform->mapUnitsPerPixel();
+      double rotation = xform->mapRotation();
+      double sw = w * scale;
+      double sh = h * scale;
+      QRectF rect( -sw / 2, -sh / 2, sw, sh );
+      painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
+      if ( rotation )
+      {
+        // Only if not horizontal
+        if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+        {
+          painter->rotate( rotation );
+        }
+      }
+      painter->translate( rect.bottomLeft() );
+      painter->rotate( -lp->getAlpha() * 180 / M_PI );
+#else
       painter->translate( QPointF( outPt.x(), outPt.y() ) );
       painter->rotate( -label->getAlpha() * 180 / M_PI );
+#endif
 
       // scale down painter: the font size has been multiplied by raster scale factor
       // to workaround a Qt font scaling bug with small font sizes

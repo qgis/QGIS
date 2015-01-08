@@ -40,17 +40,18 @@ class las2las_filter(LAStoolsAlgorithm):
         self.addParametersFilter1CoordsIntensityGUI()
         self.addParametersFilter2CoordsIntensityGUI()
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
         self.addParametersFilter2ReturnClassFlagsCommands(commands)
         self.addParametersFilter1CoordsIntensityCommands(commands)
         self.addParametersFilter2CoordsIntensityCommands(commands)
-
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

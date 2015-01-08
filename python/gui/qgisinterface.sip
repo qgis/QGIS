@@ -522,4 +522,9 @@ class QgisInterface : QObject
         signal for when this happens.
       */
     void newProjectCreated();
+    /**This signal is emitted when a layer has been saved using save as
+       @note
+       added in version 2.7
+    */
+    void layerSavedAs( QgsMapLayer* l, QString path );
 };

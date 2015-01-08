@@ -47,6 +47,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
   QVector<QgsDataItem*>items;
 
   QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  // TODO: wee need to cancel somehow acquireConnection() if deleteLater() was called on this item to avoid later credential dialog if connection failed
   QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo() );
   if ( !conn )
   {
@@ -55,11 +56,8 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  QVector<QgsPostgresLayerProperty> layerProperties;
-  bool ok = conn->supportedLayers( layerProperties,
-                                   QgsPostgresConn::geometryColumnsOnly( mName ),
-                                   QgsPostgresConn::publicSchemaOnly( mName ),
-                                   QgsPostgresConn::allowGeometrylessTables( mName ) );
+  QList<QgsPostgresSchemaProperty> schemas;
+  bool ok = conn->getSchemas( schemas );
 
   QgsPostgresConnPool::instance()->releaseConnection( conn );
 
@@ -69,15 +67,13 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return items;
   }
 
-  QSet<QString> schemaNames;
-  foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
+  foreach ( QgsPostgresSchemaProperty schema, schemas )
   {
-    schemaNames.insert( layerProperty.schemaName );
-  }
-
-  foreach ( QString schemaName, schemaNames )
-  {
-    QgsPGSchemaItem * schemaItem = new QgsPGSchemaItem( this, mName, schemaName, mPath + "/" + schemaName );
+    QgsPGSchemaItem * schemaItem = new QgsPGSchemaItem( this, mName, schema.name, mPath + "/" + schema.name );
+    if ( !schema.description.isEmpty() )
+    {
+      schemaItem->setToolTip( schema.description );
+    }
     items.append( schemaItem );
   }
 
@@ -120,7 +116,8 @@ void QgsPGConnectionItem::editConnection()
   if ( nc.exec() )
   {
     // the parent should be updated
-    mParent->refresh();
+    if ( mParent )
+      mParent->refresh();
   }
 }
 
@@ -128,7 +125,8 @@ void QgsPGConnectionItem::deleteConnection()
 {
   QgsPostgresConn::deleteConnection( mName );
   // the parent should be updated
-  mParent->refresh();
+  if ( mParent )
+    mParent->refresh();
 }
 
 void QgsPGConnectionItem::refreshConnection()
@@ -217,7 +215,7 @@ QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
     , mLayerProperty( layerProperty )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
   Q_ASSERT( mLayerProperty.size() == 1 );
 }
 
@@ -247,7 +245,8 @@ void QgsPGLayerItem::deleteLayer()
   else
   {
     QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
-    mParent->refresh();
+    if ( mParent )
+      mParent->refresh();
   }
 }
 
@@ -299,9 +298,10 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
 
   QVector<QgsPostgresLayerProperty> layerProperties;
   bool ok = conn->supportedLayers( layerProperties,
-                                   QgsPostgresConn::geometryColumnsOnly( mName ),
-                                   QgsPostgresConn::publicSchemaOnly( mName ),
-                                   QgsPostgresConn::allowGeometrylessTables( mName ) );
+                                   QgsPostgresConn::geometryColumnsOnly( mConnectionName ),
+                                   QgsPostgresConn::publicSchemaOnly( mConnectionName ),
+                                   QgsPostgresConn::allowGeometrylessTables( mConnectionName ), mName );
+
   if ( !ok )
   {
     items.append( new QgsErrorItem( this, tr( "Failed to get layers" ), mPath + "/error" ) );
@@ -309,7 +309,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
     return items;
   }
 
-  bool dontResolveType = QgsPostgresConn::dontResolveType( mName );
+  bool dontResolveType = QgsPostgresConn::dontResolveType( mConnectionName );
   foreach ( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
     if ( layerProperty.schemaName != mName )
@@ -321,7 +321,7 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
     {
       if ( dontResolveType )
       {
-        QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ) );
+        //QgsDebugMsg( QString( "skipping column %1.%2 without type constraint" ).arg( layerProperty.schemaName ).arg( layerProperty.tableName ) );
         continue;
       }
 
@@ -340,9 +340,20 @@ QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
   return items;
 }
 
+QList<QAction *> QgsPGSchemaItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionRefresh = new QAction( tr( "Refresh" ), this );
+  connect( actionRefresh, SIGNAL( triggered() ), this, SLOT( refresh() ) );
+  lst.append( actionRefresh );
+
+  return lst;
+}
+
 QgsPGLayerItem *QgsPGSchemaItem::createLayer( QgsPostgresLayerProperty layerProperty )
 {
-  QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
+  //QgsDebugMsg( "schemaName = " + layerProperty.schemaName + " tableName = " + layerProperty.tableName + " geometryColName = " + layerProperty.geometryColName );
   QGis::WkbType wkbType = layerProperty.types[0];
   QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsPostgresConn::displayStringForWkbType( wkbType ) ).arg( layerProperty.srids[0] );
 

@@ -25,6 +25,7 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
 from PyQt4.QtCore import *
 from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -32,7 +33,7 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputDirectory
 from processing.tools import dataobjects, vector
-
+from processing.tools.system import mkdir
 
 class VectorSplit(GeoAlgorithm):
 
@@ -54,18 +55,13 @@ class VectorSplit(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
-
         directory = self.getOutputValue(self.OUTPUT)
 
-        if directory.find('\\') != -1:
-            directory.replace('\\', '/')
-
-        if not directory.endswith("/"):
-            directory += '/'
+        mkdir(directory)
 
         fieldIndex = layer.fieldNameIndex(fieldName)
         uniqueValues = vector.uniqueValues(layer, fieldIndex)
-        baseName = '{0}{1}_{2}'.format(directory, layer.name(), fieldName)
+        baseName = os.path.join(directory, '{0}_{1}'.format(layer.name(), fieldName))
 
         fields = layer.pendingFields()
         crs = layer.dataProvider().crs()

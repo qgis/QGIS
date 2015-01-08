@@ -38,7 +38,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 {
 
   QString pythonlibName( "qgispython" );
-#if defined(Q_WS_MAC) || defined(Q_OS_LINUX)
+#if defined(Q_OS_MAC) || defined(Q_OS_LINUX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__

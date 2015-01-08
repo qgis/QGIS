@@ -1139,7 +1139,7 @@ QString QgsOracleProvider::paramValue( QString fieldValue, const QString &defaul
   else if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
     QSqlQuery qry( *mConnection );
-    if ( !exec( qry, QString( "SELECT %1" ).arg( defaultValue ) ) || !qry.next() )
+    if ( !exec( qry, QString( "SELECT %1 FROM dual" ).arg( defaultValue ) ) || !qry.next() )
     {
       throw OracleException( tr( "Evaluation of default value failed" ), qry );
     }

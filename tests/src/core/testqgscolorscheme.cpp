@@ -152,6 +152,8 @@ void TestQgsColorScheme::clone()
   QgsColorScheme* dummyScheme2 = dummyScheme->clone();
   QgsNamedColorList colors2 = dummyScheme2->fetchColors();
   QCOMPARE( colors, colors2 );
+  delete dummyScheme;
+  delete dummyScheme2;
 }
 
 QTEST_MAIN( TestQgsColorScheme )

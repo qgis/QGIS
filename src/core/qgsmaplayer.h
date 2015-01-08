@@ -36,6 +36,7 @@ class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
 class QgsMapLayerLegend;
 class QgsMapLayerRenderer;
+class QgsMapLayerStyleManager;
 
 class QDomDocument;
 class QKeyEvent;
@@ -387,22 +388,82 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayerLegend* legend() const;
 
+    /**
+     * Enable or disable layer's style manager. When disabled (default), the styleManager() will return null pointer.
+     * By enabling the style manager will be created with one default style (same as the layer's active style).
+     * By disabling the style manager all associated styles will be lost (only the layer's active style will stay).
+     * @note added in 2.8
+     */
+    void enableStyleManager( bool enable = true );
+
+    /**
+     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * If the style manager is not enabled, null pointer will be returned.
+     * @note added in 2.8
+     */
+    QgsMapLayerStyleManager* styleManager() const;
+
+    /**Returns the minimum scale denominator at which the layer is visible.
+     * Scale based visibility is only used if hasScaleBasedVisibility is true.
+     * @returns minimum scale denominator at which the layer will render
+     * @see setMinimumScale
+     * @see maximumScale
+     * @see hasScaleBasedVisibility
+     */
+    float minimumScale() const;
+
+    /**Returns the maximum scale denominator at which the layer is visible.
+     * Scale based visibility is only used if hasScaleBasedVisibility is true.
+     * @returns minimum scale denominator at which the layer will render
+     * @see setMaximumScale
+     * @see minimumScale
+     * @see hasScaleBasedVisibility
+     */
+    float maximumScale() const;
+
+    /**Returns whether scale based visibility is enabled for the layer.
+     * @returns true if scale based visibility is enabled
+     * @see minimumScale
+     * @see maximumScale
+     * @see setScaleBasedVisibility
+    */
+    bool hasScaleBasedVisibility() const;
+
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale denominator member */
-    void setMinimumScale( float theMinScale );
-    float minimumScale() const;
+    /**Sets the minimum scale denominator at which the layer will be visible.
+     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
+     * @param theMinScale minimum scale denominator at which the layer should render
+     * @see minimumScale
+     * @see setMaximumScale
+     * @see setScaleBasedVisibility
+     */
+    void setMinimumScale( const float theMinScale );
 
-    /** Accessor and mutator for the maximum scale denominator member */
-    void setMaximumScale( float theMaxScale );
-    float maximumScale() const;
+    /**Sets the maximum scale denominator at which the layer will be visible.
+     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
+     * @param theMaxScale maximum scale denominator at which the layer should render
+     * @see maximumScale
+     * @see setMinimumScale
+     * @see setScaleBasedVisibility
+     */
+    void setMaximumScale( const float theMaxScale );
 
-    /** Accessor and mutator for the scale based visilibility flag */
-    void toggleScaleBasedVisibility( bool theVisibilityFlag );
-    bool hasScaleBasedVisibility() const;
+    /**Sets whether scale based visibility is enabled for the layer.
+     * @param enabled set to true to enable scale based visibility
+     * @see setMinimumScale
+     * @see setMaximumScale
+     * @see scaleBasedVisibility
+     */
+    void setScaleBasedVisibility( const bool enabled );
+
+    /**Accessor for the scale based visilibility flag
+     * @deprecated use setScaleBasedVisibility instead
+    */
+    Q_DECL_DEPRECATED void toggleScaleBasedVisibility( bool theVisibilityFlag );
 
     /** Clear cached image
      *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
@@ -487,6 +548,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
+
+    /** Read style manager's configuration (if any). To be called by subclasses. */
+    void readStyleManager( const QDomNode& layerNode );
+    /** Write style manager's configuration (if exists). To be called by subclasses. */
+    void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );
@@ -576,6 +642,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Controller of legend items of this layer
     QgsMapLayerLegend* mLegend;
+
+    //! Manager of multiple styles available for a layer (may be null)
+    QgsMapLayerStyleManager* mStyleManager;
 };
 
 #endif

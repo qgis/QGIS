@@ -94,7 +94,7 @@ struct expression_parser_context
 //
 
 // operator tokens
-%token <b_op> OR AND EQ NE LE GE LT GT REGEXP LIKE IS PLUS MINUS MUL DIV MOD CONCAT POW
+%token <b_op> OR AND EQ NE LE GE LT GT REGEXP LIKE IS PLUS MINUS MUL DIV INTDIV MOD CONCAT POW
 %token <u_op> NOT
 %token IN
 
@@ -136,7 +136,7 @@ struct expression_parser_context
 %right NOT
 %left EQ NE LE GE LT GT REGEXP LIKE IS IN
 %left PLUS MINUS
-%left MUL DIV MOD
+%left MUL DIV INTDIV MOD
 %right POW
 %left CONCAT
 
@@ -168,6 +168,7 @@ expression:
     | expression PLUS expression      { $$ = BINOP($2, $1, $3); }
     | expression MINUS expression     { $$ = BINOP($2, $1, $3); }
     | expression MUL expression       { $$ = BINOP($2, $1, $3); }
+    | expression INTDIV expression    { $$ = BINOP($2, $1, $3); }
     | expression DIV expression       { $$ = BINOP($2, $1, $3); }
     | expression MOD expression       { $$ = BINOP($2, $1, $3); }
     | expression POW expression       { $$ = BINOP($2, $1, $3); }

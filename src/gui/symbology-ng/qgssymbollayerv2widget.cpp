@@ -83,6 +83,8 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVec
   btnChangeColor->setColorDialogTitle( tr( "Select line color" ) );
   btnChangeColor->setContext( "symbology" );
 
+  spinOffset->setClearValue( 0.0 );
+
   if ( vl && vl->geometryType() != QGis::Polygon )
   {
     //draw inside polygon checkbox only makes sense for polygon layers
@@ -334,6 +336,9 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const Qg
   btnChangeColorBorder->setContext( "symbology" );
   btnChangeColorBorder->setShowNoColor( true );
   btnChangeColorBorder->setNoColorString( tr( "Transparent border" ) );
+
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
 
   QSize size = lstNames->iconSize();
   QStringList names;
@@ -605,6 +610,9 @@ QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVec
   btnChangeBorderColor->setShowNoColor( true );
   btnChangeBorderColor->setNoColorString( tr( "Transparent border" ) );
 
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
+
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( cboFillStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setBrushStyle() ) );
   connect( btnChangeBorderColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setBorderColor( const QColor& ) ) );
@@ -778,6 +786,9 @@ QgsGradientFillSymbolLayerV2Widget::QgsGradientFillSymbolLayerV2Widget( const Qg
   btnChangeColor2->setContext( "symbology" );
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
+
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
 
   connect( btnChangeColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
   connect( btnChangeColor2, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor2( const QColor& ) ) );
@@ -1162,6 +1173,9 @@ QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( cons
   btnChangeColor2->setShowNoColor( true );
   btnChangeColor2->setNoColorString( tr( "Transparent" ) );
 
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
+
   cboGradientColorRamp->setShowGradientOnly( true );
   cboGradientColorRamp->populate( QgsStyleV2::defaultStyle() );
 
@@ -1448,6 +1462,8 @@ QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( const QgsVec
   mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mOffsetAlongLineUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
 
+  spinOffset->setClearValue( 0.0 );
+
   connect( spinInterval, SIGNAL( valueChanged( double ) ), this, SLOT( setInterval( double ) ) );
   connect( mSpinOffsetAlongLine, SIGNAL( valueChanged( double ) ), this, SLOT( setOffsetAlongLine( double ) ) );
   connect( chkRotateMarker, SIGNAL( clicked() ), this, SLOT( setRotate() ) );
@@ -1643,6 +1659,9 @@ QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVecto
   mChangeColorButton->setContext( "symbology" );
   mChangeBorderColorButton->setColorDialogTitle( tr( "Select border color" ) );
   mChangeColorButton->setContext( "symbology" );
+
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
 
   populateList();
 
@@ -2735,6 +2754,9 @@ QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVec
   btnColor->setColorDialogTitle( tr( "Select symbol color" ) );
   btnColor->setContext( "symbology" );
 
+  spinOffsetX->setClearValue( 0.0 );
+  spinOffsetY->setClearValue( 0.0 );
+
   connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
   connect( btnColor, SIGNAL( colorChanged( const QColor& ) ), this, SLOT( setColor( const QColor& ) ) );
@@ -2924,6 +2946,9 @@ QgsRasterFillSymbolLayerWidget::QgsRasterFillSymbolLayerWidget( const QgsVectorL
 
   mWidthUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
   mOffsetUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
+
+  mSpinOffsetX->setClearValue( 0.0 );
+  mSpinOffsetY->setClearValue( 0.0 );
 
   connect( cboCoordinateMode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setCoordinateMode( int ) ) );
   connect( mSpinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );

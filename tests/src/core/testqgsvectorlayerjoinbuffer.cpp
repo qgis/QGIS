@@ -29,7 +29,7 @@
  *
  * @see QgsVectorLayerJoinBuffer
  */
-class TestVectorLayerJoinBuffer: public QObject
+class TestVectorLayerJoinBuffer : public QObject
 {
     Q_OBJECT
 

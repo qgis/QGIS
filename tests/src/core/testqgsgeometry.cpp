@@ -38,7 +38,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the different geometry operations on vector features.
  */
-class TestQgsGeometry: public QObject
+class TestQgsGeometry : public QObject
 {
     Q_OBJECT
   private slots:

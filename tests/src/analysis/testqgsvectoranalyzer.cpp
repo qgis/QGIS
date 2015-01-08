@@ -19,7 +19,7 @@ Email                : sherman at mrcc dot com
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 
-class TestQgsVectorAnalyzer: public QObject
+class TestQgsVectorAnalyzer : public QObject
 {
     Q_OBJECT
   private slots:

@@ -40,7 +40,7 @@
 /** \ingroup UnitTests
  * This is a unit test for shapeburst fill types.
  */
-class TestQgsShapeburst: public QObject
+class TestQgsShapeburst : public QObject
 {
     Q_OBJECT
   private slots:

@@ -160,10 +160,6 @@ INCLUDE_DIRECTORIES(
   .
 )
 
-IF (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(BEFORE ../core/spatialite/headers/spatialite)
-ENDIF (WITH_INTERNAL_SPATIALITE)
-
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   qgis_core
   qgis_analysis
@@ -184,6 +180,7 @@ INSTALL(TARGETS
 INSTALL(FILES
   admin.sld
   wms_metadata.xml
+  schemaExtension.xsd
   DESTINATION ${QGIS_CGIBIN_DIR}
   )
 

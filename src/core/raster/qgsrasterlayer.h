@@ -110,12 +110,6 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
  * \endcode
  *
- *  A raster layer can also export its legend as a pixmap:
- *
- * \code
- *     QPixmap myQPixmap = myRasterLayer->legendPixmap();
- * \endcode
- *
  * Once a layer has been created you can find out what type of layer it is (GrayOrUndefined, Palette or Multiband):
  *
  * \code

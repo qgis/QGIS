@@ -36,6 +36,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
 #include "qgsmaplayerlegend.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsproject.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
@@ -55,6 +56,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mLayerType( type ),
     mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
     , mLegend( 0 )
+    , mStyleManager( 0 )
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -342,7 +344,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   }
 
   // use scale dependent visibility flag
-  toggleScaleBasedVisibility( layerElement.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+  setScaleBasedVisibility( layerElement.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( layerElement.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( layerElement.attribute( "maximumScale" ).toFloat() );
 
@@ -702,6 +704,28 @@ void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc 
   mCustomProperties.writeXml( layerNode, doc );
 }
 
+void QgsMapLayer::readStyleManager( const QDomNode& layerNode )
+{
+  QDomElement styleMgrElem = layerNode.firstChildElement( "map-layer-style-manager" );
+  if ( !styleMgrElem.isNull() )
+  {
+    enableStyleManager();
+    styleManager()->readXml( styleMgrElem );
+  }
+  else
+    enableStyleManager( false );
+}
+
+void QgsMapLayer::writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const
+{
+  if ( mStyleManager )
+  {
+    QDomElement styleMgrElem = doc.createElement( "map-layer-style-manager" );
+    mStyleManager->writeXml( styleMgrElem );
+    layerNode.appendChild( styleMgrElem );
+  }
+}
+
 
 
 
@@ -738,7 +762,7 @@ void QgsMapLayer::connectNotify( const char * signal )
 
 void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
 {
-  mScaleBasedVisibility = theVisibilityFlag;
+  setScaleBasedVisibility( theVisibilityFlag );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
@@ -746,7 +770,7 @@ bool QgsMapLayer::hasScaleBasedVisibility() const
   return mScaleBasedVisibility;
 }
 
-void QgsMapLayer::setMinimumScale( float theMinScale )
+void QgsMapLayer::setMinimumScale( const float theMinScale )
 {
   mMinScale = theMinScale;
 }
@@ -757,16 +781,20 @@ float QgsMapLayer::minimumScale() const
 }
 
 
-void QgsMapLayer::setMaximumScale( float theMaxScale )
+void QgsMapLayer::setMaximumScale( const float theMaxScale )
 {
   mMaxScale = theMaxScale;
+}
+
+void QgsMapLayer::setScaleBasedVisibility( const bool enabled )
+{
+  mScaleBasedVisibility = enabled;
 }
 
 float QgsMapLayer::maximumScale() const
 {
   return mMaxScale;
 }
-
 
 QStringList QgsMapLayer::subLayers() const
 {
@@ -997,7 +1025,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
   }
 
   // use scale dependent visibility flag
-  toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+  setScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
 
@@ -1418,6 +1446,27 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
 QgsMapLayerLegend*QgsMapLayer::legend() const
 {
   return mLegend;
+}
+
+void QgsMapLayer::enableStyleManager( bool enable )
+{
+  if (( enable && mStyleManager ) || ( !enable && !mStyleManager ) )
+    return;
+
+  if ( enable )
+  {
+    mStyleManager = new QgsMapLayerStyleManager( this );
+  }
+  else
+  {
+    delete mStyleManager;
+    mStyleManager = 0;
+  }
+}
+
+QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
+{
+  return mStyleManager;
 }
 
 void QgsMapLayer::clearCacheImage()

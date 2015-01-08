@@ -650,7 +650,7 @@ bool QgsVectorLayer::hasGeometryType() const
 
 QGis::WkbType QgsVectorLayer::wkbType() const
 {
-  return ( QGis::WkbType )( mWkbType );
+  return mWkbType;
 }
 
 QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
@@ -1328,6 +1328,8 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
     return false;
   }
 
+  readStyleManager( layer_node );
+
   setLegend( QgsMapLayerLegend::defaultVectorLegend( this ) );
 
   return mValid;               // should be true if read successfully
@@ -1477,6 +1479,8 @@ bool QgsVectorLayer::writeXml( QDomNode & layer_node,
 
   // save expression fields
   mExpressionFieldBuffer->writeXml( layer_node, document );
+
+  writeStyleManager( layer_node, document );
 
   // renderer specific settings
   QString errorMsg;
@@ -3796,7 +3800,7 @@ bool QgsVectorLayer::applyNamedStyle( QString namedStyle, QString errorMsg )
     errorMsg = tr( "Error: qgis element could not be found" );
     return false;
   }
-  toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+  setScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
 

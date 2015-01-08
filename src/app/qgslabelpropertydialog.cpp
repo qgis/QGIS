@@ -104,7 +104,8 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   updateFont( mLabelFont, false );
 
   //set all the gui elements to the default layer-level values
-  mBufferColorButton->setColor( layerSettings.textColor );
+  mFontColorButton->setColor( layerSettings.textColor );
+  mBufferColorButton->setColor( layerSettings.bufferColor );
   mLabelDistanceSpinBox->setValue( layerSettings.dist );
   mBufferSizeSpinBox->setValue( layerSettings.bufferSize );
   mMinScaleSpinBox->setValue( layerSettings.scaleMin );

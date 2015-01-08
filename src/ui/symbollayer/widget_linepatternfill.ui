@@ -23,16 +23,7 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="leftMargin">
-    <number>1</number>
-   </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>1</number>
    </property>
    <item row="0" column="0">
@@ -43,12 +34,18 @@
     </widget>
    </item>
    <item row="0" column="1">
-    <widget class="QDoubleSpinBox" name="mAngleSpinBox">
+    <widget class="QgsDoubleSpinBox" name="mAngleSpinBox">
+     <property name="suffix">
+      <string> °</string>
+     </property>
      <property name="maximum">
       <double>360.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>0.500000000000000</double>
+     </property>
+     <property name="showClearButton">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
@@ -62,7 +59,7 @@
    <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QDoubleSpinBox" name="mDistanceSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mDistanceSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -77,6 +74,9 @@
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
+       </property>
+       <property name="showClearButton">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -95,7 +95,7 @@
    <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QDoubleSpinBox" name="mOffsetSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mOffsetSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -113,6 +113,9 @@
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
+       </property>
+       <property name="showClearButton">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -137,6 +140,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>

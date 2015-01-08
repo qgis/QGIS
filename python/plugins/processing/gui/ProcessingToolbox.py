@@ -178,6 +178,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             alg = Processing.getAlgorithm(item.alg.commandLineName())
             alg = alg.getCopy()
             dlg = BatchAlgorithmDialog(alg)
+            dlg.show()
             dlg.exec_()
 
     def executeAlgorithm(self):

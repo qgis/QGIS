@@ -17,7 +17,6 @@
 
 #include <QtDebug>
 #include <QDomDocument>
-#include <QSettings>
 #include <QDate>
 #include <QRegExp>
 #include <QColor>
@@ -162,13 +161,20 @@ static QVariant tvl2variant( TVL v )
 inline bool isIntSafe( const QVariant& v )
 {
   if ( v.type() == QVariant::Int ) return true;
+  if ( v.type() == QVariant::UInt ) return true;
+  if ( v.type() == QVariant::LongLong ) return true;
+  if ( v.type() == QVariant::ULongLong ) return true;
   if ( v.type() == QVariant::Double ) return false;
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toInt( &ok ); return ok; }
   return false;
 }
 inline bool isDoubleSafe( const QVariant& v )
 {
-  if ( v.type() == QVariant::Double || v.type() == QVariant::Int ) return true;
+  if ( v.type() == QVariant::Double ) return true;
+  if ( v.type() == QVariant::Int ) return true;
+  if ( v.type() == QVariant::UInt ) return true;
+  if ( v.type() == QVariant::LongLong ) return true;
+  if ( v.type() == QVariant::ULongLong ) return true;
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toDouble( &ok ); return ok; }
   return false;
 }
@@ -206,14 +212,16 @@ inline bool isNull( const QVariant& v ) { return v.isNull(); }
 
 const char* QgsExpression::BinaryOperatorText[] =
 {
+  // this must correspond (number and order of element) to the declaration of the enum BinaryOperator
   "OR", "AND",
   "=", "<>", "<=", ">=", "<", ">", "~", "LIKE", "NOT LIKE", "ILIKE", "NOT ILIKE", "IS", "IS NOT",
-  "+", "-", "*", "/", "%", "^",
+  "+", "-", "*", "/", "//", "%", "^",
   "||"
 };
 
 const char* QgsExpression::UnaryOperatorText[] =
 {
+  // this must correspond (number and order of element) to the declaration of the enum UnaryOperator
   "NOT", "-"
 };
 
@@ -327,6 +335,15 @@ static QgsFeature getFeature( const QVariant& value, QgsExpression* parent )
     return value.value<QgsFeature>();
 
   parent->setEvalErrorString( "Cannot convert to QgsFeature" );
+  return 0;
+}
+
+static QgsExpression::Node* getNode( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.canConvert<QgsExpression::Node*>() )
+    return value.value<QgsExpression::Node*>();
+
+  parent->setEvalErrorString( "Cannot convert to Node" );
   return 0;
 }
 
@@ -1281,8 +1298,14 @@ static QVariant fcnCombine( const QVariantList& values, const QgsFeature*, QgsEx
 }
 static QVariant fcnGeomToWKT( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
+  if ( values.length() < 1 || values.length() > 2 )
+    return QVariant();
+
   QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
-  QString wkt = fGeom.exportToWkt();
+  int prec = 8;
+  if ( values.length() == 2 )
+    prec = getIntValue( values.at( 1 ), parent );
+  QString wkt = fGeom.exportToWkt( prec );
   return QVariant( wkt );
 }
 
@@ -1345,6 +1368,29 @@ static QVariant fcnColorRgb( const QVariantList &values, const QgsFeature *, Qgs
   }
 
   return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
+}
+
+static QVariant fcnIf( const QVariantList &values, const QgsFeature *f, QgsExpression *parent )
+{
+  QgsExpression::Node* node = getNode( values.at( 0 ), parent );
+  ENSURE_NO_EVAL_ERROR;
+  QVariant value = node->eval( parent, f );
+  ENSURE_NO_EVAL_ERROR;
+  if ( value.toBool() )
+  {
+    node = getNode( values.at( 1 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    value = node->eval( parent, f );
+    ENSURE_NO_EVAL_ERROR;
+  }
+  else
+  {
+    node = getNode( values.at( 2 ), parent );
+    ENSURE_NO_EVAL_ERROR;
+    value = node->eval( parent, f );
+    ENSURE_NO_EVAL_ERROR;
+  }
+  return value;
 }
 
 static QVariant fncColorRgba( const QVariantList &values, const QgsFeature *, QgsExpression *parent )
@@ -1506,6 +1552,34 @@ static QVariant fcnSpecialColumn( const QVariantList& values, const QgsFeature* 
   return QgsExpression::specialColumn( varName );
 }
 
+static QVariant fcnGetGeometry( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QgsFeature feat = getFeature( values.at( 0 ), parent );
+  QgsGeometry* geom = feat.geometry();
+  if ( geom )
+    return QVariant::fromValue( *geom );
+  return QVariant();
+}
+
+static QVariant fcnTransformGeometry( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
+{
+  QgsGeometry fGeom = getGeometry( values.at( 0 ), parent );
+  QString sAuthId = getStringValue( values.at( 1 ), parent );
+  QString dAuthId = getStringValue( values.at( 2 ), parent );
+
+  QgsCoordinateReferenceSystem s;
+  if ( ! s.createFromOgcWmsCrs( sAuthId ) )
+    return QVariant::fromValue( fGeom );
+  QgsCoordinateReferenceSystem d;
+  if ( ! d.createFromOgcWmsCrs( dAuthId ) )
+    return QVariant::fromValue( fGeom );
+
+  QgsCoordinateTransform t( s, d );
+  if ( fGeom.transform( t ) == 0 )
+    return QVariant::fromValue( fGeom );
+  return QVariant();
+}
+
 static QVariant fcnGetFeature( const QVariantList& values, const QgsFeature *, QgsExpression* parent )
 {
   //arguments: 1. layer id / name, 2. key attribute, 3. eq value
@@ -1652,6 +1726,7 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "totime", 1, fcnToTime, "Conversions" )
     << new StaticFunction( "tointerval", 1, fcnToInterval, "Conversions" )
     << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals" )
+    << new StaticFunction( "if", 3, fcnIf, "Conditionals", "", False, QStringList(), true )
     << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, "Conditionals" )
     << new StaticFunction( "$now", 0, fcnNow, "Date and Time" )
     << new StaticFunction( "age", 2, fcnAge, "Date and Time" )
@@ -1724,7 +1799,9 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "symDifference", 2, fcnSymDifference, "Geometry" )
     << new StaticFunction( "combine", 2, fcnCombine, "Geometry" )
     << new StaticFunction( "union", 2, fcnCombine, "Geometry" )
-    << new StaticFunction( "geomToWKT", 1, fcnGeomToWKT, "Geometry" )
+    << new StaticFunction( "geomToWKT", -1, fcnGeomToWKT, "Geometry" )
+    << new StaticFunction( "geometry", 1, fcnGetGeometry, "Geometry" )
+    << new StaticFunction( "transform", 3, fcnTransformGeometry, "Geometry" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
@@ -2067,6 +2144,27 @@ QString QgsExpression::replaceExpressionText( const QString &action, const QgsFe
   return expr_action;
 }
 
+double QgsExpression::evaluateToDouble( const QString &text, const double fallbackValue )
+{
+  bool ok;
+  //first test if text is directly convertible to double
+  double convertedValue = text.toDouble( &ok );
+  if ( ok )
+  {
+    return convertedValue;
+  }
+
+  //otherwise try to evalute as expression
+  QgsExpression expr( text );
+  QVariant result = expr.evaluate();
+  convertedValue = result.toDouble( &ok );
+  if ( expr.hasEvalError() || !ok )
+  {
+    return fallbackValue;
+  }
+  return convertedValue;
+}
+
 
 ///////////////////////////////////////////////
 // nodes
@@ -2145,14 +2243,14 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
     case boMul:
     case boDiv:
     case boMod:
+    {
       if ( isNull( vL ) || isNull( vR ) )
         return QVariant();
-      else if ( isIntSafe( vL ) && isIntSafe( vR ) )
+      else if ( mOp != boDiv && isIntSafe( vL ) && isIntSafe( vR ) )
       {
         // both are integers - let's use integer arithmetics
         int iL = getIntValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
         int iR = getIntValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
-        if ( mOp == boDiv && iR == 0 ) return QVariant(); // silently handle division by zero and return NULL
         return QVariant( computeInt( iL, iR ) );
       }
       else if ( isDateTimeSafe( vL ) && isIntervalSafe( vR ) )
@@ -2175,7 +2273,16 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
           return QVariant(); // silently handle division by zero and return NULL
         return QVariant( computeDouble( fL, fR ) );
       }
-
+    }
+    case boIntDiv:
+    {
+      //integer division
+      double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+      double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+      if ( fR == 0 )
+        return QVariant(); // silently handle division by zero and return NULL
+      return QVariant( qFloor( fL / fR ) );
+    }
     case boPow:
       if ( isNull( vL ) || isNull( vR ) )
         return QVariant();
@@ -2393,6 +2500,7 @@ int QgsExpression::NodeBinaryOperator::precedence() const
 
     case boMul:
     case boDiv:
+    case boIntDiv:
     case boMod:
       return 5;
 
@@ -2494,10 +2602,19 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, const QgsFeat
   {
     foreach ( Node* n, mArgs->list() )
     {
-      QVariant v = n->eval( parent, f );
-      ENSURE_NO_EVAL_ERROR;
-      if ( isNull( v ) && fd->name() != "coalesce" )
-        return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
+      QVariant v;
+      if ( fd->lazyEval() )
+      {
+        // Pass in the node for the function to eval as it needs.
+        v = QVariant::fromValue( n );
+      }
+      else
+      {
+        v = n->eval( parent, f );
+        ENSURE_NO_EVAL_ERROR;
+        if ( isNull( v ) && fd->name() != "coalesce" )
+          return QVariant(); // all "normal" functions return NULL, when any parameter is NULL (so coalesce is abnormal)
+      }
       argValues.append( v );
     }
   }

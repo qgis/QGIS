@@ -52,9 +52,10 @@ class las2iso(LAStoolsAlgorithm):
         self.addParameter(ParameterNumber(las2iso.SIMPLIFY_LENGTH, "simplify segments shorter than (0 = do not simplify)", None, None, 0.0))
         self.addParameter(ParameterNumber(las2iso.SIMPLIFY_AREA, "simplify segments pairs with area less than (0 = do not simplify)", None, None, 0.0))
         self.addParametersVectorOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2iso.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2iso")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         smooth = self.getParameterValue(las2iso.SMOOTH)
@@ -76,5 +77,6 @@ class las2iso(LAStoolsAlgorithm):
             commands.append("-clean")
             commands.append(str(clean))
         self.addParametersVectorOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -214,6 +214,7 @@ class ParametersPanel(QWidget, Ui_Form):
             if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QComboBox()
                 layers = dataobjects.getVectorLayers(param.shapetype)
+                layers.sort(key = lambda lay: lay.name())
                 if param.optional:
                     item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:

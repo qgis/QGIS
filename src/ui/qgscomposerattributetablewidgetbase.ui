@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-400</y>
+        <y>0</y>
         <width>392</width>
-        <height>1192</height>
+        <height>1202</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -152,9 +152,12 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QSpinBox" name="mMaximumRowsSpinBox">
+           <widget class="QgsSpinBox" name="mMaximumRowsSpinBox">
             <property name="maximum">
              <number>99999</number>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -260,9 +263,12 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mMarginSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mMarginSpinBox">
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -397,9 +403,12 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mGridStrokeWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mGridStrokeWidthSpinBox">
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -706,21 +715,31 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">qgsmaplayercombobox.h</header>
+   <header>qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

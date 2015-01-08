@@ -119,7 +119,7 @@ class TestQgsComposerHtml(TestCase):
         print "Checking page 2"
         myPage = 1
         checker2 = QgsCompositionChecker('composerhtml_smartbreaks2', self.mComposition)
-        myTestResult, myMessage = checker2.testComposition( myPage, 3000 )
+        myTestResult, myMessage = checker2.testComposition( myPage, 200 )
         assert myTestResult, myMessage
 
         self.mComposition.removeMultiFrame( composerHtml )

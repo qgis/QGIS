@@ -73,7 +73,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QString mDefaultTemplatesDir;
     QString mUserTemplatesDir;
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );
     void changeEvent( QEvent * );
 

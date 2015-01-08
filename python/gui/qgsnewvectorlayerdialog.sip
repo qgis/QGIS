@@ -27,7 +27,6 @@ class QgsNewVectorLayerDialog : QDialog
     void on_mAddAttributeButton_clicked();
     void on_mRemoveAttributeButton_clicked();
     void on_mTypeBox_currentIndexChanged( int index );
-    void on_pbnChangeSpatialRefSys_clicked();
     void on_buttonBox_helpRequested();
     void nameChanged( QString );
     void selectionChanged();

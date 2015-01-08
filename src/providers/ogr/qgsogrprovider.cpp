@@ -695,10 +695,10 @@ void QgsOgrProvider::setEncoding( const QString& e )
 }
 
 // This is reused by dataItem
-int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
+OGRwkbGeometryType QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
 {
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
-  int geomType = wkbUnknown;
+  OGRwkbGeometryType geomType = wkbUnknown;
   if ( fdef )
   {
     geomType = OGR_FD_GetGeomType( fdef );
@@ -935,7 +935,7 @@ size_t QgsOgrProvider::layerCount() const
  */
 QGis::WkbType QgsOgrProvider::geometryType() const
 {
-  return ( QGis::WkbType ) geomType;
+  return static_cast<QGis::WkbType>( geomType );
 }
 
 /**
@@ -985,7 +985,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   const QgsAttributes& attrs = f.attributes();
 
-  const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+  char *oldlocale = setlocale( LC_NUMERIC, NULL );
   if ( oldlocale )
     oldlocale = strdup( oldlocale );
 
@@ -1067,6 +1067,8 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   OGR_F_Destroy( feature );
 
   setlocale( LC_NUMERIC, oldlocale );
+  if ( oldlocale )
+    free( oldlocale );
 
   return returnValue;
 }
@@ -1198,7 +1200,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
     const QgsAttributeMap& attr = it.value();
 
-    const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+    char *oldlocale = setlocale( LC_NUMERIC, NULL );
     if ( oldlocale )
       oldlocale = strdup( oldlocale );
     setlocale( LC_NUMERIC, "C" );
@@ -1265,6 +1267,8 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
     }
 
     setlocale( LC_NUMERIC, oldlocale );
+    if ( oldlocale )
+      free( oldlocale );
   }
 
   if ( OGR_L_SyncToDisk( ogrLayer ) != OGRERR_NONE )
@@ -2342,7 +2346,8 @@ QVariant QgsOgrProvider::minimumValue( int index )
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QByteArray sql = "SELECT MIN(" + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
+  QByteArray sql = "SELECT MIN(" + mEncoding->fromUnicode( fld.name() );
   sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )
@@ -2380,7 +2385,8 @@ QVariant QgsOgrProvider::maximumValue( int index )
   }
   const QgsField& fld = mAttributeFields[index];
 
-  QByteArray sql = "SELECT MAX(" + quotedIdentifier( mEncoding->fromUnicode( fld.name() ) );
+  // Don't quote column name (see https://trac.osgeo.org/gdal/ticket/5799#comment:9)
+  QByteArray sql = "SELECT MAX(" + mEncoding->fromUnicode( fld.name() );
   sql += ") FROM " + quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   if ( !mSubsetString.isEmpty() )

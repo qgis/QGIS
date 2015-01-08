@@ -59,7 +59,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
 #   first we tile the data with option '-reversible'
 
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         tile_size = self.getParameterValue(hugeFileNormalize.TILE_SIZE)
@@ -78,7 +78,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
 #   then we ground classify the reversible tiles
 
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileNormalize*.laz")
         airborne = self.getParameterValue(hugeFileNormalize.AIRBORNE)
@@ -100,7 +100,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
 #   then we height-normalize each points in the reversible tiles
 
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileNormalize*_g.laz")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
@@ -114,7 +114,7 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
 #   then we reverse the tiling
 
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileNormalize*_gh.laz")
         commands.append("-reverse_tiling")

@@ -30,6 +30,7 @@ class QProgressBar;
 class QPushButton;
 class QRect;
 class QSettings;
+class QSpinBox;
 class QSplashScreen;
 class QStringList;
 class QToolButton;
@@ -53,6 +54,7 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
+class QgsMapToolAdvancedDigitizing;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
@@ -60,6 +62,7 @@ class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
+class QgsDoubleSpinBox;
 
 class QDomDocument;
 class QNetworkReply;
@@ -67,6 +70,7 @@ class QNetworkProxy;
 class QAuthenticator;
 
 class QgsBrowserDockWidget;
+class QgsAdvancedDigitizingDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
@@ -145,6 +149,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       This is essentially a simplified version of the above
       */
     QgsRasterLayer *addRasterLayer( const QString &rasterFile, const QString &baseName, bool guiWarning = true );
+
+    /** Returns and adjusted uri for the layer based on current and available CRS as well as the last selected image format
+     * @note added in 2.4
+     */
+    QString crsAndFormatAdjustedLayerUri( const QString& uri, const QStringList& supportedCrs, const QStringList& supportedFormats ) const;
 
     /** Add a 'pre-made' map layer to the project */
     void addMapLayer( QgsMapLayer *theMapLayer );
@@ -360,7 +369,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionCustomProjection() { return mActionCustomProjection; }
     QAction *actionConfigureShortcuts() { return mActionConfigureShortcuts; }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QAction *actionWindowMinimize() { return mActionWindowMinimize; }
     QAction *actionWindowZoom() { return mActionWindowZoom; }
     QAction *actionWindowAllToFront() { return mActionWindowAllToFront; }
@@ -390,7 +399,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
     QMenu *webMenu() { return mWebMenu; }
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
 #else
@@ -418,6 +427,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *vectorToolBar() { return mVectorToolBar; }
     QToolBar *databaseToolBar() { return mDatabaseToolBar; }
     QToolBar *webToolBar() { return mWebToolBar; }
+
+    //! return CAD dock widget
+    QgsAdvancedDigitizingDockWidget* cadDockWidget() { return mAdvancedDigitizingDockWidget; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -687,6 +699,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void userScale();
     //! Slot to handle user center input;
     void userCenter();
+    //! Slot to handle user rotation input;
+    //! @note added in 2.8
+    void userRotation();
     //! Remove a layer from the map and legend
     void removeLayer();
     /** Duplicate map layer(s) in legend */
@@ -882,6 +897,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Create a new empty vector layer
     void newVectorLayer();
+    //! Create a new memory layer
+    void newMemoryLayer();
     //! Create a new empty spatialite layer
     void newSpatialiteLayer();
     //! Print the current map view frame
@@ -1019,6 +1036,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showProgress( int theProgress, int theTotalSteps );
     void extentsViewToggled( bool theFlag );
     void showExtents();
+    void showRotation();
     void showStatusMessage( QString theMessage );
     void displayMapToolMessage( QString message, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO );
     void removeMapToolMessage();
@@ -1082,6 +1100,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! shows label settings dialog (for labeling-ng)
     void labeling();
+
+    //! set the CAD dock widget visible
+    void setCadDockVisible( bool visible );
 
     /** Check if deprecated labels are used in project, and flag projects that use them */
     void checkForDeprecatedLabelsInProject();
@@ -1238,6 +1259,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void customSrsValidation( QgsCoordinateReferenceSystem &crs );
 
+    /**This signal is emitted when a layer has been saved using save as
+       @note added in version 2.7
+    */
+    void layerSavedAs( QgsMapLayer* l, QString path );
+
   private:
     /** This method will open a dialog so the user can select GDAL sublayers to load
      * @returns true if any items were loaded
@@ -1328,7 +1354,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     // actions for menus and toolbars -----------------
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QAction *mActionWindowMinimize;
     QAction *mActionWindowZoom;
     QAction *mActionWindowSeparator1;
@@ -1347,7 +1373,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     // menus ------------------------------------------
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     QMenu *mWindowMenu;
 #endif
     QMenu *mPanelMenu;
@@ -1360,7 +1386,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QDockWidget *mpGpsDock;
     QDockWidget *mLogDock;
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     //! Window menu action to select this window
     QAction *mWindowAction;
 #endif
@@ -1428,6 +1454,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QLineEdit * mCoordsEdit;
     //! The validator for the mCoordsEdit
     QValidator * mCoordsEditValidator;
+    //! Widget that will live on the statusbar to display "Rotation"
+    QLabel * mRotationLabel;
+    //! Widget that will live in the statusbar to display and edit rotation
+    QgsDoubleSpinBox * mRotationEdit;
+    //! The validator for the mCoordsEdit
+    QValidator * mRotationEditValidator;
     //! Widget that will live in the statusbar to show progress of operations
     QProgressBar * mProgressBar;
     //! Widget used to suppress rendering
@@ -1438,6 +1470,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QLabel * mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton * mOnTheFlyProjectionStatusButton;
+    QToolButton * mMessageButton;
     //! Menu that contains the list of actions of the selected vector layer
     QMenu *mFeatureActionMenu;
     //! Popup menu
@@ -1529,6 +1562,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsBrowserDockWidget* mBrowserWidget;
     QgsBrowserDockWidget* mBrowserWidget2;
+
+    QgsAdvancedDigitizingDockWidget* mAdvancedDigitizingDockWidget;
 
     QgsSnappingDialog* mSnappingDialog;
 

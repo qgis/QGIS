@@ -36,7 +36,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsInvertedPolygon: public QObject
+class TestQgsInvertedPolygon : public QObject
 {
     Q_OBJECT
   private slots:

@@ -416,6 +416,7 @@ class ModelerParametersDialog(QDialog):
                         ParameterNumber,
                         ParameterBoolean,
                         ParameterExtent,
+                        ParameterFile
                         )):
                     self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterString):

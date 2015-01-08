@@ -81,7 +81,9 @@ void QgsVectorLayerSaveAsDialog::setup()
   mCRSSelection->addItems( QStringList() << tr( "Layer CRS" ) << tr( "Project CRS" ) << tr( "Selected CRS" ) );
 
   QgsCoordinateReferenceSystem srs( mCRS, QgsCoordinateReferenceSystem::InternalCrsId );
-  leCRS->setText( srs.description() );
+  mCrsSelector->setCrs( srs );
+  mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the vector file. "
+                                          "The data points will be transformed from the layer coordinate reference system." ) );
 
   mEncodingComboBox->setCurrentIndex( idx );
   on_mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
@@ -186,7 +188,7 @@ void QgsVectorLayerSaveAsDialog::accept()
 
 void QgsVectorLayerSaveAsDialog::on_mCRSSelection_currentIndexChanged( int idx )
 {
-  leCRS->setEnabled( idx == 2 );
+  mCrsSelector->lineEdit()->setEnabled( idx == 2 );
 
   QgsCoordinateReferenceSystem crs;
   if ( mCRSSelection->currentIndex() == 0 )
@@ -302,25 +304,11 @@ void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
   }
 }
 
-void QgsVectorLayerSaveAsDialog::on_browseCRS_clicked()
+void QgsVectorLayerSaveAsDialog::on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs )
 {
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-  if ( mCRS >= 0 )
-    mySelector->setSelectedCrsId( mCRS );
-  mySelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
-                              "The data points will be transformed from the layer coordinate reference system." ) );
-
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    mCRS = srs.srsid();
-    leCRS->setText( srs.description() );
-    mCRSSelection->setCurrentIndex( 2 );
-
-    mExtentGroupBox->setOutputCrs( srs );
-  }
-
-  delete mySelector;
+  mCRS = crs.srsid();
+  mCRSSelection->setCurrentIndex( 2 );
+  mExtentGroupBox->setOutputCrs( crs );
 }
 
 QString QgsVectorLayerSaveAsDialog::filename() const

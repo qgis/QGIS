@@ -33,7 +33,7 @@
 #include <QtTest/QSignalSpy>
 #include <QtTest/QtTest>
 
-class TestQgsAtlasComposition: public QObject
+class TestQgsAtlasComposition : public QObject
 {
     Q_OBJECT
   private slots:

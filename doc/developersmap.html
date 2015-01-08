@@ -1,0 +1,33 @@
+<html>
+<head>
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+  <style type="text/css">
+  body {  padding: 0; margin: 0;  }
+  html, body, #developers-map {  height: 100%;  }
+  </style>
+  <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+  <script src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
+  <link rel="points" type="application/json" href="contributors.json">
+</head>
+<body>
+  <div id="developers-map"></div>
+  <script>
+  var developersMapTiles = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    maxZooom: 18,
+    attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'  
+  });
+
+  $.getJSON($('link[rel="points"]').attr("href"), function(data) {
+    var geojson = L.geoJson(data, {
+      onEachFeature: function (feature, layer) {
+        layer.bindPopup("<b>Name:</b> " + feature.properties.Name +
+			"<br><b>Committer:</b> " + feature.properties.Committer);
+      }
+    });
+    var map = L.map('developers-map').fitBounds(geojson.getBounds());
+    developersMapTiles.addTo(map);
+    geojson.addTo(map);
+  });
+  </script>
+</body>
+</html>

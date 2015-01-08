@@ -214,7 +214,7 @@ bool QgsBrowser::layerClicked( QgsLayerItem *item )
   if ( !item )
     return false;
 
-  mActionSetProjection->setEnabled( item->capabilities() & QgsLayerItem::SetCrs );
+  mActionSetProjection->setEnabled( item->capabilities2().testFlag( QgsLayerItem::SetCrs ) );
 
   QString uri = item->uri();
   if ( !uri.isEmpty() )

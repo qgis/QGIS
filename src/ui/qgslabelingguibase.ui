@@ -56,7 +56,7 @@
          <property name="maximumSize">
           <size>
            <width>16777215</width>
-           <height>360</height>
+           <height>16777215</height>
           </size>
          </property>
          <property name="title">
@@ -523,9 +523,9 @@
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
+                       <y>-11</y>
                        <width>566</width>
-                       <height>388</height>
+                       <height>390</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -575,7 +575,7 @@
                             </widget>
                            </item>
                            <item>
-                            <widget class="QDoubleSpinBox" name="mFontLetterSpacingSpinBox">
+                            <widget class="QgsDoubleSpinBox" name="mFontLetterSpacingSpinBox">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -594,6 +594,9 @@
                              <property name="maximum">
                               <double>999999999.000000000000000</double>
                              </property>
+                             <property name="showClearButton">
+                              <bool>true</bool>
+                             </property>
                             </widget>
                            </item>
                            <item>
@@ -606,7 +609,7 @@
                           </layout>
                          </item>
                          <item row="4" column="1">
-                          <widget class="QDoubleSpinBox" name="mFontSizeSpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mFontSizeSpinBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -624,6 +627,9 @@
                            </property>
                            <property name="maximum">
                             <double>999999999.000000000000000</double>
+                           </property>
+                           <property name="showClearButton">
+                            <bool>false</bool>
                            </property>
                           </widget>
                          </item>
@@ -789,7 +795,7 @@
                              </widget>
                             </item>
                             <item>
-                             <widget class="QSpinBox" name="mFontTranspSpinBox">
+                             <widget class="QgsSpinBox" name="mFontTranspSpinBox">
                               <property name="enabled">
                                <bool>true</bool>
                               </property>
@@ -905,7 +911,7 @@
                             </widget>
                            </item>
                            <item>
-                            <widget class="QDoubleSpinBox" name="mFontWordSpacingSpinBox">
+                            <widget class="QgsDoubleSpinBox" name="mFontWordSpacingSpinBox">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -923,6 +929,9 @@
                              </property>
                              <property name="maximum">
                               <double>999999999.000000000000000</double>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>true</bool>
                              </property>
                             </widget>
                            </item>
@@ -1228,9 +1237,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>383</width>
-                       <height>389</height>
+                       <y>-13</y>
+                       <width>566</width>
+                       <height>392</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1327,7 +1336,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="1" column="1">
-                            <widget class="QDoubleSpinBox" name="mFontLineHeightSpinBox">
+                            <widget class="QgsDoubleSpinBox" name="mFontLineHeightSpinBox">
                              <property name="enabled">
                               <bool>true</bool>
                              </property>
@@ -1741,7 +1750,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="0" column="1">
-                            <widget class="QSpinBox" name="mFormatNumDecimalsSpnBx">
+                            <widget class="QgsSpinBox" name="mFormatNumDecimalsSpnBx">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -1829,8 +1838,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>298</width>
-                       <height>257</height>
+                       <width>582</width>
+                       <height>379</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1944,7 +1953,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="0" column="1">
-                            <widget class="QDoubleSpinBox" name="spinBufferSize">
+                            <widget class="QgsDoubleSpinBox" name="spinBufferSize">
                              <property name="sizePolicy">
                               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                                <horstretch>0</horstretch>
@@ -1968,6 +1977,9 @@ font-style: italic;</string>
                              </property>
                              <property name="singleStep">
                               <double>0.100000000000000</double>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -2015,7 +2027,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item>
-                               <widget class="QSpinBox" name="mBufferTranspSpinBox">
+                               <widget class="QgsSpinBox" name="mBufferTranspSpinBox">
                                 <property name="enabled">
                                  <bool>true</bool>
                                 </property>
@@ -2186,9 +2198,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>362</width>
-                       <height>697</height>
+                       <y>-321</y>
+                       <width>566</width>
+                       <height>700</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -2267,7 +2279,7 @@ font-style: italic;</string>
                            <item row="12" column="1">
                             <layout class="QHBoxLayout" name="horizontalLayout_2">
                              <item>
-                              <widget class="QDoubleSpinBox" name="mShapeRadiusXDbSpnBx">
+                              <widget class="QgsDoubleSpinBox" name="mShapeRadiusXDbSpnBx">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                                  <horstretch>0</horstretch>
@@ -2283,7 +2295,7 @@ font-style: italic;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QDoubleSpinBox" name="mShapeRadiusYDbSpnBx">
+                              <widget class="QgsDoubleSpinBox" name="mShapeRadiusYDbSpnBx">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                                  <horstretch>0</horstretch>
@@ -2358,7 +2370,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="19" column="1">
-                            <widget class="QDoubleSpinBox" name="mShapeBorderWidthSpnBx">
+                            <widget class="QgsDoubleSpinBox" name="mShapeBorderWidthSpnBx">
                              <property name="decimals">
                               <number>4</number>
                              </property>
@@ -2367,6 +2379,9 @@ font-style: italic;</string>
                              </property>
                              <property name="maximum">
                               <double>9999999.000000000000000</double>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -2459,7 +2474,7 @@ font-style: italic;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QSpinBox" name="mShapeTranspSpinBox">
+                              <widget class="QgsSpinBox" name="mShapeTranspSpinBox">
                                <property name="enabled">
                                 <bool>true</bool>
                                </property>
@@ -2501,7 +2516,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="8" column="1">
-                            <widget class="QDoubleSpinBox" name="mShapeRotationDblSpnBx">
+                            <widget class="QgsDoubleSpinBox" name="mShapeRotationDblSpnBx">
                              <property name="enabled">
                               <bool>false</bool>
                              </property>
@@ -2590,7 +2605,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="3" column="1">
-                            <widget class="QDoubleSpinBox" name="mShapeSizeXSpnBx">
+                            <widget class="QgsDoubleSpinBox" name="mShapeSizeXSpnBx">
                              <property name="suffix">
                               <string/>
                              </property>
@@ -2602,6 +2617,9 @@ font-style: italic;</string>
                              </property>
                              <property name="maximum">
                               <double>9999999.000000000000000</double>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -2634,7 +2652,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="4" column="1">
-                            <widget class="QDoubleSpinBox" name="mShapeSizeYSpnBx">
+                            <widget class="QgsDoubleSpinBox" name="mShapeSizeYSpnBx">
                              <property name="suffix">
                               <string/>
                              </property>
@@ -2646,6 +2664,9 @@ font-style: italic;</string>
                              </property>
                              <property name="maximum">
                               <double>9999999.000000000000000</double>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -2847,7 +2868,7 @@ font-style: italic;</string>
                            <item row="9" column="1">
                             <layout class="QHBoxLayout" name="horizontalLayout_7">
                              <item>
-                              <widget class="QDoubleSpinBox" name="mShapeOffsetXSpnBx">
+                              <widget class="QgsDoubleSpinBox" name="mShapeOffsetXSpnBx">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                                  <horstretch>0</horstretch>
@@ -2869,7 +2890,7 @@ font-style: italic;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QDoubleSpinBox" name="mShapeOffsetYSpnBx">
+                              <widget class="QgsDoubleSpinBox" name="mShapeOffsetYSpnBx">
                                <property name="sizePolicy">
                                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                                  <horstretch>0</horstretch>
@@ -2959,9 +2980,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>325</width>
-                       <height>424</height>
+                       <y>-48</y>
+                       <width>566</width>
+                       <height>427</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -3050,12 +3071,15 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="5" column="1">
-                            <widget class="QDoubleSpinBox" name="mShadowRadiusDblSpnBx">
+                            <widget class="QgsDoubleSpinBox" name="mShadowRadiusDblSpnBx">
                              <property name="decimals">
                               <number>6</number>
                              </property>
                              <property name="maximum">
                               <double>999999999.990000009536743</double>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -3087,7 +3111,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="2" column="1">
-                            <widget class="QDoubleSpinBox" name="mShadowOffsetSpnBx">
+                            <widget class="QgsDoubleSpinBox" name="mShadowOffsetSpnBx">
                              <property name="decimals">
                               <number>4</number>
                              </property>
@@ -3096,6 +3120,9 @@ font-style: italic;</string>
                              </property>
                              <property name="maximum">
                               <double>9999999.000000000000000</double>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -3152,7 +3179,7 @@ font-style: italic;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QSpinBox" name="mShadowOffsetAngleSpnBx">
+                              <widget class="QgsSpinBox" name="mShadowOffsetAngleSpnBx">
                                <property name="suffix">
                                 <string>˚</string>
                                </property>
@@ -3161,6 +3188,9 @@ font-style: italic;</string>
                                </property>
                                <property name="maximum">
                                 <number>180</number>
+                               </property>
+                               <property name="showClearButton">
+                                <bool>false</bool>
                                </property>
                               </widget>
                              </item>
@@ -3204,7 +3234,7 @@ font-style: italic;</string>
                             </widget>
                            </item>
                            <item row="9" column="1">
-                            <widget class="QSpinBox" name="mShadowScaleSpnBx">
+                            <widget class="QgsSpinBox" name="mShadowScaleSpnBx">
                              <property name="suffix">
                               <string> %</string>
                              </property>
@@ -3213,6 +3243,9 @@ font-style: italic;</string>
                              </property>
                              <property name="value">
                               <number>100</number>
+                             </property>
+                             <property name="showClearButton">
+                              <bool>false</bool>
                              </property>
                             </widget>
                            </item>
@@ -3281,7 +3314,7 @@ font-style: italic;</string>
                               </widget>
                              </item>
                              <item>
-                              <widget class="QSpinBox" name="mShadowTranspSpnBx">
+                              <widget class="QgsSpinBox" name="mShadowTranspSpnBx">
                                <property name="enabled">
                                 <bool>true</bool>
                                </property>
@@ -3425,9 +3458,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>0</y>
-                       <width>377</width>
-                       <height>831</height>
+                       <y>-454</y>
+                       <width>566</width>
+                       <height>833</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4054,7 +4087,7 @@ font-style: italic;</string>
                           <number>0</number>
                          </property>
                          <item row="0" column="2">
-                          <widget class="QDoubleSpinBox" name="mPointOffsetYSpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mPointOffsetYSpinBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -4093,7 +4126,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="1">
-                          <widget class="QDoubleSpinBox" name="mPointOffsetXSpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mPointOffsetXSpinBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -4158,7 +4191,7 @@ font-style: italic;</string>
                           <number>0</number>
                          </property>
                          <item row="0" column="1">
-                          <widget class="QDoubleSpinBox" name="mLineDistanceSpnBx">
+                          <widget class="QgsDoubleSpinBox" name="mLineDistanceSpnBx">
                            <property name="decimals">
                             <number>4</number>
                            </property>
@@ -4238,7 +4271,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="1">
-                          <widget class="QDoubleSpinBox" name="mPointAngleSpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mPointAngleSpinBox">
                            <property name="enabled">
                             <bool>true</bool>
                            </property>
@@ -4292,7 +4325,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="0" column="1">
-                          <widget class="QDoubleSpinBox" name="mRepeatDistanceSpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mRepeatDistanceSpinBox">
                            <property name="sizePolicy">
                             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                              <horstretch>0</horstretch>
@@ -4366,7 +4399,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="1" column="2">
-                          <widget class="QDoubleSpinBox" name="mMaxCharAngleInDSpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mMaxCharAngleInDSpinBox">
                            <property name="decimals">
                             <number>1</number>
                            </property>
@@ -4375,6 +4408,9 @@ font-style: italic;</string>
                            </property>
                            <property name="maximum">
                             <double>60.000000000000000</double>
+                           </property>
+                           <property name="showClearButton">
+                            <bool>false</bool>
                            </property>
                           </widget>
                          </item>
@@ -4399,7 +4435,7 @@ font-style: italic;</string>
                           </widget>
                          </item>
                          <item row="1" column="4">
-                          <widget class="QDoubleSpinBox" name="mMaxCharAngleOutDSpinBox">
+                          <widget class="QgsDoubleSpinBox" name="mMaxCharAngleOutDSpinBox">
                            <property name="decimals">
                             <number>1</number>
                            </property>
@@ -4408,6 +4444,9 @@ font-style: italic;</string>
                            </property>
                            <property name="maximum">
                             <double>95.000000000000000</double>
+                           </property>
+                           <property name="showClearButton">
+                            <bool>false</bool>
                            </property>
                           </widget>
                          </item>
@@ -4448,7 +4487,7 @@ font-style: italic;</string>
                         <property name="flat">
                          <bool>false</bool>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelplacementgroup</string>
                         </property>
                         <layout class="QGridLayout" name="gridLayout_4">
@@ -4633,7 +4672,7 @@ font-style: italic;</string>
                         <property name="title">
                          <string>Priority</string>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelplacementgroup</string>
                         </property>
                         <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -4726,8 +4765,8 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>421</width>
-                       <height>622</height>
+                       <width>566</width>
+                       <height>617</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -4745,7 +4784,7 @@ font-style: italic;</string>
                         <property name="title">
                          <string>Label options</string>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelrenderinggroup</string>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -4815,7 +4854,7 @@ font-style: italic;</string>
                                <number>6</number>
                               </property>
                               <item row="0" column="0">
-                               <widget class="QSpinBox" name="mScaleBasedVisibilityMinSpnBx">
+                               <widget class="QgsSpinBox" name="mScaleBasedVisibilityMinSpnBx">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                                   <horstretch>0</horstretch>
@@ -4834,6 +4873,9 @@ font-style: italic;</string>
                                 <property name="maximum">
                                  <number>999999999</number>
                                 </property>
+                                <property name="showClearButton">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="0" column="1">
@@ -4844,7 +4886,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item row="1" column="0">
-                               <widget class="QSpinBox" name="mScaleBasedVisibilityMaxSpnBx">
+                               <widget class="QgsSpinBox" name="mScaleBasedVisibilityMaxSpnBx">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                                   <horstretch>0</horstretch>
@@ -4865,6 +4907,9 @@ font-style: italic;</string>
                                 </property>
                                 <property name="value">
                                  <number>10000000</number>
+                                </property>
+                                <property name="showClearButton">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -4940,7 +4985,7 @@ font-style: italic;</string>
                                <number>6</number>
                               </property>
                               <item row="0" column="0">
-                               <widget class="QSpinBox" name="mFontMinPixelSpinBox">
+                               <widget class="QgsSpinBox" name="mFontMinPixelSpinBox">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                                   <horstretch>0</horstretch>
@@ -4965,6 +5010,9 @@ font-style: italic;</string>
                                 <property name="value">
                                  <number>3</number>
                                 </property>
+                                <property name="showClearButton">
+                                 <bool>false</bool>
+                                </property>
                                </widget>
                               </item>
                               <item row="0" column="1">
@@ -4975,7 +5023,7 @@ font-style: italic;</string>
                                </widget>
                               </item>
                               <item row="1" column="0">
-                               <widget class="QSpinBox" name="mFontMaxPixelSpinBox">
+                               <widget class="QgsSpinBox" name="mFontMaxPixelSpinBox">
                                 <property name="sizePolicy">
                                  <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
                                   <horstretch>0</horstretch>
@@ -4999,6 +5047,9 @@ font-style: italic;</string>
                                 </property>
                                 <property name="value">
                                  <number>10000</number>
+                                </property>
+                                <property name="showClearButton">
+                                 <bool>false</bool>
                                 </property>
                                </widget>
                               </item>
@@ -5211,7 +5262,7 @@ font-style: italic;</string>
                         <property name="title">
                          <string>Feature options</string>
                         </property>
-                        <property name="syncGroup" stdset="0">
+                        <property name="syncGroup">
                          <string notr="true">labelrenderinggroup</string>
                         </property>
                         <layout class="QVBoxLayout" name="verticalLayout">
@@ -5261,7 +5312,7 @@ font-style: italic;</string>
                              </spacer>
                             </item>
                             <item row="1" column="1">
-                             <widget class="QSpinBox" name="mLimitLabelSpinBox">
+                             <widget class="QgsSpinBox" name="mLimitLabelSpinBox">
                               <property name="enabled">
                                <bool>false</bool>
                               </property>
@@ -5276,6 +5327,9 @@ font-style: italic;</string>
                               </property>
                               <property name="value">
                                <number>2000</number>
+                              </property>
+                              <property name="showClearButton">
+                               <bool>false</bool>
                               </property>
                              </widget>
                             </item>
@@ -5315,7 +5369,7 @@ font-style: italic;</string>
                              </spacer>
                             </item>
                             <item row="1" column="1">
-                             <widget class="QDoubleSpinBox" name="mMinSizeSpinBox">
+                             <widget class="QgsDoubleSpinBox" name="mMinSizeSpinBox">
                               <property name="suffix">
                                <string> mm</string>
                               </property>
@@ -5390,7 +5444,7 @@ font-style: italic;</string>
        </widget>
       </item>
       <item>
-       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget" native="true">
+       <widget class="QgsFieldExpressionWidget" name="mFieldExpressionWidget">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -5462,6 +5516,12 @@ font-style: italic;</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
@@ -5470,6 +5530,21 @@ font-style: italic;</string>
    <class>QgsDataDefinedButton</class>
    <extends>QToolButton</extends>
    <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
@@ -5482,20 +5557,9 @@ font-style: italic;</string>
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsLabelPreview</class>
    <extends>QLabel</extends>
    <header>qgslabelpreview.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -5504,6 +5568,236 @@ font-style: italic;</string>
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>chkEnableLabeling</tabstop>
+  <tabstop>btnEngineSettings</tabstop>
+  <tabstop>scrollArea_mPreview</tabstop>
+  <tabstop>groupBox_mPreview</tabstop>
+  <tabstop>mPreviewTextEdit</tabstop>
+  <tabstop>mPreviewTextBtn</tabstop>
+  <tabstop>mPreviewSizeSlider</tabstop>
+  <tabstop>mPreviewBackgroundBtn</tabstop>
+  <tabstop>mLabelingOptionsListWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mFontFamilyCmbBx</tabstop>
+  <tabstop>mFontDDBtn</tabstop>
+  <tabstop>mFontStyleComboBox</tabstop>
+  <tabstop>mFontStyleDDBtn</tabstop>
+  <tabstop>mFontUnderlineBtn</tabstop>
+  <tabstop>mFontUnderlineDDBtn</tabstop>
+  <tabstop>mFontStrikethroughBtn</tabstop>
+  <tabstop>mFontStrikeoutDDBtn</tabstop>
+  <tabstop>mFontBoldBtn</tabstop>
+  <tabstop>mFontBoldDDBtn</tabstop>
+  <tabstop>mFontItalicBtn</tabstop>
+  <tabstop>mFontItalicDDBtn</tabstop>
+  <tabstop>mFontSizeSpinBox</tabstop>
+  <tabstop>mFontSizeDDBtn</tabstop>
+  <tabstop>mFontUnitsDDBtn</tabstop>
+  <tabstop>btnTextColor</tabstop>
+  <tabstop>mFontColorDDBtn</tabstop>
+  <tabstop>mFontTranspSlider</tabstop>
+  <tabstop>mFontTranspSpinBox</tabstop>
+  <tabstop>mFontTranspDDBtn</tabstop>
+  <tabstop>mFontCapitalsComboBox</tabstop>
+  <tabstop>mFontCaseDDBtn</tabstop>
+  <tabstop>mFontLetterSpacingSpinBox</tabstop>
+  <tabstop>mFontLetterSpacingDDBtn</tabstop>
+  <tabstop>mFontWordSpacingSpinBox</tabstop>
+  <tabstop>mFontWordSpacingDDBtn</tabstop>
+  <tabstop>comboBlendMode</tabstop>
+  <tabstop>mFontBlendModeDDBtn</tabstop>
+  <tabstop>scrollArea_5</tabstop>
+  <tabstop>wrapCharacterEdit</tabstop>
+  <tabstop>mWrapCharDDBtn</tabstop>
+  <tabstop>mFontLineHeightSpinBox</tabstop>
+  <tabstop>mFontLineHeightDDBtn</tabstop>
+  <tabstop>mFontMultiLineAlignComboBox</tabstop>
+  <tabstop>mFontMultiLineAlignDDBtn</tabstop>
+  <tabstop>mDirectSymbChkBx</tabstop>
+  <tabstop>mDirectSymbDDBtn</tabstop>
+  <tabstop>mDirectSymbLeftLineEdit</tabstop>
+  <tabstop>mDirectSymbLeftToolBtn</tabstop>
+  <tabstop>mDirectSymbLeftDDBtn</tabstop>
+  <tabstop>mDirectSymbRightLineEdit</tabstop>
+  <tabstop>mDirectSymbRightToolBtn</tabstop>
+  <tabstop>mDirectSymbRightDDBtn</tabstop>
+  <tabstop>mDirectSymbRadioBtnLR</tabstop>
+  <tabstop>mDirectSymbRadioBtnAbove</tabstop>
+  <tabstop>mDirectSymbRadioBtnBelow</tabstop>
+  <tabstop>mDirectSymbPlacementDDBtn</tabstop>
+  <tabstop>mDirectSymbRevChkBx</tabstop>
+  <tabstop>mDirectSymbRevDDBtn</tabstop>
+  <tabstop>mFormatNumChkBx</tabstop>
+  <tabstop>mFormatNumDDBtn</tabstop>
+  <tabstop>mFormatNumDecimalsSpnBx</tabstop>
+  <tabstop>mFormatNumDecimalsDDBtn</tabstop>
+  <tabstop>mFormatNumPlusSignChkBx</tabstop>
+  <tabstop>mFormatNumPlusSignDDBtn</tabstop>
+  <tabstop>scrollArea_7</tabstop>
+  <tabstop>mBufferDrawChkBx</tabstop>
+  <tabstop>mBufferDrawDDBtn</tabstop>
+  <tabstop>spinBufferSize</tabstop>
+  <tabstop>mBufferSizeDDBtn</tabstop>
+  <tabstop>mBufferUnitsDDBtn</tabstop>
+  <tabstop>btnBufferColor</tabstop>
+  <tabstop>mBufferColorDDBtn</tabstop>
+  <tabstop>mBufferTranspFillChbx</tabstop>
+  <tabstop>mBufferTranspSlider</tabstop>
+  <tabstop>mBufferTranspSpinBox</tabstop>
+  <tabstop>mBufferTranspDDBtn</tabstop>
+  <tabstop>mBufferJoinStyleComboBox</tabstop>
+  <tabstop>mBufferJoinStyleDDBtn</tabstop>
+  <tabstop>comboBufferBlendMode</tabstop>
+  <tabstop>mBufferBlendModeDDBtn</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>mShapeDrawChkBx</tabstop>
+  <tabstop>mShapeDrawDDBtn</tabstop>
+  <tabstop>mShapeTypeCmbBx</tabstop>
+  <tabstop>mShapeTypeDDBtn</tabstop>
+  <tabstop>mShapeSVGPathLineEdit</tabstop>
+  <tabstop>mShapeSVGSelectorBtn</tabstop>
+  <tabstop>mShapeSVGPathDDBtn</tabstop>
+  <tabstop>mShapeSizeCmbBx</tabstop>
+  <tabstop>mShapeSizeTypeDDBtn</tabstop>
+  <tabstop>mShapeSizeXSpnBx</tabstop>
+  <tabstop>mShapeSizeXDDBtn</tabstop>
+  <tabstop>mShapeSizeYSpnBx</tabstop>
+  <tabstop>mShapeSizeYDDBtn</tabstop>
+  <tabstop>mShapeSizeUnitsDDBtn</tabstop>
+  <tabstop>mShapeRotationCmbBx</tabstop>
+  <tabstop>mShapeRotationTypeDDBtn</tabstop>
+  <tabstop>mShapeRotationDblSpnBx</tabstop>
+  <tabstop>mShapeRotationDDBtn</tabstop>
+  <tabstop>mShapeOffsetXSpnBx</tabstop>
+  <tabstop>mShapeOffsetYSpnBx</tabstop>
+  <tabstop>mShapeOffsetDDBtn</tabstop>
+  <tabstop>mShapeOffsetUnitsDDBtn</tabstop>
+  <tabstop>mShapeRadiusXDbSpnBx</tabstop>
+  <tabstop>mShapeRadiusYDbSpnBx</tabstop>
+  <tabstop>mShapeRadiusDDBtn</tabstop>
+  <tabstop>mShapeRadiusUnitsDDBtn</tabstop>
+  <tabstop>mShapeTranspSlider</tabstop>
+  <tabstop>mShapeTranspSpinBox</tabstop>
+  <tabstop>mShapeTranspDDBtn</tabstop>
+  <tabstop>mShapeBlendCmbBx</tabstop>
+  <tabstop>mShapeBlendModeDDBtn</tabstop>
+  <tabstop>mShapeSVGParamsBtn</tabstop>
+  <tabstop>mShapeFillColorBtn</tabstop>
+  <tabstop>mShapeFillColorDDBtn</tabstop>
+  <tabstop>mShapeBorderColorBtn</tabstop>
+  <tabstop>mShapeBorderColorDDBtn</tabstop>
+  <tabstop>mShapeBorderWidthSpnBx</tabstop>
+  <tabstop>mShapeBorderWidthDDBtn</tabstop>
+  <tabstop>mShapeBorderUnitsDDBtn</tabstop>
+  <tabstop>mShapePenStyleCmbBx</tabstop>
+  <tabstop>mShapePenStyleDDBtn</tabstop>
+  <tabstop>scrollArea_8</tabstop>
+  <tabstop>mShadowDrawChkBx</tabstop>
+  <tabstop>mShadowDrawDDBtn</tabstop>
+  <tabstop>mShadowUnderCmbBx</tabstop>
+  <tabstop>mShadowUnderDDBtn</tabstop>
+  <tabstop>mShadowOffsetAngleDial</tabstop>
+  <tabstop>mShadowOffsetAngleSpnBx</tabstop>
+  <tabstop>mShadowOffsetAngleDDBtn</tabstop>
+  <tabstop>mShadowOffsetSpnBx</tabstop>
+  <tabstop>mShadowOffsetDDBtn</tabstop>
+  <tabstop>mShadowOffsetUnitsDDBtn</tabstop>
+  <tabstop>mShadowOffsetGlobalChkBx</tabstop>
+  <tabstop>mShadowRadiusDblSpnBx</tabstop>
+  <tabstop>mShadowRadiusDDBtn</tabstop>
+  <tabstop>mShadowRadiusUnitsDDBtn</tabstop>
+  <tabstop>mShadowRadiusAlphaChkBx</tabstop>
+  <tabstop>mShadowTranspSlider</tabstop>
+  <tabstop>mShadowTranspSpnBx</tabstop>
+  <tabstop>mShadowTranspDDBtn</tabstop>
+  <tabstop>mShadowScaleSpnBx</tabstop>
+  <tabstop>mShadowScaleDDBtn</tabstop>
+  <tabstop>mShadowColorBtn</tabstop>
+  <tabstop>mShadowColorDDBtn</tabstop>
+  <tabstop>mShadowBlendCmbBx</tabstop>
+  <tabstop>mShadowBlendDDBtn</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>radLineParallel</tabstop>
+  <tabstop>radLineCurved</tabstop>
+  <tabstop>radLineHorizontal</tabstop>
+  <tabstop>radPolygonPerimeter</tabstop>
+  <tabstop>radOverCentroid</tabstop>
+  <tabstop>radAroundPoint</tabstop>
+  <tabstop>radPolygonFree</tabstop>
+  <tabstop>radAroundCentroid</tabstop>
+  <tabstop>radPolygonHorizontal</tabstop>
+  <tabstop>chkLineAbove</tabstop>
+  <tabstop>chkLineOn</tabstop>
+  <tabstop>chkLineBelow</tabstop>
+  <tabstop>chkLineOrientationDependent</tabstop>
+  <tabstop>mCentroidRadioVisible</tabstop>
+  <tabstop>mCentroidRadioWhole</tabstop>
+  <tabstop>mCentroidDDBtn</tabstop>
+  <tabstop>mCentroidInsideCheckBox</tabstop>
+  <tabstop>mPointOffsetAboveLeft</tabstop>
+  <tabstop>mPointOffsetAbove</tabstop>
+  <tabstop>mPointOffsetAboveRight</tabstop>
+  <tabstop>mPointQuadOffsetDDBtn</tabstop>
+  <tabstop>mPointOffsetLeft</tabstop>
+  <tabstop>mPointOffsetOver</tabstop>
+  <tabstop>mPointOffsetRight</tabstop>
+  <tabstop>mPointOffsetBelowLeft</tabstop>
+  <tabstop>mPointOffsetBelow</tabstop>
+  <tabstop>mPointOffsetBelowRight</tabstop>
+  <tabstop>mPointOffsetXSpinBox</tabstop>
+  <tabstop>mPointOffsetYSpinBox</tabstop>
+  <tabstop>mPointOffsetDDBtn</tabstop>
+  <tabstop>mPointOffsetUnitsDDBtn</tabstop>
+  <tabstop>mLineDistanceSpnBx</tabstop>
+  <tabstop>mLineDistanceDDBtn</tabstop>
+  <tabstop>mLineDistanceUnitDDBtn</tabstop>
+  <tabstop>mPointAngleSpinBox</tabstop>
+  <tabstop>mPointAngleDDBtn</tabstop>
+  <tabstop>mRepeatDistanceSpinBox</tabstop>
+  <tabstop>mRepeatDistanceDDBtn</tabstop>
+  <tabstop>mRepeatDistanceUnitDDBtn</tabstop>
+  <tabstop>mMaxCharAngleInDSpinBox</tabstop>
+  <tabstop>mMaxCharAngleOutDSpinBox</tabstop>
+  <tabstop>mMaxCharAngleDDBtn</tabstop>
+  <tabstop>mPlacementDDGroupBox</tabstop>
+  <tabstop>mCoordXDDBtn</tabstop>
+  <tabstop>mCoordYDDBtn</tabstop>
+  <tabstop>mCoordAlignmentHDDBtn</tabstop>
+  <tabstop>mCoordAlignmentVDDBtn</tabstop>
+  <tabstop>mCoordRotationDDBtn</tabstop>
+  <tabstop>chkPreserveRotation</tabstop>
+  <tabstop>mPriorityGrpBx</tabstop>
+  <tabstop>mPrioritySlider</tabstop>
+  <tabstop>radOverPoint</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>mScaleBasedVisibilityChkBx</tabstop>
+  <tabstop>mScaleBasedVisibilityDDBtn</tabstop>
+  <tabstop>mScaleBasedVisibilityMinSpnBx</tabstop>
+  <tabstop>mScaleBasedVisibilityMinDDBtn</tabstop>
+  <tabstop>mScaleBasedVisibilityMaxSpnBx</tabstop>
+  <tabstop>mScaleBasedVisibilityMaxDDBtn</tabstop>
+  <tabstop>mFontLimitPixelChkBox</tabstop>
+  <tabstop>mFontLimitPixelDDBtn</tabstop>
+  <tabstop>mFontMinPixelSpinBox</tabstop>
+  <tabstop>mFontMinPixelDDBtn</tabstop>
+  <tabstop>mFontMaxPixelSpinBox</tabstop>
+  <tabstop>mFontMaxPixelDDBtn</tabstop>
+  <tabstop>mPalShowAllLabelsForLayerChkBx</tabstop>
+  <tabstop>mShowLabelDDBtn</tabstop>
+  <tabstop>mAlwaysShowDDBtn</tabstop>
+  <tabstop>mUpsidedownRadioOff</tabstop>
+  <tabstop>mUpsidedownRadioDefined</tabstop>
+  <tabstop>mUpsidedownRadioAll</tabstop>
+  <tabstop>mRenderingFeaturesGrpBx</tabstop>
+  <tabstop>chkLabelPerFeaturePart</tabstop>
+  <tabstop>chkMergeLines</tabstop>
+  <tabstop>mLimitLabelChkBox</tabstop>
+  <tabstop>mLimitLabelSpinBox</tabstop>
+  <tabstop>mMinSizeSpinBox</tabstop>
+  <tabstop>chkNoObstacle</tabstop>
+  <tabstop>mRenderingLabelGrpBx</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

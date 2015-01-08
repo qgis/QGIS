@@ -56,7 +56,7 @@
         <x>0</x>
         <y>0</y>
         <width>484</width>
-        <height>2469</height>
+        <height>2451</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -140,7 +140,7 @@
           <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QDoubleSpinBox" name="mMapRotationSpinBox">
+             <widget class="QgsDoubleSpinBox" name="mMapRotationSpinBox">
               <property name="suffix">
                <string> °</string>
               </property>
@@ -382,7 +382,7 @@
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
-             <widget class="QSpinBox" name="mAtlasMarginSpinBox">
+             <widget class="QgsSpinBox" name="mAtlasMarginSpinBox">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -613,7 +613,7 @@
              <item row="3" column="1">
               <layout class="QVBoxLayout" name="verticalLayout_9">
                <item>
-                <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mIntervalXSpinBox">
                  <property name="prefix">
                   <string>X </string>
                  </property>
@@ -626,7 +626,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mIntervalYSpinBox">
                  <property name="prefix">
                   <string>Y </string>
                  </property>
@@ -653,7 +653,7 @@
              <item row="4" column="1">
               <layout class="QVBoxLayout" name="verticalLayout_10">
                <item>
-                <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mOffsetXSpinBox">
                  <property name="prefix">
                   <string>X </string>
                  </property>
@@ -666,7 +666,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mOffsetYSpinBox">
                  <property name="prefix">
                   <string>Y </string>
                  </property>
@@ -691,12 +691,15 @@
               </widget>
              </item>
              <item row="5" column="1">
-              <widget class="QDoubleSpinBox" name="mCrossWidthSpinBox">
+              <widget class="QgsDoubleSpinBox" name="mCrossWidthSpinBox">
                <property name="suffix">
                 <string> mm</string>
                </property>
                <property name="decimals">
                 <number>2</number>
+               </property>
+               <property name="showClearButton">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -784,9 +787,12 @@
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="mGridFramePenSizeSpinBox">
+                 <widget class="QgsDoubleSpinBox" name="mGridFramePenSizeSpinBox">
                   <property name="suffix">
                    <string> mm</string>
+                  </property>
+                  <property name="showClearButton">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -921,9 +927,12 @@
                  </widget>
                 </item>
                 <item row="1" column="1" colspan="2">
-                 <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox">
+                 <widget class="QgsDoubleSpinBox" name="mFrameWidthSpinBox">
                   <property name="suffix">
                    <string> mm</string>
+                  </property>
+                  <property name="showClearButton">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1114,7 +1123,7 @@
                  </widget>
                 </item>
                 <item row="15" column="1">
-                 <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
+                 <widget class="QgsDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
                   <property name="suffix">
                    <string> mm</string>
                   </property>
@@ -1134,7 +1143,11 @@
                  </widget>
                 </item>
                 <item row="16" column="1">
-                 <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+                 <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox">
+                  <property name="showClearButton">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
                 </item>
                 <item row="1" column="1">
                  <widget class="QComboBox" name="mAnnotationDisplayLeftComboBox"/>
@@ -1363,15 +1376,25 @@
    <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

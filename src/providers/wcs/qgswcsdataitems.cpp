@@ -125,6 +125,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
     mDataSourceUri( dataSourceUri ),
     mCoverageSummary( coverageSummary )
 {
+  mSupportedCRS = mCoverageSummary.supportedCrs;
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
@@ -141,7 +142,7 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
   {
     mIconName = "mIconWcs.svg";
   }
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWCSLayerItem::~QgsWCSLayerItem()
@@ -312,3 +313,4 @@ QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags 
 {
   return new QgsWCSSourceSelect( parent, fl );
 }
+

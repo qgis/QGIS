@@ -166,7 +166,7 @@
    <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QDoubleSpinBox" name="spinBorderWidth">
+      <widget class="QgsDoubleSpinBox" name="spinBorderWidth">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -182,10 +182,13 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="showClearButton">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mBorderWidthUnitWidget"/>
+      <widget class="QgsUnitSelectionWidget" name="mBorderWidthUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -202,7 +205,7 @@
    <item row="5" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetX">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -224,7 +227,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetY">
+      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -246,7 +249,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget"/>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -283,11 +286,12 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPenJoinStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspenstylecombobox.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -297,6 +301,11 @@
   </customwidget>
   <customwidget>
    <class>QgsPenStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPenJoinStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
   </customwidget>

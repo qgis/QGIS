@@ -28,7 +28,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 
-class TestQgsComposerTable: public QObject
+class TestQgsComposerTable : public QObject
 {
     Q_OBJECT
   private slots:

@@ -131,6 +131,7 @@
      </property>
      <addaction name="mActionNewVectorLayer"/>
      <addaction name="mActionNewSpatiaLiteLayer"/>
+     <addaction name="mActionNewMemoryLayer"/>
     </widget>
     <widget class="QMenu" name="mAddLayerMenu">
      <property name="title">
@@ -2268,6 +2269,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="text">
     <string>Hide Selected Layers</string>
+   </property>
+  </action>
+  <action name="mActionNewMemoryLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCreateMemory.png</normaloff>:/images/themes/default/mActionCreateMemory.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Temporary Scratch Layer...</string>
+   </property>
+   <property name="toolTip">
+    <string>New temporary scratch layer</string>
    </property>
   </action>
  </widget>

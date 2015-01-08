@@ -86,10 +86,12 @@
 %Include qgsmessagelogviewer.sip
 %Include qgsmessageviewer.sip
 %Include qgsnewhttpconnection.sip
+%Include qgsnewmemorylayerdialog.sip
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnumericsortlistviewitem.sip
 %Include qgsowssourceselect.sip
 %Include qgsprojectbadlayerguihandler.sip
+%Include qgsprojectionselectionwidget.sip
 %Include qgsprojectionselector.sip
 %Include qgsquerybuilder.sip
 %Include qgsrasterformatsaveoptionswidget.sip

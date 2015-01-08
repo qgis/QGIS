@@ -43,6 +43,7 @@ class lastilePro(LAStoolsAlgorithm):
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
+        self.addParametersApplyFileSourceIdGUI()
         self.addParameter(ParameterNumber(lastilePro.TILE_SIZE, "tile size (side length of square tile)",  None, None, 1000.0))
         self.addParameter(ParameterNumber(lastilePro.BUFFER, "buffer around each tile (avoids edge artifacts)",  None, None, 25.0))
         self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS, "more than 2000 tiles", False))
@@ -53,10 +54,11 @@ class lastilePro(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)
+        self.addParametersApplyFileSourceIdCommands(commands)
         tile_size = self.getParameterValue(lastilePro.TILE_SIZE)
         commands.append("-tile_size")
         commands.append(str(tile_size))

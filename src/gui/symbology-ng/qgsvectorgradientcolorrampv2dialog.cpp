@@ -32,7 +32,7 @@ QgsVectorGradientColorRampV2Dialog::QgsVectorGradientColorRampV2Dialog( QgsVecto
     : QDialog( parent ), mRamp( ramp ), mCurrentItem( 0 )
 {
   setupUi( this );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
 
@@ -334,7 +334,7 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
 // workaround: call QColorDialog::getColor below instead of here,
 // but not needed at this time because of the other Qt bug
 // FIXME need to also check max QT_VERSION when Qt bug(s) fixed
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
   QColor color = QgsColorDialogV2::getColor( QColor(), this, tr( "Add Color Stop" ), true );
 
   if ( !color.isValid() )
@@ -355,7 +355,7 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
   QStringList lst;
   lst << "." << QString(( val < 10 ) ? '0' + QString::number( val ) : QString::number( val ) );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   QColor color = QgsColorDialogV2::getColor( QColor(), this, tr( "Add Color Stop" ), true );
 
   if ( !color.isValid() )

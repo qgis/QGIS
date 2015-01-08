@@ -155,6 +155,7 @@
         <file>themes/default/mActionComposerManager.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
+        <file>themes/default/mActionCreateMemory.png</file>
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
@@ -469,6 +470,14 @@
         <file>themes/default/mActionScaleHighlightFeature.svg</file>
         <file>themes/default/mActionPanHighlightFeature.svg</file>
         <file>flags/sr@latin.png</file>
+        <file>themes/default/cadtools/construction.png</file>
+        <file>themes/default/cadtools/delta.png</file>
+        <file>themes/default/cadtools/cad.png</file>
+        <file>themes/default/cadtools/lock.png</file>
+        <file>themes/default/cadtools/parallel.png</file>
+        <file>themes/default/cadtools/perpendicular.png</file>
+        <file>themes/default/mIconSuccess.png</file>
+        <file>themes/default/bubble.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

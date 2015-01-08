@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-319</y>
+        <y>0</y>
         <width>375</width>
-        <height>1291</height>
+        <height>1273</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -522,7 +522,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QSpinBox" name="mColumnCountSpinBox">
+           <widget class="QgsSpinBox" name="mColumnCountSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -586,12 +586,15 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mSymbolWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mSymbolWidthSpinBox">
             <property name="prefix">
              <string/>
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -606,12 +609,15 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="mSymbolHeightSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mSymbolHeightSpinBox">
             <property name="prefix">
              <string/>
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -650,7 +656,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mWmsLegendWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mWmsLegendWidthSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -659,6 +665,9 @@
             </property>
             <property name="maximum">
              <double>9999.000000000000000</double>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -673,7 +682,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="mWmsLegendHeightSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mWmsLegendHeightSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -682,6 +691,9 @@
             </property>
             <property name="maximum">
              <double>9999.000000000000000</double>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -723,7 +735,7 @@
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="mGroupSpaceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mGroupSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -746,7 +758,7 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="mLayerSpaceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mLayerSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -769,7 +781,7 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="mSymbolSpaceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mSymbolSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -792,7 +804,7 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="mIconLabelSpaceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mIconLabelSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -812,7 +824,7 @@
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mBoxSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -829,7 +841,7 @@
            </widget>
           </item>
           <item row="6" column="1">
-           <widget class="QDoubleSpinBox" name="mColumnSpaceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mColumnSpaceSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -849,7 +861,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mTitleSpaceBottomSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mTitleSpaceBottomSpinBox">
             <property name="toolTip">
              <string>Space below title.</string>
             </property>
@@ -870,15 +882,25 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

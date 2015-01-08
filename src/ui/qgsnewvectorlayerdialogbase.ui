@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>444</width>
-    <height>543</height>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,10 +17,50 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
-   <item row="9" column="0" colspan="2">
-    <widget class="QLineEdit" name="leSpatialRefSys">
-     <property name="readOnly">
+   <item row="5" column="1" colspan="2">
+    <widget class="QComboBox" name="mFileEncoding">
+     <property name="enabled">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="mFileFormatLabel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>File format</string>
+     </property>
+     <property name="buddy">
+      <cstring>mFileFormatComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="1" colspan="2">
+    <widget class="QComboBox" name="mFileFormatComboBox">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mFileFormatLabel_2">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="text">
+      <string>File encoding</string>
+     </property>
+     <property name="buddy">
+      <cstring>mFileFormatComboBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="3">
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
@@ -54,90 +94,6 @@
      </layout>
     </widget>
    </item>
-   <item row="12" column="0" colspan="3">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Attributes list</string>
-     </property>
-     <layout class="QGridLayout">
-      <item row="2" column="0" colspan="2">
-       <widget class="QTreeWidget" name="mAttributeView">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="alternatingRowColors">
-         <bool>true</bool>
-        </property>
-        <property name="rootIsDecorated">
-         <bool>false</bool>
-        </property>
-        <property name="columnCount">
-         <number>4</number>
-        </property>
-        <column>
-         <property name="text">
-          <string>Name</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Width</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Precision</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item row="3" column="0">
-       <spacer>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>121</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="3" column="1">
-       <widget class="QToolButton" name="mRemoveAttributeButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="toolTip">
-         <string>Delete selected attribute</string>
-        </property>
-        <property name="text">
-         <string>Remove attribute</string>
-        </property>
-        <property name="icon">
-         <iconset>
-          <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
-        </property>
-        <property name="toolButtonStyle">
-         <enum>Qt::ToolButtonTextBesideIcon</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="14" column="0" colspan="3">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
@@ -145,32 +101,6 @@
      </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QLabel" name="mFileFormatLabel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>File format</string>
-     </property>
-     <property name="buddy">
-      <cstring>mFileFormatComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="mFileFormatLabel_2">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>File encoding</string>
-     </property>
-     <property name="buddy">
-      <cstring>mFileFormatComboBox</cstring>
      </property>
     </widget>
    </item>
@@ -261,47 +191,115 @@
      </layout>
     </widget>
    </item>
-   <item row="9" column="2">
-    <widget class="QPushButton" name="pbnChangeSpatialRefSys">
-     <property name="toolTip">
-      <string>Specify the coordinate reference system of the layer's geometry.</string>
+   <item row="12" column="0" colspan="3">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Attributes list</string>
      </property>
-     <property name="whatsThis">
-      <string>Specify the coordinate reference system of the layer's geometry.</string>
-     </property>
-     <property name="text">
-      <string>Specify CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QComboBox" name="mFileEncoding">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QComboBox" name="mFileFormatComboBox">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+     <layout class="QGridLayout">
+      <item row="2" column="0" colspan="2">
+       <widget class="QTreeWidget" name="mAttributeView">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="alternatingRowColors">
+         <bool>true</bool>
+        </property>
+        <property name="rootIsDecorated">
+         <bool>false</bool>
+        </property>
+        <property name="columnCount">
+         <number>4</number>
+        </property>
+        <column>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Type</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Width</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Precision</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <spacer>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>121</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="3" column="1">
+       <widget class="QToolButton" name="mRemoveAttributeButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>Delete selected attribute</string>
+        </property>
+        <property name="text">
+         <string>Remove attribute</string>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
   <tabstop>mPolygonRadioButton</tabstop>
-  <tabstop>leSpatialRefSys</tabstop>
-  <tabstop>pbnChangeSpatialRefSys</tabstop>
+  <tabstop>mFileEncoding</tabstop>
+  <tabstop>mFileFormatComboBox</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
   <tabstop>mWidth</tabstop>
   <tabstop>mPrecision</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
+  <tabstop>mRemoveAttributeButton</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

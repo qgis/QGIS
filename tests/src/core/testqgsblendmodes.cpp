@@ -35,7 +35,7 @@
 /** \ingroup UnitTests
  * This is a unit test for layer blend modes
  */
-class TestQgsBlendModes: public QObject
+class TestQgsBlendModes : public QObject
 {
     Q_OBJECT
   private slots:

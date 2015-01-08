@@ -22,7 +22,7 @@
 #include <QtTest/QtTest>
 #include <QList>
 
-class TestQgsComposerModel: public QObject
+class TestQgsComposerModel : public QObject
 {
     Q_OBJECT
 

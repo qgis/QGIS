@@ -47,7 +47,7 @@
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
-class TestQgsDiagramExpression: public QObject
+class TestQgsDiagramExpression : public QObject
 {
     Q_OBJECT
   private:

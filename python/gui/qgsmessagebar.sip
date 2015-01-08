@@ -10,6 +10,7 @@ class QgsMessageBar: QFrame
       INFO,
       WARNING,
       CRITICAL,
+      SUCCESS
     };
 
     QgsMessageBar( QWidget *parent = 0 );
@@ -24,7 +25,7 @@ class QgsMessageBar: QFrame
     /*! display a widget as a message on the bar after hiding the currently visible one
      *  and putting it in a stack.
      * @param widget message widget to display
-     * @param level is QgsMessageBar::INFO, WARNING or CRITICAL
+     * @param level is QgsMessageBar::INFO, WARNING, CRITICAL or SUCCESS
      * @param duration timeout duration of message in seconds, 0 value indicates no timeout
      */
     QgsMessageBarItem *pushWidget( QWidget *widget /Transfer/, MessageLevel level = INFO, int duration = 0 );

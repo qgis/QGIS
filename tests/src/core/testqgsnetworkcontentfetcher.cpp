@@ -21,7 +21,7 @@
 #include <QtTest/QtTest>
 #include <QNetworkReply>
 
-class TestQgsNetworkContentFetcher: public QObject
+class TestQgsNetworkContentFetcher : public QObject
 {
     Q_OBJECT
   private slots:

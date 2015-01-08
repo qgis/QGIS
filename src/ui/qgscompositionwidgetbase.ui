@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
+    <width>345</width>
     <height>506</height>
    </rect>
   </property>
@@ -51,8 +51,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>284</width>
-        <height>599</height>
+        <width>327</width>
+        <height>586</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -121,7 +121,7 @@
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_2">
             <item>
-             <widget class="QDoubleSpinBox" name="mPaperWidthDoubleSpinBox">
+             <widget class="QgsDoubleSpinBox" name="mPaperWidthDoubleSpinBox">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
@@ -136,6 +136,9 @@
               </property>
               <property name="maximum">
                <double>99999.000000000000000</double>
+              </property>
+              <property name="showClearButton">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -161,7 +164,7 @@
           <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_3">
             <item>
-             <widget class="QDoubleSpinBox" name="mPaperHeightDoubleSpinBox">
+             <widget class="QgsDoubleSpinBox" name="mPaperHeightDoubleSpinBox">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
                 <horstretch>0</horstretch>
@@ -176,6 +179,9 @@
               </property>
               <property name="maximum">
                <double>99999.000000000000000</double>
+              </property>
+              <property name="showClearButton">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -224,9 +230,12 @@
           <item row="4" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_4">
             <item>
-             <widget class="QSpinBox" name="mNumPagesSpinBox">
+             <widget class="QgsSpinBox" name="mNumPagesSpinBox">
               <property name="minimum">
                <number>1</number>
+              </property>
+              <property name="showClearButton">
+               <bool>false</bool>
               </property>
              </widget>
             </item>
@@ -298,7 +307,7 @@
            </widget>
           </item>
           <item row="7" column="1">
-           <widget class="QSpinBox" name="mResolutionSpinBox">
+           <widget class="QgsSpinBox" name="mResolutionSpinBox">
             <property name="suffix">
              <string> dpi</string>
             </property>
@@ -307,6 +316,9 @@
             </property>
             <property name="maximum">
              <number>3000</number>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -381,7 +393,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mGridResolutionSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mGridResolutionSpinBox">
             <property name="prefix">
              <string/>
             </property>
@@ -393,6 +405,9 @@
             </property>
             <property name="maximum">
              <double>9999.000000000000000</double>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -409,7 +424,7 @@
           <item row="1" column="1">
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
-             <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+             <widget class="QgsDoubleSpinBox" name="mOffsetXSpinBox">
               <property name="prefix">
                <string>x: </string>
               </property>
@@ -422,12 +437,15 @@
              </widget>
             </item>
             <item>
-             <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+             <widget class="QgsDoubleSpinBox" name="mOffsetYSpinBox">
               <property name="prefix">
                <string>y: </string>
               </property>
               <property name="suffix">
                <string> mm</string>
+              </property>
+              <property name="maximum">
+               <double>9999.000000000000000</double>
               </property>
              </widget>
             </item>
@@ -441,12 +459,15 @@
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="mSnapToleranceSpinBox">
+           <widget class="QgsSpinBox" name="mSnapToleranceSpinBox">
             <property name="suffix">
              <string> px</string>
             </property>
             <property name="maximum">
              <number>200</number>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -475,15 +496,25 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

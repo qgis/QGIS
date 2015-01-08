@@ -45,9 +45,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-157</y>
+        <y>-155</y>
         <width>391</width>
-        <height>517</height>
+        <height>515</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -222,7 +222,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QDoubleSpinBox" name="mMaxDistanceSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mMaxDistanceSpinBox">
             <property name="suffix">
              <string> mm</string>
             </property>
@@ -234,6 +234,9 @@
             </property>
             <property name="singleStep">
              <double>1.000000000000000</double>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -279,15 +282,20 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDataDefinedButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

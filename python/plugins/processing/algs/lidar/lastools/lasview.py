@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    lasinfo.py
+    lasview.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -31,20 +31,42 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterNumber
+
 class lasview(LAStoolsAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+    POINTS = "POINTS"
+
+    SIZE = "SIZE"
+    SIZES = ["1024 768", "800 600", "1200 900", "1200 400", "1550 900", "1550 1150"]
+
+    COLORING = "COLORING"
+    COLORINGS = ["default", "classification", "elevation1", "elevation2", "intensity", "return", "flightline", "rgb"]
 
     def defineCharacteristics(self):
         self.name = "lasview"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
+        self.addParameter(ParameterNumber(lasview.POINTS, "max number of points sampled", 100000, 20000000, 5000000))
+        self.addParameter(ParameterSelection(lasview.COLORING, "color by", lasview.COLORINGS, 0))
+        self.addParameter(ParameterSelection(lasview.SIZE, "window size (x y) in pixels", lasview.SIZES, 0))
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
+        points = self.getParameterValue(lasview.POINTS)
+        commands.append("-points " + str(points))
+        coloring = self.getParameterValue(lasview.COLORING)
+        if coloring != 0:
+            commands.append("-color_by_" + lasview.COLORINGS[coloring])
+        size = self.getParameterValue(lasview.SIZE)
+        if size != 0:
+            commands.append("-win " + lasview.SIZES[size])
+        self.addParametersAdditionalCommands(commands)
 
+        print commands
         LAStoolsUtils.runLAStools(commands, progress)

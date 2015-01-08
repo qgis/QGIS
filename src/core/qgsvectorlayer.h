@@ -1735,7 +1735,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QList< TabData > mTabs;
 
     /** Geometry type as defined in enum WkbType (qgis.h) */
-    int mWkbType;
+    QGis::WkbType mWkbType;
 
     /** Renderer object which holds the information about how to display the features */
     QgsFeatureRendererV2 *mRendererV2;

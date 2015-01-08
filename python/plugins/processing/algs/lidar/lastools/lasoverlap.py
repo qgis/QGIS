@@ -53,9 +53,10 @@ class lasoverlap(LAStoolsAlgorithm):
         self.addParameter(ParameterBoolean(lasoverlap.CREATE_OVERLAP_RASTER, "create overlap raster", True))
         self.addParameter(ParameterBoolean(lasoverlap.CREATE_DIFFERENCE_RASTER, "create difference raster", True))
         self.addParametersRasterOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
@@ -75,5 +76,6 @@ class lasoverlap(LAStoolsAlgorithm):
         if self.getParameterValue(lasoverlap.CREATE_DIFFERENCE_RASTER) != True:
             commands.append("-no_diff")
         self.addParametersRasterOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

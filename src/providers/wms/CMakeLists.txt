@@ -1,3 +1,8 @@
+IF (QT5_BUILD)
+  FIND_PACKAGE(Qt5XmlPatterns REQUIRED)
+ENDIF()
+
+
 SET (WMS_SRCS
   qgswmscapabilities.cpp
   qgswmsprovider.cpp

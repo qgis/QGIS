@@ -41,7 +41,9 @@ class QgsVisibilityPresets : public QObject
     {
       bool operator==( const PresetRecord& other ) const
       {
-        return mVisibleLayerIDs == other.mVisibleLayerIDs && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols;
+        return mVisibleLayerIDs == other.mVisibleLayerIDs
+               && mPerLayerCheckedLegendSymbols == other.mPerLayerCheckedLegendSymbols
+               && mPerLayerCurrentStyle == other.mPerLayerCurrentStyle;
       }
       bool operator!=( const PresetRecord& other ) const
       {
@@ -52,6 +54,8 @@ class QgsVisibilityPresets : public QObject
       QSet<QString> mVisibleLayerIDs;
       //! For layers that have checkable legend symbols and not all symbols are checked - list which ones are
       QMap<QString, QSet<QString> > mPerLayerCheckedLegendSymbols;
+      //! For layers that use multiple styles - which one is currently selected
+      QMap<QString, QString> mPerLayerCurrentStyle;
     } PresetRecord;
 
 
@@ -107,6 +111,7 @@ class QgsVisibilityPresets : public QObject
     void addVisibleLayersToPreset( QgsLayerTreeGroup* parent, PresetRecord& rec );
     void applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent, const PresetRecord& rec );
     void addPerLayerCheckedLegendSymbols( PresetRecord& rec );
+    void addPerLayerCurrentStyle( PresetRecord& rec );
 
     PresetRecord currentState();
     void applyState( const QString& presetName );
