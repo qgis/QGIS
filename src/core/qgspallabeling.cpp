@@ -1780,6 +1780,17 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     clonedGeometry.reset( geom );
   }
 
+  // Rotate the geometry if needed, before clipping
+  const QgsMapToPixel& m2p = context.mapToPixel();
+  if ( m2p.mapRotation() )
+  {
+      if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
+      {
+        QgsDebugMsg( QString("Error rotating geometry").arg( geom->exportToWkt() ) );
+        return; // really ?
+      }
+  }
+
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
   bool do_clip = false;
@@ -3325,7 +3336,13 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   lyr.palLayer = l;
   lyr.fieldIndex = layer->fieldNameIndex( lyr.fieldName );
 
+#if 1 // XXX strk drop me or fix me (leaks memory)
+  QgsMapToPixel* m2p = new QgsMapToPixel(mMapSettings->mapToPixel());
+  m2p->setMapRotation(0,0,0);
+  lyr.xform = m2p;
+#else
   lyr.xform = &mMapSettings->mapToPixel();
+#endif
   lyr.ct = 0;
   if ( mMapSettings->hasCrsTransformEnabled() )
     lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
@@ -3876,7 +3893,12 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   if ( context.renderingStopped() )
     return; // it has been cancelled
 
+#if 1 // XXX strk testing
+  QgsMapToPixel xform = mMapSettings->mapToPixel();
+  xform.setMapRotation(0,0,0);
+#else
   const QgsMapToPixel& xform = mMapSettings->mapToPixel();
+#endif
 
   // draw rectangles with all candidates
   // this is done before actual solution of the problem
@@ -4124,7 +4146,7 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
 
   painter->save();
 
-#if 1 // TODO: generalize some of this
+#if 0 // TODO: generalize some of this
   double w = lp->getWidth();
   double h = lp->getHeight();
   double cx = lp->getX() + w / 2.0;
@@ -4172,7 +4194,12 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 {
   // NOTE: this is repeatedly called for multi-part labels
   QPainter* painter = context.painter();
+#if 1 // TODO str XXX drop me or fix me (leaks memory)
+  QgsMapToPixel* xform = new QgsMapToPixel(context.mapToPixel());
+  xform->setMapRotation(0,0,0);
+#else
   const QgsMapToPixel* xform = &context.mapToPixel();
+#endif
 
   QgsLabelComponent component;
   component.setDpiRatio( dpiRatio );
@@ -4290,7 +4317,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     for ( int i = 0; i < lines; ++i )
     {
       painter->save();
-#if 1 // TODO: generalize some of this
+#if 0 // TODO: generalize some of this
       LabelPosition* lp = label;
       double w = lp->getWidth();
       double h = lp->getHeight();
