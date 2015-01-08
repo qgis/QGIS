@@ -6,14 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>406</width>
-    <height>433</height>
+    <width>394</width>
+    <height>534</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>DXF export</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="2" column="0">
+    <widget class="QLabel" name="mSymbologyScaleLabel">
+     <property name="text">
+      <string>Symbology scale</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="2">
     <widget class="QToolButton" name="mFileSelectionButton">
      <property name="text">
@@ -31,20 +38,10 @@
      </attribute>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2">
-    <widget class="QLineEdit" name="mSymbologyScaleLineEdit"/>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="mSaveAsLabel">
      <property name="text">
       <string>Save as</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mSymbologyScaleLabel">
-     <property name="text">
-      <string>Symbology scale</string>
      </property>
     </widget>
    </item>
@@ -135,9 +132,21 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QgsScaleWidget" name="mScaleWidget">
+     <property name="showCurrentScaleButton">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsLayerTreeView</class>
    <extends>QTreeView</extends>
