@@ -56,7 +56,7 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
 
   connect( mUnitsCombo, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( unitsChanged( const QString & ) ) );
 
-  mTable->headerItem()->setTextAlignment( 0, Qt::AlignRight );
+  groupBox->setCollapsed( true );
 }
 
 void QgsMeasureDialog::updateSettings()

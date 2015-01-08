@@ -100,17 +100,10 @@
       <property name="text">
        <string>Segments</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignRight|AlignVCenter</set>
+      </property>
      </column>
-    </widget>
-   </item>
-   <item row="5" column="0" colspan="4">
-    <widget class="QLabel" name="mNotesLabel">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
     </widget>
    </item>
    <item row="6" column="0" colspan="4">
@@ -120,9 +113,48 @@
      </property>
     </widget>
    </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="QgsCollapsibleGroupBox" name="groupBox">
+     <property name="title">
+      <string>Info</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="leftMargin">
+       <number>3</number>
+      </property>
+      <property name="topMargin">
+       <number>3</number>
+      </property>
+      <property name="rightMargin">
+       <number>3</number>
+      </property>
+      <property name="bottomMargin">
+       <number>3</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="mNotesLabel">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mTable</tabstop>
   <tabstop>editTotal</tabstop>
