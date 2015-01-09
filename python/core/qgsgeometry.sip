@@ -251,6 +251,18 @@ class QgsGeometry
      @return 0 in case of success*/
     int transform( const QgsCoordinateTransform& ct );
 
+    /**Transform this geometry as described by QTransform ct
+     @note added in 2.8
+     @return 0 in case of success*/
+    int transform( const QTransform& ct );
+
+    /**Rotate this geometry around the Z axis
+     @note added in 2.8
+     @param rotation clockwise rotation in degrees
+     @param center rotation center
+     @return 0 in case of success*/
+    int rotate( double rotation, const QgsPoint& center );
+
     /**Splits this geometry according to a given line. Note that the geometry is only split once. If there are several intersections
      between geometry and splitLine, only the first one is considered.
     @param splitLine the line that splits the geometry

@@ -60,6 +60,8 @@ class TestQgsGeometry : public QObject
 #endif
     void intersectionCheck1();
     void intersectionCheck2();
+    void translateCheck1();
+    void rotateCheck1();
     void unionCheck1();
     void unionCheck2();
     void differenceCheck1();
@@ -357,6 +359,81 @@ void TestQgsGeometry::intersectionCheck1()
 void TestQgsGeometry::intersectionCheck2()
 {
   QVERIFY( !mpPolygonGeometryA->intersects( mpPolygonGeometryC ) );
+}
+
+void TestQgsGeometry::translateCheck1()
+{
+  QString wkt = "LINESTRING(0 0, 10 0, 10 10)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+  geom->translate( 10, -5 );
+  QString obtained = geom->exportToWkt();
+  QString expected = "LINESTRING(10 -5, 20 -5, 20 5)";
+  QCOMPARE( obtained, expected );
+  geom->translate( -10, 5 );
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, wkt );
+
+  wkt = "POLYGON((-2 4,-2 -10,2 3,-2 4),(1 1,-1 1,-1 -1,1 1))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  geom->translate( -2, 10 );
+  obtained = geom->exportToWkt();
+  expected = "POLYGON((-4 14,-4 0,0 13,-4 14),(-1 11,-3 11,-3 9,-1 11))";
+  QCOMPARE( obtained, expected );
+  geom->translate( 2, -10 );
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, wkt );
+
+  wkt = "POINT(40 50)";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  geom->translate( -2, 10 );
+  obtained = geom->exportToWkt();
+  expected = "POINT(38 60)";
+  QCOMPARE( obtained, expected );
+  geom->translate( 2, -10 );
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, wkt );
+
+}
+
+void TestQgsGeometry::rotateCheck1()
+{
+  QString wkt = "LINESTRING(0 0, 10 0, 10 10)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+  geom->rotate( 90, QgsPoint( 0, 0 ) );
+  QString obtained = geom->exportToWkt();
+  QString expected = "LINESTRING(0 0, 0 -10, 10 -10)";
+  QCOMPARE( obtained, expected );
+  geom->rotate( -90, QgsPoint( 0, 0 ) );
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, wkt );
+
+  wkt = "POLYGON((-2 4,-2 -10,2 3,-2 4),(1 1,-1 1,-1 -1,1 1))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  geom->rotate( 90, QgsPoint( 0, 0 ) );
+  obtained = geom->exportToWkt();
+  expected = "POLYGON((4 2,-10 2,3 -2,4 2),(1 -1,1 1,-1 1,1 -1))";
+  QCOMPARE( obtained, expected );
+  geom->rotate( -90, QgsPoint( 0, 0 ) );
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, wkt );
+
+  wkt = "POINT(40 50)";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  geom->rotate( 90, QgsPoint( 0, 0 ) );
+  obtained = geom->exportToWkt();
+  expected = "POINT(50 -40)";
+  QCOMPARE( obtained, expected );
+  geom->rotate( -90, QgsPoint( 0, 0 ) );
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, wkt );
+  geom->rotate( 180, QgsPoint( 40, 0 ) );
+  expected = "POINT(40 -50)";
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, expected );
+  geom->rotate( 180, QgsPoint( 40, 0 ) ); // round-trip
+  obtained = geom->exportToWkt();
+  QCOMPARE( obtained, wkt );
+
 }
 
 void TestQgsGeometry::unionCheck1()
