@@ -292,5 +292,8 @@ bool QgsDecorationNorthArrow::calculateNorthDirection()
       mRotationInt = 0;
     }
   }
+
+  mRotationInt += mapCanvas->mapSettings().rotation();
+
   return goodDirn;
 }
