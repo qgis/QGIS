@@ -3351,14 +3351,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
   lyr.palLayer = l;
   lyr.fieldIndex = layer->fieldNameIndex( lyr.fieldName );
 
-#if 1 // XXX strk drop me or fix me (leaks memory)
-  QgsMapToPixel* m2p = new QgsMapToPixel(mMapSettings->mapToPixel());
-  // TODO: only reset rotation IFF it needs not be considered at rendering time ?
-  m2p->setMapRotation(0,0,0);
-  lyr.xform = m2p;
-#else
   lyr.xform = &mMapSettings->mapToPixel();
-#endif
   lyr.ct = 0;
   if ( mMapSettings->hasCrsTransformEnabled() )
     lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
