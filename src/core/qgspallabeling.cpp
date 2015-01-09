@@ -4210,17 +4210,21 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 {
   // NOTE: this is repeatedly called for multi-part labels
   QPainter* painter = context.painter();
-#if 1 // TODO str XXX drop me or fix me (leaks memory)
-  QgsMapToPixel* xform = new QgsMapToPixel(context.mapToPixel());
-  xform->setMapRotation(0,0,0);
+#if 1
+  // features are pre-rotated but not scaled/translated,
+  // so we only disable rotation here. Ideally, they'd be
+  // also pre-scaled/translated, as suggested here:
+  // http://hub.qgis.org/issues/11856
+  QgsMapToPixel xform = context.mapToPixel();
+  xform.setMapRotation(0,0,0);
 #else
-  const QgsMapToPixel* xform = &context.mapToPixel();
+  const QgsMapToPixel& xform = context.mapToPixel();
 #endif
 
   QgsLabelComponent component;
   component.setDpiRatio( dpiRatio );
 
-  QgsPoint outPt = xform->transform( label->getX(), label->getY() );
+  QgsPoint outPt = xform.transform( label->getX(), label->getY() );
 //  QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
 //  QRectF labelRect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
 
@@ -4231,8 +4235,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   {
     // get rotated label's center point
     QgsPoint centerPt( outPt );
-    QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth() / 2,
-                                        label->getY() + label->getHeight() / 2 );
+    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
+                                       label->getY() + label->getHeight() / 2 );
 
     double xc = outPt2.x() - outPt.x();
     double yc = outPt2.y() - outPt.y();
