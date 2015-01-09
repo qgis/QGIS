@@ -1780,6 +1780,17 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     clonedGeometry.reset( geom );
   }
 
+  // Rotate the geometry if needed, before clipping
+  const QgsMapToPixel& m2p = context.mapToPixel();
+  if ( m2p.mapRotation() )
+  {
+      if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
+      {
+        QgsDebugMsg( QString("Error rotating geometry").arg( geom->exportToWkt() ) );
+        return; // really ?
+      }
+  }
+
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
   bool do_clip = false;
@@ -1967,6 +1978,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     if ( ok )
     {
       dataDefinedRotation = true;
+      // TODO: add setting to disable having data defined rotation follow
+      //       map rotation ?
+      rotD -= m2p.mapRotation();
       angle = rotD * M_PI / 180.0;
     }
   }
@@ -2068,6 +2082,18 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
             QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception on data-defined position" ).arg( f.id() ), 4 );
             return;
           }
+        }
+
+        //rotate position with map if data-defined
+        if ( dataDefinedPosition && m2p.mapRotation() )
+        {
+          const QgsPoint& center = context.extent().center();
+          QTransform t = QTransform::fromTranslate( center.x(), center.y() );
+          t.rotate( -m2p.mapRotation() );
+          t.translate( -center.x(), -center.y() );
+          double xPosR, yPosR;
+          t.map( xPos, yPos, &xPosR, &yPosR );
+          xPos = xPosR; yPos = yPosR;
         }
 
         xPos += xdiff;
@@ -3876,7 +3902,16 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   if ( context.renderingStopped() )
     return; // it has been cancelled
 
+#if 1 // XXX strk
+  // features are pre-rotated but not scaled/translated,
+  // so we only disable rotation here. Ideally, they'd be
+  // also pre-scaled/translated, as suggested here:
+  // http://hub.qgis.org/issues/11856
+  QgsMapToPixel xform = mMapSettings->mapToPixel();
+  xform.setMapRotation(0,0,0);
+#else
   const QgsMapToPixel& xform = mMapSettings->mapToPixel();
+#endif
 
   // draw rectangles with all candidates
   // this is done before actual solution of the problem
@@ -4124,7 +4159,7 @@ void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* p
 
   painter->save();
 
-#if 1 // TODO: generalize some of this
+#if 0 // TODO: generalize some of this
   double w = lp->getWidth();
   double h = lp->getHeight();
   double cx = lp->getX() + w / 2.0;
@@ -4172,12 +4207,21 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 {
   // NOTE: this is repeatedly called for multi-part labels
   QPainter* painter = context.painter();
-  const QgsMapToPixel* xform = &context.mapToPixel();
+#if 1 // XXX strk
+  // features are pre-rotated but not scaled/translated,
+  // so we only disable rotation here. Ideally, they'd be
+  // also pre-scaled/translated, as suggested here:
+  // http://hub.qgis.org/issues/11856
+  QgsMapToPixel xform = context.mapToPixel();
+  xform.setMapRotation(0,0,0);
+#else
+  const QgsMapToPixel& xform = context.mapToPixel();
+#endif
 
   QgsLabelComponent component;
   component.setDpiRatio( dpiRatio );
 
-  QgsPoint outPt = xform->transform( label->getX(), label->getY() );
+  QgsPoint outPt = xform.transform( label->getX(), label->getY() );
 //  QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
 //  QRectF labelRect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
 
@@ -4188,8 +4232,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   {
     // get rotated label's center point
     QgsPoint centerPt( outPt );
-    QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth() / 2,
-                                        label->getY() + label->getHeight() / 2 );
+    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
+                                       label->getY() + label->getHeight() / 2 );
 
     double xc = outPt2.x() - outPt.x();
     double yc = outPt2.y() - outPt.y();
@@ -4290,7 +4334,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     for ( int i = 0; i < lines; ++i )
     {
       painter->save();
-#if 1 // TODO: generalize some of this
+#if 0 // TODO: generalize some of this
       LabelPosition* lp = label;
       double w = lp->getWidth();
       double h = lp->getHeight();
