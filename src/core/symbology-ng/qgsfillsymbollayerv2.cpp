@@ -1287,10 +1287,11 @@ void QgsShapeburstFillSymbolLayerV2::distanceTransform1d( double *f, int n, int 
 /* distance transform of 2d function using squared distance */
 void QgsShapeburstFillSymbolLayerV2::distanceTransform2d( double * im, int width, int height )
 {
-  double *f = new double[ qMax( width,height )];
-  int *v = new int[ qMax( width,height )];
-  double *z = new double[ qMax( width,height ) + 1 ];
-  double *d = new double[ qMax( width,height )];
+  int maxDimension = qMax( width, height );
+  double *f = new double[ maxDimension ];
+  int *v = new int[ maxDimension ];
+  double *z = new double[ maxDimension + 1 ];
+  double *d = new double[ maxDimension ];
 
   // transform along columns
   for ( int x = 0; x < width; x++ )
@@ -1365,6 +1366,9 @@ double * QgsShapeburstFillSymbolLayerV2::distanceTransform( QImage *im )
 
 void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im, QgsVectorColorRampV2* ramp, double layerAlpha, bool useWholeShape, int maxPixelDistance )
 {
+  int width = im->width();
+  int height = im->height();
+
   //find maximum distance value
   double maxDistanceValue;
 
@@ -1372,9 +1376,12 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
   {
     //no max distance specified in symbol properties, so calculate from maximum value in distance transform results
     double dtMaxValue = array[0];
-    for ( int i = 1; i < ( im->width() * im->height() ); ++i )
+    for ( int i = 1; i < ( width * height ); ++i )
     {
-      dtMaxValue = qMax( dtMaxValue, array[i] );
+      if ( array[i] > dtMaxValue )
+      {
+        dtMaxValue = array[i];
+      }
     }
 
     //values in distance transform are squared
@@ -1391,11 +1398,12 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
   double squaredVal = 0;
   double pixVal = 0;
   QColor pixColor;
+  bool layerHasAlpha = layerAlpha < 1.0;
 
-  for ( int heightIndex = 0; heightIndex < im->height(); ++heightIndex )
+  for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
   {
     QRgb* scanLine = ( QRgb* )im->scanLine( heightIndex );
-    for ( int widthIndex = 0; widthIndex < im->width(); ++widthIndex )
+    for ( int widthIndex = 0; widthIndex < width; ++widthIndex )
     {
       //result of distance transform
       squaredVal = array[idx];
@@ -1406,11 +1414,15 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
       //convert value to color from ramp
       pixColor = ramp->color( pixVal );
 
-      //apply layer's transparency to alpha value
-      double alpha = pixColor.alpha() * layerAlpha;
+      int pixAlpha = pixColor.alpha();
+      if (( layerHasAlpha ) || ( pixAlpha != 255 ) )
+      {
+        //apply layer's transparency to alpha value
+        double alpha = pixAlpha * layerAlpha;
+        //premultiply ramp color since we are storing this in a ARGB32_Premultiplied QImage
+        QgsSymbolLayerV2Utils::premultiplyColor( pixColor, alpha );
+      }
 
-      //premultiply ramp color since we are storing this in a ARGB32_Premultiplied QImage
-      QgsSymbolLayerV2Utils::premultiplyColor( pixColor, alpha );
       scanLine[widthIndex] = pixColor.rgba();
       idx++;
     }
