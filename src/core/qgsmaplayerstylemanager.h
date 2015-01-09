@@ -109,6 +109,9 @@ class CORE_EXPORT QgsMapLayerStyleManager
     //! Remove a stored style
     //! @return true on success (style exists and it is not the last one)
     bool removeStyle( const QString& name );
+    //! Rename a stored style to a different name
+    //! @return true on success (style exists and new name is unique)
+    bool renameStyle( const QString& name, const QString& newName );
 
     //! Return name of the current style
     QString currentStyle() const;

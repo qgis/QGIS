@@ -122,6 +122,19 @@ bool QgsMapLayerStyleManager::removeStyle( const QString& name )
   return true;
 }
 
+bool QgsMapLayerStyleManager::renameStyle( const QString& name, const QString& newName )
+{
+  if ( !mStyles.contains( name ) || mStyles.contains( newName ) )
+    return false;
+
+  if ( name == mCurrentStyle )
+    mCurrentStyle = newName;
+
+  mStyles[newName] = mStyles[name];
+  mStyles.remove( name );
+  return true;
+}
+
 QString QgsMapLayerStyleManager::currentStyle() const
 {
   return mCurrentStyle;

@@ -28,12 +28,19 @@
 QMenu* QgsMapLayerStyleGuiUtils::createStyleManagerMenu( QgsMapLayer* layer )
 {
   QMenu* m = new QMenu( tr( "Styles" ) );
-  QAction* actionAdd = m->addAction( tr( "Add..." ), this, SLOT( addStyle() ) );
+  QAction* actionAdd = m->addAction( tr( "Add" ), this, SLOT( addStyle() ) );
   actionAdd->setData( QVariant::fromValue<QObject*>( layer ) );
 
   QgsMapLayerStyleManager* mgr = layer->styleManager();
+  bool onlyOneStyle = mgr->styles().count() == 1;
 
-  QMenu* mRemove = m->addMenu( tr( "Remove" ) );
+  QAction* actionRemove = m->addAction( tr( "Remove Current" ), this, SLOT( removeStyle() ) );
+  actionRemove->setData( QVariant::fromValue<QObject*>( layer ) );
+  actionRemove->setEnabled( !onlyOneStyle );
+
+  QAction* actionRename = m->addAction( tr( "Rename Current" ), this, SLOT( renameStyle() ) );
+  actionRename->setData( QVariant::fromValue<QObject*>( layer ) );
+
   m->addSeparator();
 
   foreach ( QString name, mgr->styles() )
@@ -44,10 +51,9 @@ QMenu* QgsMapLayerStyleGuiUtils::createStyleManagerMenu( QgsMapLayer* layer )
     QAction* actionUse = m->addAction( name, this, SLOT( useStyle() ) );
     actionUse->setCheckable( true );
     actionUse->setChecked( active );
-    actionUse->setData( QVariant::fromValue<QObject*>( layer ) );
+    actionUse->setEnabled( !onlyOneStyle );
 
-    QAction* actionRemove = mRemove->addAction( name, this, SLOT( removeStyle() ) );
-    actionRemove->setData( QVariant::fromValue<QObject*>( layer ) );
+    actionUse->setData( QVariant::fromValue<QObject*>( layer ) );
   }
 
   return m;
@@ -110,14 +116,31 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
   if ( !layer )
     return;
 
-  if ( layer->styleManager()->styles().count() == 1 )
+  bool res = layer->styleManager()->removeStyle( layer->styleManager()->currentStyle() );
+  if ( !res )
+    QgsDebugMsg( "Failed to remove current style" );
+}
+
+
+void QgsMapLayerStyleGuiUtils::renameStyle()
+{
+  QAction* a = qobject_cast<QAction*>( sender() );
+  if ( !a )
+    return;
+  QgsMapLayer* layer = qobject_cast<QgsMapLayer*>( a->data().value<QObject*>() );
+  if ( !layer )
     return;
 
-  QString name = a->text();
-  if ( name == defaultStyleName() )
-    name.clear();
+  QString name = layer->styleManager()->currentStyle();
 
-  bool res = layer->styleManager()->removeStyle( name );
+  bool ok;
+  QString text = QInputDialog::getText( 0, tr( "Rename style" ),
+                                        tr( "Style name:" ), QLineEdit::Normal,
+                                        name, &ok );
+  if ( !ok )
+    return;
+
+  bool res = layer->styleManager()->renameStyle( name, text );
   if ( !res )
-    QgsDebugMsg( "Failed to remove style: " + name );
+    QgsDebugMsg( "Failed to rename style: " + name );
 }
