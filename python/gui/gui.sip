@@ -100,6 +100,7 @@
 %Include qgsrubberband.sip
 %Include qgsscalecombobox.sip
 %Include qgsscalerangewidget.sip
+%Include qgsscalewidget.sip
 %Include qgsscalevisibilitydialog.sip
 %Include qgssearchquerybuilder.sip
 %Include qgstextannotationitem.sip
