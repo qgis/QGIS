@@ -1,5 +1,5 @@
-<h3>transformGeometry function</h3>
-Returns the geometry transforms from the source CRS to the dest CRS.
+<h3>transform function</h3>
+Returns the geometry transformed from the source CRS to the dest CRS.
 
 <h4>Syntax</h4>
 <pre>transform( geom, sAuthId, dAuthId )</pre>
