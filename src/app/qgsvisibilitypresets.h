@@ -87,7 +87,7 @@ class QgsVisibilityPresets : public QObject
     QMenu* menu();
 
     //! Create preset record given a list of visible layers (needs to store per-layer checked legend symbols)
-    PresetRecord currentStateFromLayerList( const QStringList& layerIDs );
+    PresetRecord currentStateFromLayerList( const QStringList& layerIDs, const QMap<QString, QString>& layerStyleOverrides );
 
   signals:
     void presetsChanged();

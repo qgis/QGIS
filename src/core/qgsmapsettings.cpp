@@ -231,6 +231,16 @@ void QgsMapSettings::setLayers( const QStringList& layers )
   mLayers = layers;
 }
 
+QMap<QString, QString> QgsMapSettings::layerStyleOverrides() const
+{
+  return mLayerStyleOverrides;
+}
+
+void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString>& overrides )
+{
+  mLayerStyleOverrides = overrides;
+}
+
 void QgsMapSettings::setCrsTransformEnabled( bool enabled )
 {
   mProjectionsEnabled = enabled;

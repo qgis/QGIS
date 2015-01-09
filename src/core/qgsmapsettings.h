@@ -92,6 +92,13 @@ class CORE_EXPORT QgsMapSettings
     //! The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
     void setLayers( const QStringList& layers );
 
+    //! Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.8
+    QMap<QString, QString> layerStyleOverrides() const;
+    //! Set map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
+    //! @note added in 2.8
+    void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+
     //! sets whether to use projections for this layer set
     void setCrsTransformEnabled( bool enabled );
     //! returns true if projections are enabled for this layer set
@@ -229,6 +236,7 @@ class CORE_EXPORT QgsMapSettings
     double mRotation;
 
     QStringList mLayers;
+    QMap<QString, QString> mLayerStyleOverrides;
 
     bool mProjectionsEnabled;
     QgsCoordinateReferenceSystem mDestCRS;

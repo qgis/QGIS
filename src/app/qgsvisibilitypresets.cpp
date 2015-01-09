@@ -129,13 +129,15 @@ QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentState()
   return rec;
 }
 
-QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentStateFromLayerList( const QStringList& layerIDs )
+QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentStateFromLayerList( const QStringList& layerIDs, const QMap<QString, QString>& layerStyleOverrides )
 {
   PresetRecord rec;
   foreach ( const QString& layerID, layerIDs )
     rec.mVisibleLayerIDs << layerID;
   addPerLayerCheckedLegendSymbols( rec );
   addPerLayerCurrentStyle( rec );
+  foreach (const QString& layerID, layerStyleOverrides.keys() )
+    rec.mPerLayerCurrentStyle[layerID] = layerStyleOverrides[layerID];
   return rec;
 }
 
@@ -204,12 +206,6 @@ void QgsVisibilityPresets::applyPresetCheckedLegendNodesToLayer( const QString& 
     return;
 
   const PresetRecord& rec = mPresets[name];
-
-  if ( rec.mPerLayerCurrentStyle.contains( layerID ) )
-  {
-    // apply desired style first
-    layer->styleManager()->setCurrentStyle( rec.mPerLayerCurrentStyle[layerID] );
-  }
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
   if ( !vlayer || !vlayer->rendererV2() )
