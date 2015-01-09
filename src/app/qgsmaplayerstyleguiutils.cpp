@@ -33,9 +33,6 @@ QMenu* QgsMapLayerStyleGuiUtils::createStyleManagerMenu( QgsMapLayer* layer )
 
   QgsMapLayerStyleManager* mgr = layer->styleManager();
 
-  if ( !mgr )
-    return m;
-
   QMenu* mRemove = m->addMenu( tr( "Remove" ) );
   m->addSeparator();
 
@@ -78,8 +75,6 @@ void QgsMapLayerStyleGuiUtils::addStyle()
   if ( !ok || text.isEmpty() )
     return;
 
-  layer->enableStyleManager(); // make sure it exists
-
   bool res = layer->styleManager()->addStyleFromLayer( text );
 
   if ( res ) // make it active!
@@ -116,11 +111,7 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
     return;
 
   if ( layer->styleManager()->styles().count() == 1 )
-  {
-    // let's get rid of the style manager altogether
-    layer->enableStyleManager( false );
     return;
-  }
 
   QString name = a->text();
   if ( name == defaultStyleName() )

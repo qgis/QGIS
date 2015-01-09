@@ -18,7 +18,6 @@ class TestQgsMapLayerStyleManager : public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
 
-    void testEnabled();
     void testDefault();
     void testStyle();
     void testReadWrite();
@@ -50,23 +49,8 @@ void TestQgsMapLayerStyleManager::cleanup()
   QgsMapLayerRegistry::instance()->removeAllMapLayers();
 }
 
-void TestQgsMapLayerStyleManager::testEnabled()
-{
-  QVERIFY( !mVL->styleManager() );
-
-  mVL->enableStyleManager( false );
-  QVERIFY( !mVL->styleManager() );
-
-  mVL->enableStyleManager();
-  QVERIFY( mVL->styleManager() );
-
-  mVL->enableStyleManager( false );
-  QVERIFY( !mVL->styleManager() );
-}
-
 void TestQgsMapLayerStyleManager::testDefault()
 {
-  mVL->enableStyleManager();
   QgsMapLayerStyleManager* mgr = mVL->styleManager();
   QVERIFY( mgr );
 
@@ -168,7 +152,6 @@ void TestQgsMapLayerStyleManager::testSwitchingStyles()
 {
   _setVLColor( mVL, Qt::red );
 
-  mVL->enableStyleManager();
   mVL->styleManager()->addStyleFromLayer( "s1" );
   mVL->styleManager()->setCurrentStyle( "s1" );
 

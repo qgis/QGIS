@@ -11,6 +11,9 @@ class QgsMapLayerStyle
     //! Tell whether the style is valid (i.e. there is something stored in it)
     bool isValid() const;
 
+    //! Remove any stored style data (will get invalid)
+    void clear();
+
     //! Return information about the style - for debugging purposes only
     QString dump() const;
 
@@ -34,6 +37,9 @@ class QgsMapLayerStyleManager
   public:
     //! Construct a style manager associated with a map layer (must not be null)
     QgsMapLayerStyleManager( QgsMapLayer* layer );
+
+    //! Reset the style manager to a basic state - with one default style which is set as current
+    void reset();
 
     //! Read configuration (for project loading)
     void readXml( const QDomElement& mgrElement );
