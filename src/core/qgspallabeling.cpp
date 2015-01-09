@@ -1978,6 +1978,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     if ( ok )
     {
       dataDefinedRotation = true;
+      // TODO: add setting to disable having data defined rotation follow
+      //       map rotation ?
+      rotD -= m2p.mapRotation();
       angle = rotD * M_PI / 180.0;
     }
   }
@@ -2079,6 +2082,18 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
             QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception on data-defined position" ).arg( f.id() ), 4 );
             return;
           }
+        }
+
+        //rotate position with map if data-defined
+        if ( dataDefinedPosition && m2p.mapRotation() )
+        {
+          const QgsPoint& center = context.extent().center();
+          QTransform t = QTransform::fromTranslate( center.x(), center.y() );
+          t.rotate( -m2p.mapRotation() );
+          t.translate( -center.x(), -center.y() );
+          double xPosR, yPosR;
+          t.map( xPos, yPos, &xPosR, &yPosR );
+          xPos = xPosR; yPos = yPosR;
         }
 
         xPos += xdiff;
@@ -3338,6 +3353,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
 #if 1 // XXX strk drop me or fix me (leaks memory)
   QgsMapToPixel* m2p = new QgsMapToPixel(mMapSettings->mapToPixel());
+  // TODO: only reset rotation IFF it needs not be considered at rendering time ?
   m2p->setMapRotation(0,0,0);
   lyr.xform = m2p;
 #else
