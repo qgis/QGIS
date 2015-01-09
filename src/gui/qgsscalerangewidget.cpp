@@ -21,8 +21,6 @@
 QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
     : QWidget( parent )
     , mCanvas( 0 )
-    , mMaximumScaleSetCurrentPushButton( 0 )
-    , mMinimumScaleSetCurrentPushButton( 0 )
 {
   mLayout = new QGridLayout( this );
   mLayout->setContentsMargins( 0, 0, 0, 0 );
@@ -43,19 +41,21 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mMaximumScaleIconLabel = new QLabel( this );
   mMaximumScaleIconLabel->setPixmap( QgsApplication::getThemePixmap( "/mActionZoomIn.svg" ) );
 
-  mMinimumScaleComboBox = new QgsScaleComboBox( this );
-  mMaximumScaleComboBox = new QgsScaleComboBox( this );
+  mMinimumScaleWidget = new QgsScaleWidget( this );
+  mMaximumScaleWidget = new QgsScaleWidget( this );
+  mMinimumScaleWidget->setShowCurrentScaleButton( true );
+  mMaximumScaleWidget->setShowCurrentScaleButton( true );
   reloadProjectScales();
   // add start, add comprehension of scales by settings fake ordered values
-  mMinimumScaleComboBox->setCurrentIndex( 2 );
-  mMaximumScaleComboBox->setCurrentIndex( mMinimumScaleComboBox->currentIndex() + 2 );
+  mMinimumScaleWidget->setScale( 1 / 100000 );
+  mMaximumScaleWidget->setScale( 1 / 1000 );
 
   mLayout->addWidget( minLbl, 0, 0, 2, 1 );
   mLayout->addWidget( mMinimumScaleIconLabel, 0, 1 );
-  mLayout->addWidget( mMinimumScaleComboBox, 0, 2 );
+  mLayout->addWidget( mMinimumScaleWidget, 0, 2 );
   mLayout->addWidget( maxLbl, 0, 3, 2, 1 );
   mLayout->addWidget( mMaximumScaleIconLabel, 0, 4 );
-  mLayout->addWidget( mMaximumScaleComboBox, 0, 5 );
+  mLayout->addWidget( mMaximumScaleWidget, 0, 5 );
 
   mLayout->setColumnStretch( 0, 0 );
   mLayout->setColumnStretch( 1, 0 );
@@ -75,56 +75,35 @@ void QgsScaleRangeWidget::reloadProjectScales()
   if ( projectScales )
   {
     QStringList scalesList = QgsProject::instance()->readListEntry( "Scales", "/ScalesList" );
-    mMinimumScaleComboBox->updateScales( scalesList );
-    mMaximumScaleComboBox->updateScales( scalesList );
+    mMinimumScaleWidget->updateScales( scalesList );
+    mMaximumScaleWidget->updateScales( scalesList );
   }
 }
 
 void QgsScaleRangeWidget::setMapCanvas( QgsMapCanvas *mapCanvas )
 {
-  if ( mMinimumScaleSetCurrentPushButton )
-  {
-    delete mMinimumScaleSetCurrentPushButton;
-    mMinimumScaleSetCurrentPushButton = 0;
-  }
-  if ( mMaximumScaleSetCurrentPushButton )
-  {
-    delete mMaximumScaleSetCurrentPushButton;
-    mMaximumScaleSetCurrentPushButton = 0;
-  }
-
-  if ( !mapCanvas )
-    return;
-
-  mCanvas = mapCanvas;
-
-  mMinimumScaleSetCurrentPushButton = new QPushButton( tr( "current" ), this );
-  connect( mMinimumScaleSetCurrentPushButton, SIGNAL( clicked() ), this, SLOT( setMinScaleFromCanvas() ) );
-  mMaximumScaleSetCurrentPushButton = new QPushButton( tr( "current" ), this );
-  connect( mMaximumScaleSetCurrentPushButton, SIGNAL( clicked() ), this, SLOT( setMaxScaleFromCanvas() ) );
-
-  mLayout->addWidget( mMinimumScaleSetCurrentPushButton, 1, 2 );
-  mLayout->addWidget( mMaximumScaleSetCurrentPushButton, 1, 5 );
+  mMinimumScaleWidget->setMapCanvas( mapCanvas );
+  mMaximumScaleWidget->setMapCanvas( mapCanvas );
 }
 
 void QgsScaleRangeWidget::setMinimumScale( double scale )
 {
-  mMinimumScaleComboBox->setScale( scale );
+  mMinimumScaleWidget->setScale( scale );
 }
 
 double QgsScaleRangeWidget::minimumScale()
 {
-  return mMinimumScaleComboBox->scale();
+  return mMinimumScaleWidget->scale();
 }
 
 void QgsScaleRangeWidget::setMaximumScale( double scale )
 {
-  mMaximumScaleComboBox->setScale( scale );
+  mMaximumScaleWidget->setScale( scale );
 }
 
 double QgsScaleRangeWidget::maximumScale()
 {
-  return mMaximumScaleComboBox->scale();
+  return mMaximumScaleWidget->scale();
 }
 
 double QgsScaleRangeWidget::minimumScaleDenom()
@@ -142,15 +121,4 @@ void QgsScaleRangeWidget::setScaleRange( double min, double max )
   setMaximumScale( max );
   setMinimumScale( min );
 }
-
-void QgsScaleRangeWidget::setMinScaleFromCanvas()
-{
-  mMinimumScaleComboBox->setScale( 1.0 / mCanvas->mapSettings().scale() );
-}
-
-void QgsScaleRangeWidget::setMaxScaleFromCanvas()
-{
-  mMaximumScaleComboBox->setScale( 1.0 / mCanvas->mapSettings().scale() );
-}
-
 
