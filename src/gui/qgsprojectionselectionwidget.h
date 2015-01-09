@@ -42,11 +42,6 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      */
     QgsGenericProjectionSelector* dialog() { return mDialog; }
 
-    /* Returns a pointer to the line edit used by the widget
-     * @returns CRS line edit
-     */
-    QLineEdit* lineEdit() { return mCrsLineEdit; }
-
     /* Returns the currently selected CRS for the widget
      * @returns current CRS
      */

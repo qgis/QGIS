@@ -188,7 +188,7 @@ void QgsVectorLayerSaveAsDialog::accept()
 
 void QgsVectorLayerSaveAsDialog::on_mCRSSelection_currentIndexChanged( int idx )
 {
-  mCrsSelector->lineEdit()->setEnabled( idx == 2 );
+  mCrsSelector->setEnabled( idx == 2 );
 
   QgsCoordinateReferenceSystem crs;
   if ( mCRSSelection->currentIndex() == 0 )
