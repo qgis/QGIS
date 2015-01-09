@@ -7,7 +7,7 @@
 
 from qgis.core import *
 from PyQt4.QtCore import *
-
+from processing.tools.vector import VectorWriter
 
 
 def create_points(feat):
