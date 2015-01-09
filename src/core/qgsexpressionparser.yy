@@ -214,9 +214,9 @@ expression:
           int fnIndex = QgsExpression::functionIndex(*$1);
           if (fnIndex == -1)
           {
-      if ( !QgsExpression::hasSpecialColumn( *$1 ) )
+            if ( !QgsExpression::hasSpecialColumn( *$1 ) )
 	    {
-        exp_error(parser_ctx, "Special column is not known");
+              exp_error(parser_ctx, "Special column is not known");
 	      YYERROR;
 	    }
 	    // $var is equivalent to _specialcol_( "$var" )
