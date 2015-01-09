@@ -67,14 +67,14 @@ class QgsPalGeometry : public PalGeometry
         maxoutangle = -95.0;
 
       // create label info!
-      QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
-      QgsPoint ptSize = xform->toMapCoordinatesF( 0.0, -fm->height() / fontScale );
+      double mapScale = xform->mapUnitsPerPixel();
+      double labelHeight = mapScale * fm->height() / fontScale;
 
       // mLetterSpacing/mWordSpacing = 0.0 is default for non-curved labels
       // (non-curved spacings handled by Qt in QgsPalLayerSettings/QgsPalLabeling)
       qreal charWidth;
       qreal wordSpaceFix;
-      mInfo = new pal::LabelInfo( mText.count(), ptSize.y() - ptZero.y(), maxinangle, maxoutangle );
+      mInfo = new pal::LabelInfo( mText.count(), labelHeight, maxinangle, maxoutangle );
       for ( int i = 0; i < mText.count(); i++ )
       {
         mInfo->char_info[i].chr = mText[i].unicode();
@@ -99,8 +99,8 @@ class QgsPalGeometry : public PalGeometry
           charWidth = fm->width( QString( mText[i] ) ) + wordSpaceFix;
         }
 
-        ptSize = xform->toMapCoordinatesF((( double ) charWidth ) / fontScale, 0.0 );
-        mInfo->char_info[i].width = ptSize.x() - ptZero.x();
+        double labelWidth = mapScale * charWidth / fontScale;
+        mInfo->char_info[i].width = labelWidth;
       }
       return mInfo;
     }
