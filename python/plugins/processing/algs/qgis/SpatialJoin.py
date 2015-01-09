@@ -28,6 +28,7 @@ from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry, NULL
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
@@ -37,6 +38,7 @@ from processing.tools import dataobjects, vector
 class SpatialJoin(GeoAlgorithm):
     TARGET = "TARGET"
     JOIN = "JOIN"
+    PREDICATE = "PREDICATE"
     SUMMARY = "SUMMARY"
     STATS = "STATS"
     KEEP = "KEEP"
@@ -57,23 +59,32 @@ class SpatialJoin(GeoAlgorithm):
         self.group = "Vector general tools"
 
         self.addParameter(ParameterVector(self.TARGET,
-           'Target vector layer', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Target vector layer'),
+            [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.JOIN,
-           'Join vector layer', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Join vector layer'),
+            [ParameterVector.VECTOR_TYPE_ANY]))
+        predicates = list(ParameterGeometryPredicate.predicates)
+        predicates.remove('disjoint')
+        self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
+            self.tr('Geometric predicate'),
+            left=self.TARGET, right=self.JOIN,
+            enabledPredicates=predicates))
         self.addParameter(ParameterSelection(self.SUMMARY,
-           'Attribute summary', self.SUMMARYS))
+            self.tr('Attribute summary'), self.SUMMARYS))
         self.addParameter(ParameterString(self.STATS,
-           'Statistics for summary (comma separated)',
-           'sum,mean,min,max,median'))
+            self.tr('Statistics for summary (comma separated)'),
+            'sum,mean,min,max,median', optional=True))
         self.addParameter(ParameterSelection(self.KEEP,
-           'Output table', self.KEEPS))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+            self.tr('Output table'), self.KEEPS))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         target = dataobjects.getObjectFromUri(
             self.getParameterValue(self.TARGET))
         join = dataobjects.getObjectFromUri(
             self.getParameterValue(self.JOIN))
+        predicates = self.getParameterValue(self.PREDICATE)
 
         summary = self.getParameterValue(self.SUMMARY) == 1
         keep = self.getParameterValue(self.KEEP) == 1
@@ -151,7 +162,28 @@ class SpatialJoin(GeoAlgorithm):
                 count = 0
                 for i in joinList:
                     inFeatB = mapP2[i]
-                    if inGeom.intersects(inFeatB.geometry()):
+                    inGeomB = inFeatB.geometry()
+
+                    res = False
+                    for predicate in predicates:
+                        if predicate == 'intersects':
+                            res = inGeom.intersects(inGeomB)
+                        elif predicate == 'contains':
+                            res = inGeom.contains(inGeomB)
+                        elif predicate == 'equals':
+                            res = inGeom.equals(inGeomB)
+                        elif predicate == 'touches':
+                            res = inGeom.touches(inGeomB)
+                        elif predicate == 'overlaps':
+                            res = inGeom.overlaps(inGeomB)
+                        elif predicate == 'within':
+                            res = inGeom.within(inGeomB)
+                        elif predicate == 'crosses':
+                            res = inGeom.crosses(inGeomB)
+                        if res:
+                            break
+
+                    if res:
                         count = count + 1
                         none = False
                         atMap2 = inFeatB.attributes()
@@ -173,7 +205,7 @@ class SpatialJoin(GeoAlgorithm):
                                 atMap.append(sum(self._filterNull(numFields[j])))
                             elif k == 'mean':
                                 try:
-                                    nn_count = sum( 1 for _ in self._filterNull(numFields[j]) )
+                                    nn_count = sum(1 for _ in self._filterNull(numFields[j]))
                                     atMap.append(sum(self._filterNull(numFields[j])) / nn_count)
                                 except ZeroDivisionError:
                                     atMap.append(NULL)
@@ -221,8 +253,8 @@ class SpatialJoin(GeoAlgorithm):
 
         median = 0
         if count > 1:
-            if ( count % 2 ) == 0:
-                median = 0.5 * ((data[count / 2  - 1]) + (data[count / 2]))
+            if (count % 2) == 0:
+                median = 0.5 * ((data[count / 2 - 1]) + (data[count / 2]))
             else:
                 median = data[(count + 1) / 2 - 1]
 

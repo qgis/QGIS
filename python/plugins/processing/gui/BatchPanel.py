@@ -35,6 +35,7 @@ from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
+from processing.gui.GeometryPredicateSelectionPanel import GeometryPredicateSelectionPanel
 
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterRaster
@@ -46,6 +47,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterGeometryPredicate
 
 from processing.ui.ui_widgetBatchPanel import Ui_Form
 
@@ -136,6 +138,11 @@ class BatchPanel(QWidget, Ui_Form):
             item = CrsSelectionPanel(param.default)
         elif isinstance(param, ParameterFile):
             item = FileSelectionPanel(param.isFolder)
+        elif isinstance(param, ParameterGeometryPredicate):
+            item = GeometryPredicateSelectionPanel(param.enabledPredicates, rows=1)
+            width = max(self.tblParameters.columnWidth(col),
+                        item.sizeHint().width())
+            self.tblParameters.setColumnWidth(col, width)
         else:
             item = QLineEdit()
             try:
@@ -214,6 +221,10 @@ class BatchPanel(QWidget, Ui_Form):
             widgetValue = widget.getText()
             for row in range(1, self.tblParameters.rowCount()):
                 self.tblParameters.cellWidget(row, column).setText(widgetValue)
+        elif isinstance(widget, GeometryPredicateSelectionPanel):
+            widgetValue = widget.value()
+            for row in range(1, self.tblParameters.rowCount()):
+                self.tblParameters.cellWidget(row, column).setValue(widgetValue)
         else:
             pass
 
