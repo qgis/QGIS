@@ -4628,21 +4628,9 @@ void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QTransform& trans, b
   double x, y, rotated_x, rotated_y;
 
   QgsWkbPtr tmp = wkbPtr;
-
-  memcpy( &x, tmp, sizeof( double ) );
-  tmp += sizeof( double );
-  memcpy( &y, tmp, sizeof( double ) );
-  tmp += sizeof( double );
-
+  tmp >> x >> y;
   trans.map( x, y, &rotated_x, &rotated_y );
-
-  //x-coordinate
-  memcpy( wkbPtr, &rotated_x, sizeof( double ) );
-  wkbPtr += sizeof( double );
-
-  //y-coordinate
-  memcpy( wkbPtr, &rotated_y, sizeof( double ) );
-  wkbPtr += sizeof( double );
+  wkbPtr << rotated_x << rotated_y;
 
   if ( hasZValue )
     wkbPtr += sizeof( double );
@@ -4650,19 +4638,15 @@ void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QTransform& trans, b
 
 void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QgsCoordinateTransform& ct, bool hasZValue )
 {
-  double x, y, z;
+  double x, y, z = 0.0;
 
-  memcpy( &x, wkbPtr, sizeof( double ) );
-  memcpy( &y, wkbPtr + sizeof( double ), sizeof( double ) );
-  z = 0.0; // Ignore Z for now.
-
+  QgsWkbPtr tmp = wkbPtr;
+  tmp >> x >> y;
   ct.transformInPlace( x, y, z );
-
-  // new coordinate
   wkbPtr << x << y;
+
   if ( hasZValue )
     wkbPtr += sizeof( double );
-
 }
 
 GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )
