@@ -84,6 +84,5 @@ def qgsfunction(args, group, **kwargs):
     """
 
     def wrapper(func):
-        usesgeometry = kwargs.get('usesgeometry', False)
-        return register_function(func, args, group, usesgeometry, **kwargs)
+        return register_function(func, args, group, **kwargs)
     return wrapper

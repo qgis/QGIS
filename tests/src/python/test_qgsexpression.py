@@ -31,6 +31,10 @@ class TestQgsExpressionCustomFunctions(TestCase):
 	def sqrt(values, feature, parent):
 		pass
 
+	@qgsfunction(1, 'testing', register=False, usesgeometry=True)
+	def geomtest(values, feature, parent):
+		pass
+
 	def tearDown(self):
 		QgsExpression.unregisterFunction('testfun')
 
@@ -79,6 +83,10 @@ class TestQgsExpressionCustomFunctions(TestCase):
 		success = QgsExpression.registerFunction(self.sqrt)
 		self.assertFalse(success)
 
+	def testCanRegisterGeometryFunction(self):
+		success = QgsExpression.registerFunction(self.geomtest)
+		self.assertTrue(success)
+
 	def testCantOverrideBuiltinsWithUnregister(self):
 		success = QgsExpression.unregisterFunction("sqrt")
 		self.assertFalse(success)
@@ -98,7 +106,7 @@ class TestQgsExpressionCustomFunctions(TestCase):
 		expressions = {
 			"'test' /* comment */": 'test',
 			"/* comment */'test'": 'test',
-		    "/* comment */'test*/'": 'test*/',
+			"/* comment */'test*/'": 'test*/',
 			"/** comment */'test*/'": 'test*/',
 			"/* comment **/'test*/' /* comment */": 'test*/',
 			"'test/*'/* comment */": 'test/*',
