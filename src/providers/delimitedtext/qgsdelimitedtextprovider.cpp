@@ -520,7 +520,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
             mGeometryType = QGis::Point;
           }
           mNumberFeatures++;
-          if ( buildSpatialIndex )
+          if ( buildSpatialIndex && qIsFinite( pt.x() ) && qIsFinite( pt.y() ) )
           {
             QgsFeature f;
             f.setFeatureId( mFile->recordId() );
@@ -856,6 +856,7 @@ bool QgsDelimitedTextProvider::pointFromXY( QString &sX, QString &sY, QgsPoint &
     pt.setY( y );
     return true;
   }
+
   return false;
 }
 
