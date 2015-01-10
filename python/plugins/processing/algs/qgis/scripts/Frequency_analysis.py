@@ -5,8 +5,10 @@
 
 from qgis.core import *
 from PyQt4.QtCore import *
-from processing.core.TableWriter import TableWriter
+from processing.tools.vector import TableWriter
 from collections import defaultdict
+from processing.core.GeoAlgorithmExecutionException import \
+    GeoAlgorithmExecutionException
 
 layer = processing.getObject(input)
 inputFields = layer.pendingFields()
