@@ -66,6 +66,9 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! When any external settings change
     void updateSettings();
 
+  private slots:
+    void unitsChanged( const QString &units );
+
   private:
 
     //! formats distance to most appropriate units
