@@ -8,5 +8,5 @@ ParameterNumber|zshift|Z shift|None|None|0.0
 ParameterNumber|xscale|X scale|None|None|1.0
 ParameterNumber|yscale|Y scale|None|None|1.0
 ParameterNumber|zscale|Z scale|None|None|1.0
-ParameterNumber|zrot|Rotation around z axis in degrees counterclockwise|None|None|0.0
-OutputVector|output|Transformed layer
+ParameterNumber|zrotation|Rotation around z axis in degrees counterclockwise|None|None|0.0
+OutputVector|output|Transformed vector layer
