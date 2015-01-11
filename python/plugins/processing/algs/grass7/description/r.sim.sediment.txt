@@ -2,20 +2,20 @@ r.sim.sediment
 r.sim.sediment - Sediment transport and erosion/deposition simulation using path sampling method (SIMWE).
 Raster (r.*)
 ParameterRaster|elevation|Name of the elevation raster map [m]|False
-ParameterRaster|wdepth|Name of the water depth raster map [m]|False
+ParameterRaster|water_depth|Name of the water depth raster map [m]|False
 ParameterRaster|dx|Name of the x-derivatives raster map [m/m]|False
 ParameterRaster|dy|Name of the y-derivatives raster map [m/m]|False
-ParameterRaster|det|Name of the detachment capacity coefficient raster map [s/m]|False
-ParameterRaster|tran|Name of the transport capacity coefficient raster map [s]|False
-ParameterRaster|tau|Name of the critical shear stress raster map [Pa]|False
+ParameterRaster|detachment_coeff|Name of the detachment capacity coefficient raster map [s/m]|False
+ParameterRaster|transport_coeff|Name of the transport capacity coefficient raster map [s]|False
+ParameterRaster|shear_stress|Name of the critical shear stress raster map [Pa]|False
 ParameterRaster|man|Name of the Mannings n raster map|False
 ParameterNumber|man_value|Name of the Mannings n value|None|None|0.1
-ParameterNumber|nwalk|Number of walkers|None|None|1
-ParameterNumber|niter|Time used for iterations [minutes]|None|None|10
-ParameterNumber|outiter|Time interval for creating output maps [minutes]|None|None|2
-ParameterNumber|diffc|Water diffusion constant|None|None|0.8
-OutputRaster|tc|Output transport capacity raster map [kg/ms]
-OutputRaster|et|Output transp.limited erosion-deposition raster map [kg/m2s]
-OutputRaster|conc|Output sediment concentration raster map [particle/m3]
-OutputRaster|flux|Output sediment flux raster map [kg/ms]
-OutputRaster|erdep|Output erosion-deposition raster map [kg/m2s]
+ParameterNumber|nwalkers|Number of walkers|None|None|1
+ParameterNumber|niterations|Time used for iterations [minutes]|None|None|10
+ParameterNumber|output_step|Time interval for creating output maps [minutes]|None|None|2
+ParameterNumber|diffusion_coeff|Water diffusion constant|None|None|0.8
+OutputRaster|transport_capacity|Output transport capacity raster map [kg/ms]
+OutputRaster|tlimit_erosion_deposition|Output transp.limited erosion-deposition raster map [kg/m2s]
+OutputRaster|sediment_concentration|Output sediment concentration raster map [particle/m3]
+OutputRaster|sediment_flux|Output sediment flux raster map [kg/ms]
+OutputRaster|erosion_deposition|Output erosion-deposition raster map [kg/m2s]
