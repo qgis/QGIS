@@ -52,7 +52,7 @@ class QgsRasterIdentifyResult;
 class QgsMapSettings;
 
 /**
- * \class Handles asynchronous download of images
+ * \brief Handles asynchronous download of images
  *
  * \note added in 2.8
  */
@@ -231,8 +231,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /** \brief Returns the legend rendered as pixmap
      *
      *  useful for that layer that need to get legend layer remotely as WMS
-     * \param visibleExtent Visible extent for providers supporting
-     *                      contextual legends, in layer CRS
+     * \param scale Optional parameter that is the Scale of the layer
+     * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
+     * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
      * \note visibleExtent parameter added in 2.8
      */
     virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 )
@@ -244,7 +245,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     }
 
     /**
-     * \class Get an image downloader for the raster legend
+     * \brief Get an image downloader for the raster legend
      *
      * \param mapSettings map settings for legend providers supporting
      *                    contextual legends.
