@@ -3428,6 +3428,29 @@ void QgsSymbolLayerV2Utils::premultiplyColor( QColor &rgb, int alpha )
   }
 }
 
+void QgsSymbolLayerV2Utils::premultiplyQRgb( QRgb &rgb, const int alpha )
+{
+  if ( alpha >= 255 )
+  {
+    //no change
+    return;
+  }
+  else if ( alpha <= 0 )
+  {
+    rgb = qRgba( 0, 0, 0, 0 );
+  }
+  else
+  {
+    // Semi-transparent pixel. We need to adjust the colors for ARGB32_Premultiplied images
+    // where color values have to be premultiplied by alpha
+    double alphaFactor = alpha / 255.;
+    int r = qRed( rgb ) * alphaFactor;
+    int g = qGreen( rgb ) * alphaFactor;
+    int b = qBlue( rgb ) * alphaFactor;
+    rgb = qRgba( r, g, b, alpha );
+  }
+}
+
 #if 0
 static bool _QVariantLessThan( const QVariant& lhs, const QVariant& rhs )
 {

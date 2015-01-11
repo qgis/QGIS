@@ -343,6 +343,11 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
      */
     static void premultiplyColor( QColor& rgb, int alpha );
 
+    /** Converts a QRgb into a premultiplied ARGB QRgb value using a specified alpha value
+     * @note added in 2.7
+     */
+    static void premultiplyQRgb( QRgb& rgb, const int alpha );
+
     /**Sorts the passed list in requested order*/
     static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
     /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/

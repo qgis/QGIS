@@ -1397,7 +1397,7 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
   int idx = 0;
   double squaredVal = 0;
   double pixVal = 0;
-  QColor pixColor;
+  QRgb pixRgb;
   bool layerHasAlpha = layerAlpha < 1.0;
 
   for ( int heightIndex = 0; heightIndex < height; ++heightIndex )
@@ -1412,18 +1412,18 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
       pixVal = squaredVal > 0 ? qMin(( sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
 
       //convert value to color from ramp
-      pixColor = ramp->color( pixVal );
+      pixRgb = ramp->rgb( pixVal );
 
-      int pixAlpha = pixColor.alpha();
+      int pixAlpha = qAlpha( pixRgb );
       if (( layerHasAlpha ) || ( pixAlpha != 255 ) )
       {
         //apply layer's transparency to alpha value
         double alpha = pixAlpha * layerAlpha;
         //premultiply ramp color since we are storing this in a ARGB32_Premultiplied QImage
-        QgsSymbolLayerV2Utils::premultiplyColor( pixColor, alpha );
+        QgsSymbolLayerV2Utils::premultiplyQRgb( pixRgb, alpha );
       }
 
-      scanLine[widthIndex] = pixColor.rgba();
+      scanLine[widthIndex] = pixRgb;
       idx++;
     }
   }
