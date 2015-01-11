@@ -10,15 +10,15 @@ ParameterRaster|infil|Name of the runoff infiltration rate raster map [mm/hr]|Fa
 ParameterString|infil_value|Runoff infiltration rate unique value [mm/hr]|0.0
 ParameterRaster|man|Name of the Mannings n raster map|False
 ParameterString|man_value|Mannings n unique value|0.1
-ParameterRaster|traps|Name of the flow controls raster map (permeability ratio 0-1)|False
-ParameterString|nwalk|Number of walkers, default is twice the no. of cells|
-ParameterString|niter|Time used for iterations [minutes]|10
-ParameterString|outiter|Time interval for creating output maps [minutes]|2
-ParameterString|diffc|Water diffusion constant|0.8
+ParameterRaster|flow_control|Name of the flow controls raster map (permeability ratio 0-1)|False
+ParameterString|nwalkers|Number of walkers, default is twice the no. of cells|
+ParameterString|niterations|Time used for iterations [minutes]|10
+ParameterString|output_step|Time interval for creating output maps [minutes]|2
+ParameterString|diffusion_coeff|Water diffusion constant|0.8
 ParameterString|hmax|Threshold water depth [m] (diffusion increases after this water depth is reached)|0.3
 ParameterString|halpha|Diffusion increase constant|4.0
 ParameterString|hbeta|Weighting factor for water flow velocity vector|0.5
 ParameterBoolean|-t|Time-series output|True
 OutputRaster|depth|Output water depth raster map [m]
-OutputRaster|disch|Output water discharge raster map [m3/s]
-OutputRaster|err|Output simulation error raster map [m]
+OutputRaster|discharge|Output water discharge raster map [m3/s]
+OutputRaster|error|Output simulation error raster map [m]
