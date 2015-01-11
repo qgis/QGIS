@@ -8,6 +8,6 @@ ParameterNumber|threshold|Minimum flow accumulation for streams|1.0|None|0.1
 ParameterNumber|mexp|Montgomery exponent for slope|0|None|0
 ParameterNumber|stream_length|Delete stream segments shorter than cells|0|None|0
 ParameterNumber|d8cut|Use SFD above this threshold|0|None|0
-OutputRaster|stream_rast|Output raster map with unique stream ids
-OutputVector|stream_vect|Output vector with unique stream ids
+OutputRaster|stream_raster|Output raster map with unique stream ids
+OutputVector|stream_vecter|Output vector with unique stream ids
 OutputRaster|direction|Output raster map with flow direction

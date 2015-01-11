@@ -3,3 +3,4 @@ r.surf.area - Surface area estimation for rasters.
 Raster (r.*)
 ParameterRaster|map|Input layer|False
 ParameterNumber|vscale|Vertical scale|None|None|1
+ParameterSelection|units|Units|miles,feet,meters,kilometers,acres,hectares

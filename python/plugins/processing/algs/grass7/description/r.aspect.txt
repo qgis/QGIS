@@ -2,7 +2,7 @@ r.slope.aspect
 r.aspect - Generates raster maps of aspect from a elevation raster map.
 Raster (r.*)
 ParameterRaster|elevation|Elevation|False
-ParameterSelection|prec|Data type|float;double;int
+ParameterSelection|precision|Data type|float;double;int
 ParameterNumber|zfactor|Multiplicative factor to convert elevation units to meters|None|None|1.0
-ParameterNumber|min_slp_allowed|Minimum slope val. (in percent) for which aspect is computed|None|None|0.0
+ParameterNumber|min_slope|Minimum slope val. (in percent) for which aspect is computed|None|None|0.0
 OutputRaster|aspect|Output aspect layer
