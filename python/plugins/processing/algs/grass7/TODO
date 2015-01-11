@@ -1,15 +1,9 @@
+* http://trac.osgeo.org/grass/wiki/Grass7/NewFeatures#Replacedandremovedmodules
 * TODO: Merged modules
         r.average: merged into G7:r.statistics, G7:r.statistics2, G7:r.statistics3
         r.bilinear merged into G7:r.resamp.interp
         r.median: merged into G7:r.statistics, G7:r.statistics2, G7:r.statistics3
         r.sum: merged into G7:r.statistics, G7:r.statistics2, G7:r.statistics3
-
+* http://trac.osgeo.org/grass/wiki/Grass7/NewFeatures#Renamedmodules
 * TODO: decide what to do with nviz:
     nviz_cmd -> G7:m.nviz.image
-
-
-* TODO: CHECK next how really implemented:
-
-  Global module changes
-    interpolation methods 'bilinear', 'bicubic' renamed to 'linear', 'cubic'   <<---????
-
