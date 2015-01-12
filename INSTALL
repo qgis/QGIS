@@ -242,7 +242,7 @@ Now we create a build directory and run ccmake:
   cd QGIS
   mkdir build-master
   cd build-master
-  ccmake ..
+  cmake ..
 
 When you run ccmake (note the .. is required!), a menu will appear where
 you can configure various aspects of the build. If you do not have root
