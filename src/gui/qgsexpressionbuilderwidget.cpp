@@ -25,6 +25,8 @@
 #include <QFile>
 #include <QTextStream>
 #include <QSettings>
+#include <QDir>
+#include <QComboBox>
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     : QWidget( parent )
@@ -54,71 +56,27 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
 
-  // TODO Can we move this stuff to QgsExpression, like the functions?
-  registerItem( "Operators", "+", " + ", tr( "Addition operator" ) );
-  registerItem( "Operators", "-", " - ", tr( "Subtraction operator" ) );
-  registerItem( "Operators", "*", " * ", tr( "Multiplication operator" ) );
-  registerItem( "Operators", "/", " / ", tr( "Division operator" ) );
-  registerItem( "Operators", "%", " % ", tr( "Modulo operator" ) );
-  registerItem( "Operators", "^", " ^ ", tr( "Power operator" ) );
-  registerItem( "Operators", "=", " = ", tr( "Equal operator" ) );
-  registerItem( "Operators", ">", " > ", tr( "Greater as operator" ) );
-  registerItem( "Operators", "<", " < ", tr( "Less than operator" ) );
-  registerItem( "Operators", "<>", " <> ", tr( "Unequal operator" ) );
-  registerItem( "Operators", "<=", " <= ", tr( "Less or equal operator" ) );
-  registerItem( "Operators", ">=", " >= ", tr( "Greater or equal operator" ) );
-  registerItem( "Operators", "||", " || ",
-                QString( "<b>|| %1</b><br><i>%2</i><br><i>%3:</i>%4" )
-                .arg( tr( "(String Concatenation)" ) )
-                .arg( tr( "Joins two values together into a string" ) )
-                .arg( tr( "Usage" ) )
-                .arg( tr( "'Dia' || Diameter" ) ) );
-  registerItem( "Operators", "IN", " IN " );
-  registerItem( "Operators", "LIKE", " LIKE " );
-  registerItem( "Operators", "ILIKE", " ILIKE " );
-  registerItem( "Operators", "IS", " IS " );
-  registerItem( "Operators", "OR", " OR " );
-  registerItem( "Operators", "AND", " AND " );
-  registerItem( "Operators", "NOT", " NOT " );
-
-  QString casestring = "CASE WHEN condition THEN result END";
-  QString caseelsestring = "CASE WHEN condition THEN result ELSE result END";
-  registerItem( "Conditionals", "CASE", casestring );
-  registerItem( "Conditionals", "CASE ELSE", caseelsestring );
-
-  // Load the functions from the QgsExpression class
-  int count = QgsExpression::functionCount();
-  for ( int i = 0; i < count; i++ )
-  {
-    QgsExpression::Function* func = QgsExpression::Functions()[i];
-    QString name = func->name();
-    if ( name.startsWith( "_" ) ) // do not display private functions
-      continue;
-    if ( func->params() != 0 )
-      name += "(";
-    registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
-  }
-
-  QList<QgsExpression::Function*> specials = QgsExpression::specialColumns();
-  for ( int i = 0; i < specials.size(); ++i )
-  {
-    QString name = specials[i]->name();
-    registerItem( specials[i]->group(), name, " " + name + " " );
-  }
-
   txtSearchEdit->setPlaceholderText( tr( "Search" ) );
 
   QSettings settings;
   splitter->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter" ).toByteArray() );
-//  splitter_2->restoreState( settings.value( "/windows/QgsExpressionBuilderWidget/splitter2" ).toByteArray() );
 
   txtExpressionString->setFoldingVisible( false );
-//  customFunctionBotton->setVisible( QgsPythonRunner::isValid() );
-  txtPython->setVisible( false );
-  cgbCustomFunction->setCollapsed( true );
-  txtPython->setText( "@qgsfunction(args=-1, group='Custom')\n"
-                      "def func(values, feature, parent):\n"
-                      "    return str(values)" );
+
+  updateFunctionTree();
+
+  if ( QgsPythonRunner::isValid() )
+  {
+    QgsPythonRunner::eval( "qgis.user.expressionspath", mFunctionsPath );
+    newFunctionFile();
+    // The scratch file gets written each time the widget opens.
+    saveFunctionFile("scratch");
+    updateFunctionFileList( mFunctionsPath );
+  }
+  else
+  {
+    tab_2->setEnabled( false );
+  }
 }
 
 
@@ -154,6 +112,113 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   QString help = loadFunctionHelp( item );
   txtHelpText->setText( help );
   txtHelpText->setToolTip( txtHelpText->toPlainText() );
+}
+
+void QgsExpressionBuilderWidget::on_btnRun_pressed()
+{
+  saveFunctionFile( cmbFileNames->currentText() );
+  runPythonCode( txtPython->text() );
+}
+
+void QgsExpressionBuilderWidget::runPythonCode( QString code )
+{
+  if ( QgsPythonRunner::isValid() )
+  {
+    QString pythontext = code;
+    QgsPythonRunner::run( pythontext );
+  }
+  updateFunctionTree();
+}
+
+void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
+{
+  QDir myDir( mFunctionsPath );
+  if ( !myDir.exists() )
+  {
+    myDir.mkpath( mFunctionsPath );
+  }
+
+  if ( !fileName.endsWith( ".py" ) )
+  {
+    fileName.append( ".py" );
+  }
+
+  fileName = mFunctionsPath + QDir::separator() + fileName;
+  QFile myFile( fileName );
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  {
+    QTextStream myFileStream( &myFile );
+    myFileStream << txtPython->text() << endl;
+    myFile.close();
+  }
+}
+
+void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
+{
+  mFunctionsPath = path;
+  QDir dir( path );
+  dir.setNameFilters( QStringList() << "*.py" );
+  QStringList files = dir.entryList( QDir::Files );
+  cmbFileNames->clear();
+  foreach ( QString name, files )
+  {
+    QFileInfo info( mFunctionsPath + QDir::separator() + name );
+    if ( info.baseName() == "__init__" ) continue;
+    cmbFileNames->addItem( info.baseName() );
+  }
+}
+
+void QgsExpressionBuilderWidget::newFunctionFile( QString fileName )
+{
+  txtPython->setText( "from qgis.core import *\n"
+                      "from qgis.gui import *\n\n"
+                      "@qgsfunction(args=-1, group='Custom')\n"
+                      "def func(values, feature, parent):\n"
+                      "    return str(values)" );
+  int index = cmbFileNames->findText( fileName );
+  if ( index == -1 )
+    cmbFileNames->setEditText( fileName );
+  else
+    cmbFileNames->setCurrentIndex( index );
+}
+
+void QgsExpressionBuilderWidget::on_btnNewFile_pressed()
+{
+  newFunctionFile();
+}
+
+void QgsExpressionBuilderWidget::on_cmbFileNames_currentIndexChanged( int index )
+{
+  if ( index == -1 )
+    return;
+
+  QString path = mFunctionsPath + QDir::separator() + cmbFileNames->currentText();
+  loadCodeFromFile( path );
+}
+
+void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
+{
+  if ( !path.endsWith( ".py" ) )
+    path.append( ".py" );
+
+  txtPython->loadScript( path );
+}
+
+void QgsExpressionBuilderWidget::loadFunctionCode( QString code )
+{
+  txtPython->setText( code );
+}
+
+void QgsExpressionBuilderWidget::on_btnSaveFile_pressed()
+{
+  QString name = cmbFileNames->currentText();
+  saveFunctionFile( name );
+  int index = cmbFileNames->findText( name );
+  if ( index == -1 )
+  {
+    cmbFileNames->addItem( name );
+    cmbFileNames->setCurrentIndex( cmbFileNames->count() - 1 );
+  }
 }
 
 void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIndex &index )
@@ -292,6 +357,63 @@ void QgsExpressionBuilderWidget::loadRecent( QString key )
   }
 }
 
+void QgsExpressionBuilderWidget::updateFunctionTree()
+{
+  mModel->clear();
+  mExpressionGroups.clear();
+  // TODO Can we move this stuff to QgsExpression, like the functions?
+  registerItem( "Operators", "+", " + ", tr( "Addition operator" ) );
+  registerItem( "Operators", "-", " - ", tr( "Subtraction operator" ) );
+  registerItem( "Operators", "*", " * ", tr( "Multiplication operator" ) );
+  registerItem( "Operators", "/", " / ", tr( "Division operator" ) );
+  registerItem( "Operators", "%", " % ", tr( "Modulo operator" ) );
+  registerItem( "Operators", "^", " ^ ", tr( "Power operator" ) );
+  registerItem( "Operators", "=", " = ", tr( "Equal operator" ) );
+  registerItem( "Operators", ">", " > ", tr( "Greater as operator" ) );
+  registerItem( "Operators", "<", " < ", tr( "Less than operator" ) );
+  registerItem( "Operators", "<>", " <> ", tr( "Unequal operator" ) );
+  registerItem( "Operators", "<=", " <= ", tr( "Less or equal operator" ) );
+  registerItem( "Operators", ">=", " >= ", tr( "Greater or equal operator" ) );
+  registerItem( "Operators", "||", " || ",
+                QString( "<b>|| %1</b><br><i>%2</i><br><i>%3:</i>%4" )
+                .arg( tr( "(String Concatenation)" ) )
+                .arg( tr( "Joins two values together into a string" ) )
+                .arg( tr( "Usage" ) )
+                .arg( tr( "'Dia' || Diameter" ) ) );
+  registerItem( "Operators", "IN", " IN " );
+  registerItem( "Operators", "LIKE", " LIKE " );
+  registerItem( "Operators", "ILIKE", " ILIKE " );
+  registerItem( "Operators", "IS", " IS " );
+  registerItem( "Operators", "OR", " OR " );
+  registerItem( "Operators", "AND", " AND " );
+  registerItem( "Operators", "NOT", " NOT " );
+
+  QString casestring = "CASE WHEN condition THEN result END";
+  QString caseelsestring = "CASE WHEN condition THEN result ELSE result END";
+  registerItem( "Conditionals", "CASE", casestring );
+  registerItem( "Conditionals", "CASE ELSE", caseelsestring );
+
+  // Load the functions from the QgsExpression class
+  int count = QgsExpression::functionCount();
+  for ( int i = 0; i < count; i++ )
+  {
+    QgsExpression::Function* func = QgsExpression::Functions()[i];
+    QString name = func->name();
+    if ( name.startsWith( "_" ) ) // do not display private functions
+      continue;
+    if ( func->params() != 0 )
+      name += "(";
+    registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
+  }
+
+  QList<QgsExpression::Function*> specials = QgsExpression::specialColumns();
+  for ( int i = 0; i < specials.size(); ++i )
+  {
+    QString name = specials[i]->name();
+    registerItem( specials[i]->group(), name, " " + name + " " );
+  }
+}
+
 void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
 {
   mDa = da;
@@ -299,11 +421,6 @@ void QgsExpressionBuilderWidget::setGeomCalculator( const QgsDistanceArea & da )
 
 QString QgsExpressionBuilderWidget::expressionText()
 {
-  if ( QgsPythonRunner::isValid() )
-  {
-    QString pythontext = txtPython->text();
-    QgsPythonRunner::run( pythontext );
-  }
   return txtExpressionString->text();
 }
 

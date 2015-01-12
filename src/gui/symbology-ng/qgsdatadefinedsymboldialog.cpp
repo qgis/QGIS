@@ -5,6 +5,7 @@
 #include "qgslogger.h"
 
 #include <QCheckBox>
+#include <QSettings>
 
 
 QgsDataDefinedSymbolDialog::QgsDataDefinedSymbolDialog( const QList< DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent, Qt::WindowFlags f )
