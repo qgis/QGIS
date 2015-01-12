@@ -150,8 +150,26 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     void loadRecent( QString key );
 
+    void newFunctionFile( QString fileName = "scratch");
+
+    void saveFunctionFile( QString fileName );
+
+    void loadCodeFromFile( QString path );
+
+    void loadFunctionCode( QString code );
+
+    void loadFunctionFiles( QString path );
+
+    void runPythonCode( QString code );
+
+    void updateFunctionTree();
+
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void on_btnRun_pressed();
+    void on_btnNewFile_pressed();
+    void on_cmbFileNames_currentIndexChanged( int index );
+    void on_btnSaveFile_pressed();
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
@@ -177,6 +195,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void fillFieldValues( int fieldIndex, int countLimit );
     QString loadFunctionHelp( QgsExpressionItem* functionName );
 
+    QString mFunctionsPath;
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
     QgsExpressionItemSearchProxy *mProxyModel;
