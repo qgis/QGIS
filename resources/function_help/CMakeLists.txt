@@ -1,4 +1,5 @@
 FILE(GLOB HELP_FILES *)
+
 LIST(REMOVE_ITEM HELP_FILES ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt)
 
 SET(HELP_OUTPUT "${CMAKE_SOURCE_DIR}/src/core/qgsexpression_texts.cpp")

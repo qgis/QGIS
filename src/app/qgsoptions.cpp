@@ -1452,14 +1452,14 @@ void QgsOptions::on_mBoldGroupBoxTitleChkBx_clicked( bool chkd )
   mStyleSheetBuilder->buildStyleSheet( mStyleSheetNewOpts );
 }
 
-void QgsOptions::on_leProjectGlobalCrs_crsChanged(QgsCoordinateReferenceSystem crs)
+void QgsOptions::on_leProjectGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs )
 {
   mDefaultCrs = crs;
 }
 
-void QgsOptions::on_leLayerGlobalCrs_crsChanged(QgsCoordinateReferenceSystem crs)
+void QgsOptions::on_leLayerGlobalCrs_crsChanged( QgsCoordinateReferenceSystem crs )
 {
-mLayerDefaultCrs = crs;
+  mLayerDefaultCrs = crs;
 }
 
 void QgsOptions::on_lstGdalDrivers_itemDoubleClicked( QTreeWidgetItem * item, int column )

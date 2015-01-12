@@ -25,9 +25,13 @@
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
     : mLayer( layer )
 {
-  QgsMapLayerStyle defaultStyle;
-  defaultStyle.readFromLayer( mLayer );
-  mStyles.insert( QString(), defaultStyle );
+  reset();
+}
+
+void QgsMapLayerStyleManager::reset()
+{
+  mStyles.insert( QString(), QgsMapLayerStyle() ); // insert entry for the default current style
+  mCurrentStyle.clear();
 }
 
 void QgsMapLayerStyleManager::readXml( const QDomElement& mgrElement )
@@ -49,8 +53,6 @@ void QgsMapLayerStyleManager::readXml( const QDomElement& mgrElement )
 
 void QgsMapLayerStyleManager::writeXml( QDomElement& mgrElement ) const
 {
-  const_cast<QgsMapLayerStyleManager*>( this )->syncCurrentStyle();
-
   QDomDocument doc = mgrElement.ownerDocument();
   mgrElement.setAttribute( "current", mCurrentStyle );
 
@@ -70,8 +72,13 @@ QStringList QgsMapLayerStyleManager::styles() const
 
 QgsMapLayerStyle QgsMapLayerStyleManager::style( const QString& name ) const
 {
-  if ( name == mCurrentStyle ) // make sure it is sync'ed
-    const_cast<QgsMapLayerStyleManager*>( this )->syncCurrentStyle();
+  if ( name == mCurrentStyle )
+  {
+    // current style's entry is always kept invalid - get the style data from layer's properties
+    QgsMapLayerStyle curr;
+    curr.readFromLayer( mLayer );
+    return curr;
+  }
 
   return mStyles.value( name );
 }
@@ -115,6 +122,19 @@ bool QgsMapLayerStyleManager::removeStyle( const QString& name )
   return true;
 }
 
+bool QgsMapLayerStyleManager::renameStyle( const QString& name, const QString& newName )
+{
+  if ( !mStyles.contains( name ) || mStyles.contains( newName ) )
+    return false;
+
+  if ( name == mCurrentStyle )
+    mCurrentStyle = newName;
+
+  mStyles[newName] = mStyles[name];
+  mStyles.remove( name );
+  return true;
+}
+
 QString QgsMapLayerStyleManager::currentStyle() const
 {
   return mCurrentStyle;
@@ -128,17 +148,14 @@ bool QgsMapLayerStyleManager::setCurrentStyle( const QString& name )
   if ( mCurrentStyle == name )
     return true; // nothing to do
 
-  syncCurrentStyle(); // sync before unloading it
+  mStyles[mCurrentStyle].readFromLayer( mLayer ); // sync before unloading it
   mCurrentStyle = name;
   mStyles[mCurrentStyle].writeToLayer( mLayer );
+  mStyles[mCurrentStyle].clear(); // current style does not keep any stored data
   mLayer->triggerRepaint();
   return true;
 }
 
-void QgsMapLayerStyleManager::syncCurrentStyle()
-{
-  mStyles[mCurrentStyle].readFromLayer( mLayer );
-}
 
 // -----
 
@@ -149,6 +166,11 @@ QgsMapLayerStyle::QgsMapLayerStyle()
 bool QgsMapLayerStyle::isValid() const
 {
   return !mXmlData.isEmpty();
+}
+
+void QgsMapLayerStyle::clear()
+{
+  mXmlData.clear();
 }
 
 QString QgsMapLayerStyle::dump() const
@@ -195,6 +217,10 @@ void QgsMapLayerStyle::readXml( const QDomElement& styleElement )
 
 void QgsMapLayerStyle::writeXml( QDomElement& styleElement ) const
 {
+  // the currently selected style has no content stored here (layer has all the information inside)
+  if ( !isValid() )
+    return;
+
   QDomDocument docX;
   docX.setContent( mXmlData );
   styleElement.appendChild( docX.documentElement() );

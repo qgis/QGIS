@@ -362,7 +362,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   QSettings s;
   mSymbologyModeComboBox->setCurrentIndex( s.value( "qgis/lastDxfSymbologyMode", "2" ).toInt() );
   //last symbol scale
-  mSymbologyScaleLineEdit->setText( s.value( "qgis/lastSymbologyExportScale", "50000" ).toString() );
+  mScaleWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mScaleWidget->setScale( s.value( "qgis/lastSymbologyExportScale", "1/50000" ).toDouble() );
   mMapExtentCheckBox->setChecked( s.value( "qgis/lastDxfMapRectangle", "false" ).toBool() );
 
   QStringList ids = QgsVisibilityPresets::instance()->presets();
@@ -437,7 +438,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsDxfExportDialog::layers() const
 
 double QgsDxfExportDialog::symbologyScale() const
 {
-  double scale = mSymbologyScaleLineEdit->text().toDouble();
+  double scale = mScaleWidget->scale();
   if ( qgsDoubleNear( scale, 0.0 ) )
   {
     return 1.0;
@@ -499,6 +500,6 @@ void QgsDxfExportDialog::saveSettings()
   QFileInfo dxfFileInfo( mFileLineEdit->text() );
   s.setValue( "qgis/lastDxfDir", dxfFileInfo.absolutePath() );
   s.setValue( "qgis/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
-  s.setValue( "qgis/lastSymbologyExportScale", mSymbologyScaleLineEdit->text() );
+  s.setValue( "qgis/lastSymbologyExportScale", mScaleWidget->scale() );
   s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
 }

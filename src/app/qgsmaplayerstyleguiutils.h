@@ -39,7 +39,7 @@ class QgsMapLayerStyleGuiUtils : public QObject, public QgsSingleton<QgsMapLayer
     void addStyle();
     void useStyle();
     void removeStyle();
-
+    void renameStyle();
 };
 
 #endif // QGSMAPLAYERSTYLEGUIUTILS_H

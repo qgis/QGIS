@@ -115,8 +115,7 @@ void QgsVisibilityPresets::addPerLayerCurrentStyle( QgsVisibilityPresets::Preset
     if ( !nodeLayer )
       continue;
 
-    if ( nodeLayer->layer()->styleManager() )
-      rec.mPerLayerCurrentStyle[layerID] = nodeLayer->layer()->styleManager()->currentStyle();
+    rec.mPerLayerCurrentStyle[layerID] = nodeLayer->layer()->styleManager()->currentStyle();
   }
 }
 
@@ -130,13 +129,15 @@ QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentState()
   return rec;
 }
 
-QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentStateFromLayerList( const QStringList& layerIDs )
+QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentStateFromLayerList( const QStringList& layerIDs, const QMap<QString, QString>& layerStyleOverrides )
 {
   PresetRecord rec;
   foreach ( const QString& layerID, layerIDs )
     rec.mVisibleLayerIDs << layerID;
   addPerLayerCheckedLegendSymbols( rec );
   addPerLayerCurrentStyle( rec );
+  foreach (const QString& layerID, layerStyleOverrides.keys() )
+    rec.mPerLayerCurrentStyle[layerID] = layerStyleOverrides[layerID];
   return rec;
 }
 
@@ -206,13 +207,6 @@ void QgsVisibilityPresets::applyPresetCheckedLegendNodesToLayer( const QString& 
 
   const PresetRecord& rec = mPresets[name];
 
-  if ( rec.mPerLayerCurrentStyle.contains( layerID ) )
-  {
-    // apply desired style first
-    if ( layer->styleManager() )
-      layer->styleManager()->setCurrentStyle( rec.mPerLayerCurrentStyle[layerID] );
-  }
-
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
   if ( !vlayer || !vlayer->rendererV2() )
     return;
@@ -275,8 +269,7 @@ void QgsVisibilityPresets::applyStateToLayerTreeGroup( QgsLayerTreeGroup* parent
         if ( rec.mPerLayerCurrentStyle.contains( nodeLayer->layerId() ) )
         {
           // apply desired style first
-          if ( nodeLayer->layer()->styleManager() )
-            nodeLayer->layer()->styleManager()->setCurrentStyle( rec.mPerLayerCurrentStyle[nodeLayer->layerId()] );
+          nodeLayer->layer()->styleManager()->setCurrentStyle( rec.mPerLayerCurrentStyle[nodeLayer->layerId()] );
         }
 
         QgsLayerTreeModel* model = QgisApp::instance()->layerTreeView()->layerTreeModel();
@@ -359,9 +352,7 @@ void QgsVisibilityPresets::applyState( const QString& presetName )
       continue;
 
     QString name = rec.mPerLayerCurrentStyle[layerID];
-    if ( !ml->styleManager() )
-      rec.mPerLayerCurrentStyle.remove( layerID );
-    else if ( !ml->styleManager()->styles().contains( name ) )
+    if ( !ml->styleManager()->styles().contains( name ) )
       rec.mPerLayerCurrentStyle[layerID] = ml->styleManager()->currentStyle();
   }
 }

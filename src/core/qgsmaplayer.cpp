@@ -56,7 +56,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mLayerType( type ),
     mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
     , mLegend( 0 )
-    , mStyleManager( 0 )
+    , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -86,6 +86,7 @@ QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
   delete mLegend;
+  delete mStyleManager;
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -708,12 +709,9 @@ void QgsMapLayer::readStyleManager( const QDomNode& layerNode )
 {
   QDomElement styleMgrElem = layerNode.firstChildElement( "map-layer-style-manager" );
   if ( !styleMgrElem.isNull() )
-  {
-    enableStyleManager();
-    styleManager()->readXml( styleMgrElem );
-  }
+    mStyleManager->readXml( styleMgrElem );
   else
-    enableStyleManager( false );
+    mStyleManager->reset();
 }
 
 void QgsMapLayer::writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const
@@ -1446,22 +1444,6 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
 QgsMapLayerLegend*QgsMapLayer::legend() const
 {
   return mLegend;
-}
-
-void QgsMapLayer::enableStyleManager( bool enable )
-{
-  if (( enable && mStyleManager ) || ( !enable && !mStyleManager ) )
-    return;
-
-  if ( enable )
-  {
-    mStyleManager = new QgsMapLayerStyleManager( this );
-  }
-  else
-  {
-    delete mStyleManager;
-    mStyleManager = 0;
-  }
 }
 
 QgsMapLayerStyleManager* QgsMapLayer::styleManager() const

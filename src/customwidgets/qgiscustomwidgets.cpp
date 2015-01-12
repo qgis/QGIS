@@ -31,27 +31,29 @@
 #include "qgsrelationeditorwidgetplugin.h"
 #include "qgsrelationreferencewidgetplugin.h"
 #include "qgsscalerangewidgetplugin.h"
+#include "qgsscalewidgetplugin.h"
 #include "qgsspinboxplugin.h"
 
 
 QgisCustomWidgets::QgisCustomWidgets( QObject *parent )
     : QObject( parent )
 {
-  mWidgets.append( new QgsCollapsibleGroupBoxPlugin(this) );
-  mWidgets.append( new QgsColorButtonPlugin(this) );
-  mWidgets.append( new QgsColorButtonV2Plugin(this) );
-  mWidgets.append( new QgsDataDefinedButtonPlugin(this) );
-  mWidgets.append( new QgsDateTimeEditPlugin(this) );
-  mWidgets.append( new QgsDoubleSpinBoxPlugin(this) );
-  mWidgets.append( new QgsFieldComboBoxPlugin(this) );
-  mWidgets.append( new QgsFieldExpressionWidgetPlugin(this) );
-  mWidgets.append( new QgsFilterLineEditPlugin(this) );
-  mWidgets.append( new QgsMapLayerComboBoxPlugin(this) );
-  mWidgets.append( new QgsProjectionSelectionWidgetPlugin(this) );
-  mWidgets.append( new QgsRelationEditorWidgetPlugin(this) );
-  mWidgets.append( new QgsRelationReferenceWidgetPlugin(this) );
-  mWidgets.append( new QgsScaleRangeWidgetPlugin(this) );
-  mWidgets.append( new QgsSpinBoxPlugin(this) );
+  mWidgets.append( new QgsCollapsibleGroupBoxPlugin( this ) );
+  mWidgets.append( new QgsColorButtonPlugin( this ) );
+  mWidgets.append( new QgsColorButtonV2Plugin( this ) );
+  mWidgets.append( new QgsDataDefinedButtonPlugin( this ) );
+  mWidgets.append( new QgsDateTimeEditPlugin( this ) );
+  mWidgets.append( new QgsDoubleSpinBoxPlugin( this ) );
+  mWidgets.append( new QgsFieldComboBoxPlugin( this ) );
+  mWidgets.append( new QgsFieldExpressionWidgetPlugin( this ) );
+  mWidgets.append( new QgsFilterLineEditPlugin( this ) );
+  mWidgets.append( new QgsMapLayerComboBoxPlugin( this ) );
+  mWidgets.append( new QgsProjectionSelectionWidgetPlugin( this ) );
+  mWidgets.append( new QgsRelationEditorWidgetPlugin( this ) );
+  mWidgets.append( new QgsRelationReferenceWidgetPlugin( this ) );
+  mWidgets.append( new QgsScaleRangeWidgetPlugin( this ) );
+  mWidgets.append( new QgsScaleWidgetPlugin( this ) );
+  mWidgets.append( new QgsSpinBoxPlugin( this ) );
 }
 
 QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
@@ -60,5 +62,7 @@ QList<QDesignerCustomWidgetInterface*> QgisCustomWidgets::customWidgets() const
 }
 
 #if QT_VERSION < 0x050000
-  Q_EXPORT_PLUGIN2( customwidgetsplugin, QgisCustomWidgets )
+Q_EXPORT_PLUGIN2( customwidgetsplugin, QgisCustomWidgets )
 #endif
+
+

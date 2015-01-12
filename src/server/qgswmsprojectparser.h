@@ -132,6 +132,8 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
     /**Adds drawing order info from embedded layer element or embedded group element (recursive)*/
     void addDrawingOrderEmbeddedGroup( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const;
 
+    void addLayerStyles(QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem, const QString& version ) const;
+
     void addLayers( QDomDocument &doc,
                     QDomElement &parentLayer,
                     const QDomElement &legendElem,
@@ -139,6 +141,8 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
                     const QStringList &nonIdentifiableLayers,
                     QString version, //1.1.1 or 1.3.0
                     bool fullProjectSettings = false ) const;
+
+    void addOWSLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem ) const;
 
     void addOWSLayers( QDomDocument &doc, QDomElement &parentElem, const QDomElement &legendElem,
                        const QMap<QString, QgsMapLayer *> &layerMap, const QStringList &nonIdentifiableLayers,

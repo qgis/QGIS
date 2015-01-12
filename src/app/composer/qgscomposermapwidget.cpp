@@ -272,7 +272,7 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
   if ( !menu )
     return;
 
-  QgsVisibilityPresets::PresetRecord rec = QgsVisibilityPresets::instance()->currentStateFromLayerList( mComposerMap->layerSet() );
+  QgsVisibilityPresets::PresetRecord rec = QgsVisibilityPresets::instance()->currentStateFromLayerList( mComposerMap->layerSet(), mComposerMap->layerStyleOverrides() );
 
   menu->clear();
   foreach ( QString presetName, QgsVisibilityPresets::instance()->presets() )
@@ -298,6 +298,10 @@ void QgsComposerMapWidget::visibilityPresetSelected()
   {
     mKeepLayerListCheckBox->setChecked( true );
     mComposerMap->setLayerSet( lst );
+    mComposerMap->setLayerStyleOverrides( QgsVisibilityPresets::instance()->presetState( action->text() ).mPerLayerCurrentStyle );
+
+    // TODO: switching of styles and per-layer checked legend nodes currently does not play well with each other
+    // because checked nodes are applied immediately while style is applied only when rendering the map
 
     // also apply legend node check states
     foreach ( QString layerID, lst )

@@ -42,6 +42,9 @@ class CORE_EXPORT QgsMapLayerStyle
     //! Tell whether the style is valid (i.e. there is something stored in it)
     bool isValid() const;
 
+    //! Remove any stored style data (will get invalid)
+    void clear();
+
     //! Return information about the style - for debugging purposes only
     QString dump() const;
 
@@ -70,10 +73,11 @@ class CORE_EXPORT QgsMapLayerStyle
  * record them in the currently active style without any extra effort required.
  *
  * When an instance is created, it creates "default" style (with empty name) recorded from the associated map layer
- * and it is set as the current style.
+ * and it is set as the current style. The instance must always contain at least one style (which is the current).
  *
- * The instance must always contain at least one style. If no extra styles are wanted, the style manager should get
- * disabled in QgsMapLayer instance.
+ * The style which is marked as current has no style data stored in its entry. This is to avoid duplication
+ * of data as all data is stored in map layer and can be retrieved easily. Also when saving, the entry for
+ * the current style will be saved with no data because everything is already saved by the map layer itself.
  *
  * @note added in 2.8
  */
@@ -82,6 +86,9 @@ class CORE_EXPORT QgsMapLayerStyleManager
   public:
     //! Construct a style manager associated with a map layer (must not be null)
     QgsMapLayerStyleManager( QgsMapLayer* layer );
+
+    //! Reset the style manager to a basic state - with one default style which is set as current
+    void reset();
 
     //! Read configuration (for project loading)
     void readXml( const QDomElement& mgrElement );
@@ -102,16 +109,15 @@ class CORE_EXPORT QgsMapLayerStyleManager
     //! Remove a stored style
     //! @return true on success (style exists and it is not the last one)
     bool removeStyle( const QString& name );
+    //! Rename a stored style to a different name
+    //! @return true on success (style exists and new name is unique)
+    bool renameStyle( const QString& name, const QString& newName );
 
     //! Return name of the current style
     QString currentStyle() const;
     //! Set a different style as the current style - will apply it to the layer
     //! @return true on success
     bool setCurrentStyle( const QString& name );
-
-  private:
-    void syncCurrentStyle();
-    void ensureCurrentInSync() const;
 
   private:
     QgsMapLayer* mLayer;

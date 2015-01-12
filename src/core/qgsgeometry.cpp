@@ -2706,7 +2706,7 @@ int QgsGeometry::addPart( GEOSGeometry *newPart )
   return 0;
 }
 
-int QgsGeometry::translate( double dx, double dy )
+int QgsGeometry::transform( const QTransform& t )
 {
   if ( mDirtyWkb )
     exportGeosToWkb();
@@ -2717,17 +2717,17 @@ int QgsGeometry::translate( double dx, double dy )
     return 1;
   }
 
+  bool hasZValue = false;
   QgsWkbPtr wkbPtr( mGeometry + 1 );
   QGis::WkbType wkbType;
   wkbPtr >> wkbType;
 
-  bool hasZValue = false;
   switch ( wkbType )
   {
     case QGis::WKBPoint25D:
     case QGis::WKBPoint:
     {
-      translateVertex( wkbPtr, dx, dy, hasZValue );
+      transformVertex( wkbPtr, t, hasZValue );
     }
     break;
 
@@ -2738,7 +2738,7 @@ int QgsGeometry::translate( double dx, double dy )
       int nPoints;
       wkbPtr >> nPoints;
       for ( int index = 0; index < nPoints; ++index )
-        translateVertex( wkbPtr, dx, dy, hasZValue );
+        transformVertex( wkbPtr, t, hasZValue );
 
       break;
     }
@@ -2754,7 +2754,7 @@ int QgsGeometry::translate( double dx, double dy )
         int nPoints;
         wkbPtr >> nPoints;
         for ( int index2 = 0; index2 < nPoints; ++index2 )
-          translateVertex( wkbPtr, dx, dy, hasZValue );
+          transformVertex( wkbPtr, t, hasZValue );
 
       }
       break;
@@ -2766,11 +2766,10 @@ int QgsGeometry::translate( double dx, double dy )
     {
       int nPoints;
       wkbPtr >> nPoints;
-
       for ( int index = 0; index < nPoints; ++index )
       {
         wkbPtr += 1 + sizeof( int );
-        translateVertex( wkbPtr, dx, dy, hasZValue );
+        transformVertex( wkbPtr, t, hasZValue );
       }
       break;
     }
@@ -2787,7 +2786,8 @@ int QgsGeometry::translate( double dx, double dy )
         int nPoints;
         wkbPtr >> nPoints;
         for ( int index2 = 0; index2 < nPoints; ++index2 )
-          translateVertex( wkbPtr, dx, dy, hasZValue );
+          transformVertex( wkbPtr, t, hasZValue );
+
       }
       break;
     }
@@ -2801,19 +2801,17 @@ int QgsGeometry::translate( double dx, double dy )
       for ( int index = 0; index < nPolys; ++index )
       {
         wkbPtr += 1 + sizeof( int ); //skip endian and polygon type
-
         int nRings;
         wkbPtr >> nRings;
-
         for ( int index2 = 0; index2 < nRings; ++index2 )
         {
           int nPoints;
           wkbPtr >> nPoints;
           for ( int index3 = 0; index3 < nPoints; ++index3 )
-            translateVertex( wkbPtr, dx, dy, hasZValue );
+            transformVertex( wkbPtr, t, hasZValue );
+
         }
       }
-      break;
     }
 
     default:
@@ -2821,6 +2819,19 @@ int QgsGeometry::translate( double dx, double dy )
   }
   mDirtyGeos = true;
   return 0;
+}
+
+int QgsGeometry::translate( double dx, double dy )
+{
+  return transform( QTransform::fromTranslate( dx, dy ) );
+}
+
+int QgsGeometry::rotate( double rotation, const QgsPoint& center )
+{
+  QTransform t = QTransform::fromTranslate( center.x(), center.y() );
+  t.rotate( -rotation );
+  t.translate( -center.x(), -center.y() );
+  return transform( t );
 }
 
 int QgsGeometry::transform( const QgsCoordinateTransform& ct )
@@ -4612,21 +4623,14 @@ bool QgsGeometry::convertToMultiType()
   return true;
 }
 
-void QgsGeometry::translateVertex( QgsWkbPtr &wkbPtr, double dx, double dy, bool hasZValue )
+void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QTransform& trans, bool hasZValue )
 {
-  double x, y, translated_x, translated_y;
+  double x, y, rotated_x, rotated_y;
 
-  //x-coordinate
-  memcpy( &x, wkbPtr, sizeof( double ) );
-  translated_x = x + dx;
-  memcpy( wkbPtr, &translated_x, sizeof( double ) );
-  wkbPtr += sizeof( double );
-
-  //y-coordinate
-  memcpy( &y, wkbPtr, sizeof( double ) );
-  translated_y = y + dy;
-  memcpy( wkbPtr, &translated_y, sizeof( double ) );
-  wkbPtr += sizeof( double );
+  QgsWkbPtr tmp = wkbPtr;
+  tmp >> x >> y;
+  trans.map( x, y, &rotated_x, &rotated_y );
+  wkbPtr << rotated_x << rotated_y;
 
   if ( hasZValue )
     wkbPtr += sizeof( double );
@@ -4634,19 +4638,15 @@ void QgsGeometry::translateVertex( QgsWkbPtr &wkbPtr, double dx, double dy, bool
 
 void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QgsCoordinateTransform& ct, bool hasZValue )
 {
-  double x, y, z;
+  double x, y, z = 0.0;
 
-  memcpy( &x, wkbPtr, sizeof( double ) );
-  memcpy( &y, wkbPtr + sizeof( double ), sizeof( double ) );
-  z = 0.0; // Ignore Z for now.
-
+  QgsWkbPtr tmp = wkbPtr;
+  tmp >> x >> y;
   ct.transformInPlace( x, y, z );
-
-  // new coordinate
   wkbPtr << x << y;
+
   if ( hasZValue )
     wkbPtr += sizeof( double );
-
 }
 
 GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )

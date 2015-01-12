@@ -3,6 +3,6 @@ r.random - Creates a raster layer and vector point map containing randomly locat
 Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterRaster|cover|Input cover raster layer|False
-ParameterNumber|n|The number of points to allocate|0|None|10
-OutputRaster|raster_output|Output raster layer
-OutputVector|vector_output|Output vector layer
+ParameterNumber|npoints|The number of points to allocate|0|None|10
+OutputRaster|raster|Output raster layer
+OutputVector|vector|Output vector layer

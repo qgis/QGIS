@@ -25,7 +25,7 @@ class QgisCustomWidgets : public QObject, public QDesignerCustomWidgetCollection
 {
     Q_OBJECT
 #if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "org.qgis.CustomWidgets")
+    Q_PLUGIN_METADATA( IID "org.qgis.CustomWidgets" )
 #endif
     Q_INTERFACES( QDesignerCustomWidgetCollectionInterface )
 

@@ -28,9 +28,9 @@
 
 //////////////
 
-static QColor _interpolate( QColor c1, QColor c2, double value )
+static QColor _interpolate( const QColor& c1, const QColor& c2, const double value )
 {
-  if ( qIsNaN( value ) ) value = 1;
+  if ( qIsNaN( value ) ) return c2;
   int r = ( int )( c1.red() + value * ( c2.red() - c1.red() ) );
   int g = ( int )( c1.green() + value * ( c2.green() - c1.green() ) );
   int b = ( int )( c1.blue() + value * ( c2.blue() - c1.blue() ) );
@@ -112,10 +112,19 @@ double QgsVectorGradientColorRampV2::value( int index ) const
 
 QColor QgsVectorGradientColorRampV2::color( double value ) const
 {
-  if ( mStops.isEmpty() )
+  if ( qgsDoubleNear( value, 0.0 ) || value < 0.0 )
+  {
+    return mColor1;
+  }
+  else if ( qgsDoubleNear( value, 1.0 ) || value > 1.0 )
+  {
+    return mColor2;
+  }
+  else if ( mStops.isEmpty() )
   {
     if ( mDiscrete )
       return mColor1;
+
     return _interpolate( mColor1, mColor2, value );
   }
   else

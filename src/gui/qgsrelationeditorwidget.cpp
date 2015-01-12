@@ -143,7 +143,15 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation& relation, c
   QgsVectorLayer* lyr = relation.referencingLayer();
 
   bool canChangeAttributes = lyr->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-  mToggleEditingButton->setEnabled( canChangeAttributes && !lyr->isReadOnly() );
+  if ( canChangeAttributes && !lyr->isReadOnly() )
+  {
+    mToggleEditingButton->setEnabled( true );
+    referencingLayerEditingToggled();
+  }
+  else
+  {
+    mToggleEditingButton->setEnabled( false );
+  }
 
   // If not yet initialized, it is not (yet) visible, so we don't load it to be faster (lazy loading)
   // If it is already initialized, it has been set visible before and the currently shown feature is changing

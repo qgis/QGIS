@@ -25,6 +25,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsmaprenderercustompainterjob.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
@@ -214,6 +215,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
       : QStringList(); //exporting decorations such as map frame/grid/overview, so no map layers required
   }
   jobMapSettings.setLayers( theLayerSet );
+  jobMapSettings.setLayerStyleOverrides( mLayerStyleOverrides );
   jobMapSettings.setDestinationCrs( ms.destinationCrs() );
   jobMapSettings.setCrsTransformEnabled( ms.hasCrsTransformEnabled() );
   jobMapSettings.setFlags( ms.flags() );
@@ -1260,6 +1262,8 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
     QDomElement layerElem = doc.createElement( "Layer" );
     QDomText layerIdText = doc.createTextNode( *layerIt );
     layerElem.appendChild( layerIdText );
+    if ( mLayerStyleOverrides.contains( *layerIt ) )
+      layerElem.setAttribute( "style", mLayerStyleOverrides[*layerIt] );
     layerSetElem.appendChild( layerElem );
   }
   composerMapElem.appendChild( layerSetElem );
@@ -1355,6 +1359,8 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     mDrawCanvasItems = false;
   }
 
+  mLayerStyleOverrides.clear();
+
   //mLayerSet
   QDomNodeList layerSetNodeList = itemElem.elementsByTagName( "LayerSet" );
   QStringList layerSet;
@@ -1364,7 +1370,10 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     QDomNodeList layerIdNodeList = layerSetElem.elementsByTagName( "Layer" );
     for ( int i = 0; i < layerIdNodeList.size(); ++i )
     {
-      layerSet << layerIdNodeList.at( i ).toElement().text();
+      const QDomElement& layerIdElement = layerIdNodeList.at( i ).toElement();
+      layerSet << layerIdElement.text();
+      if ( layerIdElement.hasAttribute( "style" ) )
+        mLayerStyleOverrides.insert( layerSet.last(), layerIdElement.attribute( "style" ) );
     }
   }
   mLayerSet = layerSet;
@@ -1505,6 +1514,14 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
 void QgsComposerMap::storeCurrentLayerSet()
 {
   mLayerSet = mComposition->mapSettings().layers();
+
+  // also store styles associated with the layers
+  mLayerStyleOverrides.clear();
+  foreach ( const QString& layerID, mLayerSet )
+  {
+    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+      mLayerStyleOverrides.insert( layerID, ml->styleManager()->currentStyle() );
+  }
 }
 
 void QgsComposerMap::syncLayerSet()
@@ -1529,6 +1546,7 @@ void QgsComposerMap::syncLayerSet()
   {
     if ( !currentLayerSet.contains( mLayerSet.at( i ) ) )
     {
+      mLayerStyleOverrides.remove( mLayerSet.at( i ) );
       mLayerSet.removeAt( i );
     }
   }
