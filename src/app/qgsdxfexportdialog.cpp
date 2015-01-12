@@ -438,7 +438,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsDxfExportDialog::layers() const
 
 double QgsDxfExportDialog::symbologyScale() const
 {
-  double scale = mScaleWidget->scale();
+  double scale = 1/mScaleWidget->scale();
   if ( qgsDoubleNear( scale, 0.0 ) )
   {
     return 1.0;
