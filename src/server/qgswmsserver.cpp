@@ -2656,7 +2656,14 @@ bool QgsWMSServer::checkMaximumWidthHeight() const
 
 QString QgsWMSServer::serviceUrl() const
 {
-  QUrl mapUrl( getenv( "REQUEST_URI" ) );
+  QString requestUri = getenv( "REQUEST_URI" );
+  if ( requestUri.isEmpty() )
+  {
+    // in some cases (e.g. when running through python's CGIHTTPServer) the REQUEST_URI is not defined
+    requestUri = QString( getenv( "SCRIPT_NAME" ) ) + "?" + QString( getenv( "QUERY_STRING" ) );
+  }
+
+  QUrl mapUrl( requestUri );
   mapUrl.setHost( getenv( "SERVER_NAME" ) );
 
   //Add non-default ports to url
