@@ -20,6 +20,7 @@
 #include "qgsconfigparserutils.h"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayer.h"
@@ -97,7 +98,6 @@ void QgsWMSProjectParser::layersAndStylesCapabilities( QDomElement& parentElemen
 
 QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache ) const
 {
-  Q_UNUSED( styleName );
   QMap< int, QgsMapLayer* > layers;
 
   //first check if the layer name refers an unpublished layer / group
@@ -106,12 +106,23 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     return QList<QgsMapLayer*>();
   }
 
+  // can't use layer cache if we are going to apply a non-default style
+  if ( !styleName.isEmpty() )
+    useCache = false;
+
   //does lName refer to a leaf layer
   const QHash< QString, QDomElement > &projectLayerElements = mProjectParser->useLayerIDs() ? mProjectParser->projectLayerElementsById() : mProjectParser->projectLayerElementsByName();
   QHash< QString, QDomElement >::const_iterator layerElemIt = projectLayerElements.find( lName );
   if ( layerElemIt != projectLayerElements.constEnd() )
   {
-    return QList<QgsMapLayer*>() << mProjectParser->createLayerFromElement( layerElemIt.value(), useCache );
+    QgsMapLayer* ml = mProjectParser->createLayerFromElement( layerElemIt.value(), useCache );
+    if ( !styleName.isEmpty() )
+    {
+      // try to apply the specified style
+      if ( !ml->styleManager()->setCurrentStyle( styleName ) )
+        throw QgsMapServiceException( "StyleNotDefined", QString( "Style \"%1\" does not exist for layer \"%2\"" ).arg( styleName ).arg( lName ) );
+    }
+    return QList<QgsMapLayer*>() << ml;
   }
 
   //group or project name
