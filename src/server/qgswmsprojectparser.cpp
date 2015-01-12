@@ -898,6 +898,92 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrde
   }
 }
 
+
+void QgsWMSProjectParser::addLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem, const QString& version ) const
+{
+  foreach ( const QString& styleName, currentLayer->styleManager()->styles() )
+  {
+    if ( styleName.isEmpty() )
+      continue; // do not explicitly list the default style with no name
+
+    QDomElement styleElem = doc.createElement( "Style" );
+    QDomElement styleNameElem = doc.createElement( "Name" );
+    QDomText styleNameText = doc.createTextNode( styleName );
+    styleNameElem.appendChild( styleNameText );
+    QDomElement styleTitleElem = doc.createElement( "Title" );
+    QDomText styleTitleText = doc.createTextNode( styleName );
+    styleTitleElem.appendChild( styleTitleText );
+    styleElem.appendChild( styleNameElem );
+    styleElem.appendChild( styleTitleElem );
+
+    // QString LegendURL for explicit layerbased GetLegendGraphic request
+    QDomElement getLayerLegendGraphicElem = doc.createElement( "LegendURL" );
+    QString hrefString = currentLayer->legendUrl();
+    bool customHrefString;
+    if ( !hrefString.isEmpty() )
+    {
+      customHrefString = true;
+    }
+    else
+    {
+      customHrefString = false;
+      hrefString = serviceUrl();
+    }
+    if ( hrefString.isEmpty() )
+    {
+      hrefString = getCapaServiceUrl( doc );
+    }
+    if ( !hrefString.isEmpty() )
+    {
+      QStringList getLayerLegendGraphicFormats;
+      if ( !customHrefString )
+      {
+        getLayerLegendGraphicFormats << "image/png"; // << "jpeg" << "image/jpeg"
+
+      }
+      else
+      {
+        getLayerLegendGraphicFormats << currentLayer->legendUrlFormat();
+      }
+
+      for ( int i = 0; i < getLayerLegendGraphicFormats.size(); ++i )
+      {
+        QDomElement getLayerLegendGraphicFormatElem = doc.createElement( "Format" );
+        QString getLayerLegendGraphicFormat = getLayerLegendGraphicFormats[i];
+        QDomText getLayerLegendGraphicFormatText = doc.createTextNode( getLayerLegendGraphicFormat );
+        getLayerLegendGraphicFormatElem.appendChild( getLayerLegendGraphicFormatText );
+        getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicFormatElem );
+      }
+
+      // no parameters on custom hrefUrl, because should link directly to graphic
+      if ( !customHrefString )
+      {
+        QUrl mapUrl( hrefString );
+        mapUrl.addQueryItem( "SERVICE", "WMS" );
+        mapUrl.addQueryItem( "VERSION", version );
+        mapUrl.addQueryItem( "REQUEST", "GetLegendGraphic" );
+        mapUrl.addQueryItem( "LAYER", mProjectParser->useLayerIDs() ? currentLayer->id() : currentLayer->name() );
+        mapUrl.addQueryItem( "FORMAT", "image/png" );
+        mapUrl.addQueryItem( "STYLE", styleNameText.data() );
+        if ( version == "1.3.0" )
+        {
+          mapUrl.addQueryItem( "SLD_VERSION", "1.1.0" );
+        }
+        hrefString = mapUrl.toString();
+      }
+
+      QDomElement getLayerLegendGraphicORElem = doc.createElement( "OnlineResource" );
+      getLayerLegendGraphicORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+      getLayerLegendGraphicORElem.setAttribute( "xlink:type", "simple" );
+      getLayerLegendGraphicORElem.setAttribute( "xlink:href", hrefString );
+      getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicORElem );
+      styleElem.appendChild( getLayerLegendGraphicElem );
+    }
+    layerElem.appendChild( styleElem );
+  }
+}
+
+
 void QgsWMSProjectParser::addLayers( QDomDocument &doc,
                                      QDomElement &parentLayer,
                                      const QDomElement &legendElem,
@@ -1079,81 +1165,8 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
         QgsConfigParserUtils::appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
       }
 
-      //only one default style in project file mode
-      QDomElement styleElem = doc.createElement( "Style" );
-      QDomElement styleNameElem = doc.createElement( "Name" );
-      QDomText styleNameText = doc.createTextNode( "default" );
-      styleNameElem.appendChild( styleNameText );
-      QDomElement styleTitleElem = doc.createElement( "Title" );
-      QDomText styleTitleText = doc.createTextNode( "default" );
-      styleTitleElem.appendChild( styleTitleText );
-      styleElem.appendChild( styleNameElem );
-      styleElem.appendChild( styleTitleElem );
-
-      // QString LegendURL for explicit layerbased GetLegendGraphic request
-      QDomElement getLayerLegendGraphicElem = doc.createElement( "LegendURL" );
-      QString hrefString = currentLayer->legendUrl();
-      bool customHrefString;
-      if ( !hrefString.isEmpty() )
-      {
-        customHrefString = true;
-      }
-      else
-      {
-        customHrefString = false;
-        hrefString = serviceUrl();
-      }
-      if ( hrefString.isEmpty() )
-      {
-        hrefString = getCapaServiceUrl( doc );
-      }
-      if ( !hrefString.isEmpty() )
-      {
-        QStringList getLayerLegendGraphicFormats;
-        if ( !customHrefString )
-        {
-          getLayerLegendGraphicFormats << "image/png"; // << "jpeg" << "image/jpeg"
-
-        }
-        else
-        {
-          getLayerLegendGraphicFormats << currentLayer->legendUrlFormat();
-        }
-
-        for ( int i = 0; i < getLayerLegendGraphicFormats.size(); ++i )
-        {
-          QDomElement getLayerLegendGraphicFormatElem = doc.createElement( "Format" );
-          QString getLayerLegendGraphicFormat = getLayerLegendGraphicFormats[i];
-          QDomText getLayerLegendGraphicFormatText = doc.createTextNode( getLayerLegendGraphicFormat );
-          getLayerLegendGraphicFormatElem.appendChild( getLayerLegendGraphicFormatText );
-          getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicFormatElem );
-        }
-
-        // no parameters on custom hrefUrl, because should link directly to graphic
-        if ( !customHrefString )
-        {
-          QUrl mapUrl( hrefString );
-          mapUrl.addQueryItem( "SERVICE", "WMS" );
-          mapUrl.addQueryItem( "VERSION", version );
-          mapUrl.addQueryItem( "REQUEST", "GetLegendGraphic" );
-          mapUrl.addQueryItem( "LAYER", mProjectParser->useLayerIDs() ? currentLayer->id() : currentLayer->name() );
-          mapUrl.addQueryItem( "FORMAT", "image/png" );
-          mapUrl.addQueryItem( "STYLE", styleNameText.data() );
-          if ( version == "1.3.0" )
-          {
-            mapUrl.addQueryItem( "SLD_VERSION", "1.1.0" );
-          }
-          hrefString = mapUrl.toString();
-        }
-
-        QDomElement getLayerLegendGraphicORElem = doc.createElement( "OnlineResource" );
-        getLayerLegendGraphicORElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
-        getLayerLegendGraphicORElem.setAttribute( "xlink:type", "simple" );
-        getLayerLegendGraphicORElem.setAttribute( "xlink:href", hrefString );
-        getLayerLegendGraphicElem.appendChild( getLayerLegendGraphicORElem );
-        styleElem.appendChild( getLayerLegendGraphicElem );
-      }
-      layerElem.appendChild( styleElem );
+      // add details about supported styles of the layer
+      addLayerStyles( currentLayer, doc, layerElem, version );
 
       //min/max scale denominatormScaleBasedVisibility
       if ( currentLayer->hasScaleBasedVisibility() )
@@ -1275,6 +1288,33 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
     parentLayer.appendChild( layerElem );
   }
 }
+
+
+void QgsWMSProjectParser::addOWSLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem ) const
+{
+  foreach ( const QString& styleName, currentLayer->styleManager()->styles() )
+  {
+    if ( styleName.isEmpty() )
+      continue; // do not explicitly list the default style with no name
+
+    QDomElement styleListElem = doc.createElement( "StyleList" );
+    //only one default style in project file mode
+    QDomElement styleElem = doc.createElement( "Style" );
+    styleElem.setAttribute( "current", "true" );
+    QDomElement styleNameElem = doc.createElement( "Name" );
+    QDomText styleNameText = doc.createTextNode( styleName );
+    styleNameElem.appendChild( styleNameText );
+    QDomElement styleTitleElem = doc.createElement( "Title" );
+    QDomText styleTitleText = doc.createTextNode( styleName );
+    styleTitleElem.appendChild( styleTitleText );
+    styleElem.appendChild( styleNameElem );
+    styleElem.appendChild( styleTitleElem );
+    styleListElem.appendChild( styleElem );
+    layerElem.appendChild( styleListElem );
+  }
+}
+
+
 
 void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
                                         QDomElement &parentElem,
@@ -1475,20 +1515,7 @@ void QgsWMSProjectParser::addOWSLayers( QDomDocument &doc,
         combinedBBox.combineExtentWith( &BBox );
       }
 
-      QDomElement styleListElem = doc.createElement( "StyleList" );
-      //only one default style in project file mode
-      QDomElement styleElem = doc.createElement( "Style" );
-      styleElem.setAttribute( "current", "true" );
-      QDomElement styleNameElem = doc.createElement( "Name" );
-      QDomText styleNameText = doc.createTextNode( "default" );
-      styleNameElem.appendChild( styleNameText );
-      QDomElement styleTitleElem = doc.createElement( "Title" );
-      QDomText styleTitleText = doc.createTextNode( "default" );
-      styleTitleElem.appendChild( styleTitleText );
-      styleElem.appendChild( styleNameElem );
-      styleElem.appendChild( styleTitleElem );
-      styleListElem.appendChild( styleElem );
-      layerElem.appendChild( styleListElem );
+      addOWSLayerStyles( currentLayer, doc, layerElem );
 
       //keyword list
       if ( !currentLayer->keywordList().isEmpty() )
@@ -1568,7 +1595,7 @@ int QgsWMSProjectParser::layersAndStyles( QStringList& layers, QStringList& styl
     if ( !currentLayerName.isNull() )
     {
       layers << currentLayerName;
-      styles << "default";
+      styles << QString();
     }
   }
   return 0;
