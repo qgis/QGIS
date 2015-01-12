@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>424</width>
-    <height>294</height>
+    <width>649</width>
+    <height>384</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,10 +26,60 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mFilenameDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item>
     <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QgsDoubleSpinBox" name="mWidthSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>1</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="specialValueText">
+          <string>Original</string>
+         </property>
+         <property name="decimals">
+          <number>6</number>
+         </property>
+         <property name="maximum">
+          <double>99999999.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.200000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mWidthDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsUnitSelectionWidget" name="mWidthUnitWidget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
      <item row="0" column="1">
       <widget class="QLabel" name="mTextureWidthLabel">
        <property name="text">
@@ -40,26 +90,30 @@
        </property>
       </widget>
      </item>
-     <item row="1" column="2">
-      <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+     <item row="4" column="1">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Opacity</string>
        </property>
-       <property name="suffix">
-        <string> °</string>
-       </property>
-       <property name="maximum">
-        <double>360.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.500000000000000</double>
+       <property name="buddy">
+        <cstring>mSliderTransparency</cstring>
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
+     <item row="5" column="2">
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="3" column="1">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Coord mode</string>
@@ -70,6 +124,36 @@
       </widget>
      </item>
      <item row="2" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="suffix">
+          <string> °</string>
+         </property>
+         <property name="maximum">
+          <double>360.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.500000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mRotationDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="3" column="2">
       <widget class="QComboBox" name="cboCoordinateMode">
        <item>
         <property name="text">
@@ -83,17 +167,7 @@
        </item>
       </widget>
      </item>
-     <item row="1" column="1">
-      <widget class="QLabel" name="mRotationLabel">
-       <property name="text">
-        <string>Rotation</string>
-       </property>
-       <property name="buddy">
-        <cstring>mRotationSpinBox</cstring>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" rowspan="5">
+     <item row="0" column="0" rowspan="6">
       <widget class="QLabel" name="mLabelImagePreview">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -124,37 +198,8 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QgsDoubleSpinBox" name="mWidthSpinBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>1</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="specialValueText">
-          <string>Original</string>
-         </property>
-         <property name="decimals">
-          <number>6</number>
-         </property>
-         <property name="maximum">
-          <double>99999999.000000000000000</double>
-         </property>
-         <property name="singleStep">
-          <double>0.200000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QgsUnitSelectionWidget" name="mWidthUnitWidget" native="true"/>
-       </item>
-      </layout>
-     </item>
-     <item row="3" column="2">
-      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0">
+     <item row="4" column="2">
+      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,0,0">
        <item>
         <widget class="QSlider" name="mSliderTransparency">
          <property name="sizePolicy">
@@ -190,30 +235,24 @@
          </property>
         </widget>
        </item>
+       <item>
+        <widget class="QgsDataDefinedButton" name="mOpacityDDBtn">
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </item>
-     <item row="3" column="1">
-      <widget class="QLabel" name="label">
+     <item row="2" column="1">
+      <widget class="QLabel" name="mRotationLabel">
        <property name="text">
-        <string>Opacity</string>
+        <string>Rotation</string>
        </property>
        <property name="buddy">
-        <cstring>mSliderTransparency</cstring>
+        <cstring>mRotationSpinBox</cstring>
        </property>
       </widget>
-     </item>
-     <item row="4" column="2">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>0</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>
@@ -276,24 +315,18 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
+        <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer_2">
@@ -322,20 +355,21 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mImageLineEdit</tabstop>
   <tabstop>mBrowseToolButton</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
-  <tabstop>mWidthUnitWidget</tabstop>
-  <tabstop>mRotationSpinBox</tabstop>
   <tabstop>cboCoordinateMode</tabstop>
   <tabstop>mSliderTransparency</tabstop>
   <tabstop>mSpinTransparency</tabstop>
   <tabstop>mSpinOffsetX</tabstop>
   <tabstop>mSpinOffsetY</tabstop>
-  <tabstop>mOffsetUnitWidget</tabstop>
-  <tabstop>mDataDefinedPropertiesButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

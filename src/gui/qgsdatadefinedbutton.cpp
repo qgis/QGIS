@@ -169,7 +169,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
           fieldType = tr( "string" );
           break;
         case QVariant::Int:
-          fieldMatch = mDataTypes.testFlag( Int );
+          fieldMatch = mDataTypes.testFlag( Int ) || mDataTypes.testFlag( Double );
           fieldType = tr( "integer" );
           break;
         case QVariant::Double:
