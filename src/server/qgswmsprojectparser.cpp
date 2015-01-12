@@ -199,6 +199,9 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     }
   }
 
+  if ( layers.count() == 0 )
+    throw QgsMapServiceException( "LayerNotDefined", QString( "Layer \"%1\" does not exist" ).arg( lName ) );
+
   return layers.values();
 }
 
