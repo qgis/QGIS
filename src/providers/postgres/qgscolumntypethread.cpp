@@ -62,7 +62,7 @@ void QgsGeomColumnTypeThread::run()
                                 mAllowGeometrylessTables ) ||
        layerProperties.isEmpty() )
   {
-    mConn->disconnect();
+    mConn->unref();
     mConn = 0;
     return;
   }
@@ -108,6 +108,6 @@ void QgsGeomColumnTypeThread::run()
   emit progress( 0, 0 );
   emit progressMessage( tr( "Table retrieval finished." ) );
 
-  mConn->disconnect();
+  mConn->unref();
   mConn = 0;
 }

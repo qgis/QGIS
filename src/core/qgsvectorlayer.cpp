@@ -65,6 +65,7 @@
 #include "qgsrendercontext.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
+#include "qgsvectorlayereditpassthrough.h"
 #include "qgsvectorlayereditutils.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsvectorlayerjoinbuffer.h"
@@ -1227,7 +1228,14 @@ bool QgsVectorLayer::startEditing()
     return false;
   }
 
-  mEditBuffer = new QgsVectorLayerEditBuffer( this );
+  if ( mDataProvider->transaction() )
+  {
+    mEditBuffer = new QgsVectorLayerEditPassthrough( this );
+  }
+  else
+  {
+    mEditBuffer = new QgsVectorLayerEditBuffer( this );
+  }
   // forward signals
   connect( mEditBuffer, SIGNAL( layerModified() ), this, SLOT( invalidateSymbolCountedFlag() ) );
   connect( mEditBuffer, SIGNAL( layerModified() ), this, SIGNAL( layerModified() ) ); // TODO[MD]: necessary?
@@ -2147,7 +2155,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
-  Q_FOREACH ( int attr, attrs )
+  Q_FOREACH( int attr, attrs )
   {
     if ( deleteAttribute( attr ) )
     {
@@ -2726,21 +2734,42 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 
 void QgsVectorLayer::beginEditCommand( QString text )
 {
-  undoStack()->beginMacro( text );
-  emit editCommandStarted( text );
+  if ( !mDataProvider )
+  {
+    return;
+  }
+  if ( !mDataProvider->transaction() )
+  {
+    undoStack()->beginMacro( text );
+    emit editCommandStarted( text );
+  }
 }
 
 void QgsVectorLayer::endEditCommand()
 {
-  undoStack()->endMacro();
-  emit editCommandEnded();
+  if ( !mDataProvider )
+  {
+    return;
+  }
+  if ( !mDataProvider->transaction() )
+  {
+    undoStack()->endMacro();
+    emit editCommandEnded();
+  }
 }
 
 void QgsVectorLayer::destroyEditCommand()
 {
-  undoStack()->endMacro();
-  undoStack()->undo();
-  emit editCommandDestroyed();
+  if ( !mDataProvider )
+  {
+    return;
+  }
+  if ( !mDataProvider->transaction() )
+  {
+    undoStack()->endMacro();
+    undoStack()->undo();
+    emit editCommandDestroyed();
+  }
 }
 
 
@@ -2843,7 +2872,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     if ( mEditBuffer )
     {
       QSet<QString> vals;
-      Q_FOREACH ( const QVariant& v, uniqueValues )
+      Q_FOREACH( const QVariant& v, uniqueValues )
       {
         vals << v.toString();
       }
@@ -3569,13 +3598,13 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 
 void QgsVectorLayer::onRelationsLoaded()
 {
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mAttributeEditorElements )
+  Q_FOREACH( QgsAttributeEditorElement* elem, mAttributeEditorElements )
   {
     if ( elem->type() == QgsAttributeEditorElement::AeTypeContainer )
     {
       QgsAttributeEditorContainer* cont = dynamic_cast< QgsAttributeEditorContainer* >( elem );
       QList<QgsAttributeEditorElement*> relations = cont->findElements( QgsAttributeEditorElement::AeTypeRelation );
-      Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
+      Q_FOREACH( QgsAttributeEditorElement* relElem, relations )
       {
         QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
         rel->init( QgsProject::instance()->relationManager() );
@@ -3631,7 +3660,7 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
   elem.setAttribute( "name", mName );
 
-  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
+  Q_FOREACH( QgsAttributeEditorElement* child, mChildren )
   {
     elem.appendChild( child->toDomElement( doc ) );
   }
@@ -3647,7 +3676,7 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
 {
   QList<QgsAttributeEditorElement*> results;
 
-  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
+  Q_FOREACH( QgsAttributeEditorElement* elem, mChildren )
   {
     if ( elem->type() == type )
     {
