@@ -558,5 +558,5 @@ class GeoAlgorithm:
 
     def tr(self, string, context=''):
         if context == '':
-            context = 'GeoAlgorithm'
+            context = self.__class__.__name__
         return QCoreApplication.translate(context, string)

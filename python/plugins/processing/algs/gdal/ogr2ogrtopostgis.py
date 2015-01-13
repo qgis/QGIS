@@ -79,58 +79,66 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Import Vector into PostGIS database (new connection)'
         self.group = '[OGR] Miscellaneous'
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterSelection(self.GTYPE, 'Output geometry type',self.GEOMTYPE, 5))
-        self.addParameter(ParameterCrs(self.S_SRS, 'Input CRS (EPSG Code)',
-                          'EPSG:4326'))
-        self.addParameter(ParameterCrs(self.T_SRS, 'Output CRS (EPSG Code)',
-                          'EPSG:4326'))
-        self.addParameter(ParameterString(self.HOST, 'Host',
-                          'localhost', optional=False))
-        self.addParameter(ParameterString(self.PORT, 'Port',
-                          '5432', optional=False))
-        self.addParameter(ParameterString(self.USER, 'Username',
-                          '', optional=False))
-        self.addParameter(ParameterString(self.DBNAME, 'Database Name',
-                          '', optional=False))
-        self.addParameter(ParameterString(self.PASSWORD, 'Password',
-                          '', optional=False))
-        self.addParameter(ParameterString(self.SCHEMA, 'Schema name',
-                          'public', optional=True))
-        self.addParameter(ParameterString(self.TABLE, 'Table name, leave blank to use input name',
-                          '', optional=True))
-        self.addParameter(ParameterString(self.PK, 'Primary Key',
-                          'id', optional=True))
-        self.addParameter(ParameterString(self.GEOCOLUMN, 'Geometry column name',
-                          'geom', optional=True))
-        self.addParameter(ParameterSelection(self.DIM, 'Vector dimensions',self.DIMLIST, 0))
-        self.addParameter(ParameterString(self.SIMPLIFY, 'Distance tolerance for simplification',
-                          '', optional=True))
-        self.addParameter(ParameterString(self.SEGMENTIZE, 'Maximum distance between 2 nodes (densification)',
-                          '', optional=True))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterSelection(self.GTYPE,
+            self.tr('Output geometry type'), self.GEOMTYPE, 5))
+        self.addParameter(ParameterCrs(self.S_SRS,
+            self.tr('Input CRS'), 'EPSG:4326'))
+        self.addParameter(ParameterCrs(self.T_SRS,
+            self.tr('Output CRS'), 'EPSG:4326'))
+        self.addParameter(ParameterString(self.HOST,
+            self.tr('Host'), 'localhost', optional=False))
+        self.addParameter(ParameterString(self.PORT,
+            self.tr('Port'), '5432', optional=False))
+        self.addParameter(ParameterString(self.USER,
+            self.tr('Username'), '', optional=False))
+        self.addParameter(ParameterString(self.DBNAME,
+            self.tr('Database name'), '', optional=False))
+        self.addParameter(ParameterString(self.PASSWORD,
+            self.tr('Password'), '', optional=False))
+        self.addParameter(ParameterString(self.SCHEMA,
+            self.tr('Schema name'), 'public', optional=True))
+        self.addParameter(ParameterString(self.TABLE,
+            self.tr('Table name, leave blank to use input name'),
+            '', optional=True))
+        self.addParameter(ParameterString(self.PK,
+            self.tr('Primary Key'), 'id', optional=True))
+        self.addParameter(ParameterString(self.GEOCOLUMN,
+            self.tr('Geometry column name'), 'geom', optional=True))
+        self.addParameter(ParameterSelection(self.DIM,
+            self.tr('Vector dimensions'), self.DIMLIST, 0))
+        self.addParameter(ParameterString(self.SIMPLIFY,
+            self.tr('Distance tolerance for simplification'),
+            '', optional=True))
+        self.addParameter(ParameterString(self.SEGMENTIZE,
+            self.tr('Maximum distance between 2 nodes (densification)'),
+            '', optional=True))
         self.addParameter(ParameterExtent(self.SPAT,
-                          'Select features by extent (defined in input layer CRS)'))
+            self.tr('Select features by extent (defined in input layer CRS)')))
         self.addParameter(ParameterBoolean(self.CLIP,
-                          'Clip the input layer using the above (rectangle) extent', False))
-        self.addParameter(ParameterString(self.WHERE, 'Select features using a SQL "WHERE" statement (Ex: column="value")',
-                          '', optional=True))
-        self.addParameter(ParameterString(self.GT, 'Group "n" features per transaction (Default: 20000)',
-                          '', optional=True))
+            self.tr('Clip the input layer using the above (rectangle) extent'),
+            False))
+        self.addParameter(ParameterString(self.WHERE,
+            self.tr('Select features using a SQL "WHERE" statement (Ex: column="value")'),
+            '', optional=True))
+        self.addParameter(ParameterString(self.GT,
+            self.tr('Group N features per transaction (Default: 20000)'),
+            '', optional=True))
         self.addParameter(ParameterBoolean(self.OVERWRITE,
-                          'Overwrite existing table?', True))
+            self.tr('Overwrite existing table'), True))
         self.addParameter(ParameterBoolean(self.APPEND,
-                          'Append to existing table?', False))
+            self.tr('Append to existing table'), False))
         self.addParameter(ParameterBoolean(self.ADDFIELDS,
-                          'Append and add new fields to existing table?', False))
+            self.tr('Append and add new fields to existing table'), False))
         self.addParameter(ParameterBoolean(self.LAUNDER,
-                          'Do not launder columns/table name/s?', False))
+            self.tr('Do not launder columns/table names'), False))
         self.addParameter(ParameterBoolean(self.INDEX,
-                          'Do not create Spatial Index?', False))
+            self.tr('Do not create spatial index'), False))
         self.addParameter(ParameterBoolean(self.SKIPFAILURES,
-                          'Continue after a failure, skipping the failed feature', False))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation options',
-                          '', optional=True))
+            self.tr('Continue after a failure, skipping the failed feature'), False))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options'), '', optional=True))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)

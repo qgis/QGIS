@@ -46,10 +46,10 @@ class OgrInfo(OgrAlgorithm):
         self.name = 'Information'
         self.group = '[OGR] Miscellaneous'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer'),
                           [ParameterVector.VECTOR_TYPE_ANY], False))
 
-        self.addOutput(OutputHTML(self.OUTPUT, 'Layer information'))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Layer information')))
 
     def processAlgorithm(self, progress):
         arguments = []

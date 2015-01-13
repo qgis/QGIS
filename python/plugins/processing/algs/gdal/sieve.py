@@ -50,13 +50,13 @@ class sieve(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Sieve'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
-        self.addParameter(ParameterNumber(self.THRESHOLD, 'Threshold', 0,
-                          9999, 2))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(ParameterNumber(self.THRESHOLD,
+            self.tr('Threshold'), 0, 9999, 2))
         self.addParameter(ParameterSelection(self.CONNECTIONS,
-                          'Pixel connection', self.PIXEL_CONNECTIONS, 0))
+            self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         output = self.getOutputValue(self.OUTPUT)

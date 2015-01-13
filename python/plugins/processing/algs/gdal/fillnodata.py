@@ -51,18 +51,20 @@ class fillnodata(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Fill nodata'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
-        self.addParameter(ParameterNumber(self.DISTANCE, 'Search distance', 0,
-                          9999, 100))
-        self.addParameter(ParameterNumber(self.ITERATIONS, 'Smooth iterations'
-                          , 0, 9999, 0))
-        self.addParameter(ParameterNumber(self.BAND, 'Band to operate on', 1,
-                          9999, 1))
-        self.addParameter(ParameterRaster(self.MASK, 'Validity mask', True))
+        self.addParameter(ParameterRaster(
+            self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(ParameterNumber(self.DISTANCE,
+            self.tr('Search distance'), 0, 9999, 100))
+        self.addParameter(ParameterNumber(self.ITERATIONS,
+            self.tr('Smooth iterations'), 0, 9999, 0))
+        self.addParameter(ParameterNumber(self.BAND,
+            self.tr('Band to operate on'), 1, 9999, 1))
+        self.addParameter(ParameterRaster(self.MASK,
+            self.tr('Validity mask'), True))
         self.addParameter(ParameterBoolean(self.NO_DEFAULT_MASK,
-                          'Do not use default validity mask', False))
+            self.tr('Do not use default validity mask'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         output = self.getOutputValue(self.OUTPUT)

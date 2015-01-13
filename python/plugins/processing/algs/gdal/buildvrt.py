@@ -48,11 +48,15 @@ class buildvrt(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Build Virtual Raster'
         self.group = '[GDAL] Miscellaneous'
-        self.addParameter(ParameterMultipleInput(buildvrt.INPUT, 'Input layers', ParameterMultipleInput.TYPE_RASTER))
-        self.addParameter(ParameterSelection(buildvrt.RESOLUTION, 'Resolution', buildvrt.RESOLUTION_OPTIONS, 0))
-        self.addParameter(ParameterBoolean(buildvrt.SEPARATE, 'Layer stack', True))
-        self.addParameter(ParameterBoolean(buildvrt.PROJ_DIFFERENCE, 'Allow projection difference', False))
-        self.addOutput(OutputRaster(buildvrt.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterMultipleInput(self.INPUT,
+            self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
+        self.addParameter(ParameterSelection(self.RESOLUTION,
+            self.tr('Resolution'), self.RESOLUTION_OPTIONS, 0))
+        self.addParameter(ParameterBoolean(self.SEPARATE,
+            self.tr('Layer stack'), True))
+        self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
+            self.tr('Allow projection difference'), False))
+        self.addOutput(OutputRaster(buildvrt.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         arguments = []

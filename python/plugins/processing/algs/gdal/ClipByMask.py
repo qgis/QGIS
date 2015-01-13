@@ -55,19 +55,19 @@ class ClipByMask(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Clip raster by mask layer'
         self.group = '[GDAL] Extraction'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
-        self.addParameter(ParameterVector(self.MASK, 'Mask layer',
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(ParameterVector(self.MASK, self.tr('Mask layer'),
                           [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.NO_DATA,
-            'Nodata value, leave as none to take the nodata value from input',
+            self.tr("Nodata value, leave as 'none' to take the nodata value from input"),
             'none'))
         self.addParameter(ParameterBoolean(self.ALPHA_BAND,
-                          'Create and output alpha band', False))
+            self.tr('Create and output alpha band'), False))
         self.addParameter(ParameterBoolean(self.KEEP_RESOLUTION,
-                          'Keep resolution of output raster', False))
+            self.tr('Keep resolution of output raster'), False))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+            self.tr('Additional creation parameters'), '', optional=True))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         out = self.getOutputValue(self.OUTPUT)

@@ -48,21 +48,21 @@ class slope(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Slope'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(self.BAND,
+            self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
+            self.tr('Compute edges'), False))
         self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-                "Use Zevenbergen&Thorne formula (instead of the Horn's one)",
-                False))
+            self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+            False))
         self.addParameter(ParameterBoolean(self.AS_PERCENT,
-                          'Slope expressed as percent (instead of degrees)',
-                          False))
+            self.tr('Slope expressed as percent (instead of degrees)'), False))
         self.addParameter(ParameterNumber(self.SCALE,
-                          'Scale (ratio of vert. units to horiz.)', 0.0,
-                          99999999.999999, 1.0))
+            self.tr('Scale (ratio of vert. units to horiz.)'),
+            0.0, 99999999.999999, 1.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
 
     def processAlgorithm(self, progress):
         arguments = ['slope']

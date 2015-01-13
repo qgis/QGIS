@@ -57,16 +57,17 @@ class ColorRelief(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Color relief'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(
+            self.BAND, self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
+            self.tr('Compute edges'), False))
         self.addParameter(ParameterFile(self.COLOR_TABLE,
-                          'Color configuration file', optional=False))
+            self.tr('Color configuration file'), optional=False))
         self.addParameter(ParameterSelection(self.MATCH_MODE,
-                          'Matching mode', self.MATCHING_MODES, 0))
+            self.tr('Matching mode'), self.MATCHING_MODES, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
 
     def processAlgorithm(self, progress):
         arguments = ['color-relief']

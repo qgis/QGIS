@@ -54,14 +54,14 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
         self.name = 'Clip vectors by extent'
         self.group = '[OGR] Geoprocessing'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterExtent(self.CLIP_EXTENT,
-                          'Clip extent'))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation Options',
-                          '', optional=True))
+            self.tr('Clip extent')))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)

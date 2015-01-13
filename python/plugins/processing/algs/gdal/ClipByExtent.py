@@ -50,14 +50,15 @@ class ClipByExtent(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Clip raster by extent'
         self.group = '[GDAL] Extraction'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
+        self.addParameter(ParameterRaster(
+            self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterString(self.NO_DATA,
-            'Nodata value, leave as none to take the nodata value from input',
+            self.tr("Nodata value, leave as 'none' to take the nodata value from input"),
             'none'))
-        self.addParameter(ParameterExtent(self.PROJWIN, 'Clipping extent'))
+        self.addParameter(ParameterExtent(self.PROJWIN, self.tr('Clipping extent')))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+            self.tr('Additional creation parameters'), '', optional=True))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         out = self.getOutputValue(self.OUTPUT)

@@ -43,20 +43,22 @@ class merge(GdalAlgorithm):
     SEPARATE = 'SEPARATE'
     RTYPE = 'RTYPE'
 
-    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64',
+            'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def defineCharacteristics(self):
         self.name = 'Merge'
         self.group = '[GDAL] Miscellaneous'
-        self.addParameter(ParameterMultipleInput(merge.INPUT, 'Input layers',
-                          ParameterMultipleInput.TYPE_RASTER))
+        self.addParameter(ParameterMultipleInput(merge.INPUT,
+            self.tr('Input layers'), ParameterMultipleInput.TYPE_RASTER))
         self.addParameter(ParameterBoolean(merge.PCT,
-                          'Grab pseudocolor table from first layer', False))
-        self.addParameter(ParameterBoolean(merge.SEPARATE, 'Layer stack',
-                          False))
-        self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
-			  self.TYPE, 5))
-        self.addOutput(OutputRaster(merge.OUTPUT, 'Output layer'))
+            self.tr('Grab pseudocolor table from first layer'), False))
+        self.addParameter(ParameterBoolean(merge.SEPARATE,
+            self.tr('Layer stack'), False))
+        self.addParameter(ParameterSelection(self.RTYPE,
+            self.tr('Output raster type'), self.TYPE, 5))
+
+        self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         arguments = []

@@ -63,16 +63,17 @@ class gdaladdo(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Build overviews (pyramids)'
         self.group = '[GDAL] Miscellaneous'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
-        self.addParameter(ParameterString(self.LEVELS, 'Overview levels',
-                          '2 4 8 16'))
+        self.addParameter(ParameterRaster(
+            self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(ParameterString(self.LEVELS,
+            self.tr('Overview levels'), '2 4 8 16'))
         self.addParameter(ParameterBoolean(self.CLEAN,
-                          'Remove all existing overviews', False))
+            self.tr('Remove all existing overviews'), False))
         self.addParameter(ParameterSelection(self.RESAMPLING_METHOD,
-                          'Resampling method', self.METHODS, 0))
-        self.addParameter(ParameterSelection(self.FORMAT, 'Overview format',
-                          self.FORMATS, 0))
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer', True))
+            self.tr('Resampling method'), self.METHODS, 0))
+        self.addParameter(ParameterSelection(self.FORMAT,
+            self.tr('Overview format'), self.FORMATS, 0))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer'), True))
 
     def processAlgorithm(self, progress):
         inFile = self.getParameterValue(self.INPUT)

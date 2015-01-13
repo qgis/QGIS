@@ -50,7 +50,8 @@ class GridAverage(GdalAlgorithm):
     OUTPUT = 'OUTPUT'
     RTYPE = 'RTYPE'
 
-    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64',
+            'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def commandLineName(self):
         return "gdalogr:gridaverage"
@@ -58,24 +59,25 @@ class GridAverage(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Grid (Moving average)'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterTableField(self.Z_FIELD, 'Z field',
-                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER,
-                          True))
-        self.addParameter(ParameterNumber(self.RADIUS_1, 'Radius 1',
-                          0.0, 99999999.999999, 0.0))
-        self.addParameter(ParameterNumber(self.RADIUS_2, 'Radius 2',
-                          0.0, 99999999.999999, 0.0))
-        self.addParameter(ParameterNumber(self.MIN_POINTS, 'Min points',
-                          0.0, 99999999.999999, 0.0))
-        self.addParameter(ParameterNumber(self.ANGLE, 'Angle',
-                          0.0, 359.0, 0.0))
-        self.addParameter(ParameterNumber(self.NODATA, 'Nodata',
-                          0.0, 99999999.999999, 0.0))
-        self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
-			  self.TYPE, 5))
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterTableField(self.Z_FIELD,
+            self.tr('Z field'), self.INPUT,
+            ParameterTableField.DATA_TYPE_NUMBER, True))
+        self.addParameter(ParameterNumber(self.RADIUS_1,
+            self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
+        self.addParameter(ParameterNumber(self.RADIUS_2,
+            self.tr('Radius 2'), 0.0, 99999999.999999, 0.0))
+        self.addParameter(ParameterNumber(self.MIN_POINTS,
+            self.tr('Min points'), 0.0, 99999999.999999, 0.0))
+        self.addParameter(ParameterNumber(self.ANGLE,
+            self.tr('Angle'), 0.0, 359.0, 0.0))
+        self.addParameter(ParameterNumber(self.NODATA,
+            self.tr('Nodata'), 0.0, 99999999.999999, 0.0))
+        self.addParameter(ParameterSelection(self.RTYPE,
+            self.tr('Output raster type'), self.TYPE, 5))
+
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
 
     def processAlgorithm(self, progress):
         arguments = ['-l']

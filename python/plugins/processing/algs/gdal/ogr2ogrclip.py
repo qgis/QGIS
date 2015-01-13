@@ -53,14 +53,14 @@ class Ogr2OgrClip(OgrAlgorithm):
         self.name = 'Clip vectors by polygon'
         self.group = '[OGR] Geoprocessing'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterVector(self.CLIP_LAYER, 'Clip layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON], False))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation Options',
-                          '', optional=True))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.CLIP_LAYER,
+            self.tr('Clip layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
