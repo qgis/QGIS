@@ -111,7 +111,11 @@ class QgsFeatureRendererV2
     virtual QDomElement save( QDomDocument& doc );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs
-    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const;
+    //! @deprecated since 2.8 - use the other override with styleName
+    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const /Deprecated/;
+    //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
+    //! @note added in 2.8
+    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
 
     /** create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document

@@ -452,11 +452,11 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   }
 
   //prepare filter expression
-  std::auto_ptr<QgsExpression> filterExpression;
+  QScopedPointer<QgsExpression> filterExpression;
   bool activeFilter = false;
   if ( mFilterFeatures && !mFeatureFilter.isEmpty() )
   {
-    filterExpression = std::auto_ptr<QgsExpression>( new QgsExpression( mFeatureFilter ) );
+    filterExpression.reset( new QgsExpression( mFeatureFilter ) );
     if ( !filterExpression->hasParserError() )
     {
       activeFilter = true;
@@ -528,7 +528,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
   while ( fit.nextFeature( f ) && counter < mMaximumNumberOfFeatures )
   {
     //check feature against filter
-    if ( activeFilter )
+    if ( activeFilter && !filterExpression.isNull() )
     {
       QVariant result = filterExpression->evaluate( &f, layer->pendingFields() );
       // skip this feature if the filter evaluation is false

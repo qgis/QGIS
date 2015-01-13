@@ -334,7 +334,7 @@ class CORE_EXPORT QgsAtlasComposition : public QObject
 
     QgsFeature mCurrentFeature;
 
-    std::auto_ptr<QgsExpression> mFilenameExpr;
+    QScopedPointer<QgsExpression> mFilenameExpr;
 
     // bounding box of the current feature transformed into map crs
     QgsRectangle mTransformedFeatureBounds;

@@ -2007,7 +2007,7 @@ bool QgsVectorLayer::writeSld( QDomNode& node, QDomDocument& doc, QString& error
 
   if ( hasGeometryType() )
   {
-    node.appendChild( mRendererV2->writeSld( doc, *this ) );
+    node.appendChild( mRendererV2->writeSld( doc, name() ) );
   }
   return true;
 }
