@@ -304,16 +304,43 @@ void QgsLayerTreeUtils::removeInvalidLayers( QgsLayerTreeGroup* group )
     group->removeChildNode( node );
 }
 
-void QgsLayerTreeUtils::removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group )
+QStringList QgsLayerTreeUtils::invisibleLayerList( QgsLayerTreeNode *node )
+{
+  QStringList list;
+
+  if ( QgsLayerTree::isGroup( node ) )
+  {
+    foreach ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+    {
+      list << invisibleLayerList( child );
+    }
+  }
+  else if ( QgsLayerTree::isLayer( node ) )
+  {
+    QgsLayerTreeLayer *layer = QgsLayerTree::toLayer( node );
+
+    if ( !layer->isVisible() )
+      list << layer->layerId();
+  }
+
+  return list;
+}
+
+void QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group )
 {
   foreach ( QgsLayerTreeNode* child, group->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
     {
       if ( child->customProperty( "embedded" ).toInt() )
+      {
+        child->setCustomProperty( "embedded-invisible-layers", invisibleLayerList( child ) );
         QgsLayerTree::toGroup( child )->removeAllChildren();
+      }
       else
-        removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( child ) );
+      {
+        replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( child ) );
+      }
     }
   }
 }

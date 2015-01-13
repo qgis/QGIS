@@ -252,10 +252,11 @@ class QgsProject : QObject
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
     */
+
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
      */
-    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
+    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
     /** Convenience function to set snap settings per layer */
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
@@ -304,9 +305,6 @@ class QgsProject : QObject
 
     //! @note not available in python bindings
     // void loadEmbeddedNodes( QgsLayerTreeGroup* group );
-
-    //! @note not available in python bindings
-    // void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
 
   signals:
     //! emitted when project is being read

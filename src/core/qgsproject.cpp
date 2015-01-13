@@ -974,7 +974,7 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup* group )
         QString projectPath = readPath( childGroup->customProperty( "embedded_project" ).toString() );
         childGroup->setCustomProperty( "embedded_project", projectPath );
 
-        QgsLayerTreeGroup* newGroup = createEmbeddedGroup( childGroup->name(), projectPath );
+        QgsLayerTreeGroup* newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( "embedded-invisible-layers" ).toStringList() );
         if ( newGroup )
         {
           QList<QgsLayerTreeNode*> clonedChildren;
@@ -1083,7 +1083,7 @@ bool QgsProject::write()
 
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode* clonedRoot = mRootGroup->clone();
-  QgsLayerTreeUtils::removeChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
+  QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ) ); // convert absolute paths to relative paths if required
   clonedRoot->writeXML( qgisNode );
   delete clonedRoot;
@@ -1794,7 +1794,7 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
 }
 
 
-QgsLayerTreeGroup* QgsProject::createEmbeddedGroup( const QString& groupName, const QString& projectFilePath )
+QgsLayerTreeGroup* QgsProject::createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers )
 {
   //open project file, get layer ids in group, add the layers
   QFile projectFile( projectFilePath );
@@ -1862,6 +1862,12 @@ QgsLayerTreeGroup* QgsProject::createEmbeddedGroup( const QString& groupName, co
       QStringList thisProjectIdentifyDisabledLayers = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
       thisProjectIdentifyDisabledLayers.append( layerId );
       QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", thisProjectIdentifyDisabledLayers );
+    }
+
+    QgsLayerTreeLayer *layer = newGroup->findLayer( layerId );
+    if ( layer )
+    {
+      layer->setVisible( invisibleLayers.contains( layerId ) ? Qt::Unchecked : Qt::Checked );
     }
   }
 

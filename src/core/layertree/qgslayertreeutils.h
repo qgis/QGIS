@@ -23,6 +23,7 @@ class QDomElement;
 class QDomDocument;
 class QStringList;
 
+class QgsLayerTreeNode;
 class QgsLayerTreeGroup;
 class QgsLayerTreeLayer;
 
@@ -55,12 +56,14 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Remove layer nodes that refer to invalid layers
     static void removeInvalidLayers( QgsLayerTreeGroup* group );
 
-    //! Remove subtree of embedded groups. Useful when saving layer tree
-    static void removeChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
+    //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
+    static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup* group );
 
     //! @note not available in python bindings
     static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
 
+    //! get invisible layers
+    static QStringList invisibleLayerList( QgsLayerTreeNode *node );
 };
 
 #endif // QGSLAYERTREEUTILS_H

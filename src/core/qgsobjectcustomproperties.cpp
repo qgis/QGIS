@@ -88,8 +88,24 @@ void QgsObjectCustomProperties::readXml( const QDomNode& parentNode, const QStri
     QString key = propElement.attribute( "key" );
     if ( key.isEmpty() || key.startsWith( keyStartsWith ) )
     {
-      QString value = propElement.attribute( "value" );
-      mMap[key] = QVariant( value );
+      if ( propElement.hasAttribute( "value" ) )
+      {
+        QString value = propElement.attribute( "value" );
+        mMap[key] = QVariant( value );
+      }
+      else
+      {
+        QStringList list;
+
+        for ( QDomElement itemElement = propElement.firstChildElement( "value" );
+              !itemElement.isNull();
+              itemElement = itemElement.nextSiblingElement( "value" ) )
+        {
+          list << itemElement.text();
+        }
+
+        mMap[key] = QVariant( list );
+      }
     }
   }
 
@@ -110,7 +126,19 @@ void QgsObjectCustomProperties::writeXml( QDomNode& parentNode, QDomDocument& do
   {
     QDomElement propElement = doc.createElement( "property" );
     propElement.setAttribute( "key", it.key() );
-    propElement.setAttribute( "value", it.value().toString() );
+    if ( it.value().canConvert<QString>() )
+    {
+      propElement.setAttribute( "value", it.value().toString() );
+    }
+    else if ( it.value().canConvert<QStringList>() )
+    {
+      foreach ( QString value, it.value().toStringList() )
+      {
+        QDomElement itemElement = doc.createElement( "value" );
+        itemElement.appendChild( doc.createTextNode( value ) );
+        propElement.appendChild( itemElement );
+      }
+    }
     propsElement.appendChild( propElement );
   }
 

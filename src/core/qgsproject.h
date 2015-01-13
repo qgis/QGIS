@@ -299,7 +299,7 @@ class CORE_EXPORT QgsProject : public QObject
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
      */
-    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
+    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
     /** Convenience function to set snap settings per layer */
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
