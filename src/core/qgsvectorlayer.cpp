@@ -1036,7 +1036,7 @@ bool QgsVectorLayer::deleteVertex( QgsFeatureId atFeatureId, int atVertex )
 }
 
 
-bool QgsVectorLayer::deleteSelectedFeatures()
+bool QgsVectorLayer::deleteSelectedFeatures( int* deletedCount )
 {
   if ( !( mDataProvider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
@@ -1048,19 +1048,24 @@ bool QgsVectorLayer::deleteSelectedFeatures()
     return false;
   }
 
-  if ( mSelectedFeatureIds.size() == 0 )
-    return true;
-
-  while ( mSelectedFeatureIds.size() > 0 )
+  int deleted = 0;
+  int count = mSelectedFeatureIds.size();
+  // Make a copy since deleteFeature modifies mSelectedFeatureIds
+  QgsFeatureIds selectedFeatures( mSelectedFeatureIds );
+  foreach ( QgsFeatureId fid, selectedFeatures )
   {
-    QgsFeatureId fid = *mSelectedFeatureIds.begin();
-    deleteFeature( fid );  // removes from selection
+    deleted += deleteFeature( fid );  // removes from selection
   }
 
   triggerRepaint();
   updateExtents();
 
-  return true;
+  if ( deletedCount )
+  {
+    *deletedCount = deleted;
+  }
+
+  return deleted == count;
 }
 
 int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
