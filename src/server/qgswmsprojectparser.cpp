@@ -23,6 +23,7 @@
 #include "qgsmaplayerstylemanager.h"
 #include "qgsmapserviceexception.h"
 #include "qgspallabeling.h"
+#include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
@@ -40,6 +41,10 @@
 
 #include <QFileInfo>
 #include <QTextDocument>
+
+// style name to use for the unnamed style of layers (must not be empty name in WMS)
+// this implies that a layer style called "default" will not be usable in WMS server
+#define EMPTY_STYLE_NAME   "default"
 
 QgsWMSProjectParser::QgsWMSProjectParser( const QString& filePath )
     : QgsWMSConfigParser()
@@ -119,7 +124,7 @@ QList<QgsMapLayer*> QgsWMSProjectParser::mapLayerFromStyle( const QString& lName
     if ( !styleName.isEmpty() )
     {
       // try to apply the specified style
-      if ( !ml->styleManager()->setCurrentStyle( styleName ) )
+      if ( !ml->styleManager()->setCurrentStyle( styleName != EMPTY_STYLE_NAME ? styleName : QString() ) )
         throw QgsMapServiceException( "StyleNotDefined", QString( "Style \"%1\" does not exist for layer \"%2\"" ).arg( styleName ).arg( lName ) );
     }
     return QList<QgsMapLayer*>() << ml;
@@ -901,10 +906,10 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement elem, bool useDrawingOrde
 
 void QgsWMSProjectParser::addLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem, const QString& version ) const
 {
-  foreach ( const QString& styleName, currentLayer->styleManager()->styles() )
+  foreach ( QString styleName, currentLayer->styleManager()->styles() )
   {
     if ( styleName.isEmpty() )
-      continue; // do not explicitly list the default style with no name
+      styleName = EMPTY_STYLE_NAME;
 
     QDomElement styleElem = doc.createElement( "Style" );
     QDomElement styleNameElem = doc.createElement( "Name" );
@@ -1292,10 +1297,10 @@ void QgsWMSProjectParser::addLayers( QDomDocument &doc,
 
 void QgsWMSProjectParser::addOWSLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem ) const
 {
-  foreach ( const QString& styleName, currentLayer->styleManager()->styles() )
+  foreach ( QString styleName, currentLayer->styleManager()->styles() )
   {
     if ( styleName.isEmpty() )
-      continue; // do not explicitly list the default style with no name
+      styleName = EMPTY_STYLE_NAME;
 
     QDomElement styleListElem = doc.createElement( "StyleList" );
     //only one default style in project file mode
@@ -1630,7 +1635,8 @@ QDomDocument QgsWMSProjectParser::getStyles( QStringList& layerList ) const
   {
     QString layerName;
     layerName = layerList.at( i );
-    QList<QgsMapLayer*> currentLayerList = mapLayerFromStyle( layerName, "", true );
+    // don't use a cache - we may be changing styles
+    QList<QgsMapLayer*> currentLayerList = mapLayerFromStyle( layerName, "", false );
     if ( currentLayerList.size() < 1 )
     {
       throw QgsMapServiceException( "Error", QString( "The layer for the TypeName '%1' is not found" ).arg( layerName ) );
@@ -1647,10 +1653,21 @@ QDomDocument QgsWMSProjectParser::getStyles( QStringList& layerList ) const
       QDomElement namedLayerNode = myDocument.createElement( "NamedLayer" );
       root.appendChild( namedLayerNode );
 
-      QString errorMsg;
-      if ( !layer->writeSld( namedLayerNode, myDocument, errorMsg ) )
+      // store the Name element
+      QDomElement nameNode = myDocument.createElement( "se:Name" );
+      nameNode.appendChild( myDocument.createTextNode( layerName ) );
+      namedLayerNode.appendChild( nameNode );
+
+      foreach ( QString styleName, layer->styleManager()->styles() )
       {
-        throw QgsMapServiceException( "Error", QString( "Could not get style because:\n%1" ).arg( errorMsg ) );
+        if ( layer->hasGeometryType() )
+        {
+          layer->styleManager()->setCurrentStyle( styleName );
+          if ( styleName.isEmpty() )
+            styleName = EMPTY_STYLE_NAME;
+          QDomElement styleElem = layer->rendererV2()->writeSld( myDocument, styleName );
+          namedLayerNode.appendChild( styleElem );
+        }
       }
     }
   }
