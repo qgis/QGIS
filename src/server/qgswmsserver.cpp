@@ -1221,7 +1221,8 @@ QImage* QgsWMSServer::getMap( HitTest* hitTest )
   clearFeatureSelections( selectedLayerIdList );
 
   // QgsDebugMsg( "clearing filters" );
-  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+  if ( !hitTest )
+    QgsMapLayerRegistry::instance()->removeAllMapLayers();
 
   //#ifdef QGISDEBUG
   //  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
