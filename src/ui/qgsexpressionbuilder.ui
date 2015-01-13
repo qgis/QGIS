@@ -583,8 +583,8 @@
             <string>...</string>
            </property>
            <property name="icon">
-            <iconset resource="../plugins/georeferencer/georeferencer.qrc">
-             <normaloff>:/icons/default/mActionStartGeoref.png</normaloff>:/icons/default/mActionStartGeoref.png</iconset>
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/console/iconRunScriptConsole.png</normaloff>:/images/themes/default/console/iconRunScriptConsole.png</iconset>
            </property>
            <property name="autoRaise">
             <bool>true</bool>
@@ -614,7 +614,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
+             <normaloff>:/images/themes/default/console/iconTabEditorConsole.png</normaloff>:/images/themes/default/console/iconTabEditorConsole.png</iconset>
            </property>
            <property name="autoRaise">
             <bool>true</bool>
@@ -640,8 +640,8 @@
             <string>Save</string>
            </property>
            <property name="icon">
-            <iconset resource="../plugins/georeferencer/georeferencer.qrc">
-             <normaloff>:/icons/default/mActionSaveRasterAs.png</normaloff>:/icons/default/mActionSaveRasterAs.png</iconset>
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/console/iconSaveConsole.png</normaloff>:/images/themes/default/console/iconSaveConsole.png</iconset>
            </property>
            <property name="autoRaise">
             <bool>true</bool>
@@ -690,7 +690,6 @@
  </customwidgets>
  <resources>
   <include location="../../images/images.qrc"/>
-  <include location="../plugins/georeferencer/georeferencer.qrc"/>
  </resources>
  <connections/>
 </ui>
