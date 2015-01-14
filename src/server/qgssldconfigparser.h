@@ -159,6 +159,9 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     /**Returns the <UserStyle> node of a given <UserLayer> or a null node in case of failure*/
     QDomElement findUserStyleElement( const QDomElement& userLayerElement, const QString& styleName ) const;
 
+    /**Returns the <NamedStyle> node of a given <NamedLayer> or a null node in case of failure*/
+    QDomElement findNamedStyleElement( const QDomElement& layerElement, const QString& styleName ) const;
+
     /**Creates a Renderer from a UserStyle SLD node. Returns 0 in case of error*/
     QgsFeatureRendererV2* rendererFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const;
 

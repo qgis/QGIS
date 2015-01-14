@@ -256,6 +256,18 @@ QList<QgsMapLayer*> QgsSLDConfigParser::mapLayerFromStyle( const QString& lName,
         }
       }
     }
+
+    // try with a predefined named style
+    QDomElement namedStyleElement = findNamedStyleElement( namedLayerElemList[i], styleName );
+    if ( !namedStyleElement.isNull() )
+    {
+      fallbackLayerList = mFallbackParser->mapLayerFromStyle( lName, styleName, false );
+      if ( fallbackLayerList.size() > 0 )
+      {
+        resultList << fallbackLayerList;
+        return resultList;
+      }
+    }
   }
 
   QDomElement userLayerElement = findUserLayerElement( lName );
@@ -792,6 +804,27 @@ QDomElement QgsSLDConfigParser::findUserStyleElement( const QDomElement& userLay
         if ( nameList.item( 0 ).toElement().text() == styleName )
         {
           return userStyleList.item( i ).toElement();
+        }
+      }
+    }
+  }
+  return defaultResult;
+}
+
+QDomElement QgsSLDConfigParser::findNamedStyleElement( const QDomElement& layerElement, const QString& styleName ) const
+{
+  QDomElement defaultResult;
+  if ( !layerElement.isNull() )
+  {
+    QDomNodeList styleList = layerElement.elementsByTagName( "NamedStyle" );
+    for ( int i = 0; i < styleList.size(); ++i )
+    {
+      QDomNodeList nameList = styleList.item( i ).toElement().elementsByTagName( "Name" );
+      if ( nameList.size() > 0 )
+      {
+        if ( nameList.item( 0 ).toElement().text() == styleName )
+        {
+          return styleList.item( i ).toElement();
         }
       }
     }
