@@ -45,10 +45,14 @@ class lascontrol(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI();
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterVector(lascontrol.POLYGON, "Input polygon(s)", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterBoolean(lascontrol.INTERIOR, "interior", False))
-        self.addParameter(ParameterSelection(lascontrol.OPERATION, "what to do with isolated points", lascontrol.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lascontrol.CLASSIFY_AS, "classify as", 0, None, 12))
+        self.addParameter(ParameterVector(lascontrol.POLYGON,
+            self.tr("Input polygon(s)"), ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterBoolean(lascontrol.INTERIOR,
+            self.tr("interior"), False))
+        self.addParameter(ParameterSelection(lascontrol.OPERATION,
+            self.tr("what to do with isolated points"), lascontrol.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lascontrol.CLASSIFY_AS,
+            self.tr("classify as"), 0, None, 12))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

@@ -49,13 +49,17 @@ class PolyClipData(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Poly Clip Data'
         self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input .las layer'))
-        self.addParameter(ParameterFile(self.MASK, 'Mask layer'))
-        self.addOutput(OutputFile(self.OUTPUT, 'Output clipped .las file', 'las'))
-        self.addParameter(ParameterBoolean(self.SHAPE, 'Use Shape attribute ', False))
+        self.addParameter(ParameterFile(
+            self.INPUT, self.tr('Input .las layer')))
+        self.addParameter(ParameterFile(self.MASK, self.tr('Mask layer')))
+        self.addOutput(OutputFile(self.OUTPUT,
+            self.tr('Output clipped .las file'), 'las'))
+        self.addParameter(ParameterBoolean(self.SHAPE,
+            self.tr('Use Shape attribute'), False))
         ##  'field' e 'value' box should appear or get activated if Shape attribute is switched ON
-        self.addParameter(ParameterString(self.FIELD, 'Shape field index'))
-        self.addParameter(ParameterString(self.VALUE, "Shape value"))
+        self.addParameter(ParameterString(self.FIELD,
+            self.tr('Shape field index')))
+        self.addParameter(ParameterString(self.VALUE, self.tr("Shape value")))
         self.addAdvancedModifiers()
 
 

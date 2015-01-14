@@ -60,21 +60,36 @@ class lascanopyPro(LAStoolsAlgorithm):
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
-        self.addParameter(ParameterNumber(lascanopyPro.PLOT_SIZE, "square plot size", 0, None, 20))
-        self.addParameter(ParameterNumber(lascanopyPro.HEIGHT_CUTOFF, "height cutoff / breast height", 0, None, 1.37))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT1, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT2, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT3, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT4, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT5, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT6, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT7, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT8, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT9, "create", lascanopyPro.PRODUCTS, 0))
-        self.addParameter(ParameterString(lascanopyPro.COUNTS, "count rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
-        self.addParameter(ParameterString(lascanopyPro.DENSITIES, "density rasters (e.g. 2.0 5.0 10.0 20.0)", ""))
-        self.addParameter(ParameterBoolean(lascanopyPro.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
-        self.addParameter(ParameterBoolean(lascanopyPro.FILES_ARE_PLOTS, "input file is single plot", False))
+        self.addParameter(ParameterNumber(lascanopyPro.PLOT_SIZE,
+            self.tr("square plot size"), 0, None, 20))
+        self.addParameter(ParameterNumber(lascanopyPro.HEIGHT_CUTOFF,
+            self.tr("height cutoff / breast height"), 0, None, 1.37))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT1,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT2,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT3,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT4,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT5,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT6,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT7,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT8,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterSelection(lascanopyPro.PRODUCT9,
+            self.tr("create"), lascanopyPro.PRODUCTS, 0))
+        self.addParameter(ParameterString(lascanopyPro.COUNTS,
+            self.tr("count rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
+        self.addParameter(ParameterString(lascanopyPro.DENSITIES,
+            self.tr("density rasters (e.g. 2.0 5.0 10.0 20.0)"), ""))
+        self.addParameter(ParameterBoolean(lascanopyPro.USE_TILE_BB,
+            self.tr("use tile bounding box (after tiling with buffer)"), False))
+        self.addParameter(ParameterBoolean(lascanopyPro.FILES_ARE_PLOTS,
+            self.tr("input file is single plot"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()

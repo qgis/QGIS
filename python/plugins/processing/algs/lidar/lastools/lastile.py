@@ -42,9 +42,13 @@ class lastile(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParametersFilesAreFlightlinesGUI()
         self.addParametersApplyFileSourceIdGUI()
-        self.addParameter(ParameterNumber(lastile.TILE_SIZE, "tile size (side length of square tile)",  None, None, 1000.0))
-        self.addParameter(ParameterNumber(lastile.BUFFER, "buffer around each tile",  None, None, 0.0))
-        self.addParameter(ParameterNumber(lastile.REVERSIBLE, "make tiling reversible (advanced, usually not needed)", False))
+        self.addParameter(ParameterNumber(lastile.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+            None, None, 1000.0))
+        self.addParameter(ParameterNumber(lastile.BUFFER,
+            self.tr("buffer around each tile"), None, None, 0.0))
+        self.addParameter(ParameterNumber(lastile.REVERSIBLE,
+            self.tr("make tiling reversible (advanced, usually not needed)"), False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

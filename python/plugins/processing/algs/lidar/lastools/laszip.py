@@ -40,12 +40,14 @@ class laszip(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(laszip.REPORT_SIZE, "only report size", False))
-        self.addParameter(ParameterBoolean(laszip.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(ParameterBoolean(laszip.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(ParameterBoolean(laszip.REPORT_SIZE,
+            self.tr("only report size"), False))
+        self.addParameter(ParameterBoolean(laszip.CREATE_LAX,
+            self.tr("create spatial indexing file (*.lax)"), False))
+        self.addParameter(ParameterBoolean(laszip.APPEND_LAX,
+            self.tr("append *.lax into *.laz file"), False))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "laszip")]

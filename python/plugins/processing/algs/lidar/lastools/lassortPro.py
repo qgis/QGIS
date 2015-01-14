@@ -38,8 +38,10 @@ class lassortPro(LAStoolsAlgorithm):
         self.name = "lassortPro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lassortPro.BY_GPS_TIME, "sort by GPS time", False))
-        self.addParameter(ParameterBoolean(lassortPro.BY_POINT_SOURCE_ID, "sort by point source ID", False))
+        self.addParameter(ParameterBoolean(lassortPro.BY_GPS_TIME,
+            self.tr("sort by GPS time"), False))
+        self.addParameter(ParameterBoolean(lassortPro.BY_POINT_SOURCE_ID,
+            self.tr("sort by point source ID"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

@@ -43,11 +43,16 @@ class lasheight(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(lasheight.REPLACE_Z, "replace z", False))
-        self.addParameter(ParameterBoolean(lasheight.DROP_ABOVE, "drop above", False))
-        self.addParameter(ParameterNumber(lasheight.DROP_ABOVE_HEIGHT, "drop above height", 0, None, 100.0))
-        self.addParameter(ParameterBoolean(lasheight.DROP_BELOW, "drop below", False))
-        self.addParameter(ParameterNumber(lasheight.DROP_BELOW_HEIGHT, "drop below height", 0, None, -2.0))
+        self.addParameter(ParameterBoolean(lasheight.REPLACE_Z,
+            self.tr("replace z"), False))
+        self.addParameter(ParameterBoolean(lasheight.DROP_ABOVE,
+            self.tr("drop above"), False))
+        self.addParameter(ParameterNumber(lasheight.DROP_ABOVE_HEIGHT,
+            self.tr("drop above height"), 0, None, 100.0))
+        self.addParameter(ParameterBoolean(lasheight.DROP_BELOW,
+            self.tr("drop below"), False))
+        self.addParameter(ParameterNumber(lasheight.DROP_BELOW_HEIGHT,
+            self.tr("drop below height"), 0, None, -2.0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

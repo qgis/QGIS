@@ -44,10 +44,14 @@ class lasboundaryPro(LAStoolsAlgorithm):
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParameter(ParameterSelection(lasboundaryPro.MODE, "compute boundary based on", lasboundaryPro.MODES, 0))
-        self.addParameter(ParameterNumber(lasboundaryPro.CONCAVITY, "concavity", 0, None, 50.0))
-        self.addParameter(ParameterBoolean(lasboundaryPro.HOLES, "interior holes", False))
-        self.addParameter(ParameterBoolean(lasboundaryPro.DISJOINT, "disjoint polygon", False))
+        self.addParameter(ParameterSelection(lasboundaryPro.MODE,
+            self.tr("compute boundary based on"), lasboundaryPro.MODES, 0))
+        self.addParameter(ParameterNumber(lasboundaryPro.CONCAVITY,
+            self.tr("concavity"), 0, None, 50.0))
+        self.addParameter(ParameterBoolean(lasboundaryPro.HOLES,
+            self.tr("interior holes"), False))
+        self.addParameter(ParameterBoolean(lasboundaryPro.DISJOINT,
+            self.tr("disjoint polygon"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersVectorOutputFormatGUI()

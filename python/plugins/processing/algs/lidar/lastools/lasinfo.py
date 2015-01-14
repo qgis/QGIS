@@ -55,16 +55,26 @@ class lasinfo(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(lasinfo.COMPUTE_DENSITY, "compute density", False))
-        self.addParameter(ParameterBoolean(lasinfo.REPAIR_BB, "repair bounding box", False))
-        self.addParameter(ParameterBoolean(lasinfo.REPAIR_COUNTERS, "repair counters", False))
-        self.addParameter(ParameterSelection(lasinfo.HISTO1, "histogram", lasinfo.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfo.HISTO1_BIN, "bin size", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasinfo.HISTO2, "histogram", lasinfo.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfo.HISTO2_BIN, "bin size", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasinfo.HISTO3, "histogram", lasinfo.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfo.HISTO3_BIN, "bin size", 0, None, 1.0))
-        self.addOutput(OutputFile(lasinfo.OUTPUT, "Output ASCII file"))
+        self.addParameter(ParameterBoolean(lasinfo.COMPUTE_DENSITY,
+            self.tr("compute density"), False))
+        self.addParameter(ParameterBoolean(lasinfo.REPAIR_BB,
+            self.tr("repair bounding box"), False))
+        self.addParameter(ParameterBoolean(lasinfo.REPAIR_COUNTERS,
+            self.tr("repair counters"), False))
+        self.addParameter(ParameterSelection(lasinfo.HISTO1,
+            self.tr("histogram"), lasinfo.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfo.HISTO1_BIN,
+            self.tr("bin size"), 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasinfo.HISTO2,
+            self.tr("histogram"), lasinfo.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfo.HISTO2_BIN,
+            self.tr("bin size"), 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasinfo.HISTO3,
+            self.tr("histogram"), lasinfo.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfo.HISTO3_BIN,
+            self.tr("bin size"), 0, None, 1.0))
+        self.addOutput(OutputFile(lasinfo.OUTPUT,
+            self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):

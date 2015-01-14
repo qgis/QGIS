@@ -45,11 +45,18 @@ class hugeFileGroundClassify(LAStoolsAlgorithm):
         self.name = "hugeFileGroundClassify"
         self.group = "LAStools Pipelines"
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(hugeFileGroundClassify.TILE_SIZE, "tile size (side length of square tile)",  0, None, 1000.0))
-        self.addParameter(ParameterNumber(hugeFileGroundClassify.BUFFER, "buffer around each tile (avoids edge artifacts)",  0, None, 25.0))
-        self.addParameter(ParameterBoolean(hugeFileGroundClassify.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(ParameterSelection(hugeFileGroundClassify.TERRAIN, "terrain type", hugeFileGroundClassify.TERRAINS, 1))
-        self.addParameter(ParameterSelection(hugeFileGroundClassify.GRANULARITY, "preprocessing", hugeFileGroundClassify.GRANULARITIES, 1))
+        self.addParameter(ParameterNumber(hugeFileGroundClassify.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+             0, None, 1000.0))
+        self.addParameter(ParameterNumber(hugeFileGroundClassify.BUFFER,
+            self.tr("buffer around each tile (avoids edge artifacts)"),
+            0, None, 25.0))
+        self.addParameter(ParameterBoolean(hugeFileGroundClassify.AIRBORNE,
+            self.tr("airborne LiDAR"), True))
+        self.addParameter(ParameterSelection(hugeFileGroundClassify.TERRAIN,
+            self.tr("terrain type"), hugeFileGroundClassify.TERRAINS, 1))
+        self.addParameter(ParameterSelection(hugeFileGroundClassify.GRANULARITY,
+            self.tr("preprocessing"), hugeFileGroundClassify.GRANULARITIES, 1))
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersPointOutputGUI()
         self.addParametersCoresGUI()

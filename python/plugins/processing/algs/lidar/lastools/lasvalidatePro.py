@@ -39,8 +39,9 @@ class lasvalidatePro(LAStoolsAlgorithm):
         self.name = "lasvalidatePro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lasvalidatePro.ONE_REPORT_PER_FILE, "generate one '*_LVS.xml' report per file", False))
-        self.addOutput(OutputFile(lasvalidatePro.OUTPUT, "Output XML file"))
+        self.addParameter(ParameterBoolean(lasvalidatePro.ONE_REPORT_PER_FILE,
+            self.tr("generate one '*_LVS.xml' report per file"), False))
+        self.addOutput(OutputFile(lasvalidatePro.OUTPUT, self.tr("Output XML file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):

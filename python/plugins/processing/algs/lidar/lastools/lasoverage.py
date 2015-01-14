@@ -43,8 +43,10 @@ class lasoverage(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParametersHorizontalFeetGUI()
         self.addParametersFilesAreFlightlinesGUI()
-        self.addParameter(ParameterNumber(lasoverage.CHECK_STEP, "size of grid used for scan angle check", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasoverage.OPERATION, "mode of operation", lasoverage.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lasoverage.CHECK_STEP,
+            self.tr("size of grid used for scan angle check"), 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasoverage.OPERATION,
+            self.tr("mode of operation"), lasoverage.OPERATIONS, 0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

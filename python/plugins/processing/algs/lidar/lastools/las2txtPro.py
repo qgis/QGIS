@@ -37,7 +37,8 @@ class las2txtPro(LAStoolsAlgorithm):
         self.name = "las2txtPro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterString(las2txtPro.PARSE, "parse string", "xyz"))
+        self.addParameter(ParameterString(las2txtPro.PARSE,
+            self.tr("parse string"), "xyz"))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersAdditionalGUI()

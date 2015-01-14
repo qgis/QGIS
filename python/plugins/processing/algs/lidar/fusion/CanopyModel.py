@@ -57,27 +57,38 @@ class CanopyModel(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Canopy Model'
         self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))
-        self.addParameter(ParameterNumber(self.CELLSIZE, 'Cellsize', 0, None, 10.0))
-        self.addParameter(ParameterSelection(self.XYUNITS, 'XY Units', self.UNITS))
-        self.addParameter(ParameterSelection(self.ZUNITS, 'Z Units', self.UNITS))
-        self.addOutput(OutputFile(self.OUTPUT_DTM, 'DTM Output Surface', 'dtm'))
-        ground = ParameterFile(self.GROUND, 'Input ground DTM layer', False, True)
+        self.addParameter(ParameterFile(
+            self.INPUT, self.tr('Input las layer')))
+        self.addParameter(ParameterNumber(self.CELLSIZE,
+            self.tr('Cellsize'), 0, None, 10.0))
+        self.addParameter(ParameterSelection(self.XYUNITS,
+            self.tr('XY Units'), self.UNITS))
+        self.addParameter(ParameterSelection(self.ZUNITS,
+            self.tr('Z Units'), self.UNITS))
+        self.addOutput(OutputFile(self.OUTPUT_DTM,
+            self.tr('DTM Output Surface'), 'dtm'))
+        ground = ParameterFile(self.GROUND,
+            self.tr('Input ground DTM layer'), False, True)
         ground.isAdvanced = True
         self.addParameter(ground)
-        median = ParameterString(self.MEDIAN, 'Median', '', False, True)
+        median = ParameterString(self.MEDIAN,
+            self.tr('Median'), '', False, True)
         median.isAdvanced = True
         self.addParameter(median)
-        smooth = ParameterString(self.SMOOTH, 'Smooth', '', False, True)
+        smooth = ParameterString(self.SMOOTH,
+            self.tr('Smooth'), '', False, True)
         smooth.isAdvanced = True
         self.addParameter(smooth)
-        slope = ParameterString(self.SLOPE, 'Slope', '', False, True)
+        slope = ParameterString(self.SLOPE,
+            self.tr('Slope'), '', False, True)
         slope.isAdvanced = True
         self.addParameter(slope)
-        class_var = ParameterString(self.CLASS, 'Class', '', False, True)
+        class_var = ParameterString(self.CLASS,
+            self.tr('Class'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
-        advance_modifiers = ParameterString(self.ADVANCED_MODIFIERS, 'Additional modifiers', '', False, True)
+        advance_modifiers = ParameterString(self.ADVANCED_MODIFIERS,
+            self.tr('Additional modifiers'), '', False, True)
         advance_modifiers.isAdvanced = True
         self.addParameter(advance_modifiers)
 

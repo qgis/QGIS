@@ -45,8 +45,10 @@ class las2las_transform(LAStoolsAlgorithm):
         self.addParametersTransform2CoordinateGUI()
         self.addParametersTransform1OtherGUI()
         self.addParametersTransform2OtherGUI()
-        self.addParameter(ParameterSelection(las2las_transform.OPERATION, "operations (first 8 need an argument)", las2las_transform.OPERATIONS, 0))
-        self.addParameter(ParameterString(las2las_transform.OPERATIONARG, "argument for operation"))
+        self.addParameter(ParameterSelection(las2las_transform.OPERATION,
+            self.tr("operations (first 8 need an argument)"), las2las_transform.OPERATIONS, 0))
+        self.addParameter(ParameterString(las2las_transform.OPERATIONARG,
+            self.tr("argument for operation")))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

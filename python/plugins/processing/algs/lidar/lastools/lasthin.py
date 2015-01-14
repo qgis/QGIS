@@ -45,11 +45,16 @@ class lasthin(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(lasthin.THIN_STEP, "size of grid used for thinning", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasthin.OPERATION, "keep particular point per cell", lasthin.OPERATIONS, 0))
-        self.addParameter(ParameterBoolean(lasthin.WITHHELD, "mark thinned-away points as withheld", False))
-        self.addParameter(ParameterBoolean(lasthin.CLASSIFY_AS, "classify surviving points as class", False))
-        self.addParameter(ParameterNumber(lasthin.CLASSIFY_AS_CLASS, "class", 0, None, 8))
+        self.addParameter(ParameterNumber(lasthin.THIN_STEP,
+            self.tr("size of grid used for thinning"), 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasthin.OPERATION,
+            self.tr("keep particular point per cell"), lasthin.OPERATIONS, 0))
+        self.addParameter(ParameterBoolean(lasthin.WITHHELD,
+            self.tr("mark thinned-away points as withheld"), False))
+        self.addParameter(ParameterBoolean(lasthin.CLASSIFY_AS,
+            self.tr("classify surviving points as class"), False))
+        self.addParameter(ParameterNumber(lasthin.CLASSIFY_AS_CLASS,
+            self.tr("class"), 0, None, 8))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

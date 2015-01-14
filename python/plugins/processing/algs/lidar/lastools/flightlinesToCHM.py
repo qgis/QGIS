@@ -44,14 +44,22 @@ class flightlinesToCHM(LAStoolsAlgorithm):
         self.name = "flightlinesToCHM"
         self.group = "LAStools Pipelines"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterNumber(flightlinesToCHM.TILE_SIZE, "tile size (side length of square tile)",  0, None, 1000.0))
-        self.addParameter(ParameterNumber(flightlinesToCHM.BUFFER, "buffer around each tile (avoids edge artifacts)",  0, None, 25.0))
-        self.addParameter(ParameterSelection(flightlinesToCHM.TERRAIN, "terrain type", flightlinesToCHM.TERRAINS, 1))
-        self.addParameter(ParameterNumber(flightlinesToCHM.BEAM_WIDTH, "laser beam width (diameter of laser footprint)",  0, None, 0.2))
+        self.addParameter(ParameterNumber(flightlinesToCHM.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+            0, None, 1000.0))
+        self.addParameter(ParameterNumber(flightlinesToCHM.BUFFER,
+            self.tr("buffer around each tile (avoids edge artifacts)"),
+            0, None, 25.0))
+        self.addParameter(ParameterSelection(flightlinesToCHM.TERRAIN,
+            self.tr("terrain type"), flightlinesToCHM.TERRAINS, 1))
+        self.addParameter(ParameterNumber(flightlinesToCHM.BEAM_WIDTH,
+            self.tr("laser beam width (diameter of laser footprint)"),
+            0, None, 0.2))
         self.addParametersStepGUI()
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersOutputDirectoryGUI()
-        self.addParameter(ParameterString(flightlinesToCHM.BASE_NAME, "tile base name (using 'sydney' creates sydney_274000_4714000...)","tile"))
+        self.addParameter(ParameterString(flightlinesToCHM.BASE_NAME,
+            self.tr("tile base name (using 'sydney' creates sydney_274000_4714000...)"), "tile"))
         self.addParametersRasterOutputFormatGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
