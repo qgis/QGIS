@@ -426,7 +426,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \note it does not perform any escape
      */
-    QString toParamValue( const QgsRectangle& rect, bool changeXY = false );
+    QString toParamValue( const QgsRectangle& rect, bool changeXY );
 
     /* \brief add SRS or CRS parameter */
     void setSRSQueryItem( QUrl& url );

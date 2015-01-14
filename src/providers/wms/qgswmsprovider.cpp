@@ -3004,7 +3004,8 @@ QUrl QgsWmsProvider::getLegendGraphicFullURL( double scale, const QgsRectangle& 
 
   if ( useContextualWMSLegend )
   {
-    setQueryItem( url, "BBOX", toParamValue( visibleExtent ) );
+    bool changeXY = mCaps.shouldInvertAxisOrientation( mImageCrs );
+    setQueryItem( url, "BBOX", toParamValue( visibleExtent, changeXY ) );
     setSRSQueryItem( url );
   }
 
