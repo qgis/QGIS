@@ -1997,7 +1997,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
 
     // presumably we know we've run out of metadta if either the
     // address is 0, or the first character is null
-    while ( myGdalDriverMetadata && '\0' != myGdalDriverMetadata[0] )
+    while ( myGdalDriverMetadata && myGdalDriverMetadata[0] )
     {
       metadataTokens = QString( *myGdalDriverMetadata ).split( "=", QString::SkipEmptyParts );
       // QgsDebugMsg(QString("\t%1").arg(*myGdalDriverMetadata));
