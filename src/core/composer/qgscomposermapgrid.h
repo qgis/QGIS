@@ -127,7 +127,7 @@ class CORE_EXPORT QgsComposerMapGridStack : public QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc );
+    bool readXML( const QDomElement& elem, const QDomDocument& doc ) OVERRIDE;
 
     /**Calculates the maximum distance grids within the stack extend
      * beyond the QgsComposerMap's item rect
@@ -270,21 +270,21 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     /**Draws a grid
      * @param painter destination QPainter
      */
-    void draw( QPainter* painter );
+    void draw( QPainter* painter ) OVERRIDE;
 
     /**Stores grid state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @see readXML
     */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const OVERRIDE;
 
     /**Sets grid state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXML
     */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) OVERRIDE;
 
     /**Sets the CRS for the grid.
      * @param crs coordinate reference system for grid
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
     */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
-    bool usesAdvancedEffects() const;
+    bool usesAdvancedEffects() const OVERRIDE;
 
     /**Calculates the maximum distance the grid extends beyond the QgsComposerMap's
      * item rect

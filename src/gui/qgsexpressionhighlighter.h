@@ -34,7 +34,7 @@ class GUI_EXPORT QgsExpressionHighlighter : public QSyntaxHighlighter
     void addFields( QStringList fieldList );
 
   protected:
-    void highlightBlock( const QString &text );
+    void highlightBlock( const QString &text ) OVERRIDE;
 
   private:
     struct HighlightingRule

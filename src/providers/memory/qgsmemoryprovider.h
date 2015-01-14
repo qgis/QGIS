@@ -34,52 +34,52 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const OVERRIDE;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
 
-    virtual QString dataSourceUri() const;
+    virtual QString dataSourceUri() const OVERRIDE;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
-    virtual QString storageType() const;
+    virtual QString storageType() const OVERRIDE;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const;
+    virtual QGis::WkbType geometryType() const OVERRIDE;
 
     /**
      * Number of features in the layer
      * @return long containing number of features
      */
-    virtual long featureCount() const;
+    virtual long featureCount() const OVERRIDE;
 
     /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFields & fields() const;
+    virtual const QgsFields & fields() const OVERRIDE;
 
 
     /**
       * Adds a list of features
       * @return true in case of success and false in case of failure
       */
-    virtual bool addFeatures( QgsFeatureList & flist );
+    virtual bool addFeatures( QgsFeatureList & flist ) OVERRIDE;
 
     /**
       * Deletes a feature
       * @param id list containing feature ids to delete
       * @return true in case of success and false in case of failure
       */
-    virtual bool deleteFeatures( const QgsFeatureIds & id );
+    virtual bool deleteFeatures( const QgsFeatureIds & id ) OVERRIDE;
 
 
     /**
@@ -87,21 +87,21 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      * @param attributes map with attribute name as key and type as value
      * @return true in case of success and false in case of failure
      */
-    virtual bool addAttributes( const QList<QgsField> &attributes );
+    virtual bool addAttributes( const QList<QgsField> &attributes ) OVERRIDE;
 
     /**
      * Deletes existing attributes
      * @param attributes a set containing names of attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteAttributes( const QgsAttributeIds& attributes );
+    virtual bool deleteAttributes( const QgsAttributeIds& attributes ) OVERRIDE;
 
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) OVERRIDE;
 
     /**
      * Changes geometries of existing features
@@ -109,28 +109,28 @@ class QgsMemoryProvider : public QgsVectorDataProvider
      *                       the second map parameter being the new geometries themselves
      * @return               true in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) OVERRIDE;
 
     /** Accessor for sql where clause used to limit dataset */
-    QString subsetString();
+    QString subsetString() OVERRIDE;
 
     /** mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
+    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) OVERRIDE;
 
-    virtual bool supportsSubsetString() { return true; }
+    virtual bool supportsSubsetString() OVERRIDE { return true; }
 
     /**
      * Creates a spatial index
      * @return true in case of success
      */
-    virtual bool createSpatialIndex();
+    virtual bool createSpatialIndex() OVERRIDE;
 
     /** Returns a bitmask containing the supported capabilities
     Note, some capabilities may change depending on whether
     a spatial filter is active on this provider, so it may
     be prudent to check this value per intended operation.
      */
-    virtual int capabilities() const;
+    virtual int capabilities() const OVERRIDE;
 
 
     /* Implementation of functions from QgsDataProvider */
@@ -138,24 +138,24 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     /**
      * return a provider name
      */
-    QString name() const;
+    QString name() const OVERRIDE;
 
     /**
      * return description
      */
-    QString description() const;
+    QString description() const OVERRIDE;
 
     /**
      * Return the extent for this data layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() OVERRIDE;
 
     /**
      * Returns true if this is a valid provider
      */
-    bool isValid();
+    bool isValid() OVERRIDE;
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() OVERRIDE;
 
   protected:
 

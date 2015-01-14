@@ -7360,7 +7360,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
   public:
     QgsPythonRunnerImpl( QgsPythonUtils* pythonUtils ) : mPythonUtils( pythonUtils ) {}
 
-    virtual bool runCommand( QString command, QString messageOnError = QString() )
+    virtual bool runCommand( QString command, QString messageOnError = QString() ) OVERRIDE
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {
@@ -7369,7 +7369,7 @@ class QgsPythonRunnerImpl : public QgsPythonRunner
       return false;
     }
 
-    virtual bool evalCommand( QString command, QString &result )
+    virtual bool evalCommand( QString command, QString &result ) OVERRIDE
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
       {

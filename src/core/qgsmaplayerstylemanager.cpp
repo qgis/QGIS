@@ -205,7 +205,9 @@ void QgsMapLayerStyle::writeToLayer( QgsMapLayer* layer ) const
   bool res;
   QString status = layer->loadNamedStyle( f.fileName(), res );
   if ( !res )
+  {
     QgsDebugMsg( "Failed to import style to layer: " + status );
+  }
 }
 
 void QgsMapLayerStyle::readXml( const QDomElement& styleElement )

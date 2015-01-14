@@ -70,26 +70,26 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     /* Inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const OVERRIDE;
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() );
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) OVERRIDE;
 
-    QGis::WkbType geometryType() const;
-    long featureCount() const;
+    QGis::WkbType geometryType() const OVERRIDE;
+    long featureCount() const OVERRIDE;
 
-    const QgsFields& fields() const;
+    const QgsFields& fields() const OVERRIDE;
     void rewind();
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() OVERRIDE;
 
     /* Inherited from QgsDataProvider */
 
-    QgsRectangle extent();
-    bool isValid();
-    QString name() const;
-    QString description() const;
+    QgsRectangle extent() OVERRIDE;
+    bool isValid() OVERRIDE;
+    QString name() const OVERRIDE;
+    QString description() const OVERRIDE;
 
-    virtual int capabilities() const;
+    virtual int capabilities() const OVERRIDE;
 
     /* new functions */
 
@@ -106,14 +106,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList &flist );
+    virtual bool addFeatures( QgsFeatureList &flist ) OVERRIDE;
 
     /**
      * Deletes one or more features
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteFeatures( const QgsFeatureIds &id );
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) OVERRIDE;
 
     /**
      * Changes geometries of existing features
@@ -122,14 +122,14 @@ class QgsWFSProvider : public QgsVectorDataProvider
      *                       The second map parameter being the new geometries themselves
      * @return               True in case of success and false in case of failure
      */
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) OVERRIDE;
 
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map );
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) OVERRIDE;
 
     /**Collects information about the field types. Is called internally from QgsWFSProvider ctor. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
     int describeFeatureType( const QString& uri, QString& geometryAttribute,
@@ -138,7 +138,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
   public slots:
     /**Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
-    virtual void reloadData();
+    virtual void reloadData() OVERRIDE;
 
   signals:
     void dataReadProgressMessage( QString message );

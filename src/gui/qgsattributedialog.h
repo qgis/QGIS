@@ -119,7 +119,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void setEditCommandMessage( const QString& message ) { mAttributeForm->setEditCommandMessage( message ); }
 
   public slots:
-    void accept();
+    void accept() OVERRIDE;
 
     //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
     //! closed.

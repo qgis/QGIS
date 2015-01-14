@@ -76,13 +76,13 @@ class GUI_EXPORT QgsMapLayerModel : public QAbstractItemModel
 
     // QAbstractItemModel interface
   public:
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &parent ) const;
-    int columnCount( const QModelIndex &parent ) const;
-    QVariant data( const QModelIndex &index, int role ) const;
-    bool setData( const QModelIndex &index, const QVariant &value, int role );
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    QModelIndex parent( const QModelIndex &child ) const OVERRIDE;
+    int rowCount( const QModelIndex &parent ) const OVERRIDE;
+    int columnCount( const QModelIndex &parent ) const OVERRIDE;
+    QVariant data( const QModelIndex &index, int role ) const OVERRIDE;
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) OVERRIDE;
+    Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
 };
 
 #endif // QGSMAPLAYERMODEL_H

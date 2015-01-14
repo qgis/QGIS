@@ -89,7 +89,7 @@ class SymbolLayerItem : public QStandardItem
         static_cast<SymbolLayerItem*>( parent() )->updatePreview();
     }
 
-    int type() const { return SymbolLayerItemType; }
+    int type() const OVERRIDE { return SymbolLayerItemType; }
     bool isLayer() { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
@@ -107,34 +107,34 @@ class SymbolLayerItem : public QStandardItem
       return NULL;
     }
 
-    QVariant data( int role ) const
+    QVariant data( int role ) const OVERRIDE
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
+  {
+    if ( mIsLayer )
+        return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+      else
       {
-        if ( mIsLayer )
-          return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
-        else
+        switch ( mSymbol->type() )
         {
-          switch ( mSymbol->type() )
-          {
-            case QgsSymbolV2::Marker : return "Marker";
-            case QgsSymbolV2::Fill   : return "Fill";
-            case QgsSymbolV2::Line   : return "Line";
-            default: return "Symbol";
-          }
+          case QgsSymbolV2::Marker : return "Marker";
+          case QgsSymbolV2::Fill   : return "Fill";
+          case QgsSymbolV2::Line   : return "Line";
+          default: return "Symbol";
         }
       }
-      if ( role == Qt::SizeHintRole )
-        return QVariant( QSize( 32, 32 ) );
-      if ( role == Qt::CheckStateRole )
-        return QVariant(); // could be true/false
-      return QStandardItem::data( role );
     }
+    if ( role == Qt::SizeHintRole )
+    return QVariant( QSize( 32, 32 ) );
+    if ( role == Qt::CheckStateRole )
+      return QVariant(); // could be true/false
+      return QStandardItem::data( role );
+      }
 
-  protected:
-    QgsSymbolLayerV2* mLayer;
-    QgsSymbolV2* mSymbol;
-    bool mIsLayer;
+    protected:
+      QgsSymbolLayerV2* mLayer;
+  QgsSymbolV2* mSymbol;
+  bool mIsLayer;
 };
 
 //////////

@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = 0 );
+                        QWidget * widget = 0 ) OVERRIDE;
 
     //! schedules map canvas for repaint
     void updateCanvas();
@@ -59,7 +59,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     virtual void updatePosition();
 
     //! default implementation for canvas items
-    virtual QRectF boundingRect() const;
+    virtual QRectF boundingRect() const OVERRIDE;
 
     //! sets current offset, to be called from QgsMapCanvas
     //! @deprecated since v2.4 - not called by QgsMapCanvas anymore

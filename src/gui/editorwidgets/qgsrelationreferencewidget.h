@@ -90,7 +90,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void deleteForeignKey();
 
   protected:
-    virtual void showEvent( QShowEvent* e );
+    virtual void showEvent( QShowEvent* e ) OVERRIDE;
 
     void init();
 

@@ -59,13 +59,13 @@ class QgsBrowserTreeView : public QTreeView
 
     }
 
-    void dragEnterEvent( QDragEnterEvent* e )
+    void dragEnterEvent( QDragEnterEvent* e ) OVERRIDE
     {
       // accept drag enter so that our widget will not get ignored
       // and drag events will not get passed to QgisApp
       e->accept();
     }
-    void dragMoveEvent( QDragMoveEvent* e )
+    void dragMoveEvent( QDragMoveEvent* e ) OVERRIDE
     {
       // do not accept drops above/below items
       /*if ( dropIndicatorPosition() != QAbstractItemView::OnItem )
@@ -195,7 +195,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     }
 
     bool filterAcceptsRow( int sourceRow,
-                           const QModelIndex &sourceParent ) const
+                           const QModelIndex &sourceParent ) const OVERRIDE
     {
       // if ( filterRegExp().pattern() == QString( "" ) ) return true;
       if ( mFilter == "" ) return true;
@@ -207,28 +207,28 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       // accept "invalid" items and data collections
       if ( ! item )
         return true;
-      if ( qobject_cast<QgsDataCollectionItem*>( item ) )
-        return true;
+        if ( qobject_cast<QgsDataCollectionItem*>( item ) )
+          return true;
 
-      // filter layer items - this could be delegated to the providers but a little overkill
-      if ( parentItem && qobject_cast<QgsLayerItem*>( item ) )
-      {
-        // filter normal files by extension
-        if ( qobject_cast<QgsDirectoryItem*>( parentItem ) )
+          // filter layer items - this could be delegated to the providers but a little overkill
+          if ( parentItem && qobject_cast<QgsLayerItem*>( item ) )
         {
-          QFileInfo fileInfo( item->path() );
-          return filterAcceptsString( fileInfo.fileName() );
-        }
-        // filter other items (postgis, etc.) by name
-        else if ( qobject_cast<QgsDataCollectionItem*>( parentItem ) )
-        {
-          return filterAcceptsString( item->name() );
-        }
-      }
+          // filter normal files by extension
+          if ( qobject_cast<QgsDirectoryItem*>( parentItem ) )
+            {
+              QFileInfo fileInfo( item->path() );
+              return filterAcceptsString( fileInfo.fileName() );
+            }
+            // filter other items (postgis, etc.) by name
+            else if ( qobject_cast<QgsDataCollectionItem*>( parentItem ) )
+            {
+              return filterAcceptsString( item->name() );
+            }
+          }
 
-      // accept anything else
-      return true;
-    }
+    // accept anything else
+    return true;
+  }
 };
 QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )

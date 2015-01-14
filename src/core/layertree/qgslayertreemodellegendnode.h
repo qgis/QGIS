@@ -147,19 +147,19 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent = 0 );
     ~QgsSymbolV2LegendNode();
 
-    virtual Qt::ItemFlags flags() const;
-    virtual QVariant data( int role ) const;
-    virtual bool setData( const QVariant& value, int role );
+    virtual Qt::ItemFlags flags() const OVERRIDE;
+    virtual QVariant data( int role ) const OVERRIDE;
+    virtual bool setData( const QVariant& value, int role ) OVERRIDE;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const OVERRIDE;
 
-    virtual void setEmbeddedInParent( bool embedded );
+    virtual void setEmbeddedInParent( bool embedded ) OVERRIDE;
 
-    void setUserLabel( const QString& userLabel ) { mUserLabel = userLabel; updateLabel(); }
+    void setUserLabel( const QString& userLabel ) OVERRIDE { mUserLabel = userLabel; updateLabel(); }
 
-    virtual bool isScaleOK( double scale ) const { return mItem.isScaleOK( scale ); }
+    virtual bool isScaleOK( double scale ) const OVERRIDE { return mItem.isScaleOK( scale ); }
 
-    virtual void invalidateMapBasedData();
+    virtual void invalidateMapBasedData() OVERRIDE;
 
   private:
     void updateLabel();
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
   public:
     QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent = 0 );
 
-    virtual QVariant data( int role ) const;
+    virtual QVariant data( int role ) const OVERRIDE;
 
   private:
     QString mLabel;
@@ -201,9 +201,9 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
   public:
     QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent = 0 );
 
-    virtual QVariant data( int role ) const;
+    virtual QVariant data( int role ) const OVERRIDE;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const OVERRIDE;
 
   private:
     QImage mImage;
@@ -219,9 +219,9 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
   public:
     QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent = 0 );
 
-    virtual QVariant data( int role ) const;
+    virtual QVariant data( int role ) const OVERRIDE;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const OVERRIDE;
 
   private:
     QColor mColor;
@@ -242,11 +242,11 @@ class CORE_EXPORT QgsWMSLegendNode : public QgsLayerTreeModelLegendNode
   public:
     QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent = 0 );
 
-    virtual QVariant data( int role ) const;
+    virtual QVariant data( int role ) const OVERRIDE;
 
-    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const OVERRIDE;
 
-    virtual void invalidateMapBasedData();
+    virtual void invalidateMapBasedData() OVERRIDE;
 
   private slots:
 

@@ -122,36 +122,36 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     virtual ~QgsGrassProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const OVERRIDE;
 
     /**
       *   Returns the permanent storage type for this layer as a friendly name.
       */
-    virtual QString storageType() const;
+    virtual QString storageType() const OVERRIDE;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
 
     /**
      * Get the feature type as defined in WkbType (qgis.h).
      * @return int representing the feature type
      */
-    QGis::WkbType geometryType() const;
+    QGis::WkbType geometryType() const OVERRIDE;
 
 
     /**
      * Get the number of features in the layer
      */
-    long featureCount() const;
+    long featureCount() const OVERRIDE;
 
 
     /** Return the extent for this data layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() OVERRIDE;
 
     /**
      * Get the field information for the layer
      */
-    const QgsFields & fields() const;
+    const QgsFields & fields() const OVERRIDE;
 
     // ! Key (category) field index
     int keyField();
@@ -161,7 +161,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /** Returns the minimum value of an attributs
      *  @param index the index of the attribute */
-    QVariant minimumValue( int index );
+    QVariant minimumValue( int index ) OVERRIDE;
 
     /** Returns the maximum value of an attributs
      *  @param index the index of the attribute */
@@ -178,9 +178,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /**Returns true if this is a valid layer
      */
-    bool isValid();
+    bool isValid() OVERRIDE;
 
-    QgsCoordinateReferenceSystem crs();
+    QgsCoordinateReferenceSystem crs() OVERRIDE;
 
     // ----------------------------------- Edit ----------------------------------
 
@@ -473,7 +473,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString name() const;
+    QString name() const OVERRIDE;
 
 
     /** return description
@@ -487,7 +487,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString description() const;
+    QString description() const OVERRIDE;
 
 
 

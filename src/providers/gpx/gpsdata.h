@@ -56,7 +56,7 @@ class QgsGPSPoint : public QgsGPSObject
 {
   public:
     QgsGPSPoint();
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) OVERRIDE;
     double lat, lon, ele;
     QString sym;
 };
@@ -69,7 +69,7 @@ class QgsGPSExtended : public QgsGPSObject
 {
   public:
     QgsGPSExtended();
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) OVERRIDE;
     double xMin, xMax, yMin, yMax;
     int number;
 };
@@ -84,7 +84,7 @@ typedef QgsGPSPoint QgsTrackpoint;
 class QgsWaypoint : public QgsGPSPoint
 {
   public:
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) OVERRIDE;
     QgsFeatureId id;
 };
 
@@ -94,7 +94,7 @@ class QgsWaypoint : public QgsGPSPoint
 class QgsRoute : public QgsGPSExtended
 {
   public:
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) OVERRIDE;
     QVector<QgsRoutepoint> points;
     QgsFeatureId id;
 };
@@ -116,7 +116,7 @@ class QgsTrackSegment
 class QgsTrack : public QgsGPSExtended
 {
   public:
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) OVERRIDE;
     QVector<QgsTrackSegment> segments;
     QgsFeatureId id;
 };

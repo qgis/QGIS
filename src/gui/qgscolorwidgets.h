@@ -166,10 +166,10 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     static const QPixmap& transparentBackground();
 
     //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent * e );
+    void dragEnterEvent( QDragEnterEvent * e ) OVERRIDE;
 
     //Reimplemented to accept dropped colors
-    void dropEvent( QDropEvent *e );
+    void dropEvent( QDropEvent *e ) OVERRIDE;
 };
 
 
@@ -193,18 +193,18 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
 
     virtual ~QgsColorWheel();
 
-    void paintEvent( QPaintEvent* event );
+    void paintEvent( QPaintEvent* event ) OVERRIDE;
 
   public slots:
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false ) OVERRIDE;
 
   protected:
 
-    virtual void resizeEvent( QResizeEvent *event );
-    virtual void mouseMoveEvent( QMouseEvent *event );
-    virtual void mousePressEvent( QMouseEvent *event );
-    virtual void mouseReleaseEvent( QMouseEvent *event );
+    virtual void resizeEvent( QResizeEvent *event ) OVERRIDE;
+    virtual void mouseMoveEvent( QMouseEvent *event ) OVERRIDE;
+    virtual void mousePressEvent( QMouseEvent *event ) OVERRIDE;
+    virtual void mouseReleaseEvent( QMouseEvent *event ) OVERRIDE;
 
   private:
 
@@ -285,19 +285,19 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
 
     virtual ~QgsColorBox();
 
-    virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent* event );
+    virtual QSize sizeHint() const OVERRIDE;
+    void paintEvent( QPaintEvent* event ) OVERRIDE;
 
-    virtual void setComponent( const ColorComponent component );
+    virtual void setComponent( const ColorComponent component ) OVERRIDE;
 
   public slots:
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false ) OVERRIDE;
 
   protected:
 
-    virtual void resizeEvent( QResizeEvent *event );
-    virtual void mouseMoveEvent( QMouseEvent *event );
-    virtual void mousePressEvent( QMouseEvent *event );
+    virtual void resizeEvent( QResizeEvent *event ) OVERRIDE;
+    virtual void mouseMoveEvent( QMouseEvent *event ) OVERRIDE;
+    virtual void mousePressEvent( QMouseEvent *event ) OVERRIDE;
 
   private:
 
@@ -380,8 +380,8 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
     virtual ~QgsColorRampWidget();
 
-    virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent* event );
+    virtual QSize sizeHint() const OVERRIDE;
+    void paintEvent( QPaintEvent* event ) OVERRIDE;
 
     /**Sets the orientation for the color ramp
      * @param orientation new orientation for the ramp
@@ -433,9 +433,9 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
   protected:
 
-    virtual void mouseMoveEvent( QMouseEvent *event );
-    virtual void mousePressEvent( QMouseEvent *event );
-    virtual void keyPressEvent( QKeyEvent * event );
+    virtual void mouseMoveEvent( QMouseEvent *event ) OVERRIDE;
+    virtual void mousePressEvent( QMouseEvent *event ) OVERRIDE;
+    virtual void keyPressEvent( QKeyEvent * event ) OVERRIDE;
 
   private:
 
@@ -482,9 +482,9 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
 
     virtual ~QgsColorSliderWidget();
 
-    virtual void setComponent( const ColorComponent component );
-    virtual void setComponentValue( const int value );
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setComponent( const ColorComponent component ) OVERRIDE;
+    virtual void setComponentValue( const int value ) OVERRIDE;
+    virtual void setColor( const QColor &color, const bool emitSignals = false ) OVERRIDE;
 
   private:
 
@@ -546,10 +546,10 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
 
     virtual ~QgsColorTextWidget();
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false ) OVERRIDE;
 
   protected:
-    void resizeEvent( QResizeEvent * event );
+    void resizeEvent( QResizeEvent * event ) OVERRIDE;
 
   private:
 
@@ -606,7 +606,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
 
     virtual ~QgsColorPreviewWidget();
 
-    void paintEvent( QPaintEvent* event );
+    void paintEvent( QPaintEvent* event ) OVERRIDE;
 
     /**Returns the secondary color for the widget
      * @returns secondary widget color, or an invalid color if the widget
@@ -629,13 +629,13 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
   protected:
 
     //reimplemented to allow dragging colors
-    void mousePressEvent( QMouseEvent* e );
+    void mousePressEvent( QMouseEvent* e ) OVERRIDE;
 
     //reimplemented to click colors
-    void mouseReleaseEvent( QMouseEvent* e );
+    void mouseReleaseEvent( QMouseEvent* e ) OVERRIDE;
 
     //reimplemented to allow dragging colors
-    void mouseMoveEvent( QMouseEvent *e );
+    void mouseMoveEvent( QMouseEvent *e ) OVERRIDE;
 
   private:
 

@@ -25,8 +25,8 @@ class GUI_EXPORT QgsHiddenWidgetFactory : public QgsEditorWidgetFactory
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
+    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const OVERRIDE;
+    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const OVERRIDE;
 };
 
 #endif // QGSHIDDENWIDGETFACTORY_H

@@ -69,11 +69,11 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void valueChanged( const QString& value );
 
   protected:
-    void mousePressEvent( QMouseEvent* e );
-    void focusInEvent( QFocusEvent* e );
-    void resizeEvent( QResizeEvent* e );
-    void changeEvent( QEvent* e );
-    void paintEvent( QPaintEvent* e );
+    void mousePressEvent( QMouseEvent* e ) OVERRIDE;
+    void focusInEvent( QFocusEvent* e ) OVERRIDE;
+    void resizeEvent( QResizeEvent* e ) OVERRIDE;
+    void changeEvent( QEvent* e ) OVERRIDE;
+    void paintEvent( QPaintEvent* e ) OVERRIDE;
 
   private slots:
     void clear();

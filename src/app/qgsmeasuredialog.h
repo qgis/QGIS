@@ -58,7 +58,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void restart();
 
     //! Close event
-    void closeEvent( QCloseEvent *e );
+    void closeEvent( QCloseEvent *e ) OVERRIDE;
 
     //! Show the help for the dialog
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

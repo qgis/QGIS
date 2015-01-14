@@ -29,34 +29,34 @@ class SpinBoxDelegate : public QItemDelegate
   public:
     SpinBoxDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) {}
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &/*index*/ ) const OVERRIDE
     {
       QSpinBox *editor = new QSpinBox( parent );
       editor->setMinimum( 0 );
       editor->setMaximum( 999 );
       return editor;
-    }
+  }
 
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const OVERRIDE
     {
       int value = index.model()->data( index, Qt::EditRole ).toInt();
       QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
       spinBox->setValue( value );
-    }
+  }
 
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const OVERRIDE
     {
       QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
       spinBox->interpretText();
       int value = spinBox->value();
 
       model->setData( index, value, Qt::EditRole );
-    }
+  }
 
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const OVERRIDE
     {
       editor->setGeometry( option.rect );
-    }
+  }
 
 };
 

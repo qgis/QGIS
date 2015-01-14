@@ -37,15 +37,15 @@ class GUI_EXPORT QgsMultiBandColorRendererWidget: public QgsRasterRendererWidget
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsMultiBandColorRendererWidget( layer, theExtent ); }
     ~QgsMultiBandColorRendererWidget();
 
-    QgsRasterRenderer* renderer();
+    QgsRasterRenderer* renderer() OVERRIDE;
 
     void setFromRenderer( const QgsRasterRenderer* r );
 
-    QString min( int index = 0 );
-    QString max( int index = 0 );
-    void setMin( QString value, int index = 0 );
-    void setMax( QString value, int index = 0 );
-    int selectedBand( int index = 0 );
+    QString min( int index = 0 ) OVERRIDE;
+    QString max( int index = 0 ) OVERRIDE;
+    void setMin( QString value, int index = 0 ) OVERRIDE;
+    void setMax( QString value, int index = 0 ) OVERRIDE;
+    int selectedBand( int index = 0 ) OVERRIDE;
 
   public slots:
     void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );

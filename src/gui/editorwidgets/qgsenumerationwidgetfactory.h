@@ -25,11 +25,11 @@ class GUI_EXPORT QgsEnumerationWidgetFactory : public QgsEditorWidgetFactory
 
     // QgsEditorWidgetFactory interface
   public:
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const;
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const;
+    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const OVERRIDE;
+    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const OVERRIDE;
 
   private:
-    bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx );
+    bool isFieldSupported( QgsVectorLayer* vl, int fieldIdx ) OVERRIDE;
 };
 
 #endif // QGSENUMERATIONWIDGETFACTORY_H

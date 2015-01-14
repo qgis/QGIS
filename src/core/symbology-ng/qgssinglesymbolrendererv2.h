@@ -29,21 +29,21 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual ~QgsSingleSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) OVERRIDE;
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature ) OVERRIDE;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) OVERRIDE;
 
-    virtual void stopRender( QgsRenderContext& context );
+    virtual void stopRender( QgsRenderContext& context ) OVERRIDE;
 
-    virtual QList<QString> usedAttributes();
+    virtual QList<QString> usedAttributes() OVERRIDE;
 
     QgsSymbolV2* symbol() const;
     void setSymbol( QgsSymbolV2* s );
 
-    void setRotationField( QString fieldOrExpression );
-    QString rotationField() const;
+    void setRotationField( QString fieldOrExpression ) OVERRIDE;
+    QString rotationField() const OVERRIDE;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
@@ -51,34 +51,34 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
-    virtual QString dump() const;
+    virtual QString dump() const OVERRIDE;
 
-    virtual QgsFeatureRendererV2* clone() const;
+    virtual QgsFeatureRendererV2* clone() const OVERRIDE;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const OVERRIDE;
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() { return SymbolLevels | RotationField; }
+    virtual int capabilities() OVERRIDE { return SymbolLevels | RotationField; }
 
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols() OVERRIDE;
 
     //! create renderer from XML element
     static QgsFeatureRendererV2* create( QDomElement& element );
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument& doc );
+    virtual QDomElement save( QDomDocument& doc ) OVERRIDE;
 
     //! return a list of symbology items for the legend
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) OVERRIDE;
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() ) OVERRIDE;
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! @note added in 2.6
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const OVERRIDE;
 
     //! creates a QgsSingleSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5

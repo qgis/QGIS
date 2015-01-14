@@ -29,8 +29,8 @@ class GUI_EXPORT QgsUniqueValuesConfigDlg : public QgsEditorConfigWidget, privat
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config();
-    void setConfig( const QgsEditorWidgetConfig& config );
+    QgsEditorWidgetConfig config() OVERRIDE;
+    void setConfig( const QgsEditorWidgetConfig& config ) OVERRIDE;
 };
 
 #endif // QGSUNIQUEVALUESCONFIGDLG_H

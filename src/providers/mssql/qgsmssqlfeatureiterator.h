@@ -32,7 +32,7 @@ class QgsMssqlFeatureSource : public QgsAbstractFeatureSource
     QgsMssqlFeatureSource( const QgsMssqlProvider* p );
     ~QgsMssqlFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
 
   protected:
     QgsFields mFields;
@@ -75,17 +75,17 @@ class QgsMssqlFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsM
     ~QgsMssqlFeatureIterator();
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() OVERRIDE;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() OVERRIDE;
 
   protected:
     void BuildStatement( const QgsFeatureRequest& request );
 
   private:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) OVERRIDE;
 
     // The current database
     QSqlDatabase mDatabase;

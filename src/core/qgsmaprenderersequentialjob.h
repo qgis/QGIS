@@ -34,15 +34,15 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
     QgsMapRendererSequentialJob( const QgsMapSettings& settings );
     ~QgsMapRendererSequentialJob();
 
-    virtual void start();
-    virtual void cancel();
-    virtual void waitForFinished();
-    virtual bool isActive() const;
+    virtual void start() OVERRIDE;
+    virtual void cancel() OVERRIDE;
+    virtual void waitForFinished() OVERRIDE;
+    virtual bool isActive() const OVERRIDE;
 
-    virtual QgsLabelingResults* takeLabelingResults();
+    virtual QgsLabelingResults* takeLabelingResults() OVERRIDE;
 
     // from QgsMapRendererJobWithPreview
-    virtual QImage renderedImage();
+    virtual QImage renderedImage() OVERRIDE;
 
   public slots:
 

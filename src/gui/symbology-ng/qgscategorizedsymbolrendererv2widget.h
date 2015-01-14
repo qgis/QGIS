@@ -30,18 +30,18 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
     Q_OBJECT
   public:
     QgsCategorizedSymbolRendererV2Model( QObject * parent = 0 );
-    Qt::ItemFlags flags( const QModelIndex & index ) const;
-    Qt::DropActions supportedDropActions() const;
-    QVariant data( const QModelIndex &index, int role ) const;
-    bool setData( const QModelIndex & index, const QVariant & value, int role );
-    QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex & = QModelIndex() ) const;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &index ) const;
-    QStringList mimeTypes() const;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+    Qt::ItemFlags flags( const QModelIndex & index ) const OVERRIDE;
+    Qt::DropActions supportedDropActions() const OVERRIDE;
+    QVariant data( const QModelIndex &index, int role ) const OVERRIDE;
+    bool setData( const QModelIndex & index, const QVariant & value, int role ) OVERRIDE;
+    QVariant headerData( int section, Qt::Orientation orientation, int role ) const OVERRIDE;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    int columnCount( const QModelIndex & = QModelIndex() ) const OVERRIDE;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    QModelIndex parent( const QModelIndex &index ) const OVERRIDE;
+    QStringList mimeTypes() const OVERRIDE;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const OVERRIDE;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) OVERRIDE;
 
     void setRenderer( QgsCategorizedSymbolRendererV2* renderer );
 
@@ -49,7 +49,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Model : public QAbstractItemModel
     QgsRendererCategoryV2 category( const QModelIndex &index );
     void deleteRows( QList<int> rows );
     void removeAllRows();
-    void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) OVERRIDE;
     void updateSymbology();
 
   signals:
@@ -66,7 +66,7 @@ class QgsCategorizedSymbolRendererV2ViewStyle: public QProxyStyle
   public:
     QgsCategorizedSymbolRendererV2ViewStyle( QStyle* style = 0 );
 
-    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const;
+    void drawPrimitive( PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0 ) const OVERRIDE;
 };
 
 class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widget, private Ui::QgsCategorizedSymbolRendererV2Widget
@@ -78,7 +78,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     QgsCategorizedSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
     ~QgsCategorizedSymbolRendererV2Widget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRendererV2* renderer() OVERRIDE;
 
   public slots:
     void changeCategorizedSymbol();
@@ -120,10 +120,10 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     QgsVectorColorRampV2* getColorRamp();
 
-    QList<QgsSymbolV2*> selectedSymbols();
+    QList<QgsSymbolV2*> selectedSymbols() OVERRIDE;
     QgsCategoryList selectedCategoryList();
-    void refreshSymbolView() { populateCategories(); }
-    void keyPressEvent( QKeyEvent* event );
+    void refreshSymbolView() OVERRIDE { populateCategories(); }
+    void keyPressEvent( QKeyEvent* event ) OVERRIDE;
 
   protected:
     QgsCategorizedSymbolRendererV2* mRenderer;

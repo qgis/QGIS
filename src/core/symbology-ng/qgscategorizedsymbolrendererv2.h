@@ -75,26 +75,26 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual ~QgsCategorizedSymbolRendererV2();
 
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) OVERRIDE;
 
-    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* originalSymbolForFeature( QgsFeature& feature ) OVERRIDE;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) OVERRIDE;
 
-    virtual void stopRender( QgsRenderContext& context );
+    virtual void stopRender( QgsRenderContext& context ) OVERRIDE;
 
-    virtual QList<QString> usedAttributes();
+    virtual QList<QString> usedAttributes() OVERRIDE;
 
-    virtual QString dump() const;
+    virtual QString dump() const OVERRIDE;
 
-    virtual QgsFeatureRendererV2* clone() const;
+    virtual QgsFeatureRendererV2* clone() const OVERRIDE;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const OVERRIDE;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() { return SymbolLevels | RotationField | Filter; }
+    virtual int capabilities() OVERRIDE { return SymbolLevels | RotationField | Filter; }
 
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols() OVERRIDE;
     void updateSymbols( QgsSymbolV2 * sym );
 
     const QgsCategoryList& categories() const { return mCategories; }
@@ -130,14 +130,14 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     static QgsFeatureRendererV2* create( QDomElement& element );
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument& doc );
+    virtual QDomElement save( QDomDocument& doc ) OVERRIDE;
 
     //! return a list of symbology items for the legend
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) OVERRIDE;
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = QString() ) OVERRIDE;
 
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
@@ -153,8 +153,8 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.5
     void updateColorRamp( QgsVectorColorRampV2* ramp, bool inverted = false );
 
-    void setRotationField( QString fieldOrExpression );
-    QString rotationField() const;
+    void setRotationField( QString fieldOrExpression ) OVERRIDE;
+    QString rotationField() const OVERRIDE;
 
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
@@ -164,19 +164,19 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     //! items of symbology items in legend should be checkable
     //! @note added in 2.5
-    virtual bool legendSymbolItemsCheckable() const;
+    virtual bool legendSymbolItemsCheckable() const OVERRIDE;
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual bool legendSymbolItemChecked( QString key );
+    virtual bool legendSymbolItemChecked( QString key ) OVERRIDE;
 
     //! item in symbology was checked
     // @note added in 2.5
-    virtual void checkLegendSymbolItem( QString key, bool state = true );
+    virtual void checkLegendSymbolItem( QString key, bool state = true ) OVERRIDE;
 
     //! If supported by the renderer, return classification attribute for the use in legend
     //! @note added in 2.6
-    virtual QString legendClassificationAttribute() const { return classAttribute(); }
+    virtual QString legendClassificationAttribute() const OVERRIDE { return classAttribute(); }
 
     //! creates a QgsCategorizedSymbolRendererV2 from an existing renderer.
     //! @note added in 2.5

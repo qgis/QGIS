@@ -94,7 +94,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @param enabled  Enable or Disable?
      */
-    void setEnabled( bool enabled );
+    void setEnabled( bool enabled ) OVERRIDE;
 
   signals:
     /**
@@ -112,7 +112,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @param feature The new feature
      */
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature& feature ) OVERRIDE;
 
     /**
      * Is called, when the value of the widget needs to be changed. Update the widget representation

@@ -49,77 +49,77 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     /* Functions inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const OVERRIDE;
 
     /**
      *   Returns the permanent storage type for this layer as a friendly name.
      */
-    virtual QString storageType() const;
+    virtual QString storageType() const OVERRIDE;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const;
+    virtual QGis::WkbType geometryType() const OVERRIDE;
 
     /**
      * Number of features in the layer
      * @return long containing number of features
      */
-    virtual long featureCount() const;
+    virtual long featureCount() const OVERRIDE;
 
     /**
      * Get the field information for the layer
      */
-    virtual const QgsFields& fields() const;
+    virtual const QgsFields& fields() const OVERRIDE;
 
     /**
      * Adds a list of features
      * @return true in case of success and false in case of failure
      */
-    virtual bool addFeatures( QgsFeatureList & flist );
+    virtual bool addFeatures( QgsFeatureList & flist ) OVERRIDE;
 
     /**
      * Deletes a feature
      * @param id list containing feature ids to delete
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteFeatures( const QgsFeatureIds & id );
+    virtual bool deleteFeatures( const QgsFeatureIds & id ) OVERRIDE;
 
     /**
      * Changes attribute values of existing features.
      * @param attr_map a map containing changed attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) OVERRIDE;
 
-    virtual int capabilities() const;
+    virtual int capabilities() const OVERRIDE;
 
     /**
      * Returns the default value for field specified by @c fieldId
      */
-    virtual QVariant defaultValue( int fieldId );
+    virtual QVariant defaultValue( int fieldId ) OVERRIDE;
 
 
     /* Functions inherited from QgsDataProvider */
 
     /** Return the extent for this data layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() OVERRIDE;
 
     /**Returns true if this is a valid delimited file
      */
-    virtual bool isValid();
+    virtual bool isValid() OVERRIDE;
 
     /** return a provider name */
-    virtual QString name() const;
+    virtual QString name() const OVERRIDE;
 
     /** return description */
-    virtual QString description() const;
+    virtual QString description() const OVERRIDE;
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() OVERRIDE;
 
 
     /* new functions */

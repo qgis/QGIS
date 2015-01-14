@@ -35,13 +35,13 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     ~QgsMapToolPinLabels();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
 
     bool isShowingPinned() const { return mShowPinned; }
     void setShowingPinned( bool showing ) { mShowPinned = showing; }

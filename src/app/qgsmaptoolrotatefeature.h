@@ -29,23 +29,23 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     QgsMapToolRotateFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolRotateFeature();
 
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
 
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
 
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
 
-    void keyPressEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) OVERRIDE;
 
-    void keyReleaseEvent( QKeyEvent* e );
+    void keyReleaseEvent( QKeyEvent* e ) OVERRIDE;
 
 
     //! to reset the rotation anchor to selectionbound center
     void resetAnchor();
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() OVERRIDE;
 
-    void activate();
+    void activate() OVERRIDE;
 
 
   private:

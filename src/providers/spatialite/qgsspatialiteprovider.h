@@ -74,29 +74,29 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! Destructor
     virtual ~ QgsSpatiaLiteProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const OVERRIDE;
 
     /**
         *   Returns the permanent storage type for this layer as a friendly name.
         */
-    virtual QString storageType() const;
+    virtual QString storageType() const OVERRIDE;
 
     /*! Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() OVERRIDE;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
 
     /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString();
+    virtual QString subsetString() OVERRIDE;
 
     /** mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
+    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) OVERRIDE;
 
-    virtual bool supportsSubsetString() { return true; }
+    virtual bool supportsSubsetString() OVERRIDE { return true; }
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -107,7 +107,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * WKBMultiPolygon
      * as defined in qgis.h
      */
-    QGis::WkbType geometryType() const;
+    QGis::WkbType geometryType() const OVERRIDE;
 
     /** return the number of layers for the current data source
 
@@ -120,63 +120,63 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * Get the number of features in the layer
      */
-    long featureCount() const;
+    long featureCount() const OVERRIDE;
 
     /** Return the extent for this data layer
     */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() OVERRIDE;
 
     /** Update the extent for this data layer
     */
-    virtual void updateExtents();
+    virtual void updateExtents() OVERRIDE;
 
     /**
       * Get the field information for the layer
       * @return vector of QgsField objects
       */
-    const QgsFields & fields() const;
+    const QgsFields & fields() const OVERRIDE;
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
-    QVariant minimumValue( int index );
+    QVariant minimumValue( int index ) OVERRIDE;
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maximumValue( int index );
+    QVariant maximumValue( int index ) OVERRIDE;
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values
      *  @param limit maximum number of values */
-    virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 );
+    virtual void uniqueValues( int index, QList < QVariant > &uniqueValues, int limit = -1 ) OVERRIDE;
 
     /**Returns true if layer is valid
     */
-    bool isValid();
+    bool isValid() OVERRIDE;
 
     /**Describes if provider has save and load style support
        @return true in case saving style to db is supported by this provider*/
-    virtual bool isSaveAndLoadStyleToDBSupported() { return true; }
+    virtual bool isSaveAndLoadStyleToDBSupported() OVERRIDE { return true; }
 
     /**Adds a list of features
       @return true in case of success and false in case of failure*/
-    bool addFeatures( QgsFeatureList & flist );
+    bool addFeatures( QgsFeatureList & flist ) OVERRIDE;
 
     /**Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
-    bool deleteFeatures( const QgsFeatureIds & id );
+    bool deleteFeatures( const QgsFeatureIds & id ) OVERRIDE;
 
     /**Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
-    bool addAttributes( const QList<QgsField> &attributes );
+    bool addAttributes( const QList<QgsField> &attributes ) OVERRIDE;
 
     /**Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
-    bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
+    bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) OVERRIDE;
 
     /**
        Changes geometries of existing features
@@ -184,10 +184,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    bool changeGeometryValues( QgsGeometryMap & geometry_map ) OVERRIDE;
 
     /**Returns a bitmask containing the supported capabilities*/
-    int capabilities() const;
+    int capabilities() const OVERRIDE;
 
     /** The SpatiaLite provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
@@ -215,7 +215,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString name() const;
+    QString name() const OVERRIDE;
 
     /** return description
 
@@ -228,12 +228,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString description() const;
+    QString description() const OVERRIDE;
 
     /**
      * Return list of indexes of fields that make up the primary key
      */
-    QgsAttributeList pkAttributeIndexes();
+    QgsAttributeList pkAttributeIndexes() OVERRIDE;
 
   signals:
     /**

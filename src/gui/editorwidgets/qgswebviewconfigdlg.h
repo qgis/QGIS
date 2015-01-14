@@ -29,8 +29,8 @@ class GUI_EXPORT QgsWebViewWidgetConfigDlg : public QgsEditorConfigWidget, priva
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config();
-    void setConfig( const QgsEditorWidgetConfig& config );
+    QgsEditorWidgetConfig config() OVERRIDE;
+    void setConfig( const QgsEditorWidgetConfig& config ) OVERRIDE;
 };
 
 #endif // QGSWEBVIEWWIDGETCONFIGDLGBASE_H

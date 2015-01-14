@@ -216,67 +216,67 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     ~QgsRuleBasedRendererV2();
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) OVERRIDE;
 
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) OVERRIDE;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) OVERRIDE;
 
-    virtual void stopRender( QgsRenderContext& context );
+    virtual void stopRender( QgsRenderContext& context ) OVERRIDE;
 
-    virtual QList<QString> usedAttributes();
+    virtual QList<QString> usedAttributes() OVERRIDE;
 
-    virtual QgsFeatureRendererV2* clone() const;
+    virtual QgsFeatureRendererV2* clone() const OVERRIDE;
 
-    virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
+    virtual void toSld( QDomDocument& doc, QDomElement &element ) const OVERRIDE;
 
     static QgsFeatureRendererV2* createFromSld( QDomElement& element, QGis::GeometryType geomType );
 
-    virtual QgsSymbolV2List symbols();
+    virtual QgsSymbolV2List symbols() OVERRIDE;
 
     //! store renderer info to XML element
-    virtual QDomElement save( QDomDocument& doc );
+    virtual QDomElement save( QDomDocument& doc ) OVERRIDE;
 
     //! return a list of symbology items for the legend
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize ) OVERRIDE;
 
     //! items of symbology items in legend should be checkable
     //! @note added in 2.5
-    virtual bool legendSymbolItemsCheckable() const;
+    virtual bool legendSymbolItemsCheckable() const OVERRIDE;
 
     //! items of symbology items in legend is checked
     //! @note added in 2.5
-    virtual bool legendSymbolItemChecked( QString key );
+    virtual bool legendSymbolItemChecked( QString key ) OVERRIDE;
 
     //! item in symbology was checked
     //! @note added in 2.5
-    virtual void checkLegendSymbolItem( QString key, bool state = true );
+    virtual void checkLegendSymbolItem( QString key, bool state = true ) OVERRIDE;
 
     //! return a list of item text / symbol
     //! @note not available in python bindings
-    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
+    virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" ) OVERRIDE;
 
     //! Return a list of symbology items for the legend. Better choice than legendSymbolItems().
     //! Default fallback implementation just uses legendSymbolItems() implementation
     //! @note added in 2.6
-    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const;
+    virtual QgsLegendSymbolListV2 legendSymbolItemsV2() const OVERRIDE;
 
     //! for debugging
-    virtual QString dump() const;
+    virtual QString dump() const OVERRIDE;
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.
-    virtual bool willRenderFeature( QgsFeature& feat );
+    virtual bool willRenderFeature( QgsFeature& feat ) OVERRIDE;
 
     //! return list of symbols used for rendering the feature.
     //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
     //! to use symbolForFeature()
-    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
+    virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat ) OVERRIDE;
 
-    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
+    virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat ) OVERRIDE;
 
     //! returns bitwise OR-ed capabilities of the renderer
-    virtual int capabilities() { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    virtual int capabilities() OVERRIDE { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 

@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 
     //! Set the current value to the value defined by the clear value.
-    virtual void clear();
+    virtual void clear() OVERRIDE;
 
     /**
      * @brief setClearValue defines the clear value as a custom value and will automatically set the clear value mode to CustomValue
@@ -76,12 +76,12 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     //! returns the value used when clear() is called.
     double clearValue() const;
 
-    virtual double valueFromText( const QString & text ) const;
-    virtual QValidator::State validate( QString & input, int & pos ) const;
+    virtual double valueFromText( const QString & text ) const OVERRIDE;
+    virtual QValidator::State validate( QString & input, int & pos ) const OVERRIDE;
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event );
-    virtual void changeEvent( QEvent* event );
+    virtual void resizeEvent( QResizeEvent* event ) OVERRIDE;
+    virtual void changeEvent( QEvent* event ) OVERRIDE;
 
   private slots:
     void changed( const double &value );

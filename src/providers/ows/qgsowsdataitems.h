@@ -24,10 +24,10 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
     QgsOWSConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsOWSConnectionItem();
 
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
+    virtual bool equal( const QgsDataItem *other ) OVERRIDE;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() OVERRIDE;
 
   public slots:
     void editConnection();
@@ -44,11 +44,11 @@ class QgsOWSRootItem : public QgsDataCollectionItem
     QgsOWSRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsOWSRootItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() OVERRIDE;
 
-    virtual QWidget * paramWidget();
+    virtual QWidget * paramWidget() OVERRIDE;
 
   public slots:
     void connectionsChanged();

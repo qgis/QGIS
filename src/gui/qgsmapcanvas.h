@@ -516,34 +516,34 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 #endif
 
     //! Overridden key press event
-    void keyPressEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent * e ) OVERRIDE;
 
     //! Overridden key release event
-    void keyReleaseEvent( QKeyEvent * e );
+    void keyReleaseEvent( QKeyEvent * e ) OVERRIDE;
 
     //! Overridden mouse double click event
-    void mouseDoubleClickEvent( QMouseEvent * e );
+    void mouseDoubleClickEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e );
+    void mouseMoveEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e );
+    void mousePressEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e );
+    void mouseReleaseEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Overridden mouse wheel event
-    void wheelEvent( QWheelEvent * e );
+    void wheelEvent( QWheelEvent * e ) OVERRIDE;
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e );
+    void resizeEvent( QResizeEvent * e ) OVERRIDE;
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * e );
+    void paintEvent( QPaintEvent * e ) OVERRIDE;
 
     //! Overridden drag enter event
-    void dragEnterEvent( QDragEnterEvent * e );
+    void dragEnterEvent( QDragEnterEvent * e ) OVERRIDE;
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
@@ -560,7 +560,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**debugging member
        invoked when a connect() is made to this object
     */
-    void connectNotify( const char * signal );
+    void connectNotify( const char * signal ) OVERRIDE;
 
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();

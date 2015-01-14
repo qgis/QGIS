@@ -27,7 +27,7 @@ class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
     ~QgsMapToolHtmlAnnotation();
 
   protected:
-    QgsAnnotationItem* createItem( QMouseEvent* e );
+    QgsAnnotationItem* createItem( QMouseEvent* e ) OVERRIDE;
 };
 
 #endif // QgsMapToolHtmlAnnotation_H

@@ -42,10 +42,10 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     virtual ~QgsColorSwatchGrid();
 
     //Reimplemented to set fixed size on widget
-    virtual QSize minimumSizeHint() const;
+    virtual QSize minimumSizeHint() const OVERRIDE;
 
     //Reimplemented to set fixed size on widget
-    virtual QSize sizeHint() const;
+    virtual QSize sizeHint() const OVERRIDE;
 
     /**Get the current context for the grid
      * @returns context string which is passed to scheme for color generation
@@ -96,13 +96,13 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
   protected:
 
     //reimplemented QWidget events
-    void paintEvent( QPaintEvent * event );
-    void mouseMoveEvent( QMouseEvent * event );
-    void mousePressEvent( QMouseEvent * event );
-    void mouseReleaseEvent( QMouseEvent * event );
-    void keyPressEvent( QKeyEvent* event );
-    void focusInEvent( QFocusEvent* event );
-    void focusOutEvent( QFocusEvent* event );
+    void paintEvent( QPaintEvent * event ) OVERRIDE;
+    void mouseMoveEvent( QMouseEvent * event ) OVERRIDE;
+    void mousePressEvent( QMouseEvent * event ) OVERRIDE;
+    void mouseReleaseEvent( QMouseEvent * event ) OVERRIDE;
+    void keyPressEvent( QKeyEvent* event ) OVERRIDE;
+    void focusInEvent( QFocusEvent* event ) OVERRIDE;
+    void focusOutEvent( QFocusEvent* event ) OVERRIDE;
 
   private:
     QgsColorScheme* mScheme;

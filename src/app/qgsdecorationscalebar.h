@@ -39,14 +39,14 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
-    void projectRead();
+    void projectRead() OVERRIDE;
     //! save values to the project
-    void saveToProject();
+    void saveToProject() OVERRIDE;
 
     //! this does the meaty bit of the work
-    void render( QPainter * );
+    void render( QPainter * ) OVERRIDE;
     //! Show the dialog box
-    void run();
+    void run() OVERRIDE;
 
   private:
 

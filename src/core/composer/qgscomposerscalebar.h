@@ -52,10 +52,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     ~QgsComposerScaleBar();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerScaleBar; }
+    virtual int type() const OVERRIDE { return ComposerScaleBar; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) OVERRIDE;
 
     //getters and setters
     int numSegments() const {return mNumSegments;}
@@ -218,19 +218,19 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const OVERRIDE;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) OVERRIDE;
 
     /**Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
 
     //overriden to apply minimum size
-    void setSceneRect( const QRectF &rectangle );
+    void setSceneRect( const QRectF &rectangle ) OVERRIDE;
 
   public slots:
     void updateSegmentSize();

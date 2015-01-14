@@ -30,14 +30,14 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
     QgsMapToolDeletePart( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeletePart();
 
-    void canvasMoveEvent( QMouseEvent * e );
+    void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
 
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
 
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() OVERRIDE;
 
   private:
     QgsVectorLayer* vlayer;

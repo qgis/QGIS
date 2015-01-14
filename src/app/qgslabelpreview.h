@@ -34,7 +34,7 @@ class APP_EXPORT QgsLabelPreview : public QLabel
     void setFont( QFont f ) { mFont = f; }
     QFont font() { return mFont; }
 
-    void paintEvent( QPaintEvent* e );
+    void paintEvent( QPaintEvent* e ) OVERRIDE;
 
   private:
     QgsPalLayerSettings* mTmpLyr;

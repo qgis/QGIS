@@ -43,69 +43,69 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     virtual ~DualEdgeTriangulation();
     void setDecorator( Triangulation* d ) {mDecorator = d;}
     /**Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points*/
-    void addLine( Line3D* line, bool breakline );
+    void addLine( Line3D* line, bool breakline ) OVERRIDE;
     /**Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure*/
-    int addPoint( Point3D* p );
+    int addPoint( Point3D* p ) OVERRIDE;
     /**Performs a consistency check, remove this later*/
-    virtual void performConsistencyTest();
+    virtual void performConsistencyTest() OVERRIDE;
     /**Calculates the normal at a point on the surface*/
-    virtual bool calcNormal( double x, double y, Vector3D* result );
+    virtual bool calcNormal( double x, double y, Vector3D* result ) OVERRIDE;
     /**Calculates x-, y and z-value of the point on the surface*/
-    virtual bool calcPoint( double x, double y, Point3D* result );
+    virtual bool calcPoint( double x, double y, Point3D* result ) OVERRIDE;
     /**draws the points, edges and the forced lines*/
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     /**Returns a pointer to the point with number i*/
-    virtual Point3D* getPoint( unsigned int i ) const;
+    virtual Point3D* getPoint( unsigned int i ) const OVERRIDE;
     /**Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
-    int getOppositePoint( int p1, int p2 );
+    int getOppositePoint( int p1, int p2 ) OVERRIDE;
     /**Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'*/
     //! @note not available in python bindings
-    virtual bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
+    virtual bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 ) OVERRIDE;
     /**Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3*/
-    virtual bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
+    virtual bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 ) OVERRIDE;
     /**Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method*/
-    QList<int>* getSurroundingTriangles( int pointno );
+    QList<int>* getSurroundingTriangles( int pointno ) OVERRIDE;
     /**Returns the largest x-coordinate value of the bounding box*/
-    virtual double getXMax() const;
+    virtual double getXMax() const OVERRIDE;
     /**Returns the smallest x-coordinate value of the bounding box*/
-    virtual double getXMin() const;
+    virtual double getXMin() const OVERRIDE;
     /**Returns the largest y-coordinate value of the bounding box*/
-    virtual double getYMax() const;
+    virtual double getYMax() const OVERRIDE;
     /**Returns the smallest x-coordinate value of the bounding box*/
-    virtual double getYMin() const;
+    virtual double getYMin() const OVERRIDE;
     /**Returns the number of points*/
-    virtual int getNumberOfPoints() const;
+    virtual int getNumberOfPoints() const OVERRIDE;
     /**Removes the line with number i from the triangulation*/
     void removeLine( int i );
     /**Removes the point with the number i from the triangulation*/
     void removePoint( int i );
     /**Sets the behaviour of the triangulation in case of crossing forced lines*/
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b );
+    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b ) OVERRIDE;
     /**Sets the color of the normal edges*/
-    virtual void setEdgeColor( int r, int g, int b );
+    virtual void setEdgeColor( int r, int g, int b ) OVERRIDE;
     /**Sets the color of the forced edges*/
-    virtual void setForcedEdgeColor( int r, int g, int b );
+    virtual void setForcedEdgeColor( int r, int g, int b ) OVERRIDE;
     /**Sets the color of the breaklines*/
-    virtual void setBreakEdgeColor( int r, int g, int b );
+    virtual void setBreakEdgeColor( int r, int g, int b ) OVERRIDE;
     /**Sets an interpolator object*/
-    void setTriangleInterpolator( TriangleInterpolator* interpolator );
+    void setTriangleInterpolator( TriangleInterpolator* interpolator ) OVERRIDE;
     /**Eliminates the horizontal triangles by swapping or by insertion of new points*/
-    void eliminateHorizontalTriangles();
+    void eliminateHorizontalTriangles() OVERRIDE;
     /**Adds points to make the triangles better shaped (algorithm of ruppert)*/
-    virtual void ruppertRefinement();
+    virtual void ruppertRefinement() OVERRIDE;
     /**Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise*/
-    bool pointInside( double x, double y );
+    bool pointInside( double x, double y ) OVERRIDE;
     /**Reads the dual edge structure of a taff file*/
     //bool readFromTAFF(QString fileName);
     /**Saves the dual edge structure to a taff file*/
     //bool saveToTAFF(QString fileName) const;
     /**Swaps the edge which is closest to the point with x and y coordinates (if this is possible)*/
-    virtual bool swapEdge( double x, double y );
+    virtual bool swapEdge( double x, double y ) OVERRIDE;
     /**Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method*/
-    virtual QList<int>* getPointsAroundEdge( double x, double y );
+    virtual QList<int>* getPointsAroundEdge( double x, double y ) OVERRIDE;
     /**Saves the triangulation as a (line) shapefile
     @return true in case of success*/
-    virtual bool saveAsShapefile( const QString& fileName ) const;
+    virtual bool saveAsShapefile( const QString& fileName ) const OVERRIDE;
 
   protected:
     /**X-coordinate of the upper right corner of the bounding box*/

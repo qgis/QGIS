@@ -54,18 +54,18 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     // Implementation of virtual functions from QAbstractItemModel
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &child ) const;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
-    Qt::DropActions supportedDropActions() const;
-    QStringList mimeTypes() const;
-    QMimeData* mimeData( const QModelIndexList& indexes ) const;
-    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent );
-    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() );
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    QModelIndex parent( const QModelIndex &child ) const OVERRIDE;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
+    Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) OVERRIDE;
+    Qt::DropActions supportedDropActions() const OVERRIDE;
+    QStringList mimeTypes() const OVERRIDE;
+    QMimeData* mimeData( const QModelIndexList& indexes ) const OVERRIDE;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) OVERRIDE;
+    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) OVERRIDE;
 
     // New stuff
 

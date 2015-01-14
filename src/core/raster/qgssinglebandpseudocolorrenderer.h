@@ -32,22 +32,22 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /**Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface * clone() const OVERRIDE;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) OVERRIDE;
 
     /**Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
     const QgsRasterShader* shader() const { return mShader; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const OVERRIDE;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const OVERRIDE;
 
-    QList<int> usesBands() const;
+    QList<int> usesBands() const OVERRIDE;
 
     /**Returns the band used by the renderer
      * @note added in QGIS 2.7

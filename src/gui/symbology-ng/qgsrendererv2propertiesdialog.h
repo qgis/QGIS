@@ -46,7 +46,7 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
   protected:
 
     //! Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent * event );
+    void keyPressEvent( QKeyEvent * event ) OVERRIDE;
 
 
     QgsVectorLayer* mLayer;

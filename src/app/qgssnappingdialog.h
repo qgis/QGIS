@@ -67,7 +67,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
      * Handle closing of the window
      * @param event unused
      */
-    void closeEvent( QCloseEvent* event );
+    void closeEvent( QCloseEvent* event ) OVERRIDE;
 
   signals:
     void snapSettingsChanged();

@@ -37,13 +37,13 @@ class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
     QgsHistogramDiagram();
     ~QgsHistogramDiagram();
 
-    virtual QgsDiagram* clone() const;
+    virtual QgsDiagram* clone() const OVERRIDE;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
+    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position ) OVERRIDE;
 
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
-    QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
-    QString diagramName() const { return DIAGRAM_NAME_HISTOGRAM; }
+    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) OVERRIDE;
+    QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) OVERRIDE;
+    QString diagramName() const OVERRIDE { return DIAGRAM_NAME_HISTOGRAM; }
 
   private:
     QBrush mCategoryBrush;

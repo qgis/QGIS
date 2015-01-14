@@ -89,11 +89,11 @@ class GUI_EXPORT QgsFieldModel : public QAbstractItemModel
 
     // QAbstractItemModel interface
   public:
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex &parent ) const;
-    QVariant data( const QModelIndex &index, int role ) const;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    QModelIndex parent( const QModelIndex &child ) const OVERRIDE;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    int columnCount( const QModelIndex &parent ) const OVERRIDE;
+    QVariant data( const QModelIndex &index, int role ) const OVERRIDE;
 };
 
 #endif // QGSFIELDMODEL_H

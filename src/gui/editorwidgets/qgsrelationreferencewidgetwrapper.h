@@ -46,13 +46,13 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
         QgsMessageBar* messageBar,
         QWidget* parent = 0 );
 
-    virtual QWidget* createWidget( QWidget* parent );
-    virtual void initWidget( QWidget* editor );
-    virtual QVariant value();
+    virtual QWidget* createWidget( QWidget* parent ) OVERRIDE;
+    virtual void initWidget( QWidget* editor ) OVERRIDE;
+    virtual QVariant value() OVERRIDE;
 
   public slots:
-    virtual void setValue( const QVariant& value );
-    virtual void setEnabled( bool enabled );
+    virtual void setValue( const QVariant& value ) OVERRIDE;
+    virtual void setEnabled( bool enabled ) OVERRIDE;
 
   private slots:
     void foreignKeyChanged( QVariant value );

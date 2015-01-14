@@ -121,39 +121,39 @@ class GUI_EXPORT QgsColorButton: public QPushButton
     void colorChanged( const QColor &color );
 
   protected:
-    void changeEvent( QEvent* e );
-    void showEvent( QShowEvent* e );
+    void changeEvent( QEvent* e ) OVERRIDE;
+    void showEvent( QShowEvent* e ) OVERRIDE;
     static const QPixmap& transpBkgrd();
 
     /**
      * Reimplemented to detect right mouse button clicks on the color button and allow dragging colors
      */
-    void mousePressEvent( QMouseEvent* e );
+    void mousePressEvent( QMouseEvent* e ) OVERRIDE;
 
     /**
      * Reimplemented to allow dragging colors from button
      */
-    void mouseMoveEvent( QMouseEvent *e );
+    void mouseMoveEvent( QMouseEvent *e ) OVERRIDE;
 
     /**
      * Reimplemented to allow color picking
      */
-    void mouseReleaseEvent( QMouseEvent *e );
+    void mouseReleaseEvent( QMouseEvent *e ) OVERRIDE;
 
     /**
      * Reimplemented to allow cancelling color pick via keypress, and sample via space bar press
      */
-    void keyPressEvent( QKeyEvent *e );
+    void keyPressEvent( QKeyEvent *e ) OVERRIDE;
 
     /**
      * Reimplemented to accept dragged colors
      */
-    void dragEnterEvent( QDragEnterEvent * e );
+    void dragEnterEvent( QDragEnterEvent * e ) OVERRIDE;
 
     /**
      * Reimplemented to accept dropped colors
      */
-    void dropEvent( QDropEvent *e );
+    void dropEvent( QDropEvent *e ) OVERRIDE;
 
   private:
     QString mColorDialogTitle;

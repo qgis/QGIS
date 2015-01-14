@@ -60,10 +60,10 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QgsMapToolSimplify( QgsMapCanvas* canvas );
     virtual ~QgsMapToolSimplify();
 
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() OVERRIDE;
 
   public slots:
     void removeRubberBand();

@@ -320,15 +320,15 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QgsComposerTableContents* contents() { return &mTableContents; }
 
     //reimplemented to return fixed table width
-    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const OVERRIDE;
 
     //reimplemented to return min frame height
-    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
+    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const OVERRIDE;
 
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const;
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false );
-    virtual QSizeF totalSize() const;
-    virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex );
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const OVERRIDE;
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) OVERRIDE;
+    virtual QSizeF totalSize() const OVERRIDE;
+    virtual void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) OVERRIDE;
 
   public slots:
 
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     */
     virtual void refreshAttributes();
 
-    void recalculateFrameSizes();
+    void recalculateFrameSizes() OVERRIDE;
 
   protected:
     /**Margin between cell borders and cell text*/

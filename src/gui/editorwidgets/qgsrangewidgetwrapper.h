@@ -45,14 +45,14 @@ class GUI_EXPORT QgsRangeWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    virtual QVariant value();
+    virtual QVariant value() OVERRIDE;
 
   protected:
-    virtual QWidget* createWidget( QWidget* parent );
-    virtual void initWidget( QWidget* editor );
+    virtual QWidget* createWidget( QWidget* parent ) OVERRIDE;
+    virtual void initWidget( QWidget* editor ) OVERRIDE;
 
   public slots:
-    virtual void setValue( const QVariant& value );
+    virtual void setValue( const QVariant& value ) OVERRIDE;
 
   private:
     QSpinBox* mIntSpinBox;

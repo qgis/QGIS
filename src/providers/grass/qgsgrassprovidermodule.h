@@ -24,10 +24,10 @@ class QgsGrassLocationItem : public QgsDirectoryItem
     QgsGrassLocationItem( QgsDataItem* parent, QString dirPath, QString path );
     ~QgsGrassLocationItem();
 
-    QIcon icon() { return QgsDataItem::icon(); }
+    QIcon icon() OVERRIDE { return QgsDataItem::icon(); }
 
     static bool isLocation( QString path );
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
 };
 
 class QgsGrassMapsetItem : public QgsDirectoryItem
@@ -36,10 +36,10 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
     QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
     ~QgsGrassMapsetItem();
 
-    QIcon icon() { return QgsDataItem::icon(); }
+    QIcon icon() OVERRIDE { return QgsDataItem::icon(); }
 
     static bool isMapset( QString path );
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
 
     QString mLocation;
     QString mGisdbase;
@@ -51,7 +51,7 @@ class QgsGrassVectorLayerItem : public QgsLayerItem
     QgsGrassVectorLayerItem( QgsDataItem* parent, QString mapName, QString layerName, QString path, QString uri, LayerType layerType, QString providerKey );
     ~QgsGrassVectorLayerItem() {};
 
-    QString layerName() const;
+    QString layerName() const OVERRIDE;
 
   private:
     QString mMapName;

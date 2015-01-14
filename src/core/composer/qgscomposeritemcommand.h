@@ -32,9 +32,9 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     virtual ~QgsComposerItemCommand();
 
     /**Reverses the command*/
-    void undo();
+    void undo() OVERRIDE;
     /**Replays the command*/
-    void redo();
+    void redo() OVERRIDE;
 
     /**Saves current item state as previous state*/
     void savePreviousState();
@@ -135,8 +135,8 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
     ~QgsComposerMergeCommand();
 
-    bool mergeWith( const QUndoCommand * command );
-    int id() const { return ( int )mContext; }
+    bool mergeWith( const QUndoCommand * command ) OVERRIDE;
+    int id() const OVERRIDE { return ( int )mContext; }
 
   private:
     Context mContext;

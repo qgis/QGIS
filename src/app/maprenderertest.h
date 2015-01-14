@@ -31,7 +31,7 @@ class TestWidget : public QLabel
       timer.setInterval( 100 );
     }
 
-    void mousePressEvent( QMouseEvent * event )
+    void mousePressEvent( QMouseEvent * event ) OVERRIDE
     {
       if ( event->button() == Qt::RightButton )
       {

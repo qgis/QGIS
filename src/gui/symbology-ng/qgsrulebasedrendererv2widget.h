@@ -46,27 +46,27 @@ class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
   public:
     QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
     virtual QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const;
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    virtual int columnCount( const QModelIndex & = QModelIndex() ) const;
+                                 int role = Qt::DisplayRole ) const OVERRIDE;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    virtual int columnCount( const QModelIndex & = QModelIndex() ) const OVERRIDE;
     //! provide model index for parent's child item
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
     //! provide parent model index
-    virtual QModelIndex parent( const QModelIndex &index ) const;
+    virtual QModelIndex parent( const QModelIndex &index ) const OVERRIDE;
 
     // editing support
-    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) OVERRIDE;
 
     // drag'n'drop support
-    Qt::DropActions supportedDropActions() const;
-    QStringList mimeTypes() const;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+    Qt::DropActions supportedDropActions() const OVERRIDE;
+    QStringList mimeTypes() const OVERRIDE;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const OVERRIDE;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) OVERRIDE;
 
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) OVERRIDE;
 
     // new methods
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
     ~QgsRuleBasedRendererV2Widget();
 
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRendererV2* renderer() OVERRIDE;
 
   public slots:
 
@@ -136,10 +136,10 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 
     QgsRuleBasedRendererV2::Rule* currentRule();
 
-    QList<QgsSymbolV2*> selectedSymbols();
+    QList<QgsSymbolV2*> selectedSymbols() OVERRIDE;
     QgsRuleBasedRendererV2::RuleList selectedRules();
-    void refreshSymbolView();
-    void keyPressEvent( QKeyEvent* event );
+    void refreshSymbolView() OVERRIDE;
+    void keyPressEvent( QKeyEvent* event ) OVERRIDE;
 
     QgsRuleBasedRendererV2* mRenderer;
     QgsRuleBasedRendererV2Model* mModel;
@@ -150,8 +150,8 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     QgsRuleBasedRendererV2::RuleList mCopyBuffer;
 
   protected slots:
-    void copy();
-    void paste();
+    void copy() OVERRIDE;
+    void paste() OVERRIDE;
 };
 
 ///////
@@ -173,7 +173,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
   public slots:
     void testFilter();
     void buildExpression();
-    void accept();
+    void accept() OVERRIDE;
 
   protected:
     QgsRuleBasedRendererV2::Rule* mRule; // borrowed

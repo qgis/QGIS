@@ -30,8 +30,8 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) OVERRIDE;
+    virtual QgsSymbolLayerV2* symbolLayer() OVERRIDE;
 
   protected:
     QgsEllipseSymbolLayerV2* mLayer;

@@ -30,7 +30,7 @@ class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
     ~QgsPaperGrid();
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) OVERRIDE;
 
   private:
     QgsComposition* mComposition;
@@ -45,24 +45,24 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
     ~QgsPaperItem();
 
     /** return correct graphics item type. */
-    virtual int type() const { return ComposerPaper; }
+    virtual int type() const OVERRIDE { return ComposerPaper; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) OVERRIDE;
 
     /** stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const OVERRIDE;
 
     /** sets state from Dom document
      * @param itemElem is Dom node corresponding to item tag
      * @param doc is the Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) OVERRIDE;
 
-    virtual void setSceneRect( const QRectF& rectangle );
+    virtual void setSceneRect( const QRectF& rectangle ) OVERRIDE;
 
   private:
     QgsPaperItem();

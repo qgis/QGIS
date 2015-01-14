@@ -48,13 +48,13 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     QWidget * createEditor(
       QWidget *parent,
       const QStyleOptionViewItem &option,
-      const QModelIndex &index ) const;
+      const QModelIndex &index ) const OVERRIDE;
 
     /** Overloads the paint method form the QItemDelegate bas class */
     void paint(
       QPainter * painter,
       const QStyleOptionViewItem & option,
-      const QModelIndex & index ) const;
+      const QModelIndex & index ) const OVERRIDE;
 
     /**
      * Sets data from editor back to model. Overloads default method
@@ -62,14 +62,14 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      * @param model model where data should be updated
      * @param index index of field which is to be modified
      */
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const OVERRIDE;
 
     /**
      * Sets data from model into the editor. Overloads default method
      * @param editor editor which was created by create editor function in this class
      * @param index index of field which is to be retrieved
      */
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const OVERRIDE;
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel* featureSelectionModel );
 

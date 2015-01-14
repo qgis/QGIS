@@ -28,9 +28,9 @@ class CORE_EXPORT QgsDoubleBoxScaleBarStyle: public QgsScaleBarStyle
     QgsDoubleBoxScaleBarStyle( const QgsComposerScaleBar* bar );
     ~QgsDoubleBoxScaleBarStyle();
 
-    QString name() const;
+    QString name() const OVERRIDE;
 
-    void draw( QPainter* p, double xOffset = 0 ) const;
+    void draw( QPainter* p, double xOffset = 0 ) const OVERRIDE;
 
   private:
     QgsDoubleBoxScaleBarStyle(); //forbidden

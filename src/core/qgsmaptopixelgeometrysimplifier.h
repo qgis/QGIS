@@ -62,9 +62,9 @@ class CORE_EXPORT QgsMapToPixelSimplifier : public QgsAbstractGeometrySimplifier
     void setSimplifyFlags( int simplifyFlags ) { mSimplifyFlags = simplifyFlags; }
 
     //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
+    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const OVERRIDE;
     //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
+    virtual bool simplifyGeometry( QgsGeometry* geometry ) const OVERRIDE;
 
     // MapToPixel simplification helper methods
   public:

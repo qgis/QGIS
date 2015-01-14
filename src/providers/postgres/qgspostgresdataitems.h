@@ -36,11 +36,11 @@ class QgsPGRootItem : public QgsDataCollectionItem
     QgsPGRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsPGRootItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
 
-    virtual QWidget * paramWidget();
+    virtual QWidget * paramWidget() OVERRIDE;
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() OVERRIDE;
 
     static QMainWindow *sMainWindow;
 
@@ -56,12 +56,12 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsPGConnectionItem();
 
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
-    virtual QList<QAction*> actions();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
+    virtual bool equal( const QgsDataItem *other ) OVERRIDE;
+    virtual QList<QAction*> actions() OVERRIDE;
 
-    virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
+    virtual bool acceptDrop() OVERRIDE { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) OVERRIDE;
 
   signals:
     void addGeometryColumn( QgsPostgresLayerProperty );
@@ -83,8 +83,8 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
     QgsPGSchemaItem( QgsDataItem* parent, QString connectionName, QString name, QString path );
     ~QgsPGSchemaItem();
 
-    QVector<QgsDataItem*> createChildren();
-    virtual QList<QAction*> actions();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
+    virtual QList<QAction*> actions() OVERRIDE;
 
   private:
     QgsPGLayerItem * createLayer( QgsPostgresLayerProperty layerProperty );
@@ -102,7 +102,7 @@ class QgsPGLayerItem : public QgsLayerItem
 
     QString createUri();
 
-    virtual QList<QAction*> actions();
+    virtual QList<QAction*> actions() OVERRIDE;
 
   public slots:
     void deleteLayer();

@@ -58,9 +58,9 @@ class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
      */
     void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPoint >& additionalPoints,
-                    QVector< QgsPoint>& tiedPoints ) const;
+                    QVector< QgsPoint>& tiedPoints ) const OVERRIDE;
 
-    QString name() const;
+    QString name() const OVERRIDE;
 
   private:
     QgsVectorLayer *mVectorLayer;

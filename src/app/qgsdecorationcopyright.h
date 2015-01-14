@@ -41,14 +41,14 @@ class APP_EXPORT QgsDecorationCopyright : public QgsDecorationItem
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
-    void projectRead();
+    void projectRead() OVERRIDE;
     //! save values to the project
-    void saveToProject();
+    void saveToProject() OVERRIDE;
 
     //! Show the dialog box
-    void run();
+    void run() OVERRIDE;
     //! render the copyright label
-    void render( QPainter * );
+    void render( QPainter * ) OVERRIDE;
 
   private:
     //! This is the font that will be used for the copyright label

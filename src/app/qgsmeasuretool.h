@@ -55,21 +55,21 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // Inherited from QgsMapTool
 
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
 
     //! called when set as currently active map tool
-    virtual void activate();
+    virtual void activate() OVERRIDE;
 
     //! called when map tool is being deactivated
-    virtual void deactivate();
+    virtual void deactivate() OVERRIDE;
 
-    virtual void keyPressEvent( QKeyEvent* e );
+    virtual void keyPressEvent( QKeyEvent* e ) OVERRIDE;
 
   public slots:
     //! updates the projections we're using

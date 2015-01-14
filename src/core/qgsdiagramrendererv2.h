@@ -216,23 +216,23 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
     QgsSingleCategoryDiagramRenderer();
     ~QgsSingleCategoryDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const;
+    QgsDiagramRendererV2* clone() const OVERRIDE;
 
-    QString rendererName() const { return "SingleCategory"; }
+    QString rendererName() const OVERRIDE { return "SingleCategory"; }
 
-    QList<QString> diagramAttributes() const { return mSettings.categoryAttributes; }
+    QList<QString> diagramAttributes() const OVERRIDE { return mSettings.categoryAttributes; }
 
     void setDiagramSettings( const QgsDiagramSettings& s ) { mSettings = s; }
 
-    QList<QgsDiagramSettings> diagramSettings() const;
+    QList<QgsDiagramSettings> diagramSettings() const OVERRIDE;
 
-    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
-    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) OVERRIDE;
+    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const OVERRIDE;
 
   protected:
-    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) OVERRIDE;
 
-    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c );
+    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c ) OVERRIDE;
 
   private:
     QgsDiagramSettings mSettings;
@@ -244,16 +244,16 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     QgsLinearlyInterpolatedDiagramRenderer();
     ~QgsLinearlyInterpolatedDiagramRenderer();
 
-    QgsDiagramRendererV2* clone() const;
+    QgsDiagramRendererV2* clone() const OVERRIDE;
 
     /**Returns list with all diagram settings in the renderer*/
-    QList<QgsDiagramSettings> diagramSettings() const;
+    QList<QgsDiagramSettings> diagramSettings() const OVERRIDE;
 
     void setDiagramSettings( const QgsDiagramSettings& s ) { mSettings = s; }
 
-    QList<QString> diagramAttributes() const;
+    QList<QString> diagramAttributes() const OVERRIDE;
 
-    QString rendererName() const { return "LinearlyInterpolated"; }
+    QString rendererName() const OVERRIDE { return "LinearlyInterpolated"; }
 
     void setLowerValue( double val ) { mInterpolationSettings.lowerValue = val; }
     double lowerValue() const { return mInterpolationSettings.lowerValue; }
@@ -276,13 +276,13 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
     bool classificationAttributeIsExpression() const { return mInterpolationSettings.classificationAttributeIsExpression; }
     void setClassificationAttributeIsExpression( bool isExpression ) { mInterpolationSettings.classificationAttributeIsExpression = isExpression; }
 
-    void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
-    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+    void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) OVERRIDE;
+    void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const OVERRIDE;
 
   protected:
-    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s );
+    bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) OVERRIDE;
 
-    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c );
+    QSizeF diagramSize( const QgsFeature&, const QgsRenderContext& c ) OVERRIDE;
 
   private:
     QgsDiagramSettings mSettings;

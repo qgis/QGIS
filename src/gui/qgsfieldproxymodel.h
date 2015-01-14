@@ -65,8 +65,8 @@ class GUI_EXPORT QgsFieldProxyModel : public QSortFilterProxyModel
 
     // QSortFilterProxyModel interface
   public:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const OVERRIDE;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const OVERRIDE;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsFieldProxyModel::Filters )

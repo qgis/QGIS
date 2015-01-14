@@ -28,12 +28,12 @@ class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
     QgsNumericScaleBarStyle( QgsComposerScaleBar* bar );
     ~QgsNumericScaleBarStyle();
 
-    QString name() const;
+    QString name() const OVERRIDE;
 
-    void draw( QPainter* p, double xOffset = 0 ) const;
+    void draw( QPainter* p, double xOffset = 0 ) const OVERRIDE;
 
     //calculation of box size is different compared to segment based scale bars
-    QRectF calculateBoxSize() const;
+    QRectF calculateBoxSize() const OVERRIDE;
 
   private:
     QgsNumericScaleBarStyle(); //forbidden

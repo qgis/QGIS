@@ -30,11 +30,11 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolEdit
     QgsMapToolRotatePointSymbols( QgsMapCanvas* canvas );
     ~QgsMapToolRotatePointSymbols();
 
-    void canvasPressEvent( QMouseEvent * e );
-    void canvasMoveEvent( QMouseEvent * e );
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
 
-    bool isEditTool() {return true;}
+    bool isEditTool() OVERRIDE {return true;}
 
     /**Returns true if the symbols of a maplayer can be rotated. This means the layer
       is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer*/

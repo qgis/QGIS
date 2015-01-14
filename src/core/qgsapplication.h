@@ -49,10 +49,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent * event );
+    virtual bool event( QEvent * event ) OVERRIDE;
 
     //! Catch exceptions when sending event to receiver.
-    virtual bool notify( QObject * receiver, QEvent * event );
+    virtual bool notify( QObject * receiver, QEvent * event ) OVERRIDE;
 
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject * receiver );

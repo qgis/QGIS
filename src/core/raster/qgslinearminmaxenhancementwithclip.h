@@ -31,9 +31,9 @@ class CORE_EXPORT QgsLinearMinMaxEnhancementWithClip : public QgsContrastEnhance
   public:
     QgsLinearMinMaxEnhancementWithClip( QGis::DataType, double, double );
 
-    int enhance( double );
+    int enhance( double ) OVERRIDE;
 
-    bool isValueInDisplayableRange( double );
+    bool isValueInDisplayableRange( double ) OVERRIDE;
 };
 
 #endif

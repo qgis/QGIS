@@ -120,7 +120,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     ~QgsAdvancedDigitizingDockWidget();
 
-    void hideEvent( QHideEvent* );
+    void hideEvent( QHideEvent* ) OVERRIDE;
 
     virtual bool canvasPressEventFilter( QgsMapMouseEvent* e );
     virtual bool canvasReleaseEventFilter( QgsMapMouseEvent* e );
@@ -130,7 +130,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     bool snappingEnabled() {return mSnappingEnabled;}
 
     //! key press event on the dock
-    void keyPressEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) OVERRIDE;
 
     //! determines if CAD tools are enabled or if map tools behaves "nomally"
     bool cadEnabled() const { return mCadEnabled; }
@@ -221,7 +221,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     bool filterKeyPress( QKeyEvent* e );
 
     //! event filter for line edits in the dock UI (angle/distance/x/y line edits)
-    bool eventFilter( QObject *obj, QEvent *event );
+    bool eventFilter( QObject *obj, QEvent *event ) OVERRIDE;
 
     //! trigger fake mouse move event to update map tool rubber band and/or show new constraints
     void triggerMouseMoveEvent();

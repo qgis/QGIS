@@ -33,9 +33,9 @@ class CORE_EXPORT QgsClipToMinMaxEnhancement : public QgsContrastEnhancementFunc
   public:
     QgsClipToMinMaxEnhancement( QGis::DataType, double, double );
 
-    int enhance( double );
+    int enhance( double ) OVERRIDE;
 
-    bool isValueInDisplayableRange( double );
+    bool isValueInDisplayableRange( double ) OVERRIDE;
 };
 
 #endif

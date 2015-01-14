@@ -29,12 +29,12 @@ class QgsGdalLayerItem : public QgsLayerItem
                       QStringList *theSublayers = NULL );
     ~QgsGdalLayerItem();
 
-    bool setCrs( QgsCoordinateReferenceSystem crs );
-    Capability capabilities();
+    bool setCrs( QgsCoordinateReferenceSystem crs ) OVERRIDE;
+    Capability capabilities() OVERRIDE;
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
 
-    QString layerName() const;
+    QString layerName() const OVERRIDE;
 };
 
 #endif // QGSGDALDATAITEMS_H

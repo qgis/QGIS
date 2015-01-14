@@ -36,7 +36,7 @@ class QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
     QgsVectorLayerFeatureSource( QgsVectorLayer* layer );
     ~QgsVectorLayerFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
 
     friend class QgsVectorLayerFeatureIterator;
 
@@ -74,21 +74,21 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     ~QgsVectorLayerFeatureIterator();
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() OVERRIDE;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() OVERRIDE;
 
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) OVERRIDE;
 
     //! Overrides default method as we only need to filter features in the edit buffer
     //! while for others filtering is left to the provider implementation.
-    inline virtual bool nextFeatureFilterExpression( QgsFeature &f ) { return fetchFeature( f ); }
+    inline virtual bool nextFeatureFilterExpression( QgsFeature &f ) OVERRIDE { return fetchFeature( f ); }
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod ) OVERRIDE;
 
 
     QgsFeatureRequest mProviderRequest;
@@ -159,7 +159,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     QgsAbstractGeometrySimplifier* mEditGeometrySimplifier;
 
     //! returns whether the iterator supports simplify geometries on provider side
-    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const;
+    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const OVERRIDE;
 };
 
 #endif // QGSVECTORLAYERFEATUREITERATOR_H

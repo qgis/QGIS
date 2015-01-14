@@ -36,34 +36,34 @@ class ANALYSIS_EXPORT Bezier3D: public ParametricLine
     /**Destructor*/
     virtual ~Bezier3D();
     /**Do not use this method, since a Bezier curve does not consist of other curves*/
-    virtual void add( ParametricLine *pl );
+    virtual void add( ParametricLine *pl ) OVERRIDE;
     /**Calculates the first derivative and assigns it to v*/
-    virtual void calcFirstDer( float t, Vector3D* v );
+    virtual void calcFirstDer( float t, Vector3D* v ) OVERRIDE;
     /**Calculates the second derivative and assigns it to v*/
-    virtual void calcSecDer( float t, Vector3D* v );
+    virtual void calcSecDer( float t, Vector3D* v ) OVERRIDE;
     //virtual Point3D calcPoint(float t);
     /**Calculates the point on the curve and assigns it to p*/
-    virtual void calcPoint( float t, Point3D* p );
+    virtual void calcPoint( float t, Point3D* p ) OVERRIDE;
     /**changes the order of control points*/
-    virtual void changeDirection();
+    virtual void changeDirection() OVERRIDE;
     //virtual void draw(QPainter* p);
     //virtual bool intersects(ParametricLine* pal);
     /**Do not use this method, since a Bezier curve does not consist of other curves*/
-    virtual void remove( int i );
+    virtual void remove( int i ) OVERRIDE;
     /**Returns a control point*/
-    virtual const Point3D* getControlPoint( int number ) const;
+    virtual const Point3D* getControlPoint( int number ) const OVERRIDE;
     /**Returns a pointer to the control polygon*/
     //! @note not available in python binding
-    virtual const QVector<Point3D*>* getControlPoly() const;
+    virtual const QVector<Point3D*>* getControlPoly() const OVERRIDE;
     /**Returns the degree of the curve*/
-    virtual int getDegree() const;
+    virtual int getDegree() const OVERRIDE;
     /**Returns the parent*/
-    virtual ParametricLine* getParent() const;
+    virtual ParametricLine* getParent() const OVERRIDE;
     /** Sets the parent*/
-    virtual void setParent( ParametricLine* par );
+    virtual void setParent( ParametricLine* par ) OVERRIDE;
     /**Sets the control polygon*/
     //! @note not available in python binding
-    virtual void setControlPoly( QVector<Point3D*>* cp );
+    virtual void setControlPoly( QVector<Point3D*>* cp ) OVERRIDE;
 
 };
 

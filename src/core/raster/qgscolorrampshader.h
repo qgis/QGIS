@@ -86,12 +86,12 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
     void setMaximumColorCacheSize( int theSize ) { mMaximumColorCacheSize = theSize; }
 
     /** \brief Generates and new RGB value based on one input value */
-    bool shade( double, int*, int*, int*, int* );
+    bool shade( double, int*, int*, int*, int* ) OVERRIDE;
 
     /** \brief Generates and new RGB value based on original RGB value */
-    bool shade( double, double, double, double, int*, int*, int*, int* );
+    bool shade( double, double, double, double, int*, int*, int*, int* ) OVERRIDE;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const OVERRIDE;
 
     void setClip( bool clip ) { mClip = clip; }
     bool clip() const { return mClip; }

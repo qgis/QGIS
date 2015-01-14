@@ -61,9 +61,9 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
   protected:
     void refreshModel( const QModelIndex& index );
 
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent * event ) OVERRIDE;
 
-    void hideEvent( QHideEvent * event );
+    void hideEvent( QHideEvent * event ) OVERRIDE;
 
     void addLayer( QgsLayerItem *layerItem );
 

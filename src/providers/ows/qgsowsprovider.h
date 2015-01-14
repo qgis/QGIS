@@ -52,15 +52,15 @@ class QgsOwsProvider : public QgsDataProvider
 
     /* Pure virtuals */
 
-    QString name() const;
+    QString name() const OVERRIDE;
 
-    QString description() const;
+    QString description() const OVERRIDE;
 
-    QgsCoordinateReferenceSystem crs() { return QgsCoordinateReferenceSystem(); }
+    QgsCoordinateReferenceSystem crs() OVERRIDE { return QgsCoordinateReferenceSystem(); }
 
-    QgsRectangle extent() { return QgsRectangle(); }
+    QgsRectangle extent() OVERRIDE { return QgsRectangle(); }
 
-    bool isValid() { return false; }
+    bool isValid() OVERRIDE { return false; }
 };
 
 #endif // QGSOWSPROVIDER_H

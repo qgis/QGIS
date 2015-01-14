@@ -44,17 +44,17 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
 
     //Overriden to allow multiframe to set display name
-    virtual QString displayName() const;
+    virtual QString displayName() const OVERRIDE;
 
     //Overriden to handle fixed frame sizes set by multi frame
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF& rectangle ) OVERRIDE;
 
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
-    void beginItemCommand( const QString& text );
-    void endItemCommand();
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
-    int type() const { return ComposerFrame; }
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) OVERRIDE;
+    void beginItemCommand( const QString& text ) OVERRIDE;
+    void endItemCommand() OVERRIDE;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const OVERRIDE;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) OVERRIDE;
+    int type() const OVERRIDE { return ComposerFrame; }
 
     /**Returns the visible portion of the multi frame's content which
      * is shown in this frame.

@@ -264,7 +264,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- reimplemented from QgsDataItem ---
 
-    virtual bool equal( const QgsDataItem *other );
+    virtual bool equal( const QgsDataItem *other ) OVERRIDE;
 
     // --- New virtual methods for layer item derived classes ---
 
@@ -347,21 +347,21 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem* parent, QString name, QString dirPath, QString path );
     ~QgsDirectoryItem();
 
-    virtual void setState( State state );
+    virtual void setState( State state ) OVERRIDE;
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
 
     QString dirPath() const { return mDirPath; }
-    virtual bool equal( const QgsDataItem *other );
-    virtual QIcon icon();
-    virtual QWidget *paramWidget();
+    virtual bool equal( const QgsDataItem *other ) OVERRIDE;
+    virtual QIcon icon() OVERRIDE;
+    virtual QWidget *paramWidget() OVERRIDE;
 
     /* static QVector<QgsDataProvider*> mProviders; */
     //! @note not available via python bindings
     static QVector<QLibrary*> mLibraries;
 
   public slots:
-    virtual void childrenCreated();
+    virtual void childrenCreated() OVERRIDE;
     void directoryChanged();
 
   protected:
@@ -397,7 +397,7 @@ class CORE_EXPORT QgsDirectoryParamWidget : public QTreeWidget
     QgsDirectoryParamWidget( QString path, QWidget* parent = NULL );
 
   protected:
-    void mousePressEvent( QMouseEvent* event );
+    void mousePressEvent( QMouseEvent* event ) OVERRIDE;
 
   public slots:
     void showHideColumn();
@@ -411,7 +411,7 @@ class CORE_EXPORT QgsFavouritesItem : public QgsDataCollectionItem
     QgsFavouritesItem( QgsDataItem* parent, QString name, QString path = QString() );
     ~QgsFavouritesItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
 
     void addDirectory( QString favIcon );
     void removeDirectory( QgsDirectoryItem *item );
@@ -434,7 +434,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     QgsZipItem( QgsDataItem* parent, QString name, QString dirPath, QString path );
     ~QgsZipItem();
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() OVERRIDE;
     const QStringList & getZipFileList();
 
     //! @note not available via python bindings

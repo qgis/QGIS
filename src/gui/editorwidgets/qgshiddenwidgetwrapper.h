@@ -31,14 +31,14 @@ class GUI_EXPORT QgsHiddenWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value();
+    QVariant value() OVERRIDE;
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget* createWidget( QWidget* parent ) OVERRIDE;
+    void initWidget( QWidget* editor ) OVERRIDE;
 
   public slots:
-    void setValue( const QVariant& value );
+    void setValue( const QVariant& value ) OVERRIDE;
 
   private:
     QVariant mValue;

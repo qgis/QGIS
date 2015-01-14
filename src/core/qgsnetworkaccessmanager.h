@@ -91,7 +91,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager, public
     void abortRequest();
 
   protected:
-    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
+    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 ) OVERRIDE;
 
   private:
     QList<QNetworkProxyFactory*> mProxyFactories;

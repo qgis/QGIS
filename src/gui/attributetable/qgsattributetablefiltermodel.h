@@ -118,7 +118,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     QgsFeatureId rowToId( const QModelIndex& row );
 
-    QModelIndex fidToIndex( QgsFeatureId fid );
+    QModelIndex fidToIndex( QgsFeatureId fid ) OVERRIDE;
     QModelIndexList fidToIndexList( QgsFeatureId fid );
 
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
@@ -132,7 +132,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param sourceRow row from the source model
      * @param sourceParent parent index in the source model
      */
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const OVERRIDE;
 
     /**
      * Updates the list of currently visible features on the map canvas.
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * Used by the sorting algorithm. Compares the two model indices. Will also consider the
      * selection state of the feature in case selected features are to be shown on top.
      */
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const OVERRIDE;
 
     /**
      * Sort by the given column using the given order.
@@ -153,7 +153,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * @param column The column which should be sorted
      * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) OVERRIDE;
 
   public slots:
     /**

@@ -75,14 +75,14 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * Saves the window geometry
      * @param closeEvent Event object. Unused.
      */
-    virtual void closeEvent( QCloseEvent *closeEvent );
+    virtual void closeEvent( QCloseEvent *closeEvent ) OVERRIDE;
 
     /**
      * Implementation for done (default behavior when pressing esc)
      * Calls close, so the window geometry gets saved and the object deleted.
      * @param r   Result value. Unused.
      */
-    virtual void done( int r );
+    virtual void done( int r ) OVERRIDE;
 
   private:
     void saveRecent();

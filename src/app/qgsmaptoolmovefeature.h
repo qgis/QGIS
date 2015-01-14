@@ -27,14 +27,14 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit
     QgsMapToolMoveFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolMoveFeature();
 
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
 
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
 
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() OVERRIDE;
 
   private:
     /**Start point of the move in map coordinates*/

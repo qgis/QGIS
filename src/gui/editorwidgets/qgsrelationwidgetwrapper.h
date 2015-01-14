@@ -28,11 +28,11 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     explicit QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor = 0, QWidget* parent = 0 );
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget* createWidget( QWidget* parent ) OVERRIDE;
+    void initWidget( QWidget* editor ) OVERRIDE;
 
   public slots:
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature& feature ) OVERRIDE;
 
   private:
     QgsRelation mRelation;

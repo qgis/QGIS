@@ -114,9 +114,9 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
     virtual ~QgsGplColorScheme();
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+                                           const QColor &baseColor = QColor() ) OVERRIDE;
 
-    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) OVERRIDE;
 
   protected:
 
@@ -144,11 +144,11 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     virtual ~QgsUserColorScheme();
 
-    virtual QString schemeName() const;
+    virtual QString schemeName() const OVERRIDE;
 
-    virtual QgsColorScheme* clone() const;
+    virtual QgsColorScheme* clone() const OVERRIDE;
 
-    virtual bool isEditable() const { return true; }
+    virtual bool isEditable() const OVERRIDE { return true; }
 
     /**Sets the name for the scheme
      * @param name new name
@@ -166,7 +166,7 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
     QString mFilename;
 
-    virtual QString gplFilePath();
+    virtual QString gplFilePath() OVERRIDE;
 
 };
 
@@ -183,14 +183,14 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 
     virtual ~QgsRecentColorScheme();
 
-    virtual QString schemeName() const { return QT_TR_NOOP( "Recent colors" ); }
+    virtual QString schemeName() const OVERRIDE { return QT_TR_NOOP( "Recent colors" ); }
 
-    virtual SchemeFlags flags() const { return ShowInAllContexts; }
+    virtual SchemeFlags flags() const OVERRIDE { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+                                           const QColor &baseColor = QColor() ) OVERRIDE;
 
-    QgsColorScheme* clone() const;
+    QgsColorScheme* clone() const OVERRIDE;
 };
 
 /** \ingroup core
@@ -206,18 +206,18 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual ~QgsCustomColorScheme();
 
-    virtual QString schemeName() const { return QT_TR_NOOP( "Standard colors" ); }
+    virtual QString schemeName() const OVERRIDE { return QT_TR_NOOP( "Standard colors" ); }
 
-    virtual SchemeFlags flags() const { return ShowInAllContexts; }
+    virtual SchemeFlags flags() const OVERRIDE { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+                                           const QColor &baseColor = QColor() ) OVERRIDE;
 
-    virtual bool isEditable() const { return true; }
+    virtual bool isEditable() const OVERRIDE { return true; }
 
-    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) OVERRIDE;
 
-    QgsColorScheme* clone() const;
+    QgsColorScheme* clone() const OVERRIDE;
 };
 
 /** \ingroup core
@@ -233,18 +233,18 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual ~QgsProjectColorScheme();
 
-    virtual QString schemeName() const { return QT_TR_NOOP( "Project colors" ); }
+    virtual QString schemeName() const OVERRIDE { return QT_TR_NOOP( "Project colors" ); }
 
-    virtual SchemeFlags flags() const { return ShowInAllContexts; }
+    virtual SchemeFlags flags() const OVERRIDE { return ShowInAllContexts; }
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+                                           const QColor &baseColor = QColor() ) OVERRIDE;
 
-    virtual bool isEditable() const { return true; }
+    virtual bool isEditable() const OVERRIDE { return true; }
 
-    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
+    virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) OVERRIDE;
 
-    QgsColorScheme* clone() const;
+    QgsColorScheme* clone() const OVERRIDE;
 };
 
 #endif

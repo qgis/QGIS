@@ -44,32 +44,32 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     // implemented from base classes
 
-    QString layerType() const;
+    QString layerType() const OVERRIDE;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) OVERRIDE;
 
     //overriden so that clip path can be set when using draw inside polygon option
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) OVERRIDE;
 
-    QgsStringMap properties() const;
+    QgsStringMap properties() const OVERRIDE;
 
-    QgsSymbolLayerV2* clone() const;
+    QgsSymbolLayerV2* clone() const OVERRIDE;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const OVERRIDE;
 
-    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
+    QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const OVERRIDE;
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) OVERRIDE;
+    QgsSymbolV2::OutputUnit outputUnit() const OVERRIDE;
 
-    void setMapUnitScale( const QgsMapUnitScale &scale );
-    QgsMapUnitScale mapUnitScale() const;
+    void setMapUnitScale( const QgsMapUnitScale &scale ) OVERRIDE;
+    QgsMapUnitScale mapUnitScale() const OVERRIDE;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed() const OVERRIDE;
 
     // new stuff
 
@@ -108,11 +108,11 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     //Set to true if the line should only be drawn inside the polygon
     void setDrawInsidePolygon( bool drawInsidePolygon ) { mDrawInsidePolygon = drawInsidePolygon; }
 
-    QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const;
-    Qt::PenStyle dxfPenStyle() const;
+    QVector<qreal> dxfCustomDashPattern( QgsSymbolV2::OutputUnit& unit ) const OVERRIDE;
+    Qt::PenStyle dxfPenStyle() const OVERRIDE;
 
-    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
-    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
+    double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const OVERRIDE;
+    QColor dxfColor( const QgsSymbolV2RenderContext& context ) const OVERRIDE;
 
   protected:
     Qt::PenStyle mPenStyle;
@@ -169,31 +169,31 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 
     // implemented from base classes
 
-    QString layerType() const;
+    QString layerType() const OVERRIDE;
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
 
-    void stopRender( QgsSymbolV2RenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
 
-    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context );
+    void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) OVERRIDE;
 
-    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+    void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) OVERRIDE;
 
-    QgsStringMap properties() const;
+    QgsStringMap properties() const OVERRIDE;
 
-    QgsSymbolLayerV2* clone() const;
+    QgsSymbolLayerV2* clone() const OVERRIDE;
 
-    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const OVERRIDE;
 
-    void setColor( const QColor& color );
+    void setColor( const QColor& color ) OVERRIDE;
 
-    QgsSymbolV2* subSymbol();
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    QgsSymbolV2* subSymbol() OVERRIDE;
+    bool setSubSymbol( QgsSymbolV2* symbol ) OVERRIDE;
 
-    virtual void setWidth( double width );
-    virtual double width() const;
+    virtual void setWidth( double width ) OVERRIDE;
+    virtual double width() const OVERRIDE;
 
-    double estimateMaxBleed() const;
+    double estimateMaxBleed() const OVERRIDE;
 
     // new stuff
 
@@ -270,11 +270,11 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
     const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) OVERRIDE;
+    QgsSymbolV2::OutputUnit outputUnit() const OVERRIDE;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale );
-    QgsMapUnitScale mapUnitScale() const;
+    void setMapUnitScale( const QgsMapUnitScale& scale ) OVERRIDE;
+    QgsMapUnitScale mapUnitScale() const OVERRIDE;
 
   protected:
 

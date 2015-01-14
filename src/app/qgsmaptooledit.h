@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolEdit: public QgsMapToolAdvancedDigitizing
     QgsMapToolEdit( QgsMapCanvas* canvas );
     virtual ~QgsMapToolEdit();
 
-    virtual bool isEditTool() { return true; }
+    virtual bool isEditTool() OVERRIDE { return true; }
 
   protected:
     /**Inserts vertices to the snapped segments of the editing layer.

@@ -54,12 +54,12 @@ class APP_EXPORT QgsIdentifyResultsWebView : public QWebView
     Q_OBJECT
   public:
     QgsIdentifyResultsWebView( QWidget *parent = 0 );
-    QSize sizeHint() const;
+    QSize sizeHint() const OVERRIDE;
   public slots:
     void print( void );
   protected:
-    void contextMenuEvent( QContextMenuEvent* );
-    QWebView *createWindow( QWebPage::WebWindowType type );
+    void contextMenuEvent( QContextMenuEvent* ) OVERRIDE;
+    QWebView *createWindow( QWebPage::WebWindowType type ) OVERRIDE;
 };
 
 class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
@@ -160,7 +160,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
 
     void show();
 
-    void contextMenuEvent( QContextMenuEvent* );
+    void contextMenuEvent( QContextMenuEvent* ) OVERRIDE;
 
     void layerDestroyed();
     void editingToggled();

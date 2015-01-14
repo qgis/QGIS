@@ -36,9 +36,9 @@ class FieldSelectorDelegate : public QItemDelegate
   public:
     FieldSelectorDelegate( QObject *parent = 0 );
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const OVERRIDE;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const OVERRIDE;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const OVERRIDE;
 };
 
 class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
@@ -48,10 +48,10 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
     ~QgsVectorLayerAndAttributeModel();
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
+    Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) OVERRIDE;
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;
 

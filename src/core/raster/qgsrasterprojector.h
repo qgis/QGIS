@@ -79,11 +79,11 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
 
     QgsRasterProjector & operator=( const QgsRasterProjector &projector );
 
-    QgsRasterInterface *clone() const;
+    QgsRasterInterface *clone() const OVERRIDE;
 
-    int bandCount() const;
+    int bandCount() const OVERRIDE;
 
-    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const OVERRIDE;
 
     /** \brief set source and destination CRS */
     void setCRS( const QgsCoordinateReferenceSystem & theSrcCRS, const QgsCoordinateReferenceSystem & theDestCRS,
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
       mMaxSrcXRes = theMaxSrcXRes; mMaxSrcYRes = theMaxSrcYRes;
     }
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle & extent, int width, int height ) OVERRIDE;
 
   private:
     /** get source extent */

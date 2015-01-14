@@ -36,15 +36,15 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value();
+    QVariant value() OVERRIDE;
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget* createWidget( QWidget* parent ) OVERRIDE;
+    void initWidget( QWidget* editor ) OVERRIDE;
 
   public slots:
-    void setValue( const QVariant& value );
-    void setEnabled( bool enabled );
+    void setValue( const QVariant& value ) OVERRIDE;
+    void setEnabled( bool enabled ) OVERRIDE;
 
   private:
     QLabel* mLabel;

@@ -171,13 +171,13 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Handle closing of the window
      * @param event unused
      */
-    void closeEvent( QCloseEvent* event );
+    void closeEvent( QCloseEvent* event ) OVERRIDE;
 
     /*
      * Handle KeyPress event of the window
      * @param event
      */
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent* event ) OVERRIDE;
 
   private slots:
     /**

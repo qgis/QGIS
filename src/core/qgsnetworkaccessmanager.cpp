@@ -38,7 +38,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
     QgsNetworkProxyFactory() {}
     virtual ~QgsNetworkProxyFactory() {}
 
-    virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() )
+    virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) OVERRIDE
     {
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 

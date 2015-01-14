@@ -262,7 +262,7 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const;
+    virtual QgsSymbolV2* clone() const OVERRIDE;
 };
 
 
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const;
+    virtual QgsSymbolV2* clone() const OVERRIDE;
 };
 
 
@@ -299,7 +299,7 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const;
+    virtual QgsSymbolV2* clone() const OVERRIDE;
 };
 
 #endif

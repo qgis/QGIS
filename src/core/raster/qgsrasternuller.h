@@ -39,13 +39,13 @@ class CORE_EXPORT QgsRasterNuller : public QgsRasterInterface
       double max;
     };
 
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface * clone() const OVERRIDE;
 
-    int bandCount() const;
+    int bandCount() const OVERRIDE;
 
-    QGis::DataType dataType( int bandNo ) const;
+    QGis::DataType dataType( int bandNo ) const OVERRIDE;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) OVERRIDE;
 
     void setNoData( int bandNo, QgsRasterRangeList noData );
 
