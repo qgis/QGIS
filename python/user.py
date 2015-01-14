@@ -1,7 +1,6 @@
 import os
 import sys
 import glob
-import expressions
 
 from qgis.core import QgsApplication 
 
@@ -22,8 +21,20 @@ def load_user_expressions(path):
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
 expressionspath = os.path.join(userpythonhome, "expressions")
+startuppy = os.path.join(userpythonhome, "startup.py")
 
-# TODO Look for the startup.py and execfile it
+# exec startup script
+if os.path.exists(startuppy):
+    execfile(startuppy, locals(), globals())
+
+if not os.path.exists(expressionspath):
+    os.makedirs(expressionspath)
+
+initfile = os.path.join(expressionspath, "__init__.py")
+if not os.path.exists(initfile):
+    open(initfile, "w").close()
+
+import expressions
 
 expressions.load = load_user_expressions
 expressions.load(expressionspath)
