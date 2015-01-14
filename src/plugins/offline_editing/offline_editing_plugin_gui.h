@@ -20,7 +20,21 @@
 #define QGS_OFFLINE_EDITING_PLUGIN_GUI_H
 
 #include <QDialog>
-#include <ui_offline_editing_plugin_guibase.h>
+
+#include "ui_offline_editing_plugin_guibase.h"
+
+#include "qgslayertreemodel.h"
+
+class QgsSelectLayerTreeModel : public QgsLayerTreeModel
+{
+    Q_OBJECT
+  public:
+    QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
+    ~QgsSelectLayerTreeModel();
+
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
+    // bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) OVERRIDE;
+};
 
 class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditingPluginGuiBase
 {

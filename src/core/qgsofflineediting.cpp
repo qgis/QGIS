@@ -433,55 +433,61 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
   }
   sql += ")";
 
-  // add geometry column
-  QString geomType = "";
-  switch ( layer->wkbType() )
-  {
-    case QGis::WKBPoint:
-      geomType = "POINT";
-      break;
-    case QGis::WKBMultiPoint:
-      geomType = "MULTIPOINT";
-      break;
-    case QGis::WKBLineString:
-      geomType = "LINESTRING";
-      break;
-    case QGis::WKBMultiLineString:
-      geomType = "MULTILINESTRING";
-      break;
-    case QGis::WKBPolygon:
-      geomType = "POLYGON";
-      break;
-    case QGis::WKBMultiPolygon:
-      geomType = "MULTIPOLYGON";
-      break;
-    default:
-      showWarning( tr( "QGIS wkbType %1 not supported" ).arg( layer->wkbType() ) );
-      break;
-  };
-  QString sqlAddGeom = QString( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', 2)" )
-                       .arg( tableName )
-                       .arg( layer->crs().authid().startsWith( "EPSG:", Qt::CaseInsensitive ) ? layer->crs().authid().mid( 5 ).toLong() : 0 )
-                       .arg( geomType );
-
-  // create spatial index
-  QString sqlCreateIndex = QString( "SELECT CreateSpatialIndex('%1', 'Geometry')" ).arg( tableName );
-
   int rc = sqlExec( db, sql );
-  if ( rc == SQLITE_OK )
+
+  // add geometry column
+  if ( layer->hasGeometryType() )
   {
-    rc = sqlExec( db, sqlAddGeom );
+    QString geomType = "";
+    switch ( layer->wkbType() )
+    {
+      case QGis::WKBPoint:
+        geomType = "POINT";
+        break;
+      case QGis::WKBMultiPoint:
+        geomType = "MULTIPOINT";
+        break;
+      case QGis::WKBLineString:
+        geomType = "LINESTRING";
+        break;
+      case QGis::WKBMultiLineString:
+        geomType = "MULTILINESTRING";
+        break;
+      case QGis::WKBPolygon:
+        geomType = "POLYGON";
+        break;
+      case QGis::WKBMultiPolygon:
+        geomType = "MULTIPOLYGON";
+        break;
+      default:
+        showWarning( tr( "QGIS wkbType %1 not supported" ).arg( layer->wkbType() ) );
+        break;
+    };
+    QString sqlAddGeom = QString( "SELECT AddGeometryColumn('%1', 'Geometry', %2, '%3', 2)" )
+                         .arg( tableName )
+                         .arg( layer->crs().authid().startsWith( "EPSG:", Qt::CaseInsensitive ) ? layer->crs().authid().mid( 5 ).toLong() : 0 )
+                         .arg( geomType );
+
+    // create spatial index
+    QString sqlCreateIndex = QString( "SELECT CreateSpatialIndex('%1', 'Geometry')" ).arg( tableName );
+
     if ( rc == SQLITE_OK )
     {
-      rc = sqlExec( db, sqlCreateIndex );
+      rc = sqlExec( db, sqlAddGeom );
+      if ( rc == SQLITE_OK )
+      {
+        rc = sqlExec( db, sqlCreateIndex );
+      }
     }
   }
 
   if ( rc == SQLITE_OK )
   {
     // add new layer
-    QgsVectorLayer* newLayer = new QgsVectorLayer( QString( "dbname='%1' table='%2'(Geometry) sql=" )
-        .arg( offlineDbPath ).arg( tableName ), tableName + " (offline)", "spatialite" );
+    QgsVectorLayer* newLayer = new QgsVectorLayer( QString( "dbname='%1' table='%2'%3 sql=" )
+        .arg( offlineDbPath )
+        .arg( tableName ).arg( layer->hasGeometryType() ? "(Geometry)" : "" ),
+        tableName + " (offline)", "spatialite" );
     if ( newLayer->isValid() )
     {
       // mark as offline layer

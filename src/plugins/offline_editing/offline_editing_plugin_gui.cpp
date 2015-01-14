@@ -31,6 +31,42 @@
 #include <QMessageBox>
 #include <QSettings>
 
+
+QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject* parent )
+    : QgsLayerTreeModel( rootNode, parent )
+{
+  setFlag( QgsLayerTreeModel::ShowLegend, false );
+  setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
+}
+
+QgsSelectLayerTreeModel::~QgsSelectLayerTreeModel()
+{
+}
+
+QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) const
+{
+  if ( role == Qt::CheckStateRole )
+  {
+    QgsLayerTreeNode* node = index2node( index );
+    if ( QgsLayerTree::isLayer( node ) )
+    {
+      QgsLayerTreeLayer* nodeLayer = QgsLayerTree::toLayer( node );
+      return nodeLayer->isVisible();
+    }
+    else if ( QgsLayerTree::isGroup( node ) )
+    {
+      QgsLayerTreeGroup* nodeGroup = QgsLayerTree::toGroup( node );
+      return nodeGroup->isVisible();
+    }
+    else
+    {
+      return QVariant();
+    }
+  }
+  return QgsLayerTreeModel::data( index, role );
+}
+
+
 QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/, Qt::WindowFlags fl /*= 0*/ )
     : QDialog( parent, fl )
 {
@@ -42,9 +78,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/,
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
   QgsLayerTreeGroup* rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
-  QgsLayerTreeModel* treeModel = new QgsLayerTreeModel( rootNode, this );
-  treeModel->setFlag( QgsLayerTreeModel::ShowLegend, false );
-  treeModel->setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
+  QgsLayerTreeModel* treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
 
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
@@ -114,7 +148,7 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   {
     if ( nodeLayer->isVisible() )
     {
-      QgsDebugMsg(nodeLayer->layerId());
+      QgsDebugMsg( nodeLayer->layerId() );
       mSelectedLayerIds.append( nodeLayer->layerId() );
     }
   }
