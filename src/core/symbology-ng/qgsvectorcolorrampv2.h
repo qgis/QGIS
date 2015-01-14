@@ -70,7 +70,7 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
 
     virtual double value( int index ) const;
 
-    virtual QColor color( double value ) const;
+    virtual QColor color( double value ) const OVERRIDE;
 
     virtual QString type() const { return "gradient"; }
 

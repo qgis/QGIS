@@ -320,6 +320,30 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
     )
 
 #############################################################
+# enable use of c++11 features where available
+
+IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+  EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+  IF (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+    SET(USE_CXX_11 TRUE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ENDIF()
+ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  SET(USE_CXX_11 TRUE)
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+ELSE()
+  SET(USE_CXX_11 FALSE)
+ENDIF()
+
+#allow override keyword if available
+IF (USE_CXX_11)
+  SET(OVERRIDEKEYWORD "override")
+ELSE()
+  SET(OVERRIDEKEYWORD "")
+ENDIF()
+ADD_DEFINITIONS("-DOVERRIDE=${OVERRIDEKEYWORD}")
+
+#############################################################
 # enable warnings
 
 IF (PEDANTIC)
