@@ -74,7 +74,7 @@ class CORE_EXPORT QgsDxfExport
     void writeDouble( double d );
     void writeString( const QString& s );
     void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false );
-    void writeGroup( QColor color, int exactMatch = 62, int rgbCode = 420, int tranparencyCode = 440 );
+    void writeGroup( QColor color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 
     int writeHandle( int code = 5, int handle = 0 );
 
@@ -91,7 +91,9 @@ class CORE_EXPORT QgsDxfExport
 
     void writePoint( const QString& layer, QColor color, const QgsPoint& pt );
 
-    void writeCircle( const QString& layer, QColor color, const QgsPoint& pt, double radius );
+    void writeFilledCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius );
+
+    void writeCircle( const QString& layer, QColor color, const QgsPoint& pt, double radius, const QString &lineStyleName, double width );
 
     void writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle, QColor color );
 

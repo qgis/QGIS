@@ -3327,45 +3327,66 @@ void QgsDxfExport::writePoint( const QString& layer, QColor color, const QgsPoin
   writeGroup( 0, pt );
 }
 
-void QgsDxfExport::writeCircle( const QString& layer, QColor color, const QgsPoint& pt, double radius )
+void QgsDxfExport::writeFilledCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius )
 {
-  writeGroup( 0, "CIRCLE" );
-  writeHandle();
-  writeGroup( 100, "AcDbEntity" );
-  writeGroup( 100, "AcDbCircle" );
-  writeGroup( 8, layer );
-  writeGroup( color );
-  writeGroup( 0, pt );
-  writeGroup( 40, radius );
-
-#if 0
-  writeGroup( 0, "HATCH" );
+  writeGroup( 0, "HATCH" );                     // Entity type
   writeHandle();
   writeGroup( 330, mModelSpaceBR );
   writeGroup( 100, "AcDbEntity" );
   writeGroup( 100, "AcDbHatch" );
+
+  writeGroup( 8, layer );   // Layer name
+  writeGroup( 0, QgsPoint( 0, 0 ), 0.0 );  // Elevation point (in OCS)
+  writeGroup( 200, QgsPoint( 0, 0 ), 1.0 );
+
+  writeGroup( 2, "SOLID" );  // Hatch pattern name
+  writeGroup( 70, 1 );       // Solid fill flag (solid fill = 1; pattern fill = 0)
+  writeGroup( 71, 0 );       // Associativity flag (associative = 1; non-associative = 0)
+
+  writeGroup( color );       // Color (0 by block, 256 by layer)
+
+  writeGroup( 91, 1 );       // Number of boundary paths (loops)
+
+  writeGroup( 92, 7 );       // Boundary path type flag (bit coded): 0 = Default; 1 = External; 2 = Polyline 4 = Derived; 8 = Textbox; 16 = Outermost
+  writeGroup( 72, 2 );
+  writeGroup( 73, 1 );       // Is closed flag
+  writeGroup( 93, 2 );       // Number of polyline vertices
+
+  writeGroup( 0, QgsPoint( pt.x() - radius, pt.y() ) );
+  writeGroup( 42, 1.0 );
+
+  writeGroup( 0, QgsPoint( pt.x() + radius, pt.y() ) );
+  writeGroup( 42, 1.0 );
+
+  writeGroup( 97, 0 );       // Number of source boundary objects
+
+  writeGroup( 75, 1 );       // Hatch style: 0 = Hatch "odd parity" area (Normal style), 1 = Hatch outermost area only (Outer style), 2 = Hatch through entire area (Ignore style)
+  writeGroup( 76, 1 );       // Hatch pattern type: 0 = User-defined; 1 = Predefined; 2 = Custom
+  writeGroup( 47, 0.0059696789328105 ); // Pixel size
+
+  writeGroup( 98, 0 );       // Number of seed points
+}
+
+void QgsDxfExport::writeCircle( const QString& layer, QColor color, const QgsPoint& pt, double radius, const QString &lineStyleName, double width )
+{
+  writeGroup( 0, "LWPOLYLINE" );
+  writeHandle();
+  writeGroup( 330, mModelSpaceBR );
   writeGroup( 8, layer );
+  writeGroup( 100, "AcDbEntity" );
+  writeGroup( 100, "AcDbPolyline" );
+  writeGroup( 6, lineStyleName );
   writeGroup( color );
-  writeGroup( 0, QgsPoint( 0.0, 0.0 ) ); // elevation point
-  writeGroup( 200, QgsPoint( 0, 0 ), 1.0 );  // Extrusion direction
-  writeGroup( 2, "SOLID" );              // hatch pattern
-  writeGroup( 70, 1 ); // solid fill flag
-  writeGroup( 71, 0 );  // non-associative
-  writeGroup( 91, 1 );  // 1 loop
-  writeGroup( 92, 0 );  // Default edge type
-  writeGroup( 72, 2 );  // Edge type Arc
-  writeGroup( 93, 1 );  // Is closed
 
-  writeGroup( 0, QgsPoint( pt.x(), pt.y() ), 0.0, false );  // center point
-  writeGroup( 40, radius ); // radius
-  writeGroup( 50, 0.0 ); // start angle
-  writeGroup( 51, 2*M_PI ); // end angle
+  writeGroup( 90, 2 );
 
-  writeGroup( 97, 0 );  // # of source boundary objects
-  writeGroup( 75, 1 );  // odd parity hatch style
-  writeGroup( 76, 1 );  // predefined hatch pattern
-  writeGroup( 98, 0 );  // # of seed points
-#endif
+  writeGroup( 70, 1 );
+  writeGroup( 43, width );
+
+  writeGroup( 0, QgsPoint( pt.x() - radius, pt.y() ) );
+  writeGroup( 42, 1.0 );
+  writeGroup( 0, QgsPoint( pt.x() + radius, pt.y() ) );
+  writeGroup( 42, 1.0 );
 }
 
 void QgsDxfExport::writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle, QColor color )
@@ -3403,7 +3424,7 @@ void QgsDxfExport::writeMText( const QString& layer, const QString& text, const 
   writeGroup( 1, text );
 
   writeGroup( 50, angle );  // Rotation angle in radians
-  writeGroup( 41, width );  // Reference rectangle width
+  writeGroup( 41, width * 1.1 );  // Reference rectangle width
 
   // Attachment point:
   // 1 2 3

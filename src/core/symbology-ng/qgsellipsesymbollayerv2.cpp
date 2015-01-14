@@ -696,7 +696,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     if ( qgsDoubleNear( halfWidth, halfHeight ) )
     {
       QPointF pt( t.map( QPointF( 0, 0 ) ) );
-      e.writeCircle( layerName, oc, QgsPoint( pt.x(), pt.y() ), halfWidth );
+      e.writeFilledCircle( layerName, oc, QgsPoint( pt.x(), pt.y() ), halfWidth );
     }
     else
     {
