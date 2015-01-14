@@ -3064,7 +3064,7 @@ QgsImageFetcher* QgsWmsProvider::getLegendGraphicFetcher( const QgsMapSettings* 
   if ( mapSettings && mSettings.mEnableContextualLegend )
   {
     scale = mapSettings->scale();
-    mapExtent = mapSettings->extent();
+    mapExtent = mapSettings->visibleExtent();
   }
   else
   {
