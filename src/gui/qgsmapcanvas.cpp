@@ -288,7 +288,7 @@ QgsMapCanvas::~QgsMapCanvas()
   mScene->deleteLater();  // crashes in python tests on windows
 
   delete mMapRenderer;
-  // mCanvasProperties auto-deleted via std::auto_ptr
+  // mCanvasProperties auto-deleted via QScopedPointer
   // CanvasProperties struct has its own dtor for freeing resources
 
   if ( mJob )

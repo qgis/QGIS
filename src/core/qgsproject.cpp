@@ -354,7 +354,7 @@ QgsProject::~QgsProject()
   delete mRelationManager;
   delete mRootGroup;
 
-  // note that std::auto_ptr automatically deletes imp_ when it's destroyed
+  // note that QScopedPointer automatically deletes imp_ when it's destroyed
 } // QgsProject dtor
 
 
@@ -818,8 +818,7 @@ bool QgsProject::read()
 {
   clearError();
 
-  std::auto_ptr< QDomDocument > doc =
-    std::auto_ptr < QDomDocument > ( new QDomDocument( "qgis" ) );
+  QScopedPointer<QDomDocument> doc( new QDomDocument( "qgis" ) );
 
   if ( !imp_->file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
@@ -1064,9 +1063,7 @@ bool QgsProject::write()
   QDomDocumentType documentType =
     DomImplementation.createDocumentType( "qgis", "http://mrcc.com/qgis.dtd",
                                           "SYSTEM" );
-  std::auto_ptr < QDomDocument > doc =
-    std::auto_ptr < QDomDocument > ( new QDomDocument( documentType ) );
-
+  QScopedPointer<QDomDocument> doc( new QDomDocument( documentType ) );
 
   QDomElement qgisNode = doc->createElement( "qgis" );
   qgisNode.setAttribute( "projectname", title() );

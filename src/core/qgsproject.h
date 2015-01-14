@@ -400,7 +400,7 @@ class CORE_EXPORT QgsProject : public QObject
     struct Imp;
 
     /// implementation handle
-    std::auto_ptr<Imp> imp_;
+    QScopedPointer<Imp> imp_;
 
     static QgsProject * theProject_;
 

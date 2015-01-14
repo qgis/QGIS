@@ -555,7 +555,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     class CanvasProperties;
 
     /// Handle pattern for implementation object
-    std::auto_ptr<CanvasProperties> mCanvasProperties;
+    QScopedPointer<CanvasProperties> mCanvasProperties;
 
     /**debugging member
        invoked when a connect() is made to this object
@@ -570,7 +570,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**
        @note
 
-       Otherwise std::auto_ptr would pass the object responsiblity on to the
+       Otherwise QScopedPointer would pass the object responsiblity on to the
        copy like a hot potato leaving the copyer in a weird state.
      */
     QgsMapCanvas( QgsMapCanvas const & );
