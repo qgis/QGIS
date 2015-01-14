@@ -160,11 +160,12 @@ void QgsHeatmapRendererWidget::on_mRadiusUnitWidget_changed()
     case 0:
       unit = QgsSymbolV2::Pixel;
       break;
-    case 1:
-      unit = QgsSymbolV2::MM;
-      break;
     case 2:
       unit = QgsSymbolV2::MapUnit;
+      break;
+    case 1:
+    default:
+      unit = QgsSymbolV2::MM;
       break;
   }
 

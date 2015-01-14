@@ -84,9 +84,13 @@ void QgsMapLayerStyleGuiUtils::addStyle()
   bool res = layer->styleManager()->addStyleFromLayer( text );
 
   if ( res ) // make it active!
+  {
     layer->styleManager()->setCurrentStyle( text );
+  }
   else
+  {
     QgsDebugMsg( "Failed to add style: " + text );
+  }
 }
 
 void QgsMapLayerStyleGuiUtils::useStyle()
@@ -103,7 +107,9 @@ void QgsMapLayerStyleGuiUtils::useStyle()
 
   bool res = layer->styleManager()->setCurrentStyle( name );
   if ( !res )
+  {
     QgsDebugMsg( "Failed to set current style: " + name );
+  }
 }
 
 
@@ -118,7 +124,9 @@ void QgsMapLayerStyleGuiUtils::removeStyle()
 
   bool res = layer->styleManager()->removeStyle( layer->styleManager()->currentStyle() );
   if ( !res )
+  {
     QgsDebugMsg( "Failed to remove current style" );
+  }
 }
 
 
@@ -142,5 +150,7 @@ void QgsMapLayerStyleGuiUtils::renameStyle()
 
   bool res = layer->styleManager()->renameStyle( name, text );
   if ( !res )
+  {
     QgsDebugMsg( "Failed to rename style: " + name );
+  }
 }

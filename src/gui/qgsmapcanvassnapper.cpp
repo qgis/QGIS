@@ -311,7 +311,8 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
       if ( intersectionPoint->type()  == QGis::Point )
       {
         //We have to check the intersection point is inside the tolerance distance for both layers
-        double toleranceA, toleranceB;
+        double toleranceA = 0;
+        double toleranceB = 0;
         for ( int i = 0 ;i < snapLayers.size();++i )
         {
           if ( snapLayers[i].mLayer == oSegIt->layer )

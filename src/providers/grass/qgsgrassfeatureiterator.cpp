@@ -624,6 +624,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
   int layerId = QgsGrassProvider::openLayer( p->mGisdbase, p->mLocation, p->mMapset, p->mMapName, p->mLayerField );
 
   Q_ASSERT( layerId == mLayerId );
+  Q_UNUSED( layerId ); //avoid compilier warning
 }
 
 QgsGrassFeatureSource::~QgsGrassFeatureSource()
