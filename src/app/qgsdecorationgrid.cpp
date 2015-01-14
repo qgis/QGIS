@@ -222,6 +222,7 @@ void QgsDecorationGrid::render( QPainter * p )
   QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
   QList< QPair< double, QLineF > > horizontalLines;
   xGridLines( horizontalLines, p );
+  //QgsDebugMsg( QString("grid has %1 vertical and %2 horizontal lines").arg( verticalLines.size() ).arg( horizontalLines.size() ) );
   QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
   // QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
@@ -514,10 +515,60 @@ void QgsDecorationGrid::drawAnnotation( QPainter* p, const QPointF& pos, int rot
   p->restore();
 }
 
+const QgsMapCanvas& canvas()
+{
+  return *QgisApp::instance()->mapCanvas();
+}
+
+QPolygonF canvasPolygon()
+{
+  QPolygonF poly;
+
+  const QgsMapCanvas& mapCanvas = canvas();
+  const QgsMapSettings& mapSettings = mapCanvas.mapSettings();
+  const QSize& sz = mapSettings.outputSize();
+  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
+
+  poly << m2p.toMapCoordinatesF( 0,          0           ).toQPointF();
+  poly << m2p.toMapCoordinatesF( sz.width(), 0           ).toQPointF();
+  poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
+  poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
+
+  return poly;
+}
+
+bool clipByRect(QLineF& line, const QPolygonF& rect)
+{
+  QVector<QLineF> borderLines;
+  borderLines << QLineF( rect.at( 0 ), rect.at( 1 ) );
+  borderLines << QLineF( rect.at( 1 ), rect.at( 2 ) );
+  borderLines << QLineF( rect.at( 2 ), rect.at( 3 ) );
+  borderLines << QLineF( rect.at( 3 ), rect.at( 0 ) );
+
+  QList<QPointF> intersectionList;
+  QVector<QLineF>::const_iterator it = borderLines.constBegin();
+  for ( ; it != borderLines.constEnd(); ++it )
+  {
+    QPointF intersectionPoint;
+    if ( it->intersect( line, &intersectionPoint ) == QLineF::BoundedIntersection )
+    {
+      intersectionList.push_back( intersectionPoint );
+      if ( intersectionList.size() >= 2 )
+      {
+        break; //we already have two intersections, skip further tests
+      }
+    }
+  }
+  if ( intersectionList.size() < 2 ) return false; // no intersection
+
+  line = QLineF( intersectionList.at( 0 ), intersectionList.at( 1 ) );
+  return true;
+}
+
 QPolygonF canvasExtent()
 {
   QPolygonF poly;
-  QgsRectangle extent = QgisApp::instance()->mapCanvas()->extent();
+  QgsRectangle extent = canvas().extent();
   poly << QPointF( extent.xMinimum(), extent.yMaximum() );
   poly << QPointF( extent.xMaximum(), extent.yMaximum() );
   poly << QPointF( extent.xMaximum(), extent.yMinimum() );
@@ -527,145 +578,92 @@ QPolygonF canvasExtent()
 
 int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines, QPainter * p ) const
 {
+  // prepare horizontal lines
   lines.clear();
   if ( mGridIntervalY <= 0.0 )
   {
     return 1;
   }
 
-  // QPolygonF mapPolygon = transformedMapPolygon();
-  QPolygonF mapPolygon = canvasExtent();
-  QRectF mapBoundingRect = mapPolygon.boundingRect();
+  const QgsMapCanvas& mapCanvas = canvas();
+  const QgsMapSettings& mapSettings = mapCanvas.mapSettings();
+  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
 
   // draw nothing if the distance between grid lines would be less than 1px
   // otherwise the grid lines would completely cover the whole map
-  if ( mapBoundingRect.width() / mGridIntervalX >= p->device()->width() )
+  //if ( mapBoundingRect.height() / mGridIntervalY >= p->device()->height() )
+  if ( mGridIntervalY / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  //consider to round up to the next step in case the left boundary is > 0
+  const QPolygonF& canvasPoly = canvasPolygon();
+  const QPolygonF& mapPolygon = canvasExtent();
+  const QRectF& mapBoundingRect = mapPolygon.boundingRect();
+  QLineF lineEast ( mapPolygon[2], mapPolygon[1] );
+  QLineF lineWest ( mapPolygon[3], mapPolygon[0] );
+
+  double len = lineEast.length();
+  Q_ASSERT( fabs(len - lineWest.length()) < 1e-6 ); // no shear
+
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
-  double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
-
-  // if ( qgsDoubleNear( mRotation, 0.0 ) )
-  // {
-  //no rotation. Do it 'the easy way'
-
-  double yCanvasCoord;
-
-  while ( currentLevel <= mapBoundingRect.bottom() )
+  double dist = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
+  dist = dist - mapBoundingRect.top();
+  while ( dist < len )
   {
-    yCanvasCoord = p->device()->height() * ( 1 - ( currentLevel - mapBoundingRect.top() ) / mapBoundingRect.height() );
-    lines.push_back( qMakePair( currentLevel, QLineF( 0, yCanvasCoord, p->device()->width(), yCanvasCoord ) ) );
-    currentLevel += mGridIntervalY;
+    double t = dist / len;
+    QPointF p0 = lineWest.pointAt( t );
+    QPointF p1 = lineEast.pointAt( t );
+    QLineF line( p0, p1 );
+    clipByRect(line, canvasPoly);
+    line = QLineF( m2p.transform(QgsPoint(line.pointAt(0))).toQPointF(), m2p.transform(QgsPoint(line.pointAt(1))).toQPointF() );
+    lines.push_back( qMakePair( p0.y(), line ) );
+    dist += mGridIntervalY;
   }
-  // }
-
-  //the four border lines
-  QVector<QLineF> borderLines;
-  borderLines << QLineF( mapPolygon.at( 0 ), mapPolygon.at( 1 ) );
-  borderLines << QLineF( mapPolygon.at( 1 ), mapPolygon.at( 2 ) );
-  borderLines << QLineF( mapPolygon.at( 2 ), mapPolygon.at( 3 ) );
-  borderLines << QLineF( mapPolygon.at( 3 ), mapPolygon.at( 0 ) );
-
-  QList<QPointF> intersectionList; //intersects between border lines and grid lines
-
-  while ( currentLevel <= mapBoundingRect.bottom() )
-  {
-    intersectionList.clear();
-    QLineF gridLine( mapBoundingRect.left(), currentLevel, mapBoundingRect.right(), currentLevel );
-
-    QVector<QLineF>::const_iterator it = borderLines.constBegin();
-    for ( ; it != borderLines.constEnd(); ++it )
-    {
-      QPointF intersectionPoint;
-      if ( it->intersect( gridLine, &intersectionPoint ) == QLineF::BoundedIntersection )
-      {
-        intersectionList.push_back( intersectionPoint );
-        if ( intersectionList.size() >= 2 )
-        {
-          break; //we already have two intersections, skip further tests
-        }
-      }
-    }
-
-    if ( intersectionList.size() >= 2 )
-    {
-      lines.push_back( qMakePair( currentLevel, QLineF( intersectionList.at( 0 ), intersectionList.at( 1 ) ) ) );
-    }
-    currentLevel += mGridIntervalY;
-  }
-
 
   return 0;
 }
 
 int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines, QPainter * p ) const
 {
+  // prepare vertical lines
+
   lines.clear();
   if ( mGridIntervalX <= 0.0 )
   {
     return 1;
   }
 
-  // QPolygonF mapPolygon = transformedMapPolygon();
-  QPolygonF mapPolygon = canvasExtent();
-  QRectF mapBoundingRect = mapPolygon.boundingRect();
+  const QgsMapCanvas& mapCanvas = canvas();
+  const QgsMapSettings& mapSettings = mapCanvas.mapSettings();
+  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
 
   // draw nothing if the distance between grid lines would be less than 1px
   // otherwise the grid lines would completely cover the whole map
-  if ( mapBoundingRect.height() / mGridIntervalY >= p->device()->height() )
+  //if ( mapBoundingRect.height() / mGridIntervalY >= p->device()->height() )
+  if ( mGridIntervalX / mapSettings.mapUnitsPerPixel() < 1 )
     return 1;
 
-  //consider to round up to the next step in case the left boundary is > 0
+  const QPolygonF& canvasPoly = canvasPolygon();
+  const QPolygonF& mapPolygon = canvasExtent();
+  QLineF lineSouth ( mapPolygon[3], mapPolygon[2] );
+  QLineF lineNorth ( mapPolygon[0], mapPolygon[1] );
+
+  double len = lineSouth.length();
+  Q_ASSERT( fabs(len - lineNorth.length()) < 1e-6 ); // no shear
+
+  const QRectF& mapBoundingRect = mapPolygon.boundingRect();
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
-  double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
-
-  // if ( qgsDoubleNear( mRotation, 0.0 ) )
-  // {
-  //   //no rotation. Do it 'the easy way'
-  double xCanvasCoord;
-
-  while ( currentLevel <= mapBoundingRect.right() )
+  double dist = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
+  dist = dist - mapBoundingRect.left();
+  while ( dist < len )
   {
-    xCanvasCoord = p->device()->width() * ( currentLevel - mapBoundingRect.left() ) / mapBoundingRect.width();
-    lines.push_back( qMakePair( currentLevel, QLineF( xCanvasCoord, 0, xCanvasCoord, p->device()->height() ) ) );
-    currentLevel += mGridIntervalX;
-  }
-  // }
-
-  //the four border lines
-  QVector<QLineF> borderLines;
-  borderLines << QLineF( mapPolygon.at( 0 ), mapPolygon.at( 1 ) );
-  borderLines << QLineF( mapPolygon.at( 1 ), mapPolygon.at( 2 ) );
-  borderLines << QLineF( mapPolygon.at( 2 ), mapPolygon.at( 3 ) );
-  borderLines << QLineF( mapPolygon.at( 3 ), mapPolygon.at( 0 ) );
-
-  QList<QPointF> intersectionList; //intersects between border lines and grid lines
-
-  while ( currentLevel <= mapBoundingRect.right() )
-  {
-    intersectionList.clear();
-    QLineF gridLine( currentLevel, mapBoundingRect.bottom(), currentLevel, mapBoundingRect.top() );
-
-    QVector<QLineF>::const_iterator it = borderLines.constBegin();
-    for ( ; it != borderLines.constEnd(); ++it )
-    {
-      QPointF intersectionPoint;
-      if ( it->intersect( gridLine, &intersectionPoint ) == QLineF::BoundedIntersection )
-      {
-        intersectionList.push_back( intersectionPoint );
-        if ( intersectionList.size() >= 2 )
-        {
-          break; //we already have two intersections, skip further tests
-        }
-      }
-    }
-
-    if ( intersectionList.size() >= 2 )
-    {
-      lines.push_back( qMakePair( currentLevel, QLineF( intersectionList.at( 0 ), intersectionList.at( 1 ) ) ) );
-    }
-    currentLevel += mGridIntervalX;
+    double t = dist / len;
+    QPointF p0( lineNorth.pointAt( t ) );
+    QPointF p1( lineSouth.pointAt( t ) );
+    QLineF line( p0, p1 );
+    clipByRect(line, canvasPoly);
+    line = QLineF( m2p.transform(QgsPoint(line.pointAt(0))).toQPointF(), m2p.transform(QgsPoint(line.pointAt(1))).toQPointF() );
+    lines.push_back( qMakePair( p0.x(), line ) );
+    dist += mGridIntervalX;
   }
 
   return 0;
