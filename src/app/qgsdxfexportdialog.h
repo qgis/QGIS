@@ -60,11 +60,15 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 
     void applyVisibilityPreset( const QString &name );
 
+    void selectAll();
+    void unSelectAll();
+
   private:
     QHash<const QgsVectorLayer *, int> mAttributeIdx;
     QSet<QModelIndex> mCheckedLeafs;
 
     void applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node );
+    void retrieveAllLayers( QgsLayerTreeNode *node, QSet<QString> &layers );
 };
 
 

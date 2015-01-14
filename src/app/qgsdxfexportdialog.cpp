@@ -315,7 +315,7 @@ void QgsVectorLayerAndAttributeModel::applyVisibilityPreset( const QString &name
 
 void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
   if ( !group )
     return;
 
@@ -334,6 +334,41 @@ void QgsVectorLayerAndAttributeModel::applyVisibility( QSet<QString> &visibleLay
 
     applyVisibility( visibleLayers, child );
   }
+}
+
+void QgsVectorLayerAndAttributeModel::retrieveAllLayers( QgsLayerTreeNode *node, QSet<QString> &set )
+{
+  if ( QgsLayerTree::isLayer( node ) )
+  {
+    set << QgsLayerTree::toLayer( node )->layer()->id();
+  }
+  else if ( QgsLayerTree::isGroup( node ) )
+  {
+    foreach ( QgsLayerTreeNode *child, QgsLayerTree::toGroup( node )->children() )
+    {
+      retrieveAllLayers( child, set );
+    }
+  }
+}
+
+void QgsVectorLayerAndAttributeModel::selectAll()
+{
+  mCheckedLeafs.clear();
+
+  QSet<QString> allLayers;
+  retrieveAllLayers( rootGroup(), allLayers );
+  applyVisibility( allLayers, rootGroup() );
+
+  emit dataChanged( QModelIndex(), QModelIndex() );
+}
+
+void QgsVectorLayerAndAttributeModel::unSelectAll()
+{
+  mCheckedLeafs.clear();
+
+  applyVisibility( QSet<QString>(), rootGroup() );
+
+  emit dataChanged( QModelIndex(), QModelIndex() );
 }
 
 QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
@@ -392,7 +427,7 @@ void QgsDxfExportDialog::on_mVisibilityPresets_currentIndexChanged( int index )
 
 void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 {
-  QgsLayerTreeGroup *group = QgsLayerTree::toGroup( node );
+  QgsLayerTreeGroup *group = QgsLayerTree::isGroup( node ) ? QgsLayerTree::toGroup( node ) : 0;
   if ( !group )
     return;
 
@@ -418,13 +453,16 @@ void QgsDxfExportDialog::cleanGroup( QgsLayerTreeNode *node )
 
 void QgsDxfExportDialog::selectAll()
 {
-  mTreeView->selectAll();
+  QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  Q_ASSERT( model );
+  model->selectAll();
 }
-
 
 void QgsDxfExportDialog::unSelectAll()
 {
-  mTreeView->clearSelection();
+  QgsVectorLayerAndAttributeModel *model = dynamic_cast< QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
+  Q_ASSERT( model );
+  model->unSelectAll();
 }
 
 
@@ -438,7 +476,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsDxfExportDialog::layers() const
 
 double QgsDxfExportDialog::symbologyScale() const
 {
-  double scale = 1/mScaleWidget->scale();
+  double scale = 1 / mScaleWidget->scale();
   if ( qgsDoubleNear( scale, 0.0 ) )
   {
     return 1.0;
