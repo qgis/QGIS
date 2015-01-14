@@ -157,6 +157,15 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
     return;
   }
 
+  // import QGIS user
+  error_msg = QObject::tr( "Couldn't load QGIS user." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  if ( !runString( "import qgis.user", error_msg ) )
+  {
+    // Should we really bail because of this?!
+    exitPython();
+    return;
+  }
+
   // tell the utils script where to look for the plugins
   runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( "," ) + "]" );
   runString( "qgis.utils.sys_plugin_path = \"" + pluginsPath() + "\"" );
@@ -169,8 +178,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   // initialize 'iface' object
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
 
-  QString startuppath = homePythonPath() + " + \"/startup.py\"";
-  runString( "if os.path.exists(" + startuppath + "): from startup import *\n" );
+  runString( QString("qgis.user.startup(%1)").arg( homePythonPath() ) );
 
   // release GIL!
   // Later on, we acquire GIL just before doing some Python calls and

@@ -65,7 +65,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   updateFunctionTree();
 
-  mFunctionsPath = QgsApplication::qgisSettingsDirPath() + QString( "functions" );
+  mFunctionsPath = QgsApplication::qgisSettingsDirPath() + QDir::separator() + "python" + QDir::separator() + "expressions";
   loadFunctionFiles( mFunctionsPath );
   newFunctionFile();
 }
