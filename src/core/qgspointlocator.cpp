@@ -502,17 +502,23 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 ////////////////////////////////////////////////////////////////////////////
 
 
-QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS )
+QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS, const QgsRectangle* extent )
     : mStorage( 0 )
     , mRTreeVertex( 0 )
     , mRTreeEdge( 0 )
     , mRTreeArea( 0 )
     , mTransform( 0 )
     , mLayer( layer )
+    , mExtent( 0 )
 {
   if ( destCRS )
   {
     mTransform = new QgsCoordinateTransform( layer->crs(), *destCRS );
+  }
+
+  if ( extent )
+  {
+    mExtent = new QgsRectangle( *extent );
   }
 
   mStorage = StorageManager::createNewMemoryStorageManager();
@@ -528,6 +534,7 @@ QgsPointLocator::~QgsPointLocator()
   destroyIndex( All );
   delete mStorage;
   delete mTransform;
+  delete mExtent;
 }
 
 
@@ -578,6 +585,13 @@ void QgsPointLocator::rebuildIndex( int types )
 
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
+  if ( mExtent )
+  {
+    QgsRectangle rect = *mExtent;
+    if ( mTransform )
+      rect = mTransform->transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
+    request.setFilterRect( rect );
+  }
   QgsFeatureIterator fi = mLayer->getFeatures( request );
   while ( fi.nextFeature( f ) )
   {

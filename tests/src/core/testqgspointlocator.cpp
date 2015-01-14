@@ -225,6 +225,22 @@ class TestQgsPointLocator : public QObject
 
       mVL->rollBack();
     }
+
+    void testExtent()
+    {
+      QgsRectangle bbox1( 10, 10, 11, 11 ); // out of layer's bounds
+      QgsPointLocator loc1( mVL, 0 , &bbox1 );
+
+      QgsPointLocator::Match m1 = loc1.nearestVertex( QgsPoint( 2, 2 ) );
+      QVERIFY( !m1.isValid() );
+
+      QgsRectangle bbox2( 0, 0, 1, 1 ); // in layer's bounds
+      QgsPointLocator loc2( mVL, 0 , &bbox2 );
+
+      QgsPointLocator::Match m2 = loc2.nearestVertex( QgsPoint( 2, 2 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.point(), QgsPoint( 1, 1 ) );
+    }
 };
 
 QTEST_MAIN( TestQgsPointLocator )

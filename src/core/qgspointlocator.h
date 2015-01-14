@@ -45,7 +45,11 @@ class QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = 0 );
+    /** Construct point locator for a layer.
+     *  @arg destCRS if not null, will do the searches on data reprojected to the given CRS
+     *  @arg extent  if not null, will index only a subset of the layer
+     */
+    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = 0, const QgsRectangle* extent = 0 );
 
     ~QgsPointLocator();
 
@@ -213,6 +217,7 @@ class QgsPointLocator : public QObject
     QgsCoordinateTransform* mTransform;
     int mQueryTypes;
     QgsVectorLayer* mLayer;
+    QgsRectangle* mExtent;
 };
 
 
