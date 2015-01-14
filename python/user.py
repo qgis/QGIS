@@ -1,36 +1,30 @@
 import os
 import sys
 import glob
+import expressions
 
-def startup(userpythonhome):
-    """
-    Run startup logic for this QGIS user
-    """
-    try:
-        # Start up can be a startup.py or a startup package
-        import startup
-    except ImportError:
-        pass 
+from qgis.core import QgsApplication 
 
-    expressionspath = os.path.join(userpythonhome, "expressions")
-    load_user_expressions([expressionspath])
-
-
-def load_user_expressions(paths):
+def load_user_expressions(path):
     """
     Load all user expressions from the given paths
     """
     #Loop all py files and import them
-    for path in paths:
-        sys.path.append(path)
-        modules = glob.glob(path + "/*.py")
-        names = [os.path.basename(f)[:-3] for f in modules]
-        for name in names:
-            if name == "__init__":
-                continue
-            # As user expression functions should be registed with qgsfunction
-            # just importing the file is enough to get it to load the functions into QGIS
-            __import__(name, locals(), globals())
+    modules = glob.glob(path + "/*.py")
+    names = [os.path.basename(f)[:-3] for f in modules]
+    for name in names:
+        if name == "__init__":
+            continue
+        # As user expression functions should be registed with qgsfunction
+        # just importing the file is enough to get it to load the functions into QGIS
+        __import__("expressions.{0}".format(name), locals(), globals())
 
 
+userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
+expressionspath = os.path.join(userpythonhome, "expressions")
+
+# TODO Look for the startup.py and execfile it
+
+expressions.load = load_user_expressions
+expressions.load(expressionspath)
 
