@@ -34,8 +34,12 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QString offlineDbFile();
     QStringList& selectedLayerIds();
 
+  public slots:
+    /** change the selection of layers in the list */
+    void selectAll();
+    void unSelectAll();
+
   private:
-    void updateLayerList( bool filterEditableLayers );
     void saveState();
     void restoreState();
 
@@ -44,8 +48,7 @@ class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditing
     QStringList mSelectedLayerIds;
 
   private slots:
-    void on_butBrowse_clicked();
-    void on_checkboxShowEditableLayers_stateChanged( int state );
+    void on_mBrowseButton_clicked();
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested();

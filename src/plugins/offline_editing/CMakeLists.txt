@@ -48,8 +48,10 @@ INCLUDE_DIRECTORIES(
 	${SQLITE3_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	../../core
+  ../../core/layertree
 	../../core/raster
 	../../gui
+  ../../gui/layertree
 	..
 	${GEOS_INCLUDE_DIR}
 )

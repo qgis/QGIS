@@ -29,14 +29,14 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="ui_offlineDataPath">
+      <widget class="QLineEdit" name="mOfflineDataPathLineEdit">
        <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="butBrowse">
+      <widget class="QPushButton" name="mBrowseButton">
        <property name="text">
         <string>Browse...</string>
        </property>
@@ -54,26 +54,47 @@
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="ui_layerList">
+      <widget class="QgsLayerTreeView" name="mLayerTree">
        <property name="selectionMode">
-        <enum>QAbstractItemView::MultiSelection</enum>
+        <enum>QAbstractItemView::SingleSelection</enum>
        </property>
       </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_3">
+       <item>
+        <widget class="QPushButton" name="mSelectAllButton">
+         <property name="text">
+          <string>select all</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="mUnselectAllButton">
+         <property name="text">
+          <string>unselect all</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QCheckBox" name="checkboxShowEditableLayers">
-       <property name="text">
-        <string>Show only editable layers</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
      <item>
       <widget class="QDialogButtonBox" name="buttonBox">
        <property name="orientation">
@@ -89,6 +110,13 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
