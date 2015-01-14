@@ -23,7 +23,22 @@ class QgsVectorColorRampV2
     // Relative value (0,1) of color at index
     virtual double value( int index ) const = 0;
 
+    /**
+     * Returns a QColor corresponding to the ramp's color for a specified value.
+     * @param value value between 0 and 1 inclusive
+     * @returns interpolated QColor
+     * @see rgb
+     */
     virtual QColor color( double value ) const = 0;
+    
+    /**
+     * Returns a QRgb corresponding to the ramp's color for a specified value.
+     * @param value value between 0 and 1 inclusive
+     * @returns interpolated QRgb
+     * @note added in QGIS 2.7
+     * @see color
+     */
+    virtual QRgb rgb( const double value ) const;
 
     virtual QString type() const = 0;
 
@@ -60,6 +75,8 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
     virtual double value( int index ) const;
 
     virtual QColor color( double value ) const;
+    
+    virtual QRgb rgb( const double value ) const;
 
     virtual QString type() const;
 
