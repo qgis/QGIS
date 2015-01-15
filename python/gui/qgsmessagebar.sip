@@ -68,6 +68,34 @@ class QgsMessageBar: QFrame
      */
     bool clearWidgets();
 
+    /**
+     * Pushes a warning with default timeout to the message bar
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushSuccess( const QString& title, const QString& message );
+
+    /**
+     * Pushes a warning with default timeout to the message bar
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushInfo( const QString& title, const QString& message );
+
+    /**
+     * Pushes a warning with default timeout to the message bar
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushWarning( const QString& title, const QString& message );
+
+    /**
+     * Pushes a warning with default timeout to the message bar
+     * @param message The message to be displayed
+     * @note added in 2.8
+     */
+    void pushCritical( const QString& title, const QString& message );
+
   protected:
     void mousePressEvent( QMouseEvent * e );
 };
