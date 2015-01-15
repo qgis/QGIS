@@ -85,6 +85,13 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     /** emit a signal that processing of all layers has finished */
     void progressStopped();
 
+    /**
+     * Emitted when a warning needs to be displayed.
+     *
+     * @param message A descriptive message for the warning
+     */
+    void warning( const QString& title, const QString& message );
+
   private:
     void initializeSpatialMetadata( sqlite3 *sqlite_handle );
     bool createSpatialiteDB( const QString& offlineDbPath );

@@ -425,7 +425,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
     }
     else
     {
-      showWarning( tr( "Unknown data type %1" ).arg( type ) );
+      showWarning( tr( "%1: Unknown data type %2. Not using type affinity for thie field." ).arg( fields[idx].name() ).arg( QVariant::typeToName( type ) ) );
     }
 
     sql += delim + QString( "'%1' %2" ).arg( fields[idx].name() ).arg( dataType );
@@ -817,7 +817,7 @@ QMap<int, int> QgsOfflineEditing::attributeLookup( QgsVectorLayer* offlineLayer,
 
 void QgsOfflineEditing::showWarning( const QString& message )
 {
-  QMessageBox::warning( NULL, tr( "Offline Editing Plugin" ), message );
+  emit warning( tr( "Offline Editing Plugin" ), message );
 }
 
 sqlite3* QgsOfflineEditing::openLoggingDb()
