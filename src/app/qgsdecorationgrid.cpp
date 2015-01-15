@@ -218,15 +218,13 @@ void QgsDecorationGrid::render( QPainter * p )
   // p->setPen( mGridPen );
 
   QList< QPair< double, QLineF > > verticalLines;
-  yGridLines( verticalLines, p );
-  QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
+  yGridLines( verticalLines );
   QList< QPair< double, QLineF > > horizontalLines;
-  xGridLines( horizontalLines, p );
+  xGridLines( horizontalLines );
   //QgsDebugMsg( QString("grid has %1 vertical and %2 horizontal lines").arg( verticalLines.size() ).arg( horizontalLines.size() ) );
-  QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
-  // QRectF thisPaintRect = QRectF( 0, 0, QGraphicsRectItem::rect().width(), QGraphicsRectItem::rect().height() );
-  // p->setClipRect( thisPaintRect );
+  QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
+  QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
   //simpler approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsDecorationGrid::Line )
@@ -529,15 +527,15 @@ QPolygonF canvasPolygon()
   const QSize& sz = mapSettings.outputSize();
   const QgsMapToPixel& m2p = mapSettings.mapToPixel();
 
-  poly << m2p.toMapCoordinatesF( 0,          0           ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), 0           ).toQPointF();
+  poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
+  poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
   poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
   poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
 
   return poly;
 }
 
-bool clipByRect(QLineF& line, const QPolygonF& rect)
+bool clipByRect( QLineF& line, const QPolygonF& rect )
 {
   QVector<QLineF> borderLines;
   borderLines << QLineF( rect.at( 0 ), rect.at( 1 ) );
@@ -576,7 +574,7 @@ QPolygonF canvasExtent()
   return poly;
 }
 
-int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines, QPainter * p ) const
+int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) const
 {
   // prepare horizontal lines
   lines.clear();
@@ -598,11 +596,11 @@ int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines, QPai
   const QPolygonF& canvasPoly = canvasPolygon();
   const QPolygonF& mapPolygon = canvasExtent();
   const QRectF& mapBoundingRect = mapPolygon.boundingRect();
-  QLineF lineEast ( mapPolygon[2], mapPolygon[1] );
-  QLineF lineWest ( mapPolygon[3], mapPolygon[0] );
+  QLineF lineEast( mapPolygon[2], mapPolygon[1] );
+  QLineF lineWest( mapPolygon[3], mapPolygon[0] );
 
   double len = lineEast.length();
-  Q_ASSERT( fabs(len - lineWest.length()) < 1e-6 ); // no shear
+  Q_ASSERT( fabs( len - lineWest.length() ) < 1e-6 ); // no shear
 
   double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
   double dist = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
@@ -613,8 +611,8 @@ int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines, QPai
     QPointF p0 = lineWest.pointAt( t );
     QPointF p1 = lineEast.pointAt( t );
     QLineF line( p0, p1 );
-    clipByRect(line, canvasPoly);
-    line = QLineF( m2p.transform(QgsPoint(line.pointAt(0))).toQPointF(), m2p.transform(QgsPoint(line.pointAt(1))).toQPointF() );
+    clipByRect( line, canvasPoly );
+    line = QLineF( m2p.transform( QgsPoint( line.pointAt( 0 ) ) ).toQPointF(), m2p.transform( QgsPoint( line.pointAt( 1 ) ) ).toQPointF() );
     lines.push_back( qMakePair( p0.y(), line ) );
     dist += mGridIntervalY;
   }
@@ -622,7 +620,7 @@ int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines, QPai
   return 0;
 }
 
-int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines, QPainter * p ) const
+int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) const
 {
   // prepare vertical lines
 
@@ -644,11 +642,11 @@ int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines, QPai
 
   const QPolygonF& canvasPoly = canvasPolygon();
   const QPolygonF& mapPolygon = canvasExtent();
-  QLineF lineSouth ( mapPolygon[3], mapPolygon[2] );
-  QLineF lineNorth ( mapPolygon[0], mapPolygon[1] );
+  QLineF lineSouth( mapPolygon[3], mapPolygon[2] );
+  QLineF lineNorth( mapPolygon[0], mapPolygon[1] );
 
   double len = lineSouth.length();
-  Q_ASSERT( fabs(len - lineNorth.length()) < 1e-6 ); // no shear
+  Q_ASSERT( fabs( len - lineNorth.length() ) < 1e-6 ); // no shear
 
   const QRectF& mapBoundingRect = mapPolygon.boundingRect();
   double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
@@ -660,8 +658,8 @@ int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines, QPai
     QPointF p0( lineNorth.pointAt( t ) );
     QPointF p1( lineSouth.pointAt( t ) );
     QLineF line( p0, p1 );
-    clipByRect(line, canvasPoly);
-    line = QLineF( m2p.transform(QgsPoint(line.pointAt(0))).toQPointF(), m2p.transform(QgsPoint(line.pointAt(1))).toQPointF() );
+    clipByRect( line, canvasPoly );
+    line = QLineF( m2p.transform( QgsPoint( line.pointAt( 0 ) ) ).toQPointF(), m2p.transform( QgsPoint( line.pointAt( 1 ) ) ).toQPointF() );
     lines.push_back( qMakePair( p0.x(), line ) );
     dist += mGridIntervalX;
   }

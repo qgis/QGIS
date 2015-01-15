@@ -209,10 +209,10 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
     /**Returns the grid lines with associated coordinate value
         @return 0 in case of success*/
-    int xGridLines( QList< QPair< double, QLineF > >& lines, QPainter* p ) const;
+    int xGridLines( QList< QPair< double, QLineF > >& lines ) const;
     /**Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         @return 0 in case of success*/
-    int yGridLines( QList< QPair< double, QLineF > >& lines, QPainter* p ) const;
+    int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
     /**Returns the item border of a point (in item coordinates)*/
     Border borderForLineCoord( const QPointF& point, QPainter* p ) const;
 
