@@ -41,22 +41,17 @@ class PointsInPolygon(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Count points in polygon'
         self.group = 'Vector analysis tools'
-        self.addParameter(ParameterVector(self.POLYGONS, 'Polygons',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterVector(self.POINTS, 'Points',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterString(self.FIELD, 'Count field name',
-                          'NUMPOINTS'))
+        self.addParameter(ParameterVector(self.POLYGONS,
+            self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.POINTS,
+            self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterString(self.FIELD,
+            self.tr('Count field name'), 'NUMPOINTS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Result'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
 
     def processAlgorithm(self, progress):
         polyLayer = dataobjects.getObjectFromUri(

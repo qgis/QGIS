@@ -45,11 +45,11 @@ class VectorSplit(GeoAlgorithm):
         self.name = 'Split vector layer'
         self.group = 'Vector general tools'
         self.addParameter(ParameterVector(self.INPUT,
-            'Input layer', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterTableField(self.FIELD,
-            'Unique ID field', self.INPUT))
+            self.tr('Unique ID field'), self.INPUT))
 
-        self.addOutput(OutputDirectory(self.OUTPUT, 'Output directory'))
+        self.addOutput(OutputDirectory(self.OUTPUT, self.tr('Output directory')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

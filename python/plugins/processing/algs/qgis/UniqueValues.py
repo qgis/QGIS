@@ -43,21 +43,17 @@ class UniqueValues(GeoAlgorithm):
     UNIQUE_VALUES = 'UNIQUE_VALUES'
     OUTPUT = 'OUTPUT'
 
-    # ========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/unique.png")
-    # ========================================================================
-
     def defineCharacteristics(self):
         self.name = 'List unique values'
         self.group = 'Vector table tools'
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD_NAME, 'Target field',
-                          self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
-        self.addOutput(OutputHTML(self.OUTPUT, 'Unique values'))
-        self.addOutput(OutputNumber(self.TOTAL_VALUES, 'Total unique values'))
-        self.addOutput(OutputString(self.UNIQUE_VALUES, 'Unique values'))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD_NAME,
+            self.tr('Target field'),
+            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_ANY))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Unique values')))
+        self.addOutput(OutputNumber(self.TOTAL_VALUES, self.tr('Total unique values')))
+        self.addOutput(OutputString(self.UNIQUE_VALUES, self.tr('Unique values')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -75,8 +71,8 @@ class UniqueValues(GeoAlgorithm):
         f.write('<html><head>')
         f.write('<meta http-equiv="Content-Type" content="text/html; \
                  charset=utf-8" /></head><body>')
-        f.write('<p>Total unique values: ' + str(len(algData)) + '</p>')
-        f.write('<p>Unique values:</p>')
+        f.write(self.tr('<p>Total unique values: ') + str(len(algData)) + '</p>')
+        f.write(self.tr('<p>Unique values:</p>'))
         f.write('<ul>')
         for s in algData:
             f.write('<li>' + unicode(s) + '</li>')

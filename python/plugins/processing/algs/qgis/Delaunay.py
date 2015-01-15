@@ -46,10 +46,11 @@ class Delaunay(GeoAlgorithm):
         self.name = 'Delaunay triangulation'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Delaunay triangulation'))
+        self.addOutput(OutputVector(self.OUTPUT,
+            self.tr('Delaunay triangulation')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -78,8 +79,8 @@ class Delaunay(GeoAlgorithm):
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
-                    'Input file should contain at least 3 points. Choose \
-                    another file and try again.')
+                self.tr('Input file should contain at least 3 points. Choose '
+                        'another file and try again.'))
 
         uniqueSet = Set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]

@@ -58,18 +58,18 @@ class PointsToPaths(GeoAlgorithm):
         self.name = 'Points to path'
         self.group = 'Vector creation tools'
         self.addParameter(ParameterVector(self.VECTOR,
-            'Input point layer', [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(
-            ParameterTableField(self.GROUP_FIELD, 'Group field', self.VECTOR))
-        self.addParameter(
-            ParameterTableField(self.ORDER_FIELD, 'Order field', self.VECTOR))
+            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterTableField(self.GROUP_FIELD,
+            self.tr('Group field'), self.VECTOR))
+        self.addParameter(ParameterTableField(self.ORDER_FIELD,
+            self.tr('Order field'), self.VECTOR))
         self.addParameter(ParameterString(self.DATE_FORMAT,
-            'Date format (if order field is DateTime)', '', optional=True))
+            self.tr('Date format (if order field is DateTime)'), '', optional=True))
         #self.addParameter(ParameterNumber(
         #    self.GAP_PERIOD,
         #    'Gap period (if order field is DateTime)', 0, 60, 0))
-        self.addOutput(OutputVector(self.OUTPUT_LINES, 'Paths'))
-        self.addOutput(OutputDirectory(self.OUTPUT_TEXT, 'Directory'))
+        self.addOutput(OutputVector(self.OUTPUT_LINES, self.tr('Paths')))
+        self.addOutput(OutputDirectory(self.OUTPUT_TEXT, self.tr('Directory')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

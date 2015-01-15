@@ -42,20 +42,15 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/single_to_multi.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Singleparts to multipart'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterTableField(self.FIELD, 'Unique ID field',
-                          self.INPUT))
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Unique ID field'), self.INPUT))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -108,7 +103,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
             del writer
         else:
-            raise GeoAlgorithmExecutionException('Invalid unique ID field')
+            raise GeoAlgorithmExecutionException(self.tr('Invalid unique ID field'))
 
     def singleToMultiGeom(self, wkbType):
         try:

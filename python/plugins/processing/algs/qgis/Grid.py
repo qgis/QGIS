@@ -61,16 +61,16 @@ class Grid(GeoAlgorithm):
         self.name = 'Create grid'
         self.group = 'Vector creation tools'
 
-        self.addParameter(ParameterSelection(
-            self.TYPE, 'Grid type', self.TYPES))
-        self.addParameter(ParameterExtent(
-            self.EXTENT, 'Grid extent'))
-        self.addParameter(ParameterNumber(
-            self.HSPACING, 'Horizontal spacing', default=10.0))
-        self.addParameter(ParameterNumber(
-            self.VSPACING, 'Vertical spacing', default=10.0))
+        self.addParameter(ParameterSelection(self.TYPE,
+            self.tr('Grid type'), self.TYPES))
+        self.addParameter(ParameterExtent(self.EXTENT,
+            self.tr('Grid extent')))
+        self.addParameter(ParameterNumber(self.HSPACING,
+            self.tr('Horizontal spacing'), default=10.0))
+        self.addParameter(ParameterNumber(self.VSPACING,
+            self.tr('Vertical spacing'), default=10.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         idx = self.getParameterValue(self.TYPE)
@@ -91,15 +91,15 @@ class Grid(GeoAlgorithm):
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
-                'Invalid grid spacing: %s/%s' % (hSpacing, vSpacing))
+                self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
-                'Horizontal spacing is too small for the covered area')
+                self.tr('Horizontal spacing is too small for the covered area'))
 
         if height < vSpacing:
             raise GeoAlgorithmExecutionException(
-                'Vertical spacing is too small for the covered area')
+                self.tr('Vertical spacing is too small for the covered area'))
 
         if self.TYPES[idx].find('polygon') >= 0:
             geometryType = QGis.WKBPolygon

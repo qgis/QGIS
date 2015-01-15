@@ -43,12 +43,12 @@ class TextToFloat(GeoAlgorithm):
         self.name = 'Text to float'
         self.group = 'Vector table tools'
 
-        self.addParameter(ParameterVector(
-            self.INPUT, 'Input Layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.FIELD, 'Text attribute to convert to float', self.INPUT,
-            ParameterTableField.DATA_TYPE_STRING))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Text attribute to convert to float'),
+            self.INPUT, ParameterTableField.DATA_TYPE_STRING))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

@@ -59,15 +59,15 @@ class SelectByAttribute(GeoAlgorithm):
         self.name = 'Select by attribute'
         self.group = 'Vector selection tools'
 
-        self.addParameter(ParameterVector(
-            self.INPUT, 'Input Layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.FIELD, 'Selection attribute', self.INPUT))
-        self.addParameter(ParameterSelection(
-            self.OPERATOR, 'Operator', self.OPERATORS))
-        self.addParameter(ParameterString(self.VALUE, 'Value'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Selection attribute'), self.INPUT))
+        self.addParameter(ParameterSelection(self.OPERATOR,
+            self.tr('Operator'), self.OPERATORS))
+        self.addParameter(ParameterString(self.VALUE, self.tr('Value')))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -84,14 +84,14 @@ class SelectByAttribute(GeoAlgorithm):
         if fieldType != QVariant.String and operator in self.OPERATORS[-2:]:
             op = ''.join(['"%s", ' % o for o in self.OPERATORS[-2:]])
             raise GeoAlgorithmExecutionException(
-                'Operators %s can be used only with string fields.' % op)
+                self.tr('Operators %s can be used only with string fields.' % op))
 
         if fieldType in [QVariant.Int, QVariant.Double]:
-            progress.setInfo('Numeric field')
+            progress.setInfo(self.tr('Numeric field'))
             expr = '"%s" %s %s' % (fieldName, operator, value)
             progress.setInfo(expr)
         elif fieldType == QVariant.String:
-            progress.setInfo('String field')
+            progress.setInfo(self.tr('String field'))
             if operator not in self.OPERATORS[-2:]:
                 expr = """"%s" %s '%s'""" % (fieldName, operator, value)
             elif operator == 'begins with':
@@ -100,12 +100,12 @@ class SelectByAttribute(GeoAlgorithm):
                 expr = """"%s" LIKE '%%%s%%'""" % (fieldName, value)
             progress.setInfo(expr)
         elif fieldType in [QVariant.Date, QVariant.DateTime]:
-            progress.setInfo('Date field')
+            progress.setInfo(self.tr('Date field'))
             expr = """"%s" %s '%s'""" % (fieldX, operator, value)
             progress.setInfo(expr)
         else:
             raise GeoAlgorithmExecutionException(
-                'Unsupported field type "%s"' % fields[idx].typeName())
+                self.tr('Unsupported field type "%s"' % fields[idx].typeName()))
 
         expression = QgsExpression(expr)
         expression.prepare(fields)

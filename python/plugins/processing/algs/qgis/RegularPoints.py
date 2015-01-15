@@ -52,16 +52,17 @@ class RegularPoints(GeoAlgorithm):
         self.name = 'Regular points'
         self.group = 'Vector creation tools'
 
-        self.addParameter(ParameterExtent(self.EXTENT, 'Input extent'))
+        self.addParameter(ParameterExtent(self.EXTENT,
+            self.tr('Input extent')))
         self.addParameter(ParameterNumber(self.SPACING,
-            'Point spacing/count', 0.0001, 999999999.999999999, 0.0001))
+            self.tr('Point spacing/count'), 0.0001, 999999999.999999999, 0.0001))
         self.addParameter(ParameterNumber(self.INSET,
-            'Initial inset from corner (LH side)', 0.0, 9999.9999, 0.0))
+            self.tr('Initial inset from corner (LH side)'), 0.0, 9999.9999, 0.0))
         self.addParameter(ParameterBoolean(self.RANDOMIZE,
-            'Apply random offset to point spacing', False))
+            self.tr('Apply random offset to point spacing'), False))
         self.addParameter(ParameterBoolean(self.IS_SPACING,
-            'Use point spacing', True))
-        self.addOutput(OutputVector(self.OUTPUT, 'Regular points'))
+            self.tr('Use point spacing'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Regular points')))
 
     def processAlgorithm(self, progress):
         extent = str(self.getParameterValue(self.EXTENT)).split(',')

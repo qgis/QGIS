@@ -40,21 +40,16 @@ class ReprojectLayer(GeoAlgorithm):
     TARGET_CRS = 'TARGET_CRS'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/reproject.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Reproject layer'
         self.group = 'Vector general tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterCrs(self.TARGET_CRS, 'Target CRS',
-                          'EPSG:4326'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterCrs(self.TARGET_CRS,
+            self.tr('Target CRS'), 'EPSG:4326'))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Reprojected layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Reprojected layer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

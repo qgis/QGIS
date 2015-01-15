@@ -46,27 +46,24 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
     POINT_COUNT = 'POINT_COUNT'
     Z_SCORE = 'Z_SCORE'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/neighbour.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Nearest neighbour analysis'
         self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterVector(self.POINTS, 'Points',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterVector(self.POINTS,
+            self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
 
-        self.addOutput(OutputHTML(self.OUTPUT, 'Result'))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Result')))
 
-        self.addOutput(OutputNumber(self.OBSERVED_MD, 'Observed mean distance'
-                       ))
-        self.addOutput(OutputNumber(self.EXPECTED_MD, 'Expected mean distance'
-                       ))
-        self.addOutput(OutputNumber(self.NN_INDEX, 'Nearest neighbour index'))
-        self.addOutput(OutputNumber(self.POINT_COUNT, 'Number of points'))
-        self.addOutput(OutputNumber(self.Z_SCORE, 'Z-Score'))
+        self.addOutput(OutputNumber(self.OBSERVED_MD,
+            self.tr('Observed mean distance')))
+        self.addOutput(OutputNumber(self.EXPECTED_MD,
+            self.tr('Expected mean distance')))
+        self.addOutput(OutputNumber(self.NN_INDEX,
+            self.tr('Nearest neighbour index')))
+        self.addOutput(OutputNumber(self.POINT_COUNT,
+            self.tr('Number of points')))
+        self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

@@ -43,21 +43,16 @@ class ExportGeometryInfo(GeoAlgorithm):
 
     CALC_METHODS = ['Layer CRS', 'Project CRS', 'Ellipsoidal']
 
-    #==========================================================================
-    #def getIcon(self):
-    #   return QIcon(os.path.dirname(__file__) + "/icons/export_geometry.png")
-    #=========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Export/Add geometry columns'
         self.group = 'Vector table tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterSelection(self.METHOD, 'Calculate using',
-                          self.CALC_METHODS, 0))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterSelection(self.METHOD,
+            self.tr('Calculate using'), self.CALC_METHODS, 0))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

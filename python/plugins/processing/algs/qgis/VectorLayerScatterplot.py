@@ -63,10 +63,12 @@ class VectorLayerScatterplot(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Vector layer scatterplot'
         self.group = 'Graphics'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.XFIELD, 'X attribute',
-                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.YFIELD, 'Y attribute',
-                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addOutput(OutputHTML(self.OUTPUT, 'Output'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.XFIELD,
+            self.tr('X attribute'),
+            self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.YFIELD,
+            self.tr('Y attribute'),
+            self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))

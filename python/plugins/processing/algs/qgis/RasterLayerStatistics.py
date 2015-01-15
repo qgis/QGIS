@@ -104,15 +104,15 @@ class RasterLayerStatistics(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Raster layer statistics'
         self.group = 'Raster tools'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, 'Statistics'))
-        self.addOutput(OutputNumber(self.MIN, 'Minimum value'))
-        self.addOutput(OutputNumber(self.MAX, 'Maximum value'))
-        self.addOutput(OutputNumber(self.SUM, 'Sum'))
-        self.addOutput(OutputNumber(self.MEAN, 'Mean value'))
-        self.addOutput(OutputNumber(self.COUNT, 'valid cells count'))
-        self.addOutput(OutputNumber(self.COUNT, 'No-data cells count'))
-        self.addOutput(OutputNumber(self.STD_DEV, 'Standard deviation'))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE, self.tr('Statistics')))
+        self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
+        self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
+        self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
+        self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
+        self.addOutput(OutputNumber(self.COUNT, self.tr('valid cells count')))
+        self.addOutput(OutputNumber(self.COUNT, self.tr('No-data cells count')))
+        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
 
     def createHTML(self, outputFile, algData):
         f = open(outputFile, 'w')

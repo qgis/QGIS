@@ -53,19 +53,24 @@ class ZonalStatistics(GeoAlgorithm):
         self.name = 'Zonal Statistics'
         self.group = 'Raster tools'
 
-        self.addParameter(ParameterRaster(self.INPUT_RASTER, 'Raster layer'))
-        self.addParameter(ParameterNumber(self.RASTER_BAND, 'Raster band', 1,
-                          999, 1))
+        self.addParameter(ParameterRaster(self.INPUT_RASTER,
+            self.tr('Raster layer')))
+        self.addParameter(ParameterNumber(self.RASTER_BAND,
+            self.tr('Raster band'), 1, 999, 1))
         self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                          'Vector layer containing zones',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+            self.tr('Vector layer containing zones'),
+            [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.COLUMN_PREFIX,
-                          'Output column prefix', '_'))
+            self.tr('Output column prefix'), '_'))
         self.addParameter(ParameterBoolean(self.GLOBAL_EXTENT,
-                          'Load whole raster in memory'))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Load whole raster in memory')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
+        """ Based on code by Matthew Perry
+            https://gist.github.com/perrygeo/5667173
+        """
+
         layer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT_VECTOR))
 

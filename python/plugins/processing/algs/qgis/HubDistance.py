@@ -61,17 +61,17 @@ class HubDistance(GeoAlgorithm):
         self.group = 'Vector analysis tools'
 
         self.addParameter(ParameterVector(self.POINTS,
-            'Source points layer', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.HUBS,
-            'Destination hubs layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.FIELD, 'Hub layer name attribute', self.HUBS))
-        self.addParameter(ParameterSelection(
-            self.GEOMETRY, 'Output shape type', self.GEOMETRIES))
-        self.addParameter(ParameterSelection(
-            self.UNIT, 'Measurement unit', self.UNITS))
+            self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Hub layer name attribute'), self.HUBS))
+        self.addParameter(ParameterSelection(self.GEOMETRY,
+            self.tr('Output shape type'), self.GEOMETRIES))
+        self.addParameter(ParameterSelection(self.UNIT,
+            self.tr('Measurement unit'), self.UNITS))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layerPoints = dataobjects.getObjectFromUri(
@@ -85,7 +85,7 @@ class HubDistance(GeoAlgorithm):
 
         if layerPoints.source() == layerHubs.source():
             raise GeoAlgorithmExecutionException(
-                'Same layer given for both hubs and spokes')
+                self.tr('Same layer given for both hubs and spokes'))
 
         geomType = QGis.WKBPoint
         if addLines:

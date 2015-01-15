@@ -54,24 +54,22 @@ class PointDistance(GeoAlgorithm):
         self.name = 'Distance matrix'
         self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input point layer'
-                          , [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input point layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterTableField(self.INPUT_FIELD,
-                          'Input unique ID field', self.INPUT_LAYER,
-                          ParameterTableField.DATA_TYPE_ANY))
+            self.tr('Input unique ID field'), self.INPUT_LAYER,
+            ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterVector(self.TARGET_LAYER,
-                          'Target point layer',
-                          ParameterVector.VECTOR_TYPE_POINT))
+            self.tr('Target point layer'), ParameterVector.VECTOR_TYPE_POINT))
         self.addParameter(ParameterTableField(self.TARGET_FIELD,
-                          'Target unique ID field', self.TARGET_LAYER,
-                          ParameterTableField.DATA_TYPE_ANY))
+            self.tr('Target unique ID field'), self.TARGET_LAYER,
+            ParameterTableField.DATA_TYPE_ANY))
         self.addParameter(ParameterSelection(self.MATRIX_TYPE,
-                          'Output matrix type', self.MAT_TYPES, 0))
+            self.tr('Output matrix type'), self.MAT_TYPES, 0))
         self.addParameter(ParameterNumber(self.NEAREST_POINTS,
-                          'Use only the nearest (k) target points', 0, 9999,
-                          0))
+            self.tr('Use only the nearest (k) target points'), 0, 9999, 0))
 
-        self.addOutput(OutputTable(self.DISTANCE_MATRIX, 'Distance matrix'))
+        self.addOutput(OutputTable(self.DISTANCE_MATRIX, self.tr('Distance matrix')))
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(

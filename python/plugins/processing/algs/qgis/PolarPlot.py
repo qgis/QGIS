@@ -72,9 +72,10 @@ class PolarPlot(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Polar plot'
         self.group = 'Graphics'
-        self.addParameter(ParameterTable(self.INPUT, 'Input table'))
+        self.addParameter(ParameterTable(self.INPUT,
+            self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
-                          'Category name field', self.INPUT))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD, 'Value field',
-                          self.INPUT))
-        self.addOutput(OutputHTML(self.OUTPUT, 'Output'))
+            self.tr('Category name field'), self.INPUT))
+        self.addParameter(ParameterTableField(self.VALUE_FIELD,
+            self.tr('Value field'), self.INPUT))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))

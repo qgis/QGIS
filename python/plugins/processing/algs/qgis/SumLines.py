@@ -42,25 +42,20 @@ class SumLines(GeoAlgorithm):
     COUNT_FIELD = 'COUNT_FIELD'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/sum_lines.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Sum line lengths'
         self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterVector(self.LINES, 'Lines',
-                          [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterVector(self.POLYGONS, 'Polygons',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.LINES,
+            self.tr('Lines'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.POLYGONS,
+            self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterString(self.LEN_FIELD,
-                          'Lines length field name', 'LENGTH'))
+            self.tr('Lines length field name', 'LENGTH')))
         self.addParameter(ParameterString(self.COUNT_FIELD,
-                          'Lines count field name', 'COUNT'))
+            self.tr('Lines count field name', 'COUNT')))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Result'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
 
     def processAlgorithm(self, progress):
         lineLayer = dataobjects.getObjectFromUri(

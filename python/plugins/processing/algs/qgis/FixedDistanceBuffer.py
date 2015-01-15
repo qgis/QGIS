@@ -45,24 +45,19 @@ class FixedDistanceBuffer(GeoAlgorithm):
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QtGui.QIcon(os.path.dirname(__file__) + "/icons/buffer.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Fixed distance buffer'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterNumber(self.DISTANCE, 'Distance',
-                          default=10.0))
-        self.addParameter(ParameterNumber(self.SEGMENTS, 'Segments', 1,
-                          default=5))
-        self.addParameter(ParameterBoolean(self.DISSOLVE, 'Dissolve result',
-                          False))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterNumber(self.DISTANCE,
+            self.tr('Distance'), default=10.0))
+        self.addParameter(ParameterNumber(self.SEGMENTS,
+            self.tr('Segments'), 1, default=5))
+        self.addParameter(ParameterBoolean(self.DISSOLVE,
+            self.tr('Dissolve result'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Buffer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

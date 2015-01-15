@@ -54,15 +54,16 @@ class VectorGrid(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Vector grid'
         self.group = 'Vector creation tools'
-        self.addParameter(ParameterExtent(self.EXTENT, 'Grid extent'))
+        self.addParameter(ParameterExtent(self.EXTENT,
+            self.tr('Grid extent')))
         self.addParameter(ParameterNumber(self.STEP_X,
-            'X spacing', 0.0, 1000000000.0, 0.0001))
+            self.tr('X spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterNumber(self.STEP_Y,
-            'Y spacing', 0.0, 1000000000.0, 0.0001))
+            self.tr('Y spacing'), 0.0, 1000000000.0, 0.0001))
         self.addParameter(ParameterSelection(self.TYPE,
-            'Grid type', self.TYPES))
+            self.tr('Grid type'), self.TYPES))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Grid'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
 
     def processAlgorithm(self, progress):
         extent = self.getParameterValue(self.EXTENT).split(',')

@@ -62,10 +62,11 @@ class VectorLayerHistogram(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Vector layer histogram'
         self.group = 'Graphics'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD, 'Attribute',
-                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterNumber(self.BINS, 'number of bins', 2,
-                          None, 10))
-        self.addOutput(OutputHTML(self.OUTPUT, 'Output'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Attribute'),
+            self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterNumber(self.BINS,
+            self.tr('number of bins'), 2, None, 10))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))

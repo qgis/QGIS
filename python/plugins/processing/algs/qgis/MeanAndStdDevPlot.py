@@ -74,12 +74,13 @@ class MeanAndStdDevPlot(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Mean and standard deviation plot'
         self.group = 'Graphics'
-        self.addParameter(ParameterTable(self.INPUT, 'Input table'))
+        self.addParameter(ParameterTable(self.INPUT,
+            self.tr('Input table')))
         self.addParameter(ParameterTableField(self.NAME_FIELD,
-                          'Category name field', self.INPUT,
-                          ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.MEAN_FIELD, 'Mean field',
-                          self.INPUT))
-        self.addParameter(ParameterTableField(self.STDDEV_FIELD, 'StdDev field'
-                          , self.INPUT))
-        self.addOutput(OutputHTML(self.OUTPUT, 'Output'))
+            self.tr('Category name field'), self.INPUT,
+            ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.MEAN_FIELD,
+            self.tr('Mean field'), self.INPUT))
+        self.addParameter(ParameterTableField(self.STDDEV_FIELD,
+            self.tr('StdDev field'), self.INPUT))
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))

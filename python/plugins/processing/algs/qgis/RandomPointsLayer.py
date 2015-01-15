@@ -51,12 +51,13 @@ class RandomPointsLayer(GeoAlgorithm):
         self.name = 'Random points in layer bounds'
         self.group = 'Vector creation tools'
         self.addParameter(ParameterVector(self.VECTOR,
-            'Input layer',[ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(
-            ParameterNumber(self.POINT_NUMBER, 'Points number', 1, 9999999, 1))
-        self.addParameter(ParameterNumber(
-            self.MIN_DISTANCE, 'Minimum distance', 0.0, 9999999, 0.0))
-        self.addOutput(OutputVector(self.OUTPUT, 'Random points'))
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterNumber(self.POINT_NUMBER,
+            self.tr('Points number'), 1, 9999999, 1))
+        self.addParameter(ParameterNumber(self.MIN_DISTANCE,
+            self.tr('Minimum distance'), 0.0, 9999999, 0.0))
+
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Random points')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -111,9 +112,8 @@ class RandomPointsLayer(GeoAlgorithm):
             nIterations += 1
 
         if nPoints < pointCount:
-             ProcessingLog.addToLog(
-                 ProcessingLog.LOG_INFO,
-                 'Can not generate requested number of random points. Maximum '
-                 'number of attempts exceeded.')
+             ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                 self.tr('Can not generate requested number of random points. '
+                         'Maximum number of attempts exceeded.'))
 
         del writer
