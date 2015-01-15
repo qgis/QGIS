@@ -17,15 +17,17 @@
  ***************************************************************************/
 
 
-#include <qgsapplication.h>
-#include <qgsdatasourceuri.h>
-#include <qgsgeometry.h>
-#include <qgsmaplayer.h>
-#include <qgsmaplayerregistry.h>
-#include <qgsofflineediting.h>
-#include <qgsproject.h>
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayereditbuffer.h>
+#include "qgsapplication.h"
+#include "qgsdatasourceuri.h"
+#include "qgsgeometry.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsofflineediting.h"
+#include "qgsproject.h"
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayereditbuffer.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -509,6 +511,20 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       QgsMapLayerRegistry::instance()->addMapLayers(
         QList<QgsMapLayer *>() << newLayer );
 
+      QgsLayerTreeGroup* layerTreeRoot = QgsProject::instance()->layerTreeRoot();
+      // Find the parent group of the original layer
+      QgsLayerTreeLayer* layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
+      QgsLayerTreeGroup* parentTreeGroup = qobject_cast<QgsLayerTreeGroup*>( layerTreeLayer->parent() );
+      if ( parentTreeGroup )
+      {
+        int index = parentTreeGroup->children().indexOf( layerTreeLayer );
+        // Move the new layer from the root group to the new group
+        QgsLayerTreeLayer* newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
+        QgsLayerTreeNode* newLayerTreeLayerClone = newLayerTreeLayer->clone();
+        parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
+        layerTreeRoot->removeChildNode( newLayerTreeLayer );
+      }
+
       if ( hasLabels )
       {
         // NOTE: copy symbology of layers with labels enabled after adding to project, as it will crash otherwise (WORKAROUND)
@@ -526,7 +542,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
 
       QgsFeatureIterator fit = layer->dataProvider()->getFeatures();
 
-      emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->featureCount() );
+      emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->dataProvider()->featureCount() );
       int featureCount = 1;
 
       QList<QgsFeatureId> remoteFeatureIds;
@@ -551,7 +567,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       }
       if ( newLayer->commitChanges() )
       {
-        emit progressModeSet( QgsOfflineEditing::ProcessFeatures, layer->featureCount() );
+        emit progressModeSet( QgsOfflineEditing::ProcessFeatures, layer->dataProvider()->featureCount() );
         featureCount = 1;
 
         // update feature id lookup
