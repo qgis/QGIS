@@ -80,11 +80,11 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() OVERRIDE;
     //! Show the dialog box
     void run();
     //! unload the plugin
-    void unload();
+    void unload() OVERRIDE;
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
     QIcon getThemeIcon( const QString &theThemeName );

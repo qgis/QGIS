@@ -33,7 +33,7 @@ class QgsReaderThread : public QThread
   public:
     QgsReaderThread();
 
-    virtual void run();
+    virtual void run() OVERRIDE;
 
   signals:
     void helpRead( QString help );
@@ -50,8 +50,8 @@ class QgsHelpViewer : public QDialog, private Ui::QgsHelpViewerBase
     void showHelp( QString );
     void fileExit();
   protected:
-    void moveEvent( QMoveEvent *event );
-    void resizeEvent( QResizeEvent *event );
+    void moveEvent( QMoveEvent *event ) OVERRIDE;
+    void resizeEvent( QResizeEvent *event ) OVERRIDE;
   private:
     void restorePosition();
     void saveWindowLocation();

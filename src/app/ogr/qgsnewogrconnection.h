@@ -37,7 +37,7 @@ class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
     //! Tests the connection using the parameters supplied
     void testConnection();
   public slots:
-    void accept();
+    void accept() OVERRIDE;
     void on_btnConnect_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

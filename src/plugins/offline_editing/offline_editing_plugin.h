@@ -37,12 +37,12 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() OVERRIDE;
     //! actions
     void convertProject();
     void synchronize();
     //! unload the plugin
-    void unload();
+    void unload() OVERRIDE;
     //! show the help document
     void help();
 

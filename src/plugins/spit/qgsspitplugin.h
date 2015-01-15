@@ -47,10 +47,10 @@ class QgsSpitPlugin: public QObject, public QgisPlugin
     virtual ~ QgsSpitPlugin();
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() OVERRIDE;
     void spit();
     //! unload the plugin
-    void unload();
+    void unload() OVERRIDE;
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
   private:

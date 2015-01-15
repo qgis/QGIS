@@ -52,7 +52,7 @@ class QgsAttributeTableDock : public QDockWidget
       setObjectName( "AttributeTable" ); // set object name so the position can be saved
     }
 
-    virtual void closeEvent( QCloseEvent * ev )
+    virtual void closeEvent( QCloseEvent * ev ) OVERRIDE
     {
       Q_UNUSED( ev );
       deleteLater();

@@ -109,10 +109,10 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      *
      * \returns true on success, false on failure
      */
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords );
+    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) OVERRIDE;
 
     //! \brief Returns the minimum number of GCPs required for parameter fitting.
-    uint getMinimumGCPCount() const;
+    uint getMinimumGCPCount() const OVERRIDE;
 
     /**
      * \brief Return funtion pointer to the GDALTransformer function.
@@ -121,8 +121,8 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
      * \ref transformWorldToRaster and by the GDAL warping code
      * in \ref QgsImageWarper::warpFile.
      */
-    GDALTransformerFunc  GDALTransformer()     const;
-    void*                GDALTransformerArgs() const;
+    GDALTransformerFunc  GDALTransformer()     const OVERRIDE;
+    void*                GDALTransformerArgs() const OVERRIDE;
 
     /**
      * \brief Transform from pixel coordinates to georeferenced coordinates.

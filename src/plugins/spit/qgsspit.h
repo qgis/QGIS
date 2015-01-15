@@ -133,14 +133,14 @@ class ShapefileTableDelegate : public QItemDelegate
     { Q_UNUSED( parent ); }
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const;
+                           const QModelIndex &index ) const OVERRIDE;
 
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const OVERRIDE;
     void setModelData( QWidget *editor, QAbstractItemModel *model,
-                       const QModelIndex &index ) const;
+                       const QModelIndex &index ) const OVERRIDE;
 
     void updateEditorGeometry( QWidget *editor,
-                               const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+                               const QStyleOptionViewItem &option, const QModelIndex &index ) const OVERRIDE;
     void updateSchemaList( QStringList& schema_list, QString currentSchema );
 
   private:

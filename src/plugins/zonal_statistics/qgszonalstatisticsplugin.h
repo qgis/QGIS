@@ -32,9 +32,9 @@ class QgsZonalStatisticsPlugin: public QObject, public QgisPlugin
     ~QgsZonalStatisticsPlugin();
 
     /**initialize connection to GUI*/
-    void initGui();
+    void initGui() OVERRIDE;
     /**Unload the plugin and cleanup the GUI*/
-    void unload();
+    void unload() OVERRIDE;
 
   private slots:
     /**Select input file, output file, format and analysis method*/

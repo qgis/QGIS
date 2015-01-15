@@ -305,7 +305,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     ~QgsGrassModuleStandardOptions();
 
     //! Get module options as list of arguments for QProcess
-    QStringList arguments();
+    QStringList arguments() OVERRIDE;
 
     // ! Get item by ID
     QgsGrassModuleItem *item( QString id );
@@ -314,17 +314,17 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     QgsGrassModuleItem *itemByKey( QString key );
 
     // Reimplemented methods from QgsGrassModuleOptions
-    QStringList checkOutput();
-    void freezeOutput();
-    void thawOutput();
-    QStringList ready();
-    QStringList output( int type );
-    bool hasOutput( int type );
-    QStringList checkRegion();
-    bool usesRegion();
-    bool requestsRegion();
-    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all );
-    QStringList flagNames() { return mFlagNames; }
+    QStringList checkOutput() OVERRIDE;
+    void freezeOutput() OVERRIDE;
+    void thawOutput() OVERRIDE;
+    QStringList ready() OVERRIDE;
+    QStringList output( int type ) OVERRIDE;
+    bool hasOutput( int type ) OVERRIDE;
+    QStringList checkRegion() OVERRIDE;
+    bool usesRegion() OVERRIDE;
+    bool requestsRegion() OVERRIDE;
+    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all ) OVERRIDE;
+    QStringList flagNames() OVERRIDE { return mFlagNames; }
 
   public slots:
     // ! Show/hide advanced options
@@ -370,7 +370,7 @@ class QgsGrassModuleCheckBox: public QCheckBox
     //! Destructor
     virtual ~QgsGrassModuleCheckBox();
 
-    void resizeEvent( QResizeEvent * event );
+    void resizeEvent( QResizeEvent * event ) OVERRIDE;
 
   public slots:
     void setText( const QString & text );
@@ -473,7 +473,7 @@ class QgsGrassModuleGroupBoxItem: public QGroupBox, public QgsGrassModuleItem
     //! Destructor
     virtual ~QgsGrassModuleGroupBoxItem();
 
-    void resizeEvent( QResizeEvent * event );
+    void resizeEvent( QResizeEvent * event ) OVERRIDE;
 
   public slots:
     //! Adjust title size, called on resize
@@ -512,7 +512,7 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
     enum OutputType { None, Vector, Raster };
 
     //! Retruns list of options which will be passed to module
-    virtual QStringList options();
+    virtual QStringList options() OVERRIDE;
 
     //! True if this option is output
     bool isOutput() { return mIsOutput; }
@@ -524,7 +524,7 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
     // Returns emppty string or name of existing output
     QString outputExists();
 
-    QString ready();
+    QString ready() OVERRIDE;
 
     //! Current value
     QString value();
@@ -609,7 +609,7 @@ class QgsGrassModuleFlag: public QgsGrassModuleCheckBox, public QgsGrassModuleIt
     ~QgsGrassModuleFlag();
 
     //! Retruns list of options which will be passed to module
-    virtual QStringList options();
+    virtual QStringList options() OVERRIDE;
 
 };
 
@@ -638,7 +638,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     enum Type { Vector, Raster };
 
     //! Retruns list of options which will be passed to module
-    virtual QStringList options();
+    virtual QStringList options() OVERRIDE;
 
     // ! Return vector of attribute fields of current vector
     QgsFields currentFields();
@@ -648,7 +648,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
 
     QString currentMap();
 
-    QString ready();
+    QString ready() OVERRIDE;
 
     //! Does this options causes use of region?
     //  Raster input/output uses region by default
@@ -750,8 +750,8 @@ class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
     enum Type { Gdal, Ogr };
 
     //! Reimplemented
-    QStringList options();
-    QString ready();
+    QStringList options() OVERRIDE;
+    QString ready() OVERRIDE;
 
   public slots:
     //! Fill combobox with currently available maps in QGIS canvas
@@ -812,7 +812,7 @@ class QgsGrassModuleField: public QgsGrassModuleGroupBoxItem
     ~QgsGrassModuleField();
 
     //! Retruns list of options which will be passed to module
-    virtual QStringList options();
+    virtual QStringList options() OVERRIDE;
 
   public slots:
     //! Fill combobox with currently available maps in QGIS canvas
@@ -860,7 +860,7 @@ class QgsGrassModuleSelection: public QgsGrassModuleGroupBoxItem
     ~QgsGrassModuleSelection();
 
     //! Retruns list of options which will be passed to module
-    virtual QStringList options();
+    virtual QStringList options() OVERRIDE;
 
   public slots:
     //! Set selection list to currently selected features
@@ -913,8 +913,8 @@ class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
     enum Type { Old, New, Multiple, Directory };
 
     // Reimplemented methods from QgsGrassModuleOptions
-    QStringList options();
-    QString ready();
+    QStringList options() OVERRIDE;
+    QString ready() OVERRIDE;
 
   public slots:
     // browse files

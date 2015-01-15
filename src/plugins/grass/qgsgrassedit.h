@@ -210,7 +210,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     void columnTypeChanged( int row, int col );
 
     // ! Close event
-    void closeEvent( QCloseEvent *e );
+    void closeEvent( QCloseEvent *e ) OVERRIDE;
 
     static bool isEditable( QgsMapLayer *layer );
 

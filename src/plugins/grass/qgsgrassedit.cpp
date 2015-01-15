@@ -58,17 +58,17 @@ class QgsGrassEditLayer : public QgsMapCanvasItem
     {
     }
 
-    virtual void paint( QPainter* p )
+    virtual void paint( QPainter* p ) OVERRIDE
     {
       p->drawPixmap( 0, 0, mPixmap );
     }
 
-    virtual QRectF boundingRect() const
+    virtual QRectF boundingRect() const OVERRIDE
     {
       return QRectF( 0, 0, mMapCanvas->width(), mMapCanvas->height() );
-    }
+  }
 
-    virtual void updatePosition()
+    virtual void updatePosition() OVERRIDE
     {
       setPos( QPointF( mPanningOffset ) );
     }
@@ -86,9 +86,9 @@ class QgsGrassEditAttributeTableItemDelegate : public QItemDelegate
 {
   public:
     QgsGrassEditAttributeTableItemDelegate( QObject *parent = 0 );
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const OVERRIDE;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const OVERRIDE;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const OVERRIDE;
 };
 
 QgsGrassEditAttributeTableItemDelegate::QgsGrassEditAttributeTableItemDelegate( QObject *parent )

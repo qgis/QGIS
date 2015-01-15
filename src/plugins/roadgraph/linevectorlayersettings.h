@@ -55,11 +55,11 @@ class RgLineVectorLayerSettings: public RgSettings
     /*
      * MANDATORY SETTINGS PROPERTY DECLARATIONS
      */
-    void write( QgsProject * );
-    void read( const QgsProject * );
-    bool test();
-    QWidget *getGui( QWidget* Parent );
-    void    setFromGui( QWidget* );
+    void write( QgsProject * ) OVERRIDE;
+    void read( const QgsProject * ) OVERRIDE;
+    bool test() OVERRIDE;
+    QWidget *getGui( QWidget* Parent ) OVERRIDE;
+    void    setFromGui( QWidget* ) OVERRIDE;
   public:
 
     /**

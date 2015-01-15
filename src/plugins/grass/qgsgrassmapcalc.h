@@ -56,29 +56,29 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     };
 
     //! Get module options as list of arguments for QProcess
-    QStringList arguments();
+    QStringList arguments() OVERRIDE;
 
     // Reimplemented methods
-    QStringList checkOutput();
-    QStringList ready() { return QStringList() ; }
-    bool requestsRegion() { return false; }
-    bool usesRegion() { return true; }
-    QStringList checkRegion();
-    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all );
-    QStringList output( int type );
-    bool hasOutput( int type )
+    QStringList checkOutput() OVERRIDE;
+    QStringList ready() OVERRIDE { return QStringList() ; }
+    bool requestsRegion() OVERRIDE { return false; }
+    bool usesRegion() OVERRIDE { return true; }
+    QStringList checkRegion() OVERRIDE;
+    bool inputRegion( struct Cell_head *window, QgsCoordinateReferenceSystem & crs, bool all ) OVERRIDE;
+    QStringList output( int type ) OVERRIDE;
+    bool hasOutput( int type ) OVERRIDE
     { Q_UNUSED( type ); return true; }
 
     /** \brief receives contentsMousePressEvent from view */
-    void mousePressEvent( QMouseEvent* );
+    void mousePressEvent( QMouseEvent* ) OVERRIDE;
 
     /** \brief receives contentsMouseReleaseEvent from view */
-    void mouseReleaseEvent( QMouseEvent* );
+    void mouseReleaseEvent( QMouseEvent* ) OVERRIDE;
 
     /** \brief receives contentsMouseMoveEvent from view */
-    void mouseMoveEvent( QMouseEvent* );
+    void mouseMoveEvent( QMouseEvent* ) OVERRIDE;
 
-    void keyPressEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent * e ) OVERRIDE;
 
     /** Cut coordinates by current canvas extent */
     void limit( QPoint* );
@@ -339,7 +339,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     void setFunction( QgsGrassMapcalcFunction f );
 
     void paint( QPainter * painter,
-                const QStyleOptionGraphicsItem * option, QWidget * widget );
+                const QStyleOptionGraphicsItem * option, QWidget * widget ) OVERRIDE;
 
     // Set object center
     void setCenter( int, int );
@@ -350,7 +350,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     // Recalculate size
     void resetSize();
 
-    void setSelected( bool s );
+    void setSelected( bool s ) OVERRIDE;
 
     // Try to connect connector end
     bool tryConnect( QgsGrassMapcalcConnector *, int );
@@ -363,7 +363,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
                        QgsGrassMapcalcConnector *connector = 0, int end = 0 );
 
     // Object type
-    virtual int type() const;
+    virtual int type() const OVERRIDE;
 
     // Value
     QString value() { return mValue; }
@@ -458,7 +458,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     ~QgsGrassMapcalcConnector();
 
     void paint( QPainter * painter,
-                const QStyleOptionGraphicsItem * option, QWidget * widget );
+                const QStyleOptionGraphicsItem * option, QWidget * widget ) OVERRIDE;
 
     // Set connector end point coordinates
     void setPoint( int, QPoint );
@@ -468,7 +468,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     // Recalculate size
     //void resetSize();
 
-    void setSelected( bool s );
+    void setSelected( bool s ) OVERRIDE;
 
     // Select end
     void selectEnd( QPoint );
@@ -528,10 +528,10 @@ class QgsGrassMapcalcView: public QGraphicsView
     QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc, QWidget * parent = 0, Qt::WindowFlags f = 0 );
 
   protected:
-    void mousePressEvent( QMouseEvent * e );
-    void mouseReleaseEvent( QMouseEvent * e );
-    void mouseMoveEvent( QMouseEvent * e );
-    void keyPressEvent( QKeyEvent * e );
+    void mousePressEvent( QMouseEvent * e ) OVERRIDE;
+    void mouseReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    void mouseMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void keyPressEvent( QKeyEvent * e ) OVERRIDE;
 
   private:
     QgsGrassMapcalc *mMapcalc;

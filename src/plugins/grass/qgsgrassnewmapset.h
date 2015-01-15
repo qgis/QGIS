@@ -59,7 +59,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     ~QgsGrassNewMapset();
 
     //! Next page
-    int nextId() const;
+    int nextId() const OVERRIDE;
 
     //! Is running
     static bool isRunning();
@@ -165,7 +165,7 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void setFinishPage();
 
     //! Finish / accept
-    void accept();
+    void accept() OVERRIDE;
 
     //! Create new mapset
     void createMapset();
@@ -174,10 +174,10 @@ class QgsGrassNewMapset : public QWizard, private Ui::QgsGrassNewMapsetBase
     void pageSelected( int index );
 
     //! Close event
-    void closeEvent( QCloseEvent *e );
+    void closeEvent( QCloseEvent *e ) OVERRIDE;
 
     //! Key event
-    void keyPressEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent * e ) OVERRIDE;
 
     //! Set error line
     void setError( QLabel *line, const QString &err );

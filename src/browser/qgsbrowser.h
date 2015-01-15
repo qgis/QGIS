@@ -58,8 +58,8 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     void refresh( const QModelIndex& index = QModelIndex() );
 
   protected:
-    void keyPressEvent( QKeyEvent * e );
-    void keyReleaseEvent( QKeyEvent * e );
+    void keyPressEvent( QKeyEvent * e ) OVERRIDE;
+    void keyReleaseEvent( QKeyEvent * e ) OVERRIDE;
 
     bool layerClicked( QgsLayerItem* ptr );
 

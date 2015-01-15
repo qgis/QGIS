@@ -86,7 +86,7 @@ class QgsComposerLegendWidget: public QgsComposerItemBaseWidget, private Ui::Qgs
     void setCurrentNodeStyleFromAction();
 
   protected:
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent * event ) OVERRIDE;
 
   private slots:
     /**Sets GUI according to state of mLegend*/

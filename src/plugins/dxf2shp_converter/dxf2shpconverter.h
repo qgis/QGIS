@@ -53,11 +53,11 @@ class dxf2shpConverter: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() OVERRIDE;
     //! Show the dialog box
     void run();
     //! unload the plugin
-    void unload();
+    void unload() OVERRIDE;
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed

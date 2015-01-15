@@ -36,7 +36,7 @@ class QgsGrassAttributesKeyPress : public QObject
     ~QgsGrassAttributesKeyPress();
 
   protected:
-    bool eventFilter( QObject *o, QEvent *e );
+    bool eventFilter( QObject *o, QEvent *e ) OVERRIDE;
 
   private:
     QTableWidget *mTable;
