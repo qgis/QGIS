@@ -339,15 +339,20 @@
  </customwidgets>
  <tabstops>
   <tabstop>mTextureWidthSpinBox</tabstop>
-  <tabstop>mTextureWidthUnitWidget</tabstop>
+  <tabstop>mTextureWidthDDBtn</tabstop>
+  <tabstop>mRotationSpinBox</tabstop>
+  <tabstop>mRotationDDBtn</tabstop>
   <tabstop>mChangeColorButton</tabstop>
+  <tabstop>mFilColorDDBtn</tabstop>
   <tabstop>mChangeBorderColorButton</tabstop>
+  <tabstop>mBorderColorDDBtn</tabstop>
   <tabstop>mBorderWidthSpinBox</tabstop>
-  <tabstop>mSvgOutlineWidthUnitWidget</tabstop>
+  <tabstop>mBorderWidthDDBtn</tabstop>
   <tabstop>mSvgTreeView</tabstop>
   <tabstop>mSvgListView</tabstop>
   <tabstop>mSVGLineEdit</tabstop>
   <tabstop>mBrowseToolButton</tabstop>
+  <tabstop>mSVGDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

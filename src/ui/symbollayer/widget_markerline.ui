@@ -270,15 +270,19 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mPlacementDDBtn</tabstop>
   <tabstop>radInterval</tabstop>
   <tabstop>spinInterval</tabstop>
+  <tabstop>mIntervalDDBtn</tabstop>
   <tabstop>radVertex</tabstop>
   <tabstop>radVertexLast</tabstop>
   <tabstop>radVertexFirst</tabstop>
   <tabstop>radCentralPoint</tabstop>
   <tabstop>mSpinOffsetAlongLine</tabstop>
+  <tabstop>mOffsetAlongLineDDBtn</tabstop>
   <tabstop>chkRotateMarker</tabstop>
   <tabstop>spinOffset</tabstop>
+  <tabstop>mLineOffsetDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

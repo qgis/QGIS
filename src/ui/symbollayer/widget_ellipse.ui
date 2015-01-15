@@ -571,14 +571,28 @@
  </customwidgets>
  <tabstops>
   <tabstop>btnChangeColorFill</tabstop>
+  <tabstop>mFillColorDDBtn</tabstop>
   <tabstop>btnChangeColorBorder</tabstop>
+  <tabstop>mBorderColorDDBtn</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
+  <tabstop>mSymbolWidthDDBtn</tabstop>
+  <tabstop>mOutlineStyleComboBox</tabstop>
+  <tabstop>mOutlineStyleDDBtn</tabstop>
   <tabstop>mOutlineWidthSpinBox</tabstop>
+  <tabstop>mOutlineWidthDDBtn</tabstop>
+  <tabstop>mRotationSpinBox</tabstop>
+  <tabstop>mRotationDDBtn</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
+  <tabstop>mSymbolHeightDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
+  <tabstop>mOffsetDDBtn</tabstop>
   <tabstop>mHorizontalAnchorComboBox</tabstop>
+  <tabstop>mHorizontalAnchorDDBtn</tabstop>
   <tabstop>mVerticalAnchorComboBox</tabstop>
+  <tabstop>mVerticalAnchorDDBtn</tabstop>
+  <tabstop>mShapeListWidget</tabstop>
+  <tabstop>mShapeDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>721</width>
-    <height>590</height>
+    <width>780</width>
+    <height>657</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -559,6 +559,38 @@
    <header>qgscolorrampcombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>radioTwoColor</tabstop>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>mStartColorDDBtn</tabstop>
+  <tabstop>btnChangeColor2</tabstop>
+  <tabstop>mEndColorDDBtn</tabstop>
+  <tabstop>radioColorRamp</tabstop>
+  <tabstop>cboGradientColorRamp</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>cboGradientType</tabstop>
+  <tabstop>mGradientTypeDDBtn</tabstop>
+  <tabstop>cboCoordinateMode</tabstop>
+  <tabstop>mCoordinateModeDDBtn</tabstop>
+  <tabstop>cboGradientSpread</tabstop>
+  <tabstop>mSpreadDDBtn</tabstop>
+  <tabstop>spinRefPoint1X</tabstop>
+  <tabstop>mRefPoint1XDDBtn</tabstop>
+  <tabstop>spinRefPoint1Y</tabstop>
+  <tabstop>mRefPoint1YDDBtn</tabstop>
+  <tabstop>checkRefPoint1Centroid</tabstop>
+  <tabstop>mRefPoint1CentroidDDBtn</tabstop>
+  <tabstop>spinRefPoint2X</tabstop>
+  <tabstop>mRefPoint2XDDBtn</tabstop>
+  <tabstop>spinRefPoint2Y</tabstop>
+  <tabstop>mRefPoint2YDDBtn</tabstop>
+  <tabstop>checkRefPoint2Centroid</tabstop>
+  <tabstop>mRefPoint2CentroidDDBtn</tabstop>
+  <tabstop>mSpinAngle</tabstop>
+  <tabstop>mAngleDDBtn</tabstop>
+  <tabstop>spinOffsetX</tabstop>
+  <tabstop>spinOffsetY</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

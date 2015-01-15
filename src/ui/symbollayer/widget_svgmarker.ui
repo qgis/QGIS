@@ -514,17 +514,27 @@
  </customwidgets>
  <tabstops>
   <tabstop>spinSize</tabstop>
+  <tabstop>mSizeDDBtn</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>mAngleDDBtn</tabstop>
   <tabstop>mChangeColorButton</tabstop>
+  <tabstop>mFillColorDDBtn</tabstop>
   <tabstop>mChangeBorderColorButton</tabstop>
+  <tabstop>mBorderColorDDBtn</tabstop>
   <tabstop>mBorderWidthSpinBox</tabstop>
+  <tabstop>mBorderWidthDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
+  <tabstop>mOffsetDDBtn</tabstop>
   <tabstop>mHorizontalAnchorComboBox</tabstop>
+  <tabstop>mHorizontalAnchorDDBtn</tabstop>
   <tabstop>mVerticalAnchorComboBox</tabstop>
+  <tabstop>mVerticalAnchorDDBtn</tabstop>
   <tabstop>viewGroups</tabstop>
   <tabstop>viewImages</tabstop>
   <tabstop>mFileLineEdit</tabstop>
   <tabstop>mFileToolButton</tabstop>
+  <tabstop>mFilenameDDBtn</tabstop>
  </tabstops>
  <resources/>
  <connections/>

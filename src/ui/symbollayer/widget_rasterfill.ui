@@ -364,10 +364,15 @@
  <tabstops>
   <tabstop>mImageLineEdit</tabstop>
   <tabstop>mBrowseToolButton</tabstop>
+  <tabstop>mFilenameDDBtn</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
+  <tabstop>mWidthDDBtn</tabstop>
+  <tabstop>mRotationSpinBox</tabstop>
+  <tabstop>mRotationDDBtn</tabstop>
   <tabstop>cboCoordinateMode</tabstop>
   <tabstop>mSliderTransparency</tabstop>
   <tabstop>mSpinTransparency</tabstop>
+  <tabstop>mOpacityDDBtn</tabstop>
   <tabstop>mSpinOffsetX</tabstop>
   <tabstop>mSpinOffsetY</tabstop>
  </tabstops>

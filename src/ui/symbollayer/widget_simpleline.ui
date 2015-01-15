@@ -331,13 +331,20 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>mColorDDBtn</tabstop>
   <tabstop>spinWidth</tabstop>
+  <tabstop>mPenWidthDDBtn</tabstop>
   <tabstop>spinOffset</tabstop>
+  <tabstop>mOffsetDDBtn</tabstop>
   <tabstop>cboPenStyle</tabstop>
   <tabstop>cboJoinStyle</tabstop>
+  <tabstop>mJoinStyleDDBtn</tabstop>
   <tabstop>cboCapStyle</tabstop>
+  <tabstop>mCapStyleDDBtn</tabstop>
   <tabstop>mCustomCheckBox</tabstop>
   <tabstop>mChangePatternButton</tabstop>
+  <tabstop>mDashPatternDDBtn</tabstop>
   <tabstop>mDrawInsideCheckBox</tabstop>
  </tabstops>
  <resources/>

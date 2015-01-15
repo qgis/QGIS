@@ -336,13 +336,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>viewSymbols</tabstop>
-  <tabstop>mSymbolUnitWidget</tabstop>
   <tabstop>mTransparencySlider</tabstop>
+  <tabstop>spinSize</tabstop>
   <tabstop>btnColor</tabstop>
+  <tabstop>spinAngle</tabstop>
   <tabstop>groupsCombo</tabstop>
   <tabstop>openStyleManagerButton</tabstop>
+  <tabstop>viewSymbols</tabstop>
   <tabstop>btnAdvanced</tabstop>
+  <tabstop>spinWidth</tabstop>
  </tabstops>
  <resources/>
  <connections/>

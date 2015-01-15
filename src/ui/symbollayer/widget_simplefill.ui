@@ -343,6 +343,19 @@
    <header>qgsbrushstylecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>mFillColorDDBtn</tabstop>
+  <tabstop>btnChangeBorderColor</tabstop>
+  <tabstop>mBorderColorDDBtn</tabstop>
+  <tabstop>cboFillStyle</tabstop>
+  <tabstop>cboBorderStyle</tabstop>
+  <tabstop>cboJoinStyle</tabstop>
+  <tabstop>spinBorderWidth</tabstop>
+  <tabstop>mBorderWidthDDBtn</tabstop>
+  <tabstop>spinOffsetX</tabstop>
+  <tabstop>spinOffsetY</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

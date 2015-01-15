@@ -368,18 +368,24 @@
  <tabstops>
   <tabstop>radioTwoColor</tabstop>
   <tabstop>btnChangeColor</tabstop>
+  <tabstop>mStartColorDDBtn</tabstop>
   <tabstop>btnChangeColor2</tabstop>
+  <tabstop>mEndColorDDBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>
   <tabstop>cboGradientColorRamp</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
   <tabstop>mRadioUseWholeShape</tabstop>
+  <tabstop>mShadeWholeShapeDDBtn</tabstop>
   <tabstop>mRadioUseMaxDistance</tabstop>
   <tabstop>mSpinMaxDistance</tabstop>
+  <tabstop>mShadeDistanceDDBtn</tabstop>
   <tabstop>mIgnoreRingsCheckBox</tabstop>
+  <tabstop>mIgnoreRingsDDBtn</tabstop>
   <tabstop>mBlurSlider</tabstop>
   <tabstop>mSpinBlurRadius</tabstop>
+  <tabstop>mBlurRadiusDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
-  <tabstop>mOffsetUnitWidget</tabstop>
  </tabstops>
  <resources/>
  <connections>
