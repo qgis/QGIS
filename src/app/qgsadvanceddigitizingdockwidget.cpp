@@ -501,7 +501,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
 {
   bool res = true;
 
-  QgsDebugMsg( "Contraints (locked / relative / value" );
+  QgsDebugMsg( "Constraints (locked / relative / value" );
   QgsDebugMsg( QString( "Angle:    %1 %2 %3" ).arg( mAngleConstraint->isLocked() ).arg( mAngleConstraint->relative() ).arg( mAngleConstraint->value() ) );
   QgsDebugMsg( QString( "Distance: %1 %2 %3" ).arg( mDistanceConstraint->isLocked() ).arg( mDistanceConstraint->relative() ).arg( mDistanceConstraint->value() ) );
   QgsDebugMsg( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ) );
@@ -622,7 +622,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
     double v = ( point.x() - previousPt.x() ) * cosa + ( point.y() - previousPt.y() ) * sina ;
     if ( mXConstraint->isLocked() || mYConstraint->isLocked() )
     {
-      // perform both to detect errors in contraints
+      // perform both to detect errors in constraints
       if ( mXConstraint->isLocked() )
       {
         if ( cosa == 0 )
@@ -694,7 +694,7 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   {
     if ( mXConstraint->isLocked() || mYConstraint->isLocked() )
     {
-      // perform both to detect errors in contraints
+      // perform both to detect errors in constraints
       if ( mXConstraint->isLocked() )
       {
         const QList<QgsPoint> verticalSegment = QList<QgsPoint>()
