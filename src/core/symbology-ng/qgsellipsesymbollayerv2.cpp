@@ -696,7 +696,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     if ( qgsDoubleNear( halfWidth, halfHeight ) )
     {
       QPointF pt( t.map( QPointF( 0, 0 ) ) );
-      e.writeFilledCircle( layerName, oc, QgsPoint( pt.x(), pt.y() ), halfWidth );
+      e.writeFilledCircle( layerName, oc, pt, halfWidth );
     }
     else
     {
@@ -708,11 +708,11 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
         double x = halfWidth * cos( angle );
         double y = halfHeight * sin( angle );
         QPointF pt( t.map( QPointF( x, y ) ) );
-        line.push_back( QgsPoint( pt.x(), pt.y() ) );
+        line.push_back( pt );
       }
       //close ellipse with first point
       line.push_back( line.at( 0 ) );
-      e.writePolyline( line, layerName, "solid", oc, outlineWidth, true );
+      e.writePolyline( line, layerName, "SOLID", oc, outlineWidth, true );
     }
   }
   else if ( symbolName == "rectangle" )
@@ -721,7 +721,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     QPointF pt2( t.map( QPointF( halfWidth, -halfHeight ) ) );
     QPointF pt3( t.map( QPointF( -halfWidth, halfHeight ) ) );
     QPointF pt4( t.map( QPointF( halfWidth, halfHeight ) ) );
-    e.writeSolid( layerName, fc, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+    e.writeSolid( layerName, fc, pt1, pt2, pt3, pt4 );
     return true;
   }
   else if ( symbolName == "cross" )
@@ -729,14 +729,14 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     QgsPolyline line1( 2 );
     QPointF pt1( t.map( QPointF( -halfWidth, 0 ) ) );
     QPointF pt2( t.map( QPointF( halfWidth, 0 ) ) );
-    line1[0] = QgsPoint( pt1.x(), pt1.y() );
-    line1[1] = QgsPoint( pt2.x(), pt2.y() );
+    line1[0] = pt1;
+    line1[1] = pt2;
     e.writePolyline( line1, layerName, "CONTINUOUS", oc, outlineWidth, false );
     QgsPolyline line2( 2 );
     QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
     QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
-    line2[0] = QgsPoint( pt3.x(), pt3.y() );
-    line2[1] = QgsPoint( pt4.x(), pt4.y() );
+    line2[0] = pt3;
+    line2[1] = pt4;
     e.writePolyline( line2, layerName, "CONTINUOUS", oc, outlineWidth, false );
     return true;
   }
@@ -746,7 +746,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     QPointF pt2( t.map( QPointF( halfWidth, -halfHeight ) ) );
     QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
     QPointF pt4( t.map( QPointF( 0, halfHeight ) ) );
-    e.writeSolid( layerName, fc, QgsPoint( pt1.x(), pt1.y() ), QgsPoint( pt2.x(), pt2.y() ), QgsPoint( pt3.x(), pt3.y() ), QgsPoint( pt4.x(), pt4.y() ) );
+    e.writeSolid( layerName, fc, pt1, pt2, pt3, pt4 );
     return true;
   }
 
