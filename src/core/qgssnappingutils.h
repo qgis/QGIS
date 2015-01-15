@@ -22,8 +22,19 @@
 #include "qgspointlocator.h"
 
 /**
- * Has all the configuration of snapping and can return answers to snapping queries.
- * This one will be also available from iface for map tools.
+ * This class has all the configuration of snapping and can return answers to snapping queries.
+ * Internally, it keeps a cache of QgsPointLocator instances for multiple layers.
+ *
+ * Currently it supports the following queries:
+ * - snapToMap() - has multiple modes of operation
+ * - snapToCurrentLayer()
+ * For more complex queries it is possible to use locatorForLayer() method that returns
+ * point locator instance with layer's indexed data.
+ *
+ * Indexing strategy determines how fast the queries will be and how much memory will be used.
+ *
+ * When working with map canvas, it may be useful to use derived class QgsMapCanvasSnappingUtils
+ * which keeps the configuration in sync with map canvas (e.g. current view, active layer).
  *
  * @note added in 2.8
  */
@@ -42,7 +53,6 @@ class QgsSnappingUtils : public QObject
     /** snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
     QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
-    // TODO: multi-variant
 
     /** snap to current layer */
     QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
@@ -72,6 +82,18 @@ class QgsSnappingUtils : public QObject
     /** Find out how the snapping to map is done */
     SnapToMapMode snapToMapMode() const { return mSnapToMapMode; }
 
+    enum IndexingStrategy
+    {
+      IndexAlwaysFull,    //!< For all layers build index of full extent. Uses more memory, but queries are faster.
+      IndexNeverFull,     //!< For all layers only create temporary indexes of small extent. Low memory usage, slower queries.
+      IndexHybrid         //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
+    };
+
+    /** Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be */
+    void setIndexingStrategy( IndexingStrategy strategy ) { mStrategy = strategy; }
+    /** Find out which strategy is used for indexing - by default hybrid indexing is used */
+    IndexingStrategy indexingStrategy() const { return mStrategy; }
+
     /** configure options used when the mode is snap to current layer */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );
     /** query options used when the mode is snap to current layer */
@@ -97,20 +119,9 @@ class QgsSnappingUtils : public QObject
     /** Query whether to consider intersections of nearby segments for snapping */
     bool snapOnIntersections() const { return mSnapOnIntersection; }
 
-#if 0
-    /** Set topological editing status (used by some map tools) */
-    void setTopologicalEditing( bool enabled );
-    /** Query topological editing status (used by some map tools) */
-    bool topologicalEditing() const;
-#endif
-
   public slots:
     /** Read snapping configuration from the project */
     void readConfigFromProject();
-
-    // requirements:
-    // - support existing configurations
-    // - handle updates from QgsProject::setSnapSettingsForLayer()
 
   private slots:
     void onLayersWillBeRemoved( QStringList layerIds );
@@ -122,6 +133,11 @@ class QgsSnappingUtils : public QObject
     //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
     void clearAllLocators();
 
+    //! return a locator (temporary or not) according to the indexing strategy
+    QgsPointLocator* locatorForLayerUsingStrategy( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
+    //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
+    QgsPointLocator* temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
+
   private:
     // environment
     QgsMapSettings mMapSettings;
@@ -129,6 +145,7 @@ class QgsSnappingUtils : public QObject
 
     // configuration
     SnapToMapMode mSnapToMapMode;
+    IndexingStrategy mStrategy;
     int mDefaultType;
     double mDefaultTolerance;
     QgsTolerance::UnitType mDefaultUnit;
@@ -139,6 +156,8 @@ class QgsSnappingUtils : public QObject
     typedef QMap<QgsVectorLayer*, QgsPointLocator*> LocatorsMap;
     //! on-demand locators used (locators are owned)
     LocatorsMap mLocators;
+    //! temporary locators (indexing just a part of layers). owned by the instance
+    LocatorsMap mTemporaryLocators;
 };
 
 

@@ -17,7 +17,6 @@ class QgsSnappingUtils : QObject
     /** snap to map according to the current configuration (mode). Optional filter allows to discard unwanted matches. */
     QgsPointLocator::Match snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter = 0 );
     QgsPointLocator::Match snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter = 0 );
-    // TODO: multi-variant
 
     /** snap to current layer */
     QgsPointLocator::Match snapToCurrentLayer( const QPoint& point, int type, QgsPointLocator::MatchFilter* filter = 0 );
@@ -46,6 +45,18 @@ class QgsSnappingUtils : QObject
     void setSnapToMapMode( SnapToMapMode mode );
     /** Find out how the snapping to map is done */
     SnapToMapMode snapToMapMode() const;
+
+    enum IndexingStrategy
+    {
+      IndexAlwaysFull,    //!< For all layers build index of full extent. Uses more memory, but queries are faster.
+      IndexNeverFull,     //!< For all layers only create temporary indexes of small extent. Low memory usage, slower queries.
+      IndexHybrid         //!< For "big" layers using IndexNeverFull, for the rest IndexAlwaysFull. Compromise between speed and memory usage.
+    };
+
+    /** Set a strategy for indexing geometry data - determines how fast and memory consuming the data structures will be */
+    void setIndexingStrategy( IndexingStrategy strategy );
+    /** Find out which strategy is used for indexing - by default hybrid indexing is used */
+    IndexingStrategy indexingStrategy() const;
 
     /** configure options used when the mode is snap to current layer */
     void setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit );

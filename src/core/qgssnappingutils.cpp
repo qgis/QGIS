@@ -25,6 +25,7 @@ QgsSnappingUtils::QgsSnappingUtils( QObject* parent )
     : QObject( parent )
     , mCurrentLayer( 0 )
     , mSnapToMapMode( SnapCurrentLayer )
+    , mStrategy( IndexHybrid )
     , mDefaultType( QgsPointLocator::Vertex )
     , mDefaultTolerance( 10 )
     , mDefaultUnit( QgsTolerance::Pixels )
@@ -57,6 +58,38 @@ void QgsSnappingUtils::clearAllLocators()
   foreach ( QgsPointLocator* vlpl, mLocators )
     delete vlpl;
   mLocators.clear();
+
+  foreach ( QgsPointLocator* vlpl, mTemporaryLocators )
+    delete vlpl;
+  mTemporaryLocators.clear();
+}
+
+
+QgsPointLocator* QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance )
+{
+  if ( mStrategy == IndexAlwaysFull )
+    return locatorForLayer( vl );
+  else if ( mStrategy == IndexNeverFull )
+    return temporaryLocatorForLayer( vl, pointMap, tolerance );
+  else // Hybrid
+  {
+    if ( vl->pendingFeatureCount() > 100000 )
+      return temporaryLocatorForLayer( vl, pointMap, tolerance );
+    else
+      return locatorForLayer( vl );
+  }
+}
+
+QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance )
+{
+  if ( mTemporaryLocators.contains( vl ) )
+    delete mTemporaryLocators.take( vl );
+
+  QgsRectangle rect( pointMap.x() - tolerance, pointMap.y() - tolerance,
+                     pointMap.x() + tolerance, pointMap.y() + tolerance );
+  QgsPointLocator* vlpl = new QgsPointLocator( vl, destCRS(), &rect );
+  mTemporaryLocators.insert( vl, vlpl );
+  return mTemporaryLocators.value( vl );
 }
 
 
@@ -174,17 +207,18 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     int type = mDefaultType;
 
     // use ad-hoc locator
-    QgsPointLocator* loc = locatorForLayer( mCurrentLayer );
-    loc->init( QgsPointLocator::Vertex | QgsPointLocator::Edge );
+    QgsPointLocator* loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
     if ( !loc )
       return QgsPointLocator::Match();
+    loc->init( QgsPointLocator::Vertex | QgsPointLocator::Edge );
 
     QgsPointLocator::Match bestMatch;
     _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
 
     if ( mSnapOnIntersection )
     {
-      QgsPointLocator::MatchList edges = locatorForLayer( mCurrentLayer )->edgesInTolerance( pointMap, tolerance );
+      QgsPointLocator* locEdges = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
+      QgsPointLocator::MatchList edges = locEdges->edgesInTolerance( pointMap, tolerance );
       bestMatch.replaceIfBetter( _findClosestSegmentIntersection( pointMap, edges ), tolerance );
     }
 
@@ -199,7 +233,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     foreach ( const LayerConfig& layerConfig, mLayers )
     {
       double tolerance = QgsTolerance::toleranceInMapUnits( layerConfig.tolerance, mMapSettings, layerConfig.unit );
-      if ( QgsPointLocator* loc = locatorForLayer( layerConfig.layer ) )
+      if ( QgsPointLocator* loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
       {
         loc->init( layerConfig.type );
 
@@ -228,13 +262,13 @@ QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( const QPoint& point
   if ( !mCurrentLayer )
     return QgsPointLocator::Match();
 
-  QgsPointLocator* loc = locatorForLayer( mCurrentLayer );
-  loc->init( type );
-  if ( !loc )
-    return QgsPointLocator::Match();
-
   QgsPoint pointMap = mMapSettings.mapToPixel().toMapCoordinates( point );
   double tolerance = QgsTolerance::vertexSearchRadius( mMapSettings );
+
+  QgsPointLocator* loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
+  if ( !loc )
+    return QgsPointLocator::Match();
+  loc->init( type );
 
   QgsPointLocator::Match bestMatch;
   _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
@@ -353,6 +387,15 @@ void QgsSnappingUtils::onLayersWillBeRemoved( QStringList layerIds )
       if ( it.key()->id() == layerId )
       {
         delete mLocators.take( it.key() );
+        continue;
+      }
+    }
+
+    for ( LocatorsMap::const_iterator it = mTemporaryLocators.constBegin(); it != mTemporaryLocators.constEnd(); ++it )
+    {
+      if ( it.key()->id() == layerId )
+      {
+        delete mTemporaryLocators.take( it.key() );
         continue;
       }
     }
