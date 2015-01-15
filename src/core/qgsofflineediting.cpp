@@ -524,7 +524,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       // NOTE: force feature recount for PostGIS layer, else only visible features are counted, before iterating over all features (WORKAROUND)
       layer->setSubsetString( "" );
 
-      QgsFeatureIterator fit = layer->getFeatures();
+      QgsFeatureIterator fit = layer->dataProvider()->getFeatures();
 
       emit progressModeSet( QgsOfflineEditing::CopyFeatures, layer->featureCount() );
       int featureCount = 1;
