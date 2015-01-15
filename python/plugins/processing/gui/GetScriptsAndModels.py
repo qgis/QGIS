@@ -101,7 +101,7 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
         '<p>Algorithms are divided in 3 groups:</p>'
         '<ul><li><b>Installed:</b> Algorithms already in your system, with '
         'the latest version available</li>'
-        '<li><b>Upgradable:</b> Algorithms already in your system, but with '
+        '<li><b>Updatable:</b> Algorithms already in your system, but with '
         'a newer version available in the server</li>'
         '<li><b>Not installed:</b> Algorithms not installed in your '
         'system</li></ul>')
@@ -139,6 +139,7 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
         self.notinstalledItem.setIcon(0, self.icon)
         resources = readUrl(self.urlBase + 'list.txt').splitlines()
         resources = [r.split(',') for r in resources]
+        self.resources = {f:(v,n) for f,v,n in resources}
         for filename, version, name in resources:
             treeBranch = self.getTreeBranchForState(filename, float(version))
             item = TreeItem(filename, name, self.icon)
@@ -177,8 +178,8 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
                 with open(helpFile) as f:
                     helpContent = json.load(f)
                     currentVersion = float(helpContent[Help2Html.ALG_VERSION])
-            except:
-                currentVersion = 1
+            except Exception:
+                currentVersion = 0
             if version > currentVersion:
                 return self.toupdateItem
             else:
@@ -209,12 +210,21 @@ class GetScriptsAndModelsDialog(QDialog,  Ui_DlgGetScriptsAndModels):
                     path = os.path.join(self.folder, filename)
                     with open(path, 'w') as f:
                         f.write(code)
-                    self.progressBar.setValue(i + 1)
                 except HTTPError:
                     QMessageBox.critical(iface.mainWindow(),
                         self.tr('Connection problem'),
                         self.tr('Could not download file: %s') % filename)
                     return
+                url += '.help'
+                try:
+                    html = readUrl(url)
+                except HTTPError:
+                    html = '{"ALG_VERSION" : %s}' % self.resources[filename][0]
+
+                path = os.path.join(self.folder, filename + '.help')
+                with open(path, 'w') as f:
+                    f.write(html)
+                self.progressBar.setValue(i + 1)
 
 
         toDelete = []
