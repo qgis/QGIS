@@ -366,7 +366,8 @@ void QgsVectorLayerAndAttributeModel::unSelectAll()
 {
   mCheckedLeafs.clear();
 
-  applyVisibility( QSet<QString>(), rootGroup() );
+  QSet<QString> noLayers;
+  applyVisibility( noLayers, rootGroup() );
 
   emit dataChanged( QModelIndex(), QModelIndex() );
 }
