@@ -246,10 +246,6 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     void setReferencePoint2IsCentroid( bool isCentroid ) { mReferencePoint2IsCentroid = isCentroid; }
     bool referencePoint2IsCentroid() const { return mReferencePoint2IsCentroid; }
 
-    /**Rotation angle for gradient fill. Can be used to rotate a gradient around its centre point*/
-    void setAngle( double angle ) { mAngle = angle; }
-    double angle() const { return mAngle; }
-
     /**Offset for gradient fill*/
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() const { return mOffset; }
@@ -282,7 +278,6 @@ class CORE_EXPORT QgsGradientFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     bool mReferencePoint1IsCentroid;
     QPointF mReferencePoint2;
     bool mReferencePoint2IsCentroid;
-    double mAngle;
 
     QPointF mOffset;
     QgsSymbolV2::OutputUnit mOffsetUnit;

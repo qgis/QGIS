@@ -428,7 +428,6 @@ QgsGradientFillSymbolLayerV2::QgsGradientFillSymbolLayerV2( QColor color, QColor
     , mReferencePoint1IsCentroid( false )
     , mReferencePoint2( QPointF( 0.5, 1 ) )
     , mReferencePoint2IsCentroid( false )
-    , mAngle( 0 )
     , mOffsetUnit( QgsSymbolV2::MM )
 {
   mColor = color;
