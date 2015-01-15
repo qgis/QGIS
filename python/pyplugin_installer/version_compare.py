@@ -179,6 +179,9 @@ def isCompatible(curVer, minVer, maxVer):
   maxVer = splitVersion( re.sub(r'[^0-9.]+', '', maxVer) )
   curVer = splitVersion( re.sub(r'[^0-9.]+', '', curVer) )
 
+  if not minVer or not curVer or not maxVer:
+      return False
+
   if len(minVer)<3:
     minVer += ["0"]
 
