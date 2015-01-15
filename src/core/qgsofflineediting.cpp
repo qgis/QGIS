@@ -20,14 +20,15 @@
 #include "qgsapplication.h"
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsofflineediting.h"
 #include "qgsproject.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayereditbuffer.h"
-#include "qgslayertreegroup.h"
-#include "qgslayertreelayer.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 #include <QDir>
 #include <QDomDocument>
@@ -87,14 +88,54 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
 
       emit progressStarted();
 
+      QMap<QString, QgsVectorJoinList > joinInfoBuffer;
+      QMap<QString, QgsVectorLayer*> layerIdMapping;
+
+      for ( int i = 0; i < layerIds.count(); i++ )
+      {
+        QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+        const QgsVectorJoinList& joins = vl->vectorJoins();
+        joinInfoBuffer.insert( vl->id(), joins );
+      }
+
       // copy selected vector layers to SpatiaLite
       for ( int i = 0; i < layerIds.count(); i++ )
       {
         emit layerProgressUpdated( i + 1, layerIds.count() );
 
         QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
-        copyVectorLayer( qobject_cast<QgsVectorLayer*>( layer ), db, dbPath );
+        QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
+        QString origLayerId = vl->id();
+        QgsVectorLayer* newLayer = copyVectorLayer( vl, db, dbPath );
+
+        if ( newLayer )
+        {
+          layerIdMapping.insert( origLayerId, newLayer );
+        }
       }
+
+      // restore join info on new spatialite layer
+      QMap<QString, QgsVectorJoinList >::ConstIterator it;
+      for ( it = joinInfoBuffer.constBegin(); it != joinInfoBuffer.constEnd(); ++it )
+      {
+        QgsVectorLayer* newLayer = layerIdMapping.value( it.key() );
+
+        if ( newLayer )
+        {
+          Q_FOREACH( QgsVectorJoinInfo join, it.value() )
+          {
+            QgsVectorLayer* newJoinedLayer = layerIdMapping.value( join.joinLayerId );
+            if ( newJoinedLayer )
+            {
+              // If the layer has been offline'd, update join information
+              join.joinLayerId = newJoinedLayer->id();
+            }
+            newLayer->addJoin( join );
+          }
+        }
+      }
+
 
       emit progressStopped();
 
@@ -396,11 +437,11 @@ void QgsOfflineEditing::createLoggingTables( sqlite3* db )
   */
 }
 
-void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath )
+QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, const QString& offlineDbPath )
 {
-  if ( layer == NULL )
+  if ( layer == 0 )
   {
-    return;
+    return 0;
   }
 
   QString tableName = layer->name();
@@ -531,8 +572,6 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
         copySymbology( layer, newLayer );
       }
 
-      // TODO: layer order
-
       // copy features
       newLayer->startEditing();
       QgsFeature f;
@@ -599,7 +638,9 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       QgsMapLayerRegistry::instance()->removeMapLayers(
         QStringList() << layer->id() );
     }
+    return newLayer;
   }
+  return 0;
 }
 
 void QgsOfflineEditing::applyAttributesAdded( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo )
