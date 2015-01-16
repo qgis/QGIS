@@ -132,8 +132,6 @@ class OTBAlgorithm(GeoAlgorithm):
         self.name = dom_model.find('longname').text
         self.group = dom_model.find('group').text
 
-        #ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Reading parameters for %s" % self.appkey)
-
         rebu = None
         the_result = None
 
@@ -141,7 +139,8 @@ class OTBAlgorithm(GeoAlgorithm):
             rebu = self.get_list_from_node(dom_model)
             the_result = map(self.adapt_list_to_string,rebu)
         except Exception, e:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open OTB algorithm: " + self.descriptionFile + "\n" + traceback.format_exc())
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                self.tr('Could not open OTB algorithm: %s\n%s' % (self.descriptionFile, traceback.format_exc())))
             raise e
 
         for line in the_result:
@@ -164,10 +163,9 @@ class OTBAlgorithm(GeoAlgorithm):
                 else:
                     self.addOutput(getOutputFromString(line))
             except Exception,e:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open OTB algorithm: " + self.descriptionFile + "\n" + line)
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                    self.tr('Could not open OTB algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
-
-
 
     def processAlgorithm(self, progress):
         currentOs = os.name
@@ -175,7 +173,9 @@ class OTBAlgorithm(GeoAlgorithm):
         path = OTBUtils.otbPath()
         libpath = OTBUtils.otbLibPath()
         if path == "" or libpath == "":
-            raise GeoAlgorithmExecutionException("OTB folder is not configured.\nPlease configure it before running OTB algorithms.")
+            raise GeoAlgorithmExecutionException(
+                self.tr('OTB folder is not configured. Please configure it '
+                        'before running OTB algorithms.'))
 
         commands = []
         commands.append(path + os.sep + self.cliName)
@@ -316,7 +316,7 @@ class OTBAlgorithm(GeoAlgorithm):
                 OTBUtils.executeOtb(helperCommands, progress)
 
         loglines = []
-        loglines.append("OTB execution command")
+        loglines.append(self.tr('OTB execution command'))
         for line in commands:
             loglines.append(line)
             progress.setCommand(line)
@@ -338,7 +338,8 @@ class OTBAlgorithm(GeoAlgorithm):
                     commands = getattr(module, base_key)(commands)
 
         if not found:
-            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, "Adapter for %s not found" % the_key)
+            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                self.tr("Adapter for %s not found" % the_key))
 
         #frames = inspect.getouterframes(inspect.currentframe())[1:]
         #for a_frame in frames:

@@ -110,7 +110,7 @@ class RUtils:
         proc.wait()
         RUtils.createConsoleOutput()
         loglines = []
-        loglines.append('R execution console output')
+        loglines.append(RUtils.tr('R execution console output'))
         loglines += RUtils.allConsoleResults
         for line in loglines:
             progress.setConsoleInfo(line)
@@ -138,7 +138,7 @@ class RUtils:
     @staticmethod
     def getConsoleOutput():
         s = '<font face="courier">\n'
-        s += '<h2> R Output</h2>\n'
+        s += RUtils.tr('<h2>R Output</h2>\n')
         for line in RUtils.consoleResults:
             s += line
         s += '</font>\n'
@@ -150,8 +150,8 @@ class RUtils:
         if isWindows():
             path = RUtils.RFolder()
             if path == '':
-                return 'R folder is not configured.\nPlease configure it \
-                        before running R scripts.'
+                return RUtils.tr('R folder is not configured.\nPlease configure '
+                                 'it before running R scripts.')
 
         R_INSTALLED = 'R_INSTALLED'
         settings = QSettings()
@@ -180,10 +180,12 @@ class RUtils:
             if 'R version' in line:
                 settings.setValue(R_INSTALLED, True)
                 return
-        html = '<p>This algorithm requires R to be run. Unfortunately, it \
-                seems that R is not installed in your system, or it is not \
-                correctly configured to be used from QGIS</p> \
-                <p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a>to know more about how to install and configure R to be used with QGIS</p>'
+        html = RUtils.tr(
+            '<p>This algorithm requires R to be run. Unfortunately, it '
+            'seems that R is not installed in your system, or it is not '
+            'correctly configured to be used from QGIS</p>'
+            '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
+            'to know more about how to install and configure R to be used with QGIS</p>')
 
         return html
 
@@ -191,3 +193,9 @@ class RUtils:
     def getRequiredPackages(code):
         regex = re.compile('library\("?(.*?)"?\)')
         return regex.findall(code)
+
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'RUtils'
+        return QCoreApplication.translate(context, string)

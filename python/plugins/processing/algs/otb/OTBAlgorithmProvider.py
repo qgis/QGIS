@@ -67,21 +67,29 @@ class OTBAlgorithmProvider(AlgorithmProvider):
                     if alg.name.strip() != "":
                         self.preloadedAlgs.append(alg)
                     else:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open OTB algorithm: " + descriptionFile)
+                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                            self.tr("Could not open OTB algorithm: %s" % descriptionFile))
                 except Exception,e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, "Could not open OTB algorithm: " + descriptionFile)
+                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                        self.tr("Could not open OTB algorithm: %s" % descriptionFile))
 
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         if OTBUtils.findOtbPath() is None:
-            ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_FOLDER,
-                                                "OTB command line tools folder", OTBUtils.otbPath()))
+            ProcessingConfig.addSetting(Setting(self.getDescription(),
+                OTBUtils.OTB_FOLDER,
+                self.tr("OTB command line tools folder"), OTBUtils.otbPath()))
         if OTBUtils.findOtbLibPath() is None:
-            ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_LIB_FOLDER,
-                                                "OTB applications folder", OTBUtils.otbLibPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_SRTM_FOLDER, "SRTM tiles folder", OTBUtils.otbSRTMPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(), OTBUtils.OTB_GEOID_FILE, "Geoid file", OTBUtils.otbGeoidPath()))
+            ProcessingConfig.addSetting(Setting(self.getDescription(),
+                OTBUtils.OTB_LIB_FOLDER,
+                self.tr("OTB applications folder"), OTBUtils.otbLibPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+            OTBUtils.OTB_SRTM_FOLDER,
+            self.tr("SRTM tiles folder"), OTBUtils.otbSRTMPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+            OTBUtils.OTB_GEOID_FILE,
+            self.tr("Geoid file"), OTBUtils.otbGeoidPath()))
 
     def unload(self):
         AlgorithmProvider.unload(self)

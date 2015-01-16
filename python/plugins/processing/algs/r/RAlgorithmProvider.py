@@ -46,8 +46,8 @@ class RAlgorithmProvider(AlgorithmProvider):
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.actions.append(CreateNewScriptAction('Create new R script',
-                            CreateNewScriptAction.SCRIPT_R))
+        self.actions.append(CreateNewScriptAction(
+            self.tr('Create new R script'), CreateNewScriptAction.SCRIPT_R))
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_R),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_R)]
@@ -55,13 +55,12 @@ class RAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    RUtils.RSCRIPTS_FOLDER, 'R Scripts folder'
-                                    , RUtils.RScriptsFolder()))
+            RUtils.RSCRIPTS_FOLDER, self.tr('R Scripts folder'), RUtils.RScriptsFolder()))
         if isWindows():
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    RUtils.R_FOLDER, 'R folder', RUtils.RFolder()))
+                RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder()))
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    RUtils.R_USE64, 'Use 64 bit version', False))
+                RUtils.R_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -100,5 +99,4 @@ class RAlgorithmProvider(AlgorithmProvider):
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
                     except Exception, e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not load R script:' + descriptionFile + '\n'
-                                 + unicode(e))
+                            self.tr('Could not load R script: %s\n%s' % (descriptionFile, unicode(e))))
