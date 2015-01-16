@@ -67,8 +67,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   if ( QgsPythonRunner::isValid() )
   {
-    QgsPythonRunner::eval( "qgis.user.expressionpath", mFunctionsPath );
-    loadFunctionFiles( mFunctionsPath );
+    QgsPythonRunner::eval( "qgis.user.expressionspath", mFunctionsPath );
+    updateFunctionFileList( mFunctionsPath );
     newFunctionFile();
   }
   else
@@ -151,7 +151,7 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   }
 }
 
-void QgsExpressionBuilderWidget::loadFunctionFiles( QString path )
+void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
 {
   mFunctionsPath = path;
   QDir dir( path );
