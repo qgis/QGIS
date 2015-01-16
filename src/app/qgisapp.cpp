@@ -1726,7 +1726,7 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
-  if ( QSettings().value( "/qgis/canvasRotation", false ).toBool() )
+  if ( QSettings().value( "/qgis/canvasRotation", true ).toBool() )
   {
     // add a widget to show/set current rotation
     mRotationLabel = new QLabel( QString(), statusBar() );
