@@ -1615,9 +1615,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     for ( int idx = 0; idx < attributevec.count(); ++idx )
     {
       QVariant v = attributevec[idx];
-      if ( !v.isValid() )
-        continue;
-
       if ( fieldId.contains( idx ) )
         continue;
 
@@ -1637,9 +1634,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       {
         const QgsAttributes &attrs2 = flist[i].attributes();
         QVariant v2 = attrs2[idx];
-
-        if ( !v2.isValid() )
-          break;
 
         if ( v2 != v )
           break;
@@ -1731,7 +1725,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         QVariant value = attrs[ fieldId[i] ];
 
         QString v;
-        if ( !value.isValid() )
+        if ( value.isNull() )
         {
           const QgsField &fld = field( fieldId[i] );
           v = paramValue( defaultValues[i], defaultValues[i] );
