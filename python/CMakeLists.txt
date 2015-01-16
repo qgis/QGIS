@@ -81,6 +81,7 @@ INCLUDE_DIRECTORIES(
   ../src/core/pal
   ../src/core/composer
   ../src/core/diagram
+  ../src/core/effects
   ../src/core/dxf
   ../src/core/gps
   ../src/core/layertree
