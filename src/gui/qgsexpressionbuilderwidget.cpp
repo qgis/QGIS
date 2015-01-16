@@ -65,9 +65,16 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   updateFunctionTree();
 
-  mFunctionsPath = QgsApplication::qgisSettingsDirPath() + QDir::separator() + "python" + QDir::separator() + "expressions";
-  loadFunctionFiles( mFunctionsPath );
-  newFunctionFile();
+  if ( QgsPythonRunner::isValid() )
+  {
+    QgsPythonRunner::eval( "qgis.user.expressionpath", mFunctionsPath );
+    loadFunctionFiles( mFunctionsPath );
+    newFunctionFile();
+  }
+  else
+  {
+    tab_2->setEnabled( false );
+  }
 }
 
 
@@ -151,10 +158,11 @@ void QgsExpressionBuilderWidget::loadFunctionFiles( QString path )
   dir.setNameFilters( QStringList() << "*.py" );
   QStringList files = dir.entryList( QDir::Files );
   cmbFileNames->clear();
-  foreach( QString name, files ){
-      QFileInfo info( mFunctionsPath + QDir::separator() + name );
-      cmbFileNames->addItem( info.baseName() );
-    }
+  foreach ( QString name, files )
+  {
+    QFileInfo info( mFunctionsPath + QDir::separator() + name );
+    cmbFileNames->addItem( info.baseName() );
+  }
 }
 
 void QgsExpressionBuilderWidget::newFunctionFile( QString fileName )
@@ -164,9 +172,9 @@ void QgsExpressionBuilderWidget::newFunctionFile( QString fileName )
                       "@qgsfunction(args=-1, group='Custom')\n"
                       "def func(values, feature, parent):\n"
                       "    return str(values)" );
-  int index = cmbFileNames->findText(fileName);
+  int index = cmbFileNames->findText( fileName );
   if ( index == -1 )
-      cmbFileNames->setEditText( fileName );
+    cmbFileNames->setEditText( fileName );
   else
     cmbFileNames->setCurrentIndex( index );
 }
@@ -187,8 +195,8 @@ void QgsExpressionBuilderWidget::on_cmbFileNames_currentIndexChanged( int index 
 
 void QgsExpressionBuilderWidget::loadCodeFromFile( QString path )
 {
-  if ( !path.endsWith(".py"))
-    path.append(".py");
+  if ( !path.endsWith( ".py" ) )
+    path.append( ".py" );
 
   txtPython->loadScript( path );
 }
@@ -202,7 +210,7 @@ void QgsExpressionBuilderWidget::on_btnSaveFile_pressed()
 {
   QString name = cmbFileNames->currentText();
   saveFunctionFile( name );
-  int index = cmbFileNames->findText(name);
+  int index = cmbFileNames->findText( name );
   if ( index == -1 )
   {
     cmbFileNames->addItem( name );
