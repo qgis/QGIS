@@ -111,6 +111,26 @@ class QgsExpressionBuilderWidget : QWidget
 
     void loadRecent( QString key );
 
+    /** Create a new file in the function editor
+     */
+    void newFunctionFile( QString fileName = "scratch");
+
+    /** Save the current function editor text to the given file.
+     */
+    void saveFunctionFile( QString fileName );
+
+    /** Load code from the given file into the function editor
+     */
+    void loadCodeFromFile( QString path );
+
+    /** Load code into the function editor
+     */
+    void loadFunctionCode( QString code );
+
+    /** Update the list of function files found at the given path
+     */
+    void updateFunctionFileList( QString path );
+
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );
     void on_expressionTree_doubleClicked( const QModelIndex &index );
