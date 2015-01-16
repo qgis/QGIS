@@ -27,6 +27,7 @@ __copyright__ = 'Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk \
 from PyQt4.QtCore import QObject
 from qgis.core import QgsMapLayerRegistry
 from qgis.core import *
+from qgis.gui import QgsMessageBar
 
 
 class QgisInterface(QObject):
@@ -47,6 +48,7 @@ class QgisInterface(QObject):
 
         self.statusBar = type('FakeStatusBar', (), {'showMessage': lambda _,
                               m: None})()
+        self.msgBar = QgsMessageBar()
 
     def zoomFull(self):
         """Zoom to the map full extent"""
@@ -98,6 +100,10 @@ class QgisInterface(QObject):
 
         return type('FakeMainWindow', (), {'statusBar': lambda _:
                     self.statusBar})()
+
+    def messageBar(self):
+        """Return a pointer to a QgsMessageBar"""
+        return self.msgBar
 
     def addDockWidget(self, area, dockwidget):
         """Add a dock widget to the main window"""
