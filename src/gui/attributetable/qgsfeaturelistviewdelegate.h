@@ -38,8 +38,8 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     void editButtonClicked( QModelIndex& index );
 
   protected:
-    virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const OVERRIDE;
-    virtual void paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const OVERRIDE;
+    virtual QSize sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
+    virtual void paint( QPainter* painter, const QStyleOptionViewItem& option, const QModelIndex& index ) const override;
 
   private:
     QgsFeatureSelectionModel* mFeatureSelectionModel;

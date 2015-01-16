@@ -130,7 +130,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos );
 
   protected:
-    virtual void closeEvent( QCloseEvent *e ) OVERRIDE;
+    virtual void closeEvent( QCloseEvent *e ) override;
 
   private slots:
     void handleMenuHover();

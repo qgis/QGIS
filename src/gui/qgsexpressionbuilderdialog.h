@@ -45,9 +45,9 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      *
      * @param r result value (unused)
      */
-    virtual void done( int r ) OVERRIDE;
+    virtual void done( int r ) override;
 
-    virtual void accept() OVERRIDE;
+    virtual void accept() override;
 
   private:
     QString mRecentKey;

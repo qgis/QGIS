@@ -34,17 +34,17 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     ~QgsMapToolZoom();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    virtual bool isTransient() OVERRIDE { return true; }
+    virtual bool isTransient() override { return true; }
 
-    virtual void deactivate() OVERRIDE;
+    virtual void deactivate() override;
 
   protected:
     //! stores actual zoom rect

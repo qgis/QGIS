@@ -35,8 +35,8 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
 
     QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = 0 );
     ~QgsAddRemoveMultiFrameCommand();
-    void redo() OVERRIDE;
-    void undo() OVERRIDE;
+    void redo() override;
+    void undo() override;
 
   private:
     QgsAddRemoveMultiFrameCommand();

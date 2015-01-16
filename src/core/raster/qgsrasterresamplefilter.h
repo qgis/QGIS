@@ -34,15 +34,15 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     QgsRasterResampleFilter( QgsRasterInterface *input = 0 );
     ~QgsRasterResampleFilter();
 
-    QgsRasterInterface * clone() const OVERRIDE;
+    QgsRasterInterface * clone() const override;
 
-    int bandCount() const OVERRIDE;
+    int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const OVERRIDE;
+    QGis::DataType dataType( int bandNo ) const override;
 
-    bool setInput( QgsRasterInterface* input ) OVERRIDE;
+    bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) OVERRIDE;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
 
     /**Set resampler for zoomed in scales. Takes ownership of the object*/
     void setZoomedInResampler( QgsRasterResampler* r );
@@ -55,10 +55,10 @@ class CORE_EXPORT QgsRasterResampleFilter : public QgsRasterInterface
     void setMaxOversampling( double os ) { mMaxOversampling = os; }
     double maxOversampling() const { return mMaxOversampling; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const OVERRIDE;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem ) OVERRIDE;
+    void readXML( const QDomElement& filterElem ) override;
 
   protected:
     /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/

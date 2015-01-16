@@ -30,17 +30,17 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf );
     ~QgsDxfPaintEngine();
 
-    bool begin( QPaintDevice* pdev ) OVERRIDE;
-    bool end() OVERRIDE;
-    QPaintEngine::Type type() const OVERRIDE;
-    void updateState( const QPaintEngineState& state ) OVERRIDE;
+    bool begin( QPaintDevice* pdev ) override;
+    bool end() override;
+    QPaintEngine::Type type() const override;
+    void updateState( const QPaintEngineState& state ) override;
 
-    void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) OVERRIDE;
+    void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
 
-    void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) OVERRIDE;
-    void drawRects( const QRectF * rects, int rectCount ) OVERRIDE;
-    void drawPath( const QPainterPath& path ) OVERRIDE;
-    void drawLines( const QLineF* lines, int lineCount ) OVERRIDE;
+    void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
+    void drawRects( const QRectF * rects, int rectCount ) override;
+    void drawPath( const QPainterPath& path ) override;
+    void drawLines( const QLineF* lines, int lineCount ) override;
 
     void setLayer( const QString& layer ) { mLayer = layer; }
     QString layer() const { return mLayer; }

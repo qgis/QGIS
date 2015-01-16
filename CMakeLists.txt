@@ -337,12 +337,9 @@ ELSE()
 ENDIF()
 
 #allow override keyword if available
-IF (USE_CXX_11)
-  SET(OVERRIDEKEYWORD "override")
-ELSE()
-  SET(OVERRIDEKEYWORD "")
+IF (NOT USE_CXX_11)
+  ADD_DEFINITIONS("-Doverride=")
 ENDIF()
-ADD_DEFINITIONS("-DOVERRIDE=${OVERRIDEKEYWORD}")
 
 #############################################################
 # enable warnings

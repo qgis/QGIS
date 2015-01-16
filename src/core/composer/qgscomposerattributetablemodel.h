@@ -48,16 +48,16 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModel: public QAbstractTableMod
     QgsComposerAttributeTableColumnModel( QgsComposerAttributeTable *composerTable, QObject *parent = 0 );
     virtual ~QgsComposerAttributeTableColumnModel();
 
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    virtual QVariant data( const QModelIndex &index, int role ) const OVERRIDE;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const OVERRIDE;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) OVERRIDE;
-    Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) OVERRIDE;
-    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) OVERRIDE;
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const OVERRIDE;
-    QModelIndex parent( const QModelIndex &child ) const OVERRIDE;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
 
     /**Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
@@ -148,12 +148,12 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModel: public QSortFilterProxy
 
     virtual ~QgsComposerTableSortColumnsProxyModel();
 
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const OVERRIDE;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    virtual QVariant data( const QModelIndex &index, int role ) const OVERRIDE;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const OVERRIDE;
-    Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) OVERRIDE;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**Returns the QgsComposerTableColumn corresponding to a row in the proxy model.
      * @returns QgsComposerTableColumn for specified row
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModel: public QSortFilterProxy
     void resetFilter();
 
   protected:
-    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const OVERRIDE;
+    bool filterAcceptsRow( int source_row, const QModelIndex & source_parent ) const override;
 
   private:
     QgsComposerAttributeTable * mComposerTable;

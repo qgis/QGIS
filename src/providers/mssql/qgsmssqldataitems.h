@@ -36,11 +36,11 @@ class QgsMssqlRootItem : public QgsDataCollectionItem
     QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlRootItem();
 
-    QVector<QgsDataItem*> createChildren() OVERRIDE;
+    QVector<QgsDataItem*> createChildren() override;
 
-    virtual QWidget * paramWidget() OVERRIDE;
+    virtual QWidget * paramWidget() override;
 
-    virtual QList<QAction*> actions() OVERRIDE;
+    virtual QList<QAction*> actions() override;
 
   public slots:
     void connectionsChanged();
@@ -54,13 +54,13 @@ class QgsMssqlConnectionItem : public QgsDataCollectionItem
     QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlConnectionItem();
 
-    QVector<QgsDataItem*> createChildren() OVERRIDE;
-    virtual bool equal( const QgsDataItem *other ) OVERRIDE;
-    virtual QList<QAction*> actions() OVERRIDE;
+    QVector<QgsDataItem*> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
+    virtual QList<QAction*> actions() override;
 
-    virtual bool acceptDrop() OVERRIDE { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) OVERRIDE;
-    void refresh() OVERRIDE;
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action ) override;
+    void refresh() override;
 
     QString connInfo() const { return mConnInfo; };
 
@@ -95,10 +95,10 @@ class QgsMssqlSchemaItem : public QgsDataCollectionItem
     QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QString path );
     ~QgsMssqlSchemaItem();
 
-    QVector<QgsDataItem*> createChildren() OVERRIDE;
+    QVector<QgsDataItem*> createChildren() override;
 
     QgsMssqlLayerItem* addLayer( QgsMssqlLayerProperty layerProperty, bool refresh );
-    void refresh() OVERRIDE {}; // do not refresh directly
+    void refresh() override {}; // do not refresh directly
     void addLayers( QgsDataItem* newLayers );
 };
 

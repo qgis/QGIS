@@ -30,7 +30,7 @@ class CORE_EXPORT QgsLinearMinMaxEnhancement : public QgsContrastEnhancementFunc
   public:
     QgsLinearMinMaxEnhancement( QGis::DataType, double, double );
 
-    int enhance( double ) OVERRIDE;
+    int enhance( double ) override;
 
 };
 

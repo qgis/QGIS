@@ -43,7 +43,7 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
     { setSourceModel( mModel ); }
 
   protected:
-    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const OVERRIDE
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override
     {
       QgsCptCityDataItem* item = mModel->dataItem( mModel->index( sourceRow, 0, sourceParent ) );
       return ( item && !( item->type() == QgsCptCityDataItem::ColorRamp ) );

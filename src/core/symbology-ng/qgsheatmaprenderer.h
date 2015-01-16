@@ -38,21 +38,21 @@ class CORE_EXPORT QgsHeatmapRenderer : public QgsFeatureRendererV2
     virtual ~QgsHeatmapRenderer();
 
     //reimplemented methods
-    virtual QgsFeatureRendererV2* clone() const OVERRIDE;
-    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) OVERRIDE;
-    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) OVERRIDE;
-    virtual void stopRender( QgsRenderContext& context ) OVERRIDE;
-    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) OVERRIDE;
-    virtual QgsSymbolV2List symbols() OVERRIDE;
-    virtual QString dump() const OVERRIDE;
-    virtual QList<QString> usedAttributes() OVERRIDE;
+    virtual QgsFeatureRendererV2* clone() const override;
+    virtual void startRender( QgsRenderContext& context, const QgsFields& fields ) override;
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    virtual void stopRender( QgsRenderContext& context ) override;
+    virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) override;
+    virtual QgsSymbolV2List symbols() override;
+    virtual QString dump() const override;
+    virtual QList<QString> usedAttributes() override;
     static QgsFeatureRendererV2* create( QDomElement& element );
-    virtual QDomElement save( QDomDocument& doc ) OVERRIDE;
+    virtual QDomElement save( QDomDocument& doc ) override;
     static QgsHeatmapRenderer* convertFromRenderer( const QgsFeatureRendererV2* renderer );
 
     //reimplemented to extent the request so that points up to heatmap's radius distance outside
     //visible area are included
-    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context ) OVERRIDE;
+    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context ) override;
 
     //heatmap specific methods
 

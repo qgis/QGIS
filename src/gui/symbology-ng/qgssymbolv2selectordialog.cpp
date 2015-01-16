@@ -89,7 +89,7 @@ class SymbolLayerItem : public QStandardItem
         static_cast<SymbolLayerItem*>( parent() )->updatePreview();
     }
 
-    int type() const OVERRIDE { return SymbolLayerItemType; }
+    int type() const override { return SymbolLayerItemType; }
     bool isLayer() { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
@@ -107,7 +107,7 @@ class SymbolLayerItem : public QStandardItem
       return NULL;
     }
 
-    QVariant data( int role ) const OVERRIDE
+    QVariant data( int role ) const override
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
   {

@@ -44,9 +44,9 @@ class CORE_EXPORT QgsLegendModelV2 : public QgsLayerTreeModel
   public:
     QgsLegendModelV2( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
 
-    QVariant data( const QModelIndex& index, int role ) const OVERRIDE;
+    QVariant data( const QModelIndex& index, int role ) const override;
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 };
 
 
@@ -62,10 +62,10 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     ~QgsComposerLegend();
 
     /** return correct graphics item type. */
-    virtual int type() const OVERRIDE { return ComposerLegend; }
+    virtual int type() const override { return ComposerLegend; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) OVERRIDE;
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /**Paints the legend and calculates its size. If painter is 0, only size is calculated*/
     QSizeF paintAndDetermineSize( QPainter* painter );
@@ -166,16 +166,16 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const OVERRIDE;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) OVERRIDE;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //Overriden to show legend title
-    virtual QString displayName() const OVERRIDE;
+    virtual QString displayName() const override;
 
   public slots:
     /**Data changed*/

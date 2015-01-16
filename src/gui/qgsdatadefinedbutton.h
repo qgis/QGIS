@@ -223,7 +223,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void dataDefinedActivated( bool active );
 
   protected:
-    void mouseReleaseEvent( QMouseEvent *event ) OVERRIDE;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
     /**
      * Set whether the current expression is to be used instead of field mapping

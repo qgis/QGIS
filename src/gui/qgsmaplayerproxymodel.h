@@ -68,8 +68,8 @@ class GUI_EXPORT QgsMapLayerProxyModel : public QSortFilterProxyModel
 
     // QSortFilterProxyModel interface
   public:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const OVERRIDE;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const OVERRIDE;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
+    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerProxyModel::Filters )

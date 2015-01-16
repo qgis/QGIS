@@ -37,20 +37,20 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     QgsMapToolNodeTool( QgsMapCanvas* canvas );
     virtual ~QgsMapToolNodeTool();
 
-    void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
-    void canvasDoubleClickEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasDoubleClickEvent( QMouseEvent * e ) override;
 
-    void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasPressEvent( QMouseEvent * e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    void keyPressEvent( QKeyEvent* e ) OVERRIDE;
+    void keyPressEvent( QKeyEvent* e ) override;
 
-    void keyReleaseEvent( QKeyEvent* e ) OVERRIDE;
+    void keyReleaseEvent( QKeyEvent* e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate() OVERRIDE;
+    void deactivate() override;
 
   public slots:
     void selectedFeatureDestroyed();

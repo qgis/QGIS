@@ -70,15 +70,15 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     QString selectedIdentifier();
 
     // QgsWcsCapabilities virtual methods
-    void populateLayerList() OVERRIDE;
-    void addClicked() OVERRIDE;
-    void on_mLayersTreeWidget_itemSelectionChanged() OVERRIDE;
-    void enableLayersForCrs( QTreeWidgetItem *item ) OVERRIDE;
-    void updateButtons() OVERRIDE;
-    QList<QgsOWSSourceSelect::SupportedFormat> providerFormats() OVERRIDE;
-    QStringList selectedLayersFormats() OVERRIDE;
-    QStringList selectedLayersCRSs() OVERRIDE;
-    QStringList selectedLayersTimes() OVERRIDE;
+    void populateLayerList() override;
+    void addClicked() override;
+    void on_mLayersTreeWidget_itemSelectionChanged() override;
+    void enableLayersForCrs( QTreeWidgetItem *item ) override;
+    void updateButtons() override;
+    QList<QgsOWSSourceSelect::SupportedFormat> providerFormats() override;
+    QStringList selectedLayersFormats() override;
+    QStringList selectedLayersCRSs() override;
+    QStringList selectedLayersTimes() override;
 };
 #endif // QGSWCSSOURCESELECT_H
 

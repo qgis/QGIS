@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     /** return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
 
-    void setExtent( const QgsRectangle &extent ) OVERRIDE;
+    void setExtent( const QgsRectangle &extent ) override;
 
     //! return a list of symbology items for the legend
     //! (defult implementation returns nothing)
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
      *
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) OVERRIDE;
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
 
   protected:
     QString mPluginLayerType;

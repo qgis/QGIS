@@ -440,7 +440,7 @@ class CORE_EXPORT QgsProjectBadLayerHandler
 class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHandler
 {
   public:
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) OVERRIDE;
+    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) override;
 
 };
 

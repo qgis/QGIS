@@ -45,7 +45,7 @@ class GUI_EXPORT QgsNumericSortTreeWidgetItem : public QTreeWidgetItem
     //! Destructor
     virtual ~QgsNumericSortTreeWidgetItem();
 
-    virtual bool operator<( const QTreeWidgetItem &other ) const OVERRIDE;
+    virtual bool operator<( const QTreeWidgetItem &other ) const override;
 
 };
 

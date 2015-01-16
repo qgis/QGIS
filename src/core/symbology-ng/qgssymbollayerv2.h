@@ -175,11 +175,11 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
       Bottom
     };
 
-    void startRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
+    void startRender( QgsSymbolV2RenderContext& context ) override;
 
     virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) OVERRIDE;
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const OVERRIDE;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
 
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
@@ -210,11 +210,11 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setSizeMapUnitScale( const QgsMapUnitScale& scale ) { mSizeMapUnitScale = scale; }
     const QgsMapUnitScale& sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) OVERRIDE;
-    QgsSymbolV2::OutputUnit outputUnit() const OVERRIDE;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
+    QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) OVERRIDE;
-    QgsMapUnitScale mapUnitScale() const OVERRIDE;
+    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
 
     void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
     HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
@@ -274,15 +274,15 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) OVERRIDE;
-    QgsSymbolV2::OutputUnit outputUnit() const OVERRIDE;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
+    QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) OVERRIDE;
-    QgsMapUnitScale mapUnitScale() const OVERRIDE;
+    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) OVERRIDE;
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const OVERRIDE;
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
   public:
     virtual void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) = 0;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) OVERRIDE;
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }

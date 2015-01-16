@@ -27,7 +27,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
   public:
     QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas );
 
-    QMenu* createContextMenu() OVERRIDE;
+    QMenu* createContextMenu() override;
 
     void addLegendLayerAction( QAction* action, QString menu, QString id,
                                QgsMapLayer::LayerType type, bool allLayers );

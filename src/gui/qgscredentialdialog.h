@@ -41,7 +41,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     void requestCredentials( QString, QString *, QString *, QString, bool * );
 
   protected:
-    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) OVERRIDE;
+    virtual bool request( QString realm, QString &username, QString &password, QString message = QString::null ) override;
 };
 
 #endif

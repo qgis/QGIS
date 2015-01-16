@@ -42,15 +42,15 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     QgsHueSaturationFilter( QgsRasterInterface *input = 0 );
     ~QgsHueSaturationFilter();
 
-    QgsRasterInterface * clone() const OVERRIDE;
+    QgsRasterInterface * clone() const override;
 
-    int bandCount() const OVERRIDE;
+    int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const OVERRIDE;
+    QGis::DataType dataType( int bandNo ) const override;
 
-    bool setInput( QgsRasterInterface* input ) OVERRIDE;
+    bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) OVERRIDE;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
 
     void setSaturation( int saturation );
     int saturation() const { return mSaturation; }
@@ -65,10 +65,10 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
     int colorizeStrength() const { return mColorizeStrength; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const OVERRIDE;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem ) OVERRIDE;
+    void readXML( const QDomElement& filterElem ) override;
 
   private:
     /** Process a change in saturation and update resultant HSL & RGB values*/

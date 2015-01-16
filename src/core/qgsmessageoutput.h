@@ -87,14 +87,14 @@ class CORE_EXPORT QgsMessageOutputConsole : public QObject, public QgsMessageOut
 
     QgsMessageOutputConsole();
 
-    virtual void setMessage( const QString& message, MessageType msgType ) OVERRIDE;
+    virtual void setMessage( const QString& message, MessageType msgType ) override;
 
-    virtual void appendMessage( const QString& message ) OVERRIDE;
+    virtual void appendMessage( const QString& message ) override;
 
-    virtual void setTitle( const QString& title ) OVERRIDE;
+    virtual void setTitle( const QString& title ) override;
 
     //! sends the message to the standard output
-    virtual void showMessage( bool blocking = true ) OVERRIDE;
+    virtual void showMessage( bool blocking = true ) override;
 
   signals:
 

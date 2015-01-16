@@ -105,14 +105,14 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
   protected:
     //! Move event
-    virtual void moveEvent( QMoveEvent * ) OVERRIDE;
+    virtual void moveEvent( QMoveEvent * ) override;
 
-    virtual void closeEvent( QCloseEvent * ) OVERRIDE;
+    virtual void closeEvent( QCloseEvent * ) override;
 
     //! Resize event
-    virtual void resizeEvent( QResizeEvent * ) OVERRIDE;
+    virtual void resizeEvent( QResizeEvent * ) override;
 
-    virtual void showEvent( QShowEvent* event ) OVERRIDE;
+    virtual void showEvent( QShowEvent* event ) override;
 
 #ifdef Q_OS_MAC
     //! Change event (update window menu on ActivationChange)

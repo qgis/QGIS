@@ -79,19 +79,19 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
   protected:
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * pe ) OVERRIDE;
+    void paintEvent( QPaintEvent * pe ) override;
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e ) OVERRIDE;
+    void resizeEvent( QResizeEvent * e ) override;
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void mouseMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e ) OVERRIDE;
+    void mousePressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    void mouseReleaseEvent( QMouseEvent * e ) override;
 
     //! called when panning to reflect mouse movement
     void updatePanningWidget( const QPoint& pos );

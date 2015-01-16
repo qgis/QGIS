@@ -254,7 +254,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsComposer* duplicateComposer( QgsComposer* currentComposer, QString title = QString( "" ) );
 
     /** overloaded function used to sort menu entries alphabetically */
-    QMenu* createPopupMenu() OVERRIDE;
+    QMenu* createPopupMenu() override;
 
     /**
      * Access the vector layer tools. This will be an instance of {@see QgsGuiVectorLayerTools}
@@ -613,7 +613,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void legendLayerSelectionChanged( void );
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent * event ) OVERRIDE;
+    virtual bool event( QEvent * event ) override;
 
     /** Open a raster layer using the Raster Data Provider. */
     QgsRasterLayer* addRasterLayer( QString const & uri, QString const & baseName, QString const & providerKey );
@@ -639,15 +639,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   protected:
 
     //! Handle state changes (WindowTitleChange)
-    virtual void changeEvent( QEvent * event ) OVERRIDE;
+    virtual void changeEvent( QEvent * event ) override;
     //! Have some control over closing of the application
-    virtual void closeEvent( QCloseEvent * event ) OVERRIDE;
+    virtual void closeEvent( QCloseEvent * event ) override;
 
-    virtual void dragEnterEvent( QDragEnterEvent * event ) OVERRIDE;
-    virtual void dropEvent( QDropEvent * event ) OVERRIDE;
+    virtual void dragEnterEvent( QDragEnterEvent * event ) override;
+    virtual void dropEvent( QDropEvent * event ) override;
 
     //! reimplements widget keyPress event so we can check if cancel was pressed
-    virtual void keyPressEvent( QKeyEvent * event ) OVERRIDE;
+    virtual void keyPressEvent( QKeyEvent * event ) override;
 
 #ifdef ANDROID
     //! reimplements widget keyReleaseEvent event so we can check if back was pressed

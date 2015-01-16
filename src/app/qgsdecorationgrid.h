@@ -140,14 +140,14 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
-    void projectRead() OVERRIDE;
+    void projectRead() override;
     //! save values to the project
-    void saveToProject() OVERRIDE;
+    void saveToProject() override;
 
     //! this does the meaty bit of the work
-    void render( QPainter * ) OVERRIDE;
+    void render( QPainter * ) override;
     //! Show the dialog box
-    void run() OVERRIDE;
+    void run() override;
 
     //! check that map units changed and disable if necessary
     void checkMapUnitsChanged();

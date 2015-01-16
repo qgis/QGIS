@@ -54,18 +54,18 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     // Implementation of virtual functions from QAbstractItemModel
 
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    QModelIndex parent( const QModelIndex &child ) const OVERRIDE;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
-    Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) OVERRIDE;
-    Qt::DropActions supportedDropActions() const OVERRIDE;
-    QStringList mimeTypes() const OVERRIDE;
-    QMimeData* mimeData( const QModelIndexList& indexes ) const OVERRIDE;
-    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) OVERRIDE;
-    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) OVERRIDE;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData* mimeData( const QModelIndexList& indexes ) const override;
+    bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent ) override;
+    bool removeRows( int row, int count, const QModelIndex& parent = QModelIndex() ) override;
 
     // New stuff
 

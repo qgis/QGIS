@@ -76,7 +76,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void hideOutput();
 
   public slots:
-    virtual void accept() OVERRIDE { if ( validate() ) return QDialog::accept(); }
+    virtual void accept() override { if ( validate() ) return QDialog::accept(); }
 
   private slots:
     void on_mRawModeRadioButton_toggled( bool );

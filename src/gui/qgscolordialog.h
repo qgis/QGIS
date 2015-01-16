@@ -134,15 +134,15 @@ class GUI_EXPORT QgsColorDialogV2 : public QDialog, private Ui::QgsColorDialogBa
 
   protected:
 
-    void closeEvent( QCloseEvent* e ) OVERRIDE;
+    void closeEvent( QCloseEvent* e ) override;
 
-    void mousePressEvent( QMouseEvent* e ) OVERRIDE;
+    void mousePressEvent( QMouseEvent* e ) override;
 
-    void mouseMoveEvent( QMouseEvent *e ) OVERRIDE;
+    void mouseMoveEvent( QMouseEvent *e ) override;
 
-    void mouseReleaseEvent( QMouseEvent *e ) OVERRIDE;
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
-    void keyPressEvent( QKeyEvent *e ) OVERRIDE;
+    void keyPressEvent( QKeyEvent *e ) override;
 
   private slots:
 

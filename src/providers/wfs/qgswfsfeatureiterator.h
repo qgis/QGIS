@@ -30,7 +30,7 @@ class QgsWFSFeatureSource : public QObject, public QgsAbstractFeatureSource
     QgsWFSFeatureSource( const QgsWFSProvider* p );
     ~QgsWFSFeatureSource();
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   signals:
     void extentRequested( const QgsRectangle & );
@@ -50,11 +50,11 @@ class QgsWFSFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsWFS
     QgsWFSFeatureIterator( QgsWFSFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
     ~QgsWFSFeatureIterator();
 
-    bool rewind() OVERRIDE;
-    bool close() OVERRIDE;
+    bool rewind() override;
+    bool close() override;
 
   protected:
-    bool fetchFeature( QgsFeature& f ) OVERRIDE;
+    bool fetchFeature( QgsFeature& f ) override;
 
     /**Copies feature attributes / geometry from f to feature*/
     void copyFeature( const QgsFeature* f, QgsFeature& feature, bool fetchGeometry );

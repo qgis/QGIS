@@ -74,7 +74,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     void setComposition( QgsComposition* c ) { mComposition = c; }
     QgsComposition* composition() { return mComposition; }
 
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) OVERRIDE;
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /**Finds out which mouse move action to choose depending on the scene cursor position*/
     QgsComposerMouseHandles::MouseAction mouseActionForScenePos( const QPointF& sceneCoordPos );
@@ -87,12 +87,12 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
 
   protected:
 
-    void mouseMoveEvent( QGraphicsSceneMouseEvent* event ) OVERRIDE;
-    void mouseReleaseEvent( QGraphicsSceneMouseEvent* event ) OVERRIDE;
-    void mousePressEvent( QGraphicsSceneMouseEvent* event ) OVERRIDE;
-    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event ) OVERRIDE;
-    void hoverMoveEvent( QGraphicsSceneHoverEvent * event ) OVERRIDE;
-    void hoverLeaveEvent( QGraphicsSceneHoverEvent * event ) OVERRIDE;
+    void mouseMoveEvent( QGraphicsSceneMouseEvent* event ) override;
+    void mouseReleaseEvent( QGraphicsSceneMouseEvent* event ) override;
+    void mousePressEvent( QGraphicsSceneMouseEvent* event ) override;
+    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent* event ) override;
+    void hoverMoveEvent( QGraphicsSceneHoverEvent * event ) override;
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent * event ) override;
 
   public slots:
 

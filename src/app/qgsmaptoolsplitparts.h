@@ -26,7 +26,7 @@ class QgsMapToolSplitParts: public QgsMapToolCapture
   public:
     QgsMapToolSplitParts( QgsMapCanvas* canvas );
     virtual ~QgsMapToolSplitParts();
-    void canvasMapReleaseEvent( QgsMapMouseEvent * e ) OVERRIDE;
+    void canvasMapReleaseEvent( QgsMapMouseEvent * e ) override;
 };
 
 #endif

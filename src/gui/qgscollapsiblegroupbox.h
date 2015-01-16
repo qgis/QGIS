@@ -46,7 +46,7 @@ class GUI_EXPORT QgsGroupBoxCollapseButton : public QToolButton
     void setShiftDown( bool shiftdown ) { mShiftDown = shiftdown; }
 
   protected:
-    void mouseReleaseEvent( QMouseEvent *event ) OVERRIDE
+    void mouseReleaseEvent( QMouseEvent *event ) override
     {
       mAltDown = ( event->modifiers() & ( Qt::AltModifier | Qt::ControlModifier ) );
       mShiftDown = ( event->modifiers() & Qt::ShiftModifier );
@@ -108,10 +108,10 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     /** Visual fixes for when group box is collapsed/expanded */
     void collapseExpandFixes();
 
-    void showEvent( QShowEvent *event ) OVERRIDE;
-    void mousePressEvent( QMouseEvent *event ) OVERRIDE;
-    void mouseReleaseEvent( QMouseEvent *event ) OVERRIDE;
-    void changeEvent( QEvent *event ) OVERRIDE;
+    void showEvent( QShowEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void changeEvent( QEvent *event ) override;
 
     void updateStyle();
     QRect titleRect() const;
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
 
   protected:
     void init();
-    void showEvent( QShowEvent *event ) OVERRIDE;
+    void showEvent( QShowEvent *event ) override;
     QString saveKey() const;
 
     // pointer to app or custom, external QSettings

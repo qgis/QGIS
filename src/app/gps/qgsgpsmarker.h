@@ -34,11 +34,11 @@ class QgsGpsMarker : public QgsMapCanvasItem
 
     void setCenter( const QgsPoint& point );
 
-    void paint( QPainter* p ) OVERRIDE;
+    void paint( QPainter* p ) override;
 
-    QRectF boundingRect() const OVERRIDE;
+    QRectF boundingRect() const override;
 
-    virtual void updatePosition() OVERRIDE;
+    virtual void updatePosition() override;
 
     void setSize( int theSize );
 

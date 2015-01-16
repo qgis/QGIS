@@ -31,8 +31,8 @@ class APP_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void populateActions();
 
   protected:
-    void keyPressEvent( QKeyEvent * event ) OVERRIDE;
-    void keyReleaseEvent( QKeyEvent * event ) OVERRIDE;
+    void keyPressEvent( QKeyEvent * event ) override;
+    void keyReleaseEvent( QKeyEvent * event ) override;
 
     QAction* currentAction();
 

@@ -37,17 +37,17 @@ class APP_EXPORT QgsMapToolFeatureAction : public QgsMapTool
     ~QgsMapToolFeatureAction();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    virtual void activate() OVERRIDE;
+    virtual void activate() override;
 
-    virtual void deactivate() OVERRIDE;
+    virtual void deactivate() override;
 
   private:
     bool doAction( QgsVectorLayer *layer, int x, int y );

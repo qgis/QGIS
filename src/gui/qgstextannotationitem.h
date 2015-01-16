@@ -33,10 +33,10 @@ class GUI_EXPORT QgsTextAnnotationItem: public QgsAnnotationItem
     /**Sets document (does not take ownership)*/
     void setDocument( const QTextDocument* doc );
 
-    void writeXML( QDomDocument& doc ) const OVERRIDE;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) OVERRIDE;
+    void writeXML( QDomDocument& doc ) const override;
+    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
-    void paint( QPainter* painter ) OVERRIDE;
+    void paint( QPainter* painter ) override;
 
   private:
     QTextDocument* mDocument;

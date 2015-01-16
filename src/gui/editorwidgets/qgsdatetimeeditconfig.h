@@ -34,8 +34,8 @@ class GUI_EXPORT QgsDateTimeEditConfig : public QgsEditorConfigWidget, private U
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() OVERRIDE;
-    void setConfig( const QgsEditorWidgetConfig &config ) OVERRIDE;
+    QgsEditorWidgetConfig config() override;
+    void setConfig( const QgsEditorWidgetConfig &config ) override;
 };
 
 #endif // QGSDATETIMEEDITCONFIG_H

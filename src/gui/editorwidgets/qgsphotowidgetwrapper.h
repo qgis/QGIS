@@ -44,15 +44,15 @@ class GUI_EXPORT QgsPhotoWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() OVERRIDE;
+    QVariant value() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) OVERRIDE;
-    void initWidget( QWidget* editor ) OVERRIDE;
+    QWidget* createWidget( QWidget* parent ) override;
+    void initWidget( QWidget* editor ) override;
 
   public slots:
-    void setValue( const QVariant& value ) OVERRIDE;
-    void setEnabled( bool enabled ) OVERRIDE;
+    void setValue( const QVariant& value ) override;
+    void setEnabled( bool enabled ) override;
 
   private slots:
     void selectFileName();

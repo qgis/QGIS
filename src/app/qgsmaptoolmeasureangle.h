@@ -33,16 +33,16 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     ~QgsMapToolMeasureAngle();
 
     //! Mouse move event for overridingqgs
-    void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Mouse release event for overriding
-    void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when set as currently active map tool
-    void activate() OVERRIDE;
+    void activate() override;
 
     //! called when map tool is being deactivated
-    void deactivate() OVERRIDE;
+    void deactivate() override;
 
   private:
     /**Points defining the angle (three for measuring)*/

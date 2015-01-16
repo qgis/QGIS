@@ -37,28 +37,28 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     ~QgsAppPluginManagerInterface();
 
     //! remove python plugins from the metadata registry (c++ plugins stay)
-    void clearPythonPluginMetadata() OVERRIDE;
+    void clearPythonPluginMetadata() override;
 
     //! add a single plugin to the metadata registry
-    void addPluginMetadata( QMap<QString, QString> metadata ) OVERRIDE;
+    void addPluginMetadata( QMap<QString, QString> metadata ) override;
 
     //! refresh plugin list model (and metadata browser content if necessary)
-    void reloadModel() OVERRIDE;
+    void reloadModel() override;
 
     //! return given plugin metadata
-    const QMap<QString, QString> * pluginMetadata( QString key ) const OVERRIDE;
+    const QMap<QString, QString> * pluginMetadata( QString key ) const override;
 
     //! clear the repository listWidget
-    void clearRepositoryList() OVERRIDE;
+    void clearRepositoryList() override;
 
     //! add repository to the repository listWidget
-    void addToRepositoryList( QMap<QString, QString> repository ) OVERRIDE;
+    void addToRepositoryList( QMap<QString, QString> repository ) override;
 
     //! show the Plugin Manager window and optionally open tab tabIndex
-    void showPluginManager( int tabIndex = -1 ) OVERRIDE;
+    void showPluginManager( int tabIndex = -1 ) override;
 
     //! show the given message in the Plugin Manager internal message bar
-    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) OVERRIDE;
+    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) override;
 
   private:
 

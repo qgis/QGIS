@@ -516,34 +516,34 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 #endif
 
     //! Overridden key press event
-    void keyPressEvent( QKeyEvent * e ) OVERRIDE;
+    void keyPressEvent( QKeyEvent * e ) override;
 
     //! Overridden key release event
-    void keyReleaseEvent( QKeyEvent * e ) OVERRIDE;
+    void keyReleaseEvent( QKeyEvent * e ) override;
 
     //! Overridden mouse double click event
-    void mouseDoubleClickEvent( QMouseEvent * e ) OVERRIDE;
+    void mouseDoubleClickEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void mouseMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e ) OVERRIDE;
+    void mousePressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    void mouseReleaseEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse wheel event
-    void wheelEvent( QWheelEvent * e ) OVERRIDE;
+    void wheelEvent( QWheelEvent * e ) override;
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e ) OVERRIDE;
+    void resizeEvent( QResizeEvent * e ) override;
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * e ) OVERRIDE;
+    void paintEvent( QPaintEvent * e ) override;
 
     //! Overridden drag enter event
-    void dragEnterEvent( QDragEnterEvent * e ) OVERRIDE;
+    void dragEnterEvent( QDragEnterEvent * e ) override;
 
     //! called when panning is in action, reset indicates end of panning
     void moveCanvasContents( bool reset = false );
@@ -560,7 +560,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**debugging member
        invoked when a connect() is made to this object
     */
-    void connectNotify( const char * signal ) OVERRIDE;
+    void connectNotify( const char * signal ) override;
 
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();

@@ -30,14 +30,14 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
     QgsMapToolDeleteRing( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeleteRing();
 
-    void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
-    void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasPressEvent( QMouseEvent * e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate() OVERRIDE;
+    void deactivate() override;
 
   private:
     QgsVectorLayer* vlayer;

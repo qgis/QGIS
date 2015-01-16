@@ -51,13 +51,13 @@ class GUI_EXPORT QgsDateTimeEditWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() OVERRIDE;
-    QWidget *createWidget( QWidget *parent ) OVERRIDE;
-    void initWidget( QWidget *editor ) OVERRIDE;
+    QVariant value() override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
 
   public slots:
-    void setValue( const QVariant &value ) OVERRIDE;
-    void setEnabled( bool enabled ) OVERRIDE;
+    void setValue( const QVariant &value ) override;
+    void setEnabled( bool enabled ) override;
 };
 
 #endif // QGSDATETIMEEDITWRAPPER_H

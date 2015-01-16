@@ -33,14 +33,14 @@ class QgsComposerNameDelegate : public QItemDelegate
     QgsComposerNameDelegate( QObject *parent = 0 );
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
-                           const QModelIndex &index ) const OVERRIDE;
+                           const QModelIndex &index ) const override;
 
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const OVERRIDE;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model,
-                       const QModelIndex &index ) const OVERRIDE;
+                       const QModelIndex &index ) const override;
 
     void updateEditorGeometry( QWidget *editor,
-                               const QStyleOptionViewItem &option, const QModelIndex &index ) const OVERRIDE;
+                               const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**A dialog that shows the existing composer instances. Lets the user add new

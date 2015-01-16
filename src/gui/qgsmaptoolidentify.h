@@ -93,17 +93,17 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     virtual ~QgsMapToolIdentify();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    virtual void activate() OVERRIDE;
+    virtual void activate() override;
 
-    virtual void deactivate() OVERRIDE;
+    virtual void deactivate() override;
 
     /** Performs the identification.
     @param x x coordinates of mouseEvent

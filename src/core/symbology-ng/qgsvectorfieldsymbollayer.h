@@ -49,23 +49,23 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
-    QString layerType() const OVERRIDE { return "VectorField"; }
+    QString layerType() const override { return "VectorField"; }
 
-    bool setSubSymbol( QgsSymbolV2* symbol ) OVERRIDE;
-    QgsSymbolV2* subSymbol() OVERRIDE { return mLineSymbol; }
+    bool setSubSymbol( QgsSymbolV2* symbol ) override;
+    QgsSymbolV2* subSymbol() override { return mLineSymbol; }
 
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) OVERRIDE;
-    void startRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
-    void stopRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) override;
+    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolV2RenderContext& context ) override;
 
-    QgsSymbolLayerV2* clone() const OVERRIDE;
-    QgsStringMap properties() const OVERRIDE;
+    QgsSymbolLayerV2* clone() const override;
+    QgsStringMap properties() const override;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const OVERRIDE;
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const override;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) OVERRIDE;
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
-    QSet<QString> usedAttributes() const OVERRIDE;
+    QSet<QString> usedAttributes() const override;
 
     //setters and getters
     void setXAttribute( const QString& attribute ) { mXAttribute = attribute; }
@@ -81,11 +81,11 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     void setAngleUnits( AngleUnits units ) { mAngleUnits = units; }
     AngleUnits angleUnits() const { return mAngleUnits; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) OVERRIDE;
-    QgsSymbolV2::OutputUnit outputUnit() const OVERRIDE;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
+    QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) OVERRIDE;
-    QgsMapUnitScale mapUnitScale() const OVERRIDE;
+    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
 
     void setDistanceUnit( QgsSymbolV2::OutputUnit unit ) { mDistanceUnit = unit; }
     QgsSymbolV2::OutputUnit distanceUnit() const { return mDistanceUnit; }

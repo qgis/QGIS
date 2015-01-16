@@ -32,13 +32,13 @@ class APP_EXPORT QgsMapToolShowHideLabels : public QgsMapToolLabel
     ~QgsMapToolShowHideLabels();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
   protected:
 

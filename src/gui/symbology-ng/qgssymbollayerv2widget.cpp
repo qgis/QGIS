@@ -1692,13 +1692,13 @@ class QgsSvgListModel : public QAbstractListModel
       mSvgFiles = QgsSymbolLayerV2Utils::listSvgFilesAt( path );
     }
 
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const OVERRIDE
+    int rowCount( const QModelIndex & parent = QModelIndex() ) const override
     {
       Q_UNUSED( parent );
       return mSvgFiles.count();
   }
 
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const OVERRIDE
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override
     {
       QString entry = mSvgFiles.at( index.row() );
 

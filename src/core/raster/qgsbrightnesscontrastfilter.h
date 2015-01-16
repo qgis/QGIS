@@ -32,15 +32,15 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     QgsBrightnessContrastFilter( QgsRasterInterface *input = 0 );
     ~QgsBrightnessContrastFilter();
 
-    QgsRasterInterface * clone() const OVERRIDE;
+    QgsRasterInterface * clone() const override;
 
-    int bandCount() const OVERRIDE;
+    int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const OVERRIDE;
+    QGis::DataType dataType( int bandNo ) const override;
 
-    bool setInput( QgsRasterInterface* input ) OVERRIDE;
+    bool setInput( QgsRasterInterface* input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) OVERRIDE;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override;
 
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
     int brightness() const { return mBrightness; }
@@ -48,10 +48,10 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
     int contrast() const { return mContrast; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const OVERRIDE;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem ) OVERRIDE;
+    void readXML( const QDomElement& filterElem ) override;
 
   private:
     /**Adjusts a color component by the specified brightness and contrast factor*/

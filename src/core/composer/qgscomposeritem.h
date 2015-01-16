@@ -116,7 +116,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     virtual ~QgsComposerItem();
 
     /** return correct graphics item type. */
-    virtual int type() const OVERRIDE { return ComposerItem; }
+    virtual int type() const override { return ComposerItem; }
 
     /**Returns whether this item has been removed from the composition. Items removed
      * from the composition are not deleted so that they can be restored via an undo
@@ -590,7 +590,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
     */
     virtual void setItemRotation( const double r, const bool adjustPosition = false );
 
-    void repaint() OVERRIDE;
+    void repaint() override;
 
     /**Refreshes a data defined property for the item by reevaluating the property's value
      * and redrawing the item with this new value.
@@ -599,7 +599,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * refreshed.
      * @note this method was added in version 2.5
     */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) OVERRIDE;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) override;
 
   protected:
     /**True if item has been removed from the composition*/

@@ -31,7 +31,7 @@ class APP_EXPORT QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToD
     QString getDescription();
     bool isDefault();
     void on_mFilePickButton_clicked();
-    void accept() OVERRIDE;
+    void accept() override;
 };
 
 #endif // QGSSAVESTYLETODBDIALOG_H

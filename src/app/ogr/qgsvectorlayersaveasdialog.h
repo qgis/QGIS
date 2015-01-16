@@ -73,7 +73,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_mSymbologyExportComboBox_currentIndexChanged( const QString& text );
-    void accept() OVERRIDE;
+    void accept() override;
 
   private:
     void setup();

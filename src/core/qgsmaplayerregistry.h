@@ -232,7 +232,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject, public QgsSingleton<QgsM
     /** debugging member
         invoked when a connect() is made to this object
     */
-    void connectNotify( const char * signal ) OVERRIDE;
+    void connectNotify( const char * signal ) override;
 
   private:
     //! private singleton constructor

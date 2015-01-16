@@ -31,9 +31,9 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsMapToolOffsetCurve( QgsMapCanvas* canvas );
     ~QgsMapToolOffsetCurve();
 
-    void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
-    void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
-    void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    void canvasPressEvent( QMouseEvent * e ) override;
+    void canvasReleaseEvent( QMouseEvent * e ) override;
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
   private slots:
     /**Places curve offset to value entered in the spin box*/

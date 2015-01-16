@@ -29,8 +29,8 @@ class GUI_EXPORT QgsCheckBoxConfigDlg : public QgsEditorConfigWidget, private Ui
 
     // QgsEditorConfigWidget interface
   public:
-    QgsEditorWidgetConfig config() OVERRIDE;
-    void setConfig( const QgsEditorWidgetConfig& config ) OVERRIDE;
+    QgsEditorWidgetConfig config() override;
+    void setConfig( const QgsEditorWidgetConfig& config ) override;
 };
 
 #endif // QGSCHECKBOXCONFIGDLG_H

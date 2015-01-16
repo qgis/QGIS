@@ -35,9 +35,9 @@ class GUI_EXPORT QgsColorSwatchDelegate : public QAbstractItemDelegate
 
   public:
     QgsColorSwatchDelegate( QWidget *parent = 0 );
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const OVERRIDE;
-    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const OVERRIDE;
-    bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) OVERRIDE;
+    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const override;
+    bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index ) override;
 
   private:
     QWidget* mParent;
@@ -72,20 +72,20 @@ class GUI_EXPORT QgsColorSchemeModel: public QAbstractItemModel
     ~QgsColorSchemeModel();
 
     //reimplemented QAbstractItemModel methods
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    QModelIndex parent( const QModelIndex &index ) const OVERRIDE;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
-    Qt::ItemFlags flags( const QModelIndex & index ) const OVERRIDE;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) OVERRIDE;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const OVERRIDE;
-    Qt::DropActions supportedDropActions() const OVERRIDE;
-    QStringList mimeTypes() const OVERRIDE;
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) OVERRIDE;
-    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) OVERRIDE;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const OVERRIDE;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) OVERRIDE;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags( const QModelIndex & index ) const override;
+    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     /**Returns a list of colors shown in the widget
      * @returns colors shown in the widget
@@ -220,11 +220,11 @@ class GUI_EXPORT QgsColorSchemeList: public QTreeView
 
   protected:
 
-    void keyPressEvent( QKeyEvent* event ) OVERRIDE;
+    void keyPressEvent( QKeyEvent* event ) override;
 
-    void mousePressEvent( QMouseEvent* event ) OVERRIDE;
+    void mousePressEvent( QMouseEvent* event ) override;
 
-    void mouseReleaseEvent( QMouseEvent* event ) OVERRIDE;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
 
   private:
     QgsColorScheme* mScheme;

@@ -26,10 +26,10 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri );
     ~QgsWMSConnectionItem();
 
-    QVector<QgsDataItem*> createChildren() OVERRIDE;
-    virtual bool equal( const QgsDataItem *other ) OVERRIDE;
+    QVector<QgsDataItem*> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
-    virtual QList<QAction*> actions() OVERRIDE;
+    virtual QList<QAction*> actions() override;
 
   public slots:
     void editConnection();
@@ -75,7 +75,7 @@ class QgsWMTSLayerItem : public QgsLayerItem
     ~QgsWMTSLayerItem();
 
     QString createUri();
-    QString layerName() const OVERRIDE { return mTitle; }
+    QString layerName() const override { return mTitle; }
 
   private:
     QgsDataSourceURI mDataSourceUri;
@@ -89,11 +89,11 @@ class QgsWMSRootItem : public QgsDataCollectionItem
     QgsWMSRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsWMSRootItem();
 
-    QVector<QgsDataItem*> createChildren() OVERRIDE;
+    QVector<QgsDataItem*> createChildren() override;
 
-    virtual QList<QAction*> actions() OVERRIDE;
+    virtual QList<QAction*> actions() override;
 
-    virtual QWidget * paramWidget() OVERRIDE;
+    virtual QWidget * paramWidget() override;
 
   public slots:
     void connectionsChanged();

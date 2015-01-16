@@ -94,14 +94,14 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Destructor
     virtual ~QgsWcsProvider();
 
-    QgsRasterInterface * clone() const OVERRIDE;
+    QgsRasterInterface * clone() const override;
 
     /*! Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsCoordinateReferenceSystem crs() OVERRIDE;
+    virtual QgsCoordinateReferenceSystem crs() override;
 
     /**
      * Get the coverage format used in the transfer from the WCS server
@@ -134,22 +134,22 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
      *           shared across library boundaries
      */
-    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) OVERRIDE;
+    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) OVERRIDE;
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
 
-    void readBlock( int theBandNo, int xBlock, int yBlock, void *block ) OVERRIDE;
+    void readBlock( int theBandNo, int xBlock, int yBlock, void *block ) override;
 
     /** Download cache */
     void getCache( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QString crs = "" );
 
     /** Return the extent for this data layer
     */
-    virtual QgsRectangle extent() OVERRIDE;
+    virtual QgsRectangle extent() override;
 
     /**Returns true if layer is valid
      */
-    bool isValid() OVERRIDE;
+    bool isValid() override;
 
     /**Returns the base url
      */
@@ -159,24 +159,24 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QString wcsVersion();
 
     // Reimplemented QgsRasterDataProvider virtual methods
-    int capabilities() const OVERRIDE;
-    QGis::DataType dataType( int bandNo ) const OVERRIDE;
-    QGis::DataType srcDataType( int bandNo ) const OVERRIDE;
-    int bandCount() const OVERRIDE;
+    int capabilities() const override;
+    QGis::DataType dataType( int bandNo ) const override;
+    QGis::DataType srcDataType( int bandNo ) const override;
+    int bandCount() const override;
     //double noDataValue() const;
-    int xBlockSize() const OVERRIDE;
-    int yBlockSize() const OVERRIDE;
-    int xSize() const OVERRIDE;
-    int ySize() const OVERRIDE;
-    QString metadata() OVERRIDE;
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) OVERRIDE;
-    QString lastErrorTitle() OVERRIDE;
-    QString lastError() OVERRIDE;
-    QString lastErrorFormat() OVERRIDE;
-    QString name() const OVERRIDE;
-    QString description() const OVERRIDE;
-    void reloadData() OVERRIDE;
-    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const OVERRIDE;
+    int xBlockSize() const override;
+    int yBlockSize() const override;
+    int xSize() const override;
+    int ySize() const override;
+    QString metadata() override;
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
+    QString lastErrorTitle() override;
+    QString lastError() override;
+    QString lastErrorFormat() override;
+    QString name() const override;
+    QString description() const override;
+    void reloadData() override;
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
     static QMap<QString, QString> supportedMimes();
 

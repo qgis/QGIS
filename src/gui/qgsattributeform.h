@@ -96,7 +96,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * @return         true if the event has been handled (key was ESC)
      */
-    bool eventFilter( QObject* object, QEvent* event ) OVERRIDE;
+    bool eventFilter( QObject* object, QEvent* event ) override;
 
   signals:
     /**

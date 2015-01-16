@@ -30,17 +30,17 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
     static QgsSymbolLayerV2* createFromSld( QDomElement &element );
 
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) OVERRIDE;
-    QString layerType() const OVERRIDE;
-    void startRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
-    void stopRender( QgsSymbolV2RenderContext& context ) OVERRIDE;
-    QgsSymbolLayerV2* clone() const OVERRIDE;
-    QgsStringMap properties() const OVERRIDE;
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) override;
+    QString layerType() const override;
+    void startRender( QgsSymbolV2RenderContext& context ) override;
+    void stopRender( QgsSymbolV2RenderContext& context ) override;
+    QgsSymbolLayerV2* clone() const override;
+    QgsStringMap properties() const override;
 
-    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const OVERRIDE;
-    void writeSldMarker( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const OVERRIDE;
+    void toSld( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const override;
+    void writeSldMarker( QDomDocument& doc, QDomElement &element, QgsStringMap props ) const override;
 
-    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const OVERRIDE;
+    bool writeDxf( QgsDxfExport& e, double mmMapUnitScaleFactor, const QString& layerName, const QgsSymbolV2RenderContext* context, const QgsFeature* f, const QPointF& shift = QPointF( 0.0, 0.0 ) ) const override;
 
     void setSymbolName( const QString& name ) { mSymbolName = name; }
     QString symbolName() const { return mSymbolName; }
@@ -57,11 +57,11 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setOutlineWidth( double w ) { mOutlineWidth = w; }
     double outlineWidth() const { return mOutlineWidth; }
 
-    void setFillColor( const QColor& c ) OVERRIDE { mFillColor = c;}
-    QColor fillColor() const OVERRIDE { return mFillColor; }
+    void setFillColor( const QColor& c ) override { mFillColor = c;}
+    QColor fillColor() const override { return mFillColor; }
 
-    void setOutlineColor( const QColor& c ) OVERRIDE { mOutlineColor = c; }
-    QColor outlineColor() const OVERRIDE { return mOutlineColor; }
+    void setOutlineColor( const QColor& c ) override { mOutlineColor = c; }
+    QColor outlineColor() const override { return mOutlineColor; }
 
     void setSymbolWidthUnit( QgsSymbolV2::OutputUnit unit ) { mSymbolWidthUnit = unit; }
     QgsSymbolV2::OutputUnit symbolWidthUnit() const { return mSymbolWidthUnit; }
@@ -81,11 +81,11 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setOutlineWidthMapUnitScale( const QgsMapUnitScale& scale ) { mOutlineWidthMapUnitScale = scale; }
     const QgsMapUnitScale& outlineWidthMapUnitScale() const { return mOutlineWidthMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) OVERRIDE;
-    QgsSymbolV2::OutputUnit outputUnit() const OVERRIDE;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
+    QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale ) OVERRIDE;
-    QgsMapUnitScale mapUnitScale() const OVERRIDE;
+    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
 
   private:
     QString mSymbolName;

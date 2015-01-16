@@ -34,21 +34,21 @@ class GUI_EXPORT QgsHtmlAnnotationItem: public QObject, public QgsAnnotationItem
     QgsHtmlAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0 );
     ~QgsHtmlAnnotationItem();
 
-    void paint( QPainter * painter ) OVERRIDE;
+    void paint( QPainter * painter ) override;
 
     //! paint function called by map canvas
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) OVERRIDE;
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) override;
 
-    QSizeF minimumFrameSize() const OVERRIDE;
+    QSizeF minimumFrameSize() const override;
 
     /**Reimplemented from QgsAnnotationItem*/
-    void setMapPosition( const QgsPoint& pos ) OVERRIDE;
+    void setMapPosition( const QgsPoint& pos ) override;
 
     void setHTMLPage( const QString& htmlFile );
     QString htmlPage() const { return mHtmlFile; }
 
-    void writeXML( QDomDocument& doc ) const OVERRIDE;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) OVERRIDE;
+    void writeXML( QDomDocument& doc ) const override;
+    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 

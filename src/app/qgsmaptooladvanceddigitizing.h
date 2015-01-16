@@ -48,17 +48,17 @@ class APP_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapTool
     ~QgsMapToolAdvancedDigitizing();
 
     //! catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasPressEvent( QMouseEvent* e ) OVERRIDE;
+    void canvasPressEvent( QMouseEvent* e ) override;
     //! catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasReleaseEvent( QMouseEvent* e ) OVERRIDE;
+    void canvasReleaseEvent( QMouseEvent* e ) override;
     //! catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasMoveEvent( QMouseEvent* e ) OVERRIDE;
+    void canvasMoveEvent( QMouseEvent* e ) override;
     //! catch the mouse double click event, filters it, transforms it to map coordinates and send it to virtual method
-    void canvasDoubleClickEvent( QMouseEvent* e ) OVERRIDE;
+    void canvasDoubleClickEvent( QMouseEvent* e ) override;
     //! catch the key press event, filters it and send it to virtual method
-    void keyPressEvent( QKeyEvent* event ) OVERRIDE;
+    void keyPressEvent( QKeyEvent* event ) override;
     //! catch the key release event, filters it and send it to virtual method
-    void keyReleaseEvent( QKeyEvent* event ) OVERRIDE;
+    void keyReleaseEvent( QKeyEvent* event ) override;
 
     //! mouse press event in map coordinates (eventually filtered) to be redefined in subclass
     virtual void canvasMapPressEvent( QgsMapMouseEvent* e );

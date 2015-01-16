@@ -199,14 +199,14 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     bool userStylesheetEnabled() const { return mEnableUserStylesheet; }
 
-    virtual QString displayName() const OVERRIDE;
-    QSizeF totalSize() const OVERRIDE;
-    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) OVERRIDE;
-    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const OVERRIDE;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) OVERRIDE;
-    void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) OVERRIDE;
+    virtual QString displayName() const override;
+    QSizeF totalSize() const override;
+    void render( QPainter* p, const QRectF& renderExtent, const int frameIndex ) override;
+    bool writeXML( QDomElement& elem, QDomDocument & doc, bool ignoreFrames = false ) const override;
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames = false ) override;
+    void addFrame( QgsComposerFrame* frame, bool recalcFrameSizes = true ) override;
     //overriden to break frames without dividing lines of text
-    double findNearbyPageBreak( double yPos ) OVERRIDE;
+    double findNearbyPageBreak( double yPos ) override;
 
   public slots:
 
@@ -219,10 +219,10 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void loadHtml( const bool useCache = false );
 
     /**Recalculates the frame sizes for the current viewport dimensions*/
-    void recalculateFrameSizes() OVERRIDE;
+    void recalculateFrameSizes() override;
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) OVERRIDE;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties ) override;
 
   private slots:
     void frameLoaded( bool ok = true );

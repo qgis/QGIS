@@ -32,8 +32,8 @@ class QgsSelectLayerTreeModel : public QgsLayerTreeModel
     QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
     ~QgsSelectLayerTreeModel();
 
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
-    // bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) OVERRIDE;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    // bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 };
 
 class QgsOfflineEditingPluginGui : public QDialog, private Ui::QgsOfflineEditingPluginGuiBase

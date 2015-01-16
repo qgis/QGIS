@@ -29,13 +29,13 @@ class CORE_EXPORT QgsSingleBoxScaleBarStyle: public QgsScaleBarStyle
     QgsSingleBoxScaleBarStyle( const QgsComposerScaleBar* bar );
     ~QgsSingleBoxScaleBarStyle();
 
-    QString name() const OVERRIDE;
+    QString name() const override;
 
     /*! draw method
      @param p painter object
      @param xOffset x offset
      */
-    void draw( QPainter* p, double xOffset = 0 ) const OVERRIDE;
+    void draw( QPainter* p, double xOffset = 0 ) const override;
 
   private:
     QgsSingleBoxScaleBarStyle(); //forbidden

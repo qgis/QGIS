@@ -35,7 +35,7 @@ class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
   public:
     QgsExpressionItemSearchProxy() { }
 
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const OVERRIDE
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
     {
       if ( source_parent == qobject_cast<QStandardItemModel*>( sourceModel() )->invisibleRootItem()->index() )
       return true;

@@ -30,7 +30,7 @@ class APP_EXPORT QgsAdvancedDigitizingCanvasItem : public QgsMapCanvasItem
   public:
     explicit QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget );
 
-    void paint( QPainter *painter ) OVERRIDE;
+    void paint( QPainter *painter ) override;
 
   protected:
     QPen mLockedPen;

@@ -46,27 +46,27 @@ class GUI_EXPORT QgsRuleBasedRendererV2Model : public QAbstractItemModel
   public:
     QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const OVERRIDE;
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const OVERRIDE;
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     virtual QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const OVERRIDE;
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    virtual int columnCount( const QModelIndex & = QModelIndex() ) const OVERRIDE;
+                                 int role = Qt::DisplayRole ) const override;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    virtual int columnCount( const QModelIndex & = QModelIndex() ) const override;
     //! provide model index for parent's child item
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     //! provide parent model index
-    virtual QModelIndex parent( const QModelIndex &index ) const OVERRIDE;
+    virtual QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support
-    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) OVERRIDE;
+    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
-    Qt::DropActions supportedDropActions() const OVERRIDE;
-    QStringList mimeTypes() const OVERRIDE;
-    QMimeData *mimeData( const QModelIndexList &indexes ) const OVERRIDE;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) OVERRIDE;
+    Qt::DropActions supportedDropActions() const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) OVERRIDE;
+    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
 
     // new methods
 
@@ -106,7 +106,7 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     QgsRuleBasedRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
     ~QgsRuleBasedRendererV2Widget();
 
-    virtual QgsFeatureRendererV2* renderer() OVERRIDE;
+    virtual QgsFeatureRendererV2* renderer() override;
 
   public slots:
 
@@ -136,10 +136,10 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 
     QgsRuleBasedRendererV2::Rule* currentRule();
 
-    QList<QgsSymbolV2*> selectedSymbols() OVERRIDE;
+    QList<QgsSymbolV2*> selectedSymbols() override;
     QgsRuleBasedRendererV2::RuleList selectedRules();
-    void refreshSymbolView() OVERRIDE;
-    void keyPressEvent( QKeyEvent* event ) OVERRIDE;
+    void refreshSymbolView() override;
+    void keyPressEvent( QKeyEvent* event ) override;
 
     QgsRuleBasedRendererV2* mRenderer;
     QgsRuleBasedRendererV2Model* mModel;
@@ -150,8 +150,8 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     QgsRuleBasedRendererV2::RuleList mCopyBuffer;
 
   protected slots:
-    void copy() OVERRIDE;
-    void paste() OVERRIDE;
+    void copy() override;
+    void paste() override;
 };
 
 ///////
@@ -173,7 +173,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
   public slots:
     void testFilter();
     void buildExpression();
-    void accept() OVERRIDE;
+    void accept() override;
 
   protected:
     QgsRuleBasedRendererV2::Rule* mRule; // borrowed

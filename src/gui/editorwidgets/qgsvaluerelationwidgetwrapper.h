@@ -57,15 +57,15 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() OVERRIDE;
+    QVariant value() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) OVERRIDE;
-    void initWidget( QWidget* editor ) OVERRIDE;
+    QWidget* createWidget( QWidget* parent ) override;
+    void initWidget( QWidget* editor ) override;
     static ValueRelationCache createCache( const QgsEditorWidgetConfig& config );
 
   public slots:
-    void setValue( const QVariant& value ) OVERRIDE;
+    void setValue( const QVariant& value ) override;
 
   private:
     QComboBox* mComboBox;

@@ -72,9 +72,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual ~QgsOgrProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const OVERRIDE;
+    virtual QgsAbstractFeatureSource* featureSource() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() OVERRIDE;
+    virtual QgsCoordinateReferenceSystem crs() override;
 
     /**
      * Sub-layers handled by this provider, in order from bottom to top
@@ -82,28 +82,28 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * Sub-layers are used when the provider's source can combine layers
      * it knows about in some way before it hands them off to the provider.
      */
-    virtual QStringList subLayers() const OVERRIDE;
+    virtual QStringList subLayers() const override;
 
     /**
      *   Returns the permanent storage type for this layer as a friendly name.
      */
-    virtual QString storageType() const OVERRIDE;
+    virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
     /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString() OVERRIDE;
+    virtual QString subsetString() override;
 
-    virtual bool supportsSubsetString() OVERRIDE { return true; }
+    virtual bool supportsSubsetString() override { return true; }
 
     /** mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) OVERRIDE;
+    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const OVERRIDE;
+    virtual QGis::WkbType geometryType() const override;
 
     /** return the number of layers for the current data source
 
@@ -116,53 +116,53 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**
      * Get the number of features in the layer
      */
-    virtual long featureCount() const OVERRIDE;
+    virtual long featureCount() const override;
 
     /**
      * Get the field information for the layer
      */
-    virtual const QgsFields & fields() const OVERRIDE;
+    virtual const QgsFields & fields() const override;
 
     /** Return the extent for this data layer
      */
-    virtual QgsRectangle extent() OVERRIDE;
+    virtual QgsRectangle extent() override;
 
     /** Update the extents
      */
-    virtual void updateExtents() OVERRIDE;
+    virtual void updateExtents() override;
 
     /**Writes a list of features to the file*/
-    virtual bool addFeatures( QgsFeatureList & flist ) OVERRIDE;
+    virtual bool addFeatures( QgsFeatureList & flist ) override;
 
     /**Deletes a feature*/
-    virtual bool deleteFeatures( const QgsFeatureIds & id ) OVERRIDE;
+    virtual bool deleteFeatures( const QgsFeatureIds & id ) override;
 
     /**
      * Adds new attributes
      * @param attributes list of new attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool addAttributes( const QList<QgsField> &attributes ) OVERRIDE;
+    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
 
     /**
      * Deletes existing attributes
      * @param attributes a set containing names of attributes
      * @return true in case of success and false in case of failure
      */
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) OVERRIDE;
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
     /**Changes attribute values of existing features */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) OVERRIDE;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
 
     /**Changes existing geometries*/
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) OVERRIDE;
+    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
 
     /**Tries to create a .qix index file for faster access if only a subset of the features is required
      @return true in case of success*/
-    virtual bool createSpatialIndex() OVERRIDE;
+    virtual bool createSpatialIndex() override;
 
     /**Create an attribute index on the datasource*/
-    virtual bool createAttributeIndex( int field ) OVERRIDE;
+    virtual bool createAttributeIndex( int field ) override;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
@@ -170,9 +170,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
         be prudent to check this value per intended operation.
         See the OGRLayer::TestCapability API for details.
       */
-    virtual int capabilities() const OVERRIDE;
+    virtual int capabilities() const override;
 
-    virtual void setEncoding( const QString& e ) OVERRIDE;
+    virtual void setEncoding( const QString& e ) override;
 
 
     /** return vector file filter string
@@ -187,7 +187,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
       It'd be nice to eventually be raster/vector neutral.
     */
     /* virtual */
-    QString fileVectorFilters() const OVERRIDE;
+    QString fileVectorFilters() const override;
     /** return a string containing the available database drivers */
     QString databaseDrivers() const;
     /** return a string containing the available directory drivers */
@@ -197,20 +197,20 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /**Returns true if this is a valid shapefile
     */
-    bool isValid() OVERRIDE;
+    bool isValid() override;
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
-    QVariant minimumValue( int index ) OVERRIDE;
+    QVariant minimumValue( int index ) override;
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maximumValue( int index ) OVERRIDE;
+    QVariant maximumValue( int index ) override;
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) OVERRIDE;
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
 
     /** return a provider name
 
@@ -226,7 +226,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString name() const OVERRIDE;
+    QString name() const override;
 
 
     /** return description
@@ -240,12 +240,12 @@ class QgsOgrProvider : public QgsVectorDataProvider
       anything strange with regards to their name or description?
 
      */
-    QString description() const OVERRIDE;
+    QString description() const override;
 
     /** Returns true if the provider is strict about the type of inserted features
           (e.g. no multipolygon in a polygon layer)
           */
-    virtual bool doesStrictFeatureTypeCheck() const OVERRIDE { return false;}
+    virtual bool doesStrictFeatureTypeCheck() const override { return false;}
 
     /** return OGR geometry type */
     static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );

@@ -38,10 +38,10 @@ class GUI_EXPORT QgsFileDropEdit: public QLineEdit
 
   protected:
 
-    virtual void dragEnterEvent( QDragEnterEvent *event ) OVERRIDE;
-    virtual void dragLeaveEvent( QDragLeaveEvent *event ) OVERRIDE;
-    virtual void dropEvent( QDropEvent *event ) OVERRIDE;
-    virtual void paintEvent( QPaintEvent *e ) OVERRIDE;
+    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
+    virtual void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    virtual void dropEvent( QDropEvent *event ) override;
+    virtual void paintEvent( QPaintEvent *e ) override;
 
   private:
     QString acceptableFilePath( QDropEvent *event ) const;

@@ -84,9 +84,9 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
 
         // QTreeWidget interface
       protected:
-        virtual QStringList mimeTypes() const OVERRIDE;
+        virtual QStringList mimeTypes() const override;
 
-        virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const OVERRIDE;
+        virtual QMimeData* mimeData( const QList<QTableWidgetItem*> items ) const override;
     };
 
 
@@ -103,15 +103,15 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         QTreeWidgetItem* addContainer( QTreeWidgetItem* parent, QString title );
 
       protected:
-        virtual void dragMoveEvent( QDragMoveEvent *event ) OVERRIDE;
-        virtual void dropEvent( QDropEvent *event ) OVERRIDE;
-        virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) OVERRIDE;
+        virtual void dragMoveEvent( QDragMoveEvent *event ) override;
+        virtual void dropEvent( QDropEvent *event ) override;
+        virtual bool dropMimeData( QTreeWidgetItem * parent, int index, const QMimeData * data, Qt::DropAction action ) override;
         /* Qt::DropActions supportedDropActions() const;*/
 
         // QTreeWidget interface
       protected:
-        virtual QStringList mimeTypes() const OVERRIDE;
-        virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const OVERRIDE;
+        virtual QStringList mimeTypes() const override;
+        virtual QMimeData* mimeData( const QList<QTreeWidgetItem*> items ) const override;
     };
 
     /**

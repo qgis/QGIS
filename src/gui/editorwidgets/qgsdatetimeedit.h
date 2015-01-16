@@ -50,13 +50,13 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     //! Set the current date as NULL
     //! @note if the widget is not configured to accept NULL dates, this will have no effect
-    virtual void clear() OVERRIDE;
+    virtual void clear() override;
 
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event ) OVERRIDE;
+    virtual void resizeEvent( QResizeEvent* event ) override;
 
-    void mousePressEvent( QMouseEvent*event ) OVERRIDE;
+    void mousePressEvent( QMouseEvent*event ) override;
 
 
   private slots:

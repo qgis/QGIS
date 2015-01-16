@@ -59,13 +59,13 @@ class QgsBrowserTreeView : public QTreeView
 
     }
 
-    void dragEnterEvent( QDragEnterEvent* e ) OVERRIDE
+    void dragEnterEvent( QDragEnterEvent* e ) override
     {
       // accept drag enter so that our widget will not get ignored
       // and drag events will not get passed to QgisApp
       e->accept();
     }
-    void dragMoveEvent( QDragMoveEvent* e ) OVERRIDE
+    void dragMoveEvent( QDragMoveEvent* e ) override
     {
       // do not accept drops above/below items
       /*if ( dropIndicatorPosition() != QAbstractItemView::OnItem )
@@ -195,7 +195,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     }
 
     bool filterAcceptsRow( int sourceRow,
-                           const QModelIndex &sourceParent ) const OVERRIDE
+                           const QModelIndex &sourceParent ) const override
     {
       // if ( filterRegExp().pattern() == QString( "" ) ) return true;
       if ( mFilter == "" ) return true;

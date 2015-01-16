@@ -25,8 +25,8 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
 
   public:
     explicit QgsRelationReferenceConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent );
-    virtual QgsEditorWidgetConfig config() OVERRIDE;
-    virtual void setConfig( const QgsEditorWidgetConfig& config ) OVERRIDE;
+    virtual QgsEditorWidgetConfig config() override;
+    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
 
   private slots:
     void relationChanged( int idx );

@@ -34,13 +34,13 @@ class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, priv
     QgsMessageViewer( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
     ~QgsMessageViewer();
 
-    virtual void setMessage( const QString& message, MessageType msgType ) OVERRIDE;
+    virtual void setMessage( const QString& message, MessageType msgType ) override;
 
-    virtual void appendMessage( const QString& message ) OVERRIDE;
+    virtual void appendMessage( const QString& message ) override;
 
-    virtual void showMessage( bool blocking = true ) OVERRIDE;
+    virtual void showMessage( bool blocking = true ) override;
 
-    virtual void setTitle( const QString& title ) OVERRIDE;
+    virtual void setTitle( const QString& title ) override;
 
     // Call one of the setMessage...() functions first.
     // Subsequent calls to appendMessage use the format as determined

@@ -42,7 +42,7 @@ class QgsPanningWidget : public QWidget
       setAttribute( Qt::WA_NoSystemBackground );
     }
 
-    void resizeEvent( QResizeEvent* r ) OVERRIDE
+    void resizeEvent( QResizeEvent* r ) override
     {
       QSize s = r->size();
       QRegion reg( 0, 0, s.width(), s.height() );
@@ -52,7 +52,7 @@ class QgsPanningWidget : public QWidget
     }
 
 
-    void paintEvent( QPaintEvent* pe ) OVERRIDE
+    void paintEvent( QPaintEvent* pe ) override
     {
       Q_UNUSED( pe );
 

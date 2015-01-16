@@ -50,17 +50,17 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     ~QgsMapToolIdentifyAction();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    virtual void activate() OVERRIDE;
+    virtual void activate() override;
 
-    virtual void deactivate() OVERRIDE;
+    virtual void deactivate() override;
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
@@ -80,7 +80,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QgsIdentifyResultsDialog *resultsDialog();
 
-    virtual QGis::UnitType displayUnits() OVERRIDE;
+    virtual QGis::UnitType displayUnits() override;
 
     // pointers to the custom actions for identify menu
     QAction* mAttributeTableAction;

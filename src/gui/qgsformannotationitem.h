@@ -32,23 +32,23 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0 );
     ~QgsFormAnnotationItem();
 
-    void paint( QPainter * painter ) OVERRIDE;
+    void paint( QPainter * painter ) override;
 
     //! paint function called by map canvas
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) OVERRIDE;
+    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 ) override;
 
-    QSizeF minimumFrameSize() const OVERRIDE;
+    QSizeF minimumFrameSize() const override;
     /**Returns the optimal frame size*/
     QSizeF preferredFrameSize() const;
 
     /**Reimplemented from QgsAnnotationItem*/
-    void setMapPosition( const QgsPoint& pos ) OVERRIDE;
+    void setMapPosition( const QgsPoint& pos ) override;
 
     void setDesignerForm( const QString& uiFile );
     QString designerForm() const { return mDesignerForm; }
 
-    void writeXML( QDomDocument& doc ) const OVERRIDE;
-    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) OVERRIDE;
+    void writeXML( QDomDocument& doc ) const override;
+    void readXML( const QDomDocument& doc, const QDomElement& itemElem ) override;
 
     QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 

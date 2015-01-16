@@ -65,7 +65,7 @@ class GUI_EXPORT CharacterWidget : public QWidget
 
   public:
     CharacterWidget( QWidget *parent = 0 );
-    QSize sizeHint() const OVERRIDE;
+    QSize sizeHint() const override;
 
     int getColumns() const { return columns; }
     int getSquareSize() const { return squareSize; }
@@ -81,9 +81,9 @@ class GUI_EXPORT CharacterWidget : public QWidget
     void characterSelected( const QChar &character );
 
   protected:
-    void mouseMoveEvent( QMouseEvent *event ) OVERRIDE;
-    void mousePressEvent( QMouseEvent *event ) OVERRIDE;
-    void paintEvent( QPaintEvent *event ) OVERRIDE;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   private:
     QFont displayFont;

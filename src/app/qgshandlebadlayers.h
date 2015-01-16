@@ -30,7 +30,7 @@ class APP_EXPORT QgsHandleBadLayersHandler
     QgsHandleBadLayersHandler();
 
     /** implementation of the handler */
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) OVERRIDE;
+    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) override;
 };
 
 
@@ -52,7 +52,7 @@ class APP_EXPORT QgsHandleBadLayers
     void selectionChanged();
     void browseClicked();
     void apply();
-    void accept() OVERRIDE;
+    void accept() override;
     void rejected();
 
   private:

@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
      * Overloaded accept method which will write the feature field
      * values, then delegate to QDialog::accept()
      */
-    void accept() OVERRIDE;
+    void accept() override;
 
     /**
      * Sets predefined vector layer for selection of data

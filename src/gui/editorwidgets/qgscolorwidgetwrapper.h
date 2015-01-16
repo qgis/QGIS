@@ -34,14 +34,14 @@ class GUI_EXPORT  QgsColorWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value() OVERRIDE;
+    QVariant value() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) OVERRIDE;
-    void initWidget( QWidget* editor ) OVERRIDE;
+    QWidget* createWidget( QWidget* parent ) override;
+    void initWidget( QWidget* editor ) override;
 
   public slots:
-    void setValue( const QVariant& value ) OVERRIDE;
+    void setValue( const QVariant& value ) override;
 
   private:
     QgsColorButtonV2* mColorButton;

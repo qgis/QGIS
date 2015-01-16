@@ -59,19 +59,19 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
     ~QgsComposerModel();
 
     //reimplemented QAbstractItemModel methods
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    QModelIndex parent( const QModelIndex &index ) const OVERRIDE;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const OVERRIDE;
-    QVariant data( const QModelIndex &index, int role ) const OVERRIDE;
-    Qt::ItemFlags flags( const QModelIndex & index ) const OVERRIDE;
-    bool setData( const QModelIndex & index, const QVariant & value, int role ) OVERRIDE;
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const OVERRIDE;
-    Qt::DropActions supportedDropActions() const OVERRIDE;
-    virtual QStringList mimeTypes() const OVERRIDE;
-    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const OVERRIDE;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) OVERRIDE;
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) OVERRIDE;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
+    Qt::ItemFlags flags( const QModelIndex & index ) const override;
+    bool setData( const QModelIndex & index, const QVariant & value, int role ) override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    Qt::DropActions supportedDropActions() const override;
+    virtual QStringList mimeTypes() const override;
+    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
 
     /**Clears all items from z-order list and resets the model
      * @note added in QGIS 2.5

@@ -275,15 +275,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     const QgsRasterDataProvider* dataProvider() const;
 
     /**Synchronises with changes in the datasource */
-    virtual void reload() OVERRIDE;
+    virtual void reload() override;
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * @note added in 2.4
      */
-    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) OVERRIDE;
+    virtual QgsMapLayerRenderer* createMapRenderer( QgsRenderContext& rendererContext ) override;
 
     /** \brief This is called when the view on the raster layer needs to be redrawn */
-    bool draw( QgsRenderContext& rendererContext ) OVERRIDE;
+    bool draw( QgsRenderContext& rendererContext ) override;
 
     /** \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap */
     void draw( QPainter * theQPainter,
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QgsLegendColorList legendSymbologyItems() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
-    QString metadata() OVERRIDE;
+    QString metadata() override;
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void showProgress( int theValue );
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
-    virtual QStringList subLayers() const OVERRIDE;
+    virtual QStringList subLayers() const override;
 
     /** \brief Draws a preview of the rasterlayer into a pixmap
     @note - use previewAsImage() for rendering with QGIS>=2.4 */
@@ -347,15 +347,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * (Useful for providers that manage their own layers, such as WMS)
      *
      */
-    virtual void setLayerOrder( const QStringList &layers ) OVERRIDE;
+    virtual void setLayerOrder( const QStringList &layers ) override;
 
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( QString name, bool vis ) OVERRIDE;
+    virtual void setSubLayerVisibility( QString name, bool vis ) override;
 
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
-    virtual QDateTime timestamp() const OVERRIDE { return mDataProvider->timestamp() ; }
+    virtual QDateTime timestamp() const override { return mDataProvider->timestamp() ; }
 
   public slots:
     void showStatusMessage( const QString & theMessage );
@@ -377,16 +377,16 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   protected:
     /** \brief Read the symbology for the current layer from the Dom node supplied */
-    bool readSymbology( const QDomNode& node, QString& errorMessage ) OVERRIDE;
+    bool readSymbology( const QDomNode& node, QString& errorMessage ) override;
 
     /** \brief Reads layer specific state from project file Dom node */
-    bool readXml( const QDomNode& layer_node ) OVERRIDE;
+    bool readXml( const QDomNode& layer_node ) override;
 
     /** \brief Write the symbology for the layer into the docment provided */
-    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const OVERRIDE;
+    bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const override;
 
     /** \brief Write layer specific state to project file Dom node */
-    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) OVERRIDE;
+    bool writeXml( QDomNode & layer_node, QDomDocument & doc ) override;
 
   private:
     /** \brief Initialize default values */

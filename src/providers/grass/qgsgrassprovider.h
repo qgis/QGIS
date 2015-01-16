@@ -122,36 +122,36 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     virtual ~QgsGrassProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const OVERRIDE;
+    virtual QgsAbstractFeatureSource* featureSource() const override;
 
     /**
       *   Returns the permanent storage type for this layer as a friendly name.
       */
-    virtual QString storageType() const OVERRIDE;
+    virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) OVERRIDE;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
     /**
      * Get the feature type as defined in WkbType (qgis.h).
      * @return int representing the feature type
      */
-    QGis::WkbType geometryType() const OVERRIDE;
+    QGis::WkbType geometryType() const override;
 
 
     /**
      * Get the number of features in the layer
      */
-    long featureCount() const OVERRIDE;
+    long featureCount() const override;
 
 
     /** Return the extent for this data layer
      */
-    virtual QgsRectangle extent() OVERRIDE;
+    virtual QgsRectangle extent() override;
 
     /**
      * Get the field information for the layer
      */
-    const QgsFields & fields() const OVERRIDE;
+    const QgsFields & fields() const override;
 
     // ! Key (category) field index
     int keyField();
@@ -161,7 +161,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /** Returns the minimum value of an attributs
      *  @param index the index of the attribute */
-    QVariant minimumValue( int index ) OVERRIDE;
+    QVariant minimumValue( int index ) override;
 
     /** Returns the maximum value of an attributs
      *  @param index the index of the attribute */
@@ -178,9 +178,9 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /**Returns true if this is a valid layer
      */
-    bool isValid() OVERRIDE;
+    bool isValid() override;
 
-    QgsCoordinateReferenceSystem crs() OVERRIDE;
+    QgsCoordinateReferenceSystem crs() override;
 
     // ----------------------------------- Edit ----------------------------------
 
@@ -473,7 +473,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString name() const OVERRIDE;
+    QString name() const override;
 
 
     /** return description
@@ -487,7 +487,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString description() const OVERRIDE;
+    QString description() const override;
 
 
 

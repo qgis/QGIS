@@ -108,7 +108,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     bool clearWidgets();
 
   protected:
-    void mousePressEvent( QMouseEvent * e ) OVERRIDE;
+    void mousePressEvent( QMouseEvent * e ) override;
 
   private:
     void popItem( QgsMessageBarItem *item );

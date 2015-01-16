@@ -716,7 +716,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QgsPalLabeling();
     ~QgsPalLabeling();
 
-    QgsPalLayerSettings& layer( const QString& layerName ) OVERRIDE;
+    QgsPalLayerSettings& layer( const QString& layerName ) override;
 
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
@@ -747,11 +747,11 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     //! called when we're going to start with rendering
     //! @deprecated since 2.4 - use override with QgsMapSettings
-    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr ) OVERRIDE;
+    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr ) override;
     //! called when we're going to start with rendering
-    virtual void init( const QgsMapSettings& mapSettings ) OVERRIDE;
+    virtual void init( const QgsMapSettings& mapSettings ) override;
     //! called to find out whether the layer is used for labeling
-    virtual bool willUseLayer( QgsVectorLayer* layer ) OVERRIDE;
+    virtual bool willUseLayer( QgsVectorLayer* layer ) override;
 
     //! called to find out whether the layer is used for labeling
     //! @note added in 2.4
@@ -759,34 +759,34 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     static bool staticWillUseLayer( const QString& layerID );
 
     //! clears all PAL layer settings for registered layers
-    virtual void clearActiveLayers() OVERRIDE;
+    virtual void clearActiveLayers() override;
     //! clears data defined objects from PAL layer settings for a registered layer
-    virtual void clearActiveLayer( const QString& layerID ) OVERRIDE;
+    virtual void clearActiveLayer( const QString& layerID ) override;
     //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx ) OVERRIDE;
+    virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx ) override;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s ) OVERRIDE;
+    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s ) override;
     //! hook called when drawing for every feature in a layer
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) OVERRIDE;
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) OVERRIDE;
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) override;
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) override;
     //! called when the map is drawn and labels should be placed
-    virtual void drawLabeling( QgsRenderContext& context ) OVERRIDE;
+    virtual void drawLabeling( QgsRenderContext& context ) override;
     //! called when we're done with rendering
-    virtual void exit() OVERRIDE;
+    virtual void exit() override;
 
     //! return infos about labels at a given (map) position
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) OVERRIDE;
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) override;
     //! return infos about labels within a given (map) rectangle
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) OVERRIDE;
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) override;
 
     //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
     //! @note added in 2.4
     QgsLabelingResults* takeResults();
 
     //! called when passing engine among map renderers
-    virtual QgsLabelingEngineInterface* clone() OVERRIDE;
+    virtual QgsLabelingEngineInterface* clone() override;
 
     //! @note not available in python bindings
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
