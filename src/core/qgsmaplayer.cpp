@@ -947,6 +947,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI
   return theResultFlag;
 }
 
+
 QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag )
 {
   QgsDebugMsg( QString( "uri = %1 myURI = %2" ).arg( theURI ).arg( publicSource() ) );
@@ -995,6 +996,16 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
     return myErrorMessage;
   }
 
+  theResultFlag = importNamedStyle( myDocument, myErrorMessage );
+  if ( !theResultFlag )
+    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( myErrorMessage );
+
+  return myErrorMessage;
+}
+
+
+bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMessage )
+{
   // get style file version string, if any
   QgsProjectVersion fileVersion( myDocument.firstChildElement( "qgis" ).attribute( "version" ) );
   QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
@@ -1017,9 +1028,8 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
   QDomElement myRoot = myDocument.firstChildElement( "qgis" );
   if ( myRoot.isNull() )
   {
-    myErrorMessage = tr( "Error: qgis element could not be found in %1" ).arg( theURI );
-    theResultFlag = false;
-    return myErrorMessage;
+    myErrorMessage = tr( "Root <qgis> element could not be found" );
+    return false;
   }
 
   // use scale dependent visibility flag
@@ -1039,15 +1049,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
   }
 #endif
 
-  QString errorMsg;
-  theResultFlag = readSymbology( myRoot, errorMsg );
-  if ( !theResultFlag )
-  {
-    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( errorMsg );
-    return myErrorMessage;
-  }
-
-  return "";
+  return readSymbology( myRoot, myErrorMessage );
 }
 
 void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg )

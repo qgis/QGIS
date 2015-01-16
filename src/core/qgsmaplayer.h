@@ -295,7 +295,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     virtual bool loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml );
 
-    //TODO edit infos
+    /**
+     * Import the properties of this layer from a QDomDocument
+     * @param doc source QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of readSymbology
+     * @return true on success
+     * @note added in 2.8
+     */
+    virtual bool importNamedStyle( QDomDocument& doc, QString &errorMsg );
+
     /**
      * Export the properties of this layer as named style in a QDomDocument
      * @param doc the target QDomDocument

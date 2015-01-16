@@ -19,7 +19,6 @@
 #include "qgsmaplayer.h"
 
 #include <QDomElement>
-#include <QTemporaryFile>
 #include <QTextStream>
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
@@ -196,17 +195,17 @@ void QgsMapLayerStyle::readFromLayer( QgsMapLayer* layer )
 
 void QgsMapLayerStyle::writeToLayer( QgsMapLayer* layer ) const
 {
-  // QgsMapLayer does not have a importNamedStyle() method - working it around like this
-  QTemporaryFile f;
-  f.open();
-  f.write( mXmlData );
-  f.flush();
-
-  bool res;
-  QString status = layer->loadNamedStyle( f.fileName(), res );
-  if ( !res )
+  QDomDocument doc( "qgis" );
+  if ( !doc.setContent( mXmlData ) )
   {
-    QgsDebugMsg( "Failed to import style to layer: " + status );
+    QgsDebugMsg( "Failed to parse XML of previously stored XML data - this should not happen!" );
+    return;
+  }
+
+  QString errorMsg;
+  if ( !layer->importNamedStyle( doc, errorMsg ) )
+  {
+    QgsDebugMsg( "Failed to import style to layer: " + errorMsg );
   }
 }
 
