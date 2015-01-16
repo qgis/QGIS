@@ -79,7 +79,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
                     self.exportedLayers[param.value] = filename
                 elif not param.value.endswith('shp'):
                     raise GeoAlgorithmExecutionException(
-                            'Unsupported file format')
+                        self.tr('Unsupported file format'))
             if isinstance(param, ParameterTable):
                 if param.value is None:
                     continue
@@ -89,7 +89,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
                     self.exportedLayers[param.value] = filename
                 elif not param.value.endswith('shp'):
                     raise GeoAlgorithmExecutionException(
-                            'Unsupported file format')
+                        self.tr('Unsupported file format'))
             if isinstance(param, ParameterMultipleInput):
                 if param.value is None:
                     continue
@@ -110,7 +110,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
                             self.exportedLayers[layerfile] = filename
                         elif not layerfile.endswith('shp'):
                             raise GeoAlgorithmExecutionException(
-                                    'Unsupported file format')
+                                self.tr('Unsupported file format'))
 
         # 2: Set parameters and outputs
         command = self.undecoratedGroup + ' "' + self.cmdname + '"'
@@ -202,8 +202,8 @@ class SagaAlgorithm213(SagaAlgorithm212):
 
                 if self.cmdname == 'RGB Composite':
                     commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
-                                	+ '" -FILE:"' + filename
-                                	+ '"')
+                                    + '" -FILE:"' + filename
+                                    + '"')
                 else:
                     commands.append('io_gdal 1 -GRIDS "' + filename2
                                     + '" -FORMAT ' + str(formatIndex)
@@ -214,14 +214,13 @@ class SagaAlgorithm213(SagaAlgorithm212):
         commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         loglines = []
-        loglines.append('SAGA execution commands')
+        loglines.append(self.tr('SAGA execution commands'))
         for line in commands:
             progress.setCommand(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(SagaUtils.SAGA_LOG_COMMANDS):
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         SagaUtils.executeSaga(progress)
-
 
     def exportRasterLayer(self, source):
         global sessionExportedLayers
@@ -242,8 +241,3 @@ class SagaAlgorithm213(SagaAlgorithm212):
         self.exportedLayers[source] = destFilename
         sessionExportedLayers[source] = destFilename
         return 'io_gdal 0 -TRANSFORM -INTERPOL 0 -GRIDS "' + destFilename + '" -FILES "' + source +  '"'
-
-
-
-
-

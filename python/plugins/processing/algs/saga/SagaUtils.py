@@ -137,7 +137,7 @@ def executeSaga(progress):
                  | stat.S_IREAD | stat.S_IWRITE)
         command = [sagaBatchJobFilename()]
     loglines = []
-    loglines.append('SAGA execution console output')
+    loglines.append(QCoreApplication.translate('SagaUtils', 'SAGA execution console output'))
     proc = subprocess.Popen(
         command,
         shell=True,

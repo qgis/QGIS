@@ -125,7 +125,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                     self.exportedLayers[param.value] = filename
                 elif not param.value.endswith('shp'):
                     raise GeoAlgorithmExecutionException(
-                            'Unsupported file format')
+                        self.tr('Unsupported file format'))
             if isinstance(param, ParameterTable):
                 if param.value is None:
                     continue
@@ -135,7 +135,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                     self.exportedLayers[param.value] = filename
                 elif not param.value.endswith('shp'):
                     raise GeoAlgorithmExecutionException(
-                            'Unsupported file format')
+                        self.tr('Unsupported file format'))
             if isinstance(param, ParameterMultipleInput):
                 if param.value is None:
                     continue
@@ -156,7 +156,7 @@ class SagaAlgorithm212(GeoAlgorithm):
                             self.exportedLayers[layerfile] = filename
                         elif not layerfile.endswith('shp'):
                             raise GeoAlgorithmExecutionException(
-                                    'Unsupported file format')
+                                self.tr('Unsupported file format'))
 
         # 2: Set parameters and outputs
         command = self.undecoratedGroup + ' "' + self.cmdname + '"'
@@ -246,8 +246,8 @@ class SagaAlgorithm212(GeoAlgorithm):
 
                 if self.cmdname == 'RGB Composite':
                     commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
-                                	+ '" -FILE:"' + filename
-                                	+ '"')
+                                    + '" -FILE:"' + filename
+                                    + '"')
                 else:
                     commands.append('io_gdal 1 -GRIDS "' + filename2
                                     + '" -FORMAT ' + str(formatIndex)
@@ -258,7 +258,7 @@ class SagaAlgorithm212(GeoAlgorithm):
         commands = self.editCommands(commands)
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         loglines = []
-        loglines.append('SAGA execution commands')
+        loglines.append(self.tr('SAGA execution commands'))
         for line in commands:
             progress.setCommand(line)
             loglines.append(line)
@@ -340,18 +340,15 @@ class SagaAlgorithm212(GeoAlgorithm):
                 if layer is None:
                     continue
                 if layer.bandCount() > 1:
-                    return 'Input layer ' + str(layer.name()) \
-                        + ' has more than one band.\n' \
-                        + 'Multiband layers are not supported by SAGA'
+                    return self.tr('Input layer %s has more than one band.\n'
+                                   'Multiband layers are not supported by SAGA' % str(layer.name()))
                 if not self.allowUnmatchingGridExtents:
                     if extent is None:
                         extent = (layer.extent(), layer.height(), layer.width())
                     else:
                         extent2 = (layer.extent(), layer.height(), layer.width())
                         if extent != extent2:
-                            return "Input layers do not have the same grid extent."
-
-
+                            return self.tr("Input layers do not have the same grid extent.")
 
     def help(self):
         name = self.cmdname.lower()
@@ -364,4 +361,3 @@ class SagaAlgorithm212(GeoAlgorithm):
         imgpath = os.path.join(os.path.dirname(__file__),os.pardir, os.pardir, 'images', 'saga100x100.jpg')
         html = ('<img src="%s"/>' % imgpath) + html
         return True, html
-
