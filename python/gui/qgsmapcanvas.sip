@@ -161,7 +161,7 @@ class QgsMapCanvas : QGraphicsView
     void clearExtentHistory();
 
     /** Zoom to the extent of the selected features of current (vector) layer.
-      Added in version 1.2: optionally specify different than current layer */
+      @param layer optionally specify different than current layer */
     void zoomToSelected( QgsVectorLayer* layer = NULL );
 
     /** Pan to the selected features of current (vector) layer keeping same extent. */
@@ -203,7 +203,7 @@ class QgsMapCanvas : QGraphicsView
     //! return number of layers on the map
     int layerCount() const;
 
-    //! return list of layers within map canvas. Added in v1.5
+    //! return list of layers within map canvas.
     QList<QgsMapLayer*> layers() const;
 
     /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
@@ -350,6 +350,14 @@ class QgsMapCanvas : QGraphicsView
     //! ask user about datum transformation
     void getDatumTransformInfo( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId );
 
+    //! return if canvas rotation is enabled
+    //! @note added in 2.8
+    static bool rotationEnabled();
+
+    //! change canvas rotation support
+    //! @note added in 2.8
+    static void enableRotation( bool enabled );
+
   signals:
     /** Let the owner know how far we are with render operations */
     //! @deprecated since 2.4 - already unused in 2.0 anyway
@@ -364,6 +372,10 @@ class QgsMapCanvas : QGraphicsView
 
     //! Emitted when the extents of the map change
     void extentsChanged();
+
+    //! Emitted when the rotation of the map changes
+    //! @note added in 2.8
+    void rotationChanged( double );
 
     /** Emitted when the canvas has rendered.
 
@@ -383,8 +395,7 @@ class QgsMapCanvas : QGraphicsView
     void mapCanvasRefreshed();
 
     // ### QGIS 3: rename to mapRefreshStarted()
-    /** Emitted when the canvas is about to be rendered.
-      \note Added in 1.5 */
+    /** Emitted when the canvas is about to be rendered. */
     void renderStarting();
 
     //! Emitted when a new set of layers has been received

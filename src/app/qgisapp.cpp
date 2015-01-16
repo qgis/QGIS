@@ -1684,7 +1684,6 @@ void QgisApp::createStatusBar()
   mCoordsEdit->setMaximumHeight( 20 );
   mCoordsEdit->setContentsMargins( 0, 0, 0, 0 );
   mCoordsEdit->setAlignment( Qt::AlignCenter );
-  mCoordsEdit->setAlignment( Qt::AlignCenter );
   QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
   mCoordsEditValidator = new QRegExpValidator( coordValidator, mCoordsEdit );
   mCoordsEdit->setWhatsThis( tr( "Shows the map coordinates at the "
@@ -1726,7 +1725,7 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( scaleChanged() ), this, SLOT( userScale() ) );
 
-  if ( QSettings().value( "/qgis/canvasRotation", true ).toBool() )
+  if ( QgsMapCanvas::rotationEnabled() )
   {
     // add a widget to show/set current rotation
     mRotationLabel = new QLabel( QString(), statusBar() );
@@ -1747,7 +1746,6 @@ void QgisApp::createStatusBar()
     mRotationEdit->setKeyboardTracking( false );
     mRotationEdit->setMaximumWidth( 120 );
     mRotationEdit->setDecimals( 1 );
-    mRotationEdit->setMaximumHeight( 20 );
     mRotationEdit->setRange( -180.0, 180.0 );
     mRotationEdit->setWrapping( true );
     mRotationEdit->setSingleStep( 5.0 );
@@ -2097,10 +2095,6 @@ void QgisApp::setupConnections()
            this, SLOT( checkForDeprecatedLabelsInProject() ) );
   connect( this, SIGNAL( projectRead() ),
            this, SLOT( checkForDeprecatedLabelsInProject() ) );
-
-  // reset rotation on new project
-  connect( this, SIGNAL( newProject() ),
-           this, SLOT( resetMapSettings() ) );
 
   // setup undo/redo actions
   connect( mUndoWidget, SIGNAL( undoStackChanged() ), this, SLOT( updateUndoActions() ) );
@@ -3530,7 +3524,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
 
   //QgsDebugMsg("emiting new project signal");
 
-  //emit signal so QgsComposer knows we have a new project
+  // emit signal so listeners know we have a new project
   emit newProject();
 
   mMapCanvas->freeze( false );
