@@ -40,11 +40,11 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 
     bool getOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
 
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) OVERRIDE;
-    uint getMinimumGCPCount() const OVERRIDE;
+    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
+    uint getMinimumGCPCount() const override;
 
-    GDALTransformerFunc  GDALTransformer()     const OVERRIDE { return QgsLinearGeorefTransform::linear_transform; }
-    void                *GDALTransformerArgs() const OVERRIDE { return ( void * )&mParameters; }
+    GDALTransformerFunc  GDALTransformer()     const override { return QgsLinearGeorefTransform::linear_transform; }
+    void                *GDALTransformerArgs() const override { return ( void * )&mParameters; }
   private:
     struct LinearParameters
     {
@@ -71,11 +71,11 @@ class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
     };
 
     bool getOriginScaleRotation( QgsPoint &origin, double& scale, double& rotation ) const;
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) OVERRIDE;
-    uint getMinimumGCPCount() const OVERRIDE;
+    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
+    uint getMinimumGCPCount() const override;
 
-    GDALTransformerFunc  GDALTransformer()     const OVERRIDE;
-    void                *GDALTransformerArgs() const OVERRIDE;
+    GDALTransformerFunc  GDALTransformer()     const override;
+    void                *GDALTransformerArgs() const override;
   private:
     HelmertParameters mHelmertParameters;
 
@@ -92,11 +92,11 @@ class QgsGDALGeorefTransform : public QgsGeorefTransformInterface
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
     ~QgsGDALGeorefTransform();
 
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) OVERRIDE;
-    uint getMinimumGCPCount() const OVERRIDE;
+    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
+    uint getMinimumGCPCount() const override;
 
-    GDALTransformerFunc  GDALTransformer()     const OVERRIDE;
-    void                *GDALTransformerArgs() const OVERRIDE;
+    GDALTransformerFunc  GDALTransformer()     const override;
+    void                *GDALTransformerArgs() const override;
   private:
     void destroy_gdal_args();
 
@@ -118,11 +118,11 @@ class QgsProjectiveGeorefTransform : public QgsGeorefTransformInterface
     QgsProjectiveGeorefTransform() {}
     ~QgsProjectiveGeorefTransform() {}
 
-    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) OVERRIDE;
-    uint getMinimumGCPCount() const OVERRIDE;
+    bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;
+    uint getMinimumGCPCount() const override;
 
-    GDALTransformerFunc  GDALTransformer()     const OVERRIDE { return QgsProjectiveGeorefTransform::projective_transform; }
-    void                *GDALTransformerArgs() const OVERRIDE { return ( void * )&mParameters; }
+    GDALTransformerFunc  GDALTransformer()     const override { return QgsProjectiveGeorefTransform::projective_transform; }
+    void                *GDALTransformerArgs() const override { return ( void * )&mParameters; }
   private:
     struct ProjectiveParameters
     {

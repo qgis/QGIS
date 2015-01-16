@@ -27,14 +27,14 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
     QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefDataPoint* dataPoint, bool isGCPSource/* = true*/ );
 
     //! draws point information
-    void paint( QPainter* p ) OVERRIDE;
+    void paint( QPainter* p ) override;
 
     //! handler for manual updating of position and size
-    QRectF boundingRect() const OVERRIDE;
+    QRectF boundingRect() const override;
 
-    QPainterPath shape() const OVERRIDE;
+    QPainterPath shape() const override;
 
-    void updatePosition() OVERRIDE;
+    void updatePosition() override;
 
     /**Calls prepareGeometryChange()*/
     void checkBoundingRectChange();

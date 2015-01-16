@@ -144,14 +144,14 @@ class QgsComposerMapWidget: public QgsComposerItemBaseWidget, private Ui::QgsCom
     void blockOverviewItemsSignals( bool block );
 
   protected:
-    void showEvent( QShowEvent * event ) OVERRIDE;
+    void showEvent( QShowEvent * event ) override;
 
     void addPageToToolbox( QWidget * widget, const QString& name );
 
     /**Sets the current composer map values to the GUI elements*/
     virtual void updateGuiElements();
 
-    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) OVERRIDE;
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
 
   protected slots:
     /**Initializes data defined buttons to current atlas coverage layer*/

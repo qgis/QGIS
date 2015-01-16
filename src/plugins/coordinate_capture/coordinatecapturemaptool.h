@@ -37,16 +37,16 @@ class CoordinateCaptureMapTool : public QgsMapTool
     ~CoordinateCaptureMapTool();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasPressEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e ) OVERRIDE;
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when map tool is being deactivated
-    virtual void deactivate() OVERRIDE;
+    virtual void deactivate() override;
 
   public slots:
 

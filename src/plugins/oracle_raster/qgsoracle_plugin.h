@@ -44,11 +44,11 @@ class QgsOraclePlugin : public QObject, public QgisPlugin
   public slots:
 
     //! init the gui
-    virtual void initGui() OVERRIDE;
+    virtual void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin
-    void unload() OVERRIDE;
+    void unload() override;
     //! show the help document
     void help();
 

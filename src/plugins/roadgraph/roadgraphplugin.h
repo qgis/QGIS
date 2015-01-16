@@ -78,7 +78,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui() OVERRIDE;
+    virtual void initGui() override;
 
     //!set values onthe gui when a project is read or the gui first loaded
     virtual void projectRead();
@@ -90,7 +90,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     void property();
 
     //! unload the plugin
-    void unload() OVERRIDE;
+    void unload() override;
 
     //! show the help document
     void help();

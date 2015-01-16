@@ -59,7 +59,7 @@ class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::Q
     void setGuiElements();
 
   protected:
-    void showEvent( QShowEvent * event ) OVERRIDE;
+    void showEvent( QShowEvent * event ) override;
 
   private:
     QgsComposerScaleBar* mComposerScaleBar;

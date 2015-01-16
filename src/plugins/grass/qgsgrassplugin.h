@@ -84,7 +84,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui() OVERRIDE;
+    virtual void initGui() override;
     //! Show the dialog box for new vector
     void addVector();
     //! Show the dialog box for new raster
@@ -92,7 +92,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! Start vector editing
     void edit();
     //! unload the plugin
-    void unload() OVERRIDE;
+    void unload() override;
     //! show the help document
     void help();
     //! Display current region

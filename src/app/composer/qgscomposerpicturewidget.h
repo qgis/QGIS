@@ -51,10 +51,10 @@ class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::Qg
     void on_mAnchorPointComboBox_currentIndexChanged( int index );
 
   protected:
-    void showEvent( QShowEvent * event ) OVERRIDE;
-    void resizeEvent( QResizeEvent * event ) OVERRIDE;
+    void showEvent( QShowEvent * event ) override;
+    void resizeEvent( QResizeEvent * event ) override;
 
-    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) OVERRIDE;
+    QgsComposerObject::DataDefinedProperty ddPropertyForWidget( QgsDataDefinedButton *widget ) override;
 
   protected slots:
     /**Initializes data defined buttons to current atlas coverage layer*/
