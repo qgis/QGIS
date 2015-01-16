@@ -207,11 +207,11 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   setLayout( l );
 }
 
-void QgsCustomLayerOrderWidget::bridgeHasCustomLayerOrderChanged( bool override )
+void QgsCustomLayerOrderWidget::bridgeHasCustomLayerOrderChanged( bool state )
 {
-  mChkOverride->setChecked( override );
+  mChkOverride->setChecked( state );
   mModel->refreshModel( mBridge->hasCustomLayerOrder() ? mBridge->customLayerOrder() : mBridge->defaultLayerOrder() );
-  mView->setEnabled( override );
+  mView->setEnabled( state );
 }
 
 void QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged( const QStringList& order )

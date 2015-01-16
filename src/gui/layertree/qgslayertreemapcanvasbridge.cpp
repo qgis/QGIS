@@ -65,12 +65,12 @@ void QgsLayerTreeMapCanvasBridge::defaultLayerOrder( QgsLayerTreeNode* node, QSt
 }
 
 
-void QgsLayerTreeMapCanvasBridge::setHasCustomLayerOrder( bool override )
+void QgsLayerTreeMapCanvasBridge::setHasCustomLayerOrder( bool state )
 {
-  if ( mHasCustomLayerOrder == override )
+  if ( mHasCustomLayerOrder == state )
     return;
 
-  mHasCustomLayerOrder = override;
+  mHasCustomLayerOrder = state;
   emit hasCustomLayerOrderChanged( mHasCustomLayerOrder );
 
   deferredSetCanvasLayers();
