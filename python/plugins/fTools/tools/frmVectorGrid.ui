@@ -205,7 +205,7 @@
          <number>10</number>
         </property>
         <property name="minimum">
-         <double>0.000100000000000</double>
+         <double>0.000001000000000</double>
         </property>
         <property name="maximum">
          <double>1000000000.000000000000000</double>
@@ -270,7 +270,7 @@
          <number>10</number>
         </property>
         <property name="minimum">
-         <double>0.000100000000000</double>
+         <double>0.000001000000000</double>
         </property>
         <property name="maximum">
          <double>1000000000.000000000000000</double>
@@ -286,7 +286,7 @@
          <string>Output grid as polygons</string>
         </property>
         <property name="checked">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -296,7 +296,24 @@
          <string>Output grid as lines</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QDoubleSpinBox" name="angle">
+        <property name="minimum">
+         <double>-360.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3" colspan="2">
+       <widget class="QLabel" name="angleLabel">
+        <property name="text">
+         <string>Rotation angle in degrees</string>
         </property>
        </widget>
       </item>
