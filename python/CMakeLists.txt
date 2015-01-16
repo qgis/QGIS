@@ -256,8 +256,8 @@ ENDIF(WITH_CUSTOM_WIDGETS)
 # Plugin utilities files to copy to staging or install
 SET(PY_FILES
   __init__.py
-  utils.py  
-  user.py  
+  utils.py
+  user.py
 )
 
 ADD_CUSTOM_TARGET(pyutils ALL)

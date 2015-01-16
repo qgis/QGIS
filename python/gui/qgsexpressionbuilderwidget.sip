@@ -113,7 +113,7 @@ class QgsExpressionBuilderWidget : QWidget
 
     /** Create a new file in the function editor
      */
-    void newFunctionFile( QString fileName = "scratch");
+    void newFunctionFile( QString fileName = "scratch" );
 
     /** Save the current function editor text to the given file.
      */
@@ -133,6 +133,10 @@ class QgsExpressionBuilderWidget : QWidget
 
   public slots:
     void currentChanged( const QModelIndex &index, const QModelIndex & );
+    void on_btnRun_pressed();
+    void on_btnNewFile_pressed();
+    void on_cmbFileNames_currentIndexChanged( int index );
+    void on_btnSaveFile_pressed();
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();

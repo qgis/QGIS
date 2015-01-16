@@ -152,7 +152,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /** Create a new file in the function editor
      */
-    void newFunctionFile( QString fileName = "scratch");
+    void newFunctionFile( QString fileName = "scratch" );
 
     /** Save the current function editor text to the given file.
      */
