@@ -31,6 +31,7 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import ftools_utils
+import math
 from qgis.core import *
 from ui_frmPointsInPolygon import Ui_Dialog
 
@@ -207,8 +208,8 @@ class PointsInPolygonThread(QThread):
             columnName = unicode(item.text() + "_" + self.statistics)
             index = polyProvider.fieldNameIndex(unicode(columnName))
             if index == -1:
-                if item.type() == typeDouble or self.statistics == "mean":
-                    fieldList.append( QgsField(columnName, QVariant.Double, "double", 10, 2,  "Value") )
+                if item.type() == typeDouble or self.statistics == "mean" or self.statistics == "stddev":
+                    fieldList.append( QgsField(columnName, QVariant.Double, "double", 24, 15,  "Value") )
                 else:
                     fieldList.append( QgsField(columnName, QVariant.Int, "int", 10, 0,  "Value") )
 
@@ -268,6 +269,16 @@ class PointsInPolygonThread(QThread):
                 # Compute the statistical values for selected vector attributes
                 for item in selectedItems:
                     values = valueList[item.text()]
+                    # Check if the input contains non-numeric values
+                    non_numeric_values = False
+                    for value in values:
+                        if (isinstance(value,  type(float())) != True) and (isinstance(value,  type(int())) != True):
+                            non_numeric_values = True
+                            break
+                    # Jump over invalid values
+                    if non_numeric_values is True:
+                        continue
+                    
                     if values and len(values) > 0:
                         if self.statistics == "sum":
                             value = reduce(myAdder,  values)
@@ -279,6 +290,9 @@ class PointsInPolygonThread(QThread):
                         elif self.statistics == "max":
                             values.sort()
                             value = values[-1]
+                        elif self.statistics == "stddev":
+                            value = two_pass_variance(values)
+                            value = math.sqrt(value)
                         atMap.append(value)
 
             outFeat.setAttributes(atMap)
@@ -309,3 +323,27 @@ class PointsInPolygonThread(QThread):
         
 def myAdder(x,y): 
     return x+y
+    
+def two_pass_variance(data):
+    """
+    Variance algorithm taken from Wikipedia:
+    https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance
+    """
+    n    = 0.0
+    sum1 = 0.0
+    sum2 = 0.0
+ 
+    for x in data:
+        n    = n + 1.0
+        sum1 = sum1 + float(x)
+ 
+    if (n < 2):
+        return 0
+
+    mean = sum1 / n
+ 
+    for x in data:
+        sum2 = sum2 + (x - mean)*(x - mean)
+ 
+    variance = sum2 / (n - 1)
+    return variance

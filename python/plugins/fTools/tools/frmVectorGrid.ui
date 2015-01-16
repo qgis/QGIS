@@ -205,7 +205,7 @@
          <number>10</number>
         </property>
         <property name="minimum">
-         <double>0.000001000000000</double>
+         <double>0.000100000000000</double>
         </property>
         <property name="maximum">
          <double>1000000000.000000000000000</double>
@@ -270,7 +270,7 @@
          <number>10</number>
         </property>
         <property name="minimum">
-         <double>0.000001000000000</double>
+         <double>0.000100000000000</double>
         </property>
         <property name="maximum">
          <double>1000000000.000000000000000</double>
@@ -286,7 +286,7 @@
          <string>Output grid as polygons</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -296,7 +296,7 @@
          <string>Output grid as lines</string>
         </property>
         <property name="checked">
-         <bool>false</bool>
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -368,9 +368,6 @@
     <widget class="QCheckBox" name="addToCanvasCheck">
      <property name="text">
       <string>Add result to canvas</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
      </property>
     </widget>
    </item>

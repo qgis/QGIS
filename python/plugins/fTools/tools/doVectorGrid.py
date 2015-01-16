@@ -264,7 +264,6 @@ class Dialog(QDialog, Ui_Dialog):
                     pt4 = QgsPoint(x, y - yOffset)
                     pt5 = QgsPoint(x, y)
                     
-                    print self.angle.value()
                     if self.angle.value() != 0.0:
                         self.rotatePoint(pt1)
                         self.rotatePoint(pt2)
