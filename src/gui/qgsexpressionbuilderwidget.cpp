@@ -161,6 +161,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
   foreach ( QString name, files )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
+    if ( info.baseName() == "__init__" ) continue;
     cmbFileNames->addItem( info.baseName() );
   }
 }
