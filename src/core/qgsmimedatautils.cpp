@@ -45,16 +45,29 @@ QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
 QgsMimeDataUtils::Uri::Uri( QString& encData )
 {
   QStringList decoded = decode( encData );
-  if ( decoded.size() == 6 )
+  if ( decoded.size() < 4 )
+    return;
+
+  layerType = decoded[0];
+  providerKey = decoded[1];
+  name = decoded[2];
+  uri = decoded[3];
+
+  if ( layerType == "raster" && decoded.size() == 6 )
   {
-    layerType = decoded[0];
-    providerKey = decoded[1];
-    name = decoded[2];
-    uri = decoded[3];
     supportedCrs = decode( decoded[4] );
     supportedFormats = decode( decoded[5] );
-    QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri + " supportedCRS: " + decoded[4] + " supportedFormats: " + decoded[5] );
   }
+  else
+  {
+    supportedCrs.clear();
+    supportedFormats.clear();
+  }
+
+  QgsDebugMsg( QString( "type:%1 key:%2 name:%3 uri:%4 supportedCRS:%5 supportedFormats:%6" )
+               .arg( layerType ).arg( providerKey ).arg( name ).arg( uri )
+               .arg( supportedCrs.join( ", " ) )
+               .arg( supportedFormats.join( ", " ) ) );
 }
 
 QString QgsMimeDataUtils::Uri::data() const
@@ -75,7 +88,7 @@ QMimeData* QgsMimeDataUtils::encodeUriList( QgsMimeDataUtils::UriList layers )
   QByteArray encodedData;
 
   QDataStream stream( &encodedData, QIODevice::WriteOnly );
-  foreach ( const QgsMimeDataUtils::Uri& u, layers )
+  foreach ( const Uri& u, layers )
   {
     stream << u.data();
   }
@@ -90,12 +103,12 @@ QgsMimeDataUtils::UriList QgsMimeDataUtils::decodeUriList( const QMimeData* data
   QByteArray encodedData = data->data( QGIS_URILIST_MIMETYPE );
   QDataStream stream( &encodedData, QIODevice::ReadOnly );
   QString xUri; // extended uri: layer_type:provider_key:uri
-  QgsMimeDataUtils::UriList list;
+  UriList list;
   while ( !stream.atEnd() )
   {
     stream >> xUri;
     QgsDebugMsg( xUri );
-    list.append( QgsMimeDataUtils::Uri( xUri ) );
+    list.append( Uri( xUri ) );
   }
   return list;
 }
