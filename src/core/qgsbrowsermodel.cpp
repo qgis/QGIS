@@ -29,7 +29,7 @@
 
 #include <QSettings>
 
-QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem * item )
+QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
     : mItem( item )
 {
 }

@@ -768,7 +768,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
     QString subdirPath = dir.absoluteFilePath( subdir );
     QgsDebugMsgLevel( QString( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
-    QString path = mPath + "/" + subdir; // may differ from subdirPath
+    QString path = mDirPath + "/" + subdir; // may differ from subdirPath
     QgsDirectoryItem *item = new QgsDirectoryItem( this, subdir, subdirPath, path );
     // propagate signals up to top
 
@@ -1443,7 +1443,7 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString dirPath, QSt
   return 0;
 }
 
-const QStringList & QgsZipItem::getZipFileList()
+const QStringList &QgsZipItem::getZipFileList()
 {
   if ( ! mZipFileList.isEmpty() )
     return mZipFileList;
@@ -1452,7 +1452,7 @@ const QStringList & QgsZipItem::getZipFileList()
   QSettings settings;
   QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
 
-  QgsDebugMsgLevel( QString( "mFIlePath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( mFilePath ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 3 );
+  QgsDebugMsgLevel( QString( "mFilePath = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( mFilePath ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 3 );
 
   // if scanZipBrowser == no: skip to the next file
   if ( scanZipSetting == "no" )
@@ -1461,7 +1461,7 @@ const QStringList & QgsZipItem::getZipFileList()
   }
 
   // get list of files inside zip file
-  QgsDebugMsgLevel( QString( "Open file %1 with gdal vsi" ).arg( mVsiPrefix + path() ), 3 );
+  QgsDebugMsgLevel( QString( "Open file %1 with gdal vsi" ).arg( mVsiPrefix + mFilePath ), 3 );
   char **papszSiblingFiles = VSIReadDirRecursive1( QString( mVsiPrefix + mFilePath ).toLocal8Bit().constData() );
   if ( papszSiblingFiles )
   {

@@ -431,7 +431,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 
   public:
     QgsZipItem( QgsDataItem* parent, QString name, QString path );
-    QgsZipItem( QgsDataItem* parent, QString name, QString dirPath, QString path );
+    QgsZipItem( QgsDataItem* parent, QString name, QString filePath, QString path );
     ~QgsZipItem();
 
     QVector<QgsDataItem*> createChildren() override;
