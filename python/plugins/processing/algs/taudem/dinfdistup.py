@@ -78,22 +78,22 @@ class DinfDistUp(GeoAlgorithm):
         self.group = 'Specialized Grid Analysis tools'
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
-                          'D-Infinity Flow Direction Grid', False))
+            self.tr('D-Infinity Flow Direction Grid'), False))
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID,
-                          'Pit Filled Elevation Grid', False))
-        self.addParameter(ParameterRaster(self.SLOPE_GRID, 'Slope Grid',
-                          False))
+            self.tr('Pit Filled Elevation Grid'), False))
+        self.addParameter(ParameterRaster(self.SLOPE_GRID,
+            self.tr('Slope Grid'), False))
         self.addParameter(ParameterSelection(self.STAT_METHOD,
-                          'Statistical Method', self.STATISTICS, 2))
+            self.tr('Statistical Method'), self.STATISTICS, 2))
         self.addParameter(ParameterSelection(self.DIST_METHOD,
-                          'Distance Method', self.DISTANCE, 1))
+            self.tr('Distance Method'), self.DISTANCE, 1))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-                          'Proportion Threshold', 0, None, 0.5))
+            self.tr('Proportion Threshold'), 0, None, 0.5))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-                          'Check for edge contamination', True))
+            self.tr('Check for edge contamination'), True))
 
-        self.addOutput(OutputRaster(self.DIST_UP_GRID, 'D-Infinity Distance Up'
-                       ))
+        self.addOutput(OutputRaster(self.DIST_UP_GRID,
+            self.tr('D-Infinity Distance Up')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -101,9 +101,9 @@ class DinfDistUp(GeoAlgorithm):
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -123,11 +123,5 @@ class DinfDistUp(GeoAlgorithm):
             commands.append('-nc')
         commands.append('-du')
         commands.append(self.getOutputValue(self.DIST_UP_GRID))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)

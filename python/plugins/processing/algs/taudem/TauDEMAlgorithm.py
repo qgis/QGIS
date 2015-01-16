@@ -81,8 +81,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 line = lines.readline().strip('\n').strip()
             except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       'Could not load TauDEM algorithm: '
-                                       + self.descriptionFile + '\n' + line)
+                    self.tr('Could not load TauDEM algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 
@@ -92,10 +91,9 @@ class TauDEMAlgorithm(GeoAlgorithm):
 
         processNum = int(ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES))
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.'
-                )
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -121,9 +119,4 @@ class TauDEMAlgorithm(GeoAlgorithm):
             commands.append(out.name)
             commands.append(out.value)
 
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
         TauDEMUtils.executeTauDEM(commands, progress)

@@ -65,20 +65,21 @@ class GridNet(GeoAlgorithm):
         self.group = 'Basic Grid Analysis tools'
 
         self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID,
-                          'D8 Flow Direction Grid', False))
+            self.tr('D8 Flow Direction Grid'), False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-                          'Outlets Shapefile',
-                          [ParameterVector.VECTOR_TYPE_POINT], True))
-        self.addParameter(ParameterRaster(self.MASK_GRID, 'Mask Grid', True))
+            self.tr('Outlets Shapefile'),
+            [ParameterVector.VECTOR_TYPE_POINT], True))
+        self.addParameter(ParameterRaster(self.MASK_GRID,
+            self.tr('Mask Grid'), True))
         self.addParameter(ParameterNumber(self.THRESHOLD,
-                          'Mask Threshold', 0, None, 100))
+            self.tr('Mask Threshold'), 0, None, 100))
 
         self.addOutput(OutputRaster(self.LONGEST_LEN_GRID,
-                       'Longest Upslope Length Grid'))
+            self.tr('Longest Upslope Length Grid')))
         self.addOutput(OutputRaster(self.TOTAL_LEN_GRID,
-                       'Total Upslope Length Grid'))
+            self.tr('Total Upslope Length Grid')))
         self.addOutput(OutputRaster(self.STRAHLER_GRID,
-                       'Strahler Network Order Grid'))
+            self.tr('Strahler Network Order Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -86,9 +87,9 @@ class GridNet(GeoAlgorithm):
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -112,11 +113,5 @@ class GridNet(GeoAlgorithm):
         commands.append(self.getOutputValue(self.TOTAL_LEN_GRID))
         commands.append('-gord')
         commands.append(self.getOutputValue(self.STRAHLER_GRID))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)
