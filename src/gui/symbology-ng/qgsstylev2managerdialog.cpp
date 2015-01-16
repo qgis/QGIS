@@ -242,7 +242,7 @@ void QgsStyleV2ManagerDialog::populateSymbols( QStringList symbolNames, bool che
   {
     QString name = symbolNames[i];
     QgsSymbolV2* symbol = mStyle->symbol( name );
-    if ( symbol->type() == type )
+    if ( symbol && symbol->type() == type )
     {
       QStandardItem* item = new QStandardItem( name );
       QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( symbol, listItems->iconSize() );
@@ -726,7 +726,12 @@ void QgsStyleV2ManagerDialog::itemChanged( QStandardItem* item )
     populateList();
     mModified = true;
   }
-
+  else
+  {
+    QMessageBox::critical( this, tr( "Cannot rename item" ),
+                           tr( "Name is already taken by another item. Choose a different name." ) );
+    item->setText( oldName );
+  }
 }
 
 void QgsStyleV2ManagerDialog::exportItems()

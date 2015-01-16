@@ -405,6 +405,12 @@ bool QgsStyleV2::save( QString filename )
 
 bool QgsStyleV2::renameSymbol( QString oldName, QString newName )
 {
+  if ( mSymbols.contains( newName ) )
+  {
+    QgsDebugMsg( "Symbol of new name already exists" );
+    return false;
+  }
+
   QgsSymbolV2 *symbol = mSymbols.take( oldName );
   if ( !symbol )
     return false;
@@ -431,6 +437,12 @@ bool QgsStyleV2::renameSymbol( QString oldName, QString newName )
 
 bool QgsStyleV2::renameColorRamp( QString oldName, QString newName )
 {
+  if ( mColorRamps.contains( newName ) )
+  {
+    QgsDebugMsg( "Color ramp of new name already exists." );
+    return false;
+  }
+
   QgsVectorColorRampV2 *ramp = mColorRamps.take( oldName );
   if ( !ramp )
     return false;
