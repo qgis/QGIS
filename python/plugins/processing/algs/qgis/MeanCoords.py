@@ -46,18 +46,16 @@ class MeanCoords(GeoAlgorithm):
         self.name = 'Mean coordinate(s)'
         self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterVector(self.POINTS, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.WEIGHT, 'Weight field',
-                          MeanCoords.POINTS,
-                          ParameterTableField.DATA_TYPE_NUMBER,
-                          optional=True))
-        self.addParameter(ParameterTableField(self.UID, 'Unique ID field',
-                          MeanCoords.POINTS,
-                          ParameterTableField.DATA_TYPE_NUMBER,
-                          optional=True))
+        self.addParameter(ParameterVector(self.POINTS,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.WEIGHT,
+            self.tr('Weight field'), MeanCoords.POINTS,
+            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
+        self.addParameter(ParameterTableField(self.UID,
+            self.tr('Unique ID field'), MeanCoords.POINTS,
+            ParameterTableField.DATA_TYPE_NUMBER, optional=True))
 
-        self.addOutput(OutputVector(MeanCoords.OUTPUT, 'Result'))
+        self.addOutput(OutputVector(MeanCoords.OUTPUT, self.tr('Result')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

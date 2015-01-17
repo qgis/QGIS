@@ -54,14 +54,22 @@ class txt2las(LAStoolsAlgorithm):
         self.name = "txt2las"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
-        self.addParameter(ParameterFile(txt2las.INPUT, "Input ASCII file"))
-        self.addParameter(ParameterString(txt2las.PARSE, "parse lines as", "xyz"))
-        self.addParameter(ParameterNumber(txt2las.SKIP, "skip the first n lines", 0, None, 0))
-        self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_XY, "resolution of x and y coordinate", 0, None, 0.01))
-        self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_Z, "resolution of z coordinate", 0, None, 0.01))
-        self.addParameter(ParameterSelection(txt2las.PROJECTION, "projection", txt2las.PROJECTIONS, 0))
-        self.addParameter(ParameterSelection(txt2las.UTM, "utm zone", txt2las.UTM_ZONES, 0))
-        self.addParameter(ParameterSelection(txt2las.SP, "state plane code", txt2las.STATE_PLANES, 0))
+        self.addParameter(ParameterFile(txt2las.INPUT,
+            self.tr("Input ASCII file")))
+        self.addParameter(ParameterString(txt2las.PARSE,
+            self.tr("parse lines as", "xyz")))
+        self.addParameter(ParameterNumber(txt2las.SKIP,
+            self.tr("skip the first n lines"), 0, None, 0))
+        self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_XY,
+            self.tr("resolution of x and y coordinate"), 0, None, 0.01))
+        self.addParameter(ParameterNumber(txt2las.SCALE_FACTOR_Z,
+            self.tr("resolution of z coordinate"), 0, None, 0.01))
+        self.addParameter(ParameterSelection(txt2las.PROJECTION,
+            self.tr("projection"), txt2las.PROJECTIONS, 0))
+        self.addParameter(ParameterSelection(txt2las.UTM,
+            self.tr("utm zone"), txt2las.UTM_ZONES, 0))
+        self.addParameter(ParameterSelection(txt2las.SP,
+            self.tr("state plane code"), txt2las.STATE_PLANES, 0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

@@ -74,8 +74,8 @@ class EquivalentNumField(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Create equivalent numerical field'
         self.group = 'Vector table tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD, 'Class field',
-                          self.INPUT))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Class field'), self.INPUT))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))

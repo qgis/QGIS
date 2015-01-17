@@ -45,9 +45,12 @@ class blast2dem(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(ParameterSelection(blast2dem.ATTRIBUTE, "Attribute", blast2dem.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(blast2dem.PRODUCT, "Product", blast2dem.PRODUCTS, 0))
-        self.addParameter(ParameterBoolean(blast2dem.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
+        self.addParameter(ParameterSelection(blast2dem.ATTRIBUTE,
+            self.tr("Attribute"), blast2dem.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(blast2dem.PRODUCT,
+            self.tr("Product"), blast2dem.PRODUCTS, 0))
+        self.addParameter(ParameterBoolean(blast2dem.USE_TILE_BB,
+            self.tr("Use tile bounding box (after tiling with buffer)"), False))
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
 

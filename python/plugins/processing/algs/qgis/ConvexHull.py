@@ -50,15 +50,14 @@ class ConvexHull(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Convex hull'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(
-            self.INPUT, 'Input layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.FIELD,
-            'Field (optional, only used if creating convex hulls by classes)',
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Field (optional, only used if creating convex hulls by classes)'),
             self.INPUT, optional=True))
-        self.addParameter(ParameterSelection(
-            self.METHOD, 'Method', self.METHODS))
-        self.addOutput(OutputVector(self.OUTPUT, 'Convex hull'))
+        self.addParameter(ParameterSelection(self.METHOD,
+            self.tr('Method'), self.METHODS))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Convex hull')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -129,7 +128,7 @@ class ConvexHull(GeoAlgorithm):
                         writer.addFeature(outFeat)
                     except:
                         raise GeoAlgorithmExecutionException(
-                                'Exception while computing convex hull')
+                            self.tr('Exception while computing convex hull'))
                 fid += 1
         else:
             hull = []
@@ -151,6 +150,6 @@ class ConvexHull(GeoAlgorithm):
                 writer.addFeature(outFeat)
             except:
                 raise GeoAlgorithmExecutionException(
-                        'Exception while computing convex hull')
+                    self.tr('Exception while computing convex hull'))
 
         del writer

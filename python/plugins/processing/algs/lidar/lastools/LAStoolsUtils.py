@@ -29,6 +29,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
+
+from PyQt4.QtCore import *
+
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -58,9 +61,9 @@ class LAStoolsUtils:
     def runLAStools(commands, progress):
         loglines = []
         commandline = " ".join(commands)
-        loglines.append("LAStools command line")
+        loglines.append(QCoreApplication.translate("LAStoolsUtils", "LAStools command line"))
         loglines.append(commandline)
-        loglines.append("LAStools console output")
+        loglines.append(QCoreApplication.translate("LAStoolsUtils", "LAStools console output"))
         proc = subprocess.Popen(commandline, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),
                                 stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):

@@ -47,10 +47,11 @@ class PointsFromPolygons(GeoAlgorithm):
         self.name = 'Generate points (pixel centroids) inside polygons'
         self.group = 'Vector analysis tools'
 
-        self.addParameter(ParameterRaster(self.INPUT_RASTER, 'Raster layer'))
-        self.addParameter(ParameterVector(self.INPUT_VECTOR, 'Vector layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        self.addParameter(ParameterRaster(self.INPUT_RASTER,
+            self.tr('Raster layer')))
+        self.addParameter(ParameterVector(self.INPUT_VECTOR,
+            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

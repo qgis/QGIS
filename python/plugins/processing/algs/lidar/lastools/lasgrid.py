@@ -49,9 +49,12 @@ class lasgrid(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(ParameterSelection(lasgrid.ATTRIBUTE, "Attribute", lasgrid.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(lasgrid.METHOD, "Method", lasgrid.METHODS, 0))
-        self.addParameter(ParameterBoolean(lasgrid.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
+        self.addParameter(ParameterSelection(lasgrid.ATTRIBUTE,
+            self.tr("Attribute"), lasgrid.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(lasgrid.METHOD,
+            self.tr("Method"), lasgrid.METHODS, 0))
+        self.addParameter(ParameterBoolean(lasgrid.USE_TILE_BB,
+            self.tr("use tile bounding box (after tiling with buffer)"), False))
         self.addParametersRasterOutputGUI()
         self.addParametersAdditionalGUI()
 

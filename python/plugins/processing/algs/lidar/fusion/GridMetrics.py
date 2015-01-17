@@ -55,38 +55,47 @@ class GridMetrics(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Grid Metrics'
         self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input las layer'))
-        self.addParameter(ParameterFile(self.GROUND, 'Input ground DTM layer'))
-        self.addParameter(ParameterNumber(self.HEIGHT, 'Height break'))
-        self.addParameter(ParameterNumber(self.CELLSIZE, 'Cellsize'))
+        self.addParameter(ParameterFile(
+            self.INPUT, self.tr('Input las layer')))
+        self.addParameter(ParameterFile(
+            self.GROUND, self.tr('Input ground DTM layer')))
+        self.addParameter(ParameterNumber(
+            self.HEIGHT, self.tr('Height break')))
+        self.addParameter(ParameterNumber(
+            self.CELLSIZE, self.tr('Cellsize')))
 
-        self.addOutput(OutputFile(self.OUTPUT_CSV_ELEVATION, 'Output table with grid metrics'))
+        self.addOutput(OutputFile(self.OUTPUT_CSV_ELEVATION,
+            self.tr('Output table with grid metrics')))
 
-        output_csv_intensity = OutputFile(self.OUTPUT_CSV_INTENSITY, 'OUTPUT CSV INTENSITY')
+        output_csv_intensity = OutputFile(self.OUTPUT_CSV_INTENSITY,
+            self.tr('OUTPUT CSV INTENSITY'))
         output_csv_intensity.hidden = True
         self.addOutput(output_csv_intensity)
 
-        output_txt_elevation = OutputFile(self.OUTPUT_TXT_ELEVATION, 'OUTPUT CSV INTENSITY')
+        output_txt_elevation = OutputFile(self.OUTPUT_TXT_ELEVATION,
+            self.tr('OUTPUT CSV INTENSITY'))
         output_txt_elevation.hidden = True
         self.addOutput(output_txt_elevation)
 
-        output_txt_intensity = OutputFile(self.OUTPUT_TXT_INTENSITY, 'OUTPUT CSV INTENSITY')
+        output_txt_intensity = OutputFile(self.OUTPUT_TXT_INTENSITY,
+            self.tr('OUTPUT CSV INTENSITY'))
         output_txt_intensity.hidden = True
         self.addOutput(output_txt_intensity)
 
-        outlier = ParameterString(self.OUTLIER, 'Outlier:low,high', '', False, True)
+        outlier = ParameterString(self.OUTLIER,
+            self.tr('Outlier:low,high'), '', False, True)
         outlier.isAdvanced = True
         self.addParameter(outlier)
-        first = ParameterBoolean(self.FIRST, 'First', False)
+        first = ParameterBoolean(self.FIRST, self.tr('First'), False)
         first.isAdvanced = True
         self.addParameter(first)
-        minht = ParameterString(self.MINHT, 'Htmin', '', False, True)
+        minht = ParameterString(self.MINHT, self.tr('Htmin'), '', False, True)
         minht.isAdvanced = True
         self.addParameter(minht)
-        class_var = ParameterString(self.CLASS, 'Class (set blank if not used)', '', False, True)
+        class_var = ParameterString(self.CLASS,
+            self.tr('Class (set blank if not used)'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'GridMetrics.exe')]

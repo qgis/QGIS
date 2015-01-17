@@ -40,8 +40,9 @@ class las2txt(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterString(las2txt.PARSE, "parse string", "xyz"))
-        self.addOutput(OutputFile(las2txt.OUTPUT, "Output ASCII file"))
+        self.addParameter(ParameterString(las2txt.PARSE,
+            self.tr("parse string"), "xyz"))
+        self.addOutput(OutputFile(las2txt.OUTPUT, self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
@@ -54,6 +55,6 @@ class las2txt(LAStoolsAlgorithm):
             commands.append(parse)
         commands.append("-o")
         commands.append(self.getOutputValue(las2txt.OUTPUT))
-	self.addParametersAdditionalCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

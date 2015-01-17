@@ -49,15 +49,15 @@ class HubLines(GeoAlgorithm):
         self.group = 'Vector analysis tools'
 
         self.addParameter(ParameterVector(self.HUBS,
-            'Hub point layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.HUB_FIELD, 'Hub ID field', self.HUBS))
+            self.tr('Hub point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.HUB_FIELD,
+            self.tr('Hub ID field'), self.HUBS))
         self.addParameter(ParameterVector(self.SPOKES,
-            'Spoke point layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.SPOKE_FIELD, 'Spoke ID field', self.SPOKES))
+            self.tr('Spoke point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.SPOKE_FIELD,
+            self.tr('Spoke ID field'), self.SPOKES))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layerHub = dataobjects.getObjectFromUri(
@@ -70,7 +70,7 @@ class HubLines(GeoAlgorithm):
 
         if layerHub.source() == layerSpoke.source():
             raise GeoAlgorithmExecutionException(
-                'Same layer given for both hubs and spokes')
+                self.tr('Same layer given for both hubs and spokes'))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layerSpoke.pendingFields(), QGis.WKBLineString, layerSpoke.crs())

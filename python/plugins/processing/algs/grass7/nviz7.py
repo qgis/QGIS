@@ -53,17 +53,19 @@ class nviz7(GeoAlgorithm):
         self.name = 'nviz7'
         self.group = 'Visualization(NVIZ)'
         self.addParameter(ParameterMultipleInput(nviz7.ELEVATION,
-                          'Raster file(s) for elevation',
-                          ParameterMultipleInput.TYPE_RASTER, True))
-        self.addParameter(ParameterMultipleInput(nviz7.VECTOR, 'Vector lines/areas overlay file(s)',
-                          ParameterMultipleInput.TYPE_VECTOR_ANY, True))
-        self.addParameter(ParameterMultipleInput(nviz7.COLOR, 'Raster file(s) for color',
-                          ParameterMultipleInput.TYPE_RASTER, True))
+            self.tr('Raster file(s) for elevation'),
+            ParameterMultipleInput.TYPE_RASTER, True))
+        self.addParameter(ParameterMultipleInput(nviz7.VECTOR,
+            self.tr('Vector lines/areas overlay file(s)'),
+            ParameterMultipleInput.TYPE_VECTOR_ANY, True))
+        self.addParameter(ParameterMultipleInput(nviz7.COLOR,
+            self.tr('Raster file(s) for color'),
+            ParameterMultipleInput.TYPE_RASTER, True))
         self.addParameter(ParameterExtent(nviz7.GRASS_REGION_EXTENT_PARAMETER,
-                          'GRASS region extent'))
+            self.tr('GRASS region extent')))
         self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER,
-                          'GRASS region cellsize (leave 0 for default)', 0,
-                          None, 0.0))
+            self.tr('GRASS region cellsize (leave 0 for default)'),
+            0, None, 0.0))
 
     def processAlgorithm(self, progress):
         commands = []

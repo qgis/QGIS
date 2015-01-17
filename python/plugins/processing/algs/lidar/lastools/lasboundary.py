@@ -49,10 +49,14 @@ class lasboundary(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParameter(ParameterSelection(lasboundary.MODE, "compute boundary based on", lasboundary.MODES, 0))
-        self.addParameter(ParameterNumber(lasboundary.CONCAVITY, "concavity", 0, None, 50.0))
-        self.addParameter(ParameterBoolean(lasboundary.HOLES, "interior holes", False))
-        self.addParameter(ParameterBoolean(lasboundary.DISJOINT, "disjoint polygon", False))
+        self.addParameter(ParameterSelection(lasboundary.MODE,
+            self.tr("compute boundary based on"), lasboundary.MODES, 0))
+        self.addParameter(ParameterNumber(lasboundary.CONCAVITY,
+            self.tr("concavity"), 0, None, 50.0))
+        self.addParameter(ParameterBoolean(lasboundary.HOLES,
+            self.tr("interior holes"), False))
+        self.addParameter(ParameterBoolean(lasboundary.DISJOINT,
+            self.tr("disjoint polygon"), False))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 

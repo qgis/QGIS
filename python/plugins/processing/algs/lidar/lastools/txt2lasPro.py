@@ -52,13 +52,20 @@ class txt2lasPro(LAStoolsAlgorithm):
         self.name = "txt2lasPro"
         self.group = "LAStools Production"
         self.addParametersGenericInputFolderGUI("*.txt")
-        self.addParameter(ParameterString(txt2lasPro.PARSE, "parse lines as", "xyz"))
-        self.addParameter(ParameterNumber(txt2lasPro.SKIP, "skip the first n lines", 0, None, 0))
-        self.addParameter(ParameterNumber(txt2lasPro.SCALE_FACTOR_XY, "resolution of x and y coordinate", 0, None, 0.01))
-        self.addParameter(ParameterNumber(txt2lasPro.SCALE_FACTOR_Z, "resolution of z coordinate", 0, None, 0.01))
-        self.addParameter(ParameterSelection(txt2lasPro.PROJECTION, "projection", txt2lasPro.PROJECTIONS, 0))
-        self.addParameter(ParameterSelection(txt2lasPro.UTM, "utm zone", txt2lasPro.UTM_ZONES, 0))
-        self.addParameter(ParameterSelection(txt2lasPro.SP, "state plane code", txt2lasPro.STATE_PLANES, 0))
+        self.addParameter(ParameterString(txt2lasPro.PARSE,
+            self.tr("parse lines as"), "xyz"))
+        self.addParameter(ParameterNumber(txt2lasPro.SKIP,
+            self.tr("skip the first n lines"), 0, None, 0))
+        self.addParameter(ParameterNumber(txt2lasPro.SCALE_FACTOR_XY,
+            self.tr("resolution of x and y coordinate"), 0, None, 0.01))
+        self.addParameter(ParameterNumber(txt2lasPro.SCALE_FACTOR_Z,
+            self.tr("resolution of z coordinate"), 0, None, 0.01))
+        self.addParameter(ParameterSelection(txt2lasPro.PROJECTION,
+            self.tr("projection"), txt2lasPro.PROJECTIONS, 0))
+        self.addParameter(ParameterSelection(txt2lasPro.UTM,
+            self.tr("utm zone"), txt2lasPro.UTM_ZONES, 0))
+        self.addParameter(ParameterSelection(txt2lasPro.SP,
+            self.tr("state plane code"), txt2lasPro.STATE_PLANES, 0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

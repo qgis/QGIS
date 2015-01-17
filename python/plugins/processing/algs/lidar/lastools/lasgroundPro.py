@@ -47,13 +47,16 @@ class lasgroundPro(LAStoolsAlgorithm):
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasgroundPro.NO_BULGE, "no triangle bulging during TIN refinement", False))
-        self.addParameter(ParameterSelection(lasgroundPro.TERRAIN, "terrain type", lasgroundPro.TERRAINS, 1))
-        self.addParameter(ParameterSelection(lasgroundPro.GRANULARITY, "preprocessing", lasgroundPro.GRANULARITIES, 1))
+        self.addParameter(ParameterBoolean(lasgroundPro.NO_BULGE,
+            self.tr("no triangle bulging during TIN refinement"), False))
+        self.addParameter(ParameterSelection(lasgroundPro.TERRAIN,
+            self.tr("terrain type"), lasgroundPro.TERRAINS, 1))
+        self.addParameter(ParameterSelection(lasgroundPro.GRANULARITY,
+            self.tr("preprocessing"), lasgroundPro.GRANULARITIES, 1))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
-	self.addParametersAdditionalGUI()
+        self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
@@ -74,7 +77,7 @@ class lasgroundPro(LAStoolsAlgorithm):
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)
-	self.addParametersAdditionalCommands(commands)
+        self.addParametersAdditionalCommands(commands)
         self.addParametersCoresCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

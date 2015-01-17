@@ -53,11 +53,11 @@ class GeometryConvert(GeoAlgorithm):
         self.group = 'Vector geometry tools'
 
         self.addParameter(ParameterVector(self.INPUT,
-            'Input layer', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterSelection(self.TYPE,
-            'New geometry type', self.TYPES))
+            self.tr('New geometry type'), self.TYPES))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -95,7 +95,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        'Cannot convert from %s to %s', geomType, newType)
+                        self.tr('Cannot convert from %s to %s', geomType, newType))
             elif geomType in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
                 if newType == QGis.WKBPoint and splitNodes:
                     points = geom.asMultiPoint()
@@ -111,7 +111,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(feat)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        'Cannot convert from %s to %s', geomType, newType)
+                        self.tr('Cannot convert from %s to %s', geomType, newType))
             elif geomType in [QGis.WKBLineString, QGis.WKBLineString25D]:
                 if newType == QGis.WKBPoint and splitNodes:
                     points = geom.asPolyline()
@@ -129,7 +129,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        'Cannot convert from %s to %s', geomType, newType)
+                        self.tr('Cannot convert from %s to %s', geomType, newType))
             elif geomType in [QGis.WKBMultiLineString, QGis.WKBMultiLineString25D]:
                 if newType == QGis.WKBPoint and splitNodes:
                     lines = geom.asMultiPolyline()
@@ -155,7 +155,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        'Cannot convert from %s to %s', geomType, newType)
+                        self.tr('Cannot convert from %s to %s', geomType, newType))
             elif geomType in [QGis.WKBPolygon, QGis.WKBPolygon25D]:
                 if newType == QGis.WKBPoint and splitNodes:
                     rings = geom.asPolygon()
@@ -180,7 +180,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        'Cannot convert from %s to %s', geomType, newType)
+                        self.tr('Cannot convert from %s to %s', geomType, newType))
             elif geomType in [QGis.WKBMultiPolygon, QGis.WKBMultiPolygon25D]:
                 if newType == QGis.WKBPoint and splitNodes:
                     polygons = geom.asMultiPolygon()
@@ -214,7 +214,7 @@ class GeometryConvert(GeoAlgorithm):
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(
-                        'Cannot convert from %s to %s', geomType, newType)
+                        self.tr('Cannot convert from %s to %s', geomType, newType))
 
             progress.setPercentage(int(count * total))
 

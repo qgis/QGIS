@@ -138,17 +138,16 @@ class Grass7Algorithm(GeoAlgorithm):
                 line = lines.readline().strip('\n').strip()
             except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       'Could not open GRASS GIS 7 algorithm: '
-                                       + self.descriptionFile + '\n' + line)
+                    self.tr('Could not open GRASS GIS 7 algorithm: %s\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 
         self.addParameter(ParameterExtent(self.GRASS_REGION_EXTENT_PARAMETER,
-                          'GRASS GIS 7 region extent'))
+            self.tr('GRASS GIS 7 region extent')))
         if hasRasterOutput:
             self.addParameter(ParameterNumber(
                 self.GRASS_REGION_CELLSIZE_PARAMETER,
-                'GRASS GIS 7 region cellsize (leave 0 for default)',
+                self.tr('GRASS GIS 7 region cellsize (leave 0 for default)'),
                 0, None, 0.0))
         if hasVectorInput:
             param = ParameterNumber(self.GRASS_SNAP_TOLERANCE_PARAMETER,
@@ -198,9 +197,9 @@ class Grass7Algorithm(GeoAlgorithm):
         if system.isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
-                raise GeoAlgorithmExecutionException('GRASS GIS 7 folder is not \
-                    configured.\nPlease configure it before running GRASS GIS 7\
-                    algorithms.')
+                raise GeoAlgorithmExecutionException(
+                    self.tr('GRASS GIS 7 folder is not configured. Please '
+                            'configure it before running GRASS GIS 7 algorithms.'))
 
         commands = []
         self.exportedLayers = {}
@@ -392,7 +391,7 @@ class Grass7Algorithm(GeoAlgorithm):
         # 4: Run GRASS
 
         loglines = []
-        loglines.append('GRASS GIS 7 execution commands')
+        loglines.append(self.tr('GRASS GIS 7 execution commands'))
         for line in commands:
             progress.setCommand(line)
             loglines.append(line)
@@ -493,11 +492,13 @@ class Grass7Algorithm(GeoAlgorithm):
     def checkBeforeOpeningParametersDialog(self):
         msg = Grass7Utils.checkGrass7IsInstalled()
         if msg is not None:
-            html = '<p>This algorithm requires GRASS GIS 7 to be run. \
-                Unfortunately, it seems that GRASS GIS 7 is not installed in \
-                your system, or it is not correctly configured to be used \
-                from QGIS</p>'
-            html += '<p><a href="http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>' # FIXME update URL or page
+            html = self.tr(
+                '<p>This algorithm requires GRASS GIS 7 to be run. '
+                'Unfortunately, it seems that GRASS GIS 7 is not installed in '
+                'your system, or it is not correctly configured to be used '
+                'from QGIS</p>'
+                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
+                'to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>') # FIXME update URL or page
             return html
 
     def checkParameterValuesBeforeExecuting(self):
@@ -513,15 +514,17 @@ class Grass7Algorithm(GeoAlgorithm):
     def getPostProcessingErrorMessage(self, wrongLayers):
         html = GeoAlgorithm.getPostProcessingErrorMessage(self, wrongLayers)
         msg = Grass7Utils.checkGrass7IsInstalled(True)
-        html += '<p>This algorithm requires GRASS GIS 7 to be run. A test \
-            to check if GRASS GIS 7 is correctly installed and configured in \
-            your system has been performed, with the following \
-            result:</p><ul><i>'
+        html += self.tr(
+            '<p>This algorithm requires GRASS GIS 7 to be run. A test '
+            'to check if GRASS GIS 7 is correctly installed and configured in '
+            'your system has been performed, with the following result:</p><ul><i>')
         if msg is None:
-            html += 'GRASS GIS 7 seems to be correctly installed and \
-                configured</i></li></ul>'
+            html += self.tr(
+                'GRASS GIS 7 seems to be correctly installed and configured</i></li></ul>')
         else:
             html += msg + '</i></li></ul>'
-            html += '<p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a> to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>'
+            html += self.tr(
+                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual//3rdParty.html">Click here</a> '
+                'to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>')
 
         return html

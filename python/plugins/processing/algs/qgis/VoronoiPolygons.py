@@ -46,21 +46,16 @@ class VoronoiPolygons(GeoAlgorithm):
     BUFFER = 'BUFFER'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/voronoi.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Voronoi polygons'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterNumber(
-                          self.BUFFER, 'Buffer region', 0.0, 100.0, 0.0))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterNumber(self.BUFFER,
+            self.tr('Buffer region'), 0.0, 100.0, 0.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Voronoi polygons'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
@@ -96,8 +91,8 @@ class VoronoiPolygons(GeoAlgorithm):
 
         if len(pts) < 3:
             raise GeoAlgorithmExecutionException(
-                    'Input file should contain at least 3 points. Choose \
-                    another file and try again.')
+                self.tr('Input file should contain at least 3 points. Choose '
+                        'another file and try again.'))
 
         uniqueSet = Set(item for item in pts)
         ids = [pts.index(item) for item in uniqueSet]

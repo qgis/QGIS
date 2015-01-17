@@ -53,7 +53,8 @@ class translate(GdalAlgorithm):
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
 
-    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64',
+            'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def commandLineName(self):
         return "gdalogr:translate"
@@ -61,30 +62,31 @@ class translate(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Translate (convert format)'
         self.group = '[GDAL] Conversion'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer',
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'),
                           False))
         self.addParameter(ParameterNumber(self.OUTSIZE,
-                          'Set the size of the output file (In pixels or %)',
-                          1, None, 100))
+            self.tr('Set the size of the output file (In pixels or %)'),
+            1, None, 100))
         self.addParameter(ParameterBoolean(self.OUTSIZE_PERC,
-                          'Output size is a percentage of input size', True))
+            self.tr('Output size is a percentage of input size'), True))
         self.addParameter(ParameterString(self.NO_DATA,
-            'Nodata value, leave as none to take the nodata value from input',
+            self.tr("Nodata value, leave as 'none' to take the nodata value from input"),
             'none'))
-        self.addParameter(ParameterSelection(self.EXPAND, 'Expand',
-                          ['none', 'gray', 'rgb', 'rgba']))
+        self.addParameter(ParameterSelection(self.EXPAND,
+            self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
         self.addParameter(ParameterCrs(self.SRS,
-                          'Output projection for output file [leave blank to use input projection]', None))
+            self.tr('Output projection for output file [leave blank to use input projection]'), None))
         self.addParameter(ParameterExtent(self.PROJWIN,
-                          'Subset based on georeferenced coordinates'))
+            self.tr('Subset based on georeferenced coordinates')))
         self.addParameter(ParameterBoolean(self.SDS,
-            'Copy all subdatasets of this file to individual output files',
+            self.tr('Copy all subdatasets of this file to individual output files'),
             False))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', '', optional=True))
-	self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
-			  self.TYPE, 5))
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+            self.tr('Additional creation parameters'), '', optional=True))
+        self.addParameter(ParameterSelection(self.RTYPE,
+            self.tr('Output raster type'), self.TYPE, 5))
+
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         out = self.getOutputValue(translate.OUTPUT)

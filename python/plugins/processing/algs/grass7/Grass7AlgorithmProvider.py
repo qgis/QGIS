@@ -49,17 +49,17 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    Grass7Utils.GRASS_FOLDER, 'GRASS7 folder',
-                    Grass7Utils.grassPath()))
+                Grass7Utils.GRASS_FOLDER, self.tr('GRASS7 folder'),
+                Grass7Utils.grassPath()))
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    Grass7Utils.GRASS_WIN_SHELL, 'Msys folder',
-                    Grass7Utils.grassWinShell()))
+                Grass7Utils.GRASS_WIN_SHELL, self.tr('Msys folder'),
+                Grass7Utils.grassWinShell()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    Grass7Utils.GRASS_LOG_COMMANDS,
-                                    'Log execution commands', False))
+                Grass7Utils.GRASS_LOG_COMMANDS,
+                self.tr('Log execution commands'), False))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    Grass7Utils.GRASS_LOG_CONSOLE,
-                                    'Log console output', False))
+                Grass7Utils.GRASS_LOG_CONSOLE,
+                self.tr('Log console output'), False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -80,12 +80,10 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not open GRASS GIS 7 algorithm: '
-                                + descriptionFile)
+                            self.tr('Could not open GRASS GIS 7 algorithm: %s' % descriptionFile))
                 except Exception, e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not open GRASS GIS 7 algorithm: '
-                            + descriptionFile)
+                        self.tr('Could not open GRASS GIS 7 algorithm: %s' % descriptionFile))
         self.preloadedAlgs.append(nviz7())
 
     def _loadAlgorithms(self):

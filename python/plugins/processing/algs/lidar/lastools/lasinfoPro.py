@@ -50,15 +50,24 @@ class lasinfoPro(LAStoolsAlgorithm):
         self.name = "lasinfoPro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lasinfoPro.COMPUTE_DENSITY, "compute density", False))
-        self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_BB, "repair bounding box", False))
-        self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_COUNTERS, "repair counters", False))
-        self.addParameter(ParameterSelection(lasinfoPro.HISTO1, "histogram", lasinfoPro.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfoPro.HISTO1_BIN, "bin size", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasinfoPro.HISTO2, "histogram", lasinfoPro.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfoPro.HISTO2_BIN, "bin size", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasinfoPro.HISTO3, "histogram", lasinfoPro.HISTOGRAM, 0))
-        self.addParameter(ParameterNumber(lasinfoPro.HISTO3_BIN, "bin size", 0, None, 1.0))
+        self.addParameter(ParameterBoolean(lasinfoPro.COMPUTE_DENSITY,
+            self.tr("compute density"), False))
+        self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_BB,
+            self.tr("repair bounding box"), False))
+        self.addParameter(ParameterBoolean(lasinfoPro.REPAIR_COUNTERS,
+            self.tr("repair counters"), False))
+        self.addParameter(ParameterSelection(lasinfoPro.HISTO1,
+            self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfoPro.HISTO1_BIN,
+            self.tr("bin size"), 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasinfoPro.HISTO2,
+            self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfoPro.HISTO2_BIN,
+            self.tr("bin size"), 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasinfoPro.HISTO3,
+            self.tr("histogram"), lasinfoPro.HISTOGRAM, 0))
+        self.addParameter(ParameterNumber(lasinfoPro.HISTO3_BIN,
+            self.tr("bin size"), 0, None, 1.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersAdditionalGUI()

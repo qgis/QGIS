@@ -39,8 +39,10 @@ class lasindex(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(lasindex.APPEND_LAX, "append *.lax file to *.laz file", False))
-        self.addParameter(ParameterBoolean(lasindex.MOBILE_OR_TERRESTRIAL, "is mobile or terrestrial LiDAR (not airborne)", False))
+        self.addParameter(ParameterBoolean(lasindex.APPEND_LAX,
+            self.tr("append *.lax file to *.laz file"), False))
+        self.addParameter(ParameterBoolean(lasindex.MOBILE_OR_TERRESTRIAL,
+            self.tr("is mobile or terrestrial LiDAR (not airborne)"), False))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):

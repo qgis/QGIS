@@ -57,21 +57,21 @@ class FieldsPyculator(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Advanced Python field calculator'
         self.group = 'Vector table tools'
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterString(self.FIELD_NAME, 'Result field name'
-                          , 'NewField'))
-        self.addParameter(ParameterSelection(self.FIELD_TYPE, 'Field type',
-                          self.TYPE_NAMES))
-        self.addParameter(ParameterNumber(self.FIELD_LENGTH, 'Field length',
-                          1, 255, 10))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterString(self.FIELD_NAME,
+            self.tr('Result field name'), 'NewField'))
+        self.addParameter(ParameterSelection(self.FIELD_TYPE,
+            self.tr('Field type'), self.TYPE_NAMES))
+        self.addParameter(ParameterNumber(self.FIELD_LENGTH,
+            self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-                          'Field precision', 0, 10, 0))
-        self.addParameter(ParameterString(self.GLOBAL, 'Global expression',
-                          multiline=True, optional=True))
-        self.addParameter(ParameterString(self.FORMULA, 'Formula', 'value = ',
-                          multiline=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Field precision'), 0, 10, 0))
+        self.addParameter(ParameterString(self.GLOBAL,
+            self.tr('Global expression'), multiline=True, optional=True))
+        self.addParameter(ParameterString(self.FORMULA,
+            self.tr('Formula'), 'value = ', multiline=True))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         fieldName = self.getParameterValue(self.FIELD_NAME)
@@ -100,10 +100,7 @@ class FieldsPyculator(GeoAlgorithm):
                 exec bytecode in new_ns
             except:
                 raise GeoAlgorithmExecutionException(
-                    'FieldPyculator code execute error\n'
-                    + "Global code block can't be executed!%s \n %s"
-                    % (unicode(sys.exc_info()[0].__name__),
-                       unicode(sys.exc_info()[1])))
+                    self.tr("FieldPyculator code execute error.Global code block can't be executed!\n%s\n%s" % (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1]))))
 
         # Replace all fields tags
         fields = provider.fields()
@@ -126,10 +123,7 @@ class FieldsPyculator(GeoAlgorithm):
             bytecode = compile(code, '<string>', 'exec')
         except:
             raise GeoAlgorithmExecutionException(
-                    'FieldPyculator code execute error\n'
-                    + "Field code block can't be executed! %s \n %s",
-                    unicode(sys.exc_info()[0].__name__),
-                    unicode(sys.exc_info()[1]))
+                self.tr("FieldPyculator code execute error.Field code block can't be executed!\n%s\n%s" % (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1]))))
 
         # Run
         features = vector.features(layer)
@@ -162,10 +156,9 @@ class FieldsPyculator(GeoAlgorithm):
             # Check result
             if self.RESULT_VAR_NAME not in new_ns:
                 raise GeoAlgorithmExecutionException(
-                    'FieldPyculator code execute error\n'
-                    + "Field code block does not return '%s1' variable! \
-                    Please declare this variable in your code!"
-                    % self.RESULT_VAR_NAME)
+                    self.tr("FieldPyculator code execute error\n"
+                            "Field code block does not return '%s1' variable! "
+                            "Please declare this variable in your code!" % self.RESULT_VAR_NAME))
 
             # Write feature
             nElement += 1

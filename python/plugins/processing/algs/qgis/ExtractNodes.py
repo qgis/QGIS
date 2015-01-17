@@ -42,11 +42,11 @@ class ExtractNodes(GeoAlgorithm):
         self.name = 'Extract nodes'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON,
-                          ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'),
+            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

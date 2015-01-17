@@ -46,11 +46,19 @@ class las2iso(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(las2iso.SMOOTH, "smooth underlying TIN", 0, None, 0))
-        self.addParameter(ParameterNumber(las2iso.ISO_EVERY, "extract isoline with a spacing of", 0, None, 10.0))
-        self.addParameter(ParameterNumber(las2iso.CLEAN, "clean isolines shorter than (0 = do not clean)", None, None, 0.0))
-        self.addParameter(ParameterNumber(las2iso.SIMPLIFY_LENGTH, "simplify segments shorter than (0 = do not simplify)", None, None, 0.0))
-        self.addParameter(ParameterNumber(las2iso.SIMPLIFY_AREA, "simplify segments pairs with area less than (0 = do not simplify)", None, None, 0.0))
+        self.addParameter(ParameterNumber(las2iso.SMOOTH,
+            self.tr("smooth underlying TIN"), 0, None, 0))
+        self.addParameter(ParameterNumber(las2iso.ISO_EVERY,
+            self.tr("extract isoline with a spacing of"), 0, None, 10.0))
+        self.addParameter(ParameterNumber(las2iso.CLEAN,
+            self.tr("clean isolines shorter than (0 = do not clean)"),
+            None, None, 0.0))
+        self.addParameter(ParameterNumber(las2iso.SIMPLIFY_LENGTH,
+            self.tr("simplify segments shorter than (0 = do not simplify)"),
+            None, None, 0.0))
+        self.addParameter(ParameterNumber(las2iso.SIMPLIFY_AREA,
+            self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
+            None, None, 0.0))
         self.addParametersVectorOutputGUI()
         self.addParametersAdditionalGUI()
 

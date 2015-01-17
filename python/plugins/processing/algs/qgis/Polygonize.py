@@ -49,7 +49,7 @@ class Polygonize(GeoAlgorithm):
             from shapely.geometry import Point, MultiLineString
         except ImportError:
             raise GeoAlgorithmExecutionException(
-                    'Polygonize algorithm requires shapely module!')
+                self.tr('Polygonize algorithm requires shapely module!'))
         vlayer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
@@ -66,7 +66,7 @@ class Polygonize(GeoAlgorithm):
         allLinesList = []
         features = vector.features(vlayer)
         current = 0
-        progress.setInfo('Processing lines...')
+        progress.setInfo(self.tr('Processing lines...'))
         total = 40.0 / float(len(features))
         for inFeat in features:
             inGeom = inFeat.geometry()
@@ -78,17 +78,17 @@ class Polygonize(GeoAlgorithm):
             progress.setPercentage(int(current * total))
         progress.setPercentage(40)
         allLines = MultiLineString(allLinesList)
-        progress.setInfo('Noding lines...')
+        progress.setInfo(self.tr('Noding lines...'))
         try:
             from shapely.ops import unary_union
             allLines = unary_union(allLines)
         except ImportError:
             allLines = allLines.union(Point(0, 0))
         progress.setPercentage(45)
-        progress.setInfo('Polygonizing...')
+        progress.setInfo(self.tr('Polygonizing...'))
         polygons = list(polygonize([allLines]))
         if not polygons:
-            raise GeoAlgorithmExecutionException('No polygons were created!')
+            raise GeoAlgorithmExecutionException(self.tr('No polygons were created!'))
         progress.setPercentage(50)
         progress.setInfo('Saving polygons...')
         writer = output.getVectorWriter(fields, QGis.WKBPolygon, vlayer.crs())
@@ -103,16 +103,16 @@ class Polygonize(GeoAlgorithm):
             writer.addFeature(outFeat)
             current += 1
             progress.setPercentage(50 + int(current * total))
-        progress.setInfo('Finished')
+        progress.setInfo(self.tr('Finished'))
         del writer
 
     def defineCharacteristics(self):
         self.name = 'Polygonize'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterBoolean(self.FIELDS,
-                          'Keep table structure of line layer', False))
+            self.tr('Keep table structure of line layer'), False))
         self.addParameter(ParameterBoolean(self.GEOMETRY,
-                          'Create geometry columns', True))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+            self.tr('Create geometry columns'), True))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))

@@ -58,13 +58,12 @@ class Eliminate(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Eliminate sliver polygons'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
         self.addParameter(ParameterBoolean(self.KEEPSELECTION,
-                          'Use current selection in input layer (works only ' + \
-                          'if called from toolbox)', False))
+            self.tr('Use current selection in input layer (works only if called from toolbox)'), False))
         self.addParameter(ParameterTableField(self.ATTRIBUTE,
-                          'Selection attribute', self.INPUT))
+            self.tr('Selection attribute'), self.INPUT))
         self.comparisons = [
             '==',
             '!=',
@@ -75,14 +74,14 @@ class Eliminate(GeoAlgorithm):
             'begins with',
             'contains',
             ]
-        self.addParameter(ParameterSelection(self.COMPARISON, 'Comparison',
-                          self.comparisons, default=0))
-        self.addParameter(ParameterString(self.COMPARISONVALUE, 'Value',
-                          default='0'))
+        self.addParameter(ParameterSelection(self.COMPARISON,
+            self.tr('Comparison'), self.comparisons, default=0))
+        self.addParameter(ParameterString(self.COMPARISONVALUE,
+            self.tr('Value'), default='0'))
         self.addParameter(ParameterSelection(self.MODE,
-                          'Merge selection with the neighbouring polygon with the ',
-                            self.MODES))
-        self.addOutput(OutputVector(self.OUTPUT, 'Cleaned layer'))
+            self.tr('Merge selection with the neighbouring polygon with the'),
+            self.MODES))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned layer')))
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(
@@ -107,23 +106,20 @@ class Eliminate(GeoAlgorithm):
                     y = int(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = 'Cannot convert "' + unicode(comparisonvalue) \
-                        + '" to integer'
+                    msg = self.tr('Cannot convert "%s" to integer' % unicode(comparisonvalue))
             elif selectType == 6:
                 try:
                     y = float(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = 'Cannot convert "' + unicode(comparisonvalue) \
-                        + '" to float'
+                    msg = self.tr('Cannot convert "%s" to float' % unicode(comparisonvalue))
             elif selectType == 10:
                # 10: string, boolean
                 try:
                     y = unicode(comparisonvalue)
                 except ValueError:
                     selectionError = True
-                    msg = 'Cannot convert "' + unicode(comparisonvalue) \
-                        + '" to unicode'
+                    msg = self.tr('Cannot convert "%s" to unicode' % unicode(comparisonvalue))
             elif selectType == 14:
                 # date
                 dateAndFormat = comparisonvalue.split(' ')
@@ -133,16 +129,12 @@ class Eliminate(GeoAlgorithm):
                     y = QLocale.system().toDate(dateAndFormat[0])
 
                     if y.isNull():
-                        msg = 'Cannot convert "' + unicode(dateAndFormat) \
-                            + '" to date with system date format ' \
-                            + QLocale.system().dateFormat()
+                        msg = self.tr('Cannot convert "%s" to date with system date format %s' % (unicode(dateAndFormat), QLocale.system().dateFormat()))
                 elif len(dateAndFormat) == 2:
                     y = QDate.fromString(dateAndFormat[0], dateAndFormat[1])
 
                     if y.isNull():
-                        msg = 'Cannot convert "' + unicode(dateAndFormat[0]) \
-                            + '" to date with format string "' \
-                            + unicode(dateAndFormat[1] + '". ')
+                        msg = self.tr('Cannot convert "%s" to date with format string "%s"' % (unicode(dateAndFormat[0]), dateAndFormat[1]))
                 else:
                     y = QDate()
                     msg = ''
@@ -150,20 +142,18 @@ class Eliminate(GeoAlgorithm):
                 if y.isNull():
                     # Conversion was unsuccessfull
                     selectionError = True
-                    msg += 'Enter the date and the date format, e.g. \
-                            "07.26.2011" "MM.dd.yyyy".'
+                    msg += self.tr('Enter the date and the date format, e.g. "07.26.2011" "MM.dd.yyyy".')
 
             if (comparison == 'begins with' or comparison == 'contains') \
                 and selectType != 10:
                 selectionError = True
-                msg = '"' + comparison \
-                    + '" can only be used with string fields'
+                msg =  self.tr('"%s" can only be used with string fields' % comparison)
 
             selected = []
 
             if selectionError:
                 raise GeoAlgorithmExecutionException(
-                        'Error in selection input: ' + msg)
+                    self.tr('Error in selection input: %s' % msg))
             else:
                 for feature in inLayer.getFeatures():
                     aValue = feature.attributes()[selectindex]
@@ -208,9 +198,7 @@ class Eliminate(GeoAlgorithm):
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.commandLineName()
-                                   + '(No selection in input layer "'
-                                   + self.getParameterValue(self.INPUT) + '")')
+                self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
 
         # Keep references to the features to eliminate
         featToEliminate = []
@@ -298,8 +286,7 @@ class Eliminate(GeoAlgorithm):
                         madeProgress = True
                     else:
                         raise GeoAlgorithmExecutionException(
-                                'Could not replace geometry of feature ' + \
-                                'with id %s' % mergeWithFid)
+                            self.tr('Could not replace geometry of feature with id %s' % mergeWithFid))
 
                     start = start + add
                     progress.setPercentage(start)

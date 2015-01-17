@@ -42,9 +42,12 @@ class las2shp(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(las2shp.POINT_Z, "use PointZ instead of MultiPointZ", False))
-        self.addParameter(ParameterNumber(las2shp.RECORD_SIZE, "number of points per record", 0, None, 1024))
-        self.addOutput(OutputFile(las2shp.OUTPUT, "Output SHP file"))
+        self.addParameter(ParameterBoolean(las2shp.POINT_Z,
+            self.tr("use PointZ instead of MultiPointZ"), False))
+        self.addParameter(ParameterNumber(las2shp.RECORD_SIZE,
+            self.tr("number of points per record"), 0, None, 1024))
+        self.addOutput(OutputFile(las2shp.OUTPUT,
+            self.tr("Output SHP file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
@@ -59,6 +62,6 @@ class las2shp(LAStoolsAlgorithm):
             commands.append(str(record_size))
         commands.append("-o")
         commands.append(self.getOutputValue(las2shp.OUTPUT))
-	self.addParametersAdditionalCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

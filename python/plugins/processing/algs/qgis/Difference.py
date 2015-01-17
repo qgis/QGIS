@@ -48,12 +48,11 @@ class Difference(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Difference'
         self.group = 'Vector overlay tools'
-        self.addParameter(ParameterVector(Difference.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(Difference.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(Difference.OVERLAY,
-                          'Difference layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(Difference.OUTPUT, 'Difference'))
+            self.tr('Difference layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(
@@ -114,10 +113,8 @@ class Difference(GeoAlgorithm):
         del writer
 
         if not GEOS_EXCEPT:
-            ProcessingLog.addToLog(
-                    ProcessingLog.LOG_WARNING,
-                    'Geometry exception while computing difference')
+            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                self.tr('Geometry exception while computing difference'))
         if not FEATURE_EXCEPT:
-            ProcessingLog.addToLog(
-                    ProcessingLog.LOG_WARNING,
-                    'Feature exception while computing difference')
+            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
+                self.tr('Feature exception while computing difference'))

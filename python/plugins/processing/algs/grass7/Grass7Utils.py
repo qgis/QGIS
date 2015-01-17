@@ -265,7 +265,7 @@ class Grass7Utils:
     @staticmethod
     def executeGrass7(commands, progress, outputCommands=None):
         loglines = []
-        loglines.append('GRASS GIS 7 execution console output')
+        loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command = Grass7Utils.prepareGrass7Execution(commands)
         proc = subprocess.Popen(
@@ -355,15 +355,16 @@ class Grass7Utils:
         if isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
-                return 'GRASS GIS 7 folder is not configured.\nPlease configure \
-                        it before running GRASS GIS 7 algorithms.'
+                return Grass7Utils.tr(
+                    'GRASS GIS 7 folder is not configured. Please configure '
+                    'it before running GRASS GIS 7 algorithms.')
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
-                return 'The specified GRASS GIS 7 folder does not contain a valid \
-                        set of GRASS GIS 7 modules.\n' \
-                        + 'Please, go to the Processing settings dialog, and \
-                        check that the GRASS GIS 7\n' \
-                        + 'folder is correctly configured'
+                return Grass7Utils.tr(
+                    'The specified GRASS GIS 7 folder does not contain a valid '
+                    'set of GRASS GIS 7 modules.\nPlease, go to the Processing '
+                    'settings dialog, and check that the GRASS GIS 7\n'
+                    'folder is correctly configured')
 
         if not ignorePreviousState:
             if Grass7Utils.isGrass7Installed:
@@ -382,12 +383,19 @@ class Grass7Utils:
                 None,
                 )
             if not os.path.exists(result['output']):
-                return 'It seems that GRASS GIS 7 is not correctly installed and \
-                    configured in your system.\nPlease install it before \
-                    running GRASS GIS 7 algorithms.'
+                return Grass7Utils.tr(
+                    'It seems that GRASS GIS 7 is not correctly installed and '
+                    'configured in your system.\nPlease install it before '
+                    'running GRASS GIS 7 algorithms.')
         except:
-            return 'Error while checking GRASS GIS 7 installation. GRASS GIS 7 might not \
-                be correctly configured.\n'
+            return Grass7Utils.tr(
+                'Error while checking GRASS GIS 7 installation. GRASS GIS 7 '
+                'might not be correctly configured.\n')
 
         Grass7Utils.isGrass7Installed = True
 
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'Grass7Utils'
+        return QCoreApplication.translate(context, string)

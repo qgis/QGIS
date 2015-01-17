@@ -42,10 +42,16 @@ class flightlinesToSingleCHMpitFree(LAStoolsAlgorithm):
         self.name = "flightlinesToSingleCHMpitFree"
         self.group = "LAStools Pipelines"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.TILE_SIZE, "tile size (side length of square tile)",  0, None, 1000.0))
-        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BUFFER, "buffer around each tile (avoids edge artifacts)",  0, None, 25.0))
-        self.addParameter(ParameterSelection(flightlinesToSingleCHMpitFree.TERRAIN, "terrain type", flightlinesToSingleCHMpitFree.TERRAINS, 1))
-        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BEAM_WIDTH, "laser beam width (diameter of laser footprint)",  0, None, 0.2))
+        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+            0, None, 1000.0))
+        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BUFFER,
+            self.tr("buffer around each tile (avoids edge artifacts)"),
+            0, None, 25.0))
+        self.addParameter(ParameterSelection(flightlinesToSingleCHMpitFree.TERRAIN,
+            self.tr("terrain type"), flightlinesToSingleCHMpitFree.TERRAINS, 1))
+        self.addParameter(ParameterNumber(flightlinesToSingleCHMpitFree.BEAM_WIDTH,
+            self.tr("laser beam width (diameter of laser footprint)"), 0, None, 0.2))
         self.addParametersStepGUI()
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersRasterOutputGUI()

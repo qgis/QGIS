@@ -54,14 +54,13 @@ class RandomSelection(GeoAlgorithm):
         self.name = 'Random selection'
         self.group = 'Vector selection tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterSelection(self.METHOD, 'Method',
-                          self.METHODS, 0))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterSelection(self.METHOD,
+            self.tr('Method'), self.METHODS, 0))
         self.addParameter(ParameterNumber(self.NUMBER,
-                          'Number/percentage of selected features', 0, None,
-                          10))
-        self.addOutput(OutputVector(self.OUTPUT, 'Selection', True))
+            self.tr('Number/percentage of selected features'), 0, None, 10))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
@@ -76,13 +75,13 @@ class RandomSelection(GeoAlgorithm):
         if method == 0:
             if value > featureCount:
                 raise GeoAlgorithmExecutionException(
-                        'Selected number is greater than feature count. \
-                        Choose a lower value and try again.')
+                    self.tr('Selected number is greater than feature count. '
+                            'Choose a lower value and try again.'))
         else:
             if value > 100:
                 raise GeoAlgorithmExecutionException(
-                        "Percentage can't be greater than 100. Set a \
-                        different value and try again.")
+                    self.tr("Percentage can't be greater than 100. Set a "
+                            "different value and try again."))
             value = int(round(value / 100.0000, 4) * featureCount)
 
         selran = random.sample(xrange(0, featureCount), value)

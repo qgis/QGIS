@@ -83,11 +83,12 @@ class PointsLayerFromTable(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Points layer from table'
         self.group = 'Vector creation tools'
-        self.addParameter(ParameterTable(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterTableField(self.XFIELD, 'X field',
-                          self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.YFIELD, 'Y field',
-                          self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterCrs(self.TARGET_CRS, 'Target CRS',
-                          'EPSG:4326'))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterTable(self.INPUT,
+            self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.XFIELD,
+            self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.YFIELD,
+            self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterCrs(self.TARGET_CRS,
+            self.tr('Target CRS'), 'EPSG:4326'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))

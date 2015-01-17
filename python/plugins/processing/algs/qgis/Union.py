@@ -43,11 +43,6 @@ class Union(GeoAlgorithm):
     INPUT2 = 'INPUT2'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/union.png")
-    # =========================================================================
-
     def processAlgorithm(self, progress):
         vlayerA = dataobjects.getObjectFromUri(
                 self.getParameterValue(Union.INPUT))
@@ -89,7 +84,7 @@ class Union(GeoAlgorithm):
                     # This really shouldn't happen, as we haven't
                     # edited the input geom at all
                     raise GeoAlgorithmExecutionException(
-                            'Feature exception while computing union')
+                        self.tr('Feature exception while computing union'))
             else:
                 for id in intersects:
                     count += 1
@@ -105,8 +100,8 @@ class Union(GeoAlgorithm):
                         if int_geom is None:
                            # There was a problem creating the intersection
                             raise GeoAlgorithmExecutionException(
-                                    'Geometry exception while computing \
-                                    intersection')
+                                self.tr('Geometry exception while computing '
+                                        'intersection'))
                         else:
                             int_geom = QgsGeometry(int_geom)
 
@@ -133,7 +128,7 @@ class Union(GeoAlgorithm):
                             writer.addFeature(outFeat)
                         except Exception, err:
                             raise GeoAlgorithmExecutionException(
-                                    'Feature exception while computing union')
+                                self.tr('Feature exception while computing union'))
                     else:
                       # This only happends if the bounding box intersects,
                       # but the geometry doesn't
@@ -144,7 +139,7 @@ class Union(GeoAlgorithm):
                         except:
                             # Also shoudn't ever happen
                             raise GeoAlgorithmExecutionException(
-                                    'Feature exception while computing union')
+                                self.tr('Feature exception while computing union'))
 
                 if found:
                     try:
@@ -158,7 +153,7 @@ class Union(GeoAlgorithm):
                         writer.addFeature(outFeat)
                     except Exception, err:
                         raise GeoAlgorithmExecutionException(
-                                'Feature exception while computing union')
+                            self.tr('Feature exception while computing union'))
 
         length = len(vproviderA.fields())
 
@@ -180,7 +175,7 @@ class Union(GeoAlgorithm):
                     writer.addFeature(outFeat)
                 except Exception, err:
                     raise GeoAlgorithmExecutionException(
-                            'Feature exception while computing union')
+                        self.tr('Feature exception while computing union'))
             else:
                 for id in intersects:
                     request = QgsFeatureRequest().setFilterFid(id)
@@ -200,8 +195,7 @@ class Union(GeoAlgorithm):
                             writer.addFeature(outFeat)
                     except Exception, err:
                         raise GeoAlgorithmExecutionException(
-                                'Geometry exception while computing \
-                                intersection')
+                            self.tr('Geometry exception while computing intersection'))
 
             if add:
                 try:
@@ -216,16 +210,16 @@ class Union(GeoAlgorithm):
         del writer
         if not GEOS_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                    'Geometry exception while computing intersection')
+                self.tr('Geometry exception while computing intersection'))
         if not FEATURE_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                    'Feature exception while computing interesection')
+                self.tr('Feature exception while computing interesection'))
 
     def defineCharacteristics(self):
         self.name = 'Union'
         self.group = 'Vector overlay tools'
-        self.addParameter(ParameterVector(Union.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterVector(Union.INPUT2, 'Input layer 2',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(Union.OUTPUT, 'Union'))
+        self.addParameter(ParameterVector(Union.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(Union.INPUT2,
+            self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))

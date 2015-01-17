@@ -44,11 +44,16 @@ class lasthinPro(LAStoolsAlgorithm):
         self.name = "lasthinPro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterNumber(lasthinPro.THIN_STEP, "size of grid used for thinning", 0, None, 1.0))
-        self.addParameter(ParameterSelection(lasthinPro.OPERATION, "keep particular point per cell", lasthinPro.OPERATIONS, 0))
-        self.addParameter(ParameterBoolean(lasthinPro.WITHHELD, "mark thinned-away points as withheld", False))
-        self.addParameter(ParameterBoolean(lasthinPro.CLASSIFY_AS, "classify surviving points as class", False))
-        self.addParameter(ParameterNumber(lasthinPro.CLASSIFY_AS_CLASS, "class", 0, None, 8))
+        self.addParameter(ParameterNumber(lasthinPro.THIN_STEP,
+            self.tr("size of grid used for thinning"), 0, None, 1.0))
+        self.addParameter(ParameterSelection(lasthinPro.OPERATION,
+            self.tr("keep particular point per cell"), lasthinPro.OPERATIONS, 0))
+        self.addParameter(ParameterBoolean(lasthinPro.WITHHELD,
+            self.tr("mark thinned-away points as withheld"), False))
+        self.addParameter(ParameterBoolean(lasthinPro.CLASSIFY_AS,
+            self.tr("classify surviving points as class"), False))
+        self.addParameter(ParameterNumber(lasthinPro.CLASSIFY_AS_CLASS,
+            self.tr("class"), 0, None, 8))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

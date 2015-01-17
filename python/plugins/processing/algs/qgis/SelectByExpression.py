@@ -46,15 +46,15 @@ class SelectByExpression(GeoAlgorithm):
         self.name = 'Select by expression'
         self.group = 'Vector selection tools'
 
-        self.addParameter(ParameterVector(self.LAYERNAME, 'Input Layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterString(self.EXPRESSION, "Expression"))
+        self.addParameter(ParameterVector(self.LAYERNAME,
+            self.tr('Input Layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterString(self.EXPRESSION,
+            self.tr("Expression")))
         self.addParameter(ParameterSelection(self.METHOD,
-                          'Modify current selection by', self.METHODS, 0))
-        self.addOutput(OutputVector(self.RESULT, 'Output', True))
+            self.tr('Modify current selection by'), self.METHODS, 0))
+        self.addOutput(OutputVector(self.RESULT, self.tr('Output'), True))
 
     def processAlgorithm(self, progress):
-
         filename = self.getParameterValue(self.LAYERNAME)
         layer = processing.getObject(filename)
         oldSelection = set(layer.selectedFeaturesIds())

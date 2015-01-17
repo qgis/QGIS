@@ -48,11 +48,12 @@ class gdal2xyz(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'gdal2xyz'
         self.group = '[GDAL] Conversion'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 9999,
-                          1))
+        self.addParameter(ParameterRaster(
+            self.INPUT, self.tr('Input layer'), False))
+        self.addParameter(ParameterNumber(self.BAND,
+            self.tr('Band number'), 1, 9999, 1))
 
-        self.addOutput(OutputTable(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputTable(self.OUTPUT, self.tr('Output file')))
 
     def processAlgorithm(self, progress):
         arguments = []

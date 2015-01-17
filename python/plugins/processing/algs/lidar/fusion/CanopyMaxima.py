@@ -49,21 +49,23 @@ class CanopyMaxima(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Canopy Maxima'
         self.group = 'Points'
-        self.addParameter(ParameterFile(self.INPUT, 'Input FUSION canopy height model'))
-        self.addParameter(ParameterFile(self.GROUND, 'Input ground .dtm layer [optional]'))
-        self.addParameter(ParameterNumber(self.THRESHOLD, 'Height threshold',
-                          0, None, 10.0))
+        self.addParameter(ParameterFile(self.INPUT,
+            self.tr('Input FUSION canopy height model')))
+        self.addParameter(ParameterFile(self.GROUND,
+            self.tr('Input ground .dtm layer [optional]')))
+        self.addParameter(ParameterNumber(self.THRESHOLD,
+            self.tr('Height threshold'), 0, None, 10.0))
         ### begin
-        self.addParameter(ParameterNumber(self.PARAM_A, 'Variable window size: parameter A',
-                          0, None, 2.51503))
-        self.addParameter(ParameterNumber(self.PARAM_C, 'Parameter C',
-                          0, None, 0.00901))
-        self.addParameter(ParameterBoolean(self.SUMMARY, 'Summary (tree height summary statistics)',
-                        False))
+        self.addParameter(ParameterNumber(self.PARAM_A,
+            self.tr('Variable window size: parameter A'), 0, None, 2.51503))
+        self.addParameter(ParameterNumber(self.PARAM_C,
+            self.tr('Parameter C'), 0, None, 0.00901))
+        self.addParameter(ParameterBoolean(self.SUMMARY,
+            self.tr('Summary (tree height summary statistics)'), False))
         ### end
-        self.addOutput(OutputTable(self.OUTPUT, 'Output file with maxima'))
+        self.addOutput(OutputTable(self.OUTPUT,
+            self.tr('Output file with maxima')))
         self.addAdvancedModifiers()
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'CanopyMaxima.exe')]

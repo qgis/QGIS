@@ -53,15 +53,20 @@ class las2las_project(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterSelection(las2las_project.SOURCE_PROJECTION, "source projection", las2las_project.PROJECTIONS, 0))
-        self.addParameter(ParameterSelection(las2las_project.SOURCE_UTM, "source utm zone", las2las_project.UTM_ZONES, 0))
-        self.addParameter(ParameterSelection(las2las_project.SOURCE_SP, "source state plane code", las2las_project.STATE_PLANES, 0))
-        self.addParameter(ParameterSelection(las2las_project.TARGET_PROJECTION, "target projection", las2las_project.PROJECTIONS, 0))
-        self.addParameter(ParameterSelection(las2las_project.TARGET_UTM, "target utm zone", las2las_project.UTM_ZONES, 0))
-        self.addParameter(ParameterSelection(las2las_project.TARGET_SP, "target state plane code", las2las_project.STATE_PLANES, 0))
+        self.addParameter(ParameterSelection(las2las_project.SOURCE_PROJECTION,
+            self.tr("source projection"), las2las_project.PROJECTIONS, 0))
+        self.addParameter(ParameterSelection(las2las_project.SOURCE_UTM,
+            self.tr("source utm zone"), las2las_project.UTM_ZONES, 0))
+        self.addParameter(ParameterSelection(las2las_project.SOURCE_SP,
+            self.tr("source state plane code"), las2las_project.STATE_PLANES, 0))
+        self.addParameter(ParameterSelection(las2las_project.TARGET_PROJECTION,
+            self.tr("target projection"), las2las_project.PROJECTIONS, 0))
+        self.addParameter(ParameterSelection(las2las_project.TARGET_UTM,
+            self.tr("target utm zone"), las2las_project.UTM_ZONES, 0))
+        self.addParameter(ParameterSelection(las2las_project.TARGET_SP,
+            self.tr("target state plane code"), las2las_project.STATE_PLANES, 0))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
-
 
     def processAlgorithm(self, progress):
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2las")]

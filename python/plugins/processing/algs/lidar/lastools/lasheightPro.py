@@ -42,11 +42,16 @@ class lasheightPro(LAStoolsAlgorithm):
         self.name = "lasheightPro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lasheightPro.REPLACE_Z, "replace z", False))
-        self.addParameter(ParameterBoolean(lasheightPro.DROP_ABOVE, "drop above", False))
-        self.addParameter(ParameterNumber(lasheightPro.DROP_ABOVE_HEIGHT, "drop above height", 0, None, 100.0))
-        self.addParameter(ParameterBoolean(lasheightPro.DROP_BELOW, "drop below", False))
-        self.addParameter(ParameterNumber(lasheightPro.DROP_BELOW_HEIGHT, "drop below height", 0, None, -2.0))
+        self.addParameter(ParameterBoolean(lasheightPro.REPLACE_Z,
+            self.tr("replace z"), False))
+        self.addParameter(ParameterBoolean(lasheightPro.DROP_ABOVE,
+            self.tr("drop above"), False))
+        self.addParameter(ParameterNumber(lasheightPro.DROP_ABOVE_HEIGHT,
+            self.tr("drop above height"), 0, None, 100.0))
+        self.addParameter(ParameterBoolean(lasheightPro.DROP_BELOW,
+            self.tr("drop below"), False))
+        self.addParameter(ParameterNumber(lasheightPro.DROP_BELOW_HEIGHT,
+            self.tr("drop below height"), 0, None, -2.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

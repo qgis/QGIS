@@ -128,7 +128,7 @@ class OTBUtils:
     @staticmethod
     def executeOtb(commands, progress):
         loglines = []
-        loglines.append("OTB execution console output")
+        loglines.append(OTBUtils.tr("OTB execution console output"))
         os.putenv('ITK_AUTOLOAD_PATH', OTBUtils.otbLibPath())
         fused_command = ''.join(['"%s" ' % c for c in commands])
         proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),stderr=subprocess.STDOUT, universal_newlines=True).stdout
@@ -144,7 +144,11 @@ class OTBUtils:
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
-
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'OTBUtils'
+        return QCoreApplication.translate(context, string)
 
 def get_choices_of(doc, parameter):
     choices = []

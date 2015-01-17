@@ -42,7 +42,8 @@ class lascolor(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI();
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterRaster(lascolor.ORTHO, "Input ortho"))
+        self.addParameter(ParameterRaster(lascolor.ORTHO,
+            self.tr("Input ortho")))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

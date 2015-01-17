@@ -65,17 +65,16 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    TauDEMUtils.TAUDEM_FOLDER,
-                                    'TauDEM command line tools folder',
-                                    TauDEMUtils.taudemPath()))
+            TauDEMUtils.TAUDEM_FOLDER,
+            self.tr('TauDEM command line tools folder'),
+            TauDEMUtils.taudemPath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    TauDEMUtils.MPIEXEC_FOLDER,
-                                    'MPICH2/OpenMPI bin directory',
-                                    TauDEMUtils.mpiexecPath()))
+            TauDEMUtils.MPIEXEC_FOLDER,
+            self.tr('MPICH2/OpenMPI bin directory'),
+            TauDEMUtils.mpiexecPath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    TauDEMUtils.MPI_PROCESSES,
-                                    'Number of MPI parallel processes to use',
-                                    2))
+            TauDEMUtils.MPI_PROCESSES,
+            self.tr('Number of MPI parallel processes to use'), 2))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -98,12 +97,10 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not open TauDEM algorithm: '
-                                + descriptionFile)
+                            self.tr('Could not open TauDEM algorithm: %s' % descriptionFile))
                 except Exception, e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not open TauDEM algorithm: '
-                            + descriptionFile)
+                        self.tr('Could not open TauDEM algorithm: %s' % descriptionFile))
 
         self.preloadedAlgs.append(PeukerDouglas())
         self.preloadedAlgs.append(SlopeArea())

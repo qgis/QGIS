@@ -84,7 +84,7 @@ class Dissolve(GeoAlgorithm):
                         outFeat.setGeometry(tmpOutGeom)
                     except:
                         raise GeoAlgorithmExecutionException(
-                                'Geometry exception while dissolving')
+                            self.tr('Geometry exception while dissolving'))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         else:
@@ -115,7 +115,7 @@ class Dissolve(GeoAlgorithm):
                                 outFeat.setGeometry(tmpOutGeom)
                             except:
                                 raise GeoAlgorithmExecutionException(
-                                        'Geometry exception while dissolving')
+                                    self.tr('Geometry exception while dissolving'))
                 if add:
                     outFeat.setAttributes(attrs)
                     writer.addFeature(outFeat)
@@ -124,11 +124,11 @@ class Dissolve(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Dissolve'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(Dissolve.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON,
-                          ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(Dissolve.INPUT,
+            self.tr('Input layer'),
+            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
-                          'Dissolve all (do not use field)', True))
-        self.addParameter(ParameterTableField(Dissolve.FIELD, 'Unique ID field'
-                          , Dissolve.INPUT, optional=True))
-        self.addOutput(OutputVector(Dissolve.OUTPUT, 'Dissolved'))
+            self.tr('Dissolve all (do not use field)'), True))
+        self.addParameter(ParameterTableField(Dissolve.FIELD,
+            self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
+        self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))

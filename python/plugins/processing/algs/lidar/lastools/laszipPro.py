@@ -39,13 +39,16 @@ class laszipPro(LAStoolsAlgorithm):
         self.name = "laszipPro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(laszipPro.REPORT_SIZE, "only report size", False))
-        self.addParameter(ParameterBoolean(laszipPro.CREATE_LAX, "create spatial indexing file (*.lax)", False))
-        self.addParameter(ParameterBoolean(laszipPro.APPEND_LAX, "append *.lax into *.laz file", False))
+        self.addParameter(ParameterBoolean(laszipPro.REPORT_SIZE,
+            self.tr("only report size"), False))
+        self.addParameter(ParameterBoolean(laszipPro.CREATE_LAX,
+            self.tr("create spatial indexing file (*.lax)"), False))
+        self.addParameter(ParameterBoolean(laszipPro.APPEND_LAX,
+            self.tr("append *.lax into *.laz file"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
-	self.addParametersAdditionalGUI()
+        self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
@@ -63,7 +66,7 @@ class laszipPro(LAStoolsAlgorithm):
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)
-	self.addParametersAdditionalCommands(commands)
+        self.addParametersAdditionalCommands(commands)
         self.addParametersCoresCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

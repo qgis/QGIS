@@ -51,21 +51,21 @@ class ExtractByLocation(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Extract by location'
         self.group = 'Vector selection tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Layer to select from',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Layer to select from'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INTERSECT,
-                          'Additional layer (intersection layer)',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Additional layer (intersection layer)'),
+            [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterBoolean(self.TOUCHES,
-                          'Include input features that touch the selection features',
+            self.tr('Include input features that touch the selection features'),
                           [True]))
         self.addParameter(ParameterBoolean(self.OVERLAPS,
-                          'Include input features that overlap/cross the selection features',
+            self.tr('Include input features that overlap/cross the selection features'),
                           [True]))
         self.addParameter(ParameterBoolean(self.WITHIN,
-                          'Include input features completely within the selection features',
+            self.tr('Include input features completely within the selection features'),
                           [True]))
-        self.addOutput(OutputVector(self.OUTPUT, 'Selection'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection')))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)

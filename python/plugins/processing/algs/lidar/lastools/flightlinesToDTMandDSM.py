@@ -43,13 +43,19 @@ class flightlinesToDTMandDSM(LAStoolsAlgorithm):
         self.name = "flightlinesToDTMandDSM"
         self.group = "LAStools Pipelines"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterNumber(flightlinesToDTMandDSM.TILE_SIZE, "tile size (side length of square tile)",  0, None, 1000.0))
-        self.addParameter(ParameterNumber(flightlinesToDTMandDSM.BUFFER, "buffer around each tile (avoids edge artifacts)",  0, None, 25.0))
-        self.addParameter(ParameterSelection(flightlinesToDTMandDSM.TERRAIN, "terrain type", flightlinesToDTMandDSM.TERRAINS, 1))
+        self.addParameter(ParameterNumber(flightlinesToDTMandDSM.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+            0, None, 1000.0))
+        self.addParameter(ParameterNumber(flightlinesToDTMandDSM.BUFFER,
+            self.tr("buffer around each tile (avoids edge artifacts)"),
+            0, None, 25.0))
+        self.addParameter(ParameterSelection(flightlinesToDTMandDSM.TERRAIN,
+            self.tr("terrain type"), flightlinesToDTMandDSM.TERRAINS, 1))
         self.addParametersStepGUI()
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersOutputDirectoryGUI()
-        self.addParameter(ParameterString(flightlinesToDTMandDSM.BASE_NAME, "tile base name (using 'sydney' creates sydney_274000_4714000...)","tile"))
+        self.addParameter(ParameterString(flightlinesToDTMandDSM.BASE_NAME,
+            self.tr("tile base name (using 'sydney' creates sydney_274000_4714000...)"), "tile"))
         self.addParametersRasterOutputFormatGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()

@@ -55,23 +55,22 @@ class BasicStatisticsStrings(GeoAlgorithm):
         self.group = 'Vector table tools'
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                          'Input vector layer',
-                          ParameterVector.VECTOR_TYPE_ANY, False))
+            self.tr('Input vector layer'),
+            ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
-                          'Field to calculate statistics on',
-                          self.INPUT_LAYER,
-                          ParameterTableField.DATA_TYPE_STRING))
+            self.tr('Field to calculate statistics on'),
+            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_STRING))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-                       'Statistics for text field'))
+            self.tr('Statistics for text field')))
 
-        self.addOutput(OutputNumber(self.MIN_LEN, 'Minimum length'))
-        self.addOutput(OutputNumber(self.MAX_LEN, 'Maximum length'))
-        self.addOutput(OutputNumber(self.MEAN_LEN, 'Mean length'))
-        self.addOutput(OutputNumber(self.COUNT, 'Count'))
-        self.addOutput(OutputNumber(self.EMPTY, 'Number of empty values'))
-        self.addOutput(OutputNumber(self.FILLED, 'Number of non-empty values'))
-        self.addOutput(OutputNumber(self.UNIQUE, 'Number of unique values'))
+        self.addOutput(OutputNumber(self.MIN_LEN, self.tr('Minimum length')))
+        self.addOutput(OutputNumber(self.MAX_LEN, self.tr('Maximum length')))
+        self.addOutput(OutputNumber(self.MEAN_LEN, self.tr('Mean length')))
+        self.addOutput(OutputNumber(self.COUNT, self.tr('Count')))
+        self.addOutput(OutputNumber(self.EMPTY, self.tr('Number of empty values')))
+        self.addOutput(OutputNumber(self.FILLED, self.tr('Number of non-empty values')))
+        self.addOutput(OutputNumber(self.UNIQUE, self.tr('Number of unique values')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

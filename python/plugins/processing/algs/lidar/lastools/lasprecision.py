@@ -42,7 +42,7 @@ class lasprecision(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addOutput(OutputFile(lasprecision.OUTPUT, "Output ASCII file"))
+        self.addOutput(OutputFile(lasprecision.OUTPUT, self.tr("Output ASCII file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):

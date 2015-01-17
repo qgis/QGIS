@@ -54,17 +54,16 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
         self.name = 'Random extract within subsets'
         self.group = 'Vector selection tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD, 'ID Field',
-                          self.INPUT))
-        self.addParameter(ParameterSelection(self.METHOD, 'Method',
-                          self.METHODS, 0))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('ID field'), self.INPUT))
+        self.addParameter(ParameterSelection(self.METHOD,
+            self.tr('Method'), self.METHODS, 0))
         self.addParameter(ParameterNumber(self.NUMBER,
-                          'Number/percentage of selected features', 1, None,
-                          10))
+            self.tr('Number/percentage of selected features'), 1, None, 10))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Selection'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection')))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
@@ -82,13 +81,13 @@ class RandomExtractWithinSubsets(GeoAlgorithm):
         if method == 0:
             if value > featureCount:
                 raise GeoAlgorithmExecutionException(
-                        'Selected number is greater that feature count. \
-                        Choose lesser value and try again.')
+                    self.tr('Selected number is greater that feature count. '
+                            'Choose lesser value and try again.'))
         else:
             if value > 100:
                 raise GeoAlgorithmExecutionException(
-                        "Percentage can't be greater than 100. Set correct \
-                        value and try again.")
+                    self.tr("Percentage can't be greater than 100. Set "
+                            "correct value and try again."))
             value = value / 100.0
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(

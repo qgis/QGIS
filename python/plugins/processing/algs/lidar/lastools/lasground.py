@@ -48,9 +48,12 @@ class lasground(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
-        self.addParameter(ParameterBoolean(lasground.NO_BULGE, "no triangle bulging during TIN refinement", False))
-        self.addParameter(ParameterSelection(lasground.TERRAIN, "terrain type", lasground.TERRAINS, 1))
-        self.addParameter(ParameterSelection(lasground.GRANULARITY, "preprocessing", lasground.GRANULARITIES, 1))
+        self.addParameter(ParameterBoolean(lasground.NO_BULGE,
+            self.tr("no triangle bulging during TIN refinement"), False))
+        self.addParameter(ParameterSelection(lasground.TERRAIN,
+            self.tr("terrain type"), lasground.TERRAINS, 1))
+        self.addParameter(ParameterSelection(lasground.GRANULARITY,
+            self.tr("preprocessing"), lasground.GRANULARITIES, 1))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 

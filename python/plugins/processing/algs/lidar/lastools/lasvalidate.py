@@ -39,8 +39,9 @@ class lasvalidate(LAStoolsAlgorithm):
         self.name = "lasvalidate"
         self.group = "LAStools"
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(lasvalidate.ONE_REPORT_PER_FILE, "save report to '*_LVS.xml'", False))
-        self.addOutput(OutputFile(lasvalidate.OUTPUT, "Output XML file"))
+        self.addParameter(ParameterBoolean(lasvalidate.ONE_REPORT_PER_FILE,
+            self.tr("save report to '*_LVS.xml'"), False))
+        self.addOutput(OutputFile(lasvalidate.OUTPUT, self.tr("Output XML file")))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):

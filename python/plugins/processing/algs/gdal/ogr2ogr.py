@@ -103,14 +103,14 @@ class Ogr2Ogr(OgrAlgorithm):
         self.name = 'Convert format'
         self.group = '[OGR] Conversion'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.FORMAT,
-                          'Destination Format', FORMATS))
-        self.addParameter(ParameterString(self.OPTIONS, 'Creation Options',
-                          '', optional=True))
+            self.tr('Destination Format'), FORMATS))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)

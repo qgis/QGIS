@@ -42,11 +42,19 @@ class blast2isoPro(LAStoolsAlgorithm):
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
         self.addParametersPointInputMergedGUI()
-        self.addParameter(ParameterNumber(blast2isoPro.SMOOTH, "smooth underlying TIN", 0, None, 0))
-        self.addParameter(ParameterNumber(blast2isoPro.ISO_EVERY, "extract isoline with a spacing of", 0, None, 10.0))
-        self.addParameter(ParameterNumber(blast2isoPro.CLEAN, "clean isolines shorter than (0 = do not clean)", None, None, 0.0))
-        self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_LENGTH, "simplify segments shorter than (0 = do not simplify)", None, None, 0.0))
-        self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_AREA, "simplify segments pairs with area less than (0 = do not simplify)", None, None, 0.0))
+        self.addParameter(ParameterNumber(blast2isoPro.SMOOTH,
+            self.tr("smooth underlying TIN"), 0, None, 0))
+        self.addParameter(ParameterNumber(blast2isoPro.ISO_EVERY,
+            self.tr("extract isoline with a spacing of"), 0, None, 10.0))
+        self.addParameter(ParameterNumber(blast2isoPro.CLEAN,
+            self.tr("clean isolines shorter than (0 = do not clean)"),
+            None, None, 0.0))
+        self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_LENGTH,
+            self.tr("simplify segments shorter than (0 = do not simplify)"),
+            None, None, 0.0))
+        self.addParameter(ParameterNumber(blast2isoPro.SIMPLIFY_AREA,
+            self.tr("simplify segments pairs with area less than (0 = do not simplify)"),
+            None, None, 0.0))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersVectorOutputFormatGUI()

@@ -124,7 +124,8 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
             GridDataMetrics(),
             # ----- OGR tools -----
-            OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(), Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), OgrSql(),
+            OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
+            Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), OgrSql(),
             ]
 
         # And then we add those that are created as python scripts

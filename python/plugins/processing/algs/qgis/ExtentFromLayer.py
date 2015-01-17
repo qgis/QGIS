@@ -41,22 +41,16 @@ class ExtentFromLayer(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    #==========================================================================
-    #def getIcon(self):
-    #   return QIcon(os.path.dirname(__file__) + "/icons/layer_extent.png")
-    #==========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Polygon from layer extent'
         self.group = 'Vector general tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
-                          'Calculate extent for each feature separately',
-                          False))
+            self.tr('Calculate extent for each feature separately'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

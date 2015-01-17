@@ -46,11 +46,11 @@ class SetVectorStyle(GeoAlgorithm):
         #self.allowOnlyOpenedLayers = True
         self.name = 'Set style for vector layer'
         self.group = 'Vector general tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Vector layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterFile(self.STYLE,
-                          'Style file', False, False, 'qml'))
-        self.addOutput(OutputVector(self.OUTPUT, 'Styled layer', True))
+            self.tr('Style file'), False, False, 'qml'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled layer'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)

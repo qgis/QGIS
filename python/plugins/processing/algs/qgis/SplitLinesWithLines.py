@@ -46,12 +46,12 @@ class SplitLinesWithLines(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Split lines with lines'
         self.group = 'Vector overlay tools'
-        self.addParameter(ParameterVector(self.INPUT_A, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addParameter(ParameterVector(self.INPUT_B, 'Split layer',
-                          [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.INPUT_A,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(self.INPUT_B,
+            self.tr('Split layer'), [ParameterVector.VECTOR_TYPE_LINE]))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Split lines'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Split lines')))
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(
@@ -108,7 +108,7 @@ class SplitLinesWithLines(GeoAlgorithm):
                                     result, newGeometries, topoTestPoints = inGeom.splitGeometry(splitterPList, False)
                                 except:
                                     ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                        'Geometry exception while splitting')
+                                        self.tr('Geometry exception while splitting'))
                                     result = 1
 
                                 # splitGeometry: If there are several intersections

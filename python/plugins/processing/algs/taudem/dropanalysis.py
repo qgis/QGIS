@@ -71,35 +71,35 @@ class DropAnalysis(GeoAlgorithm):
         self.group = 'Stream Network Analysis tools'
 
         self.addParameter(ParameterRaster(self.D8_CONTRIB_AREA_GRID,
-                          'D8 Contributing Area Grid', False))
+            self.tr('D8 Contributing Area Grid'), False))
         self.addParameter(ParameterRaster(self.D8_FLOW_DIR_GRID,
-                          'D8 Flow Direction Grid', False))
+            self.tr('D8 Flow Direction Grid'), False))
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID,
-                          'Pit Filled Elevation Grid', False))
+            self.tr('Pit Filled Elevation Grid'), False))
         self.addParameter(ParameterRaster(self.ACCUM_STREAM_SOURCE_GRID,
-                          'Accumulated Stream Source Grid', False))
+            self.tr('Accumulated Stream Source Grid'), False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-                          'Outlets Shapefile',
-                          [ParameterVector.VECTOR_TYPE_POINT], False))
+            self.tr('Outlets Shapefile'),
+            [ParameterVector.VECTOR_TYPE_POINT], False))
         self.addParameter(ParameterNumber(self.MIN_TRESHOLD,
-                          'Minimum Threshold', 0, None, 5))
+            self.tr('Minimum Threshold'), 0, None, 5))
         self.addParameter(ParameterNumber(self.MAX_THRESHOLD,
-                          'Maximum Threshold', 0, None, 500))
+            self.tr('Maximum Threshold'), 0, None, 500))
         self.addParameter(ParameterNumber(self.TRESHOLD_NUM,
-                          'Number of Threshold Values', 0, None, 10))
+            self.tr('Number of Threshold Values'), 0, None, 10))
         self.addParameter(ParameterSelection(self.STEP_TYPE,
-                          'Spacing for Threshold Values', self.STEPS, 0))
+            self.tr('Spacing for Threshold Values'), self.STEPS, 0))
         self.addOutput(OutputFile(self.DROP_ANALYSIS_FILE,
-                       'D-Infinity Drop to Stream Grid'))
+            self.tr('D-Infinity Drop to Stream Grid')))
 
     def processAlgorithm(self, progress):
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -121,11 +121,5 @@ class DropAnalysis(GeoAlgorithm):
         commands.append(str(self.getParameterValue(self.STEPS)))
         commands.append('-drp')
         commands.append(self.getOutputValue(self.DROP_ANALYSIS_FILE))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)

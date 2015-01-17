@@ -54,19 +54,18 @@ class aspect(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Aspect'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(
+            self.BAND, self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(
+            self.COMPUTE_EDGES, self.tr('Compute edges'), False))
         self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-                "Use Zevenbergen&Thorne formula (instead of the Horn's one)",
-                False))
+            self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+            False))
         self.addParameter(ParameterBoolean(self.TRIG_ANGLE,
-                          'Return trigonometric angle (instead of azimuth)',
-                          False))
+            self.tr('Return trigonometric angle (instead of azimuth)'), False))
         self.addParameter(ParameterBoolean(self.ZERO_FLAT,
-                          'Return o for flat (instead of -9999)',
-                          False))
+            self.tr('Return 0 for flat (instead of -9999)'), False))
 
         self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
 

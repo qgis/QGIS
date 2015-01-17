@@ -49,9 +49,12 @@ class lasview(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(lasview.POINTS, "max number of points sampled", 100000, 20000000, 5000000))
-        self.addParameter(ParameterSelection(lasview.COLORING, "color by", lasview.COLORINGS, 0))
-        self.addParameter(ParameterSelection(lasview.SIZE, "window size (x y) in pixels", lasview.SIZES, 0))
+        self.addParameter(ParameterNumber(lasview.POINTS,
+            self.tr("max number of points sampled"), 100000, 20000000, 5000000))
+        self.addParameter(ParameterSelection(lasview.COLORING,
+            self.tr("color by"), lasview.COLORINGS, 0))
+        self.addParameter(ParameterSelection(lasview.SIZE,
+            self.tr("window size (x y) in pixels"), lasview.SIZES, 0))
         self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):

@@ -47,25 +47,20 @@ class VariableDistanceBuffer(GeoAlgorithm):
     SEGMENTS = 'SEGMENTS'
     DISSOLVE = 'DISSOLVE'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/buffer.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Variable distance buffer'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD, 'Distance field',
-                          self.INPUT))
-        self.addParameter(ParameterNumber(self.SEGMENTS, 'Segments', 1,
-                          default=5))
-        self.addParameter(ParameterBoolean(self.DISSOLVE, 'Dissolve result',
-                          False))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Distance field'), self.INPUT))
+        self.addParameter(ParameterNumber(self.SEGMENTS,
+            self.tr('Segments'), 1, default=5))
+        self.addParameter(ParameterBoolean(self.DISSOLVE,
+            self.tr('Dissolve result'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Buffer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Buffer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

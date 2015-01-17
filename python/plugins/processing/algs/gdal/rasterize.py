@@ -47,7 +47,8 @@ class rasterize(GdalAlgorithm):
     RTYPE = 'RTYPE'
     OUTPUT = 'OUTPUT'
 
-    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64',
+            'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def commandLineName(self):
         return "gdalogr:rasterize"
@@ -55,22 +56,23 @@ class rasterize(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Rasterize (vector to raster)'
         self.group = '[GDAL] Conversion'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterTableField(self.FIELD, 'Attribute field',
-                          self.INPUT))
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Attribute field'), self.INPUT))
         self.addParameter(ParameterBoolean(self.WRITEOVER,
-                          'Write values inside an existing raster layer(*)', False))
+            self.tr('Write values inside an existing raster layer(*)'), False))
         self.addParameter(ParameterSelection(self.DIMENSIONS,
-                          'Set output raster size (ignored if above option is checked)', ['Output size in pixels',
-                          'Output resolution in map units per pixel'], 1))
-        self.addParameter(ParameterNumber(self.WIDTH, 'Horizontal', 0.0,
-                          99999999.999999, 100.0))
-        self.addParameter(ParameterNumber(self.HEIGHT, 'Vertical', 0.0,
-                          99999999.999999, 100.0))
-	self.addParameter(ParameterSelection(self.RTYPE, 'Raster type',
-                          self.TYPE, 0))
+            self.tr('Set output raster size (ignored if above option is checked)'),
+            ['Output size in pixels', 'Output resolution in map units per pixel'], 1))
+        self.addParameter(ParameterNumber(self.WIDTH,
+            self.tr('Horizontal'), 0.0, 99999999.999999, 100.0))
+        self.addParameter(ParameterNumber(self.HEIGHT,
+            self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
+        self.addParameter(ParameterSelection(self.RTYPE, self.tr('Raster type'),
+            self.TYPE, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer: mandatory to choose an existing raster layer if the (*) option is selected'))
+        self.addOutput(OutputRaster(self.OUTPUT,
+            self.tr('Output layer: mandatory to choose an existing raster layer if the (*) option is selected')))
 
     def processAlgorithm(self, progress):
         writeOver = self.getParameterValue(self.WRITEOVER)
@@ -82,22 +84,21 @@ class rasterize(GdalAlgorithm):
         if not writeOver:
              arguments.append('-ot')
              arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-	     dimType = self.getParameterValue(self.DIMENSIONS)
-	     if dimType == 0:
-		# size in pixels
-		arguments.append('-ts')
-		arguments.append(str(self.getParameterValue(self.WIDTH)))
-		arguments.append(str(self.getParameterValue(self.HEIGHT)))
-	     else:
-		    # resolution in map units per pixel
-		arguments.append('-tr')
-		arguments.append(str(self.getParameterValue(self.WIDTH)))
-		arguments.append(str(self.getParameterValue(self.HEIGHT)))
+        dimType = self.getParameterValue(self.DIMENSIONS)
+        if dimType == 0:
+            # size in pixels
+            arguments.append('-ts')
+            arguments.append(str(self.getParameterValue(self.WIDTH)))
+            arguments.append(str(self.getParameterValue(self.HEIGHT)))
+        else:
+             # resolution in map units per pixel
+             arguments.append('-tr')
+             arguments.append(str(self.getParameterValue(self.WIDTH)))
+             arguments.append(str(self.getParameterValue(self.HEIGHT)))
 
         arguments.append('-l')
         arguments.append(
-                os.path.basename(os.path.splitext(
-                        unicode(self.getParameterValue(self.INPUT)))[0]))
+            os.path.basename(os.path.splitext(unicode(self.getParameterValue(self.INPUT)))[0]))
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
 
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))

@@ -40,10 +40,14 @@ class lasduplicatePro(LAStoolsAlgorithm):
         self.name = "lasduplicatePro"
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
-        self.addParameter(ParameterBoolean(lasduplicatePro.LOWEST_Z, "keep duplicate with lowest z coordinate", False))
-        self.addParameter(ParameterBoolean(lasduplicatePro.UNIQUE_XYZ, "only remove duplicates in x y and z", False))
-        self.addParameter(ParameterBoolean(lasduplicatePro.SINGLE_RETURNS, "mark surviving duplicate as single return", False))
-        self.addParameter(ParameterBoolean(lasduplicatePro.RECORD_REMOVED, "record removed duplicates", False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.LOWEST_Z,
+            self.tr("keep duplicate with lowest z coordinate"), False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.UNIQUE_XYZ,
+            self.tr("only remove duplicates in x y and z"), False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.SINGLE_RETURNS,
+            self.tr("mark surviving duplicate as single return"), False))
+        self.addParameter(ParameterBoolean(lasduplicatePro.RECORD_REMOVED,
+            self.tr("record removed duplicates"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()

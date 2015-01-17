@@ -93,20 +93,19 @@ class Intersection(GeoAlgorithm):
                                 outFeat.setAttributes(attrs)
                                 writer.addFeature(outFeat)
                         except:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_INFO, 'Feature geometry error: One or more output features ignored due to invalid geometry.')
+                            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
+                                self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                             continue
                 except:
                     break
-
 
         del writer
 
     def defineCharacteristics(self):
         self.name = 'Intersection'
         self.group = 'Vector overlay tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INPUT2,
-                          'Intersect layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT, 'Intersection'))
+            self.tr('Intersect layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Intersection')))

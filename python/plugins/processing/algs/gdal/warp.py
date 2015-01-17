@@ -48,26 +48,28 @@ class warp(GdalAlgorithm):
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
 
-    TYPE = ['Byte','Int16','UInt16','UInt32','Int32','Float32','Float64','CInt16','CInt32','CFloat32','CFloat64']
+    TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64',
+            'CInt16', 'CInt32', 'CFloat32', 'CFloat64']
 
     def defineCharacteristics(self):
         self.name = 'Warp (reproject)'
         self.group = '[GDAL] Projections'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer', False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
-                          'Source SRS (EPSG Code)', 'EPSG:4326'))
+            self.tr('Source SRS'), 'EPSG:4326'))
         self.addParameter(ParameterCrs(self.DEST_SRS,
-                          'Destination SRS (EPSG Code)', 'EPSG:4326'))
+            self.tr('Destination SRS'), 'EPSG:4326'))
         self.addParameter(ParameterNumber(self.TR,
-            'Output file resolution in target georeferenced units (leave 0 for no change)',
+            self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
             0.0, None, 0.0))
-        self.addParameter(ParameterSelection(self.METHOD, 'Resampling method',
-                          self.METHOD_OPTIONS))
+        self.addParameter(ParameterSelection(self.METHOD,
+            self.tr('Resampling method'), self.METHOD_OPTIONS))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', '', optional=True))
-        self.addParameter(ParameterSelection(self.RTYPE, 'Output raster type',
-			  self.TYPE, 5))
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output layer'))
+            self.tr('Additional creation parameters'), '', optional=True))
+        self.addParameter(ParameterSelection(self.RTYPE,
+            self.tr('Output raster type'), self.TYPE, 5))
+
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         arguments = []

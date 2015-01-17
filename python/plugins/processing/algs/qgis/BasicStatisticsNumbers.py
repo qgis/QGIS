@@ -58,26 +58,24 @@ class BasicStatisticsNumbers(GeoAlgorithm):
         self.group = 'Vector table tools'
 
         self.addParameter(ParameterVector(self.INPUT_LAYER,
-                          'Input vector layer',
-                          ParameterVector.VECTOR_TYPE_ANY, False))
+            self.tr('Input vector layer'), ParameterVector.VECTOR_TYPE_ANY, False))
         self.addParameter(ParameterTableField(self.FIELD_NAME,
-                          'Field to calculate statistics on',
-                          self.INPUT_LAYER,
-                          ParameterTableField.DATA_TYPE_NUMBER))
+            self.tr('Field to calculate statistics on'),
+            self.INPUT_LAYER, ParameterTableField.DATA_TYPE_NUMBER))
 
         self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-                       'Statistics for numeric field'))
+            self.tr('Statistics for numeric field')))
 
-        self.addOutput(OutputNumber(self.CV, 'Coefficient of Variation'))
-        self.addOutput(OutputNumber(self.MIN, 'Minimum value'))
-        self.addOutput(OutputNumber(self.MAX, 'Maximum value'))
-        self.addOutput(OutputNumber(self.SUM, 'Sum'))
-        self.addOutput(OutputNumber(self.MEAN, 'Mean value'))
-        self.addOutput(OutputNumber(self.COUNT, 'Count'))
-        self.addOutput(OutputNumber(self.RANGE, 'Range'))
-        self.addOutput(OutputNumber(self.MEDIAN, 'Median'))
-        self.addOutput(OutputNumber(self.UNIQUE, 'Number of unique values'))
-        self.addOutput(OutputNumber(self.STD_DEV, 'Standard deviation'))
+        self.addOutput(OutputNumber(self.CV, self.tr('Coefficient of Variation')))
+        self.addOutput(OutputNumber(self.MIN, self.tr('Minimum value')))
+        self.addOutput(OutputNumber(self.MAX, self.tr('Maximum value')))
+        self.addOutput(OutputNumber(self.SUM, self.tr('Sum')))
+        self.addOutput(OutputNumber(self.MEAN, self.tr('Mean value')))
+        self.addOutput(OutputNumber(self.COUNT, self.tr('Count')))
+        self.addOutput(OutputNumber(self.RANGE, self.tr('Range')))
+        self.addOutput(OutputNumber(self.MEDIAN, self.tr('Median')))
+        self.addOutput(OutputNumber(self.UNIQUE, self.tr('Number of unique values')))
+        self.addOutput(OutputNumber(self.STD_DEV, self.tr('Standard deviation')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(

@@ -55,8 +55,8 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         """
         AlgorithmProvider.initializeSettings(self)
         ProcessingConfig.addSetting(Setting('Example algorithms',
-                                    ExampleAlgorithmProvider.MY_DUMMY_SETTING,
-                                    'Example setting', 'Default value'))
+            ExampleAlgorithmProvider.MY_DUMMY_SETTING,
+            'Example setting', 'Default value'))
 
     def unload(self):
         """Setting should be removed here, so they do not appear anymore

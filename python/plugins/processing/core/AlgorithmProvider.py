@@ -125,5 +125,5 @@ class AlgorithmProvider:
 
     def tr(self, string, context=''):
         if context == '':
-            context = 'AlgorithmProvider'
+            context = self.__class__.__name__
         return QtCore.QCoreApplication.translate(context, string)

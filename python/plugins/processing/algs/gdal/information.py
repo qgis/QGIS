@@ -45,13 +45,14 @@ class information(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Information'
         self.group = '[GDAL] Miscellaneous'
-        self.addParameter(ParameterRaster(information.INPUT, 'Input layer',
-                          False))
+        self.addParameter(ParameterRaster(information.INPUT,
+            self.tr('Input layer'), False))
         self.addParameter(ParameterBoolean(information.NOGCP,
-                          'Suppress GCP info', False))
+            self.tr('Suppress GCP info'), False))
         self.addParameter(ParameterBoolean(information.NOMETADATA,
-                          'Suppress metadata info', False))
-        self.addOutput(OutputHTML(information.OUTPUT, 'Layer information'))
+            self.tr('Suppress metadata info'), False))
+        self.addOutput(OutputHTML(information.OUTPUT,
+            self.tr('Layer information')))
 
     def processAlgorithm(self, progress):
         arguments = []

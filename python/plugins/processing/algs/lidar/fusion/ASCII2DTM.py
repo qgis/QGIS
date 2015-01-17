@@ -48,16 +48,20 @@ class ASCII2DTM(FusionAlgorithm):
     def defineCharacteristics(self):
         self.name = 'ASCII to DTM'
         self.group = 'Conversion'
-        self.addParameter(ParameterFile(self.INPUT, 'Input ESRI ASCII layer'))
-        self.addParameter(ParameterSelection(self.XYUNITS, 'XY Units',
-                          self.UNITS))
-        self.addParameter(ParameterSelection(self.ZUNITS, 'Z Units',
-                          self.UNITS))
-        self.addParameter(ParameterSelection(self.COORDSYS, 'Coordinate system',
-                          ['unknown', 'UTM', 'state plane']))
-        self.addParameter(ParameterNumber(self.ZONE, "Coordinate system zone ('0' for unknown)", 0, None,
-                          0))
-        self.addOutput(OutputFile(self.OUTPUT, 'Output surface', 'dtm'))
+        self.addParameter(ParameterFile(
+            self.INPUT, self.tr('Input ESRI ASCII layer')))
+        self.addParameter(ParameterSelection(
+            self.XYUNITS, self.tr('XY Units'), self.UNITS))
+        self.addParameter(ParameterSelection(
+            self.ZUNITS, self.tr('Z Units'), self.UNITS))
+        self.addParameter(ParameterSelection(self.COORDSYS,
+            self.tr('Coordinate system'), ['unknown', 'UTM', 'state plane']))
+        self.addParameter(ParameterNumber(self.ZONE,
+            self.tr("Coordinate system zone ('0' for unknown)"), 0, None, 0))
+
+        self.addOutput(OutputFile(
+            self.OUTPUT, self.tr('Output surface'), 'dtm'))
+
         self.addAdvancedModifiers()
 
     def processAlgorithm(self, progress):

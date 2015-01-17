@@ -45,9 +45,12 @@ class blast2demPro(LAStoolsAlgorithm):
         self.addParametersPointInputMergedGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
         self.addParametersStepGUI()
-        self.addParameter(ParameterSelection(blast2demPro.ATTRIBUTE, "Attribute", blast2demPro.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(blast2demPro.PRODUCT, "Product", blast2demPro.PRODUCTS, 0))
-        self.addParameter(ParameterBoolean(blast2demPro.USE_TILE_BB, "use tile bounding box (after tiling with buffer)", False))
+        self.addParameter(ParameterSelection(blast2demPro.ATTRIBUTE,
+            self.tr("Attribute"), blast2demPro.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(blast2demPro.PRODUCT,
+            self.tr("Product"), blast2demPro.PRODUCTS, 0))
+        self.addParameter(ParameterBoolean(blast2demPro.USE_TILE_BB,
+            self.tr("Use tile bounding box (after tiling with buffer)"), False))
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersRasterOutputFormatGUI()

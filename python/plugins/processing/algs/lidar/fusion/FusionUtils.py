@@ -62,7 +62,9 @@ class FusionUtils:
     @staticmethod
     def runFusion(commands, progress):
         loglines = []
-        loglines.append('Fusion execution console output')
+        loglines.append(
+            QCoreApplication.translate('FusionUtils',
+                                       'Fusion execution console output'))
         proc = subprocess.Popen(
             commands,
             shell=True,
