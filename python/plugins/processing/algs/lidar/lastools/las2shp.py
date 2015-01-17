@@ -62,6 +62,6 @@ class las2shp(LAStoolsAlgorithm):
             commands.append(str(record_size))
         commands.append("-o")
         commands.append(self.getOutputValue(las2shp.OUTPUT))
-    self.addParametersAdditionalCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

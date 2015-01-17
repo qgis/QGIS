@@ -55,6 +55,6 @@ class las2txt(LAStoolsAlgorithm):
             commands.append(parse)
         commands.append("-o")
         commands.append(self.getOutputValue(las2txt.OUTPUT))
-    self.addParametersAdditionalCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

@@ -198,7 +198,7 @@ class Eliminate(GeoAlgorithm):
 
         if inLayer.selectedFeatureCount() == 0:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT)))
+                self.tr('%s: (No selection in input layer "%s")' % (self.commandLineName(), self.getParameterValue(self.INPUT))))
 
         # Keep references to the features to eliminate
         featToEliminate = []

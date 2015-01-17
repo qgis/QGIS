@@ -129,7 +129,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         self.addParameter(ParameterBoolean(self.OVERWRITE,
             self.tr('Overwrite existing table'), True))
         self.addParameter(ParameterBoolean(self.APPEND,
-            self.tr('Append to existing table', False))
+            self.tr('Append to existing table'), False))
         self.addParameter(ParameterBoolean(self.ADDFIELDS,
             self.tr('Append and add new fields to existing table'), False))
         self.addParameter(ParameterBoolean(self.LAUNDER,

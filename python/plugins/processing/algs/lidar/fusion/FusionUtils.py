@@ -64,7 +64,7 @@ class FusionUtils:
         loglines = []
         loglines.append(
             QCoreApplication.translate('FusionUtils',
-                                       'Fusion execution console output')
+                                       'Fusion execution console output'))
         proc = subprocess.Popen(
             commands,
             shell=True,

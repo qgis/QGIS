@@ -56,7 +56,7 @@ class lasgroundPro(LAStoolsAlgorithm):
         self.addParametersOutputDirectoryGUI()
         self.addParametersOutputAppendixGUI()
         self.addParametersPointOutputFormatGUI()
-    self.addParametersAdditionalGUI()
+        self.addParametersAdditionalGUI()
         self.addParametersCoresGUI()
         self.addParametersVerboseGUI()
 
@@ -77,7 +77,7 @@ class lasgroundPro(LAStoolsAlgorithm):
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)
         self.addParametersPointOutputFormatCommands(commands)
-    self.addParametersAdditionalCommands(commands)
+        self.addParametersAdditionalCommands(commands)
         self.addParametersCoresCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

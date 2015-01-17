@@ -98,7 +98,7 @@ class Clip(GeoAlgorithm):
                                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                     self.tr('GEOS geoprocessing error: One or '
                                             'more input features have invalid '
-                                            'geometry.')
+                                            'geometry.'))
                                 break
                 if found:
                     try:
@@ -116,12 +116,12 @@ class Clip(GeoAlgorithm):
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                                 self.tr('Feature geometry error: One or more '
                                         'output features ignored due to '
-                                        'invalid geometry.')
+                                        'invalid geometry.'))
                             continue
                     except:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                             self.tr('GEOS geoprocessing error: One or more '
-                                    'input features have invalid geometry.')
+                                    'input features have invalid geometry.'))
                         continue
 
             current += 1

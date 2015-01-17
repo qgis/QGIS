@@ -137,7 +137,7 @@ class GrassAlgorithm(GeoAlgorithm):
                 line = lines.readline().strip('\n').strip()
             except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                    self.tr('Could not open GRASS algorithm: %s.\n%s' % (self.descriptionFile, line))
+                    self.tr('Could not open GRASS algorithm: %s.\n%s' % (self.descriptionFile, line)))
                 raise e
         lines.close()
 

@@ -100,10 +100,7 @@ class FieldsPyculator(GeoAlgorithm):
                 exec bytecode in new_ns
             except:
                 raise GeoAlgorithmExecutionException(
-                    self.tr("FieldPyculator code execute error\n"
-                            "Global code block can't be executed!%s \n %s"
-                            % (unicode(sys.exc_info()[0].__name__),
-                               unicode(sys.exc_info()[1])))
+                    self.tr("FieldPyculator code execute error.Global code block can't be executed!\n%s\n%s" % (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1]))))
 
         # Replace all fields tags
         fields = provider.fields()
@@ -126,10 +123,7 @@ class FieldsPyculator(GeoAlgorithm):
             bytecode = compile(code, '<string>', 'exec')
         except:
             raise GeoAlgorithmExecutionException(
-                self.tr("FieldPyculator code execute error\n"
-                        "Field code block can't be executed! %s \n %s"
-                        % (unicode(sys.exc_info()[0].__name__),
-                           unicode(sys.exc_info()[1])))
+                self.tr("FieldPyculator code execute error.Field code block can't be executed!\n%s\n%s" % (unicode(sys.exc_info()[0].__name__), unicode(sys.exc_info()[1]))))
 
         # Run
         features = vector.features(layer)

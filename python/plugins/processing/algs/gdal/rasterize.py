@@ -84,22 +84,21 @@ class rasterize(GdalAlgorithm):
         if not writeOver:
              arguments.append('-ot')
              arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-         dimType = self.getParameterValue(self.DIMENSIONS)
-         if dimType == 0:
-        # size in pixels
-        arguments.append('-ts')
-        arguments.append(str(self.getParameterValue(self.WIDTH)))
-        arguments.append(str(self.getParameterValue(self.HEIGHT)))
-         else:
-            # resolution in map units per pixel
-        arguments.append('-tr')
-        arguments.append(str(self.getParameterValue(self.WIDTH)))
-        arguments.append(str(self.getParameterValue(self.HEIGHT)))
+        dimType = self.getParameterValue(self.DIMENSIONS)
+        if dimType == 0:
+            # size in pixels
+            arguments.append('-ts')
+            arguments.append(str(self.getParameterValue(self.WIDTH)))
+            arguments.append(str(self.getParameterValue(self.HEIGHT)))
+        else:
+             # resolution in map units per pixel
+             arguments.append('-tr')
+             arguments.append(str(self.getParameterValue(self.WIDTH)))
+             arguments.append(str(self.getParameterValue(self.HEIGHT)))
 
         arguments.append('-l')
         arguments.append(
-                os.path.basename(os.path.splitext(
-                        unicode(self.getParameterValue(self.INPUT)))[0]))
+            os.path.basename(os.path.splitext(unicode(self.getParameterValue(self.INPUT)))[0]))
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
 
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))

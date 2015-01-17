@@ -60,7 +60,7 @@ class aspect(GdalAlgorithm):
         self.addParameter(ParameterBoolean(
             self.COMPUTE_EDGES, self.tr('Compute edges'), False))
         self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-            self.tr"Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+            self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
             False))
         self.addParameter(ParameterBoolean(self.TRIG_ANGLE,
             self.tr('Return trigonometric angle (instead of azimuth)'), False))
