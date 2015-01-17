@@ -178,7 +178,7 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 {
   // TODO: special case for int, double
-  QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.toString() );
+  QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.isNull() ? "" : value.toString() );
   if ( it == mSymbolHash.end() )
   {
     if ( mSymbolHash.size() == 0 )
