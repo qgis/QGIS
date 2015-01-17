@@ -59,13 +59,20 @@ class TopologyRule
      * Constructor
      * initializes the test to use both layers and not to use the tolerance
      */
-    TopologyRule()
-    {
-      useSecondLayer = true;
-      useTolerance = false;
-
-      f = 0;
-    }
+    TopologyRule( testFunction f0 = 0,
+                  bool useSecondLayer0 = true,
+                  bool useTolerance0 = false,
+                  bool useSpatialIndex0 = false,
+                  QList<QGis::GeometryType> layer1SupportedTypes0 = QList<QGis::GeometryType>(),
+                  QList<QGis::GeometryType> layer2SupportedTypes0 = QList<QGis::GeometryType>()
+                )
+        : f( f0 )
+        , useSecondLayer( useSecondLayer0 )
+        , useTolerance( useTolerance0 )
+        , useSpatialIndex( useSpatialIndex0 )
+        , layer1SupportedTypes( layer1SupportedTypes0 )
+        , layer2SupportedTypes( layer2SupportedTypes0 )
+    {}
 };
 
 /**
