@@ -27,11 +27,12 @@ __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import *
 from qgis.core import *
-from processing.tools.raster import RasterWriter
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
+from processing.tools.raster import RasterWriter
 from processing.tools import dataobjects
 
 
@@ -41,13 +42,28 @@ class CreateConstantRaster(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     NUMBER = 'NUMBER'
 
+    def defineCharacteristics(self):
+        self.name = 'Create constant raster layer'
+        self.group = 'Raster tools'
+
+        self.addParameter(ParameterRaster(self.INPUT,
+            self.tr('Reference layer')))
+        self.addParameter(ParameterNumber(self.NUMBER,
+            self.tr('Constant value'), default=1.0))
+
+        self.addOutput(OutputRaster(self.OUTPUT,
+            self.tr('Output layer')))
+
     def processAlgorithm(self, progress):
-        output = self.getOutputFromName(self.OUTPUT)
-        value = self.getOutputValue(self.NUMBER)
         layer = dataobjects.getObjectFromUri(
             self.getParameterValue(self.INPUT))
+        value = self.getOutputValue(self.NUMBER)
+
+        output = self.getOutputFromName(self.OUTPUT)
+
         cellsize = (layer.extent().xMaximum() - layer.extent().xMinimum()) \
             / layer.width()
+
         w = RasterWriter(output.getCompatibleFileName(self),
                          layer.extent().xMinimum(),
                          layer.extent().yMinimum(),
@@ -59,13 +75,3 @@ class CreateConstantRaster(GeoAlgorithm):
                         )
         w.matrix[:] = value
         w.close()
-
-    def defineCharacteristics(self):
-        self.name = 'Create constant raster layer'
-        self.group = 'Raster tools'
-        self.addParameter(ParameterRaster(self.INPUT,
-            self.tr('Reference layer')))
-        self.addParameter(ParameterNumber(self.NUMBER,
-            self.tr('Constant value'), default=1.0))
-        self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Output layer')))

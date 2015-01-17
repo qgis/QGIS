@@ -27,6 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
+try:
+    import matplotlib.pyplot
+    hasMatplotlib = True
+except:
+    hasMatplotlib = False
+
 from PyQt4.QtGui import *
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -119,12 +125,6 @@ from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
-# from VectorLayerHistogram import VectorLayerHistogram
-# from VectorLayerScatterplot import VectorLayerScatterplot
-# from MeanAndStdDevPlot import MeanAndStdDevPlot
-# from BarPlot import BarPlot
-# from PolarPlot import PolarPlot
-# from RasterLayerHistogram import RasterLayerHistogram
 
 import processing.resources_rc
 
@@ -170,14 +170,21 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
-                        SplitLinesWithLines()
-                        # ------ raster ------
-                        # CreateConstantRaster(),
-                        # ------ graphics ------
-                        # VectorLayerHistogram(), VectorLayerScatterplot(),
-                        # RasterLayerHistogram(), MeanAndStdDevPlot(),
-                        # BarPlot(), PolarPlot()
+                        SplitLinesWithLines(), CreateConstantRaster(),
                        ]
+
+        if hasMatplotlib:
+            from VectorLayerHistogram import VectorLayerHistogram
+            from RasterLayerHistogram import RasterLayerHistogram
+            from VectorLayerScatterplot import VectorLayerScatterplot
+            from MeanAndStdDevPlot import MeanAndStdDevPlot
+            from BarPlot import BarPlot
+            from PolarPlot import PolarPlot
+
+            self.alglist.extend([VectorLayerHistogram(), RasterLayerHistogram(),
+                VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
+                PolarPlot(),
+                ])
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)

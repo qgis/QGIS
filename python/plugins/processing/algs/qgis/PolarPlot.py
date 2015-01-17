@@ -30,13 +30,16 @@ import matplotlib.pylab as lab
 import matplotlib.cm as cm
 from matplotlib.pyplot import figure, show, rc
 import numpy as np
+
 from PyQt4.QtCore import *
 from qgis.core import *
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputHTML
-from processing.tools import *
+from processing.tools import vector
+from processing.tools import dataobjects
 
 
 class PolarPlot(GeoAlgorithm):
@@ -46,16 +49,29 @@ class PolarPlot(GeoAlgorithm):
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
+    def defineCharacteristics(self):
+        self.name = 'Polar plot'
+        self.group = 'Graphics'
+
+        self.addParameter(ParameterTable(self.INPUT,
+            self.tr('Input table')))
+        self.addParameter(ParameterTableField(self.NAME_FIELD,
+            self.tr('Category name field'), self.INPUT))
+        self.addParameter(ParameterTableField(self.VALUE_FIELD,
+            self.tr('Value field'), self.INPUT))
+
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
+
     def processAlgorithm(self, progress):
-        uri = self.getParameterValue(self.INPUT)
-        layer = getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(
+            self.getParameterValue(self.INPUT))
         namefieldname = self.getParameterValue(self.NAME_FIELD)
         valuefieldname = self.getParameterValue(self.VALUE_FIELD)
-        output = self.getOutputValue(self.OUTPUT)
-        values = vector.getAttributeValues(layer, namefieldname,
-                valuefieldname)
-        plt.close()
 
+        output = self.getOutputValue(self.OUTPUT)
+
+        values = vector.values(layer, namefieldname, valuefieldname)
+        plt.close()
         fig = figure(figsize=(8, 8))
         ax = fig.add_axes([0.1, 0.1, 0.8, 0.8], polar=True)
         N = len(values[valuefieldname])
@@ -68,14 +84,3 @@ class PolarPlot(GeoAlgorithm):
         f = open(output, 'w')
         f.write('<img src="' + plotFilename + '"/>')
         f.close()
-
-    def defineCharacteristics(self):
-        self.name = 'Polar plot'
-        self.group = 'Graphics'
-        self.addParameter(ParameterTable(self.INPUT,
-            self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-            self.tr('Category name field'), self.INPUT))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-            self.tr('Value field'), self.INPUT))
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
