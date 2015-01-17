@@ -171,7 +171,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   runString( "qgis.utils.initInterface(" + QString::number(( unsigned long ) interface ) + ")" );
 
   // import QGIS user
-  error_msg = QObject::tr( "Couldn't load QGIS user." ) + "\n" + QObject::tr( "Python support will be disabled." );
+  error_msg = QObject::tr( "Couldn't load qgis.user." ) + "\n" + QObject::tr( "Python support will be disabled." );
   if ( !runString( "import qgis.user", error_msg ) )
   {
     // Should we really bail because of this?!

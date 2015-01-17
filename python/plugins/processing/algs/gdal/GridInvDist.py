@@ -70,7 +70,7 @@ class GridInvDist(GdalAlgorithm):
         self.addParameter(ParameterNumber(self.POWER,
             self.tr('Power'), 0, 100.0, 2.0))
         self.addParameter(ParameterNumber(self.SMOTHING,
-            self.tr('Smothing'), 0.0, 99999999.999999, 0.0))
+            self.tr('Smoothing'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.RADIUS_1,
             self.tr('Radius 1'), 0.0, 99999999.999999, 0.0))
         self.addParameter(ParameterNumber(self.RADIUS_2,

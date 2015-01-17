@@ -213,7 +213,7 @@ class Union(GeoAlgorithm):
                 self.tr('Geometry exception while computing intersection'))
         if not FEATURE_EXCEPT:
             ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                self.tr('Feature exception while computing interesection'))
+                self.tr('Feature exception while computing intersection'))
 
     def defineCharacteristics(self):
         self.name = 'Union'
