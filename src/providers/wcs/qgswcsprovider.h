@@ -24,6 +24,7 @@
 
 #include "qgserror.h"
 #include "qgswcscapabilities.h"
+#include "qgsauthenticationmanager.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
@@ -50,15 +51,34 @@ class QNetworkRequest;
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWcsAuthorization
 {
-  QgsWcsAuthorization( const QString& userName = QString(), const QString& password = QString() ) : mUserName( userName ), mPassword( password ) {}
+  QgsWcsAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authid = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mAuthId( authid )
+  {}
 
   //! set authorization header
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthId.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthId );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
       request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
     }
+    return true;
+  }
+
+  //! set authorization reply
+  bool setAuthorizationReply( QNetworkReply * reply ) const
+  {
+    if ( !mAuthId.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthId );
+    }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -66,6 +86,9 @@ struct QgsWcsAuthorization
 
   //! Password for basic http authentication
   QString mPassword;
+
+  //! Authentication configuration ID
+  QString mAuthId;
 };
 
 /**
@@ -422,6 +445,7 @@ class QgsWcsDownloadHandler : public QObject
     void finish() { QMetaObject::invokeMethod( mEventLoop, "quit", Qt::QueuedConnection ); }
 
     QgsNetworkAccessManager* mNAM;
+    QgsWcsAuthorization& mAuth;
     QEventLoop* mEventLoop;
 
     QNetworkReply* mCacheReply;

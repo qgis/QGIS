@@ -20,6 +20,7 @@
 
 #include <QDomElement>
 #include "qgis.h"
+#include "qgsauthenticationmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
@@ -35,15 +36,34 @@ class QgsSpatialIndex;
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWFSAuthorization
 {
-  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString() ) : mUserName( userName ), mPassword( password ) {}
+  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authid = QString() )
+      : mUserName( userName )
+      , mPassword( password )
+      , mAuthId( authid )
+  {}
 
   //! set authorization header
-  void setAuthorization( QNetworkRequest &request ) const
+  bool setAuthorization( QNetworkRequest &request ) const
   {
-    if ( !mUserName.isNull() || !mPassword.isNull() )
+    if ( !mAuthId.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthId );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
       request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
     }
+    return true;
+  }
+
+  //! set authorization reply
+  bool setAuthorizationReply( QNetworkReply * reply ) const
+  {
+    if ( !mAuthId.isEmpty() )
+    {
+      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthId );
+    }
+    return true;
   }
 
   //! Username for basic http authentication
@@ -51,6 +71,9 @@ struct QgsWFSAuthorization
 
   //! Password for basic http authentication
   QString mPassword;
+
+  //! Authentication configuration ID
+  QString mAuthId;
 };
 
 /**A provider reading features from a WFS server*/
