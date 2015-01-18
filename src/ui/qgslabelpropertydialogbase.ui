@@ -225,11 +225,20 @@
         </item>
         <item>
          <widget class="QgsDoubleSpinBox" name="mFontSizeSpinBox">
+          <property name="specialValueText">
+           <string>Default</string>
+          </property>
+          <property name="minimum">
+           <double>0.000000000000000</double>
+          </property>
           <property name="maximum">
            <double>999999.000000000000000</double>
           </property>
+          <property name="value">
+           <double>0.000000000000000</double>
+          </property>
           <property name="showClearButton">
-           <bool>false</bool>
+           <bool>true</bool>
           </property>
          </widget>
         </item>

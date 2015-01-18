@@ -262,8 +262,19 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
         mFontItalicBtn->setEnabled( true );
         break;
       case QgsPalLayerSettings::Size:
+      {
         mFontSizeSpinBox->setEnabled( true );
+        double size = mCurLabelFeat.attribute( ddIndx ).toDouble( &ok );
+        if ( ok )
+        {
+          mFontSizeSpinBox->setValue( size );
+        }
+        else
+        {
+          mFontSizeSpinBox->setValue( 0 );
+        }
         break;
+      }
       default:
         break;
     }
@@ -329,13 +340,13 @@ void QgsLabelPropertyDialog::updateFont( const QFont& font, bool block )
 
   if ( block )
     blockElementSignals( true );
+
   mFontFamilyCmbBx->setCurrentFont( mLabelFont );
   populateFontStyleComboBox();
   mFontUnderlineBtn->setChecked( mLabelFont.underline() );
   mFontStrikethroughBtn->setChecked( mLabelFont.strikeOut() );
   mFontBoldBtn->setChecked( mLabelFont.bold() );
   mFontItalicBtn->setChecked( mLabelFont.italic() );
-  mFontSizeSpinBox->setValue( mLabelFont.pointSizeF() );
   if ( block )
     blockElementSignals( false );
 }
@@ -452,7 +463,13 @@ void QgsLabelPropertyDialog::on_mFontItalicBtn_toggled( bool ckd )
 
 void QgsLabelPropertyDialog::on_mFontSizeSpinBox_valueChanged( double d )
 {
-  insertChangedValue( QgsPalLayerSettings::Size, d );
+  QVariant size( d );
+  if ( d <= 0 )
+  {
+    //null value so that font size is reset to default
+    size.clear();
+  }
+  insertChangedValue( QgsPalLayerSettings::Size, size );
 }
 
 void QgsLabelPropertyDialog::on_mBufferSizeSpinBox_valueChanged( double d )
