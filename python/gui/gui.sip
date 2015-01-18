@@ -23,6 +23,9 @@
 %Include qgsattributedialog.sip
 %Include qgsattributeform.sip
 %Include qgsattributeforminterface.sip
+%Include qgsauthenticationconfigeditor.sip
+%Include qgsauthenticationconfigselect.sip
+%Include qgsauthenticationconfigwidget.sip
 %Include qgsbusyindicatordialog.sip
 %Include qgscollapsiblegroupbox.sip
 %If (HAVE_QSCI_SIP)
