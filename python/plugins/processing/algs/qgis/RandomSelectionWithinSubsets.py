@@ -88,7 +88,7 @@ class RandomSelectionWithinSubsets(GeoAlgorithm):
         else:
             if value > 100:
                 raise GeoAlgorithmExecutionException(
-                    self.tr("Persentage can't be greater than 100. Set a "
+                    self.tr("Percentage can't be greater than 100. Set a "
                             "different value and try again."))
             value = value / 100.0
 

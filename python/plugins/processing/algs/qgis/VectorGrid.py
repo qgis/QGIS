@@ -116,9 +116,9 @@ class VectorGrid(GeoAlgorithm):
                 idVar += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
-                    progress.setPersentage(int(count / count_max * 50))
+                    progress.setPercentage(int(count / count_max * 50))
 
-            progress.setPersentage( 50 )
+            progress.setPercentage( 50 )
             # counters for progressbar - update every 5%
             count = 0
             count_max = (bbox.xMaximum() - bbox.xMinimum()) / xSpace
