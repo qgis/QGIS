@@ -56,6 +56,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
+      menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+
       menu->addAction( actions->actionAddGroup( menu ) );
     }
     else if ( QgsLayerTree::isLayer( node ) )

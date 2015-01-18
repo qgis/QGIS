@@ -138,6 +138,7 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgsguivectorlayertools.h"
 #include "qgslabelinggui.h"
+#include "qgslayerdefinition.h"
 #include "qgslayertree.h"
 #include "qgslayertreemapcanvasbridge.h"
 #include "qgslayertreemodel.h"
@@ -4124,8 +4125,13 @@ void QgisApp::dxfExport()
 
 void QgisApp::openLayerDefinition( const QString & path )
 {
-  QList<QgsMapLayer*> layers = QgsMapLayer::fromLayerDefinitionFile( path );
-  QgsMapLayerRegistry::instance()->addMapLayers( layers );
+  QString errorMessage;
+  bool loaded = QgsLayerDefinition::loadLayerDefinition( path, QgsProject::instance()->layerTreeRoot(), errorMessage );
+  if ( !loaded )
+  {
+    QgsDebugMsg( errorMessage );
+    messageBar()->pushMessage( tr( "Error loading layer definition" ), errorMessage, QgsMessageBar::WARNING );
+  }
 }
 
 // Open the project file corresponding to the
@@ -5038,26 +5044,17 @@ void QgisApp::saveAsFile()
 
 void QgisApp::saveAsLayerDefinition()
 {
-  QList<QgsMapLayer*> layers = mLayerTreeView->selectedLayers();
-
-  if ( layers.isEmpty() )
-    return;
 
   QString path = QFileDialog::getSaveFileName( this, "Save as Layer Definition File", QDir::home().path(), "*.qlr" );
   QgsDebugMsg( path );
   if ( path.isEmpty() )
     return;
 
-  if ( !path.endsWith( ".qlr" ) )
-    path = path.append( ".qlr" );
-
-  QFile file( path );
-  QFileInfo fileinfo( file );
-  QDomDocument doc = QgsMapLayer::asLayerDefinition( layers, fileinfo.canonicalFilePath() );
-  if ( file.open( QFile::WriteOnly | QFile::Truncate ) )
+  QString errorMessage;
+  bool saved = QgsLayerDefinition::exportLayerDefinition( path, mLayerTreeView->selectedNodes(), errorMessage );
+  if ( !saved )
   {
-    QTextStream qlayerstream( &file );
-    doc.save( qlayerstream, 2 );
+    messageBar()->pushMessage( tr( "Error saving layer definintion file" ), errorMessage, QgsMessageBar::WARNING );
   }
 }
 

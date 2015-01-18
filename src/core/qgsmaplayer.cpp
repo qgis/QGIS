@@ -617,15 +617,16 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers, QString relativeBasePath )
 {
   QDomDocument doc( "qgis-layer-definition" );
+  QDomElement qgiselm = doc.createElement( "qlr" );
+  doc.appendChild( qgiselm );
   QDomElement layerselm = doc.createElement( "maplayers" );
   foreach ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
     layer->writeLayerXML( layerelm, doc, relativeBasePath );
-    layerelm.removeChild( layerelm.firstChildElement( "id" ) );
     layerselm.appendChild( layerelm );
   }
-  doc.appendChild( layerselm );
+  qgiselm.appendChild( layerselm );
   return doc;
 }
 

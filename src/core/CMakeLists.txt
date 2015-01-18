@@ -95,6 +95,7 @@ SET(QGIS_CORE_SRCS
   qgsgeometryvalidator.cpp
   qgsgml.cpp
   qgsgmlschema.cpp
+  qgslayerdefinition.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
   qgslabelsearchtree.cpp
@@ -480,6 +481,7 @@ SET(QGIS_CORE_HDRS
   qgsfontutils.h
   qgsgeometry.h
   qgsgeometrycache.h
+  qgslayerdefinition.h
   qgslabel.h
   qgslabelattributes.h
   qgslabelsearchtree.h
