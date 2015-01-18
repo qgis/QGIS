@@ -123,6 +123,10 @@ qgsattributeform.cpp
 qgsattributeforminterface.cpp
 qgsattributeformlegacyinterface.cpp
 qgsattributetypeloaddialog.cpp
+qgsauthenticationconfigeditor.cpp
+qgsauthenticationconfigselect.cpp
+qgsauthenticationconfigwidget.cpp
+qgsauthenticationutils.cpp
 qgsblendmodecombobox.cpp
 qgsbusyindicatordialog.cpp
 qgscharacterselectdialog.cpp
@@ -238,6 +242,10 @@ SET(QGIS_GUI_MOC_HDRS
   qgsattributeeditor.h
   qgsattributeform.h
   qgsattributetypeloaddialog.h
+  qgsauthenticationconfigeditor.h
+  qgsauthenticationconfigselect.h
+  qgsauthenticationconfigwidget.h
+  qgsauthenticationutils.h
   qgsblendmodecombobox.h
   qgsbusyindicatordialog.h
   qgscharacterselectdialog.h
@@ -434,6 +442,10 @@ SET(QGIS_GUI_HDRS
   qgsattributeeditorcontext.h
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
+  qgsauthenticationconfigeditor.h
+  qgsauthenticationconfigselect.h
+  qgsauthenticationconfigwidget.h
+  qgsauthenticationutils.h
   qgscursors.h
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
@@ -517,6 +529,7 @@ INCLUDE_DIRECTORIES(
   ../core/symbology-ng
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${QCA_INCLUDE_DIR}
   ${QWT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
 )

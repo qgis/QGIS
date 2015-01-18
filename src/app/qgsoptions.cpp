@@ -68,8 +68,9 @@
  * \class QgsOptions - Set user options and preferences
  * Constructor
  */
-QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
-    QgsOptionsDialogBase( "Options", parent, fl )
+QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
+  : QgsOptionsDialogBase( "Options", parent, fl )
+  , mAuthEditor( 0 )
 {
   setupUi( this );
 
@@ -108,6 +109,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   mIdentifyHighlightColorButton->setDefaultColor( QGis::DEFAULT_HIGHLIGHT_COLOR );
 
   QSettings settings;
+
+  mAuthEditor = new QgsAuthConfigEditor( mAuthConfigsGrpBx );
+  mAuthEditor->toggleTitleVisibility( false );
+  mAuthConfigsGrpBx->layout()->addWidget( mAuthEditor );
 
   double identifyValue = settings.value( "/Map/searchRadiusMM", QGis::DEFAULT_SEARCH_RADIUS_MM ).toDouble();
   QgsDebugMsg( QString( "Standard Identify radius setting read from settings file: %1" ).arg( identifyValue ) );

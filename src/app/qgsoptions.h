@@ -23,6 +23,7 @@
 #include "qgisgui.h"
 #include "qgisapp.h"
 #include "qgisappstylesheet.h"
+#include "qgsauthenticationconfigeditor.h"
 #include "qgscontexthelp.h"
 
 #include <qgscoordinatereferencesystem.h>
@@ -205,6 +206,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsCoordinateReferenceSystem mDefaultCrs;
     QgsCoordinateReferenceSystem mLayerDefaultCrs;
     bool mLoadedGdalDriverList;
+    QgsAuthConfigEditor * mAuthEditor;
 
     /** Generate table row for custom environment variables */
     void addCustomEnvVarRow( QString varName, QString varVal, QString varApply = QString() );

@@ -31,6 +31,7 @@
 #include <sqlite3.h>
 
 #include "qgslogger.h"
+#include "qgsauthenticationmanager.h"
 #include "qgsrectangle.h"
 #include "qgsmaplayer.h"
 #include "qgscoordinatereferencesystem.h"
@@ -180,6 +181,14 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   mnl = layerElement.namedItem( "datasource" );
   mne = mnl.toElement();
   mDataSource = mne.text();
+
+  // if the layer needs authentication, ensure the master password is set
+  QRegExp rx( "authid=([a-z]|[0-9]){7}" );
+  if (( rx.indexIn( mDataSource ) != -1 )
+      && !QgsAuthManager::instance()->setMasterPassword( true ) )
+  {
+    return false;
+  }
 
   // TODO: this should go to providers
   if ( provider == "spatialite" )

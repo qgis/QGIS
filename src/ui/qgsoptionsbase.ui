@@ -229,6 +229,15 @@
          </item>
          <item>
           <property name="text">
+           <string>Authentication</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Network</string>
           </property>
           <property name="toolTip">
@@ -4328,6 +4337,34 @@
                </item>
               </layout>
              </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptionsPageAuth">
+          <layout class="QVBoxLayout" name="verticalLayout_40">
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QGroupBox" name="mAuthConfigsGrpBx">
+             <property name="title">
+              <string>Authentication configurations</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_41">
+              <property name="leftMargin">
+               <number>6</number>
+              </property>
+              <property name="topMargin">
+               <number>6</number>
+              </property>
+              <property name="rightMargin">
+               <number>6</number>
+              </property>
+              <property name="bottomMargin">
+               <number>6</number>
+              </property>
+             </layout>
             </widget>
            </item>
           </layout>

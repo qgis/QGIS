@@ -208,12 +208,31 @@
     <property name="title">
      <string>&amp;Settings</string>
     </property>
+    <widget class="QMenu" name="mAuthenticationMenu">
+     <property name="title">
+      <string>Authentication</string>
+     </property>
+     <property name="icon">
+      <iconset resource="../../images/images.qrc">
+       <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+     </property>
+     <addaction name="mActionSetMasterPassword"/>
+     <addaction name="mActionClearCachedMasterPassword"/>
+     <addaction name="mActionResetMasterPassword"/>
+     <addaction name="separator"/>
+     <addaction name="mActionEditAuthConfigs"/>
+     <addaction name="mActionClearCachedAuthConfigs"/>
+     <addaction name="mActionRemoveAuthConfigs"/>
+     <addaction name="separator"/>
+     <addaction name="mActionEraseAuthDatabase"/>
+    </widget>
     <addaction name="mActionProjectProperties"/>
     <addaction name="mActionCustomProjection"/>
     <addaction name="mActionStyleManagerV2"/>
     <addaction name="mActionConfigureShortcuts"/>
     <addaction name="mActionCustomization"/>
     <addaction name="mActionOptions"/>
+    <addaction name="mAuthenticationMenu"/>
     <addaction name="mActionSnappingOptions"/>
    </widget>
    <widget class="QMenu" name="mRasterMenu">
@@ -2251,6 +2270,41 @@ Acts on currently active editable layer</string>
   <action name="mActionSetLayerScaleVisibility">
    <property name="text">
     <string>Set Scale Visibility of Layer(s)</string>
+   </property>
+  </action>
+  <action name="mActionClearCachedMasterPassword">
+   <property name="text">
+    <string>Clear cached master password</string>
+   </property>
+  </action>
+  <action name="mActionSetMasterPassword">
+   <property name="text">
+    <string>Input master password</string>
+   </property>
+  </action>
+  <action name="mActionEraseAuthDatabase">
+   <property name="text">
+    <string>Erase authentication database</string>
+   </property>
+  </action>
+  <action name="mActionResetMasterPassword">
+   <property name="text">
+    <string>Reset master password</string>
+   </property>
+  </action>
+  <action name="mActionRemoveAuthConfigs">
+   <property name="text">
+    <string>Remove all authentication configurations</string>
+   </property>
+  </action>
+  <action name="mActionEditAuthConfigs">
+   <property name="text">
+    <string>Edit authentication configurations</string>
+   </property>
+  </action>
+  <action name="mActionClearCachedAuthConfigs">
+   <property name="text">
+    <string>Clear cached authentication configurations</string>
    </property>
   </action>
   <action name="mActionShowSelectedLayers">
