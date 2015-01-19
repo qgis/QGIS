@@ -23,6 +23,8 @@ userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
 expressionspath = os.path.join(userpythonhome, "expressions")
 startuppy = os.path.join(userpythonhome, "startup.py")
 
+sys.path.append(userpythonhome)
+
 # exec startup script
 if os.path.exists(startuppy):
     execfile(startuppy, locals(), globals())
