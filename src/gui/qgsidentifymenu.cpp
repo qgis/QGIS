@@ -579,9 +579,18 @@ void QgsIdentifyMenu::handleMenuHover()
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( result.mLayer );
     if ( !vl )
       continue;
+
     QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
-    hl->setColor( QColor( 255, 0, 0 ) );
-    hl->setWidth( 2 );
+    QSettings settings;
+    QColor color = QColor( settings.value( "/Map/highlight/color", QGis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+    int alpha = settings.value( "/Map/highlight/colorAlpha", QGis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+    double buffer = settings.value( "/Map/highlight/buffer", QGis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+    double minWidth = settings.value( "/Map/highlight/minWidth", QGis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+    hl->setColor( color ); // sets also fill with default alpha
+    color.setAlpha( alpha );
+    hl->setFillColor( color ); // sets fill with alpha
+    hl->setBuffer( buffer );
+    hl->setMinWidth( minWidth );
     mRubberBands.append( hl );
     connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
   }
