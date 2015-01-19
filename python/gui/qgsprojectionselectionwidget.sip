@@ -19,7 +19,8 @@ class QgsProjectionSelectionWidget : QWidget
       LayerCrs, /*< optional layer CRS */
       ProjectCrs, /*< current project CRS (if OTF reprojection enabled) */
       CurrentCrs, /*< current user selected CRS */
-      DefaultCrs /*< global default QGIS CRS */
+      DefaultCrs, /*< global default QGIS CRS */
+      RecentCrs /*< recently used CRS */
     };
 
     explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0 );

@@ -44,7 +44,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       LayerCrs, /*< optional layer CRS */
       ProjectCrs, /*< current project CRS (if OTF reprojection enabled) */
       CurrentCrs, /*< current user selected CRS */
-      DefaultCrs /*< global default QGIS CRS */
+      DefaultCrs, /*< global default QGIS CRS */
+      RecentCrs /*< recently used CRS */
     };
 
     explicit QgsProjectionSelectionWidget( QWidget *parent = 0 );
@@ -100,6 +101,10 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     void addProjectCrsOption();
     void addDefaultCrsOption();
+    void addRecentCrs();
+    bool crsIsShown( const long srsid ) const;
+
+    int firstRecentCrsIndex() const;
 
   private slots:
 

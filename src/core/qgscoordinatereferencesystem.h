@@ -350,6 +350,12 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /**Returns auth id of related geographic CRS*/
     QString geographicCRSAuthId() const;
 
+    /**Returns a list of recently used projections
+     * @returns list of srsid for recently used projections
+     * @note added in QGIS 2.7
+     */
+    static QStringList recentProjections();
+
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather

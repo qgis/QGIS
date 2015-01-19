@@ -54,6 +54,8 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
     addDefaultCrsOption();
   }
 
+  addRecentCrs();
+
   layout->addWidget( mCrsComboBox );
 
   mButton = new QToolButton( this );
@@ -80,6 +82,13 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
       return mDefaultCrs ;
     case QgsProjectionSelectionWidget::CurrentCrs:
       return mCrs;
+    case QgsProjectionSelectionWidget::RecentCrs:
+    {
+      long srsid = mCrsComboBox->itemData( mCrsComboBox->currentIndex(), Qt::UserRole + 1 ).toLongLong();
+      QgsCoordinateReferenceSystem crs;
+      crs.createFromSrsId( srsid );
+      return crs;
+    }
   }
   return mCrs;
 }
@@ -109,7 +118,8 @@ void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectio
         return;
       }
       case QgsProjectionSelectionWidget::CurrentCrs:
-        //current CRS option cannot be readded
+      case QgsProjectionSelectionWidget::RecentCrs:
+        //current/recently used CRS option cannot be readded
         return;
     }
   }
@@ -150,16 +160,24 @@ void QgsProjectionSelectionWidget::comboIndexChanged( int idx )
   {
     case QgsProjectionSelectionWidget::LayerCrs:
       emit crsChanged( mLayerCrs );
-      break;
+      return;
     case QgsProjectionSelectionWidget::ProjectCrs:
       emit crsChanged( mProjectCrs );
-      break;
+      return;
     case QgsProjectionSelectionWidget::CurrentCrs:
       emit crsChanged( mCrs );
-      break;
+      return;
     case QgsProjectionSelectionWidget::DefaultCrs:
       emit crsChanged( mDefaultCrs );
-      break;
+      return;
+    case QgsProjectionSelectionWidget::RecentCrs:
+    {
+      long srsid = mCrsComboBox->itemData( idx, Qt::UserRole + 1 ).toLongLong();
+      QgsCoordinateReferenceSystem crs;
+      crs.createFromSrsId( srsid );
+      emit crsChanged( crs );
+      return;
+    }
   }
 }
 
@@ -192,7 +210,7 @@ void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSyst
     }
     else
     {
-      mCrsComboBox->addItem( tr( "Layer CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
+      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS (%1, %2)" ).arg( crs.authid() ).arg( crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
     }
   }
   else
@@ -216,4 +234,51 @@ void QgsProjectionSelectionWidget::addProjectCrsOption()
 void QgsProjectionSelectionWidget::addDefaultCrsOption()
 {
   mCrsComboBox->addItem( tr( "Default CRS (%1 - %2)" ).arg( mDefaultCrs.authid() ).arg( mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
+}
+
+void QgsProjectionSelectionWidget::addRecentCrs()
+{
+  QStringList recentProjections = QgsCoordinateReferenceSystem::recentProjections();
+  int i = 0;
+  foreach ( QString projection, recentProjections )
+  {
+    long srsid = projection.toLong();
+
+    //check if already shown
+    if ( crsIsShown( srsid ) )
+    {
+      continue;
+    }
+
+    i++;
+    QgsCoordinateReferenceSystem crs;
+    crs.createFromSrsId( srsid );
+    if ( crs.isValid() )
+    {
+      mCrsComboBox->addItem( tr( "%1 - %2" ).arg( crs.authid() ).arg( crs.description() ), QgsProjectionSelectionWidget::RecentCrs );
+      mCrsComboBox->setItemData( mCrsComboBox->count() - 1, QVariant(( long long )srsid ), Qt::UserRole + 1 );
+    }
+    if ( i >= 4 )
+    {
+      //limit to 4 recent projections to avoid clutter
+      break;
+    }
+  }
+}
+
+bool QgsProjectionSelectionWidget::crsIsShown( const long srsid ) const
+{
+  return srsid == mLayerCrs.srsid() || srsid == mDefaultCrs.srsid() || srsid == mProjectCrs.srsid();
+}
+
+int QgsProjectionSelectionWidget::firstRecentCrsIndex() const
+{
+  for ( int i = 0; i < mCrsComboBox->count(); ++i )
+  {
+    if (( CrsOption )mCrsComboBox->itemData( i ).toInt() == RecentCrs )
+    {
+      return i;
+    }
+  }
+  return -1;
 }
