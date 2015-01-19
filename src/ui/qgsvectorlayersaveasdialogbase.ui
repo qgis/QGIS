@@ -23,6 +23,13 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QGridLayout" name="gridLayout_4">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>CRS</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="1">
        <widget class="QLineEdit" name="leFilename">
         <property name="enabled">
@@ -50,25 +57,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>CRS</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1" colspan="2">
        <widget class="QComboBox" name="mFormatComboBox"/>
-      </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="QComboBox" name="mCRSSelection"/>
-      </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-        <property name="focusPolicy">
-         <enum>Qt::StrongFocus</enum>
-        </property>
-       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label">
@@ -77,6 +67,13 @@
         </property>
         <property name="buddy">
          <cstring>leFilename</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
         </property>
        </widget>
       </item>
@@ -345,7 +342,6 @@
   <tabstop>mFormatComboBox</tabstop>
   <tabstop>leFilename</tabstop>
   <tabstop>browseFilename</tabstop>
-  <tabstop>mCRSSelection</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mEncodingComboBox</tabstop>

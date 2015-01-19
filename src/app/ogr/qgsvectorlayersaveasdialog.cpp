@@ -77,11 +77,9 @@ void QgsVectorLayerSaveAsDialog::setup()
     idx = 0;
   }
 
-  mCRSSelection->clear();
-  mCRSSelection->addItems( QStringList() << tr( "Layer CRS" ) << tr( "Project CRS" ) << tr( "Selected CRS" ) );
-
   QgsCoordinateReferenceSystem srs( mCRS, QgsCoordinateReferenceSystem::InternalCrsId );
   mCrsSelector->setCrs( srs );
+  mCrsSelector->setLayerCrs( srs );
   mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the vector file. "
                                           "The data points will be transformed from the layer coordinate reference system." ) );
 
@@ -186,26 +184,6 @@ void QgsVectorLayerSaveAsDialog::accept()
   QDialog::accept();
 }
 
-void QgsVectorLayerSaveAsDialog::on_mCRSSelection_currentIndexChanged( int idx )
-{
-  mCrsSelector->setEnabled( idx == 2 );
-
-  QgsCoordinateReferenceSystem crs;
-  if ( mCRSSelection->currentIndex() == 0 )
-  {
-    crs = mLayerCrs;
-  }
-  else if ( mCRSSelection->currentIndex() == 1 )
-  {
-    crs = mExtentGroupBox->currentCrs();
-  }
-  else // custom CRS
-  {
-    crs.createFromId( mCRS, QgsCoordinateReferenceSystem::InternalCrsId );
-  }
-  mExtentGroupBox->setOutputCrs( crs );
-}
-
 void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx )
 {
   Q_UNUSED( idx );
@@ -307,7 +285,6 @@ void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 void QgsVectorLayerSaveAsDialog::on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs )
 {
   mCRS = crs.srsid();
-  mCRSSelection->setCurrentIndex( 2 );
   mExtentGroupBox->setOutputCrs( crs );
 }
 
@@ -328,18 +305,7 @@ QString QgsVectorLayerSaveAsDialog::format() const
 
 long QgsVectorLayerSaveAsDialog::crs() const
 {
-  if ( mCRSSelection->currentIndex() == 0 )
-  {
-    return -1; // Layer CRS
-  }
-  else if ( mCRSSelection->currentIndex() == 1 )
-  {
-    return -2; // Project CRS
-  }
-  else
-  {
-    return mCRS;
-  }
+  return mCRS;
 }
 
 QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const

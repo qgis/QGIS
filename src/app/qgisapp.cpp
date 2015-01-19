@@ -5088,21 +5088,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer* vlayer, bool symbologyOpt
     QStringList datasourceOptions = dialog->datasourceOptions();
 
     QgsCoordinateTransform* ct = 0;
-
-    switch ( dialog->crs() )
-    {
-      case -2: // Project CRS
-        destCRS = mMapCanvas->mapSettings().destinationCrs();
-
-        break;
-      case -1: // Layer CRS
-        destCRS = vlayer->crs();
-        break;
-
-      default: // Selected CRS
-        destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
-        break;
-    }
+    destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
 
     if ( destCRS.isValid() && destCRS != vlayer->crs() )
     {
