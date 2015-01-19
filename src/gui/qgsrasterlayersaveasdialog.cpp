@@ -48,13 +48,8 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
   on_mRawModeRadioButton_toggled( true );
 
   setValidators();
-  // Translated labels + EPSG are updated later
-  mCrsComboBox->addItem( "Layer", OriginalCrs );
-  mCrsComboBox->addItem( "Project", CurrentCrs );
-  mCrsComboBox->addItem( "Selected", UserCrs );
 
   toggleResolutionSize();
-  mUserCrs.createFromOgcWmsCrs( "EPSG:4326" );
 
   //only one hardcoded format at the moment
   QStringList myFormats;
@@ -123,7 +118,10 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLa
 
   mTilesGroupBox->hide();
 
-  updateCrsGroup();
+  mCrsSelector->setLayerCrs( mLayerCrs );
+  mCrsSelector->setCrs( mCurrentCrs );
+  connect( mCrsSelector, SIGNAL( crsChanged( QgsCoordinateReferenceSystem ) ),
+           this, SLOT( crsChanged() ) );
 
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
@@ -426,23 +424,8 @@ void QgsRasterLayerSaveAsDialog::extentChanged()
   recalcResolutionSize();
 }
 
-void QgsRasterLayerSaveAsDialog::on_mChangeCrsPushButton_clicked()
-{
-  QgsGenericProjectionSelector * selector = new QgsGenericProjectionSelector( this );
-  selector->setMessage();
-  selector->setSelectedCrsId( mUserCrs.srsid() );
-  if ( selector->exec() )
-  {
-    mUserCrs.createFromId( selector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    mCrsComboBox->setCurrentIndex( mCrsComboBox->findData( UserCrs ) );
-  }
-  delete selector;
-  crsChanged();
-}
-
 void QgsRasterLayerSaveAsDialog::crsChanged()
 {
-  QgsDebugMsg( "Entered" );
   if ( outputCrs() != mPreviousCrs )
   {
     mExtentGroupBox->setOutputCrs( outputCrs() );
@@ -484,35 +467,11 @@ void QgsRasterLayerSaveAsDialog::crsChanged()
     }
   }
   mPreviousCrs = outputCrs();
-  updateCrsGroup();
-}
-
-void QgsRasterLayerSaveAsDialog::updateCrsGroup()
-{
-  QgsDebugMsg( "Entered" );
-
-  mCrsComboBox->setItemText( mCrsComboBox->findData( OriginalCrs ),
-                             tr( "Layer (%1, %2)" ).arg( mLayerCrs.description() ).arg( mLayerCrs.authid() ) );
-
-  mCrsComboBox->setItemText( mCrsComboBox->findData( CurrentCrs ),
-                             tr( "Project (%1, %2)" ).arg( mCurrentCrs.description() ).arg( mCurrentCrs.authid() ) );
-
-  mCrsComboBox->setItemText( mCrsComboBox->findData( UserCrs ),
-                             tr( "Selected (%1, %2)" ).arg( mUserCrs.description() ).arg( mUserCrs.authid() ) );
 }
 
 QgsCoordinateReferenceSystem QgsRasterLayerSaveAsDialog::outputCrs()
 {
-  int state = mCrsComboBox->itemData( mCrsComboBox->currentIndex() ).toInt();
-  if ( state == OriginalCrs )
-  {
-    return mLayerCrs;
-  }
-  else if ( state == CurrentCrs )
-  {
-    return mCurrentCrs;
-  }
-  return mUserCrs;
+  return mCrsSelector->crs();
 }
 
 QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const

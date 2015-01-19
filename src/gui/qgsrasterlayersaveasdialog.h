@@ -92,10 +92,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void on_mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
     void on_mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
 
-    void on_mChangeCrsPushButton_clicked();
-
-    void on_mCrsComboBox_currentIndexChanged( int ) { crsChanged(); }
-
     void on_mAddNoDataManuallyToolButton_clicked();
     void on_mLoadTransparentNoDataToolButton_clicked();
     void on_mRemoveSelectedNoDataToolButton_clicked();
@@ -112,7 +108,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     QgsRectangle mCurrentExtent;
     QgsCoordinateReferenceSystem mLayerCrs; // may differ from provider CRS
     QgsCoordinateReferenceSystem mCurrentCrs;
-    QgsCoordinateReferenceSystem mUserCrs;
     QgsCoordinateReferenceSystem mPreviousCrs;
     ResolutionState mResolutionState;
     QVector<bool> mNoDataToEdited;
@@ -126,14 +121,15 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void recalcResolution();
     void updateResolutionStateMsg();
     void recalcResolutionSize();
-    void crsChanged();
-    void updateCrsGroup();
 
     void addNoDataRow( double min, double max );
     void setNoDataToEdited( int row );
     double noDataCellValue( int row, int column ) const;
     void adjustNoDataCellWidth( int row, int column );
     bool validate() const;
+
+  private slots:
+    void crsChanged();
 };
 
 
