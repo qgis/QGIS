@@ -45,7 +45,7 @@ QgsAuthType::ProviderType QgsAuthType::providerTypeFromInt( int itype )
       ptype = None;
       break;
     case 1:
-      ptype = None;
+      ptype = Basic;
       break;
 #ifndef QT_NO_OPENSSL
     case 2:
