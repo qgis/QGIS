@@ -256,20 +256,14 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       job.context.setPainter( mypPainter );
     }
 
-    QString originalStyle = ml->styleManager()->currentStyle();
-    bool overrideStyle = mSettings.layerStyleOverrides().contains( ml->id() ) && mSettings.layerStyleOverrides().value( ml->id() ) != originalStyle;
-    if ( overrideStyle )
-    {
-      // temporarily change the style so the map renderer will use the override
-      ml->styleManager()->setCurrentStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
-    }
+    bool hasStyleOverride = mSettings.layerStyleOverrides().contains( ml->id() );
+    if ( hasStyleOverride )
+      ml->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 
     job.renderer = ml->createMapRenderer( job.context );
 
-    if ( overrideStyle )
-    {
-      ml->styleManager()->setCurrentStyle( originalStyle );
-    }
+    if ( hasStyleOverride )
+      ml->styleManager()->restoreOverrideStyle();
 
     if ( mRequestedGeomCacheForLayers.contains( ml->id() ) )
     {

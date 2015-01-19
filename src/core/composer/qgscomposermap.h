@@ -247,10 +247,17 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
 
+    /**Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    bool keepLayerStyles() const { return mKeepLayerStyles; }
+    /**Setter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    void setKeepLayerStyles( bool enabled ) { mKeepLayerStyles = enabled; }
+
     /**Getter for stored overrides of styles for layers. @note added in 2.8 */
     QMap<QString, QString> layerStyleOverrides() const { return mLayerStyleOverrides; }
     /**Setter for stored overrides of styles for layers. @note added in 2.8 */
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides ) { mLayerStyleOverrides = overrides; }
+    /**Stores the current layer styles into style overrides. @note added in 2.8 */
+    void storeCurrentLayerStyles();
 
     // Set cache outdated
     void setCacheUpdated( bool u = false );
@@ -852,6 +859,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     /**Stored layer list (used if layer live-link mKeepLayerSet is disabled)*/
     QStringList mLayerSet;
+
+    bool mKeepLayerStyles;
     /**Stored style names (value) to be used with particular layer IDs (key) instead of default style */
     QMap<QString, QString> mLayerStyleOverrides;
 

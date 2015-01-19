@@ -89,6 +89,9 @@ class QgsVisibilityPresets : public QObject
     //! Create preset record given a list of visible layers (needs to store per-layer checked legend symbols)
     PresetRecord currentStateFromLayerList( const QStringList& layerIDs, const QMap<QString, QString>& layerStyleOverrides );
 
+    //! Get layer style overrides (for QgsMapSettings) of the visible layers for given preset
+    QMap<QString, QString> presetStyleOverrides( const QString& presetName );
+
   signals:
     void presetsChanged();
 

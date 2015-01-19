@@ -52,6 +52,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
     , mMapRotation( 0 )
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
+    , mKeepLayerStyles( false )
     , mUpdatesEnabled( true )
     , mMapCanvas( 0 )
     , mDrawCanvasItems( true )
@@ -96,6 +97,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     , mMapRotation( 0 )
     , mEvaluatedMapRotation( 0 )
     , mKeepLayerSet( false )
+    , mKeepLayerStyles( false )
     , mUpdatesEnabled( true )
     , mMapCanvas( 0 )
     , mDrawCanvasItems( true )
@@ -1262,11 +1264,25 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
     QDomElement layerElem = doc.createElement( "Layer" );
     QDomText layerIdText = doc.createTextNode( *layerIt );
     layerElem.appendChild( layerIdText );
-    if ( mLayerStyleOverrides.contains( *layerIt ) )
-      layerElem.setAttribute( "style", mLayerStyleOverrides[*layerIt] );
     layerSetElem.appendChild( layerElem );
   }
   composerMapElem.appendChild( layerSetElem );
+
+  // override styles
+  if ( mKeepLayerStyles )
+  {
+    QDomElement stylesElem = doc.createElement( "LayerStyles" );
+    QMap<QString, QString>::const_iterator styleIt = mLayerStyleOverrides.constBegin();
+    for ( ; styleIt != mLayerStyleOverrides.constEnd(); ++styleIt )
+    {
+      QDomElement styleElem = doc.createElement( "LayerStyle" );
+      styleElem.setAttribute( "layerid", styleIt.key() );
+      QgsMapLayerStyle style( styleIt.value() );
+      style.writeXml( styleElem );
+      stylesElem.appendChild( styleElem );
+    }
+    composerMapElem.appendChild( stylesElem );
+  }
 
   //write a dummy "Grid" element to prevent crashes on pre 2.5 versions (refs #10905)
   QDomElement gridElem = doc.createElement( "Grid" );
@@ -1372,11 +1388,26 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     {
       const QDomElement& layerIdElement = layerIdNodeList.at( i ).toElement();
       layerSet << layerIdElement.text();
-      if ( layerIdElement.hasAttribute( "style" ) )
-        mLayerStyleOverrides.insert( layerSet.last(), layerIdElement.attribute( "style" ) );
     }
   }
   mLayerSet = layerSet;
+
+  // override styles
+  QDomNodeList layerStylesNodeList = itemElem.elementsByTagName( "LayerStyles" );
+  mKeepLayerStyles = layerStylesNodeList.size() > 0;
+  if ( mKeepLayerStyles )
+  {
+    QDomElement layerStylesElem = layerStylesNodeList.at( 0 ).toElement();
+    QDomNodeList layerStyleNodeList = layerStylesElem.elementsByTagName( "LayerStyle" );
+    for ( int i = 0; i < layerStyleNodeList.size(); ++i )
+    {
+      const QDomElement& layerStyleElement = layerStyleNodeList.at( i ).toElement();
+      QString layerId = layerStyleElement.attribute( "layerid" );
+      QgsMapLayerStyle style;
+      style.readXml( layerStyleElement );
+      mLayerStyleOverrides.insert( layerId, style.xmlData() );
+    }
+  }
 
   mDrawing = false;
   mNumCachedLayers = 0;
@@ -1515,12 +1546,24 @@ void QgsComposerMap::storeCurrentLayerSet()
 {
   mLayerSet = mComposition->mapSettings().layers();
 
-  // also store styles associated with the layers
+  if ( mKeepLayerStyles )
+  {
+    // also store styles associated with the layers
+    storeCurrentLayerStyles();
+  }
+}
+
+void QgsComposerMap::storeCurrentLayerStyles()
+{
   mLayerStyleOverrides.clear();
   foreach ( const QString& layerID, mLayerSet )
   {
-    if ( QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
-      mLayerStyleOverrides.insert( layerID, ml->styleManager()->currentStyle() );
+    if ( QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID ) )
+    {
+      QgsMapLayerStyle style;
+      style.readFromLayer( layer );
+      mLayerStyleOverrides.insert( layerID, style.xmlData() );
+    }
   }
 }
 

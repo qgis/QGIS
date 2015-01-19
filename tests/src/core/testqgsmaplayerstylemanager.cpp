@@ -74,14 +74,14 @@ void TestQgsMapLayerStyleManager::testStyle()
   st1.readFromLayer( mVL );
   QCOMPARE( st1.isValid(), true );
 
-  qDebug( "CNT-1: %s", st1.dump().toAscii().data() );
+  qDebug( "CNT-1: %s", st1.xmlData().toAscii().data() );
 
   mVL->setRendererV2( new QgsSingleSymbolRendererV2( sym2 ) );
 
   QgsMapLayerStyle st2;
   st2.readFromLayer( mVL );
 
-  qDebug( "CNT-2: %s", st2.dump().toAscii().data() );
+  qDebug( "CNT-2: %s", st2.xmlData().toAscii().data() );
 
   st1.writeToLayer( mVL );
 

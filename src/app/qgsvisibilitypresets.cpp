@@ -136,7 +136,7 @@ QgsVisibilityPresets::PresetRecord QgsVisibilityPresets::currentStateFromLayerLi
     rec.mVisibleLayerIDs << layerID;
   addPerLayerCheckedLegendSymbols( rec );
   addPerLayerCurrentStyle( rec );
-  foreach (const QString& layerID, layerStyleOverrides.keys() )
+  foreach ( const QString& layerID, layerStyleOverrides.keys() )
     rec.mPerLayerCurrentStyle[layerID] = layerStyleOverrides[layerID];
   return rec;
 }
@@ -224,6 +224,41 @@ void QgsVisibilityPresets::applyPresetCheckedLegendNodesToLayer( const QString& 
       vlayer->rendererV2()->checkLegendSymbolItem( item.ruleKey(), shouldBeChecked );
   }
 }
+
+
+QMap<QString, QString> QgsVisibilityPresets::presetStyleOverrides( const QString& presetName )
+{
+  QMap<QString, QString> styleOverrides;
+  if ( !mPresets.contains( presetName ) )
+    return styleOverrides;
+
+  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
+  const QgsVisibilityPresets::PresetRecord& rec = mPresets[presetName];
+  foreach ( const QString& layerID, lst )
+  {
+    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    if ( !layer )
+      continue;
+
+    // use either the stored style name or the current one if none has been stored
+    QString overrideStyleName = rec.mPerLayerCurrentStyle.value( layerID, layer->styleManager()->currentStyle() );
+
+    // store original style and temporarily apply a style
+    layer->styleManager()->setOverrideStyle( overrideStyleName );
+
+    // set the checked legend nodes
+    applyPresetCheckedLegendNodesToLayer( presetName, layerID );
+
+    // save to overrides
+    QgsMapLayerStyle layerStyle;
+    layerStyle.readFromLayer( layer );
+    styleOverrides[layerID] = layerStyle.xmlData();
+
+    layer->styleManager()->restoreOverrideStyle();
+  }
+  return styleOverrides;
+}
+
 
 QMenu* QgsVisibilityPresets::menu()
 {

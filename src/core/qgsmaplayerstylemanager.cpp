@@ -23,6 +23,7 @@
 
 QgsMapLayerStyleManager::QgsMapLayerStyleManager( QgsMapLayer* layer )
     : mLayer( layer )
+    , mOverriddenOriginalStyle( 0 )
 {
   reset();
 }
@@ -155,10 +156,52 @@ bool QgsMapLayerStyleManager::setCurrentStyle( const QString& name )
   return true;
 }
 
+bool QgsMapLayerStyleManager::setOverrideStyle( const QString& styleDef )
+{
+  if ( mOverriddenOriginalStyle )
+    return false; // cannot override the style more than once!
+
+  if ( mStyles.contains( styleDef ) )
+  {
+    mOverriddenOriginalStyle = new QgsMapLayerStyle;
+    mOverriddenOriginalStyle->readFromLayer( mLayer );
+
+    // apply style name
+    mStyles[styleDef].writeToLayer( mLayer );
+  }
+  else if ( styleDef.startsWith( '<' ) )
+  {
+    mOverriddenOriginalStyle = new QgsMapLayerStyle;
+    mOverriddenOriginalStyle->readFromLayer( mLayer );
+
+    // apply style XML
+    QgsMapLayerStyle overrideStyle( styleDef );
+    overrideStyle.writeToLayer( mLayer );
+  }
+
+  return false;
+}
+
+bool QgsMapLayerStyleManager::restoreOverrideStyle()
+{
+  if ( !mOverriddenOriginalStyle )
+    return false;
+
+  mOverriddenOriginalStyle->writeToLayer( mLayer );
+  delete mOverriddenOriginalStyle;
+  mOverriddenOriginalStyle = 0;
+  return true;
+}
+
 
 // -----
 
 QgsMapLayerStyle::QgsMapLayerStyle()
+{
+}
+
+QgsMapLayerStyle::QgsMapLayerStyle( const QString& xmlData )
+    : mXmlData( xmlData )
 {
 }
 
@@ -172,7 +215,7 @@ void QgsMapLayerStyle::clear()
   mXmlData.clear();
 }
 
-QString QgsMapLayerStyle::dump() const
+QString QgsMapLayerStyle::xmlData() const
 {
   return mXmlData;
 }
@@ -190,7 +233,7 @@ void QgsMapLayerStyle::readFromLayer( QgsMapLayer* layer )
 
   mXmlData.clear();
   QTextStream stream( &mXmlData );
-  doc.save( stream, 0 );
+  doc.documentElement().save( stream, 0 );
 }
 
 void QgsMapLayerStyle::writeToLayer( QgsMapLayer* layer ) const

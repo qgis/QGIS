@@ -208,10 +208,17 @@ class QgsComposerMap : QgsComposerItem
     /**Stores the current layer set of the qgis mapcanvas in mLayerSet*/
     void storeCurrentLayerSet();
 
+    /**Getter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    bool keepLayerStyles() const;
+    /**Setter for flag that determines if current styles of layers should be overridden by previously stored styles. @note added in 2.8 */
+    void setKeepLayerStyles( bool enabled );
+
     /**Getter for stored overrides of styles for layers. @note added in 2.8 */
     QMap<QString, QString> layerStyleOverrides() const;
     /**Setter for stored overrides of styles for layers. @note added in 2.8 */
     void setLayerStyleOverrides( const QMap<QString, QString>& overrides );
+    /**Stores the current layer styles into style overrides. @note added in 2.8 */
+    void storeCurrentLayerStyles();
 
     // Set cache outdated
     void setCacheUpdated( bool u = false );

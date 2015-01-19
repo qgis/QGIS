@@ -1874,8 +1874,8 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( efField );
 
   QDomElement efiField  = doc.createElement( "editforminit" );
-  QDomText efiText = doc.createTextNode( mEditFormInit );
-  efiField.appendChild( efiText );
+  if ( !mEditFormInit.isEmpty() )
+    efiField.appendChild( doc.createTextNode( mEditFormInit ) );
   node.appendChild( efiField );
 
   QDomElement fFSuppElem  = doc.createElement( "featformsuppress" );

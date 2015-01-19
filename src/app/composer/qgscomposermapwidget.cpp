@@ -23,6 +23,7 @@
 #include "qgscomposermapwidget.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposition.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderer.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
@@ -272,14 +273,14 @@ void QgsComposerMapWidget::aboutToShowVisibilityPresetsMenu()
   if ( !menu )
     return;
 
-  QgsVisibilityPresets::PresetRecord rec = QgsVisibilityPresets::instance()->currentStateFromLayerList( mComposerMap->layerSet(), mComposerMap->layerStyleOverrides() );
-
   menu->clear();
   foreach ( QString presetName, QgsVisibilityPresets::instance()->presets() )
   {
     QAction* a = menu->addAction( presetName, this, SLOT( visibilityPresetSelected() ) );
     a->setCheckable( true );
-    if ( rec == QgsVisibilityPresets::instance()->presetState( presetName ) )
+    QStringList layers = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
+    QMap<QString, QString> styles = QgsVisibilityPresets::instance()->presetStyleOverrides( presetName );
+    if ( layers == mComposerMap->layerSet() && styles == mComposerMap->layerStyleOverrides() )
       a->setChecked( true );
   }
 
@@ -293,19 +294,16 @@ void QgsComposerMapWidget::visibilityPresetSelected()
   if ( !action )
     return;
 
-  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( action->text() );
+  QString presetName = action->text();
+  QStringList lst = QgsVisibilityPresets::instance()->presetVisibleLayers( presetName );
   if ( mComposerMap )
   {
     mKeepLayerListCheckBox->setChecked( true );
     mComposerMap->setLayerSet( lst );
-    mComposerMap->setLayerStyleOverrides( QgsVisibilityPresets::instance()->presetState( action->text() ).mPerLayerCurrentStyle );
 
-    // TODO: switching of styles and per-layer checked legend nodes currently does not play well with each other
-    // because checked nodes are applied immediately while style is applied only when rendering the map
+    mKeepLayerStylesCheckBox->setChecked( true );
 
-    // also apply legend node check states
-    foreach ( QString layerID, lst )
-      QgsVisibilityPresets::instance()->applyPresetCheckedLegendNodesToLayer( action->text(), layerID );
+    mComposerMap->setLayerStyleOverrides( QgsVisibilityPresets::instance()->presetStyleOverrides( presetName ) );
 
     mComposerMap->cache();
     mComposerMap->update();
@@ -646,6 +644,8 @@ void QgsComposerMapWidget::updateGuiElements()
     mKeepLayerListCheckBox->setCheckState( Qt::Unchecked );
   }
 
+  mKeepLayerStylesCheckBox->setCheckState( mComposerMap->keepLayerStyles() ? Qt::Checked : Qt::Unchecked );
+
   //draw canvas items
   if ( mComposerMap->drawCanvasItems() )
   {
@@ -763,6 +763,7 @@ void QgsComposerMapWidget::blockAllSignals( bool b )
   mAtlasFixedScaleRadio->blockSignals( b );
   mAtlasMarginRadio->blockSignals( b );
   mKeepLayerListCheckBox->blockSignals( b );
+  mKeepLayerStylesCheckBox->blockSignals( b );
   mSetToMapCanvasExtentButton->blockSignals( b );
   mUpdatePreviewButton->blockSignals( b );
 
@@ -877,6 +878,29 @@ void QgsComposerMapWidget::on_mKeepLayerListCheckBox_stateChanged( int state )
     QStringList emptyLayerSet;
     mComposerMap->setLayerSet( emptyLayerSet );
     mComposerMap->setKeepLayerSet( false );
+
+    mKeepLayerStylesCheckBox->setChecked( Qt::Unchecked );
+  }
+
+  mKeepLayerStylesCheckBox->setEnabled( state == Qt::Checked );
+}
+
+void QgsComposerMapWidget::on_mKeepLayerStylesCheckBox_stateChanged( int state )
+{
+  if ( !mComposerMap )
+  {
+    return;
+  }
+
+  if ( state == Qt::Checked )
+  {
+    mComposerMap->storeCurrentLayerStyles();
+    mComposerMap->setKeepLayerStyles( true );
+  }
+  else
+  {
+    mComposerMap->setLayerStyleOverrides( QMap<QString, QString>() );
+    mComposerMap->setKeepLayerStyles( false );
   }
 }
 

@@ -55,8 +55,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>484</width>
-        <height>2451</height>
+        <width>447</width>
+        <height>2546</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -158,14 +158,14 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
             <property name="text">
              <string>Draw map canvas items</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="5" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
              <widget class="QCheckBox" name="mKeepLayerListCheckBox">
@@ -204,6 +204,13 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QCheckBox" name="mKeepLayerStylesCheckBox">
+            <property name="text">
+             <string>Lock layer styles for map item</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -698,7 +705,7 @@
                <property name="decimals">
                 <number>2</number>
                </property>
-               <property name="showClearButton">
+               <property name="showClearButton" stdset="0">
                 <bool>false</bool>
                </property>
               </widget>
@@ -791,7 +798,7 @@
                   <property name="suffix">
                    <string> mm</string>
                   </property>
-                  <property name="showClearButton">
+                  <property name="showClearButton" stdset="0">
                    <bool>false</bool>
                   </property>
                  </widget>
@@ -931,7 +938,7 @@
                   <property name="suffix">
                    <string> mm</string>
                   </property>
-                  <property name="showClearButton">
+                  <property name="showClearButton" stdset="0">
                    <bool>false</bool>
                   </property>
                  </widget>
@@ -1144,7 +1151,7 @@
                 </item>
                 <item row="16" column="1">
                  <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox">
-                  <property name="showClearButton">
+                  <property name="showClearButton" stdset="0">
                    <bool>false</bool>
                   </property>
                  </widget>
@@ -1409,6 +1416,7 @@
   <tabstop>mDrawCanvasItemsCheckBox</tabstop>
   <tabstop>mKeepLayerListCheckBox</tabstop>
   <tabstop>mLayerListFromPresetButton</tabstop>
+  <tabstop>mKeepLayerStylesCheckBox</tabstop>
   <tabstop>mExtentsCheckBox</tabstop>
   <tabstop>mXMinLineEdit</tabstop>
   <tabstop>mXMinDDBtn</tabstop>
