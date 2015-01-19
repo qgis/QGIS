@@ -1159,7 +1159,7 @@ bool QgsProject::write()
   QTextStream projectFileStream( &imp_->file );
 
   //projectFileStream << xml << endl;
-  doc->save( projectFileStream, 4 );  // save as utf-8
+  doc->save( projectFileStream, 2 );  // save as utf-8
   imp_->file.close();
 
   // check if the text stream had no error - if it does
