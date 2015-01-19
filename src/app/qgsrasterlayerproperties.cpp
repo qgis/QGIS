@@ -29,6 +29,8 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaplayerstyleguiutils.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaptoolemitpoint.h"
 #include "qgsmaptopixel.h"
@@ -90,7 +92,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   m->addAction( tr( "Save As Default" ), this, SLOT( on_pbnSaveDefaultStyle_clicked() ) );
   m->addAction( tr( "Restore Default" ), this, SLOT( on_pbnLoadDefaultStyle_clicked() ) );
   b->setMenu( m );
+  connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowStyleMenu() ) );
   buttonBox->addButton( b, QDialogButtonBox::ResetRole );
+
+  connect( lyr->styleManager(), SIGNAL( currentStyleChanged( QString ) ), this, SLOT( syncToLayer() ) );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -1306,6 +1311,49 @@ void QgsRasterLayerProperties::transparencyCellTextEdited( const QString & text 
   }
 }
 
+void QgsRasterLayerProperties::aboutToShowStyleMenu()
+{
+  // this should be unified with QgsVectorLayerProperties::aboutToShowStyleMenu()
+
+  QMenu* m = qobject_cast<QMenu*>( sender() );
+  if ( !m )
+    return;
+
+  // first get rid of previously added style manager actions (they are dynamic)
+  bool gotFirstSeparator = false;
+  QList<QAction*> actions = m->actions();
+  for ( int i = 0; i < actions.count(); ++i )
+  {
+    if ( actions[i]->isSeparator() )
+    {
+      if ( gotFirstSeparator )
+      {
+        // remove all actions after second separator (including it)
+        while ( actions.count() != i )
+          delete actions.takeAt( i );
+        break;
+      }
+      else
+        gotFirstSeparator = true;
+    }
+  }
+
+  // re-add style manager actions!
+  m->addSeparator();
+  QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( m, mRasterLayer );
+}
+
+void QgsRasterLayerProperties::syncToLayer()
+{
+  QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  if ( renderer )
+  {
+    setRendererWidget( renderer->type() );
+  }
+  sync();
+  mRasterLayer->triggerRepaint();
+}
+
 void QgsRasterLayerProperties::setTransparencyToEdited( int row )
 {
   if ( row >= mTransparencyToEdited.size() )
@@ -1592,13 +1640,7 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
   //reset if the default style was loaded ok only
   if ( defaultLoadedFlag )
   {
-    QgsRasterRenderer* renderer = mRasterLayer->renderer();
-    if ( renderer )
-    {
-      setRendererWidget( renderer->type() );
-    }
-    sync();
-    mRasterLayer->triggerRepaint();
+    syncToLayer();
   }
   else
   {
@@ -1653,13 +1695,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
   if ( defaultLoadedFlag )
   {
     settings.setValue( "style/lastStyleDir", QFileInfo( fileName ).absolutePath() );
-    QgsRasterRenderer* renderer = mRasterLayer->renderer();
-    if ( renderer )
-    {
-      setRendererWidget( renderer->type() );
-    }
-    sync();
-    mRasterLayer->triggerRepaint();
+    syncToLayer();
   }
   else
   {

@@ -137,6 +137,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     /** called when is possible to choice if load the style from filesystem or from db */
     void loadStyleMenuTriggered( QAction * );
 
+    void aboutToShowStyleMenu();
 
   protected:
 

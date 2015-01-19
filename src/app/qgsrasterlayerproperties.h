@@ -113,6 +113,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     /** Transparency cell changed */
     void transparencyCellTextEdited( const QString & text );
 
+    void aboutToShowStyleMenu();
+
+    /** make GUI reflect the layer's state */
+    void syncToLayer();
+
   signals:
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
