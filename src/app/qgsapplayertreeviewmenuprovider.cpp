@@ -93,15 +93,18 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       // style-related actions
       if ( mView->selectedLayerNodes().count() == 1 )
       {
-        QMenu* menuStyleManager = QgsMapLayerStyleGuiUtils::instance()->createStyleManagerMenu( layer );
+        QMenu* menuStyleManager = new QMenu( tr( "Styles" ) );
 
         QgisApp* app = QgisApp::instance();
-        menuStyleManager->addSeparator();
         menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
         if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
         {
           menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
         }
+
+        menuStyleManager->addSeparator();
+        QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( menuStyleManager, layer );
+
         menu->addMenu( menuStyleManager );
       }
 
