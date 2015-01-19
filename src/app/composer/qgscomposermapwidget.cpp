@@ -644,6 +644,7 @@ void QgsComposerMapWidget::updateGuiElements()
     mKeepLayerListCheckBox->setCheckState( Qt::Unchecked );
   }
 
+  mKeepLayerStylesCheckBox->setEnabled( mComposerMap->keepLayerSet() );
   mKeepLayerStylesCheckBox->setCheckState( mComposerMap->keepLayerStyles() ? Qt::Checked : Qt::Unchecked );
 
   //draw canvas items
