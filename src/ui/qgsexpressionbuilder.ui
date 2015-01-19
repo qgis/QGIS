@@ -577,6 +577,9 @@
          <property name="sizeConstraint">
           <enum>QLayout::SetDefaultConstraint</enum>
          </property>
+         <property name="topMargin">
+          <number>3</number>
+         </property>
          <item>
           <widget class="QToolButton" name="btnRun">
            <property name="text">
