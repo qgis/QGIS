@@ -45,9 +45,9 @@ namespace osgEarth
 
         void initialize( const std::string& referenceURI, const Profile* overrideProfile = NULL );
 
-        osg::Image* createImage( const TileKey& key, ProgressCallback* progress );
+        osg::Image* createImage( const TileKey& key, ProgressCallback* progress ) override;
 
-        virtual osg::HeightField* createHeightField( const TileKey &key, ProgressCallback* progress )
+        virtual osg::HeightField* createHeightField( const TileKey &key, ProgressCallback* progress ) override
         {
           Q_UNUSED( key );
           Q_UNUSED( progress );
@@ -56,11 +56,11 @@ namespace osgEarth
           return NULL;
         }
 
-        virtual std::string getExtension()  const
+        virtual std::string getExtension() const override
         {
           //All QGIS tiles are in JPEG format
           return "jpg";
-        }
+      }
 
         virtual bool supportsPersistentCaching() const
         {

@@ -28,13 +28,13 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
   public:
     QgsSOAPRequestHandler();
     ~QgsSOAPRequestHandler();
-    void parseInput();
+    void parseInput() override;
     void setGetMapResponse( const QString& service, QImage* img );
-    void setGetCapabilitiesResponse( const QDomDocument& doc );
-    void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat );
+    void setGetCapabilitiesResponse( const QDomDocument& doc ) override;
+    void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) override;
     void setServiceException( const QgsMapServiceException& ex );
-    void setXmlResponse( const QDomDocument& doc );
-    void setXmlResponse( const QDomDocument& doc, const QString& mimeType );
+    void setXmlResponse( const QDomDocument& doc ) override;
+    void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) override;
     void setGetPrintResponse( QByteArray* ba ) const;
   private:
     /**Parses the xml of a getMap request and fills the parameters into the map. Returns 0 in case of success*/

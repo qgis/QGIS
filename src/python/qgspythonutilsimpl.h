@@ -41,8 +41,8 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     //! initialize python for server and import bindings
-    void initServerPython( QgsServerInterface* interface );
-    bool startServerPlugin( QString packageName );
+    void initServerPython( QgsServerInterface* interface ) override;
+    bool startServerPlugin( QString packageName ) override;
 #endif
 
     //! close python interpreter

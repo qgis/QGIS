@@ -44,12 +44,12 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     /** Destructor */
     ~QgsServerInterfaceImpl();
 
-    void setRequestHandler( QgsRequestHandler* requestHandler );
-    QgsCapabilitiesCache* capabiblitiesCache() { return mCapabilitiesCache; }
-    QgsRequestHandler*  requestHandler( ) { return mRequestHandler; }
-    void registerFilter( QgsServerFilter *filter, int priority = 0 );
-    QgsServerFiltersMap filters( ) { return mFilters; }
-    QString getEnv( const QString& name ) const;
+    void setRequestHandler( QgsRequestHandler* requestHandler ) override;
+    QgsCapabilitiesCache* capabiblitiesCache() override { return mCapabilitiesCache; }
+    QgsRequestHandler*  requestHandler( ) override { return mRequestHandler; }
+    void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
+    QgsServerFiltersMap filters( ) override { return mFilters; }
+    QString getEnv( const QString& name ) const override;
 
   private:
 

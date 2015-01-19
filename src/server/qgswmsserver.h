@@ -65,7 +65,7 @@ class QgsWMSServer: public QgsOWSServer
                   QgsMapRenderer* renderer, QgsCapabilitiesCache* capCache );
     ~QgsWMSServer();
 
-    void executeRequest();
+    void executeRequest() override;
 
     /**Returns an XML file with the capabilities description (as described in the WMS specs)
         @param version WMS version (1.1.1 or 1.3.0)

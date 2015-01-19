@@ -49,7 +49,7 @@ class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMen
   public:
     QgsComposerLegendMenuProvider( QgsLayerTreeView* view, QgsComposerLegendWidget* w ) : mView( view ), mWidget( w ) {}
 
-    virtual QMenu* createContextMenu()
+    virtual QMenu* createContextMenu() override
     {
       if ( !mView->currentNode() )
         return 0;

@@ -28,7 +28,7 @@ class QgsRemoteDataSourceBuilder: public QgsMSLayerBuilder
   public:
     QgsRemoteDataSourceBuilder();
     ~QgsRemoteDataSourceBuilder();
-    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
+    QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const override;
 
   private:
     /**Creates a raster layer from a <RemoteRDS>. This function loads the data into a temporary file and creates a rasterlayer from it. Returns a 0 pointer in case of error*/

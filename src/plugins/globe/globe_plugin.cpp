@@ -166,7 +166,7 @@ GlobePlugin::~GlobePlugin()
 struct PanControlHandler : public NavigationControlHandler
 {
   PanControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     _manip->pan( _dx, _dy );
   }
@@ -179,7 +179,7 @@ private:
 struct RotateControlHandler : public NavigationControlHandler
 {
   RotateControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     if ( 0 == _dx && 0 == _dy )
     {
@@ -199,7 +199,7 @@ private:
 struct ZoomControlHandler : public NavigationControlHandler
 {
   ZoomControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     _manip->zoom( _dx, _dy );
   }
@@ -212,7 +212,7 @@ private:
 struct HomeControlHandler : public NavigationControlHandler
 {
   HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
-  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) override
   {
     _manip->home( ea, aa );
   }
@@ -223,7 +223,7 @@ private:
 struct RefreshControlHandler : public ControlEventHandler
 {
   RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->imageLayersChanged();
   }
@@ -234,7 +234,7 @@ private:
 struct SyncExtentControlHandler : public ControlEventHandler
 {
   SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ ) override
   {
     mGlobe->syncExtent();
   }

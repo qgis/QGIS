@@ -26,7 +26,7 @@ class QgsGetRequestHandler: public QgsHttpRequestHandler
 {
   public:
     QgsGetRequestHandler();
-    void parseInput();
+    void parseInput() override;
 };
 
 #endif

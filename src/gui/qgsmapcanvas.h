@@ -520,7 +520,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
   protected:
 #ifdef HAVE_TOUCH
     //! Overridden standard event to be gestures aware
-    bool event( QEvent * e );
+    bool event( QEvent * e ) override;
 #endif
 
     //! Overridden key press event

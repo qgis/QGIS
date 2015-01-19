@@ -38,68 +38,68 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
 
     /**Adds layer and style specific capabilities elements to the parent node. This includes the individual layers and styles, their description, native CRS, bounding boxes, etc.
         @param fullProjectInformation If true: add extended project information (does not validate against WMS schema)*/
-    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const;
+    void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings = false ) const override;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
-    QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const;
+    QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const override;
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
-    int layersAndStyles( QStringList& layers, QStringList& styles ) const;
+    int layersAndStyles( QStringList& layers, QStringList& styles ) const override;
 
     /**Returns the xml fragment of a style*/
-    QDomDocument getStyle( const QString& styleName, const QString& layerName ) const;
+    QDomDocument getStyle( const QString& styleName, const QString& layerName ) const override;
 
     /**Returns the xml fragment of layers styles*/
-    QDomDocument getStyles( QStringList& layerList ) const;
+    QDomDocument getStyles( QStringList& layerList ) const override;
 
     /**Returns if output are MM or PIXEL*/
-    QgsMapRenderer::OutputUnits outputUnits() const;
+    QgsMapRenderer::OutputUnits outputUnits() const override;
 
     /**Returns an ID-list of layers which are not queryable (comes from <properties> -> <Identify> -> <disabledLayers in the project file*/
-    QStringList identifyDisabledLayers() const;
+    QStringList identifyDisabledLayers() const override;
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
-    bool featureInfoWithWktGeometry() const;
+    bool featureInfoWithWktGeometry() const override;
 
     /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
-    QHash<QString, QString> featureInfoLayerAliasMap() const;
+    QHash<QString, QString> featureInfoLayerAliasMap() const override;
 
-    QString featureInfoDocumentElement( const QString& defaultValue ) const;
+    QString featureInfoDocumentElement( const QString& defaultValue ) const override;
 
-    QString featureInfoDocumentElementNS() const;
+    QString featureInfoDocumentElementNS() const override;
 
-    QString featureInfoSchema() const;
+    QString featureInfoSchema() const override;
 
     /**Return feature info in format SIA2045?*/
-    bool featureInfoFormatSIA2045() const;
+    bool featureInfoFormatSIA2045() const override;
 
     /**Draw text annotation items from the QGIS projectfile*/
-    void drawOverlays( QPainter* p, int dpi, int width, int height ) const;
+    void drawOverlays( QPainter* p, int dpi, int width, int height ) const override;
 
     /**Load PAL engine settings from projectfile*/
-    void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const;
+    void loadLabelSettings( QgsLabelingEngineInterface* lbl ) const override;
 
-    QString serviceUrl() const;
+    QString serviceUrl() const override;
 
-    QStringList wfsLayerNames() const;
+    QStringList wfsLayerNames() const override;
 
-    void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const;
+    void owsGeneralAndResourceList( QDomElement& parentElement, QDomDocument& doc, const QString& strHref ) const override;
 
     //legend
-    double legendBoxSpace() const;
-    double legendLayerSpace() const;
-    double legendLayerTitleSpace() const;
-    double legendSymbolSpace() const;
-    double legendIconLabelSpace() const;
-    double legendSymbolWidth() const;
-    double legendSymbolHeight() const;
-    const QFont& legendLayerFont() const;
-    const QFont& legendItemFont() const;
+    double legendBoxSpace() const override;
+    double legendLayerSpace() const override;
+    double legendLayerTitleSpace() const override;
+    double legendSymbolSpace() const override;
+    double legendIconLabelSpace() const override;
+    double legendSymbolWidth() const override;
+    double legendSymbolHeight() const override;
+    const QFont& legendLayerFont() const override;
+    const QFont& legendItemFont() const override;
 
-    double maxWidth() const;
-    double maxHeight() const;
-    double imageQuality() const;
-    int WMSPrecision() const;
+    double maxWidth() const override;
+    double maxHeight() const override;
+    double imageQuality() const override;
+    int WMSPrecision() const override;
 
     //printing
 
@@ -107,19 +107,19 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     QgsComposition* createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const;
 
     /**Creates a composition from the project file (probably delegated to the fallback parser)*/
-    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const;
+    QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLegend* >& legendList, QList< QgsComposerLabel* >& labelList, QList<const QgsComposerHtml *>& htmlFrameList ) const override;
 
     /**Adds print capabilities to xml document. ParentElem usually is the <Capabilities> element*/
-    void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    void printCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
-    void setScaleDenominator( double denom );
-    void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc );
+    void setScaleDenominator( double denom ) override;
+    void addExternalGMLData( const QString& layerName, QDomDocument* gmlDoc ) override;
 
-    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const;
+    QList< QPair< QString, QgsLayerCoordinateTransform > > layerCoordinateTransforms() const override;
 
-    int nLayers() const;
+    int nLayers() const override;
 
-    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
+    void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const override;
 
   private:
 
@@ -189,7 +189,7 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     /**Reads attributes "epsg" or "proj" from layer element and sets specified CRS if present*/
     void setCrsForLayer( const QDomElement& layerElem, QgsMapLayer* ml ) const;
 
-    bool useLayerIDs() const { return false; }
+    bool useLayerIDs() const override { return false; }
 };
 
 #endif // QGSSLDCONFIGPARSER_H
