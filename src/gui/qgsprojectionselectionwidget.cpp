@@ -108,6 +108,9 @@ void QgsProjectionSelectionWidget::setOptionVisible( const QgsProjectionSelectio
         addDefaultCrsOption();
         return;
       }
+      case QgsProjectionSelectionWidget::CurrentCrs:
+        //current CRS option cannot be readded
+        return;
     }
   }
   else if ( !visible && optionIndex >= 0 )
