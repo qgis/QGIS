@@ -342,6 +342,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayerregistry.h
+  qgsmaplayerstylemanager.h
   qgsmaprenderer.h
   qgsmaprenderercache.h
   qgsmaprenderercustompainterjob.h

@@ -91,6 +91,7 @@ bool QgsMapLayerStyleManager::addStyle( const QString& name, const QgsMapLayerSt
     return false;
 
   mStyles.insert( name, style );
+  emit styleAdded( name );
   return true;
 }
 
@@ -119,6 +120,7 @@ bool QgsMapLayerStyleManager::removeStyle( const QString& name )
   }
 
   mStyles.remove( name );
+  emit styleRemoved( name );
   return true;
 }
 
@@ -132,6 +134,7 @@ bool QgsMapLayerStyleManager::renameStyle( const QString& name, const QString& n
 
   mStyles[newName] = mStyles[name];
   mStyles.remove( name );
+  emit styleRenamed( name, newName );
   return true;
 }
 
@@ -152,6 +155,8 @@ bool QgsMapLayerStyleManager::setCurrentStyle( const QString& name )
   mCurrentStyle = name;
   mStyles[mCurrentStyle].writeToLayer( mLayer );
   mStyles[mCurrentStyle].clear(); // current style does not keep any stored data
+  emit currentStyleChanged( mCurrentStyle );
+
   mLayer->triggerRepaint();
   return true;
 }

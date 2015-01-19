@@ -32,7 +32,7 @@ class QgsMapLayerStyle
 };
 
 
-class QgsMapLayerStyleManager
+class QgsMapLayerStyleManager : QObject
 {
 %TypeHeaderCode
 #include <qgsmaplayerstylemanager.h>
@@ -40,6 +40,9 @@ class QgsMapLayerStyleManager
   public:
     //! Construct a style manager associated with a map layer (must not be null)
     QgsMapLayerStyleManager( QgsMapLayer* layer );
+
+    //! Get pointer to the associated map layer
+    QgsMapLayer* layer() const;
 
     //! Reset the style manager to a basic state - with one default style which is set as current
     void reset();
@@ -79,4 +82,14 @@ class QgsMapLayerStyleManager
     bool setOverrideStyle( const QString& styleDef );
     //! Restore the original store after a call to setOverrideStyle()
     bool restoreOverrideStyle();
+
+  signals:
+    //! Emitted when a new style has been added
+    void styleAdded( const QString& name );
+    //! Emitted when a style has been removed
+    void styleRemoved( const QString& name );
+    //! Emitted when a style has been renamed
+    void styleRenamed( const QString& oldName, const QString& newName );
+    //! Emitted when the current style has been changed
+    void currentStyleChanged( const QString& currentName );
 };
