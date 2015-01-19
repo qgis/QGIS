@@ -80,7 +80,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   // and connecting QDialogButtonBox's accepted/rejected signals to dialog's accept/reject slots
   initOptionsBase( false );
 
-
+  QPushButton* b = new QPushButton( tr( "Style" ) );
+  QMenu* m = new QMenu( this );
+  mActionLoadStyle = m->addAction( tr( "Load Style..." ), this, SLOT( on_pbnLoadStyle_clicked() ) );
+  mActionSaveStyleAs = m->addAction( tr( "Save Style..." ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
+  m->addSeparator();
+  m->addAction( tr( "Save As Default" ), this, SLOT( on_pbnSaveDefaultStyle_clicked() ) );
+  m->addAction( tr( "Restore Default" ), this, SLOT( on_pbnLoadDefaultStyle_clicked() ) );
+  b->setMenu( m );
+  buttonBox->addButton( b, QDialogButtonBox::ResetRole );
 
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
@@ -136,7 +144,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   actionLayout->addWidget( actionDialog );
 
   // Create the menu for the save style button to choose the output format
-  mSaveAsMenu = new QMenu( pbnSaveStyleAs );
+  mSaveAsMenu = new QMenu( this );
   mSaveAsMenu->addAction( tr( "QGIS Layer Style File" ) );
   mSaveAsMenu->addAction( tr( "SLD File" ) );
 
@@ -147,8 +155,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mLoadStyleMenu = new QMenu();
     mLoadStyleMenu->addAction( tr( "Load from file" ) );
     mLoadStyleMenu->addAction( tr( "Load from database" ) );
-    pbnLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
-    pbnLoadStyle->setMenu( mLoadStyleMenu );
+    //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
+    mActionLoadStyle->setMenu( mLoadStyleMenu );
 
     QObject::connect( mLoadStyleMenu, SIGNAL( triggered( QAction * ) ),
                       this, SLOT( loadStyleMenuTriggered( QAction * ) ) );
@@ -1066,9 +1074,9 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     mRendererDialog = new QgsRendererV2PropertiesDialog( layer, QgsStyleV2::defaultStyle(), true );
 
     // display the menu to choose the output format (fix #5136)
-    pbnSaveStyleAs->setText( tr( "Save Style" ) );
-    pbnSaveStyleAs->setMenu( mSaveAsMenu );
-    QObject::disconnect( pbnSaveStyleAs, SIGNAL( clicked() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
+    mActionSaveStyleAs->setText( tr( "Save Style" ) );
+    mActionSaveStyleAs->setMenu( mSaveAsMenu );
+    QObject::disconnect( mActionSaveStyleAs, SIGNAL( triggered() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
   }
   else
   {

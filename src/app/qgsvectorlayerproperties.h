@@ -154,6 +154,9 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QMenu *mSaveAsMenu;
     QMenu *mLoadStyleMenu;
 
+    QAction* mActionLoadStyle;
+    QAction* mActionSaveStyleAs;
+
     /**Renderer dialog which is shown*/
     QDialog* mRendererDialog;
     /**Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */

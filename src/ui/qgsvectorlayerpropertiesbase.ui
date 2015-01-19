@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>730</width>
-                <height>502</height>
+                <width>743</width>
+                <height>546</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -618,8 +618,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>121</width>
-                <height>38</height>
+                <width>129</width>
+                <height>35</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -867,8 +867,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>476</width>
-                <height>182</height>
+                <width>530</width>
+                <height>189</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1216,8 +1216,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>393</width>
-                <height>608</height>
+                <width>411</width>
+                <height>630</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -1545,38 +1545,6 @@
           </layout>
          </widget>
         </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_9">
-         <item>
-          <widget class="QPushButton" name="pbnLoadStyle">
-           <property name="text">
-            <string>Load Style...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pbnSaveDefaultStyle">
-           <property name="text">
-            <string>Save As Default</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pbnLoadDefaultStyle">
-           <property name="text">
-            <string>Restore Default Style</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pbnSaveStyleAs">
-           <property name="text">
-            <string>Save Style...</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
        </item>
       </layout>
      </widget>
