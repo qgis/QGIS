@@ -109,6 +109,19 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
   mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   blockComboSignals( false );
+
+  mDataDefinedPropertyButtons.clear();
+  registerDataDefinedButton( mSymbolWidthDDBtn, "width", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mSymbolHeightDDBtn, "height", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mRotationDDBtn, "rotation", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mFillColorDDBtn, "fill_color", QgsDataDefinedButton::String, "'red,green,blue,alpha' e.g. '255,0,0,255'" );
+  registerDataDefinedButton( mBorderColorDDBtn, "outline_color", QgsDataDefinedButton::String, "'red,green,blue,alpha' e.g. '255,0,0,255'" );
+  registerDataDefinedButton( mShapeDDBtn, "symbol_name", QgsDataDefinedButton::String, "'circle', 'rectangle', 'cross', 'triangle'" );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, "'x,y' e.g. '2,3.5'" );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, "'left', 'center' or 'right'" );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, "'top', 'center' or 'bottom'" );
+
 }
 
 QgsSymbolLayerV2* QgsEllipseSymbolLayerV2Widget::symbolLayer()
@@ -269,53 +282,6 @@ void QgsEllipseSymbolLayerV2Widget::on_mVerticalAnchorComboBox_currentIndexChang
   if ( mLayer )
   {
     mLayer->setVerticalAnchorPoint(( QgsMarkerSymbolLayerV2::VerticalAnchorPoint ) index );
-    emit changed();
-  }
-}
-
-void QgsEllipseSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width", tr( "Symbol width" ), mLayer->dataDefinedPropertyString( "width" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "height", tr( "Symbol height" ), mLayer->dataDefinedPropertyString( "height" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "rotation", tr( "Rotation" ), mLayer->dataDefinedPropertyString( "rotation" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline_width", tr( "Outline width" ), mLayer->dataDefinedPropertyString( "outline_width" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "fill_color", tr( "Fill color" ), mLayer->dataDefinedPropertyString( "fill_color" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline_color", tr( "Border color" ), mLayer->dataDefinedPropertyString( "outline_color" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "symbol_name", tr( "Symbol name" ), mLayer->dataDefinedPropertyString( "symbol_name" ),
-      "'circle'|'rectangle'|'cross'|'triangle'" );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ),
-      QgsDataDefinedSymbolDialog::offsetHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
-      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
-      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
     emit changed();
   }
 }
