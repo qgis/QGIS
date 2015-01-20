@@ -195,11 +195,11 @@ struct _CohenSutherland
 
   typedef int OutCode;
 
-  const int INSIDE = 0; // 0000
-  const int LEFT = 1;   // 0001
-  const int RIGHT = 2;  // 0010
-  const int BOTTOM = 4; // 0100
-  const int TOP = 8;    // 1000
+  static const int INSIDE = 0; // 0000
+  static const int LEFT = 1;   // 0001
+  static const int RIGHT = 2;  // 0010
+  static const int BOTTOM = 4; // 0100
+  static const int TOP = 8;    // 1000
 
   QgsRectangle mRect;
 

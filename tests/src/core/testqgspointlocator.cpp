@@ -99,7 +99,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( m.layer(), mVL );
       QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m.point(), QgsPoint( 1, 1 ) );
-      QCOMPARE( m.distance(), sqrt( 2 ) );
+      QCOMPARE( m.distance(), sqrt( 2.0 ) );
       QCOMPARE( m.vertexIndex(), 2 );
     }
 

@@ -45,7 +45,7 @@ class QgsPointLocator_VisitorEdgesInRect;
  *
  * @note added in 2.8
  */
-class QgsPointLocator : public QObject
+class CORE_EXPORT QgsPointLocator : public QObject
 {
     Q_OBJECT
   public:
@@ -117,7 +117,7 @@ class QgsPointLocator : public QObject
       QgsPoint mEdgePoints[2];
     };
 
-    typedef struct QList<Match> MatchList;
+    typedef class QList<Match> MatchList;
 
     //! Interface that allows rejection of some matches in intersection queries
     //! (e.g. a match can only belong to a particular feature / match must not be a particular point).

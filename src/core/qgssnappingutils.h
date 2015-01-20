@@ -38,7 +38,7 @@
  *
  * @note added in 2.8
  */
-class QgsSnappingUtils : public QObject
+class CORE_EXPORT QgsSnappingUtils : public QObject
 {
     Q_OBJECT
   public:
