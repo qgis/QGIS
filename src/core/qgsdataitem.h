@@ -146,6 +146,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString name() const { return mName; }
     QString path() const { return mPath; }
     void setPath( const QString &path ) { mPath = path; }
+    //! Create path component replacing path separators
+    static QString pathComponent( const QString &component );
 
     // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
     // not possible to set mIcon in constructor. Either use mIconName/setIconName()

@@ -190,6 +190,11 @@ QgsDataItem::~QgsDataItem()
   }
 }
 
+QString QgsDataItem::pathComponent( const QString &string )
+{
+  return QString( string ).replace( QRegExp( "[\\\\/]" ), "|" );
+}
+
 void QgsDataItem::deleteLater()
 {
   QgsDebugMsg( "path = " + path() );
@@ -1074,8 +1079,7 @@ QVector<QgsDataItem*> QgsFavouritesItem::createChildren()
 
   foreach ( QString favDir, favDirs )
   {
-    QString pathName = favDir;
-    pathName.replace( QRegExp( "[\\\\/]" ), "|" );
+    QString pathName = pathComponent( favDir );
     QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir, mPath + "/" + pathName );
     if ( item )
     {
@@ -1094,7 +1098,10 @@ void QgsFavouritesItem::addDirectory( QString favDir )
   settings.setValue( "/browser/favourites", favDirs );
 
   if ( state() == Populated )
-    addChildItem( new QgsDirectoryItem( this, favDir, favDir ), true );
+  {
+    QString pathName = pathComponent( favDir );
+    addChildItem( new QgsDirectoryItem( this, favDir, favDir, mPath + "/" + pathName ), true );
+  }
 }
 
 void QgsFavouritesItem::removeDirectory( QgsDirectoryItem *item )
