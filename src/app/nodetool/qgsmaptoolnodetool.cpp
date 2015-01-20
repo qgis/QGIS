@@ -395,105 +395,79 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
     Q_ASSERT( vlayer );
 
-    // some feature already selected
-    QgsPoint layerCoordPoint = toLayerCoordinates( vlayer, e->pos() );
+    // try to find a piece of currently selected geometry
+    QgsFeatureIdFilter filterFid( mSelectedFeature->featureId() );
+    QgsPointLocator::Match mSel = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex | QgsPointLocator::Edge, &filterFid );
 
-    double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
-
-    // get geometry and find if snapping is near it
-    int atVertex, beforeVertex, afterVertex;
-    double dist;
-    QgsPoint closestLayerVertex = mSelectedFeature->geometry()->closestVertex( layerCoordPoint, atVertex, beforeVertex, afterVertex, dist );
-    dist = sqrt( dist );
-
-    QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
-    if ( dist <= tol )
+    if ( mSel.hasVertex() )
     {
-      // some vertex selected
+      // mouse pressed on a vertex:
+      // - if clicked on already selected vertex - deselect it
+      // - if clicked on vertex that is not selected - select it
+      // - if clicked with CTRL - invert selection state of the vertex
+      // - if pressed+dragging on already selected vertex - will move selected vertices
+
       mMoving = true;
-      mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
-      if ( mMoving )
+      mClosestMapVertex = mSel.point();
+      int atVertex = mSel.vertexIndex();
+
+      if ( mSelectedFeature->isSelected( atVertex ) )
       {
-        if ( mSelectedFeature->isSelected( atVertex ) )
-        {
-          mDeselectOnRelease = atVertex;
-        }
-        else if ( mCtrl )
-        {
-          mSelectedFeature->invertVertexSelection( atVertex );
-        }
-        else
-        {
-          mSelectedFeature->deselectAllVertexes();
-          mSelectedFeature->selectVertex( atVertex );
-        }
+        mDeselectOnRelease = atVertex;
+      }
+      else if ( mCtrl )
+      {
+        mSelectedFeature->invertVertexSelection( atVertex );
       }
       else
       {
-        // select another feature
-        mAnother = m.featureId();
-        mSelectAnother = true;
+        mSelectedFeature->deselectAllVertexes();
+        mSelectedFeature->selectVertex( atVertex );
       }
+    }
+    else if ( mSel.hasEdge() )
+    {
+      // mouse pressed on an edge:
+      // - if clicked - select just vertices of that edge
+      // - if clicked with CTRL - invert selection state of vertices of the edge
+      // - if pressed+dragging - will move vertices of the edge
+
+      mMoving = true;
+      QgsPoint p1, p2;
+      mSel.edgePoints( p1, p2 );
+      mClosestMapVertex = p1.sqrDist( mSel.point() ) < p2.sqrDist( mSel.point() ) ? p1 : p2;
+
+      if ( !mCtrl )
+      {
+        mSelectedFeature->deselectAllVertexes();
+        mSelectedFeature->selectVertex( mSel.vertexIndex() + 1 );
+        mSelectedFeature->selectVertex( mSel.vertexIndex() );
+      }
+      else
+      {
+        mSelectedFeature->invertVertexSelection( mSel.vertexIndex() + 1 );
+        mSelectedFeature->invertVertexSelection( mSel.vertexIndex() );
+      }
+
     }
     else
     {
-      // no near vertex to snap
-      //  unless point layer, try segment
-      QgsPointLocator::Match m2;
-      QgsFeatureIdFilter filterFid( mSelectedFeature->featureId() );
-      if ( mIsPoint )
-        m2 = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex, &filterFid );
-      else
-        m2 = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Edge, &filterFid );
+      // nothing from the feature is acceptable:
+      // - if clicked - try to select a different feature. if nothing is around, at least deselect all vertices
 
-      if ( m2.isValid() )
+      QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex | QgsPointLocator::Edge );
+      if ( m.isValid() )
       {
-        mAnother = 0;
-        mSelectAnother = false;
-      }
-      else
-      {
+        // if this will be just a click, on release we will select this new feature
         mAnother = m.featureId();
         mSelectAnother = true;
-      }
-
-      if ( !mSelectAnother )
-      {
-        mMoving = true;
-        mClosestMapVertex = toMapCoordinates( vlayer, closestLayerVertex );
-
-        if ( mIsPoint )
-        {
-          if ( !mCtrl )
-          {
-            mSelectedFeature->deselectAllVertexes();
-            mSelectedFeature->selectVertex( m2.vertexIndex() );
-          }
-          else
-          {
-            mSelectedFeature->invertVertexSelection( m2.vertexIndex() );
-          }
-        }
-        else
-        {
-          if ( !mCtrl )
-          {
-            mSelectedFeature->deselectAllVertexes();
-            mSelectedFeature->selectVertex( m2.vertexIndex() + 1 );
-            mSelectedFeature->selectVertex( m2.vertexIndex() );
-          }
-          else
-          {
-            mSelectedFeature->invertVertexSelection( m2.vertexIndex() + 1 );
-            mSelectedFeature->invertVertexSelection( m2.vertexIndex() );
-          }
-        }
       }
       else if ( !mCtrl )
       {
         mSelectedFeature->deselectAllVertexes();
       }
     }
+
   }
 }
 
