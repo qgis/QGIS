@@ -73,7 +73,7 @@ QgsPointLocator* QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer*
     return temporaryLocatorForLayer( vl, pointMap, tolerance );
   else // Hybrid
   {
-    if ( vl->pendingFeatureCount() > 100000 )
+    if ( vl->pendingFeatureCount() > 1000000 )
       return temporaryLocatorForLayer( vl, pointMap, tolerance );
     else
       return locatorForLayer( vl );
@@ -95,6 +95,9 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
 
 static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& pt, const QgsPointLocator::MatchList& segments )
 {
+  if ( segments.isEmpty() )
+    return QgsPointLocator::Match();
+
   QSet<QgsPoint> endpoints;
 
   // make a geometry
@@ -180,7 +183,7 @@ static void _updateBestMatch( QgsPointLocator::Match& bestMatch, const QgsPoint&
   {
     _replaceIfBetter( bestMatch, loc->nearestVertex( pointMap, tolerance, filter ), tolerance );
   }
-  if ( type & QgsPointLocator::Edge )
+  if ( bestMatch.type() != QgsPointLocator::Vertex && ( type & QgsPointLocator::Edge ) )
   {
     _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance );
   }
