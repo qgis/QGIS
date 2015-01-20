@@ -171,4 +171,4 @@ Format a date type or string into a custom string format. Uses Qt data time form
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>format_date('2012-05-15','dd.mm.yyyy') &rarr; 15.05.2012</code><br>
+<code>format_date('2012-05-15','dd.MM.yyyy') &rarr; 15.05.2012</code><br>
