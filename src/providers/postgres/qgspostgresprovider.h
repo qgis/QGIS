@@ -30,6 +30,7 @@ class QgsGeometry;
 
 class QgsPostgresFeatureIterator;
 class QgsPostgresSharedData;
+class QgsPostgresTransaction;
 
 #include "qgsdatasourceuri.h"
 
@@ -275,6 +276,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     QString description() const override;
 
+    /**
+     * Returns the transaction this data provider is included in, if any.
+     */
+    virtual QgsTransaction* transaction() const;
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the
@@ -464,16 +470,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
     QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
 
-    //! establish read-write connection
-    bool connectRW()
-    {
-      if ( mConnectionRW )
-        return mConnectionRW;
-
-      mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo(), false );
-
-      return mConnectionRW;
-    }
+    QgsPostgresConn* connectionRO() const;
+    QgsPostgresConn* connectionRW();
 
     void disconnectDb();
 
@@ -481,6 +479,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
 
     friend class QgsPostgresFeatureSource;
+
+    QgsPostgresTransaction* mTransaction;
+
+    void setTransaction( QgsTransaction* transaction );
 };
 
 

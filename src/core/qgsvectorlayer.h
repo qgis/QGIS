@@ -940,7 +940,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
      */
-    bool deleteSelectedFeatures();
+    bool deleteSelectedFeatures( int *deletedCount = 0 );
 
     /**Adds a ring to polygon/multipolygon features
      @return

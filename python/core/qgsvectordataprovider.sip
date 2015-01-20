@@ -313,6 +313,8 @@ class QgsVectorDataProvider : QgsDataProvider
 
     static QVariant convertValue( QVariant::Type type, QString value );
 
+    virtual QgsTransaction* transaction() const;
+
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();

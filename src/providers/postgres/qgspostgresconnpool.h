@@ -33,7 +33,7 @@ inline void qgsConnectionPool_ConnectionCreate( QString connInfo, QgsPostgresCon
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsPostgresConn* c )
 {
-  c->disconnect(); // will delete itself
+  c->unref(); // will delete itself
 }
 
 

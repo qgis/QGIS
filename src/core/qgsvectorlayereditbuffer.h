@@ -38,33 +38,33 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     ~QgsVectorLayerEditBuffer();
 
     /** Returns true if the provider has been modified since the last commit */
-    bool isModified() const;
+    virtual bool isModified() const;
 
 
     /** Adds a feature
         @param f feature to add
         @return True in case of success and False in case of error
      */
-    bool addFeature( QgsFeature& f );
+    virtual bool addFeature( QgsFeature& f );
 
     /** Insert a copy of the given features into the layer  (but does not commit it) */
-    bool addFeatures( QgsFeatureList& features );
+    virtual bool addFeatures( QgsFeatureList& features );
 
     /** delete a feature from the layer (but does not commit it) */
-    bool deleteFeature( QgsFeatureId fid );
+    virtual bool deleteFeature( QgsFeatureId fid );
 
     /** change feature's geometry */
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
+    virtual bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
     /** changed an attribute value (but does not commit it) */
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
+    virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added */
-    bool addAttribute( const QgsField &field );
+    virtual bool addAttribute( const QgsField &field );
 
     /** delete an attribute field (but does not commit it) */
-    bool deleteAttribute( int attr );
+    virtual bool deleteAttribute( int attr );
 
 
     /**
@@ -82,10 +82,10 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
       Therefore any error message also includes which stage failed so
       that the user has some chance of repairing the damage cleanly.
      */
-    bool commitChanges( QStringList& commitErrors );
+    virtual bool commitChanges( QStringList& commitErrors );
 
     /** Stop editing and discard the edits */
-    void rollBack();
+    virtual void rollBack();
 
 
 
@@ -130,6 +130,8 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void committedGeometriesChanges( const QString& layerId, const QgsGeometryMap& changedGeometries );
 
   protected:
+
+    QgsVectorLayerEditBuffer() {}
 
     void updateFields( QgsFields& fields );
 

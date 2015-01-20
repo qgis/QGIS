@@ -12,6 +12,7 @@
 
 %Include qgis.sip
 
+%Include qgstransaction.sip
 %Include qgsapplication.sip
 %Include qgsattributeaction.sip
 %Include qgsbrowsermodel.sip

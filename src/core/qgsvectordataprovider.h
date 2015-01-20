@@ -34,6 +34,7 @@ typedef QSet<int> QgsAttributeIds;
 typedef QHash<int, QString> QgsAttrPalIndexNameHash;
 
 class QgsFeatureIterator;
+class QgsTransaction;
 
 #include "qgsfeaturerequest.h"
 
@@ -48,6 +49,8 @@ class QgsFeatureIterator;
 class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 {
     Q_OBJECT
+
+    friend class QgsTransaction;
 
   public:
 
@@ -90,6 +93,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       SimplifyGeometries =           1 << 14,
       /** supports topological simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometriesWithTopologicalValidation = 1 << 15,
+      /** supports transactions*/
+      TransactionSupport = 1 << 16
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -359,6 +364,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     static QVariant convertValue( QVariant::Type type, QString value );
 
+    /**
+     * Returns the transaction this data provider is included in, if any.
+     */
+    virtual QgsTransaction* transaction() const { return 0; }
+
   protected:
     void clearMinMaxCache();
     void fillMinMaxCache();
@@ -394,6 +404,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     QStringList mErrors;
 
     static QStringList smEncodings;
+
+    /**
+     * Includes this data provider in the specified transaction. Ownership of transaction is not transferred.
+     */
+    virtual void setTransaction( QgsTransaction* /*transaction*/ ) {}
 
 };
 

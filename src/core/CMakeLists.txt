@@ -155,12 +155,14 @@ SET(QGIS_CORE_SRCS
   qgssnapper.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
+  qgstransaction.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayereditbuffer.cpp
+  qgsvectorlayereditpassthrough.cpp
   qgsvectorlayereditutils.cpp
   qgsvectorlayerfeatureiterator.cpp
   qgsvectorlayerimport.cpp
@@ -190,7 +192,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposermapoverview.cpp
   composer/qgscomposertable.cpp
   composer/qgscomposertablev2.cpp
-  composer/qgscomposertablecolumn.cpp  
+  composer/qgscomposertablecolumn.cpp
   composer/qgscomposerattributetable.cpp
   composer/qgscomposerattributetablev2.cpp
   composer/qgscomposerattributetablemodel.cpp
@@ -213,7 +215,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposermultiframe.cpp
   composer/qgscomposermodel.cpp
   composer/qgscomposition.cpp
-  
+
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
@@ -271,7 +273,7 @@ SET(QGIS_CORE_SRCS
   raster/qgssinglebandgrayrenderer.cpp
   raster/qgssinglebandpseudocolorrenderer.cpp
   raster/qgsbrightnesscontrastfilter.cpp
-  raster/qgshuesaturationfilter.cpp  
+  raster/qgshuesaturationfilter.cpp
 )
 
 IF(ENABLE_MODELTEST)
@@ -364,6 +366,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrelationmanager.h
   qgssnappingutils.h
   qgsvectorlayer.h
+  qgsvectorlayereditpassthrough.h
   qgsvectorlayereditbuffer.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
@@ -382,14 +385,14 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposerobject.h
   composer/qgscomposeritem.h
   composer/qgscomposeritemgroup.h
-  composer/qgscomposermousehandles.h  
+  composer/qgscomposermousehandles.h
   composer/qgscomposerlabel.h
   composer/qgscomposershape.h
   composer/qgscomposerattributetable.h
   composer/qgscomposerattributetablev2.h
   composer/qgscomposerattributetablemodel.h
-  composer/qgscomposerattributetablemodelv2.h    
-  composer/qgscomposertable.h  
+  composer/qgscomposerattributetablemodelv2.h
+  composer/qgscomposertable.h
   composer/qgscomposertablev2.h
   composer/qgscomposertablecolumn.h
   composer/qgscomposerhtml.h
@@ -463,6 +466,8 @@ SET(QGIS_CORE_HDRS
   qgsclipper.h
   qgscolorscheme.h
   qgscolorschemeregistry.h
+  qgsconnectionpool.h
+  qgscontexthelp.h
   qgscoordinatereferencesystem.h
   qgscrscache.h
   qgscsexception.h
@@ -533,6 +538,9 @@ SET(QGIS_CORE_HDRS
   qgssnappingutils.h
   qgsspatialindex.h
   qgstolerance.h
+  qgstransaction.h
+  qgsvectordataprovider.h
+  qgsvectorlayercache.h
   qgsvectorfilewriter.h
   qgsvectorlayereditutils.h
   qgsvectorlayerfeatureiterator.h

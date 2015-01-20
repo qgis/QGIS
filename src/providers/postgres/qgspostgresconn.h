@@ -22,6 +22,7 @@
 #include <QStringList>
 #include <QVector>
 #include <QMap>
+#include <QMutex>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
@@ -168,10 +169,13 @@ class QgsPostgresResult
 
 class QgsPostgresConn : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
   public:
-    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true );
-    void disconnect();
+    static QgsPostgresConn *connectDb( QString connInfo, bool readOnly, bool shared = true, bool transaction = false );
+
+    void ref() { ++mRef; }
+    void unref();
 
     //! get postgis version string
     QString postgisVersion();
@@ -226,6 +230,11 @@ class QgsPostgresConn : public QObject
     PGresult *PQgetResult();
     PGresult *PQprepare( QString stmtName, QString query, int nParams, const Oid *paramTypes );
     PGresult *PQexecPrepared( QString stmtName, const QStringList &params );
+
+    bool begin();
+    bool commit();
+    bool rollback();
+
 
     // cancel running query
     bool cancel();
@@ -304,8 +313,12 @@ class QgsPostgresConn : public QObject
     static bool allowGeometrylessTables( QString theConnName );
     static void deleteConnection( QString theConnName );
 
+    /** A connection needs to be locked when it uses transactions, see QgsPostgresConn::{begin,commit,rollback} */
+    void lock() { mLock.lock(); }
+    void unlock() { mLock.unlock(); }
+
   private:
-    QgsPostgresConn( QString conninfo, bool readOnly, bool shared );
+    QgsPostgresConn( QString conninfo, bool readOnly, bool shared, bool transaction );
     ~QgsPostgresConn();
 
     int mRef;
@@ -370,6 +383,10 @@ class QgsPostgresConn : public QObject
     int mNextCursorId;
 
     bool mShared; //! < whether the connection is shared by more providers (must not be if going to be used in worker threads)
+
+    bool mTransaction;
+
+    QMutex mLock;
 };
 
 

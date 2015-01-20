@@ -23,12 +23,14 @@
 
 class QgsPostgresProvider;
 class QgsPostgresResult;
+class QgsPostgresTransaction;
 
 
 class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     QgsPostgresFeatureSource( const QgsPostgresProvider* p );
+    ~QgsPostgresFeatureSource();
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
@@ -52,6 +54,13 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 
     QSharedPointer<QgsPostgresSharedData> mShared;
 
+    /* The transaction connection (if any) gets refed/unrefed when creating/
+     * destroying the QgsPostfresFeatureSource, to ensure that the transaction
+     * connection remains valid during the life time of the feature source
+     * even if the QgsPostgresTransaction object which initially created the
+     * connection has since been destroyed. */
+    QgsPostgresConn* mTransactionConnection;
+
     friend class QgsPostgresFeatureIterator;
 };
 
@@ -61,7 +70,7 @@ class QgsPostgresConn;
 class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>
 {
   public:
-    QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsPostgresFeatureIterator();
 
@@ -102,6 +111,8 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
+
+    bool mIsTransactionConnection;
 
     static const int sFeatureQueueSize;
 
