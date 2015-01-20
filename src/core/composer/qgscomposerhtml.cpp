@@ -86,7 +86,7 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition* c, bool createUndoCommands )
 }
 
 QgsComposerHtml::QgsComposerHtml()
-    : QgsComposerMultiFrame( 0, false )
+    : QgsComposerMultiFrame()
     , mContentMode( QgsComposerHtml::Url )
     , mWebPage( 0 )
     , mLoaded( false )
