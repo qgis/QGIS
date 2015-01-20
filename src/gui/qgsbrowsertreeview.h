@@ -33,9 +33,9 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     QgsBrowserTreeView( QWidget *parent = 0 );
     ~QgsBrowserTreeView();
 
-    virtual void setModel( QAbstractItemModel* model );
-    virtual void showEvent( QShowEvent * e );
-    virtual void hideEvent( QHideEvent * e );
+    virtual void setModel( QAbstractItemModel* model ) override;
+    virtual void showEvent( QShowEvent * e ) override;
+    virtual void hideEvent( QHideEvent * e ) override;
 
     // returns true if at least one descendat is expanded, used in refresh
     bool hasExpandedDescendant( const QModelIndex& index ) const;
@@ -44,8 +44,8 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
     void setSettingsSection( const QString & section ) { mSettingsSection = section; }
 
   protected slots:
-    virtual void rowsInserted ( const QModelIndex & parentIndex, int start, int end );
-  
+    virtual void rowsInserted( const QModelIndex & parentIndex, int start, int end ) override;
+
   private:
     QString mSettingsSection;
     // initial expanded paths

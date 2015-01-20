@@ -26,15 +26,15 @@ class QgsPostgresTransaction : public QgsTransaction
 {
   public:
     QgsPostgresTransaction( const QString& connString );
-    bool executeSql( const QString& sql, QString& error );
+    bool executeSql( const QString& sql, QString& error ) override;
     QgsPostgresConn* connection() const { return mConn; }
 
   private:
     QgsPostgresConn* mConn;
 
-    bool beginTransaction( QString& error, int statementTimeout );
-    bool commitTransaction( QString& error );
-    bool rollbackTransaction( QString& error );
+    bool beginTransaction( QString& error, int statementTimeout ) override;
+    bool commitTransaction( QString& error ) override;
+    bool rollbackTransaction( QString& error ) override;
 
 };
 

@@ -279,7 +279,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Returns the transaction this data provider is included in, if any.
      */
-    virtual QgsTransaction* transaction() const;
+    virtual QgsTransaction* transaction() const override;
 
   signals:
     /**
@@ -482,7 +482,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsPostgresTransaction* mTransaction;
 
-    void setTransaction( QgsTransaction* transaction );
+    void setTransaction( QgsTransaction* transaction ) override;
 };
 
 

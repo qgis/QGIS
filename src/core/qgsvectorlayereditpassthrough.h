@@ -24,16 +24,16 @@ class CORE_EXPORT QgsVectorLayerEditPassthrough : public QgsVectorLayerEditBuffe
     Q_OBJECT
   public:
     QgsVectorLayerEditPassthrough( QgsVectorLayer* layer ) { L = layer; }
-    bool isModified() const { return false; }
-    bool addFeature( QgsFeature& f );
-    bool addFeatures( QgsFeatureList& features );
-    bool deleteFeature( QgsFeatureId fid );
-    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
-    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
-    bool addAttribute( const QgsField &field );
-    bool deleteAttribute( int attr );
-    bool commitChanges( QStringList& commitErrors );
-    void rollBack();
+    bool isModified() const override { return false; }
+    bool addFeature( QgsFeature& f ) override;
+    bool addFeatures( QgsFeatureList& features ) override;
+    bool deleteFeature( QgsFeatureId fid ) override;
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom ) override;
+    bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() ) override;
+    bool addAttribute( const QgsField &field ) override;
+    bool deleteAttribute( int attr ) override;
+    bool commitChanges( QStringList& commitErrors ) override;
+    void rollBack() override;
 
 };
 

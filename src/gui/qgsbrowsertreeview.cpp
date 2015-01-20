@@ -23,7 +23,7 @@
 
 QgsBrowserTreeView::QgsBrowserTreeView( QWidget *parent )
     : QTreeView( parent )
-  ,mSettingsSection("browser")
+    , mSettingsSection( "browser" )
 {
 }
 
@@ -42,17 +42,17 @@ void QgsBrowserTreeView::setModel( QAbstractItemModel* model )
 
 void QgsBrowserTreeView::showEvent( QShowEvent * e )
 {
-  Q_UNUSED(e);
+  Q_UNUSED( e );
   QgsDebugMsg( "Entered" );
   if ( model() )
     restoreState();
-  QTreeView::showEvent(e);
+  QTreeView::showEvent( e );
 }
 
 // closeEvent is not called when application is closed
 void QgsBrowserTreeView::hideEvent( QHideEvent * e )
 {
-  Q_UNUSED(e);
+  Q_UNUSED( e );
   QgsDebugMsg( "Entered" );
   // hideEvent() may be called (Mac) before showEvent
   if ( model() )
@@ -74,7 +74,7 @@ void QgsBrowserTreeView::restoreState()
   QgsDebugMsg( "Entered" );
   QSettings settings;
   mExpandPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
-  
+
   QgsDebugMsg( "mExpandPaths = " + mExpandPaths.join( " " ) );
   if ( !mExpandPaths.isEmpty() )
   {
@@ -85,20 +85,22 @@ void QgsBrowserTreeView::restoreState()
       if ( expandIndex.isValid() )
         expandIndexSet.insert( expandIndex );
       else
-        QgsDebugMsg( "index for path " + path + " not found");
-    }   
+      {
+        QgsDebugMsg( "index for path " + path + " not found" );
+      }
+    }
     foreach ( QModelIndex expandIndex, expandIndexSet )
     {
       expandTree( expandIndex );
-    } 
-  } 
+    }
+  }
   else
   {
     // expand root favourites item
     QModelIndex index = QgsBrowserModel::findPath( model(), "favourites:" );
     expand( index );
-  } 
-} 
+  }
+}
 
 void QgsBrowserTreeView::expandTree( const QModelIndex & index )
 {
@@ -116,7 +118,7 @@ void QgsBrowserTreeView::expandTree( const QModelIndex & index )
 
 bool QgsBrowserTreeView::treeExpanded( const QModelIndex & index )
 {
-  if( !model() )
+  if ( !model() )
     return false;
   if ( !isExpanded( index ) )
     return false;
@@ -129,7 +131,7 @@ bool QgsBrowserTreeView::treeExpanded( const QModelIndex & index )
 
 bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex& index ) const
 {
-  if (!model())
+  if ( !model() )
     return false;
 
   for ( int i = 0 ; i < model()->rowCount( index ); i++ )
@@ -145,9 +147,9 @@ bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex& index ) const
 }
 
 // rowsInserted signal is used to continue in state restoring
-void QgsBrowserTreeView::rowsInserted ( const QModelIndex & parentIndex, int start, int end )
+void QgsBrowserTreeView::rowsInserted( const QModelIndex & parentIndex, int start, int end )
 {
-  QTreeView::rowsInserted ( parentIndex, start, end );
+  QTreeView::rowsInserted( parentIndex, start, end );
 
   if ( !model() )
     return;
@@ -155,7 +157,7 @@ void QgsBrowserTreeView::rowsInserted ( const QModelIndex & parentIndex, int sta
   if ( mExpandPaths.isEmpty() )
     return;
 
-  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join(","), 2 );
+  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( "," ), 2 );
 
   QString parentPath = model()->data( parentIndex, QgsBrowserModel::PathRole ).toString();
   QgsDebugMsgLevel( "parentPath = " + parentPath, 2 );
@@ -179,7 +181,7 @@ void QgsBrowserTreeView::rowsInserted ( const QModelIndex & parentIndex, int sta
     QModelIndex childIndex = model()->index( i, 0, parentIndex );
     QString childPath = model()->data( childIndex, QgsBrowserModel::PathRole ).toString();
 
-    if( mExpandPaths.contains(childPath) || mExpandPaths.indexOf ( QRegExp ( "^" + childPath + "/.*" ) ) != -1 )
+    if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + childPath + "/.*" ) ) != -1 )
     {
       expand( childIndex );
     }
@@ -194,10 +196,10 @@ QString QgsBrowserTreeView::expandedPathsKey() const
 QStringList QgsBrowserTreeView::expandedPathsList( const QModelIndex & index )
 {
   QStringList paths;
-  
+
   if ( !model() )
-    return paths; 
-    
+    return paths;
+
   for ( int i = 0; i < model()->rowCount( index ); i++ )
   {
     QModelIndex childIndex = model()->index( i, 0, index );
@@ -207,12 +209,12 @@ QStringList QgsBrowserTreeView::expandedPathsList( const QModelIndex & index )
       if ( !childrenPaths.isEmpty() )
       {
         paths.append( childrenPaths );
-      } 
+      }
       else
       {
         paths.append( model()->data( childIndex, QgsBrowserModel::PathRole ).toString() );
-      } 
-    } 
-  } 
+      }
+    }
+  }
   return paths;
-} 
+}

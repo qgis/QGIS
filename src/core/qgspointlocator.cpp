@@ -62,11 +62,11 @@ class QgsPointLocator_Stream : public IDataStream
     QgsPointLocator_Stream( const QLinkedList<RTree::Data*>& dataList ) : mDataList( dataList ), mIt( mDataList ) { }
     ~QgsPointLocator_Stream() { }
 
-    virtual IData* getNext() { return mIt.next(); }
-    virtual bool hasNext() { return mIt.hasNext(); }
+    virtual IData* getNext() override { return mIt.next(); }
+    virtual bool hasNext() override { return mIt.hasNext(); }
 
-    virtual uint32_t size() { Q_ASSERT( 0 && "not available" ); return 0; }
-    virtual void rewind() { Q_ASSERT( 0 && "not available" ); }
+    virtual uint32_t size() override { Q_ASSERT( 0 && "not available" ); return 0; }
+    virtual void rewind() override { Q_ASSERT( 0 && "not available" ); }
 
   private:
     QLinkedList<RTree::Data*> mDataList;
@@ -84,10 +84,10 @@ class QgsPointLocator_VisitorNearestVertex : public IVisitor
     QgsPointLocator_VisitorNearestVertex( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = 0 )
         : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
 
-    void visitNode( const INode& n ) { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
+    void visitNode( const INode& n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
 
-    void visitData( const IData& d )
+    void visitData( const IData& d ) override
     {
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry* geom = mLocator->mGeoms.value( id );
@@ -122,10 +122,10 @@ class QgsPointLocator_VisitorNearestEdge : public IVisitor
     QgsPointLocator_VisitorNearestEdge( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = 0 )
         : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
 
-    void visitNode( const INode& n ) { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
+    void visitNode( const INode& n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
 
-    void visitData( const IData& d )
+    void visitData( const IData& d ) override
     {
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry* geom = mLocator->mGeoms.value( id );
@@ -168,10 +168,10 @@ class QgsPointLocator_VisitorArea : public IVisitor
 
     ~QgsPointLocator_VisitorArea() { delete mGeomPt; }
 
-    void visitNode( const INode& n ) { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
+    void visitNode( const INode& n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
 
-    void visitData( const IData& d )
+    void visitData( const IData& d ) override
     {
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry* g = mLocator->mGeoms.value( id );
@@ -488,10 +488,10 @@ class QgsPointLocator_VisitorEdgesInRect : public IVisitor
     QgsPointLocator_VisitorEdgesInRect( QgsPointLocator* pl, QgsPointLocator::MatchList& lst, const QgsRectangle& srcRect, QgsPointLocator::MatchFilter* filter = 0 )
         : mLocator( pl ), mList( lst ), mSrcRect( srcRect ), mFilter( filter ) {}
 
-    void visitNode( const INode& n ) { Q_UNUSED( n ); }
-    void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
+    void visitNode( const INode& n ) override { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData*>& v ) override { Q_UNUSED( v ); }
 
-    void visitData( const IData& d )
+    void visitData( const IData& d ) override
     {
       QgsFeatureId id = d.getIdentifier();
       QgsGeometry* geom = mLocator->mGeoms.value( id );
@@ -526,7 +526,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
   public:
 
-    void getNextEntry( const IEntry& entry, id_type& nextEntry, bool& hasNext )
+    void getNextEntry( const IEntry& entry, id_type& nextEntry, bool& hasNext ) override
     {
       const INode* n = dynamic_cast<const INode*>( &entry );
       qDebug( "NODE: %ld", n->getIdentifier() );

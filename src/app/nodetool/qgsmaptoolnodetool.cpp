@@ -34,7 +34,7 @@
 struct QgsExcludePointFilter : public QgsPointLocator::MatchFilter
 {
   QgsExcludePointFilter( const QgsPoint& exclPoint ) : mExclPoint( exclPoint ) {}
-  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.point() != mExclPoint; }
+  bool acceptMatch( const QgsPointLocator::Match& match ) override { return match.point() != mExclPoint; }
   QgsPoint mExclPoint;
 };
 
@@ -42,7 +42,7 @@ struct QgsExcludePointFilter : public QgsPointLocator::MatchFilter
 struct QgsFeatureIdFilter : public QgsPointLocator::MatchFilter
 {
   QgsFeatureIdFilter( const QgsFeatureId& fid ) : mFid( fid ) {}
-  bool acceptMatch( const QgsPointLocator::Match& match ) { return match.featureId() == mFid; }
+  bool acceptMatch( const QgsPointLocator::Match& match ) override { return match.featureId() == mFid; }
   QgsFeatureId mFid;
 };
 
@@ -394,6 +394,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 
     QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
     Q_ASSERT( vlayer );
+    Q_UNUSED( vlayer );
 
     // try to find a piece of currently selected geometry
     QgsFeatureIdFilter filterFid( mSelectedFeature->featureId() );
