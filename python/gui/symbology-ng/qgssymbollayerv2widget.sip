@@ -42,8 +42,8 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mPenWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mDashPatternUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mDrawInsideCheckBox_stateChanged( int state );
+    void updateDataDefinedProperty();
 
   protected:
     //creates a new icon for the 'change pattern' button
@@ -77,11 +77,11 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mOutlineWidthUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mOutlineStyleComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void updateDataDefinedProperty();
 };
 
 ///////////
@@ -110,7 +110,7 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void offsetChanged();
     void on_mBorderWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
+    void updateDataDefinedProperty();
 };
 
 
@@ -141,9 +141,9 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void offsetChanged();
     void referencePointChanged();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void colorModeChanged();
     void on_mSpinAngle_valueChanged( double value );
+    void updateDataDefinedProperty();
 };
 
 ///////////
@@ -174,8 +174,8 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mButtonEditRamp_clicked();
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mIgnoreRingsCheckBox_stateChanged( int state );
+    void updateDataDefinedProperty();
 };
 
 ///////////
@@ -204,8 +204,7 @@ class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mIntervalUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mOffsetAlongLineUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
-
+    void updateDataDefinedProperty();
 };
 
 
@@ -241,9 +240,9 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
     void on_mSizeUnitWidget_changed();
     void on_mBorderWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void updateDataDefinedProperty();
 
 
   protected:

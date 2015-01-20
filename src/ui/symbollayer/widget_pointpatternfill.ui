@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>457</width>
+    <width>497</width>
     <height>271</height>
    </rect>
   </property>
@@ -52,13 +52,27 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHorizontalDistanceUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mHorizontalDistanceDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mHorizontalDistanceUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -88,8 +102,15 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mVerticalDistanceDDBtn">
+       <property name="text">
+        <string>...</string>
        </property>
       </widget>
      </item>
@@ -124,13 +145,27 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHorizontalDisplacementUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mHorizontalDisplacementDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mHorizontalDisplacementUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -160,28 +195,29 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mVerticalDisplacementUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mVerticalDisplacementDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mVerticalDisplacementUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
@@ -196,6 +232,11 @@
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

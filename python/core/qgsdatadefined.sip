@@ -22,6 +22,14 @@ class QgsDataDefined
                     const QString& expr = QString(),
                     const QString& field = QString() );
 
+    /**
+     * Construct a new data defined object, analyse the expression to determine 
+     * if it's a simple field
+     *
+     * @param expression can be null
+     */
+    QgsDataDefined( const QgsExpression * expression );
+
     ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default

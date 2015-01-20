@@ -18,10 +18,11 @@
 #define QGSSYMBOLLAYERV2WIDGET_H
 
 #include <QWidget>
+#include <QMap>
 
 class QgsSymbolLayerV2;
 class QgsVectorLayer;
-
+class QgsDataDefinedButton;
 
 class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 {
@@ -36,6 +37,8 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
   protected:
     const QgsVectorLayer* mVectorLayer;
+    QMap< QString, QgsDataDefinedButton* > mDataDefinedPropertyButtons; // indexed by property name
+
     /** Get label for data defined entry.
      * Implemented only for 'size' of marker symbols
      * @note added in 2.1
@@ -75,8 +78,8 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void on_mPenWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mDashPatternUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mDrawInsideCheckBox_stateChanged( int state );
+    void updateDataDefinedProperty();
 
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;
@@ -114,11 +117,11 @@ class GUI_EXPORT QgsSimpleMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void on_mSizeUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mOutlineWidthUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mOutlineStyleComboBox_currentIndexChanged( int index );
     void on_mOutlineWidthSpinBox_valueChanged( double d );
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void updateDataDefinedProperty();
 
   protected:
     QgsSimpleMarkerSymbolLayerV2* mLayer;
@@ -152,7 +155,7 @@ class GUI_EXPORT QgsSimpleFillSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void offsetChanged();
     void on_mBorderWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
+    void updateDataDefinedProperty();
 
   protected:
     QgsSimpleFillSymbolLayerV2* mLayer;
@@ -189,9 +192,9 @@ class GUI_EXPORT QgsGradientFillSymbolLayerV2Widget : public QgsSymbolLayerV2Wid
     void offsetChanged();
     void referencePointChanged();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void colorModeChanged();
     void on_mSpinAngle_valueChanged( double value );
+    void updateDataDefinedProperty();
 
   protected:
     QgsGradientFillSymbolLayerV2* mLayer;
@@ -228,8 +231,8 @@ class GUI_EXPORT QgsShapeburstFillSymbolLayerV2Widget : public QgsSymbolLayerV2W
     void on_mButtonEditRamp_clicked();
     void offsetChanged();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mIgnoreRingsCheckBox_stateChanged( int state );
+    void updateDataDefinedProperty();
 
   protected:
     QgsShapeburstFillSymbolLayerV2* mLayer;
@@ -264,7 +267,7 @@ class GUI_EXPORT QgsMarkerLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void on_mIntervalUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
     void on_mOffsetAlongLineUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
+    void updateDataDefinedProperty();
 
   protected:
 
@@ -306,9 +309,9 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void on_mSizeUnitWidget_changed();
     void on_mBorderWidthUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
+    void updateDataDefinedProperty();
 
 
   protected:
@@ -352,7 +355,7 @@ class GUI_EXPORT QgsRasterFillSymbolLayerWidget : public QgsSymbolLayerV2Widget,
     void on_mRotationSpinBox_valueChanged( double d );
     void on_mWidthUnitWidget_changed();
     void on_mWidthSpinBox_valueChanged( double d );
-    void on_mDataDefinedPropertiesButton_clicked();
+    void updateDataDefinedProperty();
 
   private:
     void updatePreviewImage();
@@ -400,7 +403,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mBorderWidthSpinBox_valueChanged( double d );
     void on_mTextureWidthUnitWidget_changed();
     void on_mSvgOutlineWidthUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
+    void updateDataDefinedProperty();
 };
 
 //////////
@@ -430,7 +433,7 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
     void on_mOffsetSpinBox_valueChanged( double d );
     void on_mDistanceUnitWidget_changed();
     void on_mOffsetUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
+    void updateDataDefinedProperty();
 };
 
 //////////
@@ -462,7 +465,7 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
     void on_mVerticalDistanceUnitWidget_changed();
     void on_mHorizontalDisplacementUnitWidget_changed();
     void on_mVerticalDisplacementUnitWidget_changed();
-    void on_mDataDefinedPropertiesButton_clicked();
+    void updateDataDefinedProperty();
 };
 
 /////////
