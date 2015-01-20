@@ -34,6 +34,20 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
   QgsPoint mPoint;
 };
 
+struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
+{
+  FilterExcludeEdge( const QgsPoint& p1, const QgsPoint& p2 ) : mP1( p1 ), mP2( p2 ) {}
+
+  bool acceptMatch( const QgsPointLocator::Match& match )
+  {
+    QgsPoint p1, p2;
+    match.edgePoints( p1, p2 );
+    return !( p1 == mP1 && p2 == mP2 ) && !( p1 == mP2 && p2 == mP1 );
+  }
+
+  QgsPoint mP1, mP2;
+};
+
 
 class TestQgsPointLocator : public QObject
 {
@@ -79,7 +93,7 @@ class TestQgsPointLocator : public QObject
     {
       QgsPointLocator loc( mVL );
       QgsPoint pt( 2, 2 );
-      QgsPointLocator::Match m = loc.nearestVertex( pt );
+      QgsPointLocator::Match m = loc.nearestVertex( pt, 999 );
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
       QCOMPARE( m.layer(), mVL );
@@ -93,7 +107,7 @@ class TestQgsPointLocator : public QObject
     {
       QgsPointLocator loc( mVL );
       QgsPoint pt( 1.1, 0.5 );
-      QgsPointLocator::Match m = loc.nearestEdge( pt );
+      QgsPointLocator::Match m = loc.nearestEdge( pt, 999 );
       QVERIFY( m.isValid() );
       QVERIFY( m.hasEdge() );
       QCOMPARE( m.layer(), mVL );
@@ -122,10 +136,11 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( mInvalid.count(), 0 );
     }
 
-    void testVerticesInTolerance()
+#if 0 // verticesInRect() not implemented
+    void testVerticesInRect()
     {
       QgsPointLocator loc( mVL );
-      QgsPointLocator::MatchList lst = loc.verticesInTolerance( QgsPoint( 1, 0 ), 2 );
+      QgsPointLocator::MatchList lst = loc.verticesInRect( QgsPoint( 1, 0 ), 2 );
       QCOMPARE( lst.count(), 4 );
       QCOMPARE( lst[0].point(), QgsPoint( 1, 0 ) );
       QCOMPARE( lst[0].distance(), 0. );
@@ -134,36 +149,30 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( lst[2].point(), QgsPoint( 0, 1 ) );
       QCOMPARE( lst[2].distance(), sqrt( 2 ) );
 
-      QgsPointLocator::MatchList lst2 = loc.verticesInTolerance( QgsPoint( 1, 0 ), 1 );
+      QgsPointLocator::MatchList lst2 = loc.verticesInRect( QgsPoint( 1, 0 ), 1 );
       QCOMPARE( lst2.count(), 2 );
 
       // test match filtering
       FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
-      QgsPointLocator::MatchList lst3 = loc.verticesInTolerance( QgsPoint( 1, 0 ), 1, &myFilter );
+      QgsPointLocator::MatchList lst3 = loc.verticesInRect( QgsPoint( 1, 0 ), 1, &myFilter );
       QCOMPARE( lst3.count(), 1 );
       QCOMPARE( lst3[0].point(), QgsPoint( 1, 1 ) );
     }
+#endif
 
     void testEdgesInTolerance()
     {
       QgsPointLocator loc( mVL );
-      QgsPointLocator::MatchList lst = loc.edgesInTolerance( QgsPoint( 0, 0 ), 2 );
+      QgsPointLocator::MatchList lst = loc.edgesInRect( QgsPoint( 0, 0 ), 2 );
       QCOMPARE( lst.count(), 3 );
-      QCOMPARE( lst[0].point(), QgsPoint( 0.5, 0.5 ) );
-      QCOMPARE( lst[0].distance(), sqrt( 2 ) / 2 );
-      QVERIFY( lst[1].point() == QgsPoint( 0, 1 ) || lst[1].point() == QgsPoint( 1, 0 ) );
-      QCOMPARE( lst[1].distance(), 1. );
-      QVERIFY( lst[2].point() == QgsPoint( 0, 1 ) || lst[2].point() == QgsPoint( 1, 0 ) );
-      QCOMPARE( lst[2].distance(), 1. );
 
-      QgsPointLocator::MatchList lst2 = loc.edgesInTolerance( QgsPoint( 0, 0 ), 0.9 );
+      QgsPointLocator::MatchList lst2 = loc.edgesInRect( QgsPoint( 0, 0 ), 0.9 );
       QCOMPARE( lst2.count(), 1 );
 
       // test match filtering
-      FilterExcludePoint myFilter( QgsPoint( 0.5, 0.5 ) );
-      QgsPointLocator::MatchList lst3 = loc.edgesInTolerance( QgsPoint( 0, 0 ), 2, &myFilter );
+      FilterExcludeEdge myFilter( QgsPoint( 1, 0 ), QgsPoint( 0, 1 ) );
+      QgsPointLocator::MatchList lst3 = loc.edgesInRect( QgsPoint( 0, 0 ), 2, &myFilter );
       QCOMPARE( lst3.count(), 2 );
-      QVERIFY( lst3[0].point() == QgsPoint( 0, 1 ) || lst3[0].point() == QgsPoint( 1, 0 ) );
     }
 
 
@@ -172,7 +181,7 @@ class TestQgsPointLocator : public QObject
 
       QgsPointLocator loc( mVL );
 
-      QgsPointLocator::Match mAddV0 = loc.nearestVertex( QgsPoint( 12, 12 ) );
+      QgsPointLocator::Match mAddV0 = loc.nearestVertex( QgsPoint( 12, 12 ), 999 );
       QVERIFY( mAddV0.isValid() );
       QCOMPARE( mAddV0.point(), QgsPoint( 1, 1 ) );
 
@@ -191,10 +200,10 @@ class TestQgsPointLocator : public QObject
       QVERIFY( resA );
 
       // verify it is added in the point locator
-      QgsPointLocator::Match mAddV = loc.nearestVertex( QgsPoint( 12, 12 ) );
+      QgsPointLocator::Match mAddV = loc.nearestVertex( QgsPoint( 12, 12 ), 999 );
       QVERIFY( mAddV.isValid() );
       QCOMPARE( mAddV.point(), QgsPoint( 11, 11 ) );
-      QgsPointLocator::Match mAddE = loc.nearestEdge( QgsPoint( 11.1, 10.5 ) );
+      QgsPointLocator::Match mAddE = loc.nearestEdge( QgsPoint( 11.1, 10.5 ), 999 );
       QVERIFY( mAddE.isValid() );
       QCOMPARE( mAddE.point(), QgsPoint( 11, 10.5 ) );
       QgsPointLocator::MatchList mAddA = loc.pointInPolygon( QgsPoint( 10.8, 10.8 ) );
@@ -207,10 +216,10 @@ class TestQgsPointLocator : public QObject
       delete newGeom;
 
       // verify it is changed in the point locator
-      QgsPointLocator::Match mChV = loc.nearestVertex( QgsPoint( 12, 12 ) );
+      QgsPointLocator::Match mChV = loc.nearestVertex( QgsPoint( 12, 12 ), 999 );
       QVERIFY( mChV.isValid() );
       QVERIFY( mChV.point() != QgsPoint( 11, 11 ) ); // that point does not exist anymore
-      mChV = loc.nearestVertex( QgsPoint( 9, 9 ) );
+      mChV = loc.nearestVertex( QgsPoint( 9, 9 ), 999 );
       QVERIFY( mChV.isValid() );
       QVERIFY( mChV.point() == QgsPoint( 10, 10 ) ); // updated point
 
@@ -219,7 +228,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( resD );
 
       // verify it is deleted from the point locator
-      QgsPointLocator::Match mDelV = loc.nearestVertex( QgsPoint( 12, 12 ) );
+      QgsPointLocator::Match mDelV = loc.nearestVertex( QgsPoint( 12, 12 ), 999 );
       QVERIFY( mDelV.isValid() );
       QCOMPARE( mDelV.point(), QgsPoint( 1, 1 ) );
 
@@ -231,13 +240,13 @@ class TestQgsPointLocator : public QObject
       QgsRectangle bbox1( 10, 10, 11, 11 ); // out of layer's bounds
       QgsPointLocator loc1( mVL, 0 , &bbox1 );
 
-      QgsPointLocator::Match m1 = loc1.nearestVertex( QgsPoint( 2, 2 ) );
+      QgsPointLocator::Match m1 = loc1.nearestVertex( QgsPoint( 2, 2 ), 999 );
       QVERIFY( !m1.isValid() );
 
       QgsRectangle bbox2( 0, 0, 1, 1 ); // in layer's bounds
       QgsPointLocator loc2( mVL, 0 , &bbox2 );
 
-      QgsPointLocator::Match m2 = loc2.nearestVertex( QgsPoint( 2, 2 ) );
+      QgsPointLocator::Match m2 = loc2.nearestVertex( QgsPoint( 2, 2 ), 999 );
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.point(), QgsPoint( 1, 1 ) );
     }

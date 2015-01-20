@@ -26,10 +26,14 @@ class QgsVectorLayer;
 
 #include <spatialindex/SpatialIndex.h>
 
-typedef struct GEOSGeom_t GEOSGeometry;
 
 class QgsCoordinateTransform;
 class QgsCoordinateReferenceSystem;
+
+class QgsPointLocator_VisitorNearestVertex;
+class QgsPointLocator_VisitorNearestEdge;
+class QgsPointLocator_VisitorArea;
+class QgsPointLocator_VisitorEdgesInRect;
 
 /**
  * @brief The class defines interface for querying point location:
@@ -55,13 +59,8 @@ class QgsPointLocator : public QObject
 
     enum Type { Invalid = 0, Vertex = 1, Edge = 2, Area = 4, All = Vertex | Edge | Area };
 
-    /** Prepare the indexes for given or-ed combination of query types (Vertex, Edge, Area).
-     *  If not initialized explicitly, index of particular type will be inited when first such query is issued.
-     */
-    void init( int types = All, bool force = false );
-
-    //! check whether index for given query type exists
-    bool hasIndex( Type t ) const;
+    /** Prepare the index for queries. Does nothing if the index already exists */
+    void init();
 
     struct Match
     {
@@ -101,23 +100,6 @@ class QgsPointLocator : public QObject
 
       QgsFeatureId featureId() const { return mFid; }
 
-      void replaceIfBetter( const Match& m, double maxDistance )
-      {
-        // is other match relevant?
-        if ( !m.isValid() || m.mDist > maxDistance )
-          return;
-
-        // is other match actually better?
-        if ( isValid() && mDist - 10e-6 < m.mDist )
-          return;
-
-        // prefer vertex matches to edge matches (even if they are closer)
-        if ( type() == Vertex && m.type() == Edge )
-          return;
-
-        *this = m; // the other match is better!
-      }
-
       //! Only for a valid edge match - obtain endpoints of the edge
       void edgePoints( QgsPoint& pt1, QgsPoint& pt2 ) const
       {
@@ -145,49 +127,19 @@ class QgsPointLocator : public QObject
       virtual bool acceptMatch( const Match& match ) = 0;
     };
 
-    // 1-NN queries
-
-    //! find nearest vertex to the specified point
-    inline Match nearestVertex( const QgsPoint& point )
-    {
-      MatchList lst = nearestVertices( point, 1 );
-      return lst.count() ? lst[0] : Match();
-    }
-
-    //! find nearest edge to the specified point
-    inline Match nearestEdge( const QgsPoint& point )
-    {
-      MatchList lst = nearestEdges( point, 1 );
-      return lst.count() ? lst[0] : Match();
-    }
-
-    // k-NN queries
-
-    //! find nearest vertices to the specified point - sorted by distance
-    //! will return up to maxMatches matches
-    MatchList nearestVertices( const QgsPoint& point, int maxMatches );
-    //! find nearest edges to the specified point - sorted by distance
-    MatchList nearestEdges( const QgsPoint& point, int maxMatches );
-
     // intersection queries
 
-    //! Find nearest vertices to the specified point - sorted by distance.
-    //! Will return matches up to distance given by tolerance.
+    //! Find nearest vertex to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    MatchList verticesInTolerance( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
-    //! Find nearest edges to the specified point - sorted by distance.
-    //! Will return matches up to distance given by tolerance.
+    Match nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    //! Find nearest edges to the specified point - up to distance specified by tolerance
     //! Optional filter may discard unwanted matches.
-    MatchList edgesInTolerance( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
-
-    //! Find vertices within given rectangle.
-    //! If distToPoint is given, the matches will be sorted by distance to that point.
+    Match nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
+    //! Find edges within a specified recangle
     //! Optional filter may discard unwanted matches.
-    MatchList verticesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0, MatchFilter* filter = 0 );
-    //! Find edges within given rectangle.
-    //! If distToPoint is given, the matches will be sorted by distance to that point.
-    //! Optional filter may discard unwanted matches.
-    MatchList edgesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint = 0, MatchFilter* filter = 0 );
+    MatchList edgesInRect( const QgsRectangle& rect, MatchFilter* filter = 0 );
+    //! Override of edgesInRect that construct rectangle from a center point and tolerance
+    MatchList edgesInRect( const QgsPoint& point, double tolerance, MatchFilter* filter = 0 );
 
     // point-in-polygon query
 
@@ -197,8 +149,8 @@ class QgsPointLocator : public QObject
 
 
   protected:
-    void rebuildIndex( int types );
-    void destroyIndex( int types );
+    void rebuildIndex();
+    void destroyIndex();
 
   private slots:
     void onFeatureAdded( QgsFeatureId fid );
@@ -209,15 +161,18 @@ class QgsPointLocator : public QObject
     /** storage manager */
     SpatialIndex::IStorageManager* mStorage;
 
+    QHash<QgsFeatureId, QgsGeometry*> mGeoms;
+    SpatialIndex::ISpatialIndex* mRTree;
+
     /** R-tree containing spatial index */
-    SpatialIndex::ISpatialIndex* mRTreeVertex;
-    SpatialIndex::ISpatialIndex* mRTreeEdge;
-    SpatialIndex::ISpatialIndex* mRTreeArea;
-    QList<GEOSGeometry*> mAreaGeomList; // owns the geometries - only for area R-tree
     QgsCoordinateTransform* mTransform;
-    int mQueryTypes;
     QgsVectorLayer* mLayer;
     QgsRectangle* mExtent;
+
+    friend class QgsPointLocator_VisitorNearestVertex;
+    friend class QgsPointLocator_VisitorNearestEdge;
+    friend class QgsPointLocator_VisitorArea;
+    friend class QgsPointLocator_VisitorEdgesInRect;
 };
 
 

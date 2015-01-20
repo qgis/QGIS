@@ -156,36 +156,35 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPoint& p
 }
 
 
+static void _replaceIfBetter( QgsPointLocator::Match& mBest, const QgsPointLocator::Match& mNew, double maxDistance )
+{
+  // is other match relevant?
+  if ( !mNew.isValid() || mNew.distance() > maxDistance )
+    return;
+
+  // is other match actually better?
+  if ( mBest.isValid() && mBest.type() == mNew.type() && mBest.distance() - 10e-6 < mNew.distance() )
+    return;
+
+  // prefer vertex matches to edge matches (even if they are closer)
+  if ( mBest.type() == QgsPointLocator::Vertex && mNew.type() == QgsPointLocator::Edge )
+    return;
+
+  mBest = mNew; // the other match is better!
+}
+
+
 static void _updateBestMatch( QgsPointLocator::Match& bestMatch, const QgsPoint& pointMap, QgsPointLocator* loc, int type, double tolerance, QgsPointLocator::MatchFilter* filter )
 {
-  // when filter is used we can't use just the closest match (NN queries do not support filters)
-  // TODO: could be optimized with a new call nearestVertexInTolerance() / nearestEdgeInTolerance()
-  //       so that we do not waste time gathering matches that are not needed
-
   if ( type & QgsPointLocator::Vertex )
   {
-    if ( filter )
-    {
-      QgsPointLocator::MatchList lst = loc->verticesInTolerance( pointMap, tolerance, filter );
-      if ( !lst.isEmpty() )
-        bestMatch.replaceIfBetter( lst.first(), tolerance );
-    }
-    else
-      bestMatch.replaceIfBetter( loc->nearestVertex( pointMap ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestVertex( pointMap, tolerance, filter ), tolerance );
   }
   if ( type & QgsPointLocator::Edge )
   {
-    if ( filter )
-    {
-      QgsPointLocator::MatchList lst = loc->edgesInTolerance( pointMap, tolerance, filter );
-      if ( !lst.isEmpty() )
-        bestMatch.replaceIfBetter( lst.first(), tolerance );
-    }
-    else
-      bestMatch.replaceIfBetter( loc->nearestEdge( pointMap ), tolerance );
+    _replaceIfBetter( bestMatch, loc->nearestEdge( pointMap, tolerance, filter ), tolerance );
   }
 }
-
 
 
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point, QgsPointLocator::MatchFilter* filter )
@@ -210,7 +209,6 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     QgsPointLocator* loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
     if ( !loc )
       return QgsPointLocator::Match();
-    loc->init( QgsPointLocator::Vertex | QgsPointLocator::Edge );
 
     QgsPointLocator::Match bestMatch;
     _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
@@ -218,8 +216,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     if ( mSnapOnIntersection )
     {
       QgsPointLocator* locEdges = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
-      QgsPointLocator::MatchList edges = locEdges->edgesInTolerance( pointMap, tolerance );
-      bestMatch.replaceIfBetter( _findClosestSegmentIntersection( pointMap, edges ), tolerance );
+      QgsPointLocator::MatchList edges = locEdges->edgesInRect( pointMap, tolerance );
+      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), tolerance );
     }
 
     return bestMatch;
@@ -235,20 +233,18 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
       double tolerance = QgsTolerance::toleranceInMapUnits( layerConfig.tolerance, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator* loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
       {
-        loc->init( layerConfig.type );
-
         _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter );
 
         if ( mSnapOnIntersection )
         {
-          edges << loc->edgesInTolerance( pointMap, tolerance );
+          edges << loc->edgesInRect( pointMap, tolerance );
           maxSnapIntTolerance = qMax( maxSnapIntTolerance, tolerance );
         }
       }
     }
 
     if ( mSnapOnIntersection )
-      bestMatch.replaceIfBetter( _findClosestSegmentIntersection( pointMap, edges ), maxSnapIntTolerance );
+      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), maxSnapIntTolerance );
 
     return bestMatch;
   }
@@ -268,7 +264,6 @@ QgsPointLocator::Match QgsSnappingUtils::snapToCurrentLayer( const QPoint& point
   QgsPointLocator* loc = locatorForLayerUsingStrategy( mCurrentLayer, pointMap, tolerance );
   if ( !loc )
     return QgsPointLocator::Match();
-  loc->init( type );
 
   QgsPointLocator::Match bestMatch;
   _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );

@@ -26,71 +26,6 @@ using namespace SpatialIndex;
 
 
 
-static void addPointToVertexData( QLinkedList<RTree::Data*>& vertexDataList, id_type id, int vertexIndex, const QgsPoint& pt )
-{
-  double pLow[2], pHigh[2];
-  pLow[0] = pHigh[0] = pt.x();
-  pLow[1] = pHigh[1] = pt.y();
-  SpatialIndex::Region r( pLow, pHigh, 2 );
-  vertexDataList << new RTree::Data( sizeof( int ), reinterpret_cast<byte*>( &vertexIndex ), r, id );
-}
-
-
-static void addVertexData( QLinkedList<RTree::Data*>& vertexDataList, const QgsFeature& f )
-{
-  QgsGeometry* g = f.geometry();
-  if ( !g )
-    return;
-
-  id_type id = f.id();
-  int vertexIndex = -1;
-
-  switch ( QGis::flatType( g->wkbType() ) )
-  {
-    case QGis::WKBPoint:
-      addPointToVertexData( vertexDataList, id, 0, g->asPoint() );
-      break;
-    case QGis::WKBLineString:
-    {
-      foreach ( const QgsPoint& pt, g->asPolyline() )
-        addPointToVertexData( vertexDataList, id, ++vertexIndex, pt );
-    }
-    break;
-    case QGis::WKBPolygon:
-    {
-      foreach ( const QgsPolyline& polyline, g->asPolygon() )
-        foreach ( const QgsPoint& pt, polyline )
-          addPointToVertexData( vertexDataList, id, ++vertexIndex, pt );
-    }
-    break;
-    case QGis::WKBMultiPoint:
-    {
-      foreach ( const QgsPoint& pt, g->asMultiPoint() )
-        addPointToVertexData( vertexDataList, id, ++vertexIndex, pt );
-    }
-    break;
-    case QGis::WKBMultiLineString:
-    {
-      foreach ( const QgsPolyline& polyline, g->asMultiPolyline() )
-        foreach ( const QgsPoint& pt, polyline )
-          addPointToVertexData( vertexDataList, id, ++vertexIndex, pt );
-    }
-    break;
-    case QGis::WKBMultiPolygon:
-    {
-      foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
-        foreach ( const QgsPolyline& polyline, polygon )
-          foreach ( const QgsPoint& pt, polyline )
-            addPointToVertexData( vertexDataList, id, ++vertexIndex, pt );
-    }
-    break;
-    default:
-      return;
-  }
-
-}
-
-
 static SpatialIndex::Point point2point( const QgsPoint& point )
 {
   double plow[2];
@@ -110,177 +45,12 @@ static SpatialIndex::Region rect2region( const QgsRectangle& rect )
   return SpatialIndex::Region( pLow, pHigh, 2 );
 }
 
-#if 0
-static QgsRectangle region2rect( const SpatialIndex::Region& region )
-{
-  return QgsRectangle( region.m_pLow[0], region.m_pLow[1], region.m_pHigh[0], region.m_pHigh[1] );
-}
-#endif
-
-static void addPolylineToEdgeData( QLinkedList<RTree::Data*>& edgeDataList, const QgsPolyline& pl, id_type id, int& vertexIndex )
-{
-  if ( pl.count() < 2 )
-    return;
-  QgsPoint lastPt = pl[0];
-  for ( int i = 1; i < pl.count(); ++i )
-  {
-    vertexIndex++;
-    QgsPoint pt = pl[i];
-
-    if ( pt == lastPt )
-      continue; // ignore duplicate vertices (not forming a proper edge)
-
-    bool edgeDirection = ( pt.x() < lastPt.x() && pt.y() < lastPt.y() ) || ( pt.x() > lastPt.x() && pt.y() > lastPt.y() );
-    bool isReversed = pt.x() < lastPt.x() || ( pt.x() == lastPt.x() && lastPt.y() < pt.y() );
-    double pLow[2], pHigh[2];
-    pLow[0]  = qMin( pt.x(), lastPt.x() );
-    pHigh[0] = qMax( pt.x(), lastPt.x() );
-    pLow[1]  = qMin( pt.y(), lastPt.y() );
-    pHigh[1] = qMax( pt.y(), lastPt.y() );
-    SpatialIndex::Region r( pLow, pHigh, 2 );
-    int edgeFlags = edgeDirection | ( isReversed << 1 );
-    int extraData[2] = { vertexIndex, edgeFlags };
-    edgeDataList << new RTree::Data( sizeof( int )*2, reinterpret_cast<byte*>( extraData ), r, id );
-
-    lastPt = pt;
-  }
-  vertexIndex++; // for the last vertex
-}
-
-
-static void addEdgeData( QLinkedList<RTree::Data*>& edgeDataList, const QgsFeature& f )
-{
-  QgsGeometry* g = f.geometry();
-  if ( !g )
-    return;
-
-  id_type id = f.id();
-  int vertexIndex = -1;
-
-  switch ( QGis::flatType( g->wkbType() ) )
-  {
-    case QGis::WKBLineString:
-      addPolylineToEdgeData( edgeDataList, g->asPolyline(), id, vertexIndex );
-      break;
-    case QGis::WKBPolygon:
-    {
-      foreach ( const QgsPolyline& polyline, g->asPolygon() )
-        addPolylineToEdgeData( edgeDataList, polyline, id, vertexIndex );
-    }
-    break;
-    case QGis::WKBMultiLineString:
-    {
-      foreach ( const QgsPolyline& polyline, g->asMultiPolyline() )
-        addPolylineToEdgeData( edgeDataList, polyline, id, vertexIndex );
-    }
-    break;
-    case QGis::WKBMultiPolygon:
-    {
-      foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
-        foreach ( const QgsPolyline& polyline, polygon )
-          addPolylineToEdgeData( edgeDataList, polyline, id, vertexIndex );
-    }
-    break;
-
-    case QGis::WKBPoint:
-    case QGis::WKBMultiPoint:
-    default:
-      return;
-  }
-}
-
-
-static void addPolygonToAreaData( QLinkedList<RTree::Data*>& areaDataList, QList<GEOSGeometry*>& geomList, const GEOSGeometry* geosGeomOrig, const QgsRectangle& bbox, id_type id )
-{
-  SpatialIndex::Region r( rect2region( bbox ) );
-  GEOSGeometry* geosGeom = GEOSGeom_clone_r( QgsGeometry::getGEOSHandler(), geosGeomOrig );
-  geomList << geosGeom;
-  areaDataList << new RTree::Data( sizeof( const GEOSGeometry* ), reinterpret_cast<byte*>( &geosGeom ), r, id );
-}
-
-
-static void addAreaData( QLinkedList<RTree::Data*>& areaDataList, QList<GEOSGeometry*>& geomList, const QgsFeature& f )
-{
-  QgsGeometry* g = f.geometry();
-  if ( !g )
-    return;
-
-  id_type id = f.id();
-  QgsRectangle bbox = g->boundingBox();
-
-  switch ( QGis::flatType( g->wkbType() ) )
-  {
-    case QGis::WKBPolygon:
-    {
-      addPolygonToAreaData( areaDataList, geomList, g->asGeos(), bbox, id );
-    }
-    break;
-    case QGis::WKBMultiPolygon:
-    {
-      GEOSContextHandle_t geos = QgsGeometry::getGEOSHandler();
-      const GEOSGeometry* origGeosGeom = g->asGeos();
-      for ( int i = 0; i < GEOSGetNumGeometries_r( geos, origGeosGeom ); i++ )
-      {
-        const GEOSGeometry *origGeosPolygon = GEOSGetGeometryN_r( geos, origGeosGeom, i );
-        addPolygonToAreaData( areaDataList, geomList, origGeosPolygon, bbox, id );
-      }
-    }
-    break;
-    default:
-      break;
-  }
-}
-
-
-
-static void edgeGetEndpoints( const RTree::Data& dd, double&x1, double&y1, double&x2, double&y2 )
-{
-  x1 = dd.m_region.m_pLow[0];
-  x2 = dd.m_region.m_pHigh[0];
-  int flags = reinterpret_cast<int*>( dd.m_pData )[1];
-  if ( flags & 1 )  // direction bottom-left to top-right
-  {
-    y1 = dd.m_region.m_pLow[1];
-    y2 = dd.m_region.m_pHigh[1];
-  }
-  else // direction top-left to bottom-right
-  {
-    y1 = dd.m_region.m_pHigh[1];
-    y2 = dd.m_region.m_pLow[1];
-  }
-
-  // the other flag tells the direction of the edge: whether it is [x1,y1]->[x2,y2] or reversed
-  if ( flags & 2 )
-  {
-    qSwap( x1, x2 );
-    qSwap( y1, y2 );
-  }
-}
-
-#if 0
-static LineSegment edge2lineSegment( const RTree::Data& dd )
-{
-  double pStart[2], pEnd[2];
-  edgeGetEndpoints( dd, pStart[0], pStart[1], pEnd[0], pEnd[1] );
-  return LineSegment( pStart, pEnd, 2 );
-}
-#endif
 
 // Ahh.... another magic number. Taken from QgsVectorLayer::snapToGeometry() call to closestSegmentWithContext().
 // The default epsilon used for sqrDistToSegment (1e-8) is too high when working with lat/lon coordinates
 // I still do not fully understand why the sqrDistToSegment() code uses epsilon and if the square distance
 // is lower than epsilon it will have a special logic...
 static const double POINT_LOC_EPSILON = 1e-12;
-
-// for a Data in the edge tree, find out distance from a point
-static double edgeMinDist( const RTree::Data& dd, const Point& queryP )
-{
-  double x1, x2, y1, y2;
-  QgsPoint p;
-  edgeGetEndpoints( dd, x1, y1, x2, y2 );
-  return sqrt( QgsPoint( queryP.m_pCoords[0], queryP.m_pCoords[1] ).sqrDistToSegment( x1, y1, x2, y2, p, POINT_LOC_EPSILON ) );
-}
-
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -307,90 +77,81 @@ class QgsPointLocator_Stream : public IDataStream
 ////////////////////////////////////////////////////////////////////////////
 
 
-/** Helper class used when traversing the index with vertices or areas - builds a list of matches. */
-class QgsPointLocator_VisitorVertexEdge : public IVisitor
+/** Helper class used when traversing the index looking for vertices - builds a list of matches. */
+class QgsPointLocator_VisitorNearestVertex : public IVisitor
 {
   public:
-    //! constructor for NN queries
-    QgsPointLocator_VisitorVertexEdge( QgsVectorLayer* vl, bool vertexTree, const QgsPoint& origPt, QgsPointLocator::MatchList& list )
-        : mLayer( vl ), mVertexTree( vertexTree ), mNNQuery( true ), mOrigPt( origPt ), mList( list ), mDistToPoint( 0 ), mFilter( 0 ) {}
-
-    //! constructor for range queries
-    QgsPointLocator_VisitorVertexEdge( QgsVectorLayer* vl, bool vertexTree, const QgsRectangle& origRect, QgsPointLocator::MatchList& list, const QgsPoint* distToPoint = 0, QgsPointLocator::MatchFilter* filter = 0 )
-        : mLayer( vl ), mVertexTree( vertexTree ), mNNQuery( false ), mOrigRect( origRect ), mList( list ), mDistToPoint( distToPoint ), mFilter( filter ) {}
+    QgsPointLocator_VisitorNearestVertex( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = 0 )
+        : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
 
     void visitNode( const INode& n ) { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
 
     void visitData( const IData& d )
     {
-      const RTree::Data& dd = static_cast<const RTree::Data&>( d );
-      QgsPoint pt;
-      double dist;
-      QgsPoint edgePoints[2];
-      if ( mNNQuery )
-      {
-        // nearest neighbor query
-        if ( mVertexTree )
-        {
-          pt = QgsPoint( dd.m_region.m_pLow[0], dd.m_region.m_pLow[1] );
-          dist = sqrt( pt.sqrDist( mOrigPt ) );
-        }
-        else
-        {
-          double x1, x2, y1, y2;
-          edgeGetEndpoints( dd, x1, y1, x2, y2 );
-          dist = sqrt( mOrigPt.sqrDistToSegment( x1, y1, x2, y2, pt, POINT_LOC_EPSILON ) );
-          edgePoints[0].set( x1, y1 );
-          edgePoints[1].set( x2, y2 );
-        }
-      }
-      else
-      {
-        // range query
-        // distance + point make sense only if mDistToPoint is specified
-        dist = 0;
-        if ( mVertexTree )
-        {
-          if ( mDistToPoint )
-          {
-            pt = QgsPoint( dd.m_region.m_pLow[0], dd.m_region.m_pLow[1] );
-            dist = sqrt( pt.sqrDist( *mDistToPoint ) );
-          }
-        }
-        else
-        {
-          // need to check if the edge actually intersects the region
-          SpatialIndex::Region r( rect2region( mOrigRect ) );
-          double pStart[2], pEnd[2];
-          edgeGetEndpoints( dd, pStart[0], pStart[1], pEnd[0], pEnd[1] );
-          LineSegment ls( pStart, pEnd, 2 );
-          if ( !r.intersectsLineSegment( ls ) )
-            return;
-          edgePoints[0].set( pStart[0], pStart[1] );
-          edgePoints[1].set( pEnd[0], pEnd[1] );
-          if ( mDistToPoint )
-            dist = sqrt( mDistToPoint->sqrDistToSegment( pStart[0], pStart[1], pEnd[0], pEnd[1], pt, POINT_LOC_EPSILON ) );
-        }
-      }
-      QgsPointLocator::Type t = mVertexTree ? QgsPointLocator::Vertex : QgsPointLocator::Edge;
-      int vertexIndex = *reinterpret_cast<int*>( dd.m_pData );
-      QgsPointLocator::Match m( t, mLayer, d.getIdentifier(), dist, pt, vertexIndex, t == QgsPointLocator::Edge ? edgePoints : 0 );
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry* geom = mLocator->mGeoms.value( id );
+      int vertexIndex, beforeVertex, afterVertex;
+      double sqrDist;
+      QgsPoint pt = geom->closestVertex( mSrcPoint, vertexIndex, beforeVertex, afterVertex, sqrDist );
+
+      QgsPointLocator::Match m( QgsPointLocator::Vertex, mLocator->mLayer, id, sqrt( sqrDist ), pt, vertexIndex );
       // in range queries the filter may reject some matches
       if ( mFilter && !mFilter->acceptMatch( m ) )
         return;
-      mList << m;
+
+      if ( !mBest.isValid() || m.distance() < mBest.distance() )
+        mBest = m;
     }
 
   private:
-    QgsVectorLayer* mLayer;
-    bool mVertexTree;
-    bool mNNQuery;
-    QgsPoint mOrigPt; // only for NN queries
-    QgsRectangle mOrigRect; // only for range queries
-    QgsPointLocator::MatchList& mList;
-    const QgsPoint* mDistToPoint; // optionally for range queries
-    QgsPointLocator::MatchFilter* mFilter; // optionally for range queries
+    QgsPointLocator* mLocator;
+    QgsPointLocator::Match& mBest;
+    QgsPoint mSrcPoint;
+    QgsPointLocator::MatchFilter* mFilter;
+};
+
+
+////////////////////////////////////////////////////////////////////////////
+
+
+/** Helper class used when traversing the index looking for edges - builds a list of matches. */
+class QgsPointLocator_VisitorNearestEdge : public IVisitor
+{
+  public:
+    QgsPointLocator_VisitorNearestEdge( QgsPointLocator* pl, QgsPointLocator::Match& m, const QgsPoint& srcPoint, QgsPointLocator::MatchFilter* filter = 0 )
+        : mLocator( pl ), mBest( m ), mSrcPoint( srcPoint ), mFilter( filter ) {}
+
+    void visitNode( const INode& n ) { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
+
+    void visitData( const IData& d )
+    {
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry* geom = mLocator->mGeoms.value( id );
+      QgsPoint pt;
+      int afterVertex;
+      double sqrDist = geom->closestSegmentWithContext( mSrcPoint, pt, afterVertex, 0, POINT_LOC_EPSILON );
+      if ( sqrDist < 0 )
+        return;
+
+      QgsPoint edgePoints[2];
+      edgePoints[0] = geom->vertexAt( afterVertex - 1 );
+      edgePoints[1] = geom->vertexAt( afterVertex );
+      QgsPointLocator::Match m( QgsPointLocator::Edge, mLocator->mLayer, id, sqrt( sqrDist ), pt, afterVertex - 1, edgePoints );
+      // in range queries the filter may reject some matches
+      if ( mFilter && !mFilter->acceptMatch( m ) )
+        return;
+
+      if ( !mBest.isValid() || m.distance() < mBest.distance() )
+        mBest = m;
+    }
+
+  private:
+    QgsPointLocator* mLocator;
+    QgsPointLocator::Match& mBest;
+    QgsPoint mSrcPoint;
+    QgsPointLocator::MatchFilter* mFilter;
 };
 
 
@@ -402,58 +163,356 @@ class QgsPointLocator_VisitorArea : public IVisitor
 {
   public:
     //! constructor
-    QgsPointLocator_VisitorArea( QgsVectorLayer* vl, const QgsPoint& origPt, QgsPointLocator::MatchList& list )
-        : mLayer( vl ), mList( list )
-    {
-      GEOSContextHandle_t geosH = QgsGeometry::getGEOSHandler();
-      GEOSCoordSequence *coord = GEOSCoordSeq_create_r( geosH, 1, 2 );
-      GEOSCoordSeq_setX_r( geosH, coord, 0, origPt.x() );
-      GEOSCoordSeq_setY_r( geosH, coord, 0, origPt.y() );
-      geomPt = GEOSGeom_createPoint_r( geosH, coord );
-    }
+    QgsPointLocator_VisitorArea( QgsPointLocator* pl, const QgsPoint& origPt, QgsPointLocator::MatchList& list )
+        : mLocator( pl ), mList( list ), mGeomPt( QgsGeometry::fromPoint( origPt ) ) {}
 
-    ~QgsPointLocator_VisitorArea()
-    {
-      GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geomPt );
-    }
+    ~QgsPointLocator_VisitorArea() { delete mGeomPt; }
 
     void visitNode( const INode& n ) { Q_UNUSED( n ); }
     void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
 
     void visitData( const IData& d )
     {
-      const RTree::Data& dd = static_cast<const RTree::Data&>( d );
-      GEOSGeometry* g = *reinterpret_cast<GEOSGeometry**>( dd.m_pData );
-      // TODO: handle exceptions
-      if ( GEOSIntersects_r( QgsGeometry::getGEOSHandler(), g, geomPt ) )
-        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLayer, d.getIdentifier(), 0, QgsPoint() );
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry* g = mLocator->mGeoms.value( id );
+      if ( g->intersects( mGeomPt ) )
+        mList << QgsPointLocator::Match( QgsPointLocator::Area, mLocator->mLayer, id, 0, QgsPoint() );
     }
   private:
-    QgsVectorLayer* mLayer;
+    QgsPointLocator* mLocator;
     QgsPointLocator::MatchList& mList;
-    GEOSGeometry* geomPt;
+    QgsGeometry* mGeomPt;
 };
 
 
 ////////////////////////////////////////////////////////////////////////////
 
+// code adapted from
+// http://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm
+struct _CohenSutherland
+{
+  _CohenSutherland( const QgsRectangle& rect ) : mRect( rect ) {}
 
-/** Helper class for calculation of minimum distance between point and edge (in edge index) */
-class EdgeNNComparator : public INearestNeighborComparator
+  typedef int OutCode;
+
+  const int INSIDE = 0; // 0000
+  const int LEFT = 1;   // 0001
+  const int RIGHT = 2;  // 0010
+  const int BOTTOM = 4; // 0100
+  const int TOP = 8;    // 1000
+
+  QgsRectangle mRect;
+
+  OutCode computeOutCode( double x, double y )
+  {
+    OutCode code = INSIDE;  // initialised as being inside of clip window
+    if ( x < mRect.xMinimum() )         // to the left of clip window
+      code |= LEFT;
+    else if ( x > mRect.xMaximum() )    // to the right of clip window
+      code |= RIGHT;
+    if ( y < mRect.yMinimum() )         // below the clip window
+      code |= BOTTOM;
+    else if ( y > mRect.yMaximum() )    // above the clip window
+      code |= TOP;
+    return code;
+  }
+
+  bool isSegmentInRect( double x0, double y0, double x1, double y1 )
+  {
+    // compute outcodes for P0, P1, and whatever point lies outside the clip rectangle
+    OutCode outcode0 = computeOutCode( x0, y0 );
+    OutCode outcode1 = computeOutCode( x1, y1 );
+    bool accept = false;
+
+    while ( true )
+    {
+      if ( !( outcode0 | outcode1 ) )
+      {
+        // Bitwise OR is 0. Trivially accept and get out of loop
+        accept = true;
+        break;
+      }
+      else if ( outcode0 & outcode1 )
+      {
+        // Bitwise AND is not 0. Trivially reject and get out of loop
+        break;
+      }
+      else
+      {
+        // failed both tests, so calculate the line segment to clip
+        // from an outside point to an intersection with clip edge
+        double x, y;
+
+        // At least one endpoint is outside the clip rectangle; pick it.
+        OutCode outcodeOut = outcode0 ? outcode0 : outcode1;
+
+        // Now find the intersection point;
+        // use formulas y = y0 + slope * (x - x0), x = x0 + (1 / slope) * (y - y0)
+        if ( outcodeOut & TOP )
+        { // point is above the clip rectangle
+          x = x0 + ( x1 - x0 ) * ( mRect.yMaximum() - y0 ) / ( y1 - y0 );
+          y = mRect.yMaximum();
+        }
+        else if ( outcodeOut & BOTTOM )
+        { // point is below the clip rectangle
+          x = x0 + ( x1 - x0 ) * ( mRect.yMinimum() - y0 ) / ( y1 - y0 );
+          y = mRect.yMinimum();
+        }
+        else if ( outcodeOut & RIGHT )
+        {  // point is to the right of clip rectangle
+          y = y0 + ( y1 - y0 ) * ( mRect.xMaximum() - x0 ) / ( x1 - x0 );
+          x = mRect.xMaximum();
+        }
+        else if ( outcodeOut & LEFT )
+        {   // point is to the left of clip rectangle
+          y = y0 + ( y1 - y0 ) * ( mRect.xMinimum() - x0 ) / ( x1 - x0 );
+          x = mRect.xMinimum();
+        }
+
+        // Now we move outside point to intersection point to clip
+        // and get ready for next pass.
+        if ( outcodeOut == outcode0 )
+        {
+          x0 = x;
+          y0 = y;
+          outcode0 = computeOutCode( x0, y0 );
+        }
+        else
+        {
+          x1 = x;
+          y1 = y;
+          outcode1 = computeOutCode( x1, y1 );
+        }
+      }
+    }
+    return accept;
+  }
+};
+
+
+static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, const QgsRectangle& rect, QgsVectorLayer* vl, QgsFeatureId fid )
+{
+  // this code is stupidly based on QgsGeometry::closestSegmentWithContext
+  // we need iterator for segments...
+
+  QgsPointLocator::MatchList lst;
+  unsigned char* wkb = const_cast<unsigned char*>( geom->asWkb() ); // we're not changing wkb, just need non-const for QgsWkbPtr
+  if ( !wkb )
+    return lst;
+
+  _CohenSutherland cs( rect );
+
+  QgsWkbPtr wkbPtr( wkb + 1 );
+  QGis::WkbType wkbType;
+  wkbPtr >> wkbType;
+
+  bool hasZValue = false;
+  switch ( wkbType )
+  {
+    case QGis::WKBPoint25D:
+    case QGis::WKBPoint:
+    case QGis::WKBMultiPoint25D:
+    case QGis::WKBMultiPoint:
+    {
+      // Points have no lines
+      return lst;
+    }
+
+    case QGis::WKBLineString25D:
+      hasZValue = true;
+    case QGis::WKBLineString:
+    {
+      int nPoints;
+      wkbPtr >> nPoints;
+
+      double prevx = 0.0, prevy = 0.0;
+      for ( int index = 0; index < nPoints; ++index )
+      {
+        double thisx, thisy;
+        wkbPtr >> thisx >> thisy;
+        if ( hasZValue )
+          wkbPtr += sizeof( double );
+
+        if ( index > 0 )
+        {
+          if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
+          {
+            QgsPoint edgePoints[2];
+            edgePoints[0].set( prevx, prevy );
+            edgePoints[1].set( thisx, thisy );
+            lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPoint(), index - 1, edgePoints );
+          }
+        }
+
+        prevx = thisx;
+        prevy = thisy;
+      }
+      break;
+    }
+
+    case QGis::WKBMultiLineString25D:
+      hasZValue = true;
+    case QGis::WKBMultiLineString:
+    {
+      int nLines;
+      wkbPtr >> nLines;
+      for ( int linenr = 0, pointIndex = 0; linenr < nLines; ++linenr )
+      {
+        wkbPtr += 1 + sizeof( int );
+        int nPoints;
+        wkbPtr >> nPoints;
+
+        double prevx = 0.0, prevy = 0.0;
+        for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
+        {
+          double thisx, thisy;
+          wkbPtr >> thisx >> thisy;
+          if ( hasZValue )
+            wkbPtr += sizeof( double );
+
+          if ( pointnr > 0 )
+          {
+            if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
+            {
+              QgsPoint edgePoints[2];
+              edgePoints[0].set( prevx, prevy );
+              edgePoints[1].set( thisx, thisy );
+              lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPoint(), pointIndex - 1, edgePoints );
+            }
+          }
+
+          prevx = thisx;
+          prevy = thisy;
+          ++pointIndex;
+        }
+      }
+      break;
+    }
+
+    case QGis::WKBPolygon25D:
+      hasZValue = true;
+    case QGis::WKBPolygon:
+    {
+      int nRings;
+      wkbPtr >> nRings;
+
+      for ( int ringnr = 0, pointIndex = 0; ringnr < nRings; ++ringnr )//loop over rings
+      {
+        int nPoints;
+        wkbPtr >> nPoints;
+
+        double prevx = 0.0, prevy = 0.0;
+        for ( int pointnr = 0; pointnr < nPoints; ++pointnr )//loop over points in a ring
+        {
+          double thisx, thisy;
+          wkbPtr >> thisx >> thisy;
+          if ( hasZValue )
+            wkbPtr += sizeof( double );
+
+          if ( pointnr > 0 )
+          {
+            if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
+            {
+              QgsPoint edgePoints[2];
+              edgePoints[0].set( prevx, prevy );
+              edgePoints[1].set( thisx, thisy );
+              lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPoint(), pointIndex - 1, edgePoints );
+            }
+          }
+
+          prevx = thisx;
+          prevy = thisy;
+          ++pointIndex;
+        }
+      }
+      break;
+    }
+
+    case QGis::WKBMultiPolygon25D:
+      hasZValue = true;
+    case QGis::WKBMultiPolygon:
+    {
+      int nPolygons;
+      wkbPtr >> nPolygons;
+      for ( int polynr = 0, pointIndex = 0; polynr < nPolygons; ++polynr )
+      {
+        wkbPtr += 1 + sizeof( int );
+        int nRings;
+        wkbPtr >> nRings;
+        for ( int ringnr = 0; ringnr < nRings; ++ringnr )
+        {
+          int nPoints;
+          wkbPtr >> nPoints;
+
+          double prevx = 0.0, prevy = 0.0;
+          for ( int pointnr = 0; pointnr < nPoints; ++pointnr )
+          {
+            double thisx, thisy;
+            wkbPtr >> thisx >> thisy;
+            if ( hasZValue )
+              wkbPtr += sizeof( double );
+
+            if ( pointnr > 0 )
+            {
+              if ( cs.isSegmentInRect( prevx, prevy, thisx, thisy ) )
+              {
+                QgsPoint edgePoints[2];
+                edgePoints[0].set( prevx, prevy );
+                edgePoints[1].set( thisx, thisy );
+                lst << QgsPointLocator::Match( QgsPointLocator::Edge, vl, fid, 0, QgsPoint(), pointIndex - 1, edgePoints );
+              }
+            }
+
+            prevx = thisx;
+            prevy = thisy;
+            ++pointIndex;
+          }
+        }
+      }
+      break;
+    }
+
+    case QGis::WKBUnknown:
+    default:
+      return lst;
+      break;
+  } // switch (wkbType)
+
+  return lst;
+}
+
+/** Helper class used when traversing the index looking for edges - builds a list of matches. */
+class QgsPointLocator_VisitorEdgesInRect : public IVisitor
 {
   public:
-    double getMinimumDistance( const IShape& query, const IShape& entry )
+    QgsPointLocator_VisitorEdgesInRect( QgsPointLocator* pl, QgsPointLocator::MatchList& lst, const QgsRectangle& srcRect, QgsPointLocator::MatchFilter* filter = 0 )
+        : mLocator( pl ), mList( lst ), mSrcRect( srcRect ), mFilter( filter ) {}
+
+    void visitNode( const INode& n ) { Q_UNUSED( n ); }
+    void visitData( std::vector<const IData*>& v ) { Q_UNUSED( v ); }
+
+    void visitData( const IData& d )
     {
-      return query.getMinimumDistance( entry );
+      QgsFeatureId id = d.getIdentifier();
+      QgsGeometry* geom = mLocator->mGeoms.value( id );
+
+      foreach ( const QgsPointLocator::Match& m, _geometrySegmentsInRect( geom, mSrcRect, mLocator->mLayer, id ) )
+      {
+        // in range queries the filter may reject some matches
+        if ( mFilter && !mFilter->acceptMatch( m ) )
+          continue;
+
+        mList << m;
+      }
     }
 
-    double getMinimumDistance( const IShape& query, const IData& data )
-    {
-      const RTree::Data& dd = static_cast<const RTree::Data&>( data );
-      const Point& queryP = dynamic_cast<const Point&>( query ); // virtual base - cannot use static cast
-      return edgeMinDist( dd, queryP );
-    }
+  private:
+    QgsPointLocator* mLocator;
+    QgsPointLocator::MatchList& mList;
+    QgsRectangle mSrcRect;
+    QgsPointLocator::MatchFilter* mFilter;
 };
+
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -504,9 +563,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 
 QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS, const QgsRectangle* extent )
     : mStorage( 0 )
-    , mRTreeVertex( 0 )
-    , mRTreeEdge( 0 )
-    , mRTreeArea( 0 )
+    , mRTree( 0 )
     , mTransform( 0 )
     , mLayer( layer )
     , mExtent( 0 )
@@ -531,56 +588,29 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateRefe
 
 QgsPointLocator::~QgsPointLocator()
 {
-  destroyIndex( All );
+  destroyIndex();
   delete mStorage;
   delete mTransform;
   delete mExtent;
 }
 
 
-void QgsPointLocator::init( int types, bool force )
+void QgsPointLocator::init()
 {
-  if ( !force )
-  {
-    // init only indices that do not exist yet
-    if (( types & Vertex ) && hasIndex( Vertex ) )
-      types &= ~Vertex;
-    if (( types & Edge ) && hasIndex( Edge ) )
-      types &= ~Edge;
-    if (( types & Area ) && hasIndex( Area ) )
-      types &= ~Area;
-  }
-
-  rebuildIndex( types );
+  if ( !mRTree )
+    rebuildIndex();
 }
 
 
-bool QgsPointLocator::hasIndex( QgsPointLocator::Type t ) const
+
+void QgsPointLocator::rebuildIndex()
 {
-  switch ( t )
-  {
-    case Vertex: return mRTreeVertex != 0;
-    case Edge:   return mRTreeEdge   != 0;
-    case Area:   return mRTreeArea   != 0;
-    default:     return 0;
-  }
-}
+  destroyIndex();
 
-
-void QgsPointLocator::rebuildIndex( int types )
-{
-  destroyIndex( types );
-
-  QLinkedList<RTree::Data*> vertexDataList, edgeDataList, areaDataList;
+  QLinkedList<RTree::Data*> dataList;
   QgsFeature f;
   QGis::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QGis::NoGeometry )
-    return; // nothing to index
-
-  bool indexVertex = ( types & Vertex ) && ( geomType == QGis::Polygon || geomType == QGis::Line || geomType == QGis::Point );
-  bool indexEdge   = ( types & Edge )   && ( geomType == QGis::Polygon || geomType == QGis::Line );
-  bool indexArea   = ( types & Area )   && ( geomType == QGis::Polygon );
-  if ( !indexVertex && !indexEdge && !indexArea )
     return; // nothing to index
 
   QgsFeatureRequest request;
@@ -601,14 +631,9 @@ void QgsPointLocator::rebuildIndex( int types )
     if ( mTransform )
       f.geometry()->transform( *mTransform );
 
-    if ( indexVertex )
-      addVertexData( vertexDataList, f );
-
-    if ( indexEdge )
-      addEdgeData( edgeDataList, f );
-
-    if ( indexArea )
-      addAreaData( areaDataList, mAreaGeomList, f );
+    SpatialIndex::Region r( rect2region( f.geometry()->boundingBox() ) );
+    dataList << new RTree::Data( 0, 0, r, f.id() );
+    mGeoms[f.id()] = new QgsGeometry( *f.geometry() );
   }
 
   // R-Tree parameters
@@ -619,193 +644,129 @@ void QgsPointLocator::rebuildIndex( int types )
   RTree::RTreeVariant variant = RTree::RV_RSTAR;
   SpatialIndex::id_type indexId;
 
-  // create R-tree for vertices
-  if ( vertexDataList.count() )
-  {
-    QgsPointLocator_Stream stream( vertexDataList );
-    mRTreeVertex = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
-                   leafCapacity, dimension, variant, indexId );
-  }
+  if ( dataList.isEmpty() )
+    return; // no features
 
-  // create R-tree for vedges
-  if ( edgeDataList.count() )
-  {
-    QgsPointLocator_Stream stream2( edgeDataList );
-    mRTreeEdge = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream2, *mStorage, fillFactor, indexCapacity,
-                 leafCapacity, dimension, variant, indexId );
-  }
-
-  // create R-tree for areas
-  if ( areaDataList.count() )
-  {
-    QgsPointLocator_Stream stream3( areaDataList );
-    mRTreeArea = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream3, *mStorage, fillFactor, indexCapacity,
-                 leafCapacity, dimension, variant, indexId );
-  }
+  QgsPointLocator_Stream stream( dataList );
+  mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
+           leafCapacity, dimension, variant, indexId );
 }
 
 
-void QgsPointLocator::destroyIndex( int types )
+void QgsPointLocator::destroyIndex()
 {
-  if ( types & Vertex )
-  {
-    delete mRTreeVertex;
-    mRTreeVertex = 0;
-  }
+  delete mRTree;
+  mRTree = 0;
 
-  if ( types & Edge )
-  {
-    delete mRTreeEdge;
-    mRTreeEdge = 0;
-  }
-
-  if ( types & Area )
-  {
-    delete mRTreeArea;
-    mRTreeArea = 0;
-
-    foreach ( GEOSGeometry* g, mAreaGeomList )
-      GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), g );
-    mAreaGeomList.clear();
-  }
+  foreach ( QgsGeometry* g, mGeoms )
+    delete g;
+  mGeoms.clear();
 }
 
 void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 {
-  Q_UNUSED( fid );
-  destroyIndex( All );
+  if ( !mRTree )
+    return; // nothing to do if we are not initialized yet
+
+  QgsFeature f;
+  if ( mLayer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f ) )
+  {
+    SpatialIndex::Region r( rect2region( f.geometry()->boundingBox() ) );
+    mRTree->insertData( 0, 0, r, f.id() );
+    mGeoms[fid] = new QgsGeometry( *f.geometry() );
+  }
 }
 
 void QgsPointLocator::onFeatureDeleted( QgsFeatureId fid )
 {
-  Q_UNUSED( fid );
-  destroyIndex( All );
+  if ( !mRTree )
+    return; // nothing to do if we are not initialized yet
+
+  if ( mGeoms.contains( fid ) )
+  {
+    mRTree->deleteData( rect2region( mGeoms[fid]->boundingBox() ), fid );
+    mGeoms.remove( fid );
+  }
 }
 
 void QgsPointLocator::onGeometryChanged( QgsFeatureId fid, QgsGeometry& geom )
 {
-  Q_UNUSED( fid );
   Q_UNUSED( geom );
-  destroyIndex( All );
+  onFeatureDeleted( fid );
+  onFeatureAdded( fid );
 }
 
 
-QgsPointLocator::MatchList QgsPointLocator::nearestVertices( const QgsPoint& point, int maxMatches )
+QgsPointLocator::Match QgsPointLocator::nearestVertex( const QgsPoint& point, double tolerance, MatchFilter* filter )
 {
-  if ( !mRTreeVertex )
+  if ( !mRTree )
   {
-    init( Vertex );
-    if ( !mRTreeVertex ) // still invalid?
+    init();
+    if ( !mRTree ) // still invalid?
+      return Match();
+  }
+
+  Match m;
+  QgsPointLocator_VisitorNearestVertex visitor( this, m, point, filter );
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  if ( m.isValid() && m.distance() > tolerance )
+    return Match(); // // make sure that only match strictly within the tolerance is returned
+  return m;
+}
+
+QgsPointLocator::Match QgsPointLocator::nearestEdge( const QgsPoint& point, double tolerance, MatchFilter* filter )
+{
+  if ( !mRTree )
+  {
+    init();
+    if ( !mRTree ) // still invalid?
+      return Match();
+  }
+
+  Match m;
+  QgsPointLocator_VisitorNearestEdge visitor( this, m, point, filter );
+  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+  if ( m.isValid() && m.distance() > tolerance )
+    return Match(); // // make sure that only match strictly within the tolerance is returned
+  return m;
+}
+
+QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rect, QgsPointLocator::MatchFilter* filter )
+{
+  if ( !mRTree )
+  {
+    init();
+    if ( !mRTree ) // still invalid?
       return MatchList();
   }
 
-  double plow[2];
-  plow[0] = point.x();
-  plow[1] = point.y();
-  Point query( plow, 2 );
   MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( mLayer, true, point, lst );
-  mRTreeVertex->nearestNeighborQuery( maxMatches, query, visitor );
+  QgsPointLocator_VisitorEdgesInRect visitor( this, lst, rect, filter );
+  mRTree->intersectsWithQuery( rect2region( rect ), visitor );
+
   return lst;
 }
 
-
-QgsPointLocator::MatchList QgsPointLocator::nearestEdges( const QgsPoint& point, int maxMatches )
-{
-  if ( !mRTreeEdge )
-  {
-    init( Edge );
-    if ( !mRTreeEdge ) // still invalid?
-      return MatchList();
-  }
-
-  MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( mLayer, false, point, lst );
-  EdgeNNComparator edgeNNC;
-  mRTreeEdge->nearestNeighborQuery( maxMatches, point2point( point ), visitor, edgeNNC );
-  return lst;
-}
-
-QgsPointLocator::MatchList QgsPointLocator::verticesInTolerance( const QgsPoint& point, double tolerance, MatchFilter* filter )
+QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsPoint& point, double tolerance, QgsPointLocator::MatchFilter* filter )
 {
   QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  MatchList lst = verticesInRect( rect, &point, filter );
-  // make sure that only matches strictly within the tolerance are returned
-  // (the intersection with rect may yield matches outside of tolerance)
-  while ( !lst.isEmpty() && lst.last().distance() > tolerance )
-    lst.removeLast();
-  return lst;
-}
-
-QgsPointLocator::MatchList QgsPointLocator::edgesInTolerance( const QgsPoint& point, double tolerance, MatchFilter* filter )
-{
-  QgsRectangle rect( point.x() - tolerance, point.y() - tolerance, point.x() + tolerance, point.y() + tolerance );
-  MatchList lst = edgesInRect( rect, &point, filter );
-  // make sure that only matches strictly within the tolerance are returned
-  // (the intersection with rect may yield matches outside of tolerance)
-  while ( !lst.isEmpty() && lst.last().distance() > tolerance )
-    lst.removeLast();
-  return lst;
-}
-
-static bool matchDistanceLessThan( const QgsPointLocator::Match& m1, const QgsPointLocator::Match& m2 )
-{
-  return m1.distance() < m2.distance();
-}
-
-QgsPointLocator::MatchList QgsPointLocator::verticesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint, MatchFilter* filter )
-{
-  if ( !mRTreeVertex )
-  {
-    init( Vertex );
-    if ( !mRTreeVertex ) // still invalid?
-      return MatchList();
-  }
-
-  MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( mLayer, true, rect, lst, distToPoint, filter );
-  mRTreeVertex->intersectsWithQuery( rect2region( rect ), visitor );
-
-  // if there is no distToPoint, all distances are zero, so no need to sort
-  if ( distToPoint )
-    qSort( lst.begin(), lst.end(), matchDistanceLessThan );
-
-  return lst;
-}
-
-
-QgsPointLocator::MatchList QgsPointLocator::edgesInRect( const QgsRectangle& rect, const QgsPoint* distToPoint, MatchFilter* filter )
-{
-  if ( !mRTreeEdge )
-  {
-    init( Edge );
-    if ( !mRTreeEdge ) // still invalid?
-      return MatchList();
-  }
-
-  MatchList lst;
-  QgsPointLocator_VisitorVertexEdge visitor( mLayer, false, rect, lst, distToPoint, filter );
-  mRTreeEdge->intersectsWithQuery( rect2region( rect ), visitor );
-
-  // if there is no distToPoint, all distances are zero, so no need to sort
-  if ( distToPoint )
-    qSort( lst.begin(), lst.end(), matchDistanceLessThan );
-
-  return lst;
+  return edgesInRect( rect, filter );
 }
 
 
 QgsPointLocator::MatchList QgsPointLocator::pointInPolygon( const QgsPoint& point )
 {
-  if ( !mRTreeArea )
+  if ( !mRTree )
   {
-    init( Area );
-    if ( !mRTreeArea ) // still invalid?
+    init();
+    if ( !mRTree ) // still invalid?
       return MatchList();
   }
 
   MatchList lst;
-  QgsPointLocator_VisitorArea visitor( mLayer, point, lst );
-  mRTreeArea->intersectsWithQuery( point2point( point ), visitor );
+  QgsPointLocator_VisitorArea visitor( this, point, lst );
+  mRTree->intersectsWithQuery( point2point( point ), visitor );
   return lst;
 }
