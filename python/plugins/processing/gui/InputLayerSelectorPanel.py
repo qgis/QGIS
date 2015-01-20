@@ -29,6 +29,7 @@ import os
 
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+from processing.tools import dataobjects
 
 from processing.ui.ui_widgetLayerSelector import Ui_Form
 
@@ -65,10 +66,12 @@ class InputLayerSelectorPanel(QWidget, Ui_Form):
         filename = QFileDialog.getOpenFileName(self, self.tr('Select file'),
             path, self.tr('All files (*.*);;') + self.param.getFileFilter())
         if filename:
-            self.cmbText.addItem(filename, filename)
-            self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
             settings.setValue('/Processing/LastInputPath',
                               os.path.dirname(unicode(filename)))
+            filename = dataobjects.getRasterSublayer(filename, self.param)
+            self.cmbText.addItem(filename, filename)
+            self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
+            
 
     def getValue(self):
         return self.cmbText.itemData(self.cmbText.currentIndex())

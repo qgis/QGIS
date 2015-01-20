@@ -472,11 +472,14 @@ class GrassAlgorithm(GeoAlgorithm):
     def exportRasterLayer(self, layer):
         destFilename = self.getTempFilename()
         self.exportedLayers[layer] = destFilename
-        command = 'r.external'
+        if bool(re.match('netcdf', layer, re.I)) or bool(re.match('hdf', layer, re.I)):
+            command = 'r.in.gdal'
+        else:
+            command = 'r.external -r'
         command += ' input="' + layer + '"'
         command += ' band=1'
         command += ' output=' + destFilename
-        command += ' --overwrite -o -r'
+        command += ' --overwrite -o'
         return command
 
     def getTempFilename(self):
