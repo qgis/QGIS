@@ -45,6 +45,27 @@
 #include <QStandardItemModel>
 #include <QSvgRenderer>
 #include <QMessageBox>
+#include <QTextDocument>
+
+void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
+{
+  QgsDataDefined dd( symbolLayer()->dataDefinedProperty( propertyName ) );
+  button->init( mVectorLayer, &dd, type, Qt::escape( description ) );
+  button->setProperty( "propertyName", propertyName );
+  connect( button, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
+  connect( button, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
+}
+
+void QgsSymbolLayerV2Widget::updateDataDefinedProperty()
+{
+  QgsDataDefinedButton* button = qobject_cast<QgsDataDefinedButton*>( sender() );
+  const QString propertyName( button->property( "propertyName" ).toString() );
+  if ( button->isActive() )
+    symbolLayer()->setDataDefinedProperty( propertyName, button->currentDefinition() );
+  else
+    symbolLayer()->removeDataDefinedProperty( propertyName );
+  emit changed();
+}
 
 QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryName )
 {
@@ -160,6 +181,13 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mDrawInsideCheckBox->blockSignals( false );
 
   updatePatternIcon();
+
+  registerDataDefinedButton( mColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mPenWidthDDBtn, "width", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::offsetHelpText() );
+  registerDataDefinedButton( mDashPatternDDBtn, "customdash", QgsDataDefinedButton::String, tr( "'<dash>;<space>' e.g. '8;2;1;2'" ) );
+  registerDataDefinedButton( mJoinStyleDDBtn, "joinstyle", QgsDataDefinedButton::String, tr( "'bevel'|'miter'|'round'" ) );
+  registerDataDefinedButton( mCapStyleDDBtn, "capstyle", QgsDataDefinedButton::String, tr( "'square'|'flat'|'round'" ) );
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
@@ -258,42 +286,6 @@ void QgsSimpleLineSymbolLayerV2Widget::on_mDrawInsideCheckBox_stateChanged( int 
   emit changed();
 }
 
-void QgsSimpleLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width", tr( "Pen width" ), mLayer->dataDefinedPropertyString( "width" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "customdash", tr( "Dash pattern" ), mLayer->dataDefinedPropertyString( "customdash" ), "<dash>;<space>" );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "joinstyle", tr( "Join style" ), mLayer->dataDefinedPropertyString( "joinstyle" ), "'bevel'|'miter'|'round'" );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "capstyle", tr( "Cap style" ),  mLayer->dataDefinedPropertyString( "capstyle" ), "'square'|'flat'|'round'" );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
-}
 
 void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
 {
@@ -428,6 +420,16 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   mHorizontalAnchorComboBox->blockSignals( false );
   mVerticalAnchorComboBox->blockSignals( false );
+
+  registerDataDefinedButton( mNameDDBtn, "name", QgsDataDefinedButton::String, "'square'|'rectangle'|'diamond'|'pentagon'|'triangle'|'equilateral_triangle'|'star'|'regular_star'|'arrow'|'filled_arrowhead'|'circle'|'cross'|'x'|'cross2'|'line'|'arrowhead'" );
+  registerDataDefinedButton( mFillColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mBorderColorDDBtn, "color_border", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mAngleDDBtn, "angle", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::offsetHelpText() );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2Widget::symbolLayer()
@@ -520,51 +522,6 @@ void QgsSimpleMarkerSymbolLayerV2Widget::on_mOutlineWidthUnitWidget_changed()
     QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mOutlineWidthUnitWidget->getUnit() );
     mLayer->setOutlineWidthUnit( unit );
     mLayer->setOutlineWidthMapUnitScale( mOutlineWidthUnitWidget->getMapUnitScale() );
-    emit changed();
-  }
-}
-
-void QgsSimpleMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "name", tr( "Name" ), mLayer->dataDefinedPropertyString( "name" ),
-      "'square'|'rectangle'|'diamond'|'pentagon'|'triangle'|'equilateral_triangle'|'star'|'regular_star'|'arrow'|'filled_arrowhead'|'circle'|'cross'|'x'|'cross2'|'line'|'arrowhead'" );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Fill color" ), mLayer->dataDefinedPropertyString( "color" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color_border", tr( "Border color" ), mLayer->dataDefinedPropertyString( "color_border" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline_width", tr( "Outline width" ), mLayer->dataDefinedPropertyString( "outline_width" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", dataDefinedPropertyLabel( "size" ), mLayer->dataDefinedPropertyString( "size" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ),
-      QgsDataDefinedSymbolDialog::offsetHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
-      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
-      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
     emit changed();
   }
 }
@@ -665,6 +622,10 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
+
+  registerDataDefinedButton( mFillColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mBorderColorDDBtn, "color_border", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mBorderWidthDDBtn, "width_border", QgsDataDefinedButton::Double, "" );
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
@@ -727,38 +688,6 @@ void QgsSimpleFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
     QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mOffsetUnitWidget->getUnit() );
     mLayer->setOffsetUnit( unit );
     mLayer->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
-    emit changed();
-  }
-}
-
-void QgsSimpleFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ), QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color_border", tr( "Border color" ), mLayer->dataDefinedPropertyString( "color_border" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width_border", tr( "Border width" ), mLayer->dataDefinedPropertyString( "width_border" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
     emit changed();
   }
 }
@@ -931,6 +860,19 @@ void QgsGradientFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
+
+  registerDataDefinedButton( mStartColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mEndColorDDBtn, "color2", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mAngleDDBtn, "angle", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mGradientTypeDDBtn, "gradient_type", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::gradientTypeHelpText() );
+  registerDataDefinedButton( mCoordinateModeDDBtn, "coordinate_mode", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::gradientCoordModeHelpText() );
+  registerDataDefinedButton( mSpreadDDBtn, "spread", QgsDataDefinedButton::Double, QgsDataDefinedSymbolDialog::gradientSpreadHelpText() );
+  registerDataDefinedButton( mRefPoint1XDDBtn, "reference1_x", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mRefPoint1YDDBtn, "reference1_y", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mRefPoint1CentroidDDBtn, "reference1_iscentroid", QgsDataDefinedButton::Int, QgsDataDefinedSymbolDialog::boolHelpText() );
+  registerDataDefinedButton( mRefPoint2XDDBtn, "reference2_x", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mRefPoint2YDDBtn, "reference2_y", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mRefPoint2CentroidDDBtn, "reference2_iscentroid", QgsDataDefinedButton::Int, QgsDataDefinedSymbolDialog::boolHelpText() );
 }
 
 QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2Widget::symbolLayer()
@@ -1103,54 +1045,6 @@ void QgsGradientFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
   }
 }
 
-void QgsGradientFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color (start)" ), mLayer->dataDefinedPropertyString( "color" ), QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color2", tr( "Color (end)" ), mLayer->dataDefinedPropertyString( "color2" ), QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "gradient_type", tr( "Gradient type" ), mLayer->dataDefinedPropertyString( "gradient_type" ), QgsDataDefinedSymbolDialog::gradientTypeHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "coordinate_mode", tr( "Coordinate mode" ), mLayer->dataDefinedPropertyString( "coordinate_mode" ), QgsDataDefinedSymbolDialog::gradientCoordModeHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "spread", tr( "Spread" ), mLayer->dataDefinedPropertyString( "spread" ),
-      QgsDataDefinedSymbolDialog::gradientSpreadHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference1_x", tr( "Reference Point 1 (x)" ), mLayer->dataDefinedPropertyString( "reference1_x" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference1_y", tr( "Reference Point 1 (y)" ), mLayer->dataDefinedPropertyString( "reference1_y" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference1_iscentroid", tr( "Reference Point 1 (is centroid)" ), mLayer->dataDefinedPropertyString( "reference1_iscentroid" ),
-      QgsDataDefinedSymbolDialog::boolHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference2_x", tr( "Reference Point 2 (x)" ), mLayer->dataDefinedPropertyString( "reference2_x" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference2_y", tr( "Reference Point 2 (y)" ), mLayer->dataDefinedPropertyString( "reference2_y" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "reference2_iscentroid", tr( "Reference Point 2 (is centroid)" ), mLayer->dataDefinedPropertyString( "reference2_iscentroid" ),
-      QgsDataDefinedSymbolDialog::boolHelpText() );
-
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
-}
-
 ///////////
 
 QgsShapeburstFillSymbolLayerV2Widget::QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
@@ -1273,6 +1167,13 @@ void QgsShapeburstFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* lay
   mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
   mOffsetUnitWidget->blockSignals( false );
+
+  registerDataDefinedButton( mStartColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mEndColorDDBtn, "color2", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mBlurRadiusDDBtn, "blur_radius", QgsDataDefinedButton::Int, tr( "Integer between 0 and 18" ) );
+  registerDataDefinedButton( mShadeWholeShapeDDBtn, "use_whole_shape", QgsDataDefinedButton::Int, QgsDataDefinedSymbolDialog::boolHelpText() );
+  registerDataDefinedButton( mShadeDistanceDDBtn, "max_distance", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mIgnoreRingsDDBtn, "ignore_rings", QgsDataDefinedButton::Int, QgsDataDefinedSymbolDialog::boolHelpText() );
 }
 
 QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2Widget::symbolLayer()
@@ -1408,40 +1309,6 @@ void QgsShapeburstFillSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
   }
 }
 
-void QgsShapeburstFillSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color (start)" ), mLayer->dataDefinedPropertyString( "color" ), QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color2", tr( "Color (end)" ), mLayer->dataDefinedPropertyString( "color2" ), QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "blur_radius", tr( "Blur radius" ), mLayer->dataDefinedPropertyString( "blur_radius" ),
-      tr( "Integer between 0 and 18" ) );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "use_whole_shape", tr( "Use whole shape" ), mLayer->dataDefinedPropertyString( "use_whole_shape" ), QgsDataDefinedSymbolDialog::boolHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "max_distance", tr( "Maximum distance" ), mLayer->dataDefinedPropertyString( "max_distance" ), QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "ignore_rings", tr( "Ignore rings" ), mLayer->dataDefinedPropertyString( "ignore_rings" ), QgsDataDefinedSymbolDialog::boolHelpText() );
-
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
-}
 
 void QgsShapeburstFillSymbolLayerV2Widget::on_mIgnoreRingsCheckBox_stateChanged( int state )
 {
@@ -1522,6 +1389,11 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mOffsetAlongLineUnitWidget->blockSignals( false );
 
   setPlacement(); // update gui
+
+  registerDataDefinedButton( mIntervalDDBtn, "interval", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mLineOffsetDDBtn, "offset", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mPlacementDDBtn, "placement", QgsDataDefinedButton::String, "'vertex'|'lastvertex'|'firstvertex'|'centerpoint'" );
+  registerDataDefinedButton( mOffsetAlongLineDDBtn, "offset_along_line", QgsDataDefinedButton::Double, "" );
 }
 
 QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2Widget::symbolLayer()
@@ -1604,41 +1476,6 @@ void QgsMarkerLineSymbolLayerV2Widget::on_mOffsetAlongLineUnitWidget_changed()
     mLayer->setOffsetAlongLineMapUnitScale( mOffsetAlongLineUnitWidget->getMapUnitScale() );
   }
   emit changed();
-}
-
-void QgsMarkerLineSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "interval", tr( "Interval" ), mLayer->dataDefinedPropertyString( "interval" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Line offset" ), mLayer->dataDefinedPropertyString( "offset" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "placement", tr( "Placement" ), mLayer->dataDefinedPropertyString( "placement" ),
-      tr( "'vertex'|'lastvertex'|'firstvertex'|'centerpoint'" ) );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset_along_line", tr( "Offset along line" ), mLayer->dataDefinedPropertyString( "offset_along_line" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
 }
 
 ///////////
@@ -1928,6 +1765,16 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mVerticalAnchorComboBox->blockSignals( false );
 
   setGuiForSvg( mLayer );
+
+  registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mBorderWidthDDBtn, "outline-width", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mAngleDDBtn, "angle", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::offsetHelpText() );
+  registerDataDefinedButton( mFilenameDDBtn, "name", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::fileNameHelpText() );
+  registerDataDefinedButton( mFillColorDDBtn, "fill", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mBorderColorDDBtn, "outline", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
@@ -2075,51 +1922,6 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mOffsetUnitWidget_changed()
   }
 }
 
-void QgsSvgMarkerSymbolLayerV2Widget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "size", dataDefinedPropertyLabel( "size" ), mLayer->dataDefinedPropertyString( "size" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline-width", tr( "Border width" ), mLayer->dataDefinedPropertyString( "outline-width" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "offset", tr( "Offset" ), mLayer->dataDefinedPropertyString( "offset" ),
-      QgsDataDefinedSymbolDialog::offsetHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "name", tr( "SVG file" ), mLayer->dataDefinedPropertyString( "name" ),
-      QgsDataDefinedSymbolDialog::fileNameHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "fill", tr( "Color" ), mLayer->dataDefinedPropertyString( "fill" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "outline", tr( "Border color" ), mLayer->dataDefinedPropertyString( "outline" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "horizontal_anchor_point", tr( "Horizontal anchor point" ), mLayer->dataDefinedPropertyString( "horizontal_anchor_point" ),
-      QgsDataDefinedSymbolDialog::horizontalAnchorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "vertical_anchor_point", tr( "Vertical anchor point" ), mLayer->dataDefinedPropertyString( "vertical_anchor_point" ),
-      QgsDataDefinedSymbolDialog::verticalAnchorHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
-}
-
 void QgsSvgMarkerSymbolLayerV2Widget::on_mHorizontalAnchorComboBox_currentIndexChanged( int index )
 {
   if ( mLayer )
@@ -2202,6 +2004,13 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mBorderWidthSpinBox->blockSignals( false );
   }
   updateParamGui( false );
+
+  registerDataDefinedButton( mTextureWidthDDBtn, "width", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mSVGDDBtn, "svgFile", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::fileNameHelpText() );
+  registerDataDefinedButton( mRotationDDBtn, "angle", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mFilColorDDBtn, "svgFillColor", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mBorderColorDDBtn, "svgOutlineColor", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
+  registerDataDefinedButton( mBorderWidthDDBtn, "svgOutlineWidth", QgsDataDefinedButton::Double, "" );
 }
 
 QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
@@ -2393,45 +2202,6 @@ void QgsSVGFillSymbolLayerWidget::on_mSvgOutlineWidthUnitWidget_changed()
   }
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width", tr( "Texture width" ), mLayer->dataDefinedPropertyString( "width" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "svgFile", tr( "SVG file" ), mLayer->dataDefinedPropertyString( "svgFile" ),
-      QgsDataDefinedSymbolDialog::fileNameHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Rotation" ), mLayer->dataDefinedPropertyString( "angle" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "svgFillColor", tr( "Color" ), mLayer->dataDefinedPropertyString( "svgFillColor" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "svgOutlineColor", tr( "Border color" ), mLayer->dataDefinedPropertyString( "svgOutlineColor" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "svgOutlineWidth", tr( "Border width" ), mLayer->dataDefinedPropertyString( "svgOutlineWidth" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
-}
-
 /////////////
 
 QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
@@ -2473,6 +2243,9 @@ void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* laye
     mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
     mOffsetUnitWidget->blockSignals( false );
   }
+
+  registerDataDefinedButton( mAngleDDBtn, "lineangle", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mDistanceDDBtn, "distance", QgsDataDefinedButton::Double, "" );
 }
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayerWidget::symbolLayer()
@@ -2529,42 +2302,6 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOffsetUnitWidget_changed()
   }
 }
 
-void QgsLinePatternFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "lineangle",  tr( "Angle" ), mLayer->dataDefinedPropertyString( "lineangle" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "distance", tr( "Distance" ), mLayer->dataDefinedPropertyString( "distance" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "linewidth", tr( "Line width" ), mLayer->dataDefinedPropertyString( "linewidth" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "color", tr( "Color" ), mLayer->dataDefinedPropertyString( "color" ),
-      QgsDataDefinedSymbolDialog::colorHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
-}
-
-
 /////////////
 
 QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ):
@@ -2615,6 +2352,11 @@ void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* lay
   mVerticalDisplacementUnitWidget->setUnit( mLayer->displacementYUnit() );
   mVerticalDisplacementUnitWidget->setMapUnitScale( mLayer->displacementYMapUnitScale() );
   mVerticalDisplacementUnitWidget->blockSignals( false );
+
+  registerDataDefinedButton( mHorizontalDistanceDDBtn, "distance_x", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mVerticalDistanceDDBtn, "distance_y", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mHorizontalDisplacementDDBtn, "displacement_x", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mVerticalDisplacementDDBtn, "displacement_y", QgsDataDefinedButton::Double, "" );
 }
 
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
@@ -2698,41 +2440,6 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementUnitWidget_ch
     QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mVerticalDisplacementUnitWidget->getUnit() );
     mLayer->setDisplacementYUnit( unit );
     mLayer->setDisplacementYMapUnitScale( mVerticalDisplacementUnitWidget->getMapUnitScale() );
-    emit changed();
-  }
-}
-
-void QgsPointPatternFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "distance_x", tr( "Horizontal distance" ), mLayer->dataDefinedPropertyString( "distance_x" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "distance_y", tr( "Vertical distance" ), mLayer->dataDefinedPropertyString( "distance_y" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "displacement_x", tr( "Horizontal displacement" ), mLayer->dataDefinedPropertyString( "displacement_x" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "displacement_y", tr( "Vertical displacement" ), mLayer->dataDefinedPropertyString( "displacement_y" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
     emit changed();
   }
 }
@@ -3030,6 +2737,11 @@ void QgsRasterFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2 *layer )
   mWidthUnitWidget->setMapUnitScale( mLayer->widthMapUnitScale() );
   mWidthUnitWidget->blockSignals( false );
   updatePreviewImage();
+
+  registerDataDefinedButton( mFilenameDDBtn, "file", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::fileNameHelpText() );
+  registerDataDefinedButton( mOpacityDDBtn, "alpha", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mRotationDDBtn, "angle", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mWidthDDBtn, "width", QgsDataDefinedButton::Double, "" );
 }
 
 QgsSymbolLayerV2 *QgsRasterFillSymbolLayerWidget::symbolLayer()
@@ -3188,40 +2900,6 @@ void QgsRasterFillSymbolLayerWidget::on_mWidthSpinBox_valueChanged( double d )
   emit changed();
 }
 
-void QgsRasterFillSymbolLayerWidget::on_mDataDefinedPropertiesButton_clicked()
-{
-  if ( !mLayer )
-  {
-    return;
-  }
-
-  QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry > dataDefinedProperties;
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "file", tr( "File" ), mLayer->dataDefinedPropertyString( "file" ),
-      QgsDataDefinedSymbolDialog::fileNameHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "alpha", tr( "Opacity" ), mLayer->dataDefinedPropertyString( "alpha" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "angle", tr( "Angle" ), mLayer->dataDefinedPropertyString( "angle" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  dataDefinedProperties << QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry( "width", tr( "Width" ), mLayer->dataDefinedPropertyString( "width" ),
-      QgsDataDefinedSymbolDialog::doubleHelpText() );
-  QgsDataDefinedSymbolDialog d( dataDefinedProperties, mVectorLayer );
-  if ( d.exec() == QDialog::Accepted )
-  {
-    //empty all existing properties first
-    mLayer->removeDataDefinedProperties();
-
-    QMap<QString, QString> properties = d.dataDefinedProperties();
-    QMap<QString, QString>::const_iterator it = properties.constBegin();
-    for ( ; it != properties.constEnd(); ++it )
-    {
-      if ( !it.value().isEmpty() )
-      {
-        mLayer->setDataDefinedProperty( it.key(), it.value() );
-      }
-    }
-    emit changed();
-  }
-}
 
 void QgsRasterFillSymbolLayerWidget::updatePreviewImage()
 {

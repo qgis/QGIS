@@ -33,6 +33,16 @@ QgsDataDefined::QgsDataDefined( bool active,
   mExpressionPrepared = false;
 }
 
+QgsDataDefined::QgsDataDefined( const QgsExpression * expression )
+    : mActive( bool( expression ) )
+    , mUseExpression( expression && expression->rootNode() && !dynamic_cast<const QgsExpression::NodeColumnRef*>( expression->rootNode() ) )
+    , mExpressionString( mUseExpression ? expression->dump() : "" )
+    , mField( !mUseExpression ? ( expression ? expression->dump() : "" ) : "" )
+{
+  mExpression = 0;
+  mExpressionPrepared = false;
+}
+
 QgsDataDefined::~QgsDataDefined()
 {
   mExpressionParams.clear();
