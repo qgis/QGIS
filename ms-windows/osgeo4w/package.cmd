@@ -50,11 +50,12 @@ goto devenv_x86_64
 
 :devenv_x86
 set GRASS_VERSION=6.4.4
-set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
+call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
+if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
+path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
-	-G "Visual Studio 9 2008" ^
+	-G "Visual Studio 10" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe
 goto devenv
 
@@ -77,7 +78,7 @@ set CMAKE_OPT=^
 
 :devenv
 set PYTHONPATH=
-path %PF86%\CMake 2.8\bin;%PATH%;c:\cygwin\bin
+path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
 
 PROMPT qgis%VERSION%$g 
 
