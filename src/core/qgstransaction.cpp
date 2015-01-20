@@ -110,7 +110,7 @@ bool QgsTransaction::addLayer( const QString& layerId )
   }
 
   //test if provider supports transactions
-  if ( !layer->dataProvider() || !layer->dataProvider()->capabilities() & QgsVectorDataProvider::TransactionSupport )
+  if ( !layer->dataProvider() || ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::TransactionSupport ) == 0 )
   {
     return false;
   }
