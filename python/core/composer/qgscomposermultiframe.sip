@@ -1,3 +1,9 @@
+%ModuleHeaderCode
+// fix to allow compilation with sip 4.7
+#include <qgscomposerhtml.h>
+#include <qgscomposertablev2.h>
+#include <qgscomposerattributetablev2.h>
+%End
 
 /**
  * \ingroup composer
@@ -9,7 +15,20 @@
 class QgsComposerMultiFrame: QgsComposerObject
 {
 %TypeHeaderCode
-#include "qgscomposermultiframe.h"
+#include <qgscomposermultiframe.h>
+%End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsComposerHtml*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerHtml;
+  else if (dynamic_cast<QgsComposerAttributeTableV2*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerAttributeTableV2;	
+  else if (dynamic_cast<QgsComposerTableV2*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerTableV2;
+  else if (dynamic_cast<QgsComposerMultiFrame*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsComposerMultiFrame;
+  else
+    sipClass = NULL;	
 %End
 
   public:

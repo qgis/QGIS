@@ -43,11 +43,17 @@ class QgsSymbolLayerV2
 	  sipClass = sipClass_QgsPointPatternFillSymbolLayer;
 	else if (dynamic_cast<QgsSVGFillSymbolLayer*>(sipCpp) != NULL)
 	  sipClass = sipClass_QgsSVGFillSymbolLayer;
+	else if (dynamic_cast<QgsRasterFillSymbolLayer*>(sipCpp) != NULL)
+	  sipClass = sipClass_QgsRasterFillSymbolLayer;	  
 	else
 	  sipClass = sipClass_QgsImageFillSymbolLayer;
       }
       else if (dynamic_cast<QgsCentroidFillSymbolLayerV2*>(sipCpp) != NULL)
 	sipClass = sipClass_QgsCentroidFillSymbolLayerV2;
+      else if (dynamic_cast<QgsGradientFillSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsGradientFillSymbolLayerV2;	
+      else if (dynamic_cast<QgsShapeburstFillSymbolLayerV2*>(sipCpp) != NULL)
+	sipClass = sipClass_QgsShapeburstFillSymbolLayerV2;	
       else
 	sipClass = sipClass_QgsFillSymbolLayerV2;
       break;
