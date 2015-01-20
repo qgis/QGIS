@@ -768,7 +768,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren()
     QString subdirPath = dir.absoluteFilePath( subdir );
     QgsDebugMsgLevel( QString( "creating subdir: %1" ).arg( subdirPath ), 2 );
 
-    QString path = mDirPath + "/" + subdir; // may differ from subdirPath
+    QString path = mPath + "/" + subdir; // may differ from subdirPath
     QgsDirectoryItem *item = new QgsDirectoryItem( this, subdir, subdirPath, path );
     // propagate signals up to top
 
@@ -1279,7 +1279,7 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
 
   mZipFileList.clear();
 
-  QgsDebugMsgLevel( QString( "path = %1 name= %2 scanZipSetting= %3 vsiPrefix= %4" ).arg( path() ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 2 );
+  QgsDebugMsgLevel( QString( "mFilePath = %1 path = %2 name= %3 scanZipSetting= %4 vsiPrefix= %5" ).arg( mFilePath ).arg( path() ).arg( name() ).arg( scanZipSetting ).arg( mVsiPrefix ), 2 );
 
   // if scanZipBrowser == no: skip to the next file
   if ( scanZipSetting == "no" )
@@ -1350,15 +1350,15 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString path, QStrin
   return itemFromPath( parent, path, name, path );
 }
 
-QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString dirPath, QString name, QString path )
+QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString filePath, QString name, QString path )
 {
   QSettings settings;
   QString scanZipSetting = settings.value( "/qgis/scanZipInBrowser2", "basic" ).toString();
   QString vsiPath = path;
   int zipFileCount = 0;
   QStringList zipFileList;
-  QFileInfo fileInfo( dirPath );
-  QString vsiPrefix = QgsZipItem::vsiPrefix( dirPath );
+  QFileInfo fileInfo( filePath );
+  QString vsiPrefix = QgsZipItem::vsiPrefix( filePath );
   QgsZipItem * zipItem = 0;
   bool populated = false;
 
@@ -1372,7 +1372,7 @@ QgsDataItem* QgsZipItem::itemFromPath( QgsDataItem* parent, QString dirPath, QSt
   if (( vsiPrefix != "/vsizip/" && vsiPrefix != "/vsitar/" ) )
     return 0;
 
-  zipItem = new QgsZipItem( parent, name, dirPath, path );
+  zipItem = new QgsZipItem( parent, name, filePath, path );
 
   if ( zipItem )
   {

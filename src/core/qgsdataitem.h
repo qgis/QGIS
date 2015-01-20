@@ -444,7 +444,7 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     static QString vsiPrefix( QString uri ) { return qgsVsiPrefix( uri ); }
 
     static QgsDataItem* itemFromPath( QgsDataItem* parent, QString path, QString name );
-    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString dirPath, QString name, QString path );
+    static QgsDataItem* itemFromPath( QgsDataItem* parent, QString filePath, QString name, QString path );
 
     static const QIcon &iconZip();
 
