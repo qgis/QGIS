@@ -2097,7 +2097,7 @@ double QgsGeometry::closestSegmentWithContext(
   double *leftOf,
   double epsilon )
 {
-  QgsDebugMsg( "Entering." );
+  QgsDebugMsgLevel( "Entering.", 3 );
 
   // TODO: implement with GEOS
   if ( mDirtyWkb ) //convert latest geos to mGeometry
@@ -2310,8 +2310,8 @@ double QgsGeometry::closestSegmentWithContext(
       break;
   } // switch (wkbType)
 
-  QgsDebugMsg( QString( "Exiting with nearest point %1, dist %2." )
-               .arg( point.toString() ).arg( sqrDist ) );
+  QgsDebugMsgLevel( QString( "Exiting with nearest point %1, dist %2." )
+                    .arg( point.toString() ).arg( sqrDist ), 3 );
 
   return sqrDist;
 }
