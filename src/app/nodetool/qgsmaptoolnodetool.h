@@ -16,7 +16,9 @@
 #ifndef QGSMAPTOOLNODETOOL_H
 #define QGSMAPTOOLNODETOOL_H
 
-#include "qgsmaptoolvertexedit.h"
+#include "qgsfeature.h"
+#include "qgsmaptooledit.h"
+#include "qgspoint.h"
 
 class QRubberBand;
 
@@ -30,7 +32,7 @@ class QgsSelectedFeature;
 typedef QSet<int> Vertexes;
 
 /**A maptool to move/deletes/adds vertices of line or polygon features*/
-class QgsMapToolNodeTool: public QgsMapToolVertexEdit
+class QgsMapToolNodeTool: public QgsMapToolEdit
 {
     Q_OBJECT
   public:

@@ -23,7 +23,7 @@
 #include <limits>
 
 QgsMapToolDeleteRing::QgsMapToolDeleteRing( QgsMapCanvas* canvas )
-    : QgsMapToolVertexEdit( canvas )
+    : QgsMapToolEdit( canvas )
     , mRubberBand( 0 )
 {
   mToolName = tr( "Delete ring" );

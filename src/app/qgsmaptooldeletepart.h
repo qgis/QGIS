@@ -41,7 +41,6 @@ class APP_EXPORT QgsMapToolDeletePart: public QgsMapToolEdit
 
   private:
     QgsVectorLayer* vlayer;
-    QList<QgsSnappingResult> mRecentSnappingResults;
 
     QgsGeometry* partUnderPoint( QPoint p, QgsFeatureId &fid, int &partNum );
 

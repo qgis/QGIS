@@ -18,8 +18,19 @@
 #include <QPoint>
 #include <cmath>
 
+
+double QgsTolerance::toleranceInMapUnits( double tolerance, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
+{
+  // converts to map units
+  if ( units == MapUnits )
+    return tolerance;
+  else
+    return tolerance * mapSettings.mapUnitsPerPixel();
+}
+
 double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
 {
+  // converts to layer units
   if ( units == MapUnits )
   {
     return tolerance;
@@ -31,6 +42,14 @@ double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer *layer, 
 double QgsTolerance::toleranceInMapUnits( double tolerance, QgsMapLayer* layer, QgsMapRenderer* renderer, UnitType units )
 {
   return toleranceInMapUnits( tolerance, layer, renderer->mapSettings(), units );
+}
+
+double QgsTolerance::vertexSearchRadius( const QgsMapSettings& mapSettings )
+{
+  QSettings settings;
+  double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
+  UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
+  return toleranceInMapUnits( tolerance, mapSettings, units );
 }
 
 double QgsTolerance::vertexSearchRadius( QgsMapLayer *layer, const QgsMapSettings &mapSettings )

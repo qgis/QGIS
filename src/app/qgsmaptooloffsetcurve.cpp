@@ -17,6 +17,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
+#include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 #include "qgsvertexmarker.h"
 #include <QDoubleSpinBox>
@@ -199,22 +200,17 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
   QgsPoint layerCoords = toLayerCoordinates( layer, e->pos() );
 
   //snap cursor to background layers
-  QList<QgsSnappingResult> results;
-  QList<QgsPoint> snapExcludePoints;
-  if ( mSnapper.snapToBackgroundLayers( e->pos(), results ) == 0 )
+  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( e->pos() );
+  if ( m.isValid() )
   {
-    if ( results.size() > 0 )
+    if ( ( m.layer() && m.layer()->id() != mSourceLayerId ) || m.featureId() != mModifiedFeature )
     {
-      QgsSnappingResult snap = results.at( 0 );
-      if ( snap.layer && snap.layer->id() != mSourceLayerId && snap.snappedAtGeometry != mModifiedFeature )
-      {
-        layerCoords = results.at( 0 ).snappedVertex;
-        mSnapVertexMarker = new QgsVertexMarker( mCanvas );
-        mSnapVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-        mSnapVertexMarker->setColor( Qt::green );
-        mSnapVertexMarker->setPenWidth( 1 );
-        mSnapVertexMarker->setCenter( layerCoords );
-      }
+      layerCoords = toLayerCoordinates( layer, m.point() );
+      mSnapVertexMarker = new QgsVertexMarker( mCanvas );
+      mSnapVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
+      mSnapVertexMarker->setColor( Qt::green );
+      mSnapVertexMarker->setPenWidth( 1 );
+      mSnapVertexMarker->setCenter( m.point() );
     }
   }
 

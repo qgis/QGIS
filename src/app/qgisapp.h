@@ -59,6 +59,7 @@ class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRectangle;
+class QgsSnappingUtils;
 class QgsUndoWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
@@ -1604,6 +1605,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsVectorLayerTools* mVectorLayerTools;
 
     QToolButton* mBtnFilterLegend;
+
+    QgsSnappingUtils* mSnappingUtils;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

@@ -35,6 +35,7 @@ class QgsMapLayer;
 class QgsMessageBar;
 class QgsPluginManagerInterface;
 class QgsRasterLayer;
+class QgsSnappingUtils;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 

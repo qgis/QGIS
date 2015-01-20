@@ -148,6 +148,7 @@
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvassnappingutils.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerstyleguiutils.h"
@@ -266,7 +267,6 @@
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsmaptoolsplitparts.h"
 #include "qgsmaptooltextannotation.h"
-#include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolsimplify.h"
 #include "qgsmeasuretool.h"
@@ -488,6 +488,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #endif
     , mComposerManager( 0 )
     , mpGpsWidget( 0 )
+    , mSnappingUtils( 0 )
 {
   if ( smInstance )
   {
@@ -566,6 +567,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // Advanced Digitizing dock
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
   mAdvancedDigitizingDockWidget->setObjectName( "AdvancedDigitizingTools" );
+
+  mSnappingUtils = new QgsMapCanvasSnappingUtils( mMapCanvas, this );
+  mMapCanvas->setSnappingUtils( mSnappingUtils );
+  connect( QgsProject::instance(), SIGNAL( snapSettingsChanged() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
+  connect( this, SIGNAL( projectRead() ), mSnappingUtils, SLOT( readConfigFromProject() ) );
 
   createActions();
   createActionGroups();
@@ -817,6 +823,7 @@ QgisApp::QgisApp()
     , mPythonUtils( 0 )
     , mComposerManager( 0 )
     , mpGpsWidget( 0 )
+    , mSnappingUtils( 0 )
 {
   smInstance = this;
   setupUi( this );

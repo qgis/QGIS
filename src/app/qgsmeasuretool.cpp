@@ -20,6 +20,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgssnappingutils.h"
 #include "qgstolerance.h"
 
 #include "qgsmeasuredialog.h"
@@ -47,7 +48,6 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
 
   mDialog = new QgsMeasureDialog( this, Qt::WindowStaysOnTopHint );
   mDialog->restorePosition();
-  mSnapper.setMapCanvas( canvas );
 
   connect( canvas, SIGNAL( destinationCrsChanged() ),
            this, SLOT( updateSettings() ) );
@@ -238,15 +238,9 @@ void QgsMeasureTool::addPoint( QgsPoint &point )
   }
 }
 
+
 QgsPoint QgsMeasureTool::snapPoint( const QPoint& p )
 {
-  QList<QgsSnappingResult> snappingResults;
-  if ( mSnapper.snapToBackgroundLayers( p, snappingResults ) != 0 || snappingResults.size() < 1 )
-  {
-    return mCanvas->getCoordinateTransform()->toMapCoordinates( p );
-  }
-  else
-  {
-    return snappingResults.constBegin()->snappedVertex;
-  }
+  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
+  return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );
 }

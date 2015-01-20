@@ -18,13 +18,13 @@
 #include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 
+#include "qgisapp.h"
+#include "qgssnappingutils.h"
 
 QgsMapMouseEvent::QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QMouseEvent* event , bool doSnap )
     :  QMouseEvent( event->type(), event->pos(), event->globalPos(), event->button(), event->buttons(), event->modifiers() )
     , mMapPoint( mapTool->canvas()->mapSettings().mapToPixel().toMapCoordinates( event->pos() ) )
-    , mSnapped( false )
     , mMapTool( mapTool )
-    , mSnapResults()
 {
   mOriginalPoint = mMapPoint;
 
@@ -41,9 +41,7 @@ QgsMapMouseEvent::QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QgsPo
                    button, button, modifiers )
     , mMapPoint( point )
     , mOriginalPoint( point )
-    , mSnapped( false )
     , mMapTool( mapTool )
-    , mSnapResults()
 {
   if ( doSnap )
     snapPoint();
@@ -56,22 +54,9 @@ void QgsMapMouseEvent::setPoint( const QgsPoint& point )
 
 bool QgsMapMouseEvent::snapPoint()
 {
-  QgsMapCanvasSnapper snapper;
-  snapper.setMapCanvas( mMapTool->canvas() );
-  mSnapped = false;
-  if ( snapper.snapToBackgroundLayers( mMapPoint, mSnapResults ) == 0 )
-  {
-    mSnapped = !mSnapResults.isEmpty();
-  }
-  if ( mSnapped )
-  {
-    mMapPoint = mSnapResults.constBegin()->snappedVertex;
-  }
-  else
-  {
-    mMapPoint = mOriginalPoint;
-  }
-  return mSnapped;
+  mSnapMatch = mMapTool->canvas()->snappingUtils()->snapToMap( mMapPoint );
+  mMapPoint = mSnapMatch.isValid() ? mSnapMatch.point() : mOriginalPoint;
+  return mSnapMatch.isValid();
 }
 
 QPoint QgsMapMouseEvent::mapToPixelCoordinates( QgsMapCanvas* canvas, const QgsPoint& point )
@@ -88,7 +73,7 @@ QgsPoint QgsMapMouseEvent::mapPoint( bool* snappedPoint ) const
 {
   if ( snappedPoint )
   {
-    *snappedPoint = mSnapped && mSnapResults.constBegin()->snappedVertexNr != -1;
+    *snappedPoint = mSnapMatch.isValid();
   }
   return mMapPoint;
 }
@@ -96,16 +81,15 @@ QgsPoint QgsMapMouseEvent::mapPoint( bool* snappedPoint ) const
 QList<QgsPoint> QgsMapMouseEvent::snappedSegment( bool* snapped ) const
 {
   QList<QgsPoint> segment =  QList<QgsPoint>();
-  if ( mSnapped )
+  if ( mSnapMatch.hasEdge() )
   {
-    foreach ( const QgsSnappingResult result, mSnapResults )
-    {
-      if ( result.beforeVertexNr != -1 && result.afterVertexNr != -1 )
-      {
-        segment << result.beforeVertex << result.afterVertex;
-        break;
-      }
-    }
+    QgsPoint pt1, pt2;
+    mSnapMatch.edgePoints( pt1, pt2 );
+    segment << pt1 << pt2;
+  }
+  else
+  {
+    // TODO: run snapToMap with only segments (resp. all hits)
   }
 
   if ( snapped )
