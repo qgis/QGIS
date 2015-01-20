@@ -50,11 +50,13 @@ goto devenv_x86_64
 
 :devenv_x86
 set GRASS_VERSION=6.4.4
-set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
+call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
+if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
+path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
-	-G "Visual Studio 9 2008" ^
+	-G "Visual Studio 10" ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe
 goto devenv
 
@@ -72,6 +74,7 @@ set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
@@ -154,7 +157,6 @@ cmake %CMAKE_OPT% ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
 	-D QWT_INCLUDE_DIR=%O4W_ROOT%/include/qwt ^
-	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
