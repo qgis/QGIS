@@ -22,7 +22,7 @@
 
 class QgsBrowserModel;
 class QModelIndex;
-class QgsBrowserTreeView;
+class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
@@ -56,36 +56,19 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     void showProperties();
     void toggleFastScan();
 
-    void stateChanged( const QModelIndex & index, QgsDataItem::State oldState );
-
   protected:
     void refreshModel( const QModelIndex& index );
 
     void showEvent( QShowEvent * event ) override;
 
-    void hideEvent( QHideEvent * event ) override;
-
     void addLayer( QgsLayerItem *layerItem );
 
-    QgsBrowserTreeView* mBrowserView;
+    QgsDockBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
     QgsBrowserTreeFilterProxyModel* mProxyModel;
     QString mInitPath;
 
   private:
-    QString expandedPathsKey() const;
-    // Get list of expanded items paths recursively
-    QStringList expandedPathsList( const QModelIndex & proxyIndex );
-
-    // Expand path recursively to root
-    void expand( const QModelIndex & proxyIndex );
-    // returns true if expanded from root to item
-    bool treeExpanded( const QModelIndex & proxyIndex );
-
-    void saveState();
-    void restoreState();
-    // returns true if at least one descendat is expanded, used in refresh
-    bool hasExpandedDescendant( const QModelIndex& proxyIndex ) const;
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H

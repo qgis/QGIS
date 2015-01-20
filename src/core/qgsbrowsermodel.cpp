@@ -231,6 +231,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     return item->icon();
   }
+  else if ( role == QgsBrowserModel::PathRole )
+  {
+    return item->path();
+  }
   else
   {
     // unsupported role
@@ -284,6 +288,14 @@ int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
 
 QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
 {
+  return findPath( this, path, matchFlag );
+}
+
+QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, QString path, Qt::MatchFlag matchFlag )
+{
+  if ( !model )
+    return QModelIndex();
+
   QModelIndex theIndex; // starting from root
   bool foundChild = true;
 
@@ -291,21 +303,19 @@ QModelIndex QgsBrowserModel::findPath( QString path, Qt::MatchFlag matchFlag )
   {
     foundChild = false; // assume that the next child item will not be found
 
-    for ( int i = 0; i < rowCount( theIndex ); i++ )
+    for ( int i = 0; i < model->rowCount( theIndex ); i++ )
     {
-      QModelIndex idx = index( i, 0, theIndex );
-      QgsDataItem *item = dataItem( idx );
-      if ( !item )
-        return QModelIndex(); // an error occurred
+      QModelIndex idx = model->index( i, 0, theIndex );
 
-      if ( item->path() == path )
+      QString itemPath = model->data( idx, PathRole ).toString();
+      if ( itemPath == path )
       {
-        QgsDebugMsg( "Arrived " + item->path() );
+        QgsDebugMsg( "Arrived " + itemPath );
         return idx; // we have found the item we have been looking for
       }
 
       // paths are slash separated identifier
-      if ( path.startsWith( item->path() + "/" ) )
+      if ( path.startsWith( itemPath + "/" ) )
       {
         foundChild = true;
         theIndex = idx;

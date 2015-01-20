@@ -49,6 +49,11 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     explicit QgsBrowserModel( QObject *parent = 0 );
     ~QgsBrowserModel();
 
+    enum ItemDataRole
+    {
+      // item path used to access path in the tree, see QgsDataItem::mPath
+      PathRole = Qt::UserRole
+    };
     // implemented methods from QAbstractItemModel for read-only access
 
     /** Used by other components to obtain information about each item provided by the model.
@@ -108,6 +113,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      *        item with the longest match from start with path (to get as close/deep as possible to deleted item).
      * @return model index, invalid if item not found */
     QModelIndex findPath( QString path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
+    static QModelIndex findPath( QAbstractItemModel *model, QString path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
 
     void connectItem( QgsDataItem *item );
 

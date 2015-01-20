@@ -126,6 +126,7 @@ qgsattributetypeloaddialog.cpp
 qgsblendmodecombobox.cpp
 qgsbusyindicatordialog.cpp
 qgscharacterselectdialog.cpp
+qgsbrowsertreeview.cpp
 qgscollapsiblegroupbox.cpp
 qgscolorbutton.cpp
 qgscolorbuttonv2.cpp
@@ -242,6 +243,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsblendmodecombobox.h
   qgsbusyindicatordialog.h
   qgscharacterselectdialog.h
+  qgsbrowsertreeview.h
   qgscodeeditor.h
   qgscodeeditorcss.h
   qgscodeeditorhtml.h
