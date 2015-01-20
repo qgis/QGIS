@@ -102,7 +102,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                 self.tr('Could not open SAGA algorithm: %s\n%s' % (descriptionFile, str(e))))
     def getDescription(self):
-        return 'SAGA (%s)' % SagaUtils.getSagaInstalledVersion()
+        version = SagaUtils.getSagaInstalledVersion()
+        return 'SAGA (%s)' %  version if version is not None else 'SAGA'
 
     def getName(self):
         return 'saga'

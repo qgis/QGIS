@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 import stat
-import traceback
 import subprocess
 from PyQt4.QtCore import *
 from qgis.core import *

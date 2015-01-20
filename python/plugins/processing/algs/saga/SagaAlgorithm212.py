@@ -304,8 +304,12 @@ class SagaAlgorithm212(GeoAlgorithm):
     def exportRasterLayer(self, source):
         global sessionExportedLayers
         if source in sessionExportedLayers:
-            self.exportedLayers[source] = sessionExportedLayers[source]
-            return None
+            exportedLayer = sessionExportedLayers[source]
+            if os.path.exists(exportedLayer):
+                self.exportedLayers[source] = exportedLayer
+                return None
+            else:
+                del sessionExportedLayers[source]
         layer = dataobjects.getObjectFromUri(source, False)
         if layer:
             filename = str(layer.name())
