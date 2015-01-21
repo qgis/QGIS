@@ -33,7 +33,7 @@ for n, feat in enumerate(processing.features(polyLayer)):
 			featres.setGeometry(geom)
 		else:
 			featres.setGeometry(geom)
-			geomres = [geoms[i].asPolygon() for i,a in geomarea[-1 * To_keep]]
+			geomres = [geoms[i].asPolygon() for i,a in geomarea[-1 * To_keep :]]
 			featres.setGeometry(QgsGeometry.fromMultiPolygon(geomres))
 		writer.addFeature(featres)
 	else:
