@@ -838,17 +838,15 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* d
   }
 }
 
-void QgsOfflineEditing::copySymbology( const QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer )
+void QgsOfflineEditing::copySymbology( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer )
 {
   QString error;
   QDomDocument doc;
-  QDomElement node = doc.createElement( "symbology" );
-  doc.appendChild( node );
-  sourceLayer->writeSymbology( node, doc, error );
+  sourceLayer->exportNamedStyle( doc, error );
 
   if ( error.isEmpty() )
   {
-    targetLayer->readSymbology( node, error );
+    targetLayer->importNamedStyle( doc, error );
   }
   if ( !error.isEmpty() )
   {
