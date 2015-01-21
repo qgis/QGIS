@@ -195,42 +195,57 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       return false;
     }
 
-    bool filterAcceptsRow( int sourceRow,
-                           const QModelIndex &sourceParent ) const override
+    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override
     {
-      // if ( filterRegExp().pattern() == QString( "" ) ) return true;
-      if ( mFilter == "" ) return true;
+      if ( mFilter == "" || !mModel ) return true;
 
-      QModelIndex index = sourceModel()->index( sourceRow, 0, sourceParent );
-      QgsDataItem* item = mModel->dataItem( index );
-      QgsDataItem* parentItem = mModel->dataItem( sourceParent );
+      QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+      return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
+    }
 
-      // accept "invalid" items and data collections
-      if ( ! item )
-        return true;
-        if ( qobject_cast<QgsDataCollectionItem*>( item ) )
+    // returns true if at least one ancestor is accepted by filter
+    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const
+      {
+        if ( !mModel )
           return true;
 
-          // filter layer items - this could be delegated to the providers but a little overkill
-          if ( parentItem && qobject_cast<QgsLayerItem*>( item ) )
-        {
-          // filter normal files by extension
-          if ( qobject_cast<QgsDirectoryItem*>( parentItem ) )
-            {
-              QFileInfo fileInfo( item->path() );
-              return filterAcceptsString( fileInfo.fileName() );
-            }
-            // filter other items (postgis, etc.) by name
-            else if ( qobject_cast<QgsDataCollectionItem*>( parentItem ) )
-            {
-              return filterAcceptsString( item->name() );
-            }
-          }
+        QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+        if ( !sourceParentIndex.isValid() )
+          return false;
+        if ( filterAcceptsItem( sourceParentIndex ) )
+          return true;
 
-    // accept anything else
-    return true;
-  }
+        return filterAcceptsAncestor( sourceParentIndex );
+      }
+
+    // returns true if at least one descendant s accepted by filter
+    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const
+    {
+      if ( !mModel )
+        return true;
+
+      for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
+      {
+        QgsDebugMsg( QString( "i = %1" ).arg( i ) );
+        QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
+        if ( filterAcceptsItem( sourceChildIndex ) )
+          return true;
+        if ( filterAcceptsDescendant( sourceChildIndex ) )
+          return true;
+      }
+      return false;
+    }
+
+    // filter accepts item name
+    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const
+    {
+      if ( !mModel )
+        return true;
+      return filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() );
+    }
 };
+
 QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
 {
