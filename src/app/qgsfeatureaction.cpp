@@ -77,7 +77,8 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog );
+      QgsFeature& feat = const_cast<QgsFeature&>( *dialog->feature() );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), feat, mLayer, i, -1, dialog );
       dialog->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 
