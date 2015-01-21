@@ -268,6 +268,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     , valid( false )
     , featuresCounted( -1 )
     , mDataModified( false )
+    , mWriteAccess( false )
 {
   QgsCPLErrorHandler handler;
 
@@ -368,7 +369,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   if ( !openReadOnly )
     ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
 
-  if ( !ogrDataSource )
+  if ( ogrDataSource )
+  {
+    mWriteAccess = true;
+  }
+  else
   {
     QgsDebugMsg( "OGR failed to opened in update mode, trying in read-only mode" );
 
@@ -1446,19 +1451,19 @@ int QgsOgrProvider::capabilities() const
       ability |= QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
     }
 
-    if ( OGR_L_TestCapability( ogrLayer, "SequentialWrite" ) )
+    if ( mWriteAccess && OGR_L_TestCapability( ogrLayer, "SequentialWrite" ) )
       // true if the CreateFeature() method works for this layer.
     {
       ability |= QgsVectorDataProvider::AddFeatures;
     }
 
-    if ( OGR_L_TestCapability( ogrLayer, "DeleteFeature" ) )
+    if ( mWriteAccess && OGR_L_TestCapability( ogrLayer, "DeleteFeature" ) )
       // true if this layer can delete its features
     {
       ability |= DeleteFeatures;
     }
 
-    if ( OGR_L_TestCapability( ogrLayer, "RandomWrite" ) )
+    if ( mWriteAccess && OGR_L_TestCapability( ogrLayer, "RandomWrite" ) )
       // true if the SetFeature() method is operational on this layer.
     {
       // TODO According to http://shapelib.maptools.org/ (Shapefile C Library V1.2)
@@ -1506,12 +1511,12 @@ int QgsOgrProvider::capabilities() const
     }
 #endif
 
-    if ( OGR_L_TestCapability( ogrLayer, "CreateField" ) )
+    if ( mWriteAccess && OGR_L_TestCapability( ogrLayer, "CreateField" ) )
     {
       ability |= AddAttributes;
     }
 
-    if ( OGR_L_TestCapability( ogrLayer, "DeleteField" ) )
+    if ( mWriteAccess && OGR_L_TestCapability( ogrLayer, "DeleteField" ) )
     {
       ability |= DeleteAttributes;
     }
