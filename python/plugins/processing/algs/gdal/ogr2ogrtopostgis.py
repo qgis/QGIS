@@ -142,7 +142,7 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
         host = unicode(self.getParameterValue(self.HOST))
@@ -195,6 +195,7 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
+        arguments.append(self.ogrLayerName(inLayer))
         if index:
             arguments.append(indexstring)
         if launder:
