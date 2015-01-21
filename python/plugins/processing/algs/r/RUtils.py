@@ -124,7 +124,7 @@ class RUtils:
         if os.path.exists(RUtils.getConsoleOutputFilename()):
             lines = open(RUtils.getConsoleOutputFilename())
             for line in lines:
-                line = line.strip('\n').strip(' ')
+                line = line.strip().strip(' ')
                 if line.startswith('>'):
                     line = line[1:].strip(' ')
                     if line in RUtils.verboseCommands:
