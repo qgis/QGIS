@@ -42,7 +42,9 @@ class SagaAlgorithmProvider(AlgorithmProvider):
 
     supportedVersions = {"2.1.2": ("2.1.2", SagaAlgorithm212),
                           "2.1.3": ("2.1.3", SagaAlgorithm213),
-                          "2.1.4": ("2.1.3", SagaAlgorithm214)}
+                          "2.1.4": ("2.1.3", SagaAlgorithm214),
+                          # to allow testing upcoming release
+                          "2.2.0": ("2.1.3", SagaAlgorithm214)}
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
