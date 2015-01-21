@@ -68,6 +68,10 @@ class TestQgsImageOperation : public QObject
     void stackBlur();
     void alphaOnlyBlur();
 
+    //gaussian blur
+    void gaussianBlur();
+    void gaussianBlurSmall();
+
     //flip
     void flipHorizontal();
     void flipVertical();
@@ -78,7 +82,6 @@ class TestQgsImageOperation : public QObject
     QString mSampleImage;
 
     bool imageCheck( QString testName , QImage &image, int mismatchCount );
-
 };
 
 void TestQgsImageOperation::initTestCase()
@@ -332,6 +335,27 @@ void TestQgsImageOperation::alphaOnlyBlur()
   QgsImageOperation::stackBlur( image, 10, true );
 
   bool result = imageCheck( QString( "imageop_stackblur_alphaonly" ), image, 0 );
+  QVERIFY( result );
+}
+
+void TestQgsImageOperation::gaussianBlur()
+{
+  QImage image( mSampleImage );
+  QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 30 );
+
+  bool result = imageCheck( QString( "imageop_gaussianblur" ), *blurredImage, 0 );
+  delete blurredImage;
+  QVERIFY( result );
+}
+
+//todo small, zero radius
+void TestQgsImageOperation::gaussianBlurSmall()
+{
+  QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
+
+  bool result = imageCheck( QString( "imageop_gaussianblur_small" ), *blurredImage, 0 );
+  delete blurredImage;
   QVERIFY( result );
 }
 

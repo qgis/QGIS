@@ -33,6 +33,9 @@ class QgsVectorColorRampV2;
  * to the calling procedure to ensure that any passed images are of the correct
  * format.
  *
+ * Operations are written to either modify an image in place or return a new image, depending
+ * on which is faster for the particular operation.
+ *
  * \note These operations do not work using premultiplied ARGB32_Premultiplied images
  * - please make sure the images are converted to standard ARGB32 images prior to calling
  * these operations.
@@ -145,6 +148,14 @@ class CORE_EXPORT QgsImageOperation
      */
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
 
+    /**Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
+     * quality blur.
+     * @param image QImage to blur
+     * @param radius blur radius in pixels
+     * @returns blurred image
+     */
+    static QImage* gaussianBlur( QImage &image, const int radius );
+
     /**Flips an image horizontally or vertically
      * @param image QImage to flip
      * @param type type of flip to perform (horizontal or vertical)
@@ -167,6 +178,10 @@ class CORE_EXPORT QgsImageOperation
       unsigned int lineLength;
       QImage* image;
     };
+
+    //for rect operations
+    template <typename RectOperation> static void runRectOperation( QImage &image, RectOperation& operation );
+    template <class RectOperation> static void runRectOperationOnWholeImage( QImage &image, RectOperation& operation );
 
     //for per pixel operations
     template <class PixelOperation> static void runPixelOperation( QImage &image, PixelOperation& operation );
@@ -376,6 +391,36 @@ class CORE_EXPORT QgsImageOperation
         int mi1;
         int mi2;
     };
+
+    static double *createGaussianKernel( const int radius );
+
+    class GaussianBlurOperation
+    {
+      public:
+        GaussianBlurOperation( int radius, LineOperationDirection direction, QImage* destImage, double* kernel )
+            : mRadius( radius )
+            , mDirection( direction )
+            , mDestImage( destImage )
+            , mDestImageBpl( destImage->bytesPerLine() )
+            , mKernel( kernel )
+        {}
+
+        typedef void result_type;
+
+        void operator()( ImageBlock& block );
+
+      private:
+        int mRadius;
+        LineOperationDirection mDirection;
+        QImage* mDestImage;
+        int mDestImageBpl;
+        double* mKernel;
+
+        inline QRgb gaussianBlurVertical( const int posy, unsigned char *sourceFirstLine, const int sourceBpl, const int height );
+        inline QRgb gaussianBlurHorizontal( const int posx, unsigned char *sourceFirstLine, const int width );
+    };
+
+    //flip
 
 
     class FlipLineOperation

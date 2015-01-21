@@ -3,7 +3,17 @@
  * \brief Contains operations and filters which apply to QImages
  *
  * A set of optimised pixel manipulation operations and filters which can be applied
- * to QImages.
+ * to QImages. All operations only apply to ARGB32 format images, and it is left up
+ * to the calling procedure to ensure that any passed images are of the correct
+ * format.
+ *
+ * Operations are written to either modify an image in place or return a new image, depending
+ * on which is faster for the particular operation.
+ *
+ * \note These operations do not work using premultiplied ARGB32_Premultiplied images
+ * - please make sure the images are converted to standard ARGB32 images prior to calling
+ * these operations.
+ *
  * \note Added in version 2.7
  */
 class QgsImageOperation
@@ -107,6 +117,14 @@ class QgsImageOperation
      * @param alphaOnly set to true to blur only the alpha component of the image
      */
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
+    
+    /**Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
+     * quality blur.
+     * @param image QImage to blur
+     * @param radius blur radius in pixels
+     * @returns blurred image
+     */
+    static QImage* gaussianBlur( QImage &image, const int radius ) /Factory/;
     
     /**Flips an image horizontally or vertically
      * @param image QImage to flip

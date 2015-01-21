@@ -62,6 +62,36 @@ void QgsImageOperation::runPixelOperationOnWholeImage( QImage &image, PixelOpera
   }
 }
 
+//rect operations
+
+template <typename RectOperation>
+void QgsImageOperation::runRectOperation( QImage &image, RectOperation& operation )
+{
+  //possibly could be tweaked for rect operations
+  if ( image.height() * image.width() < 100000 )
+  {
+    //small image, don't multithread
+    //this threshold was determined via testing various images
+    runRectOperationOnWholeImage( image, operation );
+  }
+  else
+  {
+    //large image, multithread operation
+    runBlockOperationInThreads( image, operation, ByRow );
+  }
+}
+
+template <class RectOperation>
+void QgsImageOperation::runRectOperationOnWholeImage( QImage &image, RectOperation& operation )
+{
+  ImageBlock fullImage;
+  fullImage.beginLine = 0;
+  fullImage.endLine = image.height();
+  fullImage.lineLength = image.width();
+  fullImage.image = &image;
+
+  operation( fullImage );
+}
 
 //linear operations
 
@@ -545,6 +575,152 @@ void QgsImageOperation::StackBlurLineOperation::operator()( QRgb* startRef, cons
   }
 }
 
+//gaussian blur
+
+QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius )
+{
+  int width = image.width();
+  int height = image.height();
+
+  if ( radius <= 0 )
+  {
+    //just make an unchanged copy
+    QImage* copy = new QImage( image.copy() );
+    return copy;
+  }
+
+  double* kernel = createGaussianKernel( radius );
+
+  //blur along rows
+  QImage xBlurImage = QImage( width, height, QImage::Format_ARGB32 );
+  GaussianBlurOperation rowBlur( radius, QgsImageOperation::ByRow, &xBlurImage, kernel );
+  runRectOperation( image, rowBlur );
+
+  //blur along columns
+  QImage* yBlurImage = new QImage( width, height, QImage::Format_ARGB32 );
+  GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage, kernel );
+  runRectOperation( xBlurImage, colBlur );
+
+  delete[] kernel;
+  return yBlurImage;
+}
+
+void QgsImageOperation::GaussianBlurOperation::operator()( QgsImageOperation::ImageBlock &block )
+{
+  int width = block.image->width();
+  int height = block.image->height();
+  int sourceBpl = block.image->bytesPerLine();
+
+  unsigned char* outputLineRef = mDestImage->scanLine( block.beginLine );
+  QRgb* destRef = 0;
+  if ( mDirection == ByRow )
+  {
+    unsigned char* sourceFirstLine = block.image->scanLine( 0 );
+    unsigned char* sourceRef;
+
+    //blur along rows
+    for ( unsigned int y = block.beginLine; y < block.endLine; ++y, outputLineRef += mDestImageBpl )
+    {
+      sourceRef = sourceFirstLine;
+      destRef = ( QRgb* )outputLineRef;
+      for ( int x = 0; x < width; ++x, ++destRef, sourceRef += 4 )
+      {
+        *destRef = gaussianBlurVertical( y, sourceRef, sourceBpl, height );
+      }
+    }
+  }
+  else
+  {
+    unsigned char* sourceRef = block.image->scanLine( block.beginLine );
+    for ( unsigned int y = block.beginLine; y < block.endLine; ++y, outputLineRef += mDestImageBpl, sourceRef += sourceBpl )
+    {
+      destRef = ( QRgb* )outputLineRef;
+      for ( int x = 0; x < width; ++x, ++destRef )
+      {
+        *destRef = gaussianBlurHorizontal( x, sourceRef, width );
+      }
+    }
+  }
+}
+
+inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurVertical( const int posy, unsigned char *sourceFirstLine, const int sourceBpl, const int height )
+{
+  double r = 0;
+  double b = 0;
+  double g = 0;
+  double a = 0;
+  int y;
+  unsigned char *ref;
+
+  for ( int i = 0; i <= mRadius*2; ++i )
+  {
+    y = qBound( 0, posy + ( i - mRadius ), height - 1 );
+    ref = sourceFirstLine + sourceBpl * y;
+
+    QRgb* refRgb = ( QRgb* )ref;
+    r += mKernel[i] * qRed( *refRgb );
+    g += mKernel[i] * qGreen( *refRgb );
+    b += mKernel[i] * qBlue( *refRgb );
+    a += mKernel[i] * qAlpha( *refRgb );
+  }
+
+  return qRgba( r, g, b, a );
+}
+
+inline QRgb QgsImageOperation::GaussianBlurOperation::gaussianBlurHorizontal( const int posx, unsigned char *sourceFirstLine, const int width )
+{
+  double r = 0;
+  double b = 0;
+  double g = 0;
+  double a = 0;
+  int x;
+  unsigned char *ref;
+
+  for ( int i = 0; i <= mRadius*2; ++i )
+  {
+    x = qBound( 0, posx + ( i - mRadius ), width - 1 );
+    ref = sourceFirstLine + x * 4;
+
+    QRgb* refRgb = ( QRgb* )ref;
+    r += mKernel[i] * qRed( *refRgb );
+    g += mKernel[i] * qGreen( *refRgb );
+    b += mKernel[i] * qBlue( *refRgb );
+    a += mKernel[i] * qAlpha( *refRgb );
+  }
+
+  return qRgba( r, g, b, a );
+}
+
+
+double* QgsImageOperation::createGaussianKernel( const int radius )
+{
+  double* kernel = new double[ radius*2+1 ];
+  double sigma = radius / 3.0;
+  double twoSigmaSquared = 2 * sigma * sigma;
+  double coefficient = 1.0 / sqrt( M_PI * twoSigmaSquared );
+  double expCoefficient = -1.0 / twoSigmaSquared;
+
+  double sum = 0;
+  double result;
+  for ( int i = 0; i <= radius; ++i )
+  {
+    result = coefficient * exp( i * i * expCoefficient );
+    kernel[ radius - i ] = result;
+    sum += result;
+    if ( i > 0 )
+    {
+      kernel[radius + i] = result;
+      sum += result;
+    }
+  }
+  //normalize
+  for ( int i = 0; i <= radius * 2; ++i )
+  {
+    kernel[i] /= sum;
+  }
+  return kernel;
+}
+
 
 // flip
 
@@ -583,3 +759,7 @@ void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int
 
   delete[] tempLine;
 }
+
+
+
+
