@@ -152,7 +152,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         port = settings.value(mySettings + '/port')
         password = settings.value(mySettings + '/password')
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
         schema = unicode(self.getParameterValue(self.SCHEMA))
@@ -200,6 +200,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
+        arguments.append(self.ogrLayerName(inLayer))
         if index:
             arguments.append(indexstring)
         if launder:
