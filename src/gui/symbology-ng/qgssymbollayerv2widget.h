@@ -20,13 +20,9 @@
 #include <qgsdatadefinedbutton.h>
 
 #include <QWidget>
-#include <QMap>
-#include <QMap>
 
 class QgsSymbolLayerV2;
 class QgsVectorLayer;
-class QgsDataDefinedButton;
-
 
 class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 {
@@ -41,7 +37,6 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
   protected:
     const QgsVectorLayer* mVectorLayer;
-    QMap< QString, QgsDataDefinedButton* > mDataDefinedPropertyButtons; // indexed by property name
 
     void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
 
