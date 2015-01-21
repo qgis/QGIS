@@ -29,14 +29,6 @@ QgsDataDefined::QgsDataDefined( bool active,
     , mExpressionString( expr )
     , mField( field )
 {
-  mExpression = 0;
-  mExpressionPrepared = false;
-}
-
-QgsDataDefined::~QgsDataDefined()
-{
-  mExpressionParams.clear();
-  delete mExpression;
 }
 
 bool QgsDataDefined::hasDefaultValues() const
@@ -46,21 +38,26 @@ bool QgsDataDefined::hasDefaultValues() const
 
 void QgsDataDefined::setExpressionString( const QString &expr )
 {
-  mExpressionString = expr;
-  mExpressionPrepared = false;
+  if ( mExpressionString != expr )
+  {
+    mExpressionString = expr;
+    mExpression.clear();
+  }
 }
 
 bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
 {
+  mExpression.clear();
+
   if ( !mUseExpression || mExpressionString.isEmpty() )
   {
     return false;
   }
 
-  mExpression = new QgsExpression( mExpressionString );
-  if ( mExpression->hasParserError() )
+  QSharedPointer< QgsExpression > expression( new QgsExpression( mExpressionString ) );
+  if ( expression->hasParserError() )
   {
-    QgsDebugMsg( "Parser error:" + mExpression->parserErrorString() );
+    QgsDebugMsg( "Parser error:" + expression->parserErrorString() );
     return false;
   }
 
@@ -72,29 +69,29 @@ bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
     double scale = scaleV.toDouble( &ok );
     if ( ok )
     {
-      mExpression->setScale( scale );
+      expression->setScale( scale );
     }
   }
 
   if ( layer )
   {
-    mExpression->prepare( layer->pendingFields() );
+    expression->prepare( layer->pendingFields() );
   }
   else
   {
     //preparing expression without a layer set, so pass empty field list
     QgsFields empty;
-    mExpression->prepare( empty );
+    expression->prepare( empty );
   }
 
-  if ( mExpression->hasEvalError() )
+  if ( expression->hasEvalError() )
   {
-    QgsDebugMsg( "Prepare error:" + mExpression->evalErrorString() );
+    QgsDebugMsg( "Prepare error:" + expression->evalErrorString() );
     return false;
   }
 
-  mExpressionPrepared = true;
-  mExprRefColmuns = mExpression->referencedColumns();
+  mExprRefColmuns = expression->referencedColumns();
+  mExpression = expression;
 
   return true;
 }
@@ -108,7 +105,7 @@ QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
 
   if ( mUseExpression )
   {
-    if ( !mExpression || !mExpressionPrepared )
+    if ( !mExpression.data() )
     {
       prepareExpression( layer );
     }

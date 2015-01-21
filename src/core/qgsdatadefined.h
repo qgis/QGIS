@@ -17,11 +17,10 @@
 
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpression.h"
 
 #include <QStringList>
-
-class QgsExpression;
-
+#include <QSharedPointer>
 
 /** \ingroup core
  * \class QgsDataDefined
@@ -44,7 +43,7 @@ class CORE_EXPORT QgsDataDefined
                     const QString& expr = QString(),
                     const QString& field = QString() );
 
-    ~QgsDataDefined();
+    // default cpy ctor, assigment and dtor are OK
 
     /**Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
@@ -69,9 +68,9 @@ class CORE_EXPORT QgsDataDefined
     void insertExpressionParam( QString key, QVariant param );
 
     bool prepareExpression( QgsVectorLayer* layer );
-    bool expressionIsPrepared() const { return mExpressionPrepared; }
+    bool expressionIsPrepared() const { return mExpression.data(); }
 
-    QgsExpression* expression() { return mExpression; }
+    QgsExpression* expression() { return mExpression.data(); }
     QStringList referencedColumns( QgsVectorLayer* layer );
 
     QString field() const { return mField; }
@@ -102,7 +101,7 @@ class CORE_EXPORT QgsDataDefined
     bool operator!=( const QgsDataDefined &other ) const;
 
   private:
-    QgsExpression* mExpression;
+    QSharedPointer< QgsExpression > mExpression;
 
     bool mActive;
     bool mUseExpression;
@@ -110,7 +109,6 @@ class CORE_EXPORT QgsDataDefined
     QString mField;
 
     QMap<QString, QVariant> mExpressionParams;
-    bool mExpressionPrepared;
     QStringList mExprRefColmuns;
 };
 
