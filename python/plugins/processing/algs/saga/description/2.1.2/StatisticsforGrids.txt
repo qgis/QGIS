@@ -1,5 +1,5 @@
 Statistics for Grids
-geostatistics_grid
+statistics_grid
 ParameterMultipleInput|GRIDS|Grids|3|False
 OutputRaster|MEAN|Arithmetic Mean
 OutputRaster|MIN|Minimum

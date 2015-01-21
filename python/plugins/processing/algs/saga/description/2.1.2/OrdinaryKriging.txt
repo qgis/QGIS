@@ -1,5 +1,5 @@
 Ordinary Kriging
-geostatistics_kriging
+statistics_kriging
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|ZFIELD|Attribute|POINTS|-1|False
 Hardcoded|-TARGET 0

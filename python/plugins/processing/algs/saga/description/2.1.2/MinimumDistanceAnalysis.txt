@@ -1,4 +1,4 @@
 Minimum Distance Analysis
-geostatistics_points
+statistics_points
 ParameterVector|POINTS|Points|0|False
 OutputTable|TABLE|Minimum Distance Analysis

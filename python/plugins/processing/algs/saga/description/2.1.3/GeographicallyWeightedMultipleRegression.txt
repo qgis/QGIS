@@ -1,5 +1,5 @@
 Geographically Weighted Multiple Regression
-geostatistics_regression
+statistics_regression
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|DEPENDENT|Dependent Variable|POINTS|-1|False
 Hardcoded|-TARGET_DEFINITION 0

@@ -1,5 +1,5 @@
 Regression analysis|Regression Analysis (Points/Grid)
-geostatistics_regression
+statistics_regression
 ParameterRaster|GRID|Grid|False
 ParameterVector|SHAPES|Shapes|-1|False
 ParameterTableField|ATTRIBUTE|Attribute|SHAPES|-1|False

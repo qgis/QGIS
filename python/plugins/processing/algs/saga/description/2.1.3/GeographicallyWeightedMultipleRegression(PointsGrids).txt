@@ -1,5 +1,5 @@
 Geographically Weighted Multiple Regression (Points/Grids)
-geostatistics_regression
+statistics_regression
 ParameterMultipleInput|PREDICTORS|Predictors|3.0|False
 ParameterBoolean|PARAMETERS                        |Output of Regression Parameters|True
 ParameterVector|POINTS|Points|0|False

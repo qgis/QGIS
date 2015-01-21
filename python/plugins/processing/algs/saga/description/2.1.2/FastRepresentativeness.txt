@@ -1,5 +1,5 @@
 Fast Representativeness
-geostatistics_grid
+statistics_grid
 ParameterRaster|INPUT|Input|False
 ParameterNumber|LOD|Level of Generalisation|None|None|16
 OutputRaster|RESULT|Output

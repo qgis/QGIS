@@ -1,5 +1,5 @@
 Multiple Regression Analysis (Points/Grids)
-geostatistics_regression
+statistics_regression
 ParameterMultipleInput|GRIDS|Grids|3|False
 ParameterVector|SHAPES|Shapes|-1|False
 ParameterTableField|ATTRIBUTE|Attribute|SHAPES|-1|False

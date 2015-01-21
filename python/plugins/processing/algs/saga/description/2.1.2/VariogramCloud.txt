@@ -1,5 +1,5 @@
 Variogram Cloud
-geostatistics_points
+statistics_points
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
 ParameterNumber|DISTMAX|Maximum Distance|None|None|0.0

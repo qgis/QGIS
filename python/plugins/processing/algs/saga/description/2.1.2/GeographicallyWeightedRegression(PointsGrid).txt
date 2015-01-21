@@ -1,5 +1,5 @@
 Geographically Weighted Regression (Points/Grid)
-geostatistics_regression
+statistics_regression
 ParameterRaster|PREDICTOR|Predictor|False
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|DEPENDENT|Dependent Variable|POINTS|-1|False

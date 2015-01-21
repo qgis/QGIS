@@ -30,10 +30,10 @@ class SagaGroupNameDecorator:
 
     groups = {}
     groups['contrib_a_perego'] = 'Contributions'
-    groups['geostatistics_grid'] = 'Geostatistics'
-    groups['geostatistics_kriging'] = 'Kriging'
-    groups['geostatistics_points'] = 'Geostatistics'
-    groups['geostatistics_regression'] = 'Geostatistics'
+    groups['statistics_grid'] = 'Geostatistics'
+    groups['statistics_kriging'] = 'Kriging'
+    groups['statistics_points'] = 'Geostatistics'
+    groups['statistics_regression'] = 'Geostatistics'
     groups['grid_analysis'] = 'Grid - Analysis'
     groups['grid_calculus'] = 'Grid - Calculus'
     groups['grid_calculus_bsl'] = 'Grid - Calculus'

@@ -1,5 +1,5 @@
 Directional Statistics for Single Grid
-geostatistics_grid
+statistics_grid
 ParameterRaster|GRID|Grid|False
 ParameterVector|POINTS|Points|-1|True
 ParameterNumber|DIRECTION|Direction [Degree]|None|None|0.0

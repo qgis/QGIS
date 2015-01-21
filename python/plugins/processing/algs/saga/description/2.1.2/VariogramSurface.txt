@@ -1,5 +1,5 @@
 Variogram Surface
-geostatistics_points
+statistics_points
 ParameterVector|POINTS|Points|0|False
 ParameterTableField|FIELD|Attribute|POINTS|-1|False
 ParameterNumber|DISTCOUNT|Number of Distance Classes|1.0|None|10

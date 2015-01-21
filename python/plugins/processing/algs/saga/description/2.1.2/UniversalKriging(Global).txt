@@ -1,5 +1,5 @@
 Universal Kriging (Global)
-geostatistics_kriging
+statistics_kriging
 ParameterVector|SHAPES|Points|0|False
 ParameterTableField|FIELD|Attribute|SHAPES|-1|False
 ParameterBoolean|BVARIANCE              |Create Variance Grid|True
