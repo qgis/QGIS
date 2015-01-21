@@ -104,7 +104,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
     void applyAttributeValueChanges( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId, int commitNo );
     void updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* db, int layerId );
-    void copySymbology( const QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
+    void copySymbology( QgsVectorLayer* sourceLayer, QgsVectorLayer* targetLayer );
     QMap<int, int> attributeLookup( QgsVectorLayer* offlineLayer, QgsVectorLayer* remoteLayer );
 
     void showWarning( const QString& message );
