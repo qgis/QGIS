@@ -228,11 +228,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if ( !thePath.startsWith( vsiPrefix ) )
       thePath = vsiPrefix + thePath;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
+    // no need to change the name I believe
+    /*
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
       name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
     }
+    */
   }
 
   // return item without testing if:
