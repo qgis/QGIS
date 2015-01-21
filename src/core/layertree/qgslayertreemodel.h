@@ -216,21 +216,40 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
     QList<QgsLayerTreeModelLegendNode*> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes );
 
+    int legendRootRowCount( QgsLayerTreeLayer* nL ) const;
+    int legendNodeRowCount( QgsLayerTreeModelLegendNode* node ) const;
+    QModelIndex legendRootIndex( int row, int column, QgsLayerTreeLayer* nL ) const;
+    QModelIndex legendNodeIndex( int row, int column, QgsLayerTreeModelLegendNode* node ) const;
+    QVariant legendNodeData( QgsLayerTreeModelLegendNode* node, int role ) const;
+    Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode* node ) const;
+    bool legendEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
+    QIcon legendIconEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
+    void legendCleanup();
+    void legendInvalidateMapBasedData();
+
   protected:
     //! Pointer to the root node of the layer tree. Not owned by the model
     QgsLayerTreeGroup* mRootNode;
     //! Set of flags for the model
     Flags mFlags;
-    //! Active legend nodes for each layer node. May have been filtered.
-    //! Owner of legend nodes is still mOriginalLegendNodes !
-    QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelLegendNode*> > mLegendNodes;
-    //! Data structure for storage of legend nodes for each layer.
-    //! These are nodes as received from QgsMapLayerLegend
-    QMap<QgsLayerTreeLayer*, QList<QgsLayerTreeModelLegendNode*> > mOriginalLegendNodes;
     //! Current index - will be underlined
     QPersistentModelIndex mCurrentIndex;
     //! Minimal number of nodes when legend should be automatically collapsed. -1 = disabled
     int mAutoCollapseLegendNodesCount;
+
+    struct LayerLegendData
+    {
+      //! Active legend nodes. May have been filtered.
+      //! Owner of legend nodes is still originalNodes !
+      QList<QgsLayerTreeModelLegendNode*> activeNodes;
+      //! Data structure for storage of legend nodes.
+      //! These are nodes as received from QgsMapLayerLegend
+      QList<QgsLayerTreeModelLegendNode*> originalNodes;
+      //LayerLegendTreeNode* treeRoot; // if null using ordinary
+    };
+
+    //! Per layer data about layer's legend nodes
+    QMap<QgsLayerTreeLayer*, LayerLegendData> mLegend;
 
     QFont mFontLayer;
     QFont mFontGroup;
