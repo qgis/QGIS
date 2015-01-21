@@ -111,8 +111,11 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAt
 
   mMenuBar = new QMenuBar( this );
   QgsActionMenu* menu = new QgsActionMenu( layer, &mAttributeForm->feature(), this );
-  mMenuBar->addMenu( menu );
-  layout()->setMenuBar( mMenuBar );
+  if ( menu->actions().size() > 0 )
+  {
+    mMenuBar->addMenu( menu );
+    layout()->setMenuBar( mMenuBar );
+  }
 
   restoreGeometry();
   focusNextChild();
