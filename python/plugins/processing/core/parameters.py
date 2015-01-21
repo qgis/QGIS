@@ -32,7 +32,6 @@ from qgis.core import *
 from processing.tools.system import *
 from processing.tools import dataobjects
 
-
 def getParameterFromString(s):
     tokens = s.split("|")
     params = [t if unicode(t) != "None" else None for t in tokens[1:]]
@@ -463,8 +462,9 @@ class ParameterRange(Parameter):
 
 class ParameterRaster(ParameterDataObject):
 
-    def __init__(self, name='', description='', optional=False):
+    def __init__(self, name='', description='', optional=False, showSublayersDialog = True):
         ParameterDataObject.__init__(self, name, description)
+        self.showSublayersDialog = parseBool(showSublayersDialog)
         self.optional = parseBool(optional)
         self.value = None
         self.exported = None
@@ -515,7 +515,12 @@ class ParameterRaster(ParameterDataObject):
                 if layer.name() == self.value:
                     self.value = unicode(layer.dataProvider().dataSourceUri())
                     return True
-            return os.path.exists(self.value)
+            if os.path.exists(self.value) or QgsRasterLayer(self.value).isValid():
+                return True
+            else:
+                # Layer could not be found
+                return False
+                    
 
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()

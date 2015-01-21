@@ -127,13 +127,13 @@ class BatchInputSelectionPanel(QWidget):
                 self.tr('All files(*.*);;') + self.param.getFileFilter())
         if ret:
             files = list(ret)
-            if len(files) == 1:
-                settings.setValue('/Processing/LastInputPath',
+            settings.setValue('/Processing/LastInputPath',
                                   os.path.dirname(unicode(files[0])))
+            for i, filename in enumerate(files):
+                files[i] = dataobjects.getRasterSublayer(filename, self.param) 
+            if len(files) == 1:
                 self.text.setText(files[0])
             else:
-                settings.setValue('/Processing/LastInputPath',
-                                  os.path.dirname(unicode(files[0])))
                 if isinstance(self.param, ParameterMultipleInput):
                     self.text.setText(';'.join(unicode(f) for f in files))
                 else:

@@ -26,7 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from os import path
+import re
 from qgis.core import *
+from qgis.gui import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.utils import iface
@@ -373,3 +375,53 @@ def exportTable(table):
             return filename[:-3] + 'dbf'
         else:
             return filename
+        
+def getRasterSublayer(path, param):
+    
+    layer = QgsRasterLayer(path)
+    
+    try:
+        # If the layer is a raster layer and has multiple sublayers, let the user chose one.
+#       # Based on QgisApp::askUserForGDALSublayers
+        if layer and param.showSublayersDialog and layer.dataProvider().name() == "gdal" and len(layer.subLayers()) > 1: 
+            layers = []
+            subLayerNum = 0
+            # simplify raster sublayer name
+            for subLayer in layer.subLayers():
+                # if netcdf/hdf use all text after filename
+                if bool(re.match('netcdf', subLayer, re.I)) or bool(re.match('hdf', subLayer, re.I)):
+                    subLayer = subLayer.split(path)[1]
+                    subLayer = subLayer[1:] 
+                else:
+                    # remove driver name and file name
+                    subLayer.replace(subLayer.split(":")[0], "")
+                    subLayer.replace(path, "")
+                # remove any : or " left over
+                if subLayer.startswith(":"):
+                    subLayer = subLayer[1:]
+                if subLayer.startswith("\""):
+                    subLayer = subLayer[1:]
+                if subLayer.endswith(":"):
+                    subLayer = subLayer[:-1]
+                if subLayer.endswith("\""):
+                    subLayer = subLayer[:-1]
+                    
+                layers.append(str(subLayerNum)+"|"+subLayer)
+                subLayerNum = subLayerNum + 1
+            
+            # Use QgsSublayersDialog
+            # Would be good if QgsSublayersDialog had an option to allow only one sublayer to be selected 
+            chooseSublayersDialog = QgsSublayersDialog(QgsSublayersDialog.Gdal, "gdal") 
+            chooseSublayersDialog.populateLayerTable( layers, "|" )
+            
+            if chooseSublayersDialog.exec_():
+                return layer.subLayers()[chooseSublayersDialog.selectionIndexes()[0]]
+            else:
+                # If user pressed cancel then just return the input path
+                return path
+        else:
+            # If the sublayers selection dialog is not to be shown then just return the input path 
+            return path
+    except:
+        # If the layer is not a raster layer, then just return the input path
+        return path
