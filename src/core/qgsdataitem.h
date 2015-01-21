@@ -144,6 +144,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     QVector<QgsDataItem*> children() const { return mChildren; }
     virtual QIcon icon();
     QString name() const { return mName; }
+    void setName( const QString &name ) { mName = name; }
     QString path() const { return mPath; }
     void setPath( const QString &path ) { mPath = path; }
     //! Create path component replacing path separators

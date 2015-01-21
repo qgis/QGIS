@@ -1329,6 +1329,8 @@ QVector<QgsDataItem*> QgsZipItem::createChildren()
         if ( item )
         {
           QgsDebugMsgLevel( "loaded item", 3 );
+          // the item comes with zipped file name, set the name to relative path within zip file
+          item->setName( fileName );
           children.append( item );
           break;
         }
