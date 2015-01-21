@@ -1,3 +1,4 @@
+import inspect
 import string
 from qgis._core import *
 
@@ -30,22 +31,38 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     :return:
     """
     class QgsExpressionFunction(QgsExpression.Function):
-        def __init__(self, func, name, args, group, helptext='', usesgeometry=False):
+        def __init__(self, func, name, args, group, helptext='', usesgeometry=False, expandargs=False):
             QgsExpression.Function.__init__(self, name, args, group, helptext, usesgeometry)
             self.function = func
+            self.expandargs = expandargs
 
         def func(self, values, feature, parent):
             try:
-                return self.function(values, feature, parent)
+                if self.expandargs:
+                    values.append(feature)
+                    values.append(parent)
+                    return self.function(*values)
+                else:
+                    return self.function(values, feature, parent)
             except Exception as ex:
-                parent.setEvalErrorString(ex.message)
+                parent.setEvalErrorString(str(ex))
+                return None
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
     helptext = function.__doc__ or ''
     helptext = helptext.strip()
+    expandargs = False
     if arg_count == 0 and not name[0] == '$':
         name = '${0}'.format(name)
+    
+    if arg_count == "auto":
+        # Work out the number of args we need.
+        # Number of function args - 2.  The last two args are always feature, parent.
+        args = inspect.getargspec(function).args
+        number = len(args)
+        arg_count = number - 2
+        expandargs = True
 
     register = kwargs.get('register', True)
     if register and QgsExpression.isFunctionName(name):
@@ -54,7 +71,7 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
 
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
-    f = QgsExpressionFunction(function, name, arg_count, group, helptext, usesgeometry)
+    f = QgsExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, expandargs)
 
     # This doesn't really make any sense here but does when used from a decorator context
     # so it can stay.
