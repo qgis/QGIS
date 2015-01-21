@@ -80,7 +80,7 @@ QgsPoint QgsMapMouseEvent::mapPoint( bool* snappedPoint ) const
 
 struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
 {
-  bool acceptMatch( const QgsPointLocator::Match& m ) { return m.hasEdge(); }
+  bool acceptMatch( const QgsPointLocator::Match& m ) override { return m.hasEdge(); }
 };
 
 QList<QgsPoint> QgsMapMouseEvent::snappedSegment( bool* snapped ) const
