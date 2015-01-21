@@ -78,6 +78,11 @@ QgsPoint QgsMapMouseEvent::mapPoint( bool* snappedPoint ) const
   return mMapPoint;
 }
 
+struct EdgesOnlyFilter : public QgsPointLocator::MatchFilter
+{
+  bool acceptMatch( const QgsPointLocator::Match& m ) { return m.hasEdge(); }
+};
+
 QList<QgsPoint> QgsMapMouseEvent::snappedSegment( bool* snapped ) const
 {
   QList<QgsPoint> segment =  QList<QgsPoint>();
@@ -89,7 +94,9 @@ QList<QgsPoint> QgsMapMouseEvent::snappedSegment( bool* snapped ) const
   }
   else
   {
-    // TODO: run snapToMap with only segments (resp. all hits)
+    // run snapToMap with only segments
+    EdgesOnlyFilter filter;
+    mMapTool->canvas()->snappingUtils()->snapToMap( mMapPoint, &filter );
   }
 
   if ( snapped )
