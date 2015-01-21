@@ -41,7 +41,6 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
   public slots:
     void itemClicked( const QModelIndex& index );
     void itemDoubleClicked( const QModelIndex& index );
-    void itemExpanded( const QModelIndex& index );
     void on_mActionSetProjection_triggered();
     void on_mActionWmsConnections_triggered();
     void on_mActionRefresh_triggered();
