@@ -474,7 +474,17 @@ class QgsVectorLayer : QgsMapLayer
      */
     virtual QString loadNamedStyle( const QString &theURI, bool &theResultFlag );
 
-    virtual bool applyNamedStyle( QString namedStyle, QString errorMsg );
+    /**
+     * Will load a named style from a provided QML string.
+     *
+     * @param namedStyle  A QML string
+     * @param errorMsg    An error message indicating problems if any
+     *
+     * @return true on success
+     *
+     * @deprecated Will be removed for QGIS 3 in favor of importNamedStyle
+     */
+    virtual bool applyNamedStyle( QString namedStyle, QString &errorMsg /Out/ );
 
     /** convert a saved attribute editor element into a AttributeEditor structure as it's used internally.
      * @param elem the DOM element
