@@ -76,7 +76,8 @@ QList<QAction*> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer* layer, Q
 void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu* m, QgsMapLayer* layer )
 {
   m->addAction( actionAddStyle( layer ) );
-  m->addAction( actionRemoveStyle( layer ) );
+  if ( layer->styleManager()->styles().count() > 1 )
+    m->addAction( actionRemoveStyle( layer ) );
   m->addAction( actionRenameStyle( layer ) );
   m->addSeparator();
   foreach ( QAction* a, actionsUseStyle( layer ) )
