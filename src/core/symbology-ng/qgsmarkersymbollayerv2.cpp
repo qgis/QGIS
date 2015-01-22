@@ -35,6 +35,12 @@
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
+
+inline bool evaluable( const QgsExpression * expr, const QgsSymbolV2RenderContext& context )
+{
+  return expr && ( context.feature() || !expr->referencedColumns().size() );
+}
+
 static void _fixQPictureDPI( QPainter* p )
 {
   // QPicture makes an assumption that we drawing to it with system DPI.
@@ -517,7 +523,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   double scaledSize = mSize;
   if ( hasDataDefinedSize )
   {
-    if ( sizeExpression )
+    if ( evaluable( sizeExpression, context ) )
     {
       scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
     }
@@ -536,7 +542,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
   //angle
   double angle = mAngle;
-  if ( mAngleExpression )
+  if ( evaluable( mAngleExpression, context ) )
   {
     angle = mAngleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
@@ -545,7 +551,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
   //data defined shape?
   bool createdNewPath = false;
-  if ( mNameExpression )
+  if ( evaluable( mNameExpression, context ) )
   {
     QString name = mNameExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     if ( !prepareShape( name ) ) // drawing as a polygon
@@ -587,22 +593,22 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     QgsExpression* colorBorderExpression = expression( "color_border" );
     QgsExpression* outlineWidthExpression = expression( "outline_width" );
     QgsExpression* outlineStyleExpression = expression( "outline_style" );
-    if ( colorExpression )
+    if ( evaluable( colorExpression, context ) )
     {
       mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
     }
-    if ( colorBorderExpression )
+    if ( evaluable( colorBorderExpression, context ) )
     {
       mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
       mSelPen.setColor( QgsSymbolLayerV2Utils::decodeColor( colorBorderExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
     }
-    if ( outlineWidthExpression )
+    if ( evaluable( outlineWidthExpression, context ) )
     {
       double outlineWidth = outlineWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
       mPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
       mSelPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
     }
-    if ( outlineStyleExpression )
+    if ( evaluable( outlineStyleExpression, context ) )
     {
       QString outlineStyle = outlineStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
       mPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );

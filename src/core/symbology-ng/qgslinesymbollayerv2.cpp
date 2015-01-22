@@ -28,6 +28,11 @@
 
 #include <cmath>
 
+inline bool evaluable( const QgsExpression * expr, const QgsSymbolV2RenderContext& context )
+{
+  return expr && ( context.feature() || !expr->referencedColumns().size() );
+}
+
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double width, Qt::PenStyle penStyle )
     : mPenStyle( penStyle )
     , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
@@ -482,7 +487,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   //data defined properties
   QgsExpression* strokeWidthExpression = expression( "width" );
-  if ( strokeWidthExpression )
+  if ( evaluable( strokeWidthExpression, context ) )
   {
     double scaledWidth = strokeWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble()
                          * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
@@ -492,21 +497,21 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   //color
   QgsExpression* strokeColorExpression = expression( "color" );
-  if ( strokeColorExpression )
+  if ( evaluable( strokeColorExpression, context ) )
   {
     pen.setColor( QgsSymbolLayerV2Utils::decodeColor( strokeColorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
 
   //offset
   QgsExpression* lineOffsetExpression = expression( "offset" );
-  if ( lineOffsetExpression )
+  if ( evaluable( lineOffsetExpression, context ) )
   {
     offset = lineOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
   }
 
   //dash dot vector
   QgsExpression* dashPatternExpression = expression( "customdash" );
-  if ( dashPatternExpression )
+  if ( evaluable( dashPatternExpression, context ) )
   {
     double scaledWidth = mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mWidthUnit, mWidthMapUnitScale );
     double dashWidthDiv = mPen.widthF();
@@ -538,7 +543,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   //line style
   QgsExpression* lineStyleExpression = expression( "line_style" );
-  if ( lineStyleExpression )
+  if ( evaluable( lineStyleExpression, context ) )
   {
     QString lineStyleString = lineStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     pen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( lineStyleString ) );
@@ -546,7 +551,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   //join style
   QgsExpression* joinStyleExpression = expression( "joinstyle" );
-  if ( joinStyleExpression )
+  if ( evaluable( joinStyleExpression, context ) )
   {
     QString joinStyleString = joinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     pen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleString ) );
@@ -554,7 +559,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   //cap style
   QgsExpression* capStyleExpression = expression( "capstyle" );
-  if ( capStyleExpression )
+  if ( evaluable( capStyleExpression, context ) )
   {
     QString capStyleString = capStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
     pen.setCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle( capStyleString ) );
