@@ -1042,6 +1042,10 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
           joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
         }
       }
+      if ( d.hasCustomPrefix() )
+        info.prefix = d.customPrefix();
+      else
+        info.prefix = QString::null;
 
       layer->addJoin( info );
       addJoinToTreeWidget( info );

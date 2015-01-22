@@ -103,6 +103,11 @@ struct QgsVectorJoinInfo
 
   bool operator==( const QgsVectorJoinInfo& other ) const;
 
+  /** An optional prefix. If it is a Null string "{layername}_" will be used
+   * @note Added in 2.8
+   */
+  QString prefix;
+
   /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
     @note added in 2.6 */
   void setJoinFieldNamesSubset( QStringList* fieldNamesSubset /Transfer/ );

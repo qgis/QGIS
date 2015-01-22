@@ -117,15 +117,21 @@ QStringList QgsAddJoinDialog::joinFieldsSubset() const
   return lst;
 }
 
+bool QgsAddJoinDialog::hasCustomPrefix() const
+{
+  return mUseCustomPrefix;
+}
+
+const QString QgsAddJoinDialog::customPrefix() const
+{
+  return mCustomPrefix->text();
+}
+
 void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged( int index )
 {
   mJoinFieldComboBox->clear();
   QString layerId = mJoinLayerComboBox->itemData( index ).toString();
   QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerId );
-  if ( !layer )
-  {
-    return;
-  }
   QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( layer );
   if ( !vLayer )
   {
@@ -157,9 +163,9 @@ void QgsAddJoinDialog::on_mJoinLayerComboBox_currentIndexChanged( int index )
   }
 
   mJoinFieldsSubsetView->setModel( subsetModel );
-}
 
-void QgsAddJoinDialog::on_mUseJoinFieldsSubset_clicked()
-{
-  mJoinFieldsSubsetView->setEnabled( mUseJoinFieldsSubset->isChecked() );
+  if ( !mUseCustomPrefix->isChecked() )
+  {
+    mCustomPrefix->setText( layer->name() + "_" );
+  }
 }

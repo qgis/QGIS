@@ -164,23 +164,28 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
 
 struct CORE_EXPORT QgsVectorJoinInfo
 {
-  /**Join field in the target layer*/
+  /** Join field in the target layer*/
   QString targetFieldName;
-  /**Source layer*/
+  /** Source layer*/
   QString joinLayerId;
-  /**Join field in the source layer*/
+  /** Join field in the source layer*/
   QString joinFieldName;
-  /**True if the join is cached in virtual memory*/
+  /** True if the join is cached in virtual memory*/
   bool memoryCache;
-  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
+  /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     @note not available in python bindings
     */
   QHash< QString, QgsAttributes> cachedAttributes;
 
-  /**Join field index in the target layer. For backward compatibility with 1.x (x>=7)*/
+  /** Join field index in the target layer. For backward compatibility with 1.x (x>=7)*/
   int targetFieldIndex;
-  /**Join field index in the source layer. For backward compatibility with 1.x (x>=7)*/
+  /** Join field index in the source layer. For backward compatibility with 1.x (x>=7)*/
   int joinFieldIndex;
+
+  /** An optional prefix. If it is a Null string "{layername}_" will be used
+   * @note Added in 2.8
+   */
+  QString prefix;
 
   bool operator==( const QgsVectorJoinInfo& other ) const
   {
@@ -188,7 +193,8 @@ struct CORE_EXPORT QgsVectorJoinInfo
            joinLayerId == other.joinLayerId &&
            joinFieldName == other.joinFieldName &&
            joinFieldsSubset == other.joinFieldsSubset &&
-           memoryCache == other.memoryCache;
+           memoryCache == other.memoryCache &&
+           prefix == other.prefix;
   }
 
   /** Set subset of fields to be used from joined layer. Takes ownership of the passed pointer. Null pointer tells to use all fields.
@@ -199,7 +205,7 @@ struct CORE_EXPORT QgsVectorJoinInfo
   QStringList* joinFieldNamesSubset() const { return joinFieldsSubset.data(); }
 
 protected:
-  /**Subset of fields to use from joined layer. null = use all fields*/
+  /** Subset of fields to use from joined layer. null = use all fields*/
   QSharedPointer<QStringList> joinFieldsSubset;
 };
 
