@@ -21,6 +21,7 @@
 #include "qgssymbolv2.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsmarkersymbollayerv2.h"
 
 #include "qgsapplication.h"
 
@@ -33,7 +34,183 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QScopedPointer>
 
+// check if the layer has an "en masse" size expression
+// to return an active QgsDataDefined, the size and offset expression
+// should match the "en masse" pattern
+
+inline
+QString rotateEnMasse( double additionalRotation, const QString & exprStr )
+{
+  return additionalRotation 
+    ? QgsExpression( QString::number( additionalRotation )+" + ("+exprStr+")" ).dump()
+    : QgsExpression( exprStr ).dump();
+}
+
+inline
+QString scaleEnMasse( double scaleFactor, const QString & exprStr )
+{
+  return ( qAbs(scaleFactor - 1) > 1e-6 ) 
+    ? QgsExpression( QString::number( scaleFactor )+"*("+exprStr+")" ).dump()
+    : QgsExpression( exprStr ).dump();
+}
+
+inline
+QString scaleEnMasseOffset( double scaleFactorX, double scaleFactorY, const QString & exprStr )
+{
+  return QgsExpression( 
+      (scaleFactorX ? "tostring("+QString::number(scaleFactorX)+"*("+exprStr+"))" : "'0'")+ 
+        "|| ',' || "+
+      (scaleFactorY ? "tostring("+QString::number(scaleFactorY)+"*("+exprStr+"))" : "'0'") ).dump(); 
+}
+
+template < class MarkerSymbolLayerIterator >
+QgsDataDefined enMasseRotationExpression( double angle, MarkerSymbolLayerIterator begin, MarkerSymbolLayerIterator end )
+{
+  QScopedPointer< QgsExpression > expr;
+
+  // find the base of the "en masse" pattern
+  for ( MarkerSymbolLayerIterator it = begin; !expr.data() && it != end; ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    if ( layer->angle() == angle && layer->dataDefinedProperty( "angle" ) )
+      expr.reset( new QgsExpression( layer->dataDefinedPropertyString( "angle" ) ) );
+  }
+
+  // check that all layers angle expressions match the "en masse" pattern
+  const QString exprStr( expr.data() ? expr->dump() : "" );
+  for ( MarkerSymbolLayerIterator it = begin; expr.data() && it != end; ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "angle" ) ).dump() );
+    if ( rotateEnMasse( layer->angle() - angle, exprStr ) != sizeExpr )
+      expr.reset();
+  }
+
+  return QgsDataDefined( expr.data() );
+}
+
+template < class MarkerSymbolLayerIterator >
+void setEnMasseRotationExpression( const QString & exprStr, double angle, MarkerSymbolLayerIterator begin, MarkerSymbolLayerIterator end )
+{
+  for ( MarkerSymbolLayerIterator it = begin; it != end; ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    if ( !exprStr.length() )
+      layer->removeDataDefinedProperty( "angle" );
+    else
+      layer->setDataDefinedProperty( "angle", rotateEnMasse( layer->angle() - angle, exprStr ) );
+  }
+}
+
+template < class MarkerSymbolLayerIterator >
+QgsDataDefined enMasseSizeExpression( double size, MarkerSymbolLayerIterator begin, MarkerSymbolLayerIterator end )
+{
+  if ( !size ) return QgsDataDefined();
+
+  QScopedPointer< QgsExpression > expr;
+
+  // find the base of the "en masse" pattern
+  for ( MarkerSymbolLayerIterator it = begin; !expr.data() && it != end; ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    if ( layer->size() == size && layer->dataDefinedProperty( "size" ) )
+      expr.reset( new QgsExpression( layer->dataDefinedPropertyString( "size" ) ) );
+  }
+
+  // check that all layers size expressions match the "en masse" pattern
+  const QString exprStr( expr.data() ? expr->dump() : "" );
+  for ( MarkerSymbolLayerIterator it = begin; expr.data() && it != end; ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "size" ) ).dump() );
+    const QString offsetExpr( QgsExpression( layer->dataDefinedPropertyString( "offset" ) ).dump() );
+    if ( scaleEnMasse( layer->size() / size, exprStr ) != sizeExpr 
+      || ( (layer->offset().x() || layer->offset().y() ) && scaleEnMasseOffset( layer->offset().x() / size, layer->offset().y() / size, exprStr ) != offsetExpr ) )
+    {
+      expr.reset();
+    }
+  }
+
+  return QgsDataDefined( expr.data() );
+}
+
+template < class MarkerSymbolLayerIterator >
+void setEnMasseSizeExpression( const QString & exprStr, double size, MarkerSymbolLayerIterator begin, MarkerSymbolLayerIterator end )
+{
+  if ( size == 0 ) return;
+
+  for ( MarkerSymbolLayerIterator it = begin; it != end; ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    if ( !exprStr.length() )
+    {
+      layer->removeDataDefinedProperty( "size" );
+      layer->removeDataDefinedProperty( "offset" );
+    }
+    else
+    {
+      layer->setDataDefinedProperty( "size", scaleEnMasse( layer->size()/size, exprStr ) );
+      if ( layer->offset().x() || layer->offset().y() ) 
+        layer->setDataDefinedProperty( "offset", scaleEnMasseOffset( layer->offset().x()/size, layer->offset().y()/size, exprStr ) );
+    }
+  }
+}
+
+template < class LineSymbolLayerIterator >
+QgsDataDefined enMasseWidthExpression( double width, LineSymbolLayerIterator begin, LineSymbolLayerIterator end )
+{
+  if ( !width ) return QgsDataDefined();
+
+  QScopedPointer< QgsExpression > expr;
+
+  // find the base of the "en masse" pattern
+  for ( LineSymbolLayerIterator it = begin; !expr.data() && it != end; ++it )
+  {
+    QgsLineSymbolLayerV2* layer = static_cast<QgsLineSymbolLayerV2*>( *it );
+    if ( layer->width() == width && layer->dataDefinedProperty( "width" ) )
+      expr.reset( new QgsExpression( layer->dataDefinedPropertyString( "width" ) ) );
+  }
+
+  // check that all layers width expressions match the "en masse" pattern
+  const QString exprStr( expr.data() ? expr->dump() : "" );
+  for ( LineSymbolLayerIterator it = begin; expr.data() && it != end; ++it )
+  {
+    QgsLineSymbolLayerV2* layer = static_cast<QgsLineSymbolLayerV2*>( *it );
+    const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "width" ) ).dump() );
+    const QString offsetExpr( QgsExpression( layer->dataDefinedPropertyString( "offset" ) ).dump() );
+    if ( scaleEnMasse( layer->width() / width, exprStr ) != sizeExpr 
+      || ( layer->offset() && scaleEnMasse( layer->offset() / width, exprStr ) != offsetExpr ) )
+    {
+      expr.reset();
+    }
+  }
+
+  return QgsDataDefined( expr.data() );
+}
+
+template < class LineSymbolLayerIterator >
+void setEnMasseWidthExpression( const QString & exprStr, double width, LineSymbolLayerIterator begin, LineSymbolLayerIterator end )
+{
+  if ( width == 0 ) return;
+
+  for ( LineSymbolLayerIterator it = begin; it != end; ++it )
+  {
+    QgsLineSymbolLayerV2* layer = static_cast<QgsLineSymbolLayerV2*>( *it );
+    if ( !exprStr.length() )
+    {
+      layer->removeDataDefinedProperty( "width" );
+      layer->removeDataDefinedProperty( "offset" );
+    }
+    else
+    {
+      layer->setDataDefinedProperty( "width", scaleEnMasse( layer->width()/width, exprStr ) );
+      if ( layer->offset() || layer->offset() ) 
+        layer->setDataDefinedProperty( "offset", scaleEnMasse( layer->offset()/width, exprStr ) );
+    }
+  }
+}
 
 QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent ) : QWidget( parent )
 {
@@ -82,6 +259,16 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerAngle( double ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
+
+  connect( mRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setMarkerRotationExpression( const QString& ) ) );
+  connect( mRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveMarkerRotationExpression( bool ) ) );
+  connect( mSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setMarkerSizeExpression( const QString& ) ) );
+  connect( mSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveMarkerSizeExpression( bool ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setLineWidthExpression( const QString& ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveLineWidthExpression( bool ) ) );
+
+
+
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -178,6 +365,29 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
   emit changed();
 }
 
+void QgsSymbolsListWidget::setActiveMarkerRotationExpression( bool active )
+{
+    if ( active )
+        setMarkerRotationExpression( mRotationDDBtn->currentDefinition() );
+    else
+        setMarkerRotationExpression( QString() );
+    spinAngle->setEnabled( !active );
+}
+
+void QgsSymbolsListWidget::setMarkerRotationExpression( const QString & definition )
+{
+  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsSymbolLayerV2List layers = markerSymbol->symbolLayers();
+  if (// shall we remove datadefined expressions for layers ?
+      ( enMasseRotationExpression( markerSymbol->angle(), layers.begin(), layers.end() ).isActive() && !definition.length()  )
+      // shall we set the "en masse" expression for properties ?
+      || definition.length() )
+  {
+    setEnMasseRotationExpression( definition, markerSymbol->angle(), layers.begin(), layers.end() );
+    emit changed();
+  }
+}
+
 void QgsSymbolsListWidget::setMarkerSize( double size )
 {
   QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
@@ -187,6 +397,29 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
   emit changed();
 }
 
+void QgsSymbolsListWidget::setActiveMarkerSizeExpression( bool active )
+{
+    if ( active )
+        setMarkerSizeExpression( mSizeDDBtn->currentDefinition() );
+    else
+        setMarkerSizeExpression( QString() );
+    spinSize->setEnabled( !active );
+}
+
+void QgsSymbolsListWidget::setMarkerSizeExpression( const QString & definition )
+{
+  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  QgsSymbolLayerV2List layers = markerSymbol->symbolLayers();
+  if (// shall we remove datadefined expressions for layers ?
+      ( enMasseSizeExpression( markerSymbol->size(), layers.begin(), layers.end() ).isActive() && !definition.length()  )
+      // shall we set the "en masse" expression for properties ?
+      || definition.length() )
+  {
+    setEnMasseSizeExpression( definition, markerSymbol->size(), layers.begin(), layers.end() );
+    emit changed();
+  }
+}
+
 void QgsSymbolsListWidget::setLineWidth( double width )
 {
   QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
@@ -194,6 +427,30 @@ void QgsSymbolsListWidget::setLineWidth( double width )
     return;
   lineSymbol->setWidth( width );
   emit changed();
+}
+
+void QgsSymbolsListWidget::setActiveLineWidthExpression( bool active )
+{
+    if ( active )
+        setLineWidthExpression( mSizeDDBtn->currentDefinition() );
+    else
+        setLineWidthExpression( QString() );
+    spinWidth->setEnabled( !active );
+}
+
+
+void QgsSymbolsListWidget::setLineWidthExpression( const QString & definition )
+{
+  QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+  QgsSymbolLayerV2List layers = lineSymbol->symbolLayers();
+  if (// shall we remove datadefined expressions for layers ?
+      ( enMasseWidthExpression( lineSymbol->width(), layers.begin(), layers.end() ).isActive() && !definition.length()  )
+      // shall we set the "en masse" expression for properties ?
+      || definition.length() )
+  {
+    setEnMasseWidthExpression( definition, lineSymbol->width(), layers.begin(), layers.end() );
+    emit changed();
+  }
 }
 
 void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol )
@@ -277,11 +534,30 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
     spinAngle->setValue( markerSymbol->angle() );
+
+    QgsSymbolLayerV2List layers = markerSymbol->symbolLayers();
+    {
+      QgsDataDefined dd = enMasseSizeExpression( markerSymbol->size(), layers.begin(), layers.end() );
+      mSizeDDBtn->init( markerSymbol->layer(), &dd, QgsDataDefinedButton::Double, "En masse size expression" );
+      if ( mSizeDDBtn->isActive() ) spinSize->setEnabled( false );
+    }
+    {
+      QgsDataDefined dd = enMasseRotationExpression( markerSymbol->angle(), layers.begin(), layers.end() );
+      mRotationDDBtn->init( markerSymbol->layer(), &dd, QgsDataDefinedButton::Double, "En masse rotation expression" );
+      if ( mRotationDDBtn->isActive() ) spinAngle->setEnabled( false );
+    }
   }
   else if ( mSymbol->type() == QgsSymbolV2::Line )
   {
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
+
+    {
+      QgsSymbolLayerV2List layers = lineSymbol->symbolLayers();
+      QgsDataDefined dd = enMasseWidthExpression( lineSymbol->width(), layers.begin(), layers.end() );
+      mWidthDDBtn->init( lineSymbol->layer(), &dd, QgsDataDefinedButton::Double, "En masse width expression" );
+      if ( mWidthDDBtn->isActive() ) spinWidth->setEnabled( false );
+    }
   }
 
   mSymbolUnitWidget->blockSignals( true );

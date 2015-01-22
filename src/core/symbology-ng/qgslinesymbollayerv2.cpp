@@ -32,8 +32,6 @@ QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double wid
     : mPenStyle( penStyle )
     , mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE )
     , mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE )
-    , mOffset( 0 )
-    , mOffsetUnit( QgsSymbolV2::MM )
     , mUseCustomDashPattern( false )
     , mCustomDashPatternUnit( QgsSymbolV2::MM )
     , mDrawInsidePolygon( false )
@@ -680,8 +678,6 @@ QgsMarkerLineSymbolLayerV2::QgsMarkerLineSymbolLayerV2( bool rotateMarker, doubl
   mInterval = interval;
   mIntervalUnit = QgsSymbolV2::MM;
   mMarker = NULL;
-  mOffset = 0;
-  mOffsetUnit = QgsSymbolV2::MM;
   mPlacement = Interval;
   mOffsetAlongLine = 0;
   mOffsetAlongLineUnit = QgsSymbolV2::MM;
