@@ -121,13 +121,30 @@ int QgsMapToolSimplify::vertexCount( QgsGeometry* g ) const
   {
     case QGis::Line:
     {
-      return g->asPolyline().count();
+      int count = 0;
+      if ( g->isMultipart() )
+      {
+        foreach ( const QgsPolyline& polyline, g->asMultiPolyline() )
+          count += polyline.count();
+      }
+      else
+        count = g->asPolyline().count();
+      return count;
     }
     case QGis::Polygon:
     {
       int count = 0;
-      foreach ( const QgsPolyline& ring, g->asPolygon() )
-        count += ring.count();
+      if ( g->isMultipart() )
+      {
+        foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
+          foreach ( const QgsPolyline& ring, polygon )
+            count += ring.count();
+      }
+      else
+      {
+        foreach ( const QgsPolyline& ring, g->asPolygon() )
+          count += ring.count();
+      }
       return count;
     }
     default:
@@ -371,12 +388,6 @@ void QgsMapToolSimplify::selectOneFeature( const QPoint& canvasPoint )
   if ( minDistanceFeature.isValid() )
   {
     mSelectedFeatures << minDistanceFeature;
-
-    if ( minDistanceFeature.geometry()->isMultipart() )
-    {
-      emit messageEmitted( tr( "Multipart features are not supported for simplification." ), QgsMessageBar::CRITICAL );
-      return;
-    }
   }
 }
 
@@ -459,16 +470,41 @@ bool QgsSimplifyFeature::simplify( QgsFeature& feature, double tolerance, QgsMap
   QgsGeometry* g = feature.geometry();
   if ( g->type() == QGis::Line )
   {
-    QVector<QgsPoint> resultPoints = simplifyPoints( g->asPolyline(), tolerance, units, ctLayerToMap );
-    feature.setGeometry( QgsGeometry::fromPolyline( resultPoints ) );
+    if ( g->isMultipart() )
+    {
+      QgsMultiPolyline poly;
+      foreach ( const QgsPolyline& ring, g->asMultiPolyline() )
+        poly << simplifyPoints( ring, tolerance, units, ctLayerToMap );
+      feature.setGeometry( QgsGeometry::fromMultiPolyline( poly ) );
+    }
+    else
+    {
+      QgsPolyline resultPoints = simplifyPoints( g->asPolyline(), tolerance, units, ctLayerToMap );
+      feature.setGeometry( QgsGeometry::fromPolyline( resultPoints ) );
+    }
     return true;
   }
   else if ( g->type() == QGis::Polygon )
   {
-    QVector<QgsPolyline> poly;
-    foreach ( const QgsPolyline& ring, g->asPolygon() )
-      poly << simplifyPoints( ring, tolerance, units, ctLayerToMap );
-    feature.setGeometry( QgsGeometry::fromPolygon( poly ) );
+    if ( g->isMultipart() )
+    {
+      QgsMultiPolygon mpoly;
+      foreach ( const QgsPolygon& polygon, g->asMultiPolygon() )
+      {
+        QgsPolygon poly;
+        foreach ( const QgsPolyline& ring, polygon )
+          poly << simplifyPoints( ring, tolerance, units, ctLayerToMap );
+        mpoly << poly;
+      }
+      feature.setGeometry( QgsGeometry::fromMultiPolygon( mpoly ) );
+    }
+    else
+    {
+      QgsPolygon poly;
+      foreach ( const QgsPolyline& ring, g->asPolygon() )
+        poly << simplifyPoints( ring, tolerance, units, ctLayerToMap );
+      feature.setGeometry( QgsGeometry::fromPolygon( poly ) );
+    }
     return true;
   }
   else
