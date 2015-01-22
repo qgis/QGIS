@@ -184,7 +184,7 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
   registerDataDefinedButton( mColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
   registerDataDefinedButton( mPenWidthDDBtn, "width", QgsDataDefinedButton::Double, "" );
-  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::offsetHelpText() );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::Double, "" );
   registerDataDefinedButton( mDashPatternDDBtn, "customdash", QgsDataDefinedButton::String, tr( "'<dash>;<space>' e.g. '8;2;1;2'" ) );
   registerDataDefinedButton( mPenStyleDDBtn, "line_style", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::lineStyleHelpText() );
   registerDataDefinedButton( mJoinStyleDDBtn, "joinstyle", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::joinStyleHelpText() );
