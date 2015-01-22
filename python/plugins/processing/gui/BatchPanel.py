@@ -142,8 +142,9 @@ class BatchPanel(QWidget, Ui_Form):
         else:
             item = QLineEdit()
             try:
-                item.setText(param.default)
+                item.setText(str(param.default))
             except:
+                item.setText("0")
                 pass
 
         return item
