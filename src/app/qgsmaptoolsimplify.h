@@ -24,6 +24,7 @@
 
 class QgsRubberBand;
 class QgsMapToolSimplify;
+class QgsCoordinateTransform;
 
 class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
 {
@@ -56,9 +57,15 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     double tolerance() const { return mTolerance; }
 
+    enum ToleranceUnits { LayerUnits = 0, MapUnits = 1 };
+
+    ToleranceUnits toleranceUnits() const { return mToleranceUnits; }
+
   public slots:
     /** slot to change display when slidebar is moved */
     void setTolerance( double tolerance );
+
+    void setToleranceUnits( int units );
 
     /** slot to store feture after simplification */
     void storeSimplified();
@@ -88,6 +95,8 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     /** real value of tolerance */
     double mTolerance;
 
+    ToleranceUnits mToleranceUnits;
+
 };
 
 /**
@@ -104,16 +113,13 @@ class APP_EXPORT QgsSimplifyFeature
 
   public:
     /** simplify line/polygon feature with specified tolerance. Returns true on success */
-    static bool simplify( QgsFeature& feature, double tolerance );
+    static bool simplify( QgsFeature& feature, double tolerance, QgsMapToolSimplify::ToleranceUnits units, const QgsCoordinateTransform* ctLayerToMap );
 
   protected:
-    /** simplify line feature with specified tolerance. Returns true on success */
-    static bool simplifyLine( QgsFeature &lineFeature, double tolerance );
-    /** simplify polygon feature with specified tolerance. Returns true on success */
-    static bool simplifyPolygon( QgsFeature &polygonFeature, double tolerance );
     /** simplify a line given by a vector of points and tolerance. Returns simplified vector of points */
-    static QVector<QgsPoint> simplifyPoints( const QVector<QgsPoint>& pts, double tolerance );
-
+    static QVector<QgsPoint> simplifyPoints( const QVector<QgsPoint>& pts, double tolerance, QgsMapToolSimplify::ToleranceUnits units, const QgsCoordinateTransform* ctLayerToMap );
+    /** get indices of points that should be preserved after simplification */
+    static QList<int> simplifyPointsIndices( const QVector<QgsPoint>& pts, double tolerance );
 
 };
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>431</width>
-    <height>54</height>
+    <width>527</width>
+    <height>38</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,6 +35,20 @@
     </widget>
    </item>
    <item>
+    <widget class="QComboBox" name="cboToleranceUnits">
+     <item>
+      <property name="text">
+       <string>Layer units</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Map units</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="okButton">
      <property name="text">
       <string>OK</string>
@@ -43,6 +57,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>spinTolerance</tabstop>
+  <tabstop>cboToleranceUnits</tabstop>
+  <tabstop>okButton</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

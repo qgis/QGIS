@@ -33,9 +33,11 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent 
   setupUi( this );
 
   spinTolerance->setValue( mTool->tolerance() );
+  cboToleranceUnits->setCurrentIndex(( int ) mTool->toleranceUnits() );
 
   // communication with map tool
   connect( spinTolerance, SIGNAL( valueChanged( double ) ), mTool, SLOT( setTolerance( double ) ) );
+  connect( cboToleranceUnits, SIGNAL( currentIndexChanged( int ) ), mTool, SLOT( setToleranceUnits( int ) ) );
   connect( okButton, SIGNAL( clicked() ), mTool, SLOT( storeSimplified() ) );
   connect( this, SIGNAL( finished( int ) ), mTool, SLOT( removeRubberBand() ) );
 
@@ -50,6 +52,7 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
 {
   QSettings settings;
   mTolerance = settings.value( "/digitizing/simplify_tolerance", 1 ).toDouble();
+  mToleranceUnits = ( ToleranceUnits ) settings.value( "/digitizing/simplify_tolerance_units", 0 ).toInt();
 
   mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
@@ -72,19 +75,31 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
     updateSimplificationPreview();
 }
 
+void QgsMapToolSimplify::setToleranceUnits( int units )
+{
+  mToleranceUnits = ( ToleranceUnits ) units;
+
+  QSettings settings;
+  settings.setValue( "/digitizing/simplify_tolerance_units", units );
+
+  if ( mSelectedFeature.isValid() )
+    updateSimplificationPreview();
+}
+
 void QgsMapToolSimplify::updateSimplificationPreview()
 {
+  QgsVectorLayer* vl = currentVectorLayer();
   // create a copy of selected feature and do the simplification
   QgsFeature f = mSelectedFeature;
-  QgsSimplifyFeature::simplify( f, mTolerance );
-  mRubberBand->setToGeometry( f.geometry(), currentVectorLayer() );
+  QgsSimplifyFeature::simplify( f, mTolerance, mToleranceUnits, mCanvas->mapSettings().layerTransform( vl ) );
+  mRubberBand->setToGeometry( f.geometry(), vl );
 }
 
 
 void QgsMapToolSimplify::storeSimplified()
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
-  QgsSimplifyFeature::simplify( mSelectedFeature, mTolerance );
+  QgsSimplifyFeature::simplify( mSelectedFeature, mTolerance, mToleranceUnits, mCanvas->mapSettings().layerTransform( vlayer ) );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
   vlayer->changeGeometry( mSelectedFeature.id(), mSelectedFeature.geometry() );
@@ -292,55 +307,58 @@ QVector<QgsPoint> QgsMapToolSimplify::getPointList( QgsFeature& f )
 ////////////////////////////////////////////////////////////////////////////
 
 
-bool QgsSimplifyFeature::simplify( QgsFeature& feature, double tolerance )
+bool QgsSimplifyFeature::simplify( QgsFeature& feature, double tolerance, QgsMapToolSimplify::ToleranceUnits units, const QgsCoordinateTransform* ctLayerToMap )
 {
   if ( tolerance <= 0 )
     return false;
 
-  if ( feature.geometry()->type() == QGis::Line )
+  QgsGeometry* g = feature.geometry();
+  if ( g->type() == QGis::Line )
   {
-    return QgsSimplifyFeature::simplifyLine( feature, tolerance );
+    QVector<QgsPoint> resultPoints = simplifyPoints( g->asPolyline(), tolerance, units, ctLayerToMap );
+    feature.setGeometry( QgsGeometry::fromPolyline( resultPoints ) );
+    return true;
+  }
+  else if ( g->type() == QGis::Polygon )
+  {
+    QVector<QgsPolyline> poly;
+    foreach ( const QgsPolyline& ring, g->asPolygon() )
+      poly << simplifyPoints( ring, tolerance, units, ctLayerToMap );
+    feature.setGeometry( QgsGeometry::fromPolygon( poly ) );
+    return true;
   }
   else
-  {
-    return QgsSimplifyFeature::simplifyPolygon( feature, tolerance );
-  }
-}
-
-bool QgsSimplifyFeature::simplifyLine( QgsFeature& lineFeature, double tolerance )
-{
-  QgsGeometry* line = lineFeature.geometry();
-  if ( line->type() != QGis::Line )
-  {
     return false;
-  }
-
-  QVector<QgsPoint> resultPoints = simplifyPoints( line->asPolyline(), tolerance );
-  lineFeature.setGeometry( QgsGeometry::fromPolyline( resultPoints ) );
-  return true;
-}
-
-bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature, double tolerance )
-{
-  QgsGeometry* polygon = polygonFeature.geometry();
-  if ( polygon->type() != QGis::Polygon )
-  {
-    return false;
-  }
-
-  QVector<QgsPoint> resultPoints = simplifyPoints( polygon->asPolygon()[0], tolerance );
-  QVector<QgsPolyline> poly;
-  poly.append( resultPoints );
-  polygonFeature.setGeometry( QgsGeometry::fromPolygon( poly ) );
-  return true;
 }
 
 
-QVector<QgsPoint> QgsSimplifyFeature::simplifyPoints( const QVector<QgsPoint>& pts, double tolerance )
+QVector<QgsPoint> QgsSimplifyFeature::simplifyPoints( const QVector<QgsPoint>& pts, double tolerance, QgsMapToolSimplify::ToleranceUnits units, const QgsCoordinateTransform* ctLayerToMap )
 {
-  //just safety precaution
   if ( tolerance < 0 )
     return pts;
+
+  // if using map units, we transform coordinates to map units and, run simplification on transformed points
+  // and use indices with original coordinates. This will ensure that we do not modify coordinate values
+  // by transforming them back and forth.
+  QVector<QgsPoint> ptsForAlg;
+  bool transform = ( units == QgsMapToolSimplify::MapUnits && ctLayerToMap );
+  if ( transform )
+  {
+    foreach ( const QgsPoint& pt, pts )
+      ptsForAlg << ctLayerToMap->transform( pt );
+  }
+
+  QList<int> indices = QgsSimplifyFeature::simplifyPointsIndices( transform ? ptsForAlg : pts, tolerance );
+
+  QVector<QgsPoint> result;
+  foreach ( int index, indices )
+    result.append( pts[index] );
+  return result;
+}
+
+
+QList<int> QgsSimplifyFeature::simplifyPointsIndices( const QVector<QgsPoint>& pts, double tolerance )
+{
   // Douglas-Peucker simplification algorithm
 
   int anchor  = 0;
@@ -436,13 +454,6 @@ QVector<QgsPoint> QgsSimplifyFeature::simplifyPoints( const QVector<QgsPoint>& p
 
   QList<int> keep2 = keep.toList();
   qSort( keep2 );
-
-  QVector<QgsPoint> result;
-  int position;
-  while ( !keep2.empty() )
-  {
-    position = keep2.takeFirst();
-    result.append( pts[position] );
-  }
-  return result;
+  return keep2;
 }
+
