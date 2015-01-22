@@ -23,7 +23,7 @@
 #include "qgsfeature.h"
 
 class QgsRubberBand;
-
+class QgsMapToolSimplify;
 
 class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
 {
@@ -31,30 +31,29 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 
   public:
 
-    QgsSimplifyDialog( QWidget* parent = NULL );
+    QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = NULL );
 
     /** Setting range of slide bar */
     void setRange( int minValue, int maxValue );
 
-  signals:
-    /** Signal when slidebar is moved */
-    void toleranceChanged( int tol );
-
-    /** Signal to accept changes */
-    void storeSimplified();
+  private:
+    QgsMapToolSimplify* mTool;
 
   private slots:
-    /** Internal signal when value is changed */
-    void valueChanged( int value );
-    /** Internal signal to store simplified feature */
-    void simplify();
+
+    /** Signal when slidebar is moved */
+    void toleranceChanged( int tol );
+    /** Signal to accept changes */
+    void okClicked();
+
+    void onFinished();
+
 };
 
 
 /** Map tool to simplify line/polygon features */
 class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 {
-    Q_OBJECT
 
   public:
     QgsMapToolSimplify( QgsMapCanvas* canvas );
@@ -65,7 +64,12 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! called when map tool is being deactivated
     void deactivate() override;
 
-  public slots:
+    /** slot to change display when slidebar is moved */
+    void setTolerance( int tolerance );
+
+    /** slot to store feture after simplification */
+    void storeSimplified();
+
     void removeRubberBand();
 
   private:
@@ -89,17 +93,10 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QgsFeature mSelectedFeature;
 
     /** tolerance divider is value which tells with which delete value from sidebar */
-    long toleranceDivider;
+    long mToleranceDivider;
 
     /** real value of tolerance */
     double mTolerance;
-
-  private slots:
-    /** slot to change display when slidebar is moved */
-    void toleranceChanged( int tolerance );
-
-    /** slot to store feture after simplification */
-    void storeSimplified();
 
 };
 

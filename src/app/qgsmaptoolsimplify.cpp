@@ -26,29 +26,19 @@
 #include <cmath>
 #include <cfloat>
 
-QgsSimplifyDialog::QgsSimplifyDialog( QWidget* parent )
+QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent )
     : QDialog( parent )
+    , mTool( tool )
 {
   setupUi( this );
-  connect( horizontalSlider, SIGNAL( valueChanged( int ) ),
-           this, SLOT( valueChanged( int ) ) );
-  connect( horizontalSlider, SIGNAL( valueChanged( int ) ),
-           spinBox, SLOT( setValue( int ) ) );
-  connect( spinBox, SIGNAL( valueChanged( int ) ),
-           horizontalSlider, SLOT( setValue( int ) ) );
-  connect( okButton, SIGNAL( clicked() ),
-           this, SLOT( simplify() ) );
+  // synchronization of values
+  connect( horizontalSlider, SIGNAL( valueChanged( int ) ), spinBox, SLOT( setValue( int ) ) );
+  connect( spinBox, SIGNAL( valueChanged( int ) ), horizontalSlider, SLOT( setValue( int ) ) );
 
-}
-
-void QgsSimplifyDialog::valueChanged( int value )
-{
-  emit toleranceChanged( value );
-}
-
-void QgsSimplifyDialog::simplify()
-{
-  emit storeSimplified();
+  // communication with map tool
+  connect( spinBox, SIGNAL( valueChanged( int ) ), this, SLOT( toleranceChanged( int ) ) );
+  connect( okButton, SIGNAL( clicked() ), this, SLOT( okClicked() ) );
+  connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 }
 
 void QgsSimplifyDialog::setRange( int minValue, int maxValue )
@@ -61,17 +51,29 @@ void QgsSimplifyDialog::setRange( int minValue, int maxValue )
   spinBox->setRange( horizontalSlider->minimum(), horizontalSlider->maximum() );
 }
 
+void QgsSimplifyDialog::toleranceChanged( int tol )
+{
+  mTool->setTolerance( tol );
+}
+
+void QgsSimplifyDialog::okClicked()
+{
+  mTool->storeSimplified();
+}
+
+void QgsSimplifyDialog::onFinished()
+{
+  mTool->removeRubberBand();
+}
+
+
+////////////////////////////////////////////////////////////////////////////
+
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas ), mRubberBand( 0 )
 {
-  mSimplifyDialog = new QgsSimplifyDialog( canvas->topLevelWidget() );
-  connect( mSimplifyDialog, SIGNAL( toleranceChanged( int ) ),
-           this, SLOT( toleranceChanged( int ) ) );
-  connect( mSimplifyDialog, SIGNAL( storeSimplified() ),
-           this, SLOT( storeSimplified() ) );
-  connect( mSimplifyDialog, SIGNAL( finished( int ) ),
-           this, SLOT( removeRubberBand() ) );
+  mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
 
 QgsMapToolSimplify::~QgsMapToolSimplify()
@@ -81,13 +83,12 @@ QgsMapToolSimplify::~QgsMapToolSimplify()
 }
 
 
-void QgsMapToolSimplify::toleranceChanged( int tolerance )
+void QgsMapToolSimplify::setTolerance( int tolerance )
 {
-  mTolerance = double( tolerance ) / toleranceDivider;
+  mTolerance = double( tolerance ) / mToleranceDivider;
 
   // create a copy of selected feature and do the simplification
   QgsFeature f = mSelectedFeature;
-  //QgsSimplifyFeature::simplifyLine(f, mTolerance);
   if ( mTolerance > 0 )
   {
     if ( mSelectedFeature.geometry()->type() == QGis::Line )
@@ -243,10 +244,10 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
       }
     }
   }
-  toleranceDivider = calculateDivider( minTolerance, maxTolerance );
+  mToleranceDivider = calculateDivider( minTolerance, maxTolerance );
   // set min and max
-  mSimplifyDialog->setRange( int( minTolerance * toleranceDivider ),
-                             int( maxTolerance * toleranceDivider ) );
+  mSimplifyDialog->setRange( int( minTolerance * mToleranceDivider ),
+                             int( maxTolerance * mToleranceDivider ) );
   return true;
 }
 
@@ -350,6 +351,8 @@ QVector<QgsPoint> QgsMapToolSimplify::getPointList( QgsFeature& f )
   }
 }
 
+
+////////////////////////////////////////////////////////////////////////////
 
 
 bool QgsSimplifyFeature::simplifyLine( QgsFeature& lineFeature, double tolerance )
