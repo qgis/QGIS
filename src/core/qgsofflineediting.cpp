@@ -579,8 +579,10 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         // Move the new layer from the root group to the new group
         QgsLayerTreeLayer* newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
         QgsLayerTreeNode* newLayerTreeLayerClone = newLayerTreeLayer->clone();
+        QgsLayerTreeGroup* grp = qobject_cast<QgsLayerTreeGroup*>( newLayerTreeLayer->parent() );
         parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
-        layerTreeRoot->removeChildNode( newLayerTreeLayer );
+        if ( grp )
+          grp->removeChildNode( newLayerTreeLayer );
       }
 
       if ( hasLabels )
