@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
@@ -43,7 +44,7 @@ from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.algs.r.RAlgorithm import RAlgorithm
 from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.script import ScriptUtils
+from processing.script.ScriptUtils import ScriptUtils
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
 import processing.resources_rc
@@ -100,7 +101,7 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
 
         self.snippets = {}
         if self.algType == self.SCRIPT_PYTHON:
-            path = os.path.join(os.path.dirname(ScriptUtils.__file__), "snippets.py")
+            path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "script", "snippets.py")
             with open(path) as f:
                 lines = f.readlines()
             snippetlines = []
