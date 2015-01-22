@@ -61,6 +61,7 @@ def algoptions(name):
 def alghelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
+        alg = alg.getCopy()
         print str(alg)
         algoptions(name)
     else:
