@@ -195,7 +195,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
         pix.fill( Qt::transparent );
       }
 
-      if ( mItem.level() == 0 )
+      if ( mItem.level() == 0 || ( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
         mPixmap = pix;
       else
       {
@@ -228,6 +228,10 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
   else if ( role == SymbolV2LegacyRuleKeyRole )
   {
     return QVariant::fromValue<void*>( mItem.legacyRuleKey() );
+  }
+  else if ( role == ParentRuleKeyRole )
+  {
+    return mItem.parentRuleKey();
   }
 
   return QVariant();

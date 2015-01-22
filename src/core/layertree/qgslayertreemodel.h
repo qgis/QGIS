@@ -75,6 +75,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       ShowLegend                = 0x0001,  //!< Add legend nodes for layer nodes
       ShowSymbology             = 0x0001,  //!< deprecated - use ShowLegend
       ShowRasterPreviewIcon     = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
+      ShowLegendAsTree          = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
 
       // behavioral flags
       AllowNodeReorder          = 0x1000,  //!< Allow reordering with drag'n'drop
@@ -216,10 +217,13 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Filter nodes from QgsMapLayerLegend according to the current filtering rules
     QList<QgsLayerTreeModelLegendNode*> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode*>& nodes );
 
+    QModelIndex indexOfParentLayerTreeNode( QgsLayerTreeNode* parentNode ) const;
+
     int legendRootRowCount( QgsLayerTreeLayer* nL ) const;
     int legendNodeRowCount( QgsLayerTreeModelLegendNode* node ) const;
     QModelIndex legendRootIndex( int row, int column, QgsLayerTreeLayer* nL ) const;
     QModelIndex legendNodeIndex( int row, int column, QgsLayerTreeModelLegendNode* node ) const;
+    QModelIndex legendParent( QgsLayerTreeModelLegendNode* legendNode ) const;
     QVariant legendNodeData( QgsLayerTreeModelLegendNode* node, int role ) const;
     Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode* node ) const;
     bool legendEmbeddedInParent( QgsLayerTreeLayer* nodeLayer ) const;
@@ -237,6 +241,20 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     //! Minimal number of nodes when legend should be automatically collapsed. -1 = disabled
     int mAutoCollapseLegendNodesCount;
 
+    //! Structure that stores tree representation of map layer's legend.
+    //! This structure is used only when the following requirements are met:
+    //! 1. tree legend representation is enabled in model (ShowLegendAsTree flag)
+    //! 2. some legend nodes have non-null parent rule key (accessible via data(ParentRuleKeyRole) method)
+    //! The tree structure (parents and children of each node) is extracted by analyzing nodes' parent rules.
+    struct LayerLegendTree
+    {
+      //! Pointer to parent for each active node. Top-level nodes have null parent. Pointers are not owned.
+      QMap<QgsLayerTreeModelLegendNode*, QgsLayerTreeModelLegendNode*> parents;
+      //! List of children for each active node. Top-level nodes are under null pointer key. Pointers are not owned.
+      QMap<QgsLayerTreeModelLegendNode*, QList<QgsLayerTreeModelLegendNode*> > children;
+    };
+
+    //! Structure that stores all data associated with one map layer
     struct LayerLegendData
     {
       //! Active legend nodes. May have been filtered.
@@ -245,8 +263,11 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
       //! Data structure for storage of legend nodes.
       //! These are nodes as received from QgsMapLayerLegend
       QList<QgsLayerTreeModelLegendNode*> originalNodes;
-      //LayerLegendTreeNode* treeRoot; // if null using ordinary
+      //! Optional pointer to a tree structure - see LayerLegendTree for details
+      LayerLegendTree* tree;
     };
+
+    void tryBuildLegendTree( LayerLegendData& data );
 
     //! Per layer data about layer's legend nodes
     QMap<QgsLayerTreeLayer*, LayerLegendData> mLegend;

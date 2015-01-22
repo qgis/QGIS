@@ -53,6 +53,7 @@ class QgsLayerTreeModel : QAbstractItemModel
       // display flags
       ShowLegend,              //!< Add legend nodes for layer nodes
       ShowSymbology,           //!< deprecated - use ShowLegend
+      ShowLegendAsTree,        //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
 
       // behavioral flags
       AllowNodeReorder,           //!< Allow reordering with drag'n'drop
