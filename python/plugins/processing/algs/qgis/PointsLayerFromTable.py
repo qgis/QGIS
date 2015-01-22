@@ -57,7 +57,8 @@ class PointsLayerFromTable(GeoAlgorithm):
                 self.getParameterValue(self.YFIELD))
 
         crsId = self.getParameterValue(self.TARGET_CRS)
-        targetCrs = QgsCoordinateReferenceSystem(crsId)
+        targetCrs = QgsCoordinateReferenceSystem()
+        targetCrs.createFromUserInput(crsId)
         self.crs = targetCrs
 
         outFeat = QgsFeature()
