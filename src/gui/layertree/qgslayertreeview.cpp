@@ -129,7 +129,20 @@ void QgsLayerTreeView::modelRowsInserted( QModelIndex index, int start, int end 
     return;
 
   if ( QgsLayerTree::isLayer( parentNode ) )
-    return; // layers have only symbology nodes (no expanded/collapsed handling)
+  {
+    // if ShowLegendAsTree flag is enabled in model, we may need to expand some legend nodes
+    QStringList expandedNodeKeys = parentNode->customProperty( "expandedLegendNodes" ).toStringList();
+    if ( expandedNodeKeys.isEmpty() )
+      return;
+
+    foreach ( QgsLayerTreeModelLegendNode* legendNode, layerTreeModel()->layerLegendNodes( QgsLayerTree::toLayer( parentNode ) ) )
+    {
+      QString ruleKey = legendNode->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+      if ( expandedNodeKeys.contains( ruleKey ) )
+        setExpanded( layerTreeModel()->legendNode2index( legendNode ), true );
+    }
+    return;
+  }
 
   QList<QgsLayerTreeNode*> children = parentNode->children();
   for ( int i = start; i <= end; ++i )
@@ -149,11 +162,27 @@ void QgsLayerTreeView::modelRowsRemoved()
 
 void QgsLayerTreeView::updateExpandedStateToNode( QModelIndex index )
 {
-  QgsLayerTreeNode* node = layerTreeModel()->index2node( index );
-  if ( !node )
-    return;
-
-  node->setExpanded( isExpanded( index ) );
+  if ( QgsLayerTreeNode* node = layerTreeModel()->index2node( index ) )
+  {
+    node->setExpanded( isExpanded( index ) );
+  }
+  else if ( QgsLayerTreeModelLegendNode* node = layerTreeModel()->index2legendNode( index ) )
+  {
+    QString ruleKey = node->data( QgsLayerTreeModelLegendNode::RuleKeyRole ).toString();
+    QStringList lst = node->layerNode()->customProperty( "expandedLegendNodes" ).toStringList();
+    bool expanded = isExpanded( index );
+    bool isInList = lst.contains( ruleKey );
+    if ( expanded && !isInList )
+    {
+      lst.append( ruleKey );
+      node->layerNode()->setCustomProperty( "expandedLegendNodes", lst );
+    }
+    else if ( !expanded && isInList )
+    {
+      lst.removeAll( ruleKey );
+      node->layerNode()->setCustomProperty( "expandedLegendNodes", lst );
+    }
+  }
 }
 
 void QgsLayerTreeView::onCurrentChanged()
