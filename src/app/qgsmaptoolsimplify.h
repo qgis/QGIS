@@ -34,10 +34,10 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 
     QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = NULL );
 
+    void updateStatusText();
+
   private:
     QgsMapToolSimplify* mTool;
-
-  private slots:
 
 };
 
@@ -63,6 +63,8 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     ToleranceUnits toleranceUnits() const { return mToleranceUnits; }
 
+    QString statusText() const;
+
   public slots:
     /** slot to change display when slidebar is moved */
     void setTolerance( double tolerance );
@@ -80,6 +82,8 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     void selectFeaturesInRect();
 
     void updateSimplificationPreview();
+
+    int vertexCount( QgsGeometry* g ) const;
 
     /** Function to calculate tolerance boudaries for simplifying */
     //bool calculateSliderBoudaries();
@@ -107,6 +111,9 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QgsRubberBand* mSelectionRubberBand;
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
+
+    int mOriginalVertexCount;
+    int mReducedVertexCount;
 };
 
 /**

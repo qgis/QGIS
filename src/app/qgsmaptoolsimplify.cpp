@@ -43,6 +43,11 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent 
 
 }
 
+void QgsSimplifyDialog::updateStatusText()
+{
+  labelStatus->setText( mTool->statusText() );
+}
+
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -51,6 +56,8 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
     , mSelectionRubberBand( 0 )
     , mDragging( false )
+    , mOriginalVertexCount( 0 )
+    , mReducedVertexCount( 0 )
 {
   QSettings settings;
   mTolerance = settings.value( "/digitizing/simplify_tolerance", 1 ).toDouble();
@@ -92,14 +99,39 @@ void QgsMapToolSimplify::updateSimplificationPreview()
 {
   QgsVectorLayer* vl = currentVectorLayer();
 
+  mReducedVertexCount = 0;
   int i = 0;
   foreach ( const QgsFeature& fSel, mSelectedFeatures )
   {
     // create a copy of selected feature and do the simplification
     QgsFeature f = fSel;
     QgsSimplifyFeature::simplify( f, mTolerance, mToleranceUnits, mCanvas->mapSettings().layerTransform( vl ) );
+    mReducedVertexCount += vertexCount( f.geometry() );
     mRubberBands[i]->setToGeometry( f.geometry(), vl );
     ++i;
+  }
+
+  mSimplifyDialog->updateStatusText();
+}
+
+
+int QgsMapToolSimplify::vertexCount( QgsGeometry* g ) const
+{
+  switch ( g->type() )
+  {
+    case QGis::Line:
+    {
+      return g->asPolyline().count();
+    }
+    case QGis::Polygon:
+    {
+      int count = 0;
+      foreach ( const QgsPolyline& ring, g->asPolygon() )
+        count += ring.count();
+      return count;
+    }
+    default:
+      return 0;
   }
 }
 
@@ -292,10 +324,12 @@ void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
 
   mDragging = false;
 
-  // prepare rubber bands
+  // count vertices, prepare rubber bands
+  mOriginalVertexCount = 0;
   foreach ( const QgsFeature& f, mSelectedFeatures )
   {
-    Q_UNUSED( f );
+    mOriginalVertexCount += vertexCount( f.geometry() );
+
     QgsRubberBand* rb = new QgsRubberBand( mCanvas );
     rb->setColor( QColor( 255, 0, 0, 65 ) );
     rb->setWidth( 2 );
@@ -382,6 +416,13 @@ void QgsMapToolSimplify::deactivate()
     mSimplifyDialog->close();
   clearSelection();
   QgsMapTool::deactivate();
+}
+
+QString QgsMapToolSimplify::statusText() const
+{
+  int percent = mOriginalVertexCount ? ( 100 * mReducedVertexCount / mOriginalVertexCount ) : 0;
+  return tr( "%1 feature(s): %2 to %3 vertices (%4%)" )
+         .arg( mSelectedFeatures.count() ).arg( mOriginalVertexCount ).arg( mReducedVertexCount ).arg( percent );
 }
 
 
