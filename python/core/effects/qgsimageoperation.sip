@@ -32,7 +32,7 @@ class QgsImageOperation
       GrayscaleLuminosity, /*< grayscale by perceptual luminosity (weighted sum of color RGB components) */
       GrayscaleAverage /*< grayscale by taking average of color RGB components */
     };
-    
+
     /** Flip operation types
     */
     enum FlipType
@@ -57,7 +57,7 @@ class QgsImageOperation
      * contrast of the image.
      */
     static void adjustBrightnessContrast( QImage &image, const int brightness, const double contrast );
-    
+
     /**Alter the hue or saturation of a QImage.
      * @param image QImage to alter
      * @param saturation double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
@@ -67,20 +67,20 @@ class QgsImageOperation
      */
     static void adjustHueSaturation( QImage &image, const double saturation, const QColor& colorizeColor = QColor(),
                                      const double colorizeStrength = 1.0 );
-                                     
+
     /**Multiplies opacity of image pixel values by a factor.
      * @param image QImage to alter
      * @param factor factor to multiple pixel's opacity by
      */
     static void multiplyOpacity( QImage &image, const double factor );
-    
+
     /**Overlays a color onto an image. This operation retains the alpha channel of the
      * original image, but replaces all image pixel colors with the specified color.
      * @param image QImage to alter
      * @param color color to overlay (any alpha component of the color is ignored)
      */
     static void overlayColor( QImage &image, const QColor& color );
-    
+
         /**Struct for storing properties of a distance transform operation*/
     struct DistanceTransformProperties
     {
@@ -117,7 +117,7 @@ class QgsImageOperation
      * @param alphaOnly set to true to blur only the alpha component of the image
      */
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
-    
+
     /**Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
      * quality blur.
      * @param image QImage to blur
@@ -125,11 +125,11 @@ class QgsImageOperation
      * @returns blurred image
      */
     static QImage* gaussianBlur( QImage &image, const int radius ) /Factory/;
-    
+
     /**Flips an image horizontally or vertically
      * @param image QImage to flip
      * @param type type of flip to perform (horizontal or vertical)
      */
     static void flipImage( QImage &image, FlipType type );
-    
+
 };

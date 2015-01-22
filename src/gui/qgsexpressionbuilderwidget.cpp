@@ -70,7 +70,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     QgsPythonRunner::eval( "qgis.user.expressionspath", mFunctionsPath );
     newFunctionFile();
     // The scratch file gets written each time the widget opens.
-    saveFunctionFile("scratch");
+    saveFunctionFile( "scratch" );
     updateFunctionFileList( mFunctionsPath );
   }
   else
@@ -171,7 +171,7 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
 void QgsExpressionBuilderWidget::newFunctionFile( QString fileName )
 {
   QString templatetxt;
-  QgsPythonRunner::eval("qgis.user.expressions.template", templatetxt);
+  QgsPythonRunner::eval( "qgis.user.expressions.template", templatetxt );
   txtPython->setText( templatetxt );
   int index = cmbFileNames->findText( fileName );
   if ( index == -1 )

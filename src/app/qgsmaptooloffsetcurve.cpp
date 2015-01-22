@@ -203,7 +203,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
   QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( e->pos() );
   if ( m.isValid() )
   {
-    if ( ( m.layer() && m.layer()->id() != mSourceLayerId ) || m.featureId() != mModifiedFeature )
+    if (( m.layer() && m.layer()->id() != mSourceLayerId ) || m.featureId() != mModifiedFeature )
     {
       layerCoords = toLayerCoordinates( layer, m.point() );
       mSnapVertexMarker = new QgsVertexMarker( mCanvas );

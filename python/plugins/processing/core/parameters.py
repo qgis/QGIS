@@ -520,7 +520,7 @@ class ParameterRaster(ParameterDataObject):
             else:
                 # Layer could not be found
                 return False
-                    
+
 
     def getFileFilter(self):
         exts = dataobjects.getSupportedOutputRasterLayerExtensions()

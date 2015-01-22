@@ -11,16 +11,16 @@ class QgsMapCanvas;
  */
 class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
 {
-  Q_OBJECT
-public:
-  QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent = 0 );
+    Q_OBJECT
+  public:
+    QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent = 0 );
 
-private slots:
-  void canvasMapSettingsChanged();
-  void canvasCurrentLayerChanged();
+  private slots:
+    void canvasMapSettingsChanged();
+    void canvasCurrentLayerChanged();
 
-private:
-  QgsMapCanvas* mCanvas;
+  private:
+    QgsMapCanvas* mCanvas;
 };
 
 

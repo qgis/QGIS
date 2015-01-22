@@ -130,7 +130,7 @@ class BatchInputSelectionPanel(QWidget):
             settings.setValue('/Processing/LastInputPath',
                                   os.path.dirname(unicode(files[0])))
             for i, filename in enumerate(files):
-                files[i] = dataobjects.getRasterSublayer(filename, self.param) 
+                files[i] = dataobjects.getRasterSublayer(filename, self.param)
             if len(files) == 1:
                 self.text.setText(files[0])
             else:

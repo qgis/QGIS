@@ -55,7 +55,7 @@ def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     expandargs = False
     if arg_count == 0 and not name[0] == '$':
         name = '${0}'.format(name)
-    
+
     if arg_count == "auto":
         # Work out the number of args we need.
         # Number of function args - 2.  The last two args are always feature, parent.

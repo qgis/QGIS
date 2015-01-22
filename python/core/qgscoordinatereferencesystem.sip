@@ -304,7 +304,7 @@ class QgsCoordinateReferenceSystem
 
     /**Returns auth id of related geographic CRS*/
     QString geographicCRSAuthId() const;
-    
+
     /**Returns a list of recently used projections
      * @returns list of srsid for recently used projections
      * @note added in QGIS 2.7

@@ -43,11 +43,11 @@ class QgsFeatureRendererV2
   else if (sipCpp->type() == "RuleRenderer")
     sipClass = sipClass_QgsRuleBasedRendererV2;
   else if (sipCpp->type() == "heatmapRenderer")
-    sipClass = sipClass_QgsHeatmapRenderer;	
+    sipClass = sipClass_QgsHeatmapRenderer;
   else if (sipCpp->type() == "invertedPolygonRenderer")
-    sipClass = sipClass_QgsInvertedPolygonRenderer;		
+    sipClass = sipClass_QgsInvertedPolygonRenderer;
   else if (sipCpp->type() == "pointDisplacement")
-    sipClass = sipClass_QgsPointDisplacementRenderer;			
+    sipClass = sipClass_QgsPointDisplacementRenderer;
   else
     sipClass = 0;
 %End

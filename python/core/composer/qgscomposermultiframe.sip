@@ -22,13 +22,13 @@ class QgsComposerMultiFrame: QgsComposerObject
   if (dynamic_cast<QgsComposerHtml*>(sipCpp) != NULL)
     sipClass = sipClass_QgsComposerHtml;
   else if (dynamic_cast<QgsComposerAttributeTableV2*>(sipCpp) != NULL)
-    sipClass = sipClass_QgsComposerAttributeTableV2;	
+    sipClass = sipClass_QgsComposerAttributeTableV2;
   else if (dynamic_cast<QgsComposerTableV2*>(sipCpp) != NULL)
     sipClass = sipClass_QgsComposerTableV2;
   else if (dynamic_cast<QgsComposerMultiFrame*>(sipCpp) != NULL)
     sipClass = sipClass_QgsComposerMultiFrame;
   else
-    sipClass = NULL;	
+    sipClass = NULL;
 %End
 
   public:

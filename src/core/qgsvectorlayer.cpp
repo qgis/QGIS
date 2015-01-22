@@ -2160,7 +2160,7 @@ bool QgsVectorLayer::deleteAttributes( QList<int> attrs )
 
   qSort( attrs.begin(), attrs.end(), qGreater<int>() );
 
-  Q_FOREACH( int attr, attrs )
+  Q_FOREACH ( int attr, attrs )
   {
     if ( deleteAttribute( attr ) )
     {
@@ -2877,7 +2877,7 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     if ( mEditBuffer )
     {
       QSet<QString> vals;
-      Q_FOREACH( const QVariant& v, uniqueValues )
+      Q_FOREACH ( const QVariant& v, uniqueValues )
       {
         vals << v.toString();
       }
@@ -3603,13 +3603,13 @@ void QgsVectorLayer::invalidateSymbolCountedFlag()
 
 void QgsVectorLayer::onRelationsLoaded()
 {
-  Q_FOREACH( QgsAttributeEditorElement* elem, mAttributeEditorElements )
+  Q_FOREACH ( QgsAttributeEditorElement* elem, mAttributeEditorElements )
   {
     if ( elem->type() == QgsAttributeEditorElement::AeTypeContainer )
     {
       QgsAttributeEditorContainer* cont = dynamic_cast< QgsAttributeEditorContainer* >( elem );
       QList<QgsAttributeEditorElement*> relations = cont->findElements( QgsAttributeEditorElement::AeTypeRelation );
-      Q_FOREACH( QgsAttributeEditorElement* relElem, relations )
+      Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
       {
         QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
         rel->init( QgsProject::instance()->relationManager() );
@@ -3665,7 +3665,7 @@ QDomElement QgsAttributeEditorContainer::toDomElement( QDomDocument& doc ) const
   QDomElement elem = doc.createElement( "attributeEditorContainer" );
   elem.setAttribute( "name", mName );
 
-  Q_FOREACH( QgsAttributeEditorElement* child, mChildren )
+  Q_FOREACH ( QgsAttributeEditorElement* child, mChildren )
   {
     elem.appendChild( child->toDomElement( doc ) );
   }
@@ -3681,7 +3681,7 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
 {
   QList<QgsAttributeEditorElement*> results;
 
-  Q_FOREACH( QgsAttributeEditorElement* elem, mChildren )
+  Q_FOREACH ( QgsAttributeEditorElement* elem, mChildren )
   {
     if ( elem->type() == type )
     {

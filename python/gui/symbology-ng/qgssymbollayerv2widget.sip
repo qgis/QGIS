@@ -12,7 +12,7 @@ class QgsSymbolLayerV2Widget : QWidget
     virtual QgsSymbolLayerV2* symbolLayer() = 0;
 
   protected:
-  
+
     void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
 
     /** Get label for data defined entry.
@@ -20,13 +20,13 @@ class QgsSymbolLayerV2Widget : QWidget
      * @note added in 2.1
      */
     virtual QString dataDefinedPropertyLabel( const QString &entryName );
-    
+
   signals:
     void changed();
-    
+
   protected slots:
     void updateDataDefinedProperty();
-    
+
 };
 
 ///////////

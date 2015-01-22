@@ -140,7 +140,7 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
 
         if ( newLayer )
         {
-          Q_FOREACH( QgsVectorJoinInfo join, it.value() )
+          Q_FOREACH ( QgsVectorJoinInfo join, it.value() )
           {
             QgsVectorLayer* newJoinedLayer = layerIdMapping.value( join.joinLayerId );
             if ( newJoinedLayer )

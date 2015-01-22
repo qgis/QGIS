@@ -62,7 +62,7 @@ void QgsScaleWidget::setScaleFromCanvas()
   if ( !mCanvas )
     return;
 
-  setScale( 1/mCanvas->scale() );
+  setScale( 1 / mCanvas->scale() );
 }
 
 

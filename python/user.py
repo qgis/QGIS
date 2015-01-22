@@ -2,7 +2,7 @@ import os
 import sys
 import glob
 
-from qgis.core import QgsApplication 
+from qgis.core import QgsApplication
 
 def load_user_expressions(path):
     """

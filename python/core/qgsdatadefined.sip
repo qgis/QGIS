@@ -23,7 +23,7 @@ class QgsDataDefined
                     const QString& field = QString() );
 
     /**
-     * Construct a new data defined object, analyse the expression to determine 
+     * Construct a new data defined object, analyse the expression to determine
      * if it's a simple field
      *
      * @param expression can be null

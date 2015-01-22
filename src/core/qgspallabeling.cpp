@@ -1784,11 +1784,11 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   const QgsMapToPixel& m2p = context.mapToPixel();
   if ( m2p.mapRotation() )
   {
-      if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
-      {
-        QgsDebugMsg( QString("Error rotating geometry").arg( geom->exportToWkt() ) );
-        return; // really ?
-      }
+    if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
+    {
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
+      return; // really ?
+    }
   }
 
   // CLIP the geometry if it is bigger than the extent
@@ -3908,7 +3908,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   // also pre-scaled/translated, as suggested here:
   // http://hub.qgis.org/issues/11856
   QgsMapToPixel xform = mMapSettings->mapToPixel();
-  xform.setMapRotation(0,0,0);
+  xform.setMapRotation( 0, 0, 0 );
 #else
   const QgsMapToPixel& xform = mMapSettings->mapToPixel();
 #endif
@@ -4213,7 +4213,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   // also pre-scaled/translated, as suggested here:
   // http://hub.qgis.org/issues/11856
   QgsMapToPixel xform = context.mapToPixel();
-  xform.setMapRotation(0,0,0);
+  xform.setMapRotation( 0, 0, 0 );
 #else
   const QgsMapToPixel& xform = context.mapToPixel();
 #endif

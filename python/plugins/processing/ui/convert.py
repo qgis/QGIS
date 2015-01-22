@@ -2,9 +2,9 @@ import os
 import subprocess
 
 def convertUiFile(f):
-        
+
     command = ["pyuic4.bat", f, "-o", "ui_" + os.path.splitext(f)[0] + ".py"]
-    
+
     proc = subprocess.Popen(
         command,
         shell=True,

@@ -4,8 +4,8 @@
 #include "qgsvectorlayer.h"
 
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
-  : QgsSnappingUtils( parent )
-  , mCanvas( canvas )
+    : QgsSnappingUtils( parent )
+    , mCanvas( canvas )
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );

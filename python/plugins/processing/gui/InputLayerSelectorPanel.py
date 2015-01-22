@@ -71,7 +71,7 @@ class InputLayerSelectorPanel(QWidget, Ui_Form):
             filename = dataobjects.getRasterSublayer(filename, self.param)
             self.cmbText.addItem(filename, filename)
             self.cmbText.setCurrentIndex(self.cmbText.count() - 1)
-            
+
 
     def getValue(self):
         return self.cmbText.itemData(self.cmbText.currentIndex())
