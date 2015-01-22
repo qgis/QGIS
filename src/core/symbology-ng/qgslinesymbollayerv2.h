@@ -112,6 +112,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Qt::PenStyle dxfPenStyle() const override;
 
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
+    double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
     QColor dxfColor( const QgsSymbolV2RenderContext& context ) const override;
 
   protected:

@@ -101,6 +101,13 @@ double QgsSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2Rende
   return 1.0;
 }
 
+double QgsSymbolLayerV2::dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+{
+  Q_UNUSED( e );
+  Q_UNUSED( context );
+  return 0.0;
+}
+
 QColor QgsSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
   Q_UNUSED( context );
@@ -423,7 +430,7 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
 double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
   Q_UNUSED( context );
-  return ( width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() ) );
+  return width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
 }
 
 

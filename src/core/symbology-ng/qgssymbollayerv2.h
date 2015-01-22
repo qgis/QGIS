@@ -123,6 +123,7 @@ class CORE_EXPORT QgsSymbolLayerV2
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
     virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
     virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
 

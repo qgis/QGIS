@@ -142,6 +142,7 @@ class QgsSymbolLayerV2
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
     virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
     virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
 
@@ -276,6 +277,7 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
     virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );

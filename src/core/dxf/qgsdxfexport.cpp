@@ -3505,11 +3505,16 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
   Qt::PenStyle penStyle( Qt::SolidLine );
   Qt::BrushStyle brushStyle( Qt::NoBrush );
   double width = -1;
+  double offset = 0.0;
   if ( mSymbologyExport != NoSymbology && symbolLayer )
   {
     width = symbolLayer->dxfWidth( *this, ctx );
+    offset = symbolLayer->dxfOffset( *this, ctx );
     penStyle = symbolLayer->dxfPenStyle();
     brushStyle = symbolLayer->dxfBrushStyle();
+
+    if ( qgsDoubleNear( offset, 0.0 ) )
+      offset = 0.0;
   }
 
   QString lineStyleName = "CONTINUOUS";
@@ -3543,35 +3548,60 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
     //single line
     if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
     {
-      writePolyline( geom->asPolyline(), layer, lineStyleName, penColor, width, false );
+      QgsGeometry *offsetLine = offset == 0.0 ? geom : geom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+      if ( !offsetLine )
+        offsetLine = geom;
+
+      writePolyline( offsetLine->asPolyline(), layer, lineStyleName, penColor, width, false );
+
+      if ( offsetLine != geom )
+        delete offsetLine;
     }
 
     //multiline
     if ( geometryType == QGis::WKBMultiLineString || geometryType == QGis::WKBMultiLineString25D )
     {
-      QgsMultiPolyline multiLine = geom->asMultiPolyline();
+      QgsGeometry *offsetLine = offset == 0.0 ? geom : geom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+      if ( !offsetLine )
+        offsetLine = geom;
+
+      QgsMultiPolyline multiLine = offsetLine->asMultiPolyline();
       QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
       for ( ; lIt != multiLine.constEnd(); ++lIt )
       {
         writePolyline( *lIt, layer, lineStyleName, penColor, width, false );
       }
+
+      if ( offsetLine != geom )
+        delete offsetLine;
     }
 
     //polygon
     if ( geometryType == QGis::WKBPolygon || geometryType == QGis::WKBPolygon25D )
     {
-      QgsPolygon polygon = geom->asPolygon();
+      QgsGeometry *offsetPolygon = offset == 0.0 ? geom : geom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+      if ( !offsetPolygon )
+        offsetPolygon = geom;
+
+      QgsPolygon polygon = offsetPolygon->asPolygon();
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) //iterate over rings
       {
-        writePolyline( *polyIt, layer, lineStyleName, penColor, width, true );
+        writePolyline( geom->asPolyline(), layer, lineStyleName, penColor, width, false );
       }
+
+      if ( offsetPolygon != geom )
+        delete offsetPolygon;
     }
 
     //multipolygon or polygon
     if ( geometryType == QGis::WKBMultiPolygon || geometryType == QGis::WKBMultiPolygon25D )
     {
-      QgsMultiPolygon mp = geom->asMultiPolygon();
+      QgsGeometry *offsetPolygon = offset == 0.0 ? geom : geom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+      if ( !offsetPolygon )
+        offsetPolygon = geom;
+
+      QgsMultiPolygon mp = offsetPolygon->asMultiPolygon();
       QgsMultiPolygon::const_iterator mpIt = mp.constBegin();
       for ( ; mpIt != mp.constEnd(); ++mpIt )
       {
@@ -3581,6 +3611,9 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
           writePolyline( *polyIt, layer, lineStyleName, penColor, width, true );
         }
       }
+
+      if ( offsetPolygon != geom )
+        delete offsetPolygon;
     }
   }
 

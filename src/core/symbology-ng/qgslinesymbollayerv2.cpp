@@ -611,6 +611,17 @@ QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& con
   return mColor;
 }
 
+double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+{
+  double offset = mOffset;
+  QgsExpression* offsetExpression = expression( "offset" );
+  if ( offsetExpression )
+  {
+    offset = offsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
+  }
+  return offset;
+}
+
 /////////
 
 
