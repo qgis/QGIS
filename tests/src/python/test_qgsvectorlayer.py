@@ -867,6 +867,8 @@ class TestQgsVectorLayer(TestCase):
 
         flds = layer.pendingFields()
         assert len(flds) == 6
+        assert flds[2].name() == "joinlayer_x"
+        assert flds[3].name() == "joinlayer_z"
         assert flds[4].name() == "custom-prefix_x"
         assert flds[5].name() == "custom-prefix_z"
         assert flds.fieldOrigin(0) == QgsFields.OriginProvider
