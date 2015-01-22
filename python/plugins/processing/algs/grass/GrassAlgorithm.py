@@ -29,6 +29,7 @@ import os
 import time
 import uuid
 import importlib
+import re
 from qgis.core import *
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
