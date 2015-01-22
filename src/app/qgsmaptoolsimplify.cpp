@@ -31,39 +31,14 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent 
     , mTool( tool )
 {
   setupUi( this );
-  // synchronization of values
-  connect( horizontalSlider, SIGNAL( valueChanged( int ) ), spinBox, SLOT( setValue( int ) ) );
-  connect( spinBox, SIGNAL( valueChanged( int ) ), horizontalSlider, SLOT( setValue( int ) ) );
+
+  spinTolerance->setValue( mTool->tolerance() );
 
   // communication with map tool
-  connect( spinBox, SIGNAL( valueChanged( int ) ), this, SLOT( toleranceChanged( int ) ) );
-  connect( okButton, SIGNAL( clicked() ), this, SLOT( okClicked() ) );
-  connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
-}
+  connect( spinTolerance, SIGNAL( valueChanged( double ) ), mTool, SLOT( setTolerance( double ) ) );
+  connect( okButton, SIGNAL( clicked() ), mTool, SLOT( storeSimplified() ) );
+  connect( this, SIGNAL( finished( int ) ), mTool, SLOT( removeRubberBand() ) );
 
-void QgsSimplifyDialog::setRange( int minValue, int maxValue )
-{
-  // let's have 20 page steps
-  horizontalSlider->setPageStep(( maxValue - minValue ) / 20 );
-
-  horizontalSlider->setMinimum(( minValue - 1 < 0 ? 0 : minValue - 1 ) );// -1 for count with minimum tolerance end caused by double imprecision
-  horizontalSlider->setMaximum( maxValue );
-  spinBox->setRange( horizontalSlider->minimum(), horizontalSlider->maximum() );
-}
-
-void QgsSimplifyDialog::toleranceChanged( int tol )
-{
-  mTool->setTolerance( tol );
-}
-
-void QgsSimplifyDialog::okClicked()
-{
-  mTool->storeSimplified();
-}
-
-void QgsSimplifyDialog::onFinished()
-{
-  mTool->removeRubberBand();
 }
 
 
@@ -73,6 +48,9 @@ void QgsSimplifyDialog::onFinished()
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas ), mRubberBand( 0 )
 {
+  QSettings settings;
+  mTolerance = settings.value( "/digitizing/simplify_tolerance", 1 ).toDouble();
+
   mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
 
@@ -83,10 +61,19 @@ QgsMapToolSimplify::~QgsMapToolSimplify()
 }
 
 
-void QgsMapToolSimplify::setTolerance( int tolerance )
+void QgsMapToolSimplify::setTolerance( double tolerance )
 {
-  mTolerance = double( tolerance ) / mToleranceDivider;
+  mTolerance = tolerance;
 
+  QSettings settings;
+  settings.setValue( "/digitizing/simplify_tolerance", tolerance );
+
+  if ( mSelectedFeature.isValid() )
+    updateSimplificationPreview();
+}
+
+void QgsMapToolSimplify::updateSimplificationPreview()
+{
   // create a copy of selected feature and do the simplification
   QgsFeature f = mSelectedFeature;
   if ( mTolerance > 0 )
@@ -123,32 +110,8 @@ void QgsMapToolSimplify::storeSimplified()
   mCanvas->refresh();
 }
 
-int QgsMapToolSimplify::calculateDivider( double minimum, double maximum )
-{
-  double tmp = minimum;
-  long i = 1;
-  if ( minimum == 0 )
-  { //exception if min = 0 than divider must be counted from maximum
-    tmp = maximum;
-  }
-  //count divider in such way so it can be used as whole number
-  while ( tmp < 1 )
-  {
-    tmp = tmp * 10;
-    i = i * 10;
-  }
-  if ( minimum == 0 )
-  { //special case that minimum is 0 to have more than 1 step
-    i = i * 100000;
-  }
-//taking care of problem when multiplication would overflow maxint
-  while ( int( i * maximum ) < 0 )
-  {
-    i = i / 10;
-  }
-  return i;
-}
 
+#if 0
 bool QgsMapToolSimplify::calculateSliderBoudaries()
 {
   double minTolerance = -1, maxTolerance = -1;
@@ -244,13 +207,11 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
       }
     }
   }
-  mToleranceDivider = calculateDivider( minTolerance, maxTolerance );
   // set min and max
-  mSimplifyDialog->setRange( int( minTolerance * mToleranceDivider ),
-                             int( maxTolerance * mToleranceDivider ) );
+  mSimplifyDialog->setRange( minTolerance, maxTolerance );
   return true;
 }
-
+#endif
 
 void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 {
@@ -302,16 +263,9 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
     mRubberBand->setWidth( 2 );
     mRubberBand->show();
-    //calculate boudaries for slidebar
-    if ( calculateSliderBoudaries() )
-    {
-      // show dialog as a non-modal window
-      mSimplifyDialog->show();
-    }
-    else
-    {
-      emit messageEmitted( tr( "This feature cannot be simplified. Check if feature has enough vertices to be simplified." ), QgsMessageBar::WARNING );
-    }
+
+    // show dialog as a non-modal window
+    mSimplifyDialog->show();
   }
 }
 

@@ -33,20 +33,10 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 
     QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = NULL );
 
-    /** Setting range of slide bar */
-    void setRange( int minValue, int maxValue );
-
   private:
     QgsMapToolSimplify* mTool;
 
   private slots:
-
-    /** Signal when slidebar is moved */
-    void toleranceChanged( int tol );
-    /** Signal to accept changes */
-    void okClicked();
-
-    void onFinished();
 
 };
 
@@ -54,7 +44,7 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 /** Map tool to simplify line/polygon features */
 class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 {
-
+    Q_OBJECT
   public:
     QgsMapToolSimplify( QgsMapCanvas* canvas );
     virtual ~QgsMapToolSimplify();
@@ -64,8 +54,11 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! called when map tool is being deactivated
     void deactivate() override;
 
+    double tolerance() const { return mTolerance; }
+
+  public slots:
     /** slot to change display when slidebar is moved */
-    void setTolerance( int tolerance );
+    void setTolerance( double tolerance );
 
     /** slot to store feture after simplification */
     void storeSimplified();
@@ -73,11 +66,11 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     void removeRubberBand();
 
   private:
-    /** Divider calculation, because slider can go only by whole numbers */
-    int calculateDivider( double minimum, double maximum );
+
+    void updateSimplificationPreview();
 
     /** Function to calculate tolerance boudaries for simplifying */
-    bool calculateSliderBoudaries();
+    //bool calculateSliderBoudaries();
 
     /** Function to get list of vertexes from feature */
     QVector<QgsPoint> getPointList( QgsFeature& f );
@@ -91,9 +84,6 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     /** Feature with which we are working */
     QgsFeature mSelectedFeature;
-
-    /** tolerance divider is value which tells with which delete value from sidebar */
-    long mToleranceDivider;
 
     /** real value of tolerance */
     double mTolerance;
