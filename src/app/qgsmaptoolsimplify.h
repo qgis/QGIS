@@ -103,6 +103,10 @@ class APP_EXPORT QgsSimplifyFeature
     };
 
   public:
+    /** simplify line/polygon feature with specified tolerance. Returns true on success */
+    static bool simplify( QgsFeature& feature, double tolerance );
+
+  protected:
     /** simplify line feature with specified tolerance. Returns true on success */
     static bool simplifyLine( QgsFeature &lineFeature, double tolerance );
     /** simplify polygon feature with specified tolerance. Returns true on success */

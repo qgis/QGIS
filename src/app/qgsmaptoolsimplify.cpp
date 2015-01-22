@@ -76,32 +76,15 @@ void QgsMapToolSimplify::updateSimplificationPreview()
 {
   // create a copy of selected feature and do the simplification
   QgsFeature f = mSelectedFeature;
-  if ( mTolerance > 0 )
-  {
-    if ( mSelectedFeature.geometry()->type() == QGis::Line )
-    {
-      QgsSimplifyFeature::simplifyLine( f, mTolerance );
-    }
-    else
-    {
-      QgsSimplifyFeature::simplifyPolygon( f, mTolerance );
-    }
-  }
-  mRubberBand->setToGeometry( f.geometry(), 0 );
+  QgsSimplifyFeature::simplify( f, mTolerance );
+  mRubberBand->setToGeometry( f.geometry(), currentVectorLayer() );
 }
 
 
 void QgsMapToolSimplify::storeSimplified()
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
-  if ( mSelectedFeature.geometry()->type() == QGis::Line )
-  {
-    QgsSimplifyFeature::simplifyLine( mSelectedFeature, mTolerance );
-  }
-  else
-  {
-    QgsSimplifyFeature::simplifyPolygon( mSelectedFeature, mTolerance );
-  }
+  QgsSimplifyFeature::simplify( mSelectedFeature, mTolerance );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
   vlayer->changeGeometry( mSelectedFeature.id(), mSelectedFeature.geometry() );
@@ -223,7 +206,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     return;
   }
 
-  QgsPoint layerCoords = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
+  QgsPoint layerCoords = toLayerCoordinates( vlayer, e->pos() );
 
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
@@ -259,10 +242,10 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     }
 
     mRubberBand = new QgsRubberBand( mCanvas );
-    mRubberBand->setToGeometry( mSelectedFeature.geometry(), 0 );
     mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
     mRubberBand->setWidth( 2 );
     mRubberBand->show();
+    updateSimplificationPreview();
 
     // show dialog as a non-modal window
     mSimplifyDialog->show();
@@ -309,6 +292,21 @@ QVector<QgsPoint> QgsMapToolSimplify::getPointList( QgsFeature& f )
 ////////////////////////////////////////////////////////////////////////////
 
 
+bool QgsSimplifyFeature::simplify( QgsFeature& feature, double tolerance )
+{
+  if ( tolerance <= 0 )
+    return false;
+
+  if ( feature.geometry()->type() == QGis::Line )
+  {
+    return QgsSimplifyFeature::simplifyLine( feature, tolerance );
+  }
+  else
+  {
+    return QgsSimplifyFeature::simplifyPolygon( feature, tolerance );
+  }
+}
+
 bool QgsSimplifyFeature::simplifyLine( QgsFeature& lineFeature, double tolerance )
 {
   QgsGeometry* line = lineFeature.geometry();
@@ -331,7 +329,6 @@ bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature, double tol
   }
 
   QVector<QgsPoint> resultPoints = simplifyPoints( polygon->asPolygon()[0], tolerance );
-  //resultPoints.push_back(resultPoints[0]);
   QVector<QgsPolyline> poly;
   poly.append( resultPoints );
   polygonFeature.setGeometry( QgsGeometry::fromPolygon( poly ) );
