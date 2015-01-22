@@ -40,4 +40,19 @@ import expressions
 
 expressions.load = load_user_expressions
 expressions.load(expressionspath)
+expressions.template = """\"\"\"
+Template function file. Define new functions using @qgsfunction.
+When using args="auto" you may define a new variable for each value for the function.
+feature and parent must always be the last args.
+To pass a any number of args into a function use args=-1 the first
+variable will then be a list of values.
+\"\"\"
+
+from qgis.core import *
+from qgis.gui import *
+
+@qgsfunction(args="auto", group='Custom')
+def func(value1, feature, parent):
+    pass
+"""
 

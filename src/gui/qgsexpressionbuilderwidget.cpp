@@ -170,11 +170,9 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( QString path )
 
 void QgsExpressionBuilderWidget::newFunctionFile( QString fileName )
 {
-  txtPython->setText( "from qgis.core import *\n"
-                      "from qgis.gui import *\n\n"
-                      "@qgsfunction(args=-1, group='Custom')\n"
-                      "def func(values, feature, parent):\n"
-                      "    return str(values)" );
+  QString templatetxt;
+  QgsPythonRunner::eval("qgis.user.expressions.template", templatetxt);
+  txtPython->setText( templatetxt );
   int index = cmbFileNames->findText( fileName );
   if ( index == -1 )
     cmbFileNames->setEditText( fileName );
