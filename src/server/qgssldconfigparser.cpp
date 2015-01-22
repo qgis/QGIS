@@ -482,6 +482,15 @@ QDomDocument QgsSLDConfigParser::getStyles( QStringList& layerList ) const
   return styleDoc;
 }
 
+QDomDocument QgsSLDConfigParser::describeLayer( QStringList& layerList, const QString& hrefString ) const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->describeLayer( layerList, hrefString );
+  }
+  return QDomDocument();
+}
+
 QgsMapRenderer::OutputUnits QgsSLDConfigParser::outputUnits() const
 {
   return mOutputUnits;

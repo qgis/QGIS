@@ -91,6 +91,7 @@ class QgsServerProjectParser
     void layerFromLegendLayer( const QDomElement& legendLayerElem, QMap< int, QgsMapLayer*>& layers, bool useCache = true ) const;
 
     QStringList wfsLayerNames() const;
+    QStringList wcsLayerNames() const;
 
     QDomElement firstComposerLegendElement() const;
 
@@ -103,8 +104,11 @@ class QgsServerProjectParser
     QString layerName( const QDomElement& layerElem ) const;
 
     QString serviceUrl() const;
+    QString wfsServiceUrl() const;
+    QString wcsServiceUrl() const;
 
     QStringList wfsLayers() const;
+    QStringList wcsLayers() const;
 
     void addJoinLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
 

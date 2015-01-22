@@ -88,6 +88,8 @@ class QgsWMSServer: public QgsOWSServer
     QDomDocument getStyle();
     /**Returns an SLD file with the styles of the requested layers. Exception is raised in case of troubles :-)*/
     QDomDocument getStyles();
+    /**Returns a describeLayer file with the onlineResource of the requested layers. Exception is raised in case of troubles :-)*/
+    QDomDocument describeLayer();
 
     /**Returns printed page as binary
       @param formatString out: format of the print output (e.g. pdf, svg, png, ...)

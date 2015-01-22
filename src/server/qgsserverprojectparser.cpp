@@ -555,6 +555,48 @@ QString QgsServerProjectParser::serviceUrl() const
   return url;
 }
 
+QString QgsServerProjectParser::wfsServiceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElement = propertiesElem();
+  if ( !propertiesElement.isNull() )
+  {
+    QDomElement wfsUrlElem = propertiesElement.firstChildElement( "WFSUrl" );
+    if ( !wfsUrlElem.isNull() )
+    {
+      url = wfsUrlElem.text();
+    }
+  }
+  return url;
+}
+
+QString QgsServerProjectParser::wcsServiceUrl() const
+{
+  QString url;
+
+  if ( !mXMLDoc )
+  {
+    return url;
+  }
+
+  QDomElement propertiesElement = propertiesElem();
+  if ( !propertiesElement.isNull() )
+  {
+    QDomElement wcsUrlElem = propertiesElement.firstChildElement( "WCSUrl" );
+    if ( !wcsUrlElem.isNull() )
+    {
+      url = wcsUrlElem.text();
+    }
+  }
+  return url;
+}
+
 void QgsServerProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc, bool considerMapExtent ) const
 {
   QgsRectangle combinedBBox;
@@ -1126,6 +1168,32 @@ QStringList QgsServerProjectParser::wfsLayerNames() const
   return layerNameList;
 }
 
+QStringList QgsServerProjectParser::wcsLayerNames() const
+{
+  QStringList layerNameList;
+
+  QMap<QString, QgsMapLayer*> layerMap;
+  projectLayerMap( layerMap );
+
+  QgsMapLayer* currentLayer = 0;
+  QStringList wcsIdList = wcsLayers();
+  QStringList::const_iterator wcsIdIt = wcsIdList.constBegin();
+  for ( ; wcsIdIt != wcsIdList.constEnd(); ++wcsIdIt )
+  {
+    QMap<QString, QgsMapLayer*>::const_iterator layerMapIt = layerMap.find( *wcsIdIt );
+    if ( layerMapIt != layerMap.constEnd() )
+    {
+      currentLayer = layerMapIt.value();
+      if ( currentLayer )
+      {
+        layerNameList.append( mUseLayerIDs ? currentLayer->id() : currentLayer->name() );
+      }
+    }
+  }
+
+  return layerNameList;
+}
+
 QDomElement QgsServerProjectParser::firstComposerLegendElement() const
 {
   if ( !mXMLDoc )
@@ -1252,6 +1320,37 @@ QStringList QgsServerProjectParser::wfsLayers() const
     wfsList << valueList.at( i ).toElement().text();
   }
   return wfsList;
+}
+
+QStringList QgsServerProjectParser::wcsLayers() const
+{
+  QStringList wcsList;
+  if ( !mXMLDoc )
+  {
+    return wcsList;
+  }
+  
+  QDomElement qgisElem = mXMLDoc->documentElement();
+  if ( qgisElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomElement wcsLayersElem = propertiesElem.firstChildElement( "WCSLayers" );
+  if ( wcsLayersElem.isNull() )
+  {
+    return wcsList;
+  }
+  QDomNodeList valueList = wcsLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < valueList.size(); ++i )
+  {
+    wcsList << valueList.at( i ).toElement().text();
+  }
+  return wcsList;
 }
 
 void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerElem, bool useCache ) const
