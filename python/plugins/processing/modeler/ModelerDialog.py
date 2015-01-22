@@ -215,7 +215,11 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             evt.accept()
 
     def editHelp(self):
-        dlg = HelpEditionDialog(self.alg)
+        if self.alg.provider is None:
+            # Might happen if model is opened from modeler dialog
+            self.alg.provider = ModelerUtils.providers['model']
+        alg = self.alg.getCopy()
+        dlg = HelpEditionDialog(alg)
         dlg.exec_()
         if dlg.descriptions:
             self.hasChanged = True
