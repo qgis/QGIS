@@ -461,7 +461,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     return 0;
   }
 
-  QString tableName = layer->name();
+  QString tableName = layer->id();
 
   // create table
   QString sql = QString( "CREATE TABLE '%1' (" ).arg( tableName );
@@ -547,7 +547,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
     QgsVectorLayer* newLayer = new QgsVectorLayer( QString( "dbname='%1' table='%2'%3 sql=" )
         .arg( offlineDbPath )
         .arg( tableName ).arg( layer->hasGeometryType() ? "(Geometry)" : "" ),
-        tableName + " (offline)", "spatialite" );
+        layer->name() + " (offline)", "spatialite" );
     if ( newLayer->isValid() )
     {
       // mark as offline layer
