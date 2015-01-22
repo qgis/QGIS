@@ -876,11 +876,13 @@ bool QgsProject::read()
     emit oldProjectVersionWarning( fileVersion.text() );
     QgsDebugMsg( "Emitting oldProjectVersionWarning(oldVersion)." );
 
-    projectFile.dump();
+    // Commented out by Tim  - overly verbose on console
+    // projectFile.dump();
 
     projectFile.updateRevision( thisVersion );
 
-    projectFile.dump();
+    // Commented out by Tim  - overly verbose on console
+    // projectFile.dump();
 
   }
 
