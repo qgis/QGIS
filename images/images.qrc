@@ -478,6 +478,7 @@
         <file>themes/default/cadtools/perpendicular.png</file>
         <file>themes/default/mIconSuccess.png</file>
         <file>themes/default/bubble.svg</file>
+        <file>themes/default/mIconClear.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
