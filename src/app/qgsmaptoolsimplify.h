@@ -85,12 +85,6 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     int vertexCount( QgsGeometry* g ) const;
 
-    /** Function to calculate tolerance boudaries for simplifying */
-    //bool calculateSliderBoudaries();
-
-    /** Function to get list of vertexes from feature */
-    QVector<QgsPoint> getPointList( QgsFeature& f );
-
     // data
     /** Dialog with slider to set correct tolerance value */
     QgsSimplifyDialog* mSimplifyDialog;

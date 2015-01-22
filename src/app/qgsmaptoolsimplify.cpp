@@ -172,107 +172,6 @@ void QgsMapToolSimplify::storeSimplified()
 }
 
 
-#if 0
-bool QgsMapToolSimplify::calculateSliderBoudaries()
-{
-  double minTolerance = -1, maxTolerance = -1;
-
-  double tol = 0.000001;
-  bool found = false;
-  bool isLine = mSelectedFeature.geometry()->type() == QGis::Line;
-  QVector<QgsPoint> pts = getPointList( mSelectedFeature );
-  int size = pts.size();
-  if ( size == 0 || ( isLine && size <= 2 ) || ( !isLine && size <= 4 ) )
-  {
-    return false;
-  }
-
-  // calculate minimum tolerance where no vertex is excluded
-  bool maximized = false;
-  int count = 0;
-  while ( !found )
-  {
-    count++;
-    if ( count == 30 && !maximized )
-    { //special case when tolerance is too low to be correct so it's near 0
-      // else in some special cases this algorithm would create infinite loop
-      found = true;
-      minTolerance = 0;
-    }
-
-    if ( QgsSimplifyFeature::simplifyPoints( pts, tol ).size() < size )
-    { //some vertexes were already excluded
-      if ( maximized ) //if we were already in second direction end
-      {
-        found = true;
-        minTolerance = tol / 2;
-      }
-      else //only lowering tolerance till it's low enough to have all vertexes
-      {
-        tol = tol / 2;
-      }
-    }
-    else
-    { // simplified feature has all vertexes therefore no need we need higher tolerance also ending flag set
-      // when some tolerance will exclude some of vertexes
-      maximized = true;
-      tol = tol * 2;
-    }
-  }
-  found = false;
-  int requiredCnt = ( isLine ? 2 : 4 ); //4 for polygon is correct because first and last points are the same
-  bool bottomFound = false;
-  double highTol = DBL_MAX, lowTol = DBL_MIN;// two boundaries to be used when no directly correct solution is found
-  // calculate minimum tolerance where minimum (requiredCnt) of vertexes are left in geometry
-  while ( !found )
-  {
-
-    int foundVertexes = QgsSimplifyFeature::simplifyPoints( pts, tol ).size();
-    if ( foundVertexes < requiredCnt + 1 )
-    { //required or lower number of verticies found
-      if ( foundVertexes == requiredCnt )
-      {
-        found = true;
-        maxTolerance = tol;
-      }
-      else
-      { //solving problem that polygon would have less than minimum alowed vertexes
-        bottomFound = true;
-        highTol = tol;
-        tol = ( highTol + lowTol ) / 2;
-        if ( qgsDoubleNear( highTol, lowTol, 0.0001 ) ) // without 0.0001 tolerance sometimes an endless loop in epsg:4326
-        { //solving problem that two points are in same distance from  line, so they will be both excluded at same time
-          //so some time more than required count of vertices can stay
-          found = true;
-          maxTolerance = lowTol;
-        }
-      }
-    }
-    else
-    {
-      if ( bottomFound )
-      {
-        lowTol = tol;
-        tol = ( highTol + lowTol ) / 2;
-        if ( qgsDoubleNear( highTol, lowTol, 0.0001 ) ) // without 0.0001 tolerance sometimes an endless loop in epsg:4326
-        { //solving problem that two points are in same distance from  line, so they will be both excluded at same time
-          //so some time more than required count of vertices can stay
-          found = true;
-          maxTolerance = lowTol;
-        }
-      }
-      else
-      { //still too much verticies left so we need to increase tolerance
-        lowTol = tol;
-        tol = tol * 2;
-      }
-    }
-  }
-  // set min and max
-  mSimplifyDialog->setRange( minTolerance, maxTolerance );
-  return true;
-}
-#endif
 
 void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 {
@@ -434,28 +333,6 @@ QString QgsMapToolSimplify::statusText() const
   int percent = mOriginalVertexCount ? ( 100 * mReducedVertexCount / mOriginalVertexCount ) : 0;
   return tr( "%1 feature(s): %2 to %3 vertices (%4%)" )
          .arg( mSelectedFeatures.count() ).arg( mOriginalVertexCount ).arg( mReducedVertexCount ).arg( percent );
-}
-
-
-QVector<QgsPoint> QgsMapToolSimplify::getPointList( QgsFeature& f )
-{
-  QgsGeometry* line = f.geometry();
-  if (( line->type() != QGis::Line && line->type() != QGis::Polygon ) || line->isMultipart() )
-  {
-    return QVector<QgsPoint>();
-  }
-  if (( line->type() == QGis::Line ) )
-  {
-    return line->asPolyline();
-  }
-  else
-  {
-    if ( line->asPolygon().size() > 1 )
-    {
-      return QVector<QgsPoint>();
-    }
-    return line->asPolygon()[0];
-  }
 }
 
 
