@@ -1079,23 +1079,26 @@ void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer* nodeL )
 
   bool isEmbedded = filteredLstNew.count() == 1 && filteredLstNew[0]->isEmbeddedInParent();
 
-  if ( ! isEmbedded ) beginInsertRows( node2index( nodeL ), 0, filteredLstNew.count() - 1 );
-
   foreach ( QgsLayerTreeModelLegendNode* n, lstNew )
   {
     n->setParent( this );
     connect( n, SIGNAL( dataChanged() ), this, SLOT( legendNodeDataChanged() ) );
   }
 
-  LayerLegendData& data = mLegend[nodeL];
+  LayerLegendData data;
   data.originalNodes = lstNew;
   data.activeNodes = filteredLstNew;
-
   data.tree = 0;
 
   // maybe the legend nodes form a tree - try to create a tree structure from the list
   if ( testFlag( ShowLegendAsTree ) )
     tryBuildLegendTree( data );
+
+  int count = data.tree ? data.tree->children[0].count() : filteredLstNew.count();
+
+  if ( ! isEmbedded ) beginInsertRows( node2index( nodeL ), 0, count - 1 );
+
+  mLegend[nodeL] = data;
 
   if ( ! isEmbedded ) endInsertRows();
 }
