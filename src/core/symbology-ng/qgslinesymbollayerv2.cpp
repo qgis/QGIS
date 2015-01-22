@@ -187,6 +187,8 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
     l->setDataDefinedProperty( "joinstyle", props["joinstyle_expression"] );
   if ( props.contains( "capstyle_expression" ) )
     l->setDataDefinedProperty( "capstyle", props["capstyle_expression"] );
+  if ( props.contains( "line_style_expression" ) )
+    l->setDataDefinedProperty( "line_style", props["line_style_expression"] );
 
   return l;
 }
@@ -532,6 +534,14 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
       dashVector.push_back( dashIt->toDouble() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mCustomDashPatternUnit, mCustomDashPatternMapUnitScale ) / dashWidthDiv );
     }
     pen.setDashPattern( dashVector );
+  }
+
+  //line style
+  QgsExpression* lineStyleExpression = expression( "line_style" );
+  if ( lineStyleExpression )
+  {
+    QString lineStyleString = lineStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+    pen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( lineStyleString ) );
   }
 
   //join style

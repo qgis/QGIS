@@ -186,8 +186,9 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   registerDataDefinedButton( mPenWidthDDBtn, "width", QgsDataDefinedButton::Double, "" );
   registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::offsetHelpText() );
   registerDataDefinedButton( mDashPatternDDBtn, "customdash", QgsDataDefinedButton::String, tr( "'<dash>;<space>' e.g. '8;2;1;2'" ) );
-  registerDataDefinedButton( mJoinStyleDDBtn, "joinstyle", QgsDataDefinedButton::String, tr( "'bevel'|'miter'|'round'" ) );
-  registerDataDefinedButton( mCapStyleDDBtn, "capstyle", QgsDataDefinedButton::String, tr( "'square'|'flat'|'round'" ) );
+  registerDataDefinedButton( mPenStyleDDBtn, "line_style", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::lineStyleHelpText() );
+  registerDataDefinedButton( mJoinStyleDDBtn, "joinstyle", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::joinStyleHelpText() );
+  registerDataDefinedButton( mCapStyleDDBtn, "capstyle", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::capStyleHelpText() );
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
@@ -425,6 +426,7 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer
   registerDataDefinedButton( mFillColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
   registerDataDefinedButton( mBorderColorDDBtn, "color_border", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
   registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mOutlineStyleDDBtn, "outline_style", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::lineStyleHelpText() );
   registerDataDefinedButton( mSizeDDBtn, "size", QgsDataDefinedButton::Double, "" );
   registerDataDefinedButton( mAngleDDBtn, "angle", QgsDataDefinedButton::Double, "" );
   registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::offsetHelpText() );
@@ -626,6 +628,10 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   registerDataDefinedButton( mFillColorDDBtn, "color", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
   registerDataDefinedButton( mBorderColorDDBtn, "color_border", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::colorHelpText() );
   registerDataDefinedButton( mBorderWidthDDBtn, "width_border", QgsDataDefinedButton::Double, "" );
+  registerDataDefinedButton( mFillStyleDDBtn, "fill_style", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::fillStyleHelpText() );
+  registerDataDefinedButton( mBorderStyleDDBtn, "border_style", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::lineStyleHelpText() );
+  registerDataDefinedButton( mJoinStyleDDBtn, "join_style", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::joinStyleHelpText() );
+
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()

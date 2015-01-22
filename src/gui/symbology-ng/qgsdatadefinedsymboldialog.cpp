@@ -139,4 +139,26 @@ QString QgsDataDefinedSymbolDialog::boolHelpText()
   return tr( "0 (false)|1 (true)" );
 }
 
+QString QgsDataDefinedSymbolDialog::lineStyleHelpText()
+{
+  return "'no'|'solid'|'dash'|'dot'|'dash dot'|'dash dot dot'";
+}
+
+QString QgsDataDefinedSymbolDialog::joinStyleHelpText()
+{
+  return "'bevel'|'miter'|'round'";
+}
+
+QString QgsDataDefinedSymbolDialog::capStyleHelpText()
+{
+  return "'square'|'flat'|'round'";
+}
+
+QString QgsDataDefinedSymbolDialog::fillStyleHelpText()
+{
+  return "'solid'|'horizontal'|'vertical'|'cross'|'b_diagonal'|'f_diagonal'|"
+         "'diagonal_x'|'dense1'|'dense2'|'dense3'|'dense4'|'dense5'|"
+         "'dense6'|'dense7'|'no'";
+}
+
 

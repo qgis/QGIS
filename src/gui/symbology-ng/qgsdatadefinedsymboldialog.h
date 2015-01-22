@@ -39,6 +39,10 @@ class GUI_EXPORT QgsDataDefinedSymbolDialog: public QDialog, private Ui::QgsData
     static QString gradientCoordModeHelpText();
     static QString gradientSpreadHelpText();
     static QString boolHelpText();
+    static QString lineStyleHelpText();
+    static QString joinStyleHelpText();
+    static QString capStyleHelpText();
+    static QString fillStyleHelpText();
 
   private:
     const QgsVectorLayer* mVectorLayer;

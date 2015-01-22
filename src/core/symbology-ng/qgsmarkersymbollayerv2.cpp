@@ -161,6 +161,10 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   {
     m->setDataDefinedProperty( "color_border", props["color_border_expression"] );
   }
+  if ( props.contains( "outline_style_expression" ) )
+  {
+    m->setDataDefinedProperty( "outline_style", props["outline_style_expression"] );
+  }
   if ( props.contains( "outline_width_expression" ) )
   {
     m->setDataDefinedProperty( "outline_width", props["outline_width_expression"] );
@@ -226,7 +230,8 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   // - size, rotation, shape, color, border color is not data-defined
   // - drawing to screen (not printer)
   mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput()
-                && !dataDefinedProperty( "name" ) && !dataDefinedProperty( "color" ) && !dataDefinedProperty( "color_border" ) && !dataDefinedProperty( "outline_width" ) &&
+                && !dataDefinedProperty( "name" ) && !dataDefinedProperty( "color" ) && !dataDefinedProperty( "color_border" )
+                && !dataDefinedProperty( "outline_width" ) && !dataDefinedProperty( "outline_style" ) &&
                 !dataDefinedProperty( "size" );
 
   // use either QPolygonF or QPainterPath for drawing
@@ -581,6 +586,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     QgsExpression* colorExpression = expression( "color" );
     QgsExpression* colorBorderExpression = expression( "color_border" );
     QgsExpression* outlineWidthExpression = expression( "outline_width" );
+    QgsExpression* outlineStyleExpression = expression( "outline_style" );
     if ( colorExpression )
     {
       mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
@@ -595,6 +601,12 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
       double outlineWidth = outlineWidthExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
       mPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
       mSelPen.setWidthF( outlineWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mOutlineWidthUnit, mOutlineWidthMapUnitScale ) );
+    }
+    if ( outlineStyleExpression )
+    {
+      QString outlineStyle = outlineStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString();
+      mPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
+      mSelPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( outlineStyle ) );
     }
 
     p->setBrush( context.selected() ? mSelBrush : mBrush );

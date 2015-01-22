@@ -85,6 +85,11 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   {
     brush.setColor( QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
+  QgsExpression* fillStyleExpression = expression( "fill_style" );
+  if ( fillStyleExpression )
+  {
+    brush.setStyle( QgsSymbolLayerV2Utils::decodeBrushStyle( fillStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+  }
   QgsExpression* colorBorderExpression = expression( "color_border" );
   if ( colorBorderExpression )
   {
@@ -97,6 +102,18 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
     width *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mBorderWidthUnit, mBorderWidthMapUnitScale );
     pen.setWidthF( width );
     selPen.setWidthF( width );
+  }
+  QgsExpression* borderStyleExpression = expression( "border_style" );
+  if ( borderStyleExpression )
+  {
+    pen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( borderStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    selPen.setStyle( QgsSymbolLayerV2Utils::decodePenStyle( borderStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+  }
+  QgsExpression* joinStyleExpression = expression( "join_style" );
+  if ( joinStyleExpression )
+  {
+    pen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
+    selPen.setJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( joinStyleExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() ) );
   }
 }
 
@@ -193,6 +210,18 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
   if ( props.contains( "width_border_expression" ) )
   {
     sl->setDataDefinedProperty( "width_border", props["width_border_expression"] );
+  }
+  if ( props.contains( "fill_style_expression" ) )
+  {
+    sl->setDataDefinedProperty( "fill_style", props["fill_style_expression"] );
+  }
+  if ( props.contains( "border_style_expression" ) )
+  {
+    sl->setDataDefinedProperty( "border_style", props["border_style_expression"] );
+  }
+  if ( props.contains( "join_style_expression" ) )
+  {
+    sl->setDataDefinedProperty( "join_style", props["join_style_expression"] );
   }
   return sl;
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>504</height>
+    <width>467</width>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -252,22 +252,39 @@
      <property name="title">
       <string>Shading style</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <item row="2" column="0">
-       <widget class="QRadioButton" name="mRadioUseWholeShape">
-        <property name="text">
-         <string>Shade whole shape</string>
-        </property>
-       </widget>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QRadioButton" name="mRadioUseWholeShape">
+          <property name="text">
+           <string>Shade whole shape</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mShadeWholeShapeDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
-      <item row="6" column="0">
-       <widget class="QCheckBox" name="mIgnoreRingsCheckBox">
-        <property name="text">
-         <string>Ignore rings in polygons while shading</string>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="0" colspan="2">
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <property name="spacing">
          <number>6</number>
@@ -306,6 +323,19 @@
          </widget>
         </item>
         <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true">
           <property name="minimumSize">
            <size>
@@ -317,19 +347,36 @@
         </item>
        </layout>
       </item>
-      <item row="2" column="1">
-       <widget class="QgsDataDefinedButton" name="mShadeWholeShapeDDBtn">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QgsDataDefinedButton" name="mIgnoreRingsDDBtn">
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QCheckBox" name="mIgnoreRingsCheckBox">
+          <property name="text">
+           <string>Ignore rings in polygons while shading</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mIgnoreRingsDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

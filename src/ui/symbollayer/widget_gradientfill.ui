@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>780</width>
-    <height>657</height>
+    <width>556</width>
+    <height>342</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -139,7 +139,7 @@
      <item>
       <widget class="QCheckBox" name="checkRefPoint1Centroid">
        <property name="text">
-        <string>Feature centroid</string>
+        <string>Centroid</string>
        </property>
       </widget>
      </item>
@@ -411,7 +411,7 @@
      <item>
       <widget class="QCheckBox" name="checkRefPoint2Centroid">
        <property name="text">
-        <string>Feature centroid</string>
+        <string>Centroid</string>
        </property>
       </widget>
      </item>

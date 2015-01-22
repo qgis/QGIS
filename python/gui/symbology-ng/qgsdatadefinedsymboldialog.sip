@@ -25,4 +25,8 @@ class QgsDataDefinedSymbolDialog : QDialog
     static QString gradientCoordModeHelpText();
     static QString gradientSpreadHelpText();
     static QString boolHelpText();
+    static QString lineStyleHelpText();
+    static QString joinStyleHelpText();
+    static QString capStyleHelpText();
+    static QString fillStyleHelpText();
 };
