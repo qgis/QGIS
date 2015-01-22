@@ -51,6 +51,8 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     virtual ~QgsMapToolSimplify();
 
     void canvasPressEvent( QMouseEvent * e ) override;
+    void canvasMoveEvent( QMouseEvent * e ) override;
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -70,9 +72,12 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     /** slot to store feture after simplification */
     void storeSimplified();
 
-    void removeRubberBand();
+    void clearSelection();
 
   private:
+
+    void selectOneFeature( const QPoint& canvasPoint );
+    void selectFeaturesInRect();
 
     void updateSimplificationPreview();
 
@@ -86,17 +91,22 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     /** Dialog with slider to set correct tolerance value */
     QgsSimplifyDialog* mSimplifyDialog;
 
-    /** Rubber band to draw current state of simplification */
-    QgsRubberBand* mRubberBand;
-
-    /** Feature with which we are working */
-    QgsFeature mSelectedFeature;
+    /** Rubber bands to draw current state of simplification */
+    QList<QgsRubberBand*> mRubberBands;
+    /** Features with which we are working */
+    QList<QgsFeature> mSelectedFeatures;
 
     /** real value of tolerance */
     double mTolerance;
 
     ToleranceUnits mToleranceUnits;
 
+    //! stores actual selection rect
+    QRect mSelectionRect;
+    //! shows actual selection rect
+    QgsRubberBand* mSelectionRubberBand;
+    //! Flag to indicate a map canvas drag operation is taking place
+    bool mDragging;
 };
 
 /**

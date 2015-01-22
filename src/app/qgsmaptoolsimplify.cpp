@@ -48,7 +48,9 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent 
 
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
-    : QgsMapToolEdit( canvas ), mRubberBand( 0 )
+    : QgsMapToolEdit( canvas )
+    , mSelectionRubberBand( 0 )
+    , mDragging( false )
 {
   QSettings settings;
   mTolerance = settings.value( "/digitizing/simplify_tolerance", 1 ).toDouble();
@@ -59,7 +61,7 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas* canvas )
 
 QgsMapToolSimplify::~QgsMapToolSimplify()
 {
-  removeRubberBand();
+  clearSelection();
   delete mSimplifyDialog;
 }
 
@@ -71,7 +73,7 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
   QSettings settings;
   settings.setValue( "/digitizing/simplify_tolerance", tolerance );
 
-  if ( mSelectedFeature.isValid() )
+  if ( !mSelectedFeatures.isEmpty() )
     updateSimplificationPreview();
 }
 
@@ -82,28 +84,40 @@ void QgsMapToolSimplify::setToleranceUnits( int units )
   QSettings settings;
   settings.setValue( "/digitizing/simplify_tolerance_units", units );
 
-  if ( mSelectedFeature.isValid() )
+  if ( !mSelectedFeatures.isEmpty() )
     updateSimplificationPreview();
 }
 
 void QgsMapToolSimplify::updateSimplificationPreview()
 {
   QgsVectorLayer* vl = currentVectorLayer();
-  // create a copy of selected feature and do the simplification
-  QgsFeature f = mSelectedFeature;
-  QgsSimplifyFeature::simplify( f, mTolerance, mToleranceUnits, mCanvas->mapSettings().layerTransform( vl ) );
-  mRubberBand->setToGeometry( f.geometry(), vl );
+
+  int i = 0;
+  foreach ( const QgsFeature& fSel, mSelectedFeatures )
+  {
+    // create a copy of selected feature and do the simplification
+    QgsFeature f = fSel;
+    QgsSimplifyFeature::simplify( f, mTolerance, mToleranceUnits, mCanvas->mapSettings().layerTransform( vl ) );
+    mRubberBands[i]->setToGeometry( f.geometry(), vl );
+    ++i;
+  }
 }
 
 
 void QgsMapToolSimplify::storeSimplified()
 {
   QgsVectorLayer * vlayer = currentVectorLayer();
-  QgsSimplifyFeature::simplify( mSelectedFeature, mTolerance, mToleranceUnits, mCanvas->mapSettings().layerTransform( vlayer ) );
 
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
-  vlayer->changeGeometry( mSelectedFeature.id(), mSelectedFeature.geometry() );
+  foreach ( const QgsFeature& feat, mSelectedFeatures )
+  {
+    QgsFeature f = feat;
+    QgsSimplifyFeature::simplify( f, mTolerance, mToleranceUnits, mCanvas->mapSettings().layerTransform( vlayer ) );
+    vlayer->changeGeometry( f.id(), f.geometry() );
+  }
   vlayer->endEditCommand();
+
+  clearSelection();
 
   mCanvas->refresh();
 }
@@ -213,16 +227,92 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
 
 void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
 {
-  QgsVectorLayer * vlayer = currentVectorLayer();
+  if ( e->button() != Qt::LeftButton )
+    return;
 
-  if ( !vlayer )
+  if ( !currentVectorLayer() )
   {
     notifyNotVectorLayer();
     return;
   }
 
-  QgsPoint layerCoords = toLayerCoordinates( vlayer, e->pos() );
+  // delete previous rubberband (if any)
+  clearSelection();
 
+  mSelectionRect.setRect( 0, 0, 0, 0 );
+}
+
+
+void QgsMapToolSimplify::canvasMoveEvent( QMouseEvent * e )
+{
+  if ( !( e->buttons() & Qt::LeftButton ) )
+    return;
+
+  if ( !mDragging )
+  {
+    mDragging = true;
+    delete mSelectionRubberBand;
+    mSelectionRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    QColor color( Qt::blue );
+    color.setAlpha( 63 );
+    mSelectionRubberBand->setColor( color );
+    mSelectionRect.setTopLeft( e->pos() );
+  }
+  mSelectionRect.setBottomRight( e->pos() );
+  if ( mSelectionRubberBand )
+  {
+    mSelectionRubberBand->setToCanvasRectangle( mSelectionRect );
+    mSelectionRubberBand->show();
+  }
+}
+
+
+void QgsMapToolSimplify::canvasReleaseEvent( QMouseEvent * e )
+{
+  if ( e->button() != Qt::LeftButton )
+    return;
+
+  delete mSelectionRubberBand;
+  mSelectionRubberBand = 0;
+
+  if ( mDragging && ( mSelectionRect.topLeft() != mSelectionRect.bottomRight() ) )
+  {
+    mDragging = false;
+
+    // store the rectangle
+    mSelectionRect.setRight( e->pos().x() );
+    mSelectionRect.setBottom( e->pos().y() );
+
+    selectFeaturesInRect();
+  }
+  else
+  {
+    selectOneFeature( e->pos() );
+  }
+
+  mDragging = false;
+
+  // prepare rubber bands
+  foreach ( const QgsFeature& f, mSelectedFeatures )
+  {
+    Q_UNUSED( f );
+    QgsRubberBand* rb = new QgsRubberBand( mCanvas );
+    rb->setColor( QColor( 255, 0, 0, 65 ) );
+    rb->setWidth( 2 );
+    rb->show();
+    mRubberBands << rb;
+  }
+  updateSimplificationPreview();
+
+  // show dialog as a non-modal window
+  mSimplifyDialog->show();
+}
+
+
+void QgsMapToolSimplify::selectOneFeature( const QPoint& canvasPoint )
+{
+  QgsVectorLayer * vlayer = currentVectorLayer();
+  QgsPoint layerCoords = toLayerCoordinates( vlayer, canvasPoint );
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
                                           layerCoords.x() + r, layerCoords.y() + r );
@@ -231,9 +321,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
   QgsGeometry* geometry = QgsGeometry::fromPoint( layerCoords );
   double minDistance = DBL_MAX;
   double currentDistance;
-
-  mSelectedFeature.setValid( false );
-
+  QgsFeature minDistanceFeature;
   QgsFeature f;
   while ( fit.nextFeature( f ) )
   {
@@ -241,43 +329,58 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
     if ( currentDistance < minDistance )
     {
       minDistance = currentDistance;
-      mSelectedFeature = f;
+      minDistanceFeature = f;
     }
   }
+  delete geometry;
 
-  // delete previous rubberband (if any)
-  removeRubberBand();
-
-  if ( mSelectedFeature.isValid() )
+  if ( minDistanceFeature.isValid() )
   {
-    if ( mSelectedFeature.geometry()->isMultipart() )
+    mSelectedFeatures << minDistanceFeature;
+
+    if ( minDistanceFeature.geometry()->isMultipart() )
     {
       emit messageEmitted( tr( "Multipart features are not supported for simplification." ), QgsMessageBar::CRITICAL );
       return;
     }
-
-    mRubberBand = new QgsRubberBand( mCanvas );
-    mRubberBand->setColor( QColor( 255, 0, 0, 65 ) );
-    mRubberBand->setWidth( 2 );
-    mRubberBand->show();
-    updateSimplificationPreview();
-
-    // show dialog as a non-modal window
-    mSimplifyDialog->show();
   }
 }
 
-void QgsMapToolSimplify::removeRubberBand()
+
+void QgsMapToolSimplify::selectFeaturesInRect()
 {
-  delete mRubberBand;
-  mRubberBand = 0;
+  QgsVectorLayer * vlayer = currentVectorLayer();
+  QgsPoint pt1 = toMapCoordinates( mSelectionRect.topLeft() );
+  QgsPoint pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
+  QgsRectangle rect = toLayerCoordinates( vlayer, QgsRectangle( pt1, pt2 ) );
+
+  QgsFeature f;
+  QgsFeatureRequest request;
+  request.setFilterRect( rect );
+  request.setFlags( QgsFeatureRequest::ExactIntersect );
+  request.setSubsetOfAttributes( QgsAttributeList() );
+  QgsFeatureIterator fit = vlayer->getFeatures( request );
+  while ( fit.nextFeature( f ) )
+    mSelectedFeatures << f;
+}
+
+
+void QgsMapToolSimplify::clearSelection()
+{
+  mSelectedFeatures.clear();
+
+  qDeleteAll( mRubberBands );
+  mRubberBands.clear();
 }
 
 void QgsMapToolSimplify::deactivate()
 {
+  delete mSelectionRubberBand;
+  mSelectionRubberBand = 0;
+
   if ( mSimplifyDialog->isVisible() )
     mSimplifyDialog->close();
-  removeRubberBand();
+  clearSelection();
   QgsMapTool::deactivate();
 }
 
