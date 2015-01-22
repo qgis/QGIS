@@ -843,7 +843,8 @@ class TestQgsVectorLayer(TestCase):
     def test_join(self):
 
         joinLayer = createJoinLayer()
-        QgsMapLayerRegistry.instance().addMapLayers([joinLayer])
+        joinLayer2 = createJoinLayer()
+        QgsMapLayerRegistry.instance().addMapLayers([joinLayer,joinLayer2])
 
         layer = createLayerWithOnePoint()
 
@@ -855,10 +856,19 @@ class TestQgsVectorLayer(TestCase):
 
         layer.addJoin(join)
 
+        join2 = QgsVectorJoinInfo()
+        join2.targetFieldName = "fldint"
+        join2.joinLayerId = joinLayer2.id()
+        join2.joinFieldName = "y"
+        join2.memoryCache = True
+        join2.prefix = "custom-prefix_"
+
+        layer.addJoin(join2)
+
         flds = layer.pendingFields()
-        assert len(flds) == 4
-        assert flds[2].name() == "joinlayer_x"
-        assert flds[3].name() == "joinlayer_z"
+        assert len(flds) == 6
+        assert flds[4].name() == "custom-prefix_x"
+        assert flds[5].name() == "custom-prefix_z"
         assert flds.fieldOrigin(0) == QgsFields.OriginProvider
         assert flds.fieldOrigin(2) == QgsFields.OriginJoin
         assert flds.fieldOrigin(3) == QgsFields.OriginJoin
@@ -870,7 +880,7 @@ class TestQgsVectorLayer(TestCase):
         fi = layer.getFeatures()
         assert fi.nextFeature(f) == True
         attrs = f.attributes()
-        assert len(attrs) == 4
+        assert len(attrs) == 6
         assert attrs[0] == "test"
         assert attrs[1] == 123
         assert attrs[2] == "foo"
@@ -878,7 +888,7 @@ class TestQgsVectorLayer(TestCase):
         assert fi.nextFeature(f) == False
 
         f2 = layer.getFeatures(QgsFeatureRequest( f.id() )).next()
-        assert len(f2.attributes()) == 4
+        assert len(f2.attributes()) == 6
         assert f2[2] == "foo"
         assert f2[3] == 321
 
