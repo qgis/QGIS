@@ -95,7 +95,24 @@ bool QgsOfflineEditing::convertToOfflineProject( const QString& offlineDataPath,
       {
         QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerIds.at( i ) );
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( layer );
-        const QgsVectorJoinList& joins = vl->vectorJoins();
+        QgsVectorJoinList joins = vl->vectorJoins();
+
+        // Layer names will be appended an _offline suffix
+        // Join fields are prefixed with the layer name and we do not want the
+        // field name to change so we stabilize the field name by defining a
+        // custom prefix with the layername without _offline suffix.
+        QgsVectorJoinList::iterator it = joins.begin();
+        while ( it != joins.end() )
+        {
+          if (( *it ).prefix.isNull() )
+          {
+            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer(( *it ).joinLayerId ) );
+
+            if ( vl )
+              ( *it ).prefix = vl->name() + "_";
+          }
+          ++it;
+        }
         joinInfoBuffer.insert( vl->id(), joins );
       }
 
