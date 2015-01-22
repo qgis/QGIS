@@ -1193,6 +1193,9 @@ int QgsLayerTreeModel::legendRootRowCount( QgsLayerTreeLayer* nL ) const
   if ( legendEmbeddedInParent( nL ) )
     return 0;
 
+  if ( !mLegend.contains( nL ) )
+    return 0;
+
   const LayerLegendData& data = mLegend[nL];
   if ( data.tree )
     return data.tree->children[0].count();
