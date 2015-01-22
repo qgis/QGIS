@@ -114,7 +114,7 @@ class Ogr2Ogr(OgrAlgorithm):
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -140,6 +140,7 @@ class Ogr2Ogr(OgrAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append(self.ogrLayerName(inLayer))
 
         commands = []
         if isWindows():
