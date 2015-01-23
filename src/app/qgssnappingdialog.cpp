@@ -130,7 +130,7 @@ void QgsSnappingDialog::reload()
   else if ( snapType == "to vertex" )
     idx = 0;
   else // off
-    idx = 4;
+    idx = 3;
   mDefaultSnapToComboBox->setCurrentIndex( idx );
 
   double tolerance = settings.value( "/qgis/digitizing/default_snapping_tolerance", 0 ).toDouble();
