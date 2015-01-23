@@ -61,7 +61,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
 
     skipBlanks( uri, i );
 
-    if ( uri[i] != '=' )
+    if ( i == uri.length() || uri[i] != '=' )
     {
       QgsDebugMsg( "= expected after parameter name" );
       return;
@@ -410,7 +410,7 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
 
   // Get the parameter value
   QString pval;
-  if ( uri[i] == '\'' || uri[i] == '"' )
+  if ( i < uri.length() && ( uri[i] == '\'' || uri[i] == '"' ) )
   {
     QChar delim = uri[i];
 
