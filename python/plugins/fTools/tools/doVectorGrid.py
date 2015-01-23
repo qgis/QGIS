@@ -171,10 +171,10 @@ class Dialog(QDialog, Ui_Dialog):
         fieldCount = 1
 
         if polygon:
-            fields.append( QgsField("XMIN", QVariant.Double) )
-            fields.append( QgsField("XMAX", QVariant.Double) )
-            fields.append( QgsField("YMIN", QVariant.Double) )
-            fields.append( QgsField("YMAX", QVariant.Double) )
+            fields.append( QgsField("X_MIN", QVariant.Double) )
+            fields.append( QgsField("X_MAX", QVariant.Double) )
+            fields.append( QgsField("Y_MIN", QVariant.Double) )
+            fields.append( QgsField("Y_MAX", QVariant.Double) )
             fieldCount = 5
             check = QFile(self.shapefileName)
             if check.exists():
