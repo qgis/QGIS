@@ -9,6 +9,7 @@ QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObj
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
+  connect( canvas, SIGNAL( layersChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( canvasCurrentLayerChanged() ) );
   canvasMapSettingsChanged();
   canvasCurrentLayerChanged();
