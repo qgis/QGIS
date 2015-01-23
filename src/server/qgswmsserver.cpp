@@ -1981,7 +1981,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     searchRect.set( infoPoint->x() - searchRadius, infoPoint->y() - searchRadius,
                     infoPoint->x() + searchRadius, infoPoint->y() + searchRadius );
   }
-  else
+  else if ( mParameters.contains( "BBOX" ) )
   {
     searchRect = layerRect;
   }
