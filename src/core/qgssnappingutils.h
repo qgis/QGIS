@@ -73,8 +73,9 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! modes for "snap to background"
     enum SnapToMapMode
     {
-      SnapCurrentLayer,    //!< snap just to current layer (tolerance+type from QSettings)
-      SnapPerLayerConfig,  //!< snap according to the configuration set in setLayers()
+      SnapCurrentLayer,    //!< snap just to current layer (tolerance and type from defaultSettings())
+      SnapAllLayers,       //!< snap to all rendered layers (tolerance and type from defaultSettings())
+      SnapAdvanced,        //!< snap according to the configuration set in setLayers()
     };
 
     /** Set how the snapping to map is done */

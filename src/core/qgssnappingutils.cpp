@@ -225,7 +225,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
 
     return bestMatch;
   }
-  else if ( mSnapToMapMode == SnapPerLayerConfig )
+  else if ( mSnapToMapMode == SnapAdvanced )
   {
     QgsPointLocator::Match bestMatch;
     QgsPointLocator::MatchList edges; // for snap on intersection
@@ -248,6 +248,35 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
 
     if ( mSnapOnIntersection )
       _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), maxSnapIntTolerance );
+
+    return bestMatch;
+  }
+  else if ( mSnapToMapMode == SnapAllLayers )
+  {
+    // data from project
+    double tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mMapSettings, mDefaultUnit );
+    int type = mDefaultType;
+
+    QgsPointLocator::MatchList edges; // for snap on intersection
+    QgsPointLocator::Match bestMatch;
+
+    foreach( const QString& layerID, mMapSettings.layers() )
+    {
+      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
+      if ( !vl )
+        continue;
+
+      if ( QgsPointLocator* loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance ) )
+      {
+        _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
+
+        if ( mSnapOnIntersection )
+          edges << loc->edgesInRect( pointMap, tolerance );
+      }
+    }
+
+    if ( mSnapOnIntersection )
+      _replaceIfBetter( bestMatch, _findClosestSegmentIntersection( pointMap, edges ), tolerance );
 
     return bestMatch;
   }
@@ -346,8 +375,10 @@ void QgsSnappingUtils::readConfigFromProject()
   // Use snapping information from the project
   if ( snapMode == "current_layer" )
     mSnapToMapMode = SnapCurrentLayer;
+  else if ( snapMode == "all_layers" )
+    mSnapToMapMode = SnapAllLayers;
   else   // either "advanced" or empty (for background compatibility)
-    mSnapToMapMode = SnapPerLayerConfig;
+    mSnapToMapMode = SnapAdvanced;
 
 
 

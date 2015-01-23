@@ -167,7 +167,7 @@ void QgsSnappingDialog::on_cbxEnableIntersectionSnappingCheckBox_stateChanged( i
 
 void QgsSnappingDialog::onSnappingModeIndexChanged( int index )
 {
-  if ( index == 0 )
+  if ( index == 0 || index == 1 )
     mStackedWidget->setCurrentIndex( 0 );
   else
     mStackedWidget->setCurrentIndex( 1 );
@@ -203,7 +203,13 @@ void QgsSnappingDialog::closeEvent( QCloseEvent* event )
 
 void QgsSnappingDialog::apply()
 {
-  QString snapMode = mSnapModeComboBox->currentIndex() == 0 ? "current_layer" : "advanced";
+  QString snapMode;
+  switch ( mSnapModeComboBox->currentIndex() )
+  {
+    case 0: snapMode = "current_layer"; break;
+    case 1: snapMode = "all_layers"; break;
+    default: snapMode = "advanced"; break;
+  }
   QgsProject::instance()->writeEntry( "Digitizing", "/SnappingMode", snapMode );
 
   QString snapType = mDefaultSnapToComboBox->itemData( mDefaultSnapToComboBox->currentIndex() ).toString();
@@ -486,7 +492,9 @@ void QgsSnappingDialog::setSnappingMode()
   QString snapMode = QgsProject::instance()->readEntry( "Digitizing", "/SnappingMode" );
   if ( snapMode == "current_layer" )
     mSnapModeComboBox->setCurrentIndex( 0 );
-  else // "advanced" or empty (backward compatibility)
+  else if ( snapMode == "all_layers" )
     mSnapModeComboBox->setCurrentIndex( 1 );
+  else // "advanced" or empty (backward compatibility)
+    mSnapModeComboBox->setCurrentIndex( 2 );
 }
 

@@ -38,6 +38,11 @@
        </item>
        <item>
         <property name="text">
+         <string>All layers</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Advanced</string>
         </property>
        </item>

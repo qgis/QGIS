@@ -111,7 +111,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( !m3.isValid() );
     }
 
-    void testSnapModePerLayer()
+    void testSnapModeAll()
     {
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 100, 100 ) );
@@ -120,7 +120,32 @@ class TestQgsSnappingUtils : public QObject
 
       QgsSnappingUtils u;
       u.setMapSettings( mapSettings );
-      u.setSnapToMapMode( QgsSnappingUtils::SnapPerLayerConfig );
+      u.setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
+
+      // right now there are no layers in map settings - snapping will fail
+
+      QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( !m.isValid() );
+
+      // now check with our layer
+      mapSettings.setLayers( QStringList() << mVL->id() );
+      u.setMapSettings( mapSettings );
+
+      QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );
+      QVERIFY( m2.isValid() );
+      QCOMPARE( m2.point(), QgsPoint( 1, 0 ) );
+    }
+
+    void testSnapModeAdvanced()
+    {
+      QgsMapSettings mapSettings;
+      mapSettings.setOutputSize( QSize( 100, 100 ) );
+      mapSettings.setExtent( QgsRectangle( 0, 0, 1, 1 ) );
+      QVERIFY( mapSettings.hasValidSettings() );
+
+      QgsSnappingUtils u;
+      u.setMapSettings( mapSettings );
+      u.setSnapToMapMode( QgsSnappingUtils::SnapAdvanced );
       QList<QgsSnappingUtils::LayerConfig> layers;
       layers << QgsSnappingUtils::LayerConfig( mVL, QgsPointLocator::Vertex, 10, QgsTolerance::Pixels );
       u.setLayers( layers );
@@ -135,6 +160,7 @@ class TestQgsSnappingUtils : public QObject
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
       QVERIFY( !m2.isValid() );
     }
+
 };
 
 QTEST_MAIN( TestQgsSnappingUtils )
