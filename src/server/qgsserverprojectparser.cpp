@@ -842,18 +842,31 @@ QStringList QgsServerProjectParser::supportedOutputCrsList() const
   else
   {
     QDomElement wmsEpsgElem = propertiesElem.firstChildElement( "WMSEpsgList" );
-    if ( wmsEpsgElem.isNull() )
+    if ( !wmsEpsgElem.isNull() )
     {
-      return crsList;
-    }
-    QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
-    bool conversionOk;
-    for ( int i = 0; i < valueList.size(); ++i )
-    {
-      int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
-      if ( conversionOk )
+      QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
+      bool conversionOk;
+      for ( int i = 0; i < valueList.size(); ++i )
       {
-        crsList.append( QString( "EPSG:%1" ).arg( epsgNr ) );
+        int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
+        if ( conversionOk )
+        {
+          crsList.append( QString( "EPSG:%1" ).arg( epsgNr ) );
+        }
+      }
+    }
+    else
+    {
+      //no CRS restriction defined in the project. Provide project CRS, wgs84 and pseudo mercator
+      QString projectCrsId = projectCRS().authid();
+      crsList.append( projectCrsId );
+      if ( projectCrsId.compare( "EPSG:4326", Qt::CaseInsensitive ) != 0 )
+      {
+        crsList.append( QString( "EPSG:%1" ).arg( 4326 ) );
+      }
+      if ( projectCrsId.compare( "EPSG:3857", Qt::CaseInsensitive ) != 0 )
+      {
+        crsList.append( QString( "EPSG:%1" ).arg( 3857 ) );
       }
     }
   }
