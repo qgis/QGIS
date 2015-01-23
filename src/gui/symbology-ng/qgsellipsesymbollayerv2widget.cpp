@@ -110,17 +110,17 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   blockComboSignals( false );
 
-  registerDataDefinedButton( mSymbolWidthDDBtn, "width", QgsDataDefinedButton::Double, "" );
-  registerDataDefinedButton( mSymbolHeightDDBtn, "height", QgsDataDefinedButton::Double, "" );
-  registerDataDefinedButton( mRotationDDBtn, "rotation", QgsDataDefinedButton::Double, "" );
-  registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, "" );
-  registerDataDefinedButton( mFillColorDDBtn, "fill_color", QgsDataDefinedButton::String, "'red,green,blue,alpha' e.g. '255,0,0,255'" );
-  registerDataDefinedButton( mBorderColorDDBtn, "outline_color", QgsDataDefinedButton::String, "'red,green,blue,alpha' e.g. '255,0,0,255'" );
-  registerDataDefinedButton( mOutlineStyleDDBtn, "outline_style", QgsDataDefinedButton::String, QgsDataDefinedSymbolDialog::lineStyleHelpText() );
-  registerDataDefinedButton( mShapeDDBtn, "symbol_name", QgsDataDefinedButton::String, "'circle', 'rectangle', 'cross', 'triangle'" );
-  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, "'x,y' e.g. '2,3.5'" );
-  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, "'left', 'center' or 'right'" );
-  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, "'top', 'center' or 'bottom'" );
+  registerDataDefinedButton( mSymbolWidthDDBtn, "width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mSymbolHeightDDBtn, "height", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mRotationDDBtn, "rotation", QgsDataDefinedButton::Double, QgsDataDefinedButton::double180RotDesc() );
+  registerDataDefinedButton( mOutlineWidthDDBtn, "outline_width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );
+  registerDataDefinedButton( mFillColorDDBtn, "fill_color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
+  registerDataDefinedButton( mBorderColorDDBtn, "outline_color", QgsDataDefinedButton::String, QgsDataDefinedButton::colorAlphaDesc() );
+  registerDataDefinedButton( mOutlineStyleDDBtn, "outline_style", QgsDataDefinedButton::String, QgsDataDefinedButton::lineStyleDesc() );
+  registerDataDefinedButton( mShapeDDBtn, "symbol_name", QgsDataDefinedButton::String, QgsDataDefinedButton::markerStyleDesc() );
+  registerDataDefinedButton( mOffsetDDBtn, "offset", QgsDataDefinedButton::String, QgsDataDefinedButton::doubleXYDesc() );
+  registerDataDefinedButton( mHorizontalAnchorDDBtn, "horizontal_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::horizontalAnchorDesc() );
+  registerDataDefinedButton( mVerticalAnchorDDBtn, "vertical_anchor_point", QgsDataDefinedButton::String, QgsDataDefinedButton::verticalAnchorDesc() );
 
 }
 
