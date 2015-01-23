@@ -601,6 +601,7 @@ QgsSymbolV2* QgsMarkerSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
+  cloneSymbol->setLayer( mLayer );
   return cloneSymbol;
 }
 
@@ -671,6 +672,7 @@ QgsSymbolV2* QgsLineSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsLineSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
+  cloneSymbol->setLayer( mLayer );
   return cloneSymbol;
 }
 
@@ -722,6 +724,7 @@ QgsSymbolV2* QgsFillSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsFillSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
+  cloneSymbol->setLayer( mLayer );
   return cloneSymbol;
 }
 

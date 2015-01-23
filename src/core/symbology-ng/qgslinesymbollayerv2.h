@@ -82,15 +82,6 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Qt::PenCapStyle penCapStyle() const { return mPenCapStyle; }
     void setPenCapStyle( Qt::PenCapStyle style ) { mPenCapStyle = style; }
 
-    double offset() const { return mOffset; }
-    void setOffset( double offset ) { mOffset = offset; }
-
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
-    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
-    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
-
     bool useCustomDashPattern() const { return mUseCustomDashPattern; }
     void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
 
@@ -121,9 +112,6 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Qt::PenCapStyle mPenCapStyle;
     QPen mPen;
     QPen mSelPen;
-    double mOffset;
-    QgsSymbolV2::OutputUnit mOffsetUnit;
-    QgsMapUnitScale mOffsetMapUnitScale;
 
     //use a custom dash dot pattern instead of the predefined ones
     bool mUseCustomDashPattern;
@@ -204,9 +192,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double interval() const { return mInterval; }
     void setInterval( double interval ) { mInterval = interval; }
 
-    double offset() const { return mOffset; }
-    void setOffset( double offset ) { mOffset = offset; }
-
     Placement placement() const { return mPlacement; }
     void setPlacement( Placement p ) { mPlacement = p; }
 
@@ -265,12 +250,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     void setIntervalMapUnitScale( const QgsMapUnitScale& scale ) { mIntervalMapUnitScale = scale; }
     const QgsMapUnitScale& intervalMapUnitScale() const { return mIntervalMapUnitScale; }
 
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
-    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
-    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
-
     void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
     QgsSymbolV2::OutputUnit outputUnit() const override;
 
@@ -289,9 +268,6 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsSymbolV2::OutputUnit mIntervalUnit;
     QgsMapUnitScale mIntervalMapUnitScale;
     QgsMarkerSymbolV2* mMarker;
-    double mOffset;
-    QgsSymbolV2::OutputUnit mOffsetUnit;
-    QgsMapUnitScale mOffsetMapUnitScale;
     Placement mPlacement;
     double mOffsetAlongLine; //distance to offset along line before marker is drawn
     QgsSymbolV2::OutputUnit mOffsetAlongLineUnit; //unit for offset along line

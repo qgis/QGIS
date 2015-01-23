@@ -269,11 +269,20 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     virtual void setWidth( double width ) { mWidth = width; }
     virtual double width() const { return mWidth; }
 
+    double offset() const { return mOffset; }
+    void setOffset( double offset ) { mOffset = offset; }
+
     void setWidthUnit( QgsSymbolV2::OutputUnit unit ) { mWidthUnit = unit; }
     QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
 
     void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
     QgsSymbolV2::OutputUnit outputUnit() const override;
@@ -291,6 +300,9 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     double mWidth;
     QgsSymbolV2::OutputUnit mWidthUnit;
     QgsMapUnitScale mWidthMapUnitScale;
+    double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
+    QgsMapUnitScale mOffsetMapUnitScale;
 };
 
 class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2

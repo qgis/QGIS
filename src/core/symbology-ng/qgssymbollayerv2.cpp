@@ -225,6 +225,8 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Line, locked )
     , mWidthUnit( QgsSymbolV2::MM )
+    , mOffset( 0 )
+    , mOffsetUnit( QgsSymbolV2::MM )
 {
 }
 
