@@ -216,7 +216,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     prepareIndex( QList<QgsVectorLayer*>() << mCurrentLayer );
 
     // data from project
-    double tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mMapSettings, mDefaultUnit );
+    double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, mCurrentLayer, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
 
     // use ad-hoc locator
@@ -249,7 +249,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
 
     foreach ( const LayerConfig& layerConfig, mLayers )
     {
-      double tolerance = QgsTolerance::toleranceInMapUnits( layerConfig.tolerance, mMapSettings, layerConfig.unit );
+      double tolerance = QgsTolerance::toleranceInProjectUnits( layerConfig.tolerance, layerConfig.layer, mMapSettings, layerConfig.unit );
       if ( QgsPointLocator* loc = locatorForLayerUsingStrategy( layerConfig.layer, pointMap, tolerance ) )
       {
         _updateBestMatch( bestMatch, pointMap, loc, layerConfig.type, tolerance, filter );
@@ -270,7 +270,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
   else if ( mSnapToMapMode == SnapAllLayers )
   {
     // data from project
-    double tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mMapSettings, mDefaultUnit );
+    double tolerance = QgsTolerance::toleranceInProjectUnits( mDefaultTolerance, 0, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
 
     QList<QgsVectorLayer*> layers;
@@ -360,6 +360,10 @@ void QgsSnappingUtils::setMapSettings( const QgsMapSettings& settings )
 
 void QgsSnappingUtils::setDefaultSettings( int type, double tolerance, QgsTolerance::UnitType unit )
 {
+  // force map units - can't use layer units for just any layer
+  if ( unit == QgsTolerance::LayerUnits )
+    unit = QgsTolerance::ProjectUnits;
+
   mDefaultType = type;
   mDefaultTolerance = tolerance;
   mDefaultUnit = unit;
@@ -394,7 +398,7 @@ void QgsSnappingUtils::readConfigFromProject()
   else if ( snapType == "to vertex" )
     type = QgsPointLocator::Vertex;
   double tolerance = QgsProject::instance()->readDoubleEntry( "Digitizing", "/DefaultSnapTolerance", 0 );
-  QgsTolerance::UnitType unit = ( QgsTolerance::UnitType ) QgsProject::instance()->readNumEntry( "Digitizing", "/DefaultSnapToleranceUnit", 0 );
+  QgsTolerance::UnitType unit = ( QgsTolerance::UnitType ) QgsProject::instance()->readNumEntry( "Digitizing", "/DefaultSnapToleranceUnit", QgsTolerance::ProjectUnits );
   setDefaultSettings( type, tolerance, unit );
 
   //snapping on intersection on?
