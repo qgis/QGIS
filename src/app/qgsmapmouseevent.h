@@ -27,11 +27,19 @@ class QgsMapToolAdvancedDigitizing;
 class APP_EXPORT QgsMapMouseEvent : public QMouseEvent
 {
   public:
-    explicit QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QMouseEvent* event, bool doSnap = false );
+
+    enum SnappingMode
+    {
+      NoSnapping,
+      SnapProjectConfig,  //!< snap according to the configuration set in the snapping settings
+      SnapAllLayers,      //!< snap to all rendered layers (tolerance and type from defaultSettings())
+    };
+
+    explicit QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QMouseEvent* event, SnappingMode mode = NoSnapping );
 
     explicit QgsMapMouseEvent( QgsMapToolAdvancedDigitizing* mapTool, QgsPoint point,
                                Qt::MouseButton button, Qt::KeyboardModifiers modifiers,
-                               QEvent::Type eventType = QEvent::MouseButtonRelease, bool doSnap = false );
+                               QEvent::Type eventType = QEvent::MouseButtonRelease, SnappingMode mode = NoSnapping );
 
     //! returns the corresponding map tool
     QgsMapToolAdvancedDigitizing* mapTool() {return mMapTool;}
@@ -40,7 +48,9 @@ class APP_EXPORT QgsMapMouseEvent : public QMouseEvent
     void setPoint( const QgsPoint& point );
 
     //! returns the first snapped segment
-    QList<QgsPoint> snappedSegment( bool* snapped = 0 ) const;
+    //! @param snapped if given, determines if a segment has been snapped
+    //! @param allLayers if true, override snapping mode
+    QList<QgsPoint> snapSegment( bool* snapped = 0, bool allLayers = false ) const;
 
     /**
      * @brief mapPoint returns the point in coordinates
@@ -49,14 +59,13 @@ class APP_EXPORT QgsMapMouseEvent : public QMouseEvent
      */
     QgsPoint mapPoint( bool* snappedPoint = 0 ) const;
 
+  private:
     /**
-     * @brief snapPoint will snap the points using the map canvas snapper
+     * @brief snapPoint will snap the points using the map canvas snapping utils configuration
      * @note if snapping did not succeeded, the map point will be reset to its original position
      */
-    bool snapPoint();
+    void snapPoint();
 
-
-  private:
     static QPoint mapToPixelCoordinates( QgsMapCanvas* canvas, const QgsPoint& point );
 
     QgsPoint mMapPoint;
@@ -65,6 +74,7 @@ class APP_EXPORT QgsMapMouseEvent : public QMouseEvent
 
     QgsMapToolAdvancedDigitizing* mMapTool;
     QgsPointLocator::Match mSnapMatch;
+    SnappingMode mSnappingMode;
 };
 
 #endif // QGSMAPMOUSEEVENT_H
