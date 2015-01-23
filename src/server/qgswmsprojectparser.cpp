@@ -1674,6 +1674,108 @@ QDomDocument QgsWMSProjectParser::getStyles( QStringList& layerList ) const
   return myDocument;
 }
 
+QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const QString& hrefString ) const
+{
+  QDomDocument myDocument = QDomDocument();
+
+  QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
+  myDocument.appendChild( header );
+  
+  // Create the root element
+  QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "DescribeLayerResponse" );
+  root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/DescribeLayer.xsd" );
+  root.setAttribute( "xmlns:ows", "http://www.opengis.net/ows" );
+  root.setAttribute( "xmlns:se", "http://www.opengis.net/se" );
+  root.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  root.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
+  myDocument.appendChild( root );
+
+  // store the Version element
+  QDomElement versionNode = myDocument.createElement( "Version" );
+  versionNode.appendChild( myDocument.createTextNode( "1.1.0" ) );
+  root.appendChild( versionNode );
+  
+  //Prepare url
+  QString wfsHrefString = mProjectParser->wfsServiceUrl();
+  if ( wfsHrefString.isEmpty() )
+  {
+    wfsHrefString = hrefString;
+  }
+  QString wcsHrefString = mProjectParser->wcsServiceUrl();
+  if ( wcsHrefString.isEmpty() )
+  {
+    wcsHrefString = hrefString;
+  }
+
+  //WFS layers
+  QStringList wfsLayers = wfsLayerNames();
+  //WCS layers
+  QStringList wcsLayers = mProjectParser->wcsLayerNames();
+
+  for ( int i = 0; i < layerList.size(); i++ )
+  {
+    QString layerName;
+    layerName = layerList.at( i );
+    // don't use a cache - we may be changing styles
+    QList<QgsMapLayer*> currentLayerList = mapLayerFromStyle( layerName, "", false );
+    if ( currentLayerList.size() < 1 )
+    {
+      throw QgsMapServiceException( "InvalidParameterValue", QString( "The layer '%1' is not found" ).arg( layerName ) );
+    }
+    for ( int j = 0; j < currentLayerList.size(); j++ )
+    {
+      QgsMapLayer* currentLayer = currentLayerList.at( j );
+      QString layerTypeName = mProjectParser->useLayerIDs() ? currentLayer->id() : currentLayer->name();
+      
+      // Create the NamedLayer element
+      QDomElement layerNode = myDocument.createElement( "LayerDescription" );
+      root.appendChild( layerNode );
+      
+      // store the owsType element
+      QDomElement typeNode = myDocument.createElement( "owsType" );
+      // store the se:OnlineResource element
+      QDomElement oResNode = myDocument.createElement( "se:OnlineResource" );
+      oResNode.setAttribute( "xlink:type", "simple" );
+      // store the TypeName element
+      QDomElement nameNode = myDocument.createElement( "TypeName" );
+      if ( currentLayer->type() == QgsMapLayer::VectorLayer )
+      {
+        typeNode.appendChild( myDocument.createTextNode( "wfs" ) );
+        
+        if ( wfsLayers.indexOf( layerTypeName ) != -1 )
+        {
+          oResNode.setAttribute( "xlink:href", wfsHrefString );
+        }
+        
+        // store the se:FeatureTypeName element
+        QDomElement typeNameNode = myDocument.createElement( "se:FeatureTypeName" );
+        typeNameNode.appendChild( myDocument.createTextNode( layerTypeName ) );
+        nameNode.appendChild( typeNameNode );
+      }
+      else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
+      {
+        typeNode.appendChild( myDocument.createTextNode( "wcs" ) );
+        
+        if ( wcsLayers.indexOf( layerTypeName ) != -1 )
+        {
+          oResNode.setAttribute( "xlink:href", wcsHrefString );
+        }
+        
+        // store the se:CoverageTypeName element
+        QDomElement typeNameNode = myDocument.createElement( "se:CoverageTypeName" );
+        typeNameNode.appendChild( myDocument.createTextNode( layerTypeName ) );
+        nameNode.appendChild( typeNameNode );
+      }
+      layerNode.appendChild( typeNode );
+      layerNode.appendChild( oResNode );
+      layerNode.appendChild( nameNode );
+      
+    }
+  }
+  
+  return myDocument;
+}
+
 QgsMapRenderer::OutputUnits QgsWMSProjectParser::outputUnits() const
 {
   return QgsMapRenderer::Millimeters;

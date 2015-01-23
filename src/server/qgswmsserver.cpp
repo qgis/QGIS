@@ -248,6 +248,21 @@ void QgsWMSServer::executeRequest()
       mRequestHandler->setServiceException( ex );
     }
   }
+  //GetStyles
+  else if ( request.compare( "DescribeLayer", Qt::CaseInsensitive ) == 0 )
+  {
+    // DescribeLayer is defined for WMS1.1.1/SLD1.0
+    // and in qgis-server WMS1.3.0 extension
+    try
+    {
+      QDomDocument doc = describeLayer();
+      mRequestHandler->setXmlResponse( doc );
+    }
+    catch ( QgsMapServiceException& ex )
+    {
+      mRequestHandler->setServiceException( ex );
+    }
+  }
   //GetLegendGraphic
   else if ( request.compare( "GetLegendGraphic", Qt::CaseInsensitive ) == 0 ||
             request.compare( "GetLegendGraphics", Qt::CaseInsensitive ) == 0 )
@@ -431,6 +446,12 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   elem.appendChild( dcpTypeElement.cloneNode().toElement() ); // this is the same as for 'GetCapabilities'
   requestElement.appendChild( elem );
 
+  //wms:DescribeLayer
+  elem = doc.createElement(( version == "1.1.1" ? "DescribeLayer" : "sld:DescribeLayer" )/*wms:GetLegendGraphic*/ );
+  appendFormats( doc, elem, QStringList() << "text/xml" );
+  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); // this is the same as for 'GetCapabilities'
+  requestElement.appendChild( elem );
+
   //wms:GetStyles
   elem = doc.createElement(( version == "1.1.1" ? "GetStyles" : "qgs:GetStyles" )/*wms:GetStyles*/ );
   appendFormats( doc, elem, QStringList() << "text/xml" );
@@ -450,6 +471,19 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   elem = doc.createElement( "Exception" );
   appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
   capabilityElement.appendChild( elem );
+  
+  //UserDefinedSymbolization element
+  if ( version == "1.3.0" )
+  {
+    elem = doc.createElement( "sld:UserDefinedSymbolization" );
+    elem.setAttribute( "SupportSLD", "1" );
+    elem.setAttribute( "UserLayer", "0" );
+    elem.setAttribute( "UserStyle", "1" );
+    elem.setAttribute( "RemoteWFS", "0" );
+    elem.setAttribute( "InlineFeature", "0" );
+    elem.setAttribute( "RemoteWCS", "0" );
+    capabilityElement.appendChild( elem );
+  }
 
   if ( mConfigParser && fullProjectInformation ) //remove composer templates from GetCapabilities in the long term
   {
@@ -1061,6 +1095,39 @@ QDomDocument QgsWMSServer::getStyles()
   }
 
   return mConfigParser->getStyles( layersList );
+}
+
+// DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
+QDomDocument QgsWMSServer::describeLayer()
+{
+  if ( !mParameters.contains( "SLD_VERSION" ) )
+  {
+    throw QgsMapServiceException( "MissingParameterValue", "SLD_VERSION is mandatory for DescribeLayer operation" );
+  }
+  if ( mParameters[ "SLD_VERSION" ] != "1.1.0" )
+  {
+    throw QgsMapServiceException( "InvalidParameterValue", QString( "SLD_VERSION = %1 is not supported" ).arg( mParameters[ "SLD_VERSION" ] ) );
+  }
+  
+  if ( !mParameters.contains( "LAYERS" ) )
+  {
+    throw QgsMapServiceException( "MissingParameterValue", "LAYERS is mandatory for DescribeLayer operation" );
+  }
+
+  QStringList layersList = mParameters[ "LAYERS" ].split( ",", QString::SkipEmptyParts );
+  if ( layersList.size() < 1 )
+  {
+    throw QgsMapServiceException( "InvalidParameterValue", "Layers is empty" );
+  }
+  
+  //Prepare url
+  QString hrefString = mConfigParser->serviceUrl();
+  if ( hrefString.isEmpty() )
+  {
+    hrefString = serviceUrl();
+  }
+  
+  return mConfigParser->describeLayer( layersList, hrefString );
 }
 
 QByteArray* QgsWMSServer::getPrint( const QString& formatString )
@@ -2704,6 +2771,14 @@ QString QgsWMSServer::serviceUrl() const
       mapUrl.removeQueryItem( queryIt->first );
     }
     else if ( queryIt->first.compare( "SERVICE", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "LAYERS", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if ( queryIt->first.compare( "SLD_VERSION", Qt::CaseInsensitive ) == 0 )
     {
       mapUrl.removeQueryItem( queryIt->first );
     }

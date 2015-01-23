@@ -43,23 +43,7 @@ QString QgsWFSProjectParser::serviceUrl() const
 
 QString QgsWFSProjectParser::wfsServiceUrl() const
 {
-  QString url;
-
-  if ( !mProjectParser->xmlDocument() )
-  {
-    return url;
-  }
-
-  QDomElement propertiesElem = mProjectParser->propertiesElem();
-  if ( !propertiesElem.isNull() )
-  {
-    QDomElement wfsUrlElem = propertiesElem.firstChildElement( "WFSUrl" );
-    if ( !wfsUrlElem.isNull() )
-    {
-      url = wfsUrlElem.text();
-    }
-  }
-  return url;
+  return mProjectParser->wfsServiceUrl();
 }
 
 void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocument& doc ) const
