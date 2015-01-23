@@ -274,7 +274,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     int type = mDefaultType;
 
     QList<QgsVectorLayer*> layers;
-    foreach( const QString& layerID, mMapSettings.layers() )
+    foreach ( const QString& layerID, mMapSettings.layers() )
       if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) )
         layers << vl;
     prepareIndex( layers );
@@ -282,7 +282,7 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     QgsPointLocator::MatchList edges; // for snap on intersection
     QgsPointLocator::Match bestMatch;
 
-    foreach( QgsVectorLayer* vl, layers )
+    foreach ( QgsVectorLayer* vl, layers )
     {
       if ( QgsPointLocator* loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance ) )
       {
@@ -307,7 +307,7 @@ void QgsSnappingUtils::prepareIndex( const QList<QgsVectorLayer*>& layers )
 {
   // check if we need to build any index
   QList<QgsVectorLayer*> layersToIndex;
-  foreach( QgsVectorLayer* vl, layers )
+  foreach ( QgsVectorLayer* vl, layers )
   {
     if ( willUseIndex( vl ) && !locatorForLayer( vl )->hasIndex() )
       layersToIndex << vl;
@@ -317,12 +317,15 @@ void QgsSnappingUtils::prepareIndex( const QList<QgsVectorLayer*>& layers )
 
   // build indexes
   QTime t; t.start();
+  int i = 0;
+  prepareIndexStarting( layersToIndex.count() );
   foreach ( QgsVectorLayer* vl, layersToIndex )
   {
     QTime tt; tt.start();
     if ( !locatorForLayer( vl )->init( mStrategy == IndexHybrid ? 1000000 : -1 ) )
       mHybridNonindexableLayers.insert( vl->id() );
     QgsDebugMsg( QString( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );
+    prepareIndexProgress( ++i );
   }
   QgsDebugMsg( QString( "Prepare index total: %1 ms" ).arg( t.elapsed() ) );
 }
