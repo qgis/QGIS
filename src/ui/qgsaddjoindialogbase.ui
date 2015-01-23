@@ -74,11 +74,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
-       <widget class="QListView" name="mJoinFieldsSubsetView">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-       </widget>
+       <widget class="QListView" name="mJoinFieldsSubsetView"/>
       </item>
      </layout>
     </widget>
