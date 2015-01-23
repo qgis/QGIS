@@ -18,7 +18,7 @@
 
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
-#include "qgssnapper.h"
+#include "qgspointlocator.h"
 
 class QgsVertexMarker;
 class QDoubleSpinBox;
@@ -65,14 +65,12 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
 
 
     void deleteRubberBandAndGeometry();
-    QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsSnappingResult& sr, QgsFeature& snappedFeature );
+    QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature );
     void createDistanceItem();
     void deleteDistanceItem();
     void setOffsetForRubberBand( double offset, bool leftSide );
     /**Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
     QgsGeometry* linestringFromPolygon( QgsGeometry* featureGeom, int vertex );
-    /**Sets snapping with default vertex search tolerance to all layers (to vertex and segment)*/
-    void configureSnapper( QgsSnapper& s );
     /**Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
     QgsGeometry* convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti );
     /**Converts offset line back to a multiline if necessary*/

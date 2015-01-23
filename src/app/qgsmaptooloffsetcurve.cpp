@@ -64,32 +64,43 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
     return;
   }
 
+  QgsSnappingUtils* snapping = mCanvas->snappingUtils();
 
-  QgsSnapper snapper( mCanvas->mapSettings() );
-  configureSnapper( snapper );
-  QList<QgsSnappingResult> snapResults;
-  snapper.snapPoint( e->pos(), snapResults );
-  if ( snapResults.size() > 0 )
+  // store previous settings
+  int oldType;
+  double oldSearchRadius;
+  QgsTolerance::UnitType oldSearchRadiusUnit;
+  QgsSnappingUtils::SnapToMapMode oldMode = snapping->snapToMapMode();
+  snapping->defaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
+
+  // setup new settings (temporary)
+  QSettings settings;
+  snapping->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
+  snapping->setDefaultSettings( QgsPointLocator::Edge,
+                                settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble(),
+                                ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
+
+  QgsPointLocator::Match match = snapping->snapToMap( e->pos() );
+
+  // restore old settings
+  snapping->setSnapToMapMode( oldMode );
+  snapping->setDefaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
+
+  if ( match.hasEdge() && match.layer() )
   {
+    mSourceLayerId = match.layer()->id();
     QgsFeature fet;
-    const QgsSnappingResult& snapResult = snapResults.at( 0 );
-    if ( snapResult.layer )
+    if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
     {
-      mSourceLayerId = snapResult.layer->id();
-
-      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mSourceLayerId ) );
-      if ( vl && vl->getFeatures( QgsFeatureRequest().setFilterFid( snapResult.snappedAtGeometry ) ).nextFeature( fet ) )
+      mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
+      mOriginalGeometry = createOriginGeometry( match.layer(), match, fet );
+      mRubberBand = createRubberBand();
+      if ( mRubberBand )
       {
-        mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
-        mOriginalGeometry = createOriginGeometry( vl, snapResult, fet );
-        mRubberBand = createRubberBand();
-        if ( mRubberBand )
-        {
-          mRubberBand->setToGeometry( mOriginalGeometry, layer );
-        }
-        mModifiedFeature = fet.id();
-        createDistanceItem();
+        mRubberBand->setToGeometry( mOriginalGeometry, layer );
       }
+      mModifiedFeature = fet.id();
+      createDistanceItem();
     }
   }
 }
@@ -232,7 +243,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, const QgsSnappingResult& sr, QgsFeature& snappedFeature )
+QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature )
 {
   if ( !vl )
   {
@@ -241,7 +252,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
 
   mMultiPartGeometry = false;
   //assign feature part by vertex number (snap to vertex) or by before vertex number (snap to segment)
-  int partVertexNr = ( sr.snappedVertexNr == -1 ? sr.beforeVertexNr : sr.snappedVertexNr );
+  int partVertexNr = match.vertexIndex();
 
   if ( vl == currentVectorLayer() && !mForceCopy )
   {
@@ -259,7 +270,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
-    if ( selection.size() < 1 || !selection.contains( sr.snappedAtGeometry ) )
+    if ( selection.size() < 1 || !selection.contains( match.featureId() ) )
     {
       return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
     }
@@ -279,7 +290,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       if ( geom->isMultipart() )
       {
         delete geom;
-        return convertToSingleLine( snappedFeature.geometryAndOwnership(), sr.snappedVertexNr, mMultiPartGeometry );
+        return convertToSingleLine( snappedFeature.geometryAndOwnership(), match.vertexIndex(), mMultiPartGeometry );
       }
 
       return geom;
@@ -431,32 +442,6 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( QgsGeometry* featureG
   return 0;
 }
 
-void QgsMapToolOffsetCurve::configureSnapper( QgsSnapper& s )
-{
-  //use default vertex snap tolerance to all visible layers, but always to segment
-  QList<QgsSnapper::SnapLayer> snapLayers;
-  if ( mCanvas )
-  {
-    QList<QgsMapLayer*> layerList = mCanvas->layers();
-    QList<QgsMapLayer*>::const_iterator layerIt = layerList.constBegin();
-    for ( ; layerIt != layerList.constEnd(); ++layerIt )
-    {
-      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( *layerIt );
-      if ( vl )
-      {
-        QgsSnapper::SnapLayer sl;
-        sl.mLayer = vl;
-        QSettings settings;
-        sl.mTolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-        sl.mUnitType = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
-        sl.mSnapTo = QgsSnapper::SnapToSegment;
-        snapLayers.push_back( sl );
-      }
-    }
-  }
-  s.setSnapLayers( snapLayers );
-  s.setSnapMode( QgsSnapper::SnapWithOneResult );
-}
 
 QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti )
 {
