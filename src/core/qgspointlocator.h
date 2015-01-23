@@ -59,8 +59,14 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
     enum Type { Invalid = 0, Vertex = 1, Edge = 2, Area = 4, All = Vertex | Edge | Area };
 
-    /** Prepare the index for queries. Does nothing if the index already exists */
-    void init();
+    /** Prepare the index for queries. Does nothing if the index already exists.
+     * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
+     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
+     * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
+    bool init( int maxFeaturesToIndex = -1 );
+
+    /** Indicate whether the data have been already indexed */
+    bool hasIndex() const;
 
     struct Match
     {
@@ -149,7 +155,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
 
 
   protected:
-    void rebuildIndex();
+    bool rebuildIndex( int maxFeaturesToIndex = -1 );
     void destroyIndex();
 
   private slots:

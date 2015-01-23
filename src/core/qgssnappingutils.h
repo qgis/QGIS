@@ -139,6 +139,11 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! return a temporary locator with index only for a small area (will be replaced by another one on next request)
     QgsPointLocator* temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance );
 
+    //! find out whether the strategy would index such layer or just use a temporary locator
+    bool willUseIndex( QgsVectorLayer* vl ) const;
+    //! initialize index for layers where it makes sense (according to the indexing strategy)
+    void prepareIndex( const QList<QgsVectorLayer*>& layers );
+
   private:
     // environment
     QgsMapSettings mMapSettings;
@@ -159,6 +164,8 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     LocatorsMap mLocators;
     //! temporary locators (indexing just a part of layers). owned by the instance
     LocatorsMap mTemporaryLocators;
+    //! list of layer IDs that are too large to be indexed (hybrid strategy will use temporary locators for those)
+    QSet<QString> mHybridNonindexableLayers;
 };
 
 

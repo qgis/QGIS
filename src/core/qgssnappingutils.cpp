@@ -67,17 +67,10 @@ void QgsSnappingUtils::clearAllLocators()
 
 QgsPointLocator* QgsSnappingUtils::locatorForLayerUsingStrategy( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance )
 {
-  if ( mStrategy == IndexAlwaysFull )
+  if ( willUseIndex( vl ) )
     return locatorForLayer( vl );
-  else if ( mStrategy == IndexNeverFull )
+  else
     return temporaryLocatorForLayer( vl, pointMap, tolerance );
-  else // Hybrid
-  {
-    if ( vl->pendingFeatureCount() > 1000000 )
-      return temporaryLocatorForLayer( vl, pointMap, tolerance );
-    else
-      return locatorForLayer( vl );
-  }
 }
 
 QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl, const QgsPoint& pointMap, double tolerance )
@@ -90,6 +83,22 @@ QgsPointLocator* QgsSnappingUtils::temporaryLocatorForLayer( QgsVectorLayer* vl,
   QgsPointLocator* vlpl = new QgsPointLocator( vl, destCRS(), &rect );
   mTemporaryLocators.insert( vl, vlpl );
   return mTemporaryLocators.value( vl );
+}
+
+bool QgsSnappingUtils::willUseIndex( QgsVectorLayer* vl ) const
+{
+  if ( mStrategy == IndexAlwaysFull )
+    return true;
+  else if ( mStrategy == IndexNeverFull )
+    return false;
+  else
+  {
+    if ( mHybridNonindexableLayers.contains( vl->id() ) )
+      return false;
+
+    // if the layer is too big, the locator will later stop indexing it after reaching a threshold
+    return true;
+  }
 }
 
 
@@ -204,6 +213,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     if ( !mCurrentLayer )
       return QgsPointLocator::Match();
 
+    prepareIndex( QList<QgsVectorLayer*>() << mCurrentLayer );
+
     // data from project
     double tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
@@ -227,6 +238,11 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
   }
   else if ( mSnapToMapMode == SnapAdvanced )
   {
+    QList<QgsVectorLayer*> layers;
+    foreach ( const LayerConfig& layerConfig, mLayers )
+      layers << layerConfig.layer;
+    prepareIndex( layers );
+
     QgsPointLocator::Match bestMatch;
     QgsPointLocator::MatchList edges; // for snap on intersection
     double maxSnapIntTolerance = 0;
@@ -257,15 +273,17 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
     double tolerance = QgsTolerance::toleranceInMapUnits( mDefaultTolerance, mMapSettings, mDefaultUnit );
     int type = mDefaultType;
 
+    QList<QgsVectorLayer*> layers;
+    foreach( const QString& layerID, mMapSettings.layers() )
+      if ( QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) ) )
+        layers << vl;
+    prepareIndex( layers );
+
     QgsPointLocator::MatchList edges; // for snap on intersection
     QgsPointLocator::Match bestMatch;
 
-    foreach( const QString& layerID, mMapSettings.layers() )
+    foreach( QgsVectorLayer* vl, layers )
     {
-      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
-      if ( !vl )
-        continue;
-
       if ( QgsPointLocator* loc = locatorForLayerUsingStrategy( vl, pointMap, tolerance ) )
       {
         _updateBestMatch( bestMatch, pointMap, loc, type, tolerance, filter );
@@ -282,6 +300,31 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, Qg
   }
 
   return QgsPointLocator::Match();
+}
+
+
+void QgsSnappingUtils::prepareIndex( const QList<QgsVectorLayer*>& layers )
+{
+  // check if we need to build any index
+  QList<QgsVectorLayer*> layersToIndex;
+  foreach( QgsVectorLayer* vl, layers )
+  {
+    if ( willUseIndex( vl ) && !locatorForLayer( vl )->hasIndex() )
+      layersToIndex << vl;
+  }
+  if ( layersToIndex.isEmpty() )
+    return;
+
+  // build indexes
+  QTime t; t.start();
+  foreach ( QgsVectorLayer* vl, layersToIndex )
+  {
+    QTime tt; tt.start();
+    if ( !locatorForLayer( vl )->init( mStrategy == IndexHybrid ? 1000000 : -1 ) )
+      mHybridNonindexableLayers.insert( vl->id() );
+    QgsDebugMsg( QString( "Index init: %1 ms (%2)" ).arg( tt.elapsed() ).arg( vl->id() ) );
+  }
+  QgsDebugMsg( QString( "Prepare index total: %1 ms" ).arg( t.elapsed() ) );
 }
 
 

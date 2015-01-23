@@ -595,15 +595,19 @@ QgsPointLocator::~QgsPointLocator()
 }
 
 
-void QgsPointLocator::init()
+bool QgsPointLocator::init( int maxFeaturesToIndex )
 {
-  if ( !mRTree )
-    rebuildIndex();
+  return hasIndex() ? true : rebuildIndex( maxFeaturesToIndex );
+}
+
+bool QgsPointLocator::hasIndex() const
+{
+  return mRTree != 0;
 }
 
 
 
-void QgsPointLocator::rebuildIndex()
+bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 {
   destroyIndex();
 
@@ -611,7 +615,7 @@ void QgsPointLocator::rebuildIndex()
   QgsFeature f;
   QGis::GeometryType geomType = mLayer->geometryType();
   if ( geomType == QGis::NoGeometry )
-    return; // nothing to index
+    return true; // nothing to index
 
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
@@ -623,6 +627,7 @@ void QgsPointLocator::rebuildIndex()
     request.setFilterRect( rect );
   }
   QgsFeatureIterator fi = mLayer->getFeatures( request );
+  int indexedCount = 0;
   while ( fi.nextFeature( f ) )
   {
     if ( !f.geometry() )
@@ -634,6 +639,14 @@ void QgsPointLocator::rebuildIndex()
     SpatialIndex::Region r( rect2region( f.geometry()->boundingBox() ) );
     dataList << new RTree::Data( 0, 0, r, f.id() );
     mGeoms[f.id()] = new QgsGeometry( *f.geometry() );
+    ++indexedCount;
+
+    if ( maxFeaturesToIndex != -1 && indexedCount > maxFeaturesToIndex )
+    {
+      qDeleteAll( dataList );
+      destroyIndex();
+      return false;
+    }
   }
 
   // R-Tree parameters
@@ -645,11 +658,12 @@ void QgsPointLocator::rebuildIndex()
   SpatialIndex::id_type indexId;
 
   if ( dataList.isEmpty() )
-    return; // no features
+    return true; // no features
 
   QgsPointLocator_Stream stream( dataList );
   mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
            leafCapacity, dimension, variant, indexId );
+  return true;
 }
 
 
