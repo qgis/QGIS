@@ -36,9 +36,6 @@ except ImportError:
 
 from ..html_elems import HtmlParagraph, HtmlList, HtmlTable
 
-from qgis.core import QgsCredentials
-
-
 def classFactory():
 	return PostGisDBPlugin
 
@@ -96,39 +93,10 @@ class PostGisDBPlugin(DBPlugin):
 
 		uri.setUseEstimatedMetadata(useEstimatedMetadata)
 
-		err = u""
 		try:
 			return self.connectToUri(uri)
 		except ConnectionError, e:
-			err = str(e)
-
-		# ask for valid credentials
-		max_attempts = 3
-		for i in range(max_attempts):
-			(ok, username, password) = QgsCredentials.instance().get(uri.connectionInfo(), username, password, err)
-
-			if not ok:
-				return False
-
-			if service != "":
-				uri.setConnection(service, database, username, password, sslmode)
-			else:
-				uri.setConnection(host, port, database, username, password, sslmode)
-
-			try:
-				self.connectToUri(uri)
-			except ConnectionError, e:
-				if i == max_attempts-1:	# failed the last attempt
-					raise e
-				err = str(e)
-				continue
-
-			QgsCredentials.instance().put(uri.connectionInfo(), username, password)
-
-			return True
-
-		return False
-
+			return False
 
 class PGDatabase(Database):
 	def __init__(self, connection, uri):

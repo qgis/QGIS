@@ -28,6 +28,8 @@ from PyQt4.QtGui import *
 from ..connector import DBConnector
 from ..plugin import ConnectionError, DbError, Table
 
+from qgis.core import QgsCredentials
+
 import os
 import psycopg2
 import psycopg2.extensions
@@ -45,15 +47,42 @@ class PostGisDBConnector(DBConnector):
 
 		self.host = uri.host() or os.environ.get('PGHOST')
 		self.port = uri.port() or os.environ.get('PGPORT')
-		self.user = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
-		self.dbname = uri.database() or os.environ.get('PGDATABASE') or self.user
-		self.passwd = uri.password() or os.environ.get('PGPASSWORD')
+
+		username = uri.username() or os.environ.get('PGUSER') or os.environ.get('USER')
+		password = uri.password() or os.environ.get('PGPASSWORD')
 
 		try:
 			self.connection = psycopg2.connect( self._connectionInfo().encode('utf-8') )
-			self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
 		except self.connection_error_types(), e:
-			raise ConnectionError(e)
+			err = str(e)
+			uri = self.uri()
+			conninfo = uri.connectionInfo()
+
+			for i in range(3):
+				(ok, username, password) = QgsCredentials.instance().get(conninfo, username, password, err)
+				if not ok:
+					raise ConnectionError(e)
+
+				if username:
+					uri.setUsername( username )
+
+				if password:
+					uri.setPassword( password )
+
+				try:
+					self.connection = psycopg2.connect( uri.connectionInfo().encode('utf-8') )
+					QgsCredentials.instance().put(conninfo, username, password)
+				except self.connection_error_types(), e:
+					if i == 2:
+						raise ConnectionError(e)
+
+					err = str(e)
+
+		self.connection.set_isolation_level(psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+
+		c = self._execute(None, u"SELECT current_user")
+		self.user = self._fetchone(c)
+		self._close_cursor(c)
 
 		self._checkSpatial()
 		self._checkRaster()
@@ -61,7 +90,7 @@ class PostGisDBConnector(DBConnector):
 		self._checkRasterColumnsTable()
 
 	def _connectionInfo(self):
-		return unicode(self._uri.connectionInfo())
+		return unicode(self.uri().connectionInfo())
 
 	def _checkSpatial(self):
 		""" check whether postgis_version is present in catalog """
@@ -158,7 +187,7 @@ class PostGisDBConnector(DBConnector):
 
 	def getDatabasePrivileges(self):
 		""" db privileges: (can create schemas, can create temp. tables) """
-		sql = u"SELECT has_database_privilege(%(d)s, 'CREATE'), has_database_privilege(%(d)s, 'TEMP')" % { 'd' : self.quoteString(self.dbname) }
+		sql = u"SELECT has_database_privilege(current_database(), 'CREATE'), has_database_privilege(current_database(), 'TEMP')"
 		c = self._execute(None, sql)
 		res = self._fetchone(c)
 		self._close_cursor(c)
