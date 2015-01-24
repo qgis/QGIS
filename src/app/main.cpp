@@ -87,7 +87,7 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
 #include <unistd.h>
 #include <execinfo.h>
 #include <signal.h>
@@ -175,7 +175,7 @@ static void dumpBacktrace( unsigned int depth )
   if ( depth == 0 )
     depth = 20;
 
-#if (defined(linux) && !defined(ANDROID)) || defined(__FreeBSD__)
+#if ((defined(linux) || defined(__linux__)) && !defined(ANDROID)) || defined(__FreeBSD__)
   int stderr_fd = -1;
   if ( access( "/usr/bin/c++filt", X_OK ) < 0 )
   {
@@ -234,7 +234,7 @@ static void dumpBacktrace( unsigned int depth )
   void **buffer = new void *[ depth ];
 
   SymSetOptions( SYMOPT_DEFERRED_LOADS | SYMOPT_INCLUDE_32BIT_MODULES | SYMOPT_UNDNAME );
-  SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols", TRUE );
+  SymInitialize( GetCurrentProcess(), "http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/symstore", TRUE );
 
   unsigned short nFrames = CaptureStackBackTrace( 1, depth, buffer, NULL );
   SYMBOL_INFO *symbol = ( SYMBOL_INFO * ) qgsMalloc( sizeof( SYMBOL_INFO ) + 256 );
