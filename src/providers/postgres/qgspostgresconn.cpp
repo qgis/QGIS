@@ -894,12 +894,15 @@ bool QgsPostgresConn::openCursor( QString cursorName, QString sql )
 {
   if ( mOpenCursors++ == 0 && !mTransaction )
   {
-    QgsDebugMsg( "Starting read-only transaction" );
-    PQexecNR( "BEGIN READ ONLY" );
+    QgsDebugMsg( QString( "Starting read-only transaction: %1" ).arg( mPostgresqlVersion ) );
+    if ( mPostgresqlVersion >= 80000 )
+      PQexecNR( "BEGIN READ ONLY" );
+    else
+      PQexecNR( "BEGIN" );
   }
   QgsDebugMsgLevel( QString( "Binary cursor %1 for %2" ).arg( cursorName ).arg( sql ), 3 );
   return PQexecNR( QString( "DECLARE %1 BINARY CURSOR %2 FOR %3" ).
-                   arg( cursorName ).arg( !mTransaction ? QString() : QString( "WITH HOLD" ) ).arg( sql ) );
+                   arg( cursorName ).arg( !mTransaction ? "" : QString( "WITH HOLD" ) ).arg( sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( QString cursorName )

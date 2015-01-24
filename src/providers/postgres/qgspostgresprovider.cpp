@@ -976,10 +976,11 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
       sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
                      "pg_class.relnamespace=pg_namespace.oid AND "
-                     "pg_get_userbyid(relowner)=current_user AND "
+                     "%3 AND "
                      "relname=%1 AND nspname=%2" )
             .arg( quotedValue( mTableName ) )
-            .arg( quotedValue( mSchemaName ) );
+            .arg( quotedValue( mSchemaName ) )
+            .arg( connectionRO()->pgVersion() < 80100 ? "pg_get_userbyid(relowner)=current_user" : "pg_has_role(relowner,'MEMBER')" );
       testAccess = connectionRO()->PQexec( sql );
       if ( testAccess.PQresultStatus() == PGRES_TUPLES_OK && testAccess.PQntuples() == 1 )
       {
