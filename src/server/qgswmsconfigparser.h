@@ -50,7 +50,7 @@ class QgsWMSConfigParser
 
     /**Returns the xml fragment of layers styles*/
     virtual QDomDocument getStyles( QStringList& layerList ) const = 0;
-    
+
     /**Returns the xml fragment of layers styles description*/
     virtual QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const = 0;
 

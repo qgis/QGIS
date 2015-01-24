@@ -1342,7 +1342,7 @@ QStringList QgsServerProjectParser::wcsLayers() const
   {
     return wcsList;
   }
-  
+
   QDomElement qgisElem = mXMLDoc->documentElement();
   if ( qgisElem.isNull() )
   {

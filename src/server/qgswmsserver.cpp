@@ -471,7 +471,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   elem = doc.createElement( "Exception" );
   appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
   capabilityElement.appendChild( elem );
-  
+
   //UserDefinedSymbolization element
   if ( version == "1.3.0" )
   {
@@ -1108,7 +1108,7 @@ QDomDocument QgsWMSServer::describeLayer()
   {
     throw QgsMapServiceException( "InvalidParameterValue", QString( "SLD_VERSION = %1 is not supported" ).arg( mParameters[ "SLD_VERSION" ] ) );
   }
-  
+
   if ( !mParameters.contains( "LAYERS" ) )
   {
     throw QgsMapServiceException( "MissingParameterValue", "LAYERS is mandatory for DescribeLayer operation" );
@@ -1119,14 +1119,14 @@ QDomDocument QgsWMSServer::describeLayer()
   {
     throw QgsMapServiceException( "InvalidParameterValue", "Layers is empty" );
   }
-  
+
   //Prepare url
   QString hrefString = mConfigParser->serviceUrl();
   if ( hrefString.isEmpty() )
   {
     hrefString = serviceUrl();
   }
-  
+
   return mConfigParser->describeLayer( layersList, hrefString );
 }
 

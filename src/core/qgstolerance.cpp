@@ -33,7 +33,7 @@ double _ratioMU2LU( const QgsMapSettings& mapSettings, QgsMapLayer* layer )
   return ratio;
 }
 
-double QgsTolerance::toleranceInProjectUnits(double tolerance, QgsMapLayer* layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
+double QgsTolerance::toleranceInProjectUnits( double tolerance, QgsMapLayer* layer, const QgsMapSettings& mapSettings, QgsTolerance::UnitType units )
 {
   // converts to map units
   if ( units == ProjectUnits )

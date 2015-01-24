@@ -1680,7 +1680,7 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
 
   QDomNode header = myDocument.createProcessingInstruction( "xml", "version=\"1.0\" encoding=\"UTF-8\"" );
   myDocument.appendChild( header );
-  
+
   // Create the root element
   QDomElement root = myDocument.createElementNS( "http://www.opengis.net/sld", "DescribeLayerResponse" );
   root.setAttribute( "xsi:schemaLocation", "http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/DescribeLayer.xsd" );
@@ -1694,7 +1694,7 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
   QDomElement versionNode = myDocument.createElement( "Version" );
   versionNode.appendChild( myDocument.createTextNode( "1.1.0" ) );
   root.appendChild( versionNode );
-  
+
   //Prepare url
   QString wfsHrefString = mProjectParser->wfsServiceUrl();
   if ( wfsHrefString.isEmpty() )
@@ -1726,11 +1726,11 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
     {
       QgsMapLayer* currentLayer = currentLayerList.at( j );
       QString layerTypeName = mProjectParser->useLayerIDs() ? currentLayer->id() : currentLayer->name();
-      
+
       // Create the NamedLayer element
       QDomElement layerNode = myDocument.createElement( "LayerDescription" );
       root.appendChild( layerNode );
-      
+
       // store the owsType element
       QDomElement typeNode = myDocument.createElement( "owsType" );
       // store the se:OnlineResource element
@@ -1741,12 +1741,12 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
       if ( currentLayer->type() == QgsMapLayer::VectorLayer )
       {
         typeNode.appendChild( myDocument.createTextNode( "wfs" ) );
-        
+
         if ( wfsLayers.indexOf( layerTypeName ) != -1 )
         {
           oResNode.setAttribute( "xlink:href", wfsHrefString );
         }
-        
+
         // store the se:FeatureTypeName element
         QDomElement typeNameNode = myDocument.createElement( "se:FeatureTypeName" );
         typeNameNode.appendChild( myDocument.createTextNode( layerTypeName ) );
@@ -1755,12 +1755,12 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
       else if ( currentLayer->type() == QgsMapLayer::RasterLayer )
       {
         typeNode.appendChild( myDocument.createTextNode( "wcs" ) );
-        
+
         if ( wcsLayers.indexOf( layerTypeName ) != -1 )
         {
           oResNode.setAttribute( "xlink:href", wcsHrefString );
         }
-        
+
         // store the se:CoverageTypeName element
         QDomElement typeNameNode = myDocument.createElement( "se:CoverageTypeName" );
         typeNameNode.appendChild( myDocument.createTextNode( layerTypeName ) );
@@ -1769,10 +1769,10 @@ QDomDocument QgsWMSProjectParser::describeLayer( QStringList& layerList, const Q
       layerNode.appendChild( typeNode );
       layerNode.appendChild( oResNode );
       layerNode.appendChild( nameNode );
-      
+
     }
   }
-  
+
   return myDocument;
 }
 

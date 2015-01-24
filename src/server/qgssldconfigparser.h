@@ -51,7 +51,7 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
 
     /**Returns the xml fragment of layers styles*/
     QDomDocument getStyles( QStringList& layerList ) const override;
-    
+
     /**Returns the xml fragment of layers styles description*/
     QDomDocument describeLayer( QStringList& layerList, const QString& hrefString ) const override;
 
