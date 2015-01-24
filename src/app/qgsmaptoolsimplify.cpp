@@ -39,8 +39,6 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent 
   connect( spinTolerance, SIGNAL( valueChanged( double ) ), mTool, SLOT( setTolerance( double ) ) );
   connect( cboToleranceUnits, SIGNAL( currentIndexChanged( int ) ), mTool, SLOT( setToleranceUnits( int ) ) );
   connect( okButton, SIGNAL( clicked() ), mTool, SLOT( storeSimplified() ) );
-  connect( this, SIGNAL( finished( int ) ), mTool, SLOT( removeRubberBand() ) );
-
 }
 
 void QgsSimplifyDialog::updateStatusText()

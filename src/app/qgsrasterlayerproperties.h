@@ -88,13 +88,13 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );
     /** Load the default style when appropriate button is pressed. */
-    void on_pbnLoadDefaultStyle_clicked();
+    void loadDefaultStyle_clicked();
     /** Save the default style when appropriate button is pressed. */
-    void on_pbnSaveDefaultStyle_clicked();
+    void saveDefaultStyle_clicked();
     /** Load a saved style when appropriate button is pressed. */
-    void on_pbnLoadStyle_clicked();
+    void loadStyle_clicked();
     /** Save a style when appriate button is pressed. */
-    void on_pbnSaveStyleAs_clicked();
+    void saveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 

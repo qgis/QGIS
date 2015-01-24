@@ -389,7 +389,7 @@ void QgsVisibilityPresets::applyState( const QString& presetName )
 
 void QgsVisibilityPresets::reconnectToLayersStyleManager()
 {
-  disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
+  // disconnect( 0, 0, this, SLOT( layerStyleRenamed( QString, QString ) ) );
 
   QSet<QString> layerIDs;
   foreach ( const QString& grpName, mPresets.keys() )

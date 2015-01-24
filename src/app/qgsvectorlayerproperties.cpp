@@ -84,11 +84,11 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   QPushButton* b = new QPushButton( tr( "Style" ) );
   QMenu* m = new QMenu( this );
-  mActionLoadStyle = m->addAction( tr( "Load Style..." ), this, SLOT( on_pbnLoadStyle_clicked() ) );
-  mActionSaveStyleAs = m->addAction( tr( "Save Style..." ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
+  mActionLoadStyle = m->addAction( tr( "Load Style..." ), this, SLOT( loadStyle_clicked() ) );
+  mActionSaveStyleAs = m->addAction( tr( "Save Style..." ), this, SLOT( saveStyleAs_clicked() ) );
   m->addSeparator();
-  m->addAction( tr( "Save As Default" ), this, SLOT( on_pbnSaveDefaultStyle_clicked() ) );
-  m->addAction( tr( "Restore Default" ), this, SLOT( on_pbnLoadDefaultStyle_clicked() ) );
+  m->addAction( tr( "Save As Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
+  m->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
   b->setMenu( m );
   connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowStyleMenu() ) );
   buttonBox->addButton( b, QDialogButtonBox::ResetRole );
@@ -669,7 +669,7 @@ void QgsVectorLayerProperties::on_mCrsSelector_crsChanged( QgsCoordinateReferenc
   layer->setCrs( crs );
 }
 
-void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
+void QgsVectorLayerProperties::loadDefaultStyle_clicked()
 {
   QString msg;
   bool defaultLoadedFlag = false;
@@ -727,7 +727,7 @@ void QgsVectorLayerProperties::on_pbnLoadDefaultStyle_clicked()
   }
 }
 
-void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
+void QgsVectorLayerProperties::saveDefaultStyle_clicked()
 {
   apply();
   QString errorMsg;
@@ -766,7 +766,7 @@ void QgsVectorLayerProperties::on_pbnSaveDefaultStyle_clicked()
 }
 
 
-void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
+void QgsVectorLayerProperties::loadStyle_clicked()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
@@ -809,7 +809,7 @@ void QgsVectorLayerProperties::on_pbnLoadStyle_clicked()
 }
 
 
-void QgsVectorLayerProperties::on_pbnSaveStyleAs_clicked()
+void QgsVectorLayerProperties::saveStyleAs_clicked()
 {
   saveStyleAs( QML );
 }
@@ -937,11 +937,11 @@ void QgsVectorLayerProperties::loadStyleMenuTriggered( QAction *action )
 
   if ( index == 0 ) //Load from filesystem
   {
-    this->on_pbnLoadStyle_clicked();
+    loadStyle_clicked();
   }
   else if ( index == 1 ) //Load from database
   {
-    this->showListOfStylesFromDatabase();
+    showListOfStylesFromDatabase();
   }
 
 }
@@ -1117,7 +1117,7 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     // display the menu to choose the output format (fix #5136)
     mActionSaveStyleAs->setText( tr( "Save Style" ) );
     mActionSaveStyleAs->setMenu( mSaveAsMenu );
-    QObject::disconnect( mActionSaveStyleAs, SIGNAL( triggered() ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
+    QObject::disconnect( mActionSaveStyleAs, SIGNAL( triggered() ), this, SLOT( saveStyleAs_clicked() ) );
   }
   else
   {

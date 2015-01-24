@@ -86,11 +86,11 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
 
   QPushButton* b = new QPushButton( tr( "Style" ) );
   QMenu* m = new QMenu( this );
-  m->addAction( tr( "Load Style..." ), this, SLOT( on_pbnLoadStyle_clicked() ) );
-  m->addAction( tr( "Save Style..." ), this, SLOT( on_pbnSaveStyleAs_clicked() ) );
+  m->addAction( tr( "Load Style..." ), this, SLOT( loadStyle_clicked() ) );
+  m->addAction( tr( "Save Style..." ), this, SLOT( saveStyleAs_clicked() ) );
   m->addSeparator();
-  m->addAction( tr( "Save As Default" ), this, SLOT( on_pbnSaveDefaultStyle_clicked() ) );
-  m->addAction( tr( "Restore Default" ), this, SLOT( on_pbnLoadDefaultStyle_clicked() ) );
+  m->addAction( tr( "Save As Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
+  m->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
   b->setMenu( m );
   connect( m, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowStyleMenu() ) );
   buttonBox->addButton( b, QDialogButtonBox::ResetRole );
@@ -1633,7 +1633,7 @@ QLinearGradient QgsRasterLayerProperties::highlightGradient()
 // Next four methods for saving and restoring qml style state
 //
 //
-void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
+void QgsRasterLayerProperties::loadDefaultStyle_clicked()
 {
   bool defaultLoadedFlag = false;
   QString myMessage = mRasterLayer->loadDefaultStyle( defaultLoadedFlag );
@@ -1652,7 +1652,7 @@ void QgsRasterLayerProperties::on_pbnLoadDefaultStyle_clicked()
   }
 }
 
-void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
+void QgsRasterLayerProperties::saveDefaultStyle_clicked()
 {
 
   apply(); // make sure the style to save is uptodate
@@ -1673,7 +1673,7 @@ void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
 }
 
 
-void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
+void QgsRasterLayerProperties::loadStyle_clicked()
 {
   QSettings settings;
   QString lastUsedDir = settings.value( "style/lastStyleDir", "." ).toString();
@@ -1704,7 +1704,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
 }
 
 
-void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
+void QgsRasterLayerProperties::saveStyleAs_clicked()
 {
   QSettings settings;
   QString lastUsedDir = settings.value( "style/lastStyleDir", "." ).toString();
