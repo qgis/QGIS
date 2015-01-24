@@ -283,12 +283,6 @@
       </item>
       <item row="3" column="0">
        <widget class="QCheckBox" name="cb_dontResolveType">
-        <property name="toolTip">
-         <string>Restrict the displayed tables to those that are in the layer registries.</string>
-        </property>
-        <property name="whatsThis">
-         <string>Restricts the displayed tables to those that are found in the layer registries (geometry_columns, geography_columns, topology.layer). This can speed up the initial display of spatial tables.</string>
-        </property>
         <property name="text">
          <string>Don't resolve type of unrestricted columns (GEOMETRY)</string>
         </property>
