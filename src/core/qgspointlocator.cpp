@@ -685,6 +685,12 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
   QgsFeature f;
   if ( mLayer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f ) )
   {
+    if ( !f.geometry() )
+      return;
+
+    if ( mTransform )
+      f.geometry()->transform( *mTransform );
+
     SpatialIndex::Region r( rect2region( f.geometry()->boundingBox() ) );
     mRTree->insertData( 0, 0, r, f.id() );
     mGeoms[fid] = new QgsGeometry( *f.geometry() );
