@@ -524,7 +524,7 @@ class Grass7Algorithm(GeoAlgorithm):
         else:
             html += msg + '</i></li></ul>'
             html += self.tr(
-                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual//3rdParty.html">Click here</a> '
+                '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
                 'to know more about how to install and configure GRASS GIS 7 to be used with QGIS</p>')
 
         return html
