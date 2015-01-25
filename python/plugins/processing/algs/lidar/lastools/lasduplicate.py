@@ -49,7 +49,7 @@ class lasduplicate(LAStoolsAlgorithm):
         self.addParameter(ParameterBoolean(lasduplicate.SINGLE_RETURNS,
             self.tr("mark surviving duplicate as single return"), False))
         self.addParameter(ParameterFile(lasduplicate.RECORD_REMOVED,
-            self.tr("record removed duplictates to LAS/LAZ file")))
+            self.tr("record removed duplicates to LAS/LAZ file")))
         self.addParametersPointOutputGUI()
         self.addParametersAdditionalGUI()
 
