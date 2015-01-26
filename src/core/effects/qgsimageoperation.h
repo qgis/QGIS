@@ -36,10 +36,6 @@ class QgsVectorColorRampV2;
  * Operations are written to either modify an image in place or return a new image, depending
  * on which is faster for the particular operation.
  *
- * \note These operations do not work using premultiplied ARGB32_Premultiplied images
- * - please make sure the images are converted to standard ARGB32 images prior to calling
- * these operations.
- *
  * \note Added in version 2.7
  */
 class CORE_EXPORT QgsImageOperation
@@ -145,6 +141,8 @@ class CORE_EXPORT QgsImageOperation
      * @param image QImage to blur
      * @param radius blur radius in pixels, maximum value of 16
      * @param alphaOnly set to true to blur only the alpha component of the image
+     * @note for fastest operation, ensure the source image is ARGB32_Premultiplied if
+     * alphaOnly is set to false, or ARGB32 if alphaOnly is true
      */
     static void stackBlur( QImage &image, const int radius, const bool alphaOnly = false );
 
@@ -153,6 +151,7 @@ class CORE_EXPORT QgsImageOperation
      * @param image QImage to blur
      * @param radius blur radius in pixels
      * @returns blurred image
+     * @note for fastest operation, ensure the source image is ARGB32_Premultiplied
      */
     static QImage* gaussianBlur( QImage &image, const int radius );
 

@@ -533,20 +533,38 @@ void QgsImageOperation::stackBlur( QImage &image, const int radius, const bool a
   int i1 = 0;
   int i2 = 3;
 
-  if ( alphaOnly ) // this seems to only work right for a black color
+  //ensure correct source format.
+  QImage::Format originalFormat = image.format();
+  QImage* pImage = &image;
+  if ( !alphaOnly && originalFormat != QImage::Format_ARGB32_Premultiplied )
+  {
+    pImage = new QImage( image.convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+  }
+  else if ( alphaOnly && originalFormat != QImage::Format_ARGB32 )
+  {
+    pImage = new QImage( image.convertToFormat( QImage::Format_ARGB32 ) );
+  }
+
+  if ( alphaOnly )
     i1 = i2 = ( QSysInfo::ByteOrder == QSysInfo::BigEndian ? 0 : 3 );
 
   StackBlurLineOperation topToBottomBlur( alpha, QgsImageOperation::ByColumn, true, i1, i2 );
-  runLineOperation( image, topToBottomBlur );
+  runLineOperation( *pImage, topToBottomBlur );
 
   StackBlurLineOperation leftToRightBlur( alpha, QgsImageOperation::ByRow, true, i1, i2 );
-  runLineOperation( image, leftToRightBlur );
+  runLineOperation( *pImage, leftToRightBlur );
 
   StackBlurLineOperation bottomToTopBlur( alpha, QgsImageOperation::ByColumn, false, i1, i2 );
-  runLineOperation( image, bottomToTopBlur );
+  runLineOperation( *pImage, bottomToTopBlur );
 
   StackBlurLineOperation rightToLeftBlur( alpha, QgsImageOperation::ByRow, false, i1, i2 );
-  runLineOperation( image, rightToLeftBlur );
+  runLineOperation( *pImage, rightToLeftBlur );
+
+  if ( pImage->format() != originalFormat )
+  {
+    image = pImage->convertToFormat( originalFormat );
+    delete pImage;
+  }
 }
 
 void QgsImageOperation::StackBlurLineOperation::operator()( QRgb* startRef, const int lineLength, const int bytesPerLine )
@@ -591,17 +609,34 @@ QImage *QgsImageOperation::gaussianBlur( QImage &image, const int radius )
 
   double* kernel = createGaussianKernel( radius );
 
+  //ensure correct source format.
+  QImage::Format originalFormat = image.format();
+  QImage* pImage = &image;
+  if ( originalFormat != QImage::Format_ARGB32_Premultiplied )
+  {
+    pImage = new QImage( image.convertToFormat( QImage::Format_ARGB32_Premultiplied ) );
+  }
+
   //blur along rows
-  QImage xBlurImage = QImage( width, height, QImage::Format_ARGB32 );
+  QImage xBlurImage = QImage( width, height, QImage::Format_ARGB32_Premultiplied );
   GaussianBlurOperation rowBlur( radius, QgsImageOperation::ByRow, &xBlurImage, kernel );
-  runRectOperation( image, rowBlur );
+  runRectOperation( *pImage, rowBlur );
 
   //blur along columns
-  QImage* yBlurImage = new QImage( width, height, QImage::Format_ARGB32 );
+  QImage* yBlurImage = new QImage( width, height, QImage::Format_ARGB32_Premultiplied );
   GaussianBlurOperation colBlur( radius, QgsImageOperation::ByColumn, yBlurImage, kernel );
   runRectOperation( xBlurImage, colBlur );
 
   delete[] kernel;
+
+  if ( originalFormat != QImage::Format_ARGB32_Premultiplied )
+  {
+    QImage* convertedImage = new QImage( yBlurImage->convertToFormat( originalFormat ) );
+    delete yBlurImage;
+    delete pImage;
+    return convertedImage;
+  }
+
   return yBlurImage;
 }
 

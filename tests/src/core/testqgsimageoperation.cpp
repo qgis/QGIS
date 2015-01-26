@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QtTest/QtTest>
 #include "qgsrenderchecker.h"
+#include "qgssymbollayerv2utils.h"
 
 class TestQgsImageOperation : public QObject
 {
@@ -66,6 +67,7 @@ class TestQgsImageOperation : public QObject
 
     //stack blur
     void stackBlur();
+    void stackBlurPremultiplied();
     void alphaOnlyBlur();
 
     //gaussian blur
@@ -327,6 +329,18 @@ void TestQgsImageOperation::stackBlur()
 
   bool result = imageCheck( QString( "imageop_stackblur" ), image, 0 );
   QVERIFY( result );
+  QCOMPARE( image.format(), QImage::Format_ARGB32 );
+}
+
+void TestQgsImageOperation::stackBlurPremultiplied()
+{
+  QImage image( mSampleImage );
+  image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
+  QgsImageOperation::stackBlur( image, 10 );
+
+  bool result = imageCheck( QString( "imageop_stackblur" ), image, 0 );
+  QVERIFY( result );
+  QCOMPARE( image.format(), QImage::Format_ARGB32_Premultiplied );
 }
 
 void TestQgsImageOperation::alphaOnlyBlur()
@@ -336,6 +350,15 @@ void TestQgsImageOperation::alphaOnlyBlur()
 
   bool result = imageCheck( QString( "imageop_stackblur_alphaonly" ), image, 0 );
   QVERIFY( result );
+  QCOMPARE( image.format(), QImage::Format_ARGB32 );
+
+  QImage premultImage( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  premultImage = premultImage.convertToFormat( QImage::Format_ARGB32_Premultiplied );
+  QgsImageOperation::stackBlur( premultImage, 10, true );
+
+  result = imageCheck( QString( "imageop_stackblur_alphaonly" ), premultImage, 0 );
+  QVERIFY( result );
+  QCOMPARE( premultImage.format(), QImage::Format_ARGB32_Premultiplied );
 }
 
 void TestQgsImageOperation::gaussianBlur()
@@ -344,6 +367,7 @@ void TestQgsImageOperation::gaussianBlur()
   QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 30 );
 
   bool result = imageCheck( QString( "imageop_gaussianblur" ), *blurredImage, 0 );
+  QCOMPARE( blurredImage->format(), QImage::Format_ARGB32 );
   delete blurredImage;
   QVERIFY( result );
 }
@@ -352,8 +376,11 @@ void TestQgsImageOperation::gaussianBlur()
 void TestQgsImageOperation::gaussianBlurSmall()
 {
   QImage image( QString( TEST_DATA_DIR ) + QDir::separator() +  "small_sample_image.png" );
+  image = image.convertToFormat( QImage::Format_ARGB32_Premultiplied );
+
   QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 10 );
 
+  QCOMPARE( blurredImage->format(), QImage::Format_ARGB32_Premultiplied );
   bool result = imageCheck( QString( "imageop_gaussianblur_small" ), *blurredImage, 0 );
   delete blurredImage;
   QVERIFY( result );
@@ -397,7 +424,7 @@ bool TestQgsImageOperation::imageCheck( QString testName, QImage &image, int mis
   QgsRenderChecker checker;
   checker.setControlName( "expected_" + testName );
   checker.setRenderedImage( fileName );
-  checker.setColorTolerance( 1 );
+  checker.setColorTolerance( 2 );
   bool resultFlag = checker.compareImages( testName, mismatchCount );
   mReport += checker.report();
   return resultFlag;
