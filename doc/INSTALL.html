@@ -77,12 +77,12 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Tuesday December 30, 2014</H3>
+<H3>Tuesday January 20, 2015</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Tuesday December 30, 2014
+Last Updated: Tuesday January 20, 2015
 Last Change : Monday November 24, 2014
 </P>
 <DIV CLASS="toc">
@@ -2340,7 +2340,7 @@ mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D CMAKE_BUILD_TYPE=MINSIZEREL -D ENABLE_TESTS=FALSE \
--D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_PYSPATIALITE=FALSE \
+-D WITH_PYSPATIALITE=FALSE \
 -D SPATIALINDEX_LIBRARY=/usr/local/lib/libspatialindex.dylib \
 -D SPATIALINDEX_INCLUDE_DIR=/usr/local/include/spatialindex \
 -D QWT_LIBRARY=/usr/local/qwt-6.0.2/lib/libqwt.dylib \
