@@ -79,7 +79,6 @@ class warp(GdalAlgorithm):
         arguments.append(str(self.getParameterValue(self.SOURCE_SRS)))
         arguments.append('-t_srs')
         crsId = self.getParameterValue(self.DEST_SRS)
-        self.crs = QgsCoordinateReferenceSystem(crsId)
         arguments.append(str(crsId))
         arguments.append('-r')
         arguments.append(

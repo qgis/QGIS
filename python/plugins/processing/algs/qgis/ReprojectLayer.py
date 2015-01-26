@@ -55,7 +55,8 @@ class ReprojectLayer(GeoAlgorithm):
         layer = dataobjects.getObjectFromUri(
                 self.getParameterValue(self.INPUT))
         crsId = self.getParameterValue(self.TARGET_CRS)
-        targetCrs = QgsCoordinateReferenceSystem(crsId)
+        targetCrs = QgsCoordinateReferenceSystem()
+        targetCrs.createFromUserInput(crsId)
 
         writer = self.getOutputFromName(
                 self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),

@@ -253,6 +253,7 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         ns = {}
         ns['progress'] = progress
+        ns['scriptDescriptionFile'] = self.descriptionFile
 
         for param in self.parameters:
             ns[param.name] = param.value
