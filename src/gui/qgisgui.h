@@ -90,7 +90,7 @@ namespace QgisGui
     call.  The regular express, glob, will have both all lower and upper
     case versions added.
   */
-  QString createFileFilter_( QString const &longName, QString const &glob );
+  QString GUI_EXPORT createFileFilter_( QString const &longName, QString const &glob );
 }
 
 #endif
