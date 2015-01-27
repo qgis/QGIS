@@ -64,6 +64,7 @@ class TestQgsImageOperation : public QObject
     void distanceTransformMaxDist();
     void distanceTransformSetSpread();
     void distanceTransformInterior();
+    void distanceTransformMisc();
 
     //stack blur
     void stackBlur();
@@ -73,6 +74,7 @@ class TestQgsImageOperation : public QObject
     //gaussian blur
     void gaussianBlur();
     void gaussianBlurSmall();
+    void gaussianBlurNoChange();
 
     //flip
     void flipHorizontal();
@@ -322,6 +324,31 @@ void TestQgsImageOperation::distanceTransformInterior()
   QVERIFY( result );
 }
 
+void TestQgsImageOperation::distanceTransformMisc()
+{
+  //no ramp
+  QImage image( mSampleImage );
+  QgsImageOperation::DistanceTransformProperties props;
+  props.useMaxDistance = true;
+  props.ramp = NULL;
+  props.shadeExterior = false;
+  QgsImageOperation::distanceTransform( image, props );
+  bool result = imageCheck( QString( "imageop_nochange" ), image, 0 );
+  QVERIFY( result );
+
+  //zero spread
+  QImage image2( mSampleImage );
+  QgsImageOperation::DistanceTransformProperties props2;
+  QgsVectorGradientColorRampV2 ramp;
+  props2.useMaxDistance = false;
+  props2.spread = 0;
+  props2.ramp = &ramp;
+  props2.shadeExterior = false;
+  QgsImageOperation::distanceTransform( image2, props2 );
+  result = imageCheck( QString( "imageop_zerospread" ), image2, 0 );
+  QVERIFY( result );
+}
+
 void TestQgsImageOperation::stackBlur()
 {
   QImage image( mSampleImage );
@@ -382,6 +409,16 @@ void TestQgsImageOperation::gaussianBlurSmall()
 
   QCOMPARE( blurredImage->format(), QImage::Format_ARGB32_Premultiplied );
   bool result = imageCheck( QString( "imageop_gaussianblur_small" ), *blurredImage, 0 );
+  delete blurredImage;
+  QVERIFY( result );
+}
+
+void TestQgsImageOperation::gaussianBlurNoChange()
+{
+  QImage image( mSampleImage );
+  QImage* blurredImage = QgsImageOperation::gaussianBlur( image, 0 );
+
+  bool result = imageCheck( QString( "imageop_nochange" ), *blurredImage, 0 );
   delete blurredImage;
   QVERIFY( result );
 }
