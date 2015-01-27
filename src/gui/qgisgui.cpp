@@ -182,8 +182,8 @@ namespace QgisGui
 
   QString createFileFilter_( QString const &format )
   {
-    QString longName = format + " format";
-    QString glob = "*" + format;
+    QString longName = format.toUpper() + " format";
+    QString glob = "*." + format;
     return createFileFilter_( longName, glob );
   }
 

@@ -20,14 +20,23 @@ class TestQgsGui : public QObject
 {
     Q_OBJECT
   private slots:
+    void createFileFilterForFormat();
     void createFileFilter();
 
 };
 
-void TestQgsGui::createFileFilter()
+void TestQgsGui::createFileFilterForFormat()
 {
   QString expected = "FOO format (*.foo *.FOO)";
-  QString actual = QgisGui::createFileFilter_("foo");;
+  QString actual = QgisGui::createFileFilter_("foo");
+
+  QCOMPARE( actual, expected );
+}
+
+void TestQgsGui::createFileFilter()
+{
+  QString expected = "My Description (my_regex MY_REGEX)";
+  QString actual = QgisGui::createFileFilter_("My Description", "my_regex");
 
   QCOMPARE( actual, expected );
 }
