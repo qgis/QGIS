@@ -4139,7 +4139,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
   QString sql;
 
-  if ( mGeometryColumn.isEmpty() )
+  if ( mGeometryColumn.isEmpty() && !(mQuery.startsWith( "(" ) && mQuery.endsWith( ")" )) )
   {
     // checking if is a non-spatial table
     sql = QString( "SELECT type FROM sqlite_master "
