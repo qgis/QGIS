@@ -93,7 +93,7 @@ namespace QgisGui
       if ( format ==  "svg" )
         continue;
 
-      filterMap.insert( createFileFilter_( format.toUpper() + " format", "*." + format ), format );
+      filterMap.insert( createFileFilter_( format ), format );
     }
 
 #ifdef QGISDEBUG
@@ -104,14 +104,13 @@ namespace QgisGui
     }
 #endif
 
-    //find out the last used filter
     QSettings settings;  // where we keep last used filter in persistent state
-    QString lastUsedFilter = settings.value( "/UI/lastSaveAsImageFilter" ).toString();
     QString lastUsedDir = settings.value( "/UI/lastSaveAsImageDir", "." ).toString();
 
-    QString outputFileName;
-    QString selectedFilter = lastUsedFilter;
-    QString ext;
+    // Prefer "png" format unless the user previously chose a different format
+    QString pngExtension = "png";
+    QString pngFilter = createFileFilter_( pngExtension );
+    QString selectedFilter = settings.value( "/UI/lastSaveAsImageFilter", pngFilter ).toString();
 
     QString initialPath;
     if ( defaultFilename.isNull() )
@@ -125,6 +124,8 @@ namespace QgisGui
       initialPath = QDir( lastUsedDir ).filePath( defaultFilename );
     }
 
+    QString outputFileName;
+    QString ext;
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
     outputFileName = QFileDialog::getSaveFileName( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ), &selectedFilter );
 
@@ -176,7 +177,14 @@ namespace QgisGui
 
   QString createFileFilter_( QString const &longName, QString const &glob )
   {
-    return longName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+    return QString("%1 (%2 %3)").arg( longName ).arg( glob.toLower() ).arg( glob.toUpper() );
+  }
+
+  QString createFileFilter_( QString const &format )
+  {
+    QString longName = format.toUpper() + " format";
+    QString glob = "*." + format;
+    return createFileFilter_( longName, glob );
   }
 
 } // end of QgisGui namespace

@@ -91,6 +91,15 @@ namespace QgisGui
     case versions added.
   */
   QString GUI_EXPORT createFileFilter_( QString const &longName, QString const &glob );
+
+  /**
+   * Create file filters suitable for use with QFileDialog
+   *
+   * @param format extension e.g. "png"
+   * @return QString e.g. "PNG format (*.png, *.PNG)"
+   */
+  QString GUI_EXPORT createFileFilter_( QString const &format );
+
 }
 
 #endif
