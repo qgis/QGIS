@@ -175,9 +175,16 @@ namespace QgisGui
     return qMakePair<QString, QString>( outputFileName, ext );
   }
 
+  QString createFileFilter_( QString const &longName, QString const &glob )
+  {
+    return QString("%1 (%2 %3)").arg( longName ).arg( glob.toLower() ).arg( glob.toUpper() );
+  }
+
   QString createFileFilter_( QString const &format )
   {
-    return QString( "%1 format (*.%2 *.%1)" ).arg( format.toUpper() ).arg( format.toLower() );
+    QString longName = format + " format";
+    QString glob = "*" + format;
+    return createFileFilter_( longName, glob );
   }
 
 } // end of QgisGui namespace

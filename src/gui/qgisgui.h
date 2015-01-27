@@ -83,12 +83,23 @@ namespace QgisGui
   QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage, QString defaultFilename = QString::null );
 
   /**
+    Convenience function for readily creating file filters.
+
+    Given a long name for a file filter and a regular expression, return
+    a file filter string suitable for use in a QFileDialog::OpenFiles()
+    call.  The regular express, glob, will have both all lower and upper
+    case versions added.
+  */
+  QString GUI_EXPORT createFileFilter_( QString const &longName, QString const &glob );
+
+  /**
    * Create file filters suitable for use with QFileDialog
    *
    * @param format extension e.g. "png"
    * @return QString e.g. "PNG format (*.png, *.PNG)"
    */
-  QString createFileFilter_( QString const &format );
+  QString GUI_EXPORT createFileFilter_( QString const &format );
+
 }
 
 #endif
