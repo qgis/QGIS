@@ -1129,6 +1129,7 @@ ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
 I'll run through these lines briefly to explain what they do, but if you are
 not interested, just do the step explained in the above section and section.
 
+```
 MACRO (ADD_QGIS_TEST testname testsrc)
 SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
 SET(qgis_${testname}_MOC_CPPS ${testsrc})
@@ -1158,20 +1159,25 @@ INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/bin/qgis_${testname})
 ENDIF (APPLE)
 ENDMACRO (ADD_QGIS_TEST)
+```
 
 Lets look a little more in detail at the individual lines. First we define the
 list of sources for our test. Since we have only one source file (following the
 methodology I described above where class declaration and definition are in the
 same file) its a simple statement:
 
+```
 SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
+```
 
 Since our test class needs to be run through the Qt meta object compiler (moc)
 we need to provide a couple of lines to make that happen too:
 
+```
 SET(qgis_${testname}_MOC_CPPS ${testsrc})
 QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
 ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
+```
 
 Next we tell cmake that it must make an executeable from the test class.
 Remember in the previous section on the last line of the class implementation I
@@ -1179,8 +1185,10 @@ included the moc outputs directly into our test class, so that will give it
 (among other things) a main method so the class can be compiled as an
 executeable:
 
+```
 ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
 ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+```
 
 Next we need to specify any library dependencies. At the moment classes have
 been implemented with a catch-all QT_LIBRARIES dependency, but I will be
@@ -1188,12 +1196,15 @@ working to replace that with the specific Qt libraries that each class needs
 only. Of course you also need to link to the relevant qgis libraries as
 required by your unit test.
 
+```
 TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
+```
 
 Next I tell cmake to install the tests to the same place as the qgis binaries
 itself. This is something I plan to remove in the future so that the tests can
 run directly from inside the source tree.
 
+```
 SET_TARGET_PROPERTIES(qgis_${testname}
 PROPERTIES
 # skip the full RPATH for the build tree
@@ -1214,6 +1225,7 @@ ELSE (APPLE)
 INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/bin/qgis_${testname})
 ENDIF (APPLE)
+```
 
 Finally the above uses ADD_TEST to register the test with cmake / ctest . Here
 is where the best magic happens - we register the class with ctest. If you
@@ -1251,6 +1263,7 @@ The make test command will invoke CTest which will run each test that was
 registered using the ADD_TEST CMake directive described above. Typical output
 from make test will look like this:
 
+```
 Running tests...
 Start processing tests
 Test project /Users/tim/dev/cpp/qgis/build
@@ -1264,12 +1277,14 @@ The following tests FAILED:
 ## 1- qgis_applicationtest (OTHER_FAULT)
 Errors while running CTest
 make: *** [test] Error 8
+```
 
 If a test fails, you can use the ctest command to examine more closely why it
 failed. Use the `-R` option to specify a regex for which tests you want to run
 and `-V` to get verbose output:
 
 `ctest -R appl -V`
+```
 Start processing tests
 Test project /Users/tim/dev/cpp/qgis/build
 Constructing a list of tests
@@ -1305,7 +1320,7 @@ Totals: 3 passed, 1 failed, 0 skipped
 The following tests FAILED:
 ## 1- qgis_applicationtest (Failed)
 Errors while running CTest
-
+```
 
 Well that concludes this section on writing unit tests in QGIS. We hope you
 will get into the habit of writing test to test new functionality and to check
