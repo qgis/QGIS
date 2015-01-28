@@ -62,8 +62,13 @@ class OgrAlgorithm(GdalAlgorithm):
             # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
             # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
             # table="t4" (geom) sql=
-            s = re.sub(''' sslmode=.+''', '', unicode(layer.source()))
-            ogrstr = 'PG:%s' % s
+            dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+            connInfo = dsUri.connectionInfo()
+            (success, user, passwd ) = QgsCredentials.instance().get(connInfo, None, None)
+            if success:
+                QgsCredentials.instance().put(connInfo, user, passwd)
+            ogrstr = ("PG:dbname='%s' host='%s' port='%s' user='%s' password='%s'"
+                        % (dsUri.database(), dsUri.host(), dsUri.port(), user, passwd))
         else:
             ogrstr = unicode(layer.source()).split("|")[0]
         return '"' + ogrstr + '"'
@@ -72,7 +77,7 @@ class OgrAlgorithm(GdalAlgorithm):
         if 'host' in uri:
             regex = re.compile('(table=")(.+?)(\.)(.+?)"')
             r = regex.search(uri)
-            return r.groups()[1] + '.' + r.groups()[3]
+            return '"' + r.groups()[1] + '.' + r.groups()[3] +'"'
         elif 'dbname' in uri:
             regex = re.compile('(table=")(.+?)"')
             r = regex.search(uri)
@@ -83,3 +88,4 @@ class OgrAlgorithm(GdalAlgorithm):
             return r.groups()[1]
         else:
             return os.path.basename(os.path.splitext(uri)[0])
+
