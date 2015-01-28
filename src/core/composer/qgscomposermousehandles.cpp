@@ -1281,7 +1281,7 @@ void QgsComposerMouseHandles::collectAlignCoordinates( QMap< double, const QgsCo
       {
         //if snapping to paper use the paper item's rect rather then the bounding rect,
         //since we want to snap to the page edge and not any outlines drawn around the page
-        itemRect = currentItem->rect();
+        itemRect = currentItem->mapRectToScene( currentItem->rect() );
       }
       else
       {
