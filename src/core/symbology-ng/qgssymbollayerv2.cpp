@@ -26,11 +26,6 @@
 #include <QPointF>
 #include <QPolygonF>
 
-inline bool evaluable( const QgsExpression * expr, const QgsSymbolV2RenderContext& context )
-{
-  return expr && ( context.feature() || !expr->referencedColumns().size() );
-}
-
 const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& property ) const
 {
   QMap< QString, QgsExpression* >::const_iterator it = mDataDefinedProperties.find( property );
@@ -264,7 +259,7 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( evaluable( mOffsetExpression, context ) )
+  if ( mOffsetExpression && context.feature() )
   {
     QPointF offset = QgsSymbolLayerV2Utils::decodePoint( mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
     offsetX = offset.x();
@@ -276,11 +271,11 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  if ( evaluable( mHorizontalAnchorExpression, context ) )
+  if ( mHorizontalAnchorExpression && context.feature() )
   {
     horizontalAnchorPoint = decodeHorizontalAnchorPoint( mHorizontalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
-  if ( evaluable( mVerticalAnchorExpression, context ) )
+  if ( mVerticalAnchorExpression && context.feature() )
   {
     verticalAnchorPoint = decodeVerticalAnchorPoint( mVerticalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
