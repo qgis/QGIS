@@ -594,6 +594,15 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     QgsMapLayerAction* mAtlasFeatureAction;
 
+    struct PanelStatus
+    {
+      PanelStatus( bool visible = true, bool active = false ) : isVisible( visible ), isActive( active ) {}
+      bool isVisible;
+      bool isActive;
+    };
+
+    QMap< QString, PanelStatus > mPanelStatus;
+
   signals:
     void printAsRasterChanged( bool state );
 
@@ -636,6 +645,8 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets the composition for the composer window
     void setComposition( QgsComposition* composition );
+
+    void dockVisibilityChanged( bool visible );
 
 };
 

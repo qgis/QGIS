@@ -540,11 +540,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemsDock->setObjectName( "ItemsDock" );
   mPanelMenu->addAction( mItemsDock->toggleViewAction() );
 
-  mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mItemDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mUndoDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mAtlasDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mItemsDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  foreach ( QDockWidget* dock, docks )
+  {
+    dock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+    connect( dock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( dockVisibilityChanged( bool ) ) );
+  }
 
   createCompositionWidget();
 
@@ -1251,12 +1252,61 @@ void QgsComposer::on_mActionToggleFullScreen_triggered()
 
 void QgsComposer::on_mActionHidePanels_triggered()
 {
+  /*
+  workaround the limited Qt dock widget API
+  see http://qt-project.org/forums/viewthread/1141/
+  and http://qt-project.org/faq/answer/how_can_i_check_which_tab_is_the_current_one_in_a_tabbed_qdockwidget
+  */
+
   bool showPanels = !mActionHidePanels->isChecked();
-  mItemDock->setVisible( showPanels );
-  mGeneralDock->setVisible( showPanels );
-  mUndoDock->setVisible( showPanels );
-  mAtlasDock->setVisible( showPanels );
-  mItemsDock->setVisible( showPanels );
+  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+
+  if ( !showPanels )
+  {
+    mPanelStatus.clear();
+    //record status of all docks
+
+    foreach ( QDockWidget* dock, docks )
+    {
+      mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
+      dock->setVisible( false );
+    }
+
+    //record active dock tabs
+    foreach ( QTabBar* tabBar, tabBars )
+    {
+      QString currentTabTitle = tabBar->tabText( tabBar->currentIndex() );
+      mPanelStatus[ currentTabTitle ].isActive = true;
+    }
+  }
+  else
+  {
+    //restore visibility of all docks
+    foreach ( QDockWidget* dock, docks )
+    {
+      if ( ! mPanelStatus.contains( dock->windowTitle() ) )
+      {
+        dock->setVisible( true );
+        continue;
+      }
+      dock->setVisible( mPanelStatus.value( dock->windowTitle() ).isVisible );
+    }
+
+    //restore previously active dock tabs
+    foreach ( QTabBar* tabBar, tabBars )
+    {
+      //loop through all tabs in tab bar
+      for ( int i = 0; i < tabBar->count(); ++i )
+      {
+        QString tabTitle = tabBar->tabText( i );
+        if ( mPanelStatus.value( tabTitle ).isActive )
+        {
+          tabBar->setCurrentIndex( i );
+        }
+      }
+    }
+  }
 }
 
 void QgsComposer::disablePreviewMode()
@@ -1346,6 +1396,16 @@ void QgsComposer::setComposition( QgsComposition* composition )
 
   //default printer page setup
   setPrinterPageDefaults();
+}
+
+void QgsComposer::dockVisibilityChanged( bool visible )
+{
+  if ( visible )
+  {
+    mActionHidePanels->blockSignals( true );
+    mActionHidePanels->setChecked( false );
+    mActionHidePanels->blockSignals( false );
+  }
 }
 
 void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
