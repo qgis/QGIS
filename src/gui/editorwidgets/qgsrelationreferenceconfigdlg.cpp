@@ -45,6 +45,11 @@ void QgsRelationReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& co
     mCbxAllowNull->setChecked( config[ "AllowNULL" ].toBool() );
   }
 
+  if ( config.contains( "OrderByValue" ) )
+  {
+    mCbxOrderByValue->setChecked( config[ "OrderByValue" ].toBool() );
+  }
+
   if ( config.contains( "ShowForm" ) )
   {
     mCbxShowForm->setChecked( config[ "ShowForm" ].toBool() );
@@ -84,6 +89,7 @@ QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
 {
   QgsEditorWidgetConfig myConfig;
   myConfig.insert( "AllowNULL", mCbxAllowNull->isChecked() );
+  myConfig.insert( "OrderByValue", mCbxOrderByValue->isChecked() );
   myConfig.insert( "ShowForm", mCbxShowForm->isChecked() );
   myConfig.insert( "MapIdentification", mCbxMapIdentification->isEnabled() && mCbxMapIdentification->isChecked() );
   myConfig.insert( "ReadOnly", mCbxReadOnly->isChecked() );

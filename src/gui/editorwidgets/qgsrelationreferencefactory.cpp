@@ -42,6 +42,7 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   QMap<QString, QVariant> cfg;
 
   cfg.insert( "AllowNULL", configElement.attribute( "AllowNULL" ) == "1" );
+  cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) == "1" );
   cfg.insert( "ShowForm", configElement.attribute( "ShowForm" ) == "1" );
   cfg.insert( "Relation", configElement.attribute( "Relation" ) );
   cfg.insert( "MapIdentification", configElement.attribute( "MapIdentification" ) == "1" );
@@ -57,6 +58,7 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
   Q_UNUSED( fieldIdx );
 
   configElement.setAttribute( "AllowNULL", config["AllowNULL"].toBool() );
+  configElement.setAttribute( "OrderByValue", config["OrderByValue"].toBool() );
   configElement.setAttribute( "ShowForm", config["ShowForm"].toBool() );
   configElement.setAttribute( "Relation", config["Relation"].toString() );
   configElement.setAttribute( "MapIdentification", config["MapIdentification"].toBool() );
