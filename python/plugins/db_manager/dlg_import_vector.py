@@ -69,7 +69,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             QObject.connect(self.btnChooseInputFile, SIGNAL("clicked()"), self.chooseInputFile)
             # QObject.connect( self.cboInputLayer.lineEdit(), SIGNAL("editingFinished()"), self.updateInputLayer )
             QObject.connect(self.cboInputLayer, SIGNAL("editTextChanged(const QString &)"), self.inputPathChanged)
-            #QObject.connect( self.cboInputLayer, SIGNAL("currentIndexChanged(int)"), self.updateInputLayer )
+            # QObject.connect( self.cboInputLayer, SIGNAL("currentIndexChanged(int)"), self.updateInputLayer )
             QObject.connect(self.btnUpdateInputLayer, SIGNAL("clicked()"), self.updateInputLayer)
 
             self.editPrimaryKey.setText(self.default_pk)
@@ -326,12 +326,14 @@ class DlgImportVector(QDialog, Ui_Dialog):
                 enc = self.cboEncoding.currentText()
                 self.inLayer.setProviderEncoding(enc)
 
+            onlySelected = self.chkSelectedFeatures.isChecked()
+
             # do the import!
-            ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, False,
+            ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer(self.inLayer, uri, providerName, outCrs, onlySelected, False, options)
                                                                      False, options)
         except Exception as e:
-            ret = -1
-            errMsg = unicode(e)
+            ret=-1
+            errMsg=unicode(e)
 
         finally:
             # restore input layer crs and encoding
@@ -341,7 +343,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
             QApplication.restoreOverrideCursor()
 
         if ret != 0:
-            output = qgis.gui.QgsMessageViewer()
+            output=qgis.gui.QgsMessageViewer()
             output.setTitle(self.tr("Import to database"))
             output.setMessageAsPlainText(self.tr("Error %d\n%s") % (ret, errMsg))
             output.showMessage()
@@ -364,7 +366,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 if __name__ == '__main__':
     import sys
 
-    a = QApplication(sys.argv)
-    dlg = DlgImportVector()
+    a=QApplication(sys.argv)
+    dlg=DlgImportVector()
     dlg.show()
     sys.exit(a.exec_())
