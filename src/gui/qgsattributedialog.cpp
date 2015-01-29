@@ -109,12 +109,16 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAt
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
 
-  mMenuBar = new QMenuBar( this );
   QgsActionMenu* menu = new QgsActionMenu( layer, &mAttributeForm->feature(), this );
   if ( menu->actions().size() > 0 )
   {
-    mMenuBar->addMenu( menu );
-    layout()->setMenuBar( mMenuBar );
+    QMenuBar* menuBar = new QMenuBar( this );
+    menuBar->addMenu( menu );
+    layout()->setMenuBar( menuBar );
+  }
+  else
+  {
+    delete menu;
   }
 
   restoreGeometry();
