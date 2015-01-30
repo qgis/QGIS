@@ -3859,11 +3859,14 @@ abort:
   return false;
 }
 
-bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   char *errMsg = NULL;
   bool toCommit = false;
   QString sql;
+
+  if ( attr_map.isEmpty() )
+    return true;
 
   int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
   if ( ret != SQLITE_OK )
@@ -3883,10 +3886,12 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
     if ( FID_IS_NEW( fid ) )
       continue;
 
+    const QgsAttributeMap &attrs = iter.value();
+    if ( attrs.isEmpty() )
+      continue;
+
     QString sql = QString( "UPDATE %1 SET " ).arg( quotedIdentifier( mTableName ) );
     bool first = true;
-
-    const QgsAttributeMap & attrs = iter.value();
 
     // cycle through the changed attributes of the feature
     for ( QgsAttributeMap::const_iterator siter = attrs.begin(); siter != attrs.end(); ++siter )

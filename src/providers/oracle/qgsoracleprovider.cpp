@@ -1570,12 +1570,15 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
   return returnvalue;
 }
 
-bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   bool returnvalue = true;
 
   if ( mIsQuery )
     return false;
+
+  if ( attr_map.isEmpty() )
+    return true;
 
   QSqlDatabase db( *mConnection );
 
@@ -1597,9 +1600,12 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
       if ( FID_IS_NEW( fid ) )
         continue;
 
+      const QgsAttributeMap& attrs = iter.value();
+      if ( attrs.isEmpty() )
+        continue;
+
       QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
 
-      const QgsAttributeMap& attrs = iter.value();
       bool pkChanged = false;
 
       // cycle through the changed attributes of the feature

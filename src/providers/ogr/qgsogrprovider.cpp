@@ -1176,7 +1176,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
 }
 
 
-bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   if ( attr_map.isEmpty() )
     return true;
@@ -1195,15 +1195,16 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
       continue;
     }
 
-    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( fid ) ) );
+    const QgsAttributeMap &attr = it.value();
+    if ( attr.isEmpty() )
+      continue;
 
+    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( fid ) ) );
     if ( !of )
     {
       pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
       continue;
     }
-
-    const QgsAttributeMap& attr = it.value();
 
     char *oldlocale = setlocale( LC_NUMERIC, NULL );
     if ( oldlocale )

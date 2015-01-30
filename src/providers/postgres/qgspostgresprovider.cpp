@@ -2020,18 +2020,20 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
   return returnvalue;
 }
 
-bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   bool returnvalue = true;
 
   if ( mIsQuery )
     return false;
 
-  QgsPostgresConn* conn = connectionRW();
+  if ( attr_map.isEmpty() )
+    return true;
+
+  QgsPostgresConn *conn = connectionRW();
   if ( !conn )
-  {
     return false;
-  }
+
   conn->lock();
 
   try
@@ -2047,9 +2049,12 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       if ( FID_IS_NEW( fid ) )
         continue;
 
+      const QgsAttributeMap &attrs = iter.value();
+      if ( attrs.isEmpty() )
+        continue;
+
       QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
 
-      const QgsAttributeMap& attrs = iter.value();
       bool pkChanged = false;
 
       // cycle through the changed attributes of the feature

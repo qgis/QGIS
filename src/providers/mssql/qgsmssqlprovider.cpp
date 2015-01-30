@@ -1008,7 +1008,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 }
 
 
-bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   if ( attr_map.isEmpty() )
     return true;
@@ -1024,8 +1024,11 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     if ( FID_IS_NEW( fid ) )
       continue;
 
-    QString statement;
-    statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
+    const QgsAttributeMap& attrs = it.value();
+    if ( attrs.isEmpty() )
+      continue;
+
+    QString statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
     bool first = true;
     if ( !mDatabase.isOpen() )
@@ -1034,8 +1037,6 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
-
-    const QgsAttributeMap& attrs = it.value();
 
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
