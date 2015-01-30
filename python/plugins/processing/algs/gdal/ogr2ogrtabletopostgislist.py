@@ -39,8 +39,6 @@ from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
-from processing.tools import dataobjects
-from processing.algs.qgis import postgis_utils
 
 from processing.tools.system import *
 
@@ -51,8 +49,6 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
 
     DATABASE = 'DATABASE'
     INPUT_LAYER = 'INPUT_LAYER'
-    GTYPE = 'GTYPE'
-    GEOMTYPE = ['NONE']
     HOST = 'HOST'
     PORT= 'PORT'
     USER = 'USER'
@@ -76,15 +72,13 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         return settings.childGroups()
 
     def defineCharacteristics(self):
-        self.name = 'Import Geometryless Table into PostGIS database (available connections)'
+        self.name = 'Import layer/table as table into PostGIS database (available connections)'
         self.group = '[OGR] Miscellaneous'
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
             self.tr('Database (connection name)'), self.DB_CONNECTIONS))
         self.addParameter(ParameterTable(self.INPUT_LAYER,
             self.tr('Input layer')))
-        self.addParameter(ParameterSelection(self.GTYPE,
-            self.tr('Output geometry type'), self.GEOMTYPE, 0))
         self.addParameter(ParameterString(self.SCHEMA,
             self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
@@ -148,14 +142,13 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         arguments.append(host)
         arguments.append('port=')
         arguments.append(port)
-        arguments.append('user=')
-        arguments.append(user)
-        arguments.append('dbname=')
-        arguments.append(dbname)
-        arguments.append('password=')
-        arguments.append(password)
-        arguments.append('"')
+        if len(dbname) > 0:
+	    arguments.append('dbname='+dbname)
+        if len(password) > 0:
+	    arguments.append('password='+password)
+        arguments.append('user='+user+'"')
         arguments.append(ogrLayer)
+        arguments.append('-nlt NONE')        
         arguments.append(self.ogrLayerName(inLayer))
         if launder:
             arguments.append(launderstring)
