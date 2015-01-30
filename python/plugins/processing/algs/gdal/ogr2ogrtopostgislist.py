@@ -94,7 +94,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         self.addParameter(ParameterSelection(self.GTYPE,
             self.tr('Output geometry type'), self.GEOMTYPE, 5))
         self.addParameter(ParameterCrs(self.A_SRS,
-            self.tr('Assign an output CRS '), ''))
+            self.tr('Assign an output CRS'), ''))
         self.addParameter(ParameterCrs(self.T_SRS,
             self.tr('Reproject to this CRS on output '), ''))
         self.addParameter(ParameterCrs(self.S_SRS,
