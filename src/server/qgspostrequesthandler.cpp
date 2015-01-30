@@ -33,6 +33,19 @@ void QgsPostRequestHandler::parseInput()
   QString inputString = readPostBody();
   QgsDebugMsg( inputString );
 
+  //Map parameter in QUERY_STRING?
+  const char* qs = getenv( "QUERY_STRING" );
+  QMap<QString, QString> getParameters;
+  QString queryString;
+  QString mapParameter;
+  if ( qs )
+  {
+    queryString = QString( qs );
+    requestStringToParameterMap( queryString, getParameters );
+    mapParameter = getParameters.value( "MAP" );
+  }
+
+
   QDomDocument doc;
   QString errorMsg;
   if ( !doc.setContent( inputString, true, &errorMsg ) )
@@ -63,5 +76,10 @@ void QgsPostRequestHandler::parseInput()
       mParameterMap.insert( "SERVICE", docElem.attribute( "service" ) );
     mParameterMap.insert( "REQUEST", docElem.tagName() );
     mParameterMap.insert( "REQUEST_BODY", inputString );
+  }
+
+  if ( !mapParameter.isEmpty() && !mParameterMap.contains( "MAP" ) )
+  {
+    mParameterMap.insert( "MAP", mapParameter );
   }
 }
