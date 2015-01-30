@@ -66,120 +66,126 @@ void QgsWFSProjectParser::featureTypeList( QDomElement& parentElement, QDomDocum
     QString type = elem.attribute( "type" );
     if ( type == "vector" )
     {
-      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
-      if ( layer && wfsLayersId.contains( layer->id() ) )
+      QString layerId = mProjectParser->layerId( elem );
+      if ( !wfsLayersId.contains( layerId ) )
       {
-        QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
-        layerMap.insert( layer->id(), layer );
-
-        QDomElement layerElem = doc.createElement( "FeatureType" );
-        QDomElement nameElem = doc.createElement( "Name" );
-        //We use the layer name even though it might not be unique.
-        //Because the id sometimes contains user/pw information and the name is more descriptive
-        QString typeName = layer->name();
-        typeName = typeName.replace( " ", "_" );
-        QDomText nameText = doc.createTextNode( typeName );
-        nameElem.appendChild( nameText );
-        layerElem.appendChild( nameElem );
-
-        QDomElement titleElem = doc.createElement( "Title" );
-        QString titleName = layer->title();
-        if ( titleName.isEmpty() )
-        {
-          titleName = layer->name();
-        }
-        QDomText titleText = doc.createTextNode( titleName );
-        titleElem.appendChild( titleText );
-        layerElem.appendChild( titleElem );
-
-        QDomElement abstractElem = doc.createElement( "Abstract" );
-        QString abstractName = layer->abstract();
-        if ( abstractName.isEmpty() )
-        {
-          abstractName = "";
-        }
-        QDomText abstractText = doc.createTextNode( abstractName );
-        abstractElem.appendChild( abstractText );
-        layerElem.appendChild( abstractElem );
-
-        //keyword list
-        if ( !layer->keywordList().isEmpty() )
-        {
-          QDomElement keywordsElem = doc.createElement( "Keywords" );
-          QDomText keywordsText = doc.createTextNode( layer->keywordList() );
-          keywordsElem.appendChild( keywordsText );
-          layerElem.appendChild( keywordsElem );
-        }
-
-        //appendExGeographicBoundingBox( layerElem, doc, layer->extent(), layer->crs() );
-
-        QDomElement srsElem = doc.createElement( "SRS" );
-        QDomText srsText = doc.createTextNode( layer->crs().authid() );
-        srsElem.appendChild( srsText );
-        layerElem.appendChild( srsElem );
-
-        //wfs:Operations element
-        QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
-        //wfs:Query element
-        QDomElement queryElement = doc.createElement( "Query"/*wfs:Query*/ );
-        operationsElement.appendChild( queryElement );
-
-        QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
-        QgsVectorDataProvider* provider = vlayer->dataProvider();
-        if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
-        {
-          //wfs:Insert element
-          QDomElement insertElement = doc.createElement( "Insert"/*wfs:Insert*/ );
-          operationsElement.appendChild( insertElement );
-        }
-        if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
-            ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
-            wfstUpdateLayersId.contains( layer->id() ) )
-        {
-          //wfs:Update element
-          QDomElement updateElement = doc.createElement( "Update"/*wfs:Update*/ );
-          operationsElement.appendChild( updateElement );
-        }
-        if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
-        {
-          //wfs:Delete element
-          QDomElement deleteElement = doc.createElement( "Delete"/*wfs:Delete*/ );
-          operationsElement.appendChild( deleteElement );
-        }
-
-        layerElem.appendChild( operationsElement );
-
-        QgsRectangle layerExtent = layer->extent();
-        QDomElement bBoxElement = doc.createElement( "LatLongBoundingBox" );
-        bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
-        bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
-        bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
-        bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
-        layerElem.appendChild( bBoxElement );
-
-        // layer metadata URL
-        QString metadataUrl = layer->metadataUrl();
-        if ( !metadataUrl.isEmpty() )
-        {
-          QDomElement metaUrlElem = doc.createElement( "MetadataURL" );
-          QString metadataUrlType = layer->metadataUrlType();
-          metaUrlElem.setAttribute( "type", metadataUrlType );
-          QString metadataUrlFormat = layer->metadataUrlFormat();
-          if ( metadataUrlFormat == "text/xml" )
-          {
-            metaUrlElem.setAttribute( "format", "XML" );
-          }
-          else
-          {
-            metaUrlElem.setAttribute( "format", "TXT" );
-          }
-          QDomText metaUrlText = doc.createTextNode( metadataUrl );
-          metaUrlElem.appendChild( metaUrlText );
-          layerElem.appendChild( metaUrlElem );
-        }
-
-        parentElement.appendChild( layerElem );
+        continue;
       }
+      QgsMapLayer *layer = mProjectParser->createLayerFromElement( elem );
+      if ( !layer )
+      {
+        continue;
+      }
+      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
+      layerMap.insert( layer->id(), layer );
+
+      QDomElement layerElem = doc.createElement( "FeatureType" );
+      QDomElement nameElem = doc.createElement( "Name" );
+      //We use the layer name even though it might not be unique.
+      //Because the id sometimes contains user/pw information and the name is more descriptive
+      QString typeName = layer->name();
+      typeName = typeName.replace( " ", "_" );
+      QDomText nameText = doc.createTextNode( typeName );
+      nameElem.appendChild( nameText );
+      layerElem.appendChild( nameElem );
+
+      QDomElement titleElem = doc.createElement( "Title" );
+      QString titleName = layer->title();
+      if ( titleName.isEmpty() )
+      {
+        titleName = layer->name();
+      }
+      QDomText titleText = doc.createTextNode( titleName );
+      titleElem.appendChild( titleText );
+      layerElem.appendChild( titleElem );
+
+      QDomElement abstractElem = doc.createElement( "Abstract" );
+      QString abstractName = layer->abstract();
+      if ( abstractName.isEmpty() )
+      {
+        abstractName = "";
+      }
+      QDomText abstractText = doc.createTextNode( abstractName );
+      abstractElem.appendChild( abstractText );
+      layerElem.appendChild( abstractElem );
+
+      //keyword list
+      if ( !layer->keywordList().isEmpty() )
+      {
+        QDomElement keywordsElem = doc.createElement( "Keywords" );
+        QDomText keywordsText = doc.createTextNode( layer->keywordList() );
+        keywordsElem.appendChild( keywordsText );
+        layerElem.appendChild( keywordsElem );
+      }
+
+      //appendExGeographicBoundingBox( layerElem, doc, layer->extent(), layer->crs() );
+
+      QDomElement srsElem = doc.createElement( "SRS" );
+      QDomText srsText = doc.createTextNode( layer->crs().authid() );
+      srsElem.appendChild( srsText );
+      layerElem.appendChild( srsElem );
+
+      //wfs:Operations element
+      QDomElement operationsElement = doc.createElement( "Operations"/*wfs:Operations*/ );
+      //wfs:Query element
+      QDomElement queryElement = doc.createElement( "Query"/*wfs:Query*/ );
+      operationsElement.appendChild( queryElement );
+
+      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layer );
+      QgsVectorDataProvider* provider = vlayer->dataProvider();
+      if (( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) && wfstInsertLayersId.contains( layer->id() ) )
+      {
+        //wfs:Insert element
+        QDomElement insertElement = doc.createElement( "Insert"/*wfs:Insert*/ );
+        operationsElement.appendChild( insertElement );
+      }
+      if (( provider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) &&
+          ( provider->capabilities() & QgsVectorDataProvider::ChangeGeometries ) &&
+          wfstUpdateLayersId.contains( layer->id() ) )
+      {
+        //wfs:Update element
+        QDomElement updateElement = doc.createElement( "Update"/*wfs:Update*/ );
+        operationsElement.appendChild( updateElement );
+      }
+      if (( provider->capabilities() & QgsVectorDataProvider::DeleteFeatures ) && wfstDeleteLayersId.contains( layer->id() ) )
+      {
+        //wfs:Delete element
+        QDomElement deleteElement = doc.createElement( "Delete"/*wfs:Delete*/ );
+        operationsElement.appendChild( deleteElement );
+      }
+
+      layerElem.appendChild( operationsElement );
+
+      QgsRectangle layerExtent = layer->extent();
+      QDomElement bBoxElement = doc.createElement( "LatLongBoundingBox" );
+      bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
+      bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
+      bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
+      bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
+      layerElem.appendChild( bBoxElement );
+
+      // layer metadata URL
+      QString metadataUrl = layer->metadataUrl();
+      if ( !metadataUrl.isEmpty() )
+      {
+        QDomElement metaUrlElem = doc.createElement( "MetadataURL" );
+        QString metadataUrlType = layer->metadataUrlType();
+        metaUrlElem.setAttribute( "type", metadataUrlType );
+        QString metadataUrlFormat = layer->metadataUrlFormat();
+        if ( metadataUrlFormat == "text/xml" )
+        {
+          metaUrlElem.setAttribute( "format", "XML" );
+        }
+        else
+        {
+          metaUrlElem.setAttribute( "format", "TXT" );
+        }
+        QDomText metaUrlText = doc.createTextNode( metadataUrl );
+        metaUrlElem.appendChild( metaUrlText );
+        layerElem.appendChild( metaUrlElem );
+      }
+
+      parentElement.appendChild( layerElem );
     }
   }
   return;
