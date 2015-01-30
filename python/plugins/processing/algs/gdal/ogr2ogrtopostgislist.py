@@ -38,8 +38,6 @@ from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
-from processing.tools import dataobjects
-from processing.algs.qgis import postgis_utils
 
 from processing.tools.system import *
 
@@ -54,6 +52,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
     GEOMTYPE = ['','NONE','GEOMETRY','POINT','LINESTRING','POLYGON','GEOMETRYCOLLECTION','MULTIPOINT','MULTIPOLYGON','MULTILINESTRING']
     S_SRS = 'S_SRS'
     T_SRS = 'T_SRS'
+    A_SRS = 'A_SRS'
     HOST = 'HOST'
     PORT= 'PORT'
     USER = 'USER'
@@ -94,10 +93,12 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.GTYPE,
             self.tr('Output geometry type'), self.GEOMTYPE, 5))
-        self.addParameter(ParameterCrs(self.S_SRS,
-            self.tr('Input CRS'), 'EPSG:4326'))
+        self.addParameter(ParameterCrs(self.A_SRS,
+            self.tr('Assign an output CRS '), ''))
         self.addParameter(ParameterCrs(self.T_SRS,
-            self.tr('Output CRS'), 'EPSG:4326'))
+            self.tr('Reproject to this CRS on output '), ''))
+        self.addParameter(ParameterCrs(self.S_SRS,
+            self.tr('Override source CRS'), ''))
         self.addParameter(ParameterString(self.SCHEMA,
             self.tr('Schema name'), 'public', optional=True))
         self.addParameter(ParameterString(self.TABLE,
@@ -155,6 +156,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
+        asrs = unicode(self.getParameterValue(self.A_SRS))        
         schema = unicode(self.getParameterValue(self.SCHEMA))
         schemastring = "-lco SCHEMA="+schema
         table = unicode(self.getParameterValue(self.TABLE))
@@ -187,17 +189,13 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         arguments.append('--config PG_USE_COPY YES')
         arguments.append('-f')
         arguments.append('PostgreSQL')
-        arguments.append('PG:"host=')
-        arguments.append(host)
-        arguments.append('port=')
-        arguments.append(port)
-        arguments.append('user=')
-        arguments.append(user)
-        arguments.append('dbname=')
-        arguments.append(dbname)
-        arguments.append('password=')
-        arguments.append(password)
-        arguments.append('"')
+        arguments.append('PG:"host='+host)
+        arguments.append('port='+port)
+        if len(dbname) > 0:
+	    arguments.append('dbname='+dbname)
+        if len(password) > 0:
+	    arguments.append('password='+password)
+        arguments.append('user='+user+'"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
         arguments.append(self.ogrLayerName(inLayer))
@@ -229,6 +227,9 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         if len(tsrs) > 0:
             arguments.append('-t_srs')
             arguments.append(tsrs)
+        if len(asrs) > 0:
+            arguments.append('-a_srs')
+            arguments.append(asrs)
         if len(spat) > 0:
             regionCoords = ogrspat.split(',')
             arguments.append('-spat')
