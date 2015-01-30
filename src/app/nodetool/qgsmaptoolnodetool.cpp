@@ -392,9 +392,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     // remove previous warning
     emit messageDiscarded();
 
-    QgsVectorLayer *vlayer = mSelectedFeature->vlayer();
-    Q_ASSERT( vlayer );
-    Q_UNUSED( vlayer );
+    Q_ASSERT( mSelectedFeature->vlayer() );
 
     // try to find a piece of currently selected geometry
     QgsFeatureIdFilter filterFid( mSelectedFeature->featureId() );
