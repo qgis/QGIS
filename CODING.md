@@ -338,9 +338,7 @@ thus making it harder to understand and maintain for others
 
 Prefer to put constants first in predicates.
 
-```
-"0 == value" instead of "value == 0"
-```
+`0 == value` instead of ~~`value == 0`~~
 
 This will help prevent programmers from accidentally using `=` when they meant
 to use `==`, which can introduce very subtle logic bugs.The compiler will
