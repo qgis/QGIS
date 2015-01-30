@@ -303,8 +303,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
 				enc = self.cboEncoding.currentText()
 				self.inLayer.setProviderEncoding( enc )
 
+			onlySelected = self.chkSelectedFeatures.isChecked()
+			
 			# do the import!
-			ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer( self.inLayer, uri, providerName, outCrs, False, False, options )
+			ret, errMsg = qgis.core.QgsVectorLayerImport.importLayer( self.inLayer, uri, providerName, outCrs, onlySelected, False, options )
 		except Exception as e:
 			ret = -1
 			errMsg = unicode( e )
