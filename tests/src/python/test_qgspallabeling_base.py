@@ -155,9 +155,8 @@ class TestQgsPalLabeling(TestCase):
         lyr_id = layer.id()
         cls._MapRegistry.removeMapLayer(lyr_id)
         ms_layers = cls._MapSettings.layers()
-        """:type: QStringList"""
-        if ms_layers.contains(lyr_id):
-            ms_layers.removeAt(ms_layers.indexOf(lyr_id))
+        if lyr_id in ms_layers:
+            ms_layers.remove(lyr_id)
             cls._MapSettings.setLayers(ms_layers)
 
     @classmethod
@@ -390,7 +389,7 @@ class TestPALConfig(TestQgsPalLabeling):
 
     def test_default_pal_disabled(self):
         # Verify PAL labeling is disabled for layer by default
-        palset = self.layer.customProperty('labeling', '').toString()
+        palset = self.layer.customProperty('labeling', '')
         msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
         self.assertEqual(palset, '', msg)
 
@@ -398,7 +397,7 @@ class TestPALConfig(TestQgsPalLabeling):
         # Verify default PAL settings enable PAL labeling for layer
         lyr = QgsPalLayerSettings()
         lyr.writeToLayer(self.layer)
-        palset = self.layer.customProperty('labeling', '').toString()
+        palset = self.layer.customProperty('labeling', '')
         msg = '\nExpected: Empty string\nGot: {0}'.format(palset)
         self.assertEqual(palset, 'pal', msg)
 
