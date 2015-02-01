@@ -7,21 +7,15 @@ SET( CTEST_CMAKE_GENERATOR  "Unix Makefiles" )
 SET (CTEST_CMAKE_COMMAND "cmake" )
 SET (CTEST_BUILD_COMMAND "/usr/bin/make -j2 -i -k" )
 SET (CTEST_SITE "travis-ci.org" )
-SET (CTEST_COVERAGE_COMMAND "/usr/bin/gcov" )
-SET (CTEST_CUSTOM_COVERAGE_EXCLUDE "\(.*/tests/.*|.*\\.cxx|.*\\.sip|.*/sip_.*|.*/ui_.*|.*/qwtpolar.*\)\$" )
 IF ($ENV{TRAVIS_PULL_REQUEST} STREQUAL "false")
   # No pull request
   SET (CTEST_BUILD_NAME "$ENV{TRAVIS_BRANCH} ($ENV{TRAVIS_COMMIT})")
 ELSE()
   SET (CTEST_BUILD_NAME "PR: $ENV{TRAVIS_PULL_REQUEST} / $ENV{TRAVIS_BRANCH} ($ENV{TRAVIS_COMMIT})")
 ENDIF()
-SET (CTEST_BUILD_CONFIGURATION "Debug")
+SET (CTEST_BUILD_CONFIGURATION "Release")
 
-SET(CMAKE_CXX_FLAGS_COVERAGE "-g -O0 --coverage -fprofile-arcs -ftest-coverage" )
-SET(CMAKE_C_FLAGS_COVERAGE "-g -O0 --coverage -fprofile-arcs -ftest-coverage")
-SET(CMAKE_EXE_LINKER_FLAGS_COVERAGE "--coverage -fprofile-arcs -ftest-coverage")
-SET(CMAKE_SHARED_LINKER_FLAGS_COVERAGE "--coverage -fprofile-arcs -ftest-coverage" )
- 
+
 SET (INITIAL_CACHE "
 BUILDNAME:STRING=${CTEST_BUILD_NAME}
 SITE:STRING=${CTEST_SITE}
@@ -42,7 +36,6 @@ IF(NOT ${BUILDRES} EQUAL 0)
   MESSAGE( FATAL_ERROR "Build failed." )
 ENDIF(NOT ${BUILDRES} EQUAL 0)
 ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 2 RETURN_VALUE TESTRES)
-ctest_coverage( BUILD "${CMAKE_BINARY_DIR}")
 IF(NOT ${TESTRES} EQUAL 0)
   ctest_submit ()
   MESSAGE( FATAL_ERROR "Test failed." )
