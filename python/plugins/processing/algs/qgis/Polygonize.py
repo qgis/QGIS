@@ -26,10 +26,9 @@ __copyright__ = '(C) 2013, Piotr Pociask'
 __revision__ = '$Format:%H$'
 
 from PyQt4.QtCore import QVariant
-from qgis.core import *
+from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-    GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
@@ -50,8 +49,7 @@ class Polygonize(GeoAlgorithm):
         except ImportError:
             raise GeoAlgorithmExecutionException(
                 self.tr('Polygonize algorithm requires shapely module!'))
-        vlayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        vlayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         if self.getParameterValue(self.FIELDS):

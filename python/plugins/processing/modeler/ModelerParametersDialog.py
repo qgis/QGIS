@@ -25,19 +25,19 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.QtWebKit import *
+from PyQt4.QtCore import Qt, QUrl, QMetaObject
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QLabel, QLineEdit, QFrame, QPushButton, QSizePolicy, QVBoxLayout, QHBoxLayout, QTabWidget, QWidget, QScrollArea, QComboBox, QTableWidgetItem, QMessageBox
+from PyQt4.QtWebKit import QWebView
 
-from processing.modeler.ModelerAlgorithm import ValueFromInput,\
+from processing.modeler.ModelerAlgorithm import ValueFromInput, \
     ValueFromOutput, Algorithm, ModelerOutput
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.RangePanel import RangePanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
-from processing.core.parameters import *
-from processing.core.outputs import *
+from processing.core.parameters import ParameterExtent, ParameterRaster, ParameterVector, ParameterBoolean, ParameterTable, ParameterFixedTable, ParameterMultipleInput, ParameterSelection, ParameterRange, ParameterNumber, ParameterString, ParameterCrs, ParameterTableField, ParameterFile
+from processing.core.outputs import OutputRaster, OutputVector, OutputTable, OutputHTML, OutputFile, OutputDirectory, OutputNumber, OutputString, OutputExtent
 
 
 class ModelerParametersDialog(QDialog):
@@ -131,7 +131,7 @@ class ModelerParametersDialog(QDialog):
             if isinstance(output, (OutputRaster, OutputVector, OutputTable,
                           OutputHTML, OutputFile, OutputDirectory)):
                 label = QLabel(output.description + '<'
-                                     + output.__class__.__name__ + '>')
+                               + output.__class__.__name__ + '>')
                 item = QLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
                     item.setPlaceholderText(ModelerParametersDialog.ENTER_NAME)
@@ -169,7 +169,7 @@ class ModelerParametersDialog(QDialog):
         isText, help = self._alg.help()
         if help is not None:
             if isText:
-                html = help;
+                html = help
             else:
                 url = QUrl(help)
         else:
@@ -215,7 +215,7 @@ class ModelerParametersDialog(QDialog):
                 self.labels[param.name].setVisible(self.showAdvanced)
                 self.widgets[param.name].setVisible(self.showAdvanced)
 
-    def getAvailableValuesOfType(self, paramType, outType = None):
+    def getAvailableValuesOfType(self, paramType, outType=None):
         values = []
         inputs = self.model.inputs
         for i in inputs.values():
@@ -417,7 +417,7 @@ class ModelerParametersDialog(QDialog):
                         ParameterBoolean,
                         ParameterExtent,
                         ParameterFile
-                        )):
+                )):
                     self.setComboBoxValue(widget, value, param)
                 elif isinstance(param, ParameterString):
                     if param.multiline:
@@ -427,7 +427,7 @@ class ModelerParametersDialog(QDialog):
                 elif isinstance(param, ParameterCrs):
                     widget.setAuthId(value)
                 elif isinstance(param, ParameterFixedTable):
-                    pass #TODO!
+                    pass  # TODO!
                 elif isinstance(param, ParameterMultipleInput):
                     if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                         options = self.getAvailableValuesOfType(ParameterVector, OutputVector)

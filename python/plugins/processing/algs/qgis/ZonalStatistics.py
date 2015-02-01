@@ -25,10 +25,9 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
 import numpy
+from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
 from osgeo import gdal, ogr, osr
-from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
@@ -71,8 +70,7 @@ class ZonalStatistics(GeoAlgorithm):
             https://gist.github.com/perrygeo/5667173
         """
 
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
         bandNumber = self.getParameterValue(self.RASTER_BAND)
@@ -120,7 +118,7 @@ class ZonalStatistics(GeoAlgorithm):
                 geoTransform[3] + srcOffset[1] * geoTransform[5],
                 0.0,
                 geoTransform[5],
-                )
+            )
 
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
@@ -148,9 +146,8 @@ class ZonalStatistics(GeoAlgorithm):
         # idxMedian, fields = ftools_utils.findOrCreateField(layer, fields,
         #        columnPrefix + "median", 21, 6)
 
-        writer = self.getOutputFromName(
-                self.OUTPUT_LAYER).getVectorWriter(fields.toList(),
-                        layer.dataProvider().geometryType(), layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
+            fields.toList(), layer.dataProvider().geometryType(), layer.crs())
 
         outFeat = QgsFeature()
 
@@ -193,7 +190,7 @@ class ZonalStatistics(GeoAlgorithm):
                     geoTransform[3] + srcOffset[1] * geoTransform[5],
                     0.0,
                     geoTransform[5],
-                    )
+                )
 
             # Create a temporary vector layer in memory
             memVDS = memVectorDriver.CreateDataSource('out')

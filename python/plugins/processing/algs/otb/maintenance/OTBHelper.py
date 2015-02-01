@@ -40,7 +40,6 @@ except ImportError, e:
 import xml.etree.ElementTree as ET
 import traceback
 
-import processing.algs.otb.OTBSpecific_XMLcreation as OTBSpecific_XMLcreation
 from contextlib import contextmanager
 import shutil
 
@@ -88,7 +87,7 @@ def get_OTB_log():
     logger = logging.getLogger('OTBGenerator')
     return logger
 
-def indent(elem, level = 0):
+def indent(elem, level=0):
     i = "\n" + level*"  "
     if len(elem):
         if not elem.text or not elem.text.strip():
@@ -114,7 +113,6 @@ def get_inverted_parameters():
     This function allows mapping otb parameters with processing parameters.
     """
     parameters = { getattr(otbApplication, each): each for each in dir(otbApplication) if 'ParameterType_' in each}
-    parameters_clone = copy.deepcopy(parameters)
 
     inverted_parameters = { key: value for value, key in parameters.items() }
     inverted_parameters['ParameterType_Radius'] = 1
@@ -154,7 +152,6 @@ def retrieve_module_name(param):
     """
     returns the file parameter of the given processing parameter
     """
-    import processing
     if param:
         try :
             if 'Parameter' in param:
@@ -171,14 +168,13 @@ def get_constructor_parameters_from_filename(py_file):
     e1 = [each for each in asto.body if type(each) is ast.ClassDef]
     e2 = [each for each in e1[0].body if hasattr(each, "name") and each.name == "__init__"]
     if len(e2) > 0:
-        e3 = len(e2[0].args.args)
         e4 = e2[0].args.args
     else:
         e4 = []
     e5 = [each.id for each in e4]
     return e5
 
-def get_xml_description_from_application_name(our_app, criteria = None):
+def get_xml_description_from_application_name(our_app, criteria=None):
     """
     creates an xml containing information about the given our_app
     """
@@ -255,7 +251,7 @@ def get_param_descriptor(appkey, app_instance, our_descriptor, root):
         if parameters[app_instance.GetParameterType(our_descriptor)] == "ParameterType_OutputImage" :
             attrs = {'source_parameter_type' : 'ParameterType_OutputFilename'}
 
-    param_type = ET.SubElement(param, 'parameter_type', attrib = attrs)
+    param_type = ET.SubElement(param, 'parameter_type', attrib=attrs)
 
     param_type.text = inverted_parameters[parameters[app_instance.GetParameterType(our_descriptor)]]
     if appkey == "Segmentation" :
@@ -414,14 +410,13 @@ dl { border: 3px double #ccc; padding: 0.5em; } dt { float: left; clear: left; t
             with tag('h2', result):
                 result.append('Parameters')
             params = app_instance.GetParametersKeys()
-            level = 0
             with tag('ul', result):
                 for param in params:
                     if is_a_parameter(app_instance, param):
                         with tag('li', result):
                             result.append('<b>%s -%s</b> %s ' % ('[param]', param, escape_html(parameters[app_instance.GetParameterType(param)])  ))
                             result.append('%s. Mandatory: %s. Default Value: &quot;%s&quot;' %(app_instance.GetParameterDescription(param), str(app_instance.IsMandatory(param)), get_default_parameter_value(app_instance, param)))
-                choices_tags = [each for each in params if (not is_a_parameter(app_instance, each)) and (not '.' in each)]
+                choices_tags = [each for each in params if (not is_a_parameter(app_instance, each)) and '.' not in each]
                 for choice in choices_tags:
                     result.append('<b>%s -%s</b> %s %s. Mandatory: %s. Default Value: &quot;%s&quot;' % ('[choice]', choice, app_instance.GetParameterDescription(choice), ','.join(app_instance.GetChoiceKeys(choice)), str(app_instance.IsMandatory(choice)), get_default_parameter_value(app_instance, choice)))
                     choices = app_instance.GetChoiceKeys(choice)
@@ -469,7 +464,7 @@ def get_list_from_node(myet, available_app):
         rebuild.append(key)
         rebuild.append(name)
         for each in parameter[4:]:
-            if not each.tag in ["hidden"]:
+            if each.tag not in ["hidden"]:
                 if len(each.getchildren()) == 0:
                     if each.tag in ["default"]:
                         if "-" in available_app:
@@ -496,15 +491,15 @@ def adapt_list_to_string(c_list):
             a_list.append("/tmp/processing/output.tif")
         else:
             import os
-            import sys
             a_list.append(os.path.join(os.path.abspath(os.curdir), "helper/QB_Toulouse_Ortho_PAN.tif"))
 
     if a_list[0] in ["ParameterSelection"]:
         pass
 
     a_list[1]="-%s" % a_list[1]
+
     def mystr(par):
-        if type(par) == type([]):
+        if isinstance(par, list):
             return ";".join(par)
         return str(par)
 
@@ -523,8 +518,6 @@ def get_automatic_ut_from_xml_description(the_root):
     try:
         appkey = dom_model.find('key').text
         cliName = dom_model.find('exec').text
-        name = dom_model.find('longname').text
-        group = dom_model.find('group').text
 
         if not cliName.startswith("otbcli_"):
             raise Exception('Wrong client executable')
@@ -567,11 +560,10 @@ def create_xml_descriptors():
     white_list = get_white_list()
     black_list = get_black_list()
 
-    from processing.algs.otb.OTBSpecific_XMLcreation import *
     for available_app in otbApplication.Registry.GetAvailableApplications():
         try:
             if 'get%s' % available_app in locals():
-                if available_app in white_list and not available_app in black_list:
+                if available_app in white_list and available_app not in black_list:
                     the_root = get_xml_description_from_application_name(available_app)
                     the_list = locals()['get%s' % available_app](available_app, the_root)
                     if the_list:
@@ -584,7 +576,7 @@ def create_xml_descriptors():
                     logger.warning("%s is not in white list." % available_app)
 
             else:
-                if available_app in white_list and not available_app in black_list:
+                if available_app in white_list and available_app not in black_list:
                     logger.warning("There is no adaptor for %s, check white list and versions" % available_app)
                     # TODO Remove this default code when all apps are tested...
                     fh = open("description/%s.xml" % available_app, "w")

@@ -55,12 +55,12 @@ class Cover(FusionAlgorithm):
             self.GROUND, self.tr('Input ground DTM layer')))
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
-        self.addParameter(ParameterNumber(self.HEIGHTBREAK,
-            self.tr('Heightbreak'), 0, None, 10.0))
-        self.addParameter(ParameterSelection(self.XYUNITS,
-            self.tr('XY Units'), self.UNITS))
-        self.addParameter(ParameterSelection(self.ZUNITS,
-            self.tr('Z Units'), self.UNITS))
+        self.addParameter(ParameterNumber(
+            self.HEIGHTBREAK, self.tr('Heightbreak'), 0, None, 10.0))
+        self.addParameter(ParameterSelection(
+            self.XYUNITS, self.tr('XY Units'), self.UNITS))
+        self.addParameter(ParameterSelection(
+            self.ZUNITS, self.tr('Z Units'), self.UNITS))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Cover')))
         self.addAdvancedModifiers()
 

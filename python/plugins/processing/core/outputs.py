@@ -24,9 +24,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import sys
-from qgis.core import *
-from PyQt4.QtCore import *
-from processing.tools.system import *
+from PyQt4.QtCore import QCoreApplication, QSettings
+from processing.tools.system import isWindows, getTempFilenameInTempFolder
 from processing.tools.vector import VectorWriter, TableWriter
 from processing.tools import dataobjects
 
@@ -114,7 +113,7 @@ class OutputExtent(Output):
 
 class OutputFile(Output):
 
-    def __init__(self, name='', description='', ext = None):
+    def __init__(self, name='', description='', ext=None):
         Output.__init__(self, name, description)
         self.ext = ext
 
@@ -180,8 +179,8 @@ class OutputRaster(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(self.name + '.'
-                        + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(
+                    self.name + '.' + self.getDefaultFileExtension(alg))
             return self.compatible
 
 
@@ -223,8 +222,8 @@ class OutputTable(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(self.name + '.'
-                        + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(
+                    self.name + '.' + self.getDefaultFileExtension(alg))
             return self.compatible
 
     def getTableWriter(self, fields):
@@ -274,8 +273,8 @@ class OutputVector(Output):
             return self.value
         else:
             if self.compatible is None:
-                self.compatible = getTempFilenameInTempFolder(self.name + '.'
-                        + self.getDefaultFileExtension(alg))
+                self.compatible = getTempFilenameInTempFolder(
+                    self.name + '.' + self.getDefaultFileExtension(alg))
             return self.compatible
 
     def getVectorWriter(self, fields, geomType, crs, options=None):

@@ -23,10 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import SIGNAL, QFileInfo
+from PyQt4.QtGui import QWidget, QMessageBox, QAbstractButton, QGroupBox
 
 from dialogBase import GdalToolsBaseDialog as BaseDialog
 import GdalTools_utils as Utils
@@ -105,7 +103,7 @@ class GdalToolsBasePluginWidget:
 
   def finished(self, load):
       outFn = self.getOutputFileName()
-      if outFn == None:
+      if outFn is None:
         return
 
       if outFn == '':
@@ -169,7 +167,7 @@ class GdalToolsBasePluginWidget:
 
       # if check version fails, disable the widget then hide both it and its enabler checkbox
       # new check for gdal 1.10, must update all widgets for this and then remove previous check
-      if ver != None and isinstance(ver, int):
+      if ver is not None and isinstance(ver, int):
         gdalVerNum = Utils.GdalConfig.versionNum()
         if ver > gdalVerNum:
           wdgt.setVisible(False)
@@ -179,11 +177,11 @@ class GdalToolsBasePluginWidget:
           sgnls = None
           chk = False
 
-      elif ver != None:
+      elif ver is not None:
         if not isinstance(ver, Utils.Version):
           ver = Utils.Version(ver)
         gdalVer = Utils.GdalConfig.version()
-        if ver < "0" or ( gdalVer != None and ver > gdalVer ):
+        if ver < "0" or ( gdalVer is not None and ver > gdalVer ):
           wdgt.setVisible(False)
           if isinstance(chk, QWidget):
             chk.setVisible(False)
@@ -198,14 +196,14 @@ class GdalToolsBasePluginWidget:
         return
 
       sgnl = sgnls
-      if sgnl != None:
+      if sgnl is not None:
         self.connect(wdgt, sgnl, self.someValueChanged)
 
       # set the passed checkbox as widget enabler
       if isinstance(chk, bool):
         wdgt.setEnabled(chk)
       if ( isinstance(chk, QAbstractButton) or isinstance(chk, QGroupBox) ) and \
-           chk.isCheckable():
+         chk.isCheckable():
         wdgt.setEnabled(chk.isChecked())
         self.connect(chk, SIGNAL("toggled(bool)"), wdgt.setEnabled)
         self.connect(chk, SIGNAL("toggled(bool)"), self.someValueChanged)

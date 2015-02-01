@@ -25,10 +25,11 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from random import *
+from random import seed, uniform
+from math import sqrt
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,7 +37,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputVector
-from processing.tools import vector
 
 
 class RegularPoints(GeoAlgorithm):
@@ -89,7 +89,7 @@ class RegularPoints(GeoAlgorithm):
         if isSpacing:
             pSpacing = spacing
         else:
-            pSpacing = sqrt(area / value)
+            pSpacing = sqrt(area / spacing)
 
         f = QgsFeature()
         f.initAttributes(1)

@@ -20,8 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import SIGNAL, SLOT
+from PyQt4.QtGui import QWidget, QTreeView, QMenu, QLabel
 
 from qgis.core import QgsMapLayerRegistry, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
@@ -49,9 +49,9 @@ class DBTree(QTreeView):
     self.connect(self.model(), SIGNAL("notPopulated"), self.collapse)
 
   def refreshItem(self, item=None):
-    if item == None:
+    if item is None:
       item = self.currentItem()
-      if item == None: return
+      if item is None: return
     self.model().refreshItem(item)
 
   def showSystemTables(self, show):
@@ -66,7 +66,7 @@ class DBTree(QTreeView):
 
   def currentDatabase(self):
     item = self.currentItem()
-    if item == None: return
+    if item is None: return
 
     if isinstance(item, (DBPlugin, Schema, Table)):
       return item.database()
@@ -74,7 +74,7 @@ class DBTree(QTreeView):
 
   def currentSchema(self):
     item = self.currentItem()
-    if item == None: return
+    if item is None: return
 
     if isinstance(item, (Schema, Table)):
       return item.schema()
@@ -82,7 +82,7 @@ class DBTree(QTreeView):
 
   def currentTable(self):
     item = self.currentItem()
-    if item == None: return
+    if item is None: return
 
     if isinstance(item, Table):
       return item
@@ -143,7 +143,7 @@ class DBTree(QTreeView):
     if table is not None:
       layer = table.toMapLayer()
       layers = QgsMapLayerRegistry.instance().addMapLayers([layer])
-      if len(layers)<>1:
+      if len(layers) != 1:
         QgsMessageLog.instance().logMessage( self.tr( "%1 is an invalid layer - not loaded" ).replace( "%1", layer.publicSource() ) )
         msgLabel = QLabel( self.tr( "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info." ).replace( "%1", layer.publicSource() ), self.mainWindow.infoBar )
         msgLabel.setWordWrap( True )

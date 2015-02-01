@@ -25,9 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+
+from PyQt4.QtGui import QIcon
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.AlgorithmProvider import AlgorithmProvider
@@ -37,8 +37,8 @@ from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from RUtils import RUtils
 from RAlgorithm import RAlgorithm
 from processing.script.WrongScriptException import WrongScriptException
-from processing.tools.system import *
-import processing.resources_rc
+from processing.tools.system import isWindows
+#import processing.resources_rc
 
 
 class RAlgorithmProvider(AlgorithmProvider):
@@ -54,12 +54,15 @@ class RAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
             RUtils.RSCRIPTS_FOLDER, self.tr('R Scripts folder'), RUtils.RScriptsFolder()))
         if isWindows():
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
                 RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder()))
-            ProcessingConfig.addSetting(Setting(self.getDescription(),
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
@@ -98,5 +101,6 @@ class RAlgorithmProvider(AlgorithmProvider):
                     except WrongScriptException, e:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
                     except Exception, e:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                        ProcessingLog.addToLog(
+                            ProcessingLog.LOG_ERROR,
                             self.tr('Could not load R script: %s\n%s' % (descriptionFile, unicode(e))))

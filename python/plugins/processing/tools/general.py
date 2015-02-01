@@ -25,7 +25,6 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
 from processing.core.Processing import Processing
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.parameters import ParameterSelection

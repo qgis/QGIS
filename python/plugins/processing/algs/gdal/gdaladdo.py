@@ -52,7 +52,7 @@ class gdaladdo(GdalAlgorithm):
         'average_mp',
         'average_magphase',
         'mode',
-        ]
+    ]
 
     FORMATS = ['Internal (if possible)', 'External (GTiff .ovr)',
                'External (ERDAS Imagine .aux)']
@@ -85,8 +85,7 @@ class gdaladdo(GdalAlgorithm):
         if clearOverviews:
             arguments.append('-clean')
         arguments.append('-r')
-        arguments.append(
-                self.METHODS[self.getParameterValue(self.RESAMPLING_METHOD)])
+        arguments.append(self.METHODS[self.getParameterValue(self.RESAMPLING_METHOD)])
 
         if ovrFormat == 1:
             # external .ovr

@@ -52,7 +52,7 @@ class FirstLastReturn(FusionAlgorithm):
     def processAlgorithm(self, progress):
         commands = [os.path.join(FusionUtils.FusionPath(), 'FirstLastReturn.exe')]
         commands.append('/verbose')
-        if self.getParameterValue(self.SWITCH) == True:
+        if self.getParameterValue(self.SWITCH):
             commands.append('/uselas')
         self.addAdvancedModifiersToCommand(commands)
         outFile = self.getOutputValue(self.OUTPUT)

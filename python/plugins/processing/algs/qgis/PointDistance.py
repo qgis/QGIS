@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-from qgis.core import *
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsDistanceArea
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterVector
@@ -73,10 +73,10 @@ class PointDistance(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         inLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+            self.getParameterValue(self.INPUT_LAYER))
         inField = self.getParameterValue(self.INPUT_FIELD)
         targetLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.TARGET_LAYER))
+            self.getParameterValue(self.TARGET_LAYER))
         targetField = self.getParameterValue(self.TARGET_FIELD)
         matType = self.getParameterValue(self.MATRIX_TYPE)
         nPoints = self.getParameterValue(self.NEAREST_POINTS)
@@ -156,7 +156,6 @@ class PointDistance(GeoAlgorithm):
         index = vector.spatialindex(targetLayer)
 
         inIdx = inLayer.fieldNameIndex(inField)
-        outIdx = targetLayer.fieldNameIndex(inField)
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

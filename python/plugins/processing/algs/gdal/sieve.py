@@ -33,7 +33,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 
@@ -66,8 +66,8 @@ class sieve(GdalAlgorithm):
         arguments.append(str(self.getParameterValue(self.THRESHOLD)))
 
         arguments.append('-' +
-                self.PIXEL_CONNECTIONS[self.getParameterValue(
-                        self.CONNECTIONS)])
+            self.PIXEL_CONNECTIONS[self.getParameterValue(
+                self.CONNECTIONS)])
 
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))

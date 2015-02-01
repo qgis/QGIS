@@ -25,9 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QWidget, QMenu, QAction, QCursor, QInputDialog
 
-from qgis.core import *
+from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
 
 from processing.gui.RectangleMapTool import RectangleMapTool
@@ -85,7 +85,7 @@ class ExtentSelectionPanel(QWidget, Ui_Form):
                 self.tr('Use min covering extent from input layers'),
                 self.btnSelect)
             useMincoveringExtentAction.triggered.connect(
-                    self.useMinCoveringExtent)
+                self.useMinCoveringExtent)
             popupmenu.addAction(useMincoveringExtentAction)
 
         popupmenu.exec_(QCursor.pos())

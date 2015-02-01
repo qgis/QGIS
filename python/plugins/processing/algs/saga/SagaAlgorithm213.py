@@ -25,20 +25,17 @@ __copyright__ = '(C) 2014, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
 
 from SagaAlgorithm212 import SagaAlgorithm212
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
-from processing.core.parameters import *
-from processing.core.outputs import *
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput, ParameterBoolean, ParameterFixedTable, ParameterExtent, ParameterNumber, ParameterSelection
+from processing.core.outputs import OutputRaster, OutputVector, OutputTable
 import SagaUtils
 from processing.tools import dataobjects
-from processing.tools.system import *
+from processing.tools.system import getTempFilenameInTempFolder, getTempFilename, isWindows
 
 sessionExportedLayers = {}
 
@@ -178,18 +175,16 @@ class SagaAlgorithm213(SagaAlgorithm212):
         commands.append(command)
 
         # 3: Export resulting raster layers
-        optim = ProcessingConfig.getSetting(
-                SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
+        # optim = ProcessingConfig.getSetting( SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
                 formatIndex = (4 if isWindows() else 1)
                 sessionExportedLayers[filename] = filename2
-                dontExport = True
-
                 # Do not export is the output is not a final output
                 # of the model
+                # dontExport = True
                 #if self.model is not None and optim:
                 #    for subalg in self.model.algOutputs:
                 #        if out.name in subalg:
@@ -235,8 +230,7 @@ class SagaAlgorithm213(SagaAlgorithm212):
             filename = layer.name()
         else:
             filename = os.path.basename(source)
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+        validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
             filename = 'layer'

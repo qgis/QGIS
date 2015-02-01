@@ -55,10 +55,10 @@
 #
 # -------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import QTextCodec, QFileInfo, QSettings
+from PyQt4.QtGui import QDialog, QFileDialog
+from qgis.core import QgsVectorFileWriter, QGis, QgsDistanceArea, QgsGeometry, QgsMapLayer, QgsVectorLayer, QgsMapLayerRegistry, QgsFeature, QgsSpatialIndex
+from qgis.gui import QgsEncodingFileDialog
 
 import locale
 
@@ -134,20 +134,20 @@ def extractPoints( geom ):
             temp_geom.append(geom.asPoint())
     elif geom.type() == 1: # it's a line
         if geom.isMultipart():
-            multi_geom = geom.asMultiPolyline() #multi_geog is a multiline
-            for i in multi_geom: #i is a line
+            multi_geom = geom.asMultiPolyline()  # multi_geog is a multiline
+            for i in multi_geom:  # i is a line
                 temp_geom.extend( i )
         else:
             temp_geom = geom.asPolyline()
     elif geom.type() == 2: # it's a polygon
         if geom.isMultipart():
-            multi_geom = geom.asMultiPolygon() #multi_geom is a multipolygon
-            for i in multi_geom: #i is a polygon
-                for j in i: #j is a line
+            multi_geom = geom.asMultiPolygon()  # multi_geom is a multipolygon
+            for i in multi_geom:  # i is a polygon
+                for j in i:  # j is a line
                     temp_geom.extend( j )
         else:
-            multi_geom = geom.asPolygon() #multi_geom is a polygon
-            for i in multi_geom: #i is a line
+            multi_geom = geom.asPolygon()  # multi_geom is a polygon
+            for i in multi_geom:  # i is a line
                 temp_geom.extend( i )
     # FIXME - if there is none of know geoms (point, line, polygon) show an warning message
     return temp_geom
@@ -390,4 +390,3 @@ def getShapefileName( outPath, extension='.shp' ):
     if outName.endswith(extension):
         outName=outName[:-len(extension)]
     return outName
-

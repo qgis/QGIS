@@ -23,10 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import SIGNAL, QObject, QCoreApplication
+from PyQt4.QtGui import QWidget, QMessageBox
 
 from ui_widgetMerge import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -50,20 +48,18 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outputFormat = Utils.fillRasterOutputFormat()
       self.extent = None
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck),
           (self.inputDirCheck, SIGNAL("stateChanged(int)")),
           (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck),
-          ( self.separateCheck, SIGNAL( "stateChanged( int )" ) ),
-          ( self.pctCheck, SIGNAL( "stateChanged( int )" ) ),
-          ( self.intersectCheck, SIGNAL( "stateChanged( int )" ) ),
+          (self.separateCheck, SIGNAL( "stateChanged( int )" ) ),
+          (self.pctCheck, SIGNAL( "stateChanged( int )" ) ),
+          (self.intersectCheck, SIGNAL( "stateChanged( int )" ) ),
           (self.creationOptionsWidget, SIGNAL("optionsChanged()")),
           (self.creationOptionsGroupBox, SIGNAL("toggled(bool)"))
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
@@ -109,7 +105,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.extent = self.getIntersectedExtent( files )
 
-      if self.extent == None:
+      if self.extent is None:
         QMessageBox.warning( self, self.tr( "Error retrieving the extent" ), self.tr( 'GDAL was unable to retrieve the extent from any file. \nThe "Use intersected extent" option will be unchecked.' ) )
         self.intersectCheck.setChecked( False )
         return
@@ -138,7 +134,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def getArguments(self):
       arguments = []
       if self.intersectCheck.isChecked():
-        if self.extent != None:
+        if self.extent is not None:
           arguments.append("-ul_lr")
           arguments.append(str( self.extent.xMinimum() ))
           arguments.append(str( self.extent.yMaximum() ))
@@ -186,12 +182,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
   def getIntersectedExtent(self, files):
     res = None
     for fileName in files:
-      if res == None:
+      if res is None:
         res = Utils.getRasterExtent( self, fileName )
         continue
 
       rect2 = Utils.getRasterExtent( self, fileName )
-      if rect2 == None:
+      if rect2 is None:
         continue
 
       res = res.intersect( rect2 )
@@ -199,4 +195,3 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         break
 
     return res
-

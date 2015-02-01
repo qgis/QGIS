@@ -12,8 +12,9 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
+import os
+
 from PyQt4.QtCore import QVariant, QObject, SIGNAL
 from PyQt4.QtGui import QPainter
 
@@ -33,8 +34,7 @@ from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest,
-                       #expectedFailure
-                      )
+                       )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 def createEmptyLayer():
@@ -179,6 +179,7 @@ class TestQgsVectorLayer(TestCase):
 
             # check feature at id
             f2 = layer.getFeatures(QgsFeatureRequest(fid)).next()
+            assert f2.id() == fid
 
         checkBefore()
 
@@ -255,7 +256,6 @@ class TestQgsVectorLayer(TestCase):
     def test_ChangeAttribute(self):
         layer = createLayerWithOnePoint()
         fid = 1
-        f = QgsFeature()
 
         def checkAfter():
             # check select+nextFeature
@@ -831,14 +831,14 @@ class TestQgsVectorLayer(TestCase):
 
         f = QgsFeature()
         fi = layer.getFeatures()
-        assert fi.nextFeature(f) == True
-        assert f.isValid() == True
+        assert fi.nextFeature(f)
+        assert f.isValid()
         assert f.id() == 1
         assert f.geometry().asPoint() == QgsPoint(100,200)
         assert f["fldtxt"] == "test"
         assert f["fldint"] == 123
 
-        assert fi.nextFeature(f) == False
+        assert not fi.nextFeature(f)
 
     def test_join(self):
 
@@ -880,14 +880,14 @@ class TestQgsVectorLayer(TestCase):
 
         f = QgsFeature()
         fi = layer.getFeatures()
-        assert fi.nextFeature(f) == True
+        assert fi.nextFeature(f)
         attrs = f.attributes()
         assert len(attrs) == 6
         assert attrs[0] == "test"
         assert attrs[1] == 123
         assert attrs[2] == "foo"
         assert attrs[3] == 321
-        assert fi.nextFeature(f) == False
+        assert not fi.nextFeature(f)
 
         f2 = layer.getFeatures(QgsFeatureRequest( f.id() )).next()
         assert len(f2.attributes()) == 6
@@ -969,6 +969,7 @@ class TestQgsVectorLayer(TestCase):
 
     def onRendererChanged( self ):
         self.rendererChanged = True
+
     def test_setRendererV2( self ):
         layer = createLayerWithOnePoint()
 
@@ -978,7 +979,7 @@ class TestQgsVectorLayer(TestCase):
 
         r = QgsSingleSymbolRendererV2( QgsSymbolV2.defaultSymbol( QGis.Point ) )
         layer.setRendererV2( r )
-        assert self.rendererChanged == True
+        assert self.rendererChanged
         assert layer.rendererV2() == r
 
 # TODO:

@@ -12,28 +12,23 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
-from PyQt4.QtCore import QFileInfo
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import (QPainter,
-                          QColor)
+
+from PyQt4.QtGui import QPainter, QColor
 
 from qgis.core import (QgsComposerMap,
                        QgsComposerMapGrid,
                        QgsRectangle,
                        QgsComposition,
                        QgsMapSettings,
-                       QgsMapLayerRegistry,
                        QgsCoordinateReferenceSystem,
                        QgsFontUtils
-                     )
+                       )
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
-                       unittest,
-                       expectedFailure
-                      )
+                       unittest
+                       )
 from qgscompositionchecker import QgsCompositionChecker
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -85,7 +80,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.setGridEnabled(False)
         self.mComposerMap.setShowGridAnnotation(False)
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testCrossGrid(self):
         myRectangle = QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 )
@@ -107,7 +102,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setEnabled( False )
         self.mComposerMap.grid().setAnnotationEnabled( False )
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testMarkerGrid(self):
         myRectangle = QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 )
@@ -127,7 +122,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setEnabled( False )
         self.mComposerMap.grid().setAnnotationEnabled( False )
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testFrameOnly(self):
         myRectangle = QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 )
@@ -149,7 +144,7 @@ class TestQgsComposerMap(TestCase):
         self.mComposerMap.grid().setAnnotationEnabled( False )
         self.mComposerMap.grid().setFrameStyle( QgsComposerMapGrid.NoFrame )
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testZebraStyle(self):
         self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
@@ -172,7 +167,7 @@ class TestQgsComposerMap(TestCase):
 
         checker = QgsCompositionChecker('composermap_zebrastyle', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testZebraStyleSides(self):
         self.mComposerMap.setGridFrameStyle(QgsComposerMap.Zebra)
@@ -199,17 +194,17 @@ class TestQgsComposerMap(TestCase):
 
         checker = QgsCompositionChecker('composermap_zebrastyle_left', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameTop, True )
         checker = QgsCompositionChecker('composermap_zebrastyle_lefttop', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameRight, True )
         checker = QgsCompositionChecker('composermap_zebrastyle_lefttopright', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
         self.mComposerMap.grid().setFrameSideFlag( QgsComposerMapGrid.FrameBottom, True )
         self.mComposerMap.grid().setFrameStyle( QgsComposerMapGrid.NoFrame )
@@ -231,9 +226,8 @@ class TestQgsComposerMap(TestCase):
 
         checker = QgsCompositionChecker('composermap_interiorticks', self.mComposition)
         myTestResult, myMessage = checker.testComposition( 0, 100 )
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
 
 if __name__ == '__main__':
     unittest.main()
-

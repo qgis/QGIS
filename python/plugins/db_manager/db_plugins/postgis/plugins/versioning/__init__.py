@@ -19,17 +19,17 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QAction, QIcon, QApplication
 
 # The load function is called when the "db" database or either one of its
 # children db objects (table o schema) is selected by the user.
 # @param db is the selected database
 # @param mainwindow is the DBManager mainwindow
 def load(db, mainwindow):
-	# add the action to the DBManager menu
-	action = QAction( QIcon(), QApplication.translate("DBManagerPlugin", "&Versioning"), db )
-	mainwindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), run )
+        # add the action to the DBManager menu
+        action = QAction( QIcon(), QApplication.translate("DBManagerPlugin", "&Versioning"), db )
+        mainwindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), run )
 
 
 # The run function is called once the user clicks on the action TopoViewer
@@ -38,12 +38,11 @@ def load(db, mainwindow):
 # @param action is the clicked action on the DBManager menu/toolbar
 # @param mainwindow is the DBManager mainwindow
 def run(item, action, mainwindow):
-	from .dlg_versioning import DlgVersioning
-	dlg = DlgVersioning( item, mainwindow )
+        from .dlg_versioning import DlgVersioning
+        dlg = DlgVersioning( item, mainwindow )
 
-	QApplication.restoreOverrideCursor()
-	try:
-		dlg.exec_()
-	finally:
-		QApplication.setOverrideCursor(Qt.WaitCursor)
-
+        QApplication.restoreOverrideCursor()
+        try:
+                dlg.exec_()
+        finally:
+                QApplication.setOverrideCursor(Qt.WaitCursor)

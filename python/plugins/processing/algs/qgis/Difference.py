@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -56,18 +55,18 @@ class Difference(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(
-                self.getParameterValue(Difference.INPUT))
+            self.getParameterValue(Difference.INPUT))
         layerB = dataobjects.getObjectFromUri(
-                self.getParameterValue(Difference.OVERLAY))
+            self.getParameterValue(Difference.OVERLAY))
 
         GEOS_EXCEPT = True
 
         FEATURE_EXCEPT = True
 
         writer = self.getOutputFromName(
-                Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
-                        layerA.dataProvider().geometryType(),
-                        layerA.dataProvider().crs())
+            Difference.OUTPUT).getVectorWriter(layerA.pendingFields(),
+            layerA.dataProvider().geometryType(),
+            layerA.dataProvider().crs())
 
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()

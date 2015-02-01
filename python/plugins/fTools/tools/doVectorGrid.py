@@ -28,10 +28,11 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL, QVariant, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QDoubleValidator, QMessageBox, QApplication
+from qgis.core import QGis, QgsMapLayerRegistry, QgsMapLayer, QgsRectangle, QgsFields, QgsField, QgsVectorFileWriter, QgsPoint, QgsFeature, QgsGeometry
+
 import ftools_utils
-from qgis.core import *
 from ui_frmVectorGrid import Ui_Dialog
 import math
 
@@ -94,10 +95,6 @@ class Dialog(QDialog, Ui_Dialog):
                     QMessageBox.information(self, self.tr("Vector grid"), self.tr("Please select a raster layer"))
                 else:
                     # get extents and pixel size
-                    xMin = boundBox.xMinimum()
-                    yMin = boundBox.yMinimum()
-                    xMax = boundBox.xMaximum()
-                    yMax = boundBox.yMaximum()
                     boundBox2 = mLayer.extent()
                     dx = math.fabs(boundBox2.xMaximum()-boundBox2.xMinimum()) / mLayer.width()
                     dy = math.fabs(boundBox2.yMaximum()-boundBox2.yMinimum()) / mLayer.height()
@@ -130,10 +127,10 @@ class Dialog(QDialog, Ui_Dialog):
         else:
             try:
                 boundBox = QgsRectangle(
-                float( self.xMin.text() ),
-                float( self.yMin.text() ),
-                float( self.xMax.text() ),
-                float( self.yMax.text() ) )
+                    float( self.xMin.text() ),
+                    float( self.yMin.text() ),
+                    float( self.xMax.text() ),
+                    float( self.yMax.text() ) )
             except:
                 QMessageBox.information(self, self.tr("Vector grid"), self.tr("Invalid extent coordinates entered"))
             xSpace = self.spnX.value()

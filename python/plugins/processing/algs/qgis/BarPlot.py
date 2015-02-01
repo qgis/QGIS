@@ -29,9 +29,6 @@ import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
 import numpy as np
 
-from PyQt4.QtCore import *
-from qgis.core import *
-
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
 from processing.core.GeoAlgorithm import GeoAlgorithm

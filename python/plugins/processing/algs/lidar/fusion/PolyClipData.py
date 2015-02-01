@@ -26,10 +26,7 @@ __copyright__ = "(C) 2014 by Niccolo' Marchi"
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
-from PyQt4 import QtGui
 from processing.core.parameters import ParameterFile
-from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile

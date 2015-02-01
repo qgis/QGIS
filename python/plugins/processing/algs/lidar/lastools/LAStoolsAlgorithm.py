@@ -136,7 +136,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersPointInputCommands(self, commands):
         input = self.getParameterValue(LAStoolsAlgorithm.INPUT_LASLAZ)
-        if input != None:
+        if input is not None:
             commands.append("-i")
             commands.append(input)
 
@@ -149,7 +149,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         wildcards = self.getParameterValue(LAStoolsAlgorithm.INPUT_WILDCARDS).split()
         for wildcard in wildcards:
             commands.append("-i")
-            if input != None:
+            if input is not None:
                 commands.append('"' + input + "\\" + wildcard + '"')
             else:
                 commands.append('"' + wildcard + '"')
@@ -170,7 +170,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         wildcards = self.getParameterValue(LAStoolsAlgorithm.INPUT_WILDCARDS).split()
         for wildcard in wildcards:
             commands.append("-i")
-            if input != None:
+            if input is not None:
                 commands.append('"' + input + "\\" + wildcard + '"')
             else:
                 commands.append('"' + wildcard + '"')
@@ -229,7 +229,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
 
     def addParametersPointOutputCommands(self, commands):
         output = self.getOutputValue(LAStoolsAlgorithm.OUTPUT_LASLAZ)
-        if output != None:
+        if output is not None:
             commands.append("-o")
             commands.append(output)
 
@@ -344,7 +344,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     def addParametersFilter1CoordsIntensityCommands(self, commands):
         filter1 = self.getParameterValue(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1)
         filter1_arg = self.getParameterValue(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY1_ARG)
-        if filter1 != 0 and filter1_arg != None:
+        if filter1 != 0 and filter1_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY[filter1])
             commands.append(filter1_arg)
 
@@ -355,7 +355,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     def addParametersFilter2CoordsIntensityCommands(self, commands):
         filter2 = self.getParameterValue(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2)
         filter2_arg = self.getParameterValue(LAStoolsAlgorithm.FILTER_COORDS_INTENSITY2_ARG)
-        if filter2 != 0 and filter2_arg != None:
+        if filter2 != 0 and filter2_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.FILTERS_COORDS_INTENSITY[filter2])
             commands.append(filter2_arg)
 
@@ -368,7 +368,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     def addParametersTransform1CoordinateCommands(self, commands):
         transform1 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE1)
         transform1_arg = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE1_ARG)
-        if transform1 != 0 and transform1_arg != None:
+        if transform1 != 0 and transform1_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_COORDINATES[transform1])
             commands.append(transform1_arg)
 
@@ -381,7 +381,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
     def addParametersTransform2CoordinateCommands(self, commands):
         transform2 = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE2)
         transform2_arg = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_COORDINATE2_ARG)
-        if transform2 != 0 and transform2_arg != None:
+        if transform2 != 0 and transform2_arg is not None:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_COORDINATES[transform2])
             commands.append(transform2_arg)
 
@@ -396,7 +396,7 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         transform1_arg = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_OTHER1_ARG)
         if transform1 != 0:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_OTHERS[transform1])
-            if transform1 < 11 and transform1_arg != None:
+            if transform1 < 11 and transform1_arg is not None:
                 commands.append(transform1_arg)
 
     def addParametersTransform2OtherGUI(self):
@@ -410,5 +410,5 @@ class LAStoolsAlgorithm(GeoAlgorithm):
         transform2_arg = self.getParameterValue(LAStoolsAlgorithm.TRANSFORM_OTHER2_ARG)
         if transform2 != 0:
             commands.append("-" + LAStoolsAlgorithm.TRANSFORM_OTHERS[transform2])
-            if transform2 < 11 and transform2_arg != None:
+            if transform2 < 11 and transform2_arg is not None:
                 commands.append(transform2_arg)

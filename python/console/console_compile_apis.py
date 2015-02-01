@@ -19,15 +19,11 @@ email                : larrys (at) dakotacarto (dot) com
 Portions of this file contain code from Eric4 APIsManager module.
 """
 
-import sys
 import os
-import shutil
-import fnmatch
-import glob
 
-from PyQt4.Qsci import *
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.Qsci import QsciAPIs
+from PyQt4.QtGui import QDialog, QDialogButtonBox
+from PyQt4.QtCore import QCoreApplication
 
 from ui_console_compile_apis import Ui_APIsDialogPythonConsole
 
@@ -47,7 +43,7 @@ class PrepareAPIDialog(QDialog):
         self._pap_file = pap_file
 
     def _clearLexer(self):
-#        self.ui.textEdit_Qsci.setLexer(0)
+        # self.ui.textEdit_Qsci.setLexer(0)
         self.qlexer = None
 
     def _stopPreparation(self):
@@ -74,9 +70,9 @@ class PrepareAPIDialog(QDialog):
         self.adjustSize()
 
     def prepareAPI(self):
-#        self.ui.textEdit_Qsci.setLexer(0)
+        # self.ui.textEdit_Qsci.setLexer(0)
         exec u'self.qlexer = {0}(self.ui.textEdit_Qsci)'.format(self._api_lexer)
-#        self.ui.textEdit_Qsci.setLexer(self.qlexer)
+        # self.ui.textEdit_Qsci.setLexer(self.qlexer)
         self._api = QsciAPIs(self.qlexer)
         self._api.apiPreparationFinished.connect(self._preparationFinished)
         for api_file in self._api_files:

@@ -31,7 +31,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import re
-import PyQt4.QtGui
+from PyQt4.QtGui import QIcon
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterRaster
@@ -44,10 +44,10 @@ from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
 from OTBUtils import OTBUtils
 from processing.core.parameters import ParameterExtent
-from processing.tools.system import *
+from processing.tools.system import getTempFilename
 import xml.etree.ElementTree as ET
 import traceback
-import inspect
+#import inspect
 
 class OTBAlgorithm(GeoAlgorithm):
 
@@ -59,7 +59,7 @@ class OTBAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
-        self.hasROI = None;
+        self.hasROI = None
 
 
     def __str__(self):
@@ -71,7 +71,7 @@ class OTBAlgorithm(GeoAlgorithm):
         return newone
 
     def getIcon(self):
-        return  PyQt4.QtGui.QIcon(os.path.dirname(__file__) + "/../../images/otb.png")
+        return QIcon(os.path.dirname(__file__) + "/../../images/otb.png")
 
     def help(self):
         folder = os.path.join( OTBUtils.otbDescriptionPath(), 'doc' )
@@ -79,7 +79,7 @@ class OTBAlgorithm(GeoAlgorithm):
         if os.path.exists(helpfile):
             return False, helpfile
         else:
-            raise False, None
+            raise (False, None)
 
 
     def adapt_list_to_string(self, c_list):
@@ -93,10 +93,12 @@ class OTBAlgorithm(GeoAlgorithm):
                 a_list[3] = -1
 
         a_list[1] = "-%s" % a_list[1]
+
         def mystr(par):
-            if type(par) == type([]):
+            if isinstance(par, list):
                 return ";".join(par)
             return str(par)
+
         b_list = map(mystr, a_list)
         res = "|".join(b_list)
         return res
@@ -114,7 +116,7 @@ class OTBAlgorithm(GeoAlgorithm):
             rebuild.append(key)
             rebuild.append(name)
             for each in parameter[4:]:
-                if not each.tag in ["hidden"]:
+                if each.tag not in ["hidden"]:
                     if len(list(each)) == 0:
                         rebuild.append(each.text)
                     else:
@@ -246,7 +248,7 @@ class OTBAlgorithm(GeoAlgorithm):
                     newparams = newparams[:-1]
                 param.value = newparams
 
-            if param.value == None or param.value == "":
+            if param.value is None or param.value == "":
                 continue
             if isinstance(param, ParameterVector):
                 commands.append(param.name)
@@ -291,13 +293,14 @@ class OTBAlgorithm(GeoAlgorithm):
             sizeX = float(self.roiValues[2]) - startX
             sizeY = float(self.roiValues[3]) - startY
             helperCommands = [
-                    "otbcli_ExtractROI",
-                    "-in",       roiInput,
-                    "-out",      roiFile,
-                    "-startx",   str(startX),
-                    "-starty",   str(startY),
-                    "-sizex",    str(sizeX),
-                    "-sizey",    str(sizeY)]
+                "otbcli_ExtractROI",
+                "-in",       roiInput,
+                "-out",      roiFile,
+                "-startx",   str(startX),
+                "-starty",   str(startY),
+                "-sizex",    str(sizeX),
+                "-sizey",    str(sizeY)
+            ]
             ProcessingLog.addToLog(ProcessingLog.LOG_INFO, helperCommands)
             progress.setCommand(helperCommands)
             OTBUtils.executeOtb(helperCommands, progress)
@@ -306,11 +309,11 @@ class OTBAlgorithm(GeoAlgorithm):
             supportRaster = self.roiRasters.itervalues().next()
             for roiInput, roiFile in self.roiVectors.items():
                 helperCommands = [
-                        "otbcli_VectorDataExtractROIApplication",
-                        "-vd.in",           roiInput,
-                        "-io.in",           supportRaster,
-                        "-io.out",          roiFile,
-                        "-elev.dem.path",   OTBUtils.otbSRTMPath()]
+                    "otbcli_VectorDataExtractROIApplication",
+                    "-vd.in",           roiInput,
+                    "-io.in",           supportRaster,
+                    "-io.out",          roiFile,
+                    "-elev.dem.path",   OTBUtils.otbSRTMPath()]
                 ProcessingLog.addToLog(ProcessingLog.LOG_INFO, helperCommands)
                 progress.setCommand(helperCommands)
                 OTBUtils.executeOtb(helperCommands, progress)

@@ -25,13 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QSettings
+from qgis.core import QgsDataSourceURI, QgsVectorLayerImport
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -122,7 +120,7 @@ class ImportIntoPostGIS(GeoAlgorithm):
             False,
             False,
             options,
-            )
+        )
         if ret != 0:
             raise GeoAlgorithmExecutionException(
                 self.tr('Error importing to PostGIS\n%s' % errMsg))

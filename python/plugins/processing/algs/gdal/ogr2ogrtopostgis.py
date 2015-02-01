@@ -25,13 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterCrs
@@ -39,7 +32,7 @@ from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -189,9 +182,9 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         arguments.append('PG:"host='+host)
         arguments.append('port='+port)
         if len(dbname) > 0:
-	    arguments.append('dbname='+dbname)
+            arguments.append('dbname='+dbname)
         if len(password) > 0:
-	    arguments.append('password='+password)
+            arguments.append('password='+password)
         arguments.append('user='+user+'"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)

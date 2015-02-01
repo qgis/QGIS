@@ -25,12 +25,10 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import math
 import random
 
-from PyQt4.QtCore import *
-
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsGeometry, QgsRectangle, QgsFeature, QgsFields, QgsField, QgsSpatialIndex, QgsPoint
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm

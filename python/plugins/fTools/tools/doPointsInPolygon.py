@@ -28,10 +28,10 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QThread, QMutex, QVariant, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 import ftools_utils
-from qgis.core import *
+from qgis.core import QGis, QgsFeatureRequest, QgsField, QgsVectorFileWriter, QgsFeature, QgsGeometry
 from ui_frmPointsInPolygon import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -84,7 +84,7 @@ class Dialog(QDialog, Ui_Dialog):
 
             polyProvider = inPoly.dataProvider()
             pointProvider = inPnts.dataProvider()
-            if polyProvider.crs() <> pointProvider.crs():
+            if polyProvider.crs() != pointProvider.crs():
                 QMessageBox.warning(self, self.tr("CRS warning!"),
                                     self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
 
@@ -115,7 +115,7 @@ class Dialog(QDialog, Ui_Dialog):
         if self.addToCanvasCheck.isChecked():
             addCanvasCheck = ftools_utils.addShapeToCanvas(unicode(self.outShape.text()))
             if not addCanvasCheck:
-                QMessageBox.warning( self, self.tr("Count Points in Polygon"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( outPath ) ))
+                QMessageBox.warning( self, self.tr("Count Points in Polygon"), self.tr( "Error loading output shapefile:\n%s" ) % ( unicode( self.outShape.text() ) ))
             self.populateLayers()
         else:
             QMessageBox.information(self, self.tr("Count Points in Polygon"),self.tr("Created output shapefile:\n%s" ) % ( unicode( self.outShape.text() )))
@@ -126,7 +126,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.restoreGui()
 
     def stopProcessing(self):
-        if self.workThread != None:
+        if self.workThread is not None:
             self.workThread.stop()
             self.workThread = None
 

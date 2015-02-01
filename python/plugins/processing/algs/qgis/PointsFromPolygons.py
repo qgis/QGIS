@@ -26,14 +26,13 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 from osgeo import gdal
-from qgis.core import *
-from PyQt4.QtCore import *
+from qgis.core import QGis, QgsFields, QgsField, QgsFeature, QgsPoint, QgsGeometry
+from PyQt4.QtCore import QVariant
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector, raster
-from processing.tools.general import *
 
 
 class PointsFromPolygons(GeoAlgorithm):
@@ -54,8 +53,7 @@ class PointsFromPolygons(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
 
@@ -68,10 +66,8 @@ class PointsFromPolygons(GeoAlgorithm):
         fields.append(QgsField('poly_id', QVariant.Int, '', 10, 0))
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(
-                self.OUTPUT_LAYER).getVectorWriter(fields.toList(),
-                                                   QGis.WKBPoint,
-                                                   layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
+            fields.toList(), QGis.WKBPoint, layer.crs())
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)

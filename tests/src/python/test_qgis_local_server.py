@@ -21,7 +21,6 @@ __revision__ = '$Format:%H$'
 import os
 import sys
 import datetime
-import urllib2
 import StringIO
 import tempfile
 
@@ -31,19 +30,12 @@ from qgis.core import (
     QgsRenderChecker
 )
 
-from qgis_local_server import (
-    QgisLocalServer,
-    FcgiServerProcess,
-    WebServerProcess,
-    getLocalServer
-)
+from qgis_local_server import getLocalServer
 
 from utilities import (
     TestCase,
     getQgisTestApp,
     unittest,
-    expectedFailure,
-    unitTestDataPath,
     openInBrowserTab
 )
 

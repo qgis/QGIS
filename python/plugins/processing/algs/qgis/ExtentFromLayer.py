@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsField, QgsPoint, QgsGeometry, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -54,7 +54,7 @@ class ExtentFromLayer(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+            self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
         fields = [
@@ -68,7 +68,7 @@ class ExtentFromLayer(GeoAlgorithm):
             QgsField('PERIM', QVariant.Double),
             QgsField('HEIGHT', QVariant.Double),
             QgsField('WIDTH', QVariant.Double),
-            ]
+        ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                 QGis.WKBPolygon, layer.crs())
@@ -109,7 +109,7 @@ class ExtentFromLayer(GeoAlgorithm):
             perim,
             height,
             width,
-            ]
+        ]
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
@@ -146,7 +146,7 @@ class ExtentFromLayer(GeoAlgorithm):
                 perim,
                 height,
                 width,
-                ]
+            ]
             feat.setAttributes(attrs)
 
             writer.addFeature(feat)

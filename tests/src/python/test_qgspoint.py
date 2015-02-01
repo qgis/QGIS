@@ -12,17 +12,11 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
 
 from qgis.core import QgsPoint
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       unittest,
-                       expectedFailure
-                       )
+from utilities import getQgisTestApp, TestCase, unittest
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 

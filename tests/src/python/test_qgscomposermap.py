@@ -12,12 +12,12 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
+import os
+
 from PyQt4.QtCore import QFileInfo
 from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import (QPainter,
-                          QColor)
+from PyQt4.QtGui import QPainter
 
 from qgis.core import (QgsComposerMap,
                        QgsRectangle,
@@ -26,14 +26,14 @@ from qgis.core import (QgsComposerMap,
                        QgsMapRenderer,
                        QgsMapLayerRegistry,
                        QgsMultiBandColorRenderer,
-                       QgsFontUtils
-                     )
+                       )
+
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
                        unittest,
                        expectedFailure
-                      )
+                       )
 from qgscompositionchecker import QgsCompositionChecker
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -83,7 +83,7 @@ class TestQgsComposerMap(TestCase):
         checker = QgsCompositionChecker('composermap_overview', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testOverviewMapBlend(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
@@ -101,7 +101,7 @@ class TestQgsComposerMap(TestCase):
         checker = QgsCompositionChecker('composermap_overview_blending', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testOverviewMapInvert(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
@@ -119,7 +119,7 @@ class TestQgsComposerMap(TestCase):
         checker = QgsCompositionChecker('composermap_overview_invert', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testOverviewMapCenter(self):
         overviewMap = QgsComposerMap(self.mComposition, 20, 130, 70, 70)
@@ -138,7 +138,7 @@ class TestQgsComposerMap(TestCase):
         checker = QgsCompositionChecker('composermap_overview_center', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
         self.mComposition.removeComposerItem(overviewMap)
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     # Fails because addItemsFromXML has been commented out in sip
     @expectedFailure
@@ -161,7 +161,7 @@ class TestQgsComposerMap(TestCase):
         newId = newMap.id()
 
         self.mComposition.removeComposerItem(newMap)
-        myMessage = 'old: %s new: %s'  % (oldId, newId)
+        myMessage = 'old: %s new: %s' % (oldId, newId)
         assert oldId != newId, myMessage
 
     def testWorldFileGeneration( self ):
@@ -181,4 +181,3 @@ class TestQgsComposerMap(TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-

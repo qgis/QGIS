@@ -25,13 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -44,10 +41,8 @@ class Union(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
 
     def processAlgorithm(self, progress):
-        vlayerA = dataobjects.getObjectFromUri(
-                self.getParameterValue(Union.INPUT))
-        vlayerB = dataobjects.getObjectFromUri(
-                self.getParameterValue(Union.INPUT2))
+        vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT))
+        vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT2))
         GEOS_EXCEPT = True
         FEATURE_EXCEPT = True
         vproviderA = vlayerA.dataProvider()
@@ -186,7 +181,7 @@ class Union(GeoAlgorithm):
                         if diff_geom.intersects(tmpGeom):
                             add = True
                             diff_geom = QgsGeometry(
-                                    diff_geom.difference(tmpGeom))
+                                diff_geom.difference(tmpGeom))
                         else:
                             # Ihis only happends if the bounding box
                             # intersects, but the geometry doesn't

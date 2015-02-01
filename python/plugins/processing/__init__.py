@@ -25,14 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from processing.tools.dataobjects import *
-from processing.tools.general import *
-from processing.tools.vector import *
-from processing.tools.raster import *
-from processing.tools.system import *
-from processing.tests.TestData import loadTestData
-
-
 def classFactory(iface):
     from processing.ProcessingPlugin import ProcessingPlugin
     return ProcessingPlugin(iface)

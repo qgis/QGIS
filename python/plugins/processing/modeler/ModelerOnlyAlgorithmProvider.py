@@ -26,15 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.modeler.CalculatorModelerAlgorithm import \
-        CalculatorModelerAlgorithm
-from processing.modeler.RasterLayerBoundsAlgorithm import \
-        RasterLayerBoundsAlgorithm
-from processing.modeler.VectorLayerBoundsAlgorithm import \
-        VectorLayerBoundsAlgorithm
+from processing.modeler.CalculatorModelerAlgorithm import CalculatorModelerAlgorithm
+from processing.modeler.RasterLayerBoundsAlgorithm import RasterLayerBoundsAlgorithm
+from processing.modeler.VectorLayerBoundsAlgorithm import VectorLayerBoundsAlgorithm
 
 
 class ModelerOnlyAlgorithmProvider(AlgorithmProvider):

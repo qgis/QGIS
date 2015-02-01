@@ -31,7 +31,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from processing.core.parameters import ParameterExtent
 from LAStoolsAlgorithm import LAStoolsAlgorithm
-from qgis.core import QgsMapLayer, QgsMapLayerRegistry, QgsVectorLayer
+from qgis.core import QgsMapLayer, QgsMapLayerRegistry
 
 class lasquery(LAStoolsAlgorithm):
 

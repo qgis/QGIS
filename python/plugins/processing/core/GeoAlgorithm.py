@@ -25,29 +25,27 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import inspect
 import os.path
 import traceback
 import copy
-from PyQt4 import QtGui
-from PyQt4.QtCore import *
-from qgis.core import *
 
-from processing.gui.Help2Html import getHtmlFromRstFile
+from PyQt4.QtGui import QIcon
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QGis, QgsRasterFileWriter
+
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
-from processing.core.parameters import *
-from processing.core.outputs import *
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.parameters import ParameterRaster, ParameterVector, ParameterMultipleInput, Parameter
+from processing.core.outputs import OutputVector, OutputRaster, OutputTable, OutputHTML, Output
 from processing.algs.gdal.GdalUtils import GdalUtils
 from processing.tools import dataobjects, vector
-from processing.tools.system import *
+from processing.tools.system import setTempOutput
 
 
 class GeoAlgorithm:
 
-    _icon = QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+    _icon = QIcon(os.path.dirname(__file__) + '/../images/alg.png')
 
     def __init__(self):
         # Parameters needed by the algorithm
@@ -134,20 +132,20 @@ class GeoAlgorithm:
         cmdLineName = self.commandLineName()
         algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
         validChars = \
-                'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
         safeGroupName = ''.join(c for c in groupName if c in validChars)
         safeAlgName = ''.join(c for c in algName if c in validChars)
 
         helpUrl = 'http://docs.qgis.org/{}/en/docs/user_manual/processing_algs/{}/{}/{}.html'.format(qgsVersion, providerName, safeGroupName, safeAlgName)
         return False, helpUrl
 
-        #name = self.commandLineName().split(':')[1].lower()
-        #filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')
-        #try:
-            #html = getHtmlFromRstFile(filename)
-            #return True, html
-        #except:
-            #return False, None
+        # name = self.commandLineName().split(':')[1].lower()
+        # filename = os.path.join(os.path.dirname(inspect.getfile(self.__class__)), 'help', name + '.rst')
+        # try:
+        #   html = getHtmlFromRstFile(filename)
+        #   return True, html
+        # except:
+        #   return False, None
 
     def processAlgorithm(self):
         """Here goes the algorithm itself.
@@ -250,17 +248,17 @@ class GeoAlgorithm:
                 lines.append(errstring)
             lines.append(errstring.replace('\n', '|'))
             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, lines)
-            raise GeoAlgorithmExecutionException(str(e)
-                    + self.tr('\nSee log for more details'))
+            raise GeoAlgorithmExecutionException(
+                str(e) + self.tr('\nSee log for more details'))
 
     def runPostExecutionScript(self, progress):
         scriptFile = ProcessingConfig.getSetting(
-                ProcessingConfig.POST_EXECUTION_SCRIPT)
+            ProcessingConfig.POST_EXECUTION_SCRIPT)
         self.runHookScript(scriptFile, progress)
 
     def runPreExecutionScript(self, progress):
         scriptFile = ProcessingConfig.getSetting(
-                ProcessingConfig.PRE_EXECUTION_SCRIPT)
+            ProcessingConfig.PRE_EXECUTION_SCRIPT)
         self.runHookScript(scriptFile, progress)
 
     def runHookScript(self, filename, progress):
@@ -293,8 +291,10 @@ class GeoAlgorithm:
                         # getCompatible method has been called
                         continue
                     provider = layer.dataProvider()
-                    writer = out.getVectorWriter(provider.fields(),
-                            provider.geometryType(), layer.crs())
+                    writer = out.getVectorWriter(
+                        provider.fields(),
+                        provider.geometryType(), layer.crs()
+                    )
                     features = vector.features(layer)
                     for feature in features:
                         writer.addFeature(feature)
@@ -547,8 +547,9 @@ class GeoAlgorithm:
                        'open</p><ul>\n')
         for layer in wrongLayers:
             html += self.tr('<li>%s: <font size=3 face="Courier New" '
-                            'color="#ff0000">%s</font></li>\n') % \
-                        (layer.description, layer.value)
+                            'color="#ff0000">%s</font></li>\n') % (
+                layer.description, layer.value
+            )
         html += self.tr('</ul><p>The above files could not be opened, which '
                         'probably indicates that they were not correctly '
                         'produced by the executed algorithm</p>'

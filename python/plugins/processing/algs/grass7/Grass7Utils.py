@@ -28,11 +28,12 @@ __revision__ = '$Format:%H$'
 import stat
 import shutil
 import subprocess
+import os
 from qgis.core import QgsApplication
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
 
 
@@ -119,7 +120,7 @@ class Grass7Utils:
         shell = Grass7Utils.grassWinShell()
 
         script = Grass7Utils.grassScriptFilename()
-        gisrc = userFolder() + os.sep + 'processing.gisrc7'  #FIXME: use temporary file
+        gisrc = userFolder() + os.sep + 'processing.gisrc7'  # FIXME: use temporary file
 
         # Temporary gisrc file
         output = open(gisrc, 'w')
@@ -148,8 +149,7 @@ class Grass7Utils:
         output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
         output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
         output.write('\n')
-        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion()
-                + '\n')
+        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
         output.write('if not "%LANG%"=="" goto langset\n')
         output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
         output.write(':langset\n')
@@ -201,8 +201,7 @@ class Grass7Utils:
         folder = Grass7Utils.grassMapsetFolder()
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
-        Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT',
-                                    'DEFAULT_WIND'))
+        Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
         outfile = open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w')
         outfile.write(
             'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
@@ -275,12 +274,11 @@ class Grass7Utils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         for line in iter(proc.readline, ''):
             if 'GRASS_INFO_PERCENT' in line:
                 try:
-                    progress.setPercentage(int(line[len('GRASS_INFO_PERCENT')
-                            + 2:]))
+                    progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
                 except:
                     pass
             else:
@@ -304,7 +302,7 @@ class Grass7Utils:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
-                ).stdout
+            ).stdout
             for line in iter(proc.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
@@ -347,8 +345,9 @@ class Grass7Utils:
 
     @staticmethod
     def addSessionLayers(exportedLayers):
-        Grass7Utils.sessionLayers = dict(Grass7Utils.sessionLayers.items()
-                + exportedLayers.items())
+        Grass7Utils.sessionLayers = dict(
+            Grass7Utils.sessionLayers.items()
+            + exportedLayers.items())
 
     @staticmethod
     def checkGrass7IsInstalled(ignorePreviousState=False):
@@ -381,7 +380,7 @@ class Grass7Utils:
                 0.0001,
                 0,
                 None,
-                )
+            )
             if not os.path.exists(result['output']):
                 return Grass7Utils.tr(
                     'It seems that GRASS GIS 7 is not correctly installed and '

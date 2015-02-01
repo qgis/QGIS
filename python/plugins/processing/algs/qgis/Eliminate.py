@@ -25,11 +25,10 @@ __copyright__ = '(C) 2013, Bernhard Ströbl'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QLocale, QDate
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -73,7 +72,7 @@ class Eliminate(GeoAlgorithm):
             '<=',
             'begins with',
             'contains',
-            ]
+        ]
         self.addParameter(ParameterSelection(self.COMPARISON,
             self.tr('Comparison'), self.comparisons, default=0))
         self.addParameter(ParameterString(self.COMPARISONVALUE,
@@ -84,8 +83,7 @@ class Eliminate(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned layer')))
 
     def processAlgorithm(self, progress):
-        inLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
         smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
         keepSelection = self.getParameterValue(self.KEEPSELECTION)
@@ -93,8 +91,7 @@ class Eliminate(GeoAlgorithm):
         if not keepSelection:
             # Make a selection with the values provided
             attribute = self.getParameterValue(self.ATTRIBUTE)
-            comparison = self.comparisons[
-                    self.getParameterValue(self.COMPARISON)]
+            comparison = self.comparisons[self.getParameterValue(self.COMPARISON)]
             comparisonvalue = self.getParameterValue(self.COMPARISONVALUE)
 
             selectindex = inLayer.dataProvider().fieldNameIndex(attribute)
@@ -145,7 +142,7 @@ class Eliminate(GeoAlgorithm):
                     msg += self.tr('Enter the date and the date format, e.g. "07.26.2011" "MM.dd.yyyy".')
 
             if (comparison == 'begins with' or comparison == 'contains') \
-                and selectType != 10:
+               and selectType != 10:
                 selectionError = True
                 msg =  self.tr('"%s" can only be used with string fields' % comparison)
 
@@ -232,7 +229,7 @@ class Eliminate(GeoAlgorithm):
                 geom2Eliminate = feat.geometry()
                 bbox = geom2Eliminate.boundingBox()
                 fit = inLayer.getFeatures(
-                        QgsFeatureRequest().setFilterRect(bbox))
+                    QgsFeatureRequest().setFilterRect(bbox))
                 mergeWithFid = None
                 mergeWithGeom = None
                 max = 0

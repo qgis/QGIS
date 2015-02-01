@@ -42,6 +42,7 @@ try:
     #   >>>	  print "Not a null value"
     from types import MethodType
     from PyQt4.QtCore import QPyNullVariant
+
     def __nonzero__(self):
         return False
 
@@ -73,10 +74,9 @@ def mapping_feature(feature):
     properties = {}
     fields = [field.name() for field in feature.fields()]
     properties = dict(zip(fields, feature.attributes()))
-    return {
-             'type' : 'Feature',
-             'properties' : properties,
-             'geometry' : geom.__geo_interface__}
+    return {'type' : 'Feature',
+            'properties' : properties,
+            'geometry' : geom.__geo_interface__}
 
 def mapping_geometry(geometry):
     geo = geometry.exportToGeoJSON()

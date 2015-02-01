@@ -25,12 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+
+from qgis.core import QGis, QgsField, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
@@ -80,11 +79,12 @@ class ConvexHull(GeoAlgorithm):
                 f.setType(QVariant.String)
                 f.setLength(255)
 
-        fields = [QgsField('id', QVariant.Int, '', 20),
-                  f,
-                  QgsField('area', QVariant.Double, '', 20, 6),
-                  QgsField('perim', QVariant.Double, '', 20, 6)
-                 ]
+        fields = [
+            QgsField('id', QVariant.Int, '', 20),
+            f,
+            QgsField('area', QVariant.Double, '', 20, 6),
+            QgsField('perim', QVariant.Double, '', 20, 6)
+        ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QGis.WKBPolygon, layer.dataProvider().crs())

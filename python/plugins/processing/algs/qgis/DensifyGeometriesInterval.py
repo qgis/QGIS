@@ -28,8 +28,7 @@ __revision__ = '$Format:%H$'
 
 from math import sqrt
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsPoint, QgsGeometry, QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -57,15 +56,14 @@ class DensifyGeometriesInterval(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         interval = self.getParameterValue(self.INTERVAL)
 
         isPolygon = layer.geometryType() == QGis.Polygon
 
         writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                                             layer.wkbType(), layer.crs())
+            self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
+                                         layer.wkbType(), layer.crs())
 
         features = vector.features(layer)
         total = 100.0 / float(len(features))

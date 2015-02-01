@@ -27,8 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import subprocess
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import userFolder
@@ -72,7 +71,7 @@ class FusionUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=False,
-            ).stdout
+        ).stdout
         for line in iter(proc.readline, ''):
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

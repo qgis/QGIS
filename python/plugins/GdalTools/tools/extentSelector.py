@@ -23,13 +23,12 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget, QColor
+from qgis.core import QgsPoint, QgsRectangle, QGis
+from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 from ui_extentSelector import Ui_GdalToolsExtentSelector as Ui_ExtentSelector
-import GdalTools_utils as Utils
 
 class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
 
@@ -70,7 +69,7 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
   def start(self):
       prevMapTool = self.canvas.mapTool()
       if prevMapTool != self.tool:
-      	self.previousMapTool = prevMapTool
+          self.previousMapTool = prevMapTool
       self.canvas.setMapTool(self.tool)
       self.isStarted = True
       self.btnEnable.setVisible(False)
@@ -93,8 +92,8 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
 
   def isCoordsValid(self):
       try:
-        point1 = QgsPoint( float(self.x1CoordEdit.text()), float(self.y1CoordEdit.text()) )
-        point2 = QgsPoint( float(self.x2CoordEdit.text()), float(self.y2CoordEdit.text()) )
+        QgsPoint( float(self.x1CoordEdit.text()), float(self.y1CoordEdit.text()) )
+        QgsPoint( float(self.x2CoordEdit.text()), float(self.y2CoordEdit.text()) )
       except ValueError:
         return False
 
@@ -112,7 +111,7 @@ class GdalToolsExtentSelector(QWidget, Ui_ExtentSelector):
   def fillCoords(self):
       rect = self.getExtent()
       self.blockSignals(True)
-      if rect != None:
+      if rect is not None:
         self.x1CoordEdit.setText( str(rect.xMinimum()) )
         self.x2CoordEdit.setText( str(rect.xMaximum()) )
         self.y1CoordEdit.setText( str(rect.yMaximum()) )
@@ -178,7 +177,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
       self.rubberBand.show()
 
   def rectangle(self):
-      if self.startPoint == None or self.endPoint == None:
+      if self.startPoint is None or self.endPoint is None:
         return None
       elif self.startPoint.x() == self.endPoint.x() or self.startPoint.y() == self.endPoint.y():
         return None
@@ -189,7 +188,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
       if rect == self.rectangle():
         return False
 
-      if rect == None:
+      if rect is None:
         self.reset()
       else:
         self.startPoint = QgsPoint(rect.xMaximum(), rect.yMaximum())

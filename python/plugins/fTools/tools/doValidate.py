@@ -28,13 +28,14 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import SIGNAL, Qt, QObject, QSettings, QByteArray, QThread, QVariant
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QAbstractItemView, QApplication, QMessageBox, QHeaderView, QTableWidgetItem
+from qgis.core import QGis, QgsPoint, QgsFeature, QgsFeatureRequest, QgsGeometry, QgsFields, QgsField, QgsVectorFileWriter
+from qgis.gui import QgsVertexMarker
+
 from ui_frmVisual import Ui_Dialog
 import ftools_utils
-import math
-from qgis import gui
+
 
 class MarkerErrorGeometry():
   def __init__(self, mapCanvas):
@@ -45,13 +46,13 @@ class MarkerErrorGeometry():
     self.reset()
 
   def __createMarker(self, point):
-    self.__marker = gui.QgsVertexMarker(self.__canvas)
+    self.__marker = QgsVertexMarker(self.__canvas)
     self.__marker.setCenter(point)
-    self.__marker.setIconType(gui.QgsVertexMarker.ICON_X)
+    self.__marker.setIconType(QgsVertexMarker.ICON_X)
     self.__marker.setPenWidth(3)
 
   def setGeom(self, p):
-    if not self.__marker is None:
+    if self.__marker is not None:
       self.reset()
     if self.__marker is None:
       self.__createMarker(p)
@@ -59,7 +60,7 @@ class MarkerErrorGeometry():
       self.__marker.setCenter(p)
 
   def reset(self):
-    if not self.__marker is None:
+    if self.__marker is not None:
       self.__canvas.scene().removeItem(self.__marker)
       del self.__marker
       self.__marker = None
@@ -69,8 +70,8 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     QDialog.__init__(self, iface.mainWindow())
     self.iface = iface
     self.setupUi(self)
-#   self.setModal(False) # we want to be able to interact with the featuresmc.extent().width()
-#   self.setWindowFlags( Qt.SubWindow )
+    # self.setModal(False) # we want to be able to interact with the featuresmc.extent().width()
+    # self.setWindowFlags( Qt.SubWindow )
     # adjust user interface
     self.setWindowTitle( self.tr( "Check geometry validity" ) )
     self.cmbField.setVisible( False )
@@ -83,8 +84,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.tblUnique.setSelectionBehavior(QAbstractItemView.SelectRows)
     # populate list of available layers
     myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
-    self.connect(self.tblUnique, SIGNAL("currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)" ),
-    self.zoomToError)
+    self.connect(self.tblUnique, SIGNAL("currentItemChanged(QTableWidgetItem*, QTableWidgetItem*)" ), self.zoomToError)
     self.inShape.addItems( myList )
     self.buttonBox_2.setOrientation(Qt.Horizontal)
     self.cancel_close = self.buttonBox_2.button(QDialogButtonBox.Close)
@@ -108,9 +108,9 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     del self.marker
 
   def keyPressEvent( self, e ):
-    if ( e.modifiers() == Qt.ControlModifier or \
+    if ( e.modifiers() == Qt.ControlModifier or
          e.modifiers() == Qt.MetaModifier ) and \
-         e.key() == Qt.Key_C:
+       e.key() == Qt.Key_C:
       items = ""
       for row in range( self.tblUnique.rowCount() ):
         items += self.tblUnique.item( row, 0 ).text() + "," + self.tblUnique.item( row, 1 ).text() + "\n"
@@ -241,14 +241,13 @@ class ValidateDialog( QDialog, Ui_Dialog ):
       for rec in success:
         if len(rec[1]) < 1:
           continue
-        where = None
-        for err in rec[1]: # for each error we find
+        for err in rec[1]:  # for each error we find
           self.tblUnique.insertRow(count)
           fidItem = QTableWidgetItem( str(rec[0]) )
           self.tblUnique.setItem( count, 0, fidItem )
           message = err.what()
           errItem = QTableWidgetItem( message )
-          if err.hasWhere(): # if there is a location associated with the error
+          if err.hasWhere():  # if there is a location associated with the error
             errItem.setData(Qt.UserRole, err.where())
           self.tblUnique.setItem( count, 1, errItem )
           count += 1

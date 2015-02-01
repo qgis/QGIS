@@ -29,38 +29,38 @@ xmlfile = "../resources/symbology-ng-style.xml"
 dbfile = "../resources/symbology-ng-style.db"
 
 _symbol = "CREATE TABLE symbol("\
-        "id INTEGER PRIMARY KEY,"\
-        "name TEXT UNIQUE,"\
-        "xml TEXT,"\
-        "groupid INTEGER)"
+          "id INTEGER PRIMARY KEY,"\
+          "name TEXT UNIQUE,"\
+          "xml TEXT,"\
+          "groupid INTEGER)"
 
 _colorramp = "CREATE TABLE colorramp("\
-        "id INTEGER PRIMARY KEY,"\
-        "name TEXT UNIQUE,"\
-        "xml TEXT,"\
-        "groupid INTEGER)"
+             "id INTEGER PRIMARY KEY,"\
+             "name TEXT UNIQUE,"\
+             "xml TEXT,"\
+             "groupid INTEGER)"
 
 _tag = "CREATE TABLE tag("\
-        "id INTEGER PRIMARY KEY,"\
-        "name TEXT)"
+       "id INTEGER PRIMARY KEY,"\
+       "name TEXT)"
 
 _tagmap = "CREATE TABLE tagmap("\
-        "tag_id INTEGER NOT NULL,"\
-        "symbol_id INTEGER)"
+          "tag_id INTEGER NOT NULL,"\
+          "symbol_id INTEGER)"
 
 _symgroup = "CREATE TABLE symgroup("\
-        "id INTEGER PRIMARY KEY,"\
-        "name TEXT,"\
-        "parent INTEGER)"
+            "id INTEGER PRIMARY KEY,"\
+            "name TEXT,"\
+            "parent INTEGER)"
 
 _smartgroup = "CREATE TABLE smartgroup("\
-        "id INTEGER PRIMARY KEY,"\
-        "name TEXT,"\
-        "xml TEXT)"
+              "id INTEGER PRIMARY KEY,"\
+              "name TEXT,"\
+              "xml TEXT)"
 
 _ctagmap = "CREATE TABLE ctagmap("\
-        "tag_id INTEGER NOT NULL,"\
-        "colorramp_id INTEGER)"
+           "tag_id INTEGER NOT NULL,"\
+           "colorramp_id INTEGER)"
 
 create_tables = [ _symbol, _colorramp, _tag, _tagmap, _ctagmap, _symgroup, _smartgroup ]
 

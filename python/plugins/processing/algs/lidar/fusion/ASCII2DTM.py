@@ -26,7 +26,6 @@ __copyright__ = "(C) 2014 by Niccolo' Marchi"
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
@@ -54,10 +53,10 @@ class ASCII2DTM(FusionAlgorithm):
             self.XYUNITS, self.tr('XY Units'), self.UNITS))
         self.addParameter(ParameterSelection(
             self.ZUNITS, self.tr('Z Units'), self.UNITS))
-        self.addParameter(ParameterSelection(self.COORDSYS,
-            self.tr('Coordinate system'), ['unknown', 'UTM', 'state plane']))
-        self.addParameter(ParameterNumber(self.ZONE,
-            self.tr("Coordinate system zone ('0' for unknown)"), 0, None, 0))
+        self.addParameter(ParameterSelection(
+            self.COORDSYS, self.tr('Coordinate system'), ['unknown', 'UTM', 'state plane']))
+        self.addParameter(ParameterNumber(
+            self.ZONE, self.tr("Coordinate system zone ('0' for unknown)"), 0, None, 0))
 
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output surface'), 'dtm'))

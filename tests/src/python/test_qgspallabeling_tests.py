@@ -16,15 +16,15 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
-from qgis.core import *
+from PyQt4.QtCore import Qt, QPointF
+from PyQt4.QtGui import QFont
 
-from utilities import (
-    svgSymbolsPath
-)
+from qgis.core import QgsPalLayerSettings
+
+from utilities import svgSymbolsPath
 
 
 # noinspection PyPep8Naming
@@ -57,8 +57,8 @@ class TestPointBase(object):
 
     def test_default_label(self):
         # Default label placement, with text size in points
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_text_size_map_unit(self):
@@ -67,13 +67,13 @@ class TestPointBase(object):
         font = QFont(self._TestFont)
         font.setPointSizeF(460)
         self.lyr.textFont = font
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_text_color(self):
-        self._Mismatches['TestCanvasPoint'] = 774;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 774
+        self._ColorTols['TestComposerPdfPoint'] = 2
         # Label color change
         self.lyr.textColor = Qt.blue
         self.checkTest()
@@ -82,8 +82,8 @@ class TestPointBase(object):
         self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
         self._Mismatches['TestComposerImagePoint'] = 800
         self.lyr.shapeDraw = True
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 1;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 1
         self.checkTest()
 
     def test_background_rect_w_offset(self):
@@ -102,8 +102,8 @@ class TestPointBase(object):
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2900.0, -450.0)
 
-        self._Mismatches['TestCanvasPoint'] = 774;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 774
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_background_svg(self):
@@ -122,8 +122,8 @@ class TestPointBase(object):
         self.lyr.shapeSizeType = QgsPalLayerSettings.SizeBuffer
         self.lyr.shapeSize = QPointF(100.0, 0.0)
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 580
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_background_svg_w_offset(self):
@@ -145,8 +145,8 @@ class TestPointBase(object):
         self.lyr.shapeOffsetUnits = QgsPalLayerSettings.MapUnits
         self.lyr.shapeOffset = QPointF(-2850.0, 500.0)
         self._Mismatches['TestComposerPdfVsComposerPoint'] = 760
-        self._Mismatches['TestCanvasPoint'] = 776;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_partials_labels_enabled(self):
@@ -157,8 +157,8 @@ class TestPointBase(object):
         # Enable partials labels
         self._Pal.setShowingPartialsLabels(True)
         self._Pal.saveEngineSettings()
-        self._Mismatches['TestCanvasPoint'] = 779;
-        self._ColorTols['TestComposerPdfPoint'] = 2;
+        self._Mismatches['TestCanvasPoint'] = 779
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_partials_labels_disabled(self):

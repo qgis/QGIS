@@ -24,10 +24,8 @@ __copyright__ = '(C) 2014, Agresta S. Coop'
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
 from FusionAlgorithm import FusionAlgorithm
@@ -38,7 +36,7 @@ from processing.core.parameters import ParameterString
 class TinSurfaceCreate(FusionAlgorithm):
 
     INPUT = 'INPUT'
-    OUTPUT_DTM = 'OUTPUT_DTM';
+    OUTPUT_DTM = 'OUTPUT_DTM'
     CELLSIZE = 'CELLSIZE'
     XYUNITS = 'XYUNITS'
     ZUNITS = 'ZUNITS'

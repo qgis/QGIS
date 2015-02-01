@@ -28,12 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 import stat
 import subprocess
-from PyQt4.QtCore import *
-from qgis.core import *
+
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
-
+from processing.tools.system import isWindows, isMac, userFolder
 
 SAGA_LOG_COMMANDS = 'SAGA_LOG_COMMANDS'
 SAGA_LOG_CONSOLE = 'SAGA_LOG_CONSOLE'
@@ -102,7 +102,7 @@ def createSagaBatchJobFileFromSagaCommands(commands):
 _installedVersion = None
 _installedVersionFound = False
 
-def getSagaInstalledVersion(runSaga = False):
+def getSagaInstalledVersion(runSaga=False):
     global _installedVersion
     global _installedVersionFound
 
@@ -120,7 +120,7 @@ def getSagaInstalledVersion(runSaga = False):
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         lines = proc.readlines()
         for line in lines:
             if line.startswith("SAGA Version:"):
@@ -144,7 +144,7 @@ def executeSaga(progress):
         stdin=open(os.devnull),
         stderr=subprocess.STDOUT,
         universal_newlines=True,
-        ).stdout
+    ).stdout
     for line in iter(proc.readline, ''):
         if '%' in line:
             s = ''.join([x for x in line if x.isdigit()])
@@ -154,8 +154,7 @@ def executeSaga(progress):
                 pass
         else:
             line = line.strip()
-            if line != '/' and line != '-' and line != '\\' and line \
-                != '|':
+            if line != '/' and line != '-' and line != '\\' and line != '|':
                 loglines.append(line)
                 progress.setConsoleInfo(line)
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):

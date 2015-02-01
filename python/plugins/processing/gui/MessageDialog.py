@@ -25,8 +25,8 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QUrl
+from PyQt4.QtGui import QDialog, QDesktopServices
 
 
 from processing.ui.ui_DlgMessage import Ui_Dialog

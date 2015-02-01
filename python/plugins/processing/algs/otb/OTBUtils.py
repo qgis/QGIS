@@ -29,15 +29,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import isMac, isWindows
 import logging
 import xml.etree.ElementTree as ET
 import traceback
-import qgis.core
 
 
 class OTBUtils:
@@ -110,15 +110,15 @@ class OTBUtils:
     @staticmethod
     def otbSRTMPath():
         folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)
-        if folder == None:
-            folder =""
+        if folder is None:
+            folder = ""
         return folder
 
     @staticmethod
     def otbGeoidPath():
         filepath = ProcessingConfig.getSetting(OTBUtils.OTB_GEOID_FILE)
-        if filepath == None:
-            filepath =""
+        if filepath is None:
+            filepath = ""
         return filepath
 
     @staticmethod
@@ -220,7 +220,6 @@ def split_by_choice(doc, parameter):
         #set a new name according to the choice
         old_app_name = working_copy.find('key').text
         working_copy.find('key').text = '%s-%s' % (old_app_name, choice)
-        old_longname = working_copy.find('longname').text
         working_copy.find('longname').text = '%s (%s)' % (old_app_name, choice)
         #add it to the dictionary
         result[choice] = working_copy
@@ -234,7 +233,6 @@ def remove_parameter_by_criteria(doc, criteria):
 def defaultWrite(available_app, original_dom_document):
     fh = open("description/%s.xml" % available_app, "w")
     the_root = original_dom_document
-    logger = logging.getLogger('OTBGenerator')
     ET.ElementTree(the_root).write(fh)
     fh.close()
 

@@ -30,7 +30,7 @@ from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
-from processing.tools.system import *
+from processing.tools.system import getTempFilename, isWindows
 import SagaUtils
 
 

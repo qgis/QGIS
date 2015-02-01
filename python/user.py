@@ -55,4 +55,3 @@ from qgis.gui import *
 def func(value1, feature, parent):
     pass
 """
-

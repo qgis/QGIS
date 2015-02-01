@@ -14,7 +14,7 @@ __revision__ = '$Format:%H$'
 
 import qgis
 
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QVariant
 
 from qgis.core import (QGis,
                        QgsVectorLayer,
@@ -23,13 +23,12 @@ from qgis.core import (QGis,
                        QgsField,
                        QgsGeometry,
                        QgsPoint
-                      )
+                       )
 
 from utilities import (getQgisTestApp,
                        TestCase,
                        unittest,
-                       compareWkt,
-                       #expectedFailure
+                       compareWkt
                        )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
@@ -44,11 +43,11 @@ class TestQgsMemoryProvider(TestCase):
         layer = QgsVectorLayer("Point", "test", "memory")
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (QGis.Point, layer.geometryType()))
+                     (QGis.Point, layer.geometryType()))
         assert layer.geometryType() == QGis.Point, myMessage
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (QGis.WKBPoint, layer.wkbType()))
+                     (QGis.WKBPoint, layer.wkbType()))
         assert layer.wkbType() == QGis.WKBPoint, myMessage
 
     def testAddFeatures(self):
@@ -75,7 +74,7 @@ class TestQgsMemoryProvider(TestCase):
         assert res, "Failed to add feature"
 
         myMessage = ('Expected: %s\nGot: %s\n' %
-                      (1, provider.featureCount()))
+                     (1, provider.featureCount()))
         assert provider.featureCount() == 1, myMessage
 
         for f in provider.getFeatures(QgsFeatureRequest()):
@@ -97,7 +96,7 @@ class TestQgsMemoryProvider(TestCase):
             geom = f.geometry()
 
             myMessage = ('Expected: %s\nGot: %s\n' %
-                        ("POINT(10.0 10.0)", str(geom.exportToWkt())))
+                         ("POINT(10.0 10.0)", str(geom.exportToWkt())))
 
             assert compareWkt( str(geom.exportToWkt()), "POINT(10.0 10.0)" ), myMessage
 

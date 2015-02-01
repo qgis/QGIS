@@ -25,7 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterRaster
@@ -94,7 +93,7 @@ class translate(GdalAlgorithm):
         outsizePerc = str(self.getParameterValue(self.OUTSIZE_PERC))
         noData = str(self.getParameterValue(self.NO_DATA))
         expand = str(self.getParameterFromName(
-                self.EXPAND).options[self.getParameterValue(self.EXPAND)])
+            self.EXPAND).options[self.getParameterValue(self.EXPAND)])
         projwin = str(self.getParameterValue(self.PROJWIN))
         crsId = self.getParameterValue(self.SRS)
         sds = self.getParameterValue(self.SDS)

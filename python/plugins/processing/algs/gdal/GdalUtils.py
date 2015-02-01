@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 import platform
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QSettings
 from qgis.core import QgsApplication
 from processing.core.ProcessingLog import ProcessingLog
 
@@ -78,7 +78,7 @@ class GdalUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         progress.setInfo('GDAL command output:')
         for line in iter(proc.readline, ''):
             progress.setConsoleInfo(line)

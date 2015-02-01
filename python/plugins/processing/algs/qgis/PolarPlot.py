@@ -27,12 +27,8 @@ __revision__ = '$Format:%H$'
 
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
-import matplotlib.cm as cm
-from matplotlib.pyplot import figure, show, rc
+from matplotlib.pyplot import figure
 import numpy as np
-
-from PyQt4.QtCore import *
-from qgis.core import *
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable

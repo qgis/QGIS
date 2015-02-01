@@ -28,10 +28,10 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 import ftools_utils
-from qgis.core import *
+from qgis.core import QGis, QgsFields, QgsVectorFileWriter, QgsFeatureRequest, QgsFeature, QgsGeometry
 from ui_frmIntersectLines import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -174,7 +174,7 @@ class Dialog(QDialog, Ui_Dialog):
                         for j in tempList:
                             # if same layer, avoid insert duplicated points
                             if line1 == line2:
-                                if not j in singlelayer_tempList:
+                                if j not in singlelayer_tempList:
                                     singlelayer_tempList.append(j)
                                     outFeat.setGeometry(tempGeom.fromPoint(j))
                                     outFeat.setAttribute(0, v1)

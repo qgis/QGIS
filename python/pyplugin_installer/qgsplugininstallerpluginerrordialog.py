@@ -24,7 +24,7 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QDialog
 
 from ui_qgsplugininstallerpluginerrorbase import Ui_QgsPluginInstallerPluginErrorDialogBase
 

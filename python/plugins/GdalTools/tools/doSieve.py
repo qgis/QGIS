@@ -23,11 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
-from osgeo import ogr
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget
 
 from ui_widgetSieve import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -45,14 +42,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outSelector.setType( self.outSelector.FILE )
       self.outputFormat = Utils.fillRasterOutputFormat()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.thresholdSpin, SIGNAL("valueChanged(int)"), self.thresholdCheck),
           (self.connectionsCombo, SIGNAL("currentIndexChanged(int)"), self.connectionsCheck)
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)

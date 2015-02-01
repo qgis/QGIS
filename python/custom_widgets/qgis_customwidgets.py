@@ -28,27 +28,26 @@ It is copied on installation in /pythonX/dist-packages/PyQt4/uic/widget-plugins/
 
 # pluginType = CW_FILTER
 # def getFilter():
-# 	import qgis.gui
+#       import qgis.gui
 #
-# 	QGIS_widgets = {}
-# 	for pyClass in dir(qgis.gui):
-# 		QGIS_widgets[pyClass] = 'qgis.gui'
+#       QGIS_widgets = {}
+#       for pyClass in dir(qgis.gui):
+#               QGIS_widgets[pyClass] = 'qgis.gui'
 #
-# 	def _QGISfilter(widgetname, baseclassname, module):
-# 		print widgetname, baseclassname, module
-# 		if widgetname in QGIS_widgets:
-# 			return (MATCH, (widgetname, baseclassname, QGIS_widgets[widgetname]))
-# 		else:
-# 			return (NO_MATCH, None)
+#       def _QGISfilter(widgetname, baseclassname, module):
+#               print widgetname, baseclassname, module
+#               if widgetname in QGIS_widgets:
+#                       return (MATCH, (widgetname, baseclassname, QGIS_widgets[widgetname]))
+#               else:
+#                       return (NO_MATCH, None)
 #
-# 	return _QGISfilter
+#       return _QGISfilter
 
 
 pluginType = MODULE
 def moduleInformation():
-	try:
-		import qgis.gui
-		return "qgis.gui", dir(qgis.gui)
-	except ImportError:
-		return "", []
-
+        try:
+                import qgis.gui
+                return "qgis.gui", dir(qgis.gui)
+        except ImportError:
+                return "", []

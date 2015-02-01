@@ -27,17 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -65,7 +60,8 @@ FORMATS = [
     'ODS',
     'XLSX',
     'PDF',
-    ]
+]
+
 EXTS = [
     '.shp',
     '.geojson',
@@ -89,7 +85,7 @@ EXTS = [
     '.ods',
     '.xlsx',
     '.pdf',
-    ]
+]
 
 
 class Ogr2Ogr(OgrAlgorithm):
@@ -150,4 +146,3 @@ class Ogr2Ogr(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)
-

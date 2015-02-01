@@ -61,9 +61,7 @@ class flightlinesToDTMandDSM(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-
-#   first we tile the data
-
+        # first we tile the data
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
@@ -85,8 +83,7 @@ class flightlinesToDTMandDSM(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we ground classify the tiles
-
+        # then we ground classify the tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name+"*.laz")
@@ -107,8 +104,7 @@ class flightlinesToDTMandDSM(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into DTMs
-
+        # then we rasterize the classified tiles into DTMs
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name+"*_g.laz")
@@ -126,8 +122,7 @@ class flightlinesToDTMandDSM(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we rasterize the classified tiles into DSMs
-
+        # then we rasterize the classified tiles into DSMs
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "las2dem")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, base_name+"*_g.laz")

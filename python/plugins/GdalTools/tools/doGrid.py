@@ -23,10 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import SIGNAL, QFileInfo, QTextCodec
+from PyQt4.QtGui import QWidget, QErrorMessage
 
 from ui_widgetGrid import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -56,8 +54,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outputFormat = Utils.fillRasterOutputFormat()
       self.lastEncoding = Utils.getLastUsedEncoding()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.zfieldCombo, SIGNAL("currentIndexChanged(int)"), self.zfieldCheck),
@@ -73,8 +70,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.datametricsMinPointsSpin, SIGNAL("valueChanged(int)")),
           (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentGroup),
           ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox )
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
@@ -93,7 +89,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getVectorLayers() )
 
   def fillFieldsCombo(self):
-      if self.inSelector.layer() == None:
+      if self.inSelector.layer() is None:
         return
 
       self.lastEncoding = self.inSelector.layer().dataProvider().encoding()
@@ -132,7 +128,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments.append( QFileInfo( inputFn ).baseName())
       if self.extentGroup.isChecked():
         rect = self.extentSelector.getExtent()
-        if rect != None:
+        if rect is not None:
           arguments.append( "-txe")
           arguments.append( str(rect.xMinimum()))
           arguments.append( str(rect.xMaximum()))
@@ -198,7 +194,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments.append("nodata=" + str(self.datametricsNoDataSpin.value()))
       return ':'.join(arguments)
 
-  def loadFields(self, vectorFile = ''):
+  def loadFields(self, vectorFile=''):
       self.zfieldCombo.clear()
 
       if not vectorFile:
@@ -214,4 +210,3 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       ncodec = QTextCodec.codecForName(self.lastEncoding)
       for name in names:
         self.zfieldCombo.addItem( ncodec.toUnicode(name) )
-

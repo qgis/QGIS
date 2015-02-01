@@ -31,8 +31,6 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
-from processing.core.parameters import ParameterNumber
-
 class las2tin(LAStoolsAlgorithm):
 
     def defineCharacteristics(self):

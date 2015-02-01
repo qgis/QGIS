@@ -23,10 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QFile, QFileInfo
+from PyQt4.QtGui import QMessageBox, QErrorMessage
 
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
@@ -36,11 +34,11 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
   def __init__(self, iface, commandName):
       BasePluginWidget.__init__(self, iface, commandName)
 
-  def getBatchArguments(self, inFile, outFile = None):
+  def getBatchArguments(self, inFile, outFile=None):
       arguments = []
       arguments.extend( self.getArguments() )
       arguments.append( inFile )
-      if outFile != None:
+      if outFile is not None:
         arguments.append(outFile)
       return arguments
 
@@ -61,7 +59,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       outDir = self.getOutputFileName()
 
       # if overwrites existent files
-      if outDir == None or outDir == inDir:
+      if outDir is None or outDir == inDir:
         return fn + ".tmp"
 
       return outDir + fn[len(inDir):]
@@ -122,7 +120,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
       # overwrite existent files
       inDir = self.getInputFileName()
       outDir = self.getOutputFileName()
-      if outDir == None or inDir == outDir:
+      if outDir is None or inDir == outDir:
         oldFile = QFile( self.inFiles[self.batchIndex] )
         newFile = QFile( self.outFiles[self.batchIndex] )
         if oldFile.remove():
@@ -140,7 +138,7 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
 
       inDir = self.getInputFileName()
       outDir = self.getOutputFileName()
-      if outDir == None or inDir == outDir:
+      if outDir is None or inDir == outDir:
         self.outFiles = self.inFiles
 
       # load layers managing the render flag to avoid waste of time
@@ -161,4 +159,3 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
         QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Operation completed." ) )
       else:
         QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "The following files were not created: \n{0}" ).format( ', '.join( notCreatedList ) ) )
-

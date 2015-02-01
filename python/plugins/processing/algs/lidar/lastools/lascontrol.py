@@ -43,7 +43,7 @@ class lascontrol(LAStoolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lascontrol"
         self.group = "LAStools"
-        self.addParametersVerboseGUI();
+        self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterVector(lascontrol.POLYGON,
             self.tr("Input polygon(s)"), ParameterVector.VECTOR_TYPE_POLYGON))
@@ -61,7 +61,7 @@ class lascontrol(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         poly = self.getParameterValue(lascontrol.POLYGON)
-        if poly != None:
+        if poly is not None:
             commands.append("-poly")
             commands.append(poly)
         if self.getParameterValue(lascontrol.INTERIOR):

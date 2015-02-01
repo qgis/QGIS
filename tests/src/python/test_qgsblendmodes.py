@@ -23,28 +23,24 @@ __copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
+import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QSize
+from PyQt4.QtGui import QPainter, QColor
 
 from qgis.core import (QgsVectorLayer,
                        QgsVectorSimplifyMethod,
                        QgsMapLayerRegistry,
-                       QgsMapRenderer,
-                       QgsCoordinateReferenceSystem,
                        QgsMultiRenderChecker,
                        QgsRasterLayer,
-                       QgsRasterDataProvider,
                        QgsMultiBandColorRenderer,
-                       QGis)
+                       )
 
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
-                       unittest,
-                       expectedFailure
+                       unittest
                        )
 # Convenience instances in case you may need them
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -64,8 +60,8 @@ class TestQgsBlendModes(TestCase):
         self.mPointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.mMapRegistry.addMapLayer(self.mPointLayer)
 
-        self.mSimplifyMethod = QgsVectorSimplifyMethod();
-        self.mSimplifyMethod.setSimplifyHints(QgsVectorSimplifyMethod.NoSimplification);
+        self.mSimplifyMethod = QgsVectorSimplifyMethod()
+        self.mSimplifyMethod.setSimplifyHints(QgsVectorSimplifyMethod.NoSimplification)
 
         # create polygon layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
@@ -117,7 +113,7 @@ class TestQgsBlendModes(TestCase):
         checker.setMapSettings(self.mapSettings)
         checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("vector_blendmodes", 20);
+        myResult = checker.runTest("vector_blendmodes", 20)
         myMessage = ('vector blending failed')
         assert myResult, myMessage
 
@@ -143,7 +139,7 @@ class TestQgsBlendModes(TestCase):
         checker.setMapSettings(self.mapSettings)
         checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("vector_featureblendmodes", 20);
+        myResult = checker.runTest("vector_featureblendmodes", 20)
         myMessage = ('vector feature blending failed')
         assert myResult, myMessage
 
@@ -168,7 +164,7 @@ class TestQgsBlendModes(TestCase):
         checker.setMapSettings(self.mapSettings)
         checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("vector_layertransparency", 20);
+        myResult = checker.runTest("vector_layertransparency", 20)
         myMessage = ('vector layer transparency failed')
         assert myResult, myMessage
 
@@ -189,7 +185,7 @@ class TestQgsBlendModes(TestCase):
         checker.setColorTolerance( 1 )
         checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("raster_blendmodes", 20);
+        myResult = checker.runTest("raster_blendmodes", 20)
         myMessage = ('raster blending failed')
         assert myResult, myMessage
 

@@ -27,8 +27,8 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsRectangle, QgsFields, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
@@ -36,7 +36,6 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
-from processing.tools import vector
 
 
 class VectorGrid(GeoAlgorithm):
@@ -49,7 +48,7 @@ class VectorGrid(GeoAlgorithm):
 
     TYPES = ['Output grid as polygons',
              'Output grid as lines'
-            ]
+             ]
 
     def defineCharacteristics(self):
         self.name = 'Vector grid'
@@ -132,7 +131,7 @@ class VectorGrid(GeoAlgorithm):
                 feat.setAttribute(0, idVar)
                 feat.setAttribute(1, x)
                 writer.addFeature(feat)
-                x = x + xOffset
+                x = x + xSpace
                 idVar += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:

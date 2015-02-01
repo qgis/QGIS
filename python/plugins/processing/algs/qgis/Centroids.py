@@ -25,11 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsGeometry, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
@@ -51,13 +49,13 @@ class Centroids(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+            self.getParameterValue(self.INPUT_LAYER))
 
         writer = self.getOutputFromName(
-                self.OUTPUT_LAYER).getVectorWriter(
-                        layer.pendingFields().toList(),
-                        QGis.WKBPoint,
-                        layer.crs())
+            self.OUTPUT_LAYER).getVectorWriter(
+                layer.pendingFields().toList(),
+                QGis.WKBPoint,
+                layer.crs())
 
         outFeat = QgsFeature()
 
@@ -72,7 +70,7 @@ class Centroids(GeoAlgorithm):
             outGeom = QgsGeometry(inGeom.centroid())
             if outGeom is None:
                 raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating centroid'))
+                    self.tr('Error calculating centroid'))
 
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)

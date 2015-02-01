@@ -27,10 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
@@ -40,8 +39,6 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputFile
-
-from processing.tools.system import *
 
 from TauDEMUtils import TauDEMUtils
 
@@ -93,6 +90,7 @@ class DropAnalysis(GeoAlgorithm):
             self.tr('D-Infinity Drop to Stream Grid')))
 
     def processAlgorithm(self, progress):
+        commands = []
         commands.append(os.path.join(TauDEMUtils.mpiexecPath(), 'mpiexec'))
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)

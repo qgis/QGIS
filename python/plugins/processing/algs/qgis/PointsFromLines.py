@@ -25,9 +25,9 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
 from osgeo import gdal
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsFeature, QgsFields, QgsField, QgsGeometry, QgsPoint
 from processing.tools import vector, raster, dataobjects
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -53,8 +53,7 @@ class PointsFromLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_VECTOR))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_VECTOR))
 
         rasterPath = unicode(self.getParameterValue(self.INPUT_RASTER))
 
@@ -67,10 +66,8 @@ class PointsFromLines(GeoAlgorithm):
         fields.append(QgsField('line_id', QVariant.Int, '', 10, 0))
         fields.append(QgsField('point_id', QVariant.Int, '', 10, 0))
 
-        writer = self.getOutputFromName(
-                self.OUTPUT_LAYER).getVectorWriter(fields.toList(),
-                                                   QGis.WKBPoint,
-                                                   layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
+            fields.toList(), QGis.WKBPoint, layer.crs())
 
         outFeature = QgsFeature()
         outFeature.setFields(fields)
@@ -118,9 +115,7 @@ class PointsFromLines(GeoAlgorithm):
 
         del writer
 
-    def buildLine(self, startX, startY, endX, endY, geoTransform, writer,
-                  feature):
-        point = QgsPoint()
+    def buildLine(self, startX, startY, endX, endY, geoTransform, writer, feature):
         if startX == endX:
             if startY > endY:
                 (startY, endY) = (endY, startY)

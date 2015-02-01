@@ -26,8 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-from PyQt4.QtCore import *
-from qgis.core import *
 from processing.core.outputs import OutputTable
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.tools import dataobjects, vector
@@ -58,11 +56,9 @@ class StatisticsByCategories(GeoAlgorithm):
         self.addOutput(OutputTable(self.OUTPUT, self.tr('Statistics')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         valuesFieldName = self.getParameterValue(self.VALUES_FIELD_NAME)
-        categoriesFieldName = self.getParameterValue(
-                self.CATEGORIES_FIELD_NAME)
+        categoriesFieldName = self.getParameterValue(self.CATEGORIES_FIELD_NAME)
 
         output = self.getOutputFromName(self.OUTPUT)
         valuesField = layer.fieldNameIndex(valuesFieldName)

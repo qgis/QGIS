@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import math
-from qgis.core import *
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsDistanceArea
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputHTML
@@ -66,8 +66,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         self.addOutput(OutputNumber(self.Z_SCORE, self.tr('Z-Score')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POINTS))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         output = self.getOutputValue(self.OUTPUT)
 
         spatialIndex = vector.spatialindex(layer)
@@ -85,7 +84,7 @@ class NearestNeighbourAnalysis(GeoAlgorithm):
         total = 100.0 / float(len(features))
         for feat in features:
             neighbourID = spatialIndex.nearestNeighbor(
-                    feat.geometry().asPoint(), 2)[1]
+                feat.geometry().asPoint(), 2)[1]
             request = QgsFeatureRequest().setFilterFid(neighbourID)
             neighbour = layer.getFeatures(request).next()
             sumDist += distance.measureLine(neighbour.geometry().asPoint(),

@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsProject, QgsCoordinateTransform, QgsFeature, QgsGeometry
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -56,7 +55,7 @@ class ExportGeometryInfo(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+            self.getParameterValue(self.INPUT))
         method = self.getParameterValue(self.METHOD)
 
         geometryType = layer.geometryType()
@@ -81,8 +80,8 @@ class ExportGeometryInfo(GeoAlgorithm):
                     21, 6)
 
         writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fields.toList(),
-                        layer.dataProvider().geometryType(), layer.crs())
+            self.OUTPUT).getVectorWriter(fields.toList(),
+            layer.dataProvider().geometryType(), layer.crs())
 
         ellips = None
         crs = None

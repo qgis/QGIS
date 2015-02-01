@@ -23,43 +23,35 @@ __revision__ = '$Format:%H$'
 #
 # To recreate all tests, set rebuildTests to true
 
+import qgis
+
 import os
-import os.path
 import re
 import tempfile
 import inspect
 import time
 import test_qgsdelimitedtextprovider_wanted as want
 
-rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ;
+rebuildTests = 'REBUILD_DELIMITED_TEXT_TESTS' in os.environ
 
-import qgis
+from PyQt4.QtCore import (QCoreApplication,
+                          QUrl,
+                          QObject
+                          )
 
-from PyQt4.QtCore import (QVariant,
-                          QCoreApplication,
-                        QUrl,
-                        QObject
-                        )
-
-from qgis.core import (QGis,
-                        QgsProviderRegistry,
-                        QgsVectorLayer,
-                        QgsFeature,
-                        QgsFeatureRequest,
-                        QgsField,
-                        QgsGeometry,
-                        QgsRectangle,
-                        QgsPoint,
-                        QgsMessageLog)
+from qgis.core import (QgsProviderRegistry,
+                       QgsVectorLayer,
+                       QgsFeatureRequest,
+                       QgsRectangle,
+                       QgsMessageLog
+                       )
 
 from utilities import (getQgisTestApp,
                        TestCase,
                        unitTestDataPath,
                        unittest,
-                       compareWkt,
-                       #expectedFailure
+                       compareWkt
                        )
-
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
@@ -76,7 +68,7 @@ class MessageLogger( QObject ):
 
     def __init__( self, tag=None ):
         QObject.__init__(self)
-        self.log=[];
+        self.log=[]
         self.tag = tag
 
     def __enter__( self ):
@@ -87,7 +79,7 @@ class MessageLogger( QObject ):
         QgsMessageLog.instance().messageReceived.disconnect( self.logMessage )
 
     def logMessage( self, msg, tag, level ):
-        if tag == self.tag  or not self.tag:
+        if tag == self.tag or not self.tag:
             self.log.append(unicode(msg))
 
     def messages( self ):
@@ -122,9 +114,9 @@ def layerData( layer, request={}, offset=0 ):
         fielddata = dict ( (name, unicode(f[name]) ) for name in fields )
         g = f.geometry()
         if g:
-            fielddata[geomkey] = str(g.exportToWkt());
+            fielddata[geomkey] = str(g.exportToWkt())
         else:
-            fielddata[geomkey] = "None";
+            fielddata[geomkey] = "None"
 
         fielddata[fidkey] = f.id()
         id = fielddata[fields[0]]
@@ -144,8 +136,8 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
     # Create a layer for the specified file and query parameters
     # and return the data for the layer (fields, data)
 
-    filepath = os.path.join(unitTestDataPath("delimitedtext"),filename);
-    url = QUrl.fromLocalFile(filepath);
+    filepath = os.path.join(unitTestDataPath("delimitedtext"),filename)
+    url = QUrl.fromLocalFile(filepath)
     if not requests:
         requests=[{}]
     for k in params.keys():
@@ -187,7 +179,7 @@ def delimitedTextData( testname, filename, requests, verbose, **params ):
             filelogname = 'temp_file' if 'tmp' in filename.lower() else filename
             msg = re.sub(r'file\s+.*'+re.escape(filename),'file '+filelogname,msg)
             msg = msg.replace(filepath,filelogname)
-            log.append(msg);
+            log.append(msg)
         return dict( fields=fields, fieldTypes=fieldTypes, data=data, log=log, uri=uri)
 
 def printWanted( testname, result ):
@@ -209,8 +201,8 @@ def printWanted( testname, result ):
         print prefix+"    {0}: {{".format(repr(k))
         for f in fields:
             print prefix+"        "+repr(f)+": "+repr(row[f])+","
-        print prefix+"        },";
-    print prefix+"    }";
+        print prefix+"        },"
+    print prefix+"    }"
 
     print prefix+"wanted['log']=["
     for msg in log:
@@ -232,7 +224,7 @@ def recordDifference( record1, record2 ):
                 return "Geometry differs: {0:.50} versus {1:.50}".format(r1k,r2k)
         else:
             if record1[k] != record2[k]:
-                return "Field {0} differs: {1:.50} versus {2:.50}".format(k,repr(r1k),repr(r2k));
+                return "Field {0} differs: {1:.50} versus {2:.50}".format(k,repr(r1k),repr(r2k))
     for k in record2.keys():
         if k not in record1:
             return "Output contains extra field {0} is missing".format(k)
@@ -242,7 +234,7 @@ def runTest( file, requests, **params ):
     # No point doing test if haven't got the right SIP vesion
     if sipversion != sipwanted:
         return
-    testname=inspect.stack()[1][3];
+    testname=inspect.stack()[1][3]
     verbose = not rebuildTests
     if verbose:
         print "Running test:",testname
@@ -312,7 +304,7 @@ class TestQgsDelimitedTextProvider(TestCase):
     def test_001_provider_defined( self ):
         registry=QgsProviderRegistry.instance()
         metadata = registry.providerMetadata('delimitedtext')
-        assert metadata != None, "Delimited text provider is not installed"
+        assert metadata is not None, "Delimited text provider is not installed"
         assert sipversion==sipwanted,"SIP version "+sipversion+" -  require version "+sipwanted+" for delimited text tests"
 
     def test_002_load_csv_file(self):
@@ -525,23 +517,27 @@ class TestQgsDelimitedTextProvider(TestCase):
         (filehandle,filename) = tempfile.mkstemp()
         with os.fdopen(filehandle,"w") as f:
             f.write("id,name\n1,rabbit\n2,pooh\n")
+
         def appendfile( layer ):
             with file(filename,'a') as f:
                 f.write('3,tigger\n')
             # print "Appended to file - sleeping"
-            time.sleep(1);
+            time.sleep(1)
             QCoreApplication.instance().processEvents()
+
         def rewritefile( layer ):
             with file(filename,'w') as f:
                 f.write("name,size,id\ntoad,small,5\nmole,medium,6\nbadger,big,7\n")
             # print "Rewritten file - sleeping"
-            time.sleep(1);
+            time.sleep(1)
             QCoreApplication.instance().processEvents()
+
         def deletefile( layer ):
             os.remove(filename)
             # print "Deleted file - sleeping"
-            time.sleep(1);
+            time.sleep(1)
             QCoreApplication.instance().processEvents()
+
         params={'geomType': 'none', 'type': 'csv', 'watchFile' : 'yes' }
         requests=[
             {'fid': 3},
@@ -561,7 +557,7 @@ class TestQgsDelimitedTextProvider(TestCase):
             {},
             rewritefile,
             {'fid': 2},
-            ]
+        ]
         runTest(filename,requests,**params)
 
     def test_030_filter_rect_xy_spatial_index(self):

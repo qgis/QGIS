@@ -40,7 +40,7 @@ class lascolor(LAStoolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lascolor"
         self.group = "LAStools"
-        self.addParametersVerboseGUI();
+        self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParameter(ParameterRaster(lascolor.ORTHO,
             self.tr("Input ortho")))
@@ -52,7 +52,7 @@ class lascolor(LAStoolsAlgorithm):
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         ortho = self.getParameterValue(lascolor.ORTHO)
-        if ortho != None:
+        if ortho is not None:
             commands.append("-image")
             commands.append(ortho)
         self.addParametersPointOutputCommands(commands)

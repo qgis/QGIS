@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeatureRequest, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -56,15 +55,18 @@ class ExtractByLocation(GeoAlgorithm):
         self.addParameter(ParameterVector(self.INTERSECT,
             self.tr('Additional layer (intersection layer)'),
             [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterBoolean(self.TOUCHES,
+        self.addParameter(ParameterBoolean(
+            self.TOUCHES,
             self.tr('Include input features that touch the selection features'),
-                          [True]))
-        self.addParameter(ParameterBoolean(self.OVERLAPS,
+            [True]))
+        self.addParameter(ParameterBoolean(
+            self.OVERLAPS,
             self.tr('Include input features that overlap/cross the selection features'),
-                          [True]))
-        self.addParameter(ParameterBoolean(self.WITHIN,
+            [True]))
+        self.addParameter(ParameterBoolean(
+            self.WITHIN,
             self.tr('Include input features completely within the selection features'),
-                          [True]))
+            [True]))
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection')))
 
     def processAlgorithm(self, progress):

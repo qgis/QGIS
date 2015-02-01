@@ -12,23 +12,17 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
-
-from PyQt4.QtCore import QDir
 
 from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
-                       QgsPoint,
-                       QgsVectorFileWriter,
-                       QgsCoordinateReferenceSystem)
+                       QgsPoint
+                       )
 
-from utilities import (#unitTestDataPath,
-                       getQgisTestApp,
+from utilities import (getQgisTestApp,
                        TestCase,
                        unittest,
-                       #expectedFailure,
                        writeShape
                        )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -42,7 +36,7 @@ class TestQgsVectorLayer(TestCase):
         """Check we can write a vector file."""
         self.mMemoryLayer = QgsVectorLayer(
             ('Point?crs=epsg:4326&field=name:string(20)&'
-            'field=age:integer&field=size:double&index=yes'),
+             'field=age:integer&field=size:double&index=yes'),
             'test',
             'memory')
 
@@ -54,7 +48,7 @@ class TestQgsVectorLayer(TestCase):
         ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(10,10)))
         ft.setAttributes([ 'Johny', 20, 0.3 ])
         myResult, myFeatures = myProvider.addFeatures([ft])
-        assert myResult == True
+        assert myResult
         assert len(myFeatures) > 0
 
         writeShape(self.mMemoryLayer, 'writetest.shp')

@@ -28,10 +28,10 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 import ftools_utils
-from qgis.core import *
+from qgis.core import QGis, QgsFeature, QgsGeometry, QgsFeatureRequest
 from ui_frmSelectByLocation import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -48,7 +48,6 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk = self.buttonBox.button( QDialogButtonBox.Ok )
         # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inPolygon.addItems(layers)
         self.inPoint.addItems(layers)
@@ -134,7 +133,7 @@ class Dialog(QDialog, Ui_Dialog):
                 self.progressBar.setValue(self.progressBar.value()+1)
         else:
             self.progressBar.setMaximum(selectProvider.featureCount())
-	    selectFit = selectProvider.getFeatures()
+            selectFit = selectProvider.getFeatures()
             while selectFit.nextFeature(feat):
                 geom = QgsGeometry(feat.geometry())
                 intersects = index.intersects(geom.boundingBox())

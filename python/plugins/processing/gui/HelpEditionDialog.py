@@ -29,9 +29,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+
+from PyQt4.QtGui import QDialog, QMessageBox, QTreeWidgetItem
+
 from processing.ui.ui_DlgHelpEdition import Ui_DlgHelpEdition
 from processing.core.ProcessingLog import ProcessingLog
 

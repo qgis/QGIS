@@ -33,8 +33,8 @@ __revision__ = '$Format:%H$'
 import os
 import locale
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QCoreApplication, QVariant
+from PyQt4.QtGui import QWidget, QLayout, QVBoxLayout, QHBoxLayout, QToolButton, QIcon, QLabel, QCheckBox, QComboBox, QLineEdit, QPlainTextEdit
 
 from processing.core.ProcessingConfig import ProcessingConfig
 
@@ -214,7 +214,7 @@ class ParametersPanel(QWidget, Ui_Form):
             if self.somethingDependsOnThisParameter(param) or self.alg.allowOnlyOpenedLayers:
                 item = QComboBox()
                 layers = dataobjects.getVectorLayers(param.shapetype)
-                layers.sort(key = lambda lay: lay.name())
+                layers.sort(key=lambda lay: lay.name())
                 if param.optional:
                     item.addItem(self.NOT_SELECTED, None)
                 for layer in layers:
@@ -313,7 +313,7 @@ class ParametersPanel(QWidget, Ui_Form):
             if param.multiline:
                 verticalLayout = QVBoxLayout()
                 verticalLayout.setSizeConstraint(
-                        QLayout.SetDefaultConstraint)
+                    QLayout.SetDefaultConstraint)
                 textEdit = QPlainTextEdit()
                 textEdit.setPlainText(param.default)
                 verticalLayout.addWidget(textEdit)
@@ -331,7 +331,7 @@ class ParametersPanel(QWidget, Ui_Form):
         sender = self.sender()
         if not isinstance(sender, QComboBox):
             return
-        if not sender.name in self.dependentItems:
+        if sender.name not in self.dependentItems:
             return
         layer = sender.itemData(sender.currentIndex())
         children = self.dependentItems[sender.name]

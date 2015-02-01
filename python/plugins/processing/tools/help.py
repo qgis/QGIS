@@ -27,8 +27,7 @@ import os
 import codecs
 
 from processing.core.Processing import Processing
-from processing.core.parameters import *
-
+from processing.core.parameters import ParameterMultipleInput, ParameterTableField, ParameterVector, ParameterSelection
 from processing.tools.system import mkdir
 
 
@@ -41,8 +40,7 @@ def createBaseHelpFile(alg, folder):
     groupName = groupName.replace(' ', '_')
     cmdLineName = alg.commandLineName()
     algName = cmdLineName[cmdLineName.find(':') + 1:].lower()
-    validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
+    validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_'
     safeGroupName = ''.join(c for c in groupName if c in validChars)
     safeAlgName = ''.join(c for c in algName if c in validChars)
 
@@ -60,8 +58,7 @@ def createBaseHelpFile(alg, folder):
         f.write('Parameters\n')
         f.write('----------\n\n')
         for p in alg.parameters:
-            if isinstance(p, (ParameterMultipleInput,
-                    ParameterTableField, ParameterVector)):
+            if isinstance(p, (ParameterMultipleInput, ParameterTableField, ParameterVector)):
                 f.write('``{}`` [{}: {}]\n'.format(p.description, p.typeName(), p.dataType()))
             else:
                 f.write('``{}`` [{}]\n'.format(p.description, p.typeName()))

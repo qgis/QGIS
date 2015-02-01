@@ -26,13 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4 import QtGui
+
+from PyQt4.QtGui import QIcon
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import ParameterRaster
@@ -51,7 +49,7 @@ from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputHTML
 from processing.core.outputs import OutputFile
-from processing.tools.system import *
+from processing.tools.system import isWindows
 from processing.script.WrongScriptException import WrongScriptException
 from RUtils import RUtils
 
@@ -76,7 +74,7 @@ class RAlgorithm(GeoAlgorithm):
             self.defineCharacteristicsFromFile()
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/r.png')
+        return QIcon(os.path.dirname(__file__) + '/../../images/r.png')
 
     def defineCharacteristicsFromScript(self):
         lines = self.script.split('\n')
@@ -114,7 +112,7 @@ class RAlgorithm(GeoAlgorithm):
                 self.verboseCommands.append(line[1:])
                 if not self.showConsoleOutput:
                     self.addOutput(OutputHTML(RAlgorithm.R_CONSOLE_OUTPUT,
-                        self.tr('R Console Output')))
+                                              self.tr('R Console Output')))
                 self.showConsoleOutput = True
             else:
                 if line == '':
@@ -162,11 +160,11 @@ class RAlgorithm(GeoAlgorithm):
             param = ParameterTable(tokens[0], desc, False)
         elif tokens[1].lower().strip().startswith('multiple raster'):
             param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_RASTER)
+                                           ParameterMultipleInput.TYPE_RASTER)
             param.optional = False
         elif tokens[1].lower().strip() == 'multiple vector':
             param = ParameterMultipleInput(tokens[0], desc,
-                    ParameterMultipleInput.TYPE_VECTOR_ANY)
+                                           ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
         elif tokens[1].lower().strip().startswith('selection'):
             options = tokens[1].strip()[len('selection'):].split(';')
@@ -323,7 +321,7 @@ class RAlgorithm(GeoAlgorithm):
                 value = param.value
                 if not value.lower().endswith('csv'):
                     raise GeoAlgorithmExecutionException(
-                            'Unsupported input file format.\n' + value)
+                        'Unsupported input file format.\n' + value)
                 if self.passFileNames:
                     commands.append(param.name + ' = "' + value + '"')
                 else:
@@ -347,32 +345,32 @@ class RAlgorithm(GeoAlgorithm):
                         layer = layer.replace('\\', '/')
                         if self.passFileNames:
                             commands.append('tempvar' + str(iLayer) + ' <- "'
-                                    + layer + '"')
+                                            + layer + '"')
                         elif self.useRasterPackage:
                             commands.append('tempvar' + str(iLayer) + ' <- '
-                                    + 'brick("' + layer + '")')
+                                            + 'brick("' + layer + '")')
                         else:
                             commands.append('tempvar' + str(iLayer) + ' <- '
-                                    + 'readGDAL("' + layer + '")')
+                                            + 'readGDAL("' + layer + '")')
                         iLayer += 1
                 else:
                     exported = param.getSafeExportedLayers()
                     layers = exported.split(';')
                     for layer in layers:
                         if not layer.lower().endswith('shp') \
-                            and not self.passFileNames:
+                           and not self.passFileNames:
                             raise GeoAlgorithmExecutionException(
-                                    'Unsupported input file format.\n' + layer)
+                                'Unsupported input file format.\n' + layer)
                         layer = layer.replace('\\', '/')
                         filename = os.path.basename(layer)
                         filename = filename[:-4]
                         if self.passFileNames:
                             commands.append('tempvar' + str(iLayer) + ' <- "'
-                                    + layer + '"')
+                                            + layer + '"')
                         else:
                             commands.append('tempvar' + str(iLayer) + ' <- '
-                                    + 'readOGR("' + layer + '",layer="'
-                                    + filename + '")')
+                                            + 'readOGR("' + layer + '",layer="'
+                                            + filename + '")')
                         iLayer += 1
                 s = ''
                 s += param.name

@@ -25,11 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 
@@ -71,7 +68,7 @@ class Merge(GeoAlgorithm):
                 found = None
                 for dfield in fields:
                     if dfield.name() == sfield.name() and \
-                            dfield.type() == sfield.type():
+                       dfield.type() == sfield.type():
                         found = dfield
                         break
 
@@ -89,7 +86,7 @@ class Merge(GeoAlgorithm):
                 i = 0
                 for sfield in layer.pendingFields():
                     if sfield.name() == dfield.name() and \
-                            sfield.type() == dfield.type():
+                       sfield.type() == dfield.type():
                         idx[dfield] = i
                         break
                     i += 1

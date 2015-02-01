@@ -13,33 +13,26 @@ __copyright__ = 'Copyright 2014, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-from utilities import (
-            unittest,
-            TestCase,
-            getQgisTestApp,
-            )
-from qgis.core import (
-            QgsGraduatedSymbolRendererV2,
-            QgsRendererRangeV2,
-            QgsRendererRangeV2LabelFormat,
-            QgsMarkerSymbolV2,
-            QgsVectorGradientColorRampV2,
-            QgsVectorLayer,
-            QgsFeature,
-            QgsGeometry,
-            QgsPoint,
-            QgsSymbolV2,
-            QgsSymbolLayerV2Utils,
-            )
-from PyQt4.QtCore import (
-            Qt,
-            )
-from PyQt4.QtXml import (
-            QDomDocument,
-            )
-from PyQt4.QtGui import (
-            QColor,
-            )
+
+from utilities import (unittest,
+                       TestCase,
+                       getQgisTestApp,
+                       )
+from qgis.core import (QgsGraduatedSymbolRendererV2,
+                       QgsRendererRangeV2,
+                       QgsRendererRangeV2LabelFormat,
+                       QgsMarkerSymbolV2,
+                       QgsVectorGradientColorRampV2,
+                       QgsVectorLayer,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPoint,
+                       QgsSymbolV2,
+                       QgsSymbolLayerV2Utils,
+                       )
+from PyQt4.QtCore import Qt
+from PyQt4.QtXml import QDomDocument
+from PyQt4.QtGui import QColor
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
@@ -76,7 +69,7 @@ def createColorRamp():
     return QgsVectorGradientColorRampV2(
         QColor(255,0,0),
         QColor(0,0,255)
-        )
+    )
 
 def createLabelFormat():
     format=QgsRendererRangeV2LabelFormat()
@@ -118,7 +111,7 @@ def dumpRangeList( rlist, breaksOnly=False,labelsOnly=False ):
             r.label(),
             r.symbol().dump(),
             r.renderState(),
-            ) + ","
+        ) + ","
     return rstr+')'
 
 # Crude dump for deterministic ramp - just dumps colors at a range of values
@@ -194,8 +187,8 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         self.assertTrue(format.trimTrailingZeroes(),"TrimTrailingZeroes getter/setter failed")
         format.setTrimTrailingZeroes(False)
         self.assertFalse(format.trimTrailingZeroes(),"TrimTrailingZeroes getter/setter failed")
-        minprecision=-6;
-        maxprecision=15;
+        minprecision=-6
+        maxprecision=15
         self.assertEqual(QgsRendererRangeV2LabelFormat.MinPrecision,minprecision,"Minimum precision != -6")
         self.assertEqual(QgsRendererRangeV2LabelFormat.MaxPrecision,maxprecision,"Maximum precision != 15")
         format.setPrecision(-10)
@@ -232,10 +225,9 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             format.setPrecision(precision)
             format.setTrimTrailingZeroes(trim)
             result=format.formatNumber(value)
-            testname="{0}:{1}:{2}".format(precision,trim,value)
             self.assertEqual(result,expected,
                              "Number format error {0}:{1}:{2} => {3}".format(
-                             precision,trim,value,result))
+                                 precision,trim,value,result))
 
         # Label tests - label format, expected result.
         # Labels will be evaluated with lower=1.23 upper=2.34, precision=2
@@ -247,7 +239,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             ("%1%1","1.231.23"),
             ("from %1 to %2 metres","from 1.23 to 2.34 metres"),
             ("from %2 to %1 metres","from 2.34 to 1.23 metres"),
-            )
+        )
         format.setPrecision(2)
         format.setTrimTrailingZeroes(False)
         lower=1.232
@@ -266,7 +258,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         format.setFormat(label)
         result=format.labelForRange(range)
         self.assertEqual(result,ltests[0][1],"Label for range error {0} => {1}".format(
-                label,result))
+                         label,result))
 
     def testQgsGraduatedSymbolRendererV2_1(self):
         """Test QgsGraduatedSymbolRendererV2: Basic get/set functions """
@@ -289,7 +281,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             QgsGraduatedSymbolRendererV2.Jenks,
             QgsGraduatedSymbolRendererV2.Pretty,
             QgsGraduatedSymbolRendererV2.StdDev,
-            ):
+        ):
             renderer.setMode(m)
             self.assertEqual(m,renderer.mode(),"Get/set renderer mode")
 
@@ -309,24 +301,24 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
 
         renderer.setInvertedColorRamp(True)
         self.assertTrue(renderer.invertedColorRamp(),
-            "Get/set renderer inverted color ramp")
+                        "Get/set renderer inverted color ramp")
         renderer.setInvertedColorRamp(False)
         self.assertFalse(renderer.invertedColorRamp(),
-            "Get/set renderer inverted color ramp")
+                         "Get/set renderer inverted color ramp")
 
         value='"value"*2'
         exp=QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(value)
         valuestr=QgsSymbolLayerV2Utils.fieldOrExpressionFromExpression(exp)
         renderer.setRotationField(value)
         self.assertEqual(valuestr,renderer.rotationField(),
-            "Get/set renderer rotation field")
+                         "Get/set renderer rotation field")
 
         value='"value"*3'
         exp=QgsSymbolLayerV2Utils.fieldOrExpressionToExpression(value)
         valuestr=QgsSymbolLayerV2Utils.fieldOrExpressionFromExpression(exp)
         renderer.setSizeScaleField(value)
         self.assertEqual(valuestr,renderer.sizeScaleField(),
-            "Get/set renderer size scale field")
+                         "Get/set renderer size scale field")
 
 
         renderer.setSourceColorRamp(ramp)
@@ -338,10 +330,10 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         for sm in (
             QgsSymbolV2.ScaleArea,
             QgsSymbolV2.ScaleDiameter,
-            ):
+        ):
             renderer.setScaleMethod(sm)
             self.assertEqual(str(sm),str(renderer.scaleMethod()),
-                "Get/set renderer scale method")
+                             "Get/set renderer scale method")
 
 
 
@@ -374,7 +366,6 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         # (Update label for sorting tests)
         renderer.updateRangeLabel(3,'Another range')
 
-        rangeListStr=dumpRangeList(renderer.ranges())
         self.assertEqual(
             dumpRangeLabels(renderer.ranges()),
             '(0.0 - 0.0,Second range,Third range,Another range,)',
@@ -391,7 +382,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),
             "clone function doesn't replicate renderer properly"
-             )
+        )
 
         # Check save and reload from Dom works
 
@@ -402,7 +393,7 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),
             "Save/create from DOM doesn't replicate renderer properly"
-             )
+        )
 
         # Check sorting
 
@@ -495,4 +486,4 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
         # symbolForFeature correctly selects range
 
 if __name__ == "__main__":
-	unittest.main()
+        unittest.main()

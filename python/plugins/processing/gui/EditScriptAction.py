@@ -55,4 +55,3 @@ class EditScriptAction(ContextAction):
                 self.toolbox.updateProvider('script')
             elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
                 self.toolbox.updateProvider('r')
-

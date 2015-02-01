@@ -64,7 +64,7 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         """
         AlgorithmProvider.unload(self)
         ProcessingConfig.removeSetting(
-                ExampleAlgorithmProvider.MY_DUMMY_SETTING)
+            ExampleAlgorithmProvider.MY_DUMMY_SETTING)
 
     def getName(self):
         """This is the name that will appear on the toolbox group.

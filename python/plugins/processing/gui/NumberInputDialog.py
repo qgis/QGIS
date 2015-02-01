@@ -25,9 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtGui import QDialog, QTreeWidgetItem, QMessageBox
+from qgis.core import QgsRasterLayer
 
 from qgis.utils import iface
 from processing.tools import dataobjects
@@ -43,7 +42,7 @@ class NumberInputDialog(QDialog, Ui_DlgNumberInput):
 
         if hasattr(self.leFormula, 'setPlaceholderText'):
             self.leFormula.setPlaceholderText(
-                    self.tr('[Enter your formula here]'))
+                self.tr('[Enter your formula here]'))
 
         self.treeValues.doubleClicked.connect(self.addValue)
 

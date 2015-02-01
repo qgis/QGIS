@@ -25,7 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterSelection
@@ -82,7 +81,7 @@ class warp(GdalAlgorithm):
         arguments.append(str(crsId))
         arguments.append('-r')
         arguments.append(
-                self.METHOD_OPTIONS[self.getParameterValue(self.METHOD)])
+            self.METHOD_OPTIONS[self.getParameterValue(self.METHOD)])
         arguments.append('-of')
         out = self.getOutputValue(self.OUTPUT)
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))

@@ -64,26 +64,26 @@ class GridMetrics(FusionAlgorithm):
         self.addParameter(ParameterNumber(
             self.CELLSIZE, self.tr('Cellsize')))
 
-        self.addOutput(OutputFile(self.OUTPUT_CSV_ELEVATION,
-            self.tr('Output table with grid metrics')))
+        self.addOutput(OutputFile(
+            self.OUTPUT_CSV_ELEVATION, self.tr('Output table with grid metrics')))
 
-        output_csv_intensity = OutputFile(self.OUTPUT_CSV_INTENSITY,
-            self.tr('OUTPUT CSV INTENSITY'))
+        output_csv_intensity = OutputFile(
+            self.OUTPUT_CSV_INTENSITY, self.tr('OUTPUT CSV INTENSITY'))
         output_csv_intensity.hidden = True
         self.addOutput(output_csv_intensity)
 
-        output_txt_elevation = OutputFile(self.OUTPUT_TXT_ELEVATION,
-            self.tr('OUTPUT CSV INTENSITY'))
+        output_txt_elevation = OutputFile(
+            self.OUTPUT_TXT_ELEVATION, self.tr('OUTPUT CSV INTENSITY'))
         output_txt_elevation.hidden = True
         self.addOutput(output_txt_elevation)
 
-        output_txt_intensity = OutputFile(self.OUTPUT_TXT_INTENSITY,
-            self.tr('OUTPUT CSV INTENSITY'))
+        output_txt_intensity = OutputFile(
+            self.OUTPUT_TXT_INTENSITY, self.tr('OUTPUT CSV INTENSITY'))
         output_txt_intensity.hidden = True
         self.addOutput(output_txt_intensity)
 
-        outlier = ParameterString(self.OUTLIER,
-            self.tr('Outlier:low,high'), '', False, True)
+        outlier = ParameterString(
+            self.OUTLIER, self.tr('Outlier:low,high'), '', False, True)
         outlier.isAdvanced = True
         self.addParameter(outlier)
         first = ParameterBoolean(self.FIRST, self.tr('First'), False)
@@ -92,8 +92,8 @@ class GridMetrics(FusionAlgorithm):
         minht = ParameterString(self.MINHT, self.tr('Htmin'), '', False, True)
         minht.isAdvanced = True
         self.addParameter(minht)
-        class_var = ParameterString(self.CLASS,
-            self.tr('Class (set blank if not used)'), '', False, True)
+        class_var = ParameterString(
+            self.CLASS, self.tr('Class (set blank if not used)'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
 

@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 import os
 
 from osgeo import gdal, osr
-from PyQt4.QtGui import *
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster

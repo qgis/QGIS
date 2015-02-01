@@ -12,7 +12,7 @@ def test_002_load_csv_file():
             'field_5': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Quoted field',
@@ -21,7 +21,7 @@ def test_002_load_csv_file():
             'field_5': u'NULL',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Escaped quotes',
@@ -30,7 +30,7 @@ def test_002_load_csv_file():
             'field_5': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Quoted newlines',
@@ -39,7 +39,7 @@ def test_002_load_csv_file():
             'field_5': u'NULL',
             '#fid': 5L,
             '#geometry': 'None',
-            },
+        },
         9L: {
             'id': u'5',
             'description': u'Extra fields',
@@ -48,7 +48,7 @@ def test_002_load_csv_file():
             'field_5': u'message',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         10L: {
             'id': u'6',
             'description': u'Missing fields',
@@ -57,10 +57,9 @@ def test_002_load_csv_file():
             'field_5': u'NULL',
             '#fid': 10L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -84,10 +83,9 @@ def test_003_field_naming():
             'field_12': u'last data',
             '#fid': 2L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -106,10 +104,9 @@ def test_004_max_fields():
             'field_7': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -127,7 +124,7 @@ def test_005_load_whitespace():
             'field_6': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Whitespace_at_start_of_line',
@@ -137,7 +134,7 @@ def test_005_load_whitespace():
             'field_6': u'NULL',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Tab_whitespace',
@@ -147,7 +144,7 @@ def test_005_load_whitespace():
             'field_6': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Multiple_whitespace_characters',
@@ -157,7 +154,7 @@ def test_005_load_whitespace():
             'field_6': u'NULL',
             '#fid': 5L,
             '#geometry': 'None',
-            },
+        },
         6L: {
             'id': u'5',
             'description': u'Extra_fields',
@@ -167,7 +164,7 @@ def test_005_load_whitespace():
             'field_6': u'rubbish5',
             '#fid': 6L,
             '#geometry': 'None',
-            },
+        },
         7L: {
             'id': u'6',
             'description': u'Missing_fields',
@@ -177,10 +174,9 @@ def test_005_load_whitespace():
             'field_6': u'NULL',
             '#fid': 7L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -198,7 +194,7 @@ def test_006_quote_escape():
             'field_6': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Using backslash escape on pipe',
@@ -208,7 +204,7 @@ def test_006_quote_escape():
             'field_6': u'NULL',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Backslash escaped newline',
@@ -218,7 +214,7 @@ def test_006_quote_escape():
             'field_6': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         7L: {
             'id': u'4',
             'description': u'Empty field',
@@ -228,7 +224,7 @@ def test_006_quote_escape():
             'field_6': u'NULL',
             '#fid': 7L,
             '#geometry': 'None',
-            },
+        },
         8L: {
             'id': u'5',
             'description': u'Quoted field',
@@ -238,7 +234,7 @@ def test_006_quote_escape():
             'field_6': u'NULL',
             '#fid': 8L,
             '#geometry': 'None',
-            },
+        },
         9L: {
             'id': u'6',
             'description': u'Escaped quote',
@@ -248,7 +244,7 @@ def test_006_quote_escape():
             'field_6': u'NULL',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         10L: {
             'id': u'7',
             'description': u'Missing fields',
@@ -258,7 +254,7 @@ def test_006_quote_escape():
             'field_6': u'NULL',
             '#fid': 10L,
             '#geometry': 'None',
-            },
+        },
         11L: {
             'id': u'8',
             'description': u'Extra fields',
@@ -268,10 +264,9 @@ def test_006_quote_escape():
             'field_6': u'more',
             '#fid': 11L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -287,7 +282,7 @@ def test_007_multiple_quote():
             'info': u'info1',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Multiple quotes 2',
@@ -295,7 +290,7 @@ def test_007_multiple_quote():
             'info': u'info2',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Leading and following whitespace',
@@ -303,7 +298,7 @@ def test_007_multiple_quote():
             'info': u'info3',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Embedded quotes 1',
@@ -311,7 +306,7 @@ def test_007_multiple_quote():
             'info': u'info4',
             '#fid': 5L,
             '#geometry': 'None',
-            },
+        },
         6L: {
             'id': u'5',
             'description': u'Embedded quotes 2',
@@ -319,7 +314,7 @@ def test_007_multiple_quote():
             'info': u'info5',
             '#fid': 6L,
             '#geometry': 'None',
-            },
+        },
         10L: {
             'id': u'9',
             'description': u'Final record',
@@ -327,8 +322,8 @@ def test_007_multiple_quote():
             'info': u'info9',
             '#fid': 10L,
             '#geometry': 'None',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file test.quote',
         u'3 records discarded due to invalid format',
@@ -336,7 +331,7 @@ def test_007_multiple_quote():
         u'Invalid record format at line 7',
         u'Invalid record format at line 8',
         u'Invalid record format at line 9',
-        ]
+    ]
     return wanted
 
 
@@ -352,15 +347,15 @@ def test_008_badly_formed_quotes():
             'info': u'inf3',
             '#fid': 4L,
             '#geometry': 'None',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file test.badquote',
         u'2 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 2',
         u'Invalid record format at line 5',
-        ]
+    ]
     return wanted
 
 
@@ -377,10 +372,9 @@ def test_009_skip_lines():
             'field_3': u'data3',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -396,7 +390,7 @@ def test_010_read_coordinates():
             'geom_y': u'20.82',
             '#fid': 2L,
             '#geometry': 'POINT(10.5 20.82)',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Integer point',
@@ -404,7 +398,7 @@ def test_010_read_coordinates():
             'geom_y': u'22.0',
             '#fid': 3L,
             '#geometry': 'POINT(11.0 22.0)',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Final point',
@@ -412,14 +406,14 @@ def test_010_read_coordinates():
             'geom_y': u'23.0',
             '#fid': 5L,
             '#geometry': 'POINT(13.0 23.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testpt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid X or Y fields at line 4',
-        ]
+    ]
     return wanted
 
 
@@ -433,39 +427,39 @@ def test_011_read_wkt():
             'description': u'Point wkt',
             '#fid': 2L,
             '#geometry': 'POINT(10.0 20.0)',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Multipoint wkt',
             '#fid': 3L,
             '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
-            },
+        },
         9L: {
             'id': u'8',
             'description': u'EWKT prefix',
             '#fid': 9L,
             '#geometry': 'POINT(10.0 10.0)',
-            },
+        },
         10L: {
             'id': u'9',
             'description': u'Informix prefix',
             '#fid': 10L,
             '#geometry': 'POINT(10.0 10.0)',
-            },
+        },
         11L: {
             'id': u'10',
             'description': u'Measure in point',
             '#fid': 11L,
             '#geometry': 'POINT(10.0 20.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
-        ]
+    ]
     return wanted
 
 
@@ -479,39 +473,39 @@ def test_012_read_wkt_point():
             'description': u'Point wkt',
             '#fid': 2L,
             '#geometry': 'POINT(10.0 20.0)',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Multipoint wkt',
             '#fid': 3L,
             '#geometry': 'MULTIPOINT(10.0 20.0, 11.0 21.0)',
-            },
+        },
         9L: {
             'id': u'8',
             'description': u'EWKT prefix',
             '#fid': 9L,
             '#geometry': 'POINT(10.0 10.0)',
-            },
+        },
         10L: {
             'id': u'9',
             'description': u'Informix prefix',
             '#fid': 10L,
             '#geometry': 'POINT(10.0 10.0)',
-            },
+        },
         11L: {
             'id': u'10',
             'description': u'Measure in point',
             '#fid': 11L,
             '#geometry': 'POINT(10.0 20.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
-        ]
+    ]
     return wanted
 
 
@@ -525,39 +519,39 @@ def test_013_read_wkt_line():
             'description': u'Linestring wkt',
             '#fid': 4L,
             '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Multiline string wkt',
             '#fid': 5L,
             '#geometry': 'MULTILINESTRING((10.0 20.0, 11.0 21.0), (20.0 30.0, 21.0 31.0))',
-            },
+        },
         12L: {
             'id': u'11',
             'description': u'Measure in line',
             '#fid': 12L,
             '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
-            },
+        },
         13L: {
             'id': u'12',
             'description': u'Z in line',
             '#fid': 13L,
             '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
-            },
+        },
         14L: {
             'id': u'13',
             'description': u'Measure and Z in line',
             '#fid': 14L,
             '#geometry': 'LINESTRING(10.0 20.0, 11.0 21.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'7 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
-        ]
+    ]
     return wanted
 
 
@@ -571,21 +565,21 @@ def test_014_read_wkt_polygon():
             'description': u'Polygon wkt',
             '#fid': 6L,
             '#geometry': 'POLYGON((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0))',
-            },
+        },
         7L: {
             'id': u'6',
             'description': u'MultiPolygon wkt',
             '#fid': 7L,
             '#geometry': 'MULTIPOLYGON(((10.0 10.0,10.0 20.0,20.0 20.0,20.0 10.0,10.0 10.0),(14.0 14.0,14.0 16.0,16.0 16.0,14.0 14.0)),((30.0 30.0,30.0 35.0,35.0 35.0,30.0 30.0)))',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testwkt.csv',
         u'1 records discarded due to invalid geometry definitions',
         u'10 records discarded due to incompatible geometry types',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid WKT at line 8',
-        ]
+    ]
     return wanted
 
 
@@ -601,7 +595,7 @@ def test_015_read_dms_xy():
             'lat': u'35 51 20',
             '#fid': 3L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         4L: {
             'id': u'2',
             'description': u'Basic DMS string 2',
@@ -609,7 +603,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20',
             '#fid': 4L,
             '#geometry': 'POINT(1.09183347 35.85555556)',
-            },
+        },
         5L: {
             'id': u'3',
             'description': u'Basic DMS string 3',
@@ -617,7 +611,7 @@ def test_015_read_dms_xy():
             'lat': u'35 59 9.99',
             '#fid': 5L,
             '#geometry': 'POINT(1.09183333 35.98610833)',
-            },
+        },
         7L: {
             'id': u'4',
             'description': u'Prefix sign 1',
@@ -625,7 +619,7 @@ def test_015_read_dms_xy():
             'lat': u'e035 51 20',
             '#fid': 7L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         8L: {
             'id': u'5',
             'description': u'Prefix sign 2',
@@ -633,7 +627,7 @@ def test_015_read_dms_xy():
             'lat': u'E035 51 20',
             '#fid': 8L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         9L: {
             'id': u'6',
             'description': u'Prefix sign 3',
@@ -641,7 +635,7 @@ def test_015_read_dms_xy():
             'lat': u'E 035 51 20',
             '#fid': 9L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         10L: {
             'id': u'7',
             'description': u'Prefix sign 4',
@@ -649,7 +643,7 @@ def test_015_read_dms_xy():
             'lat': u'W035 51 20',
             '#fid': 10L,
             '#geometry': 'POINT(-1.09183333 -35.85555556)',
-            },
+        },
         11L: {
             'id': u'8',
             'description': u'Prefix sign 5',
@@ -657,7 +651,7 @@ def test_015_read_dms_xy():
             'lat': u'+035 51 20',
             '#fid': 11L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         12L: {
             'id': u'9',
             'description': u'Prefix sign 6',
@@ -665,7 +659,7 @@ def test_015_read_dms_xy():
             'lat': u'-035 51 20',
             '#fid': 12L,
             '#geometry': 'POINT(-1.09183333 -35.85555556)',
-            },
+        },
         14L: {
             'id': u'10',
             'description': u'Postfix sign 1',
@@ -673,7 +667,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20e',
             '#fid': 14L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         15L: {
             'id': u'11',
             'description': u'Postfix sign 2',
@@ -681,7 +675,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20E',
             '#fid': 15L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         16L: {
             'id': u'12',
             'description': u'Postfix sign 3',
@@ -689,7 +683,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20 E',
             '#fid': 16L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         17L: {
             'id': u'13',
             'description': u'Postfix sign 4',
@@ -697,7 +691,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20W',
             '#fid': 17L,
             '#geometry': 'POINT(-1.09183333 -35.85555556)',
-            },
+        },
         18L: {
             'id': u'14',
             'description': u'Postfix sign 5',
@@ -705,7 +699,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20+',
             '#fid': 18L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         19L: {
             'id': u'15',
             'description': u'Postfix sign 6',
@@ -713,7 +707,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20-',
             '#fid': 19L,
             '#geometry': 'POINT(-1.09183333 -35.85555556)',
-            },
+        },
         21L: {
             'id': u'16',
             'description': u'Leading and trailing blanks 1',
@@ -721,7 +715,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20   ',
             '#fid': 21L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         22L: {
             'id': u'17',
             'description': u'Leading and trailing blanks 2',
@@ -729,7 +723,7 @@ def test_015_read_dms_xy():
             'lat': u'035 51 20 E  ',
             '#fid': 22L,
             '#geometry': 'POINT(1.09183333 35.85555556)',
-            },
+        },
         24L: {
             'id': u'18',
             'description': u'Alternative characters for D,M,S',
@@ -737,7 +731,7 @@ def test_015_read_dms_xy():
             'lat': u"35d51'20",
             '#fid': 24L,
             '#geometry': 'POINT(-1.09183333 35.85555556)',
-            },
+        },
         25L: {
             'id': u'19',
             'description': u'Degrees/minutes format',
@@ -745,8 +739,8 @@ def test_015_read_dms_xy():
             'lat': u'4 55.03',
             '#fid': 25L,
             '#geometry': 'POINT(1.08716667 4.91716667)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testdms.csv',
         u'5 records discarded due to invalid geometry definitions',
@@ -756,7 +750,7 @@ def test_015_read_dms_xy():
         u'Invalid X or Y fields at line 29',
         u'Invalid X or Y fields at line 30',
         u'Invalid X or Y fields at line 31',
-        ]
+    ]
     return wanted
 
 
@@ -774,7 +768,7 @@ def test_016_decimal_point():
             'text field': u'Field with , in it',
             '#fid': 2L,
             '#geometry': 'POINT(10.0 20.0)',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Comma as decimal point 2',
@@ -784,10 +778,9 @@ def test_016_decimal_point():
             'text field': u'Plain text field',
             '#fid': 3L,
             '#geometry': 'POINT(12.0 25.003)',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -803,7 +796,7 @@ def test_017_regular_expression_1():
             'info': u'info',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Basic regular expression test 2',
@@ -811,10 +804,9 @@ def test_017_regular_expression_1():
             'info': u'info2',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -836,7 +828,7 @@ def test_018_regular_expression_2():
             'info': u'info',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'RE': u'RE',
@@ -850,10 +842,9 @@ def test_018_regular_expression_2():
             'info': u'info2',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -868,21 +859,21 @@ def test_019_regular_expression_3():
             'information': u'Some data',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Anchored regexp recovered',
             'information': u'Some data',
             '#fid': 4L,
             '#geometry': 'None',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testre2.txt',
         u'1 records discarded due to invalid format',
         u'The following lines were not loaded into QGIS due to errors:',
         u'Invalid record format at line 3',
-        ]
+    ]
     return wanted
 
 
@@ -903,10 +894,9 @@ def test_020_regular_expression_4():
             'field_7': u'e',
             '#fid': 2L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -923,10 +913,9 @@ def test_021_regular_expression_5():
             'field_3': u'ile',
             '#fid': 2L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -941,10 +930,9 @@ def test_022_utf8_encoded_file():
             'name': u'Field has \u0101cc\xe8nt\xe9d text',
             '#fid': 2L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -959,10 +947,9 @@ def test_023_latin1_encoded_file():
             'name': u'This test is \xa9',
             '#fid': 2L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -978,7 +965,7 @@ def test_024_filter_rect_xy():
             'y': u'35',
             '#fid': 2L,
             '#geometry': 'POINT(15.0 35.0)',
-            },
+        },
         10L: {
             'id': u'9',
             'description': u'Inside 2',
@@ -986,7 +973,7 @@ def test_024_filter_rect_xy():
             'y': u'45',
             '#fid': 10L,
             '#geometry': 'POINT(25.0 45.0)',
-            },
+        },
         1002L: {
             'id': u'1',
             'description': u'Inside',
@@ -994,7 +981,7 @@ def test_024_filter_rect_xy():
             'y': u'35',
             '#fid': 2L,
             '#geometry': 'POINT(15.0 35.0)',
-            },
+        },
         1010L: {
             'id': u'9',
             'description': u'Inside 2',
@@ -1002,11 +989,11 @@ def test_024_filter_rect_xy():
             'y': u'45',
             '#fid': 10L,
             '#geometry': 'POINT(25.0 45.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         'Request 2 did not return any data',
-        ]
+    ]
     return wanted
 
 
@@ -1020,53 +1007,53 @@ def test_025_filter_rect_wkt():
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         6L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         7L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
+        },
         1002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         1004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         1006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         'Request 2 did not return any data',
-        ]
+    ]
     return wanted
 
 
@@ -1083,7 +1070,7 @@ def test_026_filter_fid():
             'field_5': u'NULL',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         1009L: {
             'id': u'5',
             'description': u'Extra fields',
@@ -1092,7 +1079,7 @@ def test_026_filter_fid():
             'field_5': u'message',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         3003L: {
             'id': u'2',
             'description': u'Quoted field',
@@ -1101,11 +1088,11 @@ def test_026_filter_fid():
             'field_5': u'NULL',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
+        },
+    }
     wanted['log']=[
         'Request 2 did not return any data',
-        ]
+    ]
     return wanted
 
 
@@ -1122,7 +1109,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'None',
             'description': u'Quoted field',
@@ -1131,7 +1118,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'None',
             'description': u'Escaped quotes',
@@ -1140,7 +1127,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         5L: {
             'id': u'None',
             'description': u'Quoted newlines',
@@ -1149,7 +1136,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 5L,
             '#geometry': 'None',
-            },
+        },
         9L: {
             'id': u'None',
             'description': u'Extra fields',
@@ -1158,7 +1145,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         10L: {
             'id': u'None',
             'description': u'Missing fields',
@@ -1167,7 +1154,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 10L,
             '#geometry': 'None',
-            },
+        },
         1009L: {
             'id': u'5',
             'description': u'Extra fields',
@@ -1176,7 +1163,7 @@ def test_027_filter_attributes():
             'field_5': u'message',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         2009L: {
             'id': u'None',
             'description': u'Extra fields',
@@ -1185,7 +1172,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         3009L: {
             'id': u'None',
             'description': u'Extra fields',
@@ -1194,7 +1181,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         4009L: {
             'id': u'None',
             'description': u'Extra fields',
@@ -1203,7 +1190,7 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         5009L: {
             'id': u'None',
             'description': u'None',
@@ -1212,10 +1199,9 @@ def test_027_filter_attributes():
             'field_5': u'None',
             '#fid': 9L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -1232,7 +1218,7 @@ def test_028_substring_test():
             'field_5': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Escaped quotes',
@@ -1241,7 +1227,7 @@ def test_028_substring_test():
             'field_5': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         9L: {
             'id': u'5',
             'description': u'Extra fields',
@@ -1250,10 +1236,9 @@ def test_028_substring_test():
             'field_5': u'message',
             '#fid': 9L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -1268,92 +1253,92 @@ def test_029_file_watcher():
             'name': u'pooh',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         1002L: {
             'id': u'1',
             'description': u'rabbit',
             'name': u'rabbit',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         1003L: {
             'id': u'2',
             'description': u'pooh',
             'name': u'pooh',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         4003L: {
             'id': u'2',
             'description': u'pooh',
             'name': u'pooh',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         5004L: {
             'id': u'3',
             'description': u'tigger',
             'name': u'tigger',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         6002L: {
             'id': u'1',
             'description': u'rabbit',
             'name': u'rabbit',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         6003L: {
             'id': u'2',
             'description': u'pooh',
             'name': u'pooh',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         6004L: {
             'id': u'3',
             'description': u'tigger',
             'name': u'tigger',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         9002L: {
             'id': u'5',
             'description': u'toad',
             'name': u'toad',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         10002L: {
             'id': u'5',
             'description': u'toad',
             'name': u'toad',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         10003L: {
             'id': u'6',
             'description': u'mole',
             'name': u'mole',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         10004L: {
             'id': u'7',
             'description': u'badger',
             'name': u'badger',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         16002L: {
             'id': u'5',
             'description': u'toad',
             'name': u'toad',
             '#fid': 2L,
             '#geometry': 'None',
-            },
-        }
+        },
+    }
     wanted['log']=[
         'Request 2 did not return any data',
         'Request 7 did not return any data',
@@ -1366,7 +1351,7 @@ def test_029_file_watcher():
         u'The file has been updated by another application - reloading',
         u'Errors in file temp_file',
         u'The file has been updated by another application - reloading',
-        ]
+    ]
     return wanted
 
 
@@ -1382,7 +1367,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'35',
             '#fid': 2L,
             '#geometry': 'POINT(15.0 35.0)',
-            },
+        },
         10L: {
             'id': u'9',
             'description': u'Inside 2',
@@ -1390,7 +1375,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'45',
             '#fid': 10L,
             '#geometry': 'POINT(25.0 45.0)',
-            },
+        },
         1002L: {
             'id': u'1',
             'description': u'Inside',
@@ -1398,7 +1383,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'35',
             '#fid': 2L,
             '#geometry': 'POINT(15.0 35.0)',
-            },
+        },
         1010L: {
             'id': u'9',
             'description': u'Inside 2',
@@ -1406,7 +1391,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'45',
             '#fid': 10L,
             '#geometry': 'POINT(25.0 45.0)',
-            },
+        },
         3002L: {
             'id': u'1',
             'description': u'Inside',
@@ -1414,7 +1399,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'35',
             '#fid': 2L,
             '#geometry': 'POINT(15.0 35.0)',
-            },
+        },
         3003L: {
             'id': u'2',
             'description': u'Outside 1',
@@ -1422,7 +1407,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'35',
             '#fid': 3L,
             '#geometry': 'POINT(5.0 35.0)',
-            },
+        },
         3004L: {
             'id': u'3',
             'description': u'Outside 2',
@@ -1430,7 +1415,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'55',
             '#fid': 4L,
             '#geometry': 'POINT(5.0 55.0)',
-            },
+        },
         3005L: {
             'id': u'4',
             'description': u'Outside 3',
@@ -1438,7 +1423,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'55',
             '#fid': 5L,
             '#geometry': 'POINT(15.0 55.0)',
-            },
+        },
         3006L: {
             'id': u'5',
             'description': u'Outside 4',
@@ -1446,7 +1431,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'55',
             '#fid': 6L,
             '#geometry': 'POINT(35.0 55.0)',
-            },
+        },
         3007L: {
             'id': u'6',
             'description': u'Outside 5',
@@ -1454,7 +1439,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'45',
             '#fid': 7L,
             '#geometry': 'POINT(35.0 45.0)',
-            },
+        },
         3008L: {
             'id': u'7',
             'description': u'Outside 7',
@@ -1462,7 +1447,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'25',
             '#fid': 8L,
             '#geometry': 'POINT(35.0 25.0)',
-            },
+        },
         3009L: {
             'id': u'8',
             'description': u'Outside 8',
@@ -1470,7 +1455,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'25',
             '#fid': 9L,
             '#geometry': 'POINT(15.0 25.0)',
-            },
+        },
         3010L: {
             'id': u'9',
             'description': u'Inside 2',
@@ -1478,7 +1463,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'45',
             '#fid': 10L,
             '#geometry': 'POINT(25.0 45.0)',
-            },
+        },
         4002L: {
             'id': u'1',
             'description': u'Inside',
@@ -1486,7 +1471,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'35',
             '#fid': 2L,
             '#geometry': 'POINT(15.0 35.0)',
-            },
+        },
         4003L: {
             'id': u'2',
             'description': u'Outside 1',
@@ -1494,7 +1479,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'35',
             '#fid': 3L,
             '#geometry': 'POINT(5.0 35.0)',
-            },
+        },
         4004L: {
             'id': u'3',
             'description': u'Outside 2',
@@ -1502,7 +1487,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'55',
             '#fid': 4L,
             '#geometry': 'POINT(5.0 55.0)',
-            },
+        },
         4005L: {
             'id': u'4',
             'description': u'Outside 3',
@@ -1510,7 +1495,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'55',
             '#fid': 5L,
             '#geometry': 'POINT(15.0 55.0)',
-            },
+        },
         4006L: {
             'id': u'5',
             'description': u'Outside 4',
@@ -1518,7 +1503,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'55',
             '#fid': 6L,
             '#geometry': 'POINT(35.0 55.0)',
-            },
+        },
         4007L: {
             'id': u'6',
             'description': u'Outside 5',
@@ -1526,7 +1511,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'45',
             '#fid': 7L,
             '#geometry': 'POINT(35.0 45.0)',
-            },
+        },
         4008L: {
             'id': u'7',
             'description': u'Outside 7',
@@ -1534,7 +1519,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'25',
             '#fid': 8L,
             '#geometry': 'POINT(35.0 25.0)',
-            },
+        },
         4009L: {
             'id': u'8',
             'description': u'Outside 8',
@@ -1542,7 +1527,7 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'25',
             '#fid': 9L,
             '#geometry': 'POINT(15.0 25.0)',
-            },
+        },
         4010L: {
             'id': u'9',
             'description': u'Inside 2',
@@ -1550,11 +1535,11 @@ def test_030_filter_rect_xy_spatial_index():
             'y': u'45',
             '#fid': 10L,
             '#geometry': 'POINT(25.0 45.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         'Request 2 did not return any data',
-        ]
+    ]
     return wanted
 
 
@@ -1568,125 +1553,125 @@ def test_031_filter_rect_wkt_spatial_index():
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         6L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         7L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
+        },
         1002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         1004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         1006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         3002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         3003L: {
             'id': u'2',
             'description': u'Outside',
             '#fid': 3L,
             '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
-            },
+        },
         3004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         3005L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         3006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         3007L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
+        },
         4002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         4003L: {
             'id': u'2',
             'description': u'Outside',
             '#fid': 3L,
             '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
-            },
+        },
         4004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         4005L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         4006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         4007L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         'Request 2 did not return any data',
-        ]
+    ]
     return wanted
 
 
@@ -1700,191 +1685,191 @@ def test_032_filter_rect_wkt_create_spatial_index():
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         6L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         7L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
+        },
         1002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         1003L: {
             'id': u'2',
             'description': u'Outside',
             '#fid': 3L,
             '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
-            },
+        },
         1004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         1005L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         1006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         1007L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
+        },
         3002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         3004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         3005L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         3006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         3007L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
+        },
         4002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         4004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         4006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         6002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         6003L: {
             'id': u'2',
             'description': u'Outside',
             '#fid': 3L,
             '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
-            },
+        },
         6004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         6005L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         6006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         6007L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
+        },
         7002L: {
             'id': u'1',
             'description': u'Inside',
             '#fid': 2L,
             '#geometry': 'LINESTRING(12.0 32.0, 28.0 48.0)',
-            },
+        },
         7003L: {
             'id': u'2',
             'description': u'Outside',
             '#fid': 3L,
             '#geometry': 'LINESTRING(0.0 0.0, 0.0 10.0)',
-            },
+        },
         7004L: {
             'id': u'3',
             'description': u'Crossing',
             '#fid': 4L,
             '#geometry': 'LINESTRING(5.0 30.0, 30.0 55.0)',
-            },
+        },
         7005L: {
             'id': u'4',
             'description': u'Bounding box overlap',
             '#fid': 5L,
             '#geometry': 'LINESTRING(5.0 30.0, 5.0 55.0, 30.0 55.0)',
-            },
+        },
         7006L: {
             'id': u'5',
             'description': u'Crossing 2',
             '#fid': 6L,
             '#geometry': 'LINESTRING(25.0 35.0, 35.0 35.0)',
-            },
+        },
         7007L: {
             'id': u'6',
             'description': u'Bounding box overlap 2',
             '#fid': 7L,
             '#geometry': 'LINESTRING(28.0 29.0, 31.0 29.0, 31.0 33.0)',
-            },
-        }
+        },
+    }
     wanted['log']=[
         'Request 5 did not return any data',
-        ]
+    ]
     return wanted
 
 
@@ -1901,7 +1886,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Quoted field',
@@ -1910,7 +1895,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         4L: {
             'id': u'3',
             'description': u'Escaped quotes',
@@ -1919,7 +1904,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         5L: {
             'id': u'4',
             'description': u'Quoted newlines',
@@ -1928,7 +1913,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 5L,
             '#geometry': 'None',
-            },
+        },
         9L: {
             'id': u'5',
             'description': u'Extra fields',
@@ -1937,7 +1922,7 @@ def test_033_reset_subset_string():
             'field_5': u'message',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         10L: {
             'id': u'6',
             'description': u'Missing fields',
@@ -1946,7 +1931,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 10L,
             '#geometry': 'None',
-            },
+        },
         2002L: {
             'id': u'1',
             'description': u'Basic unquoted record',
@@ -1955,7 +1940,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         2004L: {
             'id': u'3',
             'description': u'Escaped quotes',
@@ -1964,7 +1949,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         2009L: {
             'id': u'5',
             'description': u'Extra fields',
@@ -1973,7 +1958,7 @@ def test_033_reset_subset_string():
             'field_5': u'message',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         4010L: {
             'id': u'6',
             'description': u'Missing fields',
@@ -1982,7 +1967,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 10L,
             '#geometry': 'None',
-            },
+        },
         6004L: {
             'id': u'3',
             'description': u'Escaped quotes',
@@ -1991,7 +1976,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         8002L: {
             'id': u'1',
             'description': u'Basic unquoted record',
@@ -2000,7 +1985,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         8004L: {
             'id': u'3',
             'description': u'Escaped quotes',
@@ -2009,7 +1994,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 4L,
             '#geometry': 'None',
-            },
+        },
         8009L: {
             'id': u'5',
             'description': u'Extra fields',
@@ -2018,7 +2003,7 @@ def test_033_reset_subset_string():
             'field_5': u'message',
             '#fid': 9L,
             '#geometry': 'None',
-            },
+        },
         10003L: {
             'id': u'2',
             'description': u'Quoted field',
@@ -2027,7 +2012,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 3L,
             '#geometry': 'None',
-            },
+        },
         10005L: {
             'id': u'4',
             'description': u'Quoted newlines',
@@ -2036,7 +2021,7 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 5L,
             '#geometry': 'None',
-            },
+        },
         10010L: {
             'id': u'6',
             'description': u'Missing fields',
@@ -2045,10 +2030,9 @@ def test_033_reset_subset_string():
             'field_5': u'NULL',
             '#fid': 10L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -2067,7 +2051,7 @@ def test_034_csvt_file():
             'f5': u'times',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Test csvt 2',
@@ -2078,10 +2062,9 @@ def test_034_csvt_file():
             'f5': u'80',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -2100,7 +2083,7 @@ def test_035_csvt_file2():
             'f5': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Test csvt 2',
@@ -2111,10 +2094,9 @@ def test_035_csvt_file2():
             'f5': u'80',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -2133,7 +2115,7 @@ def test_036_csvt_file_invalid_types():
             'f5': u'times',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Test csvt 2',
@@ -2144,12 +2126,12 @@ def test_036_csvt_file_invalid_types():
             'f5': u'80',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
+        },
+    }
     wanted['log']=[
         u'Errors in file testcsvt3.csv',
         u'File type string in testcsvt3.csvt is not correctly formatted',
-        ]
+    ]
     return wanted
 
 
@@ -2168,7 +2150,7 @@ def test_037_csvt_file_invalid_file():
             'f5': u'times',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Test csvt 2',
@@ -2179,9 +2161,7 @@ def test_037_csvt_file_invalid_file():
             'f5': u'80',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
-

@@ -23,10 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import QObject, Qt, SIGNAL, QCoreApplication, QDir
+from PyQt4.QtGui import QWidget, QMessageBox
 
 from ui_widgetTranslate import Ui_GdalToolsWidget as Ui_Widget
 from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
@@ -63,8 +61,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
       self.outputFormat = Utils.fillRasterOutputFormat()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
@@ -76,8 +73,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           (self.sdsCheck, SIGNAL("stateChanged(int)")),
           (self.srcwinEdit, SIGNAL("textChanged(const QString &)"), self.srcwinCheck),
           (self.prjwinEdit, SIGNAL("textChanged(const QString &)"), self.prjwinCheck)
-        ]
-      )
+      ])
 
       #self.connect(self.canvas, SIGNAL("layersChanged()"), self.fillInputLayerCombo)
       self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillTargetSRSEditDefault)
@@ -173,7 +169,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.outSelector.setFilename( outputDir )
 
   def fillTargetSRSEditDefault(self):
-      if self.inSelector.layer() == None:
+      if self.inSelector.layer() is None:
         return
       self.refreshTargetSRS()
 
@@ -210,7 +206,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           if len(coordList) == 4 and coordList[3]:
               try:
                   for x in coordList:
-                      test = int(x)
+                      int(x)
               except ValueError:
                   #print "Coordinates must be integer numbers."
                   QMessageBox.critical(self, self.tr("Translate - srcwin"), self.tr("Image coordinates (pixels) must be integer numbers."))
@@ -223,7 +219,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           if len(coordList) == 4 and coordList[3]:
               try:
                   for x in coordList:
-                      test = float(x)
+                      float(x)
               except ValueError:
                   #print "Coordinates must be integer numbers."
                   QMessageBox.critical(self, self.tr("Translate - prjwin"), self.tr("Image coordinates (geographic) must be numbers."))
@@ -299,7 +295,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
       for f in files:
         self.inFiles.append( inDir + "/" + f )
-        if outDir != None:
+        if outDir is not None:
           outFile = re.sub( "\.[a-zA-Z0-9]{2,4}", outExt, f )
           self.outFiles.append( outDir + "/" + outFile )
 

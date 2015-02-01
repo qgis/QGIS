@@ -28,12 +28,12 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QFile, QVariant
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
+from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint, QgsMapLayer, QgsVectorFileWriter, QgsDistanceArea, QgsMessageLog, QgsFields, QgsField
+from random import seed, random
 
-from qgis.core import *
-from random import *
-import math, ftools_utils
+import ftools_utils
 from ui_frmRandPoints import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -91,7 +91,6 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(1)
             outPath = self.outShape.text()
             self.progressBar.setValue(2.5)
-            outName = ftools_utils.getShapefileName( outPath )
             self.progressBar.setValue(5)
             mLayer = ftools_utils.getMapLayerByName(unicode(inName))
             if mLayer.type() == mLayer.VectorLayer:
@@ -200,11 +199,13 @@ class Dialog(QDialog, Ui_Dialog):
       if design == self.tr("unstratified"):
           ext = inLayer.extent()
           if inLayer.type() == QgsMapLayer.RasterLayer:
-              points = self.simpleRandom(int(value), ext, ext.xMinimum(),
-              ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+              points = self.simpleRandom(
+                  int(value), ext, ext.xMinimum(),
+                  ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
           else:
-              points = self.vectorRandom(int(value), inLayer,
-              ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
+              points = self.vectorRandom(
+                  int(value), inLayer,
+                  ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
       else:
         points, featErrors = self.loopThruPolygons(inLayer, value, design)
         if featErrors:

@@ -34,8 +34,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools.system import isWindows
@@ -148,13 +147,13 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 las2shp(), shp2las(), lasnoise(), lassplit(), las2las_filter(),
                 las2las_project(), las2las_transform(), lasoverage(), lasoverlap(),
                 lasquery()
-                ]
+            ]
         else:
             lastools = [
                 lasinfo(), lasprecision(), lasvalidate(), las2txt(), txt2las(),
                 laszip(), lasindex(), lasmerge(), las2las_filter(), las2las_project(),
                 las2las_transform(), lasquery()
-                ]
+            ]
         for alg in lastools:
             alg.group = 'LAStools'
         self.algsList.extend(lastools)
@@ -169,12 +168,12 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 lasinfoPro(), las2lasPro_filter(), las2lasPro_project(), las2lasPro_transform(),
                 lasoveragePro(), txt2lasPro(), las2txtPro(), blast2isoPro(), lasvalidatePro(),
                 lasmergePro(), lasviewPro(), lasoverlapPro()
-                ]
+            ]
         else:
             lastoolsPro = [
                 laszipPro(), lasindexPro(), lasinfoPro(), las2lasPro_filter(), las2lasPro_project(),
                 las2lasPro_transform(), txt2lasPro(), las2txtPro(), lasvalidatePro(), lasmergePro()
-                ]
+            ]
         for alg in lastoolsPro:
             alg.group = 'LAStools Production'
         self.algsList.extend(lastoolsPro)
@@ -185,10 +184,9 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
             lastoolsPipe = [
                 flightlinesToDTMandDSM(), flightlinesToCHM(), flightlinesToSingleCHMpitFree(), hugeFileClassify(),
                 hugeFileGroundClassify(), hugeFileNormalize()
-                ]
+            ]
         else:
-            lastoolsPipe = [
-                ]
+            lastoolsPipe = [ ]
         for alg in lastoolsPipe:
             alg.group = 'LAStools Pipelines'
         self.algsList.extend(lastoolsPipe)
@@ -201,22 +199,25 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
                 Catalog(), CloudMetrics(), CanopyMaxima(), CanopyModel(), ClipData(),
                 Csv2Grid(), Cover(), FilterData(), GridMetrics(), GroundFilter(),
                 GridSurfaceCreate(), MergeData(), TinSurfaceCreate()
-                ]
+            ]
             for alg in fusiontools:
                 alg.group = 'Fusion'
             self.algsList.extend(fusiontools)
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                LAStoolsUtils.LASTOOLS_FOLDER,
-                self.tr('LAStools folder'), LAStoolsUtils.LAStoolsPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                FusionUtils.FUSION_FOLDER,
-                self.tr('Fusion folder'), FusionUtils.FusionPath()))
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                LAStoolsUtils.WINE_FOLDER,
-                self.tr('Wine folder'), ''))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
+            LAStoolsUtils.LASTOOLS_FOLDER,
+            self.tr('LAStools folder'), LAStoolsUtils.LAStoolsPath()))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
+            FusionUtils.FUSION_FOLDER,
+            self.tr('Fusion folder'), FusionUtils.FusionPath()))
+        ProcessingConfig.addSetting(Setting(
+            self.getDescription(),
+            LAStoolsUtils.WINE_FOLDER,
+            self.tr('Wine folder'), ''))
 
     def getName(self):
         return 'lidartools'

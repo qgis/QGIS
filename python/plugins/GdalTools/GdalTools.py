@@ -18,15 +18,12 @@ email                : lorenxo86@gmail.com
  ***************************************************************************/
 """
 # Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QObject, QCoreApplication, QSettings, QLocale, QFileInfo, QTranslator, SIGNAL
+from PyQt4.QtGui import QMessageBox, QMenu, QIcon, QAction
+from qgis.core import QGis
 import qgis.utils
 
-# Initialize Qt resources from file resources_rc.py
-import resources_rc
-
-# are all dependecies satisfied?
+# are all dependencies satisfied?
 valid = True
 
 # Import required modules
@@ -50,7 +47,7 @@ except ImportError, e:
     # if a module is missing show a more friendly module's name
     error_str = e.args[0]
     error_mod = error_str.replace( "No module named ", "" )
-    if req_mods.has_key( error_mod ):
+    if error_mod in req_mods:
       error_str = error_str.replace( error_mod, req_mods[error_mod] )
     raise ImportError( error_str )
 
@@ -92,12 +89,13 @@ class GdalTools:
   def initGui( self ):
     if not valid: return
     if int( self.QgisVersion ) < 1:
-      QMessageBox.warning( self.iface.getMainWindow(), "Gdal Tools",
-      QCoreApplication.translate( "GdalTools", "QGIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
-      + QCoreApplication.translate( "GdalTools", "This version of Gdal Tools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
+      QMessageBox.warning(
+          self.iface.getMainWindow(), "Gdal Tools",
+          QCoreApplication.translate( "GdalTools", "QGIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
+          + QCoreApplication.translate( "GdalTools", "This version of Gdal Tools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
       return None
 
-    from tools.GdalTools_utils import Version, GdalConfig, LayerRegistry
+    from tools.GdalTools_utils import GdalConfig, LayerRegistry
     self.GdalVersionNum = GdalConfig.versionNum()
     LayerRegistry.setIface( self.iface )
 
@@ -109,11 +107,11 @@ class GdalTools:
     rasterText = QCoreApplication.translate( "QgisApp", "&Raster" )
 
     for a in actions:
-        if a.menu() != None and a.menu().title() == rasterText:
+        if a.menu() is not None and a.menu().title() == rasterText:
             rasterMenu = a.menu()
             break
 
-    if rasterMenu == None:
+    if rasterMenu is None:
         # no Raster menu, create and insert it before the Help menu
         self.menu = QMenu( rasterText, self.iface.mainWindow() )
         lastAction = actions[ len( actions ) - 1 ]

@@ -82,9 +82,9 @@ class lasoverlapPro(LAStoolsAlgorithm):
         operation = self.getParameterValue(lasoverlapPro.OPERATION)
         if operation != 0:
             commands.append("-" + lasoverlapPro.OPERATIONS[operation])
-        if self.getParameterValue(lasoverlapPro.CREATE_OVERLAP_RASTER) != True:
+        if not self.getParameterValue(lasoverlapPro.CREATE_OVERLAP_RASTER):
             commands.append("-no_over")
-        if self.getParameterValue(lasoverlapPro.CREATE_DIFFERENCE_RASTER) != True:
+        if not self.getParameterValue(lasoverlapPro.CREATE_DIFFERENCE_RASTER):
             commands.append("-no_diff")
         self.addParametersOutputDirectoryCommands(commands)
         self.addParametersOutputAppendixCommands(commands)

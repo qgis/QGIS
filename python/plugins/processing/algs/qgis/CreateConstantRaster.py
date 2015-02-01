@@ -25,9 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
@@ -72,6 +69,6 @@ class CreateConstantRaster(GeoAlgorithm):
                          cellsize,
                          1,
                          self.crs,
-                        )
+                         )
         w.matrix[:] = value
         w.close()

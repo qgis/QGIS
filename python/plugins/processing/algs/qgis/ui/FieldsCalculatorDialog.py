@@ -28,15 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QSettings
+from PyQt4.QtGui import QDialog, QFileDialog, QApplication, QCursor, QMessageBox
+from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
 from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -57,8 +54,7 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.btnBrowse.clicked.connect(self.selectFile)
         self.mNewFieldGroupBox.toggled.connect(self.toggleExistingGroup)
         self.mUpdateExistingGroupBox.toggled.connect(self.toggleNewGroup)
-        self.mOutputFieldTypeComboBox.currentIndexChanged.connect(
-                self.setupSpinboxes)
+        self.mOutputFieldTypeComboBox.currentIndexChanged.connect(self.setupSpinboxes)
 
         # Default values for field width and precision
         self.mOutputFieldWidthSpinBox.setValue(10)
@@ -189,8 +185,7 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         return True
 
     def accept(self):
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
+        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
         try:
             if self.setParamValues():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -200,8 +195,8 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
                 self.executed =  runalg(self.alg, self)
                 if self.executed:
                     handleAlgorithmResults(self.alg,
-                                                          self,
-                                                          not keepOpen)
+                                           self,
+                                           not keepOpen)
                 if not keepOpen:
                     QDialog.reject(self)
             else:

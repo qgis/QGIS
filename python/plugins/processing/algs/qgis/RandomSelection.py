@@ -27,12 +27,8 @@ __revision__ = '$Format:%H$'
 
 import random
 
-from PyQt4.QtCore import *
-from qgis.core import *
-
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterNumber
@@ -49,6 +45,7 @@ class RandomSelection(GeoAlgorithm):
 
     METHODS = ['Number of selected features',
                'Percentage of selected features']
+
     def defineCharacteristics(self):
         self.allowOnlyOpenedLayers = True
         self.name = 'Random selection'

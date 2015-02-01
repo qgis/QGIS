@@ -5,8 +5,8 @@
 ##endpoint=number 0
 ##output=output vector
 
-from qgis.core import *
-from PyQt4.QtCore import *
+from qgis.core import QgsFeature, QgsField
+from PyQt4.QtCore import QVariant
 from processing.tools.vector import VectorWriter
 
 
@@ -43,4 +43,3 @@ for i, feat in enumerate(feats):
     create_points(feat)
 
 del writer
-

@@ -23,9 +23,6 @@
 #
 ###############################################################################
 
-import os
-import site
-
 def classFactory(iface):
     """invoke plugin"""
     from MetaSearch.plugin import MetaSearchPlugin

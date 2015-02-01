@@ -28,8 +28,8 @@ __revision__ = '$Format:%H$'
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsField
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber

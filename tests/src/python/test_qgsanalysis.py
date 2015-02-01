@@ -16,12 +16,9 @@ test_analysis.py
 '''
 import unittest
 import sys
-import os
 import qgis
 
 from utilities import unitTestDataPath, getQgisTestApp
-from PyQt4.QtCore import QFileInfo, QDir
-from PyQt4.QtXml import QDomDocument
 
 # support python < 2.7 via unittest2
 # needed for expected failure decorator

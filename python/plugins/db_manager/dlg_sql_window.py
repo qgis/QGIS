@@ -22,10 +22,10 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.Qsci import *
-from qgis.core import *
+from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL
+from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard
+from PyQt4.Qsci import QsciAPIs
+from qgis.core import QgsProject
 
 from .db_plugins.plugin import BaseError
 from .dlg_db_error import DlgDbError

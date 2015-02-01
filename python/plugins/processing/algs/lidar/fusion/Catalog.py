@@ -46,22 +46,26 @@ class Catalog(FusionAlgorithm):
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input las layer')))
         self.addOutput(OutputFile(self.OUTPUT, self.tr('Output files')))
-        density = ParameterString(self.DENSITY,
+        density = ParameterString(
+            self.DENSITY,
             self.tr('Density - area, min, max (set blank if not used)'),
             '', False, True)
         density.isAdvanced = True
         self.addParameter(density)
-        firest_density = ParameterString(self.FIRSTDENSITY,
+        firest_density = ParameterString(
+            self.FIRSTDENSITY,
             self.tr('First Density - area, min, max (set blank if not used)'),
             '', False, True)
         firest_density.isAdvanced = True
         self.addParameter(firest_density)
-        intensity = ParameterString(self.INTENSITY,
+        intensity = ParameterString(
+            self.INTENSITY,
             self.tr('Intensity - area, min, max (set blank if not used)'),
             '', False, True)
         intensity.isAdvanced = True
         self.addParameter(intensity)
-        advanced_modifiers = ParameterString(self.ADVANCED_MODIFIERS,
+        advanced_modifiers = ParameterString(
+            self.ADVANCED_MODIFIERS,
             self.tr('Additional modifiers'), '', False, True)
         advanced_modifiers.isAdvanced = True
         self.addParameter(advanced_modifiers)

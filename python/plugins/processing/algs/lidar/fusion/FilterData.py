@@ -49,8 +49,8 @@ class FilterData(FusionAlgorithm):
             self.INPUT, self.tr('Input las layer')))
         self.addParameter(ParameterNumber(
             self.VALUE, self.tr('Standard Deviation multiplier')))
-        self.addParameter(ParameterNumber(self.VALUE,
-            self.tr('Window size'), None, None, 10))
+        self.addParameter(ParameterNumber(
+            self.VALUE, self.tr('Window size'), None, None, 10))
         self.addOutput(OutputFile(
             self.OUTPUT, self.tr('Output filtered las file')))
         self.addAdvancedModifiers()

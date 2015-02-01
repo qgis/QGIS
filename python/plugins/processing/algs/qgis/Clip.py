@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
@@ -51,14 +50,14 @@ class Clip(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         layerA = dataobjects.getObjectFromUri(
-                self.getParameterValue(Clip.INPUT))
+            self.getParameterValue(Clip.INPUT))
         layerB = dataobjects.getObjectFromUri(
-                self.getParameterValue(Clip.OVERLAY))
+            self.getParameterValue(Clip.OVERLAY))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-                layerA.pendingFields(),
-                layerA.dataProvider().geometryType(),
-                layerA.dataProvider().crs())
+            layerA.pendingFields(),
+            layerA.dataProvider().geometryType(),
+            layerA.dataProvider().crs())
 
         inFeatA = QgsFeature()
         inFeatB = QgsFeature()
@@ -80,8 +79,8 @@ class Clip(GeoAlgorithm):
             if len(intersects) > 0:
                 for i in intersects:
                     layerB.getFeatures(
-                            QgsFeatureRequest().setFilterFid(i)).nextFeature(
-                                    inFeatB)
+                        QgsFeatureRequest().setFilterFid(i)).nextFeature(
+                            inFeatB)
                     tmpGeom = QgsGeometry(inFeatB.geometry())
                     if tmpGeom.intersects(geom):
                         found = True
@@ -92,7 +91,7 @@ class Clip(GeoAlgorithm):
                             try:
                                 cur_geom = QgsGeometry(outFeat.geometry())
                                 new_geom = QgsGeometry(
-                                        cur_geom.combine(tmpGeom))
+                                    cur_geom.combine(tmpGeom))
                                 outFeat.setGeometry(QgsGeometry(new_geom))
                             except:
                                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,

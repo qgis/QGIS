@@ -44,10 +44,6 @@ from qgis.gui import QgsRubberBand
 from owslib.csw import CatalogueServiceWeb
 from owslib.fes import BBox, PropertyIsLike
 from owslib.ows import ExceptionReport
-from owslib.wcs import WebCoverageService
-from owslib.wfs import WebFeatureService
-from owslib.wms import WebMapService
-from owslib.wmts import WebMapTileService
 
 from MetaSearch import link_types
 from MetaSearch.dialogs.manageconnectionsdialog import ManageConnectionsDialog

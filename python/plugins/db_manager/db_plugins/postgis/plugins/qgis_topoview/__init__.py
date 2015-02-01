@@ -21,9 +21,8 @@ Based on qgis_pgis_topoview by Sandro Santilli <strk@keybit.net>
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtGui import QAction, QIcon
+from qgis.core import QgsMapLayerRegistry, QgsVectorLayer, QGis
 from qgis.gui import QgsMessageBar
 
 import os
@@ -43,7 +42,7 @@ def load(db, mainwindow):
         c = db.connector._get_cursor()
         db.connector._execute( c, sql )
         res = db.connector._fetchone( c )
-        if res == None or int(res[0]) <= 0:
+        if res is None or int(res[0]) <= 0:
                 return
 
         # add the action to the DBManager menu
@@ -59,7 +58,6 @@ def load(db, mainwindow):
 def run(item, action, mainwindow):
         db = item.database()
         uri = db.uri()
-        conninfo = uri.connectionInfo()
         iface = mainwindow.iface
 
         quoteId = db.connector.quoteId
@@ -72,12 +70,12 @@ def run(item, action, mainwindow):
             mainwindow.infoBar.pushMessage("Invalid topology", u'Select a topology schema to continue.', QgsMessageBar.INFO, mainwindow.iface.messageTimeout())
             return False
 
-        if item.schema() != None:
+        if item.schema() is not None:
             sql = u"SELECT srid FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
             c = db.connector._get_cursor()
             db.connector._execute( c, sql )
             res = db.connector._fetchone( c )
-            isTopoSchema = res != None
+            isTopoSchema = res is not None
 
         if not isTopoSchema:
             mainwindow.infoBar.pushMessage("Invalid topology", u'Schema "{0}" is not registered in topology.topology.'.format(item.schema().name), QgsMessageBar.WARNING, mainwindow.iface.messageTimeout())
@@ -97,7 +95,7 @@ def run(item, action, mainwindow):
         try:
                 supergroup = legend.addGroup(u'Topology "%s"' % toponame, False)
                 provider = db.dbplugin().providerName()
-                uri = db.uri();
+                uri = db.uri()
 
                 # FACES
                 group = legend.addGroup(u'Faces', False, supergroup)
@@ -116,7 +114,7 @@ def run(item, action, mainwindow):
 
           # face geometry
                 sql = u'SELECT face_id, topology.ST_GetFaceGeometry(%s, face_id) as geom ' \
-                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame))
+                      'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame))
                 uri.setDataSource('', u'(%s\n)' % sql, 'geom', '', 'face_id')
                 uri.setSrid( toposrid )
                 uri.setWkbType( QGis.WKBPolygon )
@@ -130,7 +128,7 @@ def run(item, action, mainwindow):
 
           # face_seed
                 sql = u'SELECT face_id, ST_PointOnSurface(topology.ST_GetFaceGeometry(%s, face_id)) as geom ' \
-                       'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame))
+                      'FROM %s.face WHERE face_id > 0' % (quoteStr(toponame), quoteId(toponame))
                 uri.setDataSource('', u'(%s)' % sql, 'geom', '', 'face_id')
                 uri.setSrid( toposrid )
                 uri.setWkbType( QGis.WKBPoint )
@@ -264,4 +262,3 @@ def run(item, action, mainwindow):
                 iface.mapCanvas().setRenderFlag( prevRenderFlagState )
 
         return True
-

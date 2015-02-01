@@ -11,12 +11,15 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
 import sys
 import platform
 import tempfile
-import qgis
-from PyQt4 import QtGui, QtCore
+
+from PyQt4.QtCore import QSize, QDir
+from PyQt4.QtGui import QWidget
+
 from qgis.core import (
     QgsApplication,
     QgsCoordinateReferenceSystem,
@@ -119,12 +122,12 @@ def getQgisTestApp():
 
     global PARENT  # pylint: disable=W0603
     if PARENT is None:
-        PARENT = QtGui.QWidget()
+        PARENT = QWidget()
 
     global CANVAS  # pylint: disable=W0603
     if CANVAS is None:
         CANVAS = QgsMapCanvas(PARENT)
-        CANVAS.resize(QtCore.QSize(400, 400))
+        CANVAS.resize(QSize(400, 400))
 
     global IFACE  # pylint: disable=W0603
     if IFACE is None:
@@ -183,7 +186,7 @@ def setCanvasCrs(theEpsgId, theOtfpFlag=False):
 
 
 def writeShape(theMemoryLayer, theFileName):
-    myFileName = os.path.join(str(QtCore.QDir.tempPath()), theFileName)
+    myFileName = os.path.join(str(QDir.tempPath()), theFileName)
     print myFileName
     # Explicitly giving all options, not really needed but nice for clarity
     myErrorMessage = ''

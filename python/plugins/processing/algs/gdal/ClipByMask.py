@@ -25,10 +25,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
 from osgeo import gdal
-from qgis.core import *
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 

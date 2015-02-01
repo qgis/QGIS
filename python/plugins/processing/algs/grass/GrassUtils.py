@@ -29,11 +29,13 @@ import stat
 import shutil
 import codecs
 import subprocess
+import os
+
 from qgis.core import QgsApplication
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import userFolder, isMac, isWindows, mkdir, tempFolder
 from processing.tests.TestData import points
 
 
@@ -273,7 +275,7 @@ class GrassUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         progress.setInfo('GRASS commands output:')
         for line in iter(proc.readline, ''):
             if 'GRASS_INFO_PERCENT' in line:
@@ -303,7 +305,7 @@ class GrassUtils:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
-                ).stdout
+            ).stdout
             for line in iter(proc.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
@@ -380,7 +382,7 @@ class GrassUtils:
                 0.0001,
                 0,
                 None,
-                )
+            )
             if not os.path.exists(result['output']):
                 return GrassUtils.tr(
                     'It seems that GRASS is not correctly installed and '

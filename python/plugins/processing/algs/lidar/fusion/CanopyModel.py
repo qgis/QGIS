@@ -28,11 +28,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputFile
 from FusionAlgorithm import FusionAlgorithm
@@ -59,36 +57,36 @@ class CanopyModel(FusionAlgorithm):
         self.group = 'Points'
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input las layer')))
-        self.addParameter(ParameterNumber(self.CELLSIZE,
-            self.tr('Cellsize'), 0, None, 10.0))
-        self.addParameter(ParameterSelection(self.XYUNITS,
-            self.tr('XY Units'), self.UNITS))
-        self.addParameter(ParameterSelection(self.ZUNITS,
-            self.tr('Z Units'), self.UNITS))
-        self.addOutput(OutputFile(self.OUTPUT_DTM,
-            self.tr('DTM Output Surface'), 'dtm'))
-        ground = ParameterFile(self.GROUND,
-            self.tr('Input ground DTM layer'), False, True)
+        self.addParameter(ParameterNumber(
+            self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
+        self.addParameter(ParameterSelection(
+            self.XYUNITS, self.tr('XY Units'), self.UNITS))
+        self.addParameter(ParameterSelection(
+            self.ZUNITS, self.tr('Z Units'), self.UNITS))
+        self.addOutput(OutputFile(
+            self.OUTPUT_DTM, self.tr('DTM Output Surface'), 'dtm'))
+        ground = ParameterFile(
+            self.GROUND, self.tr('Input ground DTM layer'), False, True)
         ground.isAdvanced = True
         self.addParameter(ground)
-        median = ParameterString(self.MEDIAN,
-            self.tr('Median'), '', False, True)
+        median = ParameterString(
+            self.MEDIAN, self.tr('Median'), '', False, True)
         median.isAdvanced = True
         self.addParameter(median)
-        smooth = ParameterString(self.SMOOTH,
-            self.tr('Smooth'), '', False, True)
+        smooth = ParameterString(
+            self.SMOOTH, self.tr('Smooth'), '', False, True)
         smooth.isAdvanced = True
         self.addParameter(smooth)
-        slope = ParameterString(self.SLOPE,
-            self.tr('Slope'), '', False, True)
+        slope = ParameterString(
+            self.SLOPE, self.tr('Slope'), '', False, True)
         slope.isAdvanced = True
         self.addParameter(slope)
-        class_var = ParameterString(self.CLASS,
-            self.tr('Class'), '', False, True)
+        class_var = ParameterString(
+            self.CLASS, self.tr('Class'), '', False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
-        advance_modifiers = ParameterString(self.ADVANCED_MODIFIERS,
-            self.tr('Additional modifiers'), '', False, True)
+        advance_modifiers = ParameterString(
+            self.ADVANCED_MODIFIERS, self.tr('Additional modifiers'), '', False, True)
         advance_modifiers.isAdvanced = True
         self.addParameter(advance_modifiers)
 

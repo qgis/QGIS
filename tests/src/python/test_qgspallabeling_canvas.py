@@ -19,14 +19,9 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
+from PyQt4.QtCore import qDebug
 
 from utilities import (
-    unittest,
-    expectedFailure,
     getTempfilePath,
     renderMapToImage,
     mapSettingsString

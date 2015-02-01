@@ -28,22 +28,40 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-import resources_rc
-import os.path, sys
+from PyQt4.QtCore import QSettings, QDir, QFile, QCoreApplication, QObject, SIGNAL
+from PyQt4.QtGui import QIcon, QMessageBox, QMenu, QAction
+from qgis.core import QGis
+
+import os.path
+import sys
 # Set up current path, so that we know where to look for mudules
 currentPath = os.path.dirname(__file__)
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/tools'))
 # Multi-function modules
-import doGeometry, doGeoprocessing, doVisual
+import doGeometry
+import doGeoprocessing
+import doVisual
 # Single function modules
 # TODO: Eliminate the following modules in favour of above multi-function formats
-import doIntersectLines, doSelectByLocation, doVectorSplit, doMeanCoords
-import doPointDistance, doPointsInPolygon, doRandom, doRandPoints, doRegPoints
-import doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doMergeShapes
-import doValidate, doSimplify, doDefineProj, doSpatialIndex, doEliminate
+import doIntersectLines
+import doSelectByLocation
+import doVectorSplit
+import doMeanCoords
+import doPointDistance
+import doPointsInPolygon
+import doRandom
+import doRandPoints
+import doRegPoints
+import doSpatialJoin
+import doSubsetSelect
+import doSumLines
+import doVectorGrid
+import doMergeShapes
+import doValidate
+import doSimplify
+import doDefineProj
+import doSpatialIndex
+import doEliminate
 
 class fToolsPlugin:
   def __init__(self,iface):
@@ -119,9 +137,10 @@ class fToolsPlugin:
 
   def initGui(self):
     if int(self.QgisVersion) < 1:
-      QMessageBox.warning(self.iface.getMainWindow(), "fTools",
-      QCoreApplication.translate("fTools", "QGIS version detected: ") +unicode(self.QgisVersion)+".xx\n"
-      + QCoreApplication.translate("fTools", "This version of fTools requires at least QGIS version 1.0.0\nPlugin will not be enabled."))
+      QMessageBox.warning(
+          self.iface.getMainWindow(), "fTools",
+          QCoreApplication.translate("fTools", "QGIS version detected: ") +unicode(self.QgisVersion)+".xx\n"
+          + QCoreApplication.translate("fTools", "This version of fTools requires at least QGIS version 1.0.0\nPlugin will not be enabled."))
       return None
     QObject.connect(self.iface, SIGNAL("currentThemeChanged (QString)"), self.updateThemeIcons)
 
@@ -143,7 +162,8 @@ class fToolsPlugin:
     self.meanCoords.setObjectName("meanCoords")
     self.intLines = QAction(QCoreApplication.translate("fTools", "Line Intersections...") ,self.iface.mainWindow())
     self.intLines.setObjectName("intLines")
-    self.analysisMenu.addActions([self.distMatrix, self.sumLines, self.pointsPoly,
+    self.analysisMenu.addActions([
+        self.distMatrix, self.sumLines, self.pointsPoly,
         self.listUnique, self.compStats, self.nearestNeigh, self.meanCoords, self.intLines])
 
     self.researchMenu = QMenu(QCoreApplication.translate("fTools", "&Research Tools"))
@@ -162,7 +182,8 @@ class fToolsPlugin:
     self.selectLocation.setObjectName("selectLocation")
     self.layerExtent = QAction(QCoreApplication.translate("fTools", "Polygon from Layer Extent..."), self.iface.mainWindow())
     self.layerExtent.setObjectName("layerExtent")
-    self.researchMenu.addActions([self.randSel, self.randSub, self.randPoints,
+    self.researchMenu.addActions([
+        self.randSel, self.randSub, self.randPoints,
         self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent])
 
     self.geoMenu = QMenu(QCoreApplication.translate("fTools", "&Geoprocessing Tools"))
@@ -185,7 +206,8 @@ class fToolsPlugin:
     self.erase.setObjectName("erase")
     self.eliminate = QAction( QCoreApplication.translate( "fTools", "Eliminate Sliver Polygons..." ),self.iface.mainWindow() )
     self.eliminate.setObjectName("eliminate")
-    self.geoMenu.addActions([self.minConvex, self.dynaBuffer, self.intersect,
+    self.geoMenu.addActions([
+        self.minConvex, self.dynaBuffer, self.intersect,
         self.union, self.symDifference, self.clip, self.erase, self.dissolve,
         self.eliminate])
 
@@ -215,7 +237,8 @@ class fToolsPlugin:
     self.polysToLines.setObjectName("polysToLines")
     self.linesToPolys = QAction(QCoreApplication.translate("fTools", "Lines to Polygons..."),self.iface.mainWindow())
     self.linesToPolys.setObjectName("linesToPolys")
-    self.conversionMenu.addActions([self.checkGeom, self.compGeo, self.centroids, self.delaunay, self.voronoi,
+    self.conversionMenu.addActions([
+        self.checkGeom, self.compGeo, self.centroids, self.delaunay, self.voronoi,
         self.simplify, self.densify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.linesToPolys,
         self.extNodes])
 

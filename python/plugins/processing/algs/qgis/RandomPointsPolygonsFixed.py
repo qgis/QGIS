@@ -25,12 +25,10 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import math
 import random
 
-from PyQt4.QtCore import *
-
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsFields, QgsField, QgsDistanceArea, QgsGeometry, QgsSpatialIndex, QgsPoint, QgsFeature
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -51,7 +49,7 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
 
     STRATEGIES = ['Points count',
                   'Points density'
-                 ]
+                  ]
 
     def defineCharacteristics(self):
         self.name = 'Random points inside polygons (fixed)'
@@ -79,7 +77,6 @@ class RandomPointsPolygonsFixed(GeoAlgorithm):
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             fields, QGis.WKBPoint, layer.dataProvider().crs())
 
-        request = QgsFeatureRequest()
         da = QgsDistanceArea()
 
         features = vector.features(layer)

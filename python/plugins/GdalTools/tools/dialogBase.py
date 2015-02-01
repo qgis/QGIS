@@ -23,20 +23,17 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, SIGNAL, QProcess, QUrl, QIODevice, QCoreApplication
+from PyQt4.QtGui import QDialog, QIcon, QDialogButtonBox, QMessageBox, QDesktopServices, QErrorMessage, QApplication
 
 # to know the os
 import platform
-import os
 
 from ui_dialogBase import Ui_GdalToolsDialog as Ui_Dialog
 import GdalTools_utils as Utils
-from .. import resources_rc
+#from .. import resources_rc
 
-import os, platform, string
+import string
 
 class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
@@ -154,7 +151,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         self.textEditCommand.setPlainText(self.command + " " + Utils.escapeAndJoin(self.arguments))
 
   # enables the OK button
-  def enableRun(self, enable = True):
+  def enableRun(self, enable=True):
       self.buttonBox.button(QDialogButtonBox.Ok).setEnabled(enable)
 
   # start the command execution

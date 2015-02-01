@@ -25,10 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QWidget, QFileDialog
 
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.ui.ui_widgetBaseSelector import Ui_Form
 

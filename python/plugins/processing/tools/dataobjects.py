@@ -25,16 +25,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from os import path
+import os
 import re
-from qgis.core import *
-from qgis.gui import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.core import QGis, QgsProject, QgsVectorFileWriter, QgsMapLayer, QgsRasterLayer, QgsVectorLayer, QgsMapLayerRegistry, QgsCoordinateReferenceSystem
+from qgis.gui import QgsSublayersDialog
+from PyQt4.QtCore import QSettings
 from qgis.utils import iface
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import *
+from processing.tools.system import getTempFilenameInTempFolder, getTempFilename
 
 ALL_TYPES = [-1]
 
@@ -161,21 +160,18 @@ def load(fileName, name=None, crs=None, style=None):
         prjSetting = settings.value('/Projections/defaultBehaviour')
         settings.setValue('/Projections/defaultBehaviour', '')
     if name is None:
-        name = path.split(fileName)[1]
+        name = os.path.split(fileName)[1]
     qgslayer = QgsVectorLayer(fileName, name, 'ogr')
     if qgslayer.isValid():
         if crs is not None and qgslayer.crs() is None:
             qgslayer.setCrs(crs, False)
         if style is None:
             if qgslayer.geometryType == 0:
-                style = ProcessingConfig.getSetting(
-                        ProcessingConfig.VECTOR_POINT_STYLE)
+                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
             elif qgslayer.geometryType == 1:
-                style = ProcessingConfig.getSetting(
-                        ProcessingConfig.VECTOR_LINE_STYLE)
+                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
             else:
-                style = ProcessingConfig.getSetting(
-                        ProcessingConfig.VECTOR_POLYGON_STYLE)
+                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
         qgslayer.loadNamedStyle(style)
         QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
     else:
@@ -184,17 +180,15 @@ def load(fileName, name=None, crs=None, style=None):
             if crs is not None and qgslayer.crs() is None:
                 qgslayer.setCrs(crs, False)
             if style is None:
-                style = ProcessingConfig.getSetting(
-                        ProcessingConfig.RASTER_STYLE)
+                style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
             qgslayer.loadNamedStyle(style)
             QgsMapLayerRegistry.instance().addMapLayers([qgslayer])
             iface.legendInterface().refreshLayerSymbology(qgslayer)
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehaviour', prjSetting)
-            raise RuntimeError(
-                    'Could not load layer: ' + unicode(fileName)
-                    + '\nCheck the procesing framework log to look for errors')
+            raise RuntimeError('Could not load layer: ' + unicode(fileName)
+                               + '\nCheck the procesing framework log to look for errors')
     if prjSetting:
         settings.setValue('/Projections/defaultBehaviour', prjSetting)
 
@@ -309,9 +303,11 @@ def exportVectorLayer(layer):
         except UnicodeEncodeError:
             isASCII = False
         if not unicode(layer.source()).endswith('shp') or not isASCII:
-            writer = QgsVectorFileWriter(output, systemEncoding,
-                    layer.pendingFields(), provider.geometryType(),
-                    layer.crs())
+            writer = QgsVectorFileWriter(
+                output, systemEncoding,
+                layer.pendingFields(), provider.geometryType(),
+                layer.crs()
+            )
             for feat in layer.getFeatures():
                 writer.addFeature(feat)
             del writer
@@ -382,7 +378,7 @@ def getRasterSublayer(path, param):
 
     try:
         # If the layer is a raster layer and has multiple sublayers, let the user chose one.
-#       # Based on QgisApp::askUserForGDALSublayers
+        # Based on QgisApp::askUserForGDALSublayers
         if layer and param.showSublayersDialog and layer.dataProvider().name() == "gdal" and len(layer.subLayers()) > 1:
             layers = []
             subLayerNum = 0

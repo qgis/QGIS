@@ -26,9 +26,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtGui import QApplication
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QgsMapLayerRegistry
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingResults import ProcessingResults

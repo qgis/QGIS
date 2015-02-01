@@ -27,9 +27,12 @@ __revision__ = '$Format:%H$'
 
 import shutil
 import inspect
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+import os
+import sys
+
+from PyQt4.QtCore import Qt, QCoreApplication, QDir
+
+from PyQt4.QtGui import QMenu, QAction, QIcon
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
@@ -37,13 +40,13 @@ from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.ResultsDialog import ResultsDialog
 from processing.modeler.ModelerDialog import ModelerDialog
 from processing.gui.CommanderWindow import CommanderWindow
-from processing.tools.system import *
-import processing.resources_rc
+from processing.tools.system import tempFolder
+
+#import processing.resources_rc
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
-
 
 class ProcessingPlugin:
 
@@ -96,8 +99,7 @@ class ProcessingPlugin:
         self.menu.addAction(self.configAction)
 
         self.resultsAction = QAction(QIcon(':/processing/images/results.png'),
-                                     QCoreApplication.translate('Processing',
-                                     '&Results Viewer...'),
+                                     QCoreApplication.translate('Processing', '&Results Viewer...'),
                                      self.iface.mainWindow())
         self.resultsAction.setObjectName( 'resultsAction' )
         self.resultsAction.triggered.connect(self.openResults)
@@ -108,14 +110,15 @@ class ProcessingPlugin:
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
 
         self.commanderAction = QAction(
-                QIcon(':/processing/images/commander.png'),
-                QCoreApplication.translate('Processing', '&Commander'),
-                self.iface.mainWindow())
+            QIcon(':/processing/images/commander.png'),
+            QCoreApplication.translate('Processing', '&Commander'),
+            self.iface.mainWindow())
         self.commanderAction.setObjectName( 'commanderAction' )
         self.commanderAction.triggered.connect(self.openCommander)
         self.menu.addAction(self.commanderAction)
-        self.iface.registerMainWindowAction(self.commanderAction,
-                'Ctrl+Alt+M')
+        self.iface.registerMainWindowAction(
+            self.commanderAction,
+            QCoreApplication.translate('Processing', 'Ctrl+Alt+M' ) )
 
     def unload(self):
         self.toolbox.setVisible(False)
@@ -130,8 +133,9 @@ class ProcessingPlugin:
 
     def openCommander(self):
         if self.commander is None:
-            self.commander = CommanderWindow(self.iface.mainWindow(),
-                    self.iface.mapCanvas())
+            self.commander = CommanderWindow(
+                self.iface.mainWindow(),
+                self.iface.mapCanvas())
             Processing.addAlgListListener(self.commander)
         self.commander.prepareGui()
         self.commander.show()

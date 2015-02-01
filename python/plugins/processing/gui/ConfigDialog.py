@@ -27,14 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QEvent
+from PyQt4.QtGui import QFileDialog, QDialog, QIcon, QStyle, QStandardItemModel, QStandardItem, QMessageBox, QStyledItemDelegate, QLineEdit, QSpinBox, QDoubleSpinBox, QWidget, QToolButton, QHBoxLayout
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.Processing import Processing
 from processing.ui.ui_DlgConfig import Ui_DlgConfig
 
-import processing.resources_rc
+#import processing.resources_rc
 
 
 class ConfigDialog(QDialog, Ui_DlgConfig):
@@ -45,9 +45,9 @@ class ConfigDialog(QDialog, Ui_DlgConfig):
         self.toolbox = toolbox
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(
-                QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
+            QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
         self.groupIcon.addPixmap(self.style().standardPixmap(
-                QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
+            QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
@@ -182,7 +182,7 @@ class SettingDelegate(QStyledItemDelegate):
         parent,
         options,
         index,
-        ):
+    ):
         value = self.convertValue(index.model().data(index, Qt.EditRole))
         if isinstance(value, (int, long)):
             spnBox = QSpinBox(parent)
@@ -229,7 +229,7 @@ class SettingDelegate(QStyledItemDelegate):
         return QStyledItemDelegate.eventFilter(self, editor, event)
 
     def convertValue(self, value):
-	if value is None:
+        if value is None:
             return ""
         try:
             return int(value)
@@ -267,12 +267,12 @@ class FileDirectorySelector(QWidget):
         lastDir = ''
         if not self.selectFile:
             selectedPath = QFileDialog.getExistingDirectory(None,
-                    self.tr('Select directory'), lastDir,
-                    QFileDialog.ShowDirsOnly)
+                self.tr('Select directory'), lastDir,
+                QFileDialog.ShowDirsOnly)
         else:
             selectedPath = QFileDialog.getOpenFileName(None,
-                    self.tr('Select file'), lastDir, self.tr('All files (*.*)'
-                    ))
+                self.tr('Select file'), lastDir, self.tr('All files (*.*)')
+            )
 
         if not selectedPath:
             return

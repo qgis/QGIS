@@ -50,8 +50,8 @@ class CloudMetrics(FusionAlgorithm):
         self.group = 'Points'
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input las layer')))
-        self.addOutput(OutputFile(self.OUTPUT,
-            self.tr('Output file with tabular metric information'), 'dtm'))
+        self.addOutput(OutputFile(
+            self.OUTPUT, self.tr('Output file with tabular metric information'), 'dtm'))
         above = ParameterString(self.ABOVE, self.tr('Above'), '', False)
         above.isAdvanced = True
         self.addParameter(above)
@@ -78,7 +78,7 @@ class CloudMetrics(FusionAlgorithm):
             commands.append('/firstinpulse:' + firstImpulse)
         firstReturn = self.getParameterValue(self.FIRSTRETURN)
         if firstReturn:
-            commands.append('/firstreturn:' + first_return)
+            commands.append('/firstreturn:' + firstReturn)
         htmin = self.getParameterValue(self.HTMIN)
         if str(htmin).strip() != '':
             commands.append('/minht:' + str(htmin))

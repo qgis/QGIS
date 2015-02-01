@@ -25,12 +25,10 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import math
 import random
 
-from PyQt4.QtCore import *
-
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsGeometry, QgsFields, QgsField, QgsSpatialIndex, QgsPoint, QgsFeature, QgsFeatureRequest
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
@@ -66,7 +64,6 @@ class RandomPointsLayer(GeoAlgorithm):
         minDistance = float(self.getParameterValue(self.MIN_DISTANCE))
 
         bbox = layer.extent()
-        extent = QgsGeometry().fromRect(bbox)
         idxLayer = vector.spatialindex(layer)
 
         fields = QgsFields()

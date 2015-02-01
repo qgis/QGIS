@@ -26,22 +26,20 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import importlib
-from qgis.core import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 from processing.gui.Help2Html import getHtmlFromRstFile
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
-from processing.core.parameters import *
-from processing.core.outputs import *
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.parameters import getParameterFromString, ParameterExtent, ParameterRaster, ParameterVector, ParameterTable, ParameterMultipleInput, ParameterBoolean, ParameterFixedTable, ParameterNumber, ParameterSelection
+from processing.core.outputs import getOutputFromString, OutputTable, OutputVector, OutputRaster
 import SagaUtils
 from SagaGroupNameDecorator import SagaGroupNameDecorator
 from processing.tools import dataobjects
-from processing.tools.system import *
+from processing.tools.system import getTempFilename, isWindows, getTempFilenameInTempFolder
 
 sessionExportedLayers = {}
 
@@ -78,8 +76,7 @@ class SagaAlgorithm212(GeoAlgorithm):
             self.name = self.name[0].upper() + self.name[1:].lower()
         line = lines.readline().strip('\n').strip()
         self.undecoratedGroup = line
-        self.group = SagaGroupNameDecorator.getDecoratedName(
-                self.undecoratedGroup)
+        self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
         line = lines.readline().strip('\n').strip()
         while line != '':
             if line.startswith('Hardcoded'):
@@ -223,26 +220,25 @@ class SagaAlgorithm212(GeoAlgorithm):
         commands.append(command)
 
         # 3: Export resulting raster layers
-        optim = ProcessingConfig.getSetting(
-                SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
+        # optim = ProcessingConfig.getSetting(SagaUtils.SAGA_IMPORT_EXPORT_OPTIMIZATION)
         for out in self.outputs:
             if isinstance(out, OutputRaster):
                 filename = out.getCompatibleFileName(self)
                 filename2 = filename + '.sgrd'
                 formatIndex = (4 if isWindows() else 1)
                 sessionExportedLayers[filename] = filename2
-                dontExport = True
 
                 # Do not export is the output is not a final output
                 # of the model
-                #if self.model is not None and optim:
-                #    for subalg in self.model.algOutputs:
-                #        if out.name in subalg:
-                #            if subalg[out.name] is not None:
-                #                dontExport = False
-                #                break
-                #    if dontExport:
-                #        continue
+                #  dontExport = True
+                # if self.model is not None and optim:
+                #     for subalg in self.model.algOutputs:
+                #         if out.name in subalg:
+                #             if subalg[out.name] is not None:
+                #                 dontExport = False
+                #                 break
+                #     if dontExport:
+                #         continue
 
                 if self.cmdname == 'RGB Composite':
                     commands.append('io_grid_image 0 -IS_RGB -GRID:"' + filename2
@@ -315,8 +311,7 @@ class SagaAlgorithm212(GeoAlgorithm):
             filename = str(layer.name())
         else:
             filename = os.path.basename(source)
-        validChars = \
-            'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+        validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
         filename = ''.join(c for c in filename if c in validChars)
         if len(filename) == 0:
             filename = 'layer'

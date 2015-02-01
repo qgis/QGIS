@@ -31,7 +31,8 @@ import subprocess
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import isMac
+from PyQt4.QtCore import QCoreApplication
 
 
 class TauDEMUtils:
@@ -91,7 +92,7 @@ class TauDEMUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         for line in iter(proc.readline, ''):
             progress.setConsoleInfo(line)
             loglines.append(line)

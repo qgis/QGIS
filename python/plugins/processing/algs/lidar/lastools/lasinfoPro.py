@@ -29,8 +29,6 @@ from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
-
-from processing.core.outputs import OutputFile
 from processing.core.parameters import ParameterNumber
 
 class lasinfoPro(LAStoolsAlgorithm):

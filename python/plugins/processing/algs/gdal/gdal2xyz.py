@@ -25,16 +25,13 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputTable
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.GdalUtils import GdalUtils
 

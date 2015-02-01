@@ -32,10 +32,9 @@ from osgeo.gdalconst import GA_ReadOnly
 
 import processing
 from processing.tools import dataobjects
-from processing.tools.system import *
+from processing.tools.system import getTempFilename
 
-from processing.tests.TestData import points, points2, polygons, polygons2, \
-    lines, union, table, polygonsGeoJson, raster
+from processing.tests.TestData import polygons2, polygonsGeoJson, raster
 
 
 class SagaTest(unittest.TestCase):

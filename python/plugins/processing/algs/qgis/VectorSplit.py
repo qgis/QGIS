@@ -26,8 +26,7 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import *
-from qgis.core import *
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField

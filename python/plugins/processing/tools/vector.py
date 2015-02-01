@@ -30,8 +30,8 @@ import uuid
 import codecs
 import cStringIO
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant, QSettings
+from qgis.core import QGis, QgsFields, QgsField, QgsSpatialIndex, QgsMapLayerRegistry, QgsMapLayer, QgsVectorLayer, QgsVectorFileWriter, QgsDistanceArea
 from processing.core.ProcessingConfig import ProcessingConfig
 
 
@@ -42,7 +42,7 @@ GEOM_TYPE_MAP = {
     QGis.WKBMultiPoint: 'MultiPoint',
     QGis.WKBMultiLineString: 'MultiLineString',
     QGis.WKBMultiPolygon: 'MultiPolygon',
-    }
+}
 
 
 TYPE_MAP = {
@@ -50,7 +50,7 @@ TYPE_MAP = {
     float: QVariant.Double,
     int: QVariant.Int,
     bool: QVariant.Bool
-    }
+}
 
 
 def features(layer):
@@ -247,7 +247,7 @@ def simpleMeasure(geom, method=0, ellips=None, crs=None):
         attr1 = pt.x()
         attr2 = pt.y()
     elif geom.wkbType() in [QGis.WKBMultiPoint, QGis.WKBMultiPoint25D]:
-        pt = inGeom.asMultiPoint()
+        pt = geom.asMultiPoint()
         attr1 = pt[0].x()
         attr2 = pt[0].y()
     else:
@@ -426,7 +426,8 @@ class VectorWriter:
             for field in fields:
                 qgsfields.append(_toQgsField(field))
 
-            self.writer = QgsVectorFileWriter(self.fileName, encoding,
+            self.writer = QgsVectorFileWriter(
+                self.fileName, encoding,
                 qgsfields, geometryType, crs, OGRCodes[extension])
 
     def addFeature(self, feature):

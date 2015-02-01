@@ -30,19 +30,19 @@ import time
 import uuid
 import importlib
 import re
-from qgis.core import *
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from PyQt4.QtGui import QIcon
+
+from qgis.core import QgsRasterLayer
 from qgis.utils import iface
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import \
-    GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
-from processing.core.parameters import *
-from processing.core.outputs import *
+from processing.core.parameters import getParameterFromString, ParameterVector, ParameterMultipleInput, ParameterExtent, ParameterNumber, ParameterSelection, ParameterRaster, ParameterTable, ParameterBoolean, ParameterString
+from processing.core.outputs import getOutputFromString, OutputRaster, OutputVector, OutputFile, OutputHTML
 
 from GrassUtils import GrassUtils
 
@@ -122,7 +122,7 @@ class GrassAlgorithm(GeoAlgorithm):
                     if isinstance(parameter, ParameterVector):
                         hasVectorInput = True
                     if isinstance(parameter, ParameterMultipleInput) \
-                        and parameter.datatype < 3:
+                       and parameter.datatype < 3:
                         hasVectorInput = True
                 elif line.startswith('*Parameter'):
                     param = getParameterFromString(line[1:])
@@ -184,10 +184,10 @@ class GrassAlgorithm(GeoAlgorithm):
                     for layername in layers:
                         layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
-                            cellsize = max(cellsize,
-                                    (layer.extent().xMaximum()
-                                    - layer.extent().xMinimum())
-                                    / layer.width())
+                            cellsize = max(cellsize, (
+                                layer.extent().xMaximum()
+                                - layer.extent().xMinimum())
+                                / layer.width())
 
         if cellsize == 0:
             cellsize = 1
@@ -288,12 +288,7 @@ class GrassAlgorithm(GeoAlgorithm):
         for param in self.parameters:
             if param.value is None or param.value == '':
                 continue
-            if param.name == self.GRASS_REGION_CELLSIZE_PARAMETER \
-                or param.name == self.GRASS_REGION_EXTENT_PARAMETER \
-                or param.name == self.GRASS_MIN_AREA_PARAMETER or param.name \
-                == self.GRASS_SNAP_TOLERANCE_PARAMETER or param.name \
-                == self.GRASS_OUTPUT_TYPE_PARAMETER or param.name \
-                == self.GRASS_REGION_ALIGN_TO_RESOLUTION:
+            if param.name in [ self.GRASS_REGION_CELLSIZE_PARAMETER, self.GRASS_REGION_EXTENT_PARAMETER, self.GRASS_MIN_AREA_PARAMETER, self.GRASS_SNAP_TOLERANCE_PARAMETER, self.GRASS_OUTPUT_TYPE_PARAMETER, self.GRASS_REGION_ALIGN_TO_RESOLUTION ]:
                 continue
             if isinstance(param, (ParameterRaster, ParameterVector)):
                 value = param.value

@@ -13,11 +13,12 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-
 import os
-from PyQt4.QtCore import *
-from qgis.core import *
-from qgis.analysis import *
+
+from PyQt4.QtCore import QDir, QFile
+from qgis.core import QgsVectorLayer, QgsFeature, QgsFeatureRequest
+from qgis.analysis import QgsZonalStatistics
+
 from utilities import (
     unitTestDataPath,
     getQgisTestApp,

@@ -76,7 +76,7 @@ class lastilePro(LAStoolsAlgorithm):
             commands.append("-extra_pass")
         self.addParametersOutputDirectoryCommands(commands)
         base_name = self.getParameterValue(lastilePro.BASE_NAME)
-        if base_name != None:
+        if base_name is not None:
             commands.append("-o")
             commands.append(base_name)
         self.addParametersPointOutputFormatCommands(commands)

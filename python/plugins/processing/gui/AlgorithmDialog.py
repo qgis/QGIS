@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QMessageBox, QApplication, QCursor, QColor, QPalette
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -36,10 +36,26 @@ from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
 from processing.gui.AlgorithmExecutor import runalg, runalgIterating
 from processing.gui.Postprocessing import handleAlgorithmResults
 
-from processing.core.parameters import *
+from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterVector
+from processing.core.parameters import ParameterTable
+from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterFixedTable
+from processing.core.parameters import ParameterRange
+from processing.core.parameters import ParameterTableField
+from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterNumber
+from processing.core.parameters import ParameterFile
+from processing.core.parameters import ParameterCrs
+
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
 from processing.core.outputs import OutputTable
+
+from processing.tools import dataobjects
 
 
 class AlgorithmDialog(AlgorithmDialogBase):
@@ -123,8 +139,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(unicode(widget.text()))
 
     def accept(self):
-        checkCRS = ProcessingConfig.getSetting(
-                ProcessingConfig.WARN_UNMATCHING_CRS)
+        checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
             self.setParamValues()
             if checkCRS and not self.alg.checkInputCRS():
@@ -198,8 +213,7 @@ class AlgorithmDialog(AlgorithmDialogBase):
                     self.tr('Wrong or missing parameter values'))
 
     def finish(self):
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
+        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
 
         if self.iterateParam is None:
             handleAlgorithmResults(self.alg, self, not keepOpen)

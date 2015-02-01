@@ -12,12 +12,12 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
 import tempfile
-import qgis
 import sys
 
-from qgis.core import *
+from qgis.core import QgsVectorLayer, QgsPoint, QgsFeature
 
 from utilities import (getQgisTestApp,
                        TestCase,

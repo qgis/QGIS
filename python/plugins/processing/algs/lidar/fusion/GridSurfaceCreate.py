@@ -28,7 +28,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-import subprocess
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
@@ -60,40 +59,40 @@ class GridSurfaceCreate(FusionAlgorithm):
         self.group = 'Surface'
         self.addParameter(ParameterFile(
             self.INPUT, self.tr('Input las layer')))
-        self.addParameter(ParameterNumber(self.CELLSIZE,
-            self.tr('Cellsize'), 0, None, 10.0))
-        self.addParameter(ParameterSelection(self.XYUNITS,
-            self.tr('XY Units'), self.UNITS))
-        self.addParameter(ParameterSelection(self.ZUNITS,
-            self.tr('Z Units'), self.UNITS))
-        self.addOutput(OutputFile(self.OUTPUT_DTM,
-            self.tr('DTM Output Surface'), 'dtm'))
-        spike = ParameterString(self.SPIKE,
-            self.tr('Spike (set blank if not used)'), '', False, True)
+        self.addParameter(ParameterNumber(
+            self.CELLSIZE, self.tr('Cellsize'), 0, None, 10.0))
+        self.addParameter(ParameterSelection(
+            self.XYUNITS, self.tr('XY Units'), self.UNITS))
+        self.addParameter(ParameterSelection(
+            self.ZUNITS, self.tr('Z Units'), self.UNITS))
+        self.addOutput(OutputFile(
+            self.OUTPUT_DTM, self.tr('DTM Output Surface'), 'dtm'))
+        spike = ParameterString(
+            self.SPIKE, self.tr('Spike (set blank if not used)'), '', False, True)
         spike.isAdvanced = True
         self.addParameter(spike)
-        median = ParameterString(self.MEDIAN,
-            self.tr('Median'), '', False, True)
+        median = ParameterString(
+            self.MEDIAN, self.tr('Median'), '', False, True)
         median.isAdvanced = True
         self.addParameter(median)
-        smooth = ParameterString(self.SMOOTH,
-            self.tr('Smooth'), '', False, True)
+        smooth = ParameterString(
+            self.SMOOTH, self.tr('Smooth'), '', False, True)
         smooth.isAdvanced = True
         self.addParameter(smooth)
-        slope = ParameterString(self.SLOPE,
-            self.tr('Slope'), '', False, True)
+        slope = ParameterString(
+            self.SLOPE, self.tr('Slope'), '', False, True)
         slope.isAdvanced = True
         self.addParameter(slope)
-        minimum = ParameterBoolean(self.MINIMUM,
-            self.tr('Minimum (set blank if not used)'), False)
+        minimum = ParameterBoolean(
+            self.MINIMUM, self.tr('Minimum (set blank if not used)'), False)
         minimum.isAdvanced = True
         self.addParameter(minimum)
-        class_var = ParameterString(self.CLASS,
-            self.tr('Class(es)'), 2, False, True)
+        class_var = ParameterString(
+            self.CLASS, self.tr('Class(es)'), 2, False, True)
         class_var.isAdvanced = True
         self.addParameter(class_var)
-        advance_modifiers = ParameterString(self.ADVANCED_MODIFIERS,
-            self.tr('Additional modifiers'), '', False, True)
+        advance_modifiers = ParameterString(
+            self.ADVANCED_MODIFIERS, self.tr('Additional modifiers'), '', False, True)
         advance_modifiers.isAdvanced = True
         self.addParameter(advance_modifiers)
 

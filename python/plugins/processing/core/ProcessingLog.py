@@ -26,11 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import re
+import os
 import codecs
 import datetime
-from processing.tools.system import *
+from processing.tools.system import userFolder
 from processing.core.ProcessingConfig import ProcessingConfig
-
 
 class ProcessingLog:
 
@@ -49,9 +49,9 @@ class ProcessingLog:
         else:
             logfile = codecs.open(ProcessingLog.logFilename(), 'w',
                                   encoding='utf-8')
-        logfile.write('Started logging at '
-                + datetime.datetime.now().strftime(
-                        ProcessingLog.DATE_FORMAT).decode('utf-8') + '\n')
+        logfile.write('Started logging at ' +
+                      datetime.datetime.now().strftime(
+                          ProcessingLog.DATE_FORMAT).decode('utf-8') + '\n')
         logfile.close()
 
     @staticmethod
@@ -72,8 +72,8 @@ class ProcessingLog:
             else:
                 text = msg.replace('\n', '|')
             line = msgtype + '|' + datetime.datetime.now().strftime(
-                    ProcessingLog.DATE_FORMAT).decode('utf-8') + '|' \
-                    + text + '\n'
+                ProcessingLog.DATE_FORMAT).decode('utf-8') + '|' \
+                + text + '\n'
             logfile = codecs.open(ProcessingLog.logFilename(), 'a',
                                   encoding='utf-8')
             logfile.write(line)
@@ -85,8 +85,8 @@ class ProcessingLog:
                     ProcessingLog.recentAlgs.append(algname)
                     recentAlgsString = ';'.join(ProcessingLog.recentAlgs[-6:])
                     ProcessingConfig.setSettingValue(
-                            ProcessingConfig.RECENT_ALGORITHMS,
-                            recentAlgsString)
+                        ProcessingConfig.RECENT_ALGORITHMS,
+                        recentAlgsString)
         except:
             pass
 
@@ -122,7 +122,7 @@ class ProcessingLog:
     @staticmethod
     def getRecentAlgorithms():
         recentAlgsSetting = ProcessingConfig.getSetting(
-                ProcessingConfig.RECENT_ALGORITHMS)
+            ProcessingConfig.RECENT_ALGORITHMS)
         try:
             ProcessingLog.recentAlgs = recentAlgsSetting.split(';')
         except:

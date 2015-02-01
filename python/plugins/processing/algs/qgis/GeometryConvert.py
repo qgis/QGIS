@@ -25,11 +25,9 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
@@ -46,7 +44,7 @@ class GeometryConvert(GeoAlgorithm):
              'Linestrings',
              'Multilinestrings',
              'Polygons'
-            ]
+             ]
 
     def defineCharacteristics(self):
         self.name = 'Convert geometry type'
@@ -176,7 +174,7 @@ class GeometryConvert(GeoAlgorithm):
                     feat.setAttributes(f.attributes())
                     feat.setGeometry(QgsGeometry.fromMultiPolyline(rings))
                     writer.addFeature(feat)
-                elif newtype == QGis.WKBPolygon:
+                elif newType == QGis.WKBPolygon:
                     writer.addFeature(f)
                 else:
                     raise GeoAlgorithmExecutionException(

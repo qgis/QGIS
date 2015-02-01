@@ -25,7 +25,7 @@ __copyright__ = '(C) 2014, Michael Douchin'
 __revision__ = '$Format:%H$'
 
 import processing
-from qgis.core import *
+from qgis.core import QgsExpression, QgsFeatureRequest
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterSelection

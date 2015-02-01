@@ -30,7 +30,7 @@ __revision__ = '$Format:%H$'
 import os
 import subprocess
 
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QCoreApplication
 
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -43,15 +43,15 @@ class LAStoolsUtils:
     @staticmethod
     def hasWine():
         wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
-        return ((wine_folder != None) and (wine_folder != ""))
+        return wine_folder is not None and wine_folder != ""
 
     @staticmethod
     def LAStoolsPath():
         lastools_folder = ProcessingConfig.getSetting(LAStoolsUtils.LASTOOLS_FOLDER)
-        if lastools_folder == None:
+        if lastools_folder is None:
             lastools_folder = ""
         wine_folder = ProcessingConfig.getSetting(LAStoolsUtils.WINE_FOLDER)
-        if (wine_folder == None) or (wine_folder == ""):
+        if wine_folder is None or wine_folder == "":
             folder = lastools_folder
         else:
             folder = wine_folder + "/wine " + lastools_folder

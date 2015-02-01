@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QgsFeature, QgsGeometry, QgsFeatureRequest, QgsDistanceArea
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -58,10 +57,8 @@ class SumLines(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
 
     def processAlgorithm(self, progress):
-        lineLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.LINES))
-        polyLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POLYGONS))
+        lineLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.LINES))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
         lengthFieldName = self.getParameterValue(self.LEN_FIELD)
         countFieldName = self.getParameterValue(self.COUNT_FIELD)
 
@@ -72,10 +69,8 @@ class SumLines(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer, fieldList,
                 countFieldName)
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fieldList.toList(),
-                                             polyProvider.geometryType(),
-                                             polyProvider.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fieldList.toList(), polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = vector.spatialindex(lineLayer)
 

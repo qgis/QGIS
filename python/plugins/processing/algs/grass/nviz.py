@@ -25,8 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
-from qgis.core import *
+import os
+import time
+
+from PyQt4.QtGui import QIcon
+from qgis.core import QgsRasterLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
@@ -34,7 +37,7 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
 from GrassUtils import GrassUtils
-from processing.tools.system import *
+from processing.tools.system import getNumExportedLayers
 from processing.tools import dataobjects
 
 
@@ -47,7 +50,7 @@ class nviz(GeoAlgorithm):
     GRASS_REGION_CELLSIZE_PARAMETER = 'GRASS_REGION_CELLSIZE_PARAMETER'
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/grass.png')
+        return QIcon(os.path.dirname(__file__) + '/../images/grass.png')
 
     def defineCharacteristics(self):
         self.name = 'nviz'
@@ -158,10 +161,10 @@ class nviz(GeoAlgorithm):
                     for layername in layers:
                         layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
-                            cellsize = max(cellsize,
-                                    (layer.extent().xMaximum()
-                                    - layer.extent().xMinimum())
-                                    / layer.width())
+                            cellsize = max(cellsize, (
+                                layer.extent().xMaximum()
+                                - layer.extent().xMinimum())
+                                / layer.width())
 
         if cellsize == 0:
             cellsize = 1

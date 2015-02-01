@@ -31,8 +31,9 @@ from processing.core.outputs import OutputRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterSelection
-from processing.tools.system import *
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.tools.system import tempFolder
+
 import os
 
 class buildvrt(GdalAlgorithm):

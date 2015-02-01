@@ -28,7 +28,6 @@ from LAStoolsUtils import LAStoolsUtils
 from LAStoolsAlgorithm import LAStoolsAlgorithm
 
 from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 
 class lasviewPro(LAStoolsAlgorithm):

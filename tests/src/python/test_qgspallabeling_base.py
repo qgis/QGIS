@@ -17,6 +17,7 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
 import sys
 import datetime
@@ -25,14 +26,13 @@ import shutil
 import StringIO
 import tempfile
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QSize, qDebug
+from PyQt4.QtGui import QFont, QColor
 
 from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsDataSourceURI,
     QgsMapLayerRegistry,
-    QgsMapRenderer,
     QgsMapSettings,
     QgsPalLabeling,
     QgsPalLayerSettings,
@@ -433,7 +433,7 @@ class TestPALConfig(TestQgsPalLabeling):
 
     def test_partials_labels_activate(self):
         pal = QgsPalLabeling()
-         # Enable partials labels
+        # Enable partials labels
         pal.setShowingPartialsLabels(True)
         self.assertTrue(pal.isShowingPartialsLabels())
 

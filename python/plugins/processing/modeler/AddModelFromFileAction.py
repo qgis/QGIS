@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-from PyQt4 import QtGui
+from PyQt4.QtGui import QIcon, QFileDialog, QMessageBox
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
@@ -40,22 +40,23 @@ class AddModelFromFileAction(ToolboxAction):
         self.group = self.tr('Tools', 'AddModelFromFileAction')
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/model.png')
+        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
 
     def execute(self):
-        filename = QtGui.QFileDialog.getOpenFileName(self.toolbox,
+        filename = QFileDialog.getOpenFileName(self.toolbox,
             self.tr('Open model', 'AddModelFromFileAction'), None,
             self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
         if filename:
             try:
                 ModelerAlgorithm.fromFile(filename)
             except WrongModelException:
-                QtGui.QMessageBox.warning(self.toolbox,
-                   self.tr('Error reading model', 'AddModelFromFileAction'),
-                   self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
+                QMessageBox.warning(
+                    self.toolbox,
+                    self.tr('Error reading model', 'AddModelFromFileAction'),
+                    self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
                 return
             except:
-                QtGui.QMessageBox.warning(self.toolbox,
+                QMessageBox.warning(self.toolbox,
                     self.tr('Error reading model', 'AddModelFromFileAction'),
                     self.tr('Cannot read file', 'AddModelFromFileAction'))
             destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))

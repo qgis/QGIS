@@ -91,4 +91,3 @@ class SagaGroupNameDecorator:
     @staticmethod
     def getDecoratedName(groupName):
         return SagaGroupNameDecorator.groups.get(groupName, groupName)
-

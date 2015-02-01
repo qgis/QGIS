@@ -12,16 +12,15 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import os
 import unittest
-import qgis
 
 from PyQt4.QtCore import QFileInfo, QObject, SIGNAL
 from PyQt4 import QtGui
 
 from qgis.core import (QgsRaster,
                        QgsRasterLayer,
-                       QgsRasterDataProvider,
                        QgsColorRampShader,
                        QgsContrastEnhancement,
                        QgsMapLayerRegistry,
@@ -34,9 +33,8 @@ from qgis.core import (QgsRaster,
                        QgsSingleBandPseudoColorRenderer)
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
-                       TestCase,
-                       unittest)
-                       #expectedFailure)
+                       TestCase)
+
 # Convenience instances in case you may need them
 # not used in this test
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -149,7 +147,7 @@ class TestQgsRasterLayer(TestCase):
         myChecker.setControlName("expected_raster_transparency")
         myChecker.setMapRenderer(myMapRenderer)
 
-        myResultFlag = myChecker.runTest("raster_transparency_python");
+        myResultFlag = myChecker.runTest("raster_transparency_python")
         assert myResultFlag, "Raster transparency rendering test failed"
 
     def testIssue7023(self):
@@ -218,6 +216,7 @@ class TestQgsRasterLayer(TestCase):
 
     def onRendererChanged( self ):
         self.rendererChanged = True
+
     def test_setRenderer( self ):
         myPath = os.path.join(unitTestDataPath('raster'),
                               'band1_float32_noct_epsg4326.tif')
@@ -233,7 +232,7 @@ class TestQgsRasterLayer(TestCase):
         r = QgsSingleBandPseudoColorRenderer( layer.dataProvider(), 1, rShader )
 
         layer.setRenderer( r )
-        assert self.rendererChanged == True
+        assert self.rendererChanged
         assert layer.renderer() == r
 
 if __name__ == '__main__':

@@ -27,14 +27,12 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
@@ -55,7 +53,7 @@ class Grid(GeoAlgorithm):
              'Rectangle (polygon)',
              'Diamond (polygon)',
              'Hexagon (polygon)'
-            ]
+             ]
 
     def defineCharacteristics(self):
         self.name = 'Create grid'
@@ -110,7 +108,7 @@ class Grid(GeoAlgorithm):
                   QgsField('top', QVariant.Double, '', 24, 16),
                   QgsField('right', QVariant.Double, '', 24, 16),
                   QgsField('bottom', QVariant.Double, '', 24, 16)
-                 ]
+                  ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
             geometryType, crs)
@@ -230,8 +228,8 @@ class Grid(GeoAlgorithm):
         ft = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
-        xVertexLo = 0.288675134594813 * vSpacing;
-        xVertexHi = 0.577350269189626 * vSpacing;
+        xVertexLo = 0.288675134594813 * vSpacing
+        xVertexHi = 0.577350269189626 * vSpacing
         hSpacing = xVertexLo + xVertexHi
 
         halfVSpacing = vSpacing / 2

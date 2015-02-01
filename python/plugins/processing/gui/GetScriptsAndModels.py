@@ -30,8 +30,8 @@ import os
 import json
 import urllib2
 from urllib2 import HTTPError
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QCoreApplication
+from PyQt4.QtGui import QIcon, QMessageBox, QCursor, QApplication, QDialog, QTreeWidgetItem
 from processing.gui.ToolboxAction import ToolboxAction
 from PyQt4 import QtGui
 from processing.ui.ui_DlgGetScriptsAndModels import Ui_DlgGetScriptsAndModels

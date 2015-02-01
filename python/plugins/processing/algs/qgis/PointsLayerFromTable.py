@@ -25,9 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QGis, QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -51,10 +49,8 @@ class PointsLayerFromTable(GeoAlgorithm):
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
         writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
-        xfieldindex = vlayer.fieldNameIndex(
-                self.getParameterValue(self.XFIELD))
-        yfieldindex = vlayer.fieldNameIndex(
-                self.getParameterValue(self.YFIELD))
+        xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
+        yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
 
         crsId = self.getParameterValue(self.TARGET_CRS)
         targetCrs = QgsCoordinateReferenceSystem()

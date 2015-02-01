@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -57,10 +57,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
 
     def processAlgorithm(self, progress):
-        polyLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
@@ -72,10 +70,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                 polyLayer.pendingFields(), fieldName)
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fields.toList(),
-                                             polyProvider.geometryType(),
-                                             polyProvider.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 
@@ -105,7 +101,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
                         clazz = ftPoint.attributes()[classFieldIndex]
-                        if not clazz in classes:
+                        if clazz not in classes:
                             classes.append(clazz)
 
             outFeat.setGeometry(geom)

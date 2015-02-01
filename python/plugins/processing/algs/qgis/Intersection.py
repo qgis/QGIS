@@ -25,9 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.parameters import ParameterVector
@@ -51,9 +49,9 @@ class Intersection(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         vlayerA = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+            self.getParameterValue(self.INPUT))
         vlayerB = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT2))
+            self.getParameterValue(self.INPUT2))
         vproviderA = vlayerA.dataProvider()
 
         fields = vector.combineVectorFields(vlayerA, vlayerB)

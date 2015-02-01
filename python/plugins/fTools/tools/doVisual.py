@@ -28,10 +28,12 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL, QThread
+from PyQt4.QtGui import QDialog, QApplication, QDialogButtonBox, QMessageBox, QTableWidgetItem, QHeaderView
+from qgis.core import QGis, QgsFeature, QgsDistanceArea, QgsFeatureRequest
+
 from ui_frmVisual import Ui_Dialog
+
 import ftools_utils
 import math
 
@@ -262,7 +264,8 @@ class visualThread( QThread ):
     nElement = 0
     # determine selected field type
     if ftools_utils.getFieldType( vlayer, myField ) in (
-    'String', 'varchar', 'char', 'text'):
+        'String', 'varchar', 'char', 'text'
+    ):
       fillVal = 0
       emptyVal = 0
       if self.mySelection: # only selected features

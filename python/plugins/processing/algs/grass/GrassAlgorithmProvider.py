@@ -26,15 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from PyQt4.QtGui import QIcon
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
 from GrassUtils import GrassUtils
 from GrassAlgorithm import GrassAlgorithm
 from nviz import nviz
-from processing.tools.system import *
+from processing.tools.system import isMac, isWindows
 
 
 class GrassAlgorithmProvider(AlgorithmProvider):

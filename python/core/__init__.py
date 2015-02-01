@@ -2,7 +2,6 @@ import inspect
 import string
 from qgis._core import *
 
-
 def register_function(function, arg_count, group, usesgeometry=False, **kwargs):
     """
     Register a Python function to be used as a expression function.

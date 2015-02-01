@@ -12,25 +12,19 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
-from PyQt4.QtCore import QVariant, QObject, SIGNAL
-from PyQt4.QtGui import QPainter
 
-from qgis.core import (QGis,
-                       QgsVectorLayer,
+from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsRelation,
                        QgsGeometry,
                        QgsPoint,
                        QgsMapLayerRegistry
-                      )
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
+                       )
+from utilities import (getQgisTestApp,
                        TestCase,
-                       unittest,
-                       #expectedFailure
-                      )
+                       unittest
+                       )
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 
 def createReferencingLayer():

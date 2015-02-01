@@ -25,8 +25,9 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
+import os
+
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.tools.system import *
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection

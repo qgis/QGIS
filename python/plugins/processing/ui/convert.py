@@ -12,8 +12,7 @@ def convertUiFile(f):
         stdin=open(os.devnull),
         stderr=subprocess.STDOUT,
         universal_newlines=True,
-        ).stdout
-    lines = []
+    ).stdout
     for line in iter(proc.readline, ''):
         pass
 

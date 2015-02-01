@@ -23,15 +23,15 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
+from PyQt4.QtCore import pyqtSignal, QObject, QCoreApplication, QFile, QDir, QDirIterator, QSettings, QDate, QUrl, QFileInfo, QLocale
 from PyQt4.QtXml import QDomDocument
-from PyQt4.QtNetwork import *
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
 import sys
 import os
 import codecs
 import ConfigParser
 import qgis.utils
-from qgis.core import *
+from qgis.core import QGis, QgsNetworkAccessManager
 from qgis.utils import iface, plugin_paths
 from version_compare import compareVersions, normalizeVersion, isCompatible
 
@@ -419,37 +419,37 @@ class Repositories(QObject):
             plugin_id = None
 
           plugin = {
-            "id"            : name,
-            "plugin_id"     : plugin_id,
-            "name"          : pluginNodes.item(i).toElement().attribute("name"),
-            "version_available" : pluginNodes.item(i).toElement().attribute("version"),
-            "description"   : pluginNodes.item(i).firstChildElement("description").text().strip(),
-            "about"         : pluginNodes.item(i).firstChildElement("about").text().strip(),
-            "author_name"   : pluginNodes.item(i).firstChildElement("author_name").text().strip(),
-            "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().strip(),
-            "download_url"  : pluginNodes.item(i).firstChildElement("download_url").text().strip(),
-            "category"      : pluginNodes.item(i).firstChildElement("category").text().strip(),
-            "tags"          : pluginNodes.item(i).firstChildElement("tags").text().strip(),
-            "changelog"     : pluginNodes.item(i).firstChildElement("changelog").text().strip(),
-            "author_email"  : pluginNodes.item(i).firstChildElement("author_email").text().strip(),
-            "tracker"       : pluginNodes.item(i).firstChildElement("tracker").text().strip(),
-            "code_repository"  : pluginNodes.item(i).firstChildElement("repository").text().strip(),
-            "downloads"     : pluginNodes.item(i).firstChildElement("downloads").text().strip(),
-            "average_vote"  : pluginNodes.item(i).firstChildElement("average_vote").text().strip(),
-            "rating_votes"  : pluginNodes.item(i).firstChildElement("rating_votes").text().strip(),
-            "icon"          : icon,
-            "experimental"  : experimental,
-            "deprecated"    : deprecated,
-            "filename"      : fileName,
-            "installed"     : False,
-            "available"     : True,
-            "status"        : "not installed",
-            "error"         : "",
-            "error_details" : "",
-            "version_installed" : "",
-            "zip_repository"    : reposName,
-            "library"      : "",
-            "readonly"     : False
+              "id"            : name,
+              "plugin_id"     : plugin_id,
+              "name"          : pluginNodes.item(i).toElement().attribute("name"),
+              "version_available" : pluginNodes.item(i).toElement().attribute("version"),
+              "description"   : pluginNodes.item(i).firstChildElement("description").text().strip(),
+              "about"         : pluginNodes.item(i).firstChildElement("about").text().strip(),
+              "author_name"   : pluginNodes.item(i).firstChildElement("author_name").text().strip(),
+              "homepage"      : pluginNodes.item(i).firstChildElement("homepage").text().strip(),
+              "download_url"  : pluginNodes.item(i).firstChildElement("download_url").text().strip(),
+              "category"      : pluginNodes.item(i).firstChildElement("category").text().strip(),
+              "tags"          : pluginNodes.item(i).firstChildElement("tags").text().strip(),
+              "changelog"     : pluginNodes.item(i).firstChildElement("changelog").text().strip(),
+              "author_email"  : pluginNodes.item(i).firstChildElement("author_email").text().strip(),
+              "tracker"       : pluginNodes.item(i).firstChildElement("tracker").text().strip(),
+              "code_repository"  : pluginNodes.item(i).firstChildElement("repository").text().strip(),
+              "downloads"     : pluginNodes.item(i).firstChildElement("downloads").text().strip(),
+              "average_vote"  : pluginNodes.item(i).firstChildElement("average_vote").text().strip(),
+              "rating_votes"  : pluginNodes.item(i).firstChildElement("rating_votes").text().strip(),
+              "icon"          : icon,
+              "experimental"  : experimental,
+              "deprecated"    : deprecated,
+              "filename"      : fileName,
+              "installed"     : False,
+              "available"     : True,
+              "status"        : "not installed",
+              "error"         : "",
+              "error_details" : "",
+              "version_installed" : "",
+              "zip_repository"    : reposName,
+              "library"      : "",
+              "readonly"     : False
           }
           qgisMinimumVersion = pluginNodes.item(i).firstChildElement("qgis_minimum_version").text().strip()
           if not qgisMinimumVersion: qgisMinimumVersion = "2"
@@ -468,8 +468,9 @@ class Repositories(QObject):
           self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Server response is 200 OK, but doesn't contain plugin metatada. This is most likely caused by a proxy or a wrong repository URL. You can configure proxy settings in QGIS options.")
         else:
           self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Status code:") + " %d %s" % (
-                    reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
-                    reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute))
+              reply.attribute(QNetworkRequest.HttpStatusCodeAttribute),
+              reply.attribute(QNetworkRequest.HttpReasonPhraseAttribute)
+          )
 
     self.repositoryFetched.emit( reposName )
 
@@ -487,7 +488,7 @@ class Repositories(QObject):
 
 
   # ----------------------------------------- #
-  def setInspectionFilter(self, key = None):
+  def setInspectionFilter(self, key=None):
     """ temporarily disable all repositories but this for inspection """
     self.mInspectionFilter = key
 
@@ -553,14 +554,14 @@ class Plugins(QObject):
   # ----------------------------------------- #
   def removeInstalledPlugin(self, key):
     """ remove given plugin from the localCache """
-    if self.localCache.has_key(key):
+    if key in self.localCache:
       del self.localCache[key]
 
 
   # ----------------------------------------- #
   def removeRepository(self, repo):
     """ remove whole repository from the repoCache """
-    if self.repoCache.has_key(repo):
+    if repo in self.repoCache:
       del self.repoCache[repo]
 
 
@@ -649,7 +650,7 @@ class Plugins(QObject):
 
     icon = pluginMetadata("icon")
     if QFileInfo( icon ).isRelative():
-      icon = path + "/" + icon;
+      icon = path + "/" + icon
 
     plugin = {
         "id"                : key,
@@ -705,12 +706,12 @@ class Plugins(QObject):
         pluginDir = QDir(pluginsPath)
         pluginDir.setFilter(QDir.AllDirs)
         for key in pluginDir.entryList():
-          if not key in [".",".."]:
+          if key not in [".",".."]:
             path = QDir.convertSeparators( pluginsPath + "/" + key )
             # readOnly = not QFileInfo(pluginsPath).isWritable() # On windows testing the writable status isn't reliable.
             readOnly = isTheSystemDir                            # Assume only the system plugins are not writable.
             # only test those not yet loaded. Loaded plugins already proved they're o.k.
-            testLoadThis = testLoad and not qgis.utils.plugins.has_key(key)
+            testLoadThis = testLoad and key not in qgis.utils.plugins
             plugin = self.getInstalledPlugin(key, path=path, readOnly=readOnly, testLoad=testLoadThis)
             self.localCache[key] = plugin
             if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_installed"],plugin["version_installed"]) == 1:
@@ -740,11 +741,11 @@ class Plugins(QObject):
         key = plugin["id"]
         # check if the plugin is allowed and if there isn't any better one added already.
         if (allowExperimental or not plugin["experimental"]) \
-        and (allowDeprecated or not plugin["deprecated"]) \
-        and not (self.mPlugins.has_key(key) and self.mPlugins[key]["version_available"] and compareVersions(self.mPlugins[key]["version_available"], plugin["version_available"]) < 2):
+           and (allowDeprecated or not plugin["deprecated"]) \
+           and not (key in self.mPlugins and self.mPlugins[key]["version_available"] and compareVersions(self.mPlugins[key]["version_available"], plugin["version_available"]) < 2):
           # The mPlugins dict contains now locally installed plugins.
           # Now, add the available one if not present yet or update it if present already.
-          if not self.mPlugins.has_key(key):
+          if key not in self.mPlugins:
             self.mPlugins[key] = plugin   # just add a new plugin
           else:
             # update local plugin with remote metadata
@@ -759,7 +760,7 @@ class Plugins(QObject):
             for attrib in ["name", "plugin_id", "description", "about", "category", "tags", "changelog", "author_name", "author_email", "homepage",
                            "tracker", "code_repository", "experimental", "deprecated", "version_available", "zip_repository",
                            "download_url", "filename", "downloads", "average_vote", "rating_votes"]:
-              if ( not attrib in translatableAttributes ) or ( attrib == "name" ): # include name!
+              if attrib not in translatableAttributes or attrib == "name":  # include name!
                 if plugin[attrib]:
                     self.mPlugins[key][attrib] = plugin[attrib]
           # set status

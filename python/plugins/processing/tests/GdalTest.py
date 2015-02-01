@@ -32,10 +32,9 @@ from osgeo.gdalconst import GA_ReadOnly
 
 import processing
 from processing.tools import dataobjects
-from processing.tools.system import *
+from processing.tools.system import getTempFilename
 
-from processing.tests.TestData import points, points2, polygons, polygons2, \
-    lines, union, table, polygonsGeoJson, raster
+from processing.tests.TestData import raster, union
 
 
 class GdalTest(unittest.TestCase):
@@ -67,7 +66,7 @@ class GdalTest(unittest.TestCase):
             0,
             '',
             None,
-            )
+        )
         output = outputs['OUTPUT']
         self.assertTrue(os.path.isfile(output))
         dataset = gdal.Open(output, GA_ReadOnly)
@@ -95,7 +94,7 @@ class GdalTest(unittest.TestCase):
             'id_2',
             'poly_num_b',
             'poly_st_b',
-            ]
+        ]
         expectedtypes = [
             'Integer',
             'Real',
@@ -103,7 +102,7 @@ class GdalTest(unittest.TestCase):
             'Integer',
             'Real',
             'String',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -119,7 +118,7 @@ class GdalTest(unittest.TestCase):
             '2',
             '1',
             'string a',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
@@ -138,7 +137,7 @@ class GdalTest(unittest.TestCase):
             'id_2',
             'poly_num_b',
             'poly_st_b',
-            ]
+        ]
         expectedtypes = [
             'Integer',
             'Real',
@@ -146,7 +145,7 @@ class GdalTest(unittest.TestCase):
             'Integer',
             'Real',
             'String',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -162,7 +161,7 @@ class GdalTest(unittest.TestCase):
             '2',
             '1',
             'string a',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'

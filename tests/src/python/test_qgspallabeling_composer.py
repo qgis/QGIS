@@ -17,14 +17,16 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import sys
 import os
 import subprocess
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from PyQt4.QtCore import QRect, QRectF, QSize, QSizeF, qDebug
+from PyQt4.QtGui import QImage, QColor, QPainter, QPrinter
 from PyQt4.QtSvg import QSvgRenderer, QSvgGenerator
 
-from qgis.core import *
+from qgis.core import QgsComposition, QgsMapSettings, QgsProject, QgsComposerMap
 
 from utilities import (
     getTempfilePath,

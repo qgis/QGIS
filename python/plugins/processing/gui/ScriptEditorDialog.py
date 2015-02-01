@@ -31,11 +31,10 @@ import sys
 import json
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.Qsci import *
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QDialog, QIcon, QMenu, QAction, QCursor, QMessageBox, QFileDialog, QApplication
 
-from qgis.core import *
+from qgis.core import QgsApplication
 from qgis.utils import iface
 
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -47,7 +46,7 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
-import processing.resources_rc
+#import processing.resources_rc
 
 
 class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
@@ -66,18 +65,18 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                             Qt.WindowCloseButtonHint)
         # Set icons
         self.btnOpen.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+            QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
         self.btnSave.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+            QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.btnSaveAs.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+            QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
         self.btnEditHelp.setIcon(QIcon(':/processing/images/edithelp.png'))
         self.btnRun.setIcon(QIcon(':/processing/images/runalgorithm.png'))
         self.btnCut.setIcon(QgsApplication.getThemeIcon('/mActionEditCut.png'))
         self.btnCopy.setIcon(
-                QgsApplication.getThemeIcon('/mActionEditCopy.png'))
+            QgsApplication.getThemeIcon('/mActionEditCopy.png'))
         self.btnPaste.setIcon(
-                QgsApplication.getThemeIcon('/mActionEditPaste.png'))
+            QgsApplication.getThemeIcon('/mActionEditPaste.png'))
         self.btnUndo.setIcon(QgsApplication.getThemeIcon('/mActionUndo.png'))
         self.btnRedo.setIcon(QgsApplication.getThemeIcon('/mActionRedo.png'))
         self.btnSnippets.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
@@ -144,8 +143,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
     def closeEvent(self, evt):
         if self.hasChanged:
             ret = QMessageBox.question(self, self.tr('Unsaved changes'),
-                    self.tr('There are unsaved changes in script. Continue?'),
-                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+                self.tr('There are unsaved changes in script. Continue?'),
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.No
+            )
             if ret == QMessageBox.Yes:
                 evt.accept()
             else:
@@ -218,11 +218,11 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                                     filterName))
 
         if self.filename:
-            if self.algType == self.SCRIPT_PYTHON \
-                        and not self.filename.lower().endswith('.py'):
+            if self.algType == self.SCRIPT_PYTHON and \
+                    not self.filename.lower().endswith('.py'):
                 self.filename += '.py'
-            if self.algType == self.SCRIPT_R \
-                        and not self.filename.lower().endswith('.rsx'):
+            if self.algType == self.SCRIPT_R and \
+                    not self.filename.lower().endswith('.rsx'):
                 self.filename += '.rsx'
 
             text = unicode(self.editor.text())
@@ -233,8 +233,9 @@ class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):
                     fout.write(text)
             except IOError:
                 QMessageBox.warning(self, self.tr('I/O error'),
-                        self.tr('Unable to save edits. Reason:\n %s')
-                        % unicode(sys.exc_info()[1]))
+                    self.tr('Unable to save edits. Reason:\n %s')
+                    % unicode(sys.exc_info()[1])
+                )
                 return
             self.update = True
 

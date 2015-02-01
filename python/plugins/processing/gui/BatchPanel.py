@@ -25,10 +25,9 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QWidget, QIcon, QTableWidgetItem, QComboBox, QLineEdit
 
-from qgis.core import *
+from qgis.core import QgsApplication
 
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
@@ -60,10 +59,8 @@ class BatchPanel(QWidget, Ui_Form):
         self.btnAdvanced.hide()
 
         # Set icons
-        self.btnAdd.setIcon(
-                QgsApplication.getThemeIcon('/mActionSignPlus.png'))
-        self.btnRemove.setIcon(
-                QgsApplication.getThemeIcon('/mActionSignMinus.png'))
+        self.btnAdd.setIcon(QgsApplication.getThemeIcon('/mActionSignPlus.png'))
+        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/mActionSignMinus.png'))
         self.btnAdvanced.setIcon(QIcon(':/processing/images/alg.png'))
 
         self.alg = alg

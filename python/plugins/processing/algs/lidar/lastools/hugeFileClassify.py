@@ -63,9 +63,7 @@ class hugeFileClassify(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-
-#   first we tile the data with option '-reversible'
-
+        # first we tile the data with option '-reversible'
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
@@ -83,13 +81,12 @@ class hugeFileClassify(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we ground classify the reversible tiles
-
+        # then we ground classify the reversible tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileClassify*.laz")
         airborne = self.getParameterValue(hugeFileClassify.AIRBORNE)
-        if airborne != True:
+        if not airborne:
             commands.append("-not_airborne")
         method = self.getParameterValue(hugeFileClassify.TERRAIN)
         if method != 1:
@@ -105,8 +102,7 @@ class hugeFileClassify(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we compute the height for each points in the reversible tiles
-
+        # then we compute the height for each points in the reversible tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileClassify*_g.laz")
@@ -118,8 +114,7 @@ class hugeFileClassify(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we classify buildings and trees in the reversible tiles
-
+        # then we classify buildings and trees in the reversible tiles
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileClassify*_gh.laz")
@@ -131,8 +126,7 @@ class hugeFileClassify(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we reverse the tiling
-
+        # then we reverse the tiling
         commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileClassify*_ghc.laz")

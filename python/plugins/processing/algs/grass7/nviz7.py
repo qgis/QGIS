@@ -25,8 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+import time
+
 from PyQt4 import QtGui
-from qgis.core import *
+from qgis.core import QgsRasterLayer
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterMultipleInput
@@ -34,7 +37,7 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
 from Grass7Utils import Grass7Utils
-from processing.tools.system import *
+from processing.tools.system import getNumExportedLayers
 from processing.tools import dataobjects
 
 
@@ -52,18 +55,23 @@ class nviz7(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'nviz7'
         self.group = 'Visualization(NVIZ)'
-        self.addParameter(ParameterMultipleInput(nviz7.ELEVATION,
+        self.addParameter(ParameterMultipleInput(
+            nviz7.ELEVATION,
             self.tr('Raster file(s) for elevation'),
             ParameterMultipleInput.TYPE_RASTER, True))
-        self.addParameter(ParameterMultipleInput(nviz7.VECTOR,
+        self.addParameter(ParameterMultipleInput(
+            nviz7.VECTOR,
             self.tr('Vector lines/areas overlay file(s)'),
             ParameterMultipleInput.TYPE_VECTOR_ANY, True))
-        self.addParameter(ParameterMultipleInput(nviz7.COLOR,
+        self.addParameter(ParameterMultipleInput(
+            nviz7.COLOR,
             self.tr('Raster file(s) for color'),
             ParameterMultipleInput.TYPE_RASTER, True))
-        self.addParameter(ParameterExtent(nviz7.GRASS_REGION_EXTENT_PARAMETER,
+        self.addParameter(ParameterExtent(
+            nviz7.GRASS_REGION_EXTENT_PARAMETER,
             self.tr('GRASS region extent')))
-        self.addParameter(ParameterNumber(self.GRASS_REGION_CELLSIZE_PARAMETER,
+        self.addParameter(ParameterNumber(
+            self.GRASS_REGION_CELLSIZE_PARAMETER,
             self.tr('GRASS region cellsize (leave 0 for default)'),
             0, None, 0.0))
 
@@ -158,12 +166,11 @@ class nviz7(GeoAlgorithm):
                     for layername in layers:
                         layer = dataobjects.getObjectFromUri(layername)
                         if isinstance(layer, QgsRasterLayer):
-                            cellsize = max(cellsize,
-                                    (layer.extent().xMaximum()
-                                    - layer.extent().xMinimum())
-                                    / layer.width())
+                            cellsize = max(cellsize, (
+                                layer.extent().xMaximum()
+                                - layer.extent().xMinimum())
+                                / layer.width())
 
         if cellsize == 0:
             cellsize = 1
         return cellsize
-

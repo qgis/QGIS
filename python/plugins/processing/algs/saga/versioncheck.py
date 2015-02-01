@@ -22,7 +22,7 @@ def getAlgParams(f):
             pass
         elif line.startswith('Extent'):
             extentParamNames = line[6:].strip().split(' ')
-            params.extend(["-" + p  for p in extentParamNames])
+            params.extend(["-" + p for p in extentParamNames])
         else:
             tokens = line.split("|")
             if tokens[0] == "ParameterBoolean":
@@ -53,7 +53,7 @@ def testDescriptionFile(f):
         stdin=open(os.devnull),
         stderr=subprocess.STDOUT,
         universal_newlines=True,
-        ).stdout
+    ).stdout
     lines = []
     for line in iter(proc.readline, ''):
         lines.append(line)

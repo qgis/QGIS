@@ -31,7 +31,7 @@ import os
 import numpy
 from osgeo import gdal, ogr, osr
 
-from qgis.core import *
+from qgis.core import QgsRectangle, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
@@ -139,7 +139,7 @@ class HypsometricCurves(GeoAlgorithm):
                 geoTransform[3] + srcOffset[1] * geoTransform[5],
                 0.0,
                 geoTransform[5]
-                )
+            )
 
             memVDS = memVectorDriver.CreateDataSource('out')
             memLayer = memVDS.CreateLayer('poly', crs, ogr.wkbPolygon)

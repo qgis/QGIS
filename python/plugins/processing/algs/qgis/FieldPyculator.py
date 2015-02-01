@@ -26,11 +26,11 @@ __copyright__ = '(C) 2012, Victor Olaya & NextGIS'
 __revision__ = '$Format:%H$'
 
 import sys
-from PyQt4.QtCore import *
-from qgis.core import *
+
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsFeature, QgsField
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
@@ -83,7 +83,7 @@ class FieldsPyculator(GeoAlgorithm):
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+            self.getParameterValue(self.INPUT_LAYER))
         provider = layer.dataProvider()
         fields = provider.fields()
         fields.append(QgsField(fieldName, self.TYPES[fieldType], '',

@@ -25,10 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
-
-from qgis.gui import *
-from qgis.core import *
+from PyQt4.QtGui import QWidget
+from qgis.core import QgsCoordinateReferenceSystem
+from qgis.gui import QgsGenericProjectionSelector
 
 from processing.ui.ui_widgetBaseSelector import Ui_Form
 
@@ -64,6 +63,6 @@ class CrsSelectionPanel(QWidget, Ui_Form):
     def updateText(self):
         if self.crs is not None:
             self.leText.setText(self.crs)
-                
+
     def getValue(self):
-        return self.crs   
+        return self.crs

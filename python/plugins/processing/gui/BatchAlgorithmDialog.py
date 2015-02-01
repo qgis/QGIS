@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.QtGui import QApplication, QCursor, QMessageBox
+from PyQt4.QtCore import Qt
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -48,6 +48,10 @@ from processing.core.parameters import ParameterMultipleInput
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
 from processing.core.outputs import OutputHTML
+
+from processing.tools.system import getTempFilename
+
+import codecs
 
 class BatchAlgorithmDialog(AlgorithmDialogBase):
 

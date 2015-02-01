@@ -23,10 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import SIGNAL, QDir
+from PyQt4.QtGui import QWidget, QApplication
 
 from ui_widgetContour import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
@@ -44,21 +42,19 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       gdalVersion = Utils.GdalConfig.versionNum()
       self.useDirAsOutput = gdalVersion < 1700
       if self.useDirAsOutput:
-	      self.label_2.setText( QApplication.translate("GdalToolsWidget", "&Output directory for contour lines (shapefile)") )
+          self.label_2.setText( QApplication.translate("GdalToolsWidget", "&Output directory for contour lines (shapefile)") )
 
       self.outSelector.setType( self.outSelector.FILE )
 
       # set the default QSpinBoxes value
       self.intervalDSpinBox.setValue(10.0)
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()") ),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.intervalDSpinBox, SIGNAL("valueChanged(double)")),
           (self.attributeEdit, SIGNAL("textChanged(const QString &)"), self.attributeCheck)
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
@@ -114,6 +110,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def addLayerIntoCanvas(self, fileInfo):
       vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
-      if vl != None and vl.isValid():
+      if vl is not None and vl.isValid():
         if hasattr(self, 'lastEncoding'):
           vl.setProviderEncoding(self.lastEncoding)

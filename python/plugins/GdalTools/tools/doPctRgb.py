@@ -23,10 +23,8 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import QObject, SIGNAL, QCoreApplication
+from PyQt4.QtGui import QWidget
 
 from ui_widgetConvert import Ui_GdalToolsWidget as Ui_Widget
 from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
@@ -53,14 +51,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.progressBar.hide()
       self.outputFormat = Utils.fillRasterOutputFormat()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
           (self.colorsSpin, SIGNAL("valueChanged(int)"), self.colorsCheck, "-1"),   # hide this option
           (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck)
-        ]
-      )
+      ])
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
@@ -165,4 +161,3 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.progressBar.setValue( index + 1 )
       else:
         self.progressBar.setValue( 0 )
-

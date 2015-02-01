@@ -24,13 +24,15 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QDir, QUrl, QFile, QCoreApplication
+from PyQt4.QtGui import QDialog
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply
 
-from qgis.core import QgsApplication, QgsNetworkAccessManager
+import qgis
+from qgis.core import QgsNetworkAccessManager
 
 from ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
-from installer_data import *
+from installer_data import removeDir
 from unzip import unzip
 
 
@@ -92,7 +94,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
       reply.deleteLater()
       return
     self.file.open(QFile.WriteOnly)
-    self.file.write( reply.readAll() )
+    self.file.write(reply.readAll())
     self.file.close()
     self.stateChanged(0)
     reply.deleteLater()
