@@ -260,8 +260,8 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   QImage myDifferenceImage( myExpectedImage.width(),
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
-  QString myDiffImageFile = QDir::tempPath() + QDir::separator() +
-                            QDir::separator()  +
+  QString myDiffImageFile = QDir::tempPath() +
+                            QDir::separator() +
                             theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
