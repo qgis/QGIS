@@ -164,7 +164,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
         tsrs = unicode(self.getParameterValue(self.T_SRS))
-        asrs = unicode(self.getParameterValue(self.A_SRS))        
+        asrs = unicode(self.getParameterValue(self.A_SRS))
         schema = unicode(self.getParameterValue(self.SCHEMA))
         schemastring = "-lco SCHEMA="+schema
         table = unicode(self.getParameterValue(self.TABLE))
