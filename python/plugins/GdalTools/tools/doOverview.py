@@ -23,8 +23,9 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QObject, SIGNAL, QCoreApplication, QgsRaster
+from PyQt4.QtCore import QObject, SIGNAL, QCoreApplication
 from PyQt4.QtGui import QWidget
+from qgis.core import QgsRaster
 
 from ui_widgetOverview import Ui_GdalToolsWidget as Ui_Widget
 from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
