@@ -20,8 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import Qt, QTime, QRegExp
-from PyQt4.QtGui import QAbstractTableModel, QFont, QStandardItemModel, QStandardItem, QApplication
+from PyQt4.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
+from PyQt4.QtGui import QFont, QStandardItemModel, QStandardItem, QApplication
 
 from .plugin import DbError
 
