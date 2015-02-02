@@ -161,9 +161,16 @@ const QMap<QString, QgsMapLayer*>& QgsMapLayerRegistry::mapLayers()
 }
 
 
-
+#if QT_VERSION < 0x050000
 void QgsMapLayerRegistry::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal));
-} //  QgsMapLayerRegistry::connectNotify
+} // QgsMapLayerRegistry::connectNotify
+#else
+void QgsMapLayerRegistry::connectNotify( const QMetaMethod &signal )
+{
+  Q_UNUSED( signal );
+  //QgsDebugMsg("QgsMapLayerRegistry connected to " + QString(signal.methodSignature()));
+} // QgsMapLayerRegistry::connectNotify
+#endif
