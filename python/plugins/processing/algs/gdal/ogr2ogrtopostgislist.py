@@ -203,9 +203,9 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         arguments.append('PG:"host='+host)
         arguments.append('port='+port)
         if len(dbname) > 0:
-	    arguments.append('dbname='+dbname)
+            arguments.append('dbname='+dbname)
         if len(password) > 0:
-	    arguments.append('password='+password)
+            arguments.append('password='+password)
         arguments.append('user='+user+'"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
@@ -229,7 +229,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append(geocolumnstring)
         if len(pk) > 0:
             arguments.append(pkstring)
-        elif primary_key != None:
+        elif primary_key is not None:
             arguments.append("-lco FID="+primary_key)
         if len(table) > 0:
             arguments.append('-nln')
