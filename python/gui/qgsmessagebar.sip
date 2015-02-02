@@ -70,6 +70,7 @@ class QgsMessageBar: QFrame
 
     /**
      * Pushes a warning with default timeout to the message bar
+     * @param title title string for message
      * @param message The message to be displayed
      * @note added in 2.8
      */
@@ -77,6 +78,7 @@ class QgsMessageBar: QFrame
 
     /**
      * Pushes a warning with default timeout to the message bar
+     * @param title title string for message
      * @param message The message to be displayed
      * @note added in 2.8
      */
@@ -84,6 +86,7 @@ class QgsMessageBar: QFrame
 
     /**
      * Pushes a warning with default timeout to the message bar
+     * @param title title string for message
      * @param message The message to be displayed
      * @note added in 2.8
      */
@@ -91,6 +94,7 @@ class QgsMessageBar: QFrame
 
     /**
      * Pushes a warning with default timeout to the message bar
+     * @param title title string for message
      * @param message The message to be displayed
      * @note added in 2.8
      */

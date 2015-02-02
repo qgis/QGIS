@@ -87,7 +87,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
     /**
      * Emitted when a warning needs to be displayed.
-     *
+     * @param title title string for message
      * @param message A descriptive message for the warning
      */
     void warning( const QString& title, const QString& message );

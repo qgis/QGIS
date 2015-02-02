@@ -210,7 +210,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
 
     /**
      * Will be called, once all the features are loaded.
-     * Use e.g. to close a dialog created from {@link progress(int i,bool& cancel )}
+     * Use e.g. to close a dialog created from {@link progress( int i, bool& cancel )}
      */
     virtual void finished();
 

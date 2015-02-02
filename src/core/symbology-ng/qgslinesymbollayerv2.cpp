@@ -613,6 +613,7 @@ QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& con
 
 double QgsSimpleLineSymbolLayerV2::dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
+  Q_UNUSED( e );
   double offset = mOffset;
   QgsExpression* offsetExpression = expression( "offset" );
   if ( offsetExpression )
