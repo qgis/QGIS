@@ -25,13 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterCrs
@@ -40,7 +33,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterTableField
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
