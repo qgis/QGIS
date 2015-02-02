@@ -90,7 +90,7 @@ QgsAdvancedDigitizingDockWidget::QgsAdvancedDigitizingDockWidget( QgsMapCanvas* 
     , mSnappingMode(( QgsMapMouseEvent::SnappingMode ) QSettings().value( "/Cad/SnappingMode", ( int )QgsMapMouseEvent::SnapProjectConfig ).toInt() )
     , mCommonAngleConstraint( QSettings().value( "/Cad/CommonAngle", 90 ).toInt() )
     , mCadPointList( QList<QgsPoint>() )
-    , mPointSnapped( false )
+    , mSnappedToVertex( false )
     , mSnappedSegment( QList<QgsPoint>() )
 {
   setupUi( this );
@@ -520,7 +520,8 @@ bool QgsAdvancedDigitizingDockWidget::applyConstraints( QgsMapMouseEvent* e )
   QgsDebugMsg( QString( "X:        %1 %2 %3" ).arg( mXConstraint->isLocked() ).arg( mXConstraint->relative() ).arg( mXConstraint->value() ) );
   QgsDebugMsg( QString( "Y:        %1 %2 %3" ).arg( mYConstraint->isLocked() ).arg( mYConstraint->relative() ).arg( mYConstraint->value() ) );
 
-  QgsPoint point = e->mapPoint( &mPointSnapped );
+  QgsPoint point = e->mapPoint();
+  mSnappedToVertex = e->isSnappedToVertex();
   mSnappedSegment = e->snapSegment();
 
   bool previousPointExist, penulPointExist;
@@ -1136,7 +1137,7 @@ QgsPoint QgsAdvancedDigitizingDockWidget::currentPoint( bool* exist ) const
 {
   if ( exist )
     *exist = pointsCount() > 0;
-  if ( pointsCount() > 1 )
+  if ( pointsCount() > 0 )
     return mCadPointList.at( 0 );
   else
     return QgsPoint();
@@ -1190,7 +1191,7 @@ void QgsAdvancedDigitizingDockWidget::clearPoints()
 {
   mCadPointList.clear();
   mSnappedSegment.clear();
-  mPointSnapped = false;
+  mSnappedToVertex = false;
 
   updateCapacity();
 }

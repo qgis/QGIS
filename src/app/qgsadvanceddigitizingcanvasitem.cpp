@@ -48,7 +48,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter* painter )
   const QgsPoint curPoint = mAdvancedDigitizingDockWidget->currentPoint( );
   const QgsPoint prevPoint = mAdvancedDigitizingDockWidget->previousPoint( &previousPointExist );
   const QgsPoint penulPoint = mAdvancedDigitizingDockWidget->penultimatePoint( &penulPointExist );
-  const bool pointSnapped = mAdvancedDigitizingDockWidget->pointSnapped();
+  const bool snappedToVertex = mAdvancedDigitizingDockWidget->snappedToVertex();
   const QList<QgsPoint> snappedSegment = mAdvancedDigitizingDockWidget->snappedSegment();
   const bool hasSnappedSegment = snappedSegment.count() == 2;
 
@@ -81,14 +81,14 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter* painter )
   painter->setRenderHints( QPainter::Antialiasing );
 
   // Draw point snap
-  if ( curPointExist && pointSnapped )
+  if ( curPointExist && snappedToVertex )
   {
     painter->setPen( mSnapPen );
     painter->drawEllipse( curPointPix, 10, 10 );
   }
 
   // Draw segment snap
-  if ( hasSnappedSegment && !pointSnapped )
+  if ( hasSnappedSegment && !snappedToVertex )
   {
     painter->setPen( mSnapPen );
     painter->drawLine( snapSegmentPix1.x(),

@@ -112,8 +112,8 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 
 void QgsMapToolCapture::canvasMapMoveEvent( QgsMapMouseEvent * e )
 {
-  bool snapped;
-  QgsPoint point = e->mapPoint( &snapped );
+  bool snapped = e->isSnapped();
+  QgsPoint point = e->mapPoint();
 
   if ( !snapped )
   {

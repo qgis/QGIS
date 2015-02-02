@@ -155,7 +155,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
     QgsPoint previousPoint( bool *exist = 0 ) const;
     QgsPoint penultimatePoint( bool *exist = 0 ) const;
     int pointsCount() const {return mCadPointList.count();}
-    bool pointSnapped() const {return mPointSnapped;}
+    bool snappedToVertex() const {return mSnappedToVertex;}
     const QList<QgsPoint>& snappedSegment() const {return mSnappedSegment;}
 
     //! return the action used to enable/disable the tools
@@ -252,7 +252,7 @@ class APP_EXPORT QgsAdvancedDigitizingDockWidget : public QDockWidget, private U
 
     // point list and current snap point / segment
     QList<QgsPoint> mCadPointList;
-    bool mPointSnapped;
+    bool mSnappedToVertex;
     QList<QgsPoint> mSnappedSegment;
 
     // error message

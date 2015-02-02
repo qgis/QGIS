@@ -72,7 +72,7 @@ void QgsMapMouseEvent::snapPoint()
     QgsTolerance::UnitType unit;
     snappingUtils->defaultSettings( type, tolerance, unit );
     snappingUtils->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
-    snappingUtils->setDefaultSettings( QgsPointLocator::Vertex, tolerance, unit );
+    snappingUtils->setDefaultSettings( QgsPointLocator::Vertex | QgsPointLocator::Edge, tolerance, unit );
     mSnapMatch = snappingUtils->snapToMap( mMapPoint );
     snappingUtils->setSnapToMapMode( canvasMode );
     snappingUtils->setDefaultSettings( type, tolerance, unit );
@@ -94,15 +94,6 @@ QPoint QgsMapMouseEvent::mapToPixelCoordinates( QgsMapCanvas* canvas, const QgsP
   return QPoint( qRound( x ), qRound( y ) );
 }
 
-QgsPoint QgsMapMouseEvent::mapPoint( bool* snappedPoint ) const
-{
-  if ( snappedPoint )
-  {
-    *snappedPoint = mSnapMatch.isValid();
-  }
-  return mMapPoint;
-}
-
 QList<QgsPoint> QgsMapMouseEvent::snapSegment( bool* snapped, bool allLayers ) const
 {
   QList<QgsPoint> segment =  QList<QgsPoint>();
@@ -117,12 +108,11 @@ QList<QgsPoint> QgsMapMouseEvent::snapSegment( bool* snapped, bool allLayers ) c
   else if ( mSnappingMode != NoSnapping )
   {
     QgsPointLocator::Match match;
-    QgsPoint point;
     if ( mSnappingMode == SnapProjectConfig && !allLayers )
     {
       // run snapToMap with only segments
       EdgesOnlyFilter filter;
-      match = mMapTool->canvas()->snappingUtils()->snapToMap( point, &filter );
+      match = mMapTool->canvas()->snappingUtils()->snapToMap( mOriginalPoint, &filter );
     }
     else if ( mSnappingMode == SnapAllLayers || allLayers )
     {
@@ -135,7 +125,7 @@ QList<QgsPoint> QgsMapMouseEvent::snapSegment( bool* snapped, bool allLayers ) c
       snappingUtils->defaultSettings( type, tolerance, unit );
       snappingUtils->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
       snappingUtils->setDefaultSettings( QgsPointLocator::Edge, tolerance, unit );
-      match = snappingUtils->snapToMap( point );
+      match = snappingUtils->snapToMap( mOriginalPoint );
       snappingUtils->setSnapToMapMode( canvasMode );
       snappingUtils->setDefaultSettings( type, tolerance, unit );
     }
