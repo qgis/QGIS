@@ -25,6 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+
 from PyQt4.QtCore import QSettings
 
 from processing.core.parameters import ParameterVector
@@ -33,6 +34,7 @@ from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterExtent
+from processing.core.parameters import ParameterTableField
 
 from processing.tools.system import isWindows
 
@@ -56,6 +58,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
     SCHEMA = 'SCHEMA'
     TABLE = 'TABLE'
     PK = 'PK'
+    PRIMARY_KEY = 'PRIMARY_KEY'
     GEOCOLUMN = 'GEOCOLUMN'
     DIM = 'DIM'
     DIMLIST = ['2','3']
@@ -71,6 +74,8 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
     LAUNDER = 'LAUNDER'
     INDEX = 'INDEX'
     SKIPFAILURES = 'SKIPFAILURES'
+    PRECISION = 'PRECISION'
+    PROMOTETOMULTI = 'PROMOTETOMULTI'
     OPTIONS = 'OPTIONS'
 
     def dbConnectionNames(self):
@@ -87,7 +92,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         self.addParameter(ParameterVector(self.INPUT_LAYER,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.GTYPE,
-            self.tr('Output geometry type'), self.GEOMTYPE, 5))
+            self.tr('Output geometry type'), self.GEOMTYPE, 0))
         self.addParameter(ParameterCrs(self.A_SRS,
             self.tr('Assign an output CRS'), ''))
         self.addParameter(ParameterCrs(self.T_SRS,
@@ -100,7 +105,9 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             self.tr('Table name, leave blank to use input name'),
             '', optional=True))
         self.addParameter(ParameterString(self.PK,
-            self.tr('Primary key'), 'id', optional=True))
+            self.tr('Primary key (new field)'), 'id', optional=True))
+        self.addParameter(ParameterTableField(self.PRIMARY_KEY,
+            self.tr('Primary key (existing field, used if the above option is left empty)'), self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterString(self.GEOCOLUMN,
             self.tr('Geometry column name'), 'geom', optional=True))
         self.addParameter(ParameterSelection(self.DIM,
@@ -135,6 +142,12 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         self.addParameter(ParameterBoolean(self.SKIPFAILURES,
             self.tr('Continue after a failure, skipping the failed feature'),
             False))
+        self.addParameter(ParameterBoolean(self.PROMOTETOMULTI,
+            self.tr('Promote to Multipart'),
+            True))
+        self.addParameter(ParameterBoolean(self.PRECISION,
+            self.tr('Keep width and precision of input attributes'),
+            True))
         self.addParameter(ParameterString(self.OPTIONS,
             self.tr('Additional creation options'), '', optional=True))
 
@@ -157,6 +170,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         table = unicode(self.getParameterValue(self.TABLE))
         pk = unicode(self.getParameterValue(self.PK))
         pkstring = "-lco FID="+pk
+        primary_key = self.getParameterValue(self.PRIMARY_KEY)
         geocolumn = unicode(self.getParameterValue(self.GEOCOLUMN))
         geocolumnstring = "-lco GEOMETRY_NAME="+geocolumn
         dim = self.DIMLIST[self.getParameterValue(self.DIM)]
@@ -177,6 +191,8 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         index = self.getParameterValue(self.INDEX)
         indexstring = "-lco SPATIAL_INDEX=OFF"
         skipfailures = self.getParameterValue(self.SKIPFAILURES)
+        promotetomulti = self.getParameterValue(self.PROMOTETOMULTI)
+        precision = self.getParameterValue(self.PRECISION)
         options = unicode(self.getParameterValue(self.OPTIONS))
 
         arguments = []
@@ -187,9 +203,9 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         arguments.append('PG:"host='+host)
         arguments.append('port='+port)
         if len(dbname) > 0:
-            arguments.append('dbname='+dbname)
+	    arguments.append('dbname='+dbname)
         if len(password) > 0:
-            arguments.append('password='+password)
+	    arguments.append('password='+password)
         arguments.append('user='+user+'"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
@@ -213,6 +229,8 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             arguments.append(geocolumnstring)
         if len(pk) > 0:
             arguments.append(pkstring)
+        elif primary_key != None:
+            arguments.append("-lco FID="+primary_key)
         if len(table) > 0:
             arguments.append('-nln')
             arguments.append(table)
@@ -247,6 +265,10 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         if len(gt) > 0:
             arguments.append('-gt')
             arguments.append(gt)
+        if promotetomulti:
+            arguments.append('-nlt PROMOTE_TO_MULTI')
+        if precision is False:
+            arguments.append('-lco PRECISION=NO')
         if len(options) > 0:
             arguments.append(options)
 
