@@ -70,6 +70,7 @@ from ogr2ogrclip import Ogr2OgrClip
 from ogr2ogrclipextent import Ogr2OgrClipExtent
 from ogr2ogrtopostgis import Ogr2OgrToPostGis
 from ogr2ogrtopostgislist import Ogr2OgrToPostGisList
+from ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 from ogrinfo import OgrInfo
 from ogrsql import OgrSql
 
@@ -124,7 +125,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             GridDataMetrics(),
             # ----- OGR tools -----
             OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
-            Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), OgrSql(),
+            Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrTableToPostGisList(), OgrSql(),
         ]
 
         # And then we add those that are created as python scripts
