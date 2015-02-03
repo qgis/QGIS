@@ -1454,7 +1454,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     }
     else
     {
-      lineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( gridSymbolElem ) );
+      lineSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( gridSymbolElem );
     }
     mapGrid->setLineSymbol( lineSymbol );
 
@@ -1499,7 +1499,7 @@ bool QgsComposerMap::readXML( const QDomElement& itemElem, const QDomDocument& d
     QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( "symbol" );
     if ( !overviewFrameSymbolElem.isNull() )
     {
-      fillSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( overviewFrameSymbolElem ) );
+      fillSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( overviewFrameSymbolElem );
       mapOverview->setFrameSymbol( fillSymbol );
     }
     mOverviewStack->addOverview( mapOverview );

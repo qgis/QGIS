@@ -867,7 +867,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   if ( !pageStyleSymbolElem.isNull() )
   {
     delete mPageStyleSymbol;
-    mPageStyleSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( pageStyleSymbolElem ) );
+    mPageStyleSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( pageStyleSymbolElem );
   }
 
   if ( widthConversionOk && heightConversionOk )

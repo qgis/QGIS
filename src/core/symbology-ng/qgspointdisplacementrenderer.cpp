@@ -350,7 +350,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   QDomElement centerSymbolElem = symbologyElem.firstChildElement( "symbol" );
   if ( !centerSymbolElem.isNull() )
   {
-    r->setCenterSymbol( dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( centerSymbolElem ) ) );
+    r->setCenterSymbol( QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( centerSymbolElem ) );
   }
   return r;
 }

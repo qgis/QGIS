@@ -115,7 +115,35 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Returns the maximum estimated bleed for the symbol */
     static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
 
-    static QgsSymbolV2* loadSymbol( QDomElement& element );
+    /**Attempts to load a symbol from a DOM element
+     * @param element DOM element representing symbol
+     * @returns decoded symbol, if possible
+     */
+    static QgsSymbolV2* loadSymbol( const QDomElement& element );
+
+    /**Attempts to load a symbol from a DOM element and cast it to a particular symbol
+     * type.
+     * @param element DOM element representing symbol
+     * @returns decoded symbol cast to specified type, if possible
+     * @note not available in python bindings
+     */
+    template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element )
+    {
+      QgsSymbolV2* tmpSymbol = QgsSymbolLayerV2Utils::loadSymbol( element );
+      SymbolType* symbolCastToType = dynamic_cast<SymbolType*>( tmpSymbol );
+
+      if ( symbolCastToType )
+      {
+        return symbolCastToType;
+      }
+      else
+      {
+        //could not cast
+        delete tmpSymbol;
+        return NULL;
+      }
+    }
+
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element );
     static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
 

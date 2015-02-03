@@ -75,7 +75,20 @@ class QgsSymbolLayerV2Utils
     /**Returns the maximum estimated bleed for the symbol */
     static double estimateMaxSymbolBleed( QgsSymbolV2* symbol );
 
-    static QgsSymbolV2* loadSymbol( QDomElement& element ) /Factory/;
+    /**Attempts to load a symbol from a DOM element
+     * @param element DOM element representing symbol
+     * @returns decoded symbol, if possible
+     */
+    static QgsSymbolV2* loadSymbol( const QDomElement& element ) /Factory/;
+
+    /**Attempts to load a symbol from a DOM element and cast it to a particular symbol
+     * type.
+     * @param element DOM element representing symbol
+     * @returns decoded symbol cast to specified type, if possible
+     * @note not available in python bindings
+     */
+    //template <class SymbolType> static SymbolType* loadSymbol( const QDomElement& element );
+
     static QgsSymbolLayerV2* loadSymbolLayer( QDomElement& element ) /Factory/;
     static QDomElement saveSymbol( QString symbolName, QgsSymbolV2* symbol, QDomDocument& doc );
 

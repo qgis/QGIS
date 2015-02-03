@@ -852,7 +852,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist )
 /////
 
 
-QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
+QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( const QDomElement &element )
 {
   QgsSymbolLayerV2List layers;
   QDomNode layerNode = element.firstChild();
@@ -3744,5 +3744,4 @@ QString QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( QgsExpression* e
 
   return expression->expression();
 }
-
 

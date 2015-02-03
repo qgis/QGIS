@@ -443,7 +443,7 @@ void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& an
   QDomElement symbolElem = annotationElem.firstChildElement( "symbol" );
   if ( !symbolElem.isNull() )
   {
-    QgsMarkerSymbolV2* symbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( symbolElem ) );
+    QgsMarkerSymbolV2* symbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( symbolElem );
     if ( symbol )
     {
       delete mMarkerSymbol;

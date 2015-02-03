@@ -135,7 +135,7 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
+    mLineSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( elem );
   }
   if ( ! mLineSymbol )
     mLineSymbol = new QgsLineSymbolV2();
@@ -147,7 +147,7 @@ void QgsDecorationGrid::projectRead()
   {
     doc.setContent( xml );
     elem = doc.documentElement();
-    mMarkerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( elem ) );
+    mMarkerSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsMarkerSymbolV2>( elem );
   }
   if ( ! mMarkerSymbol )
   {

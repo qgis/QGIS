@@ -183,7 +183,7 @@ bool QgsComposerMapOverview::readXML( const QDomElement &itemElem, const QDomDoc
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
-    mFrameSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( frameStyleElem ) );
+    mFrameSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( frameStyleElem );
   }
   return ok;
 }
