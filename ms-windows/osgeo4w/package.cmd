@@ -56,7 +56,8 @@ path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
 	-G "Visual Studio 10" ^
-	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe
+	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib
 goto devenv
 
 :devenv_x86_64
@@ -73,6 +74,7 @@ set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
@@ -155,7 +157,6 @@ cmake %CMAKE_OPT% ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
 	-D QWT_INCLUDE_DIR=%O4W_ROOT%/include/qwt ^
-	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
