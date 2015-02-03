@@ -31,18 +31,18 @@ import os
 import sys
 
 from PyQt4.QtCore import Qt, QCoreApplication, QDir
-
 from PyQt4.QtGui import QMenu, QAction, QIcon
+
 from processing.core.Processing import Processing
 from processing.gui.ProcessingToolbox import ProcessingToolbox
 from processing.gui.HistoryDialog import HistoryDialog
 from processing.gui.ConfigDialog import ConfigDialog
 from processing.gui.ResultsDialog import ResultsDialog
-from processing.modeler.ModelerDialog import ModelerDialog
 from processing.gui.CommanderWindow import CommanderWindow
+from processing.modeler.ModelerDialog import ModelerDialog
 from processing.tools.system import tempFolder
 
-#import processing.resources_rc
+import processing.resources_rc
 
 cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
 if cmd_folder not in sys.path:
@@ -63,45 +63,36 @@ class ProcessingPlugin:
         Processing.addAlgListListener(self.toolbox)
 
         self.menu = QMenu(self.iface.mainWindow().menuBar())
-        self.menu.setObjectName( 'processing' )
-        self.menu.setTitle(QCoreApplication.translate('Processing',
-                           'Pro&cessing'))
+        self.menu.setObjectName('processing')
+        self.menu.setTitle(self.tr('Pro&cessing'))
 
         self.toolboxAction = self.toolbox.toggleViewAction()
-        self.toolboxAction.setObjectName( 'toolboxAction' )
+        self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(QIcon(':/processing/images/alg.png'))
-        self.toolboxAction.setText(QCoreApplication.translate('Processing',
-                                   '&Toolbox'))
+        self.toolboxAction.setText(self.tr('&Toolbox'))
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(QIcon(':/processing/images/model.png'),
-                                     QCoreApplication.translate('Processing',
-                                     'Graphical &Modeler...'),
-                                     self.iface.mainWindow())
-        self.modelerAction.setObjectName( 'modelerAction' )
+            self.tr('Graphical &Modeler...'), self.iface.mainWindow())
+        self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(QIcon(':/processing/images/history.gif'),
-                                     QCoreApplication.translate('Processing',
-                                     '&History and Log...'),
-                                     self.iface.mainWindow())
-        self.historyAction.setObjectName( 'historyAction' )
+            self.tr('&History and Log...'), self.iface.mainWindow())
+        self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.menu.addAction(self.historyAction)
 
         self.configAction = QAction(QIcon(':/processing/images/config.png'),
-                                    QCoreApplication.translate('Processing',
-                                    '&Options...'),
-                                    self.iface.mainWindow())
-        self.configAction.setObjectName( 'configAction' )
+            self.tr('&Options...'), self.iface.mainWindow())
+        self.configAction.setObjectName('configAction')
         self.configAction.triggered.connect(self.openConfig)
         self.menu.addAction(self.configAction)
 
         self.resultsAction = QAction(QIcon(':/processing/images/results.png'),
-                                     QCoreApplication.translate('Processing', '&Results Viewer...'),
-                                     self.iface.mainWindow())
-        self.resultsAction.setObjectName( 'resultsAction' )
+            self.tr('&Results Viewer...'), self.iface.mainWindow())
+        self.resultsAction.setObjectName('resultsAction')
         self.resultsAction.triggered.connect(self.openResults)
         self.menu.addAction(self.resultsAction)
 
@@ -111,14 +102,12 @@ class ProcessingPlugin:
 
         self.commanderAction = QAction(
             QIcon(':/processing/images/commander.png'),
-            QCoreApplication.translate('Processing', '&Commander'),
-            self.iface.mainWindow())
-        self.commanderAction.setObjectName( 'commanderAction' )
+            self.tr('&Commander'), self.iface.mainWindow())
+        self.commanderAction.setObjectName('commanderAction')
         self.commanderAction.triggered.connect(self.openCommander)
         self.menu.addAction(self.commanderAction)
-        self.iface.registerMainWindowAction(
-            self.commanderAction,
-            QCoreApplication.translate('Processing', 'Ctrl+Alt+M' ) )
+        self.iface.registerMainWindowAction(self.commanderAction,
+            self.tr('Ctrl+Alt+M'))
 
     def unload(self):
         self.toolbox.setVisible(False)
@@ -165,3 +154,6 @@ class ProcessingPlugin:
     def openConfig(self):
         dlg = ConfigDialog(self.toolbox)
         dlg.exec_()
+
+    def tr(self, message):
+        return QCoreApplication.translate('Processing', message)

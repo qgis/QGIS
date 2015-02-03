@@ -46,7 +46,7 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 from processing.ui.ui_DlgScriptEditor import Ui_DlgScriptEditor
 
-#import processing.resources_rc
+import processing.resources_rc
 
 
 class ScriptEditorDialog(QDialog, Ui_DlgScriptEditor):

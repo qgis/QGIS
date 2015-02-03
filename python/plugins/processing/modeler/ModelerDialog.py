@@ -47,6 +47,7 @@ from processing.modeler.WrongModelException import WrongModelException
 
 from processing.ui.ui_DlgModeler import Ui_DlgModeler
 
+import processing.resources_rc
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
 

@@ -126,6 +126,8 @@ from SelectByExpression import SelectByExpression
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
 
+import processing.resources_rc
+
 
 class QGISAlgorithmProvider(AlgorithmProvider):
 
