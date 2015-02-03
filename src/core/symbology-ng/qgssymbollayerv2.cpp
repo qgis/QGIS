@@ -266,7 +266,7 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( mOffsetExpression )
+  if ( mOffsetExpression && context.feature() )
   {
     QPointF offset = QgsSymbolLayerV2Utils::decodePoint( mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
     offsetX = offset.x();
@@ -278,11 +278,11 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  if ( mHorizontalAnchorExpression )
+  if ( mHorizontalAnchorExpression && context.feature() )
   {
     horizontalAnchorPoint = decodeHorizontalAnchorPoint( mHorizontalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
-  if ( mVerticalAnchorExpression )
+  if ( mVerticalAnchorExpression && context.feature() )
   {
     verticalAnchorPoint = decodeVerticalAnchorPoint( mVerticalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
   }
