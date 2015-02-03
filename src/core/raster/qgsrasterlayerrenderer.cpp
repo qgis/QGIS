@@ -68,7 +68,7 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
     catch ( QgsCsException &cs )
     {
       QgsMessageLog::logMessage( QObject::tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
-      myProjectedViewExtent.setMinimal();
+      myProjectedLayerExtent.setMinimal();
     }
   }
   else

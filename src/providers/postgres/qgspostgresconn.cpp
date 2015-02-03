@@ -782,7 +782,7 @@ QString QgsPostgresConn::postgisVersion()
     QStringList gist = postgisParts.filter( "STATS" );
     if ( gist.size() == 1 )
     {
-      mGistAvailable = ( geos[0].indexOf( "=1" ) > -1 );
+      mGistAvailable = ( gist[0].indexOf( "=1" ) > -1 );
     }
     QStringList proj = postgisParts.filter( "PROJ" );
     if ( proj.size() == 1 )

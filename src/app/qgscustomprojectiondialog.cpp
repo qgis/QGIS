@@ -498,7 +498,7 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
                               tr( "Internal Error (source projection invalid?)" ) );
     projectedX->setText( "" );
     projectedY->setText( "" );
-    pj_free( myProj );
+    pj_free( wgs84Proj );
     return;
   }
 
