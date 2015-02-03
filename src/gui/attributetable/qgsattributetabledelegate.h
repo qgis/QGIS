@@ -40,7 +40,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
     /** Constructor
      * @param parent parent object
      */
-    QgsAttributeTableDelegate( QObject* parent = NULL ) :
+    QgsAttributeTableDelegate( QObject* parent = 0 ) :
         QItemDelegate( parent ) {}
 
     /** Used to create an editor for when the user tries to

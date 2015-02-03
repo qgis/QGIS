@@ -69,7 +69,7 @@ class CORE_EXPORT QgsComposerObject: public QObject
       //composer picture
       PictureSource, /*< picture source url */
       //html item
-      SourceUrl /*< html source utl */
+      SourceUrl /*< html source url */
     };
 
     /** Specifies whether the value returned by a function should be the original, user

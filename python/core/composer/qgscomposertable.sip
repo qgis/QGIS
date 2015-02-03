@@ -20,7 +20,7 @@ class QgsComposerTable: QgsComposerItem
     QgsComposerTable( QgsComposition* composition /TransferThis/ );
     virtual ~QgsComposerTable();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/
@@ -219,8 +219,6 @@ class QgsComposerTable: QgsComposerItem
     virtual void adjustFrameToSize();
 
   protected:
-    /**Retrieves feature attributes*/
-    // virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
     /**Calculates the maximum width of text shown in columns.
      * @param maxWidthMap QMap of int to double in which to store the maximum widths. The int will be filled
      * with the column number and the double with the maximum width of text present in the column.

@@ -7,7 +7,7 @@ class QgsComposerItemGroup: QgsComposerItem
     QgsComposerItemGroup( QgsComposition* c /TransferThis/ );
     ~QgsComposerItemGroup();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const;
 
     /**Adds an item to the group. All the group members are deleted

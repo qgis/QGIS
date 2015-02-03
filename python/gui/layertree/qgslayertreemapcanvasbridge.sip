@@ -11,7 +11,7 @@
  * in advanced cases where the grouping in layer tree should be independent from the actual
  * order in the canvas.
  *
- * @added in 2.4
+ * @note added in 2.4
  */
 class QgsLayerTreeMapCanvasBridge : QObject
 {
@@ -44,7 +44,7 @@ class QgsLayerTreeMapCanvasBridge : QObject
     bool autoEnableCrsTransform() const;
 
   public slots:
-    void setHasCustomLayerOrder( bool override );
+    void setHasCustomLayerOrder( bool state );
     void setCustomLayerOrder( const QStringList& order );
 
     //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.

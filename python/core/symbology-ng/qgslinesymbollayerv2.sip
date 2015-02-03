@@ -84,6 +84,7 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     Qt::PenStyle dxfPenStyle() const;
 
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
     QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
 };
 

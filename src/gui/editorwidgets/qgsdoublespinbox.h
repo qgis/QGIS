@@ -41,6 +41,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     explicit QgsDoubleSpinBox( QWidget *parent = 0 );
 
     //! determines if the widget will show a clear button
+    //! @note the clear button will set the widget to its minimum value
     void setShowClearButton( const bool showClearButton );
     bool showClearButton() const {return mShowClearButton;}
 

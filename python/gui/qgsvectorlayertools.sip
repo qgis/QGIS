@@ -43,5 +43,5 @@ class QgsVectorLayerTools
      * @param layer       The layer to commit
      * @return            True if successful
      */
-    virtual bool saveEdits( QgsVectorLayer* layer) const = 0;
+    virtual bool saveEdits( QgsVectorLayer* layer ) const = 0;
 };

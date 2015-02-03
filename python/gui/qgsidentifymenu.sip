@@ -80,7 +80,6 @@ class QgsIdentifyMenu : QMenu
      * @brief exec
      * @param idResults the list of identify results to choose within
      * @param pos the position where the menu will be executed
-     * @param selectedAction if specified, this will allow to know which action has been triggered
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> idResults, QPoint pos );
 

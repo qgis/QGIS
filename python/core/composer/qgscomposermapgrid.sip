@@ -105,6 +105,10 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 
 };
 
+//
+// QgsComposerMapGrid
+//
+
 /**\ingroup MapComposer
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
@@ -226,7 +230,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
 
     /**Constructor for QgsComposerMapGrid.
      * @param name friendly display name for grid
-     * @parm map QgsComposerMap the grid stack is attached to
+     * @param map QgsComposerMap the grid is attached to
     */
     QgsComposerMapGrid( const QString& name, QgsComposerMap* map );
 
@@ -274,6 +278,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setBlendMode
     */
     QPainter::CompositionMode blendMode() const;
+
+    bool usesAdvancedEffects() const;
 
     /**Calculates the maximum distance the grid extends beyond the QgsComposerMap's
      * item rect

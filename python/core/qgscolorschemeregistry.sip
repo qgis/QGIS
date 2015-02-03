@@ -12,7 +12,7 @@ class QgsColorSchemeRegistry
 %TypeHeaderCode
 #include <qgscolorschemeregistry.h>
 %End
-	public:
+  public:
 
     /**Returns the global instance pointer, creating the object on the first call.
      */
@@ -33,8 +33,16 @@ class QgsColorSchemeRegistry
     /**Adds all default color schemes to this color scheme.
      * @see populateFromInstance
      * @see addColorScheme
+     * @see addUserSchemes
      */
     void addDefaultSchemes();
+
+    /**Creates schemes for all gpl palettes in the user's palettes folder.
+     * @see populateFromInstance
+     * @see addDefaultSchemes
+     * @see addColorScheme
+     */
+    void addUserSchemes();
 
     /**Adds a color scheme to the registry. Ownership of the scheme is transferred
      * to the registry.
@@ -62,4 +70,9 @@ class QgsColorSchemeRegistry
     */
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 
-}; // class QgsColorSchemeRegistry
+    /**Return color schemes of a specific type
+     * @param schemeList destination list for matching schemes
+     * @note not available in python bindings
+    */
+    // template<class T> void schemes( QList<T*>& schemeList );
+};

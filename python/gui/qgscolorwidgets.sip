@@ -2,7 +2,7 @@
  * \class QgsColorWidget
  * A base class for interactive color widgets. Widgets can either allow setting a single component of
  * a color (eg the red or green components), or an entire color. The QgsColorWidget also keeps track of
- * any explicitely set hue for the color, so that this information is not lost when the widget is
+ * any explicitly set hue for the color, so that this information is not lost when the widget is
  * set to a color with an ambiguous hue (eg black or white shades).
  * \note Added in version 2.5
  */

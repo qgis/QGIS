@@ -135,6 +135,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // members
 
     Type type() const { return mType; }
+
     /** Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
      *  QObject hierarchy. */
     QgsDataItem* parent() const { return mParent; }

@@ -20,11 +20,16 @@
 
 #include <QString>
 
-/**Exception class for WMS service exceptions. The most important codes are:
-"InvalidFormat"
-"Invalid CRS"
-"LayerNotDefined" / "StyleNotDefined"
-"OperationNotSupported"*/
+/**
+ * \class  QgsMapServiceException
+ * \brief Exception class for WMS service exceptions.
+ *
+ * The most important codes are:
+ *  * "InvalidFormat"
+ *  * "Invalid CRS"
+ *  * "LayerNotDefined" / "StyleNotDefined"
+ *  * "OperationNotSupported"
+ */
 
 class SERVER_EXPORT QgsMapServiceException
 {

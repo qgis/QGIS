@@ -49,7 +49,7 @@ public:
     /**
       Gets the field type. Field types vary depending on the data source. Examples
       are char, int, double, blob, geometry, etc. The type is stored exactly as
-      the data store reports it, with no attenpt to standardize the value.
+      the data store reports it, with no attempt to standardize the value.
       @return QString containing the field type
      */
     const QString & typeName() const;
@@ -108,9 +108,8 @@ public:
       */
     void setComment( const QString & comment );
 
-    /**Formats string for display*/
+    /** Formats string for display*/
     QString displayString( const QVariant& v ) const;
-
 
     /**
      * Converts the provided variant to a compatible format
@@ -185,7 +184,8 @@ class QgsFields
       OriginUnknown,   //!< it has not been specified where the field comes from
       OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
       OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
-      OriginEdit       //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+      OriginEdit,      //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
+      OriginExpression //!< field is calculated from an expression
     };
 
     //! Remove all fields

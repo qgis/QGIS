@@ -46,6 +46,8 @@ class QgsVectorDataProvider : QgsDataProvider
       SimplifyGeometries,
       /** supports topological simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometriesWithTopologicalValidation,
+      /** supports transactions*/
+      TransactionSupport = 1 << 16
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -313,6 +315,9 @@ class QgsVectorDataProvider : QgsDataProvider
 
     static QVariant convertValue( QVariant::Type type, QString value );
 
+    /**
+     * Returns the transaction this data provider is included in, if any.
+     */
     virtual QgsTransaction* transaction() const;
 
   protected:

@@ -4,7 +4,7 @@ class QgsSymbolsListWidget : QWidget
 #include <qgssymbolslistwidget.h>
 %End
   public:
-    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent = NULL );
+    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent = 0 );
 
   public slots:
     void setSymbolFromStyle( const QModelIndex & index );

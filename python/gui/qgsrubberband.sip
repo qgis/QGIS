@@ -214,6 +214,8 @@ class QgsRubberBand: QgsMapCanvasItem
      */
     QgsGeometry* asGeometry();
 
+    virtual void updatePosition();
+
   protected:
     virtual void paint( QPainter* p );
 

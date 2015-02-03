@@ -189,6 +189,4 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
     virtual QVariant data( int role ) const;
 
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
-
 };
-

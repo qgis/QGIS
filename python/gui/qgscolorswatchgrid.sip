@@ -137,7 +137,7 @@ class QgsColorSwatchGridAction: QWidgetAction
      * @param context string which is passed to scheme for color generation
      * @see context
      */
-    void setContext( const QString context );
+    void setContext( const QString &context );
 
   public slots:
 

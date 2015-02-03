@@ -58,7 +58,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
                           DataTypes datatypes = AnyType,
-                          QString description = QString( "" ) );
+                          QString description = "" );
     ~QgsDataDefinedButton();
 
     /**

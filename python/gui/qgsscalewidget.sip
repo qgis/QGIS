@@ -34,14 +34,18 @@ class QgsScaleWidget : QWidget
     // be expected.
     static QString toString( double scale );
     //! Helper function to convert a scale string to double
-    static double toDouble( QString scaleString, bool *ok = NULL );
+    static double toDouble( QString scaleString, bool *ok = 0 );
+
+  public slots:
+    void updateScales( const QStringList &scales = QStringList() );
+
+    //! assign the current scale from the map canvas
+    void setScaleFromCanvas();
 
   signals:
     //! Signal is emitted when *user* has finished editing/selecting a new scale.
     void scaleChanged();
 
-  public slots:
-    void updateScales( const QStringList &scales = QStringList() );
 
 };
 

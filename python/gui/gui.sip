@@ -40,7 +40,6 @@
 %Include qgscolorwidgets.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
-%Include qgsdatetimeedit.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdialog.sip
@@ -183,5 +182,6 @@
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
 %Include editorwidgets/qgsspinbox.sip
+%Include editorwidgets/qgsdatetimeedit.sip
 
 %Include layertree/qgslayertreeview.sip

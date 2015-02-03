@@ -26,7 +26,6 @@ class QgsSymbolLayerV2Widget : QWidget
 
   protected slots:
     void updateDataDefinedProperty();
-
 };
 
 ///////////

@@ -52,6 +52,7 @@ class QgsRequestHandler
     virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) = 0;
     virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) = 0;
     virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
+    /**Allow plugins to return a QgsMapServiceException*/
     virtual void setServiceException( QgsMapServiceException ex ) = 0;
     virtual void setXmlResponse( const QDomDocument& doc ) = 0;
     virtual void setXmlResponse( const QDomDocument& doc, const QString& mimeType ) = 0;
@@ -71,15 +72,20 @@ class QgsRequestHandler
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
     /**Return the response body*/
-    virtual QByteArray body( ) { return mBody; }
+    virtual QByteArray body() { return mBody; }
+    /**Set the info format string such as "text/xml"*/
     virtual void setInfoFormat( const QString &format ) = 0;
-    /**Check if the response headers or the response body are not empty*/
+    /**Check whether there is any header set or the body is not empty*/
     virtual bool responseReady() const = 0;
     /**Send out HTTP headers and flush output buffer*/
     virtual void sendResponse( ) = 0;
     /**Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
-    QMap<QString, QString> parameterMap( ) { return mParameterMap; }
+    /**Return a copy of the parsed parameters as a key-value pair, to modify
+     * a parameter setParameter( const QString &key, const QString &value)
+     * and removeParameter(const QString &key) must be used
+     */
+    QMap<QString, QString> parameterMap() { return mParameterMap; }
     /**Set a request parameter*/
     virtual void setParameter( const QString &key, const QString &value ) = 0;
     /**Remove a request parameter*/

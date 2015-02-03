@@ -17,7 +17,7 @@ class QgsRelationReferenceWidget : QWidget
 
     ~QgsRelationReferenceWidget();
 
-    void setRelation( QgsRelation relation , bool allowNullValue );
+    void setRelation( QgsRelation relation, bool allowNullValue );
 
     void setRelationEditable( bool editable );
 
@@ -59,12 +59,11 @@ class QgsRelationReferenceWidget : QWidget
     //! unset the currently related feature
     void deleteForeignKey();
 
-
   protected:
     virtual void showEvent( QShowEvent* e );
 
     void init();
 
-   signals:
+  signals:
     void foreignKeyChanged( QVariant );
 };

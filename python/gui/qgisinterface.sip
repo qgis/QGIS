@@ -209,7 +209,7 @@ class QgisInterface : QObject
     /** Add "add layer" action to layer menu */
     virtual void insertAddLayerAction( QAction *action ) = 0;
 
-    /** Remove "add layer" action from layer menu  */
+    /** Remove "add layer" action from layer menu */
     virtual void removeAddLayerAction( QAction *action ) = 0;
 
     /** Add action to the Database menu */
@@ -256,12 +256,10 @@ class QgisInterface : QObject
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI
-    */
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
     virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
 
-    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
-    */
+    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
@@ -522,6 +520,7 @@ class QgisInterface : QObject
         signal for when this happens.
       */
     void newProjectCreated();
+
     /**This signal is emitted when a layer has been saved using save as
        @note
        added in version 2.7

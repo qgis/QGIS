@@ -43,7 +43,7 @@ class QgsMapToPixel
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */
-    void transformInPlace( double& x, double& y ) const;
+    void transformInPlace( qreal& x, qreal& y ) const;
 
     /* Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
@@ -73,19 +73,59 @@ class QgsMapToPixel
     //! Return current map units per pixel
     double mapUnitsPerPixel() const;
 
+    //! Return current map width in pixels
+    //! The information is only known if setRotation was used
+    //! @note added in 2.8
+    int mapWidth() const;
+
+    //! Return current map height in pixels
+    //! @note added in 2.8
+    int mapHeight() const;
+
+    //! Set map rotation in degrees (clockwise)
+    //! @param degrees clockwise rotation in degrees
+    //! @param cx X ordinate of map center in geographical units
+    //! @param cy Y ordinate of map center in geographical units
+    //! @note added in 2.8
+    void setMapRotation( double degrees, double cx, double cy );
+
+    //! Return current map rotation in degrees
+    //! @note added in 2.8
+    double mapRotation() const;
+
     //! Set maximum y value
-    void setYMaximum( double ymax );
+    // @deprecated in 2.8, use setParameters
+    // @note this really sets the viewport height, not ymax
+    void setYMaximum( double ymax ) /Deprecated/;
+
     //! Set minimum y value
-    void setYMinimum( double ymin );
+    // @deprecated in 2.8, use setParameters
+    void setYMinimum( double ymin ) /Deprecated/;
+
     //! set minimum x value
-    void setXMinimum( double xmin );
+    // @deprecated in 2.8, use setParameters
+    void setXMinimum( double xmin ) /Deprecated/;
+
     /*! Set parameters for use in transforming coordinates
     * @param mapUnitsPerPixel Map units per pixel
     * @param xmin Minimum x value
     * @param ymin Minimum y value
-    * @param ymax Maximum y value
+    * @param height Map height, in pixels
+    * @deprecated in 2.8, use the version with full parameters
     */
-    void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double ymax );
+    // void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double ymax );
+
+    /*! Set parameters for use in transforming coordinates
+    * @param mapUnitsPerPixel Map units per pixel
+    * @param xc X ordinate of map center, in geographical units
+    * @param yc Y ordinate of map center, in geographical units
+    * @param width Output width, in pixels
+    * @param height Output height, in pixels
+    * @param rotation clockwise rotation in degrees
+    * @note added in 2.8
+    */
+    void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
+
     //! String representation of the parameters used in the transform
     QString showParameters();
 

@@ -24,7 +24,8 @@ class QgsComposerModel : QAbstractItemModel
   public:
 
     /**Constructor
-     * @param composition parent composition
+     * @param composition composition to attach to
+     * @param parent parent object
      */
     explicit QgsComposerModel( QgsComposition* composition, QObject* parent = 0 );
 
@@ -39,6 +40,11 @@ class QgsComposerModel : QAbstractItemModel
     Qt::ItemFlags flags( const QModelIndex & index ) const;
     bool setData( const QModelIndex & index, const QVariant & value, int role );
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    Qt::DropActions supportedDropActions() const;
+    virtual QStringList mimeTypes() const;
+    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
     /**Clears all items from z-order list and resets the model
      * @note added in QGIS 2.5
@@ -164,6 +170,7 @@ class QgsComposerModel : QAbstractItemModel
      * @param item item to update
      * @see updateItemLockStatus
      * @see updateItemVisibility
+     * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
     void updateItemDisplayName( QgsComposerItem *item );
@@ -172,6 +179,7 @@ class QgsComposerModel : QAbstractItemModel
      * @param item item to update
      * @see updateItemDisplayName
      * @see updateItemVisibility
+     * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
     void updateItemLockStatus( QgsComposerItem *item );
@@ -180,9 +188,19 @@ class QgsComposerModel : QAbstractItemModel
      * @param item item to update
      * @see updateItemDisplayName
      * @see updateItemLockStatus
+     * @see updateItemSelectStatus
      * @note added in QGIS 2.5
      */
     void updateItemVisibility( QgsComposerItem *item );
+
+    /**Must be called when an item's selection status changes
+     * @param item item to update
+     * @see updateItemDisplayName
+     * @see updateItemVisibility
+     * @see updateItemLockStatus
+     * @note added in QGIS 2.5
+     */
+    void updateItemSelectStatus( QgsComposerItem *item );
 
   public slots:
 

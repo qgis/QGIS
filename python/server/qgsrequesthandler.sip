@@ -29,41 +29,43 @@ class QgsRequestHandler
 
   public:
 
+    /**Allow plugins to return a QgsMapServiceException*/
+    virtual void setServiceException( QgsMapServiceException ex /Transfer/ ) = 0;
     /**Set an HTTP header*/
     virtual void setHeader( const QString &name, const QString &value ) = 0;
     /**Remove an HTTP header*/
     virtual int removeHeader( const QString &name ) = 0;
     /**Delete all HTTP headers*/
     virtual void clearHeaders( ) = 0;
-    /**Returns the response body*/
-    virtual QByteArray body();
     /**Append the bytestream to response body*/
-    virtual void appendBody( const QByteArray &body) = 0;
+    virtual void appendBody( const QByteArray &body ) = 0;
     /**Clears the response body*/
     virtual void clearBody( ) = 0;
+    /**Return the response body*/
+    virtual QByteArray body();
     /**Set the info format string such as "text/xml"*/
     virtual void setInfoFormat( const QString &format ) = 0;
-    /**Check wether there is any header set or the body is not empty*/
+    /**Check whether there is any header set or the body is not empty*/
     virtual bool responseReady() const = 0;
+    /**Send out HTTP headers and flush output buffer*/
+    virtual void sendResponse( ) = 0;
     /**Pointer to last raised exception*/
     virtual bool exceptionRaised() const = 0;
     /**Return a copy of the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
-    QMap<QString, QString> parameterMap( );
+    QMap<QString, QString> parameterMap();
     /**Set a request parameter*/
-    virtual void setParameter(const QString &key, const QString &value) = 0;
+    virtual void setParameter( const QString &key, const QString &value ) = 0;
     /**Remove a request parameter*/
-    virtual int removeParameter(const QString &key) = 0;
+    virtual int removeParameter( const QString &key ) = 0;
     /**Return a request parameter*/
-    virtual QString parameter(const QString &key) const = 0;
-    /**Return the image format*/
+    virtual QString parameter( const QString &key ) const = 0;
+    /**Return the requested format string*/
     QString format() const;
-    /**Return the format string as requested by the client*/
+    /**Return the mime type for the response*/
     QString infoFormat() const;
-    /**Allow plugins to return a QgsMapServiceException*/
-    virtual void setServiceException( QgsMapServiceException ex /Transfer/) = 0;
 
 private:
 

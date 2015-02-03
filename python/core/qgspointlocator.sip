@@ -34,6 +34,7 @@ class QgsPointLocator : QObject
 
       QgsPointLocator::Type type() const;
 
+
       bool isValid() const;
       bool hasVertex() const;
       bool hasEdge() const;
@@ -90,4 +91,7 @@ class QgsPointLocator : QObject
     MatchList pointInPolygon( const QgsPoint& point );
 
 
+  protected:
+    bool rebuildIndex( int maxFeaturesToIndex = -1 );
+    void destroyIndex();
 };

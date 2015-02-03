@@ -71,6 +71,12 @@ class QgsLayerTreeView : QTreeView
     //! Emitted when a current layer is changed
     void currentLayerChanged( QgsMapLayer* layer );
 
+  protected:
+    void contextMenuEvent( QContextMenuEvent* event );
+
+    void updateExpandedStateFromNode( QgsLayerTreeNode* node );
+
+    QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
 };
 
 

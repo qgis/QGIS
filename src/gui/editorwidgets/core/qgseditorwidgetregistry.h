@@ -79,7 +79,8 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     QgsVectorLayer* vl,
                                     int fieldIdx,
                                     const QgsEditorWidgetConfig& config,
-                                    QWidget* editor, QWidget* parent,
+                                    QWidget* editor,
+                                    QWidget* parent,
                                     const QgsAttributeEditorContext context = QgsAttributeEditorContext() );
 
     /**

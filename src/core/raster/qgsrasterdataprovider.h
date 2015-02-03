@@ -61,7 +61,7 @@ class CORE_EXPORT QgsImageFetcher : public QObject
     Q_OBJECT
   public:
 
-    QgsImageFetcher() {};
+    QgsImageFetcher() {}
     virtual ~QgsImageFetcher( ) {}
 
     // Make sure to connect to "finish" and "error" before starting
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProvider( const QString & uri );
 
-    virtual ~QgsRasterDataProvider() {};
+    virtual ~QgsRasterDataProvider() {}
 
     virtual QgsRasterInterface * clone() const override = 0;
 
@@ -234,7 +234,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * \param scale Optional parameter that is the Scale of the layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
-     * \note visibleExtent parameter added in 2.8
+     * \note visibleExtent parameter added in 2.8 (no available in python bindings)
      */
     virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 )
     {

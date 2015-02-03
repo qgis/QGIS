@@ -31,7 +31,7 @@ class QgsColorSchemeRegistry;
  * \note Added in version 2.5
  */
 
-class GUI_EXPORT QgsColorButtonV2: public QToolButton
+class GUI_EXPORT QgsColorButtonV2 : public QToolButton
 {
     Q_OBJECT
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )

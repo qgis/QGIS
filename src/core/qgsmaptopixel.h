@@ -143,15 +143,15 @@ class CORE_EXPORT QgsMapToPixel
     //! Set maximum y value
     // @deprecated in 2.8, use setParameters
     // @note this really sets the viewport height, not ymax
-    void setYMaximum( double yMax ) { mHeight = yMax; }
+    Q_DECL_DEPRECATED void setYMaximum( double yMax ) { mHeight = yMax; }
 
     //! Set minimum y value
     // @deprecated in 2.8, use setParameters
-    void setYMinimum( double ymin );
+    Q_DECL_DEPRECATED void setYMinimum( double ymin );
 
     //! set minimum x value
     // @deprecated in 2.8, use setParameters
-    void setXMinimum( double xmin );
+    Q_DECL_DEPRECATED void setXMinimum( double xmin );
 
     /*! Set parameters for use in transforming coordinates
     * @param mapUnitsPerPixel Map units per pixel
@@ -160,7 +160,7 @@ class CORE_EXPORT QgsMapToPixel
     * @param height Map height, in pixels
     * @deprecated in 2.8, use the version with full parameters
     */
-    void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double height );
+    Q_DECL_DEPRECATED void setParameters( double mapUnitsPerPixel, double xmin, double ymin, double height );
 
     /*! Set parameters for use in transforming coordinates
     * @param mapUnitsPerPixel Map units per pixel

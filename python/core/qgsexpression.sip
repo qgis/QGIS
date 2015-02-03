@@ -19,7 +19,8 @@ class QgsExpression
     //! Get the expression ready for evaluation - find out column indexes.
     bool prepare( const QgsFields &fields );
 
-    /**Get list of columns referenced by the expression.
+    /**
+     * Get list of columns referenced by the expression.
      * @note if the returned list contains the QgsFeatureRequest::AllAttributes constant then
      * all attributes from the layer are required for evaluation of the expression.
      * QgsFeatureRequest::setSubsetOfAttributes automatically handles this case.
@@ -119,11 +120,20 @@ class QgsExpression
     */
     static double evaluateToDouble( const QString& text, const double fallbackValue );
 
+    /**
+     * @brief list of unary operators
+     * @note if any change is made here, the definition of QgsExpression::UnaryOperatorText[] must be adapted.
+     */
     enum UnaryOperator
     {
       uoNot,
       uoMinus,
     };
+
+    /**
+     * @brief list of binary operators
+     * @note if any change is made here, the definition of QgsExpression::BinaryOperatorText[] must be adapted.
+     */
     enum BinaryOperator
     {
       // logical
@@ -187,7 +197,13 @@ class QgsExpression
         /** Does this function use a geometry object. */
         bool usesgeometry();
 
-	virtual QStringList referencedColumns() const;
+        /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
+         * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
+         * Functions are non lazy default and will be given the node return value when called **/
+        bool lazyEval();
+
+        virtual QStringList referencedColumns() const;
+
         /** The group the function belongs to. */
         QString group();
         /** The help text for the function. */

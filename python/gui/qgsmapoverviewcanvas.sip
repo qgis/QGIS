@@ -39,6 +39,7 @@ class QgsMapOverviewCanvas : QWidget
 
   protected slots:
     void mapRenderingFinished();
+    void layerRepaintRequested();
 
   protected:
 

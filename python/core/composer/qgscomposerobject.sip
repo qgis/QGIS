@@ -15,6 +15,7 @@ class QgsComposerObject : QObject
     {
       NoProperty = 0, /*< no property */
       AllProperties, /*< all properties for item */
+      TestProperty, /*< dummy property with no effect on item*/
       //composer page properties
       PresetPaperSize, /*< preset paper size for composition */
       PaperWidth, /*< paper width */
@@ -40,7 +41,9 @@ class QgsComposerObject : QObject
       MapYMax, /*< map extent y maximum */
       MapAtlasMargin, /*< map atlas margin*/
       //composer picture
-      PictureSource /*< picture source url */
+      PictureSource, /*< picture source url */
+      //html item
+      SourceUrl /*< html source url */
     };
 
     /** Specifies whether the value returned by a function should be the original, user
@@ -57,7 +60,6 @@ class QgsComposerObject : QObject
      * @param composition parent composition
      */
     QgsComposerObject( QgsComposition* composition );
-
     virtual ~QgsComposerObject();
 
     /**Returns the composition the item is attached to.
@@ -66,7 +68,7 @@ class QgsComposerObject : QObject
     const QgsComposition* composition() const;
 
     /**Stores item state in DOM element
-     * @param elem is DOM element corresponding to 'Composer' tag
+     * @param elem is DOM element corresponding to item tag
      * @param doc is the DOM document
      */
     virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
@@ -88,7 +90,7 @@ class QgsComposerObject : QObject
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
      * @param expression expression for data defined property
-     * @field field name if the data defined property should take its value from a field
+     * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
     void setDataDefinedProperty( const DataDefinedProperty property, const bool active, const bool useExpression, const QString &expression, const QString &field );

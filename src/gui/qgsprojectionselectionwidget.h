@@ -50,7 +50,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
 
     explicit QgsProjectionSelectionWidget( QWidget *parent = 0 );
 
-    /* Returns a pointer to the projection selector dialog used by the widget
+    /* Returns a pointer to the projection selector dialog used by the widget.
+     * Can be used to modify how the projection selector dialog behaves.
      * @returns projection selector dialog
      */
     QgsGenericProjectionSelector* dialog() { return mDialog; }

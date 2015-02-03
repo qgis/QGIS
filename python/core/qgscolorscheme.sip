@@ -179,7 +179,7 @@ class QgsRecentColorScheme : QgsColorScheme
                                            const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const /Factory/;
-}; // class QgsRecentColorScheme
+};
 
 /** \ingroup core
  * \class QgsCustomColorScheme
@@ -210,7 +210,7 @@ class QgsCustomColorScheme : QgsColorScheme
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const /Factory/;
-}; // class QgsCustomColorScheme
+};
 
 /** \ingroup core
  * \class QgsProjectColorScheme
@@ -240,4 +240,4 @@ class QgsProjectColorScheme : QgsColorScheme
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     QgsColorScheme* clone() const /Factory/;
-}; // class QgsProjectColorScheme
+};

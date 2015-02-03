@@ -77,7 +77,7 @@ class QgsImageOperation
      */
     static void overlayColor( QImage &image, const QColor& color );
 
-        /**Struct for storing properties of a distance transform operation*/
+    /**Struct for storing properties of a distance transform operation*/
     struct DistanceTransformProperties
     {
       /**Set to true to perform the distance transform on transparent pixels

@@ -101,7 +101,7 @@ class QgsStyleV2ManagerDialog : QDialog
     void enableItemsForGroupingMode( bool );
 
     //! Event filter to capture tagsLineEdit out of focus
-    bool eventFilter( QObject* , QEvent* );
+    bool eventFilter( QObject*, QEvent* );
 
     //! sets the text of the item with bold font
     void setBold( QStandardItem* );

@@ -103,7 +103,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      */
     QString emptyTableMessage() const;
 
-    /**Sets whether empty rows should be drawn. Tables default to hiding empty
+    /**Sets whether empty rows should be drawn. Tables default to hiding empty rows.
      * @param showEmpty set to true to show empty rows in the table
      * @see showEmptyRows
      */
@@ -377,7 +377,7 @@ class QgsComposerTableV2: QgsComposerMultiFrame
      * @see calculateMaxColumnWidths
      * @note not available in python bindings
      */
-    //void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
+    // void drawVerticalGridLines( QPainter* painter, const QMap<int, double>& maxWidthMap, const int numberRows, const bool hasHeader, const bool mergeCells = false ) const;
 
     /**Recalculates and updates the size of the table and all table frames.
      */

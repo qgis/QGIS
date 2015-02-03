@@ -107,7 +107,7 @@ class CORE_EXPORT QgsSnapper
      @return 0 in case of success
      @deprecated
      */
-    int snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
+    Q_DECL_DEPRECATED int snapPoint( const QPoint& startPoint, QList<QgsSnappingResult>& snappingResult, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
     /** Does the snapping operation
      @param mapCoordPoint the start point for snapping (in map coordinates)
      @param snappingResult the list where the results are inserted (everything in map coordinate system)

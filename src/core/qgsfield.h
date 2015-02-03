@@ -235,8 +235,6 @@ class CORE_EXPORT QgsFields
     //! Get field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const { return mFields[fieldIdx].originIndex; }
 
-
-
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }
 

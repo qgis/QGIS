@@ -20,7 +20,7 @@
 #include "Triangulation.h"
 
 /**Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
-class TriDecorator: public Triangulation
+class TriDecorator : public Triangulation
 {
   public:
     TriDecorator();

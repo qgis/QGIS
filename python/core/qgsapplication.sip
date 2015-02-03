@@ -116,7 +116,7 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * @note this function was added in version 2.7 */
     static const QString developersMapFilePath();
 
-    /**Returns the path to the sponsors file. */
+    /** Returns the path to the sponsors file. */
     static const QString sponsorsFilePath();
 
     /** Returns the path to the donors file. */

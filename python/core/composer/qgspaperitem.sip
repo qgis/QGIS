@@ -25,7 +25,7 @@ class QgsPaperItem : QgsComposerItem
     QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/ );
     ~QgsPaperItem();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint*/

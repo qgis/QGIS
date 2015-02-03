@@ -34,11 +34,18 @@ class QgsTransaction /Abstract/
 
     virtual ~QgsTransaction();
 
-	/** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
+    /** Add layer to the transaction. The layer must not be in edit mode. The transaction must not be active. */
     bool addLayer( const QString& layerId );
 
-    /** Begin transaction */
-    bool begin( QString& errorMsg );
+    /** Begin transaction
+     *  The statement timeout, in seconds, specifies how long an sql statement
+     *  is allowed to block QGIS before it is aborted. Statements can block,
+     *  depending on the provider, if multiple transactions are active and a
+     *  statement would produce a conflicting state. In these cases, the
+     *  statements block until the conflicting transaction is committed or
+     *  rolled back.
+     *  Some providers might not honour the statement timeout. */
+    bool begin( QString& errorMsg, int statementTimeout = 20 );
 
     /** Commit transaction. All layers need to be in read-only mode. */
     bool commit( QString& errorMsg );

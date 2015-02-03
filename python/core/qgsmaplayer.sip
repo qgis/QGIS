@@ -447,7 +447,6 @@ class QgsMapLayer : QObject
     */
     void toggleScaleBasedVisibility( bool theVisibilityFlag ) /Deprecated/;
 
-
     /** Clear cached image
      *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
     void clearCacheImage() /Deprecated/;

@@ -521,7 +521,7 @@ class QgsComposerMap : QgsComposerItem
      */
     QgsComposerMapGrid* grid();
 
-    /**Returns the map item's overview stack, which is used to control how over
+    /**Returns the map item's overview stack, which is used to control how overviews
      * are drawn over the map's contents.
      * @returns pointer to overview stack
      * @see overview()

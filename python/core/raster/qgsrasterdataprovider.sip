@@ -1,4 +1,29 @@
 
+/**
+ * \brief Handles asynchronous download of images
+ *
+ * \note added in 2.8
+ */
+class QgsImageFetcher : QObject
+{
+%TypeHeaderCode
+#include <qgsrasterdataprovider.h>
+%End
+  public:
+
+    QgsImageFetcher();
+    virtual ~QgsImageFetcher();
+
+    // Make sure to connect to "finish" and "error" before starting
+    virtual void start() = 0;
+
+  signals:
+
+    void finish( const QImage& legend );
+    void progress( qint64 received, qint64 total );
+    void error( const QString& msg );
+};
+
 /** Base class for raster data providers
  *
  *  \note  This class has been copied and pasted from
@@ -97,8 +122,29 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     virtual QStringList subLayers() const;
 
     /** \brief Returns the legend rendered as pixmap
-     *  useful for that layer that need to get legend layer remotly as WMS */
-    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false );
+     *
+     *  useful for that layer that need to get legend layer remotely as WMS
+     * \param scale Optional parameter that is the Scale of the layer
+     * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
+     * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
+     * \note visibleExtent parameter added in 2.8 (no available in python bindings)
+     */
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const );
+
+    /**
+     * \brief Get an image downloader for the raster legend
+     *
+     * \param mapSettings map settings for legend providers supporting
+     *                    contextual legends.
+     *
+     * \return a download handler or null if the provider does not support
+     *         legend at all. Ownership of the returned object is transferred
+     *         to caller.
+     *
+     * \note added in 2.8
+     *
+     */
+    virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings ) /Factory/;
 
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid> & thePyramidList,

@@ -33,4 +33,18 @@ class QgsLayerTreeViewDefaultActions : QObject
   public slots:
     void showInOverview();
 
+  protected slots:
+    void addGroup();
+    void removeGroupOrLayer();
+    void renameGroupOrLayer();
+    void showFeatureCount();
+    void zoomToLayer();
+    void zoomToGroup();
+    void makeTopLevel();
+    void groupSelected();
+
+  protected:
+    void zoomToLayers( QgsMapCanvas* canvas, const QList<QgsMapLayer*>& layers );
+
+    QString uniqueGroupName( QgsLayerTreeGroup* parentGroup );
 };
