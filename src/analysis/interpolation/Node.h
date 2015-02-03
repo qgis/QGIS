@@ -49,7 +49,7 @@ inline Node::Node() : mPoint( 0 ), mNext( 0 )
 
 inline Node::~Node()
 {
-
+  delete mPoint;
 }
 
 inline Node* Node::getNext() const

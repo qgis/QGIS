@@ -216,6 +216,7 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
         cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
       }
     }
+    delete e;
   }
 
   if ( config.value( "OrderByValue" ).toBool() )
