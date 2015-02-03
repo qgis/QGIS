@@ -70,7 +70,7 @@ class VectorSplit(GeoAlgorithm):
         features = vector.features(layer)
 
         for count, i in enumerate(uniqueValues):
-            fName = '{0}_{1}.shp'.format(baseName, unicode(i).strip())
+            fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
             for f in features:
