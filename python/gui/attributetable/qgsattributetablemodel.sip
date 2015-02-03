@@ -169,7 +169,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      *
      * @param context The context
      */
-    void setEditorContext( const QgsAttributeEditorContext& context ) { mEditorContext = context; }
+    void setEditorContext( const QgsAttributeEditorContext& context );
 
     /**
      * Returns the context in which this table is shown.
@@ -177,7 +177,7 @@ class QgsAttributeTableModel : QAbstractTableModel
      *
      * @return The context
      */
-    const QgsAttributeEditorContext& editorContext() const { return mEditorContext; }
+    const QgsAttributeEditorContext& editorContext() const;
 
   signals:
     /**

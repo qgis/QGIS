@@ -110,8 +110,6 @@ class QgsEditorWidgetWrapper : QObject
      */
     virtual void setValue( const QVariant& value ) = 0;
 
-    virtual void setEnabled( bool enabled );
-
   protected slots:
     /**
      * If you emit to this slot in your implementation, an appropriate change notification

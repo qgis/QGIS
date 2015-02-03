@@ -72,7 +72,7 @@ class QgsDataItem : QObject
       Fertile, //!< Can create children. Even items without this capability may have children, but cannot create them, it means that children are created by item ancestors.
       Fast     //!< createChildren() is fast enough to be run in main thread when refreshing items, most root items (wms,wfs,wcs,postgres...) are considered fast because they are reading data only from QSettings
     };
-    typedef QFlags<QgsDataItem::Capabilities> Capability;
+    typedef QFlags<QgsDataItem::Capability> Capabilities;
 
     // This will _write_ selected crs in data source
     virtual bool setCrs( QgsCoordinateReferenceSystem crs );
@@ -150,6 +150,8 @@ class QgsDataItem : QObject
     void beginRemoveItems( QgsDataItem* parent, int first, int last );
     void endRemoveItems();
 };
+
+QFlags<QgsDataItem::Capability> operator|(QgsDataItem::Capability f1, QFlags<QgsDataItem::Capability> f2);
 
 /** Item that represents a layer that can be opened with one of the providers */
 class QgsLayerItem : QgsDataItem
@@ -246,20 +248,18 @@ class QgsDirectoryItem : QgsDataCollectionItem
     QgsDirectoryItem( QgsDataItem* parent, QString name, QString path );
     ~QgsDirectoryItem();
 
-    virtual void setState( State state ) override;
+    virtual void setState( State state );
 
     QVector<QgsDataItem*> createChildren();
 
     QString dirPath() const;
     virtual bool equal( const QgsDataItem *other );
     virtual QIcon icon();
-    virtual QWidget *paramWidget();
+    virtual QWidget *paramWidget() /Factory/;
 
     /* static QVector<QgsDataProvider*> mProviders; */
     //! @note not available via python bindings
     // static QVector<QLibrary*> mLibraries;
-
-    virtual QWidget *paramWidget() /Factory/;
 };
 
 /**

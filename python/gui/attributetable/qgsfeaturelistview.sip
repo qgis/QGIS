@@ -96,7 +96,7 @@ class QgsFeatureListView : QListView
      */
     void displayExpressionChanged( const QString expression );
 
-    void aboutToChangeEditSelection( bool& ok );
+    //void aboutToChangeEditSelection( bool& ok );
 
   public slots:
     /**

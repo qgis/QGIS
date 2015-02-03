@@ -129,7 +129,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
      * \param visibleExtent Visible extent for providers supporting contextual legends, in layer CRS
      * \note visibleExtent parameter added in 2.8 (no available in python bindings)
      */
-    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const );
+    virtual QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 );
 
     /**
      * \brief Get an image downloader for the raster legend

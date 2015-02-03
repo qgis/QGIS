@@ -70,13 +70,4 @@ class QgsRasterFileWriter
     void setPyramidsConfigOptions( const QStringList& list );
     QStringList pyramidsConfigOptions() const;
 
-
-    void setMaxTileHeight( int h );
-    int maxTileHeight() const;
-
-    void setCreateOptions( const QStringList& list );
-    QStringList createOptions() const;
-
-    void setPyramidsConfigOptions( const QStringList& list );
-    QStringList pyramidsConfigOptions() const;
 };

@@ -47,7 +47,7 @@ class QgsVectorDataProvider : QgsDataProvider
       /** supports topological simplification of geometries on provider side according to a distance tolerance */
       SimplifyGeometriesWithTopologicalValidation,
       /** supports transactions*/
-      TransactionSupport = 1 << 16
+      TransactionSupport
     };
 
     /** bitmask of all provider's editing capabilities */
