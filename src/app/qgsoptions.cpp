@@ -812,7 +812,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl ) :
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
   int defRadiusUnits = settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
-  if ( defRadiusUnits == QgsTolerance::ProjectUnits || defSnapUnits == QgsTolerance::LayerUnits )
+  if ( defRadiusUnits == QgsTolerance::ProjectUnits || defRadiusUnits == QgsTolerance::LayerUnits )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
   }
