@@ -36,6 +36,9 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     Q_PROPERTY( bool openFormButtonVisible READ openFormButtonVisible WRITE setOpenFormButtonVisible )
 
   public:
+    typedef QPair < QVariant, QgsFeatureId > ValueRelationItem;
+    typedef QVector < ValueRelationItem > ValueRelationCache;
+
     enum CanvasExtent
     {
       Fixed,
@@ -70,6 +73,11 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     //! determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
     bool allowMapIdentification() {return mAllowMapIdentification;}
     void setAllowMapIdentification( bool allowMapIdentification );
+
+    //! If the widget will order the combobox entries by value
+    bool orderByValue() { return mOrderByValue; }
+    //! Set if the widget will order the combobox entries by value
+    void setOrderByValue( bool orderByValue );
 
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible() {return mOpenFormButtonVisible;}
@@ -133,6 +141,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mEmbedForm;
     bool mReadOnlySelector;
     bool mAllowMapIdentification;
+    bool mOrderByValue;
     bool mOpenFormButtonVisible;
 
     // UI

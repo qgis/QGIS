@@ -48,10 +48,12 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   bool showForm = config( "ShowForm", true ).toBool();
   bool mapIdent = config( "MapIdentification", false ).toBool();
   bool readOnlyWidget = config( "ReadOnly", false ).toBool();
+  bool orderByValue = config( "OrderByValue", false ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
+  mWidget->setOrderByValue( orderByValue );
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
 
