@@ -109,7 +109,18 @@ class CORE_EXPORT QgsDiagramSettings
       Right
     };
 
-    QgsDiagramSettings(): sizeType( MM ), minScaleDenominator( -1 ), maxScaleDenominator( -1 )
+    QgsDiagramSettings()
+        : sizeType( MM )
+        , penWidth( 0.0 )
+        , labelPlacementMethod( QgsDiagramSettings::Height )
+        , diagramOrientation( QgsDiagramSettings::Up )
+        , barWidth( 5.0 )
+        , transparency( 0 )
+        , scaleByArea( true )
+        , angleOffset( 90 * 16 ) //top
+        , minScaleDenominator( -1 )
+        , maxScaleDenominator( -1 )
+        , minimumSize( 0.0 )
     {}
     QFont font;
     QList< QColor > categoryColors;
