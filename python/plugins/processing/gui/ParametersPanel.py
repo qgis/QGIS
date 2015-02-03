@@ -195,7 +195,7 @@ class ParametersPanel(QWidget, Ui_Form):
         authid = layer.crs().authid()
         if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
                 and authid is not None:
-            return '{} [{}]'.format(layer.name(), authid)
+            return u'{} [{}]'.format(layer.name(), authid)
         else:
             return layer.name()
 
