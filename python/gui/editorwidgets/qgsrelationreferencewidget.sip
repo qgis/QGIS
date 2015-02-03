@@ -41,6 +41,11 @@ class QgsRelationReferenceWidget : QWidget
     bool allowMapIdentification();
     void setAllowMapIdentification( bool allowMapIdentification );
 
+    //! If the widget will order the combobox entries by value
+    bool orderByValue();
+    //! Set if the widget will order the combobox entries by value
+    void setOrderByValue( bool orderByValue );
+
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible();
     void setOpenFormButtonVisible( bool openFormButtonVisible );
