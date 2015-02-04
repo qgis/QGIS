@@ -24,7 +24,6 @@ class QgsRequestHandler
 %TypeHeaderCode
 #include "qgsmapserviceexception.h"
 #include "qgsrequesthandler.h"
-
 %End
 
   public:
@@ -66,27 +65,6 @@ class QgsRequestHandler
     QString format() const;
     /**Return the mime type for the response*/
     QString infoFormat() const;
-
-private:
-
-    /* Not yet part of the API */
-
-    virtual void sendHeaders( ) const = 0;
-    virtual void sendBody( ) const = 0;
-
-    /**Send out the response writing to FCGI stdout*/
-    virtual void sendResponse( ) const = 0;
-
-    virtual void parseInput() = 0;
-    virtual void setGetMapResponse( const QString& service, QImage* img, int imageQuality ) = 0;
-    virtual void setGetCapabilitiesResponse( const QDomDocument& doc ) = 0;
-    virtual void setGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) = 0;
-    virtual void setGetStyleResponse( const QDomDocument& doc ) = 0;
-    virtual void setGetPrintResponse( QByteArray* ba ) = 0;
-    virtual bool startGetFeatureResponse( QByteArray* ba, const QString& infoFormat ) = 0;
-    virtual void setGetFeatureResponse( QByteArray* ba ) = 0;
-    virtual void endGetFeatureResponse( QByteArray* ba ) = 0;
-    virtual void setGetCoverageResponse( QByteArray* ba ) = 0;
-
-
+    /**Return true if the HTTP headers were already sent to the client*/
+    bool headersSent();
 };
