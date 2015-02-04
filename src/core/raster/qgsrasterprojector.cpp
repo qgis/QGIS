@@ -363,8 +363,8 @@ void QgsRasterProjector::calcSrcRowsCols()
   // TODO: different resolution for rows and cols ?
 
   // For now, we take cell sizes projected to source but not to source axes
-  double myDestColsPerMatrixCell = mDestCols / mCPCols;
-  double myDestRowsPerMatrixCell = mDestRows / mCPRows;
+  double myDestColsPerMatrixCell = ( double )mDestCols / mCPCols;
+  double myDestRowsPerMatrixCell = ( double )mDestRows / mCPRows;
   QgsDebugMsg( QString( "myDestColsPerMatrixCell = %1 myDestRowsPerMatrixCell = %2" ).arg( myDestColsPerMatrixCell ).arg( myDestRowsPerMatrixCell ) );
 
   double myMinSize = DBL_MAX;

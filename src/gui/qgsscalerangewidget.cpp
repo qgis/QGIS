@@ -47,8 +47,8 @@ QgsScaleRangeWidget::QgsScaleRangeWidget( QWidget *parent )
   mMaximumScaleWidget->setShowCurrentScaleButton( true );
   reloadProjectScales();
   // add start, add comprehension of scales by settings fake ordered values
-  mMinimumScaleWidget->setScale( 1 / 100000 );
-  mMaximumScaleWidget->setScale( 1 / 1000 );
+  mMinimumScaleWidget->setScale( 1.0 / 100000 );
+  mMaximumScaleWidget->setScale( 1.0 / 1000 );
 
   mLayout->addWidget( minLbl, 0, 0, 2, 1 );
   mLayout->addWidget( mMinimumScaleIconLabel, 0, 1 );

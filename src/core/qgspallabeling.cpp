@@ -1829,7 +1829,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       return;
     }
 
-    int divNum = ( int )(( mFeaturesToLabel / maxNumLabels ) + 0.5 );
+    int divNum = ( int )((( double )mFeaturesToLabel / maxNumLabels ) + 0.5 );
     if ( divNum && ( mFeatsRegPal == ( int )( mFeatsSendingToPal / divNum ) ) )
     {
       mFeatsSendingToPal += 1;

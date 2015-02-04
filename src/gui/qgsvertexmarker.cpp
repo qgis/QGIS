@@ -56,7 +56,7 @@ void QgsVertexMarker::setPenWidth( int width )
 
 void QgsVertexMarker::paint( QPainter* p )
 {
-  qreal s = ( mIconSize - 1 ) / 2;
+  qreal s = ( mIconSize - 1 ) / 2.0;
 
   QPen pen( mColor );
   pen.setWidth( mPenWidth );

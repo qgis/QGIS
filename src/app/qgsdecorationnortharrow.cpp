@@ -109,8 +109,8 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
 
     if ( myQPixmap.load( myFileNameQString ) )
     {
-      double centerXDouble = myQPixmap.width() / 2;
-      double centerYDouble = myQPixmap.height() / 2;
+      double centerXDouble = myQPixmap.width() / 2.0;
+      double centerYDouble = myQPixmap.height() / 2.0;
       //save the current canvas rotation
       theQPainter->save();
       //

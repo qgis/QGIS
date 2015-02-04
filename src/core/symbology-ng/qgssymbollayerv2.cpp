@@ -410,7 +410,7 @@ void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
   QPolygonF points;
   // we're adding 0.5 to get rid of blurred preview:
   // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
-  points << QPointF( 0, size.height() / 2 + 0.5 ) << QPointF( size.width(), size.height() / 2 + 0.5 );
+  points << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 );
 
   startRender( context );
   renderPolyline( points, context );

@@ -471,7 +471,7 @@ void QgsRubberBand::paint( QPainter* p )
             double x = pt.x();
             double y = pt.y();
 
-            qreal s = ( mIconSize - 1 ) / 2;
+            qreal s = ( mIconSize - 1 ) / 2.0;
 
             switch ( mIconType )
             {
