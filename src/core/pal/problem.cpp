@@ -562,6 +562,8 @@ namespace pal
 #ifdef _VERBOSE_
           std::cerr << "Unknown search method..." << std::endl;
 #endif
+          delete[] ok;
+          delete[] parts;
           return;
       }
 

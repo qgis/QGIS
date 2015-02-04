@@ -364,6 +364,7 @@ void QgsMapToolCapture::validateGeometry()
 
   QStatusBar *sb = QgisApp::instance()->statusBar();
   sb->showMessage( tr( "Validation started." ) );
+  delete g;
 }
 
 void QgsMapToolCapture::addError( QgsGeometry::Error e )

@@ -366,7 +366,9 @@ double QgsGeometryAnalyzer::perimeterMeasure( QgsGeometry* geometry, QgsDistance
     {
       for ( jt = it->begin(); jt != it->end(); ++jt )
       {
-        value = value + measure.measure( QgsGeometry::fromPolyline( *jt ) );
+        QgsGeometry* geom = QgsGeometry::fromPolyline( *jt );
+        value = value + measure.measure( geom );
+        delete geom;
       }
     }
   }
@@ -376,7 +378,9 @@ double QgsGeometryAnalyzer::perimeterMeasure( QgsGeometry* geometry, QgsDistance
     QgsPolygon poly = geometry->asPolygon();
     for ( jt = poly.begin(); jt != poly.end(); ++jt )
     {
-      value = value + measure.measure( QgsGeometry::fromPolyline( *jt ) );
+      QgsGeometry* geom = QgsGeometry::fromPolyline( *jt );
+      value = value + measure.measure( geom );
+      delete geom;
     }
   }
   return value;

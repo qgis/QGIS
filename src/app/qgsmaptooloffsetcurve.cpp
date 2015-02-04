@@ -283,7 +283,9 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       ++selIt;
       for ( ; selIt != selectedFeatures.end(); ++selIt )
       {
-        geom = geom->combine( selIt->geometry() );
+        QgsGeometry* combined = geom->combine( selIt->geometry() );
+        delete geom;
+        geom = combined;
       }
 
       //if multitype, return only the snapped to geometry

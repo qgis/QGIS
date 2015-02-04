@@ -217,6 +217,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
         {
           emit messageEmitted( tr( "Cannot add feature. Unknown WKB type" ), QgsMessageBar::CRITICAL );
           stopCapturing();
+          delete f;
           return; //unknown wkbtype
         }
 
@@ -236,6 +237,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
         {
           emit messageEmitted( tr( "Cannot add feature. Unknown WKB type" ), QgsMessageBar::CRITICAL );
           stopCapturing();
+          delete f;
           return; //unknown wkbtype
         }
 

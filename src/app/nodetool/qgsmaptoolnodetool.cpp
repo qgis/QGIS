@@ -194,10 +194,14 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
 
       int movingPointIndex = 0;
       Vertexes* movingPoints = new Vertexes();
-      Vertexes* addedPoints = new Vertexes();
+      Vertexes* addedPoints = 0;
       if ( mTopologyMovingVertexes.contains( resultIt.value().snappedAtGeometry ) )
       {
         addedPoints = mTopologyMovingVertexes[ resultIt.value().snappedAtGeometry ];
+      }
+      else
+      {
+        addedPoints = new Vertexes();
       }
       if ( tVertex == -1 ) // adding first point if needed
       {

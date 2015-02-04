@@ -949,6 +949,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       else if ( avoidIntersectionsReturn == 3 )
       {
         QMessageBox::critical( 0, tr( "Error" ), tr( "An error was reported during intersection removal" ) );
+        delete f;
         connectGpsSlot();
         return;
       }
@@ -959,6 +960,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked()
       QMessageBox::critical( 0, tr( "Error" ), tr( "Cannot add feature. "
                              "Unknown WKB type. Choose a different layer and try again." ) );
       connectGpsSlot();
+      delete f;
       return; //unknown wkbtype
     } // layerWKBType == QGis::WKBPolygon
 

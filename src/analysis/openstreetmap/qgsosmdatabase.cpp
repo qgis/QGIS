@@ -427,6 +427,7 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
     if ( insertRes != SQLITE_DONE )
     {
       mError = QString( "Error inserting node %1 [%2]" ).arg( n.id() ).arg( insertRes );
+      delete geom;
       break;
     }
 
@@ -498,6 +499,7 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     if ( insertRes != SQLITE_DONE )
     {
       mError = QString( "Error inserting way %1 [%2]" ).arg( w.id() ).arg( insertRes );
+      delete geom;
       break;
     }
 

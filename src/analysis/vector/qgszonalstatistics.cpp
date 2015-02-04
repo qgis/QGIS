@@ -362,6 +362,8 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
           }
           delete intersectGeometry;
         }
+        delete pixelRectGeometry;
+        pixelRectGeometry = 0;
       }
       currentX += cellSizeX;
     }
