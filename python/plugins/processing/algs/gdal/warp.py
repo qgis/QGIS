@@ -44,6 +44,7 @@ class warp(GdalAlgorithm):
     METHOD = 'METHOD'
     METHOD_OPTIONS = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
     TR = 'TR'
+    NO_DATA = 'NO_DATA'
     EXTRA = 'EXTRA'
     RTYPE = 'RTYPE'
 
@@ -54,9 +55,12 @@ class warp(GdalAlgorithm):
         self.group = '[GDAL] Projections'
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer'), False))
         self.addParameter(ParameterCrs(self.SOURCE_SRS,
-            self.tr('Source SRS'), 'EPSG:4326'))
+            self.tr('Source SRS'), ''))
         self.addParameter(ParameterCrs(self.DEST_SRS,
-            self.tr('Destination SRS'), 'EPSG:4326'))
+            self.tr('Destination SRS'), ''))
+        self.addParameter(ParameterString(self.NO_DATA,
+            self.tr("Nodata value, leave blank to take the nodata value from input"),
+            '-9999'))
         self.addParameter(ParameterNumber(self.TR,
             self.tr('Output file resolution in target georeferenced units (leave 0 for no change)'),
             0.0, None, 0.0))
@@ -70,14 +74,21 @@ class warp(GdalAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
+        noData = str(self.getParameterValue(self.NO_DATA))
+        srccrs = self.getParameterValue(self.SOURCE_SRS)
+        dstcrs = self.getParameterValue(self.DEST_SRS)
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        arguments.append('-s_srs')
-        arguments.append(str(self.getParameterValue(self.SOURCE_SRS)))
-        arguments.append('-t_srs')
-        crsId = self.getParameterValue(self.DEST_SRS)
-        arguments.append(str(crsId))
+        if len(srccrs) > 0: 
+            arguments.append('-s_srs')
+            arguments.append(srccrs)
+        if len(dstcrs) > 0:
+            arguments.append('-t_srs')
+            arguments.append(dstcrs)
+        if len(noData) > 0:
+            arguments.append('-dstnodata')
+            arguments.append(noData)
         arguments.append('-r')
         arguments.append(
             self.METHOD_OPTIONS[self.getParameterValue(self.METHOD)])
