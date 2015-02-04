@@ -68,8 +68,8 @@ class translate(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.OUTSIZE_PERC,
             self.tr('Output size is a percentage of input size'), True))
         self.addParameter(ParameterString(self.NO_DATA,
-            self.tr("Nodata value, leave as 'none' to take the nodata value from input"),
-            'none'))
+            self.tr("Nodata value, leave blank to take the nodata value from input"),
+            ''))
         self.addParameter(ParameterSelection(self.EXPAND,
             self.tr('Expand'), ['none', 'gray', 'rgb', 'rgba']))
         self.addParameter(ParameterCrs(self.SRS,
@@ -111,8 +111,9 @@ class translate(GdalAlgorithm):
             arguments.append('-outsize')
             arguments.append(outsize)
             arguments.append(outsize)
-        arguments.append('-a_nodata')
-        arguments.append(noData)
+        if len(noData) > 0:
+            arguments.append('-a_nodata')
+            arguments.append(noData)
         if expand != 'none':
             arguments.append('-expand')
             arguments.append(expand)
