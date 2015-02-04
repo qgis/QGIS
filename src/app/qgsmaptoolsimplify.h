@@ -21,6 +21,7 @@
 
 #include <QVector>
 #include "qgsfeature.h"
+#include "qgstolerance.h"
 
 class QgsRubberBand;
 class QgsMapToolSimplify;
@@ -35,6 +36,7 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
     QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = NULL );
 
     void updateStatusText();
+    void enableOkButton( bool enabled );
 
   private:
     QgsMapToolSimplify* mTool;
@@ -59,9 +61,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     double tolerance() const { return mTolerance; }
 
-    enum ToleranceUnits { LayerUnits = 0, MapUnits = 1 };
-
-    ToleranceUnits toleranceUnits() const { return mToleranceUnits; }
+    QgsTolerance::UnitType toleranceUnits() const { return mToleranceUnits; }
 
     QString statusText() const;
 
@@ -97,7 +97,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     /** real value of tolerance */
     double mTolerance;
 
-    ToleranceUnits mToleranceUnits;
+    QgsTolerance::UnitType mToleranceUnits;
 
     //! stores actual selection rect
     QRect mSelectionRect;
@@ -108,30 +108,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     int mOriginalVertexCount;
     int mReducedVertexCount;
-};
-
-/**
-  Implementation of Douglas-Peucker simplification algorithm.
- */
-class APP_EXPORT QgsSimplifyFeature
-{
-    /** structure for one entry in stack for simplification algorithm */
-    struct StackEntry
-    {
-      int anchor;
-      int floater;
-    };
-
-  public:
-    /** simplify line/polygon feature with specified tolerance. Returns true on success */
-    static bool simplify( QgsFeature& feature, double tolerance, QgsMapToolSimplify::ToleranceUnits units, const QgsCoordinateTransform* ctLayerToMap );
-
-  protected:
-    /** simplify a line given by a vector of points and tolerance. Returns simplified vector of points */
-    static QVector<QgsPoint> simplifyPoints( const QVector<QgsPoint>& pts, double tolerance, QgsMapToolSimplify::ToleranceUnits units, const QgsCoordinateTransform* ctLayerToMap );
-    /** get indices of points that should be preserved after simplification */
-    static QList<int> simplifyPointsIndices( const QVector<QgsPoint>& pts, double tolerance );
-
+    bool mReducedHasErrors;
 };
 
 #endif
