@@ -127,7 +127,7 @@ void TestQgsLegendRenderer::init()
 
   static char raster_array[] = { 1, 2, 2, 1 };
   QString rasterUri = QString( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) raster_array );
-  mRL = new QgsRasterLayer( rasterUri, "Raster Layer", "gdal" );
+  mRL = new QgsRasterLayer( rasterUri, QString( "Raster Layer" ), QString( "gdal" ) );
   QgsMapLayerRegistry::instance()->addMapLayer( mRL );
 
   QgsCategoryList cats;

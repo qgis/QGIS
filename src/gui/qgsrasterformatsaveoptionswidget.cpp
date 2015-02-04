@@ -310,7 +310,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
       settings.setValue( "/Projections/defaultBehaviour", "useProject" );
     }
     tmpLayer = true;
-    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), "gdal" );
+    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QString( "gdal" ) );
     // restore /Projections/defaultBehaviour
     if ( defaultProjectionOption == "prompt" )
     {

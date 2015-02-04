@@ -110,7 +110,7 @@ QgsMapLayer *TestZipLayer::getLayer( QString myPath, QString myName, QString myP
   }
   else if ( myProviderKey == "gdal" )
   {
-    myLayer = new QgsRasterLayer( myPath, myName, "gdal" );
+    myLayer = new QgsRasterLayer( myPath, myName, QString( "gdal" ) );
   }
   // item should not have other provider key, but if it does will return NULL
 
