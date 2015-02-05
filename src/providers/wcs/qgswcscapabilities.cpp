@@ -26,6 +26,7 @@
 
 #include <cmath>
 
+#include "qgsauthenticationmanager.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrasterlayer.h"
@@ -155,13 +156,26 @@ bool QgsWcsCapabilities::sendRequest( QString const & url )
   QgsDebugMsg( "url = " + url );
   mError = "";
   QNetworkRequest request( url );
-  setAuthorization( request );
+  if ( !setAuthorization( request ) )
+  {
+    mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+    QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+    return false;
+  }
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, mCacheLoadControl );
   QgsDebugMsg( QString( "mCacheLoadControl = %1" ).arg( mCacheLoadControl ) );
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+  if ( !setAuthorizationReply( mCapabilitiesReply ) )
+  {
+    mCapabilitiesReply->deleteLater();
+    mCapabilitiesReply = 0;
+    mError = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+    QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+    return false;
+  }
 
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
   connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
@@ -355,13 +369,28 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       emit statusChanged( tr( "Capabilities request redirected." ) );
 
       QNetworkRequest request( redirect.toUrl() );
-      setAuthorization( request );
+      if ( !setAuthorization( request ) )
+      {
+        mCapabilitiesResponse.clear();
+        mError = tr( "Download of capabilities failed: network request update failed for authentication config" );
+        QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+        return;
+      }
       request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
       request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
       mCapabilitiesReply->deleteLater();
       QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
       mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+      if ( !setAuthorizationReply( mCapabilitiesReply ) )
+      {
+        mCapabilitiesResponse.clear();
+        mCapabilitiesReply->deleteLater();
+        mCapabilitiesReply = 0;
+        mError = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+        QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+        return;
+      }
 
       connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
       connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
@@ -388,6 +417,15 @@ void QgsWcsCapabilities::capabilitiesReplyFinished()
       mCapabilitiesReply->deleteLater();
 
       mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
+      if ( !setAuthorizationReply( mCapabilitiesReply ) )
+      {
+        mCapabilitiesResponse.clear();
+        mCapabilitiesReply->deleteLater();
+        mCapabilitiesReply = 0;
+        mError = tr( "Download of capabilities failed: network reply update failed for authentication config" );
+        QgsMessageLog::logMessage( mError, tr( "WCS" ) );
+        return;
+      }
       connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
       connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
       return;
@@ -1158,14 +1196,28 @@ QString QgsWcsCapabilities::lastErrorFormat()
   return mErrorFormat;
 }
 
-void QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
+bool QgsWcsCapabilities::setAuthorization( QNetworkRequest &request ) const
 {
   QgsDebugMsg( "entered" );
-  if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
+  if ( mUri.hasParam( "authid" ) && !mUri.param( "authid" ).isEmpty() )
+  {
+    return QgsAuthManager::instance()->updateNetworkRequest( request, mUri.param( "authid" ) );
+  }
+  else if ( mUri.hasParam( "username" ) && mUri.hasParam( "password" ) )
   {
     QgsDebugMsg( "setAuthorization " + mUri.param( "username" ) );
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUri.param( "username" ) ).arg( mUri.param( "password" ) ).toAscii().toBase64() );
   }
+  return true;
+}
+
+bool QgsWcsCapabilities::setAuthorizationReply( QNetworkReply *reply ) const
+{
+  if ( mUri.hasParam( "authid" ) && !mUri.param( "authid" ).isEmpty() )
+  {
+    return QgsAuthManager::instance()->updateNetworkReply( reply, mUri.param( "authid" ) );
+  }
+  return true;
 }
 
 void QgsWcsCapabilities::showMessageBox( const QString& title, const QString& text )

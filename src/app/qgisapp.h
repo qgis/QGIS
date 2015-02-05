@@ -91,6 +91,7 @@ class QgsTileScaleWidget;
 #include <QPointer>
 #include <QSslError>
 
+#include "qgsauthenticationmanager.h"
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
@@ -212,6 +213,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! update proxy settings
     void namUpdate();
+
+    //! set up master password
+    void masterPasswordSetup();
 
     /** Add a dock widget to the main window. Overloaded from QMainWindow.
      * After adding the dock widget to the ui (by delegating to the QMainWindow
@@ -606,6 +610,30 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
     void namRequestTimedOut( QNetworkReply *reply );
+
+    //! Sets the cached master password (and verifies it if its hash is in authentication database)
+    void setMasterPassword();
+
+    //! Clear the currently cached master password (not its hash in database)
+    void clearCachedMasterPassword();
+
+    //! Reset the cached master password, updating its hash in authentication database and reseting all existing configs to use it
+    void resetMasterPassword();
+
+    //! Open authentication configs editor (in Options)
+    void editAuthenticationConfigs();
+
+    //! Clear all cached authentication configs for session
+    void clearCachedAuthenticationConfigs();
+
+    //! Remove all authentication configs
+    void removeAuthenticationConfigs();
+
+    //! Completely clear out the authentication database (configs and master password)
+    void eraseAuthenticationDatabase();
+
+    //! Push authentication database functions output to messagebar
+    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
 
     //! update default action of toolbutton
     void toolButtonActionTriggered( QAction * );

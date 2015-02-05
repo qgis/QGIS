@@ -406,6 +406,9 @@ bool QgsWcsProvider::parseUri( QString uriString )
   mAuth.mPassword = uri.param( "password" );
   QgsDebugMsg( "set password to " + mAuth.mPassword );
 
+  mAuth.mAuthId = uri.param( "authid" );
+  QgsDebugMsg( "set authid to " + mAuth.mAuthId );
+
   mIdentifier = uri.param( "identifier" );
 
   mTime = uri.param( "time" );
@@ -1659,6 +1662,7 @@ int QgsWcsDownloadHandler::sErrors = 0;
 
 QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorization& auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray& cachedData, const QString& wcsVersion, QgsError& cachedError )
     : mNAM( new QgsNetworkAccessManager )
+    , mAuth( auth )
     , mEventLoop( new QEventLoop )
     , mCachedData( cachedData )
     , mWcsVersion( wcsVersion )
@@ -1667,11 +1671,25 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl& url, QgsWcsAuthorizati
   mNAM->setupDefaultProxyAndCache();
 
   QNetworkRequest request( url );
-  auth.setAuthorization( request );
+  if ( !mAuth.setAuthorization( request ) )
+  {
+    QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ),
+                               tr( "WCS" ) );
+    return;
+  }
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, cacheLoadControl );
 
   mCacheReply = mNAM->get( request );
+  if ( !mAuth.setAuthorizationReply( mCacheReply ) )
+  {
+    mCacheReply->deleteLater();
+    mCacheReply = 0;
+    QgsMessageLog::logMessage( tr( "Network reply update failed for authentication config" ),
+                               tr( "WCS" ) );
+    finish();
+    return;
+  }
   connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
   connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 }
@@ -1700,7 +1718,23 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       mCacheReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
-      mCacheReply = mNAM->get( QNetworkRequest( redirect.toUrl() ) );
+      QNetworkRequest request( redirect.toUrl() );
+      if ( !mAuth.setAuthorization( request ) )
+      {
+        QgsMessageLog::logMessage( tr( "Network request update failed for authentication config" ),
+                                   tr( "WCS" ) );
+        return;
+      }
+      mCacheReply = mNAM->get( request );
+      if ( !mAuth.setAuthorizationReply( mCacheReply ) )
+      {
+        mCacheReply->deleteLater();
+        mCacheReply = 0;
+        QgsMessageLog::logMessage( tr( "Network reply update failed for authentication config" ),
+                                   tr( "WCS" ) );
+        finish();
+        return;
+      }
       connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
       connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 
@@ -1865,6 +1899,15 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       mCacheReply->deleteLater();
 
       mCacheReply = mNAM->get( request );
+      if ( !mAuth.setAuthorizationReply( mCacheReply ) )
+      {
+        mCacheReply->deleteLater();
+        mCacheReply = 0;
+        QgsMessageLog::logMessage( tr( "Network reply update failed for authentication config" ),
+                                   tr( "WCS" ) );
+        finish();
+        return;
+      }
       connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
       connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
 

@@ -276,6 +276,13 @@ ENDIF (WITH_TOUCH)
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 
+# Master password hash and authentication encryption
+FIND_PACKAGE(QCA REQUIRED)
+# Check for runtime dependency of qca-ossl plugin
+# REQUIRED if unit tests are to be run from build directory
+include(QCAMacros)
+FIND_QCAOSSL_PLUGIN_CPP(ENABLE_TESTS)
+
 # ModelTest
 SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
 

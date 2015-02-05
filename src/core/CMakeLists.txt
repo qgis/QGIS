@@ -60,6 +60,10 @@ SET(QGIS_CORE_SRCS
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgsauthenticationconfig.cpp
+  qgsauthenticationcrypto.cpp
+  qgsauthenticationmanager.cpp
+  qgsauthenticationprovider.cpp
   qgsbrowsermodel.cpp
   qgscachedfeatureiterator.cpp
   qgscacheindex.cpp
@@ -338,6 +342,7 @@ ADD_BISON_FILES(QGIS_CORE_SRCS qgsexpressionparser.yy)
 SET(QGIS_CORE_MOC_HDRS
 
   qgsapplication.h
+  qgsauthenticationmanager.h
   qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
@@ -462,6 +467,10 @@ SET(QGIS_CORE_HDRS
 
   qgis.h
   qgsattributeaction.h
+  qgsauthenticationconfig.h
+  qgsauthenticationcrypto.h
+  qgsauthenticationmanager.h
+  qgsauthenticationprovider.h
   qgscachedfeatureiterator.h
   qgscacheindex.h
   qgscacheindexfeatureid.h
@@ -665,6 +674,7 @@ INCLUDE_DIRECTORIES(
   ${EXPAT_INCLUDE_DIR}
   ${SQLITE3_INCLUDE_DIR}
   ${SPATIALITE_INCLUDE_DIR}
+  ${QCA_INCLUDE_DIR}
 )
 
 
@@ -748,6 +758,8 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
   ${QT_QTWEBKIT_LIBRARY}
+  ${QT_QTSQL_LIBRARY}
+  ${QCA_LIBRARY}
   ${QSCINTILLA_LIBRARY}
 
   ${PROJ_LIBRARY}

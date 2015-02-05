@@ -13,4 +13,6 @@ class QgsCredentialDialog : QDialog, QgsCredentials
 
   protected:
     virtual bool request( QString realm, QString &username /In,Out/, QString &password /In,Out/, QString message = QString::null );
+
+    virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
 };

@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
+#include "qgsauthenticationmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgeometry.h"
@@ -65,7 +66,7 @@ QgsGml::~QgsGml()
 {
 }
 
-int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password )
+int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangle* extent, const QString& userName, const QString& password , const QString& authid )
 {
   mUri = uri;
   mWkbType = wkbType;
@@ -79,11 +80,37 @@ int QgsGml::getFeatures( const QString& uri, QGis::WkbType* wkbType, QgsRectangl
   mExtent.setMinimal();
 
   QNetworkRequest request( mUri );
-  if ( !userName.isNull() || !password.isNull() )
+  if ( !authid.isEmpty() )
+  {
+    if ( !QgsAuthManager::instance()->updateNetworkRequest( request, authid ) )
+    {
+      QgsMessageLog::logMessage(
+        tr( "GML Getfeature network request update failed for authid %1" ).arg( authid ),
+        tr( "Network" ),
+        QgsMessageLog::CRITICAL
+      );
+      return 1;
+    }
+  }
+  else if ( !userName.isNull() || !password.isNull() )
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( userName ).arg( password ).toAscii().toBase64() );
   }
   QNetworkReply* reply = QgsNetworkAccessManager::instance()->get( request );
+
+  if ( !authid.isEmpty() )
+  {
+    if ( !QgsAuthManager::instance()->updateNetworkReply( reply, authid ) )
+    {
+      delete reply;
+      QgsMessageLog::logMessage(
+        tr( "GML Getfeature network reply update failed for authid %1" ).arg( authid ),
+        tr( "Network" ),
+        QgsMessageLog::CRITICAL
+      );
+      return 1;
+    }
+  }
 
   connect( reply, SIGNAL( finished() ), this, SLOT( setFinished() ) );
   connect( reply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( handleProgressEvent( qint64, qint64 ) ) );

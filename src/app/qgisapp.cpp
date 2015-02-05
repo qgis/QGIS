@@ -103,6 +103,8 @@
 #include "qgsapplication.h"
 #include "qgsattributeaction.h"
 #include "qgsattributetabledialog.h"
+#include "qgsauthenticationmanager.h"
+#include "qgsauthenticationutils.h"
 #include "qgsbookmarks.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsadvanceddigitizingdockwidget.h"
@@ -503,6 +505,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   namSetup();
 
+  masterPasswordSetup();
+
   // load GUI: actions, menus, toolbars
   setupUi( this );
 
@@ -682,6 +686,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSplash->showMessage( tr( "Checking provider plugins" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   QgsApplication::initQgis();
+
+  if ( QgsAuthManager::instance()->isDisabled() )
+  {
+    mAuthenticationMenu->setEnabled( false );
+    QMessageBox::warning( this, tr( "Authentication System" ),
+                          QgsAuthManager::instance()->disabledMessage() + "\n\n" +
+                          tr( "Resources authenticating via the system can not be accessed." ) );
+  }
 
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
@@ -1033,6 +1045,14 @@ void QgisApp::createActions()
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
   connect( mActionExit, SIGNAL( triggered() ), this, SLOT( fileExit() ) );
   connect( mActionDxfExport, SIGNAL( triggered() ), this, SLOT( dxfExport() ) );
+
+  connect( mActionSetMasterPassword, SIGNAL( triggered() ), this, SLOT( setMasterPassword() ) );
+  connect( mActionClearCachedMasterPassword, SIGNAL( triggered() ), this, SLOT( clearCachedMasterPassword() ) );
+  connect( mActionResetMasterPassword, SIGNAL( triggered() ), this, SLOT( resetMasterPassword() ) );
+  connect( mActionEditAuthConfigs, SIGNAL( triggered() ), this, SLOT( editAuthenticationConfigs() ) );
+  connect( mActionClearCachedAuthConfigs, SIGNAL( triggered() ), this, SLOT( clearCachedAuthenticationConfigs() ) );
+  connect( mActionRemoveAuthConfigs, SIGNAL( triggered() ), this, SLOT( removeAuthenticationConfigs() ) );
+  connect( mActionEraseAuthDatabase, SIGNAL( triggered() ), this, SLOT( eraseAuthenticationDatabase() ) );
 
   // Edit Menu Items
 
@@ -7843,10 +7863,22 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
                + " with baseName of " + baseName
                + " and providerKey of " + providerKey );
 
+  // if the layer needs authentication, ensure the master password is set
+  bool authok = true;
+  QRegExp rx( "authid=([a-z]|[0-9]){7}" );
+  if ( rx.indexIn( vectorLayerPath ) != -1 )
+  {
+    authok = false;
+    if ( !QgsAuthUtils::isDisabled( messageBar(), messageTimeout() ) )
+    {
+      authok = QgsAuthManager::instance()->setMasterPassword( true );
+    }
+  }
+
   // create the layer
   QgsVectorLayer *layer = new QgsVectorLayer( vectorLayerPath, baseName, providerKey, false );
 
-  if ( layer && layer->isValid() )
+  if ( authok && layer && layer->isValid() )
   {
     QStringList sublayers = layer->dataProvider()->subLayers();
     QgsDebugMsg( QString( "got valid layer with %1 sublayers" ).arg( sublayers.count() ) );
@@ -10211,6 +10243,57 @@ void QgisApp::namRequestTimedOut( QNetworkReply *reply )
 void QgisApp::namUpdate()
 {
   QgsNetworkAccessManager::instance()->setupDefaultProxyAndCache();
+}
+
+void QgisApp::masterPasswordSetup()
+{
+  connect( QgsAuthManager::instance(), SIGNAL( messageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ),
+           this, SLOT( authMessageOut( const QString&, const QString&, QgsAuthManager::MessageLevel ) ) );
+}
+
+void QgisApp::setMasterPassword()
+{
+  QgsAuthUtils::setMasterPassword( messageBar(), messageTimeout() );
+}
+
+void QgisApp::clearCachedMasterPassword()
+{
+  QgsAuthUtils::clearCachedMasterPassword( messageBar(), messageTimeout() );
+}
+
+void QgisApp::resetMasterPassword()
+{
+  QgsAuthUtils::resetMasterPassword( messageBar(), messageTimeout(), this );
+}
+
+void QgisApp::editAuthenticationConfigs()
+{
+  showOptionsDialog( this, QString( "mOptionsPageAuth" ) );
+}
+
+void QgisApp::clearCachedAuthenticationConfigs()
+{
+  QgsAuthUtils::clearCachedAuthenticationConfigs( messageBar(), messageTimeout() );
+}
+
+void QgisApp::removeAuthenticationConfigs()
+{
+  QgsAuthUtils::removeAuthenticationConfigs( messageBar(), messageTimeout(), this );
+}
+
+void QgisApp::eraseAuthenticationDatabase()
+{
+  QgsAuthUtils::eraseAuthenticationDatabase( messageBar(), messageTimeout(), this );
+}
+
+void QgisApp::authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level )
+{
+  // only if main window is active window
+  if ( qApp->activeWindow() != this )
+    return;
+
+  int levelint = ( int )level;
+  messageBar()->pushMessage( authtag, message, ( QgsMessageBar::MessageLevel )levelint, 7 );
 }
 
 void QgisApp::completeInitialization()

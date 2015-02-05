@@ -77,6 +77,16 @@ void QgsCredentials::put( QString realm, QString username, QString password )
   mCredentialCache.insert( realm, QPair<QString, QString>( username, password ) );
 }
 
+bool QgsCredentials::getMasterPassword( QString &password , bool stored )
+{
+  if ( requestMasterPassword( password, stored ) )
+  {
+    QgsDebugMsg( "requested master password" );
+    return true;
+  }
+  return false;
+}
+
 void QgsCredentials::lock()
 {
   mMutex.lock();
@@ -107,6 +117,21 @@ bool QgsCredentialsConsole::request( QString realm, QString &username, QString &
   out << "username: ";
   in >> username;
   out << "password: ";
+  in >> password;
+
+  return true;
+}
+
+bool QgsCredentialsConsole::requestMasterPassword( QString &password, bool stored )
+{
+  Q_UNUSED( stored );
+
+  QTextStream in( stdin, QIODevice::ReadOnly );
+  QTextStream out( stdout, QIODevice::WriteOnly );
+
+  QString msg( stored ? "Master password for authentication configs: " : "Set master password for authentication configs: " );
+
+  out << msg;
   in >> password;
 
   return true;
