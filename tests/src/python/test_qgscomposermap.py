@@ -45,12 +45,12 @@ class TestQgsComposerMap(TestCase):
     def __init__(self, methodName):
         """Run once on class initialisation."""
         unittest.TestCase.__init__(self, methodName)
-        myPath = os.path.join(TEST_DATA_DIR, 'landsat.tif')
+        myPath = os.path.join(TEST_DATA_DIR, 'rgb256x256.png')
         rasterFileInfo = QFileInfo(myPath)
         mRasterLayer = QgsRasterLayer(rasterFileInfo.filePath(),
                                       rasterFileInfo.completeBaseName())
         rasterRenderer = QgsMultiBandColorRenderer(
-            mRasterLayer.dataProvider(), 2, 3, 4)
+            mRasterLayer.dataProvider(), 1, 2, 3)
         mRasterLayer.setRenderer(rasterRenderer)
         #pipe = mRasterLayer.pipe()
         #assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
@@ -73,11 +73,9 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setFrameEnabled(True)
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
-        myRectangle = QgsRectangle(785462.375, 3341423.125,
-                                   789262.375, 3343323.125)
+        myRectangle = QgsRectangle(96, -152, 160, -120)
         self.mComposerMap.setNewExtent(myRectangle)
-        myRectangle2 = QgsRectangle(781662.375, 3339523.125,
-                                    793062.375, 3350923.125)
+        myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         checker = QgsCompositionChecker('composermap_overview', self.mComposition)
@@ -90,11 +88,9 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setFrameEnabled(True)
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
-        myRectangle = QgsRectangle(785462.375, 3341423.125,
-                                   789262.375, 3343323.125)
+        myRectangle = QgsRectangle(96, -152, 160, -120)
         self.mComposerMap.setNewExtent(myRectangle)
-        myRectangle2 = QgsRectangle(781662.375, 3339523.125,
-                                    793062.375, 3350923.125)
+        myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewBlendMode(QPainter.CompositionMode_Multiply)
@@ -108,11 +104,9 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setFrameEnabled(True)
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
-        myRectangle = QgsRectangle(785462.375, 3341423.125,
-                                   789262.375, 3343323.125)
+        myRectangle = QgsRectangle(96, -152, 160, -120)
         self.mComposerMap.setNewExtent(myRectangle)
-        myRectangle2 = QgsRectangle(781662.375, 3339523.125,
-                                    793062.375, 3350923.125)
+        myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewInverted(True)
@@ -126,11 +120,9 @@ class TestQgsComposerMap(TestCase):
         overviewMap.setFrameEnabled(True)
         self.mComposition.addComposerMap(overviewMap)
         # zoom in
-        myRectangle = QgsRectangle(785462.375+5000, 3341423.125,
-                                   789262.375+5000, 3343323.125)
+        myRectangle = QgsRectangle(192, -288, 320, -224)
         self.mComposerMap.setNewExtent(myRectangle)
-        myRectangle2 = QgsRectangle(781662.375, 3339523.125,
-                                    793062.375, 3350923.125)
+        myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setNewExtent(myRectangle2)
         overviewMap.setOverviewFrameMap(self.mComposerMap.id())
         overviewMap.setOverviewInverted(False)
