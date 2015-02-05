@@ -604,44 +604,44 @@ class CORE_EXPORT QgsLabelComponent
 
     // methods
 
-    const QString& text() { return mText; }
+    const QString& text() const { return mText; }
     void setText( const QString& text ) { mText = text; }
 
-    const QgsPoint& origin() { return mOrigin; }
-    void setOrigin( QgsPoint point ) { mOrigin = point; }
+    const QgsPoint& origin() const { return mOrigin; }
+    void setOrigin( const QgsPoint& point ) { mOrigin = point; }
 
     bool useOrigin() const { return mUseOrigin; }
-    void setUseOrigin( bool use ) { mUseOrigin = use; }
+    void setUseOrigin( const bool use ) { mUseOrigin = use; }
 
     double rotation() const { return mRotation; }
-    void setRotation( double rotation ) { mRotation = rotation; }
+    void setRotation( const double rotation ) { mRotation = rotation; }
 
     double rotationOffset() const { return mRotationOffset; }
-    void setRotationOffset( double rotation ) { mRotationOffset = rotation; }
+    void setRotationOffset( const double rotation ) { mRotationOffset = rotation; }
 
     bool useRotation() const { return mUseRotation; }
-    void setUseRotation( bool use ) { mUseRotation = use; }
+    void setUseRotation( const bool use ) { mUseRotation = use; }
 
-    const QgsPoint& center() { return mCenter; }
-    void setCenter( QgsPoint point ) { mCenter = point; }
+    const QgsPoint& center() const { return mCenter; }
+    void setCenter( const QgsPoint& point ) { mCenter = point; }
 
     bool useCenter() const { return mUseCenter; }
-    void setUseCenter( bool use ) { mUseCenter = use; }
+    void setUseCenter( const bool use ) { mUseCenter = use; }
 
-    const QgsPoint& size() { return mSize; }
-    void setSize( QgsPoint point ) { mSize = point; }
+    const QgsPoint& size() const { return mSize; }
+    void setSize( const QgsPoint& point ) { mSize = point; }
 
-    const QgsPoint& offset() { return mOffset; }
-    void setOffset( QgsPoint point ) { mOffset = point; }
+    const QgsPoint& offset() const { return mOffset; }
+    void setOffset( const QgsPoint& point ) { mOffset = point; }
 
-    const QPicture* picture() { return mPicture; }
+    const QPicture* picture() const { return mPicture; }
     void setPicture( QPicture* picture ) { mPicture = picture; }
 
     double pictureBuffer() const { return mPictureBuffer; }
-    void setPictureBuffer( double buffer ) { mPictureBuffer = buffer; }
+    void setPictureBuffer( const double buffer ) { mPictureBuffer = buffer; }
 
     double dpiRatio() const { return mDpiRatio; }
-    void setDpiRatio( double ratio ) { mDpiRatio = ratio; }
+    void setDpiRatio( const double ratio ) { mDpiRatio = ratio; }
 
   private:
     // current label component text,
@@ -795,15 +795,15 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 );
 
     static void drawLabelBuffer( QgsRenderContext& context,
-                                 QgsLabelComponent component,
+                                 const QgsLabelComponent &component,
                                  const QgsPalLayerSettings& tmpLyr );
 
     static void drawLabelBackground( QgsRenderContext& context,
                                      QgsLabelComponent component,
                                      const QgsPalLayerSettings& tmpLyr );
 
-    static void drawLabelShadow( QgsRenderContext& context,
-                                 QgsLabelComponent component,
+    static void drawLabelShadow( QgsRenderContext &context,
+                                 const QgsLabelComponent &component,
                                  const QgsPalLayerSettings& tmpLyr );
 
     //! load/save engine settings to project file

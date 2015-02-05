@@ -558,44 +558,44 @@ class QgsLabelComponent
 
     // methods
 
-    const QString& text();
+    const QString& text() const;
     void setText( const QString& text );
 
-    const QgsPoint& origin();
-    void setOrigin( QgsPoint point );
+    const QgsPoint& origin() const;
+    void setOrigin( const QgsPoint& point );
 
     bool useOrigin() const;
-    void setUseOrigin( bool use );
+    void setUseOrigin( const bool use );
 
     double rotation() const;
-    void setRotation( double rotation );
+    void setRotation( const double rotation );
 
     double rotationOffset() const;
-    void setRotationOffset( double rotation );
+    void setRotationOffset( const double rotation );
 
     bool useRotation() const;
-    void setUseRotation( bool use );
+    void setUseRotation( const bool use );
 
-    const QgsPoint& center();
-    void setCenter( QgsPoint point );
+    const QgsPoint& center() const;
+    void setCenter( const QgsPoint& point );
 
     bool useCenter() const;
-    void setUseCenter( bool use );
+    void setUseCenter( const bool use );
 
-    const QgsPoint& size();
-    void setSize( QgsPoint point );
+    const QgsPoint& size() const;
+    void setSize( const QgsPoint& point );
 
-    const QgsPoint& offset();
-    void setOffset( QgsPoint point );
+    const QgsPoint& offset() const;
+    void setOffset( const QgsPoint& point );
 
-    const QPicture* picture();
+    const QPicture* picture() const;
     void setPicture( QPicture* picture );
 
     double pictureBuffer() const;
-    void setPictureBuffer( double buffer );
+    void setPictureBuffer( const double buffer );
 
     double dpiRatio() const;
-    void setDpiRatio( double ratio );
+    void setDpiRatio( const double ratio );
 };
 
 
@@ -721,7 +721,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     // void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType );
 
     static void drawLabelBuffer( QgsRenderContext& context,
-                                 QgsLabelComponent component,
+                                 const QgsLabelComponent& component,
                                  const QgsPalLayerSettings& tmpLyr );
 
     static void drawLabelBackground( QgsRenderContext& context,
@@ -729,7 +729,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
                                      const QgsPalLayerSettings& tmpLyr );
 
     static void drawLabelShadow( QgsRenderContext& context,
-                                 QgsLabelComponent component,
+                                 const QgsLabelComponent& component,
                                  const QgsPalLayerSettings& tmpLyr );
 
     //! load/save engine settings to project file

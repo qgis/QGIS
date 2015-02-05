@@ -4458,7 +4458,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 }
 
 void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
-                                      QgsLabelComponent component,
+                                      const QgsLabelComponent& component,
                                       const QgsPalLayerSettings& tmpLyr )
 {
   QPainter* p = context.painter();
@@ -4489,11 +4489,11 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
 
   if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowBuffer )
   {
-    component.setOrigin( QgsPoint( 0.0, 0.0 ) );
-    component.setPicture( &buffPict );
-    component.setPictureBuffer( penSize / 2.0 );
-
-    drawLabelShadow( context, component, tmpLyr );
+    QgsLabelComponent bufferComponent = component;
+    bufferComponent.setOrigin( QgsPoint( 0.0, 0.0 ) );
+    bufferComponent.setPicture( &buffPict );
+    bufferComponent.setPictureBuffer( penSize / 2.0 );
+    drawLabelShadow( context, bufferComponent, tmpLyr );
   }
 
   p->save();
@@ -4810,7 +4810,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 }
 
 void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
-                                      QgsLabelComponent component,
+                                      const QgsLabelComponent& component,
                                       const QgsPalLayerSettings& tmpLyr )
 {
   // incoming component sizes should be multiplied by rasterCompressFactor, as
