@@ -305,6 +305,7 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
 
   if ( shortestpathTree->findVertex( p2 ) == -1 )
   {
+    delete shortestpathTree;
     QMessageBox::critical( this, tr( "Path not found" ), tr( "Path not found" ) );
     return NULL;
   }

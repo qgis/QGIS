@@ -867,8 +867,12 @@ class TestQgsExpression: public QObject
       QgsGeometry* tPolygon = QgsGeometry::fromPolygon( polygon );
       tPolygon->transform( t );
 
-      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + QgsGeometry::fromPolyline( line )->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false;
-      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + QgsGeometry::fromPolygon( polygon )->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false;
+      QgsGeometry* oLine = QgsGeometry::fromPolyline( line );
+      QgsGeometry* oPolygon = QgsGeometry::fromPolygon( polygon );
+      QTest::newRow( "transform Line" ) << "transform( geomFromWKT('" + oLine->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tLine << false;
+      QTest::newRow( "transform Polygon" ) << "transform( geomFromWKT('" + oPolygon->exportToWkt() + "'), 'EPSG:4326', 'EPSG:3857' )" << ( void* ) tPolygon << false;
+      delete oLine;
+      delete oPolygon;
     }
 
     void eval_geometry_access_transform()

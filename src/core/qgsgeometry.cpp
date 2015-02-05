@@ -4661,7 +4661,9 @@ GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )
   else
     return 0;
 
-  QgsPoint splitPoint = fromGeosGeom( GEOSsplitPoint )->asPoint();
+  QgsGeometry* geosPoint = fromGeosGeom( GEOSsplitPoint );
+  QgsPoint splitPoint = geosPoint->asPoint();
+  delete geosPoint;
 
   QgsMultiPolyline lines;
   QgsPolyline line;
@@ -4689,9 +4691,9 @@ GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )
   }
   QgsGeometry* splitLines = fromMultiPolyline( lines );
   GEOSGeometry* splitGeom = GEOSGeom_clone_r( geosinit.ctxt, splitLines->asGeos() );
+  delete splitLines;
 
   return splitGeom;
-
 }
 
 int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry*>& newGeometries )

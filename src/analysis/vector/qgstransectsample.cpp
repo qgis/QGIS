@@ -595,6 +595,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( QgsGeometry* stratumGeom, QgsGeo
       bufferLine = QgsGeometry::fromMultiPolyline( mpl );
     }
     bufferLineClipped = bufferLine->intersection( stratumGeom );
+    delete bufferLine;
 
     if ( bufferLineClipped && bufferLineClipped->type() == QGis::Line )
     {
@@ -619,11 +620,13 @@ QgsGeometry* QgsTransectSample::clipBufferLine( QgsGeometry* stratumGeom, QgsGeo
 
       if ( bufferLineClippedIntersectsStratum )
       {
+        delete clipBaselineBuffer;
         return bufferLineClipped;
       }
     }
 
-    delete bufferLineClipped; delete clipBaselineBuffer; delete bufferLine;
+    delete bufferLineClipped;
+    delete clipBaselineBuffer;
     currentBufferDist /= 2;
   }
 

@@ -263,12 +263,15 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
   delete[] redMatrix;
   delete[] greenMatrix;
   delete[] blueMatrix;
+  delete[] alphaMatrix;
   delete[] xDerivativeMatrixRed;
   delete[] xDerivativeMatrixGreen;
   delete[] xDerivativeMatrixBlue;
+  delete[] xDerivativeMatrixAlpha;
   delete[] yDerivativeMatrixRed;
   delete[] yDerivativeMatrixGreen;
   delete[] yDerivativeMatrixBlue;
+  delete[] yDerivativeMatrixAlpha;
 }
 
 void QgsCubicRasterResampler::xDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix )

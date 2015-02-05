@@ -90,18 +90,19 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
     convtexts );
 
   QgsDebugMsg( QString( "Finished getting insertions. Count: %1" ).arg( insertRetr->countInserts ) );
+  delete dxf_inserts;
 
   DL_Dxf *dxf_Main = new DL_Dxf();
 
   if ( !dxf_Main->in( inf.toStdString(), parser ) )
   {
     // if file open failed
+    delete dxf_Main;
     QgsDebugMsg( "Aborting: The input file could not be opened." );
     return;
   }
 
   delete insertRetr;
-  delete dxf_inserts;
   delete dxf_Main;
 
   parser->print_shpObjects();

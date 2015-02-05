@@ -1653,6 +1653,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
   else
   {
     errorMessage = QString( "No OGC Geometry found" );
+    delete gml2Args;
     return NULL;
   }
 

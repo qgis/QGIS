@@ -97,6 +97,9 @@ void TestQgsRubberband::testAddSingleMultiGeometries()
   mRubberband->addGeometry( geomSinglePart, mPolygonLayer );
   mRubberband->addGeometry( geomMultiPart, mPolygonLayer );
   QVERIFY( mRubberband->numberOfVertices() == 15 );
+
+  delete geomSinglePart;
+  delete geomMultiPart;
 }
 
 QTEST_MAIN( TestQgsRubberband )

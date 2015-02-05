@@ -18,14 +18,24 @@
 #include "qgsvectorfieldsymbollayer.h"
 #include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer(): mXAttribute( "" ), mYAttribute( "" ), mDistanceUnit( QgsSymbolV2::MM ), mScale( 1.0 ),
-    mVectorFieldType( Cartesian ), mAngleOrientation( ClockwiseFromNorth ), mAngleUnits( Degrees ), mXIndex( -1 ), mYIndex( -1 )
+QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer()
+    : mXAttribute( "" )
+    , mYAttribute( "" )
+    , mDistanceUnit( QgsSymbolV2::MM )
+    , mScale( 1.0 )
+    , mVectorFieldType( Cartesian )
+    , mAngleOrientation( ClockwiseFromNorth )
+    , mAngleUnits( Degrees )
+    , mLineSymbol( 0 )
+    , mXIndex( -1 )
+    , mYIndex( -1 )
 {
   setSubSymbol( new QgsLineSymbolV2() );
 }
 
 QgsVectorFieldSymbolLayer::~QgsVectorFieldSymbolLayer()
 {
+  delete mLineSymbol;
 }
 
 void QgsVectorFieldSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
@@ -124,6 +134,7 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 {
   if ( symbol->type() == QgsSymbolV2::Line )
   {
+    delete mLineSymbol;
     mLineSymbol = static_cast<QgsLineSymbolV2*>( symbol );
     return true;
   }

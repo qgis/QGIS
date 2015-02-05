@@ -314,6 +314,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
       {
         if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
+          delete conflictGeom;
           continue;
         }
       }
@@ -335,7 +336,7 @@ ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer
 
     }
   }
-
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -347,7 +348,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
   int i = 0;
   ErrorList errorList;
 
-  QList<QgsFeatureId>* duplicateIds = new QList<QgsFeatureId>();
+  QList<QgsFeatureId> duplicateIds;
 
   QgsSpatialIndex* index = mLayerIndexes[layer1->id()];
 
@@ -363,7 +364,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
 
     QgsFeatureId currentId = it->feature.id();
 
-    if ( duplicateIds->contains( currentId ) )
+    if ( duplicateIds.contains( currentId ) )
     {
       //is already a duplicate geometry..skip..
       continue;
@@ -406,7 +407,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       if ( g1->equals( g2 ) )
       {
         duplicate = true;
-        duplicateIds->append( mFeatureMap2[*cit].feature.id() );
+        duplicateIds.append( mFeatureMap2[*cit].feature.id() );
       }
 
       if ( duplicate )
@@ -437,9 +438,8 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
     }
 
   }
-
+  delete canvasExtentPoly;
   return errorList;
-
 }
 
 ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
@@ -564,7 +564,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       }
 
     }
-
+    delete canvasExtentPoly;
   }
 
   return errorList;
@@ -678,10 +678,12 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
   QString extentWkt =  test.boundingBox().asWktPolygon();
   QgsGeometry* extentGeom = QgsGeometry::fromWkt( extentWkt );
   QgsGeometry* bufferExtent = extentGeom->buffer( 2, 3 );
+  delete extentGeom;
 
   //qDebug() << "extent wkt - " << bufferExtent->exportToWkt();
 
   QgsGeometry* diffGeoms = bufferExtent->difference( &test );
+  delete bufferExtent;
   if ( !diffGeoms )
   {
     qDebug() << "difference result 0-";
@@ -718,6 +720,7 @@ ErrorList topolTest::checkGaps( double tolerance, QgsVectorLayer *layer1, QgsVec
     errorList << err;
   }
 
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -810,6 +813,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
       {
         if ( canvasExtentPoly->disjoint( conflictGeom ) )
         {
+          delete conflictGeom;
           continue;
         }
       }
@@ -831,7 +835,7 @@ ErrorList topolTest::checkPseudos( double tolerance, QgsVectorLayer *layer1, Qgs
 
     }
   }
-
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -962,7 +966,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
       errorList << err;
     }
   }
-
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -1205,6 +1209,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
       }
     }
   }
+  delete canvasExtentPoly;
   return errorList;
 }
 
@@ -1257,10 +1262,12 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
       }
       QgsGeometry* startPoint = QgsGeometry::fromPoint( g2->asPolyline().first() );
       QgsGeometry* endPoint = QgsGeometry::fromPoint( g2->asPolyline().last() );
+      touched = g1->intersects( startPoint ) || g1->intersects( endPoint );
+      delete startPoint;
+      delete endPoint;
 
-      if ( g1->intersects( startPoint ) || g1->intersects( endPoint ) )
+      if ( touched )
       {
-        touched = true;
         break;
       }
     }
@@ -1283,8 +1290,8 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
       errorList << err;
     }
   }
+  delete canvasExtentPoly;
   return errorList;
-
 }
 
 ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
@@ -1359,6 +1366,9 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       }
 
     }
+    delete startPoint;
+    delete endPoint;
+
     if ( !touched )
     {
       QgsGeometry* conflictGeom = new QgsGeometry( *g1 );
@@ -1383,8 +1393,8 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
       errorList << err;
     }
   }
+  delete canvasExtentPoly;
   return errorList;
-
 }
 
 ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *layer1, QgsVectorLayer *layer2, bool isExtent )
@@ -1457,8 +1467,9 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
       errorList << err;
     }
   }
-  return errorList;
 
+  delete canvasExtentPoly;
+  return errorList;
 }
 
 

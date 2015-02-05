@@ -2974,6 +2974,7 @@ QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSy
 
 QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
 {
+  delete mMarkerSymbol;
 }
 
 void QgsPointPatternFillSymbolLayer::setOutputUnit( QgsSymbolV2::OutputUnit unit )
