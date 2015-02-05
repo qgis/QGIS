@@ -57,10 +57,10 @@ void TestQgsComposerMapOverview::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
@@ -103,11 +103,11 @@ void TestQgsComposerMapOverview::cleanup()
 
 void TestQgsComposerMapOverview::overviewMap()
 {
-  QgsComposerMap* overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
+  QgsComposerMap* overviewMap =  new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMap->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMap );
-  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
-  overviewMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
+  overviewMap->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview", mComposition );
 
@@ -121,9 +121,9 @@ void TestQgsComposerMapOverview::overviewMapRotated()
   QgsComposerMap* overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMap->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMap );
-  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
+  mComposerMap->setNewExtent( QgsRectangle( 96, -144, 160, -112 ) ); //zoom in
   mComposerMap->setMapRotation( 30 );
-  overviewMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  overviewMap->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview_rotated", mComposition );
 
@@ -138,9 +138,9 @@ void TestQgsComposerMapOverview::overviewMapRotated2()
   QgsComposerMap* overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMap->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMap );
-  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
+  mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
   overviewMap->setMapRotation( 30 );
-  overviewMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  overviewMap->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMap->overview()->setFrameMap( mComposerMap->id() );
   QgsCompositionChecker checker( "composermap_overview_rotated2", mComposition );
 
@@ -154,8 +154,8 @@ void TestQgsComposerMapOverview::overviewMapBlending()
   QgsComposerMap* overviewMapBlend = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMapBlend->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMapBlend );
-  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
-  overviewMapBlend->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
+  overviewMapBlend->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMapBlend->overview()->setFrameMap( mComposerMap->id() );
   overviewMapBlend->overview()->setBlendMode( QPainter::CompositionMode_Multiply );
 
@@ -171,8 +171,8 @@ void TestQgsComposerMapOverview::overviewMapInvert()
   QgsComposerMap* overviewMapInvert = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMapInvert->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMapInvert );
-  mComposerMap->setNewExtent( QgsRectangle( 785462.375, 3341423.125, 789262.375, 3343323.125 ) ); //zoom in
-  overviewMapInvert->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  mComposerMap->setNewExtent( QgsRectangle( 96, -152, 160, -120 ) ); //zoom in
+  overviewMapInvert->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMapInvert->overview()->setFrameMap( mComposerMap->id() );
   overviewMapInvert->overview()->setInverted( true );
 
@@ -188,8 +188,8 @@ void TestQgsComposerMapOverview::overviewMapCenter()
   QgsComposerMap* overviewMapCenter = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
   overviewMapCenter->setFrameEnabled( true );
   mComposition->addComposerMap( overviewMapCenter );
-  mComposerMap->setNewExtent( QgsRectangle( 785462.375 + 5000, 3341423.125, 789262.375 + 5000, 3343323.125 ) ); //zoom in
-  overviewMapCenter->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3350923.125 ) );
+  mComposerMap->setNewExtent( QgsRectangle( 192, -288, 320, -224 ) );
+  overviewMapCenter->setNewExtent( QgsRectangle( 0, -256, 256, 0 ) );
   overviewMapCenter->overview()->setFrameMap( mComposerMap->id() );
   overviewMapCenter->overview()->setCentered( true );
 
