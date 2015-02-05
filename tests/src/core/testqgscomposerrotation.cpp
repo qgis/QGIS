@@ -65,10 +65,10 @@ void TestQgsComposerRotation::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "landsat.tif" );
+  QFileInfo rasterFileInfo( QString( TEST_DATA_DIR ) + QDir::separator() +  "rgb256x256.png" );
   mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
                                      rasterFileInfo.completeBaseName() );
-  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
+  QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   QgsMapLayerRegistry::instance()->addMapLayers( QList<QgsMapLayer*>() << mRasterLayer );
@@ -180,10 +180,10 @@ void TestQgsComposerRotation::oldLabelRotationApi()
 void TestQgsComposerRotation::mapRotation()
 {
   //test map rotation
-  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 100, 50 );
   composerMap->setFrameEnabled( true );
   mComposition->addItem( composerMap );
-  composerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  composerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   composerMap->setMapRotation( 90 );
 
   QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
@@ -196,10 +196,10 @@ void TestQgsComposerRotation::mapRotation()
 void TestQgsComposerRotation::mapItemRotation()
 {
   //test map item rotation
-  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 20, 200, 100 );
+  QgsComposerMap* composerMap = new QgsComposerMap( mComposition, 20, 50, 100, 50 );
   composerMap->setFrameEnabled( true );
   mComposition->addItem( composerMap );
-  composerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  composerMap->setNewExtent( QgsRectangle( 0, -192, 256, -64 ) );
   composerMap->setItemRotation( 90, true );
 
   QgsCompositionChecker checker( "composerrotation_mapitemrotation", mComposition );
