@@ -33,11 +33,14 @@ from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputRaster
+from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
+from processing.tools.system import isWindows
 
 
-class rasterize(GdalAlgorithm):
+class rasterize(OgrAlgorithm):
 
     INPUT = 'INPUT'
     FIELD = 'FIELD'
@@ -47,8 +50,17 @@ class rasterize(GdalAlgorithm):
     WRITEOVER = 'WRITEOVER'
     RTYPE = 'RTYPE'
     OUTPUT = 'OUTPUT'
-
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
+    NO_DATA = 'NO_DATA'
+    TILED = 'TILED'
+    COMPRESS = 'COMPRESS'
+    JPEGCOMPRESSION = 'JPEGCOMPRESSION'
+    PREDICTOR = 'PREDICTOR'
+    ZLEVEL = 'ZLEVEL'
+    BIGTIFF = 'BIGTIFF'
+    BIGTIFFTYPE = ['', 'YES', 'NO', 'IF_NEEDED', 'IF_SAFER']
+    COMPRESSTYPE = ['NONE', 'JPEG', 'LZW', 'PACKBITS', 'DEFLATE']
+    TFW = 'TFW'
 
     def commandLineName(self):
         return "gdalogr:rasterize"
@@ -70,13 +82,43 @@ class rasterize(GdalAlgorithm):
             self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
         self.addParameter(ParameterSelection(self.RTYPE, self.tr('Raster type'),
             self.TYPE, 0))
-
+        self.addParameter(ParameterString(self.NO_DATA,
+            self.tr("Nodata value"),
+            '-9999'))
+        self.addParameter(ParameterSelection(self.COMPRESS,
+            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 0))
+        self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
+            self.tr('Set the JPEG compression level'),
+            1, 100, 75))
+        self.addParameter(ParameterNumber(self.ZLEVEL,
+            self.tr('Set the DEFLATE compression level'),
+            1, 9, 6))
+        self.addParameter(ParameterNumber(self.PREDICTOR,
+            self.tr('Set the predictor for LZW or DEFLATE compression'),
+            1, 3, 1))
+        self.addParameter(ParameterBoolean(self.TILED,
+            self.tr('Create tiled output (only used for the GTiff format)'), False))
+        self.addParameter(ParameterSelection(self.BIGTIFF,
+            self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
+        self.addParameter(ParameterBoolean(self.TFW,
+            self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
         self.addOutput(OutputRaster(self.OUTPUT,
             self.tr('Output layer: mandatory to choose an existing raster layer if the (*) option is selected')))
 
     def processAlgorithm(self, progress):
         writeOver = self.getParameterValue(self.WRITEOVER)
-
+        inLayer = self.getParameterValue(self.INPUT)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
+        noData = str(self.getParameterValue(self.NO_DATA))
+        jpegcompression = str(self.getParameterValue(self.JPEGCOMPRESSION))
+        predictor = str(self.getParameterValue(self.PREDICTOR))
+        zlevel = str(self.getParameterValue(self.ZLEVEL))
+        tiled = str(self.getParameterValue(self.TILED))
+        compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
+        bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
+        tfw = str(self.getParameterValue(self.TFW))
+        out = self.getOutputValue(self.OUTPUT)
+        
         arguments = []
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
@@ -95,13 +137,27 @@ class rasterize(GdalAlgorithm):
              arguments.append('-tr')
              arguments.append(str(self.getParameterValue(self.WIDTH)))
              arguments.append(str(self.getParameterValue(self.HEIGHT)))
-
+        if len(noData) > 0:
+            arguments.append('-a_nodata')
+            arguments.append(noData)
+        if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff") and (writeOver is False):
+            arguments.append("-co COMPRESS="+compress)
+            if compress == 'JPEG':
+               arguments.append("-co JPEG_QUALITY="+jpegcompression)
+            elif (compress == 'LZW') or (compress == 'DEFLATE'):
+               arguments.append("-co PREDICTOR="+predictor)
+            if compress == 'DEFLATE':
+               arguments.append("-co ZLEVEL="+zlevel)
+            if tiled == "True":
+               arguments.append("-co TILED=YES")
+            if tfw == "True":
+               arguments.append("-co TFW=YES")
+            if len(bigtiff) > 0:
+               arguments.append("-co BIGTIFF="+bigtiff)
         arguments.append('-l')
-        arguments.append(
-            os.path.basename(os.path.splitext(unicode(self.getParameterValue(self.INPUT)))[0]))
-        arguments.append(unicode(self.getParameterValue(self.INPUT)))
+        arguments.append(self.ogrLayerName(inLayer))
+        arguments.append(ogrLayer)
 
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
-
         GdalUtils.runGdal(['gdal_rasterize',
                           GdalUtils.escapeAndJoin(arguments)], progress)
