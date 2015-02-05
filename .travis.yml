@@ -6,7 +6,7 @@ compiler:
 cache: apt
 
 notifications:
-  irc: "chat.freenode.net#qgis"
+  irc: "chat.freenode.net#qgis-tests"
   on_failure: change
   on_success: change
 
