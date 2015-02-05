@@ -101,6 +101,7 @@ struct QgsPostgresLayerProperty
     property.pkCols          = pkCols;
     property.nSpCols         = nSpCols;
     property.sql             = sql;
+    property.force2d         = force2d;
 
     return property;
   }
