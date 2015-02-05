@@ -56,7 +56,7 @@ class Ogr2OgrClip(OgrAlgorithm):
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
         ogrClipLayer = self.ogrConnectionString(clipLayer)
 
@@ -74,7 +74,8 @@ class Ogr2OgrClip(OgrAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
-
+        arguments.append(self.ogrLayerName(inLayer))
+        
         commands = []
         if isWindows():
             commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
