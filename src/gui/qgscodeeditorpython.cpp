@@ -52,7 +52,6 @@ void QgsCodeEditorPython::setSciLexerPython()
   setWhitespaceVisibility( QsciScintilla::WsVisibleAfterIndent );
 
   QFont font = getMonospaceFont();
-  font.setPointSize( 10 );
 
   QsciLexerPython* pyLexer = new QsciLexerPython();
   pyLexer->setDefaultFont( font );
