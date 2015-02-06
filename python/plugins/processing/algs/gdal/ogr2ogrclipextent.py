@@ -57,7 +57,7 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         clipExtent = self.getParameterValue(self.CLIP_EXTENT)
         ogrclipExtent = self.ogrConnectionString(clipExtent)
 
@@ -74,14 +74,14 @@ class Ogr2OgrClipExtent(OgrAlgorithm):
         arguments.append(regionCoords[2])
         arguments.append(regionCoords[1])
         arguments.append(regionCoords[3])
-        #arguments.append('-spat')
-        #arguments.append(ogrclipExtent)
+        arguments.append('-clipsrc spat_extent')
 
         if len(options) > 0:
             arguments.append(options)
 
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append(self.ogrLayerName(inLayer))
 
         commands = []
         if isWindows():
