@@ -45,6 +45,11 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     {
       ActionData()
           : mIsValid( false )
+          , mAllResults( false )
+          , mIsExternalAction( false )
+          , mLayer( NULL )
+          , mLevel( LayerLevel )
+          , mMapLayerAction( NULL )
       {}
 
       ActionData( QgsMapLayer* layer, QgsMapLayerAction* mapLayerAction = 0 )

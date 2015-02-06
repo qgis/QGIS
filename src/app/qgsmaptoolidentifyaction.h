@@ -82,8 +82,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     virtual QGis::UnitType displayUnits() override;
 
-    // pointers to the custom actions for identify menu
-    QAction* mAttributeTableAction;
 };
 
 #endif

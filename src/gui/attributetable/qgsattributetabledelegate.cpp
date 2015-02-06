@@ -133,7 +133,7 @@ void QgsAttributeTableDelegate::paint( QPainter * painter,
     myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
   }
 
-  if ( mFeatureSelectionModel->isSelected( fid ) )
+  if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
     myOpt.state |= QStyle::State_Selected;
 
   QItemDelegate::paint( painter, myOpt, index );

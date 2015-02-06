@@ -47,22 +47,23 @@ void TestQgsOgcUtils::testGeometryFromGML()
   QVERIFY( geom );
   QVERIFY( geom->wkbType() == QGis::WKBPoint );
   QVERIFY( geom->asPoint() == QgsPoint( 123, 456 ) );
+  delete geom;
 
   QgsGeometry* geomBox = QgsOgcUtils::geometryFromGML( "<gml:Box srsName=\"foo\"><gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box>" );
   QVERIFY( geomBox );
   QVERIFY( geomBox->wkbType() == QGis::WKBPolygon );
+  delete geomBox;
 
   // Test GML3
   geom = QgsOgcUtils::geometryFromGML( "<Point><pos>123 456</pos></Point>" );
   QVERIFY( geom );
   QVERIFY( geom->wkbType() == QGis::WKBPoint );
   QVERIFY( geom->asPoint() == QgsPoint( 123, 456 ) );
+  delete geom;
 
   geomBox = QgsOgcUtils::geometryFromGML( "<gml:Envelope srsName=\"foo\"><gml:lowerCorner>135.2239 34.4879</gml:lowerCorner><gml:upperCorner>135.8578 34.8471</gml:upperCorner></gml:Envelope>" );
   QVERIFY( geomBox );
   QVERIFY( geomBox->wkbType() == QGis::WKBPolygon );
-
-  delete geom;
   delete geomBox;
 }
 

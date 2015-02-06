@@ -134,6 +134,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->set( provider->clone() ) )
   {
     logError( "Cannot set pipe provider" );
+    delete pipe;
     return false;
   }
   qDebug() << "provider set";

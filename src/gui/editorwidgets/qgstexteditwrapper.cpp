@@ -22,7 +22,10 @@
 #include <QSettings>
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mTextEdit( NULL )
+    , mPlainTextEdit( NULL )
+    , mLineEdit( NULL )
 {
 }
 

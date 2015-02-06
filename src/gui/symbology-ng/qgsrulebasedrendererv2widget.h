@@ -178,7 +178,6 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
   protected:
     QgsRuleBasedRendererV2::Rule* mRule; // borrowed
     QgsVectorLayer* mLayer;
-    QgsStyleV2* mStyle;
 
     QgsSymbolV2SelectorDialog* mSymbolSelector;
     QgsSymbolV2* mSymbol; // a clone of original symbol

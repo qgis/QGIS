@@ -46,9 +46,10 @@
 
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
-    : qgis( _qgis ),
-    legendIface( _qgis->layerTreeView() ),
-    pluginManagerIface( _qgis->pluginManager() )
+    : qgis( _qgis )
+    , mTimer( NULL )
+    , legendIface( _qgis->layerTreeView() )
+    , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
   connect( qgis->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),

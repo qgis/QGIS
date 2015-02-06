@@ -37,12 +37,12 @@
 #include <QNetworkRequest>
 
 QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0.0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
-    outline( Qt::black ), image( 0 ), picture( 0 )
+    outline( Qt::black ), image( 0 ), picture( 0 ), nextEntry( 0 ), previousEntry( 0 )
 {
 }
 
 QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou ): file( f ), size( s ), outlineWidth( ow ),
-    widthScaleFactor( wsf ), rasterScaleFactor( rsf ), fill( fi ), outline( ou ), image( 0 ), picture( 0 )
+    widthScaleFactor( wsf ), rasterScaleFactor( rsf ), fill( fi ), outline( ou ), image( 0 ), picture( 0 ), nextEntry( 0 ), previousEntry( 0 )
 {
 }
 

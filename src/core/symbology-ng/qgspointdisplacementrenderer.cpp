@@ -38,6 +38,7 @@ QgsPointDisplacementRenderer::QgsPointDisplacementRenderer( const QString& label
     , mCircleColor( QColor( 125, 125, 125 ) )
     , mCircleRadiusAddition( 0 )
     , mMaxLabelScaleDenominator( -1 )
+    , mSpatialIndex( NULL )
 {
   mRenderer = QgsFeatureRendererV2::defaultRenderer( QGis::Point );
   mCenterSymbol = new QgsMarkerSymbolV2(); //the symbol for the center of a displacement group

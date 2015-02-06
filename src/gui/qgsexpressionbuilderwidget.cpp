@@ -30,6 +30,9 @@
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     : QWidget( parent )
+    , mLayer( NULL )
+    , highlighter( NULL )
+    , mExpressionValid( false )
 {
   setupUi( this );
 

@@ -24,8 +24,11 @@
 #include "qgsspatialquery.h"
 
 QgsSpatialQuery::QgsSpatialQuery( MngProgressBar *pb )
+    : mPb( pb )
+    , mReaderFeaturesTarget( NULL )
+    , mLayerTarget( NULL )
+    , mLayerReference( NULL )
 {
-  mPb = pb;
   mUseTargetSelection = mUseReferenceSelection = false;
 } // QgsSpatialQuery::QgsSpatialQuery(MngProgressBar *pb)
 

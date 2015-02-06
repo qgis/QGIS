@@ -28,6 +28,9 @@
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WindowFlags fl )
     : QWidget( parent, fl )
+    , mUserProjList( NULL )
+    , mGeoList( NULL )
+    , mProjList( NULL )
     , mProjListDone( false )
     , mUserProjListDone( false )
     , mRecentProjListDone( false )

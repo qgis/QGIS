@@ -33,6 +33,8 @@ QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsCompos
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
+    : mComposition( NULL )
+    , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
 }
 

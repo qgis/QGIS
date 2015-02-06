@@ -22,7 +22,10 @@
 #include "qgsmapcoordsdialog.h"
 
 QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint &pixelCoords, QWidget* parent )
-    : QDialog( parent, Qt::Dialog ), mQgisCanvas( qgisCanvas ), mPixelCoords( pixelCoords )
+    : QDialog( parent, Qt::Dialog )
+    , mPrevMapTool( NULL )
+    , mQgisCanvas( qgisCanvas )
+    , mPixelCoords( pixelCoords )
 {
   setupUi( this );
 

@@ -81,6 +81,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     : palLayer( NULL )
     , mCurFeat( 0 )
     , mCurFields( 0 )
+    , xform( NULL )
     , ct( NULL )
     , extentGeom( NULL )
     , mFeaturesToLabel( 0 )
@@ -89,6 +90,8 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     , expression( NULL )
 {
   enabled = false;
+  isExpression = false;
+  fieldIndex = 0;
 
   // text style
   textFont = QApplication::font();
@@ -311,6 +314,18 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
+    : palLayer( NULL )
+    , mCurFeat( NULL )
+    , mCurFields( NULL )
+    , fieldIndex( 0 )
+    , xform( NULL )
+    , ct( NULL )
+    , extentGeom( NULL )
+    , mFeaturesToLabel( 0 )
+    , mFeatsSendingToPal( 0 )
+    , mFeatsRegPal( 0 )
+    , showingShadowRects( false )
+    , expression( NULL )
 {
   // copy only permanent stuff
 
@@ -443,10 +458,6 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   // scale factors
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
-
-  ct = NULL;
-  extentGeom = NULL;
-  expression = NULL;
 }
 
 

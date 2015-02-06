@@ -36,6 +36,11 @@ QgsComposerMapOverview::QgsComposerMapOverview( const QString& name, QgsComposer
 
 QgsComposerMapOverview::QgsComposerMapOverview()
     : QgsComposerMapItem( QString(), 0 )
+    , mFrameMapId( -1 )
+    , mFrameSymbol( 0 )
+    , mBlendMode( QPainter::CompositionMode_SourceOver )
+    , mInverted( false )
+    , mCentered( false )
 {
 }
 

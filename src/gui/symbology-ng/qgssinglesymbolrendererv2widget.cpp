@@ -31,6 +31,7 @@ QgsRendererV2Widget* QgsSingleSymbolRendererV2Widget::create( QgsVectorLayer* la
 
 QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
+    , mRenderer( NULL )
 {
   // try to recognize the previous renderer
   // (null renderer means "no previous renderer")

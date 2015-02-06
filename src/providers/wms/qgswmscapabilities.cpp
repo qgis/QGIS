@@ -1844,6 +1844,7 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, 
     : QObject( parent )
     , mBaseUrl( baseUrl )
     , mAuth( auth )
+    , mCapabilitiesReply( NULL )
 {
 }
 

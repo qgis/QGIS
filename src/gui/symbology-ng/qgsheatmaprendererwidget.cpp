@@ -34,6 +34,7 @@ QgsRendererV2Widget* QgsHeatmapRendererWidget::create( QgsVectorLayer* layer, Qg
 
 QgsHeatmapRendererWidget::QgsHeatmapRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
     : QgsRendererV2Widget( layer, style )
+    , mRenderer( NULL )
 {
   if ( !layer )
   {

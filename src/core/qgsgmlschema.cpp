@@ -59,6 +59,10 @@ int QgsGmlFeatureClass::fieldIndex( const QString & name )
 // --------------------------- QgsGmlSchema -------------------------------
 QgsGmlSchema::QgsGmlSchema()
     : QObject()
+    , mCurrentFeature( NULL )
+    , mFeatureCount( 0 )
+    , mLevel( 0 )
+    , mSkipLevel( std::numeric_limits<int>::max() )
 {
   mGeometryTypes << "Point" << "MultiPoint"
   << "LineString" << "MultiLineString"

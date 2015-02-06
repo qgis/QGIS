@@ -41,6 +41,9 @@
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
+    , mDesignerTree( NULL )
+    , mFieldsList( NULL )
+    , mRelationsList( NULL )
 {
   if ( !layer )
     return;
@@ -804,10 +807,12 @@ void QgsFieldsProperties::apply()
  */
 
 QgsFieldsProperties::FieldConfig::FieldConfig()
+    : mButton( NULL )
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
+    : mButton( NULL )
 {
   mEditable = layer->fieldEditable( idx );
   mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin
@@ -815,6 +820,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mLabelOnTop = layer->labelOnTop( idx );
   mEditorWidgetV2Type = layer->editorWidgetV2( idx );
   mEditorWidgetV2Config = layer->editorWidgetV2Config( idx );
+
 }
 
 /*

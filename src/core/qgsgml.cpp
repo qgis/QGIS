@@ -40,10 +40,14 @@ QgsGml::QgsGml(
     : QObject()
     , mTypeName( typeName )
     , mGeometryAttribute( geometryAttribute )
+    , mWkbType( NULL )
     , mFinished( false )
     , mCurrentFeature( 0 )
     , mFeatureCount( 0 )
+    , mCurrentWKB( NULL )
     , mCurrentWKBSize( 0 )
+    , mDimension( 2 )
+    , mCoorMode( QgsGml::coordinate )
     , mEpsg( 0 )
 {
   mThematicAttributes.clear();

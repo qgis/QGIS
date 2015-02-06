@@ -43,9 +43,14 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
                                         QNetworkProxy::ProxyType proxyType,
                                         QString userName,
                                         QString password )
-    : httpresponsecontenttype( "" )
+    : http( NULL )
+    , httpid( 0 )
+    , httpactive( false )
+    , httpresponsecontenttype( "" )
     , httpurl( uri )
     , httphost( proxyHost )
+    , httpredirections( 0 )
+    , mWatchdogTimer( NULL )
     , mError( "" )
 {
   Q_UNUSED( proxyPort );

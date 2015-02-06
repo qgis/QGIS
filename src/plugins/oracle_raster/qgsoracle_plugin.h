@@ -54,7 +54,6 @@ class QgsOraclePlugin : public QObject, public QgisPlugin
 
   private:
 
-    int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin

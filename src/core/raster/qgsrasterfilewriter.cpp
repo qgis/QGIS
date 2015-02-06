@@ -37,6 +37,17 @@ QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter()
+    : mMode( Raw )
+    , mOutputProviderKey( "gdal" )
+    , mOutputFormat( "GTiff" )
+    , mTiledMode( false )
+    , mMaxTileWidth( 500 )
+    , mMaxTileHeight( 500 )
+    , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
+    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
+    , mProgressDialog( 0 )
+    , mPipe( 0 )
+    , mInput( 0 )
 {
 
 }

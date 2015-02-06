@@ -62,10 +62,11 @@
 #include <QDir>
 #endif
 
-QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
-    mUri( theUri ),
-    mCoverageCount( 0 ),
-    mCacheLoadControl( QNetworkRequest::PreferNetwork )
+QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )
+    : mUri( theUri )
+    , mCapabilitiesReply( NULL )
+    , mCoverageCount( 0 )
+    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "uri = " + mUri.encodedUri() );
 
@@ -75,7 +76,8 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri ):
 }
 
 QgsWcsCapabilities::QgsWcsCapabilities()
-    : mCoverageCount( 0 )
+    : mCapabilitiesReply( NULL )
+    , mCoverageCount( 0 )
 {
 }
 

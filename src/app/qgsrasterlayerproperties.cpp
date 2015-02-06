@@ -72,8 +72,16 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     : QgsOptionsDialogBase( "RasterLayerProperties", parent, fl )
     // Constant that signals property not used.
     , TRSTRING_NOT_SET( tr( "Not Set" ) )
-    , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ), mRendererWidget( 0 )
+    , mDefaultStandardDeviation( 0 )
+    , mDefaultRedBand( 0 )
+    , mDefaultGreenBand( 0 )
+    , mDefaultBlueBand( 0 )
+    , mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
+    , mRendererWidget( 0 )
+    , mGradientHeight( 0.0 )
+    , mGradientWidth( 0.0 )
     , mMapCanvas( theCanvas )
+    , mHistogramWidget( NULL )
 {
   mGrayMinimumMaximumEstimated = true;
   mRGBMinimumMaximumEstimated = true;

@@ -144,6 +144,7 @@ namespace pal
 
           struct StackElement
           {
+            StackElement() : m_node( NULL ), m_branchIndex( 0 ) {}
             Node* m_node;
             int m_branchIndex;
           };

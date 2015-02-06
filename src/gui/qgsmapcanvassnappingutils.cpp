@@ -8,6 +8,7 @@
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
     : QgsSnappingUtils( parent )
     , mCanvas( canvas )
+    , mProgress( NULL )
 {
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );
   connect( canvas, SIGNAL( destinationCrsChanged() ), this, SLOT( canvasMapSettingsChanged() ) );

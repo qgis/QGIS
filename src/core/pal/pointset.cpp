@@ -93,6 +93,11 @@ namespace pal
   }
 
   PointSet::PointSet( PointSet &ps )
+      : parent( 0 )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     int i;
 

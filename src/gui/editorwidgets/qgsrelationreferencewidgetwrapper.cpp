@@ -21,6 +21,7 @@
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QgsMapCanvas* canvas, QgsMessageBar* messageBar, QWidget* parent )
     : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mWidget( NULL )
     , mCanvas( canvas )
     , mMessageBar( messageBar )
 {

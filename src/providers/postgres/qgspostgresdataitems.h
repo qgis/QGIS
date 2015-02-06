@@ -71,9 +71,6 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     void deleteConnection();
     void refreshConnection();
 
-  private:
-    QgsPostgresConn *mConn;
-    QMap<QString, QgsPGSchemaItem * > mSchemaMap;
 };
 
 class QgsPGSchemaItem : public QgsDataCollectionItem
