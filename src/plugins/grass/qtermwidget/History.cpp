@@ -281,7 +281,7 @@ void HistoryScrollFile::addLine( bool previousWrapped )
 // History Scroll Buffer //////////////////////////////////////
 HistoryScrollBuffer::HistoryScrollBuffer( unsigned int maxLineCount )
     : HistoryScroll( new HistoryTypeBuffer( maxLineCount ) )
-    , _historyBuffer()
+    , _historyBuffer( 0 )
     , _maxLineCount( 0 )
     , _usedLines( 0 )
     , _head( 0 )

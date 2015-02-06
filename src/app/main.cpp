@@ -207,12 +207,14 @@ static void dumpBacktrace( unsigned int depth )
     close( STDERR_FILENO );  // close stderr
 
     // stderr to pipe
-    if ( dup( fd[1] ) != STDERR_FILENO )
+    int stderr_new = dup( fd[1] );
+    if ( stderr_new != STDERR_FILENO )
     {
+      close( stderr_new );
       QgsDebugMsg( "dup to stderr failed" );
     }
 
-    close( fd[1] );          // close duped pipe
+    close( fd[1] );  // close duped pipe
   }
 
   void **buffer = new void *[ depth ];

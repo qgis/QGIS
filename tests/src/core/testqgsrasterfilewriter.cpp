@@ -148,6 +148,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->insert( 1, nuller ) )
   {
     logError( "Cannot set pipe nuller" );
+    delete pipe;
     return false;
   }
   qDebug() << "nuller set";
@@ -158,6 +159,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->insert( 2, projector ) )
   {
     logError( "Cannot set pipe projector" );
+    delete pipe;
     return false;
   }
   qDebug() << "projector set";

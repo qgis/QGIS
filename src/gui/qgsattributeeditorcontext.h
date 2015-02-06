@@ -55,6 +55,7 @@ class GUI_EXPORT QgsAttributeEditorContext
         , mLayer( 0 )
         , mVectorLayerTools( 0 )
         , mRelationMode( Undefined )
+        , mFormMode( Embed )
     {}
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode )

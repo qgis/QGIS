@@ -568,9 +568,8 @@ void QgsGrassEdit::setAttributeTable( int field )
 {
   mAttributeTable->setRowCount( 0 );
 
-  QString *key = mProvider->key( field );
-
-  if ( !key->isEmpty() )   // Database link defined
+  QString key = mProvider->key( field );
+  if ( !key.isEmpty() )   // Database link defined
   {
     QVector<QgsField> *cols = mProvider->columns( field );
 
@@ -596,6 +595,8 @@ void QgsGrassEdit::setAttributeTable( int field )
       ti->setFlags( ti->flags() & ~Qt::ItemIsEnabled );
       mAttributeTable->setItem( c, 2, ti );
     }
+
+    delete cols;
   }
   else
   {
@@ -687,11 +688,10 @@ void QgsGrassEdit::alterTable( void )
       }
     }
 
-    QString *error = mProvider->createTable( field, mAttributeTable->item( 0, 0 )->text(), sql );
-
-    if ( !error->isEmpty() )
+    QString error = mProvider->createTable( field, mAttributeTable->item( 0, 0 )->text(), sql );
+    if ( !error.isEmpty() )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), *error );
+      QMessageBox::warning( 0, tr( "Warning" ), error );
     }
     else
     {
@@ -700,7 +700,6 @@ void QgsGrassEdit::alterTable( void )
       str.sprintf( "%d", field );
       mFieldBox->addItem( str );
     }
-    delete error;
   }
   else
   {
@@ -719,13 +718,11 @@ void QgsGrassEdit::alterTable( void )
         sql.append( " (" + mAttributeTable->item( i, 2 )->text() + ")" );
       }
 
-      QString *error = mProvider->addColumn( field, sql );
-
-      if ( !error->isEmpty() )
+      QString error = mProvider->addColumn( field, sql );
+      if ( !error.isEmpty() )
       {
-        QMessageBox::warning( 0, tr( "Warning" ), *error );
+        QMessageBox::warning( 0, tr( "Warning" ), error );
       }
-      delete error;
     }
   }
 
@@ -1084,21 +1081,18 @@ int QgsGrassEdit::writeLine( int type, struct line_pnts *Points )
     Vect_cat_set( mCats, field, cat );
 
     // Insert new DB record if link is defined and the record for this cat does not exist
-    QString *key = mProvider->key( field );
-
-    if ( !key->isEmpty() )   // Database link defined
+    QString key = mProvider->key( field );
+    if ( !key.isEmpty() )   // Database link defined
     {
       QgsAttributeMap *atts = mProvider->attributes( field, cat );
 
       if ( atts->count() == 0 )   // Nothing selected
       {
-        QString *error = mProvider->insertAttributes( field, cat );
-
-        if ( !error->isEmpty() )
+        QString error = mProvider->insertAttributes( field, cat );
+        if ( !error.isEmpty() )
         {
-          QMessageBox::warning( 0, tr( "Warning" ), *error );
+          QMessageBox::warning( 0, tr( "Warning" ), error );
         }
-        delete error;
       }
 
       delete atts;
@@ -1411,14 +1405,15 @@ void QgsGrassEdit::checkOrphan( int field, int cat )
   QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
   int orphan;
-  QString *error = mProvider->isOrphan( field, cat, &orphan );
+  QString error = mProvider->isOrphan( field, cat, orphan );
 
-  if ( !error->isEmpty() )
+  if ( !error.isEmpty() )
   {
     QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "Cannot check orphan record: %1" ).arg( *error ) );
+                          tr( "Cannot check orphan record: %1" ).arg( error ) );
     return;
   }
+
   if ( !orphan )
     return;
 
@@ -1432,17 +1427,17 @@ void QgsGrassEdit::checkOrphan( int field, int cat )
 
   // Delete record
   error = mProvider->deleteAttribute( field, cat );
-  if ( !error->isEmpty() )
+  if ( !error.isEmpty() )
   {
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot delete orphan record: " )
-                          + *error );
+                          + error );
     return;
   }
 }
 
 void QgsGrassEdit::addAttributes( int field, int cat )
 {
-  QString *key = mProvider->key( field );
+  QString key = mProvider->key( field );
 
   QString lab;
   lab.sprintf( "%d:%d", field, cat );
@@ -1450,17 +1445,17 @@ void QgsGrassEdit::addAttributes( int field, int cat )
   mAttributes->setField( tab, field );
 
   QString catLabel;
-  if ( key->isEmpty() )
+  if ( key.isEmpty() )
   {
     catLabel = "Category";
   }
   else
   {
-    catLabel = *key;
+    catLabel = key;
   }
   mAttributes->setCat( tab, catLabel, cat );
 
-  if ( !key->isEmpty() )   // Database link defined
+  if ( !key.isEmpty() )   // Database link defined
   {
     QVector<QgsField> *cols = mProvider->columns( field );
 
@@ -1486,7 +1481,7 @@ void QgsGrassEdit::addAttributes( int field, int cat )
           QVariant att = ( *atts )[j];
           QgsDebugMsg( QString( " name = %1" ).arg( col.name() ) );
 
-          if ( col.name() != *key )
+          if ( col.name() != key )
           {
             QgsDebugMsg( QString( " value = %1" ).arg( att.toString() ) );
             mAttributes->addAttribute( tab, col.name(), att.toString(), col.typeName() );
@@ -1519,21 +1514,18 @@ void QgsGrassEdit::addCat( int line )
   increaseMaxCat();
 
   // Insert new DB record if link is defined and the record for this cat does not exist
-  QString *key = mProvider->key( field );
-
-  if ( !key->isEmpty() )   // Database link defined
+  QString key = mProvider->key( field );
+  if ( !key.isEmpty() )   // Database link defined
   {
     QgsAttributeMap *atts = mProvider->attributes( field, cat );
 
     if ( atts->size() == 0 )   // Nothing selected
     {
-      QString *error = mProvider->insertAttributes( field, cat );
-
-      if ( !error->isEmpty() )
+      QString error = mProvider->insertAttributes( field, cat );
+      if ( !error.isEmpty() )
       {
-        QMessageBox::warning( 0, tr( "Warning" ), *error );
+        QMessageBox::warning( 0, tr( "Warning" ), error );
       }
-      delete error;
     }
 
     delete atts;

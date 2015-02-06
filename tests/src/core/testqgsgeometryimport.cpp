@@ -20,6 +20,7 @@
 
 #include <QtTest/QtTest>
 #include <QObject>
+#include <QSharedPointer>
 
 class TestQgsGeometryImport: public QObject
 {
@@ -63,11 +64,10 @@ void TestQgsGeometryImport::pointWkt()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
+  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wktString ) );
 
   QCOMPARE( geom->wkbType(), QGis::WKBPoint );
   QgsPoint point = geom->asPoint();
-  delete geom;
 
   QVERIFY( qgsDoubleNear( point.x(), x ) );
   QVERIFY( qgsDoubleNear( point.y(), y ) );

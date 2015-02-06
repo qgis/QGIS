@@ -1625,7 +1625,11 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     return NULL;
   }
 
-  return dynamic_cast< QgsExpression::NodeBinaryOperator * >( expr );
+  QgsExpression::NodeBinaryOperator *ret = dynamic_cast< QgsExpression::NodeBinaryOperator * >( expr );
+  if ( !ret )
+    delete expr;
+
+  return ret;
 }
 
 
@@ -1652,7 +1656,7 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
   }
   else
   {
-    errorMessage = QString( "No OGC Geometry found" );
+    errorMessage = "No OGC Geometry found";
     delete gml2Args;
     return NULL;
   }

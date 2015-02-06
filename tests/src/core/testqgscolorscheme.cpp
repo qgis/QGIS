@@ -17,6 +17,7 @@
 
 #include "qgscolorscheme.h"
 #include <QObject>
+#include <QSharedPointer>
 #include <QtTest/QtTest>
 
 //dummy color scheme for testing
@@ -98,62 +99,53 @@ void TestQgsColorScheme::cleanup()
 
 void TestQgsColorScheme::createScheme()
 {
-  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QVERIFY( dummyScheme );
-  delete dummyScheme;
 }
 
 void TestQgsColorScheme::getName()
 {
-  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QCOMPARE( dummyScheme->schemeName(),  QString( "Dummy scheme" ) );
-  delete dummyScheme;
 }
 
 void TestQgsColorScheme::colorsNoBase()
 {
-  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QgsNamedColorList colors = dummyScheme->fetchColors();
   QCOMPARE( colors.length(), 2 );
   QCOMPARE( colors.at( 0 ).first, QColor( 255, 0, 0 ) );
   QCOMPARE( colors.at( 0 ).second, QString( "red" ) );
   QCOMPARE( colors.at( 1 ).first, QColor( 0, 255, 0 ) );
   QCOMPARE( colors.at( 1 ).second, QString() );
-  delete dummyScheme;
 }
 
 void TestQgsColorScheme::colorsWithBase()
 {
-  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QColor testColor = QColor( 0, 0, 255 );
   QgsNamedColorList colors = dummyScheme->fetchColors( QString(), testColor );
   QCOMPARE( colors.length(), 1 );
   QCOMPARE( colors.at( 0 ).first, testColor );
   QCOMPARE( colors.at( 0 ).second, QString( "base" ) );
-
-  delete dummyScheme;
 }
 
 void TestQgsColorScheme::colorsWithScheme()
 {
-  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QgsNamedColorList colors = dummyScheme->fetchColors( QString( "testscheme" ) );
   QCOMPARE( colors.length(), 1 );
   QCOMPARE( colors.at( 0 ).first, QColor( 255, 255, 0 ) );
   QCOMPARE( colors.at( 0 ).second, QString( "schemetest" ) );
-
-  delete dummyScheme;
 }
 
 void TestQgsColorScheme::clone()
 {
-  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QgsNamedColorList colors = dummyScheme->fetchColors();
-  QgsColorScheme* dummyScheme2 = dummyScheme->clone();
+  QSharedPointer<QgsColorScheme> dummyScheme2( dummyScheme->clone() );
   QgsNamedColorList colors2 = dummyScheme2->fetchColors();
   QCOMPARE( colors, colors2 );
-  delete dummyScheme;
-  delete dummyScheme2;
 }
 
 QTEST_MAIN( TestQgsColorScheme )

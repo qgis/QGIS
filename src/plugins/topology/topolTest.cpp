@@ -354,7 +354,6 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
 
   QgsGeometry* canvasExtentPoly = QgsGeometry::fromWkt( theQgsInterface->mapCanvas()->extent().asWktPolygon() );
 
-
   QMap<QgsFeatureId, FeatureLayer>::Iterator it;
   QMap<QgsFeatureId, FeatureLayer>::ConstIterator FeatureListEnd = mFeatureMap2.end();
   for ( it = mFeatureMap2.begin(); it != FeatureListEnd; ++it )
@@ -457,14 +456,13 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     return errorList;
   }
 
-  QList<QgsFeatureId>* duplicateIds = new QList<QgsFeatureId>();
+  QList<QgsFeatureId> *duplicateIds = new QList<QgsFeatureId>();
 
-  QgsSpatialIndex* index;
-  index = mLayerIndexes[layer1->id()];
-
+  QgsSpatialIndex* index = mLayerIndexes[layer1->id()];
   if ( !index )
   {
     qDebug() << "no index present";
+    delete duplicateIds;
     return errorList;
   }
 
@@ -566,6 +564,8 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
     }
     delete canvasExtentPoly;
   }
+
+  delete duplicateIds;
 
   return errorList;
 }

@@ -240,8 +240,11 @@ void QgsComposition::refreshItems()
 void QgsComposition::setSelectedItem( QgsComposerItem *item )
 {
   setAllUnselected();
-  item->setSelected( true );
-  emit selectedItemChanged( item );
+  if ( item )
+  {
+    item->setSelected( true );
+    emit selectedItemChanged( item );
+  }
 }
 
 void QgsComposition::setAllUnselected()

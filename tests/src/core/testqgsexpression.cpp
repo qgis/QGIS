@@ -17,6 +17,7 @@
 #include <QString>
 #include <QObject>
 #include <QtConcurrentMap>
+#include <QSharedPointer>
 
 #include <qgsapplication.h>
 //header for class being tested
@@ -966,17 +967,19 @@ class TestQgsExpression: public QObject
       QgsPolygon polygon;
       polygon << polygon_ring;
 
-      QgsGeometry* geom = QgsGeometry::fromPolygon( polygon );
+      QgsGeometry *geom;
 
+      geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "buffer" ) << "buffer( $geometry, 1.0, 3)" << ( void* ) geom << false << true << ( void* ) geom->buffer( 1.0, 3 );
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "buffer" ) << "buffer( $geometry, 2.0)" << ( void* ) geom << false << true << ( void* ) geom->buffer( 2.0, 8 );
 
       QgsPoint point1( 10, 20 );
       QgsPoint point2( 30, 20 );
-      QgsGeometry* pnt1 = QgsGeometry::fromPoint( point1 );
-      QgsGeometry* pnt2 = QgsGeometry::fromPoint( point2 );
+      QgsGeometry *pnt1 = QgsGeometry::fromPoint( point1 );
+      QgsGeometry *pnt2 = QgsGeometry::fromPoint( point2 );
       QTest::newRow( "union" ) << "union( $geometry, geomFromWKT('" + pnt2->exportToWkt() + "') )" << ( void* ) pnt1 << false << true << ( void* ) pnt1->combine( pnt2 );
+      delete pnt2;
 
       geom = QgsGeometry::fromPolygon( polygon );
       QTest::newRow( "intersection" ) << "intersection( $geometry, geomFromWKT('POLYGON((0 0, 0 10, 10 0, 0 0))') )" << ( void* ) geom << false << true << ( void* ) QgsGeometry::fromWkt( "POLYGON ((0 0,5 5,10 0,0 0))" );
@@ -1002,13 +1005,13 @@ class TestQgsExpression: public QObject
     void eval_geometry_method()
     {
       QFETCH( QString, string );
-      QFETCH( void*, geomptr );
+      QFETCH( void *, geomptr );
       QFETCH( bool, evalError );
       QFETCH( bool, needGeom );
-      QFETCH( void*, resultptr );
+      QFETCH( void *, resultptr );
 
-      QgsGeometry* geom = ( QgsGeometry* ) geomptr;
-      QgsGeometry* result = ( QgsGeometry* ) resultptr;
+      QgsGeometry *geom = ( QgsGeometry * ) geomptr;
+      QgsGeometry *result = ( QgsGeometry * ) resultptr;
 
       QgsFeature f;
       f.setGeometry( geom );
@@ -1022,6 +1025,8 @@ class TestQgsExpression: public QObject
       QCOMPARE( out.canConvert<QgsGeometry>(), true );
       QgsGeometry outGeom = out.value<QgsGeometry>();
       QVERIFY( compareWkt( outGeom.exportToWkt(), result->exportToWkt() ) );
+
+      delete result;
     }
 
     void eval_special_columns()

@@ -552,7 +552,9 @@ void QgsRasterLayerProperties::setRendererWidget( const QString& rendererName )
       }
     }
   }
-  delete oldWidget;
+
+  if ( mRendererWidget != oldWidget )
+    delete oldWidget;
 
   if ( mHistogramWidget )
   {
@@ -910,6 +912,10 @@ void QgsRasterLayerProperties::apply()
   if ( resampleFilter )
   {
     resampleFilter->setZoomedOutResampler( zoomedOutResampler );
+  }
+  else
+  {
+    delete zoomedOutResampler;
   }
 
   if ( resampleFilter )

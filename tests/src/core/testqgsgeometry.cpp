@@ -193,22 +193,20 @@ void TestQgsGeometry::cleanup()
 void TestQgsGeometry::fromQgsPoint()
 {
   QgsPoint point( 1.0, 2.0 );
-  QgsGeometry* result = QgsGeometry::fromPoint( point );
+  QSharedPointer<QgsGeometry> result( QgsGeometry::fromPoint( point ) );
   QCOMPARE( result->wkbType(), QGis::WKBPoint );
   QgsPoint resultPoint = result->asPoint();
   QCOMPARE( resultPoint, point );
-  delete result;
 }
 
 void TestQgsGeometry::fromQPoint()
 {
   QPointF point( 1.0, 2.0 );
-  QgsGeometry* result = QgsGeometry::fromQPointF( point );
+  QSharedPointer<QgsGeometry> result( QgsGeometry::fromQPointF( point ) );
   QCOMPARE( result->wkbType(), QGis::WKBPoint );
   QgsPoint resultPoint = result->asPoint();
   QCOMPARE( resultPoint.x(), 1.0 );
   QCOMPARE( resultPoint.y(), 2.0 );
-  delete result;
 }
 
 void TestQgsGeometry::fromQPolygonF()
@@ -216,7 +214,7 @@ void TestQgsGeometry::fromQPolygonF()
   //test with a polyline
   QPolygonF polyline;
   polyline << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 );
-  QgsGeometry* result = QgsGeometry::fromQPolygonF( polyline );
+  QSharedPointer<QgsGeometry> result( QgsGeometry::fromQPolygonF( polyline ) );
   QCOMPARE( result->wkbType(), QGis::WKBLineString );
   QgsPolyline resultLine = result->asPolyline();
   QCOMPARE( resultLine.size(), 4 );
@@ -224,12 +222,11 @@ void TestQgsGeometry::fromQPolygonF()
   QCOMPARE( resultLine.at( 1 ), QgsPoint( 4.0, 6.0 ) );
   QCOMPARE( resultLine.at( 2 ), QgsPoint( 4.0, 3.0 ) );
   QCOMPARE( resultLine.at( 3 ), QgsPoint( 2.0, 2.0 ) );
-  delete result;
 
   //test with a closed polygon
   QPolygonF polygon;
   polygon << QPointF( 1.0, 2.0 ) << QPointF( 4.0, 6.0 ) << QPointF( 4.0, 3.0 ) << QPointF( 2.0, 2.0 ) << QPointF( 1.0, 2.0 );
-  QgsGeometry* result2 = QgsGeometry::fromQPolygonF( polygon );
+  QSharedPointer<QgsGeometry> result2( QgsGeometry::fromQPolygonF( polygon ) );
   QCOMPARE( result2->wkbType(), QGis::WKBPolygon );
   QgsPolygon resultPolygon = result2->asPolygon();
   QCOMPARE( resultPolygon.size(), 1 );
@@ -238,16 +235,14 @@ void TestQgsGeometry::fromQPolygonF()
   QCOMPARE( resultPolygon.at( 0 ).at( 2 ), QgsPoint( 4.0, 3.0 ) );
   QCOMPARE( resultPolygon.at( 0 ).at( 3 ), QgsPoint( 2.0, 2.0 ) );
   QCOMPARE( resultPolygon.at( 0 ).at( 4 ), QgsPoint( 1.0, 2.0 ) );
-  delete result2;
 }
 
 void TestQgsGeometry::asQPointF()
 {
   QPointF point( 1.0, 2.0 );
-  QgsGeometry* geom = QgsGeometry::fromQPointF( point );
+  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromQPointF( point ) );
   QPointF resultPoint = geom->asQPointF();
   QCOMPARE( resultPoint, point );
-  delete geom;
 
   //non point geom
   QPointF badPoint = mpPolygonGeometryA->asQPointF();
@@ -270,10 +265,11 @@ void TestQgsGeometry::asQPolygonF()
   QCOMPARE( fromPoly.at( 3 ).y(), mPoint4.y() );
   QCOMPARE( fromPoly.at( 4 ).x(), mPoint1.x() );
   QCOMPARE( fromPoly.at( 4 ).y(), mPoint1.y() );
+
   //test polyline
   QgsPolyline testline;
   testline << mPoint1 << mPoint2 << mPoint3;
-  QgsGeometry* lineGeom = QgsGeometry::fromPolyline( testline );
+  QSharedPointer<QgsGeometry> lineGeom( QgsGeometry::fromPolyline( testline ) );
   QPolygonF fromLine = lineGeom->asQPolygonF();
   QVERIFY( !fromLine.isClosed() );
   QCOMPARE( fromLine.size(), 3 );
@@ -283,12 +279,11 @@ void TestQgsGeometry::asQPolygonF()
   QCOMPARE( fromLine.at( 1 ).y(), mPoint2.y() );
   QCOMPARE( fromLine.at( 2 ).x(), mPoint3.x() );
   QCOMPARE( fromLine.at( 2 ).y(), mPoint3.y() );
-  delete lineGeom;
+
   //test a bad geometry
-  QgsGeometry* badGeom = QgsGeometry::fromPoint( mPoint1 );
+  QSharedPointer<QgsGeometry> badGeom( QgsGeometry::fromPoint( mPoint1 ) );
   QPolygonF fromBad = badGeom->asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
-  delete badGeom;
 }
 
 void TestQgsGeometry::initTestCase()
@@ -465,38 +460,35 @@ void TestQgsGeometry::unionCheck2()
 void TestQgsGeometry::differenceCheck1()
 {
   // should be same as A since A does not intersect C so diff is 100% of A
-  QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference( mpPolygonGeometryC );
+  QSharedPointer<QgsGeometry> mypDifferenceGeometry( mpPolygonGeometryA->difference( mpPolygonGeometryC ) );
   qDebug( "Geometry Type: %s", QGis::featureType( mypDifferenceGeometry->wkbType() ) );
   QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union did not fail
   dumpPolygon( myPolygon );
-  delete mypDifferenceGeometry;
   QVERIFY( renderCheck( "geometry_differenceCheck1", "Checking (A - C) = A" ) );
 }
 
 void TestQgsGeometry::differenceCheck2()
 {
   // should be a single polygon as (A - B) = subset of A
-  QgsGeometry * mypDifferenceGeometry  =  mpPolygonGeometryA->difference( mpPolygonGeometryB );
+  QSharedPointer<QgsGeometry> mypDifferenceGeometry( mpPolygonGeometryA->difference( mpPolygonGeometryB ) );
   qDebug( "Geometry Type: %s", QGis::featureType( mypDifferenceGeometry->wkbType() ) );
   QVERIFY( mypDifferenceGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypDifferenceGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the union created a feature
   dumpPolygon( myPolygon );
-  delete mypDifferenceGeometry;
   QVERIFY( renderCheck( "geometry_differenceCheck2", "Checking (A - B) = subset of A" ) );
 }
 void TestQgsGeometry::bufferCheck()
 {
   // should be a single polygon
-  QgsGeometry * mypBufferGeometry  =  mpPolygonGeometryB->buffer( 10, 10 );
+  QSharedPointer<QgsGeometry> mypBufferGeometry( mpPolygonGeometryB->buffer( 10, 10 ) );
   qDebug( "Geometry Type: %s", QGis::featureType( mypBufferGeometry->wkbType() ) );
   QVERIFY( mypBufferGeometry->wkbType() == QGis::WKBPolygon );
   QgsPolygon myPolygon = mypBufferGeometry->asPolygon();
   QVERIFY( myPolygon.size() > 0 ); //check that the buffer created a feature
   dumpPolygon( myPolygon );
-  delete mypBufferGeometry;
   QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
 }
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment , int mismatchCount )

@@ -553,6 +553,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
       layer.pkCols = QStringList(); //TODO
+      layer.isGeography = false;
 
       QString type = layer.type;
       QString srid = layer.srid;

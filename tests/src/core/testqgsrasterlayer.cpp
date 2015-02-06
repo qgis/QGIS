@@ -369,6 +369,7 @@ void TestQgsRasterLayer::checkScaleOffset()
     mReport += QString( "raster layer %1 invalid" ).arg( myRasterFileInfo.filePath() );
     delete myRasterLayer;
     QVERIFY( false );
+    return;
   }
 
   QFile::remove( myRasterFileInfo.filePath() + ".aux.xml" ); // remove cached stats

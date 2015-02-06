@@ -1564,22 +1564,18 @@ int QgsGrassProvider::updatedNode( int idx )
 
 // ------------------ Attributes -------------------------------------------------
 
-QString *QgsGrassProvider::key( int field )
+QString QgsGrassProvider::key( int field )
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
-  QString *key = new QString();
-
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
+  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    return key;
+    return QString();
   }
 
-  *key = QString::fromUtf8( fi->key );
-  return key;
+  return QString::fromUtf8( fi->key );
 }
 
 QVector<QgsField> *QgsGrassProvider::columns( int field )
@@ -1738,30 +1734,26 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   return att;
 }
 
-QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &values )
+QString QgsGrassProvider::updateAttributes( int field, int cat, const QString &values )
 {
   QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
-  QString *error = new QString();
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
   // Read attributes
+  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    *error = QString::fromLatin1( "Cannot get field info" );
-    return error;
+    return "Cannot get field info";
   }
 
   QgsDebugMsg( "Field info found -> open database" );
   QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
-  dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
 
+  dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
   if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromUtf8( "Cannot open database" );
-    return error;
+    return "Cannot open database";
   }
 
   QgsDebugMsg( "Database opened -> read attributes" );
@@ -1790,12 +1782,12 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 
+  QString error;
   int ret = db_execute_immediate( driver, &dbstr );
-
   if ( ret != DB_OK )
   {
     QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    *error = QString::fromLatin1( db_get_error_msg() );
+    error = QString::fromLatin1( db_get_error_msg() );
   }
 
   db_close_database_shutdown_driver( driver );
@@ -1823,19 +1815,16 @@ int QgsGrassProvider::dbLinkField( int link )
   return ( fi->number );
 }
 
-QString *QgsGrassProvider::executeSql( int field, const QString &sql )
+QString QgsGrassProvider::executeSql( int field, const QString &sql )
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
-  QString *error = new QString();
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
   // Read attributes
+  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    *error = QString::fromLatin1( "Cannot get field info" );
-    return error;
+    return "Cannot get field info";
   }
 
   QgsDebugMsg( "Field info found -> open database" );
@@ -1846,8 +1835,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
   if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromUtf8( "Cannot open database" );
-    return error;
+    return "Cannot open database";
   }
 
   QgsDebugMsg( "Database opened" );
@@ -1858,12 +1846,13 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 
-  int ret = db_execute_immediate( driver, &dbstr );
+  QString error;
 
+  int ret = db_execute_immediate( driver, &dbstr );
   if ( ret != DB_OK )
   {
     QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    *error = QString::fromLatin1( db_get_error_msg() );
+    error = QString::fromLatin1( db_get_error_msg() );
   }
 
   db_close_database_shutdown_driver( driver );
@@ -1873,19 +1862,16 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
 
 }
 
-QString *QgsGrassProvider::createTable( int field, const QString &key, const QString &columns )
+QString QgsGrassProvider::createTable( int field, const QString &key, const QString &columns )
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
-  QString *error = new QString();
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
   // Read attributes
+  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( fi != NULL )
   {
     QgsDebugMsg( "The table for this field already exists" );
-    *error = QString::fromLatin1( "The table for this field already exists" );
-    return error;
+    return "The table for this field already exists";
   }
 
   QgsDebugMsg( "Field info not found -> create new table" );
@@ -1907,8 +1893,7 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromUtf8( "Cannot open database" );
-    return error;
+    return "Cannot open database";
   }
 
   QgsDebugMsg( "Database opened -> create table" );
@@ -1922,18 +1907,18 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( db_get_string( &dbstr ) ) );
 
+  QString error;
   int ret = db_execute_immediate( driver, &dbstr );
-
   if ( ret != DB_OK )
   {
     QgsDebugMsg( QString( "Error: %1" ).arg( db_get_error_msg() ) );
-    *error = QString::fromLatin1( db_get_error_msg() );
+    error = QString::fromLatin1( db_get_error_msg() );
   }
 
   db_close_database_shutdown_driver( driver );
   db_free_string( &dbstr );
 
-  if ( !error->isEmpty() )
+  if ( !error.isEmpty() )
     return error;
 
   ret = Vect_map_add_dblink( mMap, field, NULL, fi->table, key.toLatin1().data(),
@@ -1942,86 +1927,66 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   if ( ret == -1 )
   {
     QgsDebugMsg( "Error: Cannot add dblink" );
-    *error = QString::fromLatin1( "Cannot create link to the table. The table was created!" );
+    error = QString::fromLatin1( "Cannot create link to the table. The table was created!" );
   }
 
   return error;
 }
 
-QString *QgsGrassProvider::addColumn( int field, const QString &column )
+QString QgsGrassProvider::addColumn( int field, const QString &column )
 {
   QgsDebugMsg( QString( "field = %1" ).arg( field ) );
 
-  QString *error = new QString();
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
   // Read attributes
+  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info" );
-    *error = QString::fromLatin1( "Cannot get field info" );
-    return error;
+    return "Cannot get field info";
   }
 
   QString query;
-
   query.sprintf( "alter table %s add column %s", fi->table, column.toLatin1().constData() );
-
-  delete error;
   return executeSql( field, query );
 }
 
-QString *QgsGrassProvider::insertAttributes( int field, int cat )
+QString QgsGrassProvider::insertAttributes( int field, int cat )
 {
   QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
-  QString *error = new QString();
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
   // Read attributes
+  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    *error = QString::fromLatin1( "Cannot get field info" );
-    return error;
+    return "Cannot get field info";
   }
 
   QString query;
-
   query.sprintf( "insert into %s ( %s ) values ( %d )", fi->table, fi->key, cat );
-
-  delete error;
   return executeSql( field, query );
 }
 
-QString *QgsGrassProvider::deleteAttribute( int field, int cat )
+QString QgsGrassProvider::deleteAttribute( int field, int cat )
 {
   QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 
-  QString *error = new QString();
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
   // Read attributes
+  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    *error = QString::fromLatin1( "Cannot get field info" );
-    return error;
+    return "Cannot get field info";
   }
 
   QString query;
-
   query.sprintf( "delete from %s where %s = %d", fi->table, fi->key, cat );
-
-  delete error;
   return executeSql( field, query );
 }
 
-QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
+QString QgsGrassProvider::isOrphan( int field, int cat, int &orphan )
 {
   QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
-
-  QString *error = new QString();
 
   // Check first if another line with such cat exists
   int fieldIndex = Vect_cidx_get_field_index( mMap, field );
@@ -2034,39 +1999,36 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
     if ( ret >= 0 )
     {
       // Category exists
-      *orphan = false;
-      return error;
+      orphan = false;
+      return QString();
     }
   }
 
   // Check if attribute exists
-  struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
-
   // Read attributes
+  struct field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
   if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
-    *orphan = false;
-    return error;
+    orphan = false;
+    return QString();
   }
 
   QgsDebugMsg( "Field info found -> open database" );
   QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
-
   if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
-    *error = QString::fromUtf8( "Cannot open database" );
-    return error;
+    return "Cannot open database";
   }
 
   QgsDebugMsg( "Database opened -> select record" );
 
   dbString dbstr;
   db_init_string( &dbstr );
-  QString query;
 
+  QString query;
   query.sprintf( "select %s from %s where %s = %d", fi->key, fi->table, fi->key, cat );
   db_set_string( &dbstr, query.toLatin1().data() );
 
@@ -2076,19 +2038,18 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   if ( db_open_select_cursor( driver, &dbstr, &cursor, DB_SCROLL ) != DB_OK )
   {
     db_close_database_shutdown_driver( driver );
-    error->append( "Cannot query database: " ).append( query );
-    return error;
+    return QString( "Cannot query database: %1" ).arg( query );
   }
   int nRecords = db_get_num_rows( &cursor );
   QgsDebugMsg( QString( "Number of records: %1" ).arg( nRecords ) );
 
   if ( nRecords > 0 )
-    *orphan = true;
+    orphan = true;
 
   db_close_database_shutdown_driver( driver );
   db_free_string( &dbstr );
 
-  return error;
+  return QString();
 }
 
 bool QgsGrassProvider::isTopoType() const

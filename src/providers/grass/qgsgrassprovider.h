@@ -370,7 +370,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @param field
      *   @return Key column name or empty string
      */
-    QString *key( int field );
+    QString key( int field );
 
     /** Get number of db links
      *   @return number of links
@@ -388,7 +388,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @param sql
      *   @return empty string or error message
      */
-    QString *executeSql( int field, const QString &sql );
+    QString executeSql( int field, const QString &sql );
 
     /** Update attributes
      *   @param field
@@ -396,21 +396,21 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @param update comma separated update string, e.g.: col1 = 5, col2 = 'Val d''Aosta'
      *   @return empty string or error message
      */
-    QString *updateAttributes( int field, int cat, const QString &values );
+    QString updateAttributes( int field, int cat, const QString &values );
 
     /** Insert new attributes to the table (it does not check if attributes already exists)
      *   @param field
      *   @param cat
      *   @return empty string or error message
      */
-    QString *insertAttributes( int field, int cat );
+    QString insertAttributes( int field, int cat );
 
     /** Delete attributes from the table
      *   @param field
      *   @param cat
      *   @return empty string or error message
      */
-    QString *deleteAttribute( int field, int cat );
+    QString deleteAttribute( int field, int cat );
 
     /** Check if a database row exists and it is orphan (no more lines with
      *  that category)
@@ -419,21 +419,21 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @param orphan set to true if a record exits and it is orphan
      *   @return empty string or error message
      */
-    QString *isOrphan( int field, int cat, int *orphan );
+    QString isOrphan( int field, int cat, int &orphan );
 
     /** Create table and link vector to this table
      *   @param field
      *   @param columns SQL definition for columns, e.g. cat integer, label varchar(10)
      *   @return empty string or error message
      */
-    QString *createTable( int field, const QString &key, const QString &columns );
+    QString createTable( int field, const QString &key, const QString &columns );
 
     /** Add column to table
      *   @param field
      *   @param column SQL definition for columns, e.g. label varchar(10)
      *   @return empty string or error message
      */
-    QString *addColumn( int field, const QString &column );
+    QString addColumn( int field, const QString &column );
 
     /* Following functions work only until first edit operation! (category index used) */
 
@@ -494,7 +494,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
 
     // Layer type (layerType)
-    enum    TYPE     // layer name:
+    enum TYPE      // layer name:
     {
       POINT = 1,   // <field>_point
       LINE,        // <field>_line
@@ -524,8 +524,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     struct  Map_info *mMap; // vector header pointer
     int     mMapVersion;    // The version of the map for which the instance was last time updated
 
-    int    mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
-    int    mCidxFieldNumCats;  // !UPDATE! Number of records in field index
+    int     mCidxFieldIndex;    // !UPDATE! Index for layerField in category index or -1 if no such field
+    int     mCidxFieldNumCats;  // !UPDATE! Number of records in field index
 
     bool    mValid;                // !UPDATE!
     long    mNumberFeatures;       // !UPDATE!

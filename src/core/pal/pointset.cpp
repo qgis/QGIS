@@ -105,7 +105,6 @@ namespace pal
     x = new double[nbPoints];
     y = new double[nbPoints];
 
-
     for ( i = 0; i < nbPoints; i++ )
     {
       x[i] = ps.x[i];
@@ -115,6 +114,7 @@ namespace pal
     if ( ps.cHull )
     {
       cHullSize = ps.cHullSize;
+      cHull = new int[cHullSize];
       for ( i = 0; i < cHullSize; i++ )
       {
         cHull[i] = ps.cHull[i];

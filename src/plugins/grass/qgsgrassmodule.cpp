@@ -2780,7 +2780,8 @@ void QgsGrassModuleInput::updateQgisLayers()
     if ( item )
     {
       QgsGrassModuleInput *mapInput = dynamic_cast<QgsGrassModuleInput *>( item );
-      sourceMap = mapInput->currentMap();
+      if ( mapInput )
+        sourceMap = mapInput->currentMap();
     }
   }
 
