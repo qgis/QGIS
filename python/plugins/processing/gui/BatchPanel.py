@@ -141,7 +141,6 @@ class BatchPanel(QWidget, Ui_Form):
             try:
                 item.setText(str(param.default))
             except:
-                item.setText("0")
                 pass
 
         return item
