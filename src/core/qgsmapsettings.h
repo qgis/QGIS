@@ -156,6 +156,9 @@ class CORE_EXPORT QgsMapSettings
     bool hasValidSettings() const;
     //! Return the actual extent derived from requested extent that takes takes output image size into account
     QgsRectangle visibleExtent() const;
+    //! Return the visible area as a polygon (may be rotated)
+    //! @note added in 2.8
+    QPolygonF visiblePolygon() const;
     //! Return the distance in geographical coordinates that equals to one pixel in the map
     double mapUnitsPerPixel() const;
     //! Return the calculated scale of the map
