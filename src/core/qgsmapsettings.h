@@ -57,7 +57,8 @@ class CORE_EXPORT QgsMapSettings
     //! Return geographical coordinates of the rectangle that should be rendered.
     //! The actual visible extent used for rendering could be slightly different
     //! since the given extent may be expanded in order to fit the aspect ratio
-    //! of output size. Use visibleExtent() to get the resulting extent.
+    //! of output size and/or rotated. Use visiblePolygon() to get the
+    //! resulting extent.
     QgsRectangle extent() const;
     //! Set coordinates of the rectangle which should be rendered.
     //! The actual visible extent used for rendering could be slightly different
@@ -154,12 +155,15 @@ class CORE_EXPORT QgsMapSettings
 
     //! Check whether the map settings are valid and can be used for rendering
     bool hasValidSettings() const;
-    //! Return the actual extent derived from requested extent that takes takes output image size into account
+    //! Returns the bounding box of the visible area, @see visiblePolygon().
     QgsRectangle visibleExtent() const;
-    //! Return the visible area as a polygon (may be rotated)
+    //! Return the visible area as a polygon. (may be rotated)
+    //! The visible area is derived from requested extent, rotation
+    //! and output image size. @see also visibleExtent().
     //! @note added in 2.8
     QPolygonF visiblePolygon() const;
-    //! Return the distance in geographical coordinates that equals to one pixel in the map
+    //! Return the distance in geographical coordinates that equals to
+    //! one pixel in the map
     double mapUnitsPerPixel() const;
     //! Return the calculated scale of the map
     double scale() const;
@@ -254,7 +258,6 @@ class CORE_EXPORT QgsMapSettings
 
     // derived properties
     bool mValid; //!< whether the actual settings are valid (set in updateDerived())
-    QgsRectangle mVisibleExtent; //!< extent with some additional white space that matches the output aspect ratio
     double mMapUnitsPerPixel;
     double mScale;
 

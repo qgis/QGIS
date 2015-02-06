@@ -43,7 +43,6 @@ QgsMapSettings::QgsMapSettings()
     , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
     , mImageFormat( QImage::Format_ARGB32_Premultiplied )
     , mValid( false )
-    , mVisibleExtent()
     , mMapUnitsPerPixel( 1 )
     , mScale( 1 )
 {
@@ -138,57 +137,26 @@ void QgsMapSettings::updateDerived()
   double mapUnitsPerPixelX = mExtent.width() / myWidth;
   mMapUnitsPerPixel = mapUnitsPerPixelY > mapUnitsPerPixelX ? mapUnitsPerPixelY : mapUnitsPerPixelX;
 
-  // calculate the actual extent of the mapCanvas
-  double dxmin = mExtent.xMinimum(), dxmax = mExtent.xMaximum(),
-                 dymin = mExtent.yMinimum(), dymax = mExtent.yMaximum(), whitespace;
-
-  if ( mapUnitsPerPixelY > mapUnitsPerPixelX )
-  {
-    whitespace = (( myWidth * mMapUnitsPerPixel ) - mExtent.width() ) * 0.5;
-    dxmin -= whitespace;
-    dxmax += whitespace;
-  }
-  else
-  {
-    whitespace = (( myHeight * mMapUnitsPerPixel ) - mExtent.height() ) * 0.5;
-    dymin -= whitespace;
-    dymax += whitespace;
-  }
-
-  mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
-
-  // update the scale
-  mScaleCalculator.setDpi( mDpi );
-  mScale = mScaleCalculator.calculate( mVisibleExtent, mSize.width() );
-
   mMapToPixel.setParameters( mapUnitsPerPixel(),
-                             visibleExtent().center().x(),
-                             visibleExtent().center().y(),
+                             mExtent.center().x(),
+                             mExtent.center().y(),
                              outputSize().width(),
                              outputSize().height(),
                              mRotation );
 
-#if 1 // set visible extent taking rotation in consideration
-  if ( mRotation )
-  {
-    QgsPoint p1 = mMapToPixel.toMapCoordinates( QPoint( 0, 0 ) );
-    QgsPoint p2 = mMapToPixel.toMapCoordinates( QPoint( 0, myHeight ) );
-    QgsPoint p3 = mMapToPixel.toMapCoordinates( QPoint( myWidth, 0 ) );
-    QgsPoint p4 = mMapToPixel.toMapCoordinates( QPoint( myWidth, myHeight ) );
-    dxmin = std::min( p1.x(), std::min( p2.x(), std::min( p3.x(), p4.x() ) ) );
-    dymin = std::min( p1.y(), std::min( p2.y(), std::min( p3.y(), p4.y() ) ) );
-    dxmax = std::max( p1.x(), std::max( p2.x(), std::max( p3.x(), p4.x() ) ) );
-    dymax = std::max( p1.y(), std::max( p2.y(), std::max( p3.y(), p4.y() ) ) );
-    mVisibleExtent.set( dxmin, dymin, dxmax, dymax );
-  }
-#endif
+  QgsRectangle vExtent = visibleExtent(); // TODO: drop as not needed here ?
+
+  // update the scale
+  mScaleCalculator.setDpi( mDpi );
+  mScale = mScaleCalculator.calculate( vExtent, mSize.width() );
+
 
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mapUnitsPerPixelX ) ).arg( qgsDoubleToString( mapUnitsPerPixelY ) ) );
   QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mSize.width() ) ).arg( qgsDoubleToString( mSize.height() ) ) );
   QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mExtent.width() ) ).arg( qgsDoubleToString( mExtent.height() ) ) );
   QgsDebugMsg( mExtent.toString() );
-  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / myWidth ) ).arg( qgsDoubleToString( mVisibleExtent.height() / myHeight ) ) );
-  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( mVisibleExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( mVisibleExtent.height() / mMapUnitsPerPixel ) ) );
+  QgsDebugMsg( QString( "Adjusted map units per pixel (x,y) : %1, %2" ).arg( qgsDoubleToString( vExtent.width() / myWidth ) ).arg( qgsDoubleToString( vExtent.height() / myHeight ) ) );
+  QgsDebugMsg( QString( "Recalced pixmap dimensions (x,y) : %1, %2" ).arg( qgsDoubleToString( vExtent.width() / mMapUnitsPerPixel ) ).arg( qgsDoubleToString( vExtent.height() / mMapUnitsPerPixel ) ) );
   QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( qgsDoubleToString( mScale ) ) );
   QgsDebugMsg( QString( "Rotation: %1 degrees" ).arg( mRotation ) );
 
@@ -308,7 +276,7 @@ bool QgsMapSettings::hasValidSettings() const
 
 QgsRectangle QgsMapSettings::visibleExtent() const
 {
-  return mVisibleExtent;
+  return visiblePolygon().boundingRect();
 }
 
 QPolygonF QgsMapSettings::visiblePolygon() const
