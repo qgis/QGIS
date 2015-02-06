@@ -5,6 +5,15 @@
 #include <qgsmapcanvas.h>
 #include <qgsmaprenderer.h>
 
+namespace QTest
+{
+  template<>
+  char* toString( const QgsRectangle& r ) {
+    QByteArray ba = r.toString().toLocal8Bit();
+    return qstrdup(ba.data());
+  }
+}
+
 class TestQgsMapCanvas : public QObject
 {
     Q_OBJECT
