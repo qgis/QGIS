@@ -34,6 +34,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent ) :
 
   mCrsComboBox = new QComboBox( this );
   mCrsComboBox->addItem( tr( "invalid projection" ), QgsProjectionSelectionWidget::CurrentCrs );
+  mCrsComboBox->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
 
   if ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) )
   {
