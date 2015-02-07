@@ -5,11 +5,6 @@ compiler:
 
 cache: apt
 
-notifications:
-  irc: "chat.freenode.net#qgis"
-  on_failure: change
-  on_success: change
-
 before_install:
   - sudo apt-get update -qq
   - sudo add-apt-repository ppa:ubuntugis/ppa -y
