@@ -128,7 +128,7 @@ class translate(GdalAlgorithm):
         compress = self.COMPRESSTYPE[self.getParameterValue(self.COMPRESS)]
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = str(self.getParameterValue(self.TFW))
-        
+
         arguments = []
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(out))

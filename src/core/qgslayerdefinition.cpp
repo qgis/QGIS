@@ -35,6 +35,8 @@ bool QgsLayerDefinition::loadLayerDefinition( const QString &path, QgsLayerTreeG
 
 bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGroup *rootGroup, QString &errorMessage )
 {
+  Q_UNUSED( errorMessage );
+
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
   // We have to replace the IDs before we load them because it's too late once they are loaded
   QDomNodeList ids = doc.elementsByTagName( "id" );

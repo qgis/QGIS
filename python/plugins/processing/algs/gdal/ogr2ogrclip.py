@@ -75,7 +75,7 @@ class Ogr2OgrClip(OgrAlgorithm):
         arguments.append(output)
         arguments.append(ogrLayer)
         arguments.append(self.ogrLayerName(inLayer))
-        
+
         commands = []
         if isWindows():
             commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',

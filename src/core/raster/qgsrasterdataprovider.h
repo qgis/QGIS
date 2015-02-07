@@ -272,7 +272,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
       Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod );
       Q_UNUSED( theFormat ); Q_UNUSED( theConfigOptions );
       return "FAILED_NOT_SUPPORTED";
-    };
+    }
 
     /** \brief Accessor for ths raster layers pyramid list.
      * @param overviewList used to construct the pyramid list (optional), when empty the list is defined by the provider.
@@ -282,7 +282,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * list.
      */
     virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() )
-    { Q_UNUSED( overviewList ); return QList<QgsRasterPyramid>(); };
+    { Q_UNUSED( overviewList ); return QList<QgsRasterPyramid>(); }
 
     /** \brief Returns true if raster has at least one populated histogram. */
     bool hasPyramids();

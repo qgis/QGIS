@@ -73,6 +73,10 @@ for f in "$@"; do
                 cmd=:
                 ;;
 
+	python/ext-libs/*)
+		cmd=:
+		;;
+
         *.py|*.sip)
                 cmd="perl -i.prepare -pe 's/[\r\t ]+$//;'"
                 ;;

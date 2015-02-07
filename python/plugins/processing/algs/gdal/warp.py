@@ -113,7 +113,7 @@ class warp(GdalAlgorithm):
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
-        if len(srccrs) > 0: 
+        if len(srccrs) > 0:
             arguments.append('-s_srs')
             arguments.append(srccrs)
         if len(dstcrs) > 0:

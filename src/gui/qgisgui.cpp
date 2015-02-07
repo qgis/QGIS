@@ -177,7 +177,7 @@ namespace QgisGui
 
   QString createFileFilter_( QString const &longName, QString const &glob )
   {
-    return QString("%1 (%2 %3)").arg( longName ).arg( glob.toLower() ).arg( glob.toUpper() );
+    return QString( "%1 (%2 %3)" ).arg( longName ).arg( glob.toLower() ).arg( glob.toUpper() );
   }
 
   QString createFileFilter_( QString const &format )

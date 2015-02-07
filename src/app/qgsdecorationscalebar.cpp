@@ -151,13 +151,13 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
     {
       myScaleBarWidth = myCanvasWidth / 4.0; // pixels
       myActualSize = myScaleBarWidth * myMapUnitsPerPixelDouble; // map units
-    };
+    }
 
     //if scale bar is more than half the canvas wide keep halving until not
     while ( myScaleBarWidth > myCanvasWidth / 3.0 )
     {
       myScaleBarWidth = myScaleBarWidth / 3;
-    };
+    }
     myActualSize = myScaleBarWidth * myMapUnitsPerPixelDouble;
 
     // Work out the exponent for the number - e.g, 1234 will give 3,
@@ -235,7 +235,7 @@ void QgsDecorationScaleBar::render( QPainter * theQPainter )
         myScaleBarUnitLabel = tr( " unknown" );
       default:
         QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( myMapUnits ) );
-    };
+    }
 
     //Set font and calculate width of unit label
     int myFontSize = 10; //we use this later for buffering

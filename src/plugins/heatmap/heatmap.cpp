@@ -68,8 +68,8 @@ static const QString sPluginIcon = ":/heatmap/heatmap.png";
  */
 Heatmap::Heatmap( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
-    , mQGisIface( theQgisInterface )
     , mDecay( 1. )
+    , mQGisIface( theQgisInterface )
     , mQActionPointer( 0 )
 {
 }

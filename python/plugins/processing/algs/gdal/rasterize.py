@@ -118,7 +118,7 @@ class rasterize(OgrAlgorithm):
         bigtiff = self.BIGTIFFTYPE[self.getParameterValue(self.BIGTIFF)]
         tfw = str(self.getParameterValue(self.TFW))
         out = self.getOutputValue(self.OUTPUT)
-        
+
         arguments = []
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))

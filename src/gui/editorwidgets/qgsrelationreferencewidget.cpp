@@ -438,7 +438,7 @@ void QgsRelationReferenceWidget::init()
 
       qSort( cache.begin(), cache.end(), orderByLessThan );
 
-      Q_FOREACH( const ValueRelationItem& item, cache )
+      Q_FOREACH ( const ValueRelationItem& item, cache )
       {
         mComboBox->addItem( item.first.toString(), item.second );
 

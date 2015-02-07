@@ -74,8 +74,8 @@ CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
     , mypUserCrsToolButton( NULL )
     , mypCRSLabel( NULL )
     , mCanvasDisplayPrecision( 5 )
-    , mQGisIface( theQgisInterface )
     , mUserCrsDisplayPrecision( 5 )
+    , mQGisIface( theQgisInterface )
     , mQActionPointer( NULL )
 {
 }

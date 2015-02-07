@@ -8,9 +8,10 @@
 namespace QTest
 {
   template<>
-  char* toString( const QgsRectangle& r ) {
+  char* toString( const QgsRectangle& r )
+  {
     QByteArray ba = r.toString().toLocal8Bit();
-    return qstrdup(ba.data());
+    return qstrdup( ba.data() );
   }
 }
 

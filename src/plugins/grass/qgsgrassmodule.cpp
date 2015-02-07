@@ -286,9 +286,9 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
     : mIface( iface )
     , mTools( tools )
     , mModule( module )
-    , mDirect( direct )
     , mParent( 0 )
     , mRegionModeComboBox( 0 )
+    , mDirect( direct )
 {
   QgsDebugMsg( "called." );
 
