@@ -884,47 +884,36 @@ void QgsRasterLayerProperties::apply()
   // pixmapLegend->repaint();
 
   QgsRasterResampleFilter* resampleFilter = mRasterLayer->resampleFilter();
-
-  QgsRasterResampler* zoomedInResampler = 0;
-  QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
-  if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
-  {
-    zoomedInResampler = new QgsBilinearRasterResampler();
-  }
-  else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
-  {
-    zoomedInResampler = new QgsCubicRasterResampler();
-  }
-
   if ( resampleFilter )
   {
+    QgsRasterResampler *zoomedInResampler = 0;
+    QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
+    if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
+    {
+      zoomedInResampler = new QgsBilinearRasterResampler();
+    }
+    else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
+    {
+      zoomedInResampler = new QgsCubicRasterResampler();
+    }
+
     resampleFilter->setZoomedInResampler( zoomedInResampler );
-  }
 
-  //raster resampling
-  QgsRasterResampler* zoomedOutResampler = 0;
-  QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
-  if ( zoomedOutResamplingMethod == tr( "Average" ) )
-  {
-    zoomedOutResampler = new QgsBilinearRasterResampler();
-  }
+    //raster resampling
+    QgsRasterResampler *zoomedOutResampler = 0;
+    QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
+    if ( zoomedOutResamplingMethod == tr( "Average" ) )
+    {
+      zoomedOutResampler = new QgsBilinearRasterResampler();
+    }
 
-  if ( resampleFilter )
-  {
     resampleFilter->setZoomedOutResampler( zoomedOutResampler );
-  }
-  else
-  {
-    delete zoomedOutResampler;
-  }
 
-  if ( resampleFilter )
-  {
     resampleFilter->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 
   // Hue and saturation controls
-  QgsHueSaturationFilter* hueSaturationFilter = mRasterLayer->hueSaturationFilter();
+  QgsHueSaturationFilter *hueSaturationFilter = mRasterLayer->hueSaturationFilter();
   if ( hueSaturationFilter )
   {
     hueSaturationFilter->setSaturation( sliderSaturation->value() );

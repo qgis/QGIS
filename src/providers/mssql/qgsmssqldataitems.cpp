@@ -147,6 +147,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
       layer.pkCols = QStringList(); //TODO
+      layer.isGeography = false;
 
       // skip layers which are added already
       bool skip = false;

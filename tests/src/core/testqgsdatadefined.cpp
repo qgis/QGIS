@@ -17,6 +17,7 @@
 #include <QString>
 #include <QStringList>
 #include <QSettings>
+#include <QSharedPointer>
 
 #include <qgsdatadefined.h>
 
@@ -63,12 +64,11 @@ void TestQgsDataDefined::cleanup()
 
 void TestQgsDataDefined::create()
 {
-  QgsDataDefined* dd = new QgsDataDefined( true, true, QString( "exp" ), QString( "field" ) );
+  QSharedPointer<QgsDataDefined> dd( new QgsDataDefined( true, true, QString( "exp" ), QString( "field" ) ) );
   QVERIFY( dd->isActive() );
   QVERIFY( dd->useExpression() );
   QCOMPARE( dd->expressionString(), QString( "exp" ) );
   QCOMPARE( dd->field(), QString( "field" ) );
-  delete dd;
 }
 
 void TestQgsDataDefined::gettersSetters()
