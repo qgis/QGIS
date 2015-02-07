@@ -50,6 +50,15 @@
 class TestQgsDiagram : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsDiagram()
+        : mPointsLayer( 0 )
+        , mComposition( 0 )
+        , mPieDiagram( 0 )
+        , mComposerMap( 0 )
+    {}
+
   private:
     bool mTestHasError;
     QgsMapSettings mMapSettings;

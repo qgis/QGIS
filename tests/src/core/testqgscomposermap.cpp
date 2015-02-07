@@ -29,6 +29,14 @@
 class TestQgsComposerMap : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerMap()
+        : mComposition( 0 )
+        , mComposerMap( 0 )
+        , mRasterLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

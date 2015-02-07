@@ -35,6 +35,15 @@
 class TestQgsComposerDD : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerDD()
+        : mComposition( 0 )
+        , mVectorLayer( 0 )
+        , mAtlasMap( 0 )
+        , mAtlas( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

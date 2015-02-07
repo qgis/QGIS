@@ -38,6 +38,16 @@
 class TestQgsBlendModes : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsBlendModes()
+        : mpPointsLayer( 0 )
+        , mpPolysLayer( 0 )
+        , mpLinesLayer( 0 )
+        , mRasterLayer1( 0 )
+        , mRasterLayer2( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

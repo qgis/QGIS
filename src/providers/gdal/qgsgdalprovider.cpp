@@ -97,7 +97,14 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
     : QgsRasterDataProvider( uri )
+    , mUpdate( false )
     , mValid( false )
+    , mHasPyramids( false )
+    , mWidth( 0 )
+    , mHeight( 0 )
+    , mXBlockSize( 0 )
+    , mYBlockSize( 0 )
+    , mGeoTransform()
     , mGdalBaseDataset( 0 )
     , mGdalDataset( 0 )
 {

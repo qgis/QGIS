@@ -70,6 +70,15 @@ class TestSignalReceiver : public QObject
 class TestQgsVectorLayer : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsVectorLayer()
+        : mpMapRenderer( 0 )
+        , mpPointsLayer( 0 )
+        , mpLinesLayer( 0 )
+        , mpPolysLayer( 0 )
+        , mpNonSpatialLayer( 0 )
+    {}
+
   private:
     bool mTestHasError;
     QgsMapRenderer * mpMapRenderer;

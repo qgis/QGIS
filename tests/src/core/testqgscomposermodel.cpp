@@ -26,6 +26,14 @@ class TestQgsComposerModel : public QObject
 {
     Q_OBJECT
 
+  public:
+    TestQgsComposerModel()
+        : mComposition( 0 )
+        , mItem1( 0 )
+        , mItem2( 0 )
+        , mItem3( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

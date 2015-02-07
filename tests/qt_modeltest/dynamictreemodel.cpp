@@ -52,8 +52,8 @@
 
 
 DynamicTreeModel::DynamicTreeModel( QObject *parent )
-    : QAbstractItemModel( parent ),
-    nextId( 1 )
+    : QAbstractItemModel( parent )
+    , nextId( 1 )
 {
 }
 
@@ -234,6 +234,7 @@ void ModelInsertCommand::doCommand()
 
 ModelMoveCommand::ModelMoveCommand( DynamicTreeModel *model, QObject *parent )
     : ModelChangeCommand( model, parent )
+    , m_destRow( 0 )
 {
 
 }

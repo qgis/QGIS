@@ -24,6 +24,11 @@
 class TestQgsNetworkContentFetcher : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsNetworkContentFetcher()
+        : mLoaded( false )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -38,9 +43,7 @@ class TestQgsNetworkContentFetcher : public QObject
     void contentLoaded();
 
   private:
-
     bool mLoaded;
-
 };
 
 void TestQgsNetworkContentFetcher::initTestCase()

@@ -38,6 +38,11 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 class TestQgsSnappingUtils : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsSnappingUtils()
+        : mVL( 0 )
+    {}
+
   private:
     QgsVectorLayer* mVL;
   private slots:

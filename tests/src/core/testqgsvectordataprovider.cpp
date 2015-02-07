@@ -33,6 +33,12 @@ Q_DECLARE_METATYPE( QgsFeatureRequest );
 class TestQgsVectorDataProvider : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsVectorDataProvider()
+        : vlayerPoints( 0 )
+        , vlayerLines( 0 )
+    {}
+
   private slots:
 
     void initTestCase();// will be called before the first testfunction is executed.

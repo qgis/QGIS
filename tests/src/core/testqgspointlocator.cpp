@@ -52,8 +52,14 @@ struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 class TestQgsPointLocator : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsPointLocator()
+        : mVL( 0 )
+    {}
+
   private:
     QgsVectorLayer* mVL;
+
   private slots:
 
     void initTestCase()

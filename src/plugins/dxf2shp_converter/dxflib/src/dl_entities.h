@@ -1248,8 +1248,16 @@ struct DL_HatchEdgeData
    * Default constructor.
    */
   DL_HatchEdgeData()
+    : type( 1 )
+    , defined( false )
+    , x1( 0. ), y1( 0. )
+    , x2( 0. ), y2( 0. )
+    , cx( 0. ), cy( 0. )
+    , radius( 0. )
+    , angle1( 0. )
+    , angle2( 0. )
+    , ccw( false )
   {
-    defined = false;
   }
 
   /**
@@ -1258,13 +1266,16 @@ struct DL_HatchEdgeData
    */
   DL_HatchEdgeData( double lx1, double ly1,
                     double lx2, double ly2 )
+    : type( 1 )
+    , defined( true )
+    , x1( lx1 ), y1( ly1 )
+    , x2( lx2 ), y2( ly2 )
+    , cx( 0. ), cy( 0. )
+    , radius( 0. )
+    , angle1( 0. )
+    , angle2( 0. )
+    , ccw( false )
   {
-    x1 = lx1;
-    y1 = ly1;
-    x2 = lx2;
-    y2 = ly2;
-    type = 1;
-    defined = true;
   }
 
   /**
@@ -1275,15 +1286,16 @@ struct DL_HatchEdgeData
                     double aRadius,
                     double aAngle1, double aAngle2,
                     bool aCcw )
+    : type( 2 )
+    , defined( true )
+    , x1( 0. ), y1( 0. )
+    , x2( 0. ), y2( 0. )
+    , cx( acx ), cy( acy )
+    , radius( aRadius )
+    , angle1( aAngle1 )
+    , angle2( aAngle2 )
+    , ccw( aCcw )
   {
-    cx = acx;
-    cy = acy;
-    radius = aRadius;
-    angle1 = aAngle1;
-    angle2 = aAngle2;
-    ccw = aCcw;
-    type = 2;
-    defined = true;
   }
 
   /**

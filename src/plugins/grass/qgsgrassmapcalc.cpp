@@ -1495,9 +1495,16 @@ QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
     : QGraphicsRectItem( -1000, -1000, 50, 20, 0 )
     , QgsGrassMapcalcItem()
     , mType( type )
+    , mRound( 0. )
     , mCenter( -1000, -1000 )
+    , mSocketHalf( 0. )
+    , mMargin( 0. )
+    , mSpace( 0. )
+    , mTextHeight( 0 )
+    , mInputTextWidth( 0 )
     , mSelectionBoxSize( 5 )
     , mOutputConnector( 0 )
+    , mOutputConnectorEnd( 0 )
 {
   QgsDebugMsg( "entered." );
 

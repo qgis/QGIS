@@ -29,6 +29,14 @@
 class TestQgsComposerLabel : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerLabel()
+        : mComposition( 0 )
+        , mComposerLabel( 0 )
+        , mVectorLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

@@ -31,6 +31,15 @@
 class TestQgsComposerScaleBar : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerScaleBar()
+        : mComposition( 0 )
+        , mComposerMap( 0 )
+        , mComposerScaleBar( 0 )
+        , mRasterLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

@@ -36,6 +36,16 @@
 class TestQgsAtlasComposition : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsAtlasComposition()
+        : mComposition( 0 )
+        , mLabel1( 0 )
+        , mLabel2( 0 )
+        , mAtlasMap( 0 )
+        , mOverview( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

@@ -31,6 +31,16 @@
 class TestQgsComposerTable : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerTable()
+        : mComposition( 0 )
+        , mComposerMap( 0 )
+        , mComposerTextTable( 0 )
+        , mVectorLayer( 0 )
+        , mComposerAttributeTable( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

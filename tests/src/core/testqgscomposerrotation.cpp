@@ -34,6 +34,15 @@
 class TestQgsComposerRotation : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerRotation()
+        : mComposition( 0 )
+        , mComposerRect( 0 )
+        , mComposerLabel( 0 )
+        , mRasterLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

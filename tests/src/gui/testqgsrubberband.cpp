@@ -28,9 +28,16 @@
 #include <qgsrubberband.h>
 #include <qgslogger.h>
 
-class TestQgsRubberband: public QObject
+class TestQgsRubberband : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsRubberband()
+        : mCanvas( 0 )
+        , mPolygonLayer( 0 )
+        , mRubberband( 0 )
+    {}
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.

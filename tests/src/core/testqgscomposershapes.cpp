@@ -31,6 +31,15 @@
 class TestQgsComposerShapes : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerShapes()
+        : mComposition( 0 )
+        , mComposerShape( 0 )
+        , mSimpleFill( 0 )
+        , mFillSymbol( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

@@ -73,6 +73,12 @@ static void _verifyImage( const QString& testName )
 class TestQgsLegendRenderer : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsLegendRenderer()
+        : mRoot( 0 ), mVL1( 0 ), mVL2( 0 ), mVL3( 0 ), mRL( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

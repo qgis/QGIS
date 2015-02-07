@@ -22,6 +22,14 @@ Email                : sherman at mrcc dot com
 class TestQgsVectorAnalyzer : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsVectorAnalyzer()
+        : mpLineLayer( 0 )
+        , mpPolyLayer( 0 )
+        , mpPointLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

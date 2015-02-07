@@ -132,6 +132,7 @@ _active( false ),
 _absorbEvents( false ),
 _hfill( false ),
 _vfill( false )
+_dirty( false )
 {
     //nop
 }
@@ -1748,6 +1749,7 @@ ControlNode::PerViewData::PerViewData() :
 _obscured   ( true ),
 _visibleTime( 0.0 ),
 _screenPos  ( 0.0, 0.0, 0.0 )
+_visitFrame ( false )
 {
     //nop
 }

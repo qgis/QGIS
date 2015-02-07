@@ -43,6 +43,14 @@
 class TestQgsShapeburst : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsShapeburst()
+        : mpPolysLayer()
+        , mShapeburstFill( 0 )
+        , mFillSymbol( 0 )
+        , mSymbolRenderer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.

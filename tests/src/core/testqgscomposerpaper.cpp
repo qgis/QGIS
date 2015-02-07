@@ -32,6 +32,16 @@
 class TestQgsComposerPaper : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerPaper()
+        : mComposition( 0 )
+        , mSimpleFill( 0 )
+        , mMarkerLine( 0 )
+        , mFillSymbol( 0 )
+        , mMarkerLineSymbol( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
