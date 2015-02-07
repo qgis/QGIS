@@ -187,7 +187,7 @@ void TestQgsComposerRotation::mapRotation()
   composerMap->setMapRotation( 90 );
 
   QgsCompositionChecker checker( "composerrotation_maprotation", mComposition );
-  QVERIFY( checker.testComposition( mReport, 0, 0 ) );
+  QVERIFY( checker.testComposition( mReport, 0, 200 ) );
 
   mComposition->removeItem( composerMap );
   delete composerMap;

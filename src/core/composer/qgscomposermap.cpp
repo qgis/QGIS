@@ -204,6 +204,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
   jobMapSettings.setMapUnits( ms.mapUnits() );
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setOutputImageFormat( ms.outputImageFormat() );
+  jobMapSettings.setRotation( mEvaluatedMapRotation );
 
   //set layers to render
   QStringList theLayerSet = layersToRender();
@@ -255,10 +256,6 @@ void QgsComposerMap::cache( void )
 
   mDrawing = true;
 
-  //in case of rotation, we need to request a larger rectangle and create a larger cache image
-  QgsRectangle requestExtent;
-  requestedExtent( requestExtent );
-
   double horizontalVScaleFactor = horizontalViewScaleFactor();
   if ( horizontalVScaleFactor < 0 )
   {
@@ -266,8 +263,9 @@ void QgsComposerMap::cache( void )
     horizontalVScaleFactor = mLastValidViewScaleFactor > 0 ? mLastValidViewScaleFactor : 1;
   }
 
-  double widthMM = requestExtent.width() * mapUnitsToMM();
-  double heightMM = requestExtent.height() * mapUnitsToMM();
+  const QgsRectangle &ext = *currentMapExtent();
+  double widthMM = ext.width() * mapUnitsToMM();
+  double heightMM = ext.height() * mapUnitsToMM();
 
   int w = widthMM * horizontalVScaleFactor;
   int h = heightMM * horizontalVScaleFactor;
@@ -302,7 +300,7 @@ void QgsComposerMap::cache( void )
 
   QPainter p( &mCacheImage );
 
-  draw( &p, requestExtent, QSizeF( w, h ), mCacheImage.logicalDpiX() );
+  draw( &p, ext, QSizeF( w, h ), mCacheImage.logicalDpiX() );
   p.end();
   mCacheUpdated = true;
 
@@ -344,29 +342,12 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
     //Background color is already included in cached image, so no need to draw
 
-    QgsRectangle requestRectangle;
-    requestedExtent( requestRectangle );
-
-    QgsRectangle cExtent = *currentMapExtent();
-
-    double imagePixelWidth = cExtent.width() / requestRectangle.width() * mCacheImage.width() ; //how many pixels of the image are for the map extent?
+    double imagePixelWidth = mCacheImage.width(); //how many pixels of the image are for the map extent?
     double scale = rect().width() / imagePixelWidth;
-    QgsPoint rotationPoint = QgsPoint(( cExtent.xMaximum() + cExtent.xMinimum() ) / 2.0, ( cExtent.yMaximum() + cExtent.yMinimum() ) / 2.0 );
-
-    //shift such that rotation point is at 0/0 point in the coordinate system
-    double yShiftMM = ( requestRectangle.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
-    double xShiftMM = ( requestRectangle.xMinimum() - rotationPoint.x() ) * mapUnitsToMM();
-
-    //shift such that top left point of the extent at point 0/0 in item coordinate system
-    double xTopLeftShift = ( rotationPoint.x() - cExtent.xMinimum() ) * mapUnitsToMM();
-    double yTopLeftShift = ( cExtent.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
 
     painter->save();
 
     painter->translate( mXOffset, mYOffset );
-    painter->translate( xTopLeftShift, yTopLeftShift );
-    painter->rotate( mEvaluatedMapRotation );
-    painter->translate( xShiftMM, -yShiftMM );
     painter->scale( scale, scale );
     painter->drawImage( 0, 0, mCacheImage );
 
@@ -397,32 +378,17 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
       drawBackground( painter );
     }
 
-    QgsRectangle requestRectangle;
-    requestedExtent( requestRectangle );
-
     QgsRectangle cExtent = *currentMapExtent();
 
-    QSizeF theSize( requestRectangle.width() * mapUnitsToMM(), requestRectangle.height() * mapUnitsToMM() );
+    QSizeF theSize( cExtent.width() * mapUnitsToMM(), cExtent.height() * mapUnitsToMM() );
 
-    QgsPoint rotationPoint = QgsPoint(( cExtent.xMaximum() + cExtent.xMinimum() ) / 2.0, ( cExtent.yMaximum() + cExtent.yMinimum() ) / 2.0 );
-
-    //shift such that rotation point is at 0/0 point in the coordinate system
-    double yShiftMM = ( requestRectangle.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
-    double xShiftMM = ( requestRectangle.xMinimum() - rotationPoint.x() ) * mapUnitsToMM();
-
-    //shift such that top left point of the extent at point 0/0 in item coordinate system
-    double xTopLeftShift = ( rotationPoint.x() - cExtent.xMinimum() ) * mapUnitsToMM();
-    double yTopLeftShift = ( cExtent.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
     painter->save();
     painter->translate( mXOffset, mYOffset );
-    painter->translate( xTopLeftShift, yTopLeftShift );
-    painter->rotate( mEvaluatedMapRotation );
-    painter->translate( xShiftMM, -yShiftMM );
 
     double dotsPerMM = thePaintDevice->logicalDpiX() / 25.4;
     theSize *= dotsPerMM; // output size will be in dots (pixels)
     painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-    draw( painter, requestRectangle, theSize, thePaintDevice->logicalDpiX() );
+    draw( painter, cExtent, theSize, thePaintDevice->logicalDpiX() );
 
     //restore rotation
     painter->restore();
