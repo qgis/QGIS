@@ -73,7 +73,10 @@ namespace pal
     }
   }
 
-  Problem::Problem() : nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( 0 ), labelpositions( NULL ), featStartId( NULL ), featNbLp( NULL ), inactiveCost( NULL ), sol( NULL )
+  Problem::Problem() : nbLabelledLayers( 0 ), labelledLayersName( NULL ), nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( false ),
+      scale( 0 ), labelPositionCost( NULL ), nbOlap( NULL ),
+      labelpositions( NULL ), featStartId( NULL ), featNbLp( NULL ), inactiveCost( NULL ), sol( NULL ), nbActive( 0 ), nbOverlap( 0.0 ),
+      pal( NULL )
   {
     bbox[0] = 0;
     bbox[1] = 0;

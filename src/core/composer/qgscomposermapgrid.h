@@ -881,6 +881,8 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
         QgsComposerMapGrid::AnnotationCoordinate coordinateType;
     };
 
+    void init();
+
     /**Draws the map grid*/
     void drawGridFrame( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines ) const;
 
@@ -961,5 +963,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
 
     friend class TestQgsComposerMapGrid;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsComposerMapGrid::FrameSideFlags )
 
 #endif // QGSCOMPOSERMAPGRID_H

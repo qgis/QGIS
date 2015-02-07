@@ -41,6 +41,8 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path , QString uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
+    , mCapabilities( NULL )
+    , mGotCapabilities( false )
 {
   mIconName = "mIconWfs.svg";
 }

@@ -336,6 +336,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
     , mAvailableSortProxyModel( NULL )
     , mAvailableSortProxyModelV1( NULL )
     , mColumnAlignmentDelegate( NULL )
+    , mColumnSourceDelegate( NULL )
     , mColumnSortOrderDelegate( NULL )
     , mColumnWidthDelegate( NULL )
 {

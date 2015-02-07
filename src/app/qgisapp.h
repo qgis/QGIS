@@ -1494,8 +1494,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsCustomLayerOrderWidget* mMapLayerOrder;
     //! Cursor for the overview map
     QCursor *mOverviewMapCursor;
-    //! scale factor
-    double mScaleFactor;
     //! Current map window extent in real-world coordinates
     QRect *mMapWindow;
     //! The previously selected non zoom map tool.

@@ -49,11 +49,14 @@ struct QgsFeatureIdFilter : public QgsPointLocator::MatchFilter
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
     : QgsMapToolEdit( canvas )
     , mSelectedFeature( 0 )
+    , mSelectionRectangle( false )
     , mMoving( true )
     , mClicked( false )
     , mCtrl( false )
     , mSelectAnother( false )
+    , mAnother( 0 )
     , mSelectionRubberBand( 0 )
+    , mRect( NULL )
     , mIsPoint( false )
     , mDeselectOnRelease( -1 )
 {
@@ -63,6 +66,8 @@ QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
 QgsMapToolNodeTool::~QgsMapToolNodeTool()
 {
   cleanTool();
+  delete mRect;
+  delete mSelectionRubberBand;
 }
 
 void QgsMapToolNodeTool::createMovingRubberBands()
@@ -513,6 +518,12 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
     mSelectionRubberBand = 0;
   }
 
+  if ( mRect )
+  {
+    delete mRect;
+    mRect = 0;
+  }
+
   if ( mPressCoordinates == e->pos() )
   {
     if ( mSelectAnother )
@@ -605,7 +616,9 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
 void QgsMapToolNodeTool::deactivate()
 {
   cleanTool();
-
+  delete mRect;
+  mRect = 0;
+  delete mSelectionRubberBand;
   mSelectionRubberBand = 0;
   mSelectAnother = false;
   mCtrl = false;

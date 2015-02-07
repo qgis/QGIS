@@ -22,6 +22,11 @@ QgsTransectSample::QgsTransectSample( QgsVectorLayer* strataLayer, QString strat
 }
 
 QgsTransectSample::QgsTransectSample()
+    : mStrataLayer( NULL )
+    , mBaselineLayer( NULL )
+    , mShareBaseline( false )
+    , mMinDistanceUnits( Meters )
+    , mMinTransectLength( 0.0 )
 {
 }
 

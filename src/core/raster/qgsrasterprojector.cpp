@@ -96,6 +96,13 @@ QgsRasterProjector::QgsRasterProjector()
 
 QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
     : QgsRasterInterface( 0 )
+    , pHelperTop( NULL )
+    , pHelperBottom( NULL )
+    , mHelperTopRow( 0 )
+    , mCPCols( 0 )
+    , mCPRows( 0 )
+    , mSqrTolerance( 0 )
+    , mApproximate( false )
 {
   mSrcCRS = projector.mSrcCRS;
   mDestCRS = projector.mDestCRS;
@@ -104,6 +111,17 @@ QgsRasterProjector::QgsRasterProjector( const QgsRasterProjector &projector )
   mMaxSrcXRes = projector.mMaxSrcXRes;
   mMaxSrcYRes = projector.mMaxSrcYRes;
   mExtent = projector.mExtent;
+  mDestRows = projector.mDestRows;
+  mDestCols = projector.mDestCols;
+  mDestXRes = projector.mDestXRes;
+  mDestYRes = projector.mDestYRes;
+  mSrcRows = projector.mSrcRows;
+  mSrcCols = projector.mSrcCols;
+  mSrcXRes = projector.mSrcXRes;
+  mSrcYRes = projector.mSrcYRes;
+  mDestRowsPerMatrixRow = projector.mDestRowsPerMatrixRow;
+  mDestColsPerMatrixCol = projector.mDestColsPerMatrixCol;
+
 }
 
 QgsRasterProjector & QgsRasterProjector::operator=( const QgsRasterProjector & projector )

@@ -117,6 +117,21 @@ ShapeType (1 byte)
 /************************************************************************/
 
 QgsMssqlGeometryParser::QgsMssqlGeometryParser()
+    : pszData( NULL )
+    , pszWkb( NULL )
+    , nWkbLen( 0 )
+    , nWkbMaxLen( 100 )
+    , chByteOrder( QgsApplication::endian() )
+    , chProps( 0 )
+    , nPointSize( 0 )
+    , nPointPos( 0 )
+    , nNumPoints( 0 )
+    , nFigurePos( 0 )
+    , nNumFigures( 0 )
+    , nShapePos( 0 )
+    , nNumShapes( 0 )
+    , nSRSId( 0 )
+    , IsGeography( false )
 {
 }
 

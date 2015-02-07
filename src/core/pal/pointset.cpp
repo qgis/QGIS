@@ -53,6 +53,12 @@ namespace pal
 
 
   PointSet::PointSet()
+      : holeOf( NULL )
+      , parent( NULL )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     nbPoints = cHullSize =  0;
     x = NULL;
@@ -62,6 +68,13 @@ namespace pal
   }
 
   PointSet::PointSet( int nbPoints, double *x, double *y )
+      : cHullSize( 0 )
+      , holeOf( NULL )
+      , parent( NULL )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     this->nbPoints = nbPoints;
     this->x = new double[nbPoints];

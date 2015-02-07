@@ -223,7 +223,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsAttributeTableFilterModel* mFilterModel;
     QgsFeatureListModel* mFeatureListModel;
     QgsAttributeForm* mAttributeForm;
-    QgsCachedFeatureIterator* mFeatureCache;
     QSignalMapper* mPreviewActionMapper;
     QMenu* mPreviewColumnsMenu;
     QgsVectorLayerCache* mLayerCache;

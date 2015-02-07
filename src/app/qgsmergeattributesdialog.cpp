@@ -57,6 +57,9 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
     : QDialog()
+    , mVectorLayer( NULL )
+    , mMapCanvas( NULL )
+    , mSelectionRubberBand( NULL )
 {
   setupUi( this );
 

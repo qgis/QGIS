@@ -46,12 +46,10 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
     : http( NULL )
     , httpid( 0 )
     , httpactive( false )
-    , httpresponsecontenttype( "" )
     , httpurl( uri )
     , httphost( proxyHost )
     , httpredirections( 0 )
     , mWatchdogTimer( NULL )
-    , mError( "" )
 {
   Q_UNUSED( proxyPort );
   Q_UNUSED( proxyUser );
@@ -64,8 +62,14 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
 }
 
 QgsHttpTransaction::QgsHttpTransaction()
+    : http( NULL )
+    , httpid( 0 )
+    , httpactive( false )
+    , httpredirections( 0 )
+    , mWatchdogTimer( NULL )
 {
-
+  QSettings s;
+  mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
 }
 
 QgsHttpTransaction::~QgsHttpTransaction()

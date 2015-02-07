@@ -20,6 +20,13 @@
 
 #include "qgscoordinatereferencesystem.h"
 
+QgsGeometryCoordinateTransform::QgsGeometryCoordinateTransform()
+    : mCoordTransform( NULL )
+    , mFuncTransform( NULL )
+{
+
+}
+
 QgsGeometryCoordinateTransform::~QgsGeometryCoordinateTransform()
 {
   delete mCoordTransform;

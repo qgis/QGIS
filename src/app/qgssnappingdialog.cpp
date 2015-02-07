@@ -107,6 +107,8 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas )
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
+    : mMapCanvas( NULL )
+    , mDock( NULL )
 {
 }
 
