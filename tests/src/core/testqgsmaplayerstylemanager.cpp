@@ -60,14 +60,11 @@ void TestQgsMapLayerStyleManager::testDefault()
 
 void TestQgsMapLayerStyleManager::testStyle()
 {
-  QgsLineSymbolV2* sym1 = new QgsLineSymbolV2();
-  sym1->setColor( Qt::magenta );
-  QgsLineSymbolV2* sym2 = new QgsLineSymbolV2();
-  sym2->setColor( Qt::red );
-
   QgsMapLayerStyle st;
   QCOMPARE( st.isValid(), false );
 
+  QgsLineSymbolV2* sym1 = new QgsLineSymbolV2();
+  sym1->setColor( Qt::magenta );
   mVL->setRendererV2( new QgsSingleSymbolRendererV2( sym1 ) );
 
   QgsMapLayerStyle st1;
@@ -76,6 +73,8 @@ void TestQgsMapLayerStyleManager::testStyle()
 
   qDebug( "CNT-1: %s", st1.xmlData().toAscii().data() );
 
+  QgsLineSymbolV2* sym2 = new QgsLineSymbolV2();
+  sym2->setColor( Qt::red );
   mVL->setRendererV2( new QgsSingleSymbolRendererV2( sym2 ) );
 
   QgsMapLayerStyle st2;

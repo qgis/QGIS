@@ -314,7 +314,7 @@ void QgsCptCityColorRampV2Dialog::on_mListWidget_itemClicked( QListWidgetItem * 
   }
   else
   {
-    QgsDebugMsg( QString( "item %1 has invalid type %2" ).arg( rampItem->path() ).arg(( int )rampItem->type() ) );
+    QgsDebugMsg( "invalid item" );
   }
 }
 

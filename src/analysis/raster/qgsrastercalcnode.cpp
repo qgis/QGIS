@@ -153,6 +153,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
         break;
       case opATAN:
         leftMatrix.atangens();
+        break;
       case opSIGN:
         leftMatrix.changeSign();
         break;

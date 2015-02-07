@@ -794,8 +794,10 @@ bool QgsCptCityColorRampItem::equal( const QgsCptCityDataItem *other )
   }
   //const QgsCptCityColorRampItem *o = qobject_cast<const QgsCptCityColorRampItem *> ( other );
   const QgsCptCityColorRampItem *o = dynamic_cast<const QgsCptCityColorRampItem *>( other );
-  return ( mPath == o->mPath && mName == o->mName &&
-           ramp().variantName() == o->ramp().variantName() );
+  return o &&
+         mPath == o->mPath &&
+         mName == o->mName &&
+         ramp().variantName() == o->ramp().variantName();
 }
 
 QIcon QgsCptCityColorRampItem::icon()

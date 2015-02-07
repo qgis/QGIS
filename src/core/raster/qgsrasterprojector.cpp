@@ -174,15 +174,18 @@ void QgsRasterProjector::calc()
   if ( mInput )
   {
     QgsRasterDataProvider *provider = dynamic_cast<QgsRasterDataProvider*>( mInput->srcInput() );
-    if ( provider && ( provider->capabilities() & QgsRasterDataProvider::Size ) )
+    if ( provider )
     {
-      mMaxSrcXRes = provider->extent().width() / provider->xSize();
-      mMaxSrcYRes = provider->extent().height() / provider->ySize();
-    }
-    // Get source extent
-    if ( mExtent.isEmpty() )
-    {
-      mExtent = provider->extent();
+      if ( provider->capabilities() & QgsRasterDataProvider::Size )
+      {
+        mMaxSrcXRes = provider->extent().width() / provider->xSize();
+        mMaxSrcYRes = provider->extent().height() / provider->ySize();
+      }
+      // Get source extent
+      if ( mExtent.isEmpty() )
+      {
+        mExtent = provider->extent();
+      }
     }
   }
 

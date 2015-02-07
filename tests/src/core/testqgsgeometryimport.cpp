@@ -147,12 +147,11 @@ void TestQgsGeometryImport::linestringWkt()
   QFETCH( QString, wktString );
   QFETCH( QVariantList, line );
 
-  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
+  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wktString ) );
   QCOMPARE( geom->wkbType(), QGis::WKBLineString );
 
   QgsPolyline polyLine = geom->asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
-  delete geom;
 }
 
 void TestQgsGeometryImport::linestringWkb_data()

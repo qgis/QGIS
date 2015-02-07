@@ -806,12 +806,14 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   if ( renderer->type() == "pointDisplacement" )
   {
     const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
-    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+    if ( pointDisplacementRenderer )
+      return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
   }
   if ( renderer->type() == "invertedPolygonRenderer" )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
-    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+    if ( invertedPolygonRenderer )
+      return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
@@ -823,6 +825,6 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   {
     r->setSourceSymbol( symbols.at( 0 )->clone() );
   }
-  return r;
 
+  return r;
 }

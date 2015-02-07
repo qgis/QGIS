@@ -713,7 +713,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     QgsPythonRunner::run( "import pyplugin_installer" );
     QgsPythonRunner::run( "pyplugin_installer.initPluginInstaller()" );
     // enable Python in the Plugin Manager and pass the PythonUtils to it
-    mPluginManager -> setPythonUtils( mPythonUtils );
+    mPluginManager->setPythonUtils( mPythonUtils );
   }
   else
   {
@@ -2988,13 +2988,16 @@ bool QgisApp::askUserForZipItemLayers( QString path )
   foreach ( QgsDataItem* item, childItems )
   {
     QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
+    if ( !layerItem )
+      continue;
+
     QgsDebugMsg( QString( "item path=%1 provider=%2" ).arg( item->path() ).arg( layerItem->providerKey() ) );
-    if ( layerItem && layerItem->providerKey() == "gdal" )
+    if ( layerItem->providerKey() == "gdal" )
     {
       if ( addRasterLayer( item->path(), QFileInfo( item->name() ).completeBaseName() ) )
         ok = true;
     }
-    else if ( layerItem && layerItem->providerKey() == "ogr" )
+    else if ( layerItem->providerKey() == "ogr" )
     {
       if ( addVectorLayers( QStringList( item->path() ), "System", "file" ) )
         ok = true;

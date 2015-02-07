@@ -357,8 +357,11 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
     return false;
 
   QgsRasterDataProvider *dprovider = layer->dataProvider();
+  if ( !dprovider )
+    return false;
+
   int capabilities = dprovider->capabilities();
-  if ( !dprovider || !( capabilities & QgsRasterDataProvider::Identify ) )
+  if ( !( capabilities & QgsRasterDataProvider::Identify ) )
     return false;
 
   QgsPoint pointInCanvasCrs = point;
@@ -374,7 +377,8 @@ bool QgsMapToolIdentify::identifyRasterLayer( QList<IdentifyResult> *results, Qg
   }
   QgsDebugMsg( QString( "point = %1 %2" ).arg( point.x() ).arg( point.y() ) );
 
-  if ( !layer->extent().contains( point ) ) return false;
+  if ( !layer->extent().contains( point ) )
+    return false;
 
   QMap< QString, QString > attributes, derivedAttributes;
 

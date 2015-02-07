@@ -164,12 +164,12 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
   double yComponent = 0;
 
   double xVal = 0;
-  if ( mXIndex != -1 )
+  if ( f && mXIndex != -1 )
   {
     xVal = f->attribute( mXIndex ).toDouble();
   }
   double yVal = 0;
-  if ( mYIndex != -1 )
+  if ( f && mYIndex != -1 )
   {
     yVal = f->attribute( mYIndex ).toDouble();
   }

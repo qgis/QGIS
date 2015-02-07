@@ -115,39 +115,48 @@ QList<QPair<QLabel*, QWidget*> > QgsVectorLayerSaveAsDialog::createControls( con
     {
       case QgsVectorFileWriter::Int:
       {
-        QgsVectorFileWriter::IntOption* opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
-        QSpinBox* sb = new QSpinBox();
-        sb->setObjectName( it.key() );
-        sb->setValue( opt->defaultValue );
-        control = sb;
+        QgsVectorFileWriter::IntOption *opt = dynamic_cast<QgsVectorFileWriter::IntOption*>( option );
+        if ( opt )
+        {
+          QSpinBox *sb = new QSpinBox();
+          sb->setObjectName( it.key() );
+          sb->setValue( opt->defaultValue );
+          control = sb;
+        }
         break;
       }
 
       case QgsVectorFileWriter::Set:
       {
-        QgsVectorFileWriter::SetOption* opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
-        QComboBox* cb = new QComboBox();
-        cb->setObjectName( it.key() );
-        Q_FOREACH ( const QString& val, opt->values )
+        QgsVectorFileWriter::SetOption *opt = dynamic_cast<QgsVectorFileWriter::SetOption*>( option );
+        if ( opt )
         {
-          cb->addItem( val, val );
+          QComboBox* cb = new QComboBox();
+          cb->setObjectName( it.key() );
+          Q_FOREACH ( const QString& val, opt->values )
+          {
+            cb->addItem( val, val );
+          }
+          if ( opt->allowNone )
+            cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
+          int idx = cb->findText( opt->defaultValue );
+          if ( idx == -1 )
+            idx = cb->findData( QVariant( QVariant::String ) );
+          cb->setCurrentIndex( idx );
+          control = cb;
         }
-        if ( opt->allowNone )
-          cb->addItem( tr( "<Default>" ), QVariant( QVariant::String ) );
-        int idx = cb->findText( opt->defaultValue );
-        if ( idx == -1 )
-          idx = cb->findData( QVariant( QVariant::String ) );
-        cb->setCurrentIndex( idx );
-        control = cb;
         break;
       }
 
       case QgsVectorFileWriter::String:
       {
-        QgsVectorFileWriter::StringOption* opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
-        QLineEdit* le = new QLineEdit( opt->defaultValue );
-        le->setObjectName( it.key() );
-        control = le;
+        QgsVectorFileWriter::StringOption *opt = dynamic_cast<QgsVectorFileWriter::StringOption*>( option );
+        if ( opt )
+        {
+          QLineEdit* le = new QLineEdit( opt->defaultValue );
+          le->setObjectName( it.key() );
+          control = le;
+        }
         break;
       }
 

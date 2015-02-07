@@ -80,20 +80,27 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
     if ( !labelFieldName.isEmpty() )
     {
       mCurLabelField = vlayer->fieldNameIndex( labelFieldName );
-      mLabelTextLineEdit->setText( attributeValues[mCurLabelField].toString() );
-      const QgsFields& layerFields = vlayer->pendingFields();
-      switch ( layerFields[mCurLabelField].type() )
+      if ( mCurLabelField >= 0 )
       {
-        case QVariant::Double:
-          mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );
-          break;
-        case QVariant::Int:
-        case QVariant::UInt:
-        case QVariant::LongLong:
-          mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
-          break;
-        default:
-          break;
+        mLabelTextLineEdit->setText( attributeValues[mCurLabelField].toString() );
+        const QgsFields& layerFields = vlayer->pendingFields();
+        switch ( layerFields[mCurLabelField].type() )
+        {
+          case QVariant::Double:
+            mLabelTextLineEdit->setValidator( new QDoubleValidator( this ) );
+            break;
+          case QVariant::Int:
+          case QVariant::UInt:
+          case QVariant::LongLong:
+            mLabelTextLineEdit->setValidator( new QIntValidator( this ) );
+            break;
+          default:
+            break;
+        }
+      }
+      else
+      {
+        mLabelTextLineEdit->setEnabled( false );
       }
     }
   }

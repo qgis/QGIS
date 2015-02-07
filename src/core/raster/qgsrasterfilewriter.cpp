@@ -321,7 +321,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   QgsDebugMsg( "Entered" );
 
   const QgsRasterInterface* iface = iter->input();
-  const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
+  const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
   int nBands = iface->bandCount();
   QgsDebugMsg( QString( "nBands = %1" ).arg( nBands ) );
 
@@ -405,7 +405,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
     QList<QgsRasterBlock*> destBlockList;
     for ( int i = 1; i <= nBands; ++i )
     {
-      if ( srcProvider->dataType( i ) == destDataType )
+      if ( srcProvider && srcProvider->dataType( i ) == destDataType )
       {
         destBlockList.push_back( blockList[i-1] );
       }

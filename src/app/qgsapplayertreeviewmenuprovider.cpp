@@ -217,8 +217,11 @@ bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )
 
 void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
 {
+  if ( !action || !layer )
+    return;
+
   legendLayerActions( layer->type() );
-  if ( !action || !layer || ! mLegendLayerActionMap.contains( layer->type() ) )
+  if ( !mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it

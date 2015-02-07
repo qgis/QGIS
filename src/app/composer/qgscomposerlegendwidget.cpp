@@ -87,7 +87,9 @@ class QgsComposerLegendMenuProvider : public QObject, public QgsLayerTreeViewMen
 
 
 
-QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): QgsComposerItemBaseWidget( 0, legend ), mLegend( legend )
+QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
+    : QgsComposerItemBaseWidget( 0, legend )
+    , mLegend( legend )
 {
   setupUi( this );
 
@@ -113,9 +115,8 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): Q
   if ( legend )
   {
     connect( legend, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
+    mWrapCharLineEdit->setText( legend->wrapChar() );
   }
-
-  mWrapCharLineEdit->setText( legend->wrapChar() );
 
   setGuiElements();
 

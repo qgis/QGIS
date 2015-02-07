@@ -164,6 +164,12 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
       break;
 
     QgsGeometry* g1 = it->feature.geometry();
+    if ( !g1 || !g1->asGeos() )
+    {
+      badG1 = true;
+      continue;
+    }
+
     QgsRectangle bb = g1->boundingBox();
 
     // increase bounding box by tolerance
@@ -188,13 +194,6 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
       {
         badG2 = true;
         continue;
-      }
-
-      if ( !g1 || !g1->asGeos() )
-      {
-        badG1 = true;
-        continue;
-
       }
 
       if ( g1->distance( *g2 ) < tolerance )

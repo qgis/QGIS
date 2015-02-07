@@ -523,7 +523,8 @@ void QgsWMSSourceSelect::addClicked()
       }
     }
 
-    Q_ASSERT( layer );
+    if ( !layer )
+      return;
 
     if ( !layer->dimensions.isEmpty() )
     {

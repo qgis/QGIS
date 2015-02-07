@@ -1226,8 +1226,8 @@ void QgsPluginManager::on_buttonUninstall_clicked()
 
 void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 {
-  buttonEditRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
-  buttonDeleteRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
+  buttonEditRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
+  buttonDeleteRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
 }
 
 

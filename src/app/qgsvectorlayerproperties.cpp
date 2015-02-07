@@ -293,9 +293,12 @@ QgsVectorLayerProperties::~QgsVectorLayerProperties()
 
 void QgsVectorLayerProperties::toggleEditing()
 {
+  if ( !layer )
+    return;
+
   emit toggleEditing( layer );
 
-  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+  pbnQueryBuilder->setEnabled( layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                !layer->isEditable() && layer->vectorJoins().size() < 1 );
   if ( layer->isEditable() )
   {
@@ -381,7 +384,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // on the builder. If the ability to enter a query directly into the box is required,
   // a mechanism to check it must be implemented.
   txtSubsetSQL->setEnabled( false );
-  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+  pbnQueryBuilder->setEnabled( layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                !layer->isEditable() && layer->vectorJoins().size() < 1 );
   if ( layer->isEditable() )
   {
@@ -396,7 +399,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
     fieldComboBox->addItem( myFields[idx].name() );
   }
 
-  setDisplayField( layer-> displayField() );
+  setDisplayField( layer->displayField() );
 
   // set up the scale based layer visibility stuff....
   mScaleRangeWidget->setScaleRange( 1.0 / layer->maximumScale(), 1.0 / layer->minimumScale() ); // caution: layer uses scale denoms, widget uses true scales

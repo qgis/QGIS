@@ -641,7 +641,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 
     QString type = layerElem.attribute( "type" );
     QgsDebugMsg( type );
-    QgsMapLayer *layer = NULL;
+    QgsMapLayer *layer = 0;
 
     if ( type == "vector" )
     {
@@ -656,6 +656,9 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
       QString typeName = layerElem.attribute( "name" );
       layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
     }
+
+    if ( !layer )
+      continue;
 
     bool ok = layer->readLayerXML( layerElem );
     if ( ok )

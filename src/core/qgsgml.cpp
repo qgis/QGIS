@@ -431,6 +431,7 @@ void QgsGml::endElement( const XML_Char* el )
       else
       {
         QgsDebugMsg( "No wkb fragments" );
+        delete [] wkb;
       }
     }
   }

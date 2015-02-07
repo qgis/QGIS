@@ -2907,17 +2907,20 @@ void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     const QgsVectorJoinInfo* join = mJoinBuffer->joinForFieldIndex( index, mUpdatedFields, sourceLayerIndex );
     Q_ASSERT( join );
 
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
-    Q_ASSERT( vl );
+    QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( join->joinLayerId ) );
 
-    return vl->dataProvider()->uniqueValues( sourceLayerIndex, uniqueValues, limit );
+    if ( vl )
+      vl->dataProvider()->uniqueValues( sourceLayerIndex, uniqueValues, limit );
+
+    return;
   }
   else if ( origin == QgsFields::OriginEdit || origin == QgsFields::OriginExpression )
   {
     // the layer is editable, but in certain cases it can still be avoided going through all features
     if ( origin == QgsFields::OriginEdit && mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mAddedFeatures.isEmpty() && !mEditBuffer->mDeletedAttributeIds.contains( index ) && mEditBuffer->mChangedAttributeValues.isEmpty() )
     {
-      return mDataProvider->uniqueValues( index, uniqueValues, limit );
+      mDataProvider->uniqueValues( index, uniqueValues, limit );
+      return;
     }
 
     // we need to go through each feature
@@ -3608,10 +3611,16 @@ void QgsVectorLayer::onRelationsLoaded()
     if ( elem->type() == QgsAttributeEditorElement::AeTypeContainer )
     {
       QgsAttributeEditorContainer* cont = dynamic_cast< QgsAttributeEditorContainer* >( elem );
+      if ( !cont )
+        continue;
+
       QList<QgsAttributeEditorElement*> relations = cont->findElements( QgsAttributeEditorElement::AeTypeRelation );
       Q_FOREACH ( QgsAttributeEditorElement* relElem, relations )
       {
         QgsAttributeEditorRelation* rel = dynamic_cast< QgsAttributeEditorRelation* >( relElem );
+        if ( !rel )
+          continue;
+
         rel->init( QgsProject::instance()->relationManager() );
       }
     }

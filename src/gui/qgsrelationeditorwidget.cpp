@@ -246,6 +246,11 @@ void QgsRelationEditorWidget::unlinkFeature()
   Q_FOREACH ( const QgsRelation::FieldPair fieldPair, mRelation.fieldPairs() )
   {
     int idx = mRelation.referencingLayer()->fieldNameIndex( fieldPair.referencingField() );
+    if ( idx < 0 )
+    {
+      QgsDebugMsg( QString( "referencing field %1 not found" ).arg( fieldPair.referencingField() ) );
+      return;
+    }
     QgsField fld = mRelation.referencingLayer()->pendingFields().at( idx );
     keyFields.insert( idx, fld );
   }

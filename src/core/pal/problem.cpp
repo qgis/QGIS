@@ -2352,7 +2352,7 @@ namespace pal
           std::cout << "new_best" << std::endl;
 #endif
           best_cost = cur_cost;
-          memcpy( best_sol, sol, sizeof( int ) *subSize );
+          memcpy( best_sol, sol, sizeof( int ) * subSize );
 
           stop_it = ( it + itwimp > maxit ? maxit : it + itwimp );
         }

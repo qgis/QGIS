@@ -143,7 +143,7 @@ bool QgsSLConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
   const QgsSLConnectionItem *o = dynamic_cast<const QgsSLConnectionItem *>( other );
-  return ( mPath == o->mPath && mName == o->mName );
+  return o && mPath == o->mPath && mName == o->mName;
 }
 
 QList<QAction*> QgsSLConnectionItem::actions()

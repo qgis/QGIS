@@ -214,7 +214,7 @@ bool TestZipLayer::testZipItem( QString myFileName, QString myChildName, QString
       }
       else
       {
-        QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
+        QWARN( QString( "Invalid layer %1" ).arg( layerItem ? layerItem->path() : "(null)" ).toLocal8Bit().data() );
         break;
       }
     }

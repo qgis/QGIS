@@ -2447,14 +2447,12 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
     const QgsCoordinateTransform* ct, QString* errorMessage )
 {
   if ( !layer )
-  {
-    //return error
-  }
-  QgsFeatureRendererV2* renderer = layer->rendererV2();
+    return ErrInvalidLayer;
+
+  QgsFeatureRendererV2 *renderer = layer->rendererV2();
   if ( !renderer )
-  {
-    //return error
-  }
+    return ErrInvalidLayer;
+
   QHash< QgsSymbolV2*, QList<QgsFeature> > features;
 
   //unit type
