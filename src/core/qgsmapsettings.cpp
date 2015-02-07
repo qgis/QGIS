@@ -311,6 +311,21 @@ QgsRectangle QgsMapSettings::visibleExtent() const
   return mVisibleExtent;
 }
 
+QPolygonF QgsMapSettings::visiblePolygon() const
+{
+  QPolygonF poly;
+
+  const QSize& sz = outputSize();
+  const QgsMapToPixel& m2p = mapToPixel();
+
+  poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
+  poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
+  poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
+  poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
+
+  return poly;
+}
+
 double QgsMapSettings::mapUnitsPerPixel() const
 {
   return mMapUnitsPerPixel;

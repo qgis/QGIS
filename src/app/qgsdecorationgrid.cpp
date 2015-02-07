@@ -524,15 +524,7 @@ QPolygonF canvasPolygon()
 
   const QgsMapCanvas& mapCanvas = canvas();
   const QgsMapSettings& mapSettings = mapCanvas.mapSettings();
-  const QSize& sz = mapSettings.outputSize();
-  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
-
-  poly << m2p.toMapCoordinatesF( 0,          0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), 0 ).toQPointF();
-  poly << m2p.toMapCoordinatesF( sz.width(), sz.height() ).toQPointF();
-  poly << m2p.toMapCoordinatesF( 0,          sz.height() ).toQPointF();
-
-  return poly;
+  return mapSettings.visiblePolygon();
 }
 
 bool clipByRect( QLineF& line, const QPolygonF& rect )
