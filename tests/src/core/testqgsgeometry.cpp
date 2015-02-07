@@ -41,6 +41,10 @@
 class TestQgsGeometry : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsGeometry();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -107,6 +111,16 @@ class TestQgsGeometry : public QObject
     QPen mPen2;
     QString mReport;
 };
+
+TestQgsGeometry::TestQgsGeometry()
+    : mpPolylineGeometryD( NULL )
+    , mpPolygonGeometryA( NULL )
+    , mpPolygonGeometryB( NULL )
+    , mpPolygonGeometryC( NULL )
+    , mpPainter( NULL )
+{
+
+}
 
 
 void TestQgsGeometry::init()

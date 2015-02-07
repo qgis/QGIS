@@ -26,6 +26,10 @@
 class TestQgsComposerMultiFrame : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerMultiFrame();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -42,6 +46,12 @@ class TestQgsComposerMultiFrame : public QObject
     QgsMapSettings mMapSettings;
     QString mReport;
 };
+
+TestQgsComposerMultiFrame::TestQgsComposerMultiFrame()
+    : mComposition( NULL )
+{
+
+}
 
 void TestQgsComposerMultiFrame::initTestCase()
 {

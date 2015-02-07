@@ -26,11 +26,15 @@
 class TestQgsZonalStatistics : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsZonalStatistics();
+
   private slots:
     void initTestCase();
     void cleanupTestCase();
-    void init() {};
-    void cleanup() {};
+    void init() {}
+    void cleanup() {}
 
     void testStatistics();
 
@@ -38,6 +42,12 @@ class TestQgsZonalStatistics : public QObject
     QgsVectorLayer* mVectorLayer;
     QString mRasterPath;
 };
+
+TestQgsZonalStatistics::TestQgsZonalStatistics()
+    : mVectorLayer( NULL )
+{
+
+}
 
 void TestQgsZonalStatistics::initTestCase()
 {

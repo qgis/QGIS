@@ -31,11 +31,14 @@ class TestQgsDataItem : public QObject
 {
     Q_OBJECT
 
+  public:
+    TestQgsDataItem();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void testValid();
     void testDirItemChildren();
@@ -45,6 +48,12 @@ class TestQgsDataItem : public QObject
     QString mScanItemsSetting;
     bool isValidDirItem( QgsDirectoryItem *item );
 };
+
+TestQgsDataItem::TestQgsDataItem()
+    : mDirItem( NULL )
+{
+
+}
 
 void TestQgsDataItem::initTestCase()
 {

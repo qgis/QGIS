@@ -28,6 +28,9 @@
 class TestQgsComposerUtils : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsComposerUtils();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -65,6 +68,12 @@ class TestQgsComposerUtils : public QObject
     QFont mTestFont;
 
 };
+
+TestQgsComposerUtils::TestQgsComposerUtils()
+    : mComposition( NULL )
+{
+
+}
 
 void TestQgsComposerUtils::initTestCase()
 {

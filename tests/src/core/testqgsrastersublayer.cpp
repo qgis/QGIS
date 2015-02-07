@@ -51,11 +51,15 @@
 class TestQgsRasterSubLayer : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsRasterSubLayer();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
 
     void subLayersList();
     void checkStats();
@@ -66,6 +70,13 @@ class TestQgsRasterSubLayer : public QObject
     QString mReport;
     bool mHasNetCDF;
 };
+
+TestQgsRasterSubLayer::TestQgsRasterSubLayer()
+    : mpRasterLayer( NULL )
+    , mHasNetCDF( false )
+{
+
+}
 
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()

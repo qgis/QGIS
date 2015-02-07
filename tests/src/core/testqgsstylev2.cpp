@@ -35,6 +35,9 @@ class TestStyleV2 : public QObject
 {
     Q_OBJECT
 
+  public:
+    TestStyleV2();
+
   private:
 
     QgsStyleV2 *mStyle;
@@ -47,8 +50,8 @@ class TestStyleV2 : public QObject
     // init / cleanup
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
     // void initStyles();
 
     void testCreateColorRamps();
@@ -58,6 +61,11 @@ class TestStyleV2 : public QObject
     void testParseColorList();
 };
 
+TestStyleV2::TestStyleV2()
+    : mStyle( NULL )
+{
+
+}
 
 // slots
 void TestStyleV2::initTestCase()

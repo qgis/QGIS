@@ -36,11 +36,15 @@
 class TestQgisAppClipboard : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgisAppClipboard();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void copyPaste();
 
@@ -48,6 +52,12 @@ class TestQgisAppClipboard : public QObject
     QgisApp * mQgisApp;
     QString mTestDataDir;
 };
+
+TestQgisAppClipboard::TestQgisAppClipboard()
+    : mQgisApp( NULL )
+{
+
+}
 
 //runs before all tests
 void TestQgisAppClipboard::initTestCase()

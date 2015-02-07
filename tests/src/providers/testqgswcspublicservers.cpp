@@ -58,6 +58,7 @@ TestQgsWcsPublicServers::TestQgsWcsPublicServers( const QString & cacheDirPath, 
     , mVersion( version )
     , mForce( force )
     , mTimeout( 300000 )
+    , mOrigTimeout( 20000 )
 {
 
 }
@@ -886,7 +887,7 @@ int main( int argc, char *argv[] )
   QString myCoverage;
   QString myVersion;
   int myMaxCoverages = 2;
-  bool myForce;
+  bool myForce = false;
 
 #ifndef WIN32
   int optionChar;

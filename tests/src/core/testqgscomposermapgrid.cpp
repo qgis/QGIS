@@ -29,6 +29,10 @@
 class TestQgsComposerMapGrid : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsComposerMapGrid();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -60,6 +64,13 @@ class TestQgsComposerMapGrid : public QObject
     QgsMapSettings mMapSettings;
     QString mReport;
 };
+
+TestQgsComposerMapGrid::TestQgsComposerMapGrid()
+    : mComposition( NULL )
+    , mComposerMap( NULL )
+{
+
+}
 
 void TestQgsComposerMapGrid::initTestCase()
 {

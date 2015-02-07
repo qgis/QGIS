@@ -50,6 +50,10 @@
 class Regression1141: public QObject
 {
     Q_OBJECT
+
+  public:
+    Regression1141();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -67,6 +71,12 @@ class Regression1141: public QObject
     QgsFields mFields;
     QString mFileName;
 };
+
+Regression1141::Regression1141()
+    : mError( QgsVectorFileWriter::NoError )
+{
+
+}
 
 void Regression1141::initTestCase()
 {

@@ -43,11 +43,15 @@
 class Regression992 : public QObject
 {
     Q_OBJECT
+
+  public:
+    Regression992();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
 
     void regression992();
   private:
@@ -56,6 +60,12 @@ class Regression992 : public QObject
     QgsRasterLayer *mpRasterLayer;
     QString mReport;
 };
+
+Regression992::Regression992()
+    : mpRasterLayer( NULL )
+{
+
+}
 
 //runs before all tests
 void Regression992::initTestCase()

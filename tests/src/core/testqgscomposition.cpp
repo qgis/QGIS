@@ -31,6 +31,9 @@ class TestQgsComposition : public QObject
 {
     Q_OBJECT
 
+  public:
+    TestQgsComposition();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -46,6 +49,12 @@ class TestQgsComposition : public QObject
     QgsMapSettings mMapSettings;
     QString mReport;
 };
+
+TestQgsComposition::TestQgsComposition()
+    : mComposition( NULL )
+{
+
+}
 
 void TestQgsComposition::initTestCase()
 {
