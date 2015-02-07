@@ -262,11 +262,20 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
     virtual void setWidth( double width );
     virtual double width() const;
 
+    double offset() const;
+    void setOffset( double offset );
+
     void setWidthUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit widthUnit() const;
 
     void setWidthMapUnitScale( const QgsMapUnitScale& scale);
     const QgsMapUnitScale& widthMapUnitScale() const;
+
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
+    QgsSymbolV2::OutputUnit offsetUnit() const;
+
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
+    const QgsMapUnitScale& offsetMapUnitScale() const;
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;
