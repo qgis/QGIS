@@ -208,6 +208,7 @@ class Grass7Utils:
         outfile.close()
 
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'WIND'))
+        mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
         outfile = open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w')
         outfile.write('DB_DRIVER: sqlite\n')
         outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
