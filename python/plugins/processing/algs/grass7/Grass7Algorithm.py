@@ -4,8 +4,8 @@
 ***************************************************************************
     Grass7Algorithm.py
     ---------------------
-    Date                 : April 2014
-    Copyright            : (C) 2014 by Victor Olaya
+    Date                 : February 2015
+    Copyright            : (C) 2014-2015 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'April 2014'
-__copyright__ = '(C) 2014, Victor Olaya'
+__date__ = 'February 2015'
+__copyright__ = '(C) 2012-2015, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -270,6 +270,7 @@ class Grass7Algorithm(GeoAlgorithm):
         region = str(self.getParameterValue(self.GRASS_REGION_EXTENT_PARAMETER))
         regionCoords = region.split(',')
         command = 'g.region'
+        command += ' -a'
         command += ' n=' + str(regionCoords[3])
         command += ' s=' + str(regionCoords[2])
         command += ' e=' + str(regionCoords[1])
@@ -354,11 +355,11 @@ class Grass7Algorithm(GeoAlgorithm):
 
                 # Raster layer output: adjust region to layer before
                 # exporting
-                commands.append('g.region rast=' + out.name + uniqueSufix)
-                outputCommands.append('g.region rast=' + out.name
+                commands.append('g.region raster=' + out.name + uniqueSufix)
+                outputCommands.append('g.region raster=' + out.name
                                       + uniqueSufix)
                 if self.grassName == 'r.composite':
-                    command = 'r.out.tiff -t --verbose'
+                    command = 'r.out.tiff -t --verbose' # FIXME r.out.tiff deprecated, use r.out.gdal
                     command += ' input='
                     command += out.name + uniqueSufix
                     command += ' output="' + filename + '"'
