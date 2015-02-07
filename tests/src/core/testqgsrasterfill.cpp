@@ -45,7 +45,8 @@ class TestQgsRasterFill : public QObject
 
   public:
     TestQgsRasterFill()
-        : mpPolysLayer( 0 )
+        : mTestHasError( false )
+        , mpPolysLayer( 0 )
         , mRasterFill( 0 )
         , mFillSymbol( 0 )
         , mSymbolRenderer( 0 )

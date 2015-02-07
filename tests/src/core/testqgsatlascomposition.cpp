@@ -44,6 +44,9 @@ class TestQgsAtlasComposition : public QObject
         , mLabel2( 0 )
         , mAtlasMap( 0 )
         , mOverview( 0 )
+        , mVectorLayer( 0 )
+        , mVectorLayer2( 0 )
+        , mAtlas( 0 )
     {}
 
   private slots:

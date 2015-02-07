@@ -46,7 +46,8 @@ class TestQgsGradients : public QObject
 
   public:
     TestQgsGradients()
-        : mpPolysLayer( 0 )
+        : mTestHasError( false )
+        , mpPolysLayer( 0 )
         , mGradientFill( 0 )
         , mFillSymbol( 0 )
         , mSymbolRenderer( 0 )

@@ -38,9 +38,11 @@
 /** \ingroup UnitTests
  * This is a unit test to verify that raster histogram works
  */
-class TestRasterHistogram: public QObject
+class TestRasterHistogram : public QObject
 {
     Q_OBJECT
+
+    TestRasterHistogram() {}
 
   private:
 

@@ -53,7 +53,8 @@ class TestQgsDiagram : public QObject
 
   public:
     TestQgsDiagram()
-        : mPointsLayer( 0 )
+        : mTestHasError( false )
+        , mPointsLayer( 0 )
         , mComposition( 0 )
         , mPieDiagram( 0 )
         , mComposerMap( 0 )

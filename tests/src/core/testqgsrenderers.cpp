@@ -42,7 +42,8 @@ class TestQgsRenderers : public QObject
 
   public:
     TestQgsRenderers()
-        : mpPointsLayer( 0 )
+        : mTestHasError( false )
+        , mpPointsLayer( 0 )
         , mpLinesLayer( 0 )
         , mpPolysLayer( 0 )
     {}

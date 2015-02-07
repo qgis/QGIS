@@ -45,7 +45,8 @@ class TestQgsShapeburst : public QObject
     Q_OBJECT
   public:
     TestQgsShapeburst()
-        : mpPolysLayer()
+        : mTestHasError( false )
+        , mpPolysLayer()
         , mShapeburstFill( 0 )
         , mFillSymbol( 0 )
         , mSymbolRenderer( 0 )

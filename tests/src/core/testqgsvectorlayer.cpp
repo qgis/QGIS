@@ -72,7 +72,8 @@ class TestQgsVectorLayer : public QObject
     Q_OBJECT
   public:
     TestQgsVectorLayer()
-        : mpMapRenderer( 0 )
+        : mTestHasError( false )
+        , mpMapRenderer( 0 )
         , mpPointsLayer( 0 )
         , mpLinesLayer( 0 )
         , mpPolysLayer( 0 )
