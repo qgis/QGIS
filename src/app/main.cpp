@@ -251,6 +251,8 @@ static void dumpBacktrace( unsigned int depth )
   }
 
   qgsFree( symbol );
+#else
+  Q_UNUSED( depth );
 #endif
 }
 

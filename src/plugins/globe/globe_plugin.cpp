@@ -128,6 +128,11 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     , mTileSource( 0 )
     , mElevationManager( 0 )
     , mObjectPlacer( 0 )
+    , mControlCanvas( 0 )
+    , mSelectedLat( 0. )
+    , mSelectedLon( 0. )
+    , mSelectedElevation( 0. )
+    , mRootNode( 0 )
 {
   mIsGlobeRunning = false;
   //needed to be "seen" by other plugins by doing

@@ -145,7 +145,6 @@ class ShapefileTableDelegate : public QItemDelegate
 
   private:
     QStringList mSchemaList;
-    int mCurrentIndex;
 };
 
 #endif

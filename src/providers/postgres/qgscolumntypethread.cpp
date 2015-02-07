@@ -27,6 +27,7 @@ QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimate
     , mName( name )
     , mUseEstimatedMetadata( useEstimatedMetaData )
     , mAllowGeometrylessTables( allowGeometrylessTables )
+    , mStopped( false )
 {
   qRegisterMetaType<QgsPostgresLayerProperty>( "QgsPostgresLayerProperty" );
 }

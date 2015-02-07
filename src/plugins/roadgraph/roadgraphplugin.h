@@ -114,7 +114,6 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
     //
     ////////////////////////////////////////////////////////////////////
-    int mPluginType;
 
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;

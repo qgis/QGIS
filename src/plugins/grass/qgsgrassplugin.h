@@ -144,10 +144,8 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QString pluginDescriptionQString;
     //! Category of the plugin
     QString pluginCategoryQString;
-    //! Plugin type as defined in QgisPlugin::PLUGINTYPE
-    int pluginType;
     //! Pointer to our toolbar
-    QToolBar *toolBarPointer;
+    QToolBar *mToolBarPointer;
     //! Pointer to the QGIS interface object
     QgisInterface *qGisInterface;
     //! Pointer to canvas

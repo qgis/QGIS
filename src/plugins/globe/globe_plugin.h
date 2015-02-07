@@ -135,7 +135,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     void setupControls();
 
   private://! Checks if the globe is open
-    int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin

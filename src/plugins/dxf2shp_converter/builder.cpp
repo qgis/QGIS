@@ -43,7 +43,12 @@ Builder::Builder( std::string theFname,
     , fetchedprims( 0 )
     , fetchedtexts( 0 )
     , ignoringBlock( false )
+    , current_polyline_willclose( false )
+    , store_next_vertex_for_polyline_close( false )
     , current_polyline_pointcount( 0 )
+    , closePolyX( 0.0 )
+    , closePolyY( 0.0 )
+    , closePolyZ( 0.0 )
     , currentBlockX( 0.0 )
     , currentBlockY( 0.0 )
 {

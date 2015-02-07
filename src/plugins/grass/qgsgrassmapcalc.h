@@ -152,7 +152,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalcView *mView;
 
     // Canvas
-    QGraphicsScene *mCanvas;
+    QGraphicsScene *mCanvasScene;
 
     // Tool
     int mTool;
@@ -269,8 +269,8 @@ class QgsGrassMapcalcItem
     QgsGrassMapcalcItem();
     virtual ~QgsGrassMapcalcItem();
 
-    virtual void setSelected( bool s );
-    bool selected( void );
+    virtual void setSelected( bool s ) { mSelected = s; }
+    bool selected( void ) { return mSelected; }
 //    virtual void paint ( QPainter * painter,
 //      const QStyleOptionGraphicsItem * option, QWidget * widget );
 //

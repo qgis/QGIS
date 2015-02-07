@@ -287,6 +287,8 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
     , mTools( tools )
     , mModule( module )
     , mDirect( direct )
+    , mParent( 0 )
+    , mRegionModeComboBox( 0 )
 {
   QgsDebugMsg( "called." );
 
@@ -309,8 +311,8 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QgisInterface *iface,
   QString xname, QDomElement qDocElem,
   bool direct, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f ),
-    QgsGrassModuleOptions( tools, module, iface, direct )
+    : QWidget( parent, f )
+    , QgsGrassModuleOptions( tools, module, iface, direct )
 {
   //QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );

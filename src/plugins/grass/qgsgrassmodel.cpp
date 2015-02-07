@@ -77,6 +77,7 @@ QgsGrassModelItem::QgsGrassModelItem()
     : mParent( 0 )
     , mType( QgsGrassModel::None )
     , mPopulated( false )
+    , mModel( 0 )
 {
 }
 

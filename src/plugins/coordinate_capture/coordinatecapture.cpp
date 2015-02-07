@@ -75,6 +75,7 @@ CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
     , mypCRSLabel( NULL )
     , mCanvasDisplayPrecision( 5 )
     , mQGisIface( theQgisInterface )
+    , mUserCrsDisplayPrecision( 5 )
     , mQActionPointer( NULL )
 {
 }

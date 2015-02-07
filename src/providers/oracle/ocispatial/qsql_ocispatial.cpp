@@ -2896,6 +2896,8 @@ QOCISpatialResultPrivate::QOCISpatialResultPrivate( QOCISpatialResult *result, c
     , err( 0 )
     , svc( const_cast<OCISvcCtx*&>( driver->svc ) )
     , sql( 0 )
+    , sdoobj( 0 )
+    , sdoind( 0 )
     , transaction( driver->transaction )
     , serverVersion( driver->serverVersion )
     , prefetchRows( driver->prefetchRows )

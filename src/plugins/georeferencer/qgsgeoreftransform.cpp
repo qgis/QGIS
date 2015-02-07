@@ -35,7 +35,7 @@ using std::pow;
 class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsLinearGeorefTransform() {}
+    QgsLinearGeorefTransform() : mParameters() {}
     ~QgsLinearGeorefTransform() {}
 
     bool getOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
@@ -62,7 +62,7 @@ class QgsLinearGeorefTransform : public QgsGeorefTransformInterface
 class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsHelmertGeorefTransform() {}
+    QgsHelmertGeorefTransform() : mHelmertParameters() {}
     struct HelmertParameters
     {
       QgsPoint origin;
@@ -115,7 +115,7 @@ class QgsGDALGeorefTransform : public QgsGeorefTransformInterface
 class QgsProjectiveGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
-    QgsProjectiveGeorefTransform() {}
+    QgsProjectiveGeorefTransform() : mParameters() {}
     ~QgsProjectiveGeorefTransform() {}
 
     bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords ) override;

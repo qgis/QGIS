@@ -44,7 +44,10 @@ class QgsRequestHandler
 
   public:
 
-    QgsRequestHandler() {}
+    QgsRequestHandler()
+        : mHeadersSent( false )
+        , mException( 0 )
+    {}
     virtual ~QgsRequestHandler() {}
     /**Parses the input and creates a request neutral Parameter/Value map*/
     virtual void parseInput() = 0;

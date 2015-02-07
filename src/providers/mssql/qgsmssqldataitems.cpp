@@ -35,6 +35,9 @@
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
+    , mUseGeometryColumns( false )
+    , mUseEstimatedMetadata( false )
+    , mAllowGeometrylessTables( true )
 {
   mCapabilities |= Fast;
   mIconName = "mIconConnect.png";

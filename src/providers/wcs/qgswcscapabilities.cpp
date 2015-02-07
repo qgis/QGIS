@@ -76,7 +76,8 @@ QgsWcsCapabilities::QgsWcsCapabilities( QgsDataSourceURI const &theUri )
 }
 
 QgsWcsCapabilities::QgsWcsCapabilities()
-    : mCapabilitiesReply( NULL )
+    : mCapabilities()
+    , mCapabilitiesReply( NULL )
     , mCoverageCount( 0 )
 {
 }

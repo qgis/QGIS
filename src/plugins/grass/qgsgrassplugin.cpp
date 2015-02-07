@@ -62,9 +62,24 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
     , pluginVersionQString( tr( "0.1" ) )
     , pluginDescriptionQString( tr( "GRASS layer" ) )
     , pluginCategoryQString( tr( "Plugins" ) )
+    , mToolBarPointer( 0 )
     , qGisInterface( theQgisInterFace )
+    , mCanvas( 0 )
+    , mRegionAction( 0 )
+    , mRegion( 0 )
+    , mRegionBand( 0 )
     , mTools( 0 )
+    , mNewMapset( 0 )
     , mEdit( 0 )
+    , mOpenMapsetAction( 0 )
+    , mNewMapsetAction( 0 )
+    , mCloseMapsetAction( 0 )
+    , mAddVectorAction( 0 )
+    , mAddRasterAction( 0 )
+    , mOpenToolsAction( 0 )
+    , mEditRegionAction( 0 )
+    , mEditAction( 0 )
+    , mNewVectorAction( 0 )
 {
 }
 
@@ -113,7 +128,7 @@ int QgsGrassPlugin::type()
  */
 void QgsGrassPlugin::initGui()
 {
-  toolBarPointer = 0;
+  mToolBarPointer = 0;
   mTools = 0;
   mNewMapset = 0;
   mRegion = 0;
@@ -190,21 +205,21 @@ void QgsGrassPlugin::initGui()
   qGisInterface->addPluginToMenu( tr( "&GRASS" ), mEditRegionAction );
 
   // Add the toolbar to the main window
-  toolBarPointer = qGisInterface->addToolBar( tr( "GRASS" ) );
-  toolBarPointer->setObjectName( "GRASS" );
+  mToolBarPointer = qGisInterface->addToolBar( tr( "GRASS" ) );
+  mToolBarPointer->setObjectName( "GRASS" );
 
   // Add to the toolbar
-  toolBarPointer->addAction( mOpenMapsetAction );
-  toolBarPointer->addAction( mNewMapsetAction );
-  toolBarPointer->addAction( mCloseMapsetAction );
-  toolBarPointer->addSeparator();
-  toolBarPointer->addAction( mAddVectorAction );
-  toolBarPointer->addAction( mAddRasterAction );
-  toolBarPointer->addAction( mNewVectorAction );
-  toolBarPointer->addAction( mEditAction );
-  toolBarPointer->addAction( mOpenToolsAction );
-  toolBarPointer->addAction( mRegionAction );
-  toolBarPointer->addAction( mEditRegionAction );
+  mToolBarPointer->addAction( mOpenMapsetAction );
+  mToolBarPointer->addAction( mNewMapsetAction );
+  mToolBarPointer->addAction( mCloseMapsetAction );
+  mToolBarPointer->addSeparator();
+  mToolBarPointer->addAction( mAddVectorAction );
+  mToolBarPointer->addAction( mAddRasterAction );
+  mToolBarPointer->addAction( mNewVectorAction );
+  mToolBarPointer->addAction( mEditAction );
+  mToolBarPointer->addAction( mOpenToolsAction );
+  mToolBarPointer->addAction( mRegionAction );
+  mToolBarPointer->addAction( mEditRegionAction );
 
   // Set icons to current theme
   setCurrentTheme( "" );
@@ -867,10 +882,10 @@ void QgsGrassPlugin::unload()
   delete mEditAction;
   delete mNewVectorAction;
 
-  if ( toolBarPointer )
+  if ( mToolBarPointer )
   {
-    delete toolBarPointer;
-    toolBarPointer = 0;
+    delete mToolBarPointer;
+    mToolBarPointer = 0;
   }
 
   // disconnect slots of QgsGrassPlugin so they're not fired also after unload
@@ -887,7 +902,7 @@ void QgsGrassPlugin::unload()
 void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
 {
   Q_UNUSED( theThemeName );
-  if ( toolBarPointer )
+  if ( mToolBarPointer )
   {
     mOpenMapsetAction->setIcon( getThemeIcon( "grass_open_mapset.png" ) );
     mNewMapsetAction->setIcon( getThemeIcon( "grass_new_mapset.png" ) );

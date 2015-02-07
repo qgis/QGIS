@@ -68,6 +68,8 @@ QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString
     , mCapabilitiesCache( capCache )
     , mConfigParser( cp )
     , mOwnsConfigParser( false )
+    , mDrawLegendLayerLabel( true )
+    , mDrawLegendItemLabel( true )
 {
 }
 

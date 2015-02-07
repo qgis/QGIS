@@ -60,6 +60,8 @@ void QgsGPSObject::writeXML( QTextStream& stream )
 
 
 QgsGPSPoint::QgsGPSPoint()
+    : lat( 0. )
+    , lon( 0. )
 {
   ele = -std::numeric_limits<double>::max();
 }

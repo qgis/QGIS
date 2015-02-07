@@ -108,6 +108,7 @@ bool QgsWmsSettings::parseUri( QString uriString )
 QgsWmsCapabilities::QgsWmsCapabilities()
     : mValid( false )
     , mLayerCount( -1 )
+    , mCapabilities()
 {
 }
 
