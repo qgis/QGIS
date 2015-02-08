@@ -46,10 +46,11 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
     QRgb curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue, double d1alpha, double d2red, double d2green,
                              double d2blue, double d2alpha );
 
-    static double calcBernsteinPoly( int n, int i, double t );
-    static int lower( int n, int i );
-    static double power( double a, int b );//calculates a power b
-    static int faculty( int n );
+    static inline double calcBernsteinPolyN3( int i, double t );
+    static inline int lowerN3( int i );
+
+    //creates a QRgb by applying bounds checks
+    static inline QRgb createPremultipliedColor( const int r, const int g, const int b, const int a );
 
     //control points
 
@@ -65,6 +66,8 @@ class CORE_EXPORT QgsCubicRasterResampler: public QgsRasterResampler
     //alpha
     double cAlpha00; double cAlpha10; double cAlpha20; double cAlpha30; double cAlpha01; double cAlpha11; double cAlpha21; double cAlpha31;
     double cAlpha02; double cAlpha12; double cAlpha22; double cAlpha32; double cAlpha03; double cAlpha13; double cAlpha23; double cAlpha33;
+
+
 };
 
 #endif // QGSCUBICRASTERRESAMPLER_H
