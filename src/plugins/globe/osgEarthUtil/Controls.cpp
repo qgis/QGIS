@@ -1748,7 +1748,7 @@ ControlNode::traverse( osg::NodeVisitor& nv )
 ControlNode::PerViewData::PerViewData() :
 _obscured   ( true ),
 _visibleTime( 0.0 ),
-_screenPos  ( 0.0, 0.0, 0.0 )
+_screenPos  ( 0.0, 0.0, 0.0 ),
 _visitFrame ( false )
 {
     //nop
