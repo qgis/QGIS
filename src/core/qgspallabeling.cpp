@@ -78,7 +78,8 @@ using namespace pal;
 // -------------
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : palLayer( NULL )
+    : upsidedownLabels( Upright )
+    , palLayer( NULL )
     , mCurFeat( 0 )
     , mCurFields( 0 )
     , xform( NULL )
@@ -87,7 +88,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
     , mFeaturesToLabel( 0 )
     , mFeatsSendingToPal( 0 )
     , mFeatsRegPal( 0 )
-    , expression( NULL )
+    , expression( 0 )
 {
   enabled = false;
   isExpression = false;

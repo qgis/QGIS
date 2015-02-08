@@ -16,7 +16,8 @@
 #include <cfloat>
 
 QgsRasterCalcNode::QgsRasterCalcNode()
-    : mLeft( 0 )
+    : mType( tNumber )
+    , mLeft( 0 )
     , mRight( 0 )
     , mNumber( 0 )
 {

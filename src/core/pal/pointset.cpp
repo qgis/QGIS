@@ -90,13 +90,15 @@ namespace pal
     cHull = NULL;
   }
 
-  PointSet::PointSet( double x, double y )
+  PointSet::PointSet( double aX, double aY )
+      : xmin( aX ), xmax( aY )
+      , ymin( aX ), ymax( aY )
   {
-    nbPoints = cHullSize =  1;
-    this->x = new double[1];
-    this->y = new double[1];
-    this->x[0] = x;
-    this->y[0] = y;
+    nbPoints = cHullSize = 1;
+    x = new double[1];
+    y = new double[1];
+    x[0] = aX;
+    y[0] = aY;
 
     cHull = NULL;
     parent = NULL;

@@ -20,6 +20,18 @@
 #include <cmath>
 
 QgsCubicRasterResampler::QgsCubicRasterResampler()
+// red
+    : cRed00( 0.0 ), cRed10( 0.0 ), cRed20( 0.0 ), cRed30( 0.0 ), cRed01( 0.0 ), cRed11( 0.0 ), cRed21( 0.0 ), cRed31( 0.0 )
+    , cRed02( 0.0 ), cRed12( 0.0 ), cRed22( 0.0 ), cRed32( 0.0 ), cRed03( 0.0 ), cRed13( 0.0 ), cRed23( 0.0 ), cRed33( 0.0 )
+    // green
+    , cGreen00( 0.0 ), cGreen10( 0.0 ), cGreen20( 0.0 ), cGreen30( 0.0 ), cGreen01( 0.0 ), cGreen11( 0.0 ), cGreen21( 0.0 ), cGreen31( 0.0 )
+    , cGreen02( 0.0 ), cGreen12( 0.0 ), cGreen22( 0.0 ), cGreen32( 0.0 ), cGreen03( 0.0 ), cGreen13( 0.0 ), cGreen23( 0.0 ), cGreen33( 0.0 )
+    // blue
+    , cBlue00( 0.0 ), cBlue10( 0.0 ), cBlue20( 0.0 ), cBlue30( 0.0 ), cBlue01( 0.0 ), cBlue11( 0.0 ), cBlue21( 0.0 ), cBlue31( 0.0 )
+    , cBlue02( 0.0 ), cBlue12( 0.0 ), cBlue22( 0.0 ), cBlue32( 0.0 ), cBlue03( 0.0 ), cBlue13( 0.0 ), cBlue23( 0.0 ), cBlue33( 0.0 )
+    // alpha
+    , cAlpha00( 0.0 ), cAlpha10( 0.0 ), cAlpha20( 0.0 ), cAlpha30( 0.0 ), cAlpha01( 0.0 ), cAlpha11( 0.0 ), cAlpha21( 0.0 ), cAlpha31( 0.0 )
+    , cAlpha02( 0.0 ), cAlpha12( 0.0 ), cAlpha22( 0.0 ), cAlpha32( 0.0 ), cAlpha03( 0.0 ), cAlpha13( 0.0 ), cAlpha23( 0.0 ), cAlpha33( 0.0 )
 {
 }
 
@@ -27,7 +39,7 @@ QgsCubicRasterResampler::~QgsCubicRasterResampler()
 {
 }
 
-QgsRasterResampler * QgsCubicRasterResampler::clone() const
+QgsRasterResampler *QgsCubicRasterResampler::clone() const
 {
   return new QgsCubicRasterResampler();
 }
@@ -39,10 +51,10 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
 
   int pos = 0;
   QRgb px;
-  int* redMatrix = new int[ nCols * nRows ];
-  int* greenMatrix = new int[ nCols * nRows ];
-  int* blueMatrix = new int[ nCols * nRows ];
-  int* alphaMatrix = new int[ nCols * nRows ];
+  int *redMatrix = new int[ nCols * nRows ];
+  int *greenMatrix = new int[ nCols * nRows ];
+  int *blueMatrix = new int[ nCols * nRows ];
+  int *alphaMatrix = new int[ nCols * nRows ];
 
   for ( int i = 0; i < nRows; ++i )
   {

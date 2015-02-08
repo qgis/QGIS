@@ -49,11 +49,13 @@ class APP_EXPORT QgsFieldsProperties : public QWidget, private Ui_QgsFieldsPrope
         };
 
         DesignerTreeItemData()
+            : mType( Field )
         {}
 
         DesignerTreeItemData( Type type, const QString& name )
             : mType( type )
-            , mName( name ) {}
+            , mName( name )
+        {}
 
         QString name() const { return mName; }
         void setName( const QString& name ) { mName = name; }

@@ -57,11 +57,11 @@ Session::Session()
     , _autoClose( true )
     , _wantedClose( false )
     , _silenceSeconds( 10 )
-    , _addToUtmp( false )  // disabled by default because of a bug encountered on certain systems
     // which caused Konsole to hang when closing a tab and then opening a new
     // one.  A 'QProcess destroyed while still running' warning was being
     // printed to the terminal.  Likely a problem in KPty::logout()
     // or KPty::login() which uses a QProcess to start /usr/bin/utempter
+    , _addToUtmp( false )  // disabled by default because of a bug encountered on certain systems
     , _flowControl( true )
     , _fullScripting( false )
     , _sessionId( 0 )

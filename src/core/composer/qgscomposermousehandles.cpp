@@ -30,18 +30,20 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 
-QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition ) : QObject( 0 ),
-    QGraphicsRectItem( 0 ),
-    mComposition( composition ),
-    mGraphicsView( 0 ),
-    mBeginHandleWidth( 0 ),
-    mBeginHandleHeight( 0 ),
-    mResizeMoveX( 0 ),
-    mResizeMoveY( 0 ),
-    mIsDragging( false ),
-    mIsResizing( false ),
-    mHAlignSnapItem( 0 ),
-    mVAlignSnapItem( 0 )
+QgsComposerMouseHandles::QgsComposerMouseHandles( QgsComposition *composition )
+    : QObject( 0 )
+    , QGraphicsRectItem( 0 )
+    , mComposition( composition )
+    , mGraphicsView( 0 )
+    , mCurrentMouseMoveAction( NoAction )
+    , mBeginHandleWidth( 0 )
+    , mBeginHandleHeight( 0 )
+    , mResizeMoveX( 0 )
+    , mResizeMoveY( 0 )
+    , mIsDragging( false )
+    , mIsResizing( false )
+    , mHAlignSnapItem( 0 )
+    , mVAlignSnapItem( 0 )
 {
   //listen for selection changes, and update handles accordingly
   QObject::connect( mComposition, SIGNAL( selectionChanged() ), this, SLOT( selectionChanged() ) );

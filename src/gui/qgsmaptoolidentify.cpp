@@ -47,6 +47,7 @@
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
     , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
+    , mLastMapUnitsPerPixel( -1.0 )
 {
   // set cursor
   QPixmap myIdentifyQPixmap = QPixmap(( const char ** ) identify_cursor );

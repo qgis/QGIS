@@ -66,13 +66,13 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     /**Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method*/
     QList<int>* getSurroundingTriangles( int pointno ) override;
     /**Returns the largest x-coordinate value of the bounding box*/
-    virtual double getXMax() const override;
+    virtual double getXMax() const override { return xMax; }
     /**Returns the smallest x-coordinate value of the bounding box*/
-    virtual double getXMin() const override;
+    virtual double getXMin() const override { return xMin; }
     /**Returns the largest y-coordinate value of the bounding box*/
-    virtual double getYMax() const override;
+    virtual double getYMax() const override { return yMax; }
     /**Returns the smallest x-coordinate value of the bounding box*/
-    virtual double getYMin() const override;
+    virtual double getYMin() const override { return yMin; }
     /**Returns the number of points*/
     virtual int getNumberOfPoints() const override;
     /**Removes the line with number i from the triangulation*/
@@ -180,40 +180,46 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     void evaluateInfluenceRegion( Point3D* point, int edge, QSet<int> &set );
 };
 
-inline DualEdgeTriangulation::DualEdgeTriangulation() : xMax( 0 ), xMin( 0 ), yMax( 0 ), yMin( 0 ), mTriangleInterpolator( 0 ), mForcedCrossBehaviour( Triangulation::DELETE_FIRST ), mEdgeColor( 0, 255, 0 ), mForcedEdgeColor( 0, 0, 255 ), mBreakEdgeColor( 100, 100, 0 ), mDecorator( this )
+inline DualEdgeTriangulation::DualEdgeTriangulation()
+    : xMax( 0 )
+    , xMin( 0 )
+    , yMax( 0 )
+    , yMin( 0 )
+    , mTriangleInterpolator( 0 )
+    , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
+    , mEdgeColor( 0, 255, 0 )
+    , mForcedEdgeColor( 0, 0, 255 )
+    , mBreakEdgeColor( 100, 100, 0 )
+    , mDecorator( this )
+    , mEdgeInside( 0 )
+    , mEdgeOutside( 0 )
+    , mEdgeWithPoint( 0 )
+    , mUnstableEdge( 0 )
+    , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( mDefaultStorageForPoints );
   mHalfEdge.reserve( mDefaultStorageForHalfEdges );
 }
 
-inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* decorator ): xMax( 0 ), xMin( 0 ), yMax( 0 ), yMin( 0 ), mTriangleInterpolator( 0 ), mForcedCrossBehaviour( Triangulation::DELETE_FIRST ), mEdgeColor( 0, 255, 0 ), mForcedEdgeColor( 0, 0, 255 ), mBreakEdgeColor( 100, 100, 0 ), mDecorator( decorator )
+inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation* decorator )
+    : xMax( 0 )
+    , xMin( 0 )
+    , yMax( 0 )
+    , yMin( 0 )
+    , mTriangleInterpolator( 0 )
+    , mForcedCrossBehaviour( Triangulation::DELETE_FIRST )
+    , mEdgeColor( 0, 255, 0 )
+    , mForcedEdgeColor( 0, 0, 255 )
+    , mBreakEdgeColor( 100, 100, 0 )
+    , mDecorator( decorator ? decorator : this )
+    , mEdgeInside( 0 )
+    , mEdgeOutside( 0 )
+    , mEdgeWithPoint( 0 )
+    , mUnstableEdge( 0 )
+    , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );
-  if ( !mDecorator )
-  {
-    mDecorator = this;
-  }
-}
-
-inline double DualEdgeTriangulation::getXMax() const
-{
-  return xMax;
-}
-
-inline double DualEdgeTriangulation::getXMin() const
-{
-  return xMin;
-}
-
-inline double DualEdgeTriangulation::getYMax() const
-{
-  return yMax;
-}
-
-inline double DualEdgeTriangulation::getYMin() const
-{
-  return yMin;
 }
 
 inline int DualEdgeTriangulation::getNumberOfPoints() const
@@ -228,7 +234,16 @@ inline Point3D* DualEdgeTriangulation::getPoint( unsigned int i ) const
 
 inline bool DualEdgeTriangulation::halfEdgeBBoxTest( int edge, double xlowleft, double ylowleft, double xupright, double yupright ) const
 {
-  return (( getPoint( mHalfEdge[edge]->getPoint() )->getX() >= xlowleft && getPoint( mHalfEdge[edge]->getPoint() )->getX() <= xupright && getPoint( mHalfEdge[edge]->getPoint() )->getY() >= ylowleft && getPoint( mHalfEdge[edge]->getPoint() )->getY() <= yupright ) || ( getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getX() >= xlowleft && getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getX() <= xupright && getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getY() >= ylowleft && getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getY() <= yupright ) );
+  return (
+           ( getPoint( mHalfEdge[edge]->getPoint() )->getX() >= xlowleft &&
+             getPoint( mHalfEdge[edge]->getPoint() )->getX() <= xupright &&
+             getPoint( mHalfEdge[edge]->getPoint() )->getY() >= ylowleft &&
+             getPoint( mHalfEdge[edge]->getPoint() )->getY() <= yupright ) ||
+           ( getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getX() >= xlowleft &&
+             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getX() <= xupright &&
+             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getY() >= ylowleft &&
+             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getY() <= yupright )
+         );
 }
 
 #endif

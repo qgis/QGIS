@@ -76,6 +76,8 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
 
   delete myLib;
 
+  mAttributeCount = -1;
+
   // create an empty layer
   QString errMsg;
   mError = pCreateEmpty( uri, fields, geometryType, crs, overwrite, &mOldToNewAttrIdx, &errMsg, options );
@@ -84,8 +86,6 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     mErrorMessage = errMsg;
     return;
   }
-
-  mAttributeCount = -1;
 
   foreach ( int idx, mOldToNewAttrIdx.values() )
   {

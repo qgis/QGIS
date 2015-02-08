@@ -1774,12 +1774,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Layer transparency */
     int mLayerTransparency;
 
-    /**The current type of editing marker*/
-    QgsVectorLayer::VertexMarkerType mCurrentVertexMarkerType;
-
-    /** The current size of editing marker */
-    int mCurrentVertexMarkerSize;
-
     /** Flag if the vertex markers should be drawn only for selection (true) or for all features (false) */
     bool mVertexMarkerOnlyForSelection;
 

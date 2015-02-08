@@ -807,12 +807,15 @@ void QgsFieldsProperties::apply()
  */
 
 QgsFieldsProperties::FieldConfig::FieldConfig()
-    : mButton( NULL )
+    : mEditable( true )
+    , mEditableEnabled( true )
+    , mLabelOnTop( false )
+    , mButton( 0 )
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
-    : mButton( NULL )
+    : mButton( 0 )
 {
   mEditable = layer->fieldEditable( idx );
   mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin

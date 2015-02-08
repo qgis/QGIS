@@ -122,6 +122,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
     , mColumnTypeThread( NULL )
+    , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
