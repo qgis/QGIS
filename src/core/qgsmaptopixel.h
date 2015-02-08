@@ -41,7 +41,7 @@ class CORE_EXPORT QgsMapToPixel
     * @param xmin Minimum x value of the map canvas
     * @deprecated in 2.8, use version with all parameters
     */
-    QgsMapToPixel( double mapUnitsPerPixel, double height = 0, double ymin = 0, double xmin = 0 );
+    Q_DECL_DEPRECATED QgsMapToPixel( double mapUnitsPerPixel, double height = 0, double ymin = 0, double xmin = 0 );
 
     /* Constructor
     * @param mapUnitsPerPixel Map units per pixel

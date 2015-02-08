@@ -13,12 +13,11 @@ class QgsMapToPixel
   public:
     /* Constructor
     * @param mapUnitsPerPixel Map units per pixel
-    * @param ymax Maximum y value of the map canvas
+    * @param height Map canvas height, in pixels
     * @param ymin Minimum y value of the map canvas
     * @param xmin Minimum x value of the map canvas
     */
-    QgsMapToPixel( double mapUnitsPerPixel = 0, double ymax = 0, double ymin = 0,
-                   double xmin = 0 );
+    QgsMapToPixel( double mapUnitsPerPixel = 0, double height = 0, double ymin = 0, double xmin = 0 );
     //! destructor
     ~QgsMapToPixel();
     /*! Transform the point from map (world) coordinates to device coordinates
@@ -50,6 +49,7 @@ class QgsMapToPixel
        transform.
        @note not available in python bindings
      */
+    // template <class T>
     // void transformInPlace( QVector<double>& x, QVector<double>& y ) const;
 
     QgsPoint toMapCoordinates( int x, int y ) const;
@@ -127,8 +127,6 @@ class QgsMapToPixel
     void setParameters( double mapUnitsPerPixel, double xc, double yc, int width, int height, double rotation );
 
     //! String representation of the parameters used in the transform
-    QString showParameters();
+    QString showParameters() const;
 
 };
-
-

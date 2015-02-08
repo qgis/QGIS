@@ -108,7 +108,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   snapLayers.append( snapLayer );
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
+  if ( mSnapper->snapMapPoint( p, results, excludePoints ) != 0 )
     return 4;
 
   return 0;
@@ -257,7 +257,7 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<Qg
 
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( point, results, excludePoints ) != 0 )
+  if ( mSnapper->snapMapPoint( point, results, excludePoints ) != 0 )
     return 4;
 
   if ( intersectionSnapping != 1 )
