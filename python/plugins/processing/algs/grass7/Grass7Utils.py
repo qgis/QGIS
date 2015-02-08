@@ -4,8 +4,8 @@
 ***************************************************************************
     GrassUtils.py
     ---------------------
-    Date                 : April 2014
-    Copyright            : (C) 2014 by Victor Olaya
+    Date                 : February 2015
+    Copyright            : (C) 2014-2015 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'April 2014'
-__copyright__ = '(C) 2014, Victor Olaya'
+__date__ = 'February 2015'
+__copyright__ = '(C) 2014-2015, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -207,12 +207,11 @@ class Grass7Utils:
             'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
         outfile.close()
 
-        # FIXME: in GRASS 7 the SQLite driver is default (and more powerful)
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'WIND'))
-        mkdir(os.path.join(folder, 'PERMANENT', 'dbf'))
+        mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
         outfile = open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w')
-        outfile.write('DB_DRIVER: dbf\n')
-        outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\n')
+        outfile.write('DB_DRIVER: sqlite\n')
+        outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
         outfile.close()
 
     @staticmethod

@@ -133,7 +133,7 @@ class nviz7(GeoAlgorithm):
         destFilename = self.getTempFilename()
         command = 'v.in.ogr'
         command += ' min_area=-1'
-        command += ' dsn="' + os.path.dirname(layer) + '"'
+        command += ' input="' + os.path.dirname(layer) + '"'
         command += ' layer=' + os.path.basename(layer)[:-4]
         command += ' output=' + destFilename
         command += ' --overwrite -o'
