@@ -36,8 +36,8 @@ QgsDataDefined::QgsDataDefined( bool active,
 QgsDataDefined::QgsDataDefined( const QgsExpression * expression )
     : mActive( bool( expression ) )
     , mUseExpression( expression && expression->rootNode() && !dynamic_cast<const QgsExpression::NodeColumnRef*>( expression->rootNode() ) )
-    , mExpressionString( mUseExpression ? expression->dump() : "" )
-    , mField( !mUseExpression ? ( expression ? expression->dump() : "" ) : "" )
+    , mExpressionString( mUseExpression ? expression->expression() : "" )
+    , mField( !mUseExpression ? ( expression ? expression->expression() : "" ) : "" )
 {
   mExpression = 0;
   mExpressionPrepared = false;
