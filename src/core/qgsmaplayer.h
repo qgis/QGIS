@@ -26,6 +26,10 @@
 #include <QDomNode>
 #include <QPainter>
 
+#if QT_VERSION >= 0x050000
+#include <QMetaMethod>
+#endif
+
 #include "qgis.h"
 #include "qgserror.h"
 #include "qgsrectangle.h"
@@ -555,7 +559,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */
+#if QT_VERSION < 0x050000
     void connectNotify( const char * signal ) override;
+#else
+    void connectNotify( const QMetaMethod &signal ) override;
+#endif
 
     /** Add error message */
     void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}

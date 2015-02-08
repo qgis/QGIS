@@ -24,6 +24,10 @@
 #include <QObject>
 #include <QStringList>
 
+#if QT_VERSION >= 0x050000
+#include <QMetaMethod>
+#endif
+
 #include "qgssingleton.h"
 class QString;
 class QgsMapLayer;
@@ -232,7 +236,11 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject, public QgsSingleton<QgsM
     /** debugging member
         invoked when a connect() is made to this object
     */
+#if QT_VERSION < 0x050000
     void connectNotify( const char * signal ) override;
+#else
+    void connectNotify( const QMetaMethod &signal ) override;
+#endif
 
   private:
     //! private singleton constructor

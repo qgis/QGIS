@@ -754,11 +754,19 @@ QString QgsMapLayer::lastError()
   return QString();
 }
 
+#if QT_VERSION < 0x050000
 void QgsMapLayer::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
-} //  QgsMapLayer::connectNotify
+} // QgsMapLayer::connectNotify
+#else
+void QgsMapLayer::connectNotify( const QMetaMethod &signal )
+{
+  Q_UNUSED( signal );
+  QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal.methodSignature() ), 3 );
+} // QgsMapLayer::connectNotify
+#endif
 
 
 

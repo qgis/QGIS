@@ -1624,11 +1624,19 @@ void QgsMapCanvas::setRenderFlag( bool theFlag )
     stopRendering();
 }
 
+#if QT_VERSION < 0x050000
 void QgsMapCanvas::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal ) );
 } //connectNotify
+#else
+void QgsMapCanvas::connectNotify( const QMetaMethod &signal )
+{
+  Q_UNUSED( signal );
+  QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal.methodSignature() ) );
+} //connectNotify
+#endif
 
 
 void QgsMapCanvas::updateDatumTransformEntries()

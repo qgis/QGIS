@@ -590,7 +590,11 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /**debugging member
        invoked when a connect() is made to this object
     */
+#if QT_VERSION < 0x050000
     void connectNotify( const char * signal ) override;
+#else
+    void connectNotify( const QMetaMethod &signal ) override;
+#endif
 
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
