@@ -47,6 +47,8 @@ from processing.gui.NumberInputPanel import NumberInputPanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.FileSelectionPanel import FileSelectionPanel
 from processing.gui.CrsSelectionPanel import CrsSelectionPanel
+from processing.gui.GeometryPredicateSelectionPanel import \
+    GeometryPredicateSelectionPanel
 
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
@@ -62,6 +64,7 @@ from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterString
+from processing.core.parameters import ParameterGeometryPredicate
 
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputTable
@@ -321,6 +324,22 @@ class ParametersPanel(QWidget, Ui_Form):
             else:
                 item = QLineEdit()
                 item.setText(str(param.default))
+        elif isinstance(param, ParameterGeometryPredicate):
+            item = GeometryPredicateSelectionPanel(param.enabledPredicates)
+            if param.left:
+                widget = self.valueItems[param.left]
+                if isinstance(widget, InputLayerSelectorPanel):
+                    widget = widget.cmbText
+                widget.currentIndexChanged.connect(item.onLeftLayerChange)
+                item.leftLayer = widget.itemData(widget.currentIndex())
+            if param.right:
+                widget = self.valueItems[param.right]
+                if isinstance(widget, InputLayerSelectorPanel):
+                    widget = widget.cmbText
+                widget.currentIndexChanged.connect(item.onRightLayerChange)
+                item.rightLayer = widget.itemData(widget.currentIndex())
+            item.updatePredicates()
+            item.setValue(param.default)
         else:
             item = QLineEdit()
             item.setText(str(param.default))

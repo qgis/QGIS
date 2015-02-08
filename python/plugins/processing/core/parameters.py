@@ -782,3 +782,41 @@ class ParameterVector(ParameterDataObject):
                 types += 'any, '
 
         return types[:-2]
+
+
+class ParameterGeometryPredicate(Parameter):
+
+    predicates = ('intersects',
+                  'contains',
+                  'disjoint',
+                  'equals',
+                  'touches',
+                  'overlaps',
+                  'within',
+                  'crosses')
+
+    def __init__(self, name='', description='', left=None, right=None,
+                 optional=False, enabledPredicates=None):
+        Parameter.__init__(self, name, description)
+        self.left = left
+        self.right = right
+        self.value = None
+        self.default = []
+        self.optional = parseBool(optional)
+        self.enabledPredicates = enabledPredicates
+        if self.enabledPredicates is None:
+            self.enabledPredicates = self.predicates
+
+    def getValueAsCommandLineParameter(self):
+        return '"' + unicode(self.value) + '"'
+
+    def setValue(self, value):
+        if value is None:
+            return self.optional
+        elif len(value) == 0:
+            return self.optional
+        if isinstance(value, unicode):
+            self.value = value.split(';') # relates to ModelerAlgorithm.resolveValue
+        else:
+            self.value = value
+        return True

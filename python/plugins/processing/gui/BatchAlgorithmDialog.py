@@ -45,6 +45,7 @@ from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
 from processing.core.parameters import ParameterMultipleInput
+from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.outputs import OutputNumber
 from processing.core.outputs import OutputString
 from processing.core.outputs import OutputHTML
@@ -84,6 +85,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
             return param.setValue(widget.getValue())
         elif isinstance(param, (ParameterCrs, ParameterFile)):
             return param.setValue(widget.getValue())
+        elif isinstance(param, ParameterGeometryPredicate):
+            return param.setValue(widget.value())
         else:
             return param.setValue(widget.text())
 

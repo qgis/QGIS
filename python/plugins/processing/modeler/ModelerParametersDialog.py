@@ -35,8 +35,10 @@ from processing.gui.CrsSelectionPanel import CrsSelectionPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.RangePanel import RangePanel
+from processing.gui.GeometryPredicateSelectionPanel import \
+    GeometryPredicateSelectionPanel
 from processing.modeler.MultilineTextPanel import MultilineTextPanel
-from processing.core.parameters import ParameterExtent, ParameterRaster, ParameterVector, ParameterBoolean, ParameterTable, ParameterFixedTable, ParameterMultipleInput, ParameterSelection, ParameterRange, ParameterNumber, ParameterString, ParameterCrs, ParameterTableField, ParameterFile
+from processing.core.parameters import ParameterExtent, ParameterRaster, ParameterVector, ParameterBoolean, ParameterTable, ParameterFixedTable, ParameterMultipleInput, ParameterSelection, ParameterRange, ParameterNumber, ParameterString, ParameterCrs, ParameterTableField, ParameterFile, ParameterGeometryPredicate
 from processing.core.outputs import OutputRaster, OutputVector, OutputTable, OutputHTML, OutputFile, OutputDirectory, OutputNumber, OutputString, OutputExtent
 
 
@@ -335,6 +337,8 @@ class ModelerParametersDialog(QDialog):
             files = self.getAvailableValuesOfType(ParameterFile, OutputFile)
             for f in files:
                 item.addItem(self.resolveValueDescription(f), f)
+        elif isinstance(param, ParameterGeometryPredicate):
+            item = GeometryPredicateSelectionPanel(param.enabledPredicates)
         else:
             item = QLineEdit()
             try:
@@ -438,6 +442,8 @@ class ModelerParametersDialog(QDialog):
                         if opt in value:
                             selected.append(i)
                     widget.setSelectedItems(selected)
+                elif isinstance(param, ParameterGeometryPredicate):
+                    widget.setValue(value)
 
             for name, out in alg.outputs.iteritems():
                 widget = self.valueItems[name].setText(out.description)
@@ -618,6 +624,9 @@ class ModelerParametersDialog(QDialog):
             if len(values) == 0 and not param.optional:
                 return False
             alg.params[param.name] = values
+            return True
+        elif isinstance(param, ParameterGeometryPredicate):
+            alg.params[param.name] = widget.value()
             return True
         else:
             alg.params[param.name] = unicode(widget.text())

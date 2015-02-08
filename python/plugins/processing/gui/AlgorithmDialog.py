@@ -50,6 +50,7 @@ from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterCrs
+from processing.core.parameters import ParameterGeometryPredicate
 
 from processing.core.outputs import OutputRaster
 from processing.core.outputs import OutputVector
@@ -135,6 +136,8 @@ class AlgorithmDialog(AlgorithmDialogBase):
                 return param.setValue(unicode(widget.toPlainText()))
             else:
                 return param.setValue(unicode(widget.text()))
+        elif isinstance(param, ParameterGeometryPredicate):
+            return param.setValue(widget.value())
         else:
             return param.setValue(unicode(widget.text()))
 
