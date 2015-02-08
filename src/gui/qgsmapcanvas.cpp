@@ -1624,12 +1624,13 @@ void QgsMapCanvas::setRenderFlag( bool theFlag )
     stopRendering();
 }
 
+#if 0
 void QgsMapCanvas::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal ) );
 } //connectNotify
-
+#endif
 
 void QgsMapCanvas::updateDatumTransformEntries()
 {

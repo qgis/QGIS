@@ -19,18 +19,18 @@
 #define QGSMAPLAYER_H
 
 #include <QDateTime>
+#include <QDomNode>
+#include <QImage>
 #include <QObject>
+#include <QPainter>
 #include <QUndoStack>
 #include <QVariant>
-#include <QImage>
-#include <QDomNode>
-#include <QPainter>
 
 #include "qgis.h"
 #include "qgserror.h"
-#include "qgsrectangle.h"
 #include "qgsmaprenderer.h"
 #include "qgsobjectcustomproperties.h"
+#include "qgsrectangle.h"
 
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
@@ -554,8 +554,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Write style manager's configuration (if exists). To be called by subclasses. */
     void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
+#if 0
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal ) override;
+#endif
 
     /** Add error message */
     void appendError( const QgsErrorMessage & theMessage ) { mError.append( theMessage );}

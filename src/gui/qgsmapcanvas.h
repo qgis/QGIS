@@ -587,11 +587,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /// Handle pattern for implementation object
     QScopedPointer<CanvasProperties> mCanvasProperties;
 
+#if 0
     /**debugging member
        invoked when a connect() is made to this object
     */
     void connectNotify( const char * signal ) override;
-
+#endif
     //! Make sure the datum transform store is properly populated
     void updateDatumTransformEntries();
 
