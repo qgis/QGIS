@@ -125,6 +125,7 @@ from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
+from processing.algs.qgis.FieldsMapper import FieldsMapper
 
 import processing.resources_rc
 
@@ -171,6 +172,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
+                        FieldsMapper(),
                         ]
 
         if hasMatplotlib:
