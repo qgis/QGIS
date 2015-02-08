@@ -104,9 +104,9 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, QgsError error )
     , mHeight( 0 )
     , mXBlockSize( 0 )
     , mYBlockSize( 0 )
-    , mGeoTransform()
     , mGdalBaseDataset( 0 )
     , mGdalDataset( 0 )
+    , mGeoTransform()
 {
   setError( error );
 }

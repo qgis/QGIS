@@ -131,7 +131,7 @@ _activeColor( osg::Vec4f(.4,.4,.4,1) ),
 _active( false ),
 _absorbEvents( false ),
 _hfill( false ),
-_vfill( false )
+_vfill( false ),
 _dirty( false )
 {
     //nop
