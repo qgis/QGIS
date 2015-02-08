@@ -164,6 +164,14 @@ QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly, bo
   return conn;
 }
 
+static void noticeProcessor( void *arg, const char *message )
+{
+  Q_UNUSED( arg );
+  QString msg( QString::fromUtf8( message ) );
+  msg.chop( 1 );
+  QgsMessageLog::logMessage( QObject::tr( "NOTICE: %1" ).arg( msg ), QObject::tr( "PostGIS" ) );
+}
+
 QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared, bool transaction )
     : mRef( 1 )
     , mOpenCursors( 0 )
@@ -268,6 +276,8 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared, 
   {
     QgsDebugMsg( "Topology support available!" );
   }
+
+  PQsetNoticeProcessor( mConn, noticeProcessor, 0 );
 }
 
 QgsPostgresConn::~QgsPostgresConn()
