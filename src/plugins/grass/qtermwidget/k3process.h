@@ -879,7 +879,7 @@ class K3ShellProcess : public K3Process
     ~K3ShellProcess();
 
     virtual bool start( RunMode  runmode = NotifyOnExit,
-                        Communication comm = NoCommunication );
+                        Communication comm = NoCommunication ) override;
 
     static QString quote( const QString &arg );
 

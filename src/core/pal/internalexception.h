@@ -49,40 +49,40 @@ namespace pal
       */
       class Full : public std::exception
       {
-          const char* what() const throw()
+          const char* what() const throw() override
           {
             return "This set is full...";
-          }
+        }
       };
 
       /** \brief Thrown when trying to access an empty dada set
       */
       class Empty : public std::exception
       {
-          const char* what() const throw()
+          const char* what() const throw() override
           {
             return "This set is empty...";
-          }
+        }
       };
 
       /** \brief Thrown when a geometry type is not like expected
       */
       class WrongGeometry : public std::exception
       {
-          const char* what() const throw()
+          const char* what() const throw() override
           {
             return "GeometryTypeId is not expected...";
-          }
+        }
       };
 
       /** \brief Thrown when a geometry type is not like expected
       */
       class UnknownGeometry : public std::exception
       {
-          const char* what() const throw()
+          const char* what() const throw() override
           {
             return "Geometry Type is unknown";
-          }
+        }
       };
 
 
@@ -90,10 +90,10 @@ namespace pal
       */
       class NoLabelPosition : public std::exception
       {
-          const char * what() const throw()
+          const char * what() const throw() override
           {
             return "No way to compute positions";
-          }
+        }
       };
   };
 

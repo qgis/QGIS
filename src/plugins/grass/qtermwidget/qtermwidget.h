@@ -108,8 +108,8 @@ class QTermWidget : public QWidget
      */
     void setFlowControlWarningEnabled( bool enabled );
 
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
   signals:
     void finished();
@@ -123,7 +123,7 @@ class QTermWidget : public QWidget
     void pasteClipboard();
 
   protected:
-    virtual void resizeEvent( QResizeEvent * );
+    virtual void resizeEvent( QResizeEvent * ) override;
 
   protected slots:
     void sessionFinished();

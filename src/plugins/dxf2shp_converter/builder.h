@@ -38,17 +38,17 @@ class Builder: public DL_CreationAdapter
 
     void FinalizeAnyPolyline();
 
-    virtual void addLayer( const DL_LayerData &data );
-    virtual void addPoint( const DL_PointData &data );
-    virtual void addLine( const DL_LineData &data );
-    virtual void addPolyline( const DL_PolylineData &data );
-    virtual void addArc( const DL_ArcData &data );
-    virtual void addCircle( const DL_CircleData &data );
-    virtual void addVertex( const DL_VertexData &data );
-    virtual void addBlock( const DL_BlockData &data );
-    virtual void endBlock();
-    virtual void endSequence();
-    virtual void addText( const DL_TextData &data );
+    virtual void addLayer( const DL_LayerData &data ) override;
+    virtual void addPoint( const DL_PointData &data ) override;
+    virtual void addLine( const DL_LineData &data ) override;
+    virtual void addPolyline( const DL_PolylineData &data ) override;
+    virtual void addArc( const DL_ArcData &data ) override;
+    virtual void addCircle( const DL_CircleData &data ) override;
+    virtual void addVertex( const DL_VertexData &data ) override;
+    virtual void addBlock( const DL_BlockData &data ) override;
+    virtual void endBlock() override;
+    virtual void endSequence() override;
+    virtual void addText( const DL_TextData &data ) override;
 
     void print_shpObjects();
 

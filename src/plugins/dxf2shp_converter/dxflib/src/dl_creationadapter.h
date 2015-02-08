@@ -45,59 +45,59 @@ class DL_CreationAdapter : public DL_CreationInterface
   public:
     DL_CreationAdapter() {}
     virtual ~DL_CreationAdapter() {}
-    virtual void addLayer( const DL_LayerData& ) {}
-    virtual void addBlock( const DL_BlockData& ) {}
-    virtual void endBlock() {}
-    virtual void addPoint( const DL_PointData& ) {}
-    virtual void addLine( const DL_LineData& ) {}
-    virtual void addArc( const DL_ArcData& ) {}
-    virtual void addCircle( const DL_CircleData& ) {}
-    virtual void addEllipse( const DL_EllipseData& ) {}
+    virtual void addLayer( const DL_LayerData& ) override {}
+    virtual void addBlock( const DL_BlockData& ) override {}
+    virtual void endBlock() override {}
+    virtual void addPoint( const DL_PointData& ) override {}
+    virtual void addLine( const DL_LineData& ) override {}
+    virtual void addArc( const DL_ArcData& ) override {}
+    virtual void addCircle( const DL_CircleData& ) override {}
+    virtual void addEllipse( const DL_EllipseData& ) override {}
 
-    virtual void addPolyline( const DL_PolylineData& ) {}
-    virtual void addVertex( const DL_VertexData& ) {}
+    virtual void addPolyline( const DL_PolylineData& ) override {}
+    virtual void addVertex( const DL_VertexData& ) override {}
 
-    virtual void addSpline( const DL_SplineData& ) {}
-    virtual void addControlPoint( const DL_ControlPointData& ) {}
-    virtual void addKnot( const DL_KnotData& ) {}
+    virtual void addSpline( const DL_SplineData& ) override {}
+    virtual void addControlPoint( const DL_ControlPointData& ) override {}
+    virtual void addKnot( const DL_KnotData& ) override {}
 
-    virtual void addInsert( const DL_InsertData& ) {}
+    virtual void addInsert( const DL_InsertData& ) override {}
 
-    virtual void addMText( const DL_MTextData& ) {}
-    virtual void addMTextChunk( const char* ) {}
-    virtual void addText( const DL_TextData& ) {}
+    virtual void addMText( const DL_MTextData& ) override {}
+    virtual void addMTextChunk( const char* ) override {}
+    virtual void addText( const DL_TextData& ) override {}
 
     virtual void addDimAlign( const DL_DimensionData&,
-                              const DL_DimAlignedData& ) {}
+                              const DL_DimAlignedData& ) override {}
     virtual void addDimLinear( const DL_DimensionData&,
-                               const DL_DimLinearData& ) {}
+                               const DL_DimLinearData& ) override {}
     virtual void addDimRadial( const DL_DimensionData&,
-                               const DL_DimRadialData& ) {}
+                               const DL_DimRadialData& ) override {}
     virtual void addDimDiametric( const DL_DimensionData&,
-                                  const DL_DimDiametricData& ) {}
+                                  const DL_DimDiametricData& ) override {}
     virtual void addDimAngular( const DL_DimensionData&,
-                                const DL_DimAngularData& ) {}
+                                const DL_DimAngularData& ) override {}
     virtual void addDimAngular3P( const DL_DimensionData&,
-                                  const DL_DimAngular3PData& ) {}
-    virtual void addLeader( const DL_LeaderData& ) {}
-    virtual void addLeaderVertex( const DL_LeaderVertexData& ) {}
+                                  const DL_DimAngular3PData& ) override {}
+    virtual void addLeader( const DL_LeaderData& ) override {}
+    virtual void addLeaderVertex( const DL_LeaderVertexData& ) override {}
 
-    virtual void addHatch( const DL_HatchData& ) {}
+    virtual void addHatch( const DL_HatchData& ) override {}
 
-    virtual void addTrace( const DL_TraceData& ) {}
-    virtual void addSolid( const DL_SolidData& ) {}
+    virtual void addTrace( const DL_TraceData& ) override {}
+    virtual void addSolid( const DL_SolidData& ) override {}
 
-    virtual void addImage( const DL_ImageData& ) {}
-    virtual void linkImage( const DL_ImageDefData& ) {}
-    virtual void addHatchLoop( const DL_HatchLoopData& ) {}
-    virtual void addHatchEdge( const DL_HatchEdgeData& ) {}
-    virtual void endEntity() {}
+    virtual void addImage( const DL_ImageData& ) override {}
+    virtual void linkImage( const DL_ImageDefData& ) override {}
+    virtual void addHatchLoop( const DL_HatchLoopData& ) override {}
+    virtual void addHatchEdge( const DL_HatchEdgeData& ) override {}
+    virtual void endEntity() override {}
     virtual void setVariableVector( const char*,
-                                    double, double, double, int ) {}
-    virtual void setVariableString( const char*, const char*, int ) {}
-    virtual void setVariableInt( const char*, int, int ) {}
-    virtual void setVariableDouble( const char*, double, int ) {}
-    virtual void endSequence() {}
+                                    double, double, double, int ) override {}
+    virtual void setVariableString( const char*, const char*, int ) override {}
+    virtual void setVariableInt( const char*, int, int ) override {}
+    virtual void setVariableDouble( const char*, double, int ) override {}
+    virtual void endSequence() override {}
 };
 
 #endif

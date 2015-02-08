@@ -202,7 +202,7 @@ namespace Konsole
       {
         public:
           HotSpot( int startLine, int startColumn, int endLine , int endColumn );
-          virtual void activate( QObject* object = 0 );
+          virtual void activate( QObject* object = 0 ) override;
 
           /** Sets the captured texts associated with this hotspot */
           void setCapturedTexts( const QStringList& texts );
@@ -231,7 +231,7 @@ namespace Konsole
        * If regexp matches the empty string, then process() will return immediately
        * without finding results.
        */
-      virtual void process();
+      virtual void process() override;
 
     protected:
       /**
@@ -261,15 +261,15 @@ namespace Konsole
           HotSpot( int startLine, int startColumn, int endLine, int endColumn );
           virtual ~HotSpot();
 
-          virtual QList<QAction*> actions();
+          virtual QList<QAction*> actions() override;
 
           /**
            * Open a web browser at the current URL.  The url itself can be determined using
            * the capturedTexts() method.
            */
-          virtual void activate( QObject* object = 0 );
+          virtual void activate( QObject* object = 0 ) override;
 
-          virtual QString tooltip() const;
+          virtual QString tooltip() const override;
         private:
           enum UrlType
           {
@@ -285,7 +285,7 @@ namespace Konsole
       UrlFilter();
 
     protected:
-      virtual RegExpFilter::HotSpot* newHotSpot( int, int, int, int );
+      virtual RegExpFilter::HotSpot* newHotSpot( int, int, int, int ) override;
 
     private:
 

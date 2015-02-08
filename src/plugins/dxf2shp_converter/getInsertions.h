@@ -47,7 +47,7 @@ class InsertRetrClass: public DL_CreationAdapter
     InsertRetrClass();
     ~InsertRetrClass();
 
-    virtual void addInsert( const DL_InsertData &data );
+    virtual void addInsert( const DL_InsertData &data ) override;
 
     string *Names;
     double *XVals;

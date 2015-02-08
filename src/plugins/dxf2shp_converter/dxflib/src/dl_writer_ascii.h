@@ -60,11 +60,11 @@ class DL_WriterA : public DL_Writer
 
     bool openFailed() const;
     void close() const;
-    void dxfReal( int gc, double value ) const;
-    void dxfInt( int gc, int value ) const;
-    void dxfHex( int gc, int value ) const;
-    void dxfString( int gc, const char* value ) const;
-    void dxfString( int gc, const string& value ) const;
+    void dxfReal( int gc, double value ) const override;
+    void dxfInt( int gc, int value ) const override;
+    void dxfHex( int gc, int value ) const override;
+    void dxfString( int gc, const char* value ) const override;
+    void dxfString( int gc, const string& value ) const override;
 
     static void strReplace( char* str, char src, char dest );
 

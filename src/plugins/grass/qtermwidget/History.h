@@ -136,13 +136,13 @@ namespace Konsole
       HistoryScrollFile( const QString &logFileName );
       virtual ~HistoryScrollFile();
 
-      virtual int  getLines();
-      virtual int  getLineLen( int lineno );
-      virtual void getCells( int lineno, int colno, int count, Character res[] );
-      virtual bool isWrappedLine( int lineno );
+      virtual int  getLines() override;
+      virtual int  getLineLen( int lineno ) override;
+      virtual void getCells( int lineno, int colno, int count, Character res[] ) override;
+      virtual bool isWrappedLine( int lineno ) override;
 
-      virtual void addCells( const Character a[], int count );
-      virtual void addLine( bool previousWrapped = false );
+      virtual void addCells( const Character a[], int count ) override;
+      virtual void addLine( bool previousWrapped = false ) override;
 
     private:
       int startOfLine( int lineno );
@@ -165,14 +165,14 @@ namespace Konsole
       HistoryScrollBuffer( unsigned int maxNbLines = 1000 );
       virtual ~HistoryScrollBuffer();
 
-      virtual int  getLines();
-      virtual int  getLineLen( int lineno );
-      virtual void getCells( int lineno, int colno, int count, Character res[] );
-      virtual bool isWrappedLine( int lineno );
+      virtual int  getLines() override;
+      virtual int  getLineLen( int lineno ) override;
+      virtual void getCells( int lineno, int colno, int count, Character res[] ) override;
+      virtual bool isWrappedLine( int lineno ) override;
 
-      virtual void addCells( const Character a[], int count );
-      virtual void addCellsVector( const QVector<Character>& cells );
-      virtual void addLine( bool previousWrapped = false );
+      virtual void addCells( const Character a[], int count ) override;
+      virtual void addCellsVector( const QVector<Character>& cells ) override;
+      virtual void addLine( bool previousWrapped = false ) override;
 
       void setMaxNbLines( unsigned int nbLines );
       unsigned int maxNbLines() { return _maxLineCount; }
@@ -220,15 +220,15 @@ namespace Konsole
       HistoryScrollNone();
       virtual ~HistoryScrollNone();
 
-      virtual bool hasScroll();
+      virtual bool hasScroll() override;
 
-      virtual int  getLines();
-      virtual int  getLineLen( int lineno );
-      virtual void getCells( int lineno, int colno, int count, Character res[] );
-      virtual bool isWrappedLine( int lineno );
+      virtual int  getLines() override;
+      virtual int  getLineLen( int lineno ) override;
+      virtual void getCells( int lineno, int colno, int count, Character res[] ) override;
+      virtual bool isWrappedLine( int lineno ) override;
 
-      virtual void addCells( const Character a[], int count );
-      virtual void addLine( bool previousWrapped = false );
+      virtual void addCells( const Character a[], int count ) override;
+      virtual void addLine( bool previousWrapped = false ) override;
   };
 
 //////////////////////////////////////////////////////////////////////
@@ -240,13 +240,13 @@ namespace Konsole
       HistoryScrollBlockArray( size_t size );
       virtual ~HistoryScrollBlockArray();
 
-      virtual int  getLines();
-      virtual int  getLineLen( int lineno );
-      virtual void getCells( int lineno, int colno, int count, Character res[] );
-      virtual bool isWrappedLine( int lineno );
+      virtual int  getLines() override;
+      virtual int  getLineLen( int lineno ) override;
+      virtual void getCells( int lineno, int colno, int count, Character res[] ) override;
+      virtual bool isWrappedLine( int lineno ) override;
 
-      virtual void addCells( const Character a[], int count );
-      virtual void addLine( bool previousWrapped = false );
+      virtual void addCells( const Character a[], int count ) override;
+      virtual void addLine( bool previousWrapped = false ) override;
 
     protected:
       BlockArray m_blockArray;
@@ -286,10 +286,10 @@ namespace Konsole
     public:
       HistoryTypeNone();
 
-      virtual bool isEnabled() const;
-      virtual int maximumLineCount() const;
+      virtual bool isEnabled() const override;
+      virtual int maximumLineCount() const override;
 
-      virtual HistoryScroll* scroll( HistoryScroll * ) const;
+      virtual HistoryScroll* scroll( HistoryScroll * ) const override;
   };
 
   class HistoryTypeBlockArray : public HistoryType
@@ -297,10 +297,10 @@ namespace Konsole
     public:
       HistoryTypeBlockArray( size_t size );
 
-      virtual bool isEnabled() const;
-      virtual int maximumLineCount() const;
+      virtual bool isEnabled() const override;
+      virtual int maximumLineCount() const override;
 
-      virtual HistoryScroll* scroll( HistoryScroll * ) const;
+      virtual HistoryScroll* scroll( HistoryScroll * ) const override;
 
     protected:
       size_t m_size;
@@ -312,11 +312,11 @@ namespace Konsole
     public:
       HistoryTypeFile( const QString& fileName = QString() );
 
-      virtual bool isEnabled() const;
+      virtual bool isEnabled() const override;
       virtual const QString& getFileName() const;
-      virtual int maximumLineCount() const;
+      virtual int maximumLineCount() const override;
 
-      virtual HistoryScroll* scroll( HistoryScroll * ) const;
+      virtual HistoryScroll* scroll( HistoryScroll * ) const override;
 
     protected:
       QString m_fileName;
@@ -328,10 +328,10 @@ namespace Konsole
     public:
       HistoryTypeBuffer( unsigned int nbLines );
 
-      virtual bool isEnabled() const;
-      virtual int maximumLineCount() const;
+      virtual bool isEnabled() const override;
+      virtual int maximumLineCount() const override;
 
-      virtual HistoryScroll* scroll( HistoryScroll * ) const;
+      virtual HistoryScroll* scroll( HistoryScroll * ) const override;
 
     protected:
       unsigned int m_nbLines;
