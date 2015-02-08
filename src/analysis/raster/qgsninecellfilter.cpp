@@ -27,15 +27,25 @@
 #endif
 
 QgsNineCellFilter::QgsNineCellFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : mInputFile( inputFile ), mOutputFile( outputFile ), mOutputFormat( outputFormat ), mCellSizeX( -1 ), mCellSizeY( -1 ),
-    mInputNodataValue( -1 ), mOutputNodataValue( -1 ), mZFactor( 1.0 )
+    : mInputFile( inputFile )
+    , mOutputFile( outputFile )
+    , mOutputFormat( outputFormat )
+    , mCellSizeX( 0 )
+    , mCellSizeY( 0 )
+    , mInputNodataValue( 0 )
+    , mOutputNodataValue( 0 )
+    , mZFactor( 1.0 )
 {
 
 }
 
 QgsNineCellFilter::QgsNineCellFilter()
+    : mCellSizeX( 0 )
+    , mCellSizeY( 0 )
+    , mInputNodataValue( 0 )
+    , mOutputNodataValue( 0 )
+    , mZFactor( 1.0 )
 {
-
 }
 
 QgsNineCellFilter::~QgsNineCellFilter()

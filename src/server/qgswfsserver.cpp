@@ -44,6 +44,7 @@
 #include <QStringList>
 #include <QTextStream>
 #include <QDir>
+#include <QSharedPointer>
 
 //for printing
 #include "qgscomposition.h"
@@ -72,11 +73,14 @@ QgsWFSServer::QgsWFSServer( const QString& configFilePath, QMap<QString, QString
 {
 }
 
-QgsWFSServer::~QgsWFSServer()
+QgsWFSServer::QgsWFSServer()
+    : QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
+    , mWithGeom( true )
+    , mConfigParser( 0 )
 {
 }
 
-QgsWFSServer::QgsWFSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
+QgsWFSServer::~QgsWFSServer()
 {
 }
 
@@ -202,10 +206,14 @@ QDomDocument QgsWFSServer::getCapabilities()
   dcpTypeElement.appendChild( httpElement );
 
   //Prepare url
-  QString hrefString = mConfigParser->wfsServiceUrl();
-  if ( hrefString.isEmpty() )
+  QString hrefString;
+  if ( mConfigParser )
   {
-    hrefString = mConfigParser->serviceUrl();
+    hrefString = mConfigParser->wfsServiceUrl();
+    if ( hrefString.isEmpty() )
+    {
+      hrefString = mConfigParser->serviceUrl();
+    }
   }
   if ( hrefString.isEmpty() )
   {
@@ -580,19 +588,19 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
           }
           else
           {
-            QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
-            if ( mFilter )
+            QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+            if ( filter )
             {
-              if ( mFilter->hasParserError() )
+              if ( filter->hasParserError() )
               {
-                throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+                throw QgsMapServiceException( "RequestNotWellFormed", filter->parserErrorString() );
               }
               while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
               {
-                QVariant res = mFilter->evaluate( &feature, fields );
-                if ( mFilter->hasEvalError() )
+                QVariant res = filter->evaluate( &feature, fields );
+                if ( filter->hasEvalError() )
                 {
-                  throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+                  throw QgsMapServiceException( "RequestNotWellFormed", filter->evalErrorString() );
                 }
                 if ( res.toInt() != 0 )
                 {
@@ -721,13 +729,13 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         bboxOk = true;
         QString bbString = bbIt.value();
         minx = bbString.section( ",", 0, 0 ).toDouble( &conversionSuccess );
-        if ( !conversionSuccess ) {bboxOk = false;}
+        bboxOk &= conversionSuccess;
         miny = bbString.section( ",", 1, 1 ).toDouble( &conversionSuccess );
-        if ( !conversionSuccess ) {bboxOk = false;}
+        bboxOk &= conversionSuccess;
         maxx = bbString.section( ",", 2, 2 ).toDouble( &conversionSuccess );
-        if ( !conversionSuccess ) {bboxOk = false;}
+        bboxOk &= conversionSuccess;
         maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
-        if ( !conversionSuccess ) {bboxOk = false;}
+        bboxOk &= conversionSuccess;
       }
     }
   }
@@ -881,19 +889,19 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         req.setSubsetOfAttributes( attrIndexes );
         QgsFeatureIterator fit = layer->getFeatures( req );
-        QgsExpression *mFilter = new QgsExpression( expFilter );
-        if ( mFilter )
+        QSharedPointer<QgsExpression> filter( new QgsExpression( expFilter ) );
+        if ( filter )
         {
-          if ( mFilter->hasParserError() )
+          if ( filter->hasParserError() )
           {
-            throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter error message: %1." ).arg( mFilter->parserErrorString() ) );
+            throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter error message: %1." ).arg( filter->parserErrorString() ) );
           }
           while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
           {
-            QVariant res = mFilter->evaluate( &feature, fields );
-            if ( mFilter->hasEvalError() )
+            QVariant res = filter->evaluate( &feature, fields );
+            if ( filter->hasEvalError() )
             {
-              throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter eval error message: %1." ).arg( mFilter->evalErrorString() ) );
+              throw QgsMapServiceException( "RequestNotWellFormed", QString( "Expression filter eval error message: %1." ).arg( filter->evalErrorString() ) );
             }
             if ( res.toInt() != 0 )
             {
@@ -905,7 +913,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               ++featureCounter;
             }
           }
-          delete mFilter;
         }
       }
       else if ( filterOk )
@@ -981,12 +988,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
         }
         else
         {
-          QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
-          if ( mFilter )
+          QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+          if ( filter )
           {
-            if ( mFilter->hasParserError() )
+            if ( filter->hasParserError() )
             {
-              throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter error message: %1." ).arg( mFilter->parserErrorString() ) );
+              throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter error message: %1." ).arg( filter->parserErrorString() ) );
             }
             QgsFeatureRequest req;
             if ( layer->wkbType() != QGis::WKBNoGeometry )
@@ -1009,10 +1016,10 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
             QgsFeatureIterator fit = layer->getFeatures( req );
             while ( fit.nextFeature( feature ) && ( maxFeatures == -1 || featureCounter < maxFeat ) )
             {
-              QVariant res = mFilter->evaluate( &feature, fields );
-              if ( mFilter->hasEvalError() )
+              QVariant res = filter->evaluate( &feature, fields );
+              if ( filter->hasEvalError() )
               {
-                throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter eval error message: %1." ).arg( mFilter->evalErrorString() ) );
+                throw QgsMapServiceException( "RequestNotWellFormed", QString( "OGC expression filter eval error message: %1." ).arg( filter->evalErrorString() ) );
               }
               if ( res.toInt() != 0 )
               {
@@ -1025,7 +1032,6 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
               }
             }
           }
-          delete mFilter;
         }
       }
       else
@@ -1636,22 +1642,22 @@ QgsFeatureIds QgsWFSServer::getFeatureIdsFromFilter( QDomElement filterElem, Qgs
   }
   else
   {
-    QgsExpression *mFilter = QgsOgcUtils::expressionFromOgcFilter( filterElem );
-    if ( mFilter )
+    QSharedPointer<QgsExpression> filter( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+    if ( filter )
     {
-      if ( mFilter->hasParserError() )
+      if ( filter->hasParserError() )
       {
-        throw QgsMapServiceException( "RequestNotWellFormed", mFilter->parserErrorString() );
+        throw QgsMapServiceException( "RequestNotWellFormed", filter->parserErrorString() );
       }
       QgsFeature feature;
       const QgsFields& fields = provider->fields();
       QgsFeatureIterator fit = layer->getFeatures();
       while ( fit.nextFeature( feature ) )
       {
-        QVariant res = mFilter->evaluate( &feature, fields );
-        if ( mFilter->hasEvalError() )
+        QVariant res = filter->evaluate( &feature, fields );
+        if ( filter->hasEvalError() )
         {
-          throw QgsMapServiceException( "RequestNotWellFormed", mFilter->evalErrorString() );
+          throw QgsMapServiceException( "RequestNotWellFormed", filter->evalErrorString() );
         }
         if ( res.toInt() != 0 )
         {

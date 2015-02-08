@@ -219,11 +219,11 @@ class QgsGrassMapcalcFunction
       Function
     };
 
-    QgsGrassMapcalcFunction() {};
+    QgsGrassMapcalcFunction();
     QgsGrassMapcalcFunction( int type, QString name, int count = 2,
                              QString description = "", QString label = "",
                              QString labels = "", bool drawLabel = true );
-    ~QgsGrassMapcalcFunction() {};
+    ~QgsGrassMapcalcFunction();
 
     QString name() { return mName; }
     int     type() { return mType; }

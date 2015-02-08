@@ -38,15 +38,19 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 static const QString OGC_NAMESPACE = "http://www.opengis.net/ogc";
 
 QgsWCSServer::QgsWCSServer( const QString& configFilePath, QMap<QString, QString> &parameters, QgsWCSProjectParser* pp,
-                            QgsRequestHandler* rh ): QgsOWSServer( configFilePath, parameters, rh ), mConfigParser( pp )
+                            QgsRequestHandler* rh )
+    : QgsOWSServer( configFilePath, parameters, rh )
+    , mConfigParser( pp )
+{
+}
+
+QgsWCSServer::QgsWCSServer()
+    : QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
+    , mConfigParser( 0 )
 {
 }
 
 QgsWCSServer::~QgsWCSServer()
-{
-}
-
-QgsWCSServer::QgsWCSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
 {
 }
 
@@ -155,10 +159,14 @@ QDomDocument QgsWCSServer::getCapabilities()
   dcpTypeElement.appendChild( httpElement );
 
   //Prepare url
-  QString hrefString = mConfigParser->wcsServiceUrl();
-  if ( hrefString.isEmpty() )
+  QString hrefString;
+  if ( mConfigParser )
   {
-    hrefString = mConfigParser->serviceUrl();
+    hrefString = mConfigParser->wcsServiceUrl();
+    if ( hrefString.isEmpty() )
+    {
+      hrefString = mConfigParser->serviceUrl();
+    }
   }
   if ( hrefString.isEmpty() )
   {
@@ -190,7 +198,7 @@ QDomDocument QgsWCSServer::getCapabilities()
   QDomElement contentMetadataElement = doc.createElement( "ContentMetadata"/*wcs:ContentMetadata*/ );
   wcsCapabilitiesElement.appendChild( contentMetadataElement );
   /*
-   * Adding layer liste in contentMetadataElement
+   * Adding layer list in contentMetadataElement
    */
   if ( mConfigParser )
   {

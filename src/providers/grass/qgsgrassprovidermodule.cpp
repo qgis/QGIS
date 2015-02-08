@@ -124,7 +124,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
         layer->setState( Populated );
         items.append( layer );
       }
-      else
+      else if ( map )
       {
         QgsLayerItem *layer = new QgsGrassVectorLayerItem( map, name, baseLayerName, layerPath, uri, layerType, "grass" );
         map->addChild( layer );

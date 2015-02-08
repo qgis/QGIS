@@ -158,8 +158,10 @@ extern "C"
 // private data //
 //////////////////
 
-KPtyPrivate::KPtyPrivate() :
-    masterFd( -1 ), slaveFd( -1 )
+KPtyPrivate::KPtyPrivate()
+  : masterFd( -1 )
+  , slaveFd( -1 )
+  , q_ptr( 0 )
 {
 }
 

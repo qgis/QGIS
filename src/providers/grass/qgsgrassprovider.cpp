@@ -78,6 +78,13 @@ static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
 
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mQgisType( QGis::WKBUnknown )
+    , mLayerId( -1 )
+    , mMap()
+    , mMapVersion()
+    , mCidxFieldIndex( -1 )
+    , mCidxFieldNumCats( 0 )
+    , mNumberFeatures( 0 )
 {
   QgsDebugMsg( QString( "QgsGrassProvider URI: %1" ).arg( uri ) );
 

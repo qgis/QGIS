@@ -46,7 +46,7 @@ class QValidator;
  *  \brief Interface to GRASS modules.
  *
  */
-class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
+class QgsGrassModule : public QDialog, private  Ui::QgsGrassModuleBase
 {
     Q_OBJECT
 
@@ -358,7 +358,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
 /*! \class QgsGrassModuleCheckBox
  *  \brief Checkbox with elided text
  */
-class QgsGrassModuleCheckBox: public QCheckBox
+class QgsGrassModuleCheckBox : public QCheckBox
 {
     Q_OBJECT
 
@@ -456,7 +456,7 @@ class QgsGrassModuleItem
 /*! \class QgsGrassModuleGroupBoxItem
  *  \brief GRASS module option box
  */
-class QgsGrassModuleGroupBoxItem: public QGroupBox, public QgsGrassModuleItem
+class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleItem
 {
     Q_OBJECT
 
@@ -486,7 +486,7 @@ class QgsGrassModuleGroupBoxItem: public QGroupBox, public QgsGrassModuleItem
 /*! \class QgsGrassModuleOption
  *  \brief  GRASS option
  */
-class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleOption : public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -592,7 +592,7 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
 /*! \class QgsGrassModuleFlag
  *  \brief  GRASS flag
  */
-class QgsGrassModuleFlag: public QgsGrassModuleCheckBox, public QgsGrassModuleItem
+class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleItem
 {
     Q_OBJECT
 
@@ -618,7 +618,7 @@ class QgsGrassModuleFlag: public QgsGrassModuleCheckBox, public QgsGrassModuleIt
 /*! \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
-class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -644,7 +644,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     QgsFields currentFields();
 
     //! Returns pointer to currently selected layer or null
-    QgsMapLayer * currentLayer();
+    QgsMapLayer *currentLayer();
 
     QString currentMap();
 
@@ -731,7 +731,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
 /*! \class QgsGrassModuleGdalInput
  *  \brief GDAL/OGR module input
  */
-class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -793,7 +793,7 @@ class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
 /*! \class QgsGrassModuleField
  *  \brief GRASS vector attribute column.
  */
-class QgsGrassModuleField: public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleField : public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -840,7 +840,7 @@ class QgsGrassModuleField: public QgsGrassModuleGroupBoxItem
 /*! \class QgsGrassModuleSelection
  *  \brief List of categories taken from current layer selection.
  */
-class QgsGrassModuleSelection: public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -891,7 +891,7 @@ class QgsGrassModuleSelection: public QgsGrassModuleGroupBoxItem
 /*! \class QgsGrassModuleFile
  *  \brief Input/output file.
  */
-class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
+class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
 {
     Q_OBJECT
 
@@ -904,7 +904,7 @@ class QgsGrassModuleFile: public QgsGrassModuleGroupBoxItem
                         QString key,
                         QDomElement &qdesc, QDomElement &gdesc,
                         QDomNode &gnode,
-                        bool direct, QWidget * parent = 0 );
+                        bool direct, QWidget *parent = 0 );
 
     //! Destructor
     ~QgsGrassModuleFile();

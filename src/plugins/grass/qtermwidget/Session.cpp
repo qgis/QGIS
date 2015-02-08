@@ -47,8 +47,8 @@ using namespace Konsole;
 
 int Session::lastSessionId = 0;
 
-Session::Session() :
-    _shellProcess( 0 )
+Session::Session()
+    : _shellProcess( 0 )
     , _emulation( 0 )
     , _monitorActivity( false )
     , _monitorSilence( false )
@@ -63,6 +63,7 @@ Session::Session() :
     // or KPty::login() which uses a QProcess to start /usr/bin/utempter
     , _flowControl( true )
     , _fullScripting( false )
+    , _masterMode( 0 )
     , _sessionId( 0 )
 //   , _zmodemBusy(false)
 //   , _zmodemProc(0)

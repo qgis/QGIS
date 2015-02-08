@@ -143,20 +143,33 @@ void QgsGrassEditAttributeTableItemDelegate::setModelData( QWidget *editor,
 
 bool QgsGrassEdit::mRunning = false;
 
-QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMap,
-                            QWidget * parent, Qt::WindowFlags f )
-    : QMainWindow( parent, f ), QgsGrassEditBase(), mInited( false ),
-    mMapTool( 0 ), mCanvasEdit( 0 ), mRubberBandLine( 0 ), mRubberBandIcon( 0 )
+QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer *layer, bool newMap,
+                            QWidget *parent, Qt::WindowFlags f )
+    : QMainWindow( parent, f )
+    , QgsGrassEditBase()
+    , mValid( false )
+    , mInited( false )
+    , mIface( iface )
+    , mMoveVertexAction( 0 )
+    , mAddVertexAction( 0 )
+    , mDeleteVertexAction( 0 )
+    , mMoveLineAction( 0 )
+    , mSplitLineAction( 0 )
+    , mDeleteLineAction( 0 )
+    , mEditAttributesAction( 0 )
+    , mCloseEditAction( 0 )
+    , mMapTool( 0 )
+    , mCanvasEdit( 0 )
+    , mRubberBandLine( 0 )
+    , mRubberBandIcon( 0 )
 {
   QgsDebugMsg( "QgsGrassEdit()" );
 
   setupUi( this );
 
   mRunning = true;
-  mValid = false;
   mTool = QgsGrassEdit::NONE;
   mSuspend = false;
-  mIface = iface;
   mNewMap = newMap;
 
   mProjectionEnabled = ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) != 0 );
@@ -173,7 +186,6 @@ QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMa
   mProvider = ( QgsGrassProvider * ) mLayer->dataProvider();
 
   init();
-
 }
 
 bool QgsGrassEdit::isEditable( QgsMapLayer *layer )
@@ -1531,7 +1543,8 @@ void QgsGrassEdit::addCat( int line )
     delete atts;
   }
 
-  addAttributes( field, cat );
+  if ( mAttributes )
+    addAttributes( field, cat );
 }
 
 void QgsGrassEdit::deleteCat( int line, int field, int cat )

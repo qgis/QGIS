@@ -60,6 +60,7 @@ QgsWMSProjectParser::~QgsWMSProjectParser()
 {
   cleanupTextAnnotationItems();
   cleanupSvgAnnotationItems();
+  delete mProjectParser;
 }
 
 void QgsWMSProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc, const QString& version, bool fullProjectSettings ) const

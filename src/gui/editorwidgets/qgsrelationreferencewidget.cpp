@@ -74,6 +74,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mEmbedForm( false )
     , mReadOnlySelector( false )
     , mAllowMapIdentification( false )
+    , mOrderByValue( false )
     , mOpenFormButtonVisible( true )
 {
   mTopLayout = new QVBoxLayout( this );

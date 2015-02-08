@@ -33,6 +33,7 @@
 QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath )
     : mXMLDoc( xmlDoc )
     , mProjectPath( filePath )
+    , mUseLayerIDs( false )
 {
   //accelerate the search for layers, groups and the creation of annotation items
   if ( mXMLDoc )

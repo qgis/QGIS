@@ -45,7 +45,13 @@ static QString PROVIDER_KEY = "grassraster";
 static QString PROVIDER_DESCRIPTION = "GRASS raster provider";
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
-    : QgsRasterDataProvider( uri ), mValid( false )
+    : QgsRasterDataProvider( uri )
+    , mValid( false )
+    , mGrassDataType( 0 )
+    , mCols( 0 )
+    , mRows( 0 )
+    , mYBlockSize( 0 )
+    , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
 
@@ -136,14 +142,17 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   // We have to decide some reasonable block size, not to big to occupate too much
   // memory, not too small to result in too many calls to readBlock -> qgis.d.rast
   // for statistics
-  int cache_size = 10000000; // ~ 10 MB
-  mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) ) / mCols;
-  if ( mYBlockSize  > mRows )
+  if ( mCols > 0 )
   {
-    mYBlockSize = mRows;
+    const int cache_size = 10000000; // ~ 10 MB
+    mYBlockSize = cache_size / ( dataTypeSize( dataType( 1 ) ) ) / mCols;
+    if ( mYBlockSize > mRows )
+    {
+      mYBlockSize = mRows;
+    }
+    QgsDebugMsg( "mYBlockSize = " + QString::number( mYBlockSize ) );
+    mValid = true;
   }
-  mValid = true;
-  QgsDebugMsg( "mYBlockSize = " + QString::number( mYBlockSize ) );
 }
 
 QgsGrassRasterProvider::~QgsGrassRasterProvider()

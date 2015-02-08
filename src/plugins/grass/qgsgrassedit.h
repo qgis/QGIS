@@ -444,7 +444,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     bool mProjectionEnabled;
 
     // Canvas items
-    QgsGrassEditLayer* mCanvasEdit;
+    QgsGrassEditLayer *mCanvasEdit;
     QgsRubberBand *mRubberBandLine;
     QgsVertexMarker *mRubberBandIcon;
 

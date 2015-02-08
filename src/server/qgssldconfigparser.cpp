@@ -61,6 +61,7 @@ QgsSLDConfigParser::QgsSLDConfigParser( QDomDocument* doc, const QMap<QString, Q
     , mXMLDoc( doc )
     , mParameterMap( parameters )
     , mSLDNamespace( "http://www.opengis.net/sld" )
+    , mOutputUnits( QgsMapRenderer::Pixels )
     , mFallbackParser( 0 )
 {
 
@@ -1417,11 +1418,13 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   int nBandIn = 1;
   double dfInterval = equidistance, dfNoData = 0.0, dfOffset = offset;
 
-  int b3D = FALSE, bNoDataSet = FALSE, bIgnoreNoData = FALSE;
+  int /* b3D = FALSE, */ bNoDataSet = FALSE, bIgnoreNoData = FALSE;
 
   hSrcDS = GDALOpen( TO8( rasterLayer->source() ), GA_ReadOnly );
   if ( hSrcDS == NULL )
-    exit( 2 );
+  {
+    throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
+  }
 
   hBand = GDALGetRasterBand( hSrcDS, nBandIn );
   if ( hBand == NULL )
@@ -1456,18 +1459,22 @@ QgsVectorLayer* QgsSLDConfigParser::contourLayerFromRaster( const QDomElement& u
   if ( hDriver == NULL )
   {
     //fprintf( FCGI_stderr, "Unable to find format driver named 'ESRI Shapefile'.\n" );
-    exit( 10 );
+    throw QgsMapServiceException( "LayerNotDefined", "Operation request is for a file not available on the server." );
   }
 
   hDS = OGR_Dr_CreateDataSource( hDriver, TO8( tmpFileName ), NULL );
   if ( hDS == NULL )
-    exit( 1 );
+  {
+    throw QgsMapServiceException( "LayerNotDefined", "Operation request cannot create data source." );
+  }
 
   hLayer = OGR_DS_CreateLayer( hDS, "contour", hSRS,
-                               b3D ? wkbLineString25D : wkbLineString,
+                               /* b3D ? wkbLineString25D : */ wkbLineString,
                                NULL );
   if ( hLayer == NULL )
-    exit( 1 );
+  {
+    throw QgsMapServiceException( "LayerNotDefined", "Operation request could not create contour file." );
+  }
 
   hFld = OGR_Fld_Create( "ID", OFTInteger );
   OGR_Fld_SetWidth( hFld, 8 );
@@ -1558,7 +1565,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
 
   //hosted raster data?
   QDomNode hostedRDSNode = userLayerElem.namedItem( "HostedRDS" );
-  if ( !hostedRDSNode.isNull() )
+  if ( !layerBuilder && !hostedRDSNode.isNull() )
   {
     builderRootElement = hostedRDSNode.toElement();
     layerBuilder = new QgsHostedRDSBuilder();
@@ -1566,7 +1573,7 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
 
   //remote OWS (WMS, WFS, WCS)?
   QDomNode remoteOWSNode = userLayerElem.namedItem( "RemoteOWS" );
-  if ( !remoteOWSNode.isNull() )
+  if ( !layerBuilder && !remoteOWSNode.isNull() )
   {
     builderRootElement = remoteOWSNode.toElement();
     layerBuilder = new QgsRemoteOWSBuilder( mParameterMap );
@@ -1574,15 +1581,15 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
 
   //remote vector/raster datasource
   QDomNode remoteRDSNode = userLayerElem.namedItem( "RemoteRDS" );
-  if ( !remoteRDSNode.isNull() )
+  if ( !layerBuilder && !remoteRDSNode.isNull() )
   {
     builderRootElement = remoteRDSNode.toElement();
     layerBuilder = new QgsRemoteDataSourceBuilder();
     QgsDebugMsg( "Detected remote raster datasource" );
   }
-  QDomNode remoteVDSNode = userLayerElem.namedItem( "RemoteVDS" );
 
-  if ( !remoteVDSNode.isNull() )
+  QDomNode remoteVDSNode = userLayerElem.namedItem( "RemoteVDS" );
+  if ( !layerBuilder && !remoteVDSNode.isNull() )
   {
     builderRootElement = remoteVDSNode.toElement();
     layerBuilder = new QgsRemoteDataSourceBuilder();
@@ -1591,14 +1598,14 @@ QgsMapLayer* QgsSLDConfigParser::mapLayerFromUserLayer( const QDomElement& userL
 
   //sent vector/raster datasource
   QDomNode sentVDSNode = userLayerElem.namedItem( "SentVDS" );
-  if ( !sentVDSNode.isNull() )
+  if ( !layerBuilder && !sentVDSNode.isNull() )
   {
     builderRootElement = sentVDSNode.toElement();
     layerBuilder = new QgsSentDataSourceBuilder();
   }
 
   QDomNode sentRDSNode = userLayerElem.namedItem( "SentRDS" );
-  if ( !sentRDSNode.isNull() )
+  if ( !layerBuilder && !sentRDSNode.isNull() )
   {
     builderRootElement = sentRDSNode.toElement();
     layerBuilder = new QgsSentDataSourceBuilder();

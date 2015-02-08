@@ -50,9 +50,9 @@ QgsServerProjectParser* QgsConfigCache::serverConfiguration( const QString& file
   return new QgsServerProjectParser( doc, filePath );
 }
 
-QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
+QgsWCSProjectParser *QgsConfigCache::wcsConfiguration( const QString& filePath )
 {
-  QgsWCSProjectParser* p = mWCSConfigCache.object( filePath );
+  QgsWCSProjectParser *p = mWCSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -62,15 +62,17 @@ QgsWCSProjectParser* QgsConfigCache::wcsConfiguration( const QString& filePath )
     }
     p = new QgsWCSProjectParser( filePath );
     mWCSConfigCache.insert( filePath, p );
+    p = mWCSConfigCache.object( filePath );
+    Q_ASSERT( p );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->wcsLayers().size() );
   return p;
 }
 
-QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
+QgsWFSProjectParser *QgsConfigCache::wfsConfiguration( const QString& filePath )
 {
-  QgsWFSProjectParser* p = mWFSConfigCache.object( filePath );
+  QgsWFSProjectParser *p = mWFSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -80,15 +82,17 @@ QgsWFSProjectParser* QgsConfigCache::wfsConfiguration( const QString& filePath )
     }
     p = new QgsWFSProjectParser( filePath );
     mWFSConfigCache.insert( filePath, p );
+    p = mWFSConfigCache.object( filePath );
+    Q_ASSERT( p );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->wfsLayers().size() );
   return p;
 }
 
-QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap )
+QgsWMSConfigParser *QgsConfigCache::wmsConfiguration( const QString& filePath, const QMap<QString, QString>& parameterMap )
 {
-  QgsWMSConfigParser* p = mWMSConfigCache.object( filePath );
+  QgsWMSConfigParser *p = mWMSConfigCache.object( filePath );
   if ( !p )
   {
     QDomDocument* doc = xmlDocument( filePath );
@@ -109,6 +113,8 @@ QgsWMSConfigParser* QgsConfigCache::wmsConfiguration( const QString& filePath, c
       p = new QgsWMSProjectParser( filePath );
     }
     mWMSConfigCache.insert( filePath, p );
+    p = mWMSConfigCache.object( filePath );
+    Q_ASSERT( p );
   }
 
   QgsMSLayerCache::instance()->setProjectMaxLayers( p->nLayers() );
@@ -148,6 +154,8 @@ QDomDocument* QgsConfigCache::xmlDocument( const QString& filePath )
     }
     mXmlDocumentCache.insert( filePath, xmlDoc );
     mFileSystemWatcher.addPath( filePath );
+    xmlDoc = mXmlDocumentCache.object( filePath );
+    Q_ASSERT( xmlDoc );
   }
   return xmlDoc;
 }

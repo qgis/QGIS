@@ -421,7 +421,7 @@ void QgsSOAPRequestHandler::setXmlResponse( const QDomDocument& infoDoc, const Q
   setXmlResponse( infoDoc );
 }
 
-void QgsSOAPRequestHandler::setGetPrintResponse( QByteArray* ba ) const
+void QgsSOAPRequestHandler::setGetPrintResponse( QByteArray* ba )
 {
   Q_UNUSED( ba );
   //soon...

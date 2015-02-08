@@ -73,11 +73,18 @@ QgsWMSServer::QgsWMSServer( const QString& configFilePath, QMap<QString, QString
 {
 }
 
-QgsWMSServer::~QgsWMSServer()
+QgsWMSServer::QgsWMSServer()
+    : QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
+    , mMapRenderer( 0 )
+    , mCapabilitiesCache()
+    , mConfigParser( 0 )
+    , mOwnsConfigParser( false )
+    , mDrawLegendLayerLabel( true )
+    , mDrawLegendItemLabel( true )
 {
 }
 
-QgsWMSServer::QgsWMSServer(): QgsOWSServer( QString(), QMap<QString, QString>(), 0 )
+QgsWMSServer::~QgsWMSServer()
 {
 }
 
@@ -339,7 +346,11 @@ QDomDocument QgsWMSServer::getCapabilities( QString version, bool fullProjectInf
   QDomElement wmsCapabilitiesElement;
 
   //Prepare url
-  QString hrefString = mConfigParser->serviceUrl();
+  QString hrefString;
+  if ( mConfigParser )
+  {
+    hrefString = mConfigParser->serviceUrl();
+  }
   if ( hrefString.isEmpty() )
   {
     hrefString = serviceUrl();
@@ -1666,11 +1677,8 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 #endif
   mMapRenderer->setLayerSet( layerIdList );
 
-  //load label settings
-  if ( mConfigParser )
-  {
-    mConfigParser->loadLabelSettings( mMapRenderer->labelingEngine() );
-  }
+  // load label settings
+  mConfigParser->loadLabelSettings( mMapRenderer->labelingEngine() );
 
   return theImage;
 }
@@ -2104,7 +2112,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       }
 
       //append feature bounding box to feature info xml
-      if ( hasGeometry && mapRender )
+      if ( hasGeometry && mapRender && mConfigParser )
       {
         QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
         bBoxElem.setAttribute( version == "1.1.1" ? "SRS" : "CRS", outputCrs.authid() );
@@ -2118,20 +2126,21 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       //also append the wkt geometry as an attribute
       if ( addWktGeometry && hasGeometry )
       {
-        QgsGeometry* geom = feature.geometry();
-        if ( layer->crs() != outputCrs )
+        QgsGeometry *geom = feature.geometry();
+        if ( geom )
         {
-          const QgsCoordinateTransform *transform = mapRender->transformation( layer );
-          if ( transform )
+          if ( layer->crs() != outputCrs )
           {
-            geom->transform( *transform );
+            const QgsCoordinateTransform *transform = mapRender->transformation( layer );
+            if ( transform )
+              geom->transform( *transform );
           }
+          QDomElement geometryElement = infoDocument.createElement( "Attribute" );
+          geometryElement.setAttribute( "name", "geometry" );
+          geometryElement.setAttribute( "value", geom->exportToWkt( getWMSPrecision( 8 ) ) );
+          geometryElement.setAttribute( "type", "derived" );
+          featureElement.appendChild( geometryElement );
         }
-        QDomElement geometryElement = infoDocument.createElement( "Attribute" );
-        geometryElement.setAttribute( "name", "geometry" );
-        geometryElement.setAttribute( "value", geom->exportToWkt( getWMSPrecision( 8 ) ) );
-        geometryElement.setAttribute( "type", "derived" );
-        featureElement.appendChild( geometryElement );
       }
     }
   }
@@ -2456,7 +2465,6 @@ void QgsWMSServer::groupStringList( QStringList& list, const QString& groupStrin
   //group contents within single quotes together
   bool groupActive = false;
   int startGroup = -1;
-  int endGroup = -1;
   QString concatString;
 
   for ( int i = 0; i < list.size(); ++i )
@@ -2480,7 +2488,7 @@ void QgsWMSServer::groupStringList( QStringList& list, const QString& groupStrin
 
     if ( str.endsWith( groupString ) )
     {
-      endGroup = i;
+      int endGroup = i;
       groupActive = false;
 
       if ( startGroup != -1 )
@@ -2495,7 +2503,6 @@ void QgsWMSServer::groupStringList( QStringList& list, const QString& groupStrin
 
       concatString.clear();
       startGroup = -1;
-      endGroup = -1;
     }
   }
 }
@@ -3017,7 +3024,7 @@ QDomElement QgsWMSServer::createFeatureGML(
   }
 
   //add maptip attribute based on html/expression (in case there is no maptip attribute)
-  if ( layer->fieldNameIndex( layer->displayField() ) < 0 )
+  if ( layer && layer->fieldNameIndex( layer->displayField() ) < 0 )
   {
     QString displayField = layer->displayField();
     if ( !displayField.isEmpty() )

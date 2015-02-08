@@ -25,7 +25,6 @@
 #include "qgsgrassplugin.h"
 
 #include <cmath>
-#include <typeinfo>
 
 #include <QDir>
 #include <QDomDocument>
@@ -280,9 +279,9 @@ void QgsGrassMapcalc::mousePressEvent( QMouseEvent* e )
       {
         --it;
 
-        if ( typeid( **it ) == typeid( QgsGrassMapcalcConnector ) )
+        if ( QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it ) )
         {
-          mConnector = dynamic_cast<QgsGrassMapcalcConnector *>( *it );
+          mConnector = con;
           mConnector->setSelected( true );
           mConnector->selectEnd( p );
           mStartMoveConnectorPoints[0] = mConnector->point( 0 );
@@ -290,9 +289,9 @@ void QgsGrassMapcalc::mousePressEvent( QMouseEvent* e )
 
           break;
         }
-        else if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
+        else if ( QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it ) )
         {
-          mObject = dynamic_cast<QgsGrassMapcalcObject *>( *it );
+          mObject = obj;
           mObject->setSelected( true );
 
           int tool = Select;
@@ -991,17 +990,13 @@ void QgsGrassMapcalc::growCanvas( int left, int right, int top, int bottom )
   {
     --it;
 
-    if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
+    if ( QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it ) )
     {
-      QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
-
       QPoint p = obj->center();
       obj->setCenter( p.x() + left, p.y() + top );
     }
-    else if ( typeid( **it ) == typeid( QgsGrassMapcalcConnector ) )
+    else if ( QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it ) )
     {
-      QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it );
-
       for ( int i = 0; i < 2; i++ )
       {
         QPoint p = con->point( i );
@@ -1162,10 +1157,8 @@ void QgsGrassMapcalc::save()
   {
     --it;
 
-    if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
+    if ( QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it ) )
     {
-      QgsGrassMapcalcObject *obj = dynamic_cast<QgsGrassMapcalcObject *>( *it );
-
       QString type;
       if ( obj->type() == QgsGrassMapcalcObject::Map )
       {
@@ -1212,10 +1205,8 @@ void QgsGrassMapcalc::save()
       }
       stream <<  "/>\n";
     }
-    else if ( typeid( **it ) == typeid( QgsGrassMapcalcConnector ) )
+    else if ( QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it ) )
     {
-      QgsGrassMapcalcConnector *con = dynamic_cast<QgsGrassMapcalcConnector *>( *it );
-
       stream << "  <connector id=\"" + QString::number( con->id() )
       + "\">\n";
 
@@ -1914,7 +1905,9 @@ QString QgsGrassMapcalcObject::expression()
 
 /************************* CONNECTOR **********************************/
 QgsGrassMapcalcConnector::QgsGrassMapcalcConnector( QGraphicsScene *canvas )
-    : QGraphicsLineItem(), QgsGrassMapcalcItem()
+    : QGraphicsLineItem()
+    , QgsGrassMapcalcItem()
+    , mSelectedEnd( -1 )
 {
   QgsDebugMsg( "entered." );
 
@@ -2042,11 +2035,8 @@ bool QgsGrassMapcalcConnector::tryConnectEnd( int end )
   {
     --it;
 
-    if ( typeid( **it ) == typeid( QgsGrassMapcalcObject ) )
-    {
-      object = dynamic_cast<QgsGrassMapcalcObject *>( *it );
+    if (( object = dynamic_cast<QgsGrassMapcalcObject *>( *it ) ) )
       break;
-    }
   }
 
   // try to connect
@@ -2117,10 +2107,13 @@ QgsGrassMapcalcObject *QgsGrassMapcalcConnector::object( int end )
 /************************* FUNCTION *****************************/
 QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
     int count, QString description, QString label, QString labels,
-    bool drawLabel ) :
-    mName( name ), mType( type ), mInputCount( count ),
-    mLabel( label ), mDescription( description ),
-    mDrawLabel( drawLabel )
+    bool drawLabel )
+    : mName( name )
+    , mType( type )
+    , mInputCount( count )
+    , mLabel( label )
+    , mDescription( description )
+    , mDrawLabel( drawLabel )
 {
   if ( mLabel.isEmpty() )
     mLabel = mName;
@@ -2129,6 +2122,17 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
   {
     mInputLabels = labels.split( ",", QString::SkipEmptyParts );
   }
+}
+
+QgsGrassMapcalcFunction::QgsGrassMapcalcFunction()
+    : mType( 0 )
+    , mInputCount( 0 )
+    , mDrawLabel( false )
+{
+}
+
+QgsGrassMapcalcFunction::~QgsGrassMapcalcFunction()
+{
 }
 
 /******************** CANVAS VIEW ******************************/

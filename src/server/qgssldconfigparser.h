@@ -137,7 +137,7 @@ class QgsSLDConfigParser : public QgsWMSConfigParser
     /**Output units (pixel or mm)*/
     QgsMapRenderer::OutputUnits mOutputUnits;
 
-    QgsWMSConfigParser* mFallbackParser;
+    QgsWMSConfigParser *mFallbackParser;
 
     QFont mLegendLayerFont;
 

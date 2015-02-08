@@ -133,6 +133,9 @@ void TestQgsComposerMap::uniqueId()
       break;
     }
   }
+
+  QVERIFY( newMap );
+
   int oldId = mComposerMap->id();
   int newId = newMap->id();
 

@@ -192,8 +192,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString & path,
-                    const QString &  baseName = QString::null,
+    QgsRasterLayer( const QString &path,
+                    const QString &baseName = QString::null,
                     bool loadDefaultStyleFlag = true );
 
     //TODO - QGIS 3.0
@@ -202,9 +202,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //implicitly converted to a bool.
     //for QGIS 3.0, make either constructor explicit or alter the signatures
     /**  \brief [ data provider interface ] Constructor in provider mode */
-    QgsRasterLayer( const QString & uri,
-                    const QString & baseName,
-                    const QString & providerKey,
+    QgsRasterLayer( const QString &uri,
+                    const QString &baseName,
+                    const QString &providerKey,
                     bool loadDefaultStyleFlag = true );
 
     /** \brief The destructor */

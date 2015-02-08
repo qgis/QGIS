@@ -29,6 +29,7 @@ QgsWFSProjectParser::QgsWFSProjectParser( const QString& filePath )
 
 QgsWFSProjectParser::~QgsWFSProjectParser()
 {
+  delete mProjectParser;
 }
 
 void QgsWFSProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
