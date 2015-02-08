@@ -30,20 +30,20 @@ QgsNineCellFilter::QgsNineCellFilter( const QString& inputFile, const QString& o
     : mInputFile( inputFile )
     , mOutputFile( outputFile )
     , mOutputFormat( outputFormat )
-    , mCellSizeX( 0 )
-    , mCellSizeY( 0 )
-    , mInputNodataValue( 0 )
-    , mOutputNodataValue( 0 )
+    , mCellSizeX( -1.0 )
+    , mCellSizeY( -1.0 )
+    , mInputNodataValue( -1.0 )
+    , mOutputNodataValue( -1.0 )
     , mZFactor( 1.0 )
 {
 
 }
 
 QgsNineCellFilter::QgsNineCellFilter()
-    : mCellSizeX( 0 )
-    , mCellSizeY( 0 )
-    , mInputNodataValue( 0 )
-    , mOutputNodataValue( 0 )
+    : mCellSizeX( -1.0 )
+    , mCellSizeY( -1.0 )
+    , mInputNodataValue( -1.0 )
+    , mOutputNodataValue( -1.0 )
     , mZFactor( 1.0 )
 {
 }
