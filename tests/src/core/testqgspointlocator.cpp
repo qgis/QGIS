@@ -244,13 +244,13 @@ class TestQgsPointLocator : public QObject
     void testExtent()
     {
       QgsRectangle bbox1( 10, 10, 11, 11 ); // out of layer's bounds
-      QgsPointLocator loc1( mVL, 0 , &bbox1 );
+      QgsPointLocator loc1( mVL, 0, &bbox1 );
 
       QgsPointLocator::Match m1 = loc1.nearestVertex( QgsPoint( 2, 2 ), 999 );
       QVERIFY( !m1.isValid() );
 
       QgsRectangle bbox2( 0, 0, 1, 1 ); // in layer's bounds
-      QgsPointLocator loc2( mVL, 0 , &bbox2 );
+      QgsPointLocator loc2( mVL, 0, &bbox2 );
 
       QgsPointLocator::Match m2 = loc2.nearestVertex( QgsPoint( 2, 2 ), 999 );
       QVERIFY( m2.isValid() );

@@ -38,7 +38,7 @@ QString TestQgsMapSettings::toString( const QPolygonF& p, int dec ) const
 {
   QString s;
   const char *sep = "";
-  double r = pow( 10, dec );
+  double r = pow( 10.0, dec );
   for ( int i = 0; i < p.size(); ++i )
   {
     s += QString( "%1%2 %3" ).arg( sep )

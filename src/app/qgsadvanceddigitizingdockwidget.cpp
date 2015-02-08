@@ -46,7 +46,7 @@ bool QgsAdvancedDigitizingDockWidget::lineCircleIntersection( const QgsPoint& ce
   const double dr = sqrt( pow( dx, 2 ) + pow( dy, 2 ) );
   const double d = x1 * y2 - x2 * y1;
 
-  const double disc = pow( radius , 2 ) * pow( dr, 2 ) - pow( d, 2 );
+  const double disc = pow( radius, 2 ) * pow( dr, 2 ) - pow( d, 2 );
 
   if ( disc < 0 )
   {

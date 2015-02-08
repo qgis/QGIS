@@ -429,7 +429,7 @@ int main( int argc, char * argv[] )
         }
         else
         {
-          QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.data() , theMapRenderer.data(), &capabilitiesCache );
+          QgsWMSServer wmsServer( configFilePath, parameterMap, p, theRequestHandler.data(), theMapRenderer.data(), &capabilitiesCache );
           wmsServer.executeRequest();
         }
       }

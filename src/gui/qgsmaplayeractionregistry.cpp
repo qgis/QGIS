@@ -26,7 +26,7 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets tar
 }
 
 /**Creates a map layer action which can run only on a specific layer*/
-QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer , Targets targets, QIcon icon )
+QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer* layer, Targets targets, QIcon icon )
     : QAction( icon, name, parent )
     , mSingleLayer( true )
     , mActionLayer( layer )

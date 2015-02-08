@@ -505,7 +505,7 @@ void TestQgsGeometry::bufferCheck()
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
 }
-bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment , int mismatchCount )
+bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int mismatchCount )
 {
   mReport += "<h2>" + theTestName + "</h2>\n";
   mReport += "<h3>" + theComment + "</h3>\n";

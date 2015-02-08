@@ -85,7 +85,7 @@ class TestQgsImageOperation : public QObject
     QString mReport;
     QString mSampleImage;
 
-    bool imageCheck( QString testName , QImage &image, int mismatchCount );
+    bool imageCheck( QString testName, QImage &image, int mismatchCount );
 };
 
 void TestQgsImageOperation::initTestCase()

@@ -38,7 +38,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 
 ////
 
-QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path , QString uri )
+QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
     , mUri( uri )
     , mCapabilities( NULL )

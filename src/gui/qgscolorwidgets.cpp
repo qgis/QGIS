@@ -769,7 +769,7 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
   painter.setPen( Qt::NoPen );
 
   painter.drawRect( xPos - 1, mMargin, 3, height() - 2 * mMargin - 1 );
-  painter.drawRect( mMargin, yPos - 1 , width() - 2 * mMargin - 1, 3 );
+  painter.drawRect( mMargin, yPos - 1, width() - 2 * mMargin - 1, 3 );
   painter.setPen( Qt::black );
   painter.drawLine( xPos, mMargin, xPos, height() - mMargin - 1 );
   painter.drawLine( mMargin, yPos, width() - mMargin - 1, yPos );

@@ -1071,7 +1071,7 @@ class TestQgsExpression: public QObject
       QgsExpression e( string );
       QVERIFY( !e.hasParserError() );
       qDebug() << e.expression();
-      QCOMPARE( e.expression() , QgsExpression( e.expression() ).expression() );
+      QCOMPARE( e.expression(), QgsExpression( e.expression() ).expression() );
     }
 
     void quote_string()

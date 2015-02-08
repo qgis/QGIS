@@ -20,7 +20,7 @@
 #include "qgsmapcanvas.h"
 
 
-QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas , QgsAdvancedDigitizingDockWidget* cadDockWidget )
+QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas* canvas, QgsAdvancedDigitizingDockWidget* cadDockWidget )
     : QgsMapCanvasItem( canvas )
     , mLockedPen( QPen( QColor( 100, 100, 255, 255 ), .7, Qt::DashLine ) )
     , mConstruction1Pen( QPen( QColor( 100, 255, 100, 150 ), .7, Qt::DashLine ) )

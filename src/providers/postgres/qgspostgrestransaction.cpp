@@ -26,7 +26,7 @@ QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
 
 }
 
-bool QgsPostgresTransaction::beginTransaction( QString &error , int statementTimeout )
+bool QgsPostgresTransaction::beginTransaction( QString &error, int statementTimeout )
 {
   mConn = QgsPostgresConn::connectDb( mConnString, false /*readonly*/, false /*shared*/, true /*transaction*/ );
 
