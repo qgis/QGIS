@@ -190,7 +190,7 @@ void QgsFieldExpressionWidget::expressionEdited( const QString expression )
 
 void QgsFieldExpressionWidget::expressionEditingFinished()
 {
-  QgsDebugMsg( "Editing finsihed" );
+  QgsDebugMsg( "Editing finished" );
   const QString expression = mCombo->lineEdit()->text();
   mFieldProxyModel->sourceFieldModel()->setExpression( expression );
   QModelIndex idx = mFieldProxyModel->sourceFieldModel()->indexFromName( expression );

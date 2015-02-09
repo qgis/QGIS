@@ -187,6 +187,7 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared, 
     , mUseWkbHex( false )
     , mReadOnly( readOnly )
     , mSwapEndian( false )
+    , mNextCursorId( 0 )
     , mShared( shared )
     , mTransaction( transaction )
 {
