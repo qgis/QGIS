@@ -37,7 +37,8 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
 {
   Q_UNUSED( errorMessage );
 
-  QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
+  QgsLayerTreeGroup *root = new QgsLayerTreeGroup();
+
   // We have to replace the IDs before we load them because it's too late once they are loaded
   QDomNodeList ids = doc.elementsByTagName( "id" );
   for ( int i = 0; i < ids.size(); ++i )
@@ -75,7 +76,12 @@ bool QgsLayerDefinition::loadLayerDefinition( QDomDocument doc, QgsLayerTreeGrou
   QgsMapLayerRegistry::instance()->addMapLayers( layers, loadInLegend );
 
   QList<QgsLayerTreeNode*> nodes = root->children();
+  foreach ( QgsLayerTreeNode *node, nodes )
+    root->takeChild( node );
+  delete root;
+
   rootGroup->insertChildNodes( -1, nodes );
+
   return true;
 
 }
@@ -91,7 +97,7 @@ bool QgsLayerDefinition::exportLayerDefinition( QString path, QList<QgsLayerTree
   QDomDocument doc( "qgis-layer-definition" );
   QDomElement qgiselm = doc.createElement( "qlr" );
   doc.appendChild( qgiselm );
-  QList<QgsLayerTreeNode*> nodes =  selectedTreeNodes;
+  QList<QgsLayerTreeNode*> nodes = selectedTreeNodes;
   QgsLayerTreeGroup* root = new QgsLayerTreeGroup;
   foreach ( QgsLayerTreeNode* node, nodes )
   {

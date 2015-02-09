@@ -72,20 +72,20 @@ class QgsLayerTreeNode : QObject
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
     NodeType nodeType();
     //! Get pointer to the parent. If parent is a null pointer, the node is a root node
-    QgsLayerTreeNode* parent();
+    QgsLayerTreeNode *parent();
     //! Get list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode*> children();
 
     //! Read layer tree from XML. Returns new instance
-    static QgsLayerTreeNode* readXML( QDomElement& element );
+    static QgsLayerTreeNode *readXML( QDomElement &element );
     //! Write layer tree to XML
-    virtual void writeXML( QDomElement& parentElement ) = 0;
+    virtual void writeXML( QDomElement &parentElement ) = 0;
 
     //! Return string with layer tree structure. For debug purposes only
     virtual QString dump() const = 0;
 
     //! Create a copy of the node. Returns new instance
-    virtual QgsLayerTreeNode* clone() const = 0 /Factory/;
+    virtual QgsLayerTreeNode *clone() const = 0 /Factory/;
 
     //! Return whether the node should be shown as expanded or collapsed in GUI
     bool isExpanded() const;
@@ -93,30 +93,32 @@ class QgsLayerTreeNode : QObject
     void setExpanded( bool expanded );
 
     /** Set a custom property for the node. Properties are stored in a map and saved in project file. */
-    void setCustomProperty( const QString& key, const QVariant& value );
+    void setCustomProperty( const QString &key, const QVariant &value );
     /** Read a custom property from layer. Properties are stored in a map and saved in project file. */
-    QVariant customProperty( const QString& key, const QVariant& defaultValue = QVariant() ) const;
+    QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
     /** Remove a custom property from layer. Properties are stored in a map and saved in project file. */
-    void removeCustomProperty( const QString& key );
+    void removeCustomProperty( const QString &key );
     /** Return list of keys stored in custom properties */
     QStringList customProperties() const;
+    /** Remove a child from a node */
+    bool takeChild( QgsLayerTreeNode *node );
 
   signals:
 
     //! Emitted when one or more nodes will be added to a node within the tree
-    void willAddChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void willAddChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when one or more nodes have been added to a node within the tree
-    void addedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void addedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when one or more nodes will be removed from a node within the tree
-    void willRemoveChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void willRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when one or more nodes has been removed from a node within the tree
-    void removedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
+    void removedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo );
     //! Emitted when check state of a node within the tree has been changed
-    void visibilityChanged( QgsLayerTreeNode* node, Qt::CheckState state );
+    void visibilityChanged( QgsLayerTreeNode *node, Qt::CheckState state );
     //! Emitted when a custom property of a node within the tree has been changed or removed
-    void customPropertyChanged( QgsLayerTreeNode* node, QString key );
+    void customPropertyChanged( QgsLayerTreeNode *node, QString key );
     //! Emitted when the collapsed/expanded state of a node within the tree has been changed
-    void expandedChanged( QgsLayerTreeNode* node, bool expanded );
+    void expandedChanged( QgsLayerTreeNode *node, bool expanded );
 
   protected:
 
