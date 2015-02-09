@@ -564,6 +564,7 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 QgsPointLocator::QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS, const QgsRectangle* extent )
     : mStorage( 0 )
     , mRTree( 0 )
+    , mIsEmptyLayer( false )
     , mTransform( 0 )
     , mLayer( layer )
     , mExtent( 0 )
@@ -602,7 +603,7 @@ bool QgsPointLocator::init( int maxFeaturesToIndex )
 
 bool QgsPointLocator::hasIndex() const
 {
-  return mRTree != 0;
+  return mRTree != 0 || mIsEmptyLayer;
 }
 
 
@@ -658,7 +659,10 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
   SpatialIndex::id_type indexId;
 
   if ( dataList.isEmpty() )
+  {
+    mIsEmptyLayer = true;
     return true; // no features
+  }
 
   QgsPointLocator_Stream stream( dataList );
   mRTree = RTree::createAndBulkLoadNewRTree( RTree::BLM_STR, stream, *mStorage, fillFactor, indexCapacity,
@@ -672,6 +676,8 @@ void QgsPointLocator::destroyIndex()
   delete mRTree;
   mRTree = 0;
 
+  mIsEmptyLayer = false;
+
   foreach ( QgsGeometry* g, mGeoms )
     delete g;
   mGeoms.clear();
@@ -680,7 +686,11 @@ void QgsPointLocator::destroyIndex()
 void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 {
   if ( !mRTree )
+  {
+    if ( mIsEmptyLayer )
+      rebuildIndex(); // first feature - let's built the index
     return; // nothing to do if we are not initialized yet
+  }
 
   QgsFeature f;
   if ( mLayer->getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f ) )

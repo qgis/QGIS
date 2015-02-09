@@ -170,6 +170,9 @@ class CORE_EXPORT QgsPointLocator : public QObject
     QHash<QgsFeatureId, QgsGeometry*> mGeoms;
     SpatialIndex::ISpatialIndex* mRTree;
 
+    //! flag whether the layer is currently empty (i.e. mRTree is null but it is not necessary to rebuild it)
+    bool mIsEmptyLayer;
+
     /** R-tree containing spatial index */
     QgsCoordinateTransform* mTransform;
     QgsVectorLayer* mLayer;
