@@ -20,7 +20,11 @@
 
 #include <cmath>
 
-QgsRasterMatrix::QgsRasterMatrix(): mColumns( 0 ), mRows( 0 ), mData( 0 )
+QgsRasterMatrix::QgsRasterMatrix()
+    : mColumns( 0 )
+    , mRows( 0 )
+    , mData( 0 )
+    , mNodataValue( -1 )
 {
 }
 

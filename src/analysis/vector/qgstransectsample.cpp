@@ -146,9 +146,8 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     }
 
     //find baseline for strata
-    bool strataIdOk = true;
     QVariant strataId = fet.attribute( mStrataIdAttribute );
-    QgsGeometry* baselineGeom = findBaselineGeometry( strataIdOk ? strataId : -1 );
+    QgsGeometry* baselineGeom = findBaselineGeometry( strataId.isValid() ? strataId : -1 );
     if ( !baselineGeom )
     {
       continue;

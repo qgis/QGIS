@@ -91,27 +91,6 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     virtual void setTriangulation( NormVecDecorator* tin );
 };
 
-
-inline CloughTocherInterpolator::CloughTocherInterpolator() : mTIN( 0 ), mEdgeTolerance( 0.00001 )
-{
-
-}
-
-inline CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator* tin ) : mTIN( tin ), mEdgeTolerance( 0.00001 )
-{
-
-}
-
-inline CloughTocherInterpolator::~CloughTocherInterpolator()
-{
-  //nothing to do
-}
-
-inline void CloughTocherInterpolator::setTriangulation( NormVecDecorator* tin )
-{
-  mTIN = tin;
-}
-
 #endif
 
 

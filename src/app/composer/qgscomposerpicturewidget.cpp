@@ -486,7 +486,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       QIcon icon( filePath );
       listItem->setIcon( icon );
     }
-    else if ( fileIsPixel ) //for pixel formats: create icon from scaled pixmap
+    else //for pixel formats: create icon from scaled pixmap
     {
       QPixmap iconPixmap( filePath );
       if ( iconPixmap.isNull() )
@@ -497,10 +497,6 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       QPixmap scaledPixmap( iconPixmap.scaled( QSize( 30, 30 ), Qt::KeepAspectRatio ) );
       QIcon icon( scaledPixmap );
       listItem->setIcon( icon );
-    }
-    else
-    {
-      ++counter; continue;
     }
 
     listItem->setText( "" );

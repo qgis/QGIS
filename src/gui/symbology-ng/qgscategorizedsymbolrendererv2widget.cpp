@@ -287,7 +287,7 @@ bool QgsCategorizedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Q
     QgsDebugMsg( QString( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
     int t = to;
     // moveCategory first removes and then inserts
-    if ( rows[i] < to ) t--;
+    if ( rows[i] < t ) t--;
     mRenderer->moveCategory( rows[i], t );
     // current moved under another, shift its index up
     for ( int j = 0; j < i; j++ )

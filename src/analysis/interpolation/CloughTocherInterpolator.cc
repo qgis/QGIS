@@ -17,11 +17,53 @@
 #include "CloughTocherInterpolator.h"
 #include "qgslogger.h"
 
-#include <cmath>
+#include <qmath.h>
+
+CloughTocherInterpolator::CloughTocherInterpolator()
+    : mTIN( 0 )
+    , mEdgeTolerance( 0.00001 )
+    , der1X( 0.0 )
+    , der1Y( 0.0 )
+    , der2X( 0.0 )
+    , der2Y( 0.0 )
+    , der3X( 0.0 )
+    , der3Y( 0.0 )
+{
+
+}
+
+CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator* tin )
+    : mTIN( tin )
+    , mEdgeTolerance( 0.00001 )
+    , der1X( 0.0 )
+    , der1Y( 0.0 )
+    , der2X( 0.0 )
+    , der2Y( 0.0 )
+    , der3X( 0.0 )
+    , der3Y( 0.0 )
+{
+
+}
+
+CloughTocherInterpolator::~CloughTocherInterpolator()
+{
+  //nothing to do
+}
+
+void CloughTocherInterpolator::setTriangulation( NormVecDecorator* tin )
+{
+  mTIN = tin;
+}
 
 double CloughTocherInterpolator::calcBernsteinPoly( int n, int i, int j, int k, double u, double v, double w )
 {
-  double result = MathUtils::faculty( n ) * MathUtils::power( u, i ) * MathUtils::power( v, j ) * MathUtils::power( w, k ) / ( MathUtils::faculty( i ) * MathUtils::faculty( j ) * MathUtils::faculty( k ) );
+  if ( i < 0 || j < 0 || k < 0 )
+  {
+    QgsDebugMsg( "Invalid parameters for Bernstein poly calculation!" );
+    return 0;
+  }
+
+  double result = MathUtils::faculty( n ) * qPow( u, i ) * qPow( v, j ) * qPow( w, k ) / ( MathUtils::faculty( i ) * MathUtils::faculty( j ) * MathUtils::faculty( k ) );
   return result;
 }
 
@@ -726,10 +768,5 @@ void CloughTocherInterpolator::init( double x, double y )//version which has uni
   }
 }
 #endif
-
-
-
-
-
 
 

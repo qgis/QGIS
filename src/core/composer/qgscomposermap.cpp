@@ -1662,6 +1662,10 @@ QPen QgsComposerMap::gridPen() const
   if ( g->lineSymbol() )
   {
     QgsLineSymbolV2* line = dynamic_cast<QgsLineSymbolV2*>( g->lineSymbol()->clone() );
+    if ( !line )
+    {
+      return p;
+    }
     p.setWidthF( line->width() );
     p.setColor( line->color() );
     p.setCapStyle( Qt::FlatCap );

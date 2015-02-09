@@ -53,6 +53,17 @@ QgsComposerTableV2::QgsComposerTableV2( QgsComposition *composition, bool create
 
 QgsComposerTableV2::QgsComposerTableV2()
     : QgsComposerMultiFrame( 0, false )
+    , mCellMargin( 1.0 )
+    , mEmptyTableMode( HeadersOnly )
+    , mShowEmptyRows( false )
+    , mHeaderFontColor( Qt::black )
+    , mHeaderHAlignment( FollowColumn )
+    , mHeaderMode( FirstFrame )
+    , mContentFontColor( Qt::black )
+    , mShowGrid( true )
+    , mGridStrokeWidth( 0.5 )
+    , mGridColor( Qt::black )
+    , mBackgroundColor( Qt::white )
 {
 
 }

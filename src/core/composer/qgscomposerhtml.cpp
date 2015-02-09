@@ -97,6 +97,7 @@ QgsComposerHtml::QgsComposerHtml()
     , mExpressionFeature( 0 )
     , mExpressionLayer( 0 )
     , mDistanceArea( 0 )
+    , mEnableUserStylesheet( false )
     , mFetcher( 0 )
 {
   mDistanceArea = new QgsDistanceArea();

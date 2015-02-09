@@ -20,12 +20,15 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 
-QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData ): mDataIsCached( false ), mLayerData( layerData )
+QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData )
+    : mDataIsCached( false )
+    , mLayerData( layerData )
 {
 
 }
 
 QgsInterpolator::QgsInterpolator()
+    : mDataIsCached( false )
 {
 
 }

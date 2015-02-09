@@ -26,7 +26,7 @@ QgsLabelPreview::QgsLabelPreview( QWidget* parent )
 
   // construct a device-based render context
   QgsMapToPixel newCoordXForm;
-  newCoordXForm.setParameters( 0, 0, 0, 0 );
+  newCoordXForm.setParameters( 1, 0, 0, 0 );
   mContext = new QgsRenderContext();
   mContext->setMapToPixel( newCoordXForm );
 }

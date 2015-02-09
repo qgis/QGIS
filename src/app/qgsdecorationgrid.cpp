@@ -828,7 +828,7 @@ bool QgsDecorationGrid::getIntervalFromCurrentLayer( double* values )
     return false;
   }
   QgsRasterLayer* rlayer = dynamic_cast<QgsRasterLayer*>( layer );
-  if ( !rlayer )
+  if ( !rlayer || rlayer->width() == 0 || rlayer->height() == 0 )
   {
     QMessageBox::warning( 0, tr( "Error" ), tr( "Invalid raster layer" ) );
     return false;

@@ -43,6 +43,7 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QStr
 QgsZonalStatistics::QgsZonalStatistics()
     : mRasterBand( 0 )
     , mPolygonLayer( 0 )
+    , mInputNodataValue( -1 )
 {
 
 }

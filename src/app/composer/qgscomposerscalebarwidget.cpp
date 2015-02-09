@@ -104,12 +104,12 @@ void QgsComposerScaleBarWidget::refreshMapComboBox()
         mMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ) );
       }
     }
-  }
 
-  if ( saveCurrentComboText.isEmpty() && mComposerScaleBar->composerMap() )
-  {
-    //combo box was not initialised before
-    mMapComboBox->setCurrentIndex( mMapComboBox->findText( tr( "Map %1" ).arg( mComposerScaleBar->composerMap()->id() ) ) );
+    if ( saveCurrentComboText.isEmpty() && mComposerScaleBar->composerMap() )
+    {
+      //combo box was not initialised before
+      mMapComboBox->setCurrentIndex( mMapComboBox->findText( tr( "Map %1" ).arg( mComposerScaleBar->composerMap()->id() ) ) );
+    }
   }
   if ( mMapComboBox->findText( saveCurrentComboText ) == -1 )
   {

@@ -250,6 +250,8 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
 }
 
 QgsRasterCalculator::QgsRasterCalculator()
+    : mNumOutputColumns( 0 )
+    , mNumOutputRows( 0 )
 {
 }
 

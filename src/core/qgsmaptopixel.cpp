@@ -39,6 +39,7 @@ QgsMapToPixel::QgsMapToPixel( double mapUnitsPerPixel,
     , xMin( xc - ( mWidth * mMapUnitsPerPixel / 2.0 ) )
     , yMin( yc - ( mHeight * mMapUnitsPerPixel / 2.0 ) )
 {
+  Q_ASSERT( mapUnitsPerPixel > 0 );
   updateMatrix();
 }
 
@@ -100,11 +101,9 @@ void QgsMapToPixel::updateMatrix()
   //       center happens first, then scaling, then rotation
   //       and finally translation to output viewport center
 
-  if ( ! rotation )
+  if ( qgsDoubleNear( rotation, 0.0 ) )
   {
-    // Returning a simplified matrix in hope it'll give expected
-    // results from an existing test, see
-    // https://travis-ci.org/qgis/QGIS/builds/42508945
+    //no rotation, return a simplified matrix
     mMatrix = QTransform::fromScale( 1.0 / mMapUnitsPerPixel, -1.0 / mMapUnitsPerPixel )
               .translate( -xMin, - ( yMin + mHeight * mMapUnitsPerPixel ) );
     return;

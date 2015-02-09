@@ -81,21 +81,22 @@ void Bezier3D::calcSecDer( float t, Vector3D* v )
     v->setY( 0 );
     v->setZ( 0 );
 
-    if ( mControlPoly->count() < 3 )
+    int nodes = mControlPoly->count();
+    if ( nodes < 3 )
     {
       return;
     }
 
-    for ( int n = 1; n <= int( mControlPoly->count() - 2 ); n++ )
+    for ( int n = 1; n <= int( nodes - 2 ); n++ )
     {
-      double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 3, n - 1, t );
+      double bernst = MathUtils::calcBernsteinPoly( nodes - 3, n - 1, t );
       v->setX( v->getX() + (( *mControlPoly )[n+1]->getX() - 2*( *mControlPoly )[n]->getX() + ( *mControlPoly )[n-1]->getX() )*bernst );
       v->setY( v->getY() + (( *mControlPoly )[n+1]->getY() - 2*( *mControlPoly )[n]->getY() + ( *mControlPoly )[n-1]->getY() )*bernst );
       v->setZ( v->getZ() + (( *mControlPoly )[n+1]->getZ() - 2*( *mControlPoly )[n]->getZ() + ( *mControlPoly )[n-1]->getZ() )*bernst );
     }
-    v->setX( v->getX()*MathUtils::faculty( mControlPoly->count() - 1 ) / MathUtils::faculty( mControlPoly->count() - 3 ) );
-    v->setY( v->getY()*MathUtils::faculty( mControlPoly->count() - 1 ) / MathUtils::faculty( mControlPoly->count() - 3 ) );
-    v->setZ( v->getZ()*MathUtils::faculty( mControlPoly->count() - 1 ) / MathUtils::faculty( mControlPoly->count() - 3 ) );
+    v->setX( v->getX()*MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
+    v->setY( v->getY()*MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
+    v->setZ( v->getZ()*MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
   }
 
   else

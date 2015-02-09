@@ -159,14 +159,11 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     newComboBox->addItem( tr( "Maximum" ), "maximum" );
     newComboBox->addItem( tr( "Median" ), "median" );
     newComboBox->addItem( tr( "Sum" ), "sum" );
+    newComboBox->addItem( tr( "Mean" ), "mean" );
   }
   else if ( columnType == QVariant::String )
   {
     newComboBox->addItem( tr( "Concatenation" ), "concat" );
-  }
-  else if ( columnType == QVariant::Double )
-  {
-    newComboBox->addItem( tr( "Mean" ), "mean" );
   }
 
   newComboBox->addItem( tr( "Skip attribute" ), "skip" );

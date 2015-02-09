@@ -33,8 +33,15 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsRelief::QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat ): \
-    mInputFile( inputFile ), mOutputFile( outputFile ), mOutputFormat( outputFormat ), mZFactor( 1.0 )
+QgsRelief::QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
+    : mInputFile( inputFile )
+    , mOutputFile( outputFile )
+    , mOutputFormat( outputFormat )
+    , mCellSizeX( 0.0 )
+    , mCellSizeY( 0.0 )
+    , mInputNodataValue( -1 )
+    , mOutputNodataValue( -1 )
+    , mZFactor( 1.0 )
 {
   mSlopeFilter = new QgsSlopeFilter( inputFile, outputFile, outputFormat );
   mAspectFilter = new QgsAspectFilter( inputFile, outputFile, outputFormat );

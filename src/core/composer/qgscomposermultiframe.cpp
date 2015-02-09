@@ -28,10 +28,11 @@ QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndo
   connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );
 }
 
-QgsComposerMultiFrame::QgsComposerMultiFrame():
-    QgsComposerObject( 0 ),
-    mResizeMode( UseExistingFrames ),
-    mIsRecalculatingSize( false )
+QgsComposerMultiFrame::QgsComposerMultiFrame()
+    : QgsComposerObject( 0 )
+    , mResizeMode( UseExistingFrames )
+    , mCreateUndoCommands( false )
+    , mIsRecalculatingSize( false )
 {
 }
 
