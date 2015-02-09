@@ -182,8 +182,8 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared, 
     , mPostgresqlVersion( 0 )
     , mPostgisVersionMajor( 0 )
     , mPostgisVersionMinor( 0 )
-    , mGistAvailable( 0 )
-    , mProjAvailable( 0 )
+    , mGistAvailable( false )
+    , mProjAvailable( false )
     , mUseWkbHex( false )
     , mReadOnly( readOnly )
     , mSwapEndian( false )
@@ -920,8 +920,8 @@ bool QgsPostgresConn::openCursor( QString cursorName, QString sql )
       PQexecNR( "BEGIN" );
   }
   QgsDebugMsgLevel( QString( "Binary cursor %1 for %2" ).arg( cursorName ).arg( sql ), 3 );
-  return PQexecNR( QString( "DECLARE %1 BINARY CURSOR %2 FOR %3" ).
-                   arg( cursorName ).arg( !mTransaction ? "" : QString( "WITH HOLD" ) ).arg( sql ) );
+  return PQexecNR( QString( "DECLARE %1 BINARY CURSOR%2 FOR %3" ).
+                   arg( cursorName ).arg( !mTransaction ? "" : QString( " WITH HOLD" ) ).arg( sql ) );
 }
 
 bool QgsPostgresConn::closeCursor( QString cursorName )

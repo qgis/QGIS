@@ -28,12 +28,18 @@ QgsRasterMatrix::QgsRasterMatrix()
 {
 }
 
-QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue ):
-    mColumns( nCols ), mRows( nRows ), mData( data ), mNodataValue( nodataValue )
+QgsRasterMatrix::QgsRasterMatrix( int nCols, int nRows, float* data, double nodataValue )
+    : mColumns( nCols )
+    , mRows( nRows )
+    , mData( data )
+    , mNodataValue( nodataValue )
 {
 }
 
-QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix& m ): mColumns( 0 ), mRows( 0 ), mData( 0 )
+QgsRasterMatrix::QgsRasterMatrix( const QgsRasterMatrix& m )
+    : mColumns( 0 )
+    , mRows( 0 )
+    , mData( 0 )
 {
   operator=( m );
 }

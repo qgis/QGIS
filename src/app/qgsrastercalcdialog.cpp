@@ -67,7 +67,7 @@ QString QgsRasterCalcDialog::outputFile() const
     return outputFileName;
   }
 
-  return ( outputFileName + "." + it.value() );
+  return outputFileName + "." + it.value();
 }
 
 QString QgsRasterCalcDialog::outputFormat() const
@@ -130,7 +130,7 @@ void QgsRasterCalcDialog::insertAvailableRasterBands()
         QgsRasterCalculatorEntry entry;
         entry.raster = rlayer;
         entry.bandNumber = i + 1;
-        entry.ref = quoteBandEntry( rlayer->name() + "@" + QString::number( i + 1 ) );
+        entry.ref = rlayer->name() + "@" + QString::number( i + 1 );
         mAvailableRasterBands.push_back( entry );
         mRasterBandsListWidget->addItem( entry.ref );
       }
@@ -146,7 +146,7 @@ void QgsRasterCalcDialog::insertAvailableOutputFormats()
   for ( int i = 0; i < nDrivers; ++i )
   {
     GDALDriverH driver = GDALGetDriver( i );
-    if ( driver != NULL )
+    if ( driver )
     {
       char** driverMetadata = GDALGetMetadata( driver, NULL );
       if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
@@ -309,7 +309,7 @@ bool QgsRasterCalcDialog::filePathValid() const
 
 void QgsRasterCalcDialog::on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem* item )
 {
-  mExpressionTextEdit->insertPlainText( item->text() );
+  mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
 }
 
 void QgsRasterCalcDialog::on_mPlusPushButton_clicked()
