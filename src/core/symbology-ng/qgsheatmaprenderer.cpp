@@ -40,7 +40,7 @@ QgsHeatmapRenderer::QgsHeatmapRenderer( )
     , mGradientRamp( 0 )
     , mInvertRamp( false )
     , mExplicitMax( 0.0 )
-    , mRenderQuality( 1 )
+    , mRenderQuality( 3 )
     , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsVectorGradientColorRampV2( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
