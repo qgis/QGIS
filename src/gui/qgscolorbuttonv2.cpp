@@ -172,7 +172,12 @@ void QgsColorButtonV2::mousePressEvent( QMouseEvent *e )
     return;
   }
 
-  if ( e->button() == Qt::LeftButton )
+  if ( e->button() == Qt::RightButton )
+  {
+    QToolButton::showMenu();
+    return;
+  }
+  else if ( e->button() == Qt::LeftButton )
   {
     mDragStartPosition = e->pos();
   }
