@@ -1068,7 +1068,7 @@ QString findClosestTickVal( double target, const QwtScaleDiv * scale, int div = 
     current += diff;
     if ( current > target )
     {
-      closest = ( abs( target - current + diff ) < abs( target - current ) ) ? current - diff : current;
+      closest = ( qAbs( target - current + diff ) < qAbs( target - current ) ) ? current - diff : current;
       break;
     }
   }

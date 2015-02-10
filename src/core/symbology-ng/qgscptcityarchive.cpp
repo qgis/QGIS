@@ -967,8 +967,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
   QString curName, prevName, prevPath, curVariant, curSep, schemeName;
   QStringList listVariant;
   QStringList schemeNamesAll, schemeNames;
-  int num;
-  bool ok, prevAdd, curAdd;
+  bool prevAdd, curAdd;
 
   QDir dir( QgsCptCityArchive::defaultBaseDir() + "/" + mPath );
   schemeNamesAll = dir.entryList( QStringList( "*.svg" ), QDir::Files, QDir::Name );

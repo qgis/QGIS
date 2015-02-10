@@ -497,7 +497,7 @@ void ModelTest::data()
  */
 void ModelTest::rowsAboutToBeInserted( const QModelIndex &parent, int start, int end )
 {
-//     Q_UNUSED(end);
+  Q_UNUSED( end );
 //    qDebug() << "rowsAboutToBeInserted" << "start=" << start << "end=" << end << "parent=" << model->data ( parent ).toString()
 //    << "current count of parent=" << model->rowCount ( parent ); // << "display of last=" << model->data( model->index(start-1, 0, parent) );
 //     qDebug() << model->index(start-1, 0, parent) << model->data( model->index(start-1, 0, parent) );

@@ -824,7 +824,7 @@ void QgsComposerMouseHandles::dragMouseMove( const QPointF& currentPosition, boo
   {
     //constrained (shift) moving should lock to horizontal/vertical movement
     //reset the smaller of the x/y movements
-    if ( abs( moveRectX ) <= abs( moveRectY ) )
+    if ( qAbs( moveRectX ) <= qAbs( moveRectY ) )
     {
       moveRectX = 0;
     }
