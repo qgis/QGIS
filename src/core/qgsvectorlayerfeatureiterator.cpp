@@ -453,7 +453,7 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
     QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( joinInfo->joinLayerId ) );
     Q_ASSERT( joinLayer );
 
-    if ( !mFetchJoinInfo.contains( joinLayer ) )
+    if ( !mFetchJoinInfo.contains( joinInfo ) )
     {
       FetchJoinInfo info;
       info.joinInfo = joinInfo;
@@ -474,11 +474,11 @@ void QgsVectorLayerFeatureIterator::prepareJoins()
       if ( !fetchAttributes.contains( info.targetField ) )
         sourceJoinFields << info.targetField;
 
-      mFetchJoinInfo.insert( joinLayer, info );
+      mFetchJoinInfo.insert( joinInfo, info );
     }
 
     // store field source index - we'll need it when fetching from provider
-    mFetchJoinInfo[ joinLayer ].attributes.push_back( sourceLayerIndex );
+    mFetchJoinInfo[ joinInfo ].attributes.push_back( sourceLayerIndex );
   }
 
   // add sourceJoinFields if we're using a subset
@@ -525,7 +525,7 @@ void QgsVectorLayerFeatureIterator::prepareExpressions()
 
 void QgsVectorLayerFeatureIterator::addJoinedAttributes( QgsFeature &f )
 {
-  QMap<QgsVectorLayer*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
+  QMap<const QgsVectorJoinInfo*, FetchJoinInfo>::const_iterator joinIt = mFetchJoinInfo.constBegin();
   for ( ; joinIt != mFetchJoinInfo.constEnd(); ++joinIt )
   {
     const FetchJoinInfo& info = joinIt.value();

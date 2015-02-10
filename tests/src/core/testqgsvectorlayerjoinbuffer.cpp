@@ -52,6 +52,7 @@ class TestVectorLayerJoinBuffer : public QObject
     void testJoinDetectCycle();
     void testJoinSubset_data();
     void testJoinSubset();
+    void testJoinTwoTimes();
 
   private:
     QgsVectorLayer* mLayerA;
@@ -298,6 +299,44 @@ void TestVectorLayerJoinBuffer::testJoinSubset()
   mLayerA->removeJoin( layerX->id() );
 
   QgsMapLayerRegistry::instance()->removeMapLayer( layerX->id() );
+}
+
+
+void TestVectorLayerJoinBuffer::testJoinTwoTimes()
+{
+  QVERIFY( mLayerA->pendingFields().count() == 1 );
+
+  QgsVectorJoinInfo joinInfo1;
+  joinInfo1.targetFieldName = "id_a";
+  joinInfo1.joinLayerId = mLayerB->id();
+  joinInfo1.joinFieldName = "id_b";
+  joinInfo1.memoryCache = true;
+  joinInfo1.prefix = "j1_";
+  mLayerA->addJoin( joinInfo1 );
+
+  QgsVectorJoinInfo joinInfo2;
+  joinInfo2.targetFieldName = "id_a";
+  joinInfo2.joinLayerId = mLayerB->id();
+  joinInfo2.joinFieldName = "id_b";
+  joinInfo2.memoryCache = true;
+  joinInfo2.prefix = "j2_";
+  mLayerA->addJoin( joinInfo2 );
+
+  QCOMPARE( mLayerA->vectorJoins().count(), 2 );
+
+  QVERIFY( mLayerA->pendingFields().count() == 3 );
+
+  QgsFeatureIterator fi = mLayerA->getFeatures();
+  QgsFeature fA1; //, fA2;
+  fi.nextFeature( fA1 );
+  QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
+  QCOMPARE( fA1.attribute( "j1_value_b" ).toInt(), 11 );
+  QCOMPARE( fA1.attribute( "j2_value_b" ).toInt(), 11 );
+
+  mLayerA->removeJoin( mLayerB->id() );
+  mLayerA->removeJoin( mLayerB->id() );
+
+  QCOMPARE( mLayerA->vectorJoins().count(), 0 );
 }
 
 
