@@ -245,8 +245,7 @@ void QgsTipFactory::addGenericTip( QgsTip theTip )
 }
 QgsTip QgsTipFactory::getTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mAllTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mAllTips.at( myValue );
   return myTip;
@@ -258,16 +257,14 @@ QgsTip QgsTipFactory::getTip( int thePosition )
 }
 QgsTip QgsTipFactory::getGenericTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGenericTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGenericTips.at( myValue );
   return myTip;
 }
 QgsTip QgsTipFactory::getGuiTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGuiTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGuiTips.at( myValue );
   return myTip;

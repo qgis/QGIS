@@ -414,9 +414,9 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
 
   //set initial color for diagram category
-  int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-  int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-  int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
   QColor randomColor( red, green, blue );
   newItem->setBackground( 1, QBrush( randomColor ) );
   mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
@@ -761,9 +761,9 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
       newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
 
       //set initial color for diagram category
-      int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-      int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-      int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+      int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+      int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+      int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
       QColor randomColor( red, green, blue );
       newItem->setBackground( 1, QBrush( randomColor ) );
       mDiagramAttributesTreeWidget->addTopLevelItem( newItem );

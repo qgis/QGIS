@@ -840,8 +840,6 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
     // is larger. This will produce a more representative sample for very large
     // layers, but could end up being computationally intensive...
 
-    qsrand( time( 0 ) );
-
     sample.resize( qMax( maximumSize, values.size() / 10 ) );
 
     QgsDebugMsg( QString( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ) );

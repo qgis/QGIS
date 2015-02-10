@@ -164,7 +164,7 @@ QgsSymbolV2* QgsSymbolV2::defaultSymbol( QGis::GeometryType geomType )
   if ( defaultSymbol == "" ||
        QgsProject::instance()->readBoolEntry( "DefaultStyles", "/RandomColors", true ) )
   {
-    s->setColor( QColor::fromHsv( rand() % 360, 64 + rand() % 192, 128 + rand() % 128 ) );
+    s->setColor( QColor::fromHsv( qrand() % 360, 64 + qrand() % 192, 128 + qrand() % 128 ) );
   }
 
   return s;

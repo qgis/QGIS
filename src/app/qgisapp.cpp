@@ -6936,10 +6936,10 @@ void QgisApp::dizzy()
   QRectF rect = mMapCanvas->sceneRect();
   if ( rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d )
     return; // do not affect panning
-  rect.moveTo(( rand() % ( 2 * d ) ) - d, ( rand() % ( 2 * d ) ) - d );
+  rect.moveTo(( qrand() % ( 2 * d ) ) - d, ( qrand() % ( 2 * d ) ) - d );
   mMapCanvas->setSceneRect( rect );
   QTransform matrix;
-  matrix.rotate(( rand() % ( 2 * r ) ) - r );
+  matrix.rotate(( qrand() % ( 2 * r ) ) - r );
   mMapCanvas->setTransform( matrix );
 }
 

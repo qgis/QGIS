@@ -366,14 +366,16 @@ void QgsRasterHistogramWidget::refreshHistogram()
   mHistoColors << Qt::black; // first element, not used
   QVector<QColor> myColors;
   myColors << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkYellow << Qt::cyan;
-  srand( myBandCountInt * 100 ); // make sure colors are always the same for a given band count
+  qsrand( myBandCountInt * 100 ); // make sure colors are always the same for a given band count
   while ( myColors.size() <= myBandCountInt )
   {
     myColors <<
-    QColor( 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ) );
+    QColor( 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
+            1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ),
+            1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) ) );
   }
+  //randomise seed again
+  qsrand( time( NULL ) );
 
   // assign colors to each band, depending on the current RGB/gray band selection
   // grayscale

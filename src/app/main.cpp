@@ -438,7 +438,7 @@ int main( int argc, char *argv[] )
 #endif
 
   // initialize random number seed
-  srand( time( NULL ) );
+  qsrand( time( NULL ) );
 
   /////////////////////////////////////////////////////////////////
   // Command line options 'behaviour' flag setup

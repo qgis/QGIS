@@ -452,7 +452,7 @@ static QVariant fcnRndF( const QVariantList& values, const QgsFeature*, QgsExpre
     return QVariant();
 
   // Return a random double in the range [min, max] (inclusive)
-  double f = ( double )rand() / RAND_MAX;
+  double f = ( double )qrand() / RAND_MAX;
   return QVariant( min + f * ( max - min ) );
 }
 static QVariant fcnRnd( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
@@ -463,7 +463,7 @@ static QVariant fcnRnd( const QVariantList& values, const QgsFeature*, QgsExpres
     return QVariant();
 
   // Return a random integer in the range [min, max] (inclusive)
-  return QVariant( min + ( rand() % ( int )( max - min + 1 ) ) );
+  return QVariant( min + ( qrand() % ( int )( max - min + 1 ) ) );
 }
 
 static QVariant fcnLinearScale( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
