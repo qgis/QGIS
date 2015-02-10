@@ -38,6 +38,7 @@ class Dialog(QDialog, Ui_Dialog):
     TOUCH = 1
     OVERLAP = 2
     WITHIN = 4
+    INTERSECT = 8
 
     def __init__(self, iface):
         QDialog.__init__(self, iface.mainWindow())
@@ -92,7 +93,9 @@ class Dialog(QDialog, Ui_Dialog):
             if geomA.disjoint(geomB):
                 return False
             intersects = False
-            if self.opFlags & self.TOUCH:
+            if self.opFlags & self.INTERSECT:
+                intersects |= geomA.intersects(geomB)
+            if not intersects and (self.opFlags & self.TOUCH):
                 intersects |= geomA.touches(geomB)
             if not intersects and (self.opFlags & self.OVERLAP):
                 if geomB.type() == QGis.Line or geomA.type() == QGis.Line:
@@ -116,6 +119,8 @@ class Dialog(QDialog, Ui_Dialog):
             self.opFlags |= self.OVERLAP
         if self.chkContains.checkState() == Qt.Checked:
             self.opFlags |= self.WITHIN
+        if self.chkIntersects.checkState() == Qt.Checked:
+            self.opFlags |= self.INTERSECT
 
         sp_operator = _sp_operator()
 
