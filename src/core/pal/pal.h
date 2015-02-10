@@ -133,9 +133,6 @@ namespace pal
 
       SimpleMutex *lyrsMutex;
 
-      // TODO remove after tests !!!
-      clock_t tmpTime;
-
       Units map_unit;
 
       /**

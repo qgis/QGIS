@@ -23,7 +23,11 @@
 #include <QPainter>
 #include <QPen>
 
-QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas ): QgsMapCanvasItem( mapCanvas ), mMapPositionFixed( true ), mOffsetFromReferencePoint( QPointF( 50, -50 ) )
+QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas )
+    : QgsMapCanvasItem( mapCanvas )
+    , mMapPositionFixed( true )
+    , mOffsetFromReferencePoint( QPointF( 50, -50 ) )
+    , mBalloonSegment( -1 )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   mMarkerSymbol = new QgsMarkerSymbolV2();

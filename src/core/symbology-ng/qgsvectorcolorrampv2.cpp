@@ -361,6 +361,7 @@ void QgsVectorRandomColorRampV2::updateColors()
 /////////////
 
 QgsRandomColorsV2::QgsRandomColorsV2()
+    : mTotalColorCount( 0 )
 {
   srand( QTime::currentTime().msec() );
 }

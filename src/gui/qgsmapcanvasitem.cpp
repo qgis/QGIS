@@ -29,6 +29,7 @@
 QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
     : QGraphicsItem()
     , mMapCanvas( mapCanvas )
+    , mRectRotation( 0.0 )
     , mPanningOffset( 0, 0 )
     , mItemSize( 0, 0 )
 {

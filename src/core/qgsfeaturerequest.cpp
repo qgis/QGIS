@@ -49,6 +49,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
     : mFilter( FilterExpression )
+    , mFilterFid( -1 )
     , mFilterExpression( new QgsExpression( expr.expression() ) )
     , mFlags( 0 )
 {

@@ -33,6 +33,7 @@
 
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea )
     : QgsMapTool( canvas )
+    , mWrongProjectProjection( false )
 {
   mMeasureArea = measureArea;
 

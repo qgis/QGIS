@@ -70,8 +70,6 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
 
     /**idx of changed attribute*/
     int mAttributeId;
-
-    bool mExpressionValid;
 };
 
 #endif // QGSFIELDCALCULATOR_H

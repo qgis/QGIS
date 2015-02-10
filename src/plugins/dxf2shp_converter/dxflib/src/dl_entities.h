@@ -1223,7 +1223,7 @@ struct DL_HatchLoopData
   /**
    * Default constructor.
    */
-  DL_HatchLoopData() {}
+  DL_HatchLoopData() : numEdges( 0 ) {}
   /**
    * Constructor.
    * Parameters: see member variables.

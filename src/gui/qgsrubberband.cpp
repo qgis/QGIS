@@ -60,7 +60,13 @@ QgsRubberBand::QgsRubberBand( QgsMapCanvas* mapCanvas, bool isPolygon )
   setBrushStyle( Qt::SolidPattern );
 }
 
-QgsRubberBand::QgsRubberBand(): QgsMapCanvasItem( 0 )
+QgsRubberBand::QgsRubberBand()
+    : QgsMapCanvasItem( 0 )
+    , mIconSize( 5 )
+    , mIconType( ICON_CIRCLE )
+    , mGeometryType( QGis::Polygon )
+    , mTranslationOffsetX( 0.0 )
+    , mTranslationOffsetY( 0.0 )
 {
 }
 

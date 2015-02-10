@@ -21,6 +21,7 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, Targets tar
     , mSingleLayer( false )
     , mActionLayer( 0 )
     , mSpecificLayerType( false )
+    , mLayerType( QgsMapLayer::VectorLayer )
     , mTargets( targets )
 {
 }
@@ -31,6 +32,7 @@ QgsMapLayerAction::QgsMapLayerAction( QString name, QObject* parent, QgsMapLayer
     , mSingleLayer( true )
     , mActionLayer( layer )
     , mSpecificLayerType( false )
+    , mLayerType( QgsMapLayer::VectorLayer )
     , mTargets( targets )
 {
 }

@@ -46,7 +46,11 @@
 
 
 QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
-    : QWidget( parent ), mLayer( layer ), mMapCanvas( mapCanvas )
+    : QWidget( parent )
+    , mLayer( layer )
+    , mMapCanvas( mapCanvas )
+    , mMinPixelLimit( 0 )
+    , mLoadSvgParams( false )
 {
   if ( !layer )
     return;

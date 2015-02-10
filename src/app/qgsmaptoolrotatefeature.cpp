@@ -29,11 +29,15 @@
 
 #define PI 3.14159265
 
-QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 )
+QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
+    : QgsMapToolEdit( canvas )
+    , mRubberBand( 0 )
+    , mRotation( 0 )
+    , mRotationOffset( 0 )
+    , mAnchorPoint( 0 )
+    , mCtrl( false )
 {
-  mRotation = 0;
-  mAnchorPoint = 0;
-  mCtrl = false;
+
 }
 
 QgsMapToolRotateFeature::~QgsMapToolRotateFeature()

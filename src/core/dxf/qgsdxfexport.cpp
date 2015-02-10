@@ -316,6 +316,7 @@ QgsDxfExport::QgsDxfExport()
 }
 
 QgsDxfExport::QgsDxfExport( const QgsDxfExport& dxfExport )
+    : mModelSpaceBR( 0 )
 {
   *this = dxfExport;
 }

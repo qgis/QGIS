@@ -58,7 +58,9 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
 // ----------------------
 
 QgsCptCityColorRampV2Dialog::QgsCptCityColorRampV2Dialog( QgsCptCityColorRampV2* ramp, QWidget* parent )
-    : QDialog( parent ), mRamp( 0 )
+    : QDialog( parent )
+    , mRamp( 0 )
+    , mArchiveViewType( QgsCptCityBrowserModel::Selections )
 {
   setupUi( this );
 

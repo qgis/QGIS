@@ -31,6 +31,7 @@
 #include <QSettings> // for legend
 
 QgsRendererCategoryV2::QgsRendererCategoryV2()
+    : mRender( true )
 {
 }
 
@@ -147,6 +148,8 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     , mCategories( categories )
     , mInvertedColorRamp( false )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
+    , mAttrNum( -1 )
+    , mCounting( false )
 {
   for ( int i = 0; i < mCategories.count(); ++i )
   {

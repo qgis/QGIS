@@ -55,6 +55,7 @@ int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mNumberFeatures( 0 )
     , mCrs()
     , mWkbType( QGis::WKBUnknown )
 {

@@ -33,6 +33,7 @@ QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
     : QgsFeatureRendererV2( "singleSymbol" )
     , mSymbol( symbol )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
+    , mOrigSize( 0.0 )
 {
   Q_ASSERT( symbol );
 }

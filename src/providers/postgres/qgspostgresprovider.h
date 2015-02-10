@@ -302,7 +302,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void repaintRequested();
 
   private:
-    int mProviderId; // id to append to provider specific identified (like cursors)
 
     bool declareCursor( const QString &cursorName,
                         const QgsAttributeList &fetchAttributes,

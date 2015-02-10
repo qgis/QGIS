@@ -29,6 +29,7 @@
 
 QgsMapToolShowHideLabels::QgsMapToolShowHideLabels( QgsMapCanvas* canvas )
     : QgsMapToolLabel( canvas )
+    , mDragging( false )
 {
   mToolName = tr( "Show/hide labels" );
   mRubberBand = 0;

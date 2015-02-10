@@ -264,8 +264,6 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
 
-    int mGeomType;
-
     long mNumberFeatures;
     QString mFidColName;
     long mSRId;

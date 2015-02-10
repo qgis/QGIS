@@ -38,6 +38,7 @@ QgsRendererRangeV2::QgsRendererRangeV2()
     , mUpperValue( 0 )
     , mSymbol( 0 )
     , mLabel()
+    , mRender( true )
 {
 }
 
@@ -284,6 +285,9 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     , mMode( Custom )
     , mInvertedColorRamp( false )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
+    , mAttrNum( -1 )
+    , mCounting( false )
+
 {
   // TODO: check ranges for sanity (NULL symbols, invalid ranges)
 }

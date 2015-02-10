@@ -63,6 +63,7 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor
   mOffsetUnit = QgsSymbolV2::MM;
   mAngleExpression = NULL;
   mNameExpression = NULL;
+  mUsingCache = false;
 }
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& props )

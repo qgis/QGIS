@@ -125,6 +125,8 @@ QgsBench::QgsBench( int theWidth, int theHeight, int theIterations )
     , mHeight( theHeight )
     , mIterations( theIterations )
     , mSetExtent( false )
+    , mUserStart( 0.0 )
+    , mSysStart( 0.0 )
     , mParallel( false )
 {
   QgsDebugMsg( "entered" );

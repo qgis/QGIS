@@ -75,6 +75,11 @@ DL_Dxf::DL_Dxf()
   hatchEdgeIndex = NULL;
   dropEdges = false;
 
+  groupCode = 0;
+  currentEntity = DL_Unknown;
+  firstCall = true;
+  libVersion = 0;
+
   //bulge = 0.0;
 }
 

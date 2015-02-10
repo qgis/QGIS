@@ -92,7 +92,6 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 
     QgsFeatureRendererV2 *mRendererV2;
 
-    bool mCacheFeatures;
     QgsGeometryCache* mCache;
 
     bool mDrawVertexMarkers;

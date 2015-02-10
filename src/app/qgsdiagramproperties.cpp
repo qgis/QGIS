@@ -39,6 +39,7 @@
 
 QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent )
     : QWidget( parent )
+    , mAvailableAttributes( 0 )
 {
   mLayer = layer;
 

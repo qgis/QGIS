@@ -21,6 +21,7 @@ QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, QgsPoi
     , mEquals( -1 )
     , mInRubberBand( false )
     , mRubberBandNr( 0 )
+    , mRubberBandIndex( 0 )
     , mPenWidth( penWidth )
     , mToolTip( tooltip )
     , mType( type )

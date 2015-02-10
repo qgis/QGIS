@@ -27,12 +27,14 @@
 
 QgsSnapper::QgsSnapper( QgsMapRenderer* mapRenderer )
     : mMapSettings( mapRenderer->mapSettings() )
+    , mSnapMode( SnapWithOneResult )
 {
 
 }
 
 QgsSnapper::QgsSnapper( const QgsMapSettings& mapSettings )
     : mMapSettings( mapSettings )
+    , mSnapMode( SnapWithOneResult )
 {
 }
 

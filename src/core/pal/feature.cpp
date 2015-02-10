@@ -62,8 +62,25 @@
 namespace pal
 {
   Feature::Feature( Layer* l, const char* geom_id, PalGeometry* userG, double lx, double ly )
-      : layer( l ), userGeom( userG ), label_x( lx ), label_y( ly ), distlabel( 0 ), labelInfo( NULL ), fixedPos( false ),
-      quadOffset( false ), offsetPos( false ), fixedRotation( false ), alwaysShow( false )
+      : layer( l )
+      , userGeom( userG )
+      , label_x( lx )
+      , label_y( ly )
+      , distlabel( 0 )
+      , labelInfo( NULL )
+      , fixedPos( false )
+      , fixedPosX( 0.0 )
+      , fixedPosY( 0.0 )
+      , quadOffset( false )
+      , quadOffsetX( 0.0 )
+      , quadOffsetY( 0.0 )
+      , offsetPos( false )
+      , offsetPosX( 0.0 )
+      , offsetPosY( 0.0 )
+      , fixedRotation( false )
+      , fixedAngle( 0.0 )
+      , repeatDist( 0.0 )
+      , alwaysShow( false )
   {
     assert( finite( lx ) && finite( ly ) );
 

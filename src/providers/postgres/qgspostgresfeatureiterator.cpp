@@ -30,6 +30,8 @@ const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
     , mFeatureQueueSize( sFeatureQueueSize )
+    , mFetched( 0 )
+    , mFetchGeometry( false )
 {
   if ( !source->mTransactionConnection )
   {
