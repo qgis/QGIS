@@ -233,12 +233,12 @@ void QgsOfflineEditing::synchronize()
 
       QgsVectorLayer* offlineLayer = qobject_cast<QgsVectorLayer*>( layer );
 
-      // copy style
-      copySymbology( offlineLayer, remoteLayer );
-
       // register this layer with the central layers registry
       QgsMapLayerRegistry::instance()->addMapLayers(
         QList<QgsMapLayer *>() << remoteLayer, true );
+
+      // copy style
+      copySymbology( offlineLayer, remoteLayer );
 
       // apply layer edit log
       QString qgisLayerId = layer->id();
@@ -557,6 +557,10 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_SOURCE, layer->source() );
       newLayer->setCustomProperty( CUSTOM_PROPERTY_REMOTE_PROVIDER, layer->providerType() );
 
+      // register this layer with the central layers registry
+      QgsMapLayerRegistry::instance()->addMapLayers(
+        QList<QgsMapLayer *>() << newLayer );
+
       // copy style
       bool hasLabels = layer->hasLabelsEnabled();
       if ( !hasLabels )
@@ -564,10 +568,6 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         // NOTE: copy symbology before adding the layer so it is displayed correctly
         copySymbology( layer, newLayer );
       }
-
-      // register this layer with the central layers registry
-      QgsMapLayerRegistry::instance()->addMapLayers(
-        QList<QgsMapLayer *>() << newLayer );
 
       QgsLayerTreeGroup* layerTreeRoot = QgsProject::instance()->layerTreeRoot();
       // Find the parent group of the original layer
