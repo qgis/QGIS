@@ -95,7 +95,7 @@ class ExtractByLocation(GeoAlgorithm):
                                 pass  # already removed
                     else:
                         if predicate == 'intersects':
-                            res = tmpGeom.intersects()
+                            res = tmpGeom.intersects(geom)
                         elif predicate == 'contains':
                             res = tmpGeom.contains(geom)
                         elif predicate == 'equals':
