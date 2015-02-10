@@ -274,6 +274,10 @@ void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit
 
   // TODO We should thread this so that we don't hold the user up if the layer is massive.
   mValueListWidget->clear();
+
+  if ( fieldIndex < 0 )
+    return;
+
   mValueListWidget->setUpdatesEnabled( false );
   mValueListWidget->blockSignals( true );
 
@@ -566,6 +570,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
 
   mValueGroupBox->show();
   int fieldIndex = mLayer->fieldNameIndex( item->text() );
+
   fillFieldValues( fieldIndex, 10 );
 }
 

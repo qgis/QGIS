@@ -31,12 +31,17 @@
 
 QgsHeatmapRenderer::QgsHeatmapRenderer( )
     : QgsFeatureRendererV2( "heatmapRenderer" )
+    , mCalculatedMaxValue( 0 )
     , mRadius( 10 )
+    , mRadiusPixels( 0 )
+    , mRadiusSquared( 0 )
     , mRadiusUnit( QgsSymbolV2::MM )
+    , mWeightAttrNum( -1 )
     , mGradientRamp( 0 )
     , mInvertRamp( false )
     , mExplicitMax( 0.0 )
     , mRenderQuality( 1 )
+    , mFeaturesRendered( 0 )
 {
   mGradientRamp = new QgsVectorGradientColorRampV2( QColor( 255, 255, 255 ), QColor( 0, 0, 0 ) );
 

@@ -79,6 +79,7 @@ QgsWcsCapabilities::QgsWcsCapabilities()
     : mCapabilities()
     , mCapabilitiesReply( NULL )
     , mCoverageCount( 0 )
+    , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
 }
 

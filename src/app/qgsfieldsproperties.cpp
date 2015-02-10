@@ -550,6 +550,9 @@ void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
     if ( item->column() == 0 )
     {
       int idx = mIndexedWidgets.indexOf( item );
+      if ( idx < 0 )
+        continue;
+
       if ( mLayer->pendingFields().fieldOrigin( idx ) == QgsFields::OriginExpression )
         expressionFields << idx;
       else

@@ -261,6 +261,7 @@ QGis::DataType QgsRasterBlock::typeWithNoDataValue( QGis::DataType dataType, dou
     case QGis::Float64:
       *noDataValue = std::numeric_limits<double>::max() * -1.0;
       newDataType = QGis::Float64;
+      break;
     default:
       QgsDebugMsg( QString( "Unknow data type %1" ).arg( dataType ) );
       return QGis::UnknownDataType;

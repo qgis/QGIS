@@ -476,7 +476,7 @@ QSizeF QgsRasterSymbolLegendNode::drawSymbol( const QgsLegendSettings& settings,
     if ( QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( layerNode()->layer() ) )
     {
       if ( QgsRasterRenderer* rasterRenderer = rasterLayer->renderer() )
-        itemColor.setAlpha( rasterRenderer ? rasterRenderer->opacity() * 255.0 : 255 );
+        itemColor.setAlpha( rasterRenderer->opacity() * 255.0 );
     }
 
     ctx->painter->setBrush( itemColor );

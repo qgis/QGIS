@@ -154,7 +154,11 @@ void QgsDualView::columnBoxInit()
 
   Q_FOREACH ( const QgsField& field, fields )
   {
-    if ( mLayerCache->layer()->editorWidgetV2( mLayerCache->layer()->fieldNameIndex( field.name() ) ) != "Hidden" )
+    int fieldIndex = mLayerCache->layer()->fieldNameIndex( field.name() );
+    if ( fieldIndex == -1 )
+      continue;
+
+    if ( mLayerCache->layer()->editorWidgetV2( fieldIndex ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString text = field.name();

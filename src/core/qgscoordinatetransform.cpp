@@ -39,6 +39,7 @@ extern "C"
 
 QgsCoordinateTransform::QgsCoordinateTransform()
     : QObject()
+    , mShortCircuit( false )
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
@@ -50,6 +51,7 @@ QgsCoordinateTransform::QgsCoordinateTransform()
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source, const QgsCoordinateReferenceSystem& dest )
     : QObject()
+    , mShortCircuit( false )
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )

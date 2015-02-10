@@ -234,6 +234,9 @@ void QgsComposerRuler::drawRotatedText( QPainter *painter, QPointF pos, const QS
 
 void QgsComposerRuler::drawSmallDivisions( QPainter *painter, double startPos, int numDivisions, double rulerScale, double maxPos )
 {
+  if ( numDivisions == 0 )
+    return;
+
   //draw small divisions starting at startPos (in mm)
   double smallMarkerPos = startPos;
   double smallDivisionSpacing = rulerScale / numDivisions;

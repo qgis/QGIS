@@ -1437,7 +1437,14 @@ void QgsShapeburstFillSymbolLayerV2::dtArrayToQImage( double * array, QImage *im
       squaredVal = array[idx];
 
       //scale result to fit in the range [0, 1]
-      pixVal = squaredVal > 0 ? qMin(( sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
+      if ( maxDistanceValue > 0 )
+      {
+        pixVal = squaredVal > 0 ? qMin(( sqrt( squaredVal ) / maxDistanceValue ), 1.0 ) : 0;
+      }
+      else
+      {
+        pixVal = 1.0;
+      }
 
       //convert value to color from ramp
       pixColor = ramp->color( pixVal );

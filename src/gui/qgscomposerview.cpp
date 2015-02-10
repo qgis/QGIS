@@ -49,6 +49,8 @@
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )
+    , mCurrentTool( Select )
+    , mPreviousTool( Select )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )

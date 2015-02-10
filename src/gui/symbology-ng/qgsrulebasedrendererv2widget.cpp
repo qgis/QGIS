@@ -581,8 +581,10 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   {
     groupScale->setChecked( true );
     // caution: rule uses scale denom, scale widget uses true scales
-    mScaleRangeWidget->setMaximumScale( 1.0 / rule->scaleMinDenom() );
-    mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
+    if ( rule->scaleMinDenom() > 0 )
+      mScaleRangeWidget->setMaximumScale( 1.0 / rule->scaleMinDenom() );
+    if ( rule->scaleMaxDenom() > 0 )
+      mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
   }
 
   if ( mRule->symbol() )

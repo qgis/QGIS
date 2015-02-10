@@ -5341,13 +5341,11 @@ QGISEXTERN bool saveStyle( const QString& uri, const QString& qmlStyle, const QS
     return false;
   }
 
-  bool saved = ( SQLITE_OK == ret ) ? true : false;
-
   if ( NULL != errMsg )
     sqlite3_free( errMsg );
 
   QgsSqliteHandle::closeDb( handle );
-  return saved;
+  return true;
 }
 
 

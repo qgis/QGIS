@@ -287,7 +287,11 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   foreach ( const QgsField field, fields )
   {
-    if ( mLayer->editorWidgetV2( mLayer->fieldNameIndex( field.name() ) ) != "Hidden" )
+    int idx = mLayer->fieldNameIndex( field.name() );
+    if ( idx < 0 )
+      continue;
+
+    if ( mLayer->editorWidgetV2( idx ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString text = field.name();
@@ -650,6 +654,9 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
     const QgsFields& flds = mLayer->pendingFields();
     int fldIndex = mLayer->fieldNameIndex( fieldName );
+    if ( fldIndex < 0 )
+      return;
+
     QVariant::Type fldType = flds[fldIndex].type();
     bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 

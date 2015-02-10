@@ -421,6 +421,9 @@ void QgsAttributeForm::init()
     Q_FOREACH ( const QgsField& field, mLayer->pendingFields().toList() )
     {
       int idx = mLayer->fieldNameIndex( field.name() );
+      if ( idx < 0 )
+        continue;
+
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 

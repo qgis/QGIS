@@ -194,6 +194,9 @@ void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
     return;
   }
   int column = findComboColumn( senderComboBox );
+  if ( column < 0 )
+    return;
+
   refreshMergedValue( column );
 }
 

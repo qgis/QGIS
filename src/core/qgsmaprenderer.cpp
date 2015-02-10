@@ -175,7 +175,7 @@ void QgsMapRenderer::adjustExtentToSize()
   if ( !myWidth || !myHeight )
   {
     mScale = 1.0;
-    newCoordXForm.setParameters( 0, 0, 0, 0 );
+    newCoordXForm.setParameters( 1, 0, 0, 0 );
     return;
   }
 

@@ -2091,6 +2091,9 @@ void QgsVectorLayer::addAttributeEditorWidget( QgsAttributeEditorElement* data )
 
 const QString QgsVectorLayer::editorWidgetV2( int fieldIdx ) const
 {
+  if ( fieldIdx < 0 || fieldIdx >= mUpdatedFields.count() )
+    return "TextEdit";
+
   return mEditorWidgetV2Types.value( mUpdatedFields[fieldIdx].name(), "TextEdit" );
 }
 

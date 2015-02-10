@@ -24,6 +24,7 @@ const QString QgsFeatureRequest::AllAttributes = QString( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
     : mFilter( FilterNone )
+    , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
 {

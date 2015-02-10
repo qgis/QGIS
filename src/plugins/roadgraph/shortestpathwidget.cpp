@@ -281,6 +281,18 @@ QgsGraph* RgShortestPathWidget::getPath( QgsPoint& p1, QgsPoint& p2 )
   QgsGraph *graph = builder.graph();
 
   int startVertexIdx = graph->findVertex( p1 );
+  if ( startVertexIdx < 0 )
+  {
+    mPlugin->iface()->messageBar()->pushMessage(
+      tr( "Cannot calculate path" ),
+      tr( "Could not find start vertex. Please check your input data." ),
+      QgsMessageBar::WARNING,
+      mPlugin->iface()->messageTimeout()
+    );
+
+    delete graph;
+    return NULL;
+  }
 
   int criterionNum = 0;
   if ( mCriterionName->currentIndex() > 0 )
@@ -328,6 +340,9 @@ void RgShortestPathWidget::findingPath()
   QList< QgsPoint > p;
   while ( startVertexIdx != stopVertexIdx )
   {
+    if ( stopVertexIdx < 0 )
+      break;
+
     QgsGraphArcIdList l = path->vertex( stopVertexIdx ).inArc();
     if ( l.empty() )
       break;
@@ -399,6 +414,9 @@ void RgShortestPathWidget::exportPath()
   QgsPolyline p;
   while ( startVertexIdx != stopVertexIdx )
   {
+    if ( stopVertexIdx < 0 )
+      break;
+
     QgsGraphArcIdList l = path->vertex( stopVertexIdx ).inArc();
     if ( l.empty() )
       break;

@@ -48,6 +48,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
           , mAllResults( false )
           , mIsExternalAction( false )
           , mLayer( NULL )
+          , mFeatureId( 0 )
           , mLevel( LayerLevel )
           , mMapLayerAction( NULL )
       {}
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
           , mAllResults( layer == 0 )
           , mIsExternalAction( mapLayerAction != 0 )
           , mLayer( layer )
+          , mFeatureId( 0 )
           , mLevel( LayerLevel )
           , mMapLayerAction( mapLayerAction )
       {}

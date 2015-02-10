@@ -213,7 +213,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   uri.setParam( "crs", crs );
   uri.setParam( "layers", layerList );
   uri.setParam( "styles", styleList );
-  result = new QgsRasterLayer( uri.encodedUri(), "", "wms" );
+  result = new QgsRasterLayer( uri.encodedUri(), "", QString( "wms" ) );
   if ( !result->isValid() )
   {
     return 0;

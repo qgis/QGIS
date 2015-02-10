@@ -984,7 +984,7 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     curName = schemeName;
     curVariant = "";
 
-    // stupid code to find if name ends with 1-3 digit number - should use regexp
+    // find if name ends with 1-3 digit number
     // TODO need to detect if ends with b/c also
     if ( schemeName.length() > 1 && schemeName.endsWith( "a" ) && ! listVariant.isEmpty() &&
          (( prevName + listVariant.last()  + "a" ) == curName ) )
@@ -994,32 +994,15 @@ QMap< QString, QStringList > QgsCptCityDirectoryItem::rampsMap()
     }
     else
     {
-      num = schemeName.right( 3 ).toInt( &ok );
-      Q_UNUSED( num );
-      if ( ok )
+      QRegExp rxVariant( "^(.*[^\\d])(\\d{1,3})$" );
+      int pos = rxVariant.indexIn( schemeName );
+      if ( pos > -1 )
       {
-        curName = schemeName.left( schemeName.size() - 3 );
-        curVariant = schemeName.right( 3 );
-      }
-      else
-      {
-        num = schemeName.right( 2 ).toInt( &ok );
-        if ( ok )
-        {
-          curName = schemeName.left( schemeName.size() - 2 );
-          curVariant = schemeName.right( 2 );
-        }
-        else
-        {
-          num = schemeName.right( 1 ).toInt( &ok );
-          if ( ok )
-          {
-            curName = schemeName.left( schemeName.size() - 1 );
-            curVariant = schemeName.right( 1 );
-          }
-        }
+        curName = rxVariant.cap( 1 );
+        curVariant = rxVariant.cap( 2 );
       }
     }
+
     curSep = curName.right( 1 );
     if ( curSep == "-" || curSep == "_" )
     {

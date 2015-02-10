@@ -185,6 +185,9 @@ bool QgsFields::appendExpressionField( const QgsField& field, int originIndex )
 
 void QgsFields::remove( int fieldIdx )
 {
+  if ( !exists( fieldIdx ) )
+    return;
+
   mNameToIndex.remove( mFields[fieldIdx].field.name() );
   mFields.remove( fieldIdx );
 }
@@ -195,6 +198,14 @@ void QgsFields::extend( const QgsFields& other )
   {
     append( other.at( i ), other.fieldOrigin( i ), other.fieldOriginIndex( i ) );
   }
+}
+
+QgsFields::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
+{
+  if ( !exists( fieldIdx ) )
+    return OriginUnknown;
+
+  return mFields[fieldIdx].origin;
 }
 
 QList<QgsField> QgsFields::toList() const
