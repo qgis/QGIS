@@ -2818,7 +2818,7 @@ void QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld
   mExpressionFieldBuffer->addExpression( exp, fld );
   updateFields();
   int idx = mUpdatedFields.indexFromName( fld.name() );
-  emit( attributeAdded( idx ) );
+  emit attributeAdded( idx );
 }
 
 void QgsVectorLayer::removeExpressionField( int index )
@@ -2826,7 +2826,7 @@ void QgsVectorLayer::removeExpressionField( int index )
   int oi = mUpdatedFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->removeExpression( oi );
   updateFields();
-  emit( attributeDeleted( index ) );
+  emit attributeDeleted( index );
 }
 
 void QgsVectorLayer::updateFields()

@@ -698,14 +698,20 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
     dir = ( direction == ForwardTransform ) ? tr( "forward transform" ) : tr( "inverse transform" );
 
+    char *srcdef = pj_get_def( mSourceProjection, 0 );
+    char *dstdef = pj_get_def( mDestinationProjection, 0 );
+
     QString msg = tr( "%1 of\n"
                       "%2"
                       "PROJ.4: %3 +to %4\n"
                       "Error: %5" )
                   .arg( dir )
                   .arg( points )
-                  .arg( mSourceCRS.toProj4() ).arg( mDestCRS.toProj4() )
+                  .arg( srcdef ).arg( dstdef )
                   .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
+
+    pj_dalloc( srcdef );
+    pj_dalloc( dstdef );
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
 

@@ -1725,13 +1725,13 @@ void QgsComposerView::paintEvent( QPaintEvent* event )
 
 void QgsComposerView::hideEvent( QHideEvent* e )
 {
-  emit( composerViewHide( this ) );
+  emit composerViewHide( this );
   e->ignore();
 }
 
 void QgsComposerView::showEvent( QShowEvent* e )
 {
-  emit( composerViewShow( this ) );
+  emit composerViewShow( this );
   e->ignore();
 }
 

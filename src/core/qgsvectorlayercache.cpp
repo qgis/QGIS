@@ -219,7 +219,7 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
     QgsFeature feat;
     featureAtId( fid, feat );
   }
-  emit( featureAdded( fid ) );
+  emit featureAdded( fid );
 }
 
 void QgsVectorLayerCache::attributeAdded( int field )

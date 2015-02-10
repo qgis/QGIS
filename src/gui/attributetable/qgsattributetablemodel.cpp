@@ -311,7 +311,7 @@ void QgsAttributeTableModel::loadLayer()
     if ( t.elapsed() > 1000 )
     {
       bool cancel = false;
-      emit( progress( i, cancel ) );
+      emit progress( i, cancel );
       if ( cancel )
         break;
 

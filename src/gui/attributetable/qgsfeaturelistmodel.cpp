@@ -131,7 +131,7 @@ bool QgsFeatureListModel::setDisplayExpression( const QString expression )
   delete mExpression;
   mExpression = exp;
 
-  emit( dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) ) );
+  emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
   return true;
 }
 

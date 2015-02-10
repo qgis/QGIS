@@ -124,7 +124,7 @@ bool QgsDelimitedTextFile::open()
 void QgsDelimitedTextFile::updateFile()
 {
   close();
-  emit( fileUpdated() );
+  emit fileUpdated();
 }
 
 // Clear information based on current definition of file

@@ -499,7 +499,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
-  mComposition  = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -1008,7 +1008,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   if ( checked )
   {
     mapCanvas()->stopRendering();
-    emit( atlasPreviewFeatureChanged() );
+    emit atlasPreviewFeatureChanged();
   }
   else
   {
@@ -1030,7 +1030,7 @@ void QgsComposer::on_mActionAtlasNext_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->nextFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::on_mActionAtlasPrev_triggered()
@@ -1045,7 +1045,7 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->prevFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::on_mActionAtlasFirst_triggered()
@@ -1060,7 +1060,7 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->firstFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::on_mActionAtlasLast_triggered()
@@ -1075,7 +1075,7 @@ void QgsComposer::on_mActionAtlasLast_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->lastFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )
@@ -3701,7 +3701,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
 
   //set current preview feature id
   atlas.prepareForFeature( &feat );
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
