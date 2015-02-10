@@ -49,7 +49,7 @@ class QgsPanningWidget : public QWidget
       if ( p == mPoly ) return;
       mPoly = p;
       setGeometry( p.boundingRect() );
-      repaint();
+      update();
     }
 
 
