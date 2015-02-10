@@ -28,6 +28,7 @@
 #include <QDomDocument>
 #include <QFileInfo>
 #include <QStringList>
+#include <QTextStream>
 #include <QUrl>
 
 QgsServerProjectParser::QgsServerProjectParser( QDomDocument* xmlDoc, const QString& filePath )
@@ -151,6 +152,7 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 
   addJoinLayersForElement( elem, useCache );
   addValueRelationLayersForElement( elem, useCache );
+  addGetFeatureLayers( elem, useCache );
 
   QDomElement dataSourceElem = elem.firstChildElement( "datasource" );
   QString uri = dataSourceElem.text();
@@ -1422,3 +1424,39 @@ void QgsServerProjectParser::addValueRelationLayersForElement( const QDomElement
     }
   }
 }
+
+void QgsServerProjectParser::addGetFeatureLayers( const QDomElement& layerElem, bool useCache ) const
+{
+  QString str;
+  QTextStream stream( &str );
+  layerElem.save( stream, 2 );
+
+  QRegExp rx( "getFeature\\('([^']*)'" );
+  int idx = 0;
+  while (( idx = rx.indexIn( str, idx ) ) != -1 )
+  {
+    QString name = rx.cap( 1 );
+    QgsMapLayer* ml = 0;
+    QHash< QString, QDomElement >::const_iterator layerElemIt = mProjectLayerElementsById.find( name );
+    if ( layerElemIt != mProjectLayerElementsById.constEnd() )
+    {
+      ml = createLayerFromElement( layerElemIt.value() );
+    }
+    else
+    {
+      layerElemIt = mProjectLayerElementsByName.find( name );
+      if ( layerElemIt != mProjectLayerElementsByName.constEnd() )
+      {
+        ml = createLayerFromElement( layerElemIt.value() );
+      }
+    }
+
+    if ( ml )
+    {
+      QgsMapLayerRegistry::instance()->addMapLayer( ml, false, false );
+    }
+    idx += rx.matchedLength();
+  }
+}
+
+
