@@ -839,6 +839,10 @@ void QgsDxfExport::writeEntities()
 
     QgsSymbolV2RenderContext sctx( ctx, QgsSymbolV2::MM, 1.0, false, 0, 0 );
     QgsFeatureRendererV2* renderer = vl->rendererV2();
+    if ( !renderer )
+    {
+      continue;
+    }
     renderer->startRender( ctx, vl->pendingFields() );
 
     QStringList attributes = renderer->usedAttributes();
@@ -879,10 +883,6 @@ void QgsDxfExport::writeEntities()
       }
       else
       {
-        if ( !renderer )
-        {
-          continue;
-        }
         QgsSymbolV2List symbolList = renderer->symbolsForFeature( fet );
         if ( symbolList.size() < 1 )
         {
@@ -936,7 +936,8 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer* layer )
   QgsFeatureRendererV2* renderer = layer->rendererV2();
   if ( !renderer )
   {
-    //return error
+    //TODO return error
+    return;
   }
   QHash< QgsSymbolV2*, QList<QgsFeature> > features;
 

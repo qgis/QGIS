@@ -1059,7 +1059,7 @@ void QgsSpatialQueryDialog::signal_qgis_layerWillBeRemoved( QString idLayer )
       mLayerTarget = NULL;
     }
   }
-  else
+  else if ( mLayerTarget )
   {
     populateCbOperation();
   }

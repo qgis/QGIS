@@ -656,7 +656,7 @@ class CORE_EXPORT QgsExpression
     /**
      * Used by QgsOgcUtils to create an empty
      */
-    QgsExpression() : mRootNode( 0 ), mRowNumber( 0 ), mCalc( 0 ) {}
+    QgsExpression() : mRootNode( 0 ), mRowNumber( 0 ), mScale( 0.0 ), mCalc( 0 ) {}
 
     void initGeomCalculator();
 

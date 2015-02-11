@@ -379,12 +379,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     /** Encoding */
     QTextCodec* mEncoding;
 
-    /** should provider fetch also features that don't have geometry? */
-    bool mFetchFeaturesWithoutGeom;
-
-    /** True if geometry should be added to the features in nextFeature calls*/
-    bool mFetchGeom;
-
     /** List of attribute indices to fetch with nextFeature calls*/
     QgsAttributeList mAttributesToFetch;
 

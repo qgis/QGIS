@@ -842,7 +842,7 @@ QgsRectangle QgsVectorLayer::extent()
     QgsDebugMsg( "invoked with null mDataProvider" );
   }
 
-  if ( mEditBuffer && mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() )
+  if ( mDataProvider && mEditBuffer && mEditBuffer->mDeletedFeatureIds.isEmpty() && mEditBuffer->mChangedGeometries.isEmpty() )
   {
     mDataProvider->updateExtents();
 

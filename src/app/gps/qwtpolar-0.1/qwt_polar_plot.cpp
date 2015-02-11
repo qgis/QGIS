@@ -41,6 +41,12 @@ class QwtPolarPlot::ScaleData
 {
   public:
     ScaleData():
+        doAutoScale( false ),
+        minValue( 0.0 ),
+        maxValue( 0.0 ),
+        stepSize( 0.0 ),
+        maxMajor( 0 ),
+        maxMinor( 0 ),
         scaleEngine( NULL )
     {
     }

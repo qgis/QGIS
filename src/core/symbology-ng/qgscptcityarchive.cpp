@@ -1692,8 +1692,10 @@ void QgsCptCityBrowserModel::fetchMore( const QModelIndex & parent )
 {
   QgsCptCityDataItem* item = dataItem( parent );
   if ( item )
+  {
     item->populate();
-  QgsDebugMsg( "path = " + item->path() );
+    QgsDebugMsg( "path = " + item->path() );
+  }
 }
 
 

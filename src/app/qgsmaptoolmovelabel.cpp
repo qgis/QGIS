@@ -176,7 +176,8 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   }
   vlayer->endEditCommand();
 
-  mCanvas->refresh();
+  if ( mCanvas )
+    mCanvas->refresh();
 }
 
 

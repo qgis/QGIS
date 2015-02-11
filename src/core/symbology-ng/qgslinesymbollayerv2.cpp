@@ -1352,7 +1352,7 @@ void QgsMarkerLineSymbolLayerV2::toSld( QDomDocument &doc, QDomElement &element,
     QgsMarkerSymbolLayerV2 *markerLayer = static_cast<QgsMarkerSymbolLayerV2 *>( layer );
     if ( !markerLayer )
     {
-      graphicStrokeElem.appendChild( doc.createComment( QString( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( markerLayer->layerType() ) ) );
+      graphicStrokeElem.appendChild( doc.createComment( QString( "MarkerSymbolLayerV2 expected, %1 found. Skip it." ).arg( layer->layerType() ) ) );
     }
     else
     {

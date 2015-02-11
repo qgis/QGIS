@@ -844,7 +844,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   //outlineWidth
   double outlineWidth = mOutlineWidth;
   QgsExpression* outlineWidthExpression = expression( "outline_width" );
-  if ( outlineWidthExpression )
+  if ( context && outlineWidthExpression )
   {
     outlineWidth = outlineWidthExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
   }
@@ -872,13 +872,16 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   //offset
   double offsetX = 0;
   double offsetY = 0;
-  markerOffset( *context, offsetX, offsetY );
+  if ( context )
+  {
+    markerOffset( *context, offsetX, offsetY );
+  }
   QPointF off( offsetX, offsetY );
 
   //angle
   double angle = mAngle;
   QgsExpression* angleExpression = expression( "angle" );
-  if ( angleExpression )
+  if ( context && angleExpression )
   {
     angle = angleExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
   }
@@ -1256,7 +1259,6 @@ QString QgsSvgMarkerSymbolLayerV2::layerType() const
 void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   QgsMarkerSymbolLayerV2::startRender( context ); // get anchor point expressions
-  mOrigSize = mSize; // save in case the size would be data defined
   Q_UNUSED( context );
   prepareExpressions( context.fields(), context.renderContext().rendererScale() );
 }
@@ -1655,6 +1657,7 @@ QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( QString fontFamily, QCha
   mColor = color;
   mAngle = angle;
   mSize = pointSize;
+  mOrigSize = pointSize;
   mSizeUnit = QgsSymbolV2::MM;
   mOffset = QPointF( 0, 0 );
   mOffsetUnit = QgsSymbolV2::MM;

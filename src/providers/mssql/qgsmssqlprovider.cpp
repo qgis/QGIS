@@ -1729,7 +1729,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     for ( int i = 0, n = fields.size(); i < n; ++i )
     {
       QgsField fld = fields[i];
-      if ( fld.name() == primaryKey )
+      if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
         oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), 0 );
         continue;

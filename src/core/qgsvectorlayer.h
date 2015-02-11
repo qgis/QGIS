@@ -534,7 +534,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     struct ValueRelationData
     {
-      ValueRelationData() {}
+      ValueRelationData() : mAllowNull( false ), mOrderByValue( false ), mAllowMulti( false ) {}
       ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue,
                          bool allowMulti = false,
                          QString filterExpression = QString::null )

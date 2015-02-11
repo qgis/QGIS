@@ -94,11 +94,7 @@ class GUI_EXPORT QgsAttributeTypeLoadDialog: public QDialog, private Ui::QgsAttr
     void loadDataToValueMap();
 
     QgsVectorLayer *mLayer;
-    int mIndex;
-
-
     QMap<QString, QVariant> mValueMap;
-    QgsVectorLayer::EditType mEditType;
 };
 
 #endif

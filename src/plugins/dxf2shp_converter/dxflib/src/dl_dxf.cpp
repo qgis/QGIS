@@ -1611,6 +1611,7 @@ bool DL_Dxf::handleHatchData( DL_CreationInterface* /*creationInterface*/ )
        hatchEdges != NULL &&
        hatchEdgeIndex != NULL &&
        hatchLoopIndex >= 0 &&
+       maxHatchEdges != NULL &&
        hatchLoopIndex < maxHatchLoops &&
        hatchEdges[hatchLoopIndex] != NULL &&
        hatchEdgeIndex[hatchLoopIndex] >= 0 &&

@@ -211,7 +211,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     double mOutlineWidth;
     QgsSymbolV2::OutputUnit mOutlineWidthUnit;
     QgsMapUnitScale mOutlineWidthMapUnitScale;
-    double mOrigSize;
 };
 
 

@@ -91,7 +91,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
 
       // style-related actions
-      if ( mView->selectedLayerNodes().count() == 1 )
+      if ( layer && mView->selectedLayerNodes().count() == 1 )
       {
         QMenu* menuStyleManager = new QMenu( tr( "Styles" ) );
 
