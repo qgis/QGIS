@@ -56,7 +56,7 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
     , mNoDataBitmapWidth( 0 )
     , mNoDataBitmapSize( 0 )
 {
-  reset( mDataType, mWidth, mHeight );
+  ( void )reset( mDataType, mWidth, mHeight );
 }
 
 QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
@@ -73,7 +73,7 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
     , mNoDataBitmapWidth( 0 )
     , mNoDataBitmapSize( 0 )
 {
-  reset( mDataType, mWidth, mHeight, mNoDataValue );
+  ( void )reset( mDataType, mWidth, mHeight, mNoDataValue );
 }
 
 QgsRasterBlock::~QgsRasterBlock()

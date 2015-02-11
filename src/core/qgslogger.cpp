@@ -146,7 +146,8 @@ void QgsLogger::logMessageToFile( QString theMessage )
 
   //Maybe more efficient to keep the file open for the life of qgis...
   QFile file( sLogFile );
-  file.open( QIODevice::Append );
+  if ( !file.open( QIODevice::Append ) )
+    return;
   file.write( theMessage.toLocal8Bit().constData() );
   file.write( "\n" );
   file.close();

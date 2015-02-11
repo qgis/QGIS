@@ -114,6 +114,7 @@ void TestQgsMapLayerStyleManager::testReadWrite()
   sm0.addStyleFromLayer( "blue" );
   sm0.setCurrentStyle( "blue" );
   QgsSingleSymbolRendererV2* r1 = dynamic_cast<QgsSingleSymbolRendererV2*>( mVL->rendererV2() );
+  QVERIFY( r1 );
   r1->symbol()->setColor( Qt::blue );
 
   // read and write

@@ -777,7 +777,7 @@ static QVariant fcnRegexpSubstr( const QVariantList& values, const QgsFeature*, 
   }
 
   // extract substring
-  re.indexIn( str );
+  ( void )re.indexIn( str );
   if ( re.captureCount() > 0 )
   {
     // return first capture

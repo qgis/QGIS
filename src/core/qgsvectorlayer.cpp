@@ -3702,7 +3702,8 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
     if ( elem->type() == AeTypeContainer )
     {
       QgsAttributeEditorContainer* cont = dynamic_cast<QgsAttributeEditorContainer*>( elem );
-      results += cont->findElements( type );
+      if ( cont )
+        results += cont->findElements( type );
     }
   }
 

@@ -3007,7 +3007,10 @@ bool QgisApp::askUserForZipItemLayers( QString path )
     {
       QgsDataItem *item = zipItem->children()[i];
       QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( item );
-      QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
+      if ( layerItem )
+      {
+        QgsDebugMsgLevel( QString( "item path=%1 provider=%2" ).arg( item->path() ).arg( layerItem->providerKey() ), 2 );
+      }
       if ( layerItem && layerItem->providerKey() == "gdal" )
       {
         layers << QString( "%1|%2|%3" ).arg( i ).arg( item->name() ).arg( "Raster" );

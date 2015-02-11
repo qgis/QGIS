@@ -546,7 +546,7 @@ void TestQgsWcsPublicServers::test()
       myVersionLogFile.close();
     }
     QFile myServerLogFile( myServerLogPath );
-    myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+    Q_ASSERT( myServerLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
     QTextStream myServerStream( &myServerLogFile );
     myServerStream << myServerLog.join( "\n" );
     myServerLogFile.close();

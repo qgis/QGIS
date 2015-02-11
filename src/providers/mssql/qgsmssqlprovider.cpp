@@ -920,7 +920,16 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       }
     }
 
-    query.next();
+    if ( !query.next() )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        pushError( msg );
+        return false;
+      }
+    }
     it->setFeatureId( query.value( 0 ).toLongLong() );
   }
 
@@ -1315,8 +1324,8 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
     // try to load crs
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
-    query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
-    if ( query.isActive() )
+    bool execOk = query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
+    if ( execOk && query.isActive() )
     {
       if ( query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
         return mCrs;
@@ -1324,8 +1333,8 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
       query.finish();
     }
     query.clear();
-    query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
-    if ( query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
+    execOk = query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
+    if ( execOk && query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
       return mCrs;
   }
   return mCrs;
