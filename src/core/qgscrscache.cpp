@@ -37,7 +37,9 @@ const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QStr
   QList< QgsCoordinateTransform* >::const_iterator valIt = values.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt )
   {
-    if ( *valIt && ( *valIt )->sourceDatumTransform() == srcDatumTransform && ( *valIt )->destinationDatumTransform() == destDatumTransform )
+    if ( *valIt &&
+         ( *valIt )->sourceDatumTransform() == srcDatumTransform &&
+         ( *valIt )->destinationDatumTransform() == destDatumTransform )
     {
       return *valIt;
     }

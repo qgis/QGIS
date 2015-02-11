@@ -1111,7 +1111,7 @@ const QgsCoordinateTransform *QgsMapRenderer::transformation( const QgsMapLayer 
        || ctIt->destAuthId == mDestCRS->authid()
      )
   {
-    return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid(), -1, -1 );
+    return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
   }
   return QgsCoordinateTransformCache::instance()->transform( ctIt->srcAuthId, ctIt->destAuthId, ctIt->srcDatumTransform, ctIt->destDatumTransform );
 }

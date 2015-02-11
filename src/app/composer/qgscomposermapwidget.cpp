@@ -43,7 +43,9 @@
 #include <QFontDialog>
 #include <QMessageBox>
 
-QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap ): QgsComposerItemBaseWidget( 0, composerMap ), mComposerMap( composerMap )
+QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
+    : QgsComposerItemBaseWidget( 0, composerMap )
+    , mComposerMap( composerMap )
 {
   setupUi( this );
 

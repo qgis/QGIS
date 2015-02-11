@@ -390,14 +390,14 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Returns pointer to map renderer of qgis map canvas*/
     //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
-    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() {return mMapRenderer;}
+    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() { return mMapRenderer; }
 
     //! Return setting of QGIS map canvas
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
-    QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
-    void setPlotStyle( const QgsComposition::PlotStyle style ) {mPlotStyle = style;}
+    QgsComposition::PlotStyle plotStyle() const { return mPlotStyle; }
+    void setPlotStyle( const QgsComposition::PlotStyle style ) { mPlotStyle = style; }
 
     /**Returns the mm font size for a font that has point size set.
      * Each item that sets a font should call this function before drawing text

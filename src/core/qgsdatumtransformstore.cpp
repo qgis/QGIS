@@ -22,7 +22,6 @@
 QgsDatumTransformStore::QgsDatumTransformStore( const QgsCoordinateReferenceSystem& destCrs )
     : mDestCRS( destCrs )
 {
-
 }
 
 void QgsDatumTransformStore::clear()
@@ -68,7 +67,7 @@ const QgsCoordinateTransform* QgsDatumTransformStore::transformation( QgsMapLaye
   }
   else
   {
-    return QgsCoordinateTransformCache::instance()->transform( srcAuthId, dstAuthId, -1, -1 );
+    return QgsCoordinateTransformCache::instance()->transform( srcAuthId, dstAuthId );
   }
 }
 
@@ -90,12 +89,12 @@ void QgsDatumTransformStore::readXML( const QDomNode& parentNode )
         continue;
       }
 
-      Entry lct;
-      lct.srcAuthId = layerCoordTransformElem.attribute( "srcAuthId" );
-      lct.destAuthId = layerCoordTransformElem.attribute( "destAuthId" );
-      lct.srcDatumTransform = layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt();
-      lct.destDatumTransform = layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt();
-      mEntries.insert( layerId, lct );
+      addEntry( layerId,
+                layerCoordTransformElem.attribute( "srcAuthId" ),
+                layerCoordTransformElem.attribute( "destAuthId" ),
+                layerCoordTransformElem.attribute( "srcDatumTransform", "-1" ).toInt(),
+                layerCoordTransformElem.attribute( "destDatumTransform", "-1" ).toInt()
+              );
     }
   }
 }

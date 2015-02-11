@@ -20,7 +20,6 @@
 #include "qgscomposermapoverview.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
-#include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmaprenderer.h"
 #include "qgsmaprenderercustompainterjob.h"
@@ -184,7 +183,6 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
     return;
   }
 
-
   // render
   QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi ), painter );
   // Render the map in this thread. This is done because of problems
@@ -195,7 +193,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
 QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QSizeF& size, int dpi ) const
 {
-  const QgsMapSettings& ms = mComposition->mapSettings();
+  const QgsMapSettings &ms = mComposition->mapSettings();
 
   QgsMapSettings jobMapSettings;
   jobMapSettings.setExtent( extent );
@@ -238,6 +236,8 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle& extent, const QS
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput ); // force vector output (no caching of marker images etc.)
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
+
+  jobMapSettings.datumTransformStore() = ms.datumTransformStore();
 
   return jobMapSettings;
 }

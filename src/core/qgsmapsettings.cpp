@@ -337,14 +337,10 @@ double QgsMapSettings::scale() const
 }
 
 
-
-
-
 const QgsCoordinateTransform* QgsMapSettings::layerTransform( QgsMapLayer *layer ) const
 {
   return mDatumTransformStore.transformation( layer );
 }
-
 
 
 QgsRectangle QgsMapSettings::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent ) const
