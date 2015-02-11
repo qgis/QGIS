@@ -243,7 +243,7 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
         elif fieldType == QgsExpression:
             editor = QgsFieldExpressionWidget(parent)
             editor.setLayer(index.model().layer())
-            # editor.fieldChanged.connect(self.on_expression_fieldChange)
+            editor.fieldChanged.connect(self.on_expression_fieldChange)
 
         else:
             editor = QtGui.QStyledItemDelegate.createEditor(self, parent, option, index)
@@ -291,9 +291,8 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
     def updateEditorGeometry(self, editor, option, index):
         editor.setGeometry(option.rect)
 
-    def on_expression_fieldChange(self, fieldName, isValid):
-        # self.commitData.emit(self.sender())
-        pass
+    def on_expression_fieldChange(self, fieldName):
+        self.commitData.emit(self.sender())
 
 
 class FieldsMappingPanel(QtGui.QWidget, Ui_Form):
