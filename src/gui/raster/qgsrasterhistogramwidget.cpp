@@ -46,6 +46,10 @@
 #include "qwt5_histogram_item.h"
 #endif
 
+#ifdef WIN32
+#include <time.h>
+#endif
+
 // this has been removed, now we let the provider/raster interface decide
 // how many bins are suitable depending on data type and range
 //#define RASTER_HISTOGRAM_BINS 256
