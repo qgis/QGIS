@@ -278,7 +278,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   {
     QgsAttributes attrs = mFeature.attributes();
     Q_ASSERT( attrs.size() == idx );
-    attrs.append( QVariant() );
+    attrs.append( QVariant( layer()->pendingFields()[idx].type() ) );
     mFeature.setFields( &layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
