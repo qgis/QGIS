@@ -35,14 +35,14 @@ class SpinBoxDelegate : public QItemDelegate
       editor->setMinimum( 0 );
       editor->setMaximum( 999 );
       return editor;
-  }
+    }
 
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override
     {
       int value = index.model()->data( index, Qt::EditRole ).toInt();
       QSpinBox *spinBox = static_cast<QSpinBox*>( editor );
       spinBox->setValue( value );
-  }
+    }
 
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override
     {
@@ -51,12 +51,12 @@ class SpinBoxDelegate : public QItemDelegate
       int value = spinBox->value();
 
       model->setData( index, value, Qt::EditRole );
-  }
+    }
 
     void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex & /*index*/ ) const override
     {
       editor->setGeometry( option.rect );
-  }
+    }
 
 };
 

@@ -52,7 +52,7 @@ namespace pal
           const char* what() const throw() override
           {
             return "This set is full...";
-        }
+          }
       };
 
       /** \brief Thrown when trying to access an empty dada set
@@ -62,7 +62,7 @@ namespace pal
           const char* what() const throw() override
           {
             return "This set is empty...";
-        }
+          }
       };
 
       /** \brief Thrown when a geometry type is not like expected
@@ -72,7 +72,7 @@ namespace pal
           const char* what() const throw() override
           {
             return "GeometryTypeId is not expected...";
-        }
+          }
       };
 
       /** \brief Thrown when a geometry type is not like expected
@@ -82,7 +82,7 @@ namespace pal
           const char* what() const throw() override
           {
             return "Geometry Type is unknown";
-        }
+          }
       };
 
 
@@ -93,7 +93,7 @@ namespace pal
           const char * what() const throw() override
           {
             return "No way to compute positions";
-        }
+          }
       };
   };
 

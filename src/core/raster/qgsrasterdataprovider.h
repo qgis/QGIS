@@ -226,7 +226,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QStringList subLayers() const override
     {
       return QStringList();
-  }
+    }
 
     /** \brief Returns the legend rendered as pixmap
      *

@@ -454,7 +454,7 @@ class FieldsMappingPanel(QtGui.QWidget, Ui_Form):
 
     def updateLayerCombo(self):
         layers = dataobjects.getVectorLayers()
-        layers.sort(key = lambda lay: lay.name())
+        layers.sort(key=lambda lay: lay.name())
         for layer in layers:
             self.layerCombo.addItem(layer.name(), layer)
 

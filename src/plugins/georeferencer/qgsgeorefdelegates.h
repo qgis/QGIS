@@ -31,7 +31,7 @@ class QgsNonEditableDelegate : public QStyledItemDelegate
       Q_UNUSED( option );
       Q_UNUSED( index );
       return 0;
-  }
+    }
 };
 
 class QgsDmsAndDdDelegate : public QStyledItemDelegate

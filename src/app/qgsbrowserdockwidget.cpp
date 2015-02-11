@@ -206,18 +206,18 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
     // returns true if at least one ancestor is accepted by filter
     bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const
-      {
-        if ( !mModel )
-          return true;
+    {
+      if ( !mModel )
+        return true;
 
-        QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
-        if ( !sourceParentIndex.isValid() )
-          return false;
-        if ( filterAcceptsItem( sourceParentIndex ) )
-          return true;
+      QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+      if ( !sourceParentIndex.isValid() )
+        return false;
+      if ( filterAcceptsItem( sourceParentIndex ) )
+        return true;
 
-        return filterAcceptsAncestor( sourceParentIndex );
-      }
+      return filterAcceptsAncestor( sourceParentIndex );
+    }
 
     // returns true if at least one descendant s accepted by filter
     bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const

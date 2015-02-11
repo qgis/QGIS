@@ -47,7 +47,7 @@ class TreeFilterProxyModel : public QSortFilterProxyModel
     {
       QgsCptCityDataItem* item = mModel->dataItem( mModel->index( sourceRow, 0, sourceParent ) );
       return ( item && !( item->type() == QgsCptCityDataItem::ColorRamp ) );
-  }
+    }
     // bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
   private:
