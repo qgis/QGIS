@@ -159,8 +159,8 @@ void QgsSpatialQueryDialog::evaluateCheckBoxLayer( bool isTarget )
     lyr = mLayerReference;
     checkbox = ckbUsingSelectedReference;
   }
-  int selectedCount = lyr->selectedFeatureCount();
-  bool isCheckBoxValid = ( lyr != NULL &&  selectedCount > 0 );
+  int selectedCount = lyr ? lyr->selectedFeatureCount() : 0;
+  bool isCheckBoxValid = selectedCount > 0;
   checkbox->setChecked( isCheckBoxValid );
   checkbox->setEnabled( isCheckBoxValid );
   QString textCheckBox  = isCheckBoxValid

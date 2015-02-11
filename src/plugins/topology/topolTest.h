@@ -134,6 +134,8 @@ class topolTest: public QObject
      * @param layer2 not used
      */
     ErrorList checkSelfIntersections( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+
+#if 0 //unused and broken
     /**
      * Checks for features that are too close
      * @param tolerance allowed tolerance
@@ -141,6 +143,8 @@ class topolTest: public QObject
      * @param layer2 pointer to the second layer
      */
     ErrorList checkCloseFeature( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent );
+#endif
+
     /**
     * Checks for short segments
     * @param tolerance tolerance - not used

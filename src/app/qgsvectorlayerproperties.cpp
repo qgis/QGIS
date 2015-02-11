@@ -111,6 +111,9 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( htmlRadio, SIGNAL( toggled( bool ) ), insertExpressionButton, SLOT( setEnabled( bool ) ) );
   connect( fieldComboRadio, SIGNAL( toggled( bool ) ), displayFieldComboBox, SLOT( setEnabled( bool ) ) );
 
+  if ( !layer )
+    return;
+
   QVBoxLayout *layout;
 
   if ( layer->hasGeometryType() )
@@ -236,38 +239,35 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mDiagramFrame->layout()->addWidget( diagramPropertiesDialog );
 
   //layer title and abstract
-  if ( layer )
-  {
-    mLayerTitleLineEdit->setText( layer->title() );
-    mLayerAbstractTextEdit->setPlainText( layer->abstract() );
-    mLayerKeywordListLineEdit->setText( layer->keywordList() );
-    mLayerDataUrlLineEdit->setText( layer->dataUrl() );
-    mLayerDataUrlFormatComboBox->setCurrentIndex(
-      mLayerDataUrlFormatComboBox->findText(
-        layer->dataUrlFormat()
-      )
-    );
-    //layer attribution and metadataUrl
-    mLayerAttributionLineEdit->setText( layer->attribution() );
-    mLayerAttributionUrlLineEdit->setText( layer->attributionUrl() );
-    mLayerMetadataUrlLineEdit->setText( layer->metadataUrl() );
-    mLayerMetadataUrlTypeComboBox->setCurrentIndex(
-      mLayerMetadataUrlTypeComboBox->findText(
-        layer->metadataUrlType()
-      )
-    );
-    mLayerMetadataUrlFormatComboBox->setCurrentIndex(
-      mLayerMetadataUrlFormatComboBox->findText(
-        layer->metadataUrlFormat()
-      )
-    );
-    mLayerLegendUrlLineEdit->setText( layer->legendUrl() );
-    mLayerLegendUrlFormatComboBox->setCurrentIndex(
-      mLayerLegendUrlFormatComboBox->findText(
-        layer->legendUrlFormat()
-      )
-    );
-  }
+  mLayerTitleLineEdit->setText( layer->title() );
+  mLayerAbstractTextEdit->setPlainText( layer->abstract() );
+  mLayerKeywordListLineEdit->setText( layer->keywordList() );
+  mLayerDataUrlLineEdit->setText( layer->dataUrl() );
+  mLayerDataUrlFormatComboBox->setCurrentIndex(
+    mLayerDataUrlFormatComboBox->findText(
+      layer->dataUrlFormat()
+    )
+  );
+  //layer attribution and metadataUrl
+  mLayerAttributionLineEdit->setText( layer->attribution() );
+  mLayerAttributionUrlLineEdit->setText( layer->attributionUrl() );
+  mLayerMetadataUrlLineEdit->setText( layer->metadataUrl() );
+  mLayerMetadataUrlTypeComboBox->setCurrentIndex(
+    mLayerMetadataUrlTypeComboBox->findText(
+      layer->metadataUrlType()
+    )
+  );
+  mLayerMetadataUrlFormatComboBox->setCurrentIndex(
+    mLayerMetadataUrlFormatComboBox->findText(
+      layer->metadataUrlFormat()
+    )
+  );
+  mLayerLegendUrlLineEdit->setText( layer->legendUrl() );
+  mLayerLegendUrlFormatComboBox->setCurrentIndex(
+    mLayerLegendUrlFormatComboBox->findText(
+      layer->legendUrlFormat()
+    )
+  );
 
   QSettings settings;
   // if dialog hasn't been opened/closed yet, default to Styles tab, which is used most often

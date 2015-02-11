@@ -2516,6 +2516,10 @@ void QgisApp::autoSelectAddedLayer( QList<QgsMapLayer*> layers )
   if ( layers.count() )
   {
     QgsLayerTreeLayer* nodeLayer = QgsProject::instance()->layerTreeRoot()->findLayer( layers[0]->id() );
+
+    if ( !nodeLayer )
+      return;
+
     QModelIndex index = mLayerTreeView->layerTreeModel()->node2index( nodeLayer );
     mLayerTreeView->setCurrentIndex( index );
   }
@@ -7456,7 +7460,10 @@ void QgisApp::loadPythonSupport()
 
   //QgsDebugMsg("Python support library's instance() symbol resolved.");
   mPythonUtils = pythonlib_inst();
-  mPythonUtils->initPython( mQgisInterface );
+  if ( mPythonUtils )
+  {
+    mPythonUtils->initPython( mQgisInterface );
+  }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
@@ -9205,12 +9212,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     bool layerHasSelection = vlayer->selectedFeatureCount() > 0;
     bool layerHasActions = vlayer->actions()->size() + QgsMapLayerActionRegistry::instance()->mapLayerActions( vlayer ).size() > 0;
 
-    bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
-    bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
-    bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
-    bool canSupportEditing = dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities;
-    bool canChangeGeometry = dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
-
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
     mActionLocalCumulativeCutStretch->setEnabled( false );
@@ -9242,6 +9243,12 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
 
     if ( dprovider )
     {
+      bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+      bool canDeleteFeatures = dprovider->capabilities() & QgsVectorDataProvider::DeleteFeatures;
+      bool canAddFeatures = dprovider->capabilities() & QgsVectorDataProvider::AddFeatures;
+      bool canSupportEditing = dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities;
+      bool canChangeGeometry = dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries;
+
       mActionLayerSubsetString->setEnabled( !isEditable && dprovider->supportsSubsetString() );
 
       mActionToggleEditing->setEnabled( canSupportEditing && !vlayer->isReadOnly() );

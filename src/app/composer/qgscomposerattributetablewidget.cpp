@@ -553,11 +553,14 @@ void QgsComposerAttributeTableWidget::atlasToggled()
   bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
   toggleAtlasSpecificControls( atlasEnabled );
 
+  if ( !mComposerTable )
+    return;
+
   mSourceComboBox->blockSignals( true );
   mSourceComboBox->setCurrentIndex( mSourceComboBox->findData( mComposerTable->source() ) );
   mSourceComboBox->blockSignals( false );
 
-  if ( !atlasEnabled && mComposerTable && mComposerTable->filterToAtlasFeature() )
+  if ( !atlasEnabled && mComposerTable->filterToAtlasFeature() )
   {
     mComposerTable->setFilterToAtlasFeature( false );
   }

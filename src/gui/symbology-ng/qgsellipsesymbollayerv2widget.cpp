@@ -93,19 +93,19 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 
   //set combo entries to current values
   blockComboSignals( true );
-    mSymbolWidthUnitWidget->setUnit( mLayer->symbolWidthUnit() );
-    mSymbolWidthUnitWidget->setMapUnitScale( mLayer->symbolWidthMapUnitScale() );
-    mOutlineWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
-    mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
-    mSymbolHeightUnitWidget->setUnit( mLayer->symbolHeightUnit() );
-    mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
-    mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
-    mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
-    QPointF offsetPt = mLayer->offset();
-    spinOffsetX->setValue( offsetPt.x() );
-    spinOffsetY->setValue( offsetPt.y() );
-    mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-    mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  mSymbolWidthUnitWidget->setUnit( mLayer->symbolWidthUnit() );
+  mSymbolWidthUnitWidget->setMapUnitScale( mLayer->symbolWidthMapUnitScale() );
+  mOutlineWidthUnitWidget->setUnit( mLayer->outlineWidthUnit() );
+  mOutlineWidthUnitWidget->setMapUnitScale( mLayer->outlineWidthMapUnitScale() );
+  mSymbolHeightUnitWidget->setUnit( mLayer->symbolHeightUnit() );
+  mSymbolHeightUnitWidget->setMapUnitScale( mLayer->symbolHeightMapUnitScale() );
+  mOffsetUnitWidget->setUnit( mLayer->offsetUnit() );
+  mOffsetUnitWidget->setMapUnitScale( mLayer->offsetMapUnitScale() );
+  QPointF offsetPt = mLayer->offset();
+  spinOffsetX->setValue( offsetPt.x() );
+  spinOffsetY->setValue( offsetPt.y() );
+  mHorizontalAnchorComboBox->setCurrentIndex( mLayer->horizontalAnchorPoint() );
+  mVerticalAnchorComboBox->setCurrentIndex( mLayer->verticalAnchorPoint() );
   blockComboSignals( false );
 
   registerDataDefinedButton( mSymbolWidthDDBtn, "width", QgsDataDefinedButton::Double, QgsDataDefinedButton::doublePosDesc() );

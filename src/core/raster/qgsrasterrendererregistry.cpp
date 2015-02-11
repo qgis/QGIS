@@ -204,7 +204,7 @@ QgsRasterRenderer* QgsRasterRendererRegistry::defaultRendererForDrawingStyle( co
       break;
     }
     default:
-      break;
+      return 0;
   }
 
   QgsRasterTransparency* tr = new QgsRasterTransparency(); //renderer takes ownership

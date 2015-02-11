@@ -112,11 +112,11 @@ void QgsRasterDrawer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const
   // which should not harm anything
   p->setBrush( QBrush( QColor( Qt::white ), Qt::NoBrush ) );
 
-  int w = theQgsMapToPixel->mapWidth();
-  int h = theQgsMapToPixel->mapHeight();
-
   if ( theQgsMapToPixel )
   {
+    int w = theQgsMapToPixel->mapWidth();
+    int h = theQgsMapToPixel->mapHeight();
+
     double rotation = theQgsMapToPixel->mapRotation();
     if ( rotation )
     {

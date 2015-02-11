@@ -157,8 +157,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   bool scanExtSetting = false;
   if (( settings.value( "/qgis/scanItemsInBrowser2",
                         "extension" ).toString() == "extension" ) ||
-      ( settings.value( "/qgis/scanItemsFastScanUris",
-                        QStringList() ).toStringList().contains( parentItem->path() ) ) ||
+      ( parentItem && settings.value( "/qgis/scanItemsFastScanUris",
+                                      QStringList() ).toStringList().contains( parentItem->path() ) ) ||
       (( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
        settings.value( "/qgis/scanItemsFastScanUris",
                        QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )

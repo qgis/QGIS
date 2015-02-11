@@ -124,7 +124,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   blockAllSignals( false );
 
   //set the appropriate renderer dialog
-  if ( mRenderer && mRenderer->embeddedRenderer() )
+  if ( mRenderer->embeddedRenderer() )
   {
     QString rendererName = mRenderer->embeddedRenderer()->type();
     int rendererIndex = mRendererComboBox->findData( rendererName );

@@ -143,6 +143,7 @@ bool topolTest::testCancelled()
   return false;
 }
 
+#if 0 //unused and totally broken - index is set to null and then immediately dereferenced
 ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {
   Q_UNUSED( isExtent );
@@ -223,6 +224,7 @@ ErrorList topolTest::checkCloseFeature( double tolerance, QgsVectorLayer* layer1
 
   return errorList;
 }
+#endif
 
 ErrorList topolTest::checkDanglingLines( double tolerance, QgsVectorLayer* layer1, QgsVectorLayer* layer2, bool isExtent )
 {

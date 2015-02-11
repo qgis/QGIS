@@ -572,17 +572,20 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       QgsLayerTreeGroup* layerTreeRoot = QgsProject::instance()->layerTreeRoot();
       // Find the parent group of the original layer
       QgsLayerTreeLayer* layerTreeLayer = layerTreeRoot->findLayer( layer->id() );
-      QgsLayerTreeGroup* parentTreeGroup = qobject_cast<QgsLayerTreeGroup*>( layerTreeLayer->parent() );
-      if ( parentTreeGroup )
+      if ( layerTreeLayer )
       {
-        int index = parentTreeGroup->children().indexOf( layerTreeLayer );
-        // Move the new layer from the root group to the new group
-        QgsLayerTreeLayer* newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
-        QgsLayerTreeNode* newLayerTreeLayerClone = newLayerTreeLayer->clone();
-        QgsLayerTreeGroup* grp = qobject_cast<QgsLayerTreeGroup*>( newLayerTreeLayer->parent() );
-        parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
-        if ( grp )
-          grp->removeChildNode( newLayerTreeLayer );
+        QgsLayerTreeGroup* parentTreeGroup = qobject_cast<QgsLayerTreeGroup*>( layerTreeLayer->parent() );
+        if ( parentTreeGroup )
+        {
+          int index = parentTreeGroup->children().indexOf( layerTreeLayer );
+          // Move the new layer from the root group to the new group
+          QgsLayerTreeLayer* newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
+          QgsLayerTreeNode* newLayerTreeLayerClone = newLayerTreeLayer->clone();
+          QgsLayerTreeGroup* grp = qobject_cast<QgsLayerTreeGroup*>( newLayerTreeLayer->parent() );
+          parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
+          if ( grp )
+            grp->removeChildNode( newLayerTreeLayer );
+        }
       }
 
       if ( hasLabels )

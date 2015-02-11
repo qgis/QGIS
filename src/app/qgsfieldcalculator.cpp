@@ -137,6 +137,9 @@ void QgsFieldCalculator::accept()
 {
   builder->saveToRecent( "fieldcalc" );
 
+  if ( !mVectorLayer )
+    return;
+
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
 
@@ -148,9 +151,6 @@ void QgsFieldCalculator::accept()
   QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
   exp.setGeomCalculator( myDa );
-
-  if ( !mVectorLayer )
-    return;
 
   if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
   {

@@ -464,9 +464,11 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   }
 
   const QgsRasterInterface* iface = iter->input();
+  if ( !iface )
+    return SourceProviderError;
+
   QGis::DataType inputDataType = iface->dataType( 1 );
-  if ( !iface || ( inputDataType != QGis::ARGB32 &&
-                   inputDataType != QGis::ARGB32_Premultiplied ) )
+  if ( inputDataType != QGis::ARGB32 && inputDataType != QGis::ARGB32_Premultiplied )
   {
     return SourceProviderError;
   }

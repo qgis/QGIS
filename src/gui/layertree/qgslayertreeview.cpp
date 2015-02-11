@@ -197,7 +197,8 @@ void QgsLayerTreeView::onCurrentChanged()
   if ( layerCurrent )
   {
     QgsLayerTreeLayer* nodeLayer = layerTreeModel()->rootGroup()->findLayer( layerCurrentID );
-    nodeLayerIndex = layerTreeModel()->node2index( nodeLayer );
+    if ( nodeLayer )
+      nodeLayerIndex = layerTreeModel()->node2index( nodeLayer );
   }
   layerTreeModel()->setCurrentIndex( nodeLayerIndex );
 

@@ -111,6 +111,10 @@ void QgsGCPListModel::updateModel()
   {
     int j = 0;
     QgsGeorefDataPoint *p = mGCPList->at( i );
+
+    if ( !p )
+      continue;
+
     p->setId( i );
 
     QStandardItem *si = new QStandardItem();
@@ -159,10 +163,7 @@ void QgsGCPListModel::updateModel()
     }
     residual = sqrt( dX * dX + dY * dY );
 
-    if ( p )
-    {
-      p->setResidual( QPointF( dX, dY ) );
-    }
+    p->setResidual( QPointF( dX, dY ) );
 
     if ( residual >= 0.f )
     {
