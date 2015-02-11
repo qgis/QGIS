@@ -132,7 +132,7 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
 
             fieldType = column_def['type']
             if fieldType == QtCore.QVariant.Type:
-                if value == 0:
+                if value == QtCore.QVariant.Invalid:
                     return ''
                 return self.fieldTypes[value]
             return value
@@ -277,6 +277,8 @@ class FieldDelegate(QtGui.QStyledItemDelegate):
         fieldType = FieldsMappingModel.columns[column]['type']
         if fieldType == QtCore.QVariant.Type:
             value = editor.itemData(editor.currentIndex())
+            if value is None:
+                value = QtCore.QVariant.Invalid
             model.setData(index, value)
 
         elif fieldType == QgsExpression:
