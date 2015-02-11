@@ -3,6 +3,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 
+#include <QApplication>
 #include <QProgressDialog>
 
 QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas* canvas, QObject* parent )
@@ -30,6 +31,7 @@ void QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged()
 
 void QgsMapCanvasSnappingUtils::prepareIndexStarting( int count )
 {
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   mProgress = new QProgressDialog( tr( "Indexing data..." ), QString(), 0, count, mCanvas->topLevelWidget() );
   mProgress->setWindowModality( Qt::WindowModal );
 }
@@ -41,5 +43,6 @@ void QgsMapCanvasSnappingUtils::prepareIndexProgress( int index )
   {
     delete mProgress;
     mProgress = 0;
+    QApplication::restoreOverrideCursor();
   }
 }
