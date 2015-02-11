@@ -1449,10 +1449,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   dataDefinedValues.clear();
 
   // data defined show label? defaults to show label if not 0
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal ) )
+  if ( dataDefinedIsActive( QgsPalLayerSettings::Show ) )
   {
-    QgsDebugMsgLevel( QString( "exprVal Show:%1" ).arg( exprVal.toBool() ? "true" : "false" ), 4 );
-    if ( !exprVal.toBool() )
+    bool showLabel = dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal );
+    showLabel = exprVal.toBool();
+    QgsDebugMsgLevel( QString( "exprVal Show:%1" ).arg( showLabel ? "true" : "false" ), 4 );
+    if ( !showLabel )
     {
       return;
     }
