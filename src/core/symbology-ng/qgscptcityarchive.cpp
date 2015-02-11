@@ -1531,15 +1531,18 @@ QModelIndex QgsCptCityBrowserModel::findPath( QString path )
       if ( item->type() == QgsCptCityDataItem::Selection )
       {
         const QgsCptCitySelectionItem* selItem = dynamic_cast<const QgsCptCitySelectionItem *>( item );
-        foreach ( QString childPath, selItem->selectionsList() )
+        if ( selItem )
         {
-          if ( childPath.endsWith( "/" ) )
-            childPath.chop( 1 );
-          // QgsDebugMsg( "childPath= " + childPath );
-          if ( path.startsWith( childPath ) )
+          foreach ( QString childPath, selItem->selectionsList() )
           {
-            foundParent = true;
-            break;
+            if ( childPath.endsWith( "/" ) )
+              childPath.chop( 1 );
+            // QgsDebugMsg( "childPath= " + childPath );
+            if ( path.startsWith( childPath ) )
+            {
+              foundParent = true;
+              break;
+            }
           }
         }
       }

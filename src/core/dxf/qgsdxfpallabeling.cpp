@@ -75,6 +75,8 @@ void QgsDxfPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& 
   if ( mDxfExport )
   {
     QgsPalGeometry *g = dynamic_cast< QgsPalGeometry* >( label->getFeaturePart()->getUserGeometry() );
+    if ( !g )
+      return;
 
     //label text
     QString text = g->text();

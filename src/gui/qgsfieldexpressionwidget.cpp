@@ -71,6 +71,9 @@ void QgsFieldExpressionWidget::setFilters( QgsFieldProxyModel::Filters filters )
 void QgsFieldExpressionWidget::setLeftHandButtonStyle( bool isLeft )
 {
   QHBoxLayout* layout = dynamic_cast<QHBoxLayout*>( this->layout() );
+  if ( !layout )
+    return;
+
   if ( isLeft )
   {
     QLayoutItem* item = layout->takeAt( 1 );

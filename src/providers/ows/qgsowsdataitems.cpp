@@ -126,7 +126,7 @@ bool QgsOWSConnectionItem::equal( const QgsDataItem *other )
     return false;
   }
   const QgsOWSConnectionItem *o = dynamic_cast<const QgsOWSConnectionItem *>( other );
-  return ( mPath == o->mPath && mName == o->mName );
+  return ( o && mPath == o->mPath && mName == o->mName );
 }
 
 QList<QAction*> QgsOWSConnectionItem::actions()

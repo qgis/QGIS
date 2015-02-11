@@ -215,7 +215,9 @@ void TestQgsLegendRenderer::testBigMarker()
   QgsMarkerSymbolV2* sym = new QgsMarkerSymbolV2();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategorySymbol( 0, sym );
+  QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
 
   //dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategoryLabel( 2, "This is a long symbol label" );
 
@@ -231,7 +233,9 @@ void TestQgsLegendRenderer::testLongSymbolText()
 {
   QString testName = "legend_long_symbol_text";
 
-  dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
+  QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
 
   QgsLayerTreeModel legendModel( mRoot );
 

@@ -303,12 +303,14 @@ bool QgsGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double &scale
   if ( mTransformParametrisation == Linear )
   {
     rotation = 0.0;
-    return dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation )->getOriginScale( origin, scaleX, scaleY );
+    QgsLinearGeorefTransform* transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
+    return transform && transform->getOriginScale( origin, scaleX, scaleY );
   }
   else if ( mTransformParametrisation == Helmert )
   {
     double scale;
-    if ( ! dynamic_cast<QgsHelmertGeorefTransform*>( mGeorefTransformImplementation )->getOriginScaleRotation( origin, scale, rotation ) )
+    QgsHelmertGeorefTransform* transform = dynamic_cast<QgsHelmertGeorefTransform*>( mGeorefTransformImplementation );
+    if ( !transform || ! transform->getOriginScaleRotation( origin, scale, rotation ) )
     {
       return false;
     }

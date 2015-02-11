@@ -565,7 +565,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mModel->itemFromIndex( idx ) );
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  if ( !mLayer )
+  if ( !mLayer || !item )
     return;
 
   mValueGroupBox->show();
@@ -580,7 +580,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>( mModel->itemFromIndex( idx ) );
   // TODO We should really return a error the user of the widget that
   // the there is no layer set.
-  if ( !mLayer )
+  if ( !mLayer || !item )
     return;
 
   mValueGroupBox->show();

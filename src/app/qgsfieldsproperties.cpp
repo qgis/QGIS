@@ -165,6 +165,10 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Container, widgetDef->name() ) );
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
+      if ( !container )
+      {
+        break;
+      }
 
       Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
       {

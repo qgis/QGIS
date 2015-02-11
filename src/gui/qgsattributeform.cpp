@@ -386,6 +386,9 @@ void QgsAttributeForm::init()
       if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
         QgsAttributeEditorContainer* containerDef = dynamic_cast<QgsAttributeEditorContainer*>( widgDef );
+        if ( !containerDef )
+          continue;
+
         containerDef->setIsGroupBox( false ); // Toplevel widgets are tabs not groupboxes
         QString dummy1;
         bool dummy2;
@@ -565,6 +568,9 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
     case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
+      if ( !fieldDef )
+        break;
+
       int fldIdx = fieldDef->idx();
       if ( fldIdx < vl->pendingFields().count() && fldIdx >= 0 )
       {
@@ -600,8 +606,10 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
     case QgsAttributeEditorElement::AeTypeContainer:
     {
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
-      QWidget* myContainer;
+      if ( !container )
+        break;
 
+      QWidget* myContainer;
       if ( container->isGroupBox() )
       {
         QGroupBox* groupBox = new QGroupBox( parent );
@@ -760,7 +768,7 @@ bool QgsAttributeForm::eventFilter( QObject* object, QEvent* e )
   if ( e->type() == QEvent::KeyPress )
   {
     QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>( e );
-    if ( keyEvent->key() == Qt::Key_Escape )
+    if ( keyEvent && keyEvent->key() == Qt::Key_Escape )
     {
       // Re-emit to this form so it will be forwarded to parent
       event( e );

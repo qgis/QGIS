@@ -194,15 +194,13 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( layer );
           return QIcon( rlayer->previewAsPixmap( QSize( 32, 32 ) ) );
         }
+        else
+        {
+          return QgsLayerItem::iconRaster();
+        }
       }
 
       QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer*>( layer );
-
-      if ( layer->type() == QgsMapLayer::RasterLayer )
-      {
-        return QgsLayerItem::iconRaster();
-      }
-
       QIcon icon;
 
       // if there's just on legend entry that should be embedded in layer - do that!
@@ -210,7 +208,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       {
         icon = legendIconEmbeddedInParent( nodeLayer );
       }
-      else if ( layer->type() == QgsMapLayer::VectorLayer )
+      else if ( vlayer && layer->type() == QgsMapLayer::VectorLayer )
       {
         if ( vlayer->geometryType() == QGis::Point )
           icon = QgsLayerItem::iconPoint();

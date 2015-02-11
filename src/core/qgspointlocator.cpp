@@ -529,6 +529,9 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
     void getNextEntry( const IEntry& entry, id_type& nextEntry, bool& hasNext ) override
     {
       const INode* n = dynamic_cast<const INode*>( &entry );
+      if ( !n )
+        return;
+
       qDebug( "NODE: %ld", n->getIdentifier() );
       if ( n->getLevel() > 0 )
       {

@@ -3224,7 +3224,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
   {
     //write symbol directly here
     const QgsMarkerSymbolLayerV2* msl = dynamic_cast< const QgsMarkerSymbolLayerV2* >( symbolLayer );
-    if ( symbolLayer && symbol )
+    if ( msl && symbol )
     {
       QgsRenderContext ct;
       QgsSymbolV2RenderContext ctx( ct, QgsSymbolV2::MapUnit, symbol->alpha(), false, symbol->renderHints(), f );
