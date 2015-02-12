@@ -4661,7 +4661,8 @@ GEOSGeometry* QgsGeometry::linePointDifference( GEOSGeometry* GEOSsplitPoint )
   else
     return 0;
 
-  QgsGeometry* geosPoint = fromGeosGeom( GEOSsplitPoint );
+  // GEOSsplitPoint will be deleted in the caller, so make a clone
+  QgsGeometry* geosPoint = fromGeosGeom( GEOSGeom_clone_r( geosinit.ctxt, GEOSsplitPoint ) );
   QgsPoint splitPoint = geosPoint->asPoint();
   delete geosPoint;
 
@@ -4746,9 +4747,7 @@ int QgsGeometry::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry
 
   if ( lineGeoms.size() > 0 )
   {
-    GEOSGeom_destroy_r( geosinit.ctxt, mGeos );
-    mGeos = lineGeoms[0];
-    mDirtyWkb = true;
+    fromGeos( lineGeoms[0] );
   }
 
   for ( int i = 1; i < lineGeoms.size(); ++i )
