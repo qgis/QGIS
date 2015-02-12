@@ -601,9 +601,12 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
 
   if ( query.exec( statement ) )
   {
-    QgsDebugMsg( "Found extents in spatial index" );
-    if ( query.next() )
+    if ( query.next() && ( !query.value( 0 ).isNull() ||
+                           !query.value( 1 ).isNull() ||
+                           !query.value( 2 ).isNull() ||
+                           !query.value( 3 ).isNull() ) )
     {
+      QgsDebugMsg( "Found extents in spatial index" );
       mExtent.setXMinimum( query.value( 0 ).toDouble() );
       mExtent.setYMinimum( query.value( 1 ).toDouble() );
       mExtent.setXMaximum( query.value( 2 ).toDouble() );
