@@ -137,15 +137,30 @@ bool QgsField::convertCompatible( QVariant& v ) const
     return true;
   }
 
+  if ( mType == QVariant::Int && v.toInt() != v.toLongLong() )
+  {
+    v = QVariant( mType );
+    return false;
+  }
+
   if ( !v.convert( mType ) )
   {
+    v = QVariant( mType );
     return false;
   }
 
   if ( mType == QVariant::Double && mPrecision > 0 )
   {
-    v = qRound64( v.toDouble() * qPow( 10, mPrecision ) ) / qPow( 10, mPrecision );
+    double s = qPow( 10, mPrecision );
+    double d = v.toDouble() * s;
+    v = QVariant(( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
     return true;
+  }
+
+  if ( mType == QVariant::String && mLength >= 0 && v.toString().length() > mLength )
+  {
+    v = QVariant( mType );
+    return false;
   }
 
   return true;

@@ -332,7 +332,6 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   bool calculationSuccess = true;
   QString error;
 
-
   QgsExpression exp( expression );
   exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
@@ -341,6 +340,8 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
 
   int rownum = 1;
+
+  const QgsField &fld = layer->pendingFields()[ fieldindex ];
 
   //go through all the features and change the new attributes
   QgsFeatureIterator fit = layer->getFeatures( request );
@@ -354,6 +355,7 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
 
     exp.setCurrentRowNumber( rownum );
     QVariant value = exp.evaluate( &feature );
+    fld.convertCompatible( value );
     // Bail if we have a update error
     if ( exp.hasEvalError() )
     {
