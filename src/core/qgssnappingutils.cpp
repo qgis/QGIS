@@ -461,21 +461,29 @@ void QgsSnappingUtils::onLayersWillBeRemoved( QStringList layerIds )
   // remove locators for layers that are going to be deleted
   foreach ( QString layerId, layerIds )
   {
-    for ( LocatorsMap::const_iterator it = mLocators.constBegin(); it != mLocators.constEnd(); ++it )
+    for ( LocatorsMap::iterator it = mLocators.begin(); it != mLocators.end(); )
     {
       if ( it.key()->id() == layerId )
       {
-        delete mLocators.take( it.key() );
-        continue;
+        delete it.value();
+        it = mLocators.erase( it );
+      }
+      else
+      {
+        ++it;
       }
     }
 
-    for ( LocatorsMap::const_iterator it = mTemporaryLocators.constBegin(); it != mTemporaryLocators.constEnd(); ++it )
+    for ( LocatorsMap::iterator it = mTemporaryLocators.begin(); it != mTemporaryLocators.end(); )
     {
       if ( it.key()->id() == layerId )
       {
-        delete mTemporaryLocators.take( it.key() );
-        continue;
+        delete it.value();
+        it = mTemporaryLocators.erase( it );
+      }
+      else
+      {
+        ++it;
       }
     }
   }
