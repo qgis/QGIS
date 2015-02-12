@@ -3656,6 +3656,17 @@ QPointF QgsSymbolLayerV2Utils::polygonCentroid( const QPolygonF& points )
     cy += ( p1.y() + p2.y() ) * area;
   }
   sum *= 3.0;
+  if ( sum == 0 )
+  {
+    // the linear ring is invalid -  let's fall back to a solution that will still
+    // allow us render at least something (instead of just returning point nan,nan)
+    if ( points.count() >= 2 )
+      return QPointF(( points[0].x() + points[1].x() ) / 2, ( points[0].y() + points[1].y() ) / 2 );
+    else if ( points.count() == 1 )
+      return points[0];
+    else
+      return QPointF(); // hopefully we shouldn't ever get here
+  }
   cx /= sum;
   cy /= sum;
 
