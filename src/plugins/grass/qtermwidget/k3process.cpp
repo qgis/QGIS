@@ -317,7 +317,7 @@ bool K3Process::start( RunMode runmode, Communication comm )
 
     close( fd[0] );
     // Closing of fd[1] indicates that the execvp() succeeded!
-    fcntl( fd[1], F_SETFD, FD_CLOEXEC );
+    (void)fcntl( fd[1], F_SETFD, FD_CLOEXEC );
 
     if ( !commSetupDoneC() )
       qDebug() << "Could not finish comm setup in child!" << endl;
@@ -874,15 +874,15 @@ int K3Process::setupCommunication( Communication comm )
   {
     if ( socketpair( AF_UNIX, SOCK_STREAM, 0, out ) )
       goto fail1;
-    fcntl( out[0], F_SETFD, FD_CLOEXEC );
-    fcntl( out[1], F_SETFD, FD_CLOEXEC );
+    (void)fcntl( out[0], F_SETFD, FD_CLOEXEC );
+    (void)fcntl( out[1], F_SETFD, FD_CLOEXEC );
   }
   if ( comm & Stderr )
   {
     if ( socketpair( AF_UNIX, SOCK_STREAM, 0, err ) )
       goto fail2;
-    fcntl( err[0], F_SETFD, FD_CLOEXEC );
-    fcntl( err[1], F_SETFD, FD_CLOEXEC );
+    (void)fcntl( err[0], F_SETFD, FD_CLOEXEC );
+    (void)fcntl( err[1], F_SETFD, FD_CLOEXEC );
   }
   return 1; // Ok
 fail2:
@@ -923,7 +923,7 @@ int K3Process::commSetupDoneP()
 
   if ( communication & Stdin )
   {
-    fcntl( in[1], F_SETFL, O_NONBLOCK | fcntl( in[1], F_GETFL ) );
+    (void)fcntl( in[1], F_SETFL, O_NONBLOCK | fcntl( in[1], F_GETFL ) );
     innot =  new QSocketNotifier( in[1], QSocketNotifier::Write, this );
     Q_CHECK_PTR( innot );
     innot->setEnabled( false ); // will be enabled when data has to be sent

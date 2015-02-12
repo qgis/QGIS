@@ -1208,7 +1208,12 @@ bool GRASS_LIB_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   else if ( type == Vector )
   {
     // Get current projection
-    region( gisbase, location, mapset, window );
+    if ( !region( gisbase, location, mapset, window ) )
+    {
+      QMessageBox::warning( 0, QObject::tr( "Warning" ),
+                            QObject::tr( "Cannot read vector map region" ) );
+      return false;
+    }
 
     struct Map_info Map;
 

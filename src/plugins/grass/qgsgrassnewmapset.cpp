@@ -1263,7 +1263,13 @@ void QgsGrassNewMapset::createMapset()
 
     // TODO: add QgsGrass::setLocation or G_make_location with
     //       database path
-    QgsGrass::activeMode(); // because it calls private QgsGrass::init()
+    if ( !QgsGrass::activeMode() ) // because it calls private QgsGrass::init()
+    {
+      QMessageBox::warning( this, tr( "Create mapset" ),
+                            tr( "Cannot activate grass" ) );
+      return;
+    }
+
 #if defined(WIN32)
     G__setenv(( char * ) "GISDBASE", QgsGrass::shortPath( mDatabaseLineEdit->text() ).toUtf8().data() );
 #else

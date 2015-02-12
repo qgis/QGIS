@@ -74,7 +74,14 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     : QgsOptionsDialogBase( "VectorLayerProperties", parent, fl )
     , layer( lyr )
     , mMetadataFilled( false )
+    , mSaveAsMenu( 0 )
+    , mLoadStyleMenu( 0 )
     , mRendererDialog( 0 )
+    , labelingDialog( 0 )
+    , labelDialog( 0 )
+    , actionDialog( 0 )
+    , diagramPropertiesDialog( 0 )
+    , mFieldsPropertiesDialog( 0 )
 {
   setupUi( this );
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,

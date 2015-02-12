@@ -105,10 +105,10 @@ K3ProcessController::K3ProcessController()
     abort();
   }
 
-  fcntl( d->fd[0], F_SETFL, O_NONBLOCK ); // in case slotDoHousekeeping is called without polling first
-  fcntl( d->fd[1], F_SETFL, O_NONBLOCK ); // in case it fills up
-  fcntl( d->fd[0], F_SETFD, FD_CLOEXEC );
-  fcntl( d->fd[1], F_SETFD, FD_CLOEXEC );
+  (void)fcntl( d->fd[0], F_SETFL, O_NONBLOCK ); // in case slotDoHousekeeping is called without polling first
+  (void)fcntl( d->fd[1], F_SETFL, O_NONBLOCK ); // in case it fills up
+  (void)fcntl( d->fd[0], F_SETFD, FD_CLOEXEC );
+  (void)fcntl( d->fd[1], F_SETFD, FD_CLOEXEC );
 
   d->notifier = new QSocketNotifier( d->fd[0], QSocketNotifier::Read );
   d->notifier->setEnabled( true );
