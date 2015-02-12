@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import re
 import os
+import psycopg2
 
 from qgis.core import QgsDataSourceURI, QgsCredentials
 
@@ -54,14 +55,28 @@ class OgrAlgorithm(GdalAlgorithm):
             # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
             # table="t4" (geom) sql=
             dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
-            connInfo = dsUri.connectionInfo()
-            (success, user, passwd ) = QgsCredentials.instance().get(connInfo, None, None)
-            if success:
-                QgsCredentials.instance().put(connInfo, user, passwd)
-            ogrstr = ("PG:dbname='%s' host='%s' port='%s' user='%s' password='%s'"
-                      % (dsUri.database(), dsUri.host(), dsUri.port(), user, passwd))
+            conninfo = dsUri.connectionInfo()
+
+            conn = None
+            while not conn:
+                try:
+                    conn = psycopg2.connect(dsUri.connectionInfo())
+                except psycopg2.OperationalError, e:
+                    (ok, user, passwd ) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
+                    if not ok:
+                        break
+
+                    dsUri.setUsername( user )
+                    dsUri.setPassword( passwd )
+
+            if not conn:
+                raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
+
+            QgsCredentials.instance().put(conninfo, user, passwd)
+            ogrstr = "PG:%s" % dsUri.connectionInfo()
         else:
             ogrstr = unicode(layer.source()).split("|")[0]
+
         return '"' + ogrstr + '"'
 
     def ogrLayerName(self, uri):
