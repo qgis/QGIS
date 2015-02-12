@@ -206,11 +206,11 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param i       The number of features already loaded
      * @param cancel  Set to true to cancel
      */
-    virtual void progress( int i, bool& cancel );
+    virtual void progress( int i, bool &cancel );
 
     /**
      * Will be called, once all the features are loaded.
-     * Use e.g. to close a dialog created from {@link progress( int i, bool& cancel )}
+     * Use e.g. to close a dialog created from progress( int i, bool &cancel )
      */
     virtual void finished();
 
