@@ -110,11 +110,11 @@ class QgsServerProjectParser
     QStringList wfsLayers() const;
     QStringList wcsLayers() const;
 
-    void addJoinLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
+    void addJoinLayersForElement( const QDomElement& layerElem ) const;
 
-    void addValueRelationLayersForElement( const QDomElement& layerElem, bool useCache = true ) const;
+    void addValueRelationLayersForElement( const QDomElement& layerElem ) const;
     /**Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributField, value)'*/
-    void addGetFeatureLayers( const QDomElement& layerElem, bool useCache = true ) const;
+    void addGetFeatureLayers( const QDomElement& layerElem ) const;
 
     /**Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
