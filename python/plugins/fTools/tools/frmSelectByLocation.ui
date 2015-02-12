@@ -63,7 +63,7 @@
    <item>
     <widget class="QCheckBox" name="chkIntersects">
      <property name="text">
-      <string>Include input features that insersect the selection features</string>
+      <string>Include input features that intersect the selection features</string>
      </property>
      <property name="checked">
       <bool>true</bool>
