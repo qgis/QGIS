@@ -315,6 +315,10 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 
 #############################################################
 # enable use of c++11 features where available
+# full c++11 support in clang 3.3+: http://clang.llvm.org/cxx_status.html
+# for Mac, this is probably Apple LLVM 4.2 (based on LLVM 3.2svn, in XCode 4.6+)
+#   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
+#   https://gist.github.com/yamaya/2924292
 
 IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
   EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
@@ -323,9 +327,12 @@ IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   ENDIF()
 ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-  SET(USE_CXX_11 TRUE)
-  #deprecated-register breaks Travis builds
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-error=c++11-narrowing -Wno-deprecated-register")
+  IF ((NOT APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.2")
+       OR (APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.1"))
+    SET(USE_CXX_11 TRUE)
+    #deprecated-register breaks Travis builds
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-error=c++11-narrowing -Wno-deprecated-register")
+  ENDIF()
 ELSE()
   SET(USE_CXX_11 FALSE)
 ENDIF()
@@ -368,9 +375,9 @@ IF (PEDANTIC)
     # There are redundant declarations in Qt and GDAL
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
-    ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
     # command line -D option overrides environment variable
@@ -387,13 +394,13 @@ IF (PEDANTIC)
 
 ENDIF (PEDANTIC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
