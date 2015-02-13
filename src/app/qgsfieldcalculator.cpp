@@ -158,7 +158,7 @@ void QgsFieldCalculator::accept()
     return;
   }
 
-  if ( mNewFieldGroupBox->isEnabled() && mCreateVirtualFieldCheckbox->isChecked() )
+  if ( mNewFieldGroupBox->isChecked() && mCreateVirtualFieldCheckbox->isChecked() )
   {
     mVectorLayer->addExpressionField( calcString, fieldDefinition() );
   }
