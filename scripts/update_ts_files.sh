@@ -21,8 +21,7 @@
 # Note the .pro file must NOT be named qgis.pro as this
 # name is reserved for the Windows qmake project file
 
-echo "deprecated - use push_ts.sh and pull_ts.sh"
-exit 1
+echo "deprecated - use push_ts.sh and pull_ts.sh" >&2
 
 set -e
 

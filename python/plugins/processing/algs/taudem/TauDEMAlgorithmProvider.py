@@ -54,7 +54,7 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
         self.createAlgsList()
 
     def getDescription(self):
-        return 'TauDEM (hydrologic analysis)'
+        return self.tr('TauDEM (hydrologic analysis)')
 
     def getName(self):
         return 'taudem'

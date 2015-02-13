@@ -100,7 +100,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         return os.path.dirname(__file__) + '/scripts'
 
     def getDescription(self):
-        return 'GDAL/OGR'
+        return self.tr('GDAL/OGR')
 
     def getName(self):
         return 'gdalogr'

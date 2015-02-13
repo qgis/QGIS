@@ -156,4 +156,4 @@ class ProcessingPlugin:
         dlg.exec_()
 
     def tr(self, message):
-        return QCoreApplication.translate('Processing', message)
+        return QCoreApplication.translate('ProcessingPlugin', message)
