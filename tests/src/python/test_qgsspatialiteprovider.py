@@ -82,6 +82,18 @@ class TestQgsSpatialiteProvider(TestCase):
         sql +=    "VALUES (2, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
         cur.execute(sql)
 
+        # simple table with a geometry column named 'Geometry'
+        sql = "CREATE TABLE test_n (Id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_n', 'Geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_n (id, name, geometry) "
+        sql +=    "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_n (id, name, geometry) "
+        sql +=    "VALUES (2, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
         cur.execute( "COMMIT" )
         con.close()
 
@@ -164,6 +176,15 @@ class TestQgsSpatialiteProvider(TestCase):
         sum_id2 = sum(f.attributes()[0] for f in l.getFeatures())
         assert(sum_id1 == 3)
         assert(sum_id2 == 3)
+
+    def test_case(self):
+        """Test case sensitivity issues"""
+        l = QgsVectorLayer("dbname=%s table='test_n' (geometry) key='id'" % self.dbname, "test_n1", "spatialite")
+        assert(l.isValid())
+        assert(l.dataProvider().fields().count() == 2)
+        fields = [f.name() for f in l.dataProvider().fields()]
+        assert('Geometry' not in fields)
+
 
 if __name__ == '__main__':
     unittest.main()
