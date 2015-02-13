@@ -2094,7 +2094,26 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
         QDomElement attributeElement = infoDocument.createElement( "Attribute" );
         attributeElement.setAttribute( "name", attributeName );
-        attributeElement.setAttribute( "value", replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) ) );
+
+        QString value;
+        if ( featureAttributes[i].isNull() )
+          value = QSettings().value( "qgis/nullValue", "NULL" ).toString();
+        else
+        {
+          value = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) );
+
+          switch ( featureAttributes[i].type() )
+          {
+            case QVariant::Int:
+            case QVariant::LongLong:
+            case QVariant::Double:
+              break;
+            default:
+              value = "'" + value + "'";
+          }
+        }
+
+        attributeElement.setAttribute( "value",  value );
         featureElement.appendChild( attributeElement );
       }
 
@@ -3054,11 +3073,12 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
     QMap<QString, QVariant>::const_iterator vmapIt = cfg.constBegin();
     for ( ; vmapIt != cfg.constEnd(); ++vmapIt )
     {
-      if ( vmapIt.value().toString() == attributeVal )
+      if ( vmapIt.key() == attributeVal )
       {
-        return vmapIt.key();
+        return vmapIt.value().toString();
       }
     }
+    return QString( "(%1)" ).arg( attributeVal );
   }
   else if ( type == "ValueRelation" )
   {
@@ -3066,30 +3086,30 @@ QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, c
     QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( cfg.value( "Layer" ).toString() ) );
     if ( !layer )
     {
-      return attributeVal;
+      return QString( "(%1)" ).arg( attributeVal );
     }
 
     QString outputString;
-    if ( cfg.value( "AllowMulti" ).toBool() )
+    QString valueString = attributeVal;
+    QStringList valueList = cfg.value( "AllowMulti" ).toBool()
+                            ? valueString.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," )
+                            : QStringList( valueString );
+    for ( int i = 0; i < valueList.size(); ++i )
     {
-      QString valueString = attributeVal;
-      QStringList valueList = valueString.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," );
-      for ( int i = 0; i < valueList.size(); ++i )
+      if ( i > 0 )
       {
-        if ( i > 0 )
-        {
-          outputString += ";";
-        }
-        outputString += relationValue(
-                          valueList.at( i ),
-                          layer,
-                          cfg.value( "Key" ).toString(),
-                          cfg.value( "Value" ).toString()
-                        );
+        outputString += ";";
       }
+      outputString += relationValue(
+                        valueList.at( i ),
+                        layer,
+                        cfg.value( "Key" ).toString(),
+                        cfg.value( "Value" ).toString()
+                      );
     }
     return outputString;
   }
+
   return attributeVal;
 }
 

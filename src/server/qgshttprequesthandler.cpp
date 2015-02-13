@@ -368,8 +368,8 @@ void QgsHttpRequestHandler::setGetFeatureInfoResponse( const QDomDocument& infoD
             QDomElement attributeElement = attributeNodeList.at( k ).toElement();
             if ( infoFormat == "text/plain" )
             {
-              featureInfoString.append( attributeElement.attribute( "name" ) + " = '" +
-                                        attributeElement.attribute( "value" ) + "'\n" );
+              featureInfoString.append( attributeElement.attribute( "name" ) + " = " +
+                                        attributeElement.attribute( "value" ) + "\n" );
             }
             else if ( infoFormat == "text/html" )
             {

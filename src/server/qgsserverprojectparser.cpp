@@ -24,6 +24,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
+#include "qgseditorwidgetregistry.h"
 
 #include <QDomDocument>
 #include <QFileInfo>
@@ -241,6 +242,12 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 
   if ( layer )
   {
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      // see QgsEditorWidgetRegistry::mapLayerAdded()
+      QObject::connect( layer, SIGNAL( readCustomSymbology( const QDomElement&, QString& ) ), QgsEditorWidgetRegistry::instance(), SLOT( readSymbology( const QDomElement&, QString& ) ) );
+    }
+
     layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     layer->setLayerName( layerName( elem ) );
     if ( useCache )
@@ -917,50 +924,6 @@ QStringList QgsServerProjectParser::supportedOutputCrsList() const
   }
 
   return crsList;
-}
-
-//not very nice, needs to be kept in sync with QgsVectorLayer class...
-QString QgsServerProjectParser::editTypeString( QgsVectorLayer::EditType type )
-{
-  switch ( type )
-  {
-    case QgsVectorLayer::LineEdit:
-      return "LineEdit";
-    case QgsVectorLayer::UniqueValues:
-      return "UniqueValues";
-    case QgsVectorLayer::UniqueValuesEditable:
-      return "UniqueValuesEditable";
-    case QgsVectorLayer::ValueMap:
-      return "ValueMap";
-    case QgsVectorLayer::Classification:
-      return "Classification";
-    case QgsVectorLayer::EditRange:
-      return "EditRange";
-    case QgsVectorLayer::SliderRange:
-      return "SliderRange";
-    case QgsVectorLayer::CheckBox:
-      return "CheckBox";
-    case QgsVectorLayer::FileName:
-      return "FileName";
-    case QgsVectorLayer::Enumeration:
-      return "Enumeration";
-    case QgsVectorLayer::Immutable:
-      return "Immutable";
-    case QgsVectorLayer::Hidden:
-      return "Hidden";
-    case QgsVectorLayer::TextEdit:
-      return "TextEdit";
-    case QgsVectorLayer::Calendar:
-      return "Calendar";
-    case QgsVectorLayer::DialRange:
-      return "DialRange";
-    case QgsVectorLayer::ValueRelation:
-      return "ValueRelation";
-    case QgsVectorLayer::UuidGenerator:
-      return "UuidGenerator";
-    default:
-      return "Unknown";
-  }
 }
 
 QString QgsServerProjectParser::projectTitle() const

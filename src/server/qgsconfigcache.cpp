@@ -27,8 +27,12 @@
 
 QgsConfigCache* QgsConfigCache::instance()
 {
-  static QgsConfigCache mInstance;
-  return &mInstance;
+  static QgsConfigCache *instance = 0;
+
+  if ( !instance )
+    instance = new QgsConfigCache();
+
+  return instance;
 }
 
 QgsConfigCache::QgsConfigCache()

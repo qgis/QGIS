@@ -70,8 +70,6 @@ class QgsServerProjectParser
 
     QStringList supportedOutputCrsList() const;
 
-    static QString editTypeString( QgsVectorLayer::EditType type );
-
     const QList<QDomElement>& projectLayerElements() const { return mProjectLayerElements; }
 
     const QList<QDomElement>& legendGroupElements() const { return mLegendGroupElements; }

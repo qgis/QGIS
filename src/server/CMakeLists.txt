@@ -88,7 +88,7 @@ ENDIF (WIN32)
 
 QT4_WRAP_CPP(qgis_mapserv_MOC_SRCS ${qgis_mapserv_MOC_HDRS})
 
-ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS} )
+ADD_LIBRARY(qgis_server SHARED ${qgis_mapserv_SRCS} ${qgis_mapserv_MOC_SRCS} ${qgis_mapserv_HDRS} ${qgis_mapserv_MOC_HDRS})
 
 #generate unversioned libs for android
 IF (NOT ANDROID)
@@ -100,6 +100,7 @@ ENDIF (NOT ANDROID)
 
 TARGET_LINK_LIBRARIES(qgis_server
   qgis_core
+  qgis_gui
   qgis_analysis
   qgispython
   ${PROJ_LIBRARY}
@@ -155,6 +156,9 @@ INCLUDE_DIRECTORIES(
   ../core/symbology-ng
   ../core/composer
   ../core/layertree
+  ../gui
+  ../gui/editorwidgets
+  ../gui/editorwidgets/core
   ../analysis/interpolation
   ../plugins/diagram_overlay
   .
@@ -162,6 +166,7 @@ INCLUDE_DIRECTORIES(
 
 TARGET_LINK_LIBRARIES(qgis_mapserv.fcgi
   qgis_core
+  qgis_gui
   qgis_analysis
   ${PROJ_LIBRARY}
   ${FCGI_LIBRARY}

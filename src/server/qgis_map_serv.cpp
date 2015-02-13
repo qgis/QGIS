@@ -37,6 +37,7 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsserverlogger.h"
+#include "qgseditorwidgetregistry.h"
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 #include "qgsserverplugins.h"
@@ -287,8 +288,6 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( "User DB PATH: " + QgsApplication::qgisUserDbFilePath() );
   QgsDebugMsg( "SVG PATHS: " + QgsApplication::svgPaths().join( ":" ) );
 
-  // FIXME: what is this debug line for?
-  QgsDebugMsg( qgsapp.applicationDirPath() + "/qgis_wms_server.log" );
   QgsApplication::createDB(); //init qgis.db (e.g. necessary for user crs)
 
   QString defaultConfigFilePath;
@@ -336,6 +335,8 @@ int main( int argc, char * argv[] )
   // Store plugin filters for faster access
   QMultiMap<int, QgsServerFilter*> pluginFilters = serverIface.filters();
 #endif
+
+  QgsEditorWidgetRegistry::initEditors();
 
   while ( fcgi_accept() >= 0 )
   {
