@@ -660,7 +660,7 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
       return;
 
     QVariant::Type fldType = flds[fldIndex].type();
-    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
+    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
     QString sensString = "ILIKE";
     if ( mCbxCaseSensitive->isChecked() )
