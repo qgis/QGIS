@@ -121,6 +121,7 @@ namespace pal
 
     delete hashtable;
     delete modMutex;
+    delete connectedTexts;
   }
 
   Feature* Layer::getFeature( const char* geom_id )
