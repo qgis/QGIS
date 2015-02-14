@@ -620,7 +620,7 @@ int QgsStyleV2::addGroup( QString groupName, int parentid )
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   if ( nErr == SQLITE_OK )
-    sqlite3_step( ppStmt );
+    ( void )sqlite3_step( ppStmt );
 
   sqlite3_finalize( ppStmt );
 
@@ -636,7 +636,7 @@ int QgsStyleV2::addTag( QString tagname )
   char *query = sqlite3_mprintf( "INSERT INTO tag VALUES (NULL, '%q')", tagname.toUtf8().constData() );
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   if ( nErr == SQLITE_OK )
-    sqlite3_step( ppStmt );
+    ( void )sqlite3_step( ppStmt );
   sqlite3_finalize( ppStmt );
 
   return ( int )sqlite3_last_insert_rowid( mCurrentDB );

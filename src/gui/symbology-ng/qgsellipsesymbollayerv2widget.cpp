@@ -71,7 +71,7 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
 
 void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if ( layer && layer->layerType() != "EllipseMarker" )
+  if ( !layer || layer->layerType() != "EllipseMarker" )
   {
     return;
   }

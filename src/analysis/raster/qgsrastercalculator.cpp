@@ -160,6 +160,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
   QgsRasterMatrix resultMatrix;
 
   //read / write line by line
+  bool encounteredError = false;
   for ( int i = 0; i < mNumOutputRows; ++i )
   {
     if ( p )
@@ -178,7 +179,11 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     {
       double sourceTransformation[6];
       GDALRasterBandH sourceRasterBand = mInputRasterBands[bufferIt.key()];
-      GDALGetGeoTransform( GDALGetBandDataset( sourceRasterBand ), sourceTransformation );
+      if ( !GDALGetGeoTransform( GDALGetBandDataset( sourceRasterBand ), sourceTransformation ) )
+      {
+        encounteredError = true;
+        break;
+      }
       //the function readRasterPart calls GDALRasterIO (and ev. does some conversion if raster transformations are not the same)
       readRasterPart( targetGeoTransform, 0, i, mNumOutputColumns, 1, sourceTransformation, sourceRasterBand, bufferIt.value()->data() );
     }
@@ -244,11 +249,11 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     GDALClose( *datasetIt );
   }
 
-  if ( p && p->wasCanceled() )
+  if (( p && p->wasCanceled() ) || encounteredError )
   {
     //delete the dataset without closing (because it is faster)
     GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
-    return 3;
+    return encounteredError ? 1 : 3;
   }
   GDALClose( outputDataset );
   CPLFree( resultScanLine );

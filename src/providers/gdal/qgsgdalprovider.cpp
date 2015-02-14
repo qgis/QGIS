@@ -2486,7 +2486,7 @@ void QgsGdalProvider::initBaseDataset()
     }
     else
     {
-      GDALGetGeoTransform( mGdalDataset, mGeoTransform );
+      hasGeoTransform = GDALGetGeoTransform( mGdalDataset, mGeoTransform );
     }
   }
   else
