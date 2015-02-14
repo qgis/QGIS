@@ -265,7 +265,16 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   renderer->startRender( renderContext, layer()->pendingFields() );
 
-  QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( QgsFeatureRequest().setFilterRect( rect ) );
+  QgsFeatureRequest r( masterModel()->request() );
+  if ( r.filterType() == QgsFeatureRequest::FilterRect )
+  {
+    r.setFilterRect( r.filterRect().intersect( &rect ) );
+  }
+  else
+  {
+    r.setFilterRect( rect );
+  }
+  QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( r );
 
   QgsFeature f;
 

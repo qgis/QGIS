@@ -51,7 +51,7 @@
 /*!
   \class QgsHighlight
   \brief The QgsHighlight class provides a transparent overlay widget
-  for highlightng features on the map.
+  for highlighting features on the map.
 */
 QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsMapLayer *layer )
     : QgsMapCanvasItem( mapCanvas )

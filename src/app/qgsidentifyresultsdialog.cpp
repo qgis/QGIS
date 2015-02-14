@@ -1490,7 +1490,6 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem )
     return;
 
-
   if ( mHighlights.contains( featItem ) )
     return;
 

@@ -42,6 +42,7 @@
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsrubberband.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -63,6 +64,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     : QDialog( parent, flags )
     , mDock( 0 )
     , mLayer( theLayer )
+    , mRubberBand( 0 )
 {
   setupUi( this );
 
@@ -87,8 +89,21 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   context.setDistanceArea( *myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
+  QgsFeatureRequest r;
+  if ( settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+  {
+    QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
+    QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
+    r.setFilterRect( extent );
+
+    QgsGeometry *g = QgsGeometry::fromRect( extent );
+    mRubberBand = new QgsRubberBand( mc, true );
+    mRubberBand->setToGeometry( g, theLayer );
+    delete g;
+  }
+
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), QgsFeatureRequest(), context );
+  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );
 
   // Initialize filter gui elements
   mFilterActionMapper = new QSignalMapper( this );
@@ -215,6 +230,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
   delete myDa;
+  delete mRubberBand;
 }
 
 void QgsAttributeTableDialog::updateTitle()
@@ -305,19 +321,17 @@ void QgsAttributeTableDialog::columnBoxInit()
   }
 }
 
-
 void QgsAttributeTableDialog::updateFieldFromExpression()
 {
-
   bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
   QgsFeatureIds filteredIds = filtered ? mMainView->filteredFeatures() : QgsFeatureIds();
-  this->runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
 }
 
 void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
 {
   QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
-  this->runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
 }
 
 void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds )
@@ -336,7 +350,8 @@ void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QStrin
   exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
 
-  QgsFeatureRequest request;
+  QgsFeatureRequest request( mMainView->masterModel()->request() );
+  useGeometry |= request.filterType() == QgsFeatureRequest::FilterRect;
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
 
   int rownum = 1;
@@ -736,7 +751,7 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   filterExpression.setGeomCalculator( myDa );
-  QgsFeatureRequest request;
+  QgsFeatureRequest request( mMainView->masterModel()->request() );
   request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->pendingFields() );
   if ( !fetchGeom )
   {
