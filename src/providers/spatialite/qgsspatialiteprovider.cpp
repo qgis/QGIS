@@ -425,7 +425,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
   // parsing members from the uri structure
   mTableName = anUri.table();
-  mGeometryColumn = anUri.geometryColumn();
+  mGeometryColumn = anUri.geometryColumn().toLower();
   mSqlitePath = anUri.database();
   mSubsetString = anUri.sql();
   mPrimaryKey = anUri.keyColumn();
@@ -612,7 +612,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   while ( fld )
   {
     QString name = QString::fromUtf8( fld->AttributeFieldName );
-    if ( name != mGeometryColumn )
+    if ( name.toLower() != mGeometryColumn )
     {
       const char *type = "TEXT";
       QVariant::Type fieldType = QVariant::String; // default: SQLITE_TEXT
@@ -746,7 +746,7 @@ void QgsSpatiaLiteProvider::loadFields()
           QgsDebugMsg( "found primaryKey " + name );
         }
 
-        if ( name != mGeometryColumn )
+        if ( name.toLower() != mGeometryColumn )
         {
           // for sure any SQLite value can be represented as SQLITE_TEXT
           QVariant::Type fieldType = QVariant::String;
@@ -813,7 +813,7 @@ void QgsSpatiaLiteProvider::loadFields()
           QgsDebugMsg( "found primaryKey " + name );
         }
 
-        if ( name != mGeometryColumn )
+        if ( name.toLower() != mGeometryColumn )
         {
           // for sure any SQLite value can be represented as SQLITE_TEXT
           QVariant::Type fieldType = QVariant::String;
@@ -4145,7 +4145,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
   QString sql;
 
-  if ( mGeometryColumn.isEmpty() )
+  if ( mGeometryColumn.isEmpty() && !(mQuery.startsWith( "(" ) && mQuery.endsWith( ")" )) )
   {
     // checking if is a non-spatial table
     sql = QString( "SELECT type FROM sqlite_master "
