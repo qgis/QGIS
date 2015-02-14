@@ -49,8 +49,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
 {
   setupUi( this );
 
-  mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
-
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
   mainLayout->addWidget( itemPropertiesWidget );
@@ -135,6 +133,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
 
   if ( composerMap )
   {
+    mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
+
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
 
     QgsAtlasComposition* atlas = atlasComposition();

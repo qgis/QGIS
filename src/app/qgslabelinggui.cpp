@@ -49,6 +49,14 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
     : QWidget( parent )
     , mLayer( layer )
     , mMapCanvas( mapCanvas )
+    , mCharDlg( 0 )
+    , mQuadrantBtnGrp( 0 )
+    , mDirectSymbBtnGrp( 0 )
+    , mUpsidedownBtnGrp( 0 )
+    , mPlacePointBtnGrp( 0 )
+    , mPlaceLineBtnGrp( 0 )
+    , mPlacePolygonBtnGrp( 0 )
+    , mPreviewSize( 24 )
     , mMinPixelLimit( 0 )
     , mLoadSvgParams( false )
 {
@@ -81,7 +89,6 @@ QgsLabelingGui::QgsLabelingGui( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, 
   mCharDlg = new QgsCharacterSelectorDialog( this );
 
   mRefFont = lblFontPreview->font();
-  mPreviewSize = 24;
 
   // main layer label-enabling connections
   connect( chkEnableLabeling, SIGNAL( toggled( bool ) ), mFieldExpressionWidget, SLOT( setEnabled( bool ) ) );
