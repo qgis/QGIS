@@ -49,10 +49,6 @@ QgsMessageLogViewer::~QgsMessageLogViewer()
 
 void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
-#ifndef ANDROID
-  mButton->setToolTip( tr( "Message(s) logged." ) );
-#endif
-
   if ( tag.isNull() )
     tag = tr( "General" );
 
