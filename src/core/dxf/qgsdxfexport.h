@@ -78,7 +78,7 @@ class CORE_EXPORT QgsDxfExport
 
     int writeHandle( int code = 5, int handle = 0 );
 
-    //draw dxf primitives
+    //! draw dxf primitives
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, QColor color,
                         double width = -1, bool polygon = false );
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsDxfExport
 
     void writeSolid( const QString &layer, QColor color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 );
 
-    //write line (as a polyline)
+    //! write line (as a polyline)
     void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, QColor color, double width = -1 );
 
     void writePoint( const QString &layer, QColor color, const QgsPoint &pt );
@@ -101,8 +101,13 @@ class CORE_EXPORT QgsDxfExport
 
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 
+    //! return cleaned layer name for use in DXF
     static QString dxfLayerName( const QString &name );
+
+    //! return DXF encoding for Qt encoding
     static QString dxfEncoding( const QString &name );
+
+    //! return list of available DXF encodings
     static QStringList encodings();
 
   private:
