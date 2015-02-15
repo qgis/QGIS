@@ -49,7 +49,7 @@ QgsMessageLogViewer::~QgsMessageLogViewer()
 
 void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
-#ifdef ANDROID
+#ifndef ANDROID
   mButton->setToolTip( tr( "Message(s) logged." ) );
 #endif
 
