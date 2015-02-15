@@ -4180,7 +4180,7 @@ void QgisApp::dxfExport()
       fileName += ".dxf";
     QFile dxfFile( fileName );
     QApplication::setOverrideCursor( Qt::BusyCursor );
-    if ( dxfExport.writeToFile( &dxfFile ) == 0 )
+    if ( dxfExport.writeToFile( &dxfFile, d.encoding() ) == 0 )
     {
       messageBar()->pushMessage( tr( "DXF export completed" ), QgsMessageBar::INFO, 4 );
     }

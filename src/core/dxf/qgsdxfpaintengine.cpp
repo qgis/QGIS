@@ -24,12 +24,10 @@ QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxf
     : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
     , mPaintDevice( dxfDevice ), mDxf( dxf )
 {
-
 }
 
 QgsDxfPaintEngine::~QgsDxfPaintEngine()
 {
-
 }
 
 bool QgsDxfPaintEngine::begin( QPaintDevice* pdev )
@@ -69,7 +67,7 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
   }
 }
 
-void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, PolygonDrawMode mode )
+void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, PolygonDrawMode mode )
 {
   Q_UNUSED( mode );
   if ( !mDxf || !mPaintDevice )
