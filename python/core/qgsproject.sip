@@ -132,36 +132,6 @@ class QgsProject : QObject
     bool write();
     //@}
 
-
-    /// syntactic sugar for property lists
-    // DEPRECATED typedef QPair< QString, QVariant >  PropertyValue;
-    // DEPRECATED typedef QValueList< PropertyValue > Properties;
-
-    /** extra properties, typically added by plug-ins
-
-       This allows for extra properties to be associated with projects.  Think
-       of it as a registry bound to a project.
-
-       Properties are arbitrary values keyed by a name and associated with a
-       scope.  The scope would presumably refer to your plug-in.
-       E.g., "openmodeller".
-
-       @note
-
-       E.g., open modeller might use:
-
-       <code>"QgsProject::instance()->properties("openmodeller")["foo"]</code>.
-
-       @todo "properties" is, overall, a good name; but that might imply that
-       the qgis specific state properites are different since they aren't
-       accessible here.  Actually, what if we make "qgis" yet another
-       scope that stores its state in the properties list?  E.g.,
-       QgsProject::instance()->properties()["qgis"]?
-
-
-     */
-    // DEPRECATED Properties & properties( QString const & scope );
-
     /**
        removes all project properties
 
