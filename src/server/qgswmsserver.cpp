@@ -45,6 +45,7 @@
 #include "qgspaintenginehack.h"
 #include "qgsogcutils.h"
 #include "qgsfeature.h"
+#include "qgseditorwidgetregistry.h"
 
 #include <QImage>
 #include <QPainter>
@@ -2094,16 +2095,12 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
 
         QDomElement attributeElement = infoDocument.createElement( "Attribute" );
         attributeElement.setAttribute( "name", attributeName );
-
-        QString value;
-        if ( featureAttributes[i].isNull() )
-          value = QSettings().value( "qgis/nullValue", "NULL" ).toString();
-        else
-        {
-          value = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) );
-        }
-
-        attributeElement.setAttribute( "value",  value );
+        attributeElement.setAttribute( "value",
+                                       replaceValueMapAndRelation(
+                                         layer, i,
+                                         QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer )
+                                       )
+                                     );
         featureElement.appendChild( attributeElement );
       }
 
@@ -3051,82 +3048,18 @@ QDomElement QgsWMSServer::createFeatureGML(
 
 QString QgsWMSServer::replaceValueMapAndRelation( QgsVectorLayer* vl, int idx, const QString& attributeVal )
 {
-  if ( !vl )
-  {
-    return attributeVal;
-  }
-
-  QString type = vl->editorWidgetV2( idx );
-  if ( type == "ValueMap" )
+  if ( QgsEditorWidgetFactory *factory = QgsEditorWidgetRegistry::instance()->factory( vl->editorWidgetV2( idx ) ) )
   {
     QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
-    QMap<QString, QVariant>::const_iterator vmapIt = cfg.constBegin();
-    for ( ; vmapIt != cfg.constEnd(); ++vmapIt )
+    QString value( factory->representValue( vl, idx, cfg, QVariant(), attributeVal ) );
+    if ( cfg.value( "AllowMulti" ).toBool() && value.startsWith( "{" ) && value.endsWith( "}" ) )
     {
-      if ( vmapIt.key() == attributeVal )
-      {
-        return vmapIt.value().toString();
-      }
+      value = value.mid( 1, value.size() - 2 );
     }
+    return value;
+  }
+  else
     return QString( "(%1)" ).arg( attributeVal );
-  }
-  else if ( type == "ValueRelation" )
-  {
-    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
-    QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( cfg.value( "Layer" ).toString() ) );
-    if ( !layer )
-    {
-      return QString( "(%1)" ).arg( attributeVal );
-    }
-
-    QString outputString;
-    QString valueString = attributeVal;
-    QStringList valueList = cfg.value( "AllowMulti" ).toBool()
-                            ? valueString.remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( "," )
-                            : QStringList( valueString );
-    for ( int i = 0; i < valueList.size(); ++i )
-    {
-      if ( i > 0 )
-      {
-        outputString += ";";
-      }
-      outputString += relationValue(
-                        valueList.at( i ),
-                        layer,
-                        cfg.value( "Key" ).toString(),
-                        cfg.value( "Value" ).toString()
-                      );
-    }
-    return outputString;
-  }
-
-  return attributeVal;
-}
-
-QString QgsWMSServer::relationValue( const QString& attributeVal, QgsVectorLayer* layer, const QString& key, const QString& value )
-{
-  if ( !layer )
-  {
-    return attributeVal;
-  }
-
-  int keyId = layer->fieldNameIndex( key );
-  int valueId = layer->fieldNameIndex( value );
-  if ( keyId == -1 || valueId == -1 )
-  {
-    return attributeVal;
-  }
-
-  QgsFeatureIterator fIt = layer->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( QgsAttributeList() << keyId << valueId ) );
-  QgsFeature f;
-  while ( fIt.nextFeature( f ) )
-  {
-    if ( f.attribute( key ).toString() == attributeVal )
-    {
-      return f.attribute( value ).toString();
-    }
-  }
-  return attributeVal;
 }
 
 int QgsWMSServer::getImageQuality() const
