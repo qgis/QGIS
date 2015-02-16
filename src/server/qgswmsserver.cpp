@@ -2989,7 +2989,7 @@ QDomElement QgsWMSServer::createFeatureGML(
     typeNameElement.appendChild( bbElem );
   }
 
-  if ( withGeom )
+  if ( withGeom && geom )
   {
     //add geometry column (as gml)
 
