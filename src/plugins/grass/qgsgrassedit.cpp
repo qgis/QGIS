@@ -147,9 +147,32 @@ QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer *layer, bool newMa
                             QWidget *parent, Qt::WindowFlags f )
     : QMainWindow( parent, f )
     , QgsGrassEditBase()
+    , mLayer( 0 )
+    , mToolBar( 0 )
+    , mSize( 0 )
     , mValid( false )
     , mInited( false )
     , mIface( iface )
+    , mCanvas( 0 )
+    , mProvider( 0 )
+    , mTool( QgsGrassEdit::NONE )
+    , mSuspend( false )
+    , mEditPoints( 0 )
+    , mPoints( 0 )
+    , mCats( 0 )
+    , mPixmap( 0 )
+    , mTransform( 0 )
+    , mSelectedLine( 0 )
+    , mSelectedPart( 0 )
+    , mAddVertexEnd( false )
+    , mLineWidth( 0 )
+    , mMarkerSize( 0 )
+    , mAttributes( 0 )
+    , mNewMap( newMap )
+    , mNewPointAction( 0 )
+    , mNewLineAction( 0 )
+    , mNewBoundaryAction( 0 )
+    , mNewCentroidAction( 0 )
     , mMoveVertexAction( 0 )
     , mAddVertexAction( 0 )
     , mDeleteVertexAction( 0 )
@@ -168,9 +191,6 @@ QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer *layer, bool newMa
   setupUi( this );
 
   mRunning = true;
-  mTool = QgsGrassEdit::NONE;
-  mSuspend = false;
-  mNewMap = newMap;
 
   mProjectionEnabled = ( QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectionsEnabled", 0 ) != 0 );
 
