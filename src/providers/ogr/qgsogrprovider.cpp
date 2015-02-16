@@ -650,7 +650,6 @@ QStringList QgsOgrProvider::subLayers() const
       OGRFeatureH fet;
       while (( fet = OGR_L_GetNextFeature( layer ) ) )
       {
-        if ( !fet ) continue;
         OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
         if ( geom )
         {
@@ -2502,7 +2501,6 @@ void QgsOgrProvider::recalculateFeatureCount()
     OGRFeatureH fet;
     while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
     {
-      if ( !fet ) continue;
       OGRGeometryH geom = OGR_F_GetGeometryRef( fet );
       if ( geom )
       {
