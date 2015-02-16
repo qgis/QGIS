@@ -343,9 +343,6 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     //! List of all flags. Necessary for scripts.
     QStringList mFlagNames;
 
-    //! Use of region defined in qgm
-    bool mUsesRegion;
-
     // ! Advanced options switch button
     QPushButton mAdvancedPushButton;
 
