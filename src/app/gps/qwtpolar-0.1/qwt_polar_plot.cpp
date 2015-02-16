@@ -753,7 +753,7 @@ QwtScaleMap QwtPolarPlot::scaleMap( int scaleId, const double radius ) const
   map.setScaleInterval( sd->lowerBound(), sd->upperBound() );
 #endif
 
-  if ( scaleId == QwtPolar::Azimuth )
+  if ( scaleId == QwtPolar::ScaleAzimuth )
   {
     map.setPaintXInterval( d_data->azimuthOrigin,
                            d_data->azimuthOrigin + M_2PI );
@@ -826,7 +826,7 @@ void QwtPolarPlot::initPlot( const QwtText &title )
   {
     ScaleData &scaleData = d_data->scaleData[scaleId];
 
-    if ( scaleId == QwtPolar::Azimuth )
+    if ( scaleId == QwtPolar::ScaleAzimuth )
     {
       scaleData.minValue = 0.0;
       scaleData.maxValue = 360.0;
