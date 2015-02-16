@@ -32,7 +32,6 @@
 
 QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
-    , mShowToolTips( true )
 {
   Q_UNUSED( statusBar )
   setupUi( this );
