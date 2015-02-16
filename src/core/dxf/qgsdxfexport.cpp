@@ -343,7 +343,7 @@ const char *QgsDxfExport::mDxfEncodings[][2] =
   { "ANSI_1256", "CP1256" },
   { "ANSI_1257", "CP1257" },
   { "ANSI_874", "CP874" },
-  { "ANSI_932", "CP932" },
+  { "ANSI_932", "Shift_JIS" },
   { "ANSI_936", "CP936" },
   { "ANSI_949", "cp949" },
   { "ANSI_950", "CP950" },
