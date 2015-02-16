@@ -78,6 +78,7 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
   {
     // if file open failed
     QgsDebugMsg( "Aborting: The input file could not be opened." );
+    delete dxf_inserts;
     return;
   }
 
