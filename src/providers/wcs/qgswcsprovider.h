@@ -232,7 +232,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QString prepareUri( QString uri ) const;
 
-    QString coverageMetadata( QgsWcsCoverageSummary c );
+    QString coverageMetadata( const QgsWcsCoverageSummary& c );
 
     //! remove query item and replace it with a new value
     void setQueryItem( QUrl &url, QString key, QString value );

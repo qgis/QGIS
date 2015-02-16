@@ -1198,7 +1198,7 @@ int QgsWcsProvider::capabilities() const
   return capability;
 }
 
-QString QgsWcsProvider::coverageMetadata( QgsWcsCoverageSummary coverage )
+QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage )
 {
   QString metadata;
 

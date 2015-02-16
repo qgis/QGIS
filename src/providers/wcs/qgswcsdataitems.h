@@ -49,7 +49,7 @@ class QgsWCSLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     QgsWcsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWcsCoverageSummary coverageSummary );
+                     QgsWcsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWcsCoverageSummary& coverageSummary );
     ~QgsWCSLayerItem();
 
     QString createUri();

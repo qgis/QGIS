@@ -49,7 +49,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * @deprecated
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent = 0, bool showDialogButtons = true );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent = 0, bool showDialogButtons = true );
 
     /**
      * Create an attribute dialog for a given layer and feature
@@ -62,7 +62,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * @param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = 0, bool showDialogButtons = true, QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent = 0, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 
@@ -126,7 +126,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     void show( bool autoDelete = true );
 
   private:
-    void init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent );
+    void init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext& context, QWidget* parent );
 
     QString mSettingsPath;
     // Used to sync multiple widgets for the same field

@@ -81,7 +81,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
                                     const QgsEditorWidgetConfig& config,
                                     QWidget* editor,
                                     QWidget* parent,
-                                    const QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Creates a configuration widget

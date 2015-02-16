@@ -81,7 +81,7 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
   qDeleteAll( mWidgetFactories.values() );
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext context )
+QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {

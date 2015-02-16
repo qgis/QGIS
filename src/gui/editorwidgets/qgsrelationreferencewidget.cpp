@@ -346,7 +346,7 @@ QVariant QgsRelationReferenceWidget::foreignKey()
   }
 }
 
-void QgsRelationReferenceWidget::setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
+void QgsRelationReferenceWidget::setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas* canvas, QgsMessageBar* messageBar )
 {
   mEditorContext = context;
   mCanvas = canvas;

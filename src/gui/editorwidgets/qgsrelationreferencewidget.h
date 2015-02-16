@@ -60,7 +60,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     //! returns the related feature foreign key
     QVariant foreignKey();
 
-    void setEditorContext( QgsAttributeEditorContext context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
+    void setEditorContext( const QgsAttributeEditorContext& context, QgsMapCanvas* canvas, QgsMessageBar* messageBar );
 
     //! determines if the form of the related feature will be shown
     bool embedForm() {return mEmbedForm;}

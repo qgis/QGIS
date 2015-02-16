@@ -41,7 +41,7 @@ class QgsDualView : QStackedWidget
      * @param request    Use a modified request to limit the shown features
      * @param context    The context in which this view is shown
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Change the current view mode.
