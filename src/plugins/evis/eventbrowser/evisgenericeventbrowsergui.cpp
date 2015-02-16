@@ -681,11 +681,8 @@ void eVisGenericEventBrowserGui::restoreDefaultOptions()
  */
 void eVisGenericEventBrowserGui::setBasePathToDataSource()
 {
-  //Noticed some strangeness here while cleaning up for migration to the QGIS trunk - PJE 2009-07-01
-  //TODO: The check for windows paths not longer does anything, remove or fix
-
   int myPathMarker = 0;
-  bool isWindows = false;
+
   QString mySourceUri = mDataProvider->dataSourceUri();
   //Check to see which way the directory symbol goes, I think this is actually unnecessary in qt
   if ( mySourceUri.contains( '/' ) )
@@ -701,22 +698,19 @@ void eVisGenericEventBrowserGui::setBasePathToDataSource()
   mySourceUri.truncate( myPathMarker + 1 );
 
   //check for duplicate directory symbols when concatinating the two strings
-  if ( isWindows )
+#ifdef Q_OS_WIN
+  mySourceUri.replace( "\\\\", "\\" );
+#else
+  if ( mySourceUri.startsWith( "http://", Qt::CaseInsensitive ) )
   {
-    mySourceUri.replace( "\\\\", "\\" );
+    mySourceUri.replace( "//", "/" );
+    mySourceUri.replace( "http:/", "http://", Qt::CaseInsensitive );
   }
   else
   {
-    if ( mySourceUri.startsWith( "http://", Qt::CaseInsensitive ) )
-    {
-      mySourceUri.replace( "//", "/" );
-      mySourceUri.replace( "http:/", "http://", Qt::CaseInsensitive );
-    }
-    else
-    {
-      mySourceUri.replace( "//", "/" );
-    }
+    mySourceUri.replace( "//", "/" );
   }
+#endif
 
   leBasePath->setText( mySourceUri );
 }

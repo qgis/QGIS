@@ -86,7 +86,6 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
   bool allOk = true;
   for ( int band = 1; band <= expectedProvider->bandCount(); band++ )
   {
-    bool bandOk = true;
     mReport += QString( "<h3>Band %1</h3>\n" ).arg( band );
     mReport += QString( "<table style='%1'>\n" ).arg( mTabStyle );
     mReport += compareHead();
@@ -122,12 +121,6 @@ bool QgsRasterChecker::runTest( QString theVerifiedKey, QString theVerifiedUri,
 
     mReport += "</table>";
     mReport += "<br>";
-
-    if ( !bandOk )
-    {
-      allOk = false;
-      continue;
-    }
 
     if ( !statsOk || !typesOk )
     {
