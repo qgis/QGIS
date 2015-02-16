@@ -62,7 +62,8 @@ namespace pal
       :  pal( pal ), obstacle( obstacle ), active( active ),
       toLabel( toLabel ), displayAll( displayAll ), centroidInside( false ), label_unit( label_unit ),
       min_scale( min_scale ), max_scale( max_scale ),
-      arrangement( arrangement ), arrangementFlags( 0 ), mode( LabelPerFeature ), mergeLines( false )
+      arrangement( arrangement ), arrangementFlags( 0 ), mode( LabelPerFeature ), mergeLines( false ),
+      upsidedownLabels( Upright )
   {
 
     this->name = new char[strlen( lyrName ) +1];

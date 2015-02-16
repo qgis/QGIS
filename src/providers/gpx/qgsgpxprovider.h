@@ -165,16 +165,6 @@ class QgsGPXProvider : public QgsVectorDataProvider
     static const int attrCount;
 
     bool mValid;
-    long mNumberFeatures;
-
-    struct wkbPoint
-    {
-      char byteOrder;
-      unsigned wkbType;
-      double x;
-      double y;
-    };
-    wkbPoint mWKBpt;
 
     friend class QgsGPXFeatureSource;
 };

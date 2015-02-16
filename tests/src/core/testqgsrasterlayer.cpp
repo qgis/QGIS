@@ -420,6 +420,7 @@ void TestQgsRasterLayer::checkScaleOffset()
         mReport += QString( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ) ).arg( valueString );
         delete myRasterLayer;
         QVERIFY( false );
+        return;
       }
       else
       {
@@ -436,6 +437,7 @@ void TestQgsRasterLayer::checkScaleOffset()
   {
     delete myRasterLayer;
     QVERIFY( false );
+    return;
   }
 
   mReport += "<p>Passed</p>";

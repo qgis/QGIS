@@ -2197,7 +2197,7 @@ namespace pal
 
     maxit = probSize * pal->tabuMaxIt;
 
-    itwimp = probSize * pal->tabuMinIt;;
+    itwimp = probSize * pal->tabuMinIt;
 
     stop_it = itwimp;
 

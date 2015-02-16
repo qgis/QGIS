@@ -93,6 +93,7 @@ QgsRasterProjector::QgsRasterProjector(
     , mDestRowsPerMatrixRow( 0.0 )
     , mDestColsPerMatrixCol( 0.0 )
     , pHelperTop( 0 ), pHelperBottom( 0 )
+    , mHelperTopRow( 0 )
     , mCPCols( 0 )
     , mCPRows( 0 )
     , mSqrTolerance( 0.0 )

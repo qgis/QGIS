@@ -69,10 +69,10 @@ const QString GPX_DESCRIPTION = QObject::tr( "GPS eXchange format provider" );
 
 QgsGPXProvider::QgsGPXProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , data( 0 )
+    , mFeatureType( WaypointType )
+    , mValid( false ) // assume that it won't work
 {
-  // assume that it won't work
-  mValid = false;
-
   // we always use UTF-8
   mEncoding = QTextCodec::codecForName( "utf8" );
 

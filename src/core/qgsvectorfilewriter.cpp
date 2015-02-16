@@ -70,7 +70,10 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mLayer( NULL )
     , mGeom( NULL )
     , mError( NoError )
+    , mCodec( 0 )
+    , mWkbType( geometryType )
     , mSymbologyExport( symbologyExport )
+    , mSymbologyScaleDenominator( 1.0 )
 {
   QString vectorFileName = theVectorFileName;
   QString fileEncoding = theFileEncoding;
