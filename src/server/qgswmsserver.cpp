@@ -2101,16 +2101,6 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         else
         {
           value = replaceValueMapAndRelation( layer, i, QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer ) );
-
-          switch ( featureAttributes[i].type() )
-          {
-            case QVariant::Int:
-            case QVariant::LongLong:
-            case QVariant::Double:
-              break;
-            default:
-              value = "'" + value + "'";
-          }
         }
 
         attributeElement.setAttribute( "value",  value );
