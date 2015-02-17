@@ -93,9 +93,9 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
     bool ok;
 #if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font() );
+    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), this );
 #endif
     if ( ok )
     {
