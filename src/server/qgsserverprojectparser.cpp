@@ -152,7 +152,6 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
   }
 
   addJoinLayersForElement( elem );
-  addValueRelationLayersForElement( elem );
   addGetFeatureLayers( elem );
 
   QDomElement dataSourceElem = elem.firstChildElement( "datasource" );
@@ -250,6 +249,12 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 
     layer->readLayerXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     layer->setLayerName( layerName( elem ) );
+
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
+    }
+
     if ( useCache )
     {
       QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer, mProjectPath );
@@ -1357,34 +1362,29 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
   }
 }
 
-void QgsServerProjectParser::addValueRelationLayersForElement( const QDomElement& layerElem ) const
+void QgsServerProjectParser::addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const
 {
-  QDomElement editTypesElem = layerElem.firstChildElement( "edittypes" );
-  if ( editTypesElem.isNull() )
-  {
+  if ( !vl )
     return;
-  }
 
-  QDomNodeList editTypeNodeList = editTypesElem.elementsByTagName( "edittype" );
-  for ( int i = 0; i < editTypeNodeList.size(); ++i )
+  for ( int idx = 0; idx < vl->pendingFields().size(); idx++ )
   {
-    QDomElement editTypeElem = editTypeNodeList.at( i ).toElement();
-    int type = editTypeElem.attribute( "type" ).toInt();
-    if ( type == QgsVectorLayer::ValueRelation )
-    {
-      QString layerId = editTypeElem.attribute( "layer" );
-#if 0
-      QString keyAttribute = editTypeEleml.attribute( "id" ); //relation attribute in other layer
-      QString valueAttribute = editTypeElem.attribute( "value" ); //value attribute in other layer
-      QString relationAttribute = editTypeElem.attribute( "name" );
-#endif
+    if ( vl->editorWidgetV2( idx ) != "ValueRelation" )
+      continue;
 
-      QgsMapLayer* layer = mapLayerFromLayerId( layerId );
-      if ( layer )
-      {
-        QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
-      }
-    }
+    QgsEditorWidgetConfig cfg( vl->editorWidgetV2Config( idx ) );
+    if ( !cfg.contains( "Layer" ) )
+      continue;
+
+    QString layerId = cfg.value( "Layer" ).toString();
+    if ( QgsMapLayerRegistry::instance()->mapLayer( layerId ) )
+      continue;
+
+    QgsMapLayer *layer = mapLayerFromLayerId( layerId );
+    if ( !layer )
+      continue;
+
+    QgsMapLayerRegistry::instance()->addMapLayer( layer, false, false );
   }
 }
 

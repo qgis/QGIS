@@ -110,7 +110,7 @@ class QgsServerProjectParser
 
     void addJoinLayersForElement( const QDomElement& layerElem ) const;
 
-    void addValueRelationLayersForElement( const QDomElement& layerElem ) const;
+    void addValueRelationLayersForLayer( const QgsVectorLayer *vl ) const;
     /**Add layers which are necessary for the evaluation of the expression function 'getFeature( layer, attributField, value)'*/
     void addGetFeatureLayers( const QDomElement& layerElem ) const;
 
