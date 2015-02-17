@@ -108,7 +108,7 @@ void QgsComposerShapeWidget::on_mShapeStyleButton_clicked()
   QgsVectorLayer* coverageLayer = atlasCoverageLayer();
 
   QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposerShape->shapeStyleSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

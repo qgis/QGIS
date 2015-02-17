@@ -182,7 +182,7 @@ void QgsComposerAttributeTableWidget::on_mAttributesPushButton_clicked()
   //temporarily block updates for the window, to stop table trying to repaint under windows (#11462)
   window()->setUpdatesEnabled( false );
 
-  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->sourceLayer(), 0 );
+  QgsAttributeSelectionDialog d( mComposerTable, mComposerTable->sourceLayer(), this );
   if ( d.exec() == QDialog::Accepted )
   {
     mComposerTable->refreshAttributes();
@@ -290,9 +290,9 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
   bool ok;
 #if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
+  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), this, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
 #else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), 0, tr( "Select Font" ) );
+  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), this, tr( "Select Font" ) );
 #endif
   if ( ok )
   {
@@ -338,9 +338,9 @@ void QgsComposerAttributeTableWidget::on_mContentFontPushButton_clicked()
   bool ok;
 #if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
+  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), this, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
 #else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), 0, tr( "Select Font" ) );
+  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), this, tr( "Select Font" ) );
 #endif
   if ( ok )
   {
@@ -575,7 +575,7 @@ void QgsComposerAttributeTableWidget::updateRelationsCombo()
   if ( atlasLayer )
   {
     QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( atlasLayer );
-    Q_FOREACH ( const QgsRelation& relation, relations )
+    Q_FOREACH( const QgsRelation& relation, relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );
     }

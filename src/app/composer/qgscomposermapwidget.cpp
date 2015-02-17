@@ -1556,7 +1556,7 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
   }
 
   QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1581,7 +1581,7 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
   }
 
   QgsMarkerSymbolV2* newSymbol = dynamic_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -2088,9 +2088,9 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
   bool ok;
 #if defined(Q_OS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
+  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
-  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont() );
+  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont(), this );
 #endif
   if ( ok )
   {
@@ -2561,7 +2561,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   }
 
   QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

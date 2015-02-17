@@ -371,9 +371,9 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
     bool ok;
 #if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), this );
 #endif
     if ( ok )
     {
@@ -393,9 +393,9 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
     bool ok;
 #if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), this );
 #endif
     if ( ok )
     {
@@ -415,9 +415,9 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
     bool ok;
 #if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), this );
 #endif
     if ( ok )
     {
@@ -437,9 +437,9 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
     bool ok;
 #if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
     // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
 #else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font() );
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), this );
 #endif
     if ( ok )
     {
@@ -652,7 +652,7 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
   {
     QList<QgsMapLayer*> layers = canvas->layers();
 
-    QgsComposerLegendLayersDialog addDialog( layers );
+    QgsComposerLegendLayersDialog addDialog( layers, this );
     if ( addDialog.exec() == QDialog::Accepted )
     {
       QgsMapLayer* layer = addDialog.selectedLayer();

@@ -531,7 +531,7 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   {
     newSymbol = new QgsFillSymbolV2();
   }
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
