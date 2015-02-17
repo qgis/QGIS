@@ -112,6 +112,8 @@ void QgsHttpRequestHandler::sendHeaders()
     QgsDebugMsg( QString( "Content format: %1" ).arg( mInfoFormat ) );
     printf( "Content-Type: " );
     printf( mInfoFormat.toLocal8Bit() );
+    if ( mInfoFormat.startsWith( "text/" ) )
+      printf( "; charset=utf-8" );
     printf( "\n" );
     // size is not known when streaming
     if ( mBody.size() > 0 )
