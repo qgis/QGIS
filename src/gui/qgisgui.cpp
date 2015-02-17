@@ -137,6 +137,7 @@ namespace QgisGui
       settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
     }
 #else
+
     //create a file dialog using the filter list generated above
     QScopedPointer<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
@@ -145,9 +146,9 @@ namespace QgisGui
     fileDialog->setAcceptMode( QFileDialog::AcceptSave );
     fileDialog->setConfirmOverwrite( true );
 
-    if ( !lastUsedFilter.isEmpty() )     // set the filter to the last one used
+    if ( !selectedFilter.isEmpty() )     // set the filter to the last one used
     {
-      fileDialog->selectNameFilter( lastUsedFilter );
+      fileDialog->selectNameFilter( selectedFilter );
     }
 
     //prompt the user for a fileName
