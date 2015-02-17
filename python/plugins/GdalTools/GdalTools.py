@@ -23,6 +23,9 @@ from PyQt4.QtGui import QMessageBox, QMenu, QIcon, QAction
 from qgis.core import QGis
 import qgis.utils
 
+# load icons for actions
+import resources_rc
+
 # are all dependencies satisfied?
 valid = True
 
