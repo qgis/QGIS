@@ -58,7 +58,7 @@ class Ogr2OgrClip(OgrAlgorithm):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         clipLayer = self.getParameterValue(self.CLIP_LAYER)
-        ogrClipLayer = self.ogrConnectionString(clipLayer)
+        ogrClipLayer = self.ogrConnectionString(clipLayer)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -69,6 +69,8 @@ class Ogr2OgrClip(OgrAlgorithm):
         arguments = []
         arguments.append('-clipsrc')
         arguments.append(ogrClipLayer)
+        arguments.append("-clipsrclayer")
+        arguments.append(self.ogrLayerName(clipLayer))
         if len(options) > 0:
             arguments.append(options)
 
