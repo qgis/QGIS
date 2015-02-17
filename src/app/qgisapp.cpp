@@ -10057,7 +10057,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 
   if ( ml->type() == QgsMapLayer::RasterLayer )
   {
-    QgsRasterLayerProperties *rlp = NULL; // See note above about reusing this
+#if 0 // See note above about reusing this
+    QgsRasterLayerProperties *rlp = NULL;
     if ( rlp )
     {
       rlp->sync();
@@ -10067,6 +10068,9 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
       // handled by rendererChanged() connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
+#else
+    QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
+#endif
 
     rlp->exec();
     delete rlp; // delete since dialog cannot be reused without updating code
@@ -10075,7 +10079,8 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( ml );
 
-    QgsVectorLayerProperties *vlp = NULL; // See note above about reusing this
+#if 0 // See note above about reusing this
+    QgsVectorLayerProperties *vlp = NULL;
     if ( vlp )
     {
       vlp->syncToLayer();
@@ -10085,6 +10090,9 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       vlp = new QgsVectorLayerProperties( vlayer, this );
       // handled by rendererChanged() connect( vlp, SIGNAL( refreshLegend( QString ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
+#else
+    QgsVectorLayerProperties *vlp = new QgsVectorLayerProperties( vlayer, this );
+#endif
 
     if ( vlp->exec() )
     {
