@@ -56,8 +56,8 @@ class OgrAlgorithm(GdalAlgorithm):
             # table="t4" (geom) sql=
             dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
             conninfo = dsUri.connectionInfo()
-
             conn = None
+            ok = False
             while not conn:
                 try:
                     conn = psycopg2.connect(dsUri.connectionInfo())
@@ -72,7 +72,9 @@ class OgrAlgorithm(GdalAlgorithm):
             if not conn:
                 raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
 
-            QgsCredentials.instance().put(conninfo, user, passwd)
+            if ok:
+                QgsCredentials.instance().put(conninfo, user, passwd)
+
             ogrstr = "PG:%s" % dsUri.connectionInfo()
         else:
             ogrstr = unicode(layer.source()).split("|")[0]
