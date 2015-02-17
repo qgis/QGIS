@@ -270,14 +270,19 @@ void QgsComposerMap::cache( void )
   int w = widthMM * horizontalVScaleFactor;
   int h = heightMM * horizontalVScaleFactor;
 
-  if ( w > 5000 ) //limit size of image for better performance
+  // limit size of image for better performance
+  if ( w > 5000 || h > 5000 )
   {
-    w = 5000;
-  }
-
-  if ( h > 5000 )
-  {
-    h = 5000;
+    if ( w > h )
+    {
+      w = 5000;
+      h = w * heightMM / widthMM;
+    }
+    else
+    {
+      h = 5000;
+      w = h * widthMM / heightMM;
+    }
   }
 
   mCacheImage = QImage( w, h, QImage::Format_ARGB32 );
