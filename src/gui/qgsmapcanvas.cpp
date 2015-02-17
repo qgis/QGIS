@@ -843,6 +843,14 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
 
   if ( r.isEmpty() )
   {
+    if ( !mSettings.hasValidSettings() )
+    {
+      // we can't even just move the map center
+      QgsDebugMsg( "Empty extent - ignoring" );
+      return;
+    }
+
+    // ### QGIS 3: do not allow empty extent - require users to call setCenter() explicitly
     QgsDebugMsg( "Empty extent - keeping old scale with new center!" );
     setCenter( r.center() );
   }
