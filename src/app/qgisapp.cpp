@@ -5911,6 +5911,7 @@ void QgisApp::mergeSelectedFeatures()
   }
 
   //get initial selection (may be altered by attribute merge dialog later)
+  QgsFeatureIds featureIds = vl->selectedFeaturesIds();
   QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
   bool canceled;
   QgsGeometry* unionGeom = unionGeometries( vl, featureList, canceled );
@@ -5939,9 +5940,9 @@ void QgisApp::mergeSelectedFeatures()
     return;
   }
 
-  QgsFeatureList featureListAfter = vl->selectedFeatures();
+  QgsFeatureIds featureIdsAfter = vl->selectedFeaturesIds();
 
-  if ( featureListAfter.size() < 2 )
+  if ( featureIdsAfter.size() < 2 )
   {
     QMessageBox::information( 0, tr( "Not enough features selected" ), tr( "The merge tool requires at least two selected features" ) );
     delete unionGeom;
@@ -5949,10 +5950,11 @@ void QgisApp::mergeSelectedFeatures()
   }
 
   //if the user changed the feature selection in the merge dialog, we need to repeat the union and check the type
-  if ( featureList.size() != featureListAfter.size() )
+  if ( featureIds.size() != featureIdsAfter.size() )
   {
     delete unionGeom;
     bool canceled;
+    QgsFeatureList featureListAfter = vl->selectedFeatures();
     unionGeom = unionGeometries( vl, featureListAfter, canceled );
     if ( !unionGeom )
     {
@@ -5978,10 +5980,10 @@ void QgisApp::mergeSelectedFeatures()
   newFeature.setGeometry( unionGeom );
   newFeature.setAttributes( d.mergedAttributes() );
 
-  QgsFeatureList::const_iterator feature_it = featureListAfter.constBegin();
-  for ( ; feature_it != featureListAfter.constEnd(); ++feature_it )
+  QgsFeatureIds::const_iterator feature_it = featureIdsAfter.constBegin();
+  for ( ; feature_it != featureIdsAfter.constEnd(); ++feature_it )
   {
-    vl->deleteFeature( feature_it->id() );
+    vl->deleteFeature( *feature_it );
   }
 
   vl->addFeature( newFeature, false );

@@ -166,12 +166,11 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       continue;
     }
 
-    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5  blendmode:%6" )
+    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
                  .arg( ml->name() )
                  .arg( ml->minimumScale() )
                  .arg( ml->maximumScale() )
                  .arg( ml->hasScaleBasedVisibility() )
-                 .arg( ml->extent().toString() )
                  .arg( ml->blendMode() )
                );
 

@@ -2327,13 +2327,26 @@ const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
 QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
   QgsFeatureList features;
-
-  QgsFeatureIterator it = selectedFeaturesIterator();
-
   QgsFeature f;
-  while ( it.nextFeature( f ) )
+
+  if ( mSelectedFeatureIds.count() <= 8 )
   {
-    features.push_back( f );
+    // for small amount of selected features, fetch them directly
+    // because request with FilterFids would go iterate over the whole layer
+    foreach ( int fid, mSelectedFeatureIds )
+    {
+      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
+      features << f;
+    }
+  }
+  else
+  {
+    QgsFeatureIterator it = selectedFeaturesIterator();
+
+    while ( it.nextFeature( f ) )
+    {
+      features.push_back( f );
+    }
   }
 
   return features;
@@ -2341,10 +2354,16 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 
 QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request )
 {
+  if ( mSelectedFeatureIds.count() == 0 )
+    return QgsFeatureIterator();
+
   if ( geometryType() == QGis::NoGeometry )
     request.setFlags( QgsFeatureRequest::NoGeometry );
 
-  request.setFilterFids( mSelectedFeatureIds );
+  if ( mSelectedFeatureIds.count() == 1 )
+    request.setFilterFid( *mSelectedFeatureIds.constBegin() );
+  else
+    request.setFilterFids( mSelectedFeatureIds );
 
   return getFeatures( request );
 }
