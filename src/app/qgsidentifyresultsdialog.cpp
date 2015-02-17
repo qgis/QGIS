@@ -741,11 +741,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     featItem->addChild( attrItem ); // before setHtml()!
     if ( !attributes.isEmpty() )
     {
-      attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain" );
+      attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain; charset=utf-8" );
     }
     else
     {
-      attrItem->setContent( tr( "No attributes." ).toUtf8(), "text/plain" );
+      attrItem->setContent( tr( "No attributes." ).toUtf8(), "text/plain; charset=utf-8" );
     }
   }
   else

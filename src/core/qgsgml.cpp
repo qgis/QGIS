@@ -614,7 +614,7 @@ QString QgsGml::readAttribute( const QString& attributeName, const XML_Char** at
   {
     if ( attributeName.compare( attr[i] ) == 0 )
     {
-      return QString( attr[i+1] );
+      return QString::fromUtf8( attr[i+1] );
     }
     i += 2;
   }
