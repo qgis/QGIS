@@ -399,13 +399,14 @@ class VectorWriter:
         if self.fileName.startswith(self.MEMORY_LAYER_PREFIX):
             self.isMemory = True
 
-            uri = GEOM_TYPE_MAP[geometryType]
+            uri = GEOM_TYPE_MAP[geometryType] + "?uuid=" + str(uuid.uuid4())
             if crs.isValid():
-                uri += '?crs=' + crs.authid() + '&'
-            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
+                uri += '&crs=' + crs.authid()
 
-            fieldsstring = '&'.join(fieldsdesc)
-            uri += fieldsstring
+            fieldsdesc = ['field=' + _fieldName(f) for f in fields]
+            if fieldsdesc:
+              uri += '&' + '&'.join(fieldsdesc)
+
             self.memLayer = QgsVectorLayer(uri, self.fileName, 'memory')
             self.writer = self.memLayer.dataProvider()
         else:
