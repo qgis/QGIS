@@ -51,7 +51,7 @@ installation document in qgis/doc/index.html. The installation document is
 also available as PDF in the same directory.
 
 ## Help us
-Please submit bug reports using the [QGIS bug tracker](http://hub.qgis.org/)
+Please submit bug reports using the [QGIS bug tracker](http://hub.qgis.org/).
 When reporting a bug, either login or, if you don't have a qgis trac, provide
 an email address where we can request additional information.
 
