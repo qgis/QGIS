@@ -64,7 +64,8 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
       geomType = "point";
   }
 
-  QString layerProperties = geomType + QString( "?crs=%1" ).arg( crsId );
+  static int createScratchLayers = 0;
+  QString layerProperties = QString( "%1?crs=%2&memoryid=scratchlayer%3" ).arg( geomType ).arg( crsId ).arg( ++createScratchLayers );
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
   QgsVectorLayer* newLayer = new QgsVectorLayer( layerProperties, name, QString( "memory" ) );
   return newLayer;

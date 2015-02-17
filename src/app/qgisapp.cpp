@@ -6343,6 +6343,9 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QString typeName = QString( QGis::featureType( wkbType ) ).replace( "WKB", "" );
 
+  static int pastedFeatureLayers = 0;
+  typeName += QString( "?memoryid=pasted_features%1" ).arg( ++pastedFeatureLayers );
+
   QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
 
   QString message;
