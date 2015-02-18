@@ -486,7 +486,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   mCachedViewWidth = pixelWidth;
   mCachedViewHeight = pixelHeight;
 
-  if ( !mSettings.mTiled && !mSettings.mMaxWidth && !mSettings.mMaxHeight )
+  if ( !mSettings.mTiled && mSettings.mMaxWidth == 0 && mSettings.mMaxHeight == 0 )
   {
     // Calculate active layers that are also visible.
 
@@ -559,7 +559,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     //t.start();
 
   }
-  else
+  else if ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 )
   {
     mTileReqNo++;
 
@@ -830,6 +830,10 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
                         + tr( ", %n errors.", "errors", stat.errors )
                       );
 #endif
+  }
+  else
+  {
+    QgsDebugMsg( "empty tile size" );
   }
 
   return mCachedImage;
