@@ -26,6 +26,7 @@
 #include <QComboBox>
 #include <QLibrary>
 #include <QSettings>
+#include <QUuid>
 #include <QFileDialog>
 
 QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
@@ -64,8 +65,7 @@ QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
       geomType = "point";
   }
 
-  static int createScratchLayers = 0;
-  QString layerProperties = QString( "%1?crs=%2&memoryid=scratchlayer%3" ).arg( geomType ).arg( crsId ).arg( ++createScratchLayers );
+  QString layerProperties = QString( "%1?crs=%2&memoryid=%3" ).arg( geomType ).arg( crsId ).arg( QUuid::createUuid().toString() );
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
   QgsVectorLayer* newLayer = new QgsVectorLayer( layerProperties, name, QString( "memory" ) );
   return newLayer;
