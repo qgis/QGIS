@@ -191,7 +191,7 @@ QgsProperty *addKey_( QString const &scope,
 
         return currentProperty;
       }
-      else if ( nextProperty = currentProperty->find( keySequence.first() ) )
+      else if (( nextProperty = currentProperty->find( keySequence.first() ) ) )
       {
         currentProperty = dynamic_cast<QgsPropertyKey*>( nextProperty );
 
@@ -206,7 +206,7 @@ QgsProperty *addKey_( QString const &scope,
       }
       else                // the next subkey doesn't exist, so add it
       {
-        if ( newPropertyKey = currentProperty->addKey( keySequence.first() ) )
+        if (( newPropertyKey = currentProperty->addKey( keySequence.first() ) ) )
         {
           currentProperty = newPropertyKey;
         }
