@@ -1262,7 +1262,7 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
     // get the field name
     const QgsField &fld = field( index );
     QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
+                  .arg( quotedIdentifier( fld.name() ) + "::text" )
                   .arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
