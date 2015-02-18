@@ -518,7 +518,14 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     if ( !mSettings.visibleExtent().isEmpty() )
     {
       QgsCoordinateTransform transform( mSettings.destinationCrs(), crs );
-      rect = transform.transformBoundingBox( mSettings.visibleExtent() );
+      try
+      {
+        rect = transform.transformBoundingBox( mSettings.visibleExtent() );
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+      }
     }
     if ( !rect.isEmpty() )
     {

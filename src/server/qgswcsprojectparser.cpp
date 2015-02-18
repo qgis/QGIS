@@ -119,7 +119,16 @@ void QgsWCSProjectParser::wcsContentMetadata( QDomElement& parentElement, QDomDo
         const QgsCoordinateReferenceSystem& layerCrs = layer->crs();
         QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
-        QgsRectangle BBox = t.transformBoundingBox( layer->extent() );
+        QgsRectangle BBox;
+        try
+        {
+          BBox = t.transformBoundingBox( layer->extent() );
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugMsg( QString( "Transform error caught: %1. Using original layer extent." ).arg( e.what() ) );
+          BBox = layer->extent();
+        }
         QDomElement lonLatElem = doc.createElement( "lonLatEnvelope" );
         lonLatElem.setAttribute( "srsName", "urn:ogc:def:crs:OGC:1.3:CRS84" );
         QDomElement lowerPosElem = doc.createElement( "gml:pos" );
