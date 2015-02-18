@@ -315,7 +315,7 @@ QString QgsBench::serialize( QMap<QString, QVariant> theMap, int level )
   QMap<QString, QVariant>::const_iterator i = theMap.constBegin();
   while ( i != theMap.constEnd() )
   {
-    switch ( i.value().type() )
+    switch ( (QMetaType::Type)i.value().type() )
     {
       case QMetaType::Int:
         list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toInt() ) );
