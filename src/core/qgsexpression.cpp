@@ -2239,6 +2239,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
         QString sR = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
         return QVariant( sL + sR );
       }
+      //intentional fall-through
     case boMinus:
     case boMul:
     case boDiv:

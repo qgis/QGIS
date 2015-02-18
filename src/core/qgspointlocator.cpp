@@ -320,6 +320,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
 
     case QGis::WKBLineString25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBLineString:
     {
       int nPoints;
@@ -352,6 +353,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
 
     case QGis::WKBMultiLineString25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiLineString:
     {
       int nLines;
@@ -391,6 +393,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
 
     case QGis::WKBPolygon25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBPolygon:
     {
       int nRings;
@@ -430,6 +433,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry* geom, co
 
     case QGis::WKBMultiPolygon25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiPolygon:
     {
       int nPolygons;
