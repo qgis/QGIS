@@ -1235,7 +1235,7 @@ QVariant QgsPostgresProvider::minimumValue( int index )
     // get the field name
     const QgsField &fld = field( index );
     QString sql = QString( "SELECT min(%1) FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
+                  .arg( connectionRO()->fieldExpression( fld ) )
                   .arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
@@ -1262,7 +1262,7 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
     // get the field name
     const QgsField &fld = field( index );
     QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
+                  .arg( connectionRO()->fieldExpression( fld ) )
                   .arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
@@ -1408,7 +1408,7 @@ QVariant QgsPostgresProvider::maximumValue( int index )
     // get the field name
     const QgsField &fld = field( index );
     QString sql = QString( "SELECT max(%1) FROM %2" )
-                  .arg( quotedIdentifier( fld.name() ) )
+                  .arg( connectionRO()->fieldExpression( fld ) )
                   .arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
