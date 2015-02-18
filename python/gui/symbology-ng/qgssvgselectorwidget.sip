@@ -4,10 +4,10 @@ class QgsSvgSelectorListModel : QAbstractListModel
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorListModel( QObject* parent );
+    QgsSvgSelectorListModel( QObject* parent /TransferThis/ );
 
     // Constructor to create model for icons in a specific path
-    QgsSvgSelectorListModel( QObject* parent, QString path );
+    QgsSvgSelectorListModel( QObject* parent /TransferThis/, QString path );
 
     int rowCount( const QModelIndex & parent = QModelIndex() ) const;
 
@@ -20,7 +20,7 @@ class QgsSvgSelectorGroupsModel : QStandardItemModel
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorGroupsModel( QObject* parent );
+    QgsSvgSelectorGroupsModel( QObject* parent /TransferThis/ );
 };
 
 
@@ -30,7 +30,7 @@ class QgsSvgSelectorWidget : QWidget
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorWidget( QWidget* parent = 0 );
+    QgsSvgSelectorWidget( QWidget* parent /TransferThis/ = 0 );
     ~QgsSvgSelectorWidget();
 
     static QgsSvgSelectorWidget* create( QWidget* parent = 0 ) /Factory/;
@@ -62,7 +62,7 @@ class QgsSvgSelectorDialog : QDialog
 #include <qgssvgselectorwidget.h>
 %End
   public:
-    QgsSvgSelectorDialog( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
+    QgsSvgSelectorDialog( QWidget* parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
     ~QgsSvgSelectorDialog();

@@ -8,7 +8,7 @@ class QgsMessageLogViewer: QDialog
 %End
 
   public:
-    QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsMessageLogViewer();
 
   public slots:

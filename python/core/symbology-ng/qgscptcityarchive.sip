@@ -260,7 +260,7 @@ class QgsCptCityBrowserModel : QAbstractItemModel
       List // not used anymore
     };
 
-    QgsCptCityBrowserModel( QObject* parent = 0,
+    QgsCptCityBrowserModel( QObject* parent /TransferThis/ = 0,
                             QgsCptCityArchive* archive = QgsCptCityArchive::defaultArchive(),
                             ViewType Type = Authors );
     ~QgsCptCityBrowserModel();

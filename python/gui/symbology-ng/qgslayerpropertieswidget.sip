@@ -5,7 +5,7 @@ class QgsLayerPropertiesWidget : QWidget
 %End
 
   public:
-    QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsLayerPropertiesWidget( QgsSymbolLayerV2* layer, const QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
   public slots:
     void layerTypeChanged();

@@ -20,7 +20,7 @@ class QgsAttributeForm : QWidget
 %End
 
   public:
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
     const QgsFeature& feature();

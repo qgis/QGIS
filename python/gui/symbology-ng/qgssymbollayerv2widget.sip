@@ -5,7 +5,7 @@ class QgsSymbolLayerV2Widget : QWidget
 %End
 
   public:
-    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 );
+    QgsSymbolLayerV2Widget( QWidget* parent /TransferThis/, const QgsVectorLayer* vl = 0 );
     virtual ~QgsSymbolLayerV2Widget();
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
@@ -37,7 +37,7 @@ class QgsSimpleLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -71,7 +71,7 @@ class QgsSimpleMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -104,7 +104,7 @@ class QgsSimpleFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -132,7 +132,7 @@ class QgsGradientFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 #include <qgssymbollayerv2widget.h>
 %End
   public:
-    QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsGradientFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -163,7 +163,7 @@ class QgsShapeburstFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 #include <qgssymbollayerv2widget.h>
 %End
   public:
-    QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsShapeburstFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -194,7 +194,7 @@ class QgsMarkerLineSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 #include <qgssymbollayerv2widget.h>
 %End
   public:
-    QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -224,7 +224,7 @@ class QgsSvgMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -266,7 +266,7 @@ class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsRasterFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -285,7 +285,7 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -312,7 +312,7 @@ class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerV2Widget
 %End
   public:
 
-    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
@@ -328,7 +328,7 @@ class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
@@ -344,7 +344,7 @@ class QgsFontMarkerSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 
@@ -374,7 +374,7 @@ class QgsCentroidFillSymbolLayerV2Widget : QgsSymbolLayerV2Widget
 %End
 
   public:
-    QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = NULL );
+    QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = NULL );
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;
 

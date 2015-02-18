@@ -9,7 +9,7 @@ class QgsScaleComboBox : QComboBox
 %End
 
   public:
-    QgsScaleComboBox( QWidget* parent = 0 );
+    QgsScaleComboBox( QWidget* parent /TransferThis/ = 0 );
     ~QgsScaleComboBox();
 
     //! Function to read the selected scale as text

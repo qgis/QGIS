@@ -11,7 +11,7 @@ class QgsProjectionSelector : QWidget
 %End
 
   public:
-    QgsProjectionSelector( QWidget* parent, const char *name = "", Qt::WindowFlags fl = 0 );
+    QgsProjectionSelector( QWidget* parent /TransferThis/, const char *name = "", Qt::WindowFlags fl = 0 );
 
     ~QgsProjectionSelector();
 

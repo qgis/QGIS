@@ -286,7 +286,7 @@ class QgsDirectoryParamWidget : QTreeWidget
 #include <qgsdataitem.h>
 %End
   public:
-    QgsDirectoryParamWidget( QString path, QWidget* parent = NULL );
+    QgsDirectoryParamWidget( QString path, QWidget* parent /TransferThis/ = NULL );
 
   protected:
     void mousePressEvent( QMouseEvent* event );

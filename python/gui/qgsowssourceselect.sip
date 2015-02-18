@@ -23,7 +23,7 @@ class QgsOWSSourceSelect : QDialog
     };
 
     //! Constructor
-    QgsOWSSourceSelect( QString service, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOWSSourceSelect( QString service, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsOWSSourceSelect();
 

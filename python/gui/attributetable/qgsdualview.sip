@@ -29,7 +29,7 @@ class QgsDualView : QStackedWidget
      * @brief Constructor
      * @param parent  The parent widget
      */
-    explicit QgsDualView( QWidget* parent = 0 );
+    explicit QgsDualView( QWidget* parent /TransferThis/ = 0 );
     virtual ~QgsDualView();
 
     /**

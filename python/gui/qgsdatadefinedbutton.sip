@@ -22,7 +22,7 @@ class QgsDataDefinedButton :  QToolButton
      * @param datatypes The expected data types to be compared against the variant type of the QgsField from data source and expression result
      * @param description The description of expected input data
      */
-    QgsDataDefinedButton( QWidget* parent = 0,
+    QgsDataDefinedButton( QWidget* parent /TransferThis/ = 0,
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
                           DataTypes datatypes = AnyType,

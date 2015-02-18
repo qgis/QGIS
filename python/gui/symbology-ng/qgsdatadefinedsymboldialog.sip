@@ -14,7 +14,7 @@ class QgsDataDefinedSymbolDialog : QDialog
       DataDefinedSymbolEntry( const QString& p, const QString& t, const QString& v, const QString& h );
     };
 
-    QgsDataDefinedSymbolDialog( const QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent = 0, Qt::WindowFlags f = 0 ) /Deprecated/;
+    QgsDataDefinedSymbolDialog( const QList< QgsDataDefinedSymbolDialog::DataDefinedSymbolEntry >& entries, const QgsVectorLayer* vl, QWidget * parent /TransferThis/ = 0, Qt::WindowFlags f = 0 ) /Deprecated/;
     ~QgsDataDefinedSymbolDialog();
     QMap< QString, QString > dataDefinedProperties() const /Deprecated/;
 

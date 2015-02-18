@@ -13,7 +13,7 @@ class QgsMessageBar: QFrame
       SUCCESS
     };
 
-    QgsMessageBar( QWidget *parent = 0 );
+    QgsMessageBar( QWidget *parent /TransferThis/ = 0 );
     ~QgsMessageBar();
 
     /*! display a message item on the bar after hiding the currently visible one

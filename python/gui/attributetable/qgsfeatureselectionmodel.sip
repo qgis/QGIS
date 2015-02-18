@@ -4,7 +4,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
 #include <attributetable/qgsfeatureselectionmodel.h>
 %End
   public:
-    explicit QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionHandler, QObject* parent );
+    explicit QgsFeatureSelectionModel( QAbstractItemModel* model, QgsFeatureModel* featureModel, QgsIFeatureSelectionManager* featureSelectionHandler, QObject* parent /TransferThis/ );
 
     /**
      * Enables or disables synchronisation to the {@link QgsVectorLayer}
