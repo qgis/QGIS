@@ -930,7 +930,8 @@ int QgsWFSProvider::readAttributesFromSchema( QDomDocument& schemaDoc, QString& 
     //is it a geometry attribute?
     //MH 090428: sometimes the <element> tags for geometry attributes have only attribute ref="gml:polygonProperty" and no name
     QRegExp gmlPT( "gml:(.*)PropertyType" );
-    if ( type.indexOf( gmlPT ) == 0 || name.isEmpty() )
+    // the GeometryAssociationType has been seen in #11785
+    if ( type.indexOf( gmlPT ) == 0 || type == "gml:GeometryAssociationType" || name.isEmpty() )
     {
       foundGeometryAttribute = true;
       geometryAttribute = name;
