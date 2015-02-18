@@ -157,9 +157,9 @@ bool QgsField::convertCompatible( QVariant& v ) const
     return true;
   }
 
-  if ( mType == QVariant::String && mLength >= 0 && v.toString().length() > mLength )
+  if ( mType == QVariant::String && mLength > 0 && v.toString().length() > mLength )
   {
-    v = QVariant( mType );
+    v = v.toString().left( mLength );
     return false;
   }
 
