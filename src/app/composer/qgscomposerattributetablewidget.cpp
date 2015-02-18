@@ -575,7 +575,7 @@ void QgsComposerAttributeTableWidget::updateRelationsCombo()
   if ( atlasLayer )
   {
     QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( atlasLayer );
-    Q_FOREACH( const QgsRelation& relation, relations )
+    Q_FOREACH ( const QgsRelation& relation, relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );
     }

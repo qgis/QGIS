@@ -44,11 +44,11 @@ def elemIsDocumentableClass(elem):
 
 def elemIsDocumentableMember(elem):
     if elem.get('kind') == 'variable':
-	    return False
+        return False
 
     #only public or protected members should be documented
     if not elem.get('prot') in ('public','protected'):
-	    return False
+        return False
 
     #ignore reimplemented methods
     #use two different tests, as doxygen will not detect reimplemented qt methods
@@ -120,4 +120,3 @@ class TestQgsDocCoverage(TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-
