@@ -403,8 +403,14 @@ bool DL_Dxf::getChoppedLine( char *s, unsigned int size,
  */
 bool DL_Dxf::stripWhiteSpace( char** s )
 {
+  if ( !s || !( *s ) )
+    return false;
+
   // last non-NULL char:
   int lastChar = strlen( *s ) - 1;
+  if ( lastChar < 0 )
+    return false;
+
 // QgsDebugMsg(QString("lastChar: %1").arg(lastChar));
 
   // Is last character CR or LF?
