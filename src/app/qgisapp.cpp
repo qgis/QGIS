@@ -63,6 +63,7 @@
 #include <QtGlobal>
 #include <QTimer>
 #include <QToolButton>
+#include <QUuid>
 #include <QVBoxLayout>
 #include <QWhatsThis>
 #include <QThread>
@@ -6343,8 +6344,7 @@ QgsVectorLayer *QgisApp::pasteToNewMemoryVector()
 
   QString typeName = QString( QGis::featureType( wkbType ) ).replace( "WKB", "" );
 
-  static int pastedFeatureLayers = 0;
-  typeName += QString( "?memoryid=pasted_features%1" ).arg( ++pastedFeatureLayers );
+  typeName += QString( "?memoryid=%1" ).arg( QUuid::createUuid().toString() );
 
   QgsDebugMsg( QString( "output wkbType = %1 typeName = %2" ).arg( wkbType ).arg( typeName ) );
 
