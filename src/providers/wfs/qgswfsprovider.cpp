@@ -1179,8 +1179,6 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
   QDomNode currentAttributeChild;
   QDomElement currentAttributeElement;
   QgsFeature* f = 0;
-  unsigned char* wkb = 0;
-  int wkbSize = 0;
   mFeatureCount = 0;
 
   for ( int i = 0; i < featureTypeNodeList.size(); ++i )
@@ -1219,7 +1217,7 @@ int QgsWFSProvider::getFeaturesFromGML2( const QDomElement& wfsCollectionElement
       }
       currentAttributeChild = currentAttributeChild.nextSibling();
     }
-    if ( wkb && wkbSize > 0 )
+    if ( f->geometry() )
     {
       //insert bbox and pointer to feature into search tree
       mSpatialIndex->insertFeature( *f );
