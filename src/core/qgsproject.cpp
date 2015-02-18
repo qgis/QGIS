@@ -680,6 +680,18 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     vIt->first->updateFields();
   }
 
+  QSet<QgsVectorLayer *> notified;
+  for ( vIt = vLayerList.begin(); vIt != vLayerList.end(); ++vIt )
+  {
+    if ( notified.contains( vIt->first ) )
+      continue;
+
+    notified << vIt->first;
+    emit readMapLayer( vIt->first, vIt->second );
+  }
+
+
+
   return qMakePair( returnStatus, brokenNodes );
 } // _getMapLayers
 
@@ -715,16 +727,17 @@ bool QgsProject::addLayer( const QDomElement &layerElem, QList<QDomNode> &broken
   // have the layer restore state that is stored in Dom node
   if ( mapLayer->readLayerXML( layerElem ) && mapLayer->isValid() )
   {
-    emit readMapLayer( mapLayer, layerElem );
+    // postpone readMapLayer signal for vector layers with joins
+    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
+    if ( !vLayer || vLayer->vectorJoins().size() == 0 )
+      emit readMapLayer( mapLayer, layerElem );
+    else
+      vectorLayerList.push_back( qMakePair( vLayer, layerElem ) );
 
     QList<QgsMapLayer *> myLayers;
     myLayers << mapLayer;
     QgsMapLayerRegistry::instance()->addMapLayers( myLayers );
-    QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-    if ( vLayer && vLayer->vectorJoins().size() > 0 )
-    {
-      vectorLayerList.push_back( qMakePair( vLayer, layerElem ) );
-    }
+
     return true;
   }
   else
