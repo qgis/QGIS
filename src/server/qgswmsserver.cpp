@@ -2098,7 +2098,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
         attributeElement.setAttribute( "value",
                                        replaceValueMapAndRelation(
                                          layer, i,
-                                         QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer )
+                                         featureAttributes[i].isNull() ?  QString::null : QgsExpression::replaceExpressionText( featureAttributes[i].toString(), &feature, layer )
                                        )
                                      );
         featureElement.appendChild( attributeElement );
