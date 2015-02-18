@@ -423,7 +423,7 @@ void TestQgsWcsPublicServers::test()
           {
             uri = myPath + "-gdal.xml";
             QFile myGdalXmlFile( uri );
-            myGdalXmlFile.open( QIODevice::WriteOnly | QIODevice::Text );
+            Q_ASSERT( myGdalXmlFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
             QTextStream myStream( &myGdalXmlFile );
             myStream << "<WCS_GDAL>\n";
             myStream << "  <ServiceURL>" + serverUrl + "?" + "</ServiceURL>\n";
@@ -528,7 +528,7 @@ void TestQgsWcsPublicServers::test()
 
         QFile myLogFile( myLogPath );
 
-        myLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+        Q_ASSERT( myLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
         QTextStream myStream( &myLogFile );
         myStream << myLog.join( "\n" );
 
@@ -540,7 +540,7 @@ void TestQgsWcsPublicServers::test()
         QgsDebugMsg( "Coverage not found" );
       }
       QFile myVersionLogFile( myVersionLogPath );
-      myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text );
+      Q_ASSERT( myVersionLogFile.open( QIODevice::WriteOnly | QIODevice::Text ) );
       QTextStream myVersionStream( &myVersionLogFile );
       myVersionStream << myVersionLog.join( "\n" );
       myVersionLogFile.close();
