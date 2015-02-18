@@ -265,6 +265,17 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                             theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
 
+  //check for mask
+  QString maskImagePath = mExpectedImageFile;
+  maskImagePath.chop( 4 ); //remove .png extension
+  maskImagePath += "_mask.png";
+  QImage* maskImage = new QImage( maskImagePath );
+  bool hasMask = !maskImage->isNull();
+  if ( hasMask )
+  {
+    qDebug( "QgsRenderChecker using mask image" );
+  }
+
   //
   // Set pixel count score and target
   //
@@ -338,6 +349,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
     mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
     mReport += "</td></tr>";
     mReport += myImagesString;
+    delete maskImage;
     return false;
   }
 
@@ -348,29 +360,42 @@ bool QgsRenderChecker::compareImages( QString theTestName,
 
   mMismatchCount = 0;
   int colorTolerance = ( int ) mColorTolerance;
-  for ( int x = 0; x < myExpectedImage.width(); ++x )
+  for ( int y = 0; y < myExpectedImage.height(); ++y )
   {
-    for ( int y = 0; y < myExpectedImage.height(); ++y )
+    const QRgb* expectedScanline = ( const QRgb* )myExpectedImage.constScanLine( y );
+    const QRgb* resultScanline = ( const QRgb* )myResultImage.constScanLine( y );
+    const QRgb* maskScanline = hasMask ? ( const QRgb* )maskImage->constScanLine( y ) : 0;
+    QRgb* diffScanline = ( QRgb* )myDifferenceImage.scanLine( y );
+
+    for ( int x = 0; x < myExpectedImage.width(); ++x )
     {
-      QRgb myExpectedPixel = myExpectedImage.pixel( x, y );
-      QRgb myActualPixel = myResultImage.pixel( x, y );
-      if ( mColorTolerance == 0 )
+      int maskTolerance = hasMask ? qRed( maskScanline[ x ] ) : 0;
+      int pixelTolerance = qMax( colorTolerance, maskTolerance );
+      if ( pixelTolerance == 255 )
+      {
+        //skip pixel
+        continue;
+      }
+
+      QRgb myExpectedPixel = expectedScanline[x];
+      QRgb myActualPixel = resultScanline[x];
+      if ( pixelTolerance == 0 )
       {
         if ( myExpectedPixel != myActualPixel )
         {
           ++mMismatchCount;
-          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+          diffScanline[ x ] = qRgb( 255, 0, 0 );
         }
       }
       else
       {
-        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > colorTolerance ||
-             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > colorTolerance ||
-             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > colorTolerance ||
-             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > colorTolerance )
+        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
         {
           ++mMismatchCount;
-          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+          diffScanline[ x ] = qRgb( 255, 0, 0 );
         }
       }
     }
@@ -379,6 +404,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //save the diff image to disk
   //
   myDifferenceImage.save( myDiffImageFile );
+  delete maskImage;
 
   //
   // Send match result to debug
