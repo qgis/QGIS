@@ -180,9 +180,13 @@ void QgsBrowserTreeView::rowsInserted( const QModelIndex & parentIndex, int star
   {
     QModelIndex childIndex = model()->index( i, 0, parentIndex );
     QString childPath = model()->data( childIndex, QgsBrowserModel::PathRole ).toString();
+    QString escapedChildPath = childPath;
+    escapedChildPath.replace( "|", "\\|" );
 
-    if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + childPath + "/.*" ) ) != -1 )
+    QgsDebugMsgLevel( "childPath = " + childPath + " escapedChildPath = " + escapedChildPath, 2 );
+    if ( mExpandPaths.contains( childPath ) || mExpandPaths.indexOf( QRegExp( "^" + escapedChildPath + "/.*" ) ) != -1 )
     {
+      QgsDebugMsgLevel( "-> expand", 2 );
       expand( childIndex );
     }
   }
