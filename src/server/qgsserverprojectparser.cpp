@@ -214,6 +214,9 @@ QgsMapLayer* QgsServerProjectParser::createLayerFromElement( const QDomElement& 
 
   if ( layer )
   {
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+      addValueRelationLayersForLayer( dynamic_cast<QgsVectorLayer *>( layer ) );
+
     return layer;
   }
 
