@@ -22,6 +22,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsvectorlayer.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
+#include "qgsrendererv2.h"
 #include "qgsrubberband.h"
 #include "qgscsexception.h"
 #include "qgslogger.h"
@@ -135,7 +136,20 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   QgsDebugMsg( "doContains: " + QString( doContains ? "T" : "F" ) );
   QgsDebugMsg( "doDifference: " + QString( doDifference ? "T" : "F" ) );
 
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectGeomTrans.boundingBox() ).setFlags( QgsFeatureRequest::ExactIntersect ).setSubsetOfAttributes( QgsAttributeList() ) );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
+  QgsFeatureRendererV2* r = vlayer->rendererV2();
+  if ( r )
+    r->startRender( context, vlayer->pendingFields() );
+
+  QgsFeatureRequest request;
+  request.setFilterRect( selectGeomTrans.boundingBox() );
+  request.setFlags( QgsFeatureRequest::ExactIntersect );
+  if ( r )
+    request.setSubsetOfAttributes( r->usedAttributes(), vlayer->pendingFields() );
+  else
+    request.setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator fit = vlayer->getFeatures( request );
 
   QgsFeatureIds newSelectedFeatures;
   QgsFeature f;
@@ -144,6 +158,10 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   double closestFeatureDist = std::numeric_limits<double>::max();
   while ( fit.nextFeature( f ) )
   {
+    // make sure to only use features that are visible
+    if ( r && !r->willRenderFeature( f ) )
+      continue;
+
     QgsGeometry* g = f.geometry();
     if ( doContains )
     {
@@ -174,6 +192,9 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
   {
     newSelectedFeatures.insert( closestFeatureId );
   }
+
+  if ( r )
+    r->stopRender( context );
 
   QgsDebugMsg( "Number of new selected features: " + QString::number( newSelectedFeatures.size() ) );
 
