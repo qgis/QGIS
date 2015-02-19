@@ -260,7 +260,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   {
     mRenderedImageFile = theRenderedImageFile;
   }
-  if ( mRenderedImageFile.isEmpty() )
+  else if ( mRenderedImageFile.isEmpty() )
   {
     qDebug( "QgsRenderChecker::runTest failed - Rendered Image File not set." );
     mReport = "<table>"
