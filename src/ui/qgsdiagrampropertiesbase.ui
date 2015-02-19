@@ -120,7 +120,7 @@
           <item>
            <widget class="QTabWidget" name="mDiagramPropertiesTabWidget">
             <property name="currentIndex">
-             <number>3</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="mDiagramPropertiesTabWidgetPage1">
              <attribute name="title">

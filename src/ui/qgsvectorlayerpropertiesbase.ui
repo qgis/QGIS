@@ -246,7 +246,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>10</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
