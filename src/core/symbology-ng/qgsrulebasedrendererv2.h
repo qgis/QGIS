@@ -158,7 +158,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
 
         RuleList& children() { return mChildren; }
-        RuleList descendants() const { RuleList l; foreach ( Rule *c, mChildren ) { l += c; l += c->children(); } return l; }
+        RuleList descendants() const { RuleList l; foreach ( Rule *c, mChildren ) { l += c; l += c->descendants(); } return l; }
         Rule* parent() { return mParent; }
 
         //! add child rule, take ownership, sets this as parent
