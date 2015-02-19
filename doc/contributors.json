@@ -566,6 +566,23 @@
           48.791220421656064
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Martin Dobias",
+        "Committer": "Yes",
+        "First Commit Message": "Patch to allow setting extents from cli on startup",
+        "First Commit Date": "03-06-2005",
+        "GIT Nickname": "wonder"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          14.42916,
+          50.06681
+        ]
+      }
     }
   ]
 }
