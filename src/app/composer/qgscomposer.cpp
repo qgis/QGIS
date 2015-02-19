@@ -803,24 +803,35 @@ void QgsComposer::activate()
   }
 }
 
-#ifdef Q_OS_MAC
 void QgsComposer::changeEvent( QEvent* event )
 {
   QMainWindow::changeEvent( event );
   switch ( event->type() )
   {
+#ifdef Q_OS_MAC
     case QEvent::ActivationChange:
+    {
       if ( QApplication::activeWindow() == this )
       {
         mWindowAction->setChecked( true );
       }
       break;
-
+    }
+#endif
+    case QEvent::WindowStateChange:
+    {
+      QWindowStateChangeEvent* changeEv = static_cast< QWindowStateChangeEvent* >( event );
+      if ( changeEv->oldState() & Qt::WindowMinimized )
+      {
+        // Window restored, restore composers
+        restoreComposerMapStates();
+      }
+      break;
+    }
     default:
       break;
   }
 }
-#endif
 
 void QgsComposer::setTitle( const QString& title )
 {
@@ -3005,11 +3016,6 @@ void QgsComposer::resizeEvent( QResizeEvent *e )
 
 void QgsComposer::showEvent( QShowEvent* event )
 {
-  if ( event->spontaneous() ) //event from the window system
-  {
-    restoreComposerMapStates();
-  }
-
 #ifdef Q_OS_MAC
   // add to menu if (re)opening window (event not due to unminimize)
   if ( !event->spontaneous() )
