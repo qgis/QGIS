@@ -117,21 +117,24 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
         layerType = QgsLayerItem::Polygon;
 
       QString layerPath = mapPath + QDir::separator() + layerName;
-      if ( layerNames.size() == 1 )
+      if ( !map )
       {
         /* This may happen (one layer only) in GRASS 7 with points (no topo layers) */
         QgsLayerItem *layer = new QgsLayerItem( this, name + " " + baseLayerName, layerPath, uri, layerType, "grass" );
         layer->setState( Populated );
         items.append( layer );
       }
-      else if ( map )
+      else
       {
         QgsLayerItem *layer = new QgsGrassVectorLayerItem( map, name, baseLayerName, layerPath, uri, layerType, "grass" );
         map->addChild( layer );
       }
     }
-    if ( layerNames.size() != 1 )
+    if ( map )
+    {
+      map->setState( Populated );
       items.append( map );
+    }
   }
 
   QStringList rasterNames = QgsGrass::rasters( mDirPath );

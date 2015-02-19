@@ -493,6 +493,7 @@ void QgsDataItem::setParent( QgsDataItem* parent )
 
 void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
 {
+  Q_ASSERT( child );
   QgsDebugMsg( QString( "path = %1 add child #%2 - %3 - %4" ).arg( mPath ).arg( mChildren.size() ).arg( child->mName ).arg( child->mType ) );
 
   int i;
@@ -551,6 +552,7 @@ int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
 {
   for ( int i = 0; i < items.size(); i++ )
   {
+    Q_ASSERT_X( items[i], "findItem", QString( "item %1 is NULL" ).arg( i ).toAscii() );
     QgsDebugMsgLevel( QString::number( i ) + " : " + items[i]->mPath + " x " + item->mPath, 2 );
     if ( items[i]->equal( item ) )
       return i;
