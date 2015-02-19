@@ -50,7 +50,8 @@ void TestQgsMapToPixel::legacy()
   QCOMPARE( p.x(), -10.2 );
   QCOMPARE( p.y(), 11.2 );
   d = m2p.transform( p );
-  QCOMPARE( d, QgsPoint( -1, -1 ) );
+  QCOMPARE( d.x(), -1.0 );
+  QCOMPARE( d.y(), -1.0 );
 
   p = m2p.toMapCoordinates( 20, 20 );
   QCOMPARE( p.x(), -6.0 );
