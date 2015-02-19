@@ -38,6 +38,38 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.8.0 'Wien'? =
+
+This is a minor release increment with the following feature:
+- Long term release (maintained for a year)
+- >1000 issues flagged by static analysis tools fixed
+- new code commits and pull requests are now automatically tests against our testing framework.
+- more responsive browser
+- support for contextual WMS legend graphics
+- custom prefixes for joins
+- creation of memory layers in core
+- field calc bar in attribute table
+- dxf export improvements
+- advanced digitizing tools
+- improved snapping
+- better simplify tool
+- Qt5 support
+- Bookmark import/export
+- composer gui improvements
+- grid improvements
+- raster image fill type
+- live heatmap renderer
+- multiple styles per layer
+- rotation of map canvas
+- improved date defined symbology UI
+- new algorithms in processing
+- expressions extentable with custom functions
+- comments in expressions
+- QGIS server improvements: better caching, layer style support, value
+  relations, DescribeLayer, python plugins
+-
+
+
 = What's new in Version 2.6.0 'Brighton'? =
 
 This is a minor release increment with the following new features:

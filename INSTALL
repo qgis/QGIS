@@ -1,9 +1,9 @@
 QGIS
 Building QGIS from source - step by step
-Monday February 09, 2015
+Thursday February 12, 2015
 
 
-Last Updated: Monday February 09, 2015
+Last Updated: Thursday February 12, 2015
 Last Change : Monday November 24, 2014
 
 
@@ -328,12 +328,6 @@ build QGIS.
     =================================
 
 The free (as in free beer) Express Edition installer is available under:
-
-Currently we use Visual C++ 2008 Express for 32bit builds:
-
-  http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe
-
-And Visual C++ 2010 Express for 64bit builds:
 
   http://download.microsoft.com/download/c/d/7/cd7d4dfb-5290-4cc7-9f85-ab9e3c9af796/vc_web.exe
 
