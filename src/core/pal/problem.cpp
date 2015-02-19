@@ -682,8 +682,8 @@ namespace pal
     int *sub;
 
     int id;
-    register int featS;
-    register int p;
+    int featS;
+    int p;
     int i;
 
     int n = 0;
@@ -1390,7 +1390,7 @@ namespace pal
     int subSize    = part->subSize;
     int *sub       = part->sub;
     int *sol       = part->sol;
-    register int subseed;
+    int subseed;
 
     double delta;
     double delta_min;

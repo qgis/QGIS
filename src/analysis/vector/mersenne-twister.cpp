@@ -67,7 +67,7 @@ static inline void generate_numbers()
    */
 
   static const uint32_t MATRIX[2] = {0, 0x9908b0df};
-  register uint32_t y, i = 0;
+  uint32_t y, i = 0;
 
   // i = [0 ... 226]
   while ( i < ( DIFF - 1 ) )
@@ -145,7 +145,7 @@ extern "C" void seed( uint32_t value )
   MT[0] = value;
   index = 0;
 
-  for ( register unsigned i = 1; i < SIZE; ++i )
+  for ( unsigned i = 1; i < SIZE; ++i )
     MT[i] = 0x6c078965 * ( MT[i-1] ^ MT[i-1] >> 30 ) + i;
 }
 
@@ -154,7 +154,7 @@ extern "C" uint32_t rand_u32()
   if ( !index )
     generate_numbers();
 
-  register uint32_t y = MT[index];
+  uint32_t y = MT[index];
 
   // Tempering
   y ^= y >> 11;

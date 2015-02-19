@@ -329,8 +329,8 @@ void Builder::addArc( const DL_ArcData& data )
     return;
   }
 
-  register int i = 0;
-  register long shpIndex = 0;
+  int i = 0;
+  long shpIndex = 0;
 
   // Approximate the arc
 
@@ -411,7 +411,7 @@ void Builder::addCircle( const DL_CircleData& data )
   DL_PointData myPoint;
 
   // Approximate the circle with 360 line segments connecting points along that circle
-  register long shpIndex = 0;
+  long shpIndex = 0;
   for ( double i = 0.0; i <= 2*M_PI; i += M_PI / 180.0, shpIndex++ )
   {
     myPoint.x = data.radius * cos( i ) + data.cx + currentBlockX;

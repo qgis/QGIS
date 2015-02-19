@@ -65,7 +65,7 @@ namespace pal
     while ( this->alpha < 0 )
       this->alpha += 2 * M_PI;
 
-    register double beta = this->alpha + ( M_PI / 2 );
+    double beta = this->alpha + ( M_PI / 2 );
 
     double dx1, dx2, dy1, dy2;
 
