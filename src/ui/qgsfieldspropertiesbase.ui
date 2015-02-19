@@ -490,6 +490,22 @@ MyForms.py must live on PYTHONPATH, .qgis/python, or inside the project folder.<
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mEditorLayoutComboBox</tabstop>
+  <tabstop>leEditFormInit</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
+  <tabstop>mDeleteAttributeButton</tabstop>
+  <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mCalculateFieldButton</tabstop>
+  <tabstop>leEditForm</tabstop>
+  <tabstop>pbnSelectEditForm</tabstop>
+  <tabstop>mAddTabOrGroupButton</tabstop>
+  <tabstop>mRemoveTabGroupItemButton</tabstop>
+  <tabstop>mAddItemButton</tabstop>
+  <tabstop>mMoveUpItem</tabstop>
+  <tabstop>mMoveDownItem</tabstop>
+  <tabstop>mFormSuppressCmbBx</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

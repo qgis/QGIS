@@ -69,7 +69,7 @@
      <property name="checked">
       <bool>false</bool>
      </property>
-     <property name="collapsed">
+     <property name="collapsed" stdset="0">
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
@@ -90,7 +90,7 @@
      <property name="checked">
       <bool>false</bool>
      </property>
-     <property name="collapsed">
+     <property name="collapsed" stdset="0">
       <bool>true</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
@@ -139,6 +139,10 @@
   <tabstop>mTargetFieldComboBox</tabstop>
   <tabstop>mCacheInMemoryCheckBox</tabstop>
   <tabstop>mCreateIndexCheckBox</tabstop>
+  <tabstop>mUseJoinFieldsSubset</tabstop>
+  <tabstop>mJoinFieldsSubsetView</tabstop>
+  <tabstop>mUseCustomPrefix</tabstop>
+  <tabstop>mCustomPrefix</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

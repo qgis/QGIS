@@ -246,7 +246,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>10</number>
          </property>
          <widget class="QWidget" name="mOptsPage_General">
           <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -266,8 +266,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>743</width>
-                <height>546</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -544,8 +544,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -618,8 +618,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>129</width>
-                <height>35</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -682,8 +682,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_20">
@@ -724,8 +724,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>684</width>
-                <height>165</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -818,7 +818,7 @@
                    </widget>
                   </item>
                   <item row="3" column="2">
-                   <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox" native="true">
+                   <widget class="QgsScaleComboBox" name="mSimplifyMaximumScaleComboBox">
                     <property name="sizePolicy">
                      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                       <horstretch>0</horstretch>
@@ -867,8 +867,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>530</width>
-                <height>189</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_26">
@@ -1028,8 +1028,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1076,8 +1076,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>98</width>
-                <height>113</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1174,8 +1174,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>730</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_24">
@@ -1215,9 +1215,9 @@
               <property name="geometry">
                <rect>
                 <x>0</x>
-                <y>0</y>
-                <width>411</width>
-                <height>630</height>
+                <y>-71</y>
+                <width>714</width>
+                <height>608</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_3">
@@ -1592,7 +1592,7 @@
   </customwidget>
   <customwidget>
    <class>QgsScaleComboBox</class>
-   <extends>QWidget</extends>
+   <extends>QComboBox</extends>
    <header>qgsscalecombobox.h</header>
   </customwidget>
   <customwidget>
@@ -1607,6 +1607,58 @@
    <header>qgsscalerangewidget.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mLayerOrigNameLineEdit</tabstop>
+  <tabstop>txtDisplayName</tabstop>
+  <tabstop>txtLayerSource</tabstop>
+  <tabstop>cboProviderEncoding</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>pbnIndex</tabstop>
+  <tabstop>pbnUpdateExtents</tabstop>
+  <tabstop>mScaleVisibilityGroupBox</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
+  <tabstop>txtSubsetSQL</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>scrollArea_9</tabstop>
+  <tabstop>labelCheckBox</tabstop>
+  <tabstop>scrollArea_5</tabstop>
+  <tabstop>scrollArea_19</tabstop>
+  <tabstop>mSimplifyDrawingGroupBox</tabstop>
+  <tabstop>mSimplifyDrawingSpinBox</tabstop>
+  <tabstop>mSimplifyDrawingAtProvider</tabstop>
+  <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
+  <tabstop>scrollArea_10</tabstop>
+  <tabstop>fieldComboRadio</tabstop>
+  <tabstop>displayFieldComboBox</tabstop>
+  <tabstop>htmlRadio</tabstop>
+  <tabstop>htmlMapTip</tabstop>
+  <tabstop>insertExpressionButton</tabstop>
+  <tabstop>fieldComboBox</tabstop>
+  <tabstop>insertFieldButton</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>mJoinTreeWidget</tabstop>
+  <tabstop>scrollArea_7</tabstop>
+  <tabstop>mButtonAddJoin</tabstop>
+  <tabstop>mButtonRemoveJoin</tabstop>
+  <tabstop>scrollArea_8</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>mLayerTitleLineEdit</tabstop>
+  <tabstop>mLayerAbstractTextEdit</tabstop>
+  <tabstop>mLayerKeywordListLineEdit</tabstop>
+  <tabstop>mLayerDataUrlLineEdit</tabstop>
+  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerAttributionLineEdit</tabstop>
+  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
+  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerLegendUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>teMetadata</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

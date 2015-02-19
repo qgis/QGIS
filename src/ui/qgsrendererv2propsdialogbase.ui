@@ -151,6 +151,10 @@
  </customwidgets>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
+  <tabstop>mLayerTransparencySlider</tabstop>
+  <tabstop>mLayerTransparencySpnBx</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mFeatureBlendComboBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

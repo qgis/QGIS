@@ -115,6 +115,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leName</tabstop>
+  <tabstop>leSource</tabstop>
+  <tabstop>leProvider</tabstop>
+  <tabstop>txtbMetadata</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

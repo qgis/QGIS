@@ -153,16 +153,28 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScaleWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsscalewidget.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsLayerTreeView</class>
    <extends>QTreeView</extends>
    <header>qgslayertreeview.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsScaleWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsscalewidget.h</header>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mFileLineEdit</tabstop>
+  <tabstop>mFileSelectionButton</tabstop>
+  <tabstop>mSymbologyModeComboBox</tabstop>
+  <tabstop>mEncoding</tabstop>
+  <tabstop>mVisibilityPresets</tabstop>
+  <tabstop>mTreeView</tabstop>
+  <tabstop>mSelectAllButton</tabstop>
+  <tabstop>mUnSelectAllButton</tabstop>
+  <tabstop>mMapExtentCheckBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

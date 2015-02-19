@@ -169,6 +169,7 @@ p, li { white-space: pre-wrap; }
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -176,6 +177,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>txtCopyrightText</tabstop>
   <tabstop>cboPlacement</tabstop>
   <tabstop>cboOrientation</tabstop>
+  <tabstop>pbnColorChooser</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

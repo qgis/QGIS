@@ -202,8 +202,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>628</width>
-                <height>551</height>
+                <width>615</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -353,11 +353,11 @@
                   <string notr="true">rastergeneral</string>
                  </property>
                  <layout class="QGridLayout" name="_5">
-                  <property name="verticalSpacing">
-                   <number>6</number>
-                  </property>
                   <property name="margin">
                    <number>11</number>
+                  </property>
+                  <property name="verticalSpacing">
+                   <number>6</number>
                   </property>
                   <item row="0" column="0" colspan="2">
                    <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
@@ -409,8 +409,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>540</width>
-                <height>516</height>
+                <width>615</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -1031,8 +1031,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>500</width>
-                <height>401</height>
+                <width>615</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1438,8 +1438,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>658</width>
-                <height>185</height>
+                <width>615</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1502,8 +1502,8 @@
                        <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Cantarell';&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                       </property>
                      </widget>
                     </item>
@@ -1599,8 +1599,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>615</width>
+                <height>542</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -1649,8 +1649,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>411</width>
-                <height>630</height>
+                <width>599</width>
+                <height>608</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_12">
@@ -2020,6 +2020,12 @@ p, li { white-space: pre-wrap; }
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsBlendModeComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsblendmodecombobox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
@@ -2032,35 +2038,30 @@ p, li { white-space: pre-wrap; }
    <extends>QWidget</extends>
    <header>qgsscalerangewidget.h</header>
   </customwidget>
-  <customwidget>
-   <class>QgsBlendModeComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsblendmodecombobox.h</header>
-  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>buttonBox</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>leDisplayName</tabstop>
   <tabstop>mLayerOrigNameLineEd</tabstop>
+  <tabstop>leDisplayName</tabstop>
   <tabstop>leLayerSource</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mRenderTypeComboBox</tabstop>
-  <tabstop>sliderSaturation</tabstop>
+  <tabstop>mBlendModeComboBox</tabstop>
+  <tabstop>mResetColorRenderingBtn</tabstop>
   <tabstop>mSliderBrightness</tabstop>
   <tabstop>mBrightnessSpinBox</tabstop>
   <tabstop>mSliderContrast</tabstop>
   <tabstop>mContrastSpinBox</tabstop>
+  <tabstop>sliderSaturation</tabstop>
   <tabstop>spinBoxSaturation</tabstop>
+  <tabstop>comboGrayscale</tabstop>
   <tabstop>mColorizeCheck</tabstop>
   <tabstop>btnColorizeColor</tabstop>
   <tabstop>sliderColorizeStrength</tabstop>
   <tabstop>spinColorizeStrength</tabstop>
-  <tabstop>mBlendModeComboBox</tabstop>
-  <tabstop>mResetColorRenderingBtn</tabstop>
-  <tabstop>comboGrayscale</tabstop>
   <tabstop>mZoomedInResamplingComboBox</tabstop>
   <tabstop>mZoomedOutResamplingComboBox</tabstop>
   <tabstop>mMaximumOversamplingSpinBox</tabstop>
@@ -2068,8 +2069,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>sliderTransparency</tabstop>
   <tabstop>mSrcNoDataValueCheckBox</tabstop>
   <tabstop>leNoDataValue</tabstop>
-  <tabstop>tableTransparency</tabstop>
   <tabstop>cboxTransparencyBand</tabstop>
+  <tabstop>tableTransparency</tabstop>
   <tabstop>pbnAddValuesManually</tabstop>
   <tabstop>pbnAddValuesFromDisplay</tabstop>
   <tabstop>pbnRemoveSelectedRow</tabstop>
@@ -2077,11 +2078,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>pbnImportTransparentPixelValues</tabstop>
   <tabstop>pbnExportTransparentPixelValues</tabstop>
   <tabstop>scrollArea_5</tabstop>
-  <tabstop>lbxPyramidResolutions</tabstop>
   <tabstop>tePyramidDescription</tabstop>
-  <tabstop>buttonBuildPyramids</tabstop>
-  <tabstop>cboResamplingMethod</tabstop>
+  <tabstop>lbxPyramidResolutions</tabstop>
   <tabstop>cbxPyramidsFormat</tabstop>
+  <tabstop>cboResamplingMethod</tabstop>
+  <tabstop>buttonBuildPyramids</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>

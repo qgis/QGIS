@@ -311,7 +311,7 @@ QMenu::item:selected {  background-color: gray; } */
          <item>
           <layout class="QHBoxLayout" name="symbolBtnsLayout">
            <property name="spacing">
-            <number>-1</number>
+            <number>6</number>
            </property>
            <property name="leftMargin">
             <number>0</number>
@@ -421,9 +421,18 @@ QMenu::item:selected {  background-color: gray; } */
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>groupTree</tabstop>
+  <tabstop>btnAddGroup</tabstop>
+  <tabstop>btnRemoveGroup</tabstop>
+  <tabstop>btnManageGroups</tabstop>
+  <tabstop>searchBox</tabstop>
+  <tabstop>tabItemType</tabstop>
   <tabstop>listItems</tabstop>
+  <tabstop>tagsLineEdit</tabstop>
   <tabstop>btnAddItem</tabstop>
   <tabstop>btnEditItem</tabstop>
+  <tabstop>btnRemoveItem</tabstop>
+  <tabstop>btnShare</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>

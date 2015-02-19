@@ -215,8 +215,23 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mCenterSymbolPushButton</tabstop>
+  <tabstop>mRendererComboBox</tabstop>
+  <tabstop>mRendererSettingsButton</tabstop>
+  <tabstop>mCircleWidthSpinBox</tabstop>
+  <tabstop>mCircleColorButton</tabstop>
+  <tabstop>mCircleModificationSpinBox</tabstop>
+  <tabstop>mDistanceSpinBox</tabstop>
+  <tabstop>mLabelFieldComboBox</tabstop>
+  <tabstop>mLabelFontButton</tabstop>
+  <tabstop>mLabelColorButton</tabstop>
+  <tabstop>mScaleDependentLabelsCheckBox</tabstop>
+  <tabstop>mMaxScaleDenominatorEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

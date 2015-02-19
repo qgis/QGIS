@@ -52,6 +52,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>selectionListWidget</tabstop>
+  <tabstop>isFieldEditableCheckBox</tabstop>
+  <tabstop>labelOnTopCheckBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

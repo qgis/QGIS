@@ -225,7 +225,11 @@
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
+  <tabstop>lineFilter</tabstop>
   <tabstop>treeView</tabstop>
+  <tabstop>cbxUseTitleLayerName</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

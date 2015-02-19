@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>320</width>
-    <height>126</height>
+    <height>134</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Adjust scaling range</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../../images/images.qrc">
+   <iconset>
     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
@@ -67,9 +67,14 @@
    <header>qgsscalecombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../images/images.qrc"/>
- </resources>
+ <tabstops>
+  <tabstop>mCheckBoxMaxScale</tabstop>
+  <tabstop>mComboBoxMaxScale</tabstop>
+  <tabstop>mCheckBoxMinScale</tabstop>
+  <tabstop>mComboBoxMinScale</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
+ <resources/>
  <connections>
   <connection>
    <sender>mButtonBox</sender>

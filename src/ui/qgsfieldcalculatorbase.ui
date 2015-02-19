@@ -257,10 +257,15 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mOnlyUpdateSelectedCheckBox</tabstop>
+  <tabstop>mNewFieldGroupBox</tabstop>
+  <tabstop>mCreateVirtualFieldCheckbox</tabstop>
   <tabstop>mOutputFieldNameLineEdit</tabstop>
   <tabstop>mOutputFieldTypeComboBox</tabstop>
   <tabstop>mOutputFieldWidthSpinBox</tabstop>
   <tabstop>mOutputFieldPrecisionSpinBox</tabstop>
+  <tabstop>mUpdateExistingGroupBox</tabstop>
+  <tabstop>mExistingFieldComboBox</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
