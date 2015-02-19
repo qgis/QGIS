@@ -248,19 +248,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
               "Image File not set.</td></tr></table>\n";
     return false;
   }
-  if ( ! theRenderedImageFile.isEmpty() )
-  {
-    mRenderedImageFile = theRenderedImageFile;
-  }
-  if ( mRenderedImageFile.isEmpty() )
-  {
-    qDebug( "QgsRenderChecker::runTest failed - Rendered Image File not set." );
-    mReport = "<table>"
-              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
-              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
-              "Image File not set.</td></tr></table>\n";
-    return false;
-  }
+  mRenderedImageFile = theRenderedImageFile;
   //
   // Load /create the images
   //
