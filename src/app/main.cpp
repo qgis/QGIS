@@ -606,7 +606,7 @@ int main( int argc, char *argv[] )
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
-#ifdef Q_OS_UNIX
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
   bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
 #else
   bool myUseGuiFlag = true;
