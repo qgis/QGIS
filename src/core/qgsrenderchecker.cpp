@@ -214,7 +214,15 @@ bool QgsRenderChecker::runTest( QString theTestName,
 
   myImage.setDotsPerMeterX( myExpectedImage.dotsPerMeterX() );
   myImage.setDotsPerMeterY( myExpectedImage.dotsPerMeterY() );
-  myImage.save( mRenderedImageFile, "PNG", 100 );
+  if ( ! myImage.save( mRenderedImageFile, "PNG", 100 ) )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not save rendered image to " << mRenderedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+              "Image File could not be saved.</td></tr></table>\n";
+    return false;
+  }
 
   //create a world file to go with the image...
 
@@ -266,6 +274,15 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   QImage myExpectedImage( mExpectedImageFile );
   QImage myResultImage( mRenderedImageFile );
+  if ( myResultImage.isNull() )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not load rendered image from " << mRenderedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+              "Image File could not be loaded.</td></tr></table>\n";
+    return false;
+  }
   QImage myDifferenceImage( myExpectedImage.width(),
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
