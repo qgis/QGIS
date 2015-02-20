@@ -3421,9 +3421,24 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   //convert geom to geos
   QgsGeometry* geom = feat.geometry();
 
-  if ( layerIt.value().ct && staticWillUseLayer( layerID ) ) // reproject the geometry if feature not already transformed for labeling
+  // reproject the geometry if necessary (but don't modify the features
+  // geometry so that geometry based expression keep working)
+  QScopedPointer<QgsGeometry> clonedGeometry;
+  if ( layerIt.value().ct )
   {
-    geom->transform( *( layerIt.value().ct ) );
+    geom = new QgsGeometry( *geom );
+    clonedGeometry.reset( geom );
+
+    try
+    {
+      geom->transform( *( layerIt.value().ct ) );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception" ).arg( feat.id() ), 4 );
+      return;
+    }
   }
 
   const GEOSGeometry* geos_geom = geom->asGeos();
