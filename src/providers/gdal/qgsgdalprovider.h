@@ -272,7 +272,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                may be longer than source data type to keep nulls
                indexed from 0
      */
-    QList<int>mGdalDataType;
+    QList<GDALDataType> mGdalDataType;
 
     QgsRectangle mExtent;
     int mWidth;

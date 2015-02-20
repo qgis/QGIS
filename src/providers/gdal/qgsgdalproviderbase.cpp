@@ -146,107 +146,47 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProviderBase::colorTable( GDALDa
   return ct;
 }
 
-QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( int theGdalDataType ) const
+QGis::DataType QgsGdalProviderBase::dataTypeFromGdal( const GDALDataType theGdalDataType ) const
 {
   switch ( theGdalDataType )
   {
-    case GDT_Unknown:
-      return QGis::UnknownDataType;
-      break;
-    case GDT_Byte:
-      return QGis::Byte;
-      break;
-    case GDT_UInt16:
-      return QGis::UInt16;
-      break;
-    case GDT_Int16:
-      return QGis::Int16;
-      break;
-    case GDT_UInt32:
-      return QGis::UInt32;
-      break;
-    case GDT_Int32:
-      return QGis::Int32;
-      break;
-    case GDT_Float32:
-      return QGis::Float32;
-      break;
-    case GDT_Float64:
-      return QGis::Float64;
-      break;
-    case GDT_CInt16:
-      return QGis::CInt16;
-      break;
-    case GDT_CInt32:
-      return QGis::CInt32;
-      break;
-    case GDT_CFloat32:
-      return QGis::CFloat32;
-      break;
-    case GDT_CFloat64:
-      return QGis::CFloat64;
-      break;
+    case GDT_Byte: return QGis::Byte;
+    case GDT_UInt16: return QGis::UInt16;
+    case GDT_Int16: return QGis::Int16;
+    case GDT_UInt32: return QGis::UInt32;
+    case GDT_Int32: return QGis::Int32;
+    case GDT_Float32: return QGis::Float32;
+    case GDT_Float64: return QGis::Float64;
+    case GDT_CInt16: return QGis::CInt16;
+    case GDT_CInt32: return QGis::CInt32;
+    case GDT_CFloat32: return QGis::CFloat32;
+    case GDT_CFloat64: return QGis::CFloat64;
+    case GDT_Unknown: return QGis::UnknownDataType;
   }
   return QGis::UnknownDataType;
 }
 
-int QgsGdalProviderBase::colorInterpretationFromGdal( int gdalColorInterpretation ) const
+int QgsGdalProviderBase::colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const
 {
   switch ( gdalColorInterpretation )
   {
-    case GCI_Undefined:
-      return QgsRaster::UndefinedColorInterpretation;
-      break;
-    case GCI_GrayIndex:
-      return QgsRaster::GrayIndex;
-      break;
-    case GCI_PaletteIndex:
-      return QgsRaster::PaletteIndex;
-      break;
-    case GCI_RedBand:
-      return QgsRaster::RedBand;
-      break;
-    case GCI_GreenBand:
-      return QgsRaster::GreenBand;
-      break;
-    case GCI_BlueBand:
-      return QgsRaster::BlueBand;
-      break;
-    case GCI_AlphaBand:
-      return QgsRaster::AlphaBand;
-      break;
-    case GCI_HueBand:
-      return QgsRaster::HueBand;
-      break;
-    case GCI_SaturationBand:
-      return QgsRaster::SaturationBand;
-      break;
-    case GCI_LightnessBand:
-      return QgsRaster::LightnessBand;
-      break;
-    case GCI_CyanBand:
-      return QgsRaster::CyanBand;
-      break;
-    case GCI_MagentaBand:
-      return QgsRaster::MagentaBand;
-      break;
-    case GCI_YellowBand:
-      return QgsRaster::YellowBand;
-      break;
-    case GCI_BlackBand:
-      return QgsRaster::BlackBand;
-      break;
-    case GCI_YCbCr_YBand:
-      return QgsRaster::YCbCr_YBand;
-      break;
-    case GCI_YCbCr_CbBand:
-      return QgsRaster::YCbCr_CbBand;
-      break;
-    case GCI_YCbCr_CrBand:
-      return QgsRaster::YCbCr_CrBand;
-      break;
-    default:
-      break;
+    case GCI_GrayIndex: return QgsRaster::GrayIndex;
+    case GCI_PaletteIndex: return QgsRaster::PaletteIndex;
+    case GCI_RedBand: return QgsRaster::RedBand;
+    case GCI_GreenBand: return QgsRaster::GreenBand;
+    case GCI_BlueBand: return QgsRaster::BlueBand;
+    case GCI_AlphaBand: return QgsRaster::AlphaBand;
+    case GCI_HueBand: return QgsRaster::HueBand;
+    case GCI_SaturationBand: return QgsRaster::SaturationBand;
+    case GCI_LightnessBand: return QgsRaster::LightnessBand;
+    case GCI_CyanBand: return QgsRaster::CyanBand;
+    case GCI_MagentaBand: return QgsRaster::MagentaBand;
+    case GCI_YellowBand: return QgsRaster::YellowBand;
+    case GCI_BlackBand: return QgsRaster::BlackBand;
+    case GCI_YCbCr_YBand: return QgsRaster::YCbCr_YBand;
+    case GCI_YCbCr_CbBand: return QgsRaster::YCbCr_CbBand;
+    case GCI_YCbCr_CrBand: return QgsRaster::YCbCr_CrBand;
+    case GCI_Undefined: return QgsRaster::UndefinedColorInterpretation;
   }
   return QgsRaster::UndefinedColorInterpretation;
 }
