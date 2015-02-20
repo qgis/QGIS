@@ -133,11 +133,12 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         FOREACH (QL ${QGFWLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QFWDIR}/${QL}.framework/${QL}")
         ENDFOREACH (QL)
-        # libqgispython is not a framework
+        # libqgispython and libqgis_server are not frameworks
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATLOADER}/${QGIS_LIB_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         ENDIF ()
         INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/libqgispython.dylib")
+        INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/libqgis_server.dylib")
         # crssync
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
@@ -200,6 +201,9 @@ ENDFOREACH (QARCH)
 FILE (GLOB QGFWLIST RELATIVE "${QFWDIR}" "${QFWDIR}/qgis*.framework")
 # for some reason, REPLACE is stripping list seps
 STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
+# don't collect any library symlinks, limit to versioned libs
+SET (Q_LIBVER ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
+FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.${Q_LIBVER}*.dylib")
 FILE (GLOB QGPLUGLIST "${QPLUGDIR}/*.so")
 FILE (GLOB QGPYLIST "${QGISPYDIR}/qgis/*.so")
 FILE (GLOB QGAPPLIST RELATIVE "${QBINDIR}" "${QBINDIR}/q*.app")
