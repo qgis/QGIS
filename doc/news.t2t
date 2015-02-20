@@ -41,32 +41,31 @@ Last Change : %%mtime(%A %B %d, %Y)
 = What's new in Version 2.8.0 'Wien'? =
 
 This is a minor release increment with the following feature:
-- Long term release (maintained for a year)
-- >1000 issues flagged by static analysis tools fixed
-- new code commits and pull requests are now automatically tests against our testing framework.
-- more responsive browser
-- support for contextual WMS legend graphics
-- custom prefixes for joins
-- creation of memory layers in core
-- field calc bar in attribute table
-- dxf export improvements
-- advanced digitizing tools
-- improved snapping
-- better simplify tool
-- Qt5 support
-- Bookmark import/export
-- composer gui improvements
-- grid improvements
-- raster image fill type
-- live heatmap renderer
-- multiple styles per layer
-- rotation of map canvas
-- improved date defined symbology UI
-- new algorithms in processing
-- expressions extentable with custom functions
-- comments in expressions
-- QGIS server improvements: better caching, layer style support, value
-  relations, DescribeLayer, python plugins
+- QGIS 2.8 is the basis for a long term release (which will be maintained for a year).
+- >1000 issues which were flagged by static analysis tools have been fixed.
+- New code commits and pull requests are now automatically tested against our testing framework.
+- More responsive QGIS Browser thanks to multithreading support.
+- Support for contextual WMS legend graphics.
+- Custom prefixes for joins.
+- Creation of memory layers is now a core feature.
+- New field calculator bar in attribute table.
+- DXF export improvements.
+- Advanced digitizing tools.
+- Improved snapping options and behaviour.
+- Better simplify tool - including support for on the fly reprojection being enabled.
+- Qt5 support (optional - default packages are still currently built against Qt4).
+- Spatial bookmark import/export.
+- Composer user interface improvements.
+- Grid overlay improvements for composer maps. 
+- Raster image fill type.
+- Live heatmap renderer.
+- You can now use multiple styles per layer.
+- Rotation of map canvas (disabled by default, activate in settings) is now supported.
+- Improved user interface for data defined symbology.
+- New algorithms in processing.
+- Expressions are now extendable with custom python functions.
+- Comments are now supported in expressions.
+- QGIS server improvements: better caching, layer style support, value relations, DescribeLayer, python plugins.
 -
 
 
