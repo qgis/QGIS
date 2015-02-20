@@ -140,10 +140,8 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
   def executeSql(self):
 
-    sql = ""
-    if self.editSql.hasSelectedText():
-        sql = self.editSql.selectedText()
-    else:
+    sql = self.editSql.selectedText()
+    if len(sql) == 0:
         sql = self.editSql.text()
 
     if sql == "":
