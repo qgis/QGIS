@@ -1,4 +1,16 @@
-qgis (2.7.0) UNRELEASED; urgency=medium
+qgis (2.9.0) UNRELEASED; urgency=medium
+
+  * New development version 2.9 after branch of 2.8
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 20 Feb 2015 13:06:05 +0100
+
+qgis (2.8.0) unstable; urgency=medium
+
+  * Release of 2.8
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 20 Feb 2015 13:06:05 +0100
+
+qgis (2.7.0) unstable; urgency=medium
 
   * New development version 2.7 after branch of 2.6
   * run tests in en_US.UTF-8 locale
@@ -7,7 +19,7 @@ qgis (2.7.0) UNRELEASED; urgency=medium
   * merge some downstream debian changes
   * drop support for ubuntu saucy and add vivid
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sun, 21 Dec 2014 21:13:48 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 20 Feb 2015 13:05:35 +0100
 
 qgis (2.6.0) unstable; urgency=medium
 
