@@ -273,8 +273,9 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-server/%PACKAGENAME
 	"apps/%PACKAGENAME%/bin/qgis_server.dll" ^
 	"apps/%PACKAGENAME%/bin/admin.sld" ^
 	"apps/%PACKAGENAME%/bin/wms_metadata.xml" ^
-	"apps/%PACKAGENAME%/python/_server.pyd" ^
-	"apps/%PACKAGENAME%/python/server" ^
+	"apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	"apps/%PACKAGENAME%/python/qgis/_server.lib" ^
+	"apps/%PACKAGENAME%/python/qgis/server/" ^
 	"httpd.d/httpd_%PACKAGENAME%.conf.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%-server.bat" ^
 	"etc/preremove/%PACKAGENAME%-server.bat"
@@ -303,8 +304,9 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
-	--exclude "apps/%PACKAGENAME%/python/_server.pyd" ^
-	--exclude "apps/%PACKAGENAME%/python/server" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/server/" ^
 	"bin/%PACKAGENAME%-browser-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
