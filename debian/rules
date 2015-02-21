@@ -152,7 +152,7 @@ cleantemplates:
 	$(MAKE) -f debian/rules templateclean
 	$(MAKE) -f debian/rules debian/control debian/compat
 
-binary build clean install:
+binary binary-arch build clean install:
 	dh $@ --with python2 --parallel --builddirectory=debian/build
 
 override_dh_clean: cleantemplates
