@@ -36,12 +36,6 @@
 #include "qgssvgselectorwidget.h"
 
 #include <QCheckBox>
-#include <QColorDialog>
-#include <QFileDialog>
-#include <QFontDialog>
-#include <QTextEdit>
-#include <QApplication>
-#include <QMessageBox>
 #include <QSettings>
 
 

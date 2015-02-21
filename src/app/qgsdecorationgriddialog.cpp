@@ -25,9 +25,8 @@
 #include "qgssymbolv2.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgisapp.h"
+#include "qgisgui.h"
 
-#include <QFontDialog>
-#include <QColorDialog>
 #include <QSettings>
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid& deco, QWidget* parent )
@@ -275,12 +274,7 @@ void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
 void QgsDecorationGridDialog::on_mAnnotationFontButton_clicked()
 {
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mDeco.gridAnnotationFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mDeco.gridAnnotationFont() );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mDeco.gridAnnotationFont() );
   if ( ok )
   {
     mDeco.setGridAnnotationFont( newFont );

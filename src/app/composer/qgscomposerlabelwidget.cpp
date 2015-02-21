@@ -91,12 +91,7 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   if ( mComposerLabel )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), this, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), this );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mComposerLabel->font() );
     if ( ok )
     {
       mComposerLabel->beginCommand( tr( "Label font changed" ) );

@@ -15,11 +15,11 @@
 #include "qgisgui.h"
 
 #include <QSettings>
-#include <QObject> //for tr
 #include <QImageWriter>
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
-#include <memory> //for auto_ptr
+
+#include <QFontDialog>
 
 
 namespace QgisGui
@@ -186,6 +186,19 @@ namespace QgisGui
     QString longName = format.toUpper() + " format";
     QString glob = "*." + format;
     return createFileFilter_( longName, glob );
+  }
+
+  QFont getFont( bool &ok, const QFont &initial, const QString &title )
+  {
+    // parent is intentionally not set to 'this' as
+    // that would make it follow the style sheet font
+    // see also #12233 and #4937
+#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
+    return QFontDialog::getFont( &ok, initial, 0, title, QFontDialog::DontUseNativeDialog );
+#else
+    return QFontDialog::getFont( &ok, initial, 0, title );
+#endif
   }
 
 } // end of QgisGui namespace

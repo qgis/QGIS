@@ -23,9 +23,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
-#include <QFontDialog>
-#include <QColorDialog>
-#include <QInputDialog>
+#include "qgisgui.h"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -41,6 +39,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 
 
 
@@ -369,12 +368,7 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), this );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::Title ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Title font changed" ) );
@@ -391,12 +385,7 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), this );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::Group ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend group font changed" ) );
@@ -413,12 +402,7 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), this );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend layer font changed" ) );
@@ -435,12 +419,7 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), this, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), this );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend item font changed" ) );
