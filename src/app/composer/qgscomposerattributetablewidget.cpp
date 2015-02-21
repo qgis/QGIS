@@ -28,8 +28,7 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
 
 QgsComposerAttributeTableWidget::QgsComposerAttributeTableWidget( QgsComposerAttributeTableV2* table, QgsComposerFrame* frame )
     : QgsComposerItemBaseWidget( 0, table )
@@ -283,29 +282,20 @@ void QgsComposerAttributeTableWidget::on_mMarginSpinBox_valueChanged( double d )
 void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
 {
   if ( !mComposerTable )
-  {
     return;
-  }
 
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), this, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->headerFont(), this, tr( "Select Font" ) );
-#endif
-  if ( ok )
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
+  if ( !ok )
   {
-    QgsComposition* composition = mComposerTable->composition();
+    QgsComposition *composition = mComposerTable->composition();
     if ( composition )
-    {
       composition->beginMultiFrameCommand( mComposerTable, tr( "Table header font" ) );
-    }
+
     mComposerTable->setHeaderFont( newFont );
+
     if ( composition )
-    {
       composition->endMultiFrameCommand();
-    }
   }
 }
 
@@ -336,24 +326,17 @@ void QgsComposerAttributeTableWidget::on_mContentFontPushButton_clicked()
   }
 
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), this, tr( "Select Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mComposerTable->contentFont(), this, tr( "Select Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mComposerTable->contentFont(), tr( "Select Font" ) );
   if ( ok )
   {
     QgsComposition* composition = mComposerTable->composition();
     if ( composition )
-    {
       composition->beginMultiFrameCommand( mComposerTable, tr( "Table content font" ) );
-    }
+
     mComposerTable->setContentFont( newFont );
+
     if ( composition )
-    {
       composition->endMultiFrameCommand();
-    }
   }
 }
 

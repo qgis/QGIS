@@ -30,9 +30,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
 #include "qgscolordialog.h"
+#include "qgisgui.h"
 
-#include <QColorDialog>
-#include <QFontDialog>
 #include <QList>
 #include <QMessageBox>
 #include <QSettings>
@@ -494,7 +493,7 @@ void QgsDiagramProperties::on_mDisplayDiagramsGroupBox_toggled( bool checked )
 void QgsDiagramProperties::on_mDiagramFontButton_clicked()
 {
   bool ok;
-  mDiagramFont = QFontDialog::getFont( &ok, mDiagramFont );
+  mDiagramFont = QgisGui::getFont( ok, mDiagramFont );
 }
 
 
