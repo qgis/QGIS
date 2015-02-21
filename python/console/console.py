@@ -21,7 +21,6 @@ Some portions of code were taken from https://code.google.com/p/pydee/
 
 from PyQt4.QtCore import Qt, QTimer, QSettings, QCoreApplication, QSize, QByteArray, QFileInfo, SIGNAL
 from PyQt4.QtGui import QDockWidget, QToolBar, QToolButton, QWidget, QSplitter, QTreeWidget, QAction, QFileDialog, QCheckBox, QSizePolicy, QMenu, QGridLayout, QApplication
-from PyQt4 import pyqtconfig
 from qgis.utils import iface
 from console_sci import ShellScintilla
 from console_output import ShellOutputScintilla
@@ -31,6 +30,12 @@ from qgis.core import QgsApplication, QgsContextHelp
 from qgis.gui import QgsFilterLineEdit
 
 import sys
+
+try:
+  from PyQt4.QtCore import QT_VERSION # works if PyQt4 was built with configure-ng.py
+except ImportError:
+  from PyQt4 import pyqtconfig # works if built with configure.py
+  QT_VERSION = pyqtconfig.Configuration().qt_version
 
 _console = None
 
@@ -464,7 +469,7 @@ class PythonConsoleWidget(QWidget):
         self.lineEditFind = QgsFilterLineEdit()
         placeHolderTxt = QCoreApplication.translate("PythonConsole", "Enter text to find...")
 
-        if pyqtconfig.Configuration().qt_version >= 0x40700:
+        if QT_VERSION >= 0x40700:
           self.lineEditFind.setPlaceholderText(placeHolderTxt)
         else:
           self.lineEditFind.setToolTip(placeHolderTxt)
