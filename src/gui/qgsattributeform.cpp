@@ -571,7 +571,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       if ( !fieldDef )
         break;
 
-      int fldIdx = fieldDef->idx();
+      int fldIdx = vl->fieldNameIndex( fieldDef->name() );
       if ( fldIdx < vl->pendingFields().count() && fldIdx >= 0 )
       {
         const QString widgetType = mLayer->editorWidgetV2( fldIdx );

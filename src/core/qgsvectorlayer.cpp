@@ -1758,7 +1758,7 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
     for ( int i = 0; i < childNodeList.size(); i++ )
     {
       QDomElement childElem = childNodeList.at( i ).toElement();
-      QgsAttributeEditorElement* myElem = attributeEditorElementFromDomElement( childElem, container );
+      QgsAttributeEditorElement *myElem = attributeEditorElementFromDomElement( childElem, container );
       if ( myElem )
         container->addChildElement( myElem );
     }
@@ -1768,7 +1768,7 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
   else if ( elem.tagName() == "attributeEditorField" )
   {
     QString name = elem.attribute( "name" );
-    int idx = *( dataProvider()->fieldNameMap() ).find( name );
+    int idx = fieldNameIndex( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
   else if ( elem.tagName() == "attributeEditorRelation" )
