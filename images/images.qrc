@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.jpg">developers/essen-2012.jpg</file>
+        <file alias="last-hackfest.jpg">developers/essen-2014.jpg</file>
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
