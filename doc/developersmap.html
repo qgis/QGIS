@@ -27,6 +27,7 @@
     var map = L.map('developers-map').fitBounds(geojson.getBounds());
     developersMapTiles.addTo(map);
     geojson.addTo(map);
+    map.setZoom(1);
   });
   </script>
 </body>
