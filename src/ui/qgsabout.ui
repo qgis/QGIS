@@ -341,7 +341,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="text">
-              <string>Essen (Germany), Developer meeting 2012</string>
+              <string>Essen (Germany), Developer meeting 2014</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
