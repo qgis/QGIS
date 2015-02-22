@@ -2954,7 +2954,15 @@ QDomElement QgsWMSServer::createFeatureGML(
     QgsRectangle box = feat->geometry()->boundingBox();
     if ( transform )
     {
-      box = transform->transformBoundingBox( box );
+      try
+      {
+        QgsRectangle transformedBox = transform->transformBoundingBox( box );
+        box = transformedBox;
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+      }
     }
 
     QDomElement bbElem = doc.createElement( "gml:boundedBy" );

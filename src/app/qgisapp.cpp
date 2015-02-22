@@ -841,6 +841,22 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
 QgisApp::QgisApp()
     : QMainWindow( 0, 0 )
+    , mStyleSheetBuilder( 0 )
+    , mActionPluginSeparator1( 0 )
+    , mActionPluginSeparator2( 0 )
+    , mActionRasterSeparator( 0 )
+    , mMapToolGroup( 0 )
+    , mPreviewGroup( 0 )
+#ifdef Q_OS_MAC
+    , mWindowMenu( 0 )
+#endif
+    , mPanelMenu( 0 )
+    , mToolbarMenu( 0 )
+    , mLayerTreeDock( 0 )
+    , mLayerOrderDock( 0 )
+    , mOverviewDock( 0 )
+    , mpGpsDock( 0 )
+    , mLogDock( 0 )
     , mNonEditMapTool( 0 )
     , mScaleLabel( 0 )
     , mScaleEdit( 0 )

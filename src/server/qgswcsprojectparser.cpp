@@ -243,7 +243,17 @@ void QgsWCSProjectParser::describeCoverage( const QString& aCoveName, QDomElemen
         const QgsCoordinateReferenceSystem& layerCrs = rLayer->crs();
         QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
         //transform
-        QgsRectangle BBox = t.transformBoundingBox( rLayer->extent() );
+        QgsRectangle BBox = rLayer->extent();
+        try
+        {
+          QgsRectangle transformedBox = t.transformBoundingBox( BBox );
+          BBox = transformedBox;
+        }
+        catch ( QgsCsException &e )
+        {
+          QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+        }
+
         QDomElement lonLatElem = doc.createElement( "lonLatEnvelope" );
         lonLatElem.setAttribute( "srsName", "urn:ogc:def:crs:OGC:1.3:CRS84" );
         QDomElement lowerPosElem = doc.createElement( "gml:pos" );
