@@ -296,15 +296,12 @@ bool QgsRasterCalcDialog::expressionValid() const
 
 bool QgsRasterCalcDialog::filePathValid() const
 {
-  QString outputPath = QFileInfo( mOutputLayerLineEdit->text() ).absolutePath();
-  if ( QFileInfo( outputPath ).isWritable() )
-  {
-    return true;
-  }
-  else
-  {
+  QString outputPath = mOutputLayerLineEdit->text();
+  if ( outputPath.isEmpty() )
     return false;
-  }
+
+  outputPath = QFileInfo( outputPath ).absolutePath();
+  return QFileInfo( outputPath ).isWritable();
 }
 
 void QgsRasterCalcDialog::on_mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem* item )
