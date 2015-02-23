@@ -9920,6 +9920,10 @@ See the log for more information.</translation>
         <source>Overwrite %s?</source>
         <translation>Overwrite %s?</translation>
     </message>
+    <message>
+        <source>Name cannot contain &apos;/&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>NotSupportedDbType</name>

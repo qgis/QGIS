@@ -402,7 +402,7 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     </message>
     <message>
         <source>Select directory</source>
-        <translation type="unfinished">Verzeichnis wählen</translation>
+        <translation>Verzeichnis wählen</translation>
     </message>
 </context>
 <context>
@@ -609,11 +609,11 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     </message>
     <message>
         <source>GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation>GEOS-Verarbeitungsfehler: Ein oder mehrere Eingabeobjekte haben ungültige Geometrien</translation>
+        <translation>GEOS-Verarbeitungsfehler: Ein oder mehrere Eingabeobjekte haben ungültige Geometrien.</translation>
     </message>
     <message>
         <source>Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation>Objektgeometriefehler: Ein oder mehrere Objekte wegen ungültiger Geometrie ignoriert</translation>
+        <translation>Objektgeometriefehler: Ein oder mehrere Objekte wegen ungültiger Geometrie ignoriert.</translation>
     </message>
 </context>
 <context>
@@ -7641,7 +7641,7 @@ im Installationsverzeichnis nicht erlaubt ist</translation>
     <name>Intersection</name>
     <message>
         <source>Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation>Objektgeometriefehler: Ein oder mehrere Objekte wegen ungültiger Geometrie ignoriert</translation>
+        <translation>Objektgeometriefehler: Ein oder mehrere Objekte wegen ungültiger Geometrie ignoriert.</translation>
     </message>
     <message>
         <source>Input layer</source>
@@ -8970,7 +8970,7 @@ Funktioniert auf allen ändernbaren Layern</translation>
     </message>
     <message>
         <source>&amp;Snapping Options...</source>
-        <translation>Fangoptionen (&amp;S)</translation>
+        <translation>Fangoptionen (&amp;S)...</translation>
     </message>
     <message>
         <source>Zoom &amp;Full</source>
@@ -8994,7 +8994,7 @@ Funktioniert auf allen ändernbaren Layern</translation>
     </message>
     <message>
         <source>&amp;Properties...</source>
-        <translation>Eigenschaften... (&amp;P)</translation>
+        <translation>Eigenschaften (&amp;P)...</translation>
     </message>
     <message>
         <source>&amp;Project Properties...</source>
@@ -9911,6 +9911,10 @@ Mehr Informationen.im Protokoll.</translation>
     <message>
         <source>Overwrite %s?</source>
         <translation>%s überschreiben?</translation>
+    </message>
+    <message>
+        <source>Name cannot contain &apos;/&apos;</source>
+        <translation>Name darf kein &apos;/&apos; enthalten</translation>
     </message>
 </context>
 <context>
@@ -25609,7 +25613,7 @@ Vorhandene Dateien werden hier aufgelistet und gewählte geladen.</translation>
     </message>
     <message>
         <source>Save the current script into the users function file folder.</source>
-        <translation>Aktuelle Skript im Verzeichnis für Benutzerfunktionen ablegen</translation>
+        <translation>Aktuelle Skript im Verzeichnis für Benutzerfunktionen ablegen.</translation>
     </message>
     <message>
         <source>Save file</source>
@@ -43225,7 +43229,7 @@ standard deviation ×</source>
     </message>
     <message>
         <source>A widget to define the scale.</source>
-        <translation>Ein Bedienelement zur Maßstabsfestlegung</translation>
+        <translation>Ein Bedienelement zur Maßstabsfestlegung.</translation>
     </message>
 </context>
 <context>
