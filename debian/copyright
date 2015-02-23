@@ -658,34 +658,12 @@ Files: python/plugins/fTools/*
 Copyright: 2009 Carson J.Q. Farmer
 License: MIT
 
-Files: python/plugins/plugin_installer
-Copyright: 2007 Matthew T. Perry
- 2008-2009 Borys Jurgiel
-License: MIT
-
 Files: src/app/gps/qwtpolar-0.1/*
- src/app/gps/qwtpolor-1.0/*
+ src/app/gps/qwtpolar-1.0/*
 Copyright:  2008 Uwe Rathmann
 Comment: This library is free software; you can redistribute it and/or
  modify it under the terms of the Qwt License, Version 1.0
 License: QWT-1.0
-
-License: Apache-2.0
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- .
- http://www.apache.org/licenses/LICENSE-2.0
- .
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- .
- See the License for the specific language governing permissions and
- limitations under the License.
- .
- On Debian systems, the complete text of the Apache License version 2
- an be found in the `/usr/share/common-licenses/Apache-2.0' file.
 
 License: Apache-Style-Software-License-Version-1.1
  Apache-Style Software License for ColorBrewer software and ColorBrewer
@@ -1816,19 +1794,21 @@ License: QWT-1.0
  the Qwt project (http://qwt.sf.net).
 
 License: Zlib
- This software is provided 'as-is', without any express or implied
- warranty.  In no event will the authors be held liable for any damages
- arising from the use of this software.
+ This software is provided 'as-is', without any express or implied warranty. In
+ no event will the authors be held liable for any damages arising from the use
+ of this software.
  .
  Permission is granted to anyone to use this software for any purpose,
- including commercial applications, and to alter it and redistribute it
- freely, subject to the following restrictions:
+ including commercial applications, and to alter it and redistribute it freely,
+ subject to the following restrictions:
  .
- 1. The origin of this software must not be misrepresented; you must not
-    claim that you wrote the original software. If you use this software
-    in a product, an acknowledgment in the product documentation would be
-    appreciated but is not required.
- 2. Altered source versions must be plainly marked as such, and must not be
-    misrepresented as being the original software.
- 3. This notice may not be removed or altered from any source distribution.
+     1. The origin of this software must not be misrepresented; you must not
+        claim that you wrote the original software. If you use this software in
+        a product, an acknowledgment in the product documentation would be
+        appreciated but is not required.
+ .
+     2. Altered source versions must be plainly marked as such, and must not be
+        misrepresented as being the original software.
+ .
+     3. This notice may not be removed or altered from any source distribution.
 
