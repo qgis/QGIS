@@ -262,7 +262,6 @@ Architecture: all
 Depends:
 #sid jessie saucy sid-oracle trusty# python2.7,
 #wheezy precise# python,
- ${python:Depends},
  ${misc:Depends}
 Breaks: qgis-common (<< 1.5)
 Replaces: qgis-common (<< 1.5)
