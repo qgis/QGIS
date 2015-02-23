@@ -71,6 +71,7 @@ class TestQgsGeometry : public QObject
     void differenceCheck1();
     void differenceCheck2();
     void bufferCheck();
+    void smoothCheck();
 
   private:
     /** A helper method to do a render check to see if the geometry op is as expected */
@@ -505,6 +506,165 @@ void TestQgsGeometry::bufferCheck()
   dumpPolygon( myPolygon );
   QVERIFY( renderCheck( "geometry_bufferCheck", "Checking buffer(10,10) of B", 10 ) );
 }
+
+void TestQgsGeometry::smoothCheck()
+{
+  //can't smooth a point
+  QString wkt = "POINT(40 50)";
+  QScopedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wkt ) );
+  QgsGeometry* result = geom->smooth( 1, 0.25 );
+  QString obtained = result->exportToWkt();
+  delete result;
+  QCOMPARE( obtained, wkt );
+
+  //linestring
+  wkt = "LINESTRING(0 0, 10 0, 10 10, 20 10)";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  result = geom->smooth( 1, 0.25 );
+  QgsPolyline line = result->asPolyline();
+  delete result;
+  QCOMPARE( line.count(), 6 );
+  QVERIFY( qgsDoubleNear( line.at( 0 ).x(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( line.at( 0 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( line.at( 1 ).x(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( line.at( 1 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( line.at( 2 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( line.at( 2 ).y(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( line.at( 3 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( line.at( 3 ).y(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( line.at( 4 ).x(), 12.5 ) );
+  QVERIFY( qgsDoubleNear( line.at( 4 ).y(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( line.at( 5 ).x(), 20.0 ) );
+  QVERIFY( qgsDoubleNear( line.at( 5 ).y(), 10.0 ) );
+
+  wkt = "MULTILINESTRING((0 0, 10 0, 10 10, 20 10),(30 30, 40 30, 40 40, 50 40))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  result = geom->smooth( 1, 0.25 );
+  QgsMultiPolyline multiLine = result->asMultiPolyline();
+  delete result;
+  QCOMPARE( multiLine.count(), 2 );
+  QCOMPARE( multiLine.at( 0 ).count(), 6 );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 0 ).x(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 0 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 1 ).x(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 1 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 2 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 2 ).y(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 3 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 3 ).y(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 4 ).x(), 12.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 4 ).y(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 5 ).x(), 20.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 0 ).at( 5 ).y(), 10.0 ) );
+  QCOMPARE( multiLine.at( 1 ).count(), 6 );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 0 ).x(), 30.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 0 ).y(), 30.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 1 ).x(), 37.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 1 ).y(), 30.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 2 ).x(), 40.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 2 ).y(), 32.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 3 ).x(), 40.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 3 ).y(), 37.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 4 ).x(), 42.5 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 4 ).y(), 40.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 5 ).x(), 50.0 ) );
+  QVERIFY( qgsDoubleNear( multiLine.at( 1 ).at( 5 ).y(), 40.0 ) );
+
+  //polygon
+  wkt = "POLYGON((0 0, 10 0, 10 10, 0 10, 0 0 ),(2 2, 4 2, 4 4, 2 4, 2 2))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  result = geom->smooth( 1, 0.25 );
+  QgsPolygon poly = result->asPolygon();
+  delete result;
+  QCOMPARE( poly.count(), 2 );
+  QCOMPARE( poly.at( 0 ).count(), 9 );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 0 ).x(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 0 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 1 ).x(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 1 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 2 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 2 ).y(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 3 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 3 ).y(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 4 ).x(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 4 ).y(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 5 ).x(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 5 ).y(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 6 ).x(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 6 ).y(), 7.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 7 ).x(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 7 ).y(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 8 ).x(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 8 ).y(), 0.0 ) );
+  QCOMPARE( poly.at( 1 ).count(), 9 );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 0 ).x(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 0 ).y(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 1 ).x(), 3.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 1 ).y(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 2 ).x(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 2 ).y(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 3 ).x(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 3 ).y(), 3.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 4 ).x(), 3.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 4 ).y(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 5 ).x(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 5 ).y(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 6 ).x(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 6 ).y(), 3.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 7 ).x(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 7 ).y(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 8 ).x(), 2.5 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 1 ).at( 8 ).y(), 2.0 ) );
+
+  //multipolygon
+  wkt = "MULTIPOLYGON(((0 0, 10 0, 10 10, 0 10, 0 0 )),((2 2, 4 2, 4 4, 2 4, 2 2)))";
+  geom.reset( QgsGeometry::fromWkt( wkt ) );
+  result = geom->smooth( 1, 0.1 );
+  QgsMultiPolygon multipoly = result->asMultiPolygon();
+  delete result;
+  QCOMPARE( multipoly.count(), 2 );
+  poly = multipoly.at( 0 );
+  QCOMPARE( poly.at( 0 ).count(), 9 );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 0 ).x(), 1.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 0 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 1 ).x(), 9.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 1 ).y(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 2 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 2 ).y(), 1.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 3 ).x(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 3 ).y(), 9.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 4 ).x(), 9.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 4 ).y(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 5 ).x(), 1.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 5 ).y(), 10.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 6 ).x(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 6 ).y(), 9.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 7 ).x(), 0.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 7 ).y(), 1.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 8 ).x(), 1.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 8 ).y(), 0.0 ) );
+  poly = multipoly.at( 1 );
+  QCOMPARE( poly.at( 0 ).count(), 9 );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 0 ).x(), 2.2 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 0 ).y(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 1 ).x(), 3.8 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 1 ).y(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 2 ).x(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 2 ).y(), 2.2 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 3 ).x(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 3 ).y(), 3.8 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 4 ).x(), 3.8 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 4 ).y(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 5 ).x(), 2.2 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 5 ).y(), 4.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 6 ).x(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 6 ).y(), 3.8 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 7 ).x(), 2.0 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 7 ).y(), 2.2 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 8 ).x(), 2.2 ) );
+  QVERIFY( qgsDoubleNear( poly.at( 0 ).at( 8 ).y(), 2.0 ) );
+}
+
 bool TestQgsGeometry::renderCheck( QString theTestName, QString theComment, int mismatchCount )
 {
   mReport += "<h2>" + theTestName + "</h2>\n";
