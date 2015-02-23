@@ -267,7 +267,7 @@ override_dh_compress:
 	dh_compress --exclude=pdf
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets$(QGIS_ABI) -- -c0 -v$(QGIS_VERSION)
+	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets -- -c0 -v$(QGIS_VERSION)
 
 override_dh_shlibdeps:
 	dh_shlibdeps -l/usr/lib/$(GRASS)/lib
