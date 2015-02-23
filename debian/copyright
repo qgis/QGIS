@@ -4,59 +4,227 @@ Upstream-Contact: qgis-developer@lists.osgeo.org
 Source: https://github.com/qgis/QGIS
 
 Files: *
-Comment: The upstream contributors are listed in the PROVENANCE file
- and here reported.
-Copyright: Gary E.Sherman <sherman@mrcc dot com>
- Steve Halasz	<stevehalasz@users.sourceforge.net>
- Marco Hugentobler	<mhugent@users.sourceforge.net>
- Tim Sutton	<tim@linfiniti.com>
- Denis Antipov	<rawbytes@users.sourceforge.net>
- Mark Coletti	<mcoletti@users.sourceforge.net>
- Lars Luthman	<larsl@users.sourceforge.net>
- Jens Oberender	<j.obi@troja.net>
- Christoph Spoerri	<spoerri@users.sourceforge.net>
- Carl Anderson	<>
- Gavin Macaulay	<g_j_m@users.sourceforge.net>
- Masaru Hoshi	<hoshi@users.sourceforge.net>
- Peter Brewer	<p.w.brewer@rdg dot ac dot uk>
- Radim Blazek	<blazek@itc.it>
- Tom Elwertowski	<telwertowski@users.sourceforge.net>
- Godofredo Contreras	<frdcn@hotmail.com>
- Martin Dobias	<wonder.sk@gmail.com>
- Brendan Morley	<morb@beagle.com.au>
- Magnus Homann	<magnus@homann.se>
- Jürgen E. Fischer	<jef@norbit.de>
- Tisham Dhar	<tisham@apogee.com.au>
- Leonardo Lami	<lami@faunalia.it>
- Marco Pasetti	<marco.pasetti@alice.it>
- Mateusz Loskot	<mateusz@loskot dot net>
- Peter Ersts	<ersts@amnh.org>
- Borys Jurgiel	<borysiasty@aster.pl>
- Paolo Cavallini	<cavallini@faunalia.it>
- Carson J. Q. Farmer	<carson dot farmer@gmail dot com>
- Lorenzo Masini	<lorenxo86@gmail.com>
- Werner Macho	<werner.macho@gmail.com>
- Giuseppe Sucameli	<brush.tyler@gmail.com>
- Alessandro Furieri	<a.furieri@lqt.it>
- 2008 Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+Copyright:                   Carl Anderson
+                             Christoph Spoerri <spoerri@users.sourceforge.net>
+                             Ivan Lucena <ivan.lucena@pmldnet.com>
+                             Jens Oberender <j.obi@troja.net>
+                             Leonardo Lami <lami@faunalia.it>
+                             Marco Pasetti <marco.pasetti@alice.it>
+                             Masaru Hoshi <hoshi@users.sourceforge.net>
+                             Mateusz Loskot <mateusz@loskot.net>
+                             Tisham Dhar <tisham@apogee.com.au>
+                             Werner Macho <werner.macho@gmail.com>
+                  1997-1998, Lars Doelle <lars.doelle@on-line.de>
+                       2003, Denis Antipov <rawbytes@users.sourceforge.net>
+                  2003-2004, Steve Halasz <stevehalasz@users.sourceforge.net>
+                       2004, Peter Brewer <p.w.brewer@rdg.ac.uk>
+                  2004-2005, Gavin Macaulay <g_j_m@users.sourceforge.net>
+                  2004-2005, Lars Luthman <larsl@users.sourceforge.net>
+                  2004-2005, Mark Coletti <mcoletti@users.sourceforge.net>
+                       2005, Brendan Morley <morb@beagle.com.au>
+                       2006, Ionut Iosifescu Enescu
+                  2006-2007, Robert Knight <robertknight@gmail.com>
+                  2006-2007, Tom Elwertowski <telwertowski@users.sourceforge.net>
+                       2007, Peter Ersts <ersts@amnh.org>
+                  2007-2008, Matthew Perry
+                       2008, Alessandro Furieri <a.furieri@lqt.it>
+                       2008, Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+                       2008, Stefan Ziegler
+                 2000, 2009, Richard Kostecky <csf.kostej@mail.com>
+                  2008-2009, Maciej Sieczka <msieczka@sieczka.org>
+                       2009, Andres Manz <manz.andres@gmail.com>
+                       2009, Diego Moreira <moreira.geo@gmail.com>
+                       2009, Florian El Ahdab <felahdab@gmail.com>
+                       2009, Godofredo Contreras <frdcn@hotmail.com>
+                       2009, Lorenzo Masini <lorenxo86@gmail.com>
+                       2009, Mathias Walker <mwa@sourcepole.ch>
+                       2009, Paolo Cavallini <cavallini@faunalia.it>
+                       2009, Vita Cizek <weetya@gmail.com>
+ 2002-2005, 2007, 2009-2010, Gary E.Sherman <sherman@mrcc.com>
+                  2009-2010, Manuel Massing <m.massing at warped-space.de>
+                       2010, Ivan Mincik <ivan.mincik@gista.sk>
+                       2010, Jack R, Maxim Dubinin (GIS-Lab) <sim@gis-lab.info>
+                       2010, Jeremy Palmer <jpalmer@linz.govt.nz>
+                       2010, Michael Minn <pyqgis@michaelminn.com>
+                       2010, NextGIS (http://nextgis.org)
+                       2010, Pirmin Kalberer <pka@sourcepole.ch>
+                       2010, Sourcepole <info@sourcepole.ch>
+                  2008-2011, Carson J. Q. Farmer <carson.farmer@gmail.com>
+                  2009-2011, Sergey Yakushev <YakushevS@list.ru>
+                 2009, 2011, Luiz Motta <motta.luiz@gmail.com>
+                       2011, German Carrillo <geotux_tuxman@linuxmail.org>
+                       2011, SunilRajKiran-kCube <sunilraj.kiran@kcubeconsulting.com>
+           2007, 2009, 2012, Magnus Homann <magnus@homann.se>
+                  2009-2012, Giuseppe Sucameli <brush.tyler@gmail.com>
+                  2010-2012, Marco Bernasocchi <marco@bernawebdesign.ch>
+                       2012, Arunmozhi <aruntheguy@gmail.com>
+                       2012, Anita Graser <anitagraser@gmx.at>
+                       2012, Australia Indonesia Facility for Disaster Reduction
+                       2012, Carterix Geomatics
+                       2012, Etienne Tourigny <etourigny.dev@gmail.com>
+                 2008, 2012, Horst Düster
+       2003-2005, 2007-2013, Tim Sutton <tim@linfiniti.com>
+                  2008-2013, Borys Jurgiel <borysiasty@aster.pl>
+                  2012-2013, Chris Crook <ccrook@linz.govt.nz>
+                  2012-2013, Larry Shaffer <larrys@dakcarto.com>
+                  2012-2013, Massimo Endrighi <massimo.endrighi@geopartner.it>
+                  2012-2013, Salvatore Larosa <lrssvtml@gmail.com>
+                  2012-2013, Vinayan Parameswaran <vinayan123@gmail.com>
+                       2013, Alvaro Huarte <ahuarte47@yahoo.es>
+                       2013, CS Systemes d'information (CS SI) <otb@c-s.fr>
+                       2013, Joshua Arnott <josh@snorfalorpagus.net
+                  2012-2013, René-Luc D'Hont <rldhont@3liz.com>
+                  2004-2014, Marco Hugentobler <mhugent@users.sourceforge.net>
+           2005, 2012, 2014, Hugo Mercier <hugo.mercier@oslandia.com>
+            2011-2012, 2014, Nathan Woodrow <madmanwoo@gmail.com>
+            2008-2012, 2014, Jürgen E. Fischer <jef@norbit.de>
+                 2011, 2014, Tamas Szekeres <szekerest@gmail.com>
+                  2009-2014, Alexander Bruy <alexander.bruy@gmail.com>
+                  2012-2014, Matthias Kuhn <matthias.kuhn@gmx.ch>
+                  2012-2014, Piotr Pociask <opengis84@gmail.com>
+            2011, 2013-2014, Bernhard Ströbl <bernhard.stroebl@jena.de>
+                  2013-2014, Martin Isenburg <martin@rapidlasso.com>
+                       2014, Agresta S. Coop <iescamochero@agresta.org>
+                       2014, Alessandro Pasotti <a.pasotti@itopen.it>
+                       2014, Angelos Tzotsos <tzotsos@gmail.com>
+                       2014, Giovanni Allegri
+                       2014, Michael Douchin
+                       2014, Niccolo' Marchi <sciurusurbanus@hotmail.it>
+                       2014, Radoslaw Guzinski <rmgu@dhi-gras.com>
+                       2015, Tom Kralidis <tomkralidis@gmail.com>
+       2004-2006, 2009-2015, Radim Blazek <blazek@itc.it>
+                  2005-2015, Martin Dobias <wonder.sk@gmail.com>
+                  2012-2015, Victor Olaya <volayaf@gmail.com>
+                  2012-2015, The QGIS Project
+                  2012-2015, Denis Rouzaud <denis.rouzaud@gmail.com>
+                  2013-2015, Nyall Dawson <nyall.dawson@gmail.com>
+                  2014-2015, Arnaud Morvan <arnaud.morvan@camptocamp.com>
+                  2014-2015, Sandro Mani <manisandro@gmail.com>
+                  2014-2015, Sandro Santilli <strk@keybit.net>
+                       2015, Michael Kirk <michael.john.kirk@gmail.com>
 License: GPL-2+
 
+Files: qgis.dtd
+Copyright: disclaimed
+License: public-domain
+ This DTD describes the maplayers and their symbology and
+ is used when saving/restoring a QGIS project.
+ This file is in the public domain
+
+Files: python/ext-libs/dateutil/*
+Copyright: 2003-2010, Gustavo Niemeyer <gustavo@niemeyer.net>
+License: BSD-3-Clause
+
+Files: python/ext-libs/httplib2/*
+Copyright: 2006, 2012, Joe Gregorio <joe@bitworking.org>
+License: GPL-2+
+
+Files: python/ext-libs/httplib2/socks.py
+Copyright: 2006, Dan-Haim
+License: BSD-2-Clause
+
+Files: python/ext-libs/jinja2/*
+Copyright: 2006-2010, the Jinja Team
+License: BSD-3-Clause
+
+Files: python/ext-libs/markupsafe/*
+Copyright: 2010, 2013, Armin Ronacher
+License: BSD-3-Clause
+
+Files: python/ext-libs/owslib/*
+Copyright: 2006, Ancient World Mapping Center
+      2008-2013, Tom Kralidis
+           2013, Christian Ledermann <christian.ledermann@gmail.com>
+           2012, Brad Hards <bradh@frogmouth.net>
+           2012, Jachym Cepicky
+      2007-2009, STFC <http://www.stfc.ac.uk>
+      2004-2006, Sean C. Gillies
+           2005, Nuxeo SARL <http://nuxeo.com>
+License: BSD-3-Clause
+
+Files: python/ext-libs/pygments/*
+Copyright: 2006-2013, the Pygments team
+License: BSD-2-Clause
+
+Files: python/ext-libs/pygments/lexers/_robotframeworklexer.py
+Copyright: 2006-2013, the Pygments team
+                2012, Nokia Siemens Networks Oyj
+License: BSD-2-Clause and Apache-2.0
+
 Files: python/ext-libs/pyspatialite/*
-Copyright: 2004-2007 Gerhard Häring <gh@ghaering.de>
+Copyright: 2004-2010, Gerhard Häring <gh@ghaering.de>
 License: Zlib
 
-Files: src/plugins/dxf2shp_converter/builder.cpp
-Copyright: 1999, Frank Warmerdam <warmerda@pobox.com>
-Comment: The code is heavily based on Christopher Michaelis' DXF to
- Shapefile Converter (http://www.wanderingidea.com/content/view/12/25/),
- released under GPL License
- .
- This code is based on two other products:
-    DXFLIB (http://www.ribbonsoft.com/dxflib.html)
- This is a library for reading DXF files, also GPL.
-    SHAPELIB (http://shapelib.maptools.org/)
- Used for the Shapefile functionality.
+Files: python/ext-libs/pytz/*
+Copyright: 2003-2009, Stuart Bishop <stuart@stuartbishop.net>
 License: MIT
+
+Files: python/ext-libs/six.py
+Copyright: 2010-2014, Benjamin Peterson
+License: MIT
+
+Files: python/plugins/fTools/*
+Copyright: 2009, Carson J.Q. Farmer
+License: MIT
+
+Files: python/plugins/GdalTools/*
+Copyright: 2009, Faunalia
+License: MIT
+
+Files: python/plugins/processing/modeler/ModelerArrowItem.py
+Copyright: 2010, Nokia Corporation and/or its subsidiary(-ies)
+           2010, Riverbank Computing Limited
+License: BSD-3-Clause
+
+Files: python/plugins/processing/algs/qgis/voronoi.py
+Copyright: 2012, Victor Olaya
+           1994, AT&T Bell Laboratories
+Comment: Voronoi diagram calculator/ Delaunay triangulator
+ Translated to Python by Bill Simons
+ September, 2005
+ .
+ Additional changes by Carson Farmer added November 2010
+ .
+ Calculate Delaunay triangulation or the Voronoi polygons for a set of
+ 2D input points.
+ .
+ Derived from code bearing the following notice:
+ .
+  The author of this software is Steven Fortune.  Copyright (c) 1994 by AT&T
+  Bell Laboratories.
+  Permission to use, copy, modify, and distribute this software for any
+  purpose without fee is hereby granted, provided that this entire notice
+  is included in all copies of any software which is or includes a copy
+  or modification of this software and in all copies of the supporting
+  documentation for such software.
+  THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
+  WARRANTY.  IN PARTICULAR, NEITHER THE AUTHORS NOR AT&T MAKE ANY
+  REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY
+  OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
+ .
+ Comments were incorporated from Shane O'Sullivan's translation of the
+ original code into C++ (http://mapviewer.skynet.ie/voronoi.html)
+ .
+ Steve Fortune's homepage: http://netlib.bell-labs.com/cm/cs/who/sjf/index.html
+License: GPL-2+
+
+Files: src/app/gps/qwtpolar-0.1/*
+ src/app/gps/qwtpolar-1.0/*
+Copyright: 2008, Uwe Rathmann
+Comment: This library is free software; you can redistribute it and/or
+ modify it under the terms of the Qwt License, Version 1.0
+License: QWT-1.0
+
+Files: src/app/qtmain_android.cpp
+Copyright: 2009-2011, BogDan Vatra <bog_dan_ro@yahoo.com>
+License: BSD-3-Clause
+
+Files: src/astyle/*
+Copyright: Jim Pattee <jimp03@email.com>
+           Tal Davidson
+Comment: Artistic Style is maintained and updated by Jim Pattee.
+ The original author was Tal Davidson, Israel.
+License: LGPL-2.1+
 
 Files: src/core/gps/config.h
  src/core/gps/context.c
@@ -78,35 +246,155 @@ Files: src/core/gps/config.h
 Copyright: Tim <xtimor@gmail.com>
 License: LGPL-2+
 
-Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/dbfopen.c
- src/plugins/dxf2shp_converter/shapelib-1.2.10/shapefil.h
-Copyright: 1999, Frank Warmerdam
-License: LGPL-2+
+Files: src/core/pal/*
+Copyright: 2008, Maxence Laurent, MIS-TIC, HEIG-VD
+License: GPL-3+
 
-Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/shpopen.c
-Copyright: 1999, 2001, Frank Warmerdam
-License: LGPL-2+
-
-Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/shprewind.c
-Copyright: 2002, Frank Warmerdam
-License: LGPL-2+
-
-Files: cmake/PythonCompile.py
-Copyright: Simon Edwards <simon@simonzone.com>
+Files: src/core/pal/rtree.hpp
+Copyright: disclaimed
+Comment: from http://www.superliminal.com/
+ .
+ AUTORS
+    - 1983 Original algorithm and test code by Antonin Guttman and Michael Stonebraker, UC Berkely
+    - 1994 ANCI C ported from original test code by Melinda Green - melinda@superliminal.com
+    - 1995 Sphere volume fix for degeneracy problem submitted by Paul Brook
+    - 2004 Templated C++ port by Greg Douglas
+    - 2008 Portability issues fixed by Maxence Laurent
 License: public-domain
- PythonCompile.py was written by Simon Edwards, and is placed in the public
- domain. The author hereby disclaims copyright to this source code.
+ LICENSE : Entirely free for all uses. Enjoy!
+ This File is in the public domain
 
-Files: cmake/FindLibPython.py
- cmake/FindPyQt.py
- cmake/FindSIP.py
-Copyright: 2007, Simon Edwards <simon@simonzone.com>
-License: BSD-3-Clause
+Files: src/core/symbology-ng/qgscolorbrewerpalette.cpp
+Copyright: 2002, Cynthia Brewer, Mark Harrower, and The Pennsylvania State University
+           2009, by Martin Dobias
+License: Apache-2.0 and GPL-2+
 
-Files: cmake/FindQsci.py
-Copyright: 2012, Larry Shaffer <larry@dakotacarto.com>
-  2012, The QGIS Project'
-License: BSD-3-Clause
+Files: src/gui/raster/qwt5_histogram_item.h
+Copyright: 1997, Josef Wilgen
+           2002, Uwe Rathmann
+License: QWT-1.0
+
+Files: src/gui/symbology-ng/characterwidget.cpp
+ src/gui/symbology-ng/characterwidget.h
+Copyright: 2009, Nokia Corporation and/or its subsidiary(-ies)
+License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
+
+Files: src/plugins/dxf2shp_converter/builder.cpp
+ src/plugins/dxf2shp_converter/builder.h
+Copyright: 1999, Frank Warmerdam <warmerda@pobox.com>
+Comment: The code is heavily based on Christopher Michaelis' DXF to
+ Shapefile Converter (http://www.wanderingidea.com/content/view/12/25/),
+ released under GPL License
+ .
+ This code is based on two other products:
+    DXFLIB (http://www.ribbonsoft.com/dxflib.html)
+ This is a library for reading DXF files, also GPL.
+    SHAPELIB (http://shapelib.maptools.org/)
+ Used for the Shapefile functionality.
+License: MIT
+
+Files: src/plugins/dxf2shp_converter/getInsertions.h
+Copyright: Christopher Michaelis
+License: GPL-2
+
+Files: src/plugins/dxf2shp_converter/getInsertions.cpp
+Copyright: Christopher Michaelis
+License: GPL-2+
+
+Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/*
+Copyright: 1999, 2001-2002, Frank Warmerdam
+License: MIT or LGPL-2+
+
+Files: src/plugins/dxf2shp_converter/dxflib/src/*
+Copyright: 2001-2003, RibbonSoft
+                2001, Robert J. Campbell Jr
+License: GPL-2 or dxflib-Commercial-License
+
+Files: src/plugins/evis/*
+Copyright: 2007, American Museum of Natural History
+License: LGPL-2+
+
+Files: src/plugins/globe/osgEarthQt/ViewerWidget.cpp
+ src/plugins/globe/osgEarthUtil/Controls.cpp
+Copyright: 2008-2012, Pelican Mapping
+License: LGPL-2+
+
+Files: src/plugins/grass/qtermwidget/BlockArray.*
+Copyright: 2000, Stephan Kulow <coolo@kde.org>
+           2008, e_k <e_k@users.sourceforge.net>
+License: GPL-2+
+
+Files: src/plugins/grass/qtermwidget/Emulation.cpp
+Copyright: 1996, Matthias Ettrich <ettrich@kde.org>
+      1997-1998, Lars Doelle <lars.doelle@on-line.de>
+           2007, Robert Knight <robertknight@gmail.com>
+           2008, e_k <e_k@users.sourceforge.net>
+License: GPL-2+
+
+Files: src/plugins/grass/qtermwidget/k3process.cpp
+ src/plugins/grass/qtermwidget/k3process.h
+ src/plugins/grass/qtermwidget/k3processcontroller.cpp
+ src/plugins/grass/qtermwidget/k3processcontroller.h
+Copyright: 1997, Christian Czezakte <e9025461@student.tuwien.ac.at>
+           2008, e_k <e_k@users.sourceforge.net>
+License: LGPL-2+
+
+Files: src/plugins/grass/qtermwidget/konsole_wcwidth.*
+Copyright: 2011, Markus Kuhn
+License: public-domain
+ This file is in the public domain
+
+Files: src/plugins/grass/qtermwidget/kpty.cpp
+ src/plugins/grass/qtermwidget/kpty.h
+ src/plugins/grass/qtermwidget/kpty_p.h
+Copyright:  2002, Waldo Bastian <bastian@kde.org>
+ 2002-2003, 2007, Oswald Buddenhagen <ossi@kde.org>
+            2008, e_k <e_k@users.sourceforge.net>
+License: LGPL-2+
+
+Files: src/plugins/grass/qtermwidget/qtermwidget.cpp
+ src/plugins/grass/qtermwidget/qtermwidget.h
+Copyright: 2008, e_k <e_k@users.sourceforge.net>
+           2009, Lorenzo "Il Rugginoso" Masini <lorenxo86@gmail.com>
+License: LGPL-2+
+
+Files: src/plugins/grass/qtermwidget/TerminalCharacterDecoder.cpp
+ src/plugins/grass/qtermwidget/TerminalCharacterDecoder.h
+Copyright: 2006-2007, Robert Knight <robertknight@gmail.com>
+                2008, e_k <e_k@users.sourceforge.net>
+License: LGPL-2+
+
+Files: src/providers/oracle/ocispatial/main.cpp
+ src/providers/oracle/ocispatial/qsql_ocispatial.cpp
+Copyright: 2012, Digia Plc and/or its subsidiary(-ies)
+      2012-2013, Juergen E. Fischer <jef@norbit.de>
+License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
+
+Files: src/providers/oracle/ocispatial/qsql_ocispatial.h
+ src/providers/oracle/ocispatial/qsqlcachedresult_p.h
+ src/providers/spatialite/qspatialite/qsql_spatialite.cpp
+ src/providers/spatialite/qspatialite/qsql_spatialite.h
+ src/providers/spatialite/qspatialite/qsqlcachedresult_p.h
+ src/providers/spatialite/qspatialite/smain.cpp
+Copyright: 2012, Digia Plc and/or its subsidiary(-ies)
+License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
+
+Files: tests/qt_modeltest/modeltest.cpp
+ tests/qt_modeltest/modeltest.h
+ tests/qt_modeltest/tst_modeltest.cpp
+Copyright: 2011, Nokia Corporation and/or its subsidiary(-ies)
+License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
+
+Files: tests/qt_modeltest/dynamictreemodel.cpp
+ tests/qt_modeltest/dynamictreemodel.h
+Copyright: 2009, Stephen Kelly <steveire@gmail.com>
+License: QT-Commercial or LGPL-2.1 with Digia Qt LGPL Exception 1.1 or GPL-3
+
+Files: tests/testdata/cpt-city/gmt/*
+Copyright: 2004, 2010, Paul Wessel, SOEST
+           2004, 2010, Andreas Trawoeger
+           2004, 2010, Walter Smith, NOAA
+License: GPL-2+
 
 Files: cmake/Bison.cmake
  cmake/FindExpat.cmake
@@ -116,6 +404,10 @@ Files: cmake/Bison.cmake
  cmake/FindSqlite3.cmake
  cmake/Flex.cmake
 Copyright: 2007, Martin Dobias <wonder.sk at gmail.com>
+License: BSD-3-Clause
+
+Files: cmake/FindFcgi.cmake
+Copyright: 2010, Marco Hugentobler
 License: BSD-3-Clause
 
 Files: cmake/FindGDAL.cmake
@@ -129,12 +421,24 @@ License: BSD-3-Clause
 
 Files: cmake/FindGSL.cmake
 Copyright: 2004, Felix Woelk
- Jan Woetzel
+                 Jan Woetzel
 License: BSD-3-Clause
 
 Files: cmake/FindIconv.cmake
  cmake/PyQt4Macros.cmake
 Copyright: 2009, Juergen E. Fischer <jef at norbit dot de>
+License: BSD-3-Clause
+
+Files: cmake/FindLibPython.py
+ cmake/FindPyQt.py
+ cmake/FindSIP.py
+Copyright: 2007, Simon Edwards <simon@simonzone.com>
+License: BSD-3-Clause
+
+Files: cmake/FindOSGEARTH.cmake
+Copyright: 2011-2013, Pirmin Kalberer
+                2011, Jürgen E. Fischer <jef at norbit.de>
+                2013, William Kyngesburye
 License: BSD-3-Clause
 
 Files: cmake/FindPyQt4.cmake
@@ -158,45 +462,55 @@ Files: cmake/FindQGIS.cmake
 Copyright: Tim Sutton
 License: BSD-3-Clause
 
-Files: cmake/FindQwt.cmake
-Copyright: 2010, Tim Sutton <tim at linfiniti.com>
-License: BSD-3-Clause
-
 Files: cmake/FindQsci.cmake
  cmake/QsciAPI.cmake
 Copyright: 2012, Larry Shaffer <larrys@dakotacarto.com>
 License: BSD-3-Clause
 
+Files: cmake/FindQsci.py
+Copyright: 2012, Larry Shaffer <larry@dakotacarto.com>
+           2012, The QGIS Project
+License: BSD-3-Clause
+
 Files: cmake/FindQScintilla.cmake
-Copyright: 2007 Thomas Moenicke thomas.moenicke@kdemail.net
+Copyright: 2007, Thomas Moenicke thomas.moenicke@kdemail.net
+License: BSD-3-Clause
+
+Files: cmake/FindQwt.cmake
+Copyright: 2010, Tim Sutton <tim at linfiniti.com>
 License: BSD-3-Clause
 
 Files: cmake/FindSPATIALITE.cmake
 Copyright: 2009, Sandro Furieri <a.furieri at lqt.it>
 License: BSD-3-Clause
 
-Files: cmake/UsePythonTest.cmake
-Copyright: 2006-2010 Mathieu Malaterre <mathieu.malaterre@gmail.com>
-License: BSD-3-Clause
-
-Files: cmake/FindFcgi.cmake
-Copyright: 2010, Marco Hugentobler
-License: BSD-3-Clause
-
-Files: cmake/FindOSGEARTH.cmake
-Copyright: 2011-2013, Pirmin Kalberer
- 2011, Jürgen E. Fischer <jef at norbit.de>
- 2013, William Kyngesburye
-License: BSD-3-Clause
-
 Files: cmake/MacBundleMacros.cmake
 Copyright: 2010-2013, William Kyngesburye
- 2012, Larry Shaffer
+                2012, Larry Shaffer
 License: BSD-3-Clause
 
 Files: cmake/MacPlistMacros.cmake
 Copyright: 2011, William Kyngesburye
 License: BSD-3-Clause
+
+Files: cmake/PythonCompile.py
+Copyright: Simon Edwards <simon@simonzone.com>
+License: public-domain
+ PythonCompile.py was written by Simon Edwards, and is placed in the public
+ domain. The author hereby disclaims copyright to this source code.
+
+Files: cmake/UsePythonTest.cmake
+Copyright: 2006-2010, Mathieu Malaterre <mathieu.malaterre@gmail.com>
+License: BSD-3-Clause
+
+Files: images/themes/default/*
+Copyright: 2011, Robert Szczepanek
+                 Anita Graser
+Comment: GIS icons by Robert Szczepanek is licensed under a Creative Commons
+ Attribution-Share Alike 3.0 Unported License. Feel free to use it in any GIS
+ software or for other purposes. I only ask you to let me know about that and
+ to include licence.txt file in your work.
+License: CC-BY-SA-3.0
 
 Files: resources/cpt-city-qgis-min/bhw/*
 Copyright: 2011, Blackheartedworf (http://blackheartedwolf.deviantart.com/)
@@ -204,7 +518,7 @@ License: CC-BY-3.0
 
 Files: resources/cpt-city-qgis-min/cb/*
 Copyright: 2002, Cynthia Brewer, Pennsylvania State University
- 2002, Mark Harrower, University of Wisconsin-Madison
+           2002, Mark Harrower, University of Wisconsin-Madison
 Comment: This product includes color specifications and designs developed by
  Cynthia Brewer (http://colorbrewer.org/).
 License: Apache-Style-Software-License-Version-1.1
@@ -340,8 +654,8 @@ License: BSD-like-gist
 
 Files: resources/cpt-city-qgis-min/gmt/*
 Copyright: 2004, 2010, Paul Wessel, SOEST
- 2004, 2010, Andreas Trawoeger
- 2004, 2010, Walter Smith, NOAA
+           2004, 2010, Andreas Trawoeger
+           2004, 2010, Walter Smith, NOAA
 License: GPL-2+
 
 Files: resources/cpt-city-qgis-min/go2/webtwo/*
@@ -487,9 +801,9 @@ License: CC-BY-SA-3.0
 
 Files: resources/cpt-city-qgis-min/ngdc/*
 Copyright: 2009, Elliot Lim, NOAA/NGDC
- 2009, Greg Reed, Australian Ocean Data Centre Joint Facility
- 2009, Lester M. Anderson, CASP, UK
- 2009, Jesse Varner, NOAA/NGDC
+           2009, Greg Reed, Australian Ocean Data Centre Joint Facility
+           2009, Lester M. Anderson, CASP, UK
+           2009, Jesse Varner, NOAA/NGDC
 Comment: Derived from GMT_globe and GMT_haxby which are licensed
  under the GPL.
  .
@@ -523,7 +837,7 @@ License: public-domain-attribution
 
 Files: resources/cpt-city-qgis-min/saga/*
 Copyright: 2012, O. Conrad, Universität Hamburg
- 2012, J. Böhner, Universität Hamburg
+           2012, J. Böhner, Universität Hamburg
 License: GPL-2+
 
 Files: resources/cpt-city-qgis-min/tp/*
@@ -562,8 +876,8 @@ License: OPL-PSI-1.0
 
 Files: resources/cpt-city-qgis-min/wkp/country/*
 Copyright: 2008, 2011, 2012, Bourrichon
- 2008, 2011, 2012, Eric Gaba
- 2008, 2011, 2012, PZmaps
+           2008, 2011, 2012, Eric Gaba
+           2008, 2011, 2012, PZmaps
 License: CC-BY-SA-3.0
 
 Files: resources/cpt-city-qgis-min/wkp/encyclopedia/*
@@ -635,41 +949,6 @@ Files: resources/cpt-city-qgis-min/wkp/tubs/*
 Copyright: 2012, TUBS
 License: CC-BY-SA-3.0
 
-Files: tests/testdata/cpt-city/gmt/*
-Copyright: 2004, 2010, Paul Wessel, SOEST
- 2004, 2010, Andreas Trawoeger
- 2004, 2010, Walter Smith, NOAA
-License: GPL-2+
-
-Files: images/themes/default/*
-Copyright: 2011, Robert Szczepanek
- Anita Graser
-Comment: GIS icons by Robert Szczepanek is licensed under a Creative Commons
- Attribution-Share Alike 3.0 Unported License. Feel free to use it in any GIS
- software or for other purposes. I only ask you to let me know about that and
- to include licence.txt file in your work.
-License: CC-BY-SA-3.0
-
-Files: python/plugins/GdalTools/*
-Copyright: 2009 Faunalia
-License: MIT
-
-Files: python/plugins/fTools/*
-Copyright: 2009 Carson J.Q. Farmer
-License: MIT
-
-Files: python/plugins/plugin_installer
-Copyright: 2007 Matthew T. Perry
- 2008-2009 Borys Jurgiel
-License: MIT
-
-Files: src/app/gps/qwtpolar-0.1/*
- src/app/gps/qwtpolor-1.0/*
-Copyright:  2008 Uwe Rathmann
-Comment: This library is free software; you can redistribute it and/or
- modify it under the terms of the Qwt License, Version 1.0
-License: QWT-1.0
-
 License: Apache-2.0
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -727,6 +1006,30 @@ License: Apache-Style-Software-License-Version-1.1
  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+License: BSD-2-Clause
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions are
+ met:
+ .
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ .
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ .
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 License: BSD-3-Clause
  Redistribution and use in source and binary forms, with or without
@@ -1466,6 +1769,33 @@ License: CC-BY-SA-3.0
  .
  Creative Commons may be contacted at http://creativecommons.org/.
 
+License: dxflib-Commercial-License
+ Licensees holding valid dxflib Professional Edition licenses may use
+ this file in accordance with the dxflib Commercial License
+ Agreement provided with the Software.
+ .
+ This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ .
+ See http://www.ribbonsoft.com for further details.
+ .
+ Contact info@ribbonsoft.com if any conditions of this licensing are
+ not clear to you.
+
+License: GPL-2
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License version 3 or
+ version 2 as published by the Free Software Foundation.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+ .
+ On Debian systems, the full text of the GNU General Public License
+ version 2 can be found in the file
+ `/usr/share/common-licenses/GPL-2'.
+
 License: GPL-2+
  This program is free software; you can redistribute it and/or
  modify it under the terms of the GNU General Public License as
@@ -1479,6 +1809,22 @@ License: GPL-2+
  .
  On Debian systems, the complete text of the GNU General Public
  License can be found in the `/usr/share/common-licenses/GPL-2' file.
+
+License: GPL-3
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License version 3 as published
+ by the Free Software Foundation.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-3'.
 
 License: GPL-3+
  This program is free software: you can redistribute it and/or modify
@@ -1508,6 +1854,55 @@ License: LGPL-2+
  .
  On Debian systems, the complete text of the GNU Lesser General Public
  License can be found in the `/usr/share/common-licenses/LGPL-2' file.
+
+License: LGPL-2.1+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+ .
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+ .
+ On Debian systems, the full text of the GNU Lesser General Public
+ License version 2.1 can be found in the file
+ `/usr/share/common-licenses/LGPL-2.1'.
+
+License: LGPL-2.1 with Digia Qt LGPL Exception 1.1
+ Alternatively, this file may be used under the terms of the GNU Lesser
+ General Public License version 2.1 as published by the Free Software
+ Foundation and appearing in the file LICENSE.LGPL included in the
+ packaging of this file. Please review the following information to
+ ensure the GNU Lesser General Public License version 2.1 requirements
+ will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+ .
+ In addition, as a special exception, Digia gives you certain additional
+ rights. These rights are described in the Digia Qt LGPL Exception
+ version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
+ .
+ Digia Qt LGPL Exception version 1.1
+ As an additional permission to the GNU Lesser General Public License version
+ 2.1, the object code form of a "work that uses the Library" may incorporate
+ material from a header file that is part of the Library. You may distribute
+ such object code under terms of your choice, provided that:
+ (i) the header files of the Library have not been modified; and
+ (ii) the incorporated material is limited to numerical parameters, data
+ structure layouts, accessors, macros, inline functions and
+ templates; and
+ (iii) you comply with the terms of Section 6 of the GNU Lesser General
+ Public License version 2.1.
+ .
+ Moreover, you may apply this exception to a modified version of the Library,
+ provided that such modification does not involve copying material from the
+ Library into the modified Library's header files unless such material is
+ limited to (i) numerical parameters; (ii) data structure layouts;
+ (iii) accessors; and (iv) small macros, templates and inline functions of
+ five lines or less in length.
+ .
+ Furthermore, you are not required to apply this additional permission to a
+ modified version of the Library.
 
 License: MIT
  Permission is hereby granted, free of charge, to any person
@@ -1782,6 +2177,15 @@ License: OPL-PSI-1.0
  Licensing Framework section on The National Archives website.
  http://www.nationalarchives.gov.uk/information-management/uk-gov-licensing-framework.htm
 
+License: QT-Commercial
+ Commercial License Usage
+ Licensees holding valid commercial Qt licenses may use this file in
+ accordance with the commercial license agreement provided with the
+ Software or, alternatively, in accordance with the terms contained in
+ a written agreement between you and Digia. For licensing terms and
+ conditions see http://qt.digia.com/licensing. For further information
+ use the contact form at http://qt.digia.com/contact-us.
+
 License: QWT-1.0
  The Qwt library and included programs are provided under the terms
  of the GNU LESSER GENERAL PUBLIC LICENSE (LGPL) with the following
@@ -1816,19 +2220,21 @@ License: QWT-1.0
  the Qwt project (http://qwt.sf.net).
 
 License: Zlib
- This software is provided 'as-is', without any express or implied
- warranty.  In no event will the authors be held liable for any damages
- arising from the use of this software.
+ This software is provided 'as-is', without any express or implied warranty. In
+ no event will the authors be held liable for any damages arising from the use
+ of this software.
  .
  Permission is granted to anyone to use this software for any purpose,
- including commercial applications, and to alter it and redistribute it
- freely, subject to the following restrictions:
+ including commercial applications, and to alter it and redistribute it freely,
+ subject to the following restrictions:
  .
- 1. The origin of this software must not be misrepresented; you must not
-    claim that you wrote the original software. If you use this software
-    in a product, an acknowledgment in the product documentation would be
-    appreciated but is not required.
- 2. Altered source versions must be plainly marked as such, and must not be
-    misrepresented as being the original software.
- 3. This notice may not be removed or altered from any source distribution.
+     1. The origin of this software must not be misrepresented; you must not
+        claim that you wrote the original software. If you use this software in
+        a product, an acknowledgment in the product documentation would be
+        appreciated but is not required.
+ .
+     2. Altered source versions must be plainly marked as such, and must not be
+        misrepresented as being the original software.
+ .
+     3. This notice may not be removed or altered from any source distribution.
 
