@@ -67,8 +67,8 @@ class SelectByLocation(GeoAlgorithm):
         filename = self.getParameterValue(self.INPUT)
         inputLayer = dataobjects.getObjectFromUri(filename)
         method = self.getParameterValue(self.METHOD)
-        filename = self.getParameterValue(self.INTERSECT)
-        selectLayer = dataobjects.getObjectFromUri(filename)
+        filename2 = self.getParameterValue(self.INTERSECT)
+        selectLayer = dataobjects.getObjectFromUri(filename2)
         predicates = self.getParameterValue(self.PREDICATE)
 
         oldSelection = set(inputLayer.selectedFeaturesIds())
