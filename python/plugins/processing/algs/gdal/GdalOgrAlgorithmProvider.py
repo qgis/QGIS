@@ -65,7 +65,7 @@ from GridAverage import GridAverage
 from GridNearest import GridNearest
 from GridDataMetrics import GridDataMetrics
 from gdaltindex import gdaltindex
-from GdalRasterCalc import GdalRasterCalc
+from gdalcalc import gdalcalc
 
 from ogr2ogr import Ogr2Ogr
 from ogr2ogrclip import Ogr2OgrClip
@@ -123,7 +123,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
             hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
             ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
-            GridDataMetrics(), gdaltindex(), GdalRasterCalc(),
+            GridDataMetrics(), gdaltindex(), gdalcalc(),
             # ----- OGR tools -----
             OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
             Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), OgrSql(),
