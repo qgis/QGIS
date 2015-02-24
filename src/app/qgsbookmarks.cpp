@@ -265,7 +265,10 @@ void QgsBookmarks::zoomToBookmark()
 
 void QgsBookmarks::importFromXML()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), ".",
+  QSettings settings;
+
+  QString lastUsedDir = settings.value( "/Bookmark/LastUsedDirectory", QVariant() ).toString();
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -338,7 +341,10 @@ void QgsBookmarks::importFromXML()
 
 void QgsBookmarks::exportToXML()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), ".",
+  QSettings settings;
+
+  QString lastUsedDir = settings.value( "/Bookmark/LastUsedDirectory", QVariant() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
                      tr( "XML files( *.xml *.XML )" ) );
   if ( fileName.isEmpty() )
   {
@@ -388,4 +394,6 @@ void QgsBookmarks::exportToXML()
   out.setCodec( "UTF - 8" );
   doc.save( out, 2 );
   f.close();
+
+  settings.setValue( "/Bookmark/LastUsedDirectory", QFileInfo( fileName ).path() );
 }
