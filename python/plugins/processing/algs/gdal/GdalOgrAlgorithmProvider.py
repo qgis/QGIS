@@ -76,6 +76,10 @@ from ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
 from ogr2ogrbuffer import Ogr2OgrBuffer
 from ogr2ogrdissolve import Ogr2OgrDissolve
 from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
+from ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
+from ogr2ogrbuffer import Ogr2OgrBuffer
+from ogr2ogrdissolve import Ogr2OgrDissolve
+from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
 from ogrinfo import OgrInfo
 from ogrsql import OgrSql
 
@@ -131,7 +135,8 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
             # ----- OGR tools -----
             OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
             Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
-            Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(), OgrSql(),
+            Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(),
+            Ogr2OgrTableToPostGisList(), OgrSql(),
         ]
 
         # And then we add those that are created as python scripts
