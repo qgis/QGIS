@@ -132,7 +132,7 @@ def get_help_url():
     version = QGis.QGIS_VERSION[:3]
 
     path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
-            (version, locale_name)
+           (version, locale_name)
 
     return '/'.join(['http://docs.qgis.org', path])
 
