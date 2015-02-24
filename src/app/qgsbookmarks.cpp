@@ -296,13 +296,13 @@ void QgsBookmarks::importFromXML()
   for ( int i = 0;i < nodeList.count(); i++ )
   {
     QDomNode bookmark = nodeList.at( i );
-    QDomElement name = bookmark.firstChildElement( "Name" );
-    QDomElement prjname = bookmark.firstChildElement( "Project" );
-    QDomElement xmin = bookmark.firstChildElement( "xMin" );
-    QDomElement xmax = bookmark.firstChildElement( "xMax" );
-    QDomElement ymin = bookmark.firstChildElement( "yMin" );
-    QDomElement ymax = bookmark.firstChildElement( "yMax" );
-    QDomElement srid = bookmark.firstChildElement( "SRID" );
+    QDomElement name = bookmark.firstChildElement( tr( "Name" ) );
+    QDomElement prjname = bookmark.firstChildElement( tr( "Project" ) );
+    QDomElement xmin = bookmark.firstChildElement( tr( "xMin" ) );
+    QDomElement xmax = bookmark.firstChildElement( tr( "xMax" ) );
+    QDomElement ymin = bookmark.firstChildElement( tr( "yMin" ) );
+    QDomElement ymax = bookmark.firstChildElement( tr( "yMax" ) );
+    QDomElement srid = bookmark.firstChildElement( tr( "SRID" ) );
 
     queries += "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
                "  VALUES (NULL,"
