@@ -163,8 +163,10 @@ bool QgsFeatureAction::addFeature( const QgsAttributeMap& defaultAttributes, boo
     mFeature.setAttribute( idx, v );
   }
 
-  // show the dialog to enter attribute values
-  bool isDisabledAttributeValuesDlg = settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
+  //show the dialog to enter attribute values
+  //only show if enabled in settings and layer has fields
+  bool isDisabledAttributeValuesDlg = ( fields.count() == 0 ) || settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool();
+
   // override application-wide setting with any layer setting
   switch ( mLayer->featureFormSuppress() )
   {
