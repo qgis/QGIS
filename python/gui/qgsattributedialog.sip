@@ -48,7 +48,16 @@ class QgsAttributeDialog : QDialog
      */
     void setHighlight( QgsHighlight *h );
 
-    QDialog *dialog();
+    /**
+     * @brief Returns reference to self. Only here for legacy compliance
+     *
+     * @return this
+     *
+     * @deprecated Do not use. Just use this object itself. Or QgsAttributeForm if you want to embed.
+     */
+    QDialog *dialog() /Deprecated/;
+
+    QgsAttributeForm *attributeForm();
 
     const QgsFeature* feature();
 
