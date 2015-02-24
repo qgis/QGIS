@@ -42,30 +42,34 @@ class Ogr2OgrBuffer(OgrAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
     GEOMETRY = 'GEOMETRY'
-    DISTANCE = 'DISTANCE'   
+    DISTANCE = 'DISTANCE'
     DISSOLVEALL = 'DISSOLVEALL'
     FIELD = 'FIELD'
-    MULTI = 'MULTI' 
+    MULTI = 'MULTI'
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
         self.name = 'Buffer vectors'
         self.group = '[OGR] Geoprocessing'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterString(self.GEOMETRY, 'Geometry column name ("geometry" for Shapefiles, may be different for other formats)',
-                          'geometry', optional=False))
-        self.addParameter(ParameterString(self.DISTANCE,'Buffer distance', '1000', optional=False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterString(self.GEOMETRY,
+            self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+            'geometry', optional=False))
+        self.addParameter(ParameterString(self.DISTANCE,
+            self.tr('Buffer distance'), '1000', optional=False))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
-                          'Dissolve all results?', False))
-        self.addParameter(ParameterTableField(self.FIELD, 'Dissolve by attribute',
-                          self.INPUT_LAYER, optional=True))
+            self.tr('Dissolve all results'), False))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Dissolve by attribute'), self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterBoolean(self.MULTI,
-                          'Output as singlepart geometries (only used when dissolving by attribute)?', False))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation options (see ogr2ogr manual)',
-                          '', optional=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Output as singlepart geometries (only used when dissolving by attribute)'), False))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options (see ogr2ogr manual)'),
+            '', optional=True))
+
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
@@ -74,9 +78,9 @@ class Ogr2OgrBuffer(OgrAlgorithm):
         geometry = unicode(self.getParameterValue(self.GEOMETRY))
         distance = unicode(self.getParameterValue(self.DISTANCE))
         dissolveall = self.getParameterValue(self.DISSOLVEALL)
-        field = unicode(self.getParameterValue(self.FIELD)) 
+        field = unicode(self.getParameterValue(self.FIELD))
         multi = self.getParameterValue(self.MULTI)
-        
+
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
@@ -90,27 +94,27 @@ class Ogr2OgrBuffer(OgrAlgorithm):
         if dissolveall or field != 'None':
            arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_Buffer(')
         else:
-           arguments.append('-dialect sqlite -sql "SELECT ST_Buffer(')           
+           arguments.append('-dialect sqlite -sql "SELECT ST_Buffer(')
         arguments.append(geometry)
         arguments.append(',')
         arguments.append(distance)
         if dissolveall or field != 'None':
-           arguments.append(')),*')  
+           arguments.append(')),*')
         else:
-           arguments.append('),*')  
+           arguments.append('),*')
         arguments.append('FROM')
         arguments.append(layername)
         if field != 'None':
            arguments.append('GROUP')
-           arguments.append('BY')         
-           arguments.append(field) 
-        arguments.append('"')   
+           arguments.append('BY')
+           arguments.append(field)
+        arguments.append('"')
         if field != 'None' and multi:
            arguments.append('-explodecollections')
 
         if len(options) > 0:
             arguments.append(options)
-            
+
         commands = []
         if isWindows():
             commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
@@ -119,4 +123,3 @@ class Ogr2OgrBuffer(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)
-        

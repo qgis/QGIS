@@ -50,31 +50,35 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
     LEFTRIGHTLIST = ['Right','Left']
     DISSOLVEALL = 'DISSOLVEALL'
     FIELD = 'FIELD'
-    MULTI = 'MULTI' 
+    MULTI = 'MULTI'
     OPTIONS = 'OPTIONS'
 
     def defineCharacteristics(self):
         self.name = 'Single sided buffers (and offset lines) for lines'
         self.group = '[OGR] Geoprocessing'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_LINE], False))
-        self.addParameter(ParameterSelection(self.OPERATION, 'Buffer or Offset Curve?',self.OPERATIONLIST, 0))
-        self.addParameter(ParameterString(self.GEOMETRY, 'Geometry column name ("geometry" for Shapefiles, may be different for other formats)',
-                          'geometry', optional=False))
-        self.addParameter(ParameterString(self.RADIUS,'Buffer distance', '1000', optional=False))
-        self.addParameter(ParameterSelection(self.LEFTRIGHT, 'Left or Right buffer',self.LEFTRIGHTLIST, 0))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE], False))
+        self.addParameter(ParameterSelection(self.OPERATION,
+            self.tr('Operation'),self.OPERATIONLIST, 0))
+        self.addParameter(ParameterString(self.GEOMETRY,
+            self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+            'geometry', optional=False))
+        self.addParameter(ParameterString(self.RADIUS,
+            self.tr('Buffer distance'), '1000', optional=False))
+        self.addParameter(ParameterSelection(self.LEFTRIGHT,
+            self.tr('Buffer side'),self.LEFTRIGHTLIST, 0))
         self.addParameter(ParameterBoolean(self.DISSOLVEALL,
-                          'Dissolve all results?', False))
-        self.addParameter(ParameterTableField(self.FIELD, 'Dissolve by attribute',
-                          self.INPUT_LAYER, optional=True))
+            self.tr('Dissolve all results'), False))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Dissolve by attribute'), self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterBoolean(self.MULTI,
-                          'Output as singlepart geometries (only used when dissolving by attribute)?', False))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation options (see ogr2ogr manual)',
-                          '', optional=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Output as singlepart geometries (only used when dissolving by attribute)'), False))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options (see ogr2ogr manual)'),
+            '', optional=True))
 
-
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
@@ -85,9 +89,9 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
         distance = unicode(self.getParameterValue(self.RADIUS))
         leftright = self.LEFTRIGHTLIST[self.getParameterValue(self.LEFTRIGHT)]
         dissolveall = self.getParameterValue(self.DISSOLVEALL)
-        field = unicode(self.getParameterValue(self.FIELD)) 
+        field = unicode(self.getParameterValue(self.FIELD))
         multi = self.getParameterValue(self.MULTI)
-        
+
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
@@ -105,35 +109,35 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
               arguments.append('-dialect sqlite -sql "SELECT ST_Union(ST_OffsetCurve(')
         else:
            if operation == 'Single Side Buffer':
-              arguments.append('-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(')           
+              arguments.append('-dialect sqlite -sql "SELECT ST_SingleSidedBuffer(')
            else:
-              arguments.append('-dialect sqlite -sql "SELECT ST_OffsetCurve(')                         
+              arguments.append('-dialect sqlite -sql "SELECT ST_OffsetCurve(')
         arguments.append(geometry)
         arguments.append(',')
         arguments.append(distance)
         if dissolveall or field != 'None':
            if leftright == 'Left':
-              arguments.append(',0)),*')  
+              arguments.append(',0)),*')
            else:
-              arguments.append(',1)),*')             
+              arguments.append(',1)),*')
         else:
            if leftright == 'Left':
-              arguments.append(',0),*')  
+              arguments.append(',0),*')
            else:
-              arguments.append(',1),*')  
+              arguments.append(',1),*')
         arguments.append('FROM')
         arguments.append(layername)
         if field != 'None':
            arguments.append('GROUP')
-           arguments.append('BY')         
-           arguments.append(field) 
-        arguments.append('"')   
+           arguments.append('BY')
+           arguments.append(field)
+        arguments.append('"')
         if field != 'None' and multi:
            arguments.append('-explodecollections')
 
         if len(options) > 0:
             arguments.append(options)
-            
+
         commands = []
         if isWindows():
             commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
@@ -142,4 +146,3 @@ class Ogr2OgrOneSideBuffer(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)
-        

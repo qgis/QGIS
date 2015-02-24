@@ -42,11 +42,11 @@ class Ogr2OgrDissolve(OgrAlgorithm):
     OUTPUT_LAYER = 'OUTPUT_LAYER'
     INPUT_LAYER = 'INPUT_LAYER'
     GEOMETRY = 'GEOMETRY'
-    FIELD = 'FIELD'    
-    MULTI = 'MULTI' 
-    COUNT = 'COUNT' 
-    STATS = 'STATS' 
-    STATSATT = 'STATSATT' 
+    FIELD = 'FIELD'
+    MULTI = 'MULTI'
+    COUNT = 'COUNT'
+    STATS = 'STATS'
+    STATSATT = 'STATSATT'
     AREA = 'AREA'
     FIELDS = 'FIELDS'
     OPTIONS = 'OPTIONS'
@@ -55,43 +55,43 @@ class Ogr2OgrDissolve(OgrAlgorithm):
         self.name = 'Dissolve polygons'
         self.group = '[OGR] Geoprocessing'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON], False))
-        self.addParameter(ParameterString(self.GEOMETRY, 'Geometry column name ("geometry" for Shapefiles, may be different for other formats)',
-                          'geometry', optional=False))
-        self.addParameter(ParameterTableField(self.FIELD, 'Dissolve field',
-                          self.INPUT_LAYER))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON], False))
+        self.addParameter(ParameterString(self.GEOMETRY,
+            self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+            'geometry', optional=False))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Dissolve field'), self.INPUT_LAYER))
         self.addParameter(ParameterBoolean(self.MULTI,
-                          'Output as multipart geometries?', True))
+            self.tr('Output as multipart geometries'), True))
         self.addParameter(ParameterBoolean(self.FIELDS,
-                          'Keep input attributes?', False)) 
+            self.tr('Keep input attributes'), False))
         self.addParameter(ParameterBoolean(self.COUNT,
-                          'Count dissolved features?', False))        
+            self.tr('Count dissolved features'), False))
         self.addParameter(ParameterBoolean(self.AREA,
-                          'Compute area and perimeter of dissolved features?', False))  
+            self.tr('Compute area and perimeter of dissolved features'), False))
         self.addParameter(ParameterBoolean(self.STATS,
-                          'Compute min/max/sum/mean for the following numeric attribute?', False)) 
-        self.addParameter(ParameterTableField(self.STATSATT, 'Numeric attribute to compute dissolved features stats',
-                          self.INPUT_LAYER))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation options (see ogr2ogr manual)',
-                          '', optional=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Compute min/max/sum/mean for the following numeric attribute'), False))
+        self.addParameter(ParameterTableField(self.STATSATT,
+            self.tr('Numeric attribute to compute dissolved features stats'), self.INPUT_LAYER))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options (see ogr2ogr manual)'),
+            '', optional=True))
 
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         layername = "'" + self.ogrLayerName(inLayer) + "'"
         geometry = unicode(self.getParameterValue(self.GEOMETRY))
-        field = unicode(self.getParameterValue(self.FIELD))        
+        field = unicode(self.getParameterValue(self.FIELD))
         statsatt = unicode(self.getParameterValue(self.STATSATT))
         stats = self.getParameterValue(self.STATS)
         area = self.getParameterValue(self.AREA)
         multi = self.getParameterValue(self.MULTI)
         count = self.getParameterValue(self.COUNT)
         fields = self.getParameterValue(self.FIELDS)
-        #dsUri = QgsDataSourceURI(self.getParameterValue(self.INPUT_LAYER))
-        #geomColumn = dsUri.geometryColumn()
         querystart = '-dialect sqlite -sql "SELECT ST_Union(' + geometry + ')'
         queryend = ' FROM ' + layername + ' GROUP BY ' + field + '"'
         if fields:
@@ -109,8 +109,8 @@ class Ogr2OgrDissolve(OgrAlgorithm):
         if area:
            queryarea = ", SUM(ST_area(" + geometry + ")) AS area_diss, ST_perimeter(ST_union(" + geometry + ")) AS peri_diss"
         else:
-           queryarea = ""  
-        
+           queryarea = ""
+
         query = querystart + queryfields + querycount + querystats + queryarea + queryend
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -122,11 +122,11 @@ class Ogr2OgrDissolve(OgrAlgorithm):
         arguments.append(output)
         arguments.append(ogrLayer)
         arguments.append(self.ogrLayerName(inLayer))
-        arguments.append(query)               
+        arguments.append(query)
 
         if not multi:
-            arguments.append('-explodecollections')    
-      
+            arguments.append('-explodecollections')
+
         if len(options) > 0:
             arguments.append(options)
 
@@ -138,4 +138,3 @@ class Ogr2OgrDissolve(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)
-        

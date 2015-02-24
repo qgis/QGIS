@@ -48,14 +48,18 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
         self.name = 'Create points along lines'
         self.group = '[OGR] Geoprocessing'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_LINE], False))
-        self.addParameter(ParameterString(self.GEOMETRY, 'Geometry column name ("geometry" for Shapefiles, may be different for other formats)',
-                          'geometry', optional=False))
-        self.addParameter(ParameterNumber(self.DISTANCE, 'Distance from line start represented as fraction of line length', 0, 1, 0.5))
-        self.addParameter(ParameterString(self.OPTIONS, 'Additional creation options (see ogr2ogr manual)',
-                          '', optional=True))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE], False))
+        self.addParameter(ParameterString(self.GEOMETRY,
+            self.tr('Geometry column name ("geometry" for Shapefiles, may be different for other formats)'),
+            'geometry', optional=False))
+        self.addParameter(ParameterNumber(self.DISTANCE,
+            self.tr('Distance from line start represented as fraction of line length'), 0, 1, 0.5))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Additional creation options (see ogr2ogr manual)'),
+            '', optional=True))
+
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
@@ -63,7 +67,7 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
         layername = "'" + self.ogrLayerName(inLayer) + "'"
         distance = unicode(self.getParameterValue(self.DISTANCE))
         geometry = unicode(self.getParameterValue(self.GEOMETRY))
-        
+
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
 
@@ -74,7 +78,7 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
         arguments.append(output)
         arguments.append(ogrLayer)
         arguments.append(self.ogrLayerName(inLayer))
-        
+
         arguments.append('-dialect sqlite -sql "SELECT ST_Line_Interpolate_Point(')
         arguments.append(geometry)
         arguments.append(',')
@@ -83,10 +87,10 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
         arguments.append('FROM')
         arguments.append(layername)
         arguments.append('"')
-        
+
         if len(options) > 0:
             arguments.append(options)
-            
+
         commands = []
         if isWindows():
             commands = ['cmd.exe', '/C ', 'ogr2ogr.exe',
@@ -95,4 +99,3 @@ class Ogr2OgrPointsOnLines(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)
-        
