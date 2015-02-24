@@ -561,7 +561,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   }
   else
   {
-    QgsDebugMsg( QString( "mTiled:%1 mMaxWidth:%2 mMaxHeight:%3" ).arg( mSettings.mTiled ).arg( mSettings.mMaxWidth ).arg( mSettings.mMaxHeight ) );
     mTileReqNo++;
 
     double vres = viewExtent.width() / pixelWidth;
@@ -599,7 +598,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
       tileMode = mTileLayer->tileMode;
     }
-    else if ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight && != 0 )
+    else if ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 )
     {
       static QgsWmtsTileMatrix tempTm;
       tempTm.topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
@@ -614,7 +613,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     else
     {
       QgsDebugMsg( "empty tile size" );
-      return mCacheImage;
+      return mCachedImage;
     }
 
     QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
