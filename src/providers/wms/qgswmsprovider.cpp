@@ -561,7 +561,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   }
   else
   {
-    QgsDebugMsg( QString( "mTiled:%1 mMaxWidth:%2 mMaxHeight:%3" ).arg( mSettings.mTiled ).arg( mSettings.mMaxWidth ).arg( mSettings.mMaxHeight ) );
     mTileReqNo++;
 
     double vres = viewExtent.width() / pixelWidth;
