@@ -309,8 +309,8 @@ void QgsBookmarks::importFromXML()
                "'" + name.text() + "',"
                "'" + prjname.text() + "',"
                + xmin.text() + ","
-               + xmax.text() + ","
                + ymin.text() + ","
+               + xmax.text() + ","
                + ymax.text() + ","
                + srid.text() + ");";
   }
