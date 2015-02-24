@@ -25,6 +25,7 @@
 #include <qwt_plot_curve.h>
 #if (WITH_QWTPOLAR)
 #include <qwt_polar_plot.h>
+#include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
 #endif
 
@@ -89,6 +90,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QwtPlotCurve * mpCurve;
 #if (WITH_QWTPOLAR)
     QwtPolarPlot * mpSatellitesWidget;
+    QwtPolarGrid *mpSatellitesGrid;
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
