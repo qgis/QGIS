@@ -36,8 +36,12 @@ from jinja2 import Environment, FileSystemLoader
 from pygments import highlight
 from pygments.lexers import XmlLexer
 from pygments.formatters import HtmlFormatter
+from PyQt4.QtCore import QSettings
 from PyQt4.QtGui import QMessageBox
 from PyQt4.uic import loadUiType
+
+from qgis.core import QGis
+
 
 LOGGER = logging.getLogger('MetaSearch')
 
@@ -119,6 +123,18 @@ def highlight_xml(context, xml):
     template_file = 'resources/templates/xml_highlight.html'
     template = env.get_template(template_file)
     return template.render(css=css, body=body)
+
+
+def get_help_url():
+    """return QGIS MetaSearch help documentation link"""
+
+    locale_name = QSettings().value('locale/userLocale')[0:2]
+    version = QGis.QGIS_VERSION[:3]
+
+    path = '%s/%s/docs/user_manual/plugins/plugins_metasearch.html' % \
+            (version, locale_name)
+
+    return '/'.join(['http://docs.qgis.org', path])
 
 
 def open_url(url):
