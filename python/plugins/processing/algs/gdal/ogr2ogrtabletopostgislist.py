@@ -85,7 +85,8 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         self.addParameter(ParameterString(self.PK,
             self.tr('Primary key'), 'id', optional=True))
         self.addParameter(ParameterTableField(self.PRIMARY_KEY,
-            self.tr('Primary key (existing field, used if the above option is left empty)'), self.INPUT_LAYER, optional=True))
+            self.tr('Primary key (existing field, used if the above option is left empty)'),
+            self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterString(self.WHERE,
             self.tr('Select features using a SQL "WHERE" statement (Ex: column="value")'),
             '', optional=True))
@@ -148,12 +149,12 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         arguments.append('port=')
         arguments.append(port)
         if len(dbname) > 0:
-	    arguments.append('dbname='+dbname)
+            arguments.append('dbname=' + dbname)
         if len(password) > 0:
-	    arguments.append('password='+password)
-        arguments.append('user='+user+'"')
+            arguments.append('password=' + password)
+        arguments.append('user=' + user + '"')
         arguments.append(ogrLayer)
-        arguments.append('-nlt NONE')        
+        arguments.append('-nlt NONE')
         arguments.append(self.ogrLayerName(inLayer))
         if launder:
             arguments.append(launderstring)
@@ -167,7 +168,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
             arguments.append(schemastring)
         if len(pk) > 0:
             arguments.append(pkstring)
-        elif primary_key != None:
+        elif primary_key is not None:
             arguments.append("-lco FID="+primary_key)
         if len(table) > 0:
             arguments.append('-nln')
@@ -179,7 +180,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         if len(gt) > 0:
             arguments.append('-gt')
             arguments.append(gt)
-        if precision is False:
+        if not precision:
             arguments.append('-lco PRECISION=NO')
         if len(options) > 0:
             arguments.append(options)
