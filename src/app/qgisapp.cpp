@@ -3883,6 +3883,7 @@ void QgisApp::newMemoryLayer()
     layers << newLayer;
 
     QgsMapLayerRegistry::instance()->addMapLayers( layers );
+    newLayer->startEditing();
   }
 }
 
