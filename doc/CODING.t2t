@@ -1047,7 +1047,7 @@ add to our test class:
 
 ```
 QTEST_MAIN(TestQgsRasterLayer)
-#include "moc_testqgsrasterlayer.cxx"
+#include "testqgsrasterlayer.moc"
 ```
 
 The purpose of these two lines is to signal to Qt's moc that his is a QtTest

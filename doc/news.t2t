@@ -38,7 +38,7 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
-= What's new in Version 2.8.0 'Wien'? =
+= What's new in Version 2.8 'Wien'? =
 
 This is a minor release increment with the following feature:
 - QGIS 2.8 is the basis for a long term release (which will be maintained for a year).
@@ -56,16 +56,17 @@ This is a minor release increment with the following feature:
 - Qt5 support (optional - default packages are still currently built against Qt4).
 - Spatial bookmark import/export.
 - Composer user interface improvements.
-- Grid overlay improvements for composer maps. 
+- Grid overlay improvements for composer maps.
 - Raster image fill type.
 - Live heatmap renderer.
 - You can now use multiple styles per layer.
-- Rotation of map canvas (disabled by default, activate in settings) is now supported.
+- Rotation of map canvas is now supported.
 - Improved user interface for data defined symbology.
 - New algorithms in processing.
 - Expressions are now extendable with custom python functions.
 - Comments are now supported in expressions.
-- QGIS server improvements: better caching, layer style support, value relations, DescribeLayer, python plugins.
+- QGIS server improvements: better caching, layer style support, value relations,
+  DescribeLayer, python plugins.
 -
 
 
