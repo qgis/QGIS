@@ -3,6 +3,7 @@ usr/lib/libqgis_core.so
 usr/lib/libqgis_gui.so
 usr/lib/libqgis_analysis.so
 usr/lib/libqgis_networkanalysis.so
+usr/lib/libqgis_server.so
 usr/lib/libqgisgrass.so
 usr/lib/libqgispython.so
 usr/share/qgis/FindQGIS.cmake
