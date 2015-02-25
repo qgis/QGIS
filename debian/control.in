@@ -224,6 +224,7 @@ Depends:
  libqgis-gui{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-server{QGIS_ABI} (= ${binary:Version}),
  libqgisgrass{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
  libqt4-dev (>= 4.7.0),
