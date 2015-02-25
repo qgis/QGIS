@@ -155,7 +155,7 @@ class CORE_EXPORT QgsGeometry
     QGis::GeometryType type() const;
 
     /** Returns true if wkb of the geometry is of WKBMulti* type */
-    bool isMultipart();
+    bool isMultipart() const;
 
     /** compare geometries using GEOS */
     bool isGeosEqual( QgsGeometry & );
