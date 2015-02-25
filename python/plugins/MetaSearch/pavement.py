@@ -123,7 +123,7 @@ def package():
                 if file_add.endswith('.pyc') or file_add in skip_files:
                     continue
                 filepath = os.path.join(root, file_add)
-                relpath = os.path.relpath(filepath)
+                relpath = os.path.join(PLUGIN_NAME, os.path.relpath(filepath))
                 zipf.write(filepath, relpath)
     return package_file  # return name of created zipfile
 
