@@ -1,11 +1,12 @@
 QGIS News
 Change history for the QGIS Project
-Friday February 20, 2015
+Wednesday February 25, 2015
 
 
 ------------------------------------------------------------------------
 
-  1. What's new in Version 2.8.0 'Wien'?
+
+  1. What's new in Version 2.8 'Wien'?
   2. What's new in Version 2.6.0 'Brighton'?
   3. What's new in Version 2.4.0 'Chugiak'?
   4. Whats new in Version 2.2.0 'Valmiera'?
@@ -33,12 +34,13 @@ Friday February 20, 2015
 
 ------------------------------------------------------------------------
 
-Last Updated: Friday February 20, 2015
-Last Change : Friday February 20, 2015
+
+Last Updated: Wednesday February 25, 2015
+Last Change : Wednesday February 25, 2015
 
 
-  1. What's new in Version 2.8.0 'Wien'?
-  ======================================
+  1. What's new in Version 2.8 'Wien'?
+  ====================================
 
 This is a minor release increment with the following feature:
 
@@ -57,17 +59,17 @@ This is a minor release increment with the following feature:
 - Qt5 support (optional - default packages are still currently built against Qt4).
 - Spatial bookmark import/export.
 - Composer user interface improvements.
-- Grid overlay improvements for composer maps. 
+- Grid overlay improvements for composer maps.
 - Raster image fill type.
 - Live heatmap renderer.
 - You can now use multiple styles per layer.
-- Rotation of map canvas (disabled by default, activate in settings) is now supported.
+- Rotation of map canvas is now supported.
 - Improved user interface for data defined symbology.
 - New algorithms in processing.
 - Expressions are now extendable with custom python functions.
 - Comments are now supported in expressions.
-- QGIS server improvements: better caching, layer style support, value relations, DescribeLayer, python plugins.
-
+- QGIS server improvements: better caching, layer style support, value relations,
+  DescribeLayer, python plugins.
 
 
   2. What's new in Version 2.6.0 'Brighton'?
@@ -116,7 +118,6 @@ This is a minor release increment with the following new features:
 - Context menu for identify tool
 
 
-
   3. What's new in Version 2.4.0 'Chugiak'?
   =========================================
 
@@ -135,7 +136,6 @@ This is the minor release sports a number of great new features:
 - Shapeburst fill style
 - Option to shift marker line placement
 - New Inverted Polygon renderer
-
 
 
   4. Whats new in Version 2.2.0 'Valmiera'?
@@ -177,7 +177,6 @@ This is the minor release sports a number of great new features:
 - QGS now supports multiple datum transformations.
 - 'Processing' now has a script editor.
 - 'Processing' can be used headless in scripts.
-
 
 
   5. Whats new in Version 2.0.1 'Dufour'?
@@ -329,7 +328,6 @@ added gdal_fillnodata to GDALTools plugin
 - Support for nesting projects within other projects
 
 
-
   8. Whats new in Version 1.7.2 'Wroclaw'?
   ========================================
 
@@ -375,7 +373,6 @@ were made.
 - fTools: update layers lists after adding new layer to TOC (fix #4318)
 - Don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
 - Fix broken Assign projection functionality in GDALTools and improve handling output file extension
-
 
 
   9. Whats new in Version 1.7.1 'Wroclaw'?
@@ -476,7 +473,6 @@ changed so we will just provide a bullet list of key new features here.
 - Move/rotate/change label edit tools to interactively change data defined label properties.
 
 
-
   10.2. New Tools
   ===============
 
@@ -507,7 +503,6 @@ changed so we will just provide a bullet list of key new features here.
 - Default to last selection when prompting for CRS.
 
 
-
   10.5. Rasters
   =============
 
@@ -515,7 +510,6 @@ changed so we will just provide a bullet list of key new features here.
 - On-the-fly reprojection of rasters added!
 - Proper implementation of raster providers.
 - Added raster toolbar with histogram stretch functions.
-
 
 
   10.6. Providers and Data Handling
@@ -542,7 +536,6 @@ changed so we will just provide a bullet list of key new features here.
  - Optionally re-use entered attribute values for next digitized feature.
  - Allow merging/assigning attribute values to a set of features.-
  - Allow OGR 'save as' without attributes (for eg. DGN/DXF).
-
 
 
   10.7. Api and Developer Centric
@@ -573,12 +566,10 @@ changed so we will just provide a bullet list of key new features here.
 - Removed ogr converter plugin - use 'save as' context menu rather.
 
 
-
   10.10. Printing
   ===============
 
 - Undo/Redo support for the print composer
-
 
 
   11. Whats new in Version 1.6.0 'Capiapo'?
@@ -627,7 +618,6 @@ caching providers (currently WMS and WFS) can synchronize with changes in
 the datasource.
 
 
-
   11.2. Table of contents (TOC) improvements
   ==========================================
 
@@ -636,7 +626,6 @@ layer using the min and max pixel values of the current extent.
 - When writing shape files using the table of contents context menu's 'Save
 as' option, you can now specify OGR creation options.
 - In the table of contents, it is now possible to select and remove several layers at once.
-
 
 
   11.3. Labelling (New generation only)
@@ -667,7 +656,6 @@ the transparency table in the raster layer properties dialog.
 the style manager more easily.
 
 
-
   11.5. Map Composer
   ==================
 
@@ -675,7 +663,6 @@ the style manager more easily.
 position dialog.
 - Composer items can now be deleted with the backspace key.
 - Sorting for composer attribute table (several columns and ascending / descending).
-
 
 
   12. Whats new in Version 1.5.0?
@@ -748,7 +735,6 @@ only visible features in composer table or all features
 closed and reappears when reactivated.
 
 
-
   12.2. WMS and WMS-C Support
   ===========================
 
@@ -760,7 +746,6 @@ IGNF definitions in srs.db
 - WMS has support for more mime types
 - Added load/save to WMS dialog
 - WMS-C scale slider gui added and more selection improvements
-
 
 
   12.3. API Updates
@@ -778,7 +763,6 @@ and dynamic authentication to website and proxies)
 variables. More paths can be passed, separated by semicolon.
 - Legend interface added to retrieve layers in legend order
 - Support more GEOS operators
-
 
 
   13. Whats new in Version 1.4.0 'Enceladus'?
@@ -857,7 +841,6 @@ This release includes over 30 bug fixes and several useful new features:
 - other OSM related bugfixes.
 
 
-
   14.2. Other notable features and improvements in this release
   =============================================================
 
@@ -871,7 +854,6 @@ This release includes over 30 bug fixes and several useful new features:
 - Added snapping to current layer in measure dialog.
 - Added ability to select the primary key for views.
 - Zoom to a coordinate by entering it in the status bar coordinate display.
-
 
 
   15. Version 1.2.0 'Daphnis'
@@ -901,7 +883,6 @@ includes the addition of new vector editing tools:
 - Added undo/redo functionality for vector layer editing.
 - Added option to show only markers of selected features in editing mode.
 - Change layer's icon in legend to reflext that the layer is editable.
-
 
 In addition, there are undo/redo actions in Edit menu, in Advanced digitizing toolbar
 and there is a new dock widget displaying undo stack of active layer.
@@ -967,7 +948,6 @@ be respected in the attribute table.
 - An new OpenStreetMap provider and plugin have been added to QGIS.
 
 
-
   15.6. Projects Management
   =========================
 
@@ -992,7 +972,6 @@ types and for setting of column comments.
 - add support for font symbol markers (only data defined - no gui yet)
 - add symbol size in map units (ie. symbols that keep the size in mapunits
   independent of the mapscale)
-
 
 
   15.9. Command line arguments
@@ -1066,7 +1045,6 @@ implementation based on the SQLITE database.
 layers based on attribute data.
 
 
-
   16. Version 1.0.0 'Kore'
   ========================
 
@@ -1096,7 +1074,6 @@ running will support a plugin that is being installed.
 - Ported all GDAL/OGR and GEOS usage to use C APIs only.
 
 
-
   17. Version 0.11.0 'Metis'
   ==========================
 
@@ -1111,7 +1088,6 @@ QGIS 0.10.0 release. In addition we have made the following changes:
 - List view and filter for Plugin Manager to find plugins more easily
 - Updated Spatial Reference System definitions
 - QML Style support for rasters and database layers
-
 
 
   18. Version 0.10.0 'Io'
@@ -1135,7 +1111,6 @@ improvements 'under the hood'.
 - Support for migration of old projects to work in newer QGIS versions.
 
 
-
   19. Version 0.9.2rc1 'Ganymede'
   ===============================
 
@@ -1153,7 +1128,6 @@ in raster layers. Support for color ramps in raster layers.
 improvements 'under the hood'.
 
 
-
   20. Version 0.9.1 'Ganymede'
   ============================
 
@@ -1165,7 +1139,6 @@ This is a bug fix release
 - Documentation updates
 - Improvements for building under MSVC
 - Python Plugin installer to install PyQGIS plugins from the repository
-
 
 
   21. Version 0.9 'Ganymede'
@@ -1181,7 +1154,6 @@ This is a bug fix release
 - Crash fix for 2.5D shapefiles
 - The QGIS libraries have been refactored and better organised.
 - Improvements to the GeoReferencer
-
 
 
   22. Version 0.8 'Joesephine' .... development version
@@ -1206,7 +1178,6 @@ over time,
 - 2005-11-10 [timlinux] 0.7.9.1 Merged in 0.7 branch changes with Tom Elwertowskis help
 - 2005-10-13 [timlinux] 0.7.9 Added capability to generate point and polygon based graticules to the
 grid_maker plugin
-
 
 
   23. Version 0.6 'Simon'
@@ -2109,7 +2080,6 @@ including:
 - currently this process IS NOT KNOWN TO BE REVERSIBLE so please backup data
 first before experimenting.
 
-
 2004-04-27 [ts] 0.2.0devel1
 
 Rejigged single marker symbol so directory, icon selector, preview and 
@@ -2343,7 +2313,9 @@ Search radius for identifying features on vector layers added to Preferences
 2004-02-23 [ts]
 Save current view to disk as a PNG image
 
+
 ------------------------------------------------------------------------------
+
 Version 0.1 'Moroz' February 25, 2004
 User interface improvements - menu and dialog cleanups and a new icon theme
   based on Everaldo's Crystal icon set.
@@ -2487,8 +2459,4 @@ July 6, 2002
   tables that could be loaded. 
 
   This is the initial import of the code base into CVS on Sourceforge.net.
-
-
-
-
 
