@@ -61,7 +61,7 @@ This is a minor release increment with the following feature:
 - Raster image fill type.
 - Live heatmap renderer.
 - You can now use multiple styles per layer.
-- Rotation of map canvas (disabled by default, activate in settings) is now supported.
+- Rotation of map canvas is now supported.
 - Improved user interface for data defined symbology.
 - New algorithms in processing.
 - Expressions are now extendable with custom python functions.
