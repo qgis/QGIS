@@ -299,13 +299,13 @@ void QgsBookmarks::importFromXML()
   for ( int i = 0;i < nodeList.count(); i++ )
   {
     QDomNode bookmark = nodeList.at( i );
-    QDomElement name = bookmark.firstChildElement( "Name" );
-    QDomElement prjname = bookmark.firstChildElement( "Project" );
-    QDomElement xmin = bookmark.firstChildElement( "xMin" );
-    QDomElement xmax = bookmark.firstChildElement( "xMax" );
-    QDomElement ymin = bookmark.firstChildElement( "yMin" );
-    QDomElement ymax = bookmark.firstChildElement( "yMax" );
-    QDomElement srid = bookmark.firstChildElement( "SRID" );
+    QDomElement name = bookmark.firstChildElement( "name" );
+    QDomElement prjname = bookmark.firstChildElement( "project" );
+    QDomElement xmin = bookmark.firstChildElement( "xmin" );
+    QDomElement xmax = bookmark.firstChildElement( "xmax" );
+    QDomElement ymin = bookmark.firstChildElement( "ymin" );
+    QDomElement ymax = bookmark.firstChildElement( "ymax" );
+    QDomElement srid = bookmark.firstChildElement( "sr_id" );
 
     queries += "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
                "  VALUES (NULL,"
@@ -364,6 +364,10 @@ void QgsBookmarks::exportToXML()
   int rowCount = lstBookmarks->model()->rowCount();
   int colCount = lstBookmarks->model()->columnCount();
 
+  QList<QString> headerList;
+  headerList << "id" << "name" << "project" << "xmin"
+  << "ymin" << "xmax" << "ymax" << "sr_id";
+
   for ( int i = 0; i < rowCount; ++i )
   {
     QDomElement bookmark = doc.createElement( "bookmark" );
@@ -375,8 +379,8 @@ void QgsBookmarks::exportToXML()
       {
         QString value = idx.data( Qt::DisplayRole ).toString();
         QDomText idText = doc.createTextNode( value );
-        QVariant header = lstBookmarks->model()->headerData( j, Qt::Horizontal );
-        QDomElement id = doc.createElement( header.toString() );
+        QString header = headerList.at( j );
+        QDomElement id = doc.createElement( header );
         id.appendChild( idText );
         bookmark.appendChild( id );
       }
