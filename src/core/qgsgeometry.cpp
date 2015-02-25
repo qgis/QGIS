@@ -679,7 +679,7 @@ QGis::GeometryType QgsGeometry::type() const
   }
 }
 
-bool QgsGeometry::isMultipart()
+bool QgsGeometry::isMultipart() const
 {
   if ( mDirtyWkb )
     exportGeosToWkb();
