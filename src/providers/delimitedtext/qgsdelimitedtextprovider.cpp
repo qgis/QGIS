@@ -84,6 +84,14 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mBuildSpatialIndex( false )
     , mSpatialIndex( 0 )
 {
+
+  // Add supported types to enable creating expression fields in field calculator
+  mNativeTypes
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 0, 10 )
+  << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
+  << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
+  ;
+
   QgsDebugMsg( "Delimited text file uri is " + uri );
 
   QUrl url = QUrl::fromEncoded( uri.toAscii() );
