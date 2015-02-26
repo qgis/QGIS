@@ -129,6 +129,8 @@ class QGis
     static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
     //! Provides translated version of the type value
     static QString tr( QGis::UnitType unit );
+    //! Provides type value from translated version
+    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 

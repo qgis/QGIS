@@ -43,14 +43,14 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
 
-  mUnitsCombo->addItem( tr( "Meters" ) );
-  mUnitsCombo->addItem( tr( "Feet" ) );
-  mUnitsCombo->addItem( tr( "Degrees" ) );
-  mUnitsCombo->addItem( tr( "Nautical Miles" ) );
+  mUnitsCombo->addItem( QGis::tr( QGis::Meters ) );
+  mUnitsCombo->addItem( QGis::tr( QGis::Feet ) );
+  mUnitsCombo->addItem( QGis::tr( QGis::Degrees ) );
+  mUnitsCombo->addItem( QGis::tr( QGis::NauticalMiles ) );
 
   QSettings settings;
-  QString units = settings.value( "/qgis/measure/displayunits", "meters" ).toString();
-  mUnitsCombo->setCurrentIndex( mUnitsCombo->findText( units, Qt::MatchFixedString ) );
+  QString units = settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString();
+  mUnitsCombo->setCurrentIndex( mUnitsCombo->findText( QGis::tr( QGis::fromLiteral( units ) ), Qt::MatchFixedString ) );
 
   updateSettings();
 
@@ -66,7 +66,7 @@ void QgsMeasureDialog::updateSettings()
   mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
   // Configure QgsDistanceArea
-  mDisplayUnits = QGis::fromLiteral( mUnitsCombo->currentText().toLower() );
+  mDisplayUnits = QGis::fromTr( mUnitsCombo->currentText() );
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
@@ -92,7 +92,7 @@ void QgsMeasureDialog::updateSettings()
 
 void QgsMeasureDialog::unitsChanged( const QString &units )
 {
-  mDisplayUnits = QGis::fromLiteral( units.toLower() );
+  mDisplayUnits = QGis::fromTr( units );
   mTable->clear();
   mTotal = 0.;
   updateUi();
@@ -350,4 +350,3 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   mDa.convertMeasurement( measure, myUnits, mDisplayUnits, isArea );
   u = myUnits;
 }
-
