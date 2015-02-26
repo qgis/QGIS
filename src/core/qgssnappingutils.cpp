@@ -206,7 +206,8 @@ QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QPoint& point, QgsPoin
 
 QgsPointLocator::Match QgsSnappingUtils::snapToMap( const QgsPoint& pointMap, QgsPointLocator::MatchFilter* filter )
 {
-  Q_ASSERT( mMapSettings.hasValidSettings() );
+  if ( !mMapSettings.hasValidSettings() )
+    return QgsPointLocator::Match();
 
   if ( mSnapToMapMode == SnapCurrentLayer )
   {

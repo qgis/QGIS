@@ -120,6 +120,18 @@ QString QGis::tr( QGis::UnitType unit )
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
 }
 
+QGis::UnitType QGis::fromTr( QString literal, QGis::UnitType defaultType )
+{
+  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
+  {
+    if ( literal == QGis::tr( static_cast<UnitType>( i ) ) )
+    {
+      return static_cast<UnitType>( i );
+    }
+  }
+  return defaultType;
+}
+
 double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
 {
 #define DEGREE_TO_METER 111319.49079327358

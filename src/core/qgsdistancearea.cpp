@@ -1026,8 +1026,7 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       //intentional fall-through
     default:
       QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( u ) );
-  };
-
+  }
 
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
 }
