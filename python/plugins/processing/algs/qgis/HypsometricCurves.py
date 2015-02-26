@@ -132,6 +132,12 @@ class HypsometricCurves(GeoAlgorithm):
             srcOffset = (startColumn, startRow, width, height)
             srcArray = rasterBand.ReadAsArray(*srcOffset)
 
+            if srcOffset[2] == 0 or srcOffset[3] == 0:
+                progress.setInfo(
+                    self.tr('Feature %d does is smaller than raster '
+                            'cell size' % f.id()))
+                continue
+
             newGeoTransform = (
                 geoTransform[0] + srcOffset[0] * geoTransform[1],
                 geoTransform[1],
