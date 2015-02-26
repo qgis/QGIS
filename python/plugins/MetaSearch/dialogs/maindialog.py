@@ -518,7 +518,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             return
 
         identifier = get_item_data(item, 'identifier')
-        record = self.catalog.records[identifier]
+        try:
+            record = self.catalog.records[identifier]
+        except KeyError, err:
+            QMessageBox.warning(self,
+                                self.tr('Record parsing error'),
+                                'Unable to locate record identifier')
+            return
 
         # if the record has a bbox, show a footprint on the map
         if record.bbox is not None:
@@ -733,6 +739,12 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, self.tr('GetRecords error'),
                                 self.tr('Error getting response: %s') % err)
+            return
+        except KeyError, err:
+            QMessageBox.warning(self,
+                                self.tr('Record parsing error'),
+                                'Unable to locate record identifier')
+            QApplication.restoreOverrideCursor()
             return
 
         QApplication.restoreOverrideCursor()
