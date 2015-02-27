@@ -223,7 +223,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
-  mScene->addItem( mMap );
 
   // project handling
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
