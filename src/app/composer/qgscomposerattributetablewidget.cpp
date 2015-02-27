@@ -286,7 +286,7 @@ void QgsComposerAttributeTableWidget::on_mHeaderFontPushButton_clicked()
 
   bool ok;
   QFont newFont = QgisGui::getFont( ok, mComposerTable->headerFont(), tr( "Select Font" ) );
-  if ( !ok )
+  if ( ok )
   {
     QgsComposition *composition = mComposerTable->composition();
     if ( composition )
