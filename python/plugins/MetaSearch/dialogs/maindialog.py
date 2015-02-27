@@ -72,6 +72,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.catalog_url = None
         self.context = StaticContext()
 
+        version = self.context.metadata.get('general', 'version')
+        self.setWindowTitle('MetaSearch %s' % version)
+
         self.rubber_band = QgsRubberBand(self.map, True)  # True = a polygon
         self.rubber_band.setColor(QColor(255, 0, 0, 75))
         self.rubber_band.setWidth(5)
