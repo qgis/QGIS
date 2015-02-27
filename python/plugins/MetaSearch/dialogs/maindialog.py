@@ -626,9 +626,20 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
-        self.catalog.getrecords2(constraints=self.constraints,
-                                 maxrecords=self.maxrecords,
-                                 startposition=self.startfrom, esn='full')
+        try:
+            self.catalog.getrecords2(constraints=self.constraints,
+                                     maxrecords=self.maxrecords,
+                                     startposition=self.startfrom, esn='full')
+        except ExceptionReport, err:
+            QApplication.restoreOverrideCursor()
+            QMessageBox.warning(self, self.tr('Search error'),
+                                self.tr('Search error: %s') % err)
+            return
+        except Exception, err:
+            QApplication.restoreOverrideCursor()
+            QMessageBox.warning(self, self.tr('Connection error'),
+                                self.tr('Connection error: %s') % err)
+            return
 
         QApplication.restoreOverrideCursor()
 
