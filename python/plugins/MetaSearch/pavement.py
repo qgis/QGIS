@@ -186,6 +186,7 @@ def test_default_csw_connections():
         try:
             csw = CatalogueServiceWeb(conn.attrib.get('url'))
             info('Success: %s', csw.identification.title)
+            csw.getrecords2()
         except Exception, err:
             raise ValueError('ERROR: %s', err)
 
@@ -214,12 +215,11 @@ def generate_csw_connections_file():
                 csw = CatalogueServiceWeb(url)
                 title = unicode(csw.identification.title)
                 conn = etree.SubElement(conns, 'csw', name=title, url=url)
-                #conn.attrib['name'] = title
-                #conn.attrib['url'] = url
             except Exception, err:
                 error('ERROR on CSW %s: %s', url, err)
 
-    info(etree.tostring(conns, encoding='utf-8'))
+    with open('%s.xml' % filename, 'w') as connsxmlfh:
+        connsxmlfh.write(etree.tostring(conns, encoding='utf-8'))
 
 
 def get_package_filename():
