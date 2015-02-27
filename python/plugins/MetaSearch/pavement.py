@@ -23,14 +23,14 @@ from ConfigParser import ConfigParser
 import getpass
 import os
 import shutil
-from urllib import urlencode
-from urllib2 import urlopen
 import xml.etree.ElementTree as etree
 import xmlrpclib
 import zipfile
 
 from paver.easy import (call_task, cmdopts, error, info, options, path,
-                        pushd, sh, task, Bunch)
+                        sh, task, Bunch)
+
+from owslib.csw import CatalogueServiceWeb
 
 PLUGIN_NAME = 'MetaSearch'
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -180,24 +180,46 @@ def test_default_csw_connections():
     relpath = 'resources%sconnections-default.xml' % os.sep
     csw_connections_xml = options.base.plugin / relpath
 
-    csws = etree.parse(csw_connections_xml)
+    conns = etree.parse(csw_connections_xml)
 
-    for csw in csws.findall('csw'):
-        # name = csw.attrib.get('name')
-        data = {
-            'service': 'CSW',
-            'version': '2.0.2',
-            'request': 'GetCapabilities'
-        }
-        values = urlencode(data)
-        url = '%s?%s' % (csw.attrib.get('url'), values)
-        content = urlopen(url)
-        if content.getcode() != 200:
-            raise ValueError('Bad HTTP status code')
-        csw_xml = etree.fromstring(content.read())
-        tag = '{http://www.opengis.net/cat/csw/2.0.2}Capabilities'
-        if csw_xml.tag != tag:
-            raise ValueError('root element should be csw:Capabilities')
+    for conn in conns.findall('csw'):
+        try:
+            csw = CatalogueServiceWeb(conn.attrib.get('url'))
+            info('Success: %s', csw.identification.title)
+        except Exception, err:
+            raise ValueError('ERROR: %s', err)
+
+
+@task
+@cmdopts([
+    ('filename=', 'f', 'Path to file of CSW URLs'),
+])
+def generate_csw_connections_file():
+    """generate a CSW connections file from a flat file of CSW URLs"""
+
+    filename = options.get('filename', False)
+
+    if not filename:
+        raise ValueError('path to file of CSW URLs required')
+
+    conns = etree.Element('qgsCSWConnections')
+    conns.attrib['version'] = '1.0'
+
+    with open(filename) as connsfh:
+        for line in connsfh:
+            url = line.strip()
+            if not url:  # blank line
+                continue
+            try:
+                csw = CatalogueServiceWeb(url)
+                title = unicode(csw.identification.title)
+                conn = etree.SubElement(conns, 'csw', name=title, url=url)
+                #conn.attrib['name'] = title
+                #conn.attrib['url'] = url
+            except Exception, err:
+                error('ERROR on CSW %s: %s', url, err)
+
+    info(etree.tostring(conns, encoding='utf-8'))
 
 
 def get_package_filename():
