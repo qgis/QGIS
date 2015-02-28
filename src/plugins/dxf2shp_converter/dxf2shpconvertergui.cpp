@@ -16,7 +16,6 @@
 #include "qgscontexthelp.h"
 
 #include "builder.h"
-#include "getInsertions.h"
 #include "dxflib/src/dl_dxf.h"
 
 //qt includes
@@ -58,8 +57,9 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
     return;
   }
 
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
   int type = SHPT_POINT;
-  bool convtexts = convertTextCheck->checkState();
 
   if ( polyline->isChecked() )
     type = SHPT_ARC;
@@ -70,28 +70,7 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
   if ( point->isChecked() )
     type = SHPT_POINT;
 
-  InsertRetrClass *insertRetr = new InsertRetrClass();
-
-  DL_Dxf *dxf_inserts = new DL_Dxf();
-
-  if ( !dxf_inserts->in( inf.toStdString(), insertRetr ) )
-  {
-    // if file open failed
-    QgsDebugMsg( "Aborting: The input file could not be opened." );
-    delete dxf_inserts;
-    return;
-  }
-
-  Builder *parser = new Builder(
-    outd.toStdString(),
-    type,
-    insertRetr->XVals, insertRetr->YVals,
-    insertRetr->Names,
-    insertRetr->countInserts,
-    convtexts );
-
-  QgsDebugMsg( QString( "Finished getting insertions. Count: %1" ).arg( insertRetr->countInserts ) );
-  delete dxf_inserts;
+  Builder *parser = new Builder( outd, type, convertTextCheck->isChecked(), convertInsertCheck->isChecked() );
 
   DL_Dxf *dxf_Main = new DL_Dxf();
 
@@ -100,22 +79,29 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
     // if file open failed
     delete dxf_Main;
     QgsDebugMsg( "Aborting: The input file could not be opened." );
+    QApplication::restoreOverrideCursor();
     return;
   }
 
-  delete insertRetr;
   delete dxf_Main;
 
   parser->print_shpObjects();
 
-  emit createLayer( QString(( parser->outputShp() ).c_str() ), QString( "Data layer" ) );
+  emit createLayer( parser->outputShp(), "Data layer" );
 
-  if ( convtexts && parser->textObjectsSize() > 0 )
+  if ( convertTextCheck->isChecked() && parser->textObjectsSize() > 0 )
   {
-    emit createLayer( QString(( parser->outputTShp() ).c_str() ), QString( "Text layer" ) );
+    emit createLayer( parser->outputTShp(), "Text layer" );
+  }
+
+  if ( convertInsertCheck->isChecked() && parser->insertObjectsSize() > 0 )
+  {
+    emit createLayer( parser->outputIShp(), "Insert layer" );
   }
 
   delete parser;
+
+  QApplication::restoreOverrideCursor();
 
   accept();
 }

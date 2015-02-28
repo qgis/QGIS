@@ -293,22 +293,14 @@ Comment: The code is heavily based on Christopher Michaelis' DXF to
  Used for the Shapefile functionality.
 License: MIT
 
-Files: src/plugins/dxf2shp_converter/getInsertions.h
-Copyright: Christopher Michaelis
-License: GPL-2
-
-Files: src/plugins/dxf2shp_converter/getInsertions.cpp
-Copyright: Christopher Michaelis
-License: GPL-2+
-
 Files: src/plugins/dxf2shp_converter/shapelib-1.2.10/*
 Copyright: 1999, 2001-2002, Frank Warmerdam
 License: MIT or LGPL-2+
 
 Files: src/plugins/dxf2shp_converter/dxflib/src/*
-Copyright: 2001-2003, RibbonSoft
+Copyright: 2001-2013, RibbonSoft GmbH
                 2001, Robert J. Campbell Jr
-License: GPL-2 or dxflib-Commercial-License
+License: GPL-2+ or dxflib-Commercial-License
 
 Files: src/plugins/evis/*
 Copyright: 2007, American Museum of Natural History

@@ -20,28 +20,21 @@
 //IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-#include <cmath>
-#include <string>
-
 #include "builder.h"
+
+#include <cmath>
+#include <QVector>
 
 #include "qgslogger.h"
 
-Builder::Builder( std::string theFname,
+Builder::Builder( QString theFname,
                   int theShapefileType,
-                  double *theGrpXVals, double *theGrpYVals,
-                  std::string *theGrpNames,
-                  int theInsertCount,
-                  bool theConvertText )
+                  bool theConvertText,
+                  bool theConvertInserts )
     : fname( theFname )
     , shapefileType( theShapefileType )
-    , grpXVals( theGrpXVals )
-    , grpYVals( theGrpYVals )
-    , grpNames( theGrpNames )
-    , insertCount( theInsertCount )
     , convertText( theConvertText )
-    , fetchedprims( 0 )
-    , fetchedtexts( 0 )
+    , convertInserts( theConvertInserts )
     , ignoringBlock( false )
     , current_polyline_willclose( false )
     , store_next_vertex_for_polyline_close( false )
@@ -49,65 +42,22 @@ Builder::Builder( std::string theFname,
     , closePolyX( 0.0 )
     , closePolyY( 0.0 )
     , closePolyZ( 0.0 )
-    , currentBlockX( 0.0 )
-    , currentBlockY( 0.0 )
 {
 }
 
 Builder::~Builder()
 {
-  polyVertex.clear();
-  shpObjects.clear();
-  textObjects.clear();
-}
-
-int Builder::textObjectsSize()
-{
-  return textObjects.size();
-}
-
-std::string Builder::outputShp()
-{
-  return outputshp;
-}
-
-std::string Builder::outputTShp()
-{
-  return outputtshp;
 }
 
 void Builder::addBlock( const DL_BlockData& data )
 {
-  QgsDebugMsg( "start block." );
-
-  if ( data.name.compare( "ADCADD_ZZ" ) == 0 )
-  {
-    QgsDebugMsg( QString( "Ignoring block %1" ).arg( data.name.c_str() ) );
-    ignoringBlock = true;
-  }
-  else
-  {
-    for ( int i = 0; i < insertCount; i++ )
-    {
-      if ( grpNames[i] == data.name )
-      {
-        currentBlockX = grpXVals[i];
-        currentBlockY = grpYVals[i];
-        QgsDebugMsg( QString( "Found coord for block: (%1,%2)" ).arg( grpXVals[i] ).arg( grpYVals[i] ) );
-      }
-    }
-  }
+  Q_UNUSED( data );
+  ignoringBlock = true;
 }
 
 void Builder::endBlock()
 {
-  FinalizeAnyPolyline();
-
-  currentBlockX = 0.0;
-  currentBlockY = 0.0;
   ignoringBlock = false;
-
-  QgsDebugMsg( "end block." );
 }
 
 void Builder::addLayer( const DL_LayerData& data )
@@ -132,17 +82,8 @@ void Builder::addPoint( const DL_PointData& data )
     return;
   }
 
-
-  double x = data.x + currentBlockX;
-  double y = data.y + currentBlockY;
-  double z = data.z;
-
-  SHPObject *psObject;
-  psObject = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, 1, &x, &y, &z, NULL );
-
-  shpObjects.push_back( psObject );
-
-  fetchedprims++;
+  double x = data.x, y = data.y, z = data.z;
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, 1, &x, &y, &z, NULL );
 }
 
 void Builder::addLine( const DL_LineData& data )
@@ -167,22 +108,11 @@ void Builder::addLine( const DL_LineData& data )
   }
 
 
-  double xv[2], yv[2], zv[2];
-  xv[0] = data.x1 + currentBlockX;
-  yv[0] = data.y1 + currentBlockY;
-  zv[0] = data.z1;
+  double xv[2] = { data.x1, data.x2 };
+  double yv[2] = { data.y1, data.y2 };
+  double zv[2] = { data.z1, data.z2 };
 
-  xv[1] = data.x2 + currentBlockX;
-  yv[1] = data.y2 + currentBlockY;
-  zv[1] = data.z2;
-
-  SHPObject *psObject;
-
-  psObject = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, 2, xv, yv, zv, NULL );
-
-  shpObjects.push_back( psObject );
-
-  fetchedprims++;
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, 2, xv, yv, zv, NULL );
 }
 
 
@@ -218,11 +148,10 @@ void Builder::addPolyline( const DL_PolylineData& data )
 
     }
 
-    SHPObject *psShape;
     int dim = polyVertex.size();
-    double *xv = new double[dim];
-    double *yv = new double[dim];
-    double *zv = new double[dim];
+    QVector<double> xv( dim );
+    QVector<double> yv( dim );
+    QVector<double> zv( dim );
 
     for ( int i = 0; i < dim; i++ )
     {
@@ -231,20 +160,11 @@ void Builder::addPolyline( const DL_PolylineData& data )
       zv[i] = polyVertex[i].z;
     }
 
-    psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL );
-
-    delete [] xv;
-    delete [] yv;
-    delete [] zv;
-
-    shpObjects.push_back( psShape );
-
-
-    fetchedprims++;
+    shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
 
     polyVertex.clear();
 
-    QgsDebugMsg( QString( "polyline prepared: %1" ).arg( fetchedprims - 1 ) );
+    QgsDebugMsg( QString( "polyline prepared: %1" ).arg( shpObjects.size() - 1 ) );
     current_polyline_pointcount = 0;
   }
 
@@ -283,20 +203,15 @@ void Builder::addVertex( const DL_VertexData& data )
     return;
   }
 
-  DL_VertexData myVertex;
-  myVertex.x = data.x + currentBlockX;
-  myVertex.y = data.y + currentBlockY;
-  myVertex.z = data.z;
-
-  polyVertex.push_back( myVertex );
+  polyVertex << DL_VertexData( data.x, data.y, data.z );
 
   current_polyline_pointcount++;
 
   if ( store_next_vertex_for_polyline_close )
   {
     store_next_vertex_for_polyline_close = false;
-    closePolyX = data.x + currentBlockX;
-    closePolyY = data.y + currentBlockY;
+    closePolyX = data.x;
+    closePolyY = data.y;
     closePolyZ = data.z;
   }
 }
@@ -349,8 +264,8 @@ void Builder::addArc( const DL_ArcData& data )
 
     radianMeasure = i * M_PI / 180.0;
 
-    myPoint.x = data.radius * cos( radianMeasure ) + data.cx + currentBlockX;
-    myPoint.y = data.radius * sin( radianMeasure ) + data.cy + currentBlockY;
+    myPoint.x = data.radius * cos( radianMeasure ) + data.cx;
+    myPoint.y = data.radius * sin( radianMeasure ) + data.cy;
     myPoint.z = data.cz;
 
     arcPoints.push_back( myPoint );
@@ -361,11 +276,10 @@ void Builder::addArc( const DL_ArcData& data )
 
   // Finalize
 
-  SHPObject *psShape;
   int dim = arcPoints.size();
-  double *xv = new double[dim];
-  double *yv = new double[dim];
-  double *zv = new double[dim];
+  QVector<double> xv( dim );
+  QVector<double> yv( dim );
+  QVector<double> zv( dim );
 
   for ( int i = 0; i < dim; i++ )
   {
@@ -375,18 +289,8 @@ void Builder::addArc( const DL_ArcData& data )
 
   }
 
-  psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL );
-
-  delete [] xv;
-  delete [] yv;
-  delete [] zv;
-
-  shpObjects.push_back( psShape );
-
-  fetchedprims++;
-
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
   arcPoints.clear();
-
 }
 
 
@@ -414,18 +318,17 @@ void Builder::addCircle( const DL_CircleData& data )
   long shpIndex = 0;
   for ( double i = 0.0; i <= 2*M_PI; i += M_PI / 180.0, shpIndex++ )
   {
-    myPoint.x = data.radius * cos( i ) + data.cx + currentBlockX;
-    myPoint.y = data.radius * sin( i ) + data.cy + currentBlockY;
+    myPoint.x = data.radius * cos( i ) + data.cx;
+    myPoint.y = data.radius * sin( i ) + data.cy;
     myPoint.z = data.cz;
 
     circlePoints.push_back( myPoint );
   }
 
-  SHPObject *psShape;
   int dim = circlePoints.size();
-  double *xv = new double[dim];
-  double *yv = new double[dim];
-  double *zv = new double[dim];
+  QVector<double> xv( dim );
+  QVector<double> yv( dim );
+  QVector<double> zv( dim );
 
   for ( int i = 0; i < dim; i++ )
   {
@@ -434,36 +337,40 @@ void Builder::addCircle( const DL_CircleData& data )
     zv[i] = circlePoints[i].z;
   }
 
-  psShape = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL );
-
-  delete [] xv;
-  delete [] yv;
-  delete [] zv;
-
-  shpObjects.push_back( psShape );
-
-  fetchedprims++;
+  shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
 
   circlePoints.clear();
 }
 
+void Builder::addInsert( const DL_InsertData& data )
+{
+  if ( !convertInserts )
+    return;
+
+  insertObjects << DL_InsertData(
+    data.name,
+    data.ipx, data.ipy, data.ipz,
+    data.sx, data.sy, data.sz,
+    data.angle,
+    data.cols, data.rows,
+    data.colSp, data.rowSp
+  );
+}
+
 void Builder::addText( const DL_TextData &data )
 {
-  if ( convertText )
-  {
-    DL_TextData myText(
-      data.ipx + currentBlockX, data.ipy + currentBlockY, data.ipz,
-      data.apx, data.apy, data.apz,
-      data.height, data.xScaleFactor, data.textGenerationFlags,
-      data.hJustification, data.vJustification,
-      data.text, data.style, data.angle
-    );
+  if ( !convertText )
+    return;
 
-    textObjects.push_back( myText );
+  textObjects << DL_TextData(
+    data.ipx, data.ipy, data.ipz,
+    data.apx, data.apy, data.apz,
+    data.height, data.xScaleFactor, data.textGenerationFlags,
+    data.hJustification, data.vJustification,
+    data.text, data.style, data.angle
+  );
 
-    QgsDebugMsg( QString( "text: %1" ).arg( data.text.c_str() ) );
-    fetchedtexts++;
-  }
+  QgsDebugMsg( QString( "text: %1" ).arg( data.text.c_str() ) );
 }
 
 void Builder::FinalizeAnyPolyline()
@@ -473,19 +380,13 @@ void Builder::FinalizeAnyPolyline()
   {
     if ( current_polyline_willclose )
     {
-      DL_VertexData myVertex;
-      myVertex.x = closePolyX;
-      myVertex.y = closePolyY;
-      myVertex.z = closePolyZ;
-
-      polyVertex.push_back( myVertex );
+      polyVertex << DL_VertexData( closePolyX, closePolyY, closePolyZ );
     }
 
-    SHPObject *psObject;
     int dim = polyVertex.size();
-    double *xv = new double[dim];
-    double *yv = new double[dim];
-    double *zv = new double[dim];
+    QVector<double> xv( dim );
+    QVector<double> yv( dim );
+    QVector<double> zv( dim );
 
     for ( int i = 0; i < dim; i++ )
     {
@@ -494,58 +395,47 @@ void Builder::FinalizeAnyPolyline()
       zv[i] = polyVertex[i].z;
     }
 
-    psObject = SHPCreateObject( shapefileType, fetchedprims, 0, NULL, NULL, dim, xv, yv, zv, NULL );
-
-    delete [] xv;
-    delete [] yv;
-    delete [] zv;
-
-    shpObjects.push_back( psObject );
-
+    shpObjects << SHPCreateObject( shapefileType, shpObjects.size(), 0, NULL, NULL, dim, xv.data(), yv.data(), zv.data(), NULL );
     polyVertex.clear();
 
-    fetchedprims++;
-
-    QgsDebugMsg( QString( "Finalized adding of polyline shape %1" ).arg( fetchedprims - 1 ) );
+    QgsDebugMsg( QString( "Finalized adding of polyline shape %1" ).arg( shpObjects.size() - 1 ) );
     current_polyline_pointcount = 0;
   }
 }
 
 void Builder::print_shpObjects()
 {
-  int dim = shpObjects.size();
-  int dimTexts = textObjects.size();
-
-  QgsDebugMsg( QString( "Number of primitives: %1" ).arg( dim ) );
-  QgsDebugMsg( QString( "Number of text fields: %1" ).arg( dimTexts ) );
+  QgsDebugMsg( QString( "Number of primitives: %1" ).arg( shpObjects.size() ) );
+  QgsDebugMsg( QString( "Number of text fields: %1" ).arg( textObjects.size() ) );
+  QgsDebugMsg( QString( "Number of inserts fields: %1" ).arg( insertObjects.size() ) );
 
   SHPHandle hSHP;
 
-  if ( fname.substr( fname.length() - 4 ).compare( ".shp" ) == 0 )
+  if ( fname.endsWith( ".shp", Qt::CaseInsensitive ) )
   {
-    outputdbf = fname;
-    outputdbf = outputdbf.replace(( outputdbf.length() - 3 ), outputdbf.length(), "dbf" );
-    outputshp = fname;
-    outputshp = outputshp.replace(( outputshp.length() - 3 ), outputshp.length(), "shp" );
-    outputtdbf = fname;
-    outputtdbf = outputtdbf.replace(( outputtdbf.length() - 4 ), outputtdbf.length(), "_texts.dbf" );
-    outputtshp = fname;
-    outputtshp = outputtshp.replace(( outputtshp.length() - 4 ), outputtshp.length(), "_texts.shp" );
+    QString fn( fname.mid( fname.length() - 4 ) );
+
+    outputdbf = fn + ".dbf";
+    outputshp = fn + ".shp";
+    outputtdbf = fn + "_texts.dbf";
+    outputtshp = fn + "_texts.shp";
+    outputidbf = fn + "_inserts.dbf";
+    outputishp = fn + "_inserts.shp";
   }
   else
   {
-    outputdbf = outputtdbf = fname + ".dbf";
-    outputshp = outputtshp = fname + ".shp";
+    outputdbf = outputtdbf = outputidbf = fname + ".dbf";
+    outputshp = outputtshp = outputishp = fname + ".shp";
   }
 
-  DBFHandle dbffile = DBFCreate( outputdbf.c_str() );
+  DBFHandle dbffile = DBFCreate( outputdbf.toUtf8() );
   DBFAddField( dbffile, "myid", FTInteger, 10, 0 );
 
-  hSHP = SHPCreate( outputshp.c_str(), shapefileType );
+  hSHP = SHPCreate( outputshp.toUtf8(), shapefileType );
 
   QgsDebugMsg( "Writing to main shp file..." );
 
-  for ( int i = 0; i < dim; i++ )
+  for ( int i = 0; i < shpObjects.size(); i++ )
   {
     SHPWriteObject( hSHP, -1, shpObjects[i] );
     SHPDestroyObject( shpObjects[i] );
@@ -557,12 +447,12 @@ void Builder::print_shpObjects()
 
   QgsDebugMsg( "Done!" );
 
-  if ( convertText && dimTexts > 0 )
+  if ( textObjects.size() > 0 )
   {
     SHPHandle thSHP;
 
-    DBFHandle Tdbffile = DBFCreate( outputtdbf.c_str() );
-    thSHP = SHPCreate( outputtshp.c_str(), SHPT_POINT );
+    DBFHandle Tdbffile = DBFCreate( outputtdbf.toUtf8() );
+    thSHP = SHPCreate( outputtshp.toUtf8(), SHPT_POINT );
 
     DBFAddField( Tdbffile, "tipx", FTDouble, 20, 10 );
     DBFAddField( Tdbffile, "tipy", FTDouble, 20, 10 );
@@ -581,7 +471,7 @@ void Builder::print_shpObjects()
 
     QgsDebugMsg( "Writing Texts' shp File..." );
 
-    for ( int i = 0; i < dimTexts; i++ )
+    for ( int i = 0; i < textObjects.size(); i++ )
     {
       SHPObject *psObject;
       double x = textObjects[i].ipx;
@@ -615,6 +505,60 @@ void Builder::print_shpObjects()
     }
     SHPClose( thSHP );
     DBFClose( Tdbffile );
+
+    QgsDebugMsg( "Done!" );
+  }
+
+  if ( insertObjects.size() > 0 )
+  {
+    SHPHandle ihSHP;
+
+    DBFHandle Idbffile = DBFCreate( outputidbf.toUtf8() );
+    ihSHP = SHPCreate( outputishp.toUtf8(), SHPT_POINT );
+
+    DBFAddField( Idbffile, "name", FTString, 200, 0 );
+    DBFAddField( Idbffile, "ipx", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "ipy", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "ipz", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "sx", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "sy", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "sz", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "angle", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "cols", FTInteger, 20, 0 );
+    DBFAddField( Idbffile, "rows", FTInteger, 20, 0 );
+    DBFAddField( Idbffile, "colsp", FTDouble, 20, 10 );
+    DBFAddField( Idbffile, "rowsp", FTDouble, 20, 10 );
+
+    QgsDebugMsg( "Writing Insert' shp File..." );
+
+    for ( int i = 0; i < insertObjects.size(); i++ )
+    {
+      SHPObject *psObject;
+      double &x = insertObjects[i].ipx;
+      double &y = insertObjects[i].ipy;
+      double &z = insertObjects[i].ipz;
+      psObject = SHPCreateObject( SHPT_POINT, i, 0, NULL, NULL, 1, &x, &y, &z, NULL );
+
+      SHPWriteObject( ihSHP, -1, psObject );
+
+      int c = 0;
+      DBFWriteStringAttribute( Idbffile, i, c++, insertObjects[i].name.c_str() );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].ipx );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].ipy );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].ipz );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].sx );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].sy );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].sz );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].angle );
+      DBFWriteIntegerAttribute( Idbffile, i, c++, insertObjects[i].cols );
+      DBFWriteIntegerAttribute( Idbffile, i, c++, insertObjects[i].rows );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].colSp );
+      DBFWriteDoubleAttribute( Idbffile, i, c++, insertObjects[i].rowSp );
+
+      SHPDestroyObject( psObject );
+    }
+    SHPClose( ihSHP );
+    DBFClose( Idbffile );
 
     QgsDebugMsg( "Done!" );
   }
