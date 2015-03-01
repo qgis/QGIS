@@ -52,6 +52,7 @@ my $help;
 my $domajor;
 my $dominor;
 my $dopoint;
+my $doltr = 0;
 
 my $result = GetOptions(
 		"major" => \$domajor,
@@ -59,6 +60,7 @@ my $result = GetOptions(
 		"point" => \$dopoint,
 		"releasename=s" => \$newreleasename,
 		"help" => \$help,
+		"ltr" => \$doltr,
 		"dryrun" => \$dryrun,
 	);
 
@@ -70,6 +72,7 @@ $i++ if defined $dominor;
 $i++ if defined $dopoint;
 pod2usage("Exactly one of -major, -minor or -point expected") if $i!=1;
 pod2usage("Release name for major and minor releases expected") if !$dopoint && !defined $newreleasename;
+pod2usage("Long term releases only for major and minor releases") if $doltr && $dopoint;
 pod2usage("No CMakeLists.txt in current directory") unless -r "CMakeLists.txt";
 
 my $major;
@@ -134,6 +137,7 @@ run( "git pull --rebase", "git pull rebase failed" );
 my $release = "$newmajor.$newminor";
 my $version = "$release.$newpatch";
 my $relbranch = "release-${newmajor}_${newminor}";
+my $ltrtag = $doltr ? "ltr-${newmajor}_${newminor}" : "";
 my $reltag = "final-${newmajor}_${newminor}_${newpatch}";
 
 unless( $dopoint ) {
@@ -171,14 +175,15 @@ unless( $dopoint ) {
 	}
 
 	run( "git commit -a -m 'Release of $release ($releasename)'", "release commit failed" );
-	run( "git tag $reltag -m 'Version $release'", "tag failed" );
+	run( "git tag $reltag -m 'Version $release'", "release tag failed" );
+	run( "git tag $ltrtag -m 'Long term release $release'", "ltr tag failed" ) if $doltr;
 } else {
 	run( "git commit -a -m 'Release of $version'", "release commit failed" );
 	run( "git tag $reltag -m 'Version $version'", "tag failed" );
 }
 
 print "Producing archive...\n";
-run( "git archive --format tar --prefix=qgis-$version/ $reltag | bzip2 -c >qgis-$version.tar.bz2", "git archive failed" );
+run( "git archive --format tar --prefix=qgis-$version/ $reltag $ltrtag | bzip2 -c >qgis-$version.tar.bz2", "git archive failed" );
 run( "md5sum qgis-$version.tar.bz2 >qgis-$version.tar.bz2.md5", "md5sum failed" );
 
 unless( $dopoint ) {
@@ -193,7 +198,7 @@ unless( $dopoint ) {
 	run( "git commit -a -m 'Bump version to $newmajor.$newminor'", "bump version failed" );
 }
 
-my $topush = ($dopoint ? "" : "master ") . "$relbranch $reltag";
+my $topush = ($dopoint ? "" : "master ") . "$relbranch $reltag $ltrtag";
 
 print "Push dry-run...\n";
 run( "git push -n origin $topush", "push dry run failed" );
@@ -206,12 +211,13 @@ release.pl - create a new release
 
 =head1 SYNOPSIS
 
-release.pl {{-major|-minor} -releasename=releasename|-point}
+release.pl {{-major|-minor} [-ltr] -releasename=releasename|-point}
 
   Options:
     -major              do a new major release
     -minor              do a new minor release
     -point              do a new point release
     -releasename=name   new release name for master/minor release
+    -ltr                new release is a long term release
     -dryrun             just echo but don't run any commands
 =cut
