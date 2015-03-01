@@ -70,7 +70,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         return settings.childGroups()
 
     def defineCharacteristics(self):
-        self.name = 'Import layer/table as table into PostGIS database (available connections)'
+        self.name = 'Import layer/table as geometryless table into PostgreSQL database'
         self.group = '[OGR] Miscellaneous'
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
