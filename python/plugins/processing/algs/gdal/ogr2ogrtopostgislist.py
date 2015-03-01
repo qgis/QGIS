@@ -124,7 +124,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
             self.tr('Clip the input layer using the above (rectangle) extent'),
             False))
         self.addParameter(ParameterString(self.WHERE,
-            self.tr('Select features using a SQL "WHERE" statement (Ex: column="value")'),
+            self.tr('Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
             '', optional=True))
         self.addParameter(ParameterString(self.GT,
             self.tr('Group N features per transaction (Default: 20000)'),
@@ -181,7 +181,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         ogrspat = self.ogrConnectionString(spat)
         clip = self.getParameterValue(self.CLIP)
         where = unicode(self.getParameterValue(self.WHERE))
-        wherestring = "-where '"+where+"'"
+        wherestring = '-where "'+where+'"'
         gt = unicode(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
