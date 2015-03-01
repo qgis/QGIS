@@ -70,7 +70,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         return settings.childGroups()
 
     def defineCharacteristics(self):
-        self.name = 'Import layer/table as table into PostGIS database (available connections)'
+        self.name = 'Import layer/table as geometryless table into PostgreSQL database'
         self.group = '[OGR] Miscellaneous'
         self.DB_CONNECTIONS = self.dbConnectionNames()
         self.addParameter(ParameterSelection(self.DATABASE,
@@ -88,7 +88,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
             self.tr('Primary key (existing field, used if the above option is left empty)'),
             self.INPUT_LAYER, optional=True))
         self.addParameter(ParameterString(self.WHERE,
-            self.tr('Select features using a SQL "WHERE" statement (Ex: column="value")'),
+            self.tr('Select features using a SQL "WHERE" statement (Ex: column=\'value\')'),
             '', optional=True))
         self.addParameter(ParameterString(self.GT,
             self.tr('Group N features per transaction (Default: 20000)'),
@@ -128,7 +128,7 @@ class Ogr2OgrTableToPostGisList(OgrAlgorithm):
         pkstring = "-lco FID="+pk
         primary_key = self.getParameterValue(self.PRIMARY_KEY)
         where = unicode(self.getParameterValue(self.WHERE))
-        wherestring = "-where '"+where+"'"
+        wherestring = '-where "'+where+'"'
         gt = unicode(self.getParameterValue(self.GT))
         overwrite = self.getParameterValue(self.OVERWRITE)
         append = self.getParameterValue(self.APPEND)
