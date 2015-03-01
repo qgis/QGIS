@@ -831,7 +831,6 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
       }
       else if ( tagName == "BoundingBox" )
       {
-        // TODO: overwrite inherited
         QgsWmsBoundingBoxProperty bbox;
         bbox.box = QgsRectangle( e1.attribute( "minx" ).toDouble(),
                                  e1.attribute( "miny" ).toDouble(),
@@ -852,7 +851,18 @@ void QgsWmsCapabilities::parseLayer( QDomElement const & e, QgsWmsLayerProperty&
             bbox.box = invAxisBbox;
           }
 
-          layerProperty.boundingBoxes << bbox;
+          // Overwrite existing bounding boxes with identical CRS
+          bool inheritedOverwritten = false;
+          for ( int i = 0; i < layerProperty.boundingBoxes.size(); i++ )
+          {
+              if ( layerProperty.boundingBoxes[i].crs == bbox.crs )
+              {
+                  layerProperty.boundingBoxes[i] = bbox;
+                  inheritedOverwritten = true;
+              }
+          }
+          if ( ! inheritedOverwritten )
+              layerProperty.boundingBoxes << bbox;
         }
         else
         {
