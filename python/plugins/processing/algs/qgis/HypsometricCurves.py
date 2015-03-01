@@ -134,7 +134,7 @@ class HypsometricCurves(GeoAlgorithm):
 
             if srcOffset[2] == 0 or srcOffset[3] == 0:
                 progress.setInfo(
-                    self.tr('Feature %d does is smaller than raster '
+                    self.tr('Feature %d is smaller than raster '
                             'cell size' % f.id()))
                 continue
 
