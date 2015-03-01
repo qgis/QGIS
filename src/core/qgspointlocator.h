@@ -23,9 +23,12 @@ class QgsVectorLayer;
 #include "qgspoint.h"
 #include "qgsrectangle.h"
 
-
-#include <spatialindex/SpatialIndex.h>
-
+// forward declaration
+namespace SpatialIndex
+{
+  class IStorageManager;
+  class ISpatialIndex;
+}
 
 class QgsCoordinateTransform;
 class QgsCoordinateReferenceSystem;

@@ -18,7 +18,7 @@
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
 
-#include <spatialindex/SpatialIndex.h>
+#include "SpatialIndex.h"
 
 #include <QLinkedListIterator>
 
