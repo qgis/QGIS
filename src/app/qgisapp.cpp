@@ -5654,7 +5654,7 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
 void QgisApp::deletePrintComposers()
 {
   QSet<QgsComposer*>::iterator it = mPrintComposers.begin();
-  for ( ; it != mPrintComposers.end(); ++it )
+  while ( it != mPrintComposers.end() )
   {
     emit composerWillBeRemoved(( *it )->view() );
 
@@ -5670,8 +5670,8 @@ void QgisApp::deletePrintComposers()
     {
       delete composition;
     }
+    it = mPrintComposers.erase( it );
   }
-  mPrintComposers.clear();
   mLastComposerId = 0;
   markDirty();
 }
