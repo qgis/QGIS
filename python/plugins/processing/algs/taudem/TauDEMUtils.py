@@ -26,24 +26,44 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.core import QgsApplication
 import subprocess
+
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QgsApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
 from processing.tools.system import isMac
-from PyQt4.QtCore import QCoreApplication
 
 
 class TauDEMUtils:
 
     TAUDEM_FOLDER = 'TAUDEM_FOLDER'
+    TAUDEM_MULTIFILE_FOLDER = 'TAUDEM_MULTIFILE_FOLDER'
+    TAUDEM_USE_SINGLEFILE = 'TAUDEM_USE_SINGLEFILE'
+    TAUDEM_USE_MULTIFILE = 'TAUDEM_USE_MULTIFILE'
     MPIEXEC_FOLDER = 'MPIEXEC_FOLDER'
     MPI_PROCESSES = 'MPI_PROCESSES'
 
     @staticmethod
     def taudemPath():
         folder = ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_FOLDER)
+        if folder is None:
+            folder = ''
+
+        if isMac():
+            testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
+            if os.path.exists(os.path.join(testfolder, 'slopearea')):
+                folder = testfolder
+            else:
+                testfolder = '/usr/local/bin'
+                if os.path.exists(os.path.join(testfolder, 'slopearea')):
+                    folder = testfolder
+        return folder
+
+    @staticmethod
+    def taudemMultifilePath():
+        folder = ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_MULTIFILE_FOLDER)
         if folder is None:
             folder = ''
 
@@ -75,8 +95,8 @@ class TauDEMUtils:
 
     @staticmethod
     def taudemDescriptionPath():
-        return os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                'description'))
+        return os.path.normpath(
+            os.path.join(os.path.dirname(__file__), 'description'))
 
     @staticmethod
     def executeTauDEM(command, progress):

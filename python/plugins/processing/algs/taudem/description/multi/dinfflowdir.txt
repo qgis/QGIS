@@ -1,0 +1,6 @@
+D-Infinity Flow Directions (multifile)
+dinfflowdir
+Basic Grid Analysis tools
+ParameterFile|-fel|Pit Filled Elevation Grid|True|False
+OutputDirectory|-ang|D-Infinity Flow Directions Grid
+OutputDirectory|-slp|D-Infinity Slope Grid

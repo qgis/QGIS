@@ -2,9 +2,9 @@
 
 """
 ***************************************************************************
-    TauDEMAlgorithm.py
+    TauDEMMultifileAlgorithm.py
     ---------------------
-    Date                 : October 2012
+    Date                 : March 2015
     Copyright            : (C) 2012 by Alexander Bruy
     Email                : alexander dot bruy at gmail dot com
 ***************************************************************************
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Alexander Bruy'
-__date__ = 'October 2012'
-__copyright__ = '(C) 2012, Alexander Bruy'
+__date__ = 'March 2015'
+__copyright__ = '(C) 2015, Alexander Bruy'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -34,7 +34,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
 
-from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterString
@@ -45,7 +45,7 @@ from processing.core.outputs import getOutputFromString
 from TauDEMUtils import TauDEMUtils
 
 
-class TauDEMAlgorithm(GeoAlgorithm):
+class TauDEMMultifileAlgorithm(GeoAlgorithm):
 
     def __init__(self, descriptionfile):
         GeoAlgorithm.__init__(self)
@@ -53,7 +53,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
 
     def getCopy(self):
-        newone = TauDEMAlgorithm(self.descriptionFile)
+        newone = TauDEMMultifileAlgorithm(self.descriptionFile)
         newone.provider = self.provider
         return newone
 
@@ -97,7 +97,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
 
         commands.append('-n')
         commands.append(str(processNum))
-        commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
+        commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
 
         for param in self.parameters:
             if param.value is None or param.value == '':
@@ -105,7 +105,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
             if isinstance(param, ParameterNumber):
                 commands.append(param.name)
                 commands.append(str(param.value))
-            if isinstance(param, (ParameterRaster, ParameterVector)):
+            if isinstance(param, (ParameterFile, ParameterVector)):
                 commands.append(param.name)
                 commands.append(param.value)
             elif isinstance(param, ParameterBoolean):
