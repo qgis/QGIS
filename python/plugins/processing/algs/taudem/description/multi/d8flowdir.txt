@@ -1,0 +1,6 @@
+D8 Flow Directions (multifile)
+d8flowdir
+Basic Grid Analysis tools
+ParameterFile|-fel|Pit Filled Elevation Grid|True|False
+OutputDirectory|-p|D8 Flow Direction Grid
+OutputDirectory|-sd8|D8 Slope Grid
