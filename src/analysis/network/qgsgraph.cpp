@@ -82,6 +82,12 @@ int QgsGraph::findVertex( const QgsPoint& pt ) const
   return -1;
 }
 
+int QgsGraph::findVertex( const QgsGraphVertex& gv ) const
+{
+  QgsPoint pt(gv.point());
+  return this->findVertex( pt );
+}
+
 QgsGraphArc::QgsGraphArc()
     : mOut( 0 )
     , mIn( 0 )

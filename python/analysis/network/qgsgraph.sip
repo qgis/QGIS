@@ -129,4 +129,10 @@ class QgsGraph
      * \return vertex index
      */
     int findVertex( const QgsPoint& pt ) const;
+
+    /**
+     * find index by vertex
+     * \return vertex index
+     */
+    int findVertex( const QgsGraphVertex& gv ) const;
 };
