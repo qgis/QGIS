@@ -1298,6 +1298,12 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       query += QString::number( srid );
     }
 
+    query += ",";
+    query += QString( "%1(%2%3)" )
+             .arg( majorVersion() < 2 ? "ndims" : "st_ndims" )
+             .arg( quotedIdentifier( layerProperty.geometryColName ) )
+             .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" );
+
     query += " FROM " + table;
 
     //QgsDebugMsg( "Retrieving geometry types: " + query );
@@ -1310,6 +1316,10 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       {
         QString type = gresult.PQgetvalue( i, 0 );
         QString srid = gresult.PQgetvalue( i, 1 );
+        QString ndims = gresult.PQgetvalue( i, 2 );
+
+        if ( ndims.toInt() > 2 ) layerProperty.force2d = true;
+
         if ( type.isEmpty() )
           continue;
 
