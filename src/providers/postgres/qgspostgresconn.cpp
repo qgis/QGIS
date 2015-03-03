@@ -454,13 +454,15 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         srid = INT_MIN;
       }
 
-      /*QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7 %8" )
+#if 0
+      QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7 %8" )
                    .arg( gtableName )
                    .arg( schemaName ).arg( tableName ).arg( column )
                    .arg( type )
                    .arg( srid )
                    .arg( relkind )
-                   .arg( dim ) );*/
+                   .arg( dim ) );
+#endif
 
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -470,11 +472,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
       /*
-       * NOTE: force2d may get a false negative value
+       * force2d may get a false negative value
        * (dim == 2 but is not really constrained)
        * http://trac.osgeo.org/postgis/ticket/3068
        */
-      layerProperty.force2d = dim > 2;
+      layerProperty.force2d = dim > 3;
       addColumnInfo( layerProperty, schemaName, tableName, isView );
 
       if ( isView && layerProperty.pkCols.empty() )
@@ -1303,10 +1305,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       query += QString::number( srid );
     }
 
-    if ( ! layerProperty.force2d )
+    if ( !layerProperty.force2d )
     {
-      query += ",";
-      query += QString( "%1(%2%3)" )
+      query += QString( ",%1(%2%3)" )
                .arg( majorVersion() < 2 ? "ndims" : "st_ndims" )
                .arg( quotedIdentifier( layerProperty.geometryColName ) )
                .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" );
@@ -1325,10 +1326,9 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
         QString type = gresult.PQgetvalue( i, 0 );
         QString srid = gresult.PQgetvalue( i, 1 );
 
-        if ( ! layerProperty.force2d )
+        if ( !layerProperty.force2d && gresult.PQgetvalue( i, 2 ).toInt() > 3 )
         {
-          QString ndims = gresult.PQgetvalue( i, 2 );
-          if ( ndims.toInt() > 2 ) layerProperty.force2d = true;
+          layerProperty.force2d = true;
         }
 
         if ( type.isEmpty() )
