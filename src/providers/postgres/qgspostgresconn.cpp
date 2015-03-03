@@ -469,11 +469,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
-      /* TODO: why not != 2 ?
-       * Also note the value is not necessarely trustworthy:
+      /*
+       * NOTE: force2d may get a false negative value
+       * (dim == 2 but is not really constrained)
        * http://trac.osgeo.org/postgis/ticket/3068
        */
-      layerProperty.force2d = dim == 4;
+      layerProperty.force2d = dim > 2;
       addColumnInfo( layerProperty, schemaName, tableName, isView );
 
       if ( isView && layerProperty.pkCols.empty() )
@@ -1303,11 +1304,14 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       query += QString::number( srid );
     }
 
-    query += ",";
-    query += QString( "%1(%2%3)" )
-             .arg( majorVersion() < 2 ? "ndims" : "st_ndims" )
-             .arg( quotedIdentifier( layerProperty.geometryColName ) )
-             .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" );
+    if ( ! layerProperty.force2d )
+    {
+      query += ",";
+      query += QString( "%1(%2%3)" )
+               .arg( majorVersion() < 2 ? "ndims" : "st_ndims" )
+               .arg( quotedIdentifier( layerProperty.geometryColName ) )
+               .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" );
+    }
 
     query += " FROM " + table;
 
@@ -1321,9 +1325,12 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       {
         QString type = gresult.PQgetvalue( i, 0 );
         QString srid = gresult.PQgetvalue( i, 1 );
-        QString ndims = gresult.PQgetvalue( i, 2 );
 
-        if ( ndims.toInt() > 2 ) layerProperty.force2d = true;
+        if ( ! layerProperty.force2d )
+        {
+          QString ndims = gresult.PQgetvalue( i, 2 );
+          if ( ndims.toInt() > 2 ) layerProperty.force2d = true;
+        }
 
         if ( type.isEmpty() )
           continue;
