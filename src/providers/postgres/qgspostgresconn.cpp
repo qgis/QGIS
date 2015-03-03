@@ -469,6 +469,10 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
+      /* TODO: why not != 2 ?
+       * Also note the value is not necessarely trustworthy:
+       * http://trac.osgeo.org/postgis/ticket/3068
+       */
       layerProperty.force2d = dim == 4;
       addColumnInfo( layerProperty, schemaName, tableName, isView );
 
@@ -1306,7 +1310,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
 
     query += " FROM " + table;
 
-    //QgsDebugMsg( "Retrieving geometry types: " + query );
+    //QgsDebugMsg( "Retrieving geometry types,srids and dims: " + query );
 
     QgsPostgresResult gresult = PQexec( query );
 
