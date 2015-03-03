@@ -1103,6 +1103,9 @@ bool QgsPostgresProvider::determinePrimaryKey()
           if ( res.PQntuples() == 1 )
           {
             mPrimaryKeyType = pktTid;
+
+            QgsMessageLog::logMessage( tr( "Primary key is ctid - changing of existing features disabled (%1; %2)" ).arg( mGeometryColumn ).arg( mQuery ) );
+            mEnabledCapabilities &= ~( QgsVectorDataProvider::DeleteFeatures | QgsVectorDataProvider::ChangeAttributeValues | QgsVectorDataProvider::ChangeGeometries );
           }
           else
           {
