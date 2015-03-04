@@ -362,7 +362,8 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     /* static QVector<QgsDataProvider*> mProviders; */
     //! @note not available via python bindings
-    static QVector<QLibrary*> mLibraries;
+    //! @note deprecated since 2.10 - use QgsDataItemProviderRegistry
+    Q_DECL_DEPRECATED static QVector<QLibrary*> mLibraries;
 
   public slots:
     virtual void childrenCreated() override;

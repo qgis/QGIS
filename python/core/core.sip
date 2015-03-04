@@ -26,6 +26,8 @@
 %Include qgscrscache.sip
 %Include qgsdatadefined.sip
 %Include qgsdataitem.sip
+%Include qgsdataitemprovider.sip
+%Include qgsdataitemproviderregistry.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdatumtransformstore.sip

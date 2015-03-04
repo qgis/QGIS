@@ -77,6 +77,8 @@ SET(QGIS_CORE_SRCS
   qgsdatadefined.cpp
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
+  qgsdataitemprovider.cpp
+  qgsdataitemproviderregistry.cpp
   qgsdatumtransformstore.cpp
   qgsdbfilterproxymodel.cpp
   qgsdiagramrendererv2.cpp
@@ -475,6 +477,9 @@ SET(QGIS_CORE_HDRS
   qgscsexception.h
   qgsdartmeasurement.h
   qgsdatadefined.h
+  qgsdataitem.h
+  qgsdataitemprovider.h
+  qgsdataitemproviderregistry.h
   qgsdatasourceuri.h
   qgsdatumtransformstore.h
   qgsdbfilterproxymodel.h
