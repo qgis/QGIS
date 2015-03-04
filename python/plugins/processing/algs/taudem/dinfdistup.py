@@ -115,7 +115,7 @@ class DinfDistUp(GeoAlgorithm):
             self.DIST_METHOD)]))
         commands.append('-thresh')
         commands.append(str(self.getParameterValue(self.THRESHOLD)))
-        if str(self.getParameterValue(self.EDGE_CONTAM)).lower() == 'false':
+        if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
         commands.append('-du')
         commands.append(self.getOutputValue(self.DIST_UP_GRID))

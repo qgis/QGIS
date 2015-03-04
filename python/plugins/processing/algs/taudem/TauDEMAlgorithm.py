@@ -109,7 +109,7 @@ class TauDEMAlgorithm(GeoAlgorithm):
                 commands.append(param.name)
                 commands.append(param.value)
             elif isinstance(param, ParameterBoolean):
-                if param.value and str(param.value).lower() == 'false':
+                if not param.value:
                     commands.append(param.name)
             elif isinstance(param, ParameterString):
                 commands.append(param.name)

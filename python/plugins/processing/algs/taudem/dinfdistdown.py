@@ -118,7 +118,7 @@ class DinfDistDown(GeoAlgorithm):
             self.STAT_METHOD)]))
         commands.append(str(self.DIST_DICT[self.getParameterValue(
             self.DIST_METHOD)]))
-        if str(self.getParameterValue(self.EDGE_CONTAM)).lower() == 'false':
+        if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
         commands.append('-dd')
         commands.append(self.getOutputValue(self.DIST_DOWN_GRID))
