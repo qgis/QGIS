@@ -1170,34 +1170,35 @@ qint64 QgsPostgresConn::getBinaryInt( QgsPostgresResult &queryResult, int row, i
   return oid;
 }
 
-QString QgsPostgresConn::fieldExpression( const QgsField &fld )
+QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
 {
   const QString &type = fld.typeName();
+  expr = expr.arg( quotedIdentifier( fld.name() ) );
   if ( type == "money" )
   {
-    return QString( "cash_out(%1)" ).arg( quotedIdentifier( fld.name() ) );
+    return QString( "cash_out(%1)" ).arg( expr );
   }
   else if ( type.startsWith( "_" ) )
   {
-    return QString( "array_out(%1)" ).arg( quotedIdentifier( fld.name() ) );
+    return QString( "array_out(%1)" ).arg( expr );
   }
   else if ( type == "bool" )
   {
-    return QString( "boolout(%1)" ).arg( quotedIdentifier( fld.name() ) );
+    return QString( "boolout(%1)" ).arg( expr );
   }
   else if ( type == "geometry" )
   {
     return QString( "%1(%2)" )
            .arg( majorVersion() < 2 ? "asewkt" : "st_asewkt" )
-           .arg( quotedIdentifier( fld.name() ) );
+           .arg( expr );
   }
   else if ( type == "geography" )
   {
-    return QString( "st_astext(%1)" ).arg( quotedIdentifier( fld.name() ) );
+    return QString( "st_astext(%1)" ).arg( expr );
   }
   else
   {
-    return quotedIdentifier( fld.name() ) + "::text";
+    return expr + "::text";
   }
 }
 
