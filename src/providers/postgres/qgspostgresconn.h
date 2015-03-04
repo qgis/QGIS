@@ -285,7 +285,7 @@ class QgsPostgresConn : public QObject
 
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
-    QString fieldExpression( const QgsField &fld );
+    QString fieldExpression( const QgsField &fld, QString expr = "%1" );
 
     QString connInfo() const { return mConnInfo; }
 
