@@ -254,7 +254,9 @@ QIcon QgsDataItem::icon()
     return mIcon;
 
   if ( !mIconMap.contains( mIconName ) )
-    mIconMap.insert( mIconName, QgsApplication::getThemeIcon( mIconName ) );
+  {
+    mIconMap.insert( mIconName, mIconName.startsWith( ":" ) ? QIcon( mIconName ) : QgsApplication::getThemeIcon( mIconName ) );
+  }
 
   return mIconMap.value( mIconName );
 }
