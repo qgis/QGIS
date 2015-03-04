@@ -36,6 +36,12 @@ class CORE_EXPORT QgsDataItemProviderRegistry : public QgsSingleton<QgsDataItemP
     //! Get list of available providers
     QList<QgsDataItemProvider*> providers() const { return mProviders; }
 
+    //! Add a provider implementation. Takes ownership of the object.
+    void addProvider( QgsDataItemProvider* provider );
+
+    //! Remove provider implementation from the list (provider object is deleted)
+    void removeProvider( QgsDataItemProvider* provider );
+
   private:
     QgsDataItemProviderRegistry();
 

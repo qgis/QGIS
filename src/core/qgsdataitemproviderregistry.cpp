@@ -84,3 +84,14 @@ QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()
   qDeleteAll( mProviders );
 }
 
+void QgsDataItemProviderRegistry::addProvider( QgsDataItemProvider* provider )
+{
+  mProviders.append( provider );
+}
+
+void QgsDataItemProviderRegistry::removeProvider( QgsDataItemProvider* provider )
+{
+  int index = mProviders.indexOf( provider );
+  if ( index >= 0 )
+    delete mProviders.takeAt( index );
+}
