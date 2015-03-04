@@ -454,13 +454,15 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         srid = INT_MIN;
       }
 
-      /*QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7 %8" )
+#if 0
+      QgsDebugMsg( QString( "%1 : %2.%3.%4: %5 %6 %7 %8" )
                    .arg( gtableName )
                    .arg( schemaName ).arg( tableName ).arg( column )
                    .arg( type )
                    .arg( srid )
                    .arg( relkind )
-                   .arg( dim ) );*/
+                   .arg( dim ) );
+#endif
 
       layerProperty.schemaName = schemaName;
       layerProperty.tableName = tableName;
@@ -469,7 +471,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       layerProperty.types = QList<QGis::WkbType>() << ( QgsPostgresConn::wkbTypeFromPostgis( type ) );
       layerProperty.srids = QList<int>() << srid;
       layerProperty.sql = "";
-      layerProperty.force2d = dim == 4;
+      /*
+       * force2d may get a false negative value
+       * (dim == 2 but is not really constrained)
+       * http://trac.osgeo.org/postgis/ticket/3068
+       */
+      layerProperty.force2d = dim > 3;
       addColumnInfo( layerProperty, schemaName, tableName, isView );
 
       if ( isView && layerProperty.pkCols.empty() )
@@ -1298,9 +1305,17 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       query += QString::number( srid );
     }
 
+    if ( !layerProperty.force2d )
+    {
+      query += QString( ",%1(%2%3)" )
+               .arg( majorVersion() < 2 ? "ndims" : "st_ndims" )
+               .arg( quotedIdentifier( layerProperty.geometryColName ) )
+               .arg( layerProperty.geometryColType == sctGeography ? "::geometry" : "" );
+    }
+
     query += " FROM " + table;
 
-    //QgsDebugMsg( "Retrieving geometry types: " + query );
+    //QgsDebugMsg( "Retrieving geometry types,srids and dims: " + query );
 
     QgsPostgresResult gresult = PQexec( query );
 
@@ -1310,6 +1325,12 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
       {
         QString type = gresult.PQgetvalue( i, 0 );
         QString srid = gresult.PQgetvalue( i, 1 );
+
+        if ( !layerProperty.force2d && gresult.PQgetvalue( i, 2 ).toInt() > 3 )
+        {
+          layerProperty.force2d = true;
+        }
+
         if ( type.isEmpty() )
           continue;
 
