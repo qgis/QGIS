@@ -4794,7 +4794,7 @@ Erweiterung wird nicht aktiviert.</translation>
     </message>
     <message>
         <source>Merge...</source>
-        <translation>Abfrage...</translation>
+        <translation>Verschmelzen...</translation>
     </message>
     <message>
         <source>Information...</source>
@@ -7559,6 +7559,10 @@ im Installationsverzeichnis nicht erlaubt ist</translation>
         <source>Elevation</source>
         <translation>Geländehöhe</translation>
     </message>
+    <message>
+        <source>Feature %d is smaller than raster cell size</source>
+        <translation>Objekt %d ist kleiner als die Rasterzellengröße</translation>
+    </message>
 </context>
 <context>
     <name>ImportIntoPostGIS</name>
@@ -9446,6 +9450,10 @@ Funktioniert auf allen ändernbaren Layern</translation>
     <message>
         <source>seconds</source>
         <translation>Sekunden</translation>
+    </message>
+    <message>
+        <source>Record parsing error</source>
+        <translation>Datensatzfehler</translation>
     </message>
 </context>
 <context>
@@ -33236,22 +33244,6 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <source>Segments [%1]</source>
         <translation>Segmente [%1]</translation>
-    </message>
-    <message>
-        <source>Meters</source>
-        <translation>Meter</translation>
-    </message>
-    <message>
-        <source>Feet</source>
-        <translation>Fuß</translation>
-    </message>
-    <message>
-        <source>Degrees</source>
-        <translation>Grad</translation>
-    </message>
-    <message>
-        <source>Nautical Miles</source>
-        <translation>Seemeilen</translation>
     </message>
 </context>
 <context>
