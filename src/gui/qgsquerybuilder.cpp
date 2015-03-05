@@ -72,6 +72,11 @@ void QgsQueryBuilder::populateFields()
   const QgsFields& fields = mLayer->pendingFields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
+    if ( fields.fieldOrigin(idx) != QgsFields::OriginProvider )
+    {
+      // only consider native fields
+      continue;
+    }
     QStandardItem *myItem = new QStandardItem( fields[idx].name() );
     myItem->setData( idx );
     myItem->setEditable( false );
