@@ -906,10 +906,10 @@ bool QgsRuleBasedRendererV2Model::setData( const QModelIndex & index, const QVar
       rule->setFilterExpression( value.toString() );
       break;
     case 2: // scale min
-      rule->setScaleMinDenom( value.toInt() );
+      rule->setScaleMaxDenom( value.toInt() );
       break;
     case 3: // scale max
-      rule->setScaleMaxDenom( value.toInt() );
+      rule->setScaleMinDenom( value.toInt() );
       break;
     default:
       return false;
