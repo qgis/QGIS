@@ -658,8 +658,64 @@ bool QgsPostgresProvider::loadFields()
 
   QSet<QString> fields;
 
-  // The queries inside this loop could possibly be combined into one
-  // single query - this would make the code run faster.
+  /* Collect type info */
+  sql = "SELECT oid, typname,typtype,typelem,typlen FROM pg_type";
+  QgsPostgresResult typeResult = connectionRO()->PQexec( sql );
+  QMap<int, PGTypeInfo> typeMap;
+  for ( int i = 0; i < typeResult.PQntuples(); ++i )
+  {
+    PGTypeInfo typeInfo =
+    {
+      /*typeName = */ typeResult.PQgetvalue( i, 1 ),
+      /*typeType = */ typeResult.PQgetvalue( i, 2 ),
+      /*typeElem = */ typeResult.PQgetvalue( i, 3 ),
+      /*typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
+    };
+    typeMap.insert( typeResult.PQgetvalue( i, 0 ).toInt(), typeInfo );
+  }
+
+  /* Collect table oids */
+  QSet<int> tableoids;
+  for ( int i = 0; i < result.PQnfields(); i++ )
+  {
+    int tableoid = result.PQftable( i );
+    if ( tableoid > 0 )
+    {
+      tableoids.insert( tableoid );
+    }
+  }
+  QStringList tableoidsList;
+  foreach ( int tableoid, tableoids )
+  {
+    tableoidsList.append( QString::number( tableoid ) );
+  }
+
+  QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
+
+  /* Collect formatted field types */
+  sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid IN " + tableoidsFilter;
+  QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
+  QMap<int, QMap<int, QString> > fmtFieldTypeMap;
+  for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+  {
+    int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
+    int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
+    QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
+    fmtFieldTypeMap[attrelid][attnum] = formatType;
+  }
+
+  /* Collect descriptions */
+  sql = "SELECT objoid, objsubid, description FROM pg_description WHERE objoid IN " + tableoidsFilter;
+  QgsPostgresResult descrResult = connectionRO()->PQexec( sql );
+  QMap<int, QMap<int, QString> > descrMap;
+  for ( int i = 0; i < descrResult.PQntuples(); ++i )
+  {
+    int objoid = descrResult.PQgetvalue( i, 0 ).toInt();
+    int objsubid = descrResult.PQgetvalue( i, 1 ).toInt();
+    QString descr = descrResult.PQgetvalue( i, 2 );
+    descrMap[objoid][objsubid] = descr;
+  }
+
   mAttributeFields.clear();
   for ( int i = 0; i < result.PQnfields(); i++ )
   {
@@ -668,40 +724,17 @@ bool QgsPostgresProvider::loadFields()
       continue;
 
     int fldtyp = result.PQftype( i );
-    QString typOid = QString().setNum( fldtyp );
     int fieldPrec = -1;
-    QString fieldComment( "" );
     int tableoid = result.PQftable( i );
     int attnum = result.PQftablecol( i );
 
-    sql = QString( "SELECT typname,typtype,typelem,typlen FROM pg_type WHERE oid=%1" ).arg( typOid );
-    // just oid; needs more work to support array type
-    //      "oid = (SELECT Distinct typelem FROM pg_type WHERE "  //needs DISTINCT to guard against 2 or more rows on int2
-    //      "typelem = " + typOid + " AND typlen = -1)";
+    const PGTypeInfo& typeInfo = typeMap.value( fldtyp );
+    QString fieldTypeName = typeInfo.typeName;
+    QString fieldTType = typeInfo.typeType;
+    int fieldSize = typeInfo.typeLen;
 
-    QgsPostgresResult oidResult = connectionRO()->PQexec( sql );
-    QString fieldTypeName = oidResult.PQgetvalue( 0, 0 );
-    QString fieldTType = oidResult.PQgetvalue( 0, 1 );
-    QString fieldElem = oidResult.PQgetvalue( 0, 2 );
-    int fieldSize = oidResult.PQgetvalue( 0, 3 ).toInt();
-
-    QString formattedFieldType;
-    if ( tableoid > 0 )
-    {
-      sql = QString( "SELECT pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid=%1 AND attnum=%2" )
-            .arg( tableoid ).arg( quotedValue( attnum ) );
-
-      QgsPostgresResult tresult = connectionRO()->PQexec( sql );
-      if ( tresult.PQntuples() > 0 )
-        formattedFieldType = tresult.PQgetvalue( 0, 0 );
-
-      sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
-            .arg( tableoid ).arg( attnum );
-
-      tresult = connectionRO()->PQexec( sql );
-      if ( tresult.PQntuples() > 0 )
-        fieldComment = tresult.PQgetvalue( 0, 0 );
-    }
+    QString formattedFieldType = fmtFieldTypeMap[tableoid][attnum];
+    QString fieldComment = descrMap[tableoid][attnum];
 
     QVariant::Type fieldType;
 
@@ -1919,6 +1952,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
   {
     conn->begin();
 
+    QString sql = QString( "ALTER TABLE %1 " ).arg( mQuery );
     for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
     {
       QString type = iter->typeName();
@@ -1932,18 +1966,19 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
         if ( iter->length() > 0 && iter->precision() >= 0 )
           type = QString( "%1(%2,%3)" ).arg( type ).arg( iter->length() ).arg( iter->precision() );
       }
+      sql.append( QString( "ADD COLUMN %1 %2, " ).arg( quotedIdentifier( iter->name() ) ).arg( type ) );
+    }
+    sql.chop( 2 ); /* ", " */
+    sql.append( ";" );
+    QgsDebugMsg( sql );
 
-      QString sql = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" )
-                    .arg( mQuery )
-                    .arg( quotedIdentifier( iter->name() ) )
-                    .arg( type );
-      QgsDebugMsg( sql );
+    //send sql statement and do error handling
+    QgsPostgresResult result = conn->PQexec( sql );
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
+      throw PGException( result );
 
-      //send sql statement and do error handling
-      QgsPostgresResult result = conn->PQexec( sql );
-      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
-        throw PGException( result );
-
+    for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
+    {
       if ( !iter->comment().isEmpty() )
       {
         sql = QString( "COMMENT ON COLUMN %1.%2 IS %3" )

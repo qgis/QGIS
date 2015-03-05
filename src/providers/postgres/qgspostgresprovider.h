@@ -455,6 +455,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       QString mWhat;
     };
 
+    struct PGTypeInfo
+    {
+      QString typeName;
+      QString typeType;
+      QString typeElem;
+      int typeLen;
+    };
+
     // A function that determines if the given schema.table.column
     // contains unqiue entries
     bool uniqueData( QString query, QString colName );
