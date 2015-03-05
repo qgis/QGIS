@@ -1349,11 +1349,6 @@ void QgsServerProjectParser::addJoinLayersForElement( const QDomElement& layerEl
   }
 
   QDomNodeList joinNodeList = vectorJoinsElem.elementsByTagName( "join" );
-  if ( joinNodeList.size() > 1 )
-  {
-    return;
-  }
-
   for ( int i = 0; i < joinNodeList.size(); ++i )
   {
     QString id = joinNodeList.at( i ).toElement().attribute( "joinLayerId" );
