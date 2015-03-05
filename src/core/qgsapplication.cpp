@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscrscache.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -626,6 +627,7 @@ void QgsApplication::exitQgis()
   QgsMapLayerRegistry::cleanup();
   QgsNetworkAccessManager::cleanup();
   QgsCoordinateTransformCache::cleanup();
+  QgsDataItemProviderRegistry::cleanup();
 
   // Cleanup providers
   delete QgsProviderRegistry::instance();

@@ -1237,8 +1237,8 @@ QVariant QgsPostgresProvider::minimumValue( int index )
   {
     // get the field name
     const QgsField &fld = field( index );
-    QString sql = QString( "SELECT min(%1) FROM %2" )
-                  .arg( connectionRO()->fieldExpression( fld ) )
+    QString sql = QString( "SELECT %1 FROM %2" )
+                  .arg( connectionRO()->fieldExpression( fld, "min(%1)" ) )
                   .arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )
@@ -1410,8 +1410,8 @@ QVariant QgsPostgresProvider::maximumValue( int index )
   {
     // get the field name
     const QgsField &fld = field( index );
-    QString sql = QString( "SELECT max(%1) FROM %2" )
-                  .arg( connectionRO()->fieldExpression( fld ) )
+    QString sql = QString( "SELECT %1 FROM %2" )
+                  .arg( connectionRO()->fieldExpression( fld, "max(%1)" ) )
                   .arg( mQuery );
 
     if ( !mSqlWhereClause.isEmpty() )

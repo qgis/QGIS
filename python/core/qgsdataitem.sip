@@ -14,7 +14,7 @@ class QgsDataItem : QObject
     };
 
     /** Create new data item. */
-    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent /TransferThis/, QString name, QString path );
     virtual ~QgsDataItem();
 
     bool hasChildren();

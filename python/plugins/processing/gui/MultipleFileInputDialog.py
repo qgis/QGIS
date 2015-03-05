@@ -91,6 +91,9 @@ class MultipleFileInputDialog(QDialog, Ui_DlgMultipleSelection):
         files = QFileDialog.getOpenFileNames(self,
             self.tr('Select file(s)'), path, self.tr('All files (*.*)'))
 
+        if len(files) == 0:
+            return
+
         model = self.lstLayers.model()
         for filePath in files:
             item = QStandardItem(filePath)

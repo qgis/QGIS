@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    dinftranslimaccum.py
+    dinftranslimaccum_multi.py
     ---------------------
-    Date                 : October 2012
-    Copyright            : (C) 2012 by Alexander Bruy
+    Date                 : March 2015
+    Copyright            : (C) 2015 by Alexander Bruy
     Email                : alexander dot bruy at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Alexander Bruy'
-__date__ = 'October 2012'
-__copyright__ = '(C) 2012, Alexander Bruy'
+__date__ = 'March 2015'
+__copyright__ = '(C) 2015, Alexander Bruy'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -34,15 +34,15 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
 
-from processing.core.parameters import ParameterRaster
+from processing.core.parameters import ParameterFile
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
-from processing.core.outputs import OutputRaster
+from processing.core.outputs import OutputDirectory
 
 from TauDEMUtils import TauDEMUtils
 
 
-class DinfTransLimAccum(GeoAlgorithm):
+class DinfTransLimAccumMulti(GeoAlgorithm):
 
     DINF_FLOW_DIR_GRID = 'DINF_FLOW_DIR_GRID'
     SUPPLY_GRID = 'SUPPLY_GRID'
@@ -59,25 +59,25 @@ class DinfTransLimAccum(GeoAlgorithm):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
 
     def defineCharacteristics(self):
-        self.name = 'D-Infinity Transport Limited Accumulation'
+        self.name = 'D-Infinity Transport Limited Accumulation (multifile)'
         self.cmdName = 'dinftranslimaccum'
         self.group = 'Specialized Grid Analysis tools'
 
-        self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
-            self.tr('D-Infinity Flow Direction Grid'), False))
-        self.addParameter(ParameterRaster(self.SUPPLY_GRID,
-            self.tr('Supply Grid'), False))
-        self.addParameter(ParameterRaster(self.CAPACITY_GRID,
-            self.tr('Transport Capacity Grid'), False))
+        self.addParameter(ParameterFile(self.DINF_FLOW_DIR_GRID,
+            self.tr('D-Infinity Flow Direction Grid'), True, False))
+        self.addParameter(ParameterFile(self.SUPPLY_GRID,
+            self.tr('Supply Grid'), True, False))
+        self.addParameter(ParameterFile(self.CAPACITY_GRID,
+            self.tr('Transport Capacity Grid'), True, False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
             self.tr('Outlets Shapefile'),
             [ParameterVector.VECTOR_TYPE_POINT], True))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
             self.tr('Check for edge contamination'), True))
 
-        self.addOutput(OutputRaster(self.TRANSP_LIM_ACCUM_GRID,
+        self.addOutput(OutputDirectory(self.TRANSP_LIM_ACCUM_GRID,
             self.tr('Transport Limited Accumulation Grid')))
-        self.addOutput(OutputRaster(self.DEPOSITION_GRID,
+        self.addOutput(OutputDirectory(self.DEPOSITION_GRID,
             self.tr('Deposition Grid')))
 
     def processAlgorithm(self, progress):
@@ -92,7 +92,7 @@ class DinfTransLimAccum(GeoAlgorithm):
 
         commands.append('-n')
         commands.append(str(processNum))
-        commands.append(os.path.join(TauDEMUtils.taudemPath(), self.cmdName))
+        commands.append(os.path.join(TauDEMUtils.taudemMultifilePath(), self.cmdName))
         commands.append('-ang')
         commands.append(self.getParameterValue(self.DINF_FLOW_DIR_GRID))
         commands.append('-tsup')
