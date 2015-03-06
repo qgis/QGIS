@@ -149,7 +149,7 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
 
   fileName = mFunctionsPath + QDir::separator() + fileName;
   QFile myFile( fileName );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( myFile.open( QIODevice::WriteOnly ) )
   {
     QTextStream myFileStream( &myFile );
     myFileStream << txtPython->text() << endl;
