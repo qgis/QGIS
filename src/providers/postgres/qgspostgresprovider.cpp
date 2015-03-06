@@ -656,25 +656,32 @@ bool QgsPostgresProvider::loadFields()
 
   QgsPostgresResult result = connectionRO()->PQexec( sql );
 
-  QSet<QString> fields;
-
-  /* Collect type info */
-  sql = "SELECT oid, typname,typtype,typelem,typlen FROM pg_type";
+  // Collect type info
+  sql = "SELECT oid,typname,typtype,typelem,typlen FROM pg_type";
   QgsPostgresResult typeResult = connectionRO()->PQexec( sql );
+
+  struct PGTypeInfo
+  {
+    QString typeName;
+    QString typeType;
+    QString typeElem;
+    int typeLen;
+  };
+
   QMap<int, PGTypeInfo> typeMap;
   for ( int i = 0; i < typeResult.PQntuples(); ++i )
   {
     PGTypeInfo typeInfo =
     {
-      /*typeName = */ typeResult.PQgetvalue( i, 1 ),
-      /*typeType = */ typeResult.PQgetvalue( i, 2 ),
-      /*typeElem = */ typeResult.PQgetvalue( i, 3 ),
-      /*typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
+      /* typeName = */ typeResult.PQgetvalue( i, 1 ),
+      /* typeType = */ typeResult.PQgetvalue( i, 2 ),
+      /* typeElem = */ typeResult.PQgetvalue( i, 3 ),
+      /* typeLen = */ typeResult.PQgetvalue( i, 4 ).toInt()
     };
     typeMap.insert( typeResult.PQgetvalue( i, 0 ).toInt(), typeInfo );
   }
 
-  /* Collect table oids */
+  // Collect table oids
   QSet<int> tableoids;
   for ( int i = 0; i < result.PQnfields(); i++ )
   {
@@ -692,7 +699,7 @@ bool QgsPostgresProvider::loadFields()
 
   QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
 
-  /* Collect formatted field types */
+  // Collect formatted field types
   sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid IN " + tableoidsFilter;
   QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
   QMap<int, QMap<int, QString> > fmtFieldTypeMap;
@@ -704,7 +711,7 @@ bool QgsPostgresProvider::loadFields()
     fmtFieldTypeMap[attrelid][attnum] = formatType;
   }
 
-  /* Collect descriptions */
+  // Collect descriptions
   sql = "SELECT objoid, objsubid, description FROM pg_description WHERE objoid IN " + tableoidsFilter;
   QgsPostgresResult descrResult = connectionRO()->PQexec( sql );
   QMap<int, QMap<int, QString> > descrMap;
@@ -716,6 +723,7 @@ bool QgsPostgresProvider::loadFields()
     descrMap[objoid][objsubid] = descr;
   }
 
+  QSet<QString> fields;
   mAttributeFields.clear();
   for ( int i = 0; i < result.PQnfields(); i++ )
   {
@@ -1952,6 +1960,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
   {
     conn->begin();
 
+    QString delim = "";
     QString sql = QString( "ALTER TABLE %1 " ).arg( mQuery );
     for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
     {
@@ -1966,11 +1975,9 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
         if ( iter->length() > 0 && iter->precision() >= 0 )
           type = QString( "%1(%2,%3)" ).arg( type ).arg( iter->length() ).arg( iter->precision() );
       }
-      sql.append( QString( "ADD COLUMN %1 %2, " ).arg( quotedIdentifier( iter->name() ) ).arg( type ) );
+      sql.append( QString( "%1ADD COLUMN %2 %3" ).arg( delim ).arg( quotedIdentifier( iter->name() ) ).arg( type ) );
+      delim = ",";
     }
-    sql.chop( 2 ); /* ", " */
-    sql.append( ";" );
-    QgsDebugMsg( sql );
 
     //send sql statement and do error handling
     QgsPostgresResult result = conn->PQexec( sql );
