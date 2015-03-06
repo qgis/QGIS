@@ -2650,9 +2650,9 @@ void QgsGdalProvider::initBaseDataset()
     // define if the band has scale and offset to apply
     double myScale = bandScale( i );
     double myOffset = bandOffset( i );
-    if ( myScale != 1.0 && myOffset != 0.0 )
+    if ( !qgsDoubleNear( myScale, 1.0 ) || !qgsDoubleNear( myOffset, 0.0 ) )
     {
-      // if the band has scale and offset to apply change dataType
+      // if the band has scale or offset to apply change dataType
       switch ( myGdalDataType )
       {
         case GDT_Unknown:
