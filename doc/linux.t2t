@@ -147,7 +147,12 @@ $HOME/apps/bin/qgis
 ```
 
 If all has worked properly the QGIS application should start up and appear
-on your screen.
+on your screen.  If you get the error message "error while loading shared libraries",
+execute this command in your shell.
+
+```
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
+```
 
 
 == Building Debian packages ==

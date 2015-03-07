@@ -77,13 +77,13 @@ label{  background-color: #FFFFCC;
 <DIV CLASS="header" ID="header">
 <H1>QGIS</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Wednesday February 25, 2015</H3>
+<H3>Saturday March 07, 2015</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Wednesday February 25, 2015
-Last Change : Wednesday February 25, 2015
+Last Updated: Saturday March 07, 2015
+Last Change : Saturday March 07, 2015
 </P>
 <DIV CLASS="toc">
 
@@ -456,8 +456,13 @@ $HOME/apps/bin/qgis
 
 <P>
 If all has worked properly the QGIS application should start up and appear
-on your screen.
+on your screen.  If you get the error message "error while loading shared libraries",
+execute this command in your shell.
 </P>
+
+<div class="code"><PRE>
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
+</PRE></div>
 
 <A NAME="toc11"></A>
 <H2>3.8. Building Debian packages</H2>

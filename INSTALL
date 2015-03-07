@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Wednesday February 25, 2015
+Saturday March 07, 2015
 
 
-Last Updated: Wednesday February 25, 2015
-Last Change : Wednesday February 25, 2015
+Last Updated: Saturday March 07, 2015
+Last Change : Saturday March 07, 2015
 
 
   1. Introduction
@@ -268,7 +268,10 @@ After that you can try to run QGIS:
   $HOME/apps/bin/qgis
 
 If all has worked properly the QGIS application should start up and appear
-on your screen.
+on your screen.  If you get the error message "error while loading shared libraries",
+execute this command in your shell.
+
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 
 
   3.8. Building Debian packages
