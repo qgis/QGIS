@@ -632,6 +632,15 @@ QString QgsPostgresProvider::endianString()
   }
 }
 
+
+struct PGTypeInfo
+{
+  QString typeName;
+  QString typeType;
+  QString typeElem;
+  int typeLen;
+};
+
 bool QgsPostgresProvider::loadFields()
 {
   if ( !mIsQuery )
@@ -659,14 +668,6 @@ bool QgsPostgresProvider::loadFields()
   // Collect type info
   sql = "SELECT oid,typname,typtype,typelem,typlen FROM pg_type";
   QgsPostgresResult typeResult = connectionRO()->PQexec( sql );
-
-  struct PGTypeInfo
-  {
-    QString typeName;
-    QString typeType;
-    QString typeElem;
-    int typeLen;
-  };
 
   QMap<int, PGTypeInfo> typeMap;
   for ( int i = 0; i < typeResult.PQntuples(); ++i )
