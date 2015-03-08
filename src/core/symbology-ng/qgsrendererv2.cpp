@@ -53,7 +53,10 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
     context.coordinateTransform()->transformInPlace( x, y, z );
   }
 
-  context.mapToPixel().transformInPlace( x, y );
+  qreal qx = (qreal) x;
+  qreal qy = (qreal) y;
+
+  context.mapToPixel().transformInPlace( qx, qy );
 
   pt = QPointF( x, y );
   return wkbPtr;

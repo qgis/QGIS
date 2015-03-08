@@ -1886,10 +1886,10 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPo
 
   //otherwise, guess side based on closest map side to point
   QList< QPair<double, QgsComposerMapGrid::BorderSide > > distanceToSide;
-  distanceToSide << qMakePair( p.x(), QgsComposerMapGrid::Left );
-  distanceToSide << qMakePair( mComposerMap->rect().width() - p.x(), QgsComposerMapGrid::Right );
-  distanceToSide << qMakePair( p.y(), QgsComposerMapGrid::Top );
-  distanceToSide << qMakePair( mComposerMap->rect().height() - p.y(), QgsComposerMapGrid::Bottom );
+  distanceToSide << qMakePair( (double)p.x(), QgsComposerMapGrid::Left );
+  distanceToSide << qMakePair( (double)(mComposerMap->rect().width() - p.x()), QgsComposerMapGrid::Right );
+  distanceToSide << qMakePair( (double)p.y(), QgsComposerMapGrid::Top );
+  distanceToSide << qMakePair( (double)(mComposerMap->rect().height() - p.y()), QgsComposerMapGrid::Bottom );
 
   qSort( distanceToSide.begin(), distanceToSide.end(), sortByDistance );
   return distanceToSide.at( 0 ).second;

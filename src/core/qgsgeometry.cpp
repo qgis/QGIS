@@ -4683,7 +4683,13 @@ void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QTransform& trans, b
 
   QgsWkbPtr tmp = wkbPtr;
   tmp >> x >> y;
-  trans.map( x, y, &rotated_x, &rotated_y );
+
+  qreal qx = (qreal) x;
+  qreal qy = (qreal) y;
+  qreal qrx = (qreal) rotated_x;
+  qreal qry = (qreal) rotated_y;
+
+  trans.map( qx, qy, &qrx, &qry );
   wkbPtr << rotated_x << rotated_y;
 
   if ( hasZValue )

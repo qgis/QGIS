@@ -86,8 +86,8 @@ void QgsMapMouseEvent::snapPoint()
 
 QPoint QgsMapMouseEvent::mapToPixelCoordinates( QgsMapCanvas* canvas, const QgsPoint& point )
 {
-  double x = point.x();
-  double y = point.y();
+  qreal x = point.x();
+  qreal y = point.y();
 
   canvas->mapSettings().mapToPixel().transformInPlace( x, y );
 

@@ -63,7 +63,7 @@ QgsPoint QgsMapCanvasItem::toMapCoordinates( const QPoint& point ) const
 
 QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point ) const
 {
-  double x = point.x(), y = point.y();
+  qreal x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
   return QPointF( x, y ) + mPanningOffset;
 }

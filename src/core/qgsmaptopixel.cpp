@@ -124,7 +124,16 @@ QgsPoint QgsMapToPixel::toMapPoint( double x, double y ) const
   QTransform matrix = mMatrix.inverted( &invertible );
   assert( invertible );
   double mx, my;
-  matrix.map( x, y, &mx, &my );
+
+  qreal qx = (qreal) x;
+  qreal qy = (qreal) y;
+  qreal qmx, qmy;
+
+  matrix.map( qx, qy, &qmx, &qmy );
+
+  mx = (double) qmx;
+  my = (double) qmy;
+
   QgsPoint ret( mx, my );
 
   //QgsDebugMsg(QString("XXX toMapPoint x:%1 y:%2 -> x:%3 y:%4").arg(x).arg(y).arg(mx).arg(my));
@@ -238,7 +247,14 @@ QString QgsMapToPixel::showParameters() const
 
 QgsPoint QgsMapToPixel::transform( double x, double y ) const
 {
-  transformInPlace( x, y );
+  qreal qx = (qreal) x;
+  qreal qy = (qreal) y;
+
+  transformInPlace( qx, qy );
+  
+  x = (double) qx;
+  y = (double) qy;
+
   return QgsPoint( x, y );
 }
 
@@ -246,7 +262,14 @@ QgsPoint QgsMapToPixel::transform( const QgsPoint& p ) const
 {
   double dx = p.x();
   double dy = p.y();
-  transformInPlace( dx, dy );
+  
+  qreal qdx = (qreal) dx;
+  qreal qdy = (qreal) dy;
+
+  transformInPlace( qdx, qdy );
+
+  dx = (double) qdx;
+  dy = (double) qdy;
 
 // QgsDebugMsg(QString("Point to pixel...X : %1-->%2, Y: %3 -->%4").arg(p.x()).arg(dx).arg(p.y()).arg(dy));
   return QgsPoint( dx, dy );
@@ -256,7 +279,14 @@ void QgsMapToPixel::transform( QgsPoint* p ) const
 {
   double x = p->x();
   double y = p->y();
-  transformInPlace( x, y );
+
+  qreal qx = (qreal) x;
+  qreal qy = (qreal) y;
+
+  transformInPlace( qx, qy );
+
+  x = (double) qx;
+  y = (double) qy;
 
 #ifdef QGISDEBUG
 // QgsDebugMsg(QString("Point to pixel...X : %1-->%2, Y: %3 -->%4").arg(p->x()).arg(x).arg(p->y()).arg(y));
@@ -267,7 +297,7 @@ void QgsMapToPixel::transform( QgsPoint* p ) const
 void QgsMapToPixel::transformInPlace( qreal& x, qreal& y ) const
 {
   // Map 2 Pixel
-  double mx, my;
+  qreal mx, my;
   mMatrix.map( x, y, &mx, &my );
   //QgsDebugMsg(QString("XXX transformInPlace X : %1-->%2, Y: %3 -->%4").arg(x).arg(mx).arg(y).arg(my));
   x = mx; y = my;

@@ -605,7 +605,7 @@ int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) con
     QLineF line( p0, p1 );
     clipByRect( line, canvasPoly );
     line = QLineF( m2p.transform( QgsPoint( line.pointAt( 0 ) ) ).toQPointF(), m2p.transform( QgsPoint( line.pointAt( 1 ) ) ).toQPointF() );
-    lines.push_back( qMakePair( p0.y(), line ) );
+    lines.push_back( qMakePair( (double)p0.y(), line ) );
     dist += mGridIntervalY;
   }
 
@@ -652,7 +652,7 @@ int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) con
     QLineF line( p0, p1 );
     clipByRect( line, canvasPoly );
     line = QLineF( m2p.transform( QgsPoint( line.pointAt( 0 ) ) ).toQPointF(), m2p.transform( QgsPoint( line.pointAt( 1 ) ) ).toQPointF() );
-    lines.push_back( qMakePair( p0.x(), line ) );
+    lines.push_back( qMakePair( (double)p0.x(), line ) );
     dist += mGridIntervalX;
   }
 
