@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <qgsCSWConnections version="1.0">
-    <csw name="Data.gov CSW" url="http://catalog.data.gov/csw-all"/>
-    <csw name="Geonorge - National CSW service for Norway" url="http://www.geonorge.no/geonetwork/srv/eng/csw"/>
-    <csw name="Geoportale Nazionale - Servizio di ricerca Italiano" url="http://www.pcn.minambiente.it/geoportal/csw"/>
-    <csw name="LINZ Data Service" url="http://data.linz.govt.nz/feeds/csw"/>
-    <csw name="Nationaal Georegister (Nederland)" url="http://www.nationaalgeoregister.nl/geonetwork/srv/eng/csw"/>
-    <csw name="RNDT - Repertorio Nazionale dei Dati Territoriali - Servizio di ricerca" url="http://www.rndt.gov.it/RNDT/CSW"/>
+    <csw name="USA: Data.gov CSW" url="http://catalog.data.gov/csw-all"/>
+    <csw name="Danmark: National CSW" url="http://www.geodata-info.dk/registrant/srv/en/csw?"/>
+    <csw name="Finland: National CSW (Paikkatietohakemisto)" url="http://www.paikkatietohakemisto.fi/geonetwork/srv/fi/csw?"/>
+    <csw name="Iceland: National CSW (Iceland Service)" url="http://gatt.lmi.is/geoportal122/csw?"/>
+    <csw name="Italy: National CSW (Geoportale Nazionale - Servizio di ricerca Italiano)" url="http://www.pcn.minambiente.it/geoportal/csw"/>
+    <csw name="Italy: RNDT - Repertorio Nazionale dei Dati Territoriali - Servizio di ricerca" url="http://www.rndt.gov.it/RNDT/CSW"/>
+    <csw name="New Zealand: LINZ Data Service" url="http://data.linz.govt.nz/feeds/csw"/>
+    <csw name="Netherlands: National CSW (Nationaal Georegister)" url="http://www.nationaalgeoregister.nl/geonetwork/srv/eng/csw"/>
+    <csw name="Norway: National CSW (Geonorge)" url="http://www.geonorge.no/geonetwork/srv/no/csw?request=GetCapabilities&service=CSW"/>
+    <csw name="Sweden: National CSW" url="http://www.geodata.se/InspireCswProxy/csw?"/>
     <csw name="UK Location Catalogue Publishing Service" url="http://csw.data.gov.uk/geonetwork/srv/en/csw"/>
     <csw name="UNEP GRID-Geneva Metadata Catalog" url="http://metadata.grid.unep.ch:8080/geonetwork/srv/eng/csw"/>
 </qgsCSWConnections>
