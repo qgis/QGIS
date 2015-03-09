@@ -39,10 +39,7 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
 {
   QgsConstWkbPtr wkbPtr( wkb + 1 );
   unsigned int wkbType;
-  wkbPtr >> wkbType;
-
-  double x, y;
-  wkbPtr >> x >> y;
+  wkbPtr >> wkbType >> pt.rx() >> pt.ry();
 
   if ( wkbType == QGis::WKBPoint25D )
     wkbPtr += sizeof( double );
@@ -50,12 +47,11 @@ const unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderCont
   if ( context.coordinateTransform() )
   {
     double z = 0; // dummy variable for coordiante transform
-    context.coordinateTransform()->transformInPlace( x, y, z );
+    context.coordinateTransform()->transformInPlace( pt.rx(), pt.ry(), z );
   }
 
-  context.mapToPixel().transformInPlace( x, y );
+  context.mapToPixel().transformInPlace( pt.rx(), pt.ry() );
 
-  pt = QPointF( x, y );
   return wkbPtr;
 }
 
@@ -65,7 +61,7 @@ const unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRe
   unsigned int wkbType, nPoints;
   wkbPtr >> wkbType >> nPoints;
 
-  bool hasZValue = ( wkbType == QGis::WKBLineString25D );
+  bool hasZValue = wkbType == QGis::WKBLineString25D;
 
   double x, y;
   const QgsCoordinateTransform* ct = context.coordinateTransform();

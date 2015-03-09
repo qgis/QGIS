@@ -686,12 +686,18 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline const QgsWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v=d; return *this; }
+#endif
 
     inline QgsWkbPtr &operator<<( const double &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const int &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const unsigned int &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const char &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const QGis::WkbType &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline QgsWkbPtr &operator<<( const qreal &v ) { double d = v; memcpy( mP, &d, sizeof( d ) ); mP += sizeof( d ); return *this; }
+#endif
 
     inline void operator+=( int n ) { mP += n; }
 
@@ -710,6 +716,9 @@ class CORE_EXPORT QgsConstWkbPtr
     inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline const QgsConstWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v=d; return *this; }
+#endif
 
     inline void operator+=( int n ) { mP += n; }
 

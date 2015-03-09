@@ -2105,7 +2105,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
           QTransform t = QTransform::fromTranslate( center.x(), center.y() );
           t.rotate( -m2p.mapRotation() );
           t.translate( -center.x(), -center.y() );
-          double xPosR, yPosR;
+          qreal xPosR, yPosR;
           t.map( xPos, yPos, &xPosR, &yPosR );
           xPos = xPosR; yPos = yPosR;
         }

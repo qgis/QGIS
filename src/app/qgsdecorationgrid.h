@@ -199,7 +199,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
         @param p drawing painter
     @param hLines horizontal coordinate lines in item coordinates
         @param vLines vertical coordinate lines in item coordinates*/
-    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines );
+    void drawCoordinateAnnotations( QPainter* p, const QList< QPair< qreal, QLineF > >& hLines, const QList< QPair< qreal, QLineF > >& vLines );
     void drawCoordinateAnnotation( QPainter* p, const QPointF& pos, QString annotationString );
     /**Draws a single annotation
         @param p drawing painter
@@ -209,10 +209,10 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     void drawAnnotation( QPainter* p, const QPointF& pos, int rotation, const QString& annotationText );
     /**Returns the grid lines with associated coordinate value
         @return 0 in case of success*/
-    int xGridLines( QList< QPair< double, QLineF > >& lines ) const;
+    int xGridLines( QList< QPair< qreal, QLineF > >& lines ) const;
     /**Returns the grid lines for the y-coordinates. Not vertical in case of rotation
         @return 0 in case of success*/
-    int yGridLines( QList< QPair< double, QLineF > >& lines ) const;
+    int yGridLines( QList< QPair< qreal, QLineF > >& lines ) const;
     /**Returns the item border of a point (in item coordinates)*/
     Border borderForLineCoord( const QPointF& point, QPainter* p ) const;
 
