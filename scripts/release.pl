@@ -128,8 +128,10 @@ if( $domajor ) {
 	pod2usage("No version change");
 }
 
-pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
-pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp";
+unless( $dopoint ) {
+	pod2usage("Splash images/splash/splash-$newmajor.$newminor.png not found") unless -r "images/splash/splash-$newmajor.$newminor.png";
+	pod2usage("NSIS image ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp not found") unless -r "ms-windows/Installer-Files/WelcomeFinishPage-$newmajor.$newminor.bmp";
+}
 
 print "Last pull rebase...\n";
 run( "git pull --rebase", "git pull rebase failed" );
@@ -220,4 +222,8 @@ release.pl {{-major|-minor} [-ltr] -releasename=releasename|-point}
     -releasename=name   new release name for master/minor release
     -ltr                new release is a long term release
     -dryrun             just echo but don't run any commands
+
+  Major and minor releases also require a new splash screen
+  images/splash/splash-M.N.png and bitmap for the NSIS
+  installer ms-windows/Installer-Files/WelcomeFinishPage-M.N.bmp.
 =cut
