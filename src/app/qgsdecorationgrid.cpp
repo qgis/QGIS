@@ -217,14 +217,14 @@ void QgsDecorationGrid::render( QPainter * p )
 
   // p->setPen( mGridPen );
 
-  QList< QPair< double, QLineF > > verticalLines;
+  QList< QPair< qreal, QLineF > > verticalLines;
   yGridLines( verticalLines );
-  QList< QPair< double, QLineF > > horizontalLines;
+  QList< QPair< qreal, QLineF > > horizontalLines;
   xGridLines( horizontalLines );
   //QgsDebugMsg( QString("grid has %1 vertical and %2 horizontal lines").arg( verticalLines.size() ).arg( horizontalLines.size() ) );
 
-  QList< QPair< double, QLineF > >::const_iterator vIt = verticalLines.constBegin();
-  QList< QPair< double, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
+  QList< QPair< qreal, QLineF > >::const_iterator vIt = verticalLines.constBegin();
+  QList< QPair< qreal, QLineF > >::const_iterator hIt = horizontalLines.constBegin();
 
   //simpler approach: draw vertical lines first, then horizontal ones
   if ( mGridStyle == QgsDecorationGrid::Line )
@@ -338,7 +338,7 @@ void QgsDecorationGrid::render( QPainter * p )
   }
 }
 
-void QgsDecorationGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< double, QLineF > >& hLines, const QList< QPair< double, QLineF > >& vLines )
+void QgsDecorationGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPair< qreal, QLineF > >& hLines, const QList< QPair< qreal, QLineF > >& vLines )
 {
   if ( !p )
   {
@@ -346,7 +346,7 @@ void QgsDecorationGrid::drawCoordinateAnnotations( QPainter* p, const QList< QPa
   }
 
   QString currentAnnotationString;
-  QList< QPair< double, QLineF > >::const_iterator it = hLines.constBegin();
+  QList< QPair< qreal, QLineF > >::const_iterator it = hLines.constBegin();
   for ( ; it != hLines.constEnd(); ++it )
   {
     currentAnnotationString = QString::number( it->first, 'f', mGridAnnotationPrecision );
@@ -566,7 +566,7 @@ QPolygonF canvasExtent()
   return poly;
 }
 
-int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) const
+int QgsDecorationGrid::xGridLines( QList< QPair< qreal, QLineF > >& lines ) const
 {
   // prepare horizontal lines
   lines.clear();
@@ -612,7 +612,7 @@ int QgsDecorationGrid::xGridLines( QList< QPair< double, QLineF > >& lines ) con
   return 0;
 }
 
-int QgsDecorationGrid::yGridLines( QList< QPair< double, QLineF > >& lines ) const
+int QgsDecorationGrid::yGridLines( QList< QPair< qreal, QLineF > >& lines ) const
 {
   // prepare vertical lines
 

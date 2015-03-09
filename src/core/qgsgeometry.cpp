@@ -4679,7 +4679,7 @@ bool QgsGeometry::convertToMultiType()
 
 void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QTransform& trans, bool hasZValue )
 {
-  double x, y, rotated_x, rotated_y;
+  qreal x, y, rotated_x, rotated_y;
 
   QgsWkbPtr tmp = wkbPtr;
   tmp >> x >> y;
