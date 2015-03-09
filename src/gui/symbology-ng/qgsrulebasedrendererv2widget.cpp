@@ -800,8 +800,8 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
     {
       case 0: return rule->label();
       case 1: return rule->filterExpression();
-      case 2: return rule->scaleMinDenom();
-      case 3: return rule->scaleMaxDenom();
+      case 2: return rule->scaleMaxDenom();
+      case 3: return rule->scaleMinDenom();
       default: return QVariant();
     }
   }
