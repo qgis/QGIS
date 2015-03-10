@@ -74,6 +74,7 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
+ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
 #############################################################
 # WCS public servers test:
