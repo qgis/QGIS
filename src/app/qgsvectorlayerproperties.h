@@ -115,6 +115,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void enableLabelOptions( bool theFlag );
 
     void on_mButtonAddJoin_clicked();
+    void on_mButtonEditJoin_clicked();
     void on_mButtonRemoveJoin_clicked();
 
     void on_mSimplifyDrawingGroupBox_toggled( bool checked );

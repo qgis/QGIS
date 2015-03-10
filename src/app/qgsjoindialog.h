@@ -1,5 +1,5 @@
 /***************************************************************************
-                              qgsaddjoindialog.h
+                              qgsjoindialog.h
                               ------------------
   begin                : July 10, 2010
   copyright            : (C) 2010 by Marco Hugentobler
@@ -15,42 +15,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSADDJOINDIALOG_H
-#define QGSADDJOINDIALOG_H
+#ifndef QgsJoinDIALOG_H
+#define QgsJoinDIALOG_H
 
-#include "ui_qgsaddjoindialogbase.h"
+#include "ui_qgsjoindialogbase.h"
+
 class QgsVectorLayer;
+class QgsVectorJoinInfo;
 
-class APP_EXPORT QgsAddJoinDialog: public QDialog, private Ui::QgsAddJoinDialogBase
+class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 {
     Q_OBJECT
   public:
-    QgsAddJoinDialog( QgsVectorLayer* layer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
-    ~QgsAddJoinDialog();
+    QgsJoinDialog( QgsVectorLayer* layer, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    ~QgsJoinDialog();
 
-    //retrieve results
+    /** Configure the dialog for an existing join */
+    void setJoinInfo( const QgsVectorJoinInfo& joinInfo );
 
-    /** Get the id of the layer to join*/
-    QString joinedLayerId() const;
-    /** Returns the name of the join field*/
-    QString joinFieldName() const;
-    /** Returns the name of the target field (join-to field)*/
-    QString targetFieldName() const;
-    /** True if joined layer should be cached in virtual memory*/
-    bool cacheInMemory() const;
+    /** Returns the join info */
+    QgsVectorJoinInfo joinInfo() const;
+
     /** Returns true if user wants to create an attribute index on the join field*/
     bool createAttributeIndex() const;
-    /** True if onle a subset of fields of joined layer should be used*/
-    bool hasJoinFieldsSubset() const;
-    /** Return list of checked fields from joined layer to be used in join*/
-    QStringList joinFieldsSubset() const;
-    /** Return if the user selected a custom prefix*/
-    bool hasCustomPrefix() const;
-    /** The custom prefix the user defined*/
-    const QString customPrefix() const;
 
   private slots:
-    void on_mJoinLayerComboBox_currentIndexChanged( int index );
+    void joinedLayerChanged( QgsMapLayer* layer );
 
   private:
     /**Target layer*/
@@ -58,4 +48,4 @@ class APP_EXPORT QgsAddJoinDialog: public QDialog, private Ui::QgsAddJoinDialogB
 };
 
 
-#endif // QGSADDJOINDIALOG_H
+#endif // QgsJoinDIALOG_H

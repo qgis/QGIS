@@ -20,7 +20,7 @@
 #include <limits>
 
 #include "qgisapp.h"
-#include "qgsaddjoindialog.h"
+#include "qgsjoindialog.h"
 #include "qgsapplication.h"
 #include "qgsattributeactiondialog.h"
 #include "qgsapplydialog.h"
@@ -1031,17 +1031,10 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
 
 void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
 {
-  QgsAddJoinDialog d( layer );
+  QgsJoinDialog d( layer );
   if ( d.exec() == QDialog::Accepted )
   {
-    QgsVectorJoinInfo info;
-    info.targetFieldName = d.targetFieldName();
-    info.joinLayerId = d.joinedLayerId();
-    info.joinFieldName = d.joinFieldName();
-    info.memoryCache = d.cacheInMemory();
-
-    if ( d.hasJoinFieldsSubset() )
-      info.setJoinFieldNamesSubset( new QStringList( d.joinFieldsSubset() ) );
+    QgsVectorJoinInfo info = d.joinInfo();
     if ( layer )
     {
       //create attribute index if possible
@@ -1053,17 +1046,68 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
           joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
         }
       }
-      if ( d.hasCustomPrefix() )
-        info.prefix = d.customPrefix();
-      else
-        info.prefix = QString::null;
-
       layer->addJoin( info );
       addJoinToTreeWidget( info );
       pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                    !layer->isEditable() && layer->vectorJoins().size() < 1 );
     }
     mFieldsPropertiesDialog->init();
+  }
+}
+
+void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
+{
+  QTreeWidgetItem* currentJoinItem = mJoinTreeWidget->currentItem();
+  if ( !layer || !currentJoinItem )
+  {
+    return;
+  }
+
+  QString joinLayerId = currentJoinItem->data( 0, Qt::UserRole ).toString();
+  const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
+  int j = -1;
+  for ( int i = 0; i < joins.size(); ++i )
+  {
+    if ( joins[i].joinLayerId == joinLayerId )
+    {
+      j = i;
+      break;
+    }
+  }
+  if ( j == -1 )
+  {
+    return;
+  }
+
+  QgsJoinDialog d( layer );
+  d.setJoinInfo( joins[j] );
+
+  if ( d.exec() == QDialog::Accepted )
+  {
+    // remove old join
+    layer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
+    mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
+
+    // add the new edited
+    QgsVectorJoinInfo info = d.joinInfo();
+    if ( layer )
+    {
+      //create attribute index if possible
+      if ( d.createAttributeIndex() )
+      {
+        QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
+        if ( joinLayer )
+        {
+          joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
+        }
+      }
+      layer->addJoin( info );
+      addJoinToTreeWidget( info );
+
+      pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+                                   !layer->isEditable() && layer->vectorJoins().size() < 1 );
+      mFieldsPropertiesDialog->init();
+    }
   }
 }
 

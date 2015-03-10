@@ -42,6 +42,10 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
      */
     QgsMapLayerProxyModel* setFilters( Filters filters );
     const Filters& filters() const;
+    
+    //! offer the possibility to except some layers to be listed
+    void setExceptedLayerList( QList<QgsMapLayer*> exceptList );
+    QList<QgsMapLayer*> exceptedLayerList();
 
     // QSortFilterProxyModel interface
   public:

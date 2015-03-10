@@ -21,6 +21,7 @@
 QgsMapLayerProxyModel::QgsMapLayerProxyModel( QObject *parent )
     : QSortFilterProxyModel( parent )
     , mFilters( All )
+    , mExceptList( QList<QgsMapLayer*>() )
     , mModel( new QgsMapLayerModel( parent ) )
 {
   setSourceModel( mModel );
@@ -37,6 +38,12 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
   return this;
 }
 
+void QgsMapLayerProxyModel::setExceptedLayerList(QList<QgsMapLayer*> exceptList)
+{
+  mExceptList = exceptList;
+  invalidateFilter();
+}
+
 bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   if ( mFilters.testFlag( All ) )
@@ -45,6 +52,9 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   QModelIndex index = sourceModel()->index( source_row, 0, source_parent );
   QgsMapLayer* layer = static_cast<QgsMapLayer*>( index.internalPointer() );
   if ( !layer )
+    return false;
+
+  if ( mExceptList.contains( layer ) )
     return false;
 
   // layer type
