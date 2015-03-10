@@ -1315,8 +1315,7 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
       sql += QString( " WHERE %1" ).arg( mSqlWhereClause );
     }
 
-    sql +=  QString( " ORDER BY %1" )
-            .arg( quotedIdentifier( fld.name() ) );
+    sql +=  QString( " ORDER BY %1" ).arg( connectionRO()->fieldExpression( fld ) );
 
     if ( limit >= 0 )
     {

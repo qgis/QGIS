@@ -1183,15 +1183,15 @@ QString QgsPostgresConn::fieldExpression( const QgsField &fld, QString expr )
   expr = expr.arg( quotedIdentifier( fld.name() ) );
   if ( type == "money" )
   {
-    return QString( "cash_out(%1)" ).arg( expr );
+    return QString( "cash_out(%1)::text" ).arg( expr );
   }
   else if ( type.startsWith( "_" ) )
   {
-    return QString( "array_out(%1)" ).arg( expr );
+    return QString( "array_out(%1)::text" ).arg( expr );
   }
   else if ( type == "bool" )
   {
-    return QString( "boolout(%1)" ).arg( expr );
+    return QString( "boolout(%1)::text" ).arg( expr );
   }
   else if ( type == "geometry" )
   {
