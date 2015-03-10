@@ -3193,7 +3193,85 @@ Soll wirklich fortgefahren werden?</translation>
     </message>
 </context>
 <context>
+    <name>DinfDistDownMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation>D-Infinity Fliessrichtung Raster</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation>Höhengitter mit gefüllten Löchern</translation>
+    </message>
+    <message>
+        <source>Stream Raster Grid</source>
+        <translation>Stromrastergitter</translation>
+    </message>
+    <message>
+        <source>Weight Path Grid</source>
+        <translation>Pfadgewichtungsgitter</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation>Statistische Methode</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation>Distanz Methode</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>Kantenverunreinigung prüfen</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation>D-Infinity Sende and Strom Gitter</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
     <name>DinfDistUp</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation>D-Infinity Fliessrichtung Raster</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation>Höhengitter mit gefüllten Löchern</translation>
+    </message>
+    <message>
+        <source>Slope Grid</source>
+        <translation>Neigungsgitter</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation>Statistische Methode</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation>Distanz Methode</translation>
+    </message>
+    <message>
+        <source>Proportion Threshold</source>
+        <translation>Anteils Schwellenwert</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>Kantenverunreinigung prüfen</translation>
+    </message>
+    <message>
+        <source>D-Infinity Distance Up</source>
+        <translation>D-Infinity Entfernung hoch</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfDistUpMulti</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
         <translation>D-Infinity Fliessrichtung Raster</translation>
@@ -3303,6 +3381,84 @@ Soll wirklich fortgefahren werden?</translation>
     <message>
         <source>Output Concentration Grid</source>
         <translation>Ausgangs Konzentrationsgitter</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccum2Multi</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation>D-Infinity Fliessrichtung Raster</translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation>Versorgungsnetz</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation>Transportkapazitätsgitter</translation>
+    </message>
+    <message>
+        <source>Input Concentration Grid</source>
+        <translation>Eingangs Konzentrationsgitter</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>Auslaß-Shapedatei</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>Kantenverunreinigung prüfen</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation>Transportbegrenztes Akkumulations Gitter</translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation>Ablagerungs Raster</translation>
+    </message>
+    <message>
+        <source>Output Concentration Grid</source>
+        <translation>Ausgangs Konzentrationsgitter</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccumMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation>D-Infinity Fliessrichtung Raster</translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation>Versorgungsnetz</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation>Transportkapazitätsgitter</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>Auslaß-Shapedatei</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation>Kantenverunreinigung prüfen</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation>Transportbegrenztes Akkumulations Gitter</translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation>Ablagerungs Raster</translation>
     </message>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
@@ -3899,6 +4055,53 @@ Geometriespate - Spalte mit eindeutigen ganzahligen Werden</translation>
 </context>
 <context>
     <name>DropAnalysis</name>
+    <message>
+        <source>D8 Contributing Area Grid</source>
+        <translation>D8 beitragende Fläche Raster</translation>
+    </message>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation>D8 Fliessrichtung Raster</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation>Höhengitter mit gefüllten Löchern</translation>
+    </message>
+    <message>
+        <source>Accumulated Stream Source Grid</source>
+        <translation>Kumuliertes Fluss Quellennetz</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>Auslaß-Shapedatei</translation>
+    </message>
+    <message>
+        <source>Minimum Threshold</source>
+        <translation>Minimum Schwellenwert</translation>
+    </message>
+    <message>
+        <source>Maximum Threshold</source>
+        <translation>Maximum Schwellenwert</translation>
+    </message>
+    <message>
+        <source>Number of Threshold Values</source>
+        <translation>Anzahl der Schwellenwerte</translation>
+    </message>
+    <message>
+        <source>Spacing for Threshold Values</source>
+        <translation>Abstand für Schwellenwerte</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation>D-Infinity Sende and Strom Gitter</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
+    <name>DropAnalysisMulti</name>
     <message>
         <source>D8 Contributing Area Grid</source>
         <translation>D8 beitragende Fläche Raster</translation>
@@ -7066,6 +7269,41 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
 </context>
 <context>
+    <name>GridNetMulti</name>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation>D8 Fliessrichtung Raster</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation>Auslaß-Shapedatei</translation>
+    </message>
+    <message>
+        <source>Mask Grid</source>
+        <translation>Maskengitter</translation>
+    </message>
+    <message>
+        <source>Mask Threshold</source>
+        <translation>Maskenschwellenwert</translation>
+    </message>
+    <message>
+        <source>Longest Upslope Length Grid</source>
+        <translation>Längstes Steigungslängen Gitter</translation>
+    </message>
+    <message>
+        <source>Total Upslope Length Grid</source>
+        <translation>Gesamt Steigungslängen Gitter</translation>
+    </message>
+    <message>
+        <source>Strahler Network Order Grid</source>
+        <translation>Strahler Netzwerk Ordnungs Raster</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
     <name>GridSurfaceCreate</name>
     <message>
         <source>Input las layer</source>
@@ -7875,6 +8113,33 @@ Bitte vor der Ausführung von LAStools-Algorithmen einstellen.</translation>
 </context>
 <context>
     <name>LengthArea</name>
+    <message>
+        <source>Length Grid</source>
+        <translation>Längengitter</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation>Beitragende Fläche Raster</translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation>Schwelle</translation>
+    </message>
+    <message>
+        <source>Exponent</source>
+        <translation>Exponent</translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation>Strom Quellennetz</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
+    <name>LengthAreaMulti</name>
     <message>
         <source>Length Grid</source>
         <translation>Längengitter</translation>
@@ -10569,6 +10834,33 @@ Bitte die Processing-Einstellung überprüfen.</translation>
 </context>
 <context>
     <name>PeukerDouglas</name>
+    <message>
+        <source>Elevation Grid</source>
+        <translation>Höhen Raster</translation>
+    </message>
+    <message>
+        <source>Center Smoothing Weight</source>
+        <translation>Glättungsgewichtung Mitte</translation>
+    </message>
+    <message>
+        <source>Side Smoothing Weight</source>
+        <translation>Seitenglättungsgewichtung</translation>
+    </message>
+    <message>
+        <source>Diagonal Smoothing Weight</source>
+        <translation>Diagonale Glättungsgewichtung</translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation>Strom Quellennetz</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
+    <name>PeukerDouglasMulti</name>
     <message>
         <source>Elevation Grid</source>
         <translation>Höhen Raster</translation>
@@ -16641,7 +16933,7 @@ Ausdruckfehler:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation>Attributtabelle - %1 :: Objekte gesamt: %2, gefiltert: %3, gewählt: %4</translation>
+        <translation type="obsolete">Attributtabelle - %1 :: Objekte gesamt: %2, gefiltert: %3, gewählt: %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -16688,6 +16980,18 @@ Ausdruckfehler:
     <message>
         <source>Update Selected</source>
         <translation>Gewählte aktualisieren</translation>
+    </message>
+    <message>
+        <source>Show All Features In Initial Canvas Extent</source>
+        <translation>Alle Objekte im anfänglichen Kartenausschnitt zeigen</translation>
+    </message>
+    <message>
+        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
+        <translation>Attributtabelle - %1 :: Objekte gesamt: %2, gefiltert: %3, gewählt: %4%5</translation>
+    </message>
+    <message>
+        <source>, spatially limited</source>
+        <translation>, räumlich beschränkt</translation>
     </message>
 </context>
 <context>
@@ -50315,6 +50619,33 @@ Fehler in Zeile %d</translation>
     </message>
 </context>
 <context>
+    <name>SlopeAreaMulti</name>
+    <message>
+        <source>Slope Grid</source>
+        <translation>Neigungsgitter</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation>Beitragende Fläche Raster</translation>
+    </message>
+    <message>
+        <source>Slope Exponent</source>
+        <translation>Neigungs Exponent</translation>
+    </message>
+    <message>
+        <source>Area Exponent</source>
+        <translation>Flächen Exponent</translation>
+    </message>
+    <message>
+        <source>Slope Area Grid</source>
+        <translation>Neigungsflächen Raster</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
+    </message>
+</context>
+<context>
     <name>SpatialJoin</name>
     <message>
         <source>Target vector layer</source>
@@ -50533,6 +50864,37 @@ Fehler in Zeile %d</translation>
     <message>
         <source>TauDEM (hydrologic analysis)</source>
         <translation>TauDEM (hydrologische Analyse)</translation>
+    </message>
+    <message>
+        <source>TauDEM multifile command line tools folder</source>
+        <translation>TauDEM-Mehrdateibefehlszeilenwerkzeugverzeichnis</translation>
+    </message>
+    <message>
+        <source>Enable singlefile TauDEM tools</source>
+        <translation>TauDEM-Einzeldateiwerkzeuge aktivieren</translation>
+    </message>
+    <message>
+        <source>Enable multifile TauDEM tools</source>
+        <translation>TauDEM-Mehrdateiwerkzeuge aktivieren</translation>
+    </message>
+    <message>
+        <source>Could not open TauDEM algorithm %s:
+%s</source>
+        <translation>Konnte TauDEM-Algorithmus nicht öffnen: %s:
+%s</translation>
+    </message>
+</context>
+<context>
+    <name>TauDEMMultifileAlgorithm</name>
+    <message>
+        <source>Could not load TauDEM algorithm: %s
+%s</source>
+        <translation>Konnte TauDEM-Algorithmus nicht laden: %s
+%s</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation>Falsche Anzahl von MPI-Prozessen verwendet. Bitte vor der Ausführung von TauDEM-Algorithmen korrekte Anzahl einstellen.</translation>
     </message>
 </context>
 <context>
