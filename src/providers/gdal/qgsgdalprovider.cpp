@@ -1091,9 +1091,9 @@ QGis::DataType QgsGdalProvider::srcDataType( int bandNo ) const
   // define if the band has scale and offset to apply
   double myScale = bandScale( bandNo );
   double myOffset = bandOffset( bandNo );
-  if ( myScale != 1.0 && myOffset != 0.0 )
+  if ( myScale != 1.0 || myOffset != 0.0 )
   {
-    // if the band has scale and offset to apply change dataType
+    // if the band has scale or offset to apply change dataType
     switch ( myDataType )
     {
       case QGis::UnknownDataType:
