@@ -1039,6 +1039,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
     info.joinLayerId = d.joinedLayerId();
     info.joinFieldName = d.joinFieldName();
     info.memoryCache = d.cacheInMemory();
+
     if ( d.hasJoinFieldsSubset() )
       info.setJoinFieldNamesSubset( new QStringList( d.joinFieldsSubset() ) );
     if ( layer )
@@ -1080,21 +1081,45 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
   joinItem->setData( 0, Qt::UserRole, join.joinLayerId );
 
   if ( join.joinFieldName.isEmpty() && join.joinFieldIndex >= 0 && join.joinFieldIndex < joinLayer->pendingFields().count() )
+  {
     joinItem->setText( 1, joinLayer->pendingFields().field( join.joinFieldIndex ).name() );   //for compatibility with 1.x
+  }
   else
+  {
     joinItem->setText( 1, join.joinFieldName );
+  }
 
   if ( join.targetFieldName.isEmpty() && join.targetFieldIndex >= 0 && join.targetFieldIndex < layer->pendingFields().count() )
+  {
     joinItem->setText( 2, layer->pendingFields().field( join.targetFieldIndex ).name() );   //for compatibility with 1.x
+  }
   else
+  {
     joinItem->setText( 2, join.targetFieldName );
+  }
 
   if ( join.memoryCache )
+  {
     joinItem->setText( 3, QChar( 0x2714 ) );
+  }
+
+  joinItem->setText( 4, join.prefix );
+
+  const QStringList* list = join.joinFieldNamesSubset();
+  if ( list )
+  {
+    joinItem->setText( 5, QString( "%1" ).arg( list->count() ) );
+  }
+  else
+  {
+    joinItem->setText( 5, tr( "all" ) );
+  }
 
   mJoinTreeWidget->addTopLevelItem( joinItem );
-  for ( int c = 0; c < 3; c++ )
+  for ( int c = 0; c < 5; c++ )
+  {
     mJoinTreeWidget->resizeColumnToContents( c );
+  }
 }
 
 void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
