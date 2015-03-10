@@ -25,7 +25,7 @@
 
 #include <QStandardItemModel>
 
-QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt::WindowFlags f )
+QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QList<QgsMapLayer*> alreadyJoinedLayers, QWidget * parent, Qt::WindowFlags f )
     : QDialog( parent, f )
     , mLayer( layer )
 {
@@ -35,12 +35,13 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt::Windo
   {
     return;
   }
+  // adds self layer to the joined layer (cannot join to itself)
+  alreadyJoinedLayers.append( layer );
 
   mTargetFieldComboBox->setLayer( mLayer );
-  mJoinLayerComboBox->setExceptedLayerList( QList<QgsMapLayer*>() << mLayer );
+  mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
   connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), mJoinFieldComboBox, SLOT( setLayer( QgsMapLayer* ) ) );
   connect( mJoinLayerComboBox, SIGNAL( layerChanged( QgsMapLayer* ) ), this, SLOT( joinedLayerChanged( QgsMapLayer* ) ) );
-  connect( mJoinFieldComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( allowAttrIndexCreation() ) );
 
   mCacheInMemoryCheckBox->setChecked( true );
 }
@@ -66,14 +67,14 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorJoinInfo& joinInfo )
   }
 
   QStringList* lst = joinInfo.joinFieldNamesSubset();
-  mUseJoinFieldsSubset->setChecked( lst->count() > 0 );
+  mUseJoinFieldsSubset->setChecked( lst && lst->count() > 0 );
   QAbstractItemModel* model = mJoinFieldsSubsetView->model();
   if ( model )
   {
     for ( int i = 0; i < model->rowCount(); ++i )
     {
       QModelIndex index = model->index( i, 0 );
-      if ( lst->contains( model->data( index, Qt::DisplayRole ).toString() ) )
+      if ( lst && lst->contains( model->data( index, Qt::DisplayRole ).toString() ) )
       {
         model->setData( index, Qt::Checked, Qt::CheckStateRole );
       }

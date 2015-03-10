@@ -1031,26 +1031,33 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
 
 void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
 {
-  QgsJoinDialog d( layer );
+  if ( !layer )
+    return;
+
+  QList<QgsMapLayer*> joinedLayers;
+  const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
+  for ( int i = 0; i < joins.size(); ++i )
+  {
+    joinedLayers.append( QgsMapLayerRegistry::instance()->mapLayer( joins[i].joinLayerId ) );
+  }
+
+  QgsJoinDialog d( layer, joinedLayers );
   if ( d.exec() == QDialog::Accepted )
   {
     QgsVectorJoinInfo info = d.joinInfo();
-    if ( layer )
+    //create attribute index if possible
+    if ( d.createAttributeIndex() )
     {
-      //create attribute index if possible
-      if ( d.createAttributeIndex() )
+      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
+      if ( joinLayer )
       {
-        QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
-        if ( joinLayer )
-        {
-          joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
-        }
+        joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
       }
-      layer->addJoin( info );
-      addJoinToTreeWidget( info );
-      pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
-                                   !layer->isEditable() && layer->vectorJoins().size() < 1 );
     }
+    layer->addJoin( info );
+    addJoinToTreeWidget( info );
+    pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+                                 !layer->isEditable() && layer->vectorJoins().size() < 1 );
     mFieldsPropertiesDialog->init();
   }
 }
@@ -1063,6 +1070,7 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
     return;
   }
 
+  QList<QgsMapLayer*> joinedLayers;
   QString joinLayerId = currentJoinItem->data( 0, Qt::UserRole ).toString();
   const QList< QgsVectorJoinInfo >& joins = layer->vectorJoins();
   int j = -1;
@@ -1071,7 +1079,11 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
     if ( joins[i].joinLayerId == joinLayerId )
     {
       j = i;
-      break;
+    }
+    else
+    {
+      // remove already joined layers from possible list to be displayed in dialog
+      joinedLayers.append( QgsMapLayerRegistry::instance()->mapLayer( joins[i].joinLayerId ) );
     }
   }
   if ( j == -1 )
@@ -1079,8 +1091,9 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
     return;
   }
 
-  QgsJoinDialog d( layer );
+  QgsJoinDialog d( layer, joinedLayers );
   d.setJoinInfo( joins[j] );
+
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1090,24 +1103,22 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
 
     // add the new edited
     QgsVectorJoinInfo info = d.joinInfo();
-    if ( layer )
-    {
-      //create attribute index if possible
-      if ( d.createAttributeIndex() )
-      {
-        QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
-        if ( joinLayer )
-        {
-          joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
-        }
-      }
-      layer->addJoin( info );
-      addJoinToTreeWidget( info );
 
-      pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
-                                   !layer->isEditable() && layer->vectorJoins().size() < 1 );
-      mFieldsPropertiesDialog->init();
+    //create attribute index if possible
+    if ( d.createAttributeIndex() )
+    {
+      QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
+      if ( joinLayer )
+      {
+        joinLayer->dataProvider()->createAttributeIndex( joinLayer->pendingFields().indexFromName( info.joinFieldName ) );
+      }
     }
+    layer->addJoin( info );
+    addJoinToTreeWidget( info );
+
+    pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+                                 !layer->isEditable() && layer->vectorJoins().size() < 1 );
+    mFieldsPropertiesDialog->init();
   }
 }
 
