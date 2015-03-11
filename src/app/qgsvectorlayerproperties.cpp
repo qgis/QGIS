@@ -1026,7 +1026,6 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     }
 
   }
-
 }
 
 void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
@@ -1094,15 +1093,16 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
   QgsJoinDialog d( layer, joinedLayers );
   d.setJoinInfo( joins[j] );
 
-
   if ( d.exec() == QDialog::Accepted )
   {
+    QgsVectorJoinInfo info = d.joinInfo();
+
     // remove old join
-    layer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
+    layer->removeJoin( joinLayerId );
     mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
 
     // add the new edited
-    QgsVectorJoinInfo info = d.joinInfo();
+
 
     //create attribute index if possible
     if ( d.createAttributeIndex() )
