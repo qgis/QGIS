@@ -181,7 +181,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     //QPixmap bufferPixmap;
 
     /**Adds a new join to mJoinTreeWidget*/
-    void addJoinToTreeWidget( const QgsVectorJoinInfo& join );
+    void addJoinToTreeWidget( const QgsVectorJoinInfo& join , const int insertIndex = -1 );
 };
 
 inline QString QgsVectorLayerProperties::displayName()

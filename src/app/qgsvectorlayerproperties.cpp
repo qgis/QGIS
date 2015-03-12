@@ -1099,10 +1099,10 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
 
     // remove old join
     layer->removeJoin( joinLayerId );
-    mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
+    int idx = mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem );
+    mJoinTreeWidget->takeTopLevelItem( idx );
 
     // add the new edited
-
 
     //create attribute index if possible
     if ( d.createAttributeIndex() )
@@ -1114,7 +1114,7 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
       }
     }
     layer->addJoin( info );
-    addJoinToTreeWidget( info );
+    addJoinToTreeWidget( info, idx );
 
     pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
                                  !layer->isEditable() && layer->vectorJoins().size() < 1 );
@@ -1122,7 +1122,7 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
   }
 }
 
-void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& join )
+void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& join, const int insertIndex )
 {
   QTreeWidgetItem* joinItem = new QTreeWidgetItem();
 
@@ -1170,11 +1170,19 @@ void QgsVectorLayerProperties::addJoinToTreeWidget( const QgsVectorJoinInfo& joi
     joinItem->setText( 5, tr( "all" ) );
   }
 
-  mJoinTreeWidget->addTopLevelItem( joinItem );
+  if ( insertIndex >= 0 )
+  {
+    mJoinTreeWidget->insertTopLevelItem( insertIndex, joinItem );
+  }
+  else
+  {
+    mJoinTreeWidget->addTopLevelItem( joinItem );
+  }
   for ( int c = 0; c < 5; c++ )
   {
     mJoinTreeWidget->resizeColumnToContents( c );
   }
+  mJoinTreeWidget->setCurrentItem( joinItem );
 }
 
 void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
