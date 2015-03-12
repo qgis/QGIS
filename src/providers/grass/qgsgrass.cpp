@@ -50,15 +50,6 @@ extern "C"
 #endif
 }
 
-#if GRASS_VERSION_MAJOR >= 7
-#define G_suppress_masking Rast_suppress_masking
-#define BOUND_BOX bound_box
-#endif
-
-#if GRASS_VERSION_MAJOR > 7 || (GRASS_VERSION_MAJOR == 7 && GRASS_VERSION_MINOR >= 1)
-#define G_available_mapsets G_get_available_mapsets
-#endif
-
 #if !defined(GRASS_VERSION_MAJOR) || \
     !defined(GRASS_VERSION_MINOR) || \
     GRASS_VERSION_MAJOR<6 || \
