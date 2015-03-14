@@ -617,6 +617,23 @@
           49.04172
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Tom Kralidis",
+        "Committer": "Yes",
+        "First Commit Message": "add MetaSearch 0.2.0",
+        "First Commit Date": "07-05-2014",
+        "GIT Nickname": "tomkralidis"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.383184,
+           43.653226
+        ]
+      }
     }
   ]
 }
