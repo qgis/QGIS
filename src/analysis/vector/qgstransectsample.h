@@ -25,7 +25,8 @@ class ANALYSIS_EXPORT QgsTransectSample
 
     QgsTransectSample( QgsVectorLayer* strataLayer, QString strataIdAttribute, QString minDistanceAttribute, QString nPointsAttribute,
                        DistanceUnits minDistUnits, QgsVectorLayer* baselineLayer, bool shareBaseline,
-                       QString baselineStrataId, const QString& outputPointLayer, const QString& outputLineLayer, const QString& usedBaselineLayer, double minTransectLength = 0.0 );
+                       QString baselineStrataId, const QString& outputPointLayer, const QString& outputLineLayer, const QString& usedBaselineLayer, double minTransectLength = 0.0,
+                       double baselineBufferDistance = -1.0, double baselineSimplificationTolerance = -1.0 );
     ~QgsTransectSample();
 
     int createSample( QProgressDialog* pd );
@@ -56,6 +57,11 @@ class ANALYSIS_EXPORT QgsTransectSample
 
     double mMinTransectLength;
 
+    /**If value is negative, the buffer distance ist set to the same value as the minimum distance*/
+    double mBaselineBufferDistance;
+    /**If value is negative, no simplification is done to the baseline prior to create the buffer*/
+    double mBaselineSimplificationTolerance;
+
     /**Finds the closest points between two line segments
         @param g1 first input geometry. Must be a linestring with two vertices
         @param g2 second input geometry. Must be a linestring with two vertices
@@ -71,7 +77,10 @@ class ANALYSIS_EXPORT QgsTransectSample
         @param clippedBaseline base line geometry clipped to the stratum
         @param tolerance buffer distance (in layer units)
         @return clipped buffer line or 0 in case of error*/
-    static QgsGeometry* clipBufferLine( const QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance );
+    QgsGeometry* clipBufferLine( const QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance );
+
+    /**Returns distance to buffer the baseline (takes care of units and buffer settings*/
+    double bufferDistance( double minDistanceFromAttribute ) const;
 };
 
 #endif // QGSTRANSECTSAMPLE_H
