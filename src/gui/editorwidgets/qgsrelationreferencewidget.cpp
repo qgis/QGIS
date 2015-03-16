@@ -586,6 +586,7 @@ void QgsRelationReferenceWidget::mapIdentification()
 
   mCanvas->window()->raise();
   mCanvas->activateWindow();
+  mCanvas->setFocus();
 
   connect( mMapTool, SIGNAL( featureIdentified( QgsFeature ) ), this, SLOT( featureIdentified( const QgsFeature ) ) );
   connect( mMapTool, SIGNAL( deactivated() ), this, SLOT( mapToolDeactivated() ) );
@@ -593,7 +594,7 @@ void QgsRelationReferenceWidget::mapIdentification()
   if ( mMessageBar )
   {
     QString title = QString( "Relation %1 for %2." ).arg( mRelationName ).arg( mReferencingLayer->name() );
-    QString msg = tr( "Identify a feature of %1 to be associated. Press <ESC> to cancel." ).arg( mReferencedLayer->name() );
+    QString msg = tr( "Identify a feature of %1 to be associated. Press &lt;ESC&gt; to cancel." ).arg( mReferencedLayer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     mMessageBar->pushItem( mMessageBarItem );
   }
