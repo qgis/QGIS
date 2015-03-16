@@ -52,7 +52,8 @@ from MetaSearch.dialogs.recorddialog import RecordDialog
 from MetaSearch.dialogs.xmldialog import XMLDialog
 from MetaSearch.util import (get_connections_from_file, get_ui_class,
                              get_help_url, highlight_xml, normalize_text,
-                             open_url, render_template, StaticContext)
+                             open_url, render_template, serialize_string,
+                             StaticContext)
 
 BASE_CLASS = get_ui_class('maindialog.ui')
 
@@ -648,6 +649,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
     def add_to_ows(self):
         """add to OWS provider connection list"""
 
+        conn_name_matches = []
+
         item = self.treeRecords.currentItem()
 
         if not item:
@@ -678,13 +681,19 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
+        for key in keys:
+            if key.startswith(sname):
+                conn_name_matches.append(key)
+        if conn_name_matches:
+            sname = matches[-1]
+
         # check for duplicates
         if sname in keys:
             msg = self.tr('Connection %s exists. Overwrite?') % sname
             res = QMessageBox.warning(self, self.tr('Saving server'), msg,
                                       QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:
-                return
+            if res != QMessageBox.Yes:  # assign new name with serial
+                sname = serialize_string(sname)
 
         # no dups detected or overwrite is allowed
         self.settings.beginGroup('/Qgis/connections-%s' % stype[1])

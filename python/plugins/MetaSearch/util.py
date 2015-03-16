@@ -146,3 +146,19 @@ def normalize_text(text):
     """tidy up string"""
 
     return text.replace('\n', '')
+
+
+def serialize_string(input_string):
+    """apply a serial counter to a string"""
+
+    s = input_string.strip().split()
+
+    last_token = s[-1]
+    all_other_tokens_as_string = input_string.replace(last_token, '')
+
+    if last_token.isdigit():
+        value = '%s%s' % (all_other_tokens_as_string, int(last_token) + 1)
+    else:
+        value = '%s 1' % input_string
+
+    return value
