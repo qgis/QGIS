@@ -621,6 +621,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Giovanni Manghi",
+        "Committer": "No",
+        "First Commit Message": "Makes SAGA supervised classification work also with SAGA 2.0.8.",
+        "First Commit Date": "30-09-2013",
+        "GIT Nickname": "gioman"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -7.917703,
+          38.596288
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Tom Kralidis",
         "Committer": "Yes",
         "First Commit Message": "add MetaSearch 0.2.0",
