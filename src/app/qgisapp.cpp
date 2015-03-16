@@ -5022,6 +5022,9 @@ void QgisApp::saveAsRasterFile()
                                 this );
   if ( d.exec() == QDialog::Accepted )
   {
+    QSettings settings;
+    settings.setValue( "/UI/lastRasterFileDir", QFileInfo( d.outputFileName() ).absolutePath() );
+
     QgsRasterFileWriter fileWriter( d.outputFileName() );
     if ( d.tileMode() )
     {
