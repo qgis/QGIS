@@ -72,11 +72,15 @@ void QgsQueryBuilder::populateFields()
   const QgsFields& fields = mLayer->pendingFields();
   for ( int idx = 0; idx < fields.count(); ++idx )
   {
+    // skip if the field cannot be queried upon
+    if(! mLayer->setSubsetString(QString("%1 is NULL").arg(fields[idx].name()))) { continue; }
+
     QStandardItem *myItem = new QStandardItem( fields[idx].name() );
     myItem->setData( idx );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
   }
+  mLayer->setSubsetString( mOrigSubsetString );
 
   // All fields get ... setup
   setupLstFieldsModel();

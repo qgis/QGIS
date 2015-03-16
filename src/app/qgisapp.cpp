@@ -6890,17 +6890,21 @@ void QgisApp::layerSubsetString()
     return;
 
   // launch the query builder
-  QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );
   QString subsetBefore = vlayer->subsetString();
+  QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
-  qb->setSql( vlayer->subsetString() );
+  qb->setSql( subsetBefore );
   // Open the query builder
   if ( qb->exec() )
   {
     if ( subsetBefore != qb->sql() )
     {
+
+      // refresh the join cache of depending layers
+      vlayer->refreshJointLayersCache();
+
       mMapCanvas->refresh();
       if ( mLayerTreeView )
       {

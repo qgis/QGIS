@@ -2881,6 +2881,42 @@ void QgsVectorLayer::createJoinCaches()
   }
 }
 
+bool QgsVectorLayer::updateJoinCache(QString joinDestLayer)
+{
+  if ( ! mJoinBuffer ) { return false; }
+  return mJoinBuffer->updateJoinCache(joinDestLayer);
+}
+
+bool QgsVectorLayer::refreshJointLayersCache()
+{
+    // refresh the cache of the joins pointing to this layer
+
+    // track if we will update some
+    bool some_updated=false;
+
+    // loop on all other vector layers
+    const QMap< QString, QgsMapLayer * > & layerList=QgsMapLayerRegistry::instance()->mapLayers();
+    QMap<QString, QgsMapLayer*>::const_iterator it=layerList.constBegin();
+
+    for ( ; it != layerList.constEnd(); ++it )
+    {
+      QgsMapLayer* currentLayer = it.value();
+      if ( currentLayer->type() != QgsMapLayer::VectorLayer ) { continue; }
+      QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+      if ( ! currentVectorLayer || currentVectorLayer == this ) { continue; }
+
+      if ( currentVectorLayer->updateJoinCache(id()) )
+      {
+        some_updated=true;
+        // update it and recurse 
+        currentVectorLayer->updateFields();
+        currentVectorLayer->refreshJointLayersCache();
+      }
+    }
+
+    return some_updated;
+}
+
 void QgsVectorLayer::uniqueValues( int index, QList<QVariant> &uniqueValues, int limit )
 {
   uniqueValues.clear();

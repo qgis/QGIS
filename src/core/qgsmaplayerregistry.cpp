@@ -18,6 +18,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayer.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
 
 //
 // Main class begins now...
@@ -140,6 +141,15 @@ void QgsMapLayerRegistry::removeAllMapLayers()
 
 void QgsMapLayerRegistry::clearAllLayerCaches()
 {
+  QMap<QString, QgsMapLayer *>::iterator it;
+  for ( it = mMapLayers.begin(); it != mMapLayers.end() ; ++it )
+  {
+    // clear the join caches
+    if ( it.value()->type() == QgsMapLayer::VectorLayer ) {
+      QgsVectorLayer* currentVectorLayer = dynamic_cast<QgsVectorLayer*>( it.value() );
+      currentVectorLayer->updateJoinCache();
+    }
+  }
 }
 
 void QgsMapLayerRegistry::reloadAllLayers()
