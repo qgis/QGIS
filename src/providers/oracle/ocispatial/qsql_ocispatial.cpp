@@ -3449,10 +3449,16 @@ bool QOCISpatialDriver::open( const QString & db,
     setLastError( qMakeError( tr( "Unable to logon" ), QSqlError::ConnectionError, d->err ) );
     setOpenError( true );
     if ( d->authp )
+    {
+      OCISessionEnd( d->svc, d->err, d->authp, OCI_DEFAULT );
       OCIHandleFree( d->authp, OCI_HTYPE_SESSION );
+    }
     d->authp = 0;
     if ( d->srvhp )
+    {
+      OCIServerDetach( d->srvhp, d->err, OCI_DEFAULT );
       OCIHandleFree( d->srvhp, OCI_HTYPE_SERVER );
+    }
     d->srvhp = 0;
     return false;
   }
