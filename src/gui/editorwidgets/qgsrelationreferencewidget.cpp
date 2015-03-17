@@ -95,7 +95,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   editLayout->addWidget( mChooserGroupBox );
   QHBoxLayout* chooserLayout = new QHBoxLayout;
   chooserLayout->setContentsMargins( 0, 0, 0, 0 );
-  mFilterLayout = new QFormLayout;
+  mFilterLayout = new QHBoxLayout;
   mFilterLayout->setContentsMargins( 0, 0, 0, 0 );
   mChooserGroupBox->setLayout( chooserLayout );
   chooserLayout->addLayout( mFilterLayout );
@@ -426,33 +426,54 @@ void QgsRelationReferenceWidget::init()
 
     QSet<QString> requestedAttrs;
 
-    Q_FOREACH ( const QString& fieldName, mFilterFields )
+    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 10000, this );
+
+    if ( mFilterFields.size() )
     {
-      QVariantList uniqueValues;
-      int idx = mReferencedLayer->fieldNameIndex( fieldName );
-      QComboBox* cb = new QComboBox();
-      cb->setProperty( "Field", fieldName );
-      mFilterComboBoxes << cb;
-      mReferencedLayer->uniqueValues( idx, uniqueValues );
-      cb->addItem( tr( " - All - " ) );
-      Q_FOREACH ( QVariant v, uniqueValues )
+      Q_FOREACH ( const QString& fieldName, mFilterFields )
       {
-        cb->addItem( v.toString(), v );
+        QVariantList uniqueValues;
+        int idx = mReferencedLayer->fieldNameIndex( fieldName );
+        QComboBox* cb = new QComboBox();
+        cb->setProperty( "Field", fieldName );
+        mFilterComboBoxes << cb;
+        mReferencedLayer->uniqueValues( idx, uniqueValues );
+        cb->addItem( mReferencedLayer->attributeAlias( idx ).isEmpty() ? fieldName : mReferencedLayer->attributeAlias( idx ) );
+
+        Q_FOREACH ( QVariant v, uniqueValues )
+        {
+          cb->addItem( v.toString(), v );
+        }
+
+        connect( cb, SIGNAL( currentIndexChanged( int ) ), this, SLOT( filterChanged() ) );
+
+        // Request this attribute for caching
+        requestedAttrs << fieldName;
+
+        mFilterLayout->addWidget( cb );
       }
 
-      connect( cb, SIGNAL( currentIndexChanged( int ) ), this, SLOT( filterChanged() ) );
+      if ( true )
+      {
+        // Disable all but first filter
+        QList<QComboBox*>::ConstIterator it( mFilterComboBoxes.constBegin() );
+        ++it;
+        for ( ; it != mFilterComboBoxes.constEnd(); ++it )
+        {
+          (*it)->setEnabled( false );
+        }
 
-      // Request this attribute for caching
-      requestedAttrs << fieldName;
-
-      mFilterLayout->addRow( mReferencedLayer->attributeAlias( idx ).isEmpty() ? fieldName : mReferencedLayer->attributeAlias( idx ) , cb );
+        QgsFeature ft;
+        QgsFeatureIterator fit = layerCache->getFeatures();
+        while ( fit.nextFeature( ft ) )
+        {
+          for ( int i = 0; i < mFilterComboBoxes.count() - 1; ++i )
+          {
+            mFilterCache[mFilterFields[i]][ft.attribute(mFilterFields[i]).toString()] << ft.attribute( mFilterFields[i + 1] ).toString();
+          }
+        }
+      }
     }
-
-    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 10000, this );
-    QgsFeature ft;
-    QgsFeatureIterator it = layerCache->getFeatures();
-    while ( it.nextFeature( ft ) )
-      QgsDebugMsg( ft.attribute( 0 ).toString() );
 
     QgsExpression exp( mReferencedLayer->displayExpression() );
 
@@ -743,6 +764,50 @@ void QgsRelationReferenceWidget::filterChanged()
   QStringList filters;
   QgsAttributeList attrs;
 
+  QComboBox* scb = qobject_cast<QComboBox*>( sender() );
+
+  Q_ASSERT( scb );
+
+  if ( true )
+  {
+    QComboBox* ccb = 0;
+    Q_FOREACH( QComboBox* cb, mFilterComboBoxes )
+    {
+      if ( ccb == 0 )
+      {
+        if ( cb != scb )
+          continue;
+        else
+        {
+          ccb = cb;
+          continue;
+        }
+      }
+
+      if ( ccb->currentIndex() == 0 )
+      {
+        cb->setCurrentIndex( 0 );
+        cb->setEnabled( false );
+      }
+      else
+      {
+        cb->clear();
+        cb->addItem( cb->property( "Field" ).toString() );
+
+        // ccb = scb
+        // cb = scb + 1
+        Q_FOREACH( const QString& txt, mFilterCache[ccb->property( "Field" ).toString()][ccb->currentText()] )
+        {
+          cb->addItem( txt );
+        }
+
+        cb->setEnabled( true );
+
+        ccb = cb;
+      }
+    }
+  }
+
   Q_FOREACH ( QComboBox* cb, mFilterComboBoxes )
   {
     if ( cb->currentIndex() != 0 )
@@ -753,11 +818,11 @@ void QgsRelationReferenceWidget::filterChanged()
 
       if ( mReferencedLayer->pendingFields().field( fieldName ).type() == QVariant::String )
       {
-        filters << QString( "\"%1\" = '%2'" ).arg( fieldName ).arg( cb->itemData( cb->currentIndex() ).toString() );
+        filters << QString( "\"%1\" = '%2'" ).arg( fieldName ).arg( cb->currentText() );
       }
       else
       {
-        filters << QString( "\"%1\" = %2" ).arg( fieldName ).arg( cb->itemData( cb->currentIndex() ).toString() );
+        filters << QString( "\"%1\" = %2" ).arg( fieldName ).arg( cb->currentText() );
       }
 
       attrs << mReferencedLayer->fieldNameIndex( fieldName );

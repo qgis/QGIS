@@ -28,7 +28,8 @@
 #include <QComboBox>
 #include <QToolButton>
 #include <QLineEdit>
-#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QStandardItemModel>
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;
@@ -147,6 +148,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsRelation mRelation;
     bool mIsEditable;
     QStringList mFilterFields;
+    QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
 
     // Q_PROPERTY
     bool mEmbedForm;
@@ -167,7 +169,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction* mPanHighlightFeatureAction;
     QComboBox* mComboBox;
     QGroupBox* mChooserGroupBox;
-    QFormLayout* mFilterLayout;
+    QHBoxLayout* mFilterLayout;
     QgsCollapsibleGroupBox* mAttributeEditorFrame;
     QVBoxLayout* mAttributeEditorLayout;
     QLineEdit* mLineEdit;
