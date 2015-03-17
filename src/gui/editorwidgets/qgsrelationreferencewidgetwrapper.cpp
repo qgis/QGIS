@@ -55,6 +55,10 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
   mWidget->setOrderByValue( orderByValue );
+  if ( config( "FilterFields", QVariant() ).isValid() )
+  {
+    mWidget->setFilterFields( config( "FilterFields" ).toStringList() );
+  }
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );
 

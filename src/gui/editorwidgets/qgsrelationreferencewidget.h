@@ -21,11 +21,14 @@
 #include "qgsfeature.h"
 #include "qgshighlight.h"
 #include "qgsmaptoolidentifyfeature.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsfeaturelistmodel.h"
 
 #include <QComboBox>
 #include <QToolButton>
 #include <QLineEdit>
-#include <QVBoxLayout>
+#include <QFormLayout>
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;
@@ -78,6 +81,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool orderByValue() { return mOrderByValue; }
     //! Set if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
+    //! Set the fields for which filter comboboxes will be created
+    void setFilterFields( QStringList filterFields );
 
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible() {return mOpenFormButtonVisible;}
@@ -112,6 +117,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void featureIdentified( const QgsFeature& feature );
     void unsetMapTool();
     void mapToolDeactivated();
+    void filterChanged();
 
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
@@ -132,10 +138,15 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsAttributeForm* mReferencedAttributeForm;
     QgsVectorLayer* mReferencedLayer;
     QgsVectorLayer* mReferencingLayer;
+    QgsAttributeTableModel* mMasterModel;
+    QgsAttributeTableFilterModel* mFilterModel;
+    QgsFeatureListModel* mFeatureListModel;
+    QList<QComboBox*> mFilterComboBoxes;
     QWidget* mWindowWidget;
     bool mShown;
     QgsRelation mRelation;
     bool mIsEditable;
+    QStringList mFilterFields;
 
     // Q_PROPERTY
     bool mEmbedForm;
@@ -155,6 +166,8 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction* mScaleHighlightFeatureAction;
     QAction* mPanHighlightFeatureAction;
     QComboBox* mComboBox;
+    QGroupBox* mChooserGroupBox;
+    QFormLayout* mFilterLayout;
     QgsCollapsibleGroupBox* mAttributeEditorFrame;
     QVBoxLayout* mAttributeEditorLayout;
     QLineEdit* mLineEdit;
