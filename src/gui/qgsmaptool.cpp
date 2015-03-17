@@ -105,7 +105,8 @@ void QgsMapTool::setAction( QAction* action )
   if ( mAction )
     disconnect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
   mAction = action;
-  connect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+  if ( mAction )
+    connect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
 }
 
 void QgsMapTool::actionDestroyed()
