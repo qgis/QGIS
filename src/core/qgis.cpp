@@ -23,6 +23,7 @@
 #include <QColor>
 #include <QDate>
 #include <QTime>
+#include <QLocale>
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
@@ -182,6 +183,20 @@ double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUni
     }
   }
   return 1.0;
+}
+
+double QGis::permissiveToDouble( QString string, bool &ok )
+{
+  //remove any thousands seperators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toDouble( string, &ok );
+}
+
+int QGis::permissiveToInt( QString string, bool &ok )
+{
+  //remove any thousands seperators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toInt( string, &ok );
 }
 
 void *qgsMalloc( size_t size )

@@ -134,6 +134,26 @@ class QGis
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
 
+    /** Converts a string to a double in a permissive way, eg allowing for incorrect
+     * numbers of digits between thousand seperators
+     * @param string string to convert
+     * @param ok will be set to true if conversion was successful
+     * @returns string converted to double if possible
+     * @note added in version 2.9
+     * @see permissiveToInt
+     */
+    static double permissiveToDouble( QString string, bool& ok );
+
+    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
+     * numbers of digits between thousand seperators
+     * @param string string to convert
+     * @param ok will be set to true if conversion was successful
+     * @returns string converted to int if possible
+     * @note added in version 2.9
+     * @see permissiveToDouble
+     */
+    static int permissiveToInt( QString string, bool& ok );
+
     //! User defined event types
     enum UserEvent
     {
