@@ -129,7 +129,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMapCanvas* mCanvas;
     QgsMessageBar* mMessageBar;
     QVariant mForeignKey;
-    QgsFeatureId mFeatureId;
+    QgsFeature mFeature;
     int mFkeyFieldIdx;
     bool mAllowNull;
     QgsHighlight* mHighlight;
@@ -169,6 +169,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction* mPanHighlightFeatureAction;
     QComboBox* mComboBox;
     QGroupBox* mChooserGroupBox;
+    QWidget* mFilterContainer;
     QHBoxLayout* mFilterLayout;
     QgsCollapsibleGroupBox* mAttributeEditorFrame;
     QVBoxLayout* mAttributeEditorLayout;

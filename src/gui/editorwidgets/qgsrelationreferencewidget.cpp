@@ -59,7 +59,6 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
     , mCanvas( NULL )
     , mMessageBar( NULL )
     , mForeignKey( QVariant() )
-    , mFeatureId( QgsFeatureId() )
     , mFkeyFieldIdx( -1 )
     , mAllowNull( true )
     , mHighlight( NULL )
@@ -97,8 +96,10 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   chooserLayout->setContentsMargins( 0, 0, 0, 0 );
   mFilterLayout = new QHBoxLayout;
   mFilterLayout->setContentsMargins( 0, 0, 0, 0 );
+  mFilterContainer = new QWidget;
+  mFilterContainer->setLayout( mFilterLayout );
   mChooserGroupBox->setLayout( chooserLayout );
-  chooserLayout->addLayout( mFilterLayout );
+  chooserLayout->addWidget( mFilterContainer );
 
   // combobox (for non-geometric relation)
   mComboBox = new QComboBox( this );
@@ -225,6 +226,7 @@ void QgsRelationReferenceWidget::setRelationEditable( bool editable )
   if ( !editable )
     unsetMapTool();
 
+  mFilterContainer->setEnabled( editable );
   mComboBox->setEnabled( editable );
   mMapIdentificationButton->setEnabled( editable );
   mRemoveFKButton->setEnabled( editable );
@@ -239,38 +241,36 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
     return;
   }
 
-  QgsFeature f;
   if ( !mReferencedLayer )
     return;
 
   // TODO: Rewrite using expression
   QgsFeatureIterator fit = mReferencedLayer->getFeatures( QgsFeatureRequest() );
-  while ( fit.nextFeature( f ) )
+  while ( fit.nextFeature( mFeature ) )
   {
-    if ( f.attribute( mFkeyFieldIdx ) == value )
+    if ( mFeature.attribute( mFkeyFieldIdx ) == value )
     {
       break;
     }
   }
 
-  if ( !f.isValid() )
+  if ( !mFeature.isValid() )
   {
     deleteForeignKey();
     return;
   }
 
-  mForeignKey = f.attribute( mFkeyFieldIdx );
+  mForeignKey = mFeature.attribute( mFkeyFieldIdx );
 
   if ( mReadOnlySelector )
   {
     QgsExpression expr( mReferencedLayer->displayExpression() );
-    QString title = expr.evaluate( &f ).toString();
+    QString title = expr.evaluate( &mFeature ).toString();
     if ( expr.hasEvalError() )
     {
-      title = f.attribute( mFkeyFieldIdx ).toString();
+      title = mFeature.attribute( mFkeyFieldIdx ).toString();
     }
     mLineEdit->setText( title );
-    mFeatureId = f.id();
   }
   else
   {
@@ -286,8 +286,8 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant& value )
   }
 
   mRemoveFKButton->setEnabled( mIsEditable );
-  highlightFeature( f );
-  updateAttributeEditorFrame( f );
+  highlightFeature( mFeature );
+  updateAttributeEditorFrame( mFeature );
   emit foreignKeyChanged( foreignKey() );
 }
 
@@ -303,7 +303,7 @@ void QgsRelationReferenceWidget::deleteForeignKey()
     }
     mLineEdit->setText( nullText );
     mForeignKey = QVariant();
-    mFeatureId = QgsFeatureId();
+    mFeature.setValid( false );
   }
   else
   {
@@ -329,7 +329,7 @@ QgsFeature QgsRelationReferenceWidget::referencedFeature()
     QgsFeatureId fid;
     if ( mReadOnlySelector )
     {
-      fid = mFeatureId;
+      fid = mFeature.id();
     }
     else
     {
@@ -426,7 +426,7 @@ void QgsRelationReferenceWidget::init()
 
     QSet<QString> requestedAttrs;
 
-    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 10000, this );
+    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 100000, this );
 
     if ( mFilterFields.size() )
     {
@@ -455,14 +455,6 @@ void QgsRelationReferenceWidget::init()
 
       if ( true )
       {
-        // Disable all but first filter
-        QList<QComboBox*>::ConstIterator it( mFilterComboBoxes.constBegin() );
-        ++it;
-        for ( ; it != mFilterComboBoxes.constEnd(); ++it )
-        {
-          (*it)->setEnabled( false );
-        }
-
         QgsFeature ft;
         QgsFeatureIterator fit = layerCache->getFeatures();
         while ( fit.nextFeature( ft ) )
@@ -543,6 +535,14 @@ void QgsRelationReferenceWidget::init()
           mComboBox->setCurrentIndex( mComboBox->count() - 1 );
 
         mFidFkMap.insert( f.id(), f.attribute( mFkeyFieldIdx ) );
+      }
+    }
+
+    if ( true && mFeature.isValid() )
+    {
+      for ( int i = 0; i < mFilterFields.size(); i++ )
+      {
+        mFilterComboBoxes[i]->setCurrentIndex( mFilterComboBoxes[i]->findText( mFeature.attribute( mFilterFields[i] ).toString() ) );
       }
     }
 
@@ -719,7 +719,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
     }
     mLineEdit->setText( title );
     mForeignKey = feature.attribute( mFkeyFieldIdx );
-    mFeatureId = feature.id();
+    mFeature = feature;
   }
   else
   {
@@ -791,6 +791,7 @@ void QgsRelationReferenceWidget::filterChanged()
       }
       else
       {
+        cb->blockSignals( true );
         cb->clear();
         cb->addItem( cb->property( "Field" ).toString() );
 
@@ -802,6 +803,7 @@ void QgsRelationReferenceWidget::filterChanged()
         }
 
         cb->setEnabled( true );
+        cb->blockSignals( false );
 
         ccb = cb;
       }
