@@ -332,20 +332,26 @@ namespace pal
     *lPos = new LabelPosition *[nbp];
 
     // get from feature
-    double label_x = f->label_x;
-    double label_y = f->label_y;
     double labelW = f->label_x;
     double labelH = f->label_y;
 
-    double xdiff = 0.0;
-    double ydiff = 0.0;
-    double lx = 0.0;
-    double ly = 0.0;
     double cost = 0.0001;
     int id = 0;
 
-    xdiff -= label_x / 2.0;
-    ydiff -= label_y / 2.0;
+    double xdiff = -labelW / 2.0;
+    double ydiff = -labelH / 2.0;
+
+    if ( f->quadOffset )
+    {
+      if ( f->quadOffsetX != 0 )
+      {
+        xdiff += labelW / 2.0 * f->quadOffsetX;
+      }
+      if ( f->quadOffsetY != 0 )
+      {
+        ydiff += labelH / 2.0 * f->quadOffsetY;
+      }
+    }
 
     if ( ! f->fixedPosition() )
     {
@@ -355,32 +361,6 @@ namespace pal
         double yd = xdiff * sin( angle ) + ydiff * cos( angle );
         xdiff = xd;
         ydiff = yd;
-      }
-    }
-
-    if ( angle != 0 )
-    {
-      // use LabelPosition construction to calculate new rotated label dimensions
-      pal::LabelPosition* lp  = new LabelPosition( 1, lx, ly, label_x, label_y, angle, 0.0, this );
-
-      double amin[2], amax[2];
-      lp->getBoundingBox( amin, amax );
-      labelW = amax[0] - amin[0];
-      labelH = amax[1] - amin[1];
-
-      delete lp;
-    }
-
-    LabelPosition::Quadrant quadrant = f->quadOffset ? quadrantFromOffset() : LabelPosition::QuadrantOver;
-    if ( f->quadOffset )
-    {
-      if ( f->quadOffsetX != 0 )
-      {
-        xdiff += labelW / 2 * f->quadOffsetX;
-      }
-      if ( f->quadOffsetY != 0 )
-      {
-        ydiff += labelH / 2 * f->quadOffsetY;
       }
     }
 
@@ -396,10 +376,10 @@ namespace pal
       }
     }
 
-    lx = x + xdiff;
-    ly = y + ydiff;
+    double lx = x + xdiff;
+    double ly = y + ydiff;
 
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, angle, cost, this, false, quadrant );
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this );
     return nbp;
   }
 
