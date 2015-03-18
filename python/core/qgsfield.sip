@@ -192,6 +192,8 @@ class QgsFields
     void clear();
     //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
     bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
+    //! Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
+    bool appendExpressionField( const QgsField& field, int originIndex );
     //! Remove a field with the given index
     void remove( int fieldIdx );
     //! Extend with fields from another QgsFields container
