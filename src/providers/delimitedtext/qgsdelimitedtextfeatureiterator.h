@@ -31,7 +31,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-    QgsExpression *mSubsetExpression;
+    QgsExpression * const * mSubsetExpressionPtr;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
     QgsSpatialIndex *mSpatialIndex;

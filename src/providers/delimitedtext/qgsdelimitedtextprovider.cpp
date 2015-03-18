@@ -997,12 +997,14 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
 
   if ( valid )
   {
-
-    if ( mSubsetExpression ) delete mSubsetExpression;
+    QgsExpression * tmpSubsetExpression = mSubsetExpression;
+    // using a tmp pointer to avoid the pointer being dereferenced by
+    // a friend class after it has been freed but before it has been
+    // reassigned
     QString previousSubset = mSubsetString;
     mSubsetString = subset;
     mSubsetExpression = expression;
-
+    if ( tmpSubsetExpression ) delete tmpSubsetExpression;
     // Update the feature count and extents if requested
 
     // Usage of updateFeatureCount is a bit painful, basically expect that it

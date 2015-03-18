@@ -40,7 +40,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // Does the layer have an explicit or implicit subset (implicit subset is if we have geometry which can
   // be invalid)
 
-  mTestSubset = mSource->mSubsetExpression;
+  mTestSubset = *(mSource->mSubsetExpressionPtr);
   mTestGeometry = false;
 
   mMode = FileScan;
@@ -120,7 +120,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
        && (
          !( mRequest.flags() & QgsFeatureRequest::NoGeometry )
          || mTestGeometry
-         || ( mTestSubset && mSource->mSubsetExpression->needsGeometry() )
+         || ( mTestSubset && (*(mSource->mSubsetExpressionPtr))->needsGeometry() )
        )
      )
   {
@@ -335,8 +335,8 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( mTestSubset )
     {
-      QVariant isOk = mSource->mSubsetExpression->evaluate( &feature );
-      if ( mSource->mSubsetExpression->hasEvalError() ) continue;
+      QVariant isOk = (*(mSource->mSubsetExpressionPtr))->evaluate( &feature );
+      if ( (*(mSource->mSubsetExpressionPtr))->hasEvalError() ) continue;
       if ( ! isOk.toBool() ) continue;
     }
 
@@ -447,7 +447,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 
 QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
     : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression )
+    , mSubsetExpressionPtr ( &(p->mSubsetExpression) )
     , mExtent( p->mExtent )
     , mUseSpatialIndex( p->mUseSpatialIndex )
     , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )
