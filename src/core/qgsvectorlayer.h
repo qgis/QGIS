@@ -668,6 +668,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     void removeExpressionField( int index );
 
+    const QString expressionField( int index );
+
     /** Get the label object associated with this layer */
     QgsLabel *label();
 

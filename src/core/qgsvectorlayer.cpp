@@ -2859,6 +2859,12 @@ void QgsVectorLayer::removeExpressionField( int index )
   emit attributeDeleted( index );
 }
 
+const QString QgsVectorLayer::expressionField( int index )
+{
+  int oi = mUpdatedFields.fieldOriginIndex( index );
+  return mExpressionFieldBuffer->expressions().value( oi ).expression;
+}
+
 void QgsVectorLayer::updateFields()
 {
   if ( !mDataProvider )
