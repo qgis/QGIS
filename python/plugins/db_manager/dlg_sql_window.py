@@ -261,7 +261,7 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
     # get sensible default columns. do this before sorting in case there's hints in the column order (eg, id is more likely to be first)
     try:
-      defaultGeomCol = next(col for col in cols if col in ['geom','geometry','the_geom'])
+      defaultGeomCol = next(col for col in cols if col in ['geom','geometry','the_geom','way'])
     except:
       defaultGeomCol = None
     try:
