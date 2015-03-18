@@ -1042,6 +1042,10 @@ void QgisApp::dropEvent( QDropEvent *event )
       {
         addRasterLayer( uri, u.name, u.providerKey );
       }
+      else if ( u.layerType == "plugin" )
+      {
+        addPluginLayer( uri, u.name, u.providerKey );
+      }
     }
   }
   mMapCanvas->freeze( false );
@@ -9812,6 +9816,22 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 //
 //
 ///////////////////////////////////////////////////////////////////
+
+
+QgsPluginLayer* QgisApp::addPluginLayer( const QString& uri, const QString& baseName, const QString& providerKey )
+{
+  QgsPluginLayer* layer = QgsPluginLayerRegistry::instance()->createLayer( providerKey, uri );
+  if ( !layer )
+    return 0;
+
+  layer->setLayerName( baseName );
+
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  return layer;
+}
+
+
 
 #ifdef ANDROID
 void QgisApp::keyReleaseEvent( QKeyEvent *event )

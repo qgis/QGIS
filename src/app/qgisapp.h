@@ -55,6 +55,7 @@ class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
+class QgsPluginLayer;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
@@ -618,6 +619,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Open a raster layer using the Raster Data Provider. */
     QgsRasterLayer *addRasterLayer( QString const & uri, QString const & baseName, QString const & providerKey );
+
+    /** Open a plugin layer using its provider */
+    QgsPluginLayer* addPluginLayer( const QString& uri, const QString& baseName, const QString& providerKey );
 
     void addWfsLayer( QString uri, QString typeName );
 

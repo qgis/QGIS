@@ -486,6 +486,10 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   {
     QgisApp::instance()->addRasterLayer( uri, layerItem->layerName(), providerKey );
   }
+  if ( type == QgsMapLayer::PluginLayer )
+  {
+    QgisApp::instance()->addPluginLayer( uri, layerItem->layerName(), providerKey );
+  }
 }
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
@@ -590,6 +594,11 @@ void QgsBrowserDockWidget::showProperties()
           }
           delete layer;
         }
+      }
+      else if ( type == QgsMapLayer::PluginLayer )
+      {
+        // TODO: support display of properties for plugin layers
+        return;
       }
 
       // restore /Projections/defaultBehaviour
