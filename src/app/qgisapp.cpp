@@ -740,7 +740,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   }
   else
   {
-    mActionShowPythonDialog->setVisible( false );
+    // python is disabled so get rid of the action for python console
+    delete mActionShowPythonDialog;
+    mActionShowPythonDialog = 0;
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
@@ -7524,11 +7526,6 @@ void QgisApp::loadPythonSupport()
     QgsPythonRunner::setInstance( new QgsPythonRunnerImpl( mPythonUtils ) );
 
     QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ), QString::null, QgsMessageLog::INFO );
-  }
-  else
-  {
-    delete mActionShowPythonDialog;
-    mActionShowPythonDialog = 0;
   }
 }
 
