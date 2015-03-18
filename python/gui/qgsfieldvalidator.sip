@@ -6,7 +6,7 @@ class QgsFieldValidator : QValidator
 %End
 
   public:
-    QgsFieldValidator( QObject *parent, const QgsField &field, QString dateFormat = "yyyy-MM-dd" );
+    QgsFieldValidator( QObject *parent, const QgsField &field, QString defaultValue, QString dateFormat = "yyyy-MM-dd" );
     ~QgsFieldValidator();
 
     virtual State validate(QString & /In,Out/, int & /In,Out/) const = 0 /API=QString:2 - /;

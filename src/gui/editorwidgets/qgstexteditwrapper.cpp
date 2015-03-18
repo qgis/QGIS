@@ -59,6 +59,11 @@ QVariant QgsTextEditWrapper::value()
       v == QSettings().value( "qgis/nullValue", "NULL" ).toString() )
     return QVariant( field().type() );
 
+  if ( v == defaultValue().toString() )
+  {
+    return defaultValue();
+  }
+
   QVariant res( v );
   if ( field().convertCompatible( res ) )
     return res;
@@ -99,16 +104,22 @@ void QgsTextEditWrapper::initWidget( QWidget* editor )
 
   if ( mLineEdit )
   {
-    mLineEdit->setValidator( new QgsFieldValidator( mLineEdit, field() ) );
+    mLineEdit->setValidator( new QgsFieldValidator( mLineEdit, field(), defaultValue().toString() ) );
+
+    QVariant defVal = defaultValue();
+    if ( defVal.isNull() )
+    {
+      defVal = QSettings().value( "qgis/nullValue", "NULL" );
+    }
 
     QgsFilterLineEdit *fle = qobject_cast<QgsFilterLineEdit*>( mLineEdit );
     if ( field().type() == QVariant::Int || field().type() == QVariant::Double || field().type() == QVariant::LongLong || field().type() == QVariant::Date )
     {
-      mLineEdit->setPlaceholderText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      mLineEdit->setPlaceholderText( defVal.toString() );
     }
     else if ( fle )
     {
-      fle->setNullValue( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+      fle->setNullValue( defVal.toString() );
     }
 
     connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );

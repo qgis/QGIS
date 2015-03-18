@@ -15,6 +15,7 @@
 
 #include "qgseditorwidgetwrapper.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 #include "qgsfield.h"
 
 #include <QWidget>
@@ -33,6 +34,11 @@ int QgsEditorWidgetWrapper::fieldIdx()
 QgsField QgsEditorWidgetWrapper::field()
 {
   return layer()->pendingFields()[mFieldIdx];
+}
+
+QVariant QgsEditorWidgetWrapper::defaultValue()
+{
+  return layer()->dataProvider()->defaultValue( mFieldIdx );
 }
 
 QgsEditorWidgetWrapper* QgsEditorWidgetWrapper::fromWidget( QWidget* widget )
