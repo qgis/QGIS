@@ -37,6 +37,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QFileDialog>
+#include <QHBoxLayout>
 
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )
@@ -242,9 +243,23 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   mFieldsList->setItem( row, attrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
   mFieldsList->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
   mFieldsList->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  mFieldsList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
+  if ( mLayer->pendingFields().fieldOrigin( idx ) == QgsFields::OriginExpression )
+  {
+    QWidget* expressionWidget = new QWidget;
+    expressionWidget->setLayout( new QHBoxLayout );
+    QToolButton* editExpressionButton = new QToolButton;
+    editExpressionButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+    expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+    expressionWidget->layout()->addWidget( editExpressionButton );
+    expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
+    mFieldsList->setCellWidget( row, attrCommentCol, expressionWidget );
+  }
+  else
+  {
+    mFieldsList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
+  }
 
-  for ( int i = 0; i < attrEditTypeCol; i++ )
+  for ( int i = 0; i < attrCommentCol; i++ )
     mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
   FieldConfig cfg( mLayer, idx );
