@@ -101,7 +101,10 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     self.presetCombo.setCurrentIndex(-1)
 
   def storePreset(self):
-    query = self.editSql.text()
+    query = self.editSql.selectedText()
+    if len(query) == 0:
+        query = self.editSql.text()
+    
     name = self.presetName.text()
     QgsProject.instance().writeEntry('DBManager','savedQueries/q'+str(name.__hash__())+'/name', name )
     QgsProject.instance().writeEntry('DBManager','savedQueries/q'+str(name.__hash__())+'/query', query )
@@ -184,7 +187,10 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
       QMessageBox.warning(self, self.tr( "DB Manager" ), self.tr( "You must fill the required fields: \ngeometry column - column with unique integer values" ) )
       return
 
-    query = self.editSql.text()
+    query = self.editSql.selectedText()
+    if len(query) == 0:
+        query = self.editSql.text()
+    
     if query == "":
       return
 
@@ -219,7 +225,10 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
     QApplication.restoreOverrideCursor()
 
   def fillColumnCombos(self):
-    query = self.editSql.text()
+    query = self.editSql.selectedText()
+    if len(query) == 0:
+        query = self.editSql.text()
+    
     if query == "": return
 
     QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
