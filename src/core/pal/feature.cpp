@@ -275,6 +275,55 @@ namespace pal
     return f->uid;
   }
 
+  LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
+  {
+    if ( f->quadOffsetX < 0 )
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAboveLeft;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelowLeft;
+      }
+      else
+      {
+        return LabelPosition::QuadrantLeft;
+      }
+    }
+    else  if ( f->quadOffsetX > 0 )
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAboveRight;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelowRight;
+      }
+      else
+      {
+        return LabelPosition::QuadrantRight;
+      }
+    }
+    else
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAbove;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelow;
+      }
+      else
+      {
+        return LabelPosition::QuadrantOver;
+      }
+    }
+  }
+
   int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle )
   {
     Q_UNUSED( scale );
@@ -322,6 +371,7 @@ namespace pal
       delete lp;
     }
 
+    LabelPosition::Quadrant quadrant = f->quadOffset ? quadrantFromOffset() : LabelPosition::QuadrantOver;
     if ( f->quadOffset )
     {
       if ( f->quadOffsetX != 0 )
@@ -349,7 +399,7 @@ namespace pal
     lx = x + xdiff;
     ly = y + ydiff;
 
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, angle, cost, this );
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, angle, cost, this, false, quadrant );
     return nbp;
   }
 
@@ -443,6 +493,8 @@ namespace pal
       if ( alpha > a360 )
         alpha -= a360;
 
+      LabelPosition::Quadrant quadrant = LabelPosition::QuadrantOver;
+
       if ( alpha < gamma1 || alpha > a360 - gamma1 )  // on the right
       {
         lx += distlabel;
@@ -452,44 +504,53 @@ namespace pal
 
         //ly += -yrm/2.0 + tan(alpha)*(distlabel + xrm/2);
         ly += -yrm + yrm * iota / ( 2 * gamma1 );
+
+        quadrant = LabelPosition::QuadrantRight;
       }
       else if ( alpha < a90 - gamma2 )  // top-right
       {
         lx += distlabel * cos( alpha );
         ly += distlabel * sin( alpha );
+        quadrant = LabelPosition::QuadrantAboveRight;
       }
       else if ( alpha < a90 + gamma2 ) // top
       {
         //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
         lx += -xrm * ( alpha - a90 + gamma2 ) / ( 2 * gamma2 );
         ly += distlabel;
+        quadrant = LabelPosition::QuadrantAbove;
       }
       else if ( alpha < a180 - gamma1 )  // top left
       {
         lx += distlabel * cos( alpha ) - xrm;
         ly += distlabel * sin( alpha );
+        quadrant = LabelPosition::QuadrantAboveLeft;
       }
       else if ( alpha < a180 + gamma1 ) // left
       {
         lx += -distlabel - xrm;
         //ly += -yrm/2.0 - tan(alpha)*(distlabel + xrm/2);
         ly += - ( alpha - a180 + gamma1 ) * yrm / ( 2 * gamma1 );
+        quadrant = LabelPosition::QuadrantLeft;
       }
       else if ( alpha < a270 - gamma2 ) // down - left
       {
         lx += distlabel * cos( alpha ) - xrm;
         ly += distlabel * sin( alpha ) - yrm;
+        quadrant = LabelPosition::QuadrantBelowLeft;
       }
       else if ( alpha < a270 + gamma2 ) // down
       {
         ly += -distlabel - yrm;
         //lx += -xrm/2.0 + tan(alpha+a90)*(distlabel + yrm/2);
         lx += -xrm + ( alpha - a270 + gamma2 ) * xrm / ( 2 * gamma2 );
+        quadrant = LabelPosition::QuadrantBelow;
       }
-      else if ( alpha < a360 )
+      else if ( alpha < a360 ) // down - right
       {
         lx += distlabel * cos( alpha );
         ly += distlabel * sin( alpha ) - yrm;
+        quadrant = LabelPosition::QuadrantBelowRight;
       }
 
       double cost;
@@ -499,7 +560,7 @@ namespace pal
       else
         cost = 0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
-      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost, this );
+      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost, this, false, quadrant );
 
       icost += inc;
 

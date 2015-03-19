@@ -140,7 +140,9 @@ class QgsPalLayerSettings
     {
       MultiLeft,
       MultiCenter,
-      MultiRight
+      MultiRight,
+      MultiFollowPlacement /*< Alignment follows placement of label, eg labels to the left of a feature
+                               will be drawn with right alignment*/
     };
 
     enum ShapeType

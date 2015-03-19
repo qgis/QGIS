@@ -2720,6 +2720,10 @@ void QgsPalLayerSettings::parseTextFormatting()
       {
         aligntype = QgsPalLayerSettings::MultiRight;
       }
+      else if ( str.compare( "Follow", Qt::CaseInsensitive ) == 0 )
+      {
+        aligntype = QgsPalLayerSettings::MultiFollowPlacement;
+      }
       dataDefinedValues.insert( QgsPalLayerSettings::MultiLineAlignment, QVariant(( int )aligntype ) );
     }
   }
@@ -4037,6 +4041,29 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString() ).arg( dFont.styleName() ), 4 );
 #endif
     tmpLyr.textFont = dFont;
+
+    if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )
+    {
+      //calculate font alignment based on label quadrant
+      switch (( *it )->getQuadrant() )
+      {
+        case LabelPosition::QuadrantAboveLeft:
+        case LabelPosition::QuadrantLeft:
+        case LabelPosition::QuadrantBelowLeft:
+          tmpLyr.multilineAlign = QgsPalLayerSettings::MultiRight;
+          break;
+        case LabelPosition::QuadrantAbove:
+        case LabelPosition::QuadrantOver:
+        case LabelPosition::QuadrantBelow:
+          tmpLyr.multilineAlign = QgsPalLayerSettings::MultiCenter;
+          break;
+        case LabelPosition::QuadrantAboveRight:
+        case LabelPosition::QuadrantRight:
+        case LabelPosition::QuadrantBelowRight:
+          tmpLyr.multilineAlign = QgsPalLayerSettings::MultiLeft;
+          break;
+      }
+    }
 
     // update tmpLyr with any data defined text style values
     dataDefinedTextStyle( tmpLyr, ddValues );
