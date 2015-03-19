@@ -2165,3 +2165,54 @@ def test_037_csvt_file_invalid_file():
     }
     wanted['log']=[]
     return wanted
+
+def test_038_long_type():
+    wanted={}
+    filename="testlongs.csv"
+    wanted['uri']=u'file://{}?yField={}&xField={}&type={}'.format(filename,"lat","lon","csv")
+    wanted['fieldTypes']=['longlong', 'text', 'double', 'double', 'integer']
+    # long is casted as longlong because of QVariant limitation
+    wanted['data']={
+        2L: {
+            'id': u'9189304972279762602',
+            'a_long': u'9189304972279762602',
+            'lon': u'1.0',
+            'lat': u'1.0',
+            'an_integer': u'40',
+            '#geometry': 'POINT(1.0 1.0)',
+            '#fid':2L,
+            'description': 'line1'
+    },
+        3L: {
+            'id': u'9189304972279762602',
+            'a_long': u'9189304972279762602',
+            'lon': u'2.2',
+            'lat': u'2.5',
+            'an_integer': u'5',
+            '#geometry': 'POINT(2.2 2.5)',
+            '#fid':3L,
+            'description': 'line2'
+    },
+        4L: {
+            'id': u'-3123724580211819352',
+            'a_long': u'-3123724580211819352',
+            'lon': u'1.0',
+            'lat': u'1.0',
+            'an_integer': u'7',
+            '#geometry': 'POINT(1.0 1.0)',
+            '#fid':4L,
+            'description': 'line3'
+    },
+        5L: {
+            'id': u'-3',
+            'a_long': u'-3',
+            'lon': u'1.0',
+            'lat': u'1.0',
+            'an_integer': u'7',
+            '#geometry': 'POINT(1.0 1.0)',
+            '#fid':5L,
+            'description': 'line4'
+    }
+    }
+    wanted['log']=[]
+    return wanted

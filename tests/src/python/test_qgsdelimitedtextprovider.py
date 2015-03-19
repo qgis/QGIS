@@ -12,7 +12,7 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-# This module provides unit test for the delimtied text provider.  It uses data files in
+# This module provides unit test for the delimited text provider.  It uses data files in
 # the testdata/delimitedtext directory.
 #
 # New tests can be created (or existing ones updated), but incorporating a createTest
@@ -650,6 +650,12 @@ class TestQgsDelimitedTextProvider(TestCase):
         requests=None
         runTest(filename,requests,**params)
 
+    def test_038_long_type(self):
+        # Skip lines
+        filename='testlongs.csv'
+        params={'yField': 'lat', 'xField': 'lon', 'type': 'csv'}
+        requests=None
+        runTest(filename,requests,**params)
 
 if __name__ == '__main__':
     unittest.main()
