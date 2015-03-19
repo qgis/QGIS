@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Saturday March 07, 2015
+Thursday March 19, 2015
 
 
-Last Updated: Saturday March 07, 2015
-Last Change : Saturday March 07, 2015
+Last Updated: Thursday March 19, 2015
+Last Change : Thursday March 19, 2015
 
 
   1. Introduction
@@ -246,8 +246,9 @@ Now we create a build directory and run ccmake:
   ccmake ..
 
 When you run ccmake (note the .. is required!), a menu will appear where
-you can configure various aspects of the build. If you do not have root
-access or do not want to overwrite existing QGIS installs (by your
+you can configure various aspects of the build. If you want QGIS to have
+debugging capabilities then set CMAKE_BUILD_TYPE to Debug. If you do not have
+root access or do not want to overwrite existing QGIS installs (by your
 packagemanager for example), set the CMAKE_INSTALL_PREFIX to somewhere you
 have write access to (I usually use ${HOME}/apps). Now press
 'c' to configure, 'e' to dismiss any error messages that may appear.
