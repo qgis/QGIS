@@ -245,7 +245,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( QString filename, QStr
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
   strTypeList = strTypeList.toLower();
-  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
+  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|long|longlong|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
   if ( ! reTypeList.exactMatch( strTypeList ) )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
@@ -407,6 +407,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   QList<bool> isEmpty;
   QList<bool> couldBeInt;
+  QList<bool> couldBeLongLong;
   QList<bool> couldBeDouble;
 
   while ( true )
@@ -561,26 +562,27 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     {
 
       QString &value = parts[i];
-      if ( value.isEmpty() )
-        continue;
-
-      // try to convert attribute values to integer and double
-
-      while ( couldBeInt.size() <= i )
-      {
+      if ( value.isEmpty() ) {
         isEmpty.append( true );
         couldBeInt.append( false );
+        couldBeLongLong.append( false );
         couldBeDouble.append( false );
+        continue;
       }
-      if ( isEmpty[i] )
-      {
-        isEmpty[i] = false;
-        couldBeInt[i] = true;
-        couldBeDouble[i] = true;
-      }
+      // try to convert attribute values to integer, long and double
+      isEmpty.append( false );
+      // try all possible formats
+      couldBeInt.append( true );
+      couldBeLongLong.append( true );
+      couldBeDouble.append( true );
       if ( couldBeInt[i] )
       {
         value.toInt( &couldBeInt[i] );
+      }
+
+      if ( couldBeLongLong[i] )
+      {
+        value.toLongLong( &couldBeLongLong[i] );
       }
       if ( couldBeDouble[i] )
       {
@@ -620,6 +622,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         fieldType = QVariant::Int;
         typeName = "integer";
       }
+      else if ( csvtTypes[i] == "long" || csvtTypes[i]== "longlong" )
+      {
+        fieldType = QVariant::LongLong; //QVariant doesn't support long
+        typeName = "longlong";
+      }
       else if ( csvtTypes[i] == "real" )
       {
         fieldType = QVariant::Double;
@@ -632,6 +639,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       {
         fieldType = QVariant::Int;
         typeName = "integer";
+      }
+      else if ( couldBeLongLong[i] )
+      {
+        fieldType = QVariant::LongLong;
+        typeName = "longlong";
       }
       else if ( couldBeDouble[i] )
       {
@@ -997,12 +1009,14 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
 
   if ( valid )
   {
-
-    if ( mSubsetExpression ) delete mSubsetExpression;
+    QgsExpression * tmpSubsetExpression = mSubsetExpression;
+    // using a tmp pointer to avoid the pointer being dereferenced by
+    // a friend class after it has been freed but before it has been
+    // reassigned
     QString previousSubset = mSubsetString;
     mSubsetString = subset;
     mSubsetExpression = expression;
-
+    if ( tmpSubsetExpression ) delete tmpSubsetExpression;
     // Update the feature count and extents if requested
 
     // Usage of updateFeatureCount is a bit painful, basically expect that it
