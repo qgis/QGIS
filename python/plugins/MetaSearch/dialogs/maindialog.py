@@ -125,6 +125,11 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.btnAddToWcs.clicked.connect(self.add_to_ows)
         self.btnShowXml.clicked.connect(self.show_xml)
 
+        # settings
+        self.radioTitleAsk.clicked.connect(self.set_ows_save_title_ask)
+        self.radioTitleNoAsk.clicked.connect(self.set_ows_save_title_no_ask)
+        self.radioTempName.clicked.connect(self.set_ows_save_temp_name)
+
         self.manageGui()
 
     def manageGui(self):
@@ -142,6 +147,16 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.set_bbox_global()
 
         self.reset_buttons()
+
+        # get preferred connection save strategy from settings and set it
+        save_strat = self.settings.value('/MetaSearch/ows_save_strategy',
+                                         'title_ask')
+        if save_strat == 'temp_name':
+            self.radioTempName.setChecked(True)
+        elif save_strat == 'title_no_ask':
+            self.radioTitleNoAsk.setChecked(True)
+        else:
+            self.radioTitleAsk.setChecked(True)
 
         # install proxy handler if specified in QGIS settings
         self.install_proxy()
@@ -685,14 +700,19 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             if key.startswith(sname):
                 conn_name_matches.append(key)
         if conn_name_matches:
-            sname = matches[-1]
+            sname = conn_name_matches[-1]
 
         # check for duplicates
-        if sname in keys:
-            msg = self.tr('Connection %s exists. Overwrite?') % sname
-            res = QMessageBox.warning(self, self.tr('Saving server'), msg,
-                                      QMessageBox.Yes | QMessageBox.No)
-            if res != QMessageBox.Yes:  # assign new name with serial
+        if sname in keys:  # duplicate found
+            if self.radioTitleAsk.isChecked():  # ask to overwrite
+                msg = self.tr('Connection %s exists. Overwrite?') % sname
+                res = QMessageBox.warning(self, self.tr('Saving server'), msg,
+                                          QMessageBox.Yes | QMessageBox.No)
+                if res != QMessageBox.Yes:  # assign new name with serial
+                    sname = serialize_string(sname)
+            elif self.radioTitleNoAsk.isChecked():  # don't ask to overwrite
+                pass
+            elif self.radioTempName.isChecked():  # use temp name
                 sname = serialize_string(sname)
 
         # no dups detected or overwrite is allowed
