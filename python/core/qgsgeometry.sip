@@ -475,5 +475,27 @@ class QgsGeometry
         @returns the new computed QgsGeometry, or null
     */
     static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList ) /Factory/;
+
+    /** Compares two polylines for equality within a specified tolerance.
+     * @param p1 first polyline
+     * @param p2 second polyline
+     * @param epsilon maximum difference for coordinates between the polylines
+     * @returns true if polylines have the same number of points and all
+     * points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON );
+
+    /** Compares two polygons for equality within a specified tolerance.
+     * @param p1 first polygon
+     * @param p2 second polygon
+     * @param epsilon maximum difference for coordinates between the polygons
+     * @returns true if polygons have the same number of rings, and each ring has the same
+     * number of points and all points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+
+
 }; // class QgsGeometry
 

@@ -6632,3 +6632,29 @@ QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
   ret->fromGeos( geomUnion );
   return ret;
 }
+
+bool QgsGeometry::compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon )
+{
+  if ( p1.count() != p2.count() )
+    return false;
+
+  for ( int i = 0; i < p1.count(); ++i )
+  {
+    if ( !p1.at( i ).compare( p2.at( i ), epsilon ) )
+      return false;
+  }
+  return true;
+}
+
+bool QgsGeometry::compare( const QgsPolygon &p1, const QgsPolygon &p2, double epsilon )
+{
+  if ( p1.count() != p2.count() )
+    return false;
+
+  for ( int i = 0; i < p1.count(); ++i )
+  {
+    if ( !QgsGeometry::compare( p1.at( i ), p2.at( i ), epsilon ) )
+      return false;
+  }
+  return true;
+}

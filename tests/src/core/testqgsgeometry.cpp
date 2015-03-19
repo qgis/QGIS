@@ -57,6 +57,9 @@ class TestQgsGeometry : public QObject
     void asQPointF();
     void asQPolygonF();
 
+    void comparePolylines();
+    void comparePolygons();
+
     // MK, Disabled 14.11.2014
     // Too unclear what exactly should be tested and which variations are allowed for the line
 #if 0
@@ -298,6 +301,48 @@ void TestQgsGeometry::asQPolygonF()
   QSharedPointer<QgsGeometry> badGeom( QgsGeometry::fromPoint( mPoint1 ) );
   QPolygonF fromBad = badGeom->asQPolygonF();
   QVERIFY( fromBad.isEmpty() );
+}
+
+void TestQgsGeometry::comparePolylines()
+{
+  QgsPolyline line1;
+  line1 << mPoint1 << mPoint2 << mPoint3;
+  QgsPolyline line2;
+  line2 << mPoint1 << mPoint2 << mPoint3;
+  QVERIFY( QgsGeometry::compare( line1, line2 ) );
+
+  //different number of nodes
+  QgsPolyline line3;
+  line3 << mPoint1 << mPoint2 << mPoint3 << mPoint4;
+  QVERIFY( !QgsGeometry::compare( line1, line3 ) );
+
+  //different nodes
+  QgsPolyline line4;
+  line3 << mPoint1 << mPointA << mPoint3 << mPoint4;
+  QVERIFY( !QgsGeometry::compare( line3, line4 ) );
+}
+
+void TestQgsGeometry::comparePolygons()
+{
+  QgsPolyline ring1;
+  ring1 << mPoint1 << mPoint2 << mPoint3 << mPoint1;
+  QgsPolyline ring2;
+  ring2 << mPoint4 << mPointA << mPointB << mPoint4;
+  QgsPolygon poly1;
+  poly1 << ring1 << ring2;
+  QgsPolygon poly2;
+  poly2 << ring1 << ring2;
+  QVERIFY( QgsGeometry::compare( poly1, poly2 ) );
+
+  //different number of rings
+  QgsPolygon poly3;
+  poly3 << ring1;
+  QVERIFY( !QgsGeometry::compare( poly1, poly3 ) );
+
+  //different rings
+  QgsPolygon poly4;
+  poly4 << ring2;
+  QVERIFY( !QgsGeometry::compare( poly3, poly4 ) );
 }
 
 void TestQgsGeometry::initTestCase()

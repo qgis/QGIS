@@ -347,6 +347,11 @@ double QgsPoint::azimuth( const QgsPoint& other )
   return ( atan2( dx, dy ) * 180.0 / M_PI );
 }
 
+bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
+{
+  return ( qgsDoubleNear( m_x, other.x(), epsilon ) && qgsDoubleNear( m_y, other.y(), epsilon ) );
+}
+
 // operators
 bool QgsPoint::operator==( const QgsPoint & other )
 {

@@ -521,6 +521,26 @@ class CORE_EXPORT QgsGeometry
     */
     static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList );
 
+    /** Compares two polylines for equality within a specified tolerance.
+     * @param p1 first polyline
+     * @param p2 second polyline
+     * @param epsilon maximum difference for coordinates between the polylines
+     * @returns true if polylines have the same number of points and all
+     * points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON );
+
+    /** Compares two polygons for equality within a specified tolerance.
+     * @param p1 first polygon
+     * @param p2 second polygon
+     * @param epsilon maximum difference for coordinates between the polygons
+     * @returns true if polygons have the same number of rings, and each ring has the same
+     * number of points and all points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+
   private:
     // Private variables
 
@@ -687,7 +707,7 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
 #ifdef QT_ARCH_ARM
-    inline const QgsWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v=d; return *this; }
+    inline const QgsWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v = d; return *this; }
 #endif
 
     inline QgsWkbPtr &operator<<( const double &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
@@ -717,7 +737,7 @@ class CORE_EXPORT QgsConstWkbPtr
     inline const QgsConstWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
 #ifdef QT_ARCH_ARM
-    inline const QgsConstWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v=d; return *this; }
+    inline const QgsConstWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v = d; return *this; }
 #endif
 
     inline void operator+=( int n ) { mP += n; }
