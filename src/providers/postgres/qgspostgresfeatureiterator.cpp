@@ -322,7 +322,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     if ( mSource->mForce2d )
     {
       geom = QString( "%1(%2)" )
-                   // Force_2D before 2.0
+             // Force_2D before 2.0
              .arg( mConn->majorVersion() < 2 ? "force_2d"
                    // ST_Force2D since 2.1.0
                    : mConn->majorVersion() > 2 || mConn->minorVersion() > 0 ? "st_force2d"

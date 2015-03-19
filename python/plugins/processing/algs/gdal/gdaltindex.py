@@ -56,7 +56,7 @@ class gdaltindex(GdalAlgorithm):
 
     def processAlgorithm(self, progress):
         fieldName = str(self.getParameterValue(self.FIELD_NAME))
-    
+
         arguments = []
         if len(fieldName) > 0:
             arguments.append('-tileindex')
