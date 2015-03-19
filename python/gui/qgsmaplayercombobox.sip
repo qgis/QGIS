@@ -21,7 +21,7 @@ class QgsMapLayerComboBox : QComboBox
 
     //! currently used filter on list layers
     QgsMapLayerProxyModel::Filters filters() const;
-    
+
     //! except a list of layers not to be listed
     void setExceptedLayerList( QList<QgsMapLayer*> layerList );
 

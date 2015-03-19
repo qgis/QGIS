@@ -341,7 +341,7 @@ class QgsGeometry
 
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance ) /Factory/;
-    
+
     /**Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
      * roughly doubles the number of vertices in a geometry.
      * @param iterations number of smoothing iterations to run. More iterations results
@@ -506,7 +506,7 @@ class QgsGeometry
      * @note added in QGIS 2.9
     */
     static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
-    
+
     /** Compares two multipolygons for equality within a specified tolerance.
      * @param p1 first multipolygon
      * @param p2 second multipolygon

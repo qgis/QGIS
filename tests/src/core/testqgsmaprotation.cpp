@@ -101,12 +101,12 @@ void TestQgsMapRotation::initTestCase()
   mapLayers << mLinesLayer;
 
   // Register all layers with the registry
-  QgsMapLayerRegistry::instance()->addMapLayers(mapLayers);
+  QgsMapLayerRegistry::instance()->addMapLayers( mapLayers );
 
   // This is needed to correctly set rotation center,
   // the actual size doesn't matter as QgsRenderChecker will
   // re-set it to the size of the expected image
-  mMapSettings.setOutputSize( QSize(256,256) );
+  mMapSettings.setOutputSize( QSize( 256, 256 ) );
 
   mReport += "<h1>Map Rotation Tests</h1>\n";
 }
@@ -150,7 +150,7 @@ void TestQgsMapRotation::pointsLayer()
   bool success = false;
   mPointsLayer->loadNamedStyle( qml, success );
   QVERIFY( success );
-  mMapSettings.setExtent( QgsRectangle(-105.5,37,-97.5,45) );
+  mMapSettings.setExtent( QgsRectangle( -105.5, 37, -97.5, 45 ) );
   mMapSettings.setRotation( -60 );
   QVERIFY( render( "svgpoints-60" ) );
 
@@ -159,7 +159,7 @@ void TestQgsMapRotation::pointsLayer()
   success = false;
   mPointsLayer->loadNamedStyle( qml, success );
   QVERIFY( success );
-  mMapSettings.setExtent( QgsRectangle(-116,33,-107,42) );
+  mMapSettings.setExtent( QgsRectangle( -116, 33, -107, 42 ) );
   mMapSettings.setRotation( 90 );
   QVERIFY( render( "svgpoints-datadefined+90" ) );
 
@@ -170,7 +170,7 @@ void TestQgsMapRotation::pointsLayer()
   success = false;
   mPointsLayer->loadNamedStyle( qml, success );
   QVERIFY( success );
-  mMapSettings.setExtent( QgsRectangle(-116,33,-107,42) );
+  mMapSettings.setExtent( QgsRectangle( -116, 33, -107, 42 ) );
   mMapSettings.setRotation( 90 );
   QVERIFY( render( "simplepoints-datadefined+90" ) );
 
@@ -179,7 +179,7 @@ void TestQgsMapRotation::pointsLayer()
   success = false;
   mPointsLayer->loadNamedStyle( qml, success );
   QVERIFY( success );
-  mMapSettings.setExtent( QgsRectangle(-108,26,-100,34) );
+  mMapSettings.setExtent( QgsRectangle( -108, 26, -100, 34 ) );
   mMapSettings.setRotation( 30 );
   QVERIFY( render( "simplepoints+30" ) );
 
@@ -207,7 +207,7 @@ bool TestQgsMapRotation::render( QString theTestType )
 {
   mReport += "<h2>" + theTestType + "</h2>\n";
   QgsRenderChecker checker;
-  checker.setControlPathPrefix("maprotation");
+  checker.setControlPathPrefix( "maprotation" );
   checker.setControlName( "expected_" + theTestType );
   checker.setMapSettings( mMapSettings );
   bool result = checker.runTest( theTestType );

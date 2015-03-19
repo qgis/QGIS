@@ -38,7 +38,7 @@ QgsMapLayerProxyModel *QgsMapLayerProxyModel::setFilters( Filters filters )
   return this;
 }
 
-void QgsMapLayerProxyModel::setExceptedLayerList(QList<QgsMapLayer*> exceptList)
+void QgsMapLayerProxyModel::setExceptedLayerList( QList<QgsMapLayer*> exceptList )
 {
   mExceptList = exceptList;
   invalidateFilter();
