@@ -181,9 +181,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsAttributeList pkAttributeIndexes() override { return mPrimaryKeyAttrs; }
 
-    /**Returns the default value for field specified by @c fieldName */
-    QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
-
     /**Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) override;
 
@@ -482,6 +479,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsPostgresTransaction* mTransaction;
 
     void setTransaction( QgsTransaction* transaction ) override;
+
+    QHash<int, QString> mDefaultValues;
 };
 
 

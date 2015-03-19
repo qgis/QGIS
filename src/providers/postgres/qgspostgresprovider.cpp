@@ -682,46 +682,45 @@ bool QgsPostgresProvider::loadFields()
     typeMap.insert( typeResult.PQgetvalue( i, 0 ).toInt(), typeInfo );
   }
 
-  // Collect table oids
-  QSet<int> tableoids;
-  for ( int i = 0; i < result.PQnfields(); i++ )
+
+  QMap<int, QMap<int, QString> > fmtFieldTypeMap, descrMap, defValMap;
+  if ( result.PQnfields() > 0 )
   {
-    int tableoid = result.PQftable( i );
-    if ( tableoid > 0 )
+    // Collect table oids
+    QSet<int> tableoids;
+    for ( int i = 0; i < result.PQnfields(); i++ )
     {
-      tableoids.insert( tableoid );
+      int tableoid = result.PQftable( i );
+      if ( tableoid > 0 )
+      {
+        tableoids.insert( tableoid );
+      }
     }
-  }
-  QStringList tableoidsList;
-  foreach ( int tableoid, tableoids )
-  {
-    tableoidsList.append( QString::number( tableoid ) );
-  }
+    QStringList tableoidsList;
+    foreach ( int tableoid, tableoids )
+    {
+      tableoidsList.append( QString::number( tableoid ) );
+    }
 
-  QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
+    QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
 
-  // Collect formatted field types
-  sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid IN " + tableoidsFilter;
-  QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
-  QMap<int, QMap<int, QString> > fmtFieldTypeMap;
-  for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
-  {
-    int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
-    int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
-    QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
-    fmtFieldTypeMap[attrelid][attnum] = formatType;
-  }
-
-  // Collect descriptions
-  sql = "SELECT objoid, objsubid, description FROM pg_description WHERE objoid IN " + tableoidsFilter;
-  QgsPostgresResult descrResult = connectionRO()->PQexec( sql );
-  QMap<int, QMap<int, QString> > descrMap;
-  for ( int i = 0; i < descrResult.PQntuples(); ++i )
-  {
-    int objoid = descrResult.PQgetvalue( i, 0 ).toInt();
-    int objsubid = descrResult.PQgetvalue( i, 1 ).toInt();
-    QString descr = descrResult.PQgetvalue( i, 2 );
-    descrMap[objoid][objsubid] = descr;
+    // Collect formatted field types
+    sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), adsrc"
+          " FROM pg_attribute"
+          " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
+          " WHERE attrelid IN " + tableoidsFilter;
+    QgsPostgresResult fmtFieldTypeResult = connectionRO()->PQexec( sql );
+    for ( int i = 0; i < fmtFieldTypeResult.PQntuples(); ++i )
+    {
+      int attrelid = fmtFieldTypeResult.PQgetvalue( i, 0 ).toInt();
+      int attnum = fmtFieldTypeResult.PQgetvalue( i, 1 ).toInt();
+      QString formatType = fmtFieldTypeResult.PQgetvalue( i, 2 );
+      QString descr = fmtFieldTypeResult.PQgetvalue( i, 3 );
+      QString defVal = fmtFieldTypeResult.PQgetvalue( i, 4 );
+      fmtFieldTypeMap[attrelid][attnum] = formatType;
+      descrMap[attrelid][attnum] = descr;
+      defValMap[attrelid][attnum] = defVal;
+    }
   }
 
   QSet<QString> fields;
@@ -907,6 +906,7 @@ bool QgsPostgresProvider::loadFields()
 
     mAttrPalIndexName.insert( i, fieldName );
     mAttributeFields.append( QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
+    mDefaultValues.insert( i, defValMap[tableoid][attnum] );
   }
 
   return true;
@@ -1475,44 +1475,9 @@ bool QgsPostgresProvider::isValid()
   return mValid;
 }
 
-QVariant QgsPostgresProvider::defaultValue( QString fieldName, QString tableName, QString schemaName )
-{
-  if ( schemaName.isNull() )
-    schemaName = mSchemaName;
-  if ( tableName.isNull() )
-    tableName = mTableName;
-
-  // Get the default column value from the Postgres information
-  // schema. If there is no default we return an empty string.
-
-  // Maintaining a cache of the results of this query would be quite
-  // simple and if this query is called lots, could save some time.
-
-  QString sql = QString( "SELECT column_default FROM information_schema.columns WHERE column_default IS NOT NULL AND table_schema=%1 AND table_name=%2 AND column_name=%3 " )
-                .arg( quotedValue( schemaName ) )
-                .arg( quotedValue( tableName ) )
-                .arg( quotedValue( fieldName ) );
-
-  QVariant defaultValue( QString::null );
-
-  QgsPostgresResult result = connectionRO()->PQexec( sql );
-
-  if ( result.PQntuples() == 1 )
-    defaultValue = result.PQgetvalue( 0, 0 );
-
-  return defaultValue;
-}
-
 QVariant QgsPostgresProvider::defaultValue( int fieldId )
 {
-  try
-  {
-    return defaultValue( field( fieldId ).name() );
-  }
-  catch ( PGFieldNotFound )
-  {
-    return QVariant( QString::null );
-  }
+  return mDefaultValues.value( fieldId, QString::null );
 }
 
 QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defaultValue ) const
