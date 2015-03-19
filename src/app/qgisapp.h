@@ -91,6 +91,7 @@ class QgsTileScaleWidget;
 #include <QAbstractSocket>
 #include <QPointer>
 #include <QSslError>
+#include <QDateTime>
 
 #include "qgsconfig.h"
 #include "qgsfeature.h"
@@ -1652,6 +1653,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolButton* mBtnFilterLegend;
 
     QgsSnappingUtils* mSnappingUtils;
+
+    QDateTime mProjectLastModified;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

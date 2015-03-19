@@ -513,6 +513,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mpTileScaleWidget( 0 )
     , mpGpsWidget( 0 )
     , mSnappingUtils( 0 )
+    , mProjectLastModified()
 {
   if ( smInstance )
   {
@@ -916,6 +917,7 @@ QgisApp::QgisApp()
     , mVectorLayerTools( 0 )
     , mBtnFilterLegend( 0 )
     , mSnappingUtils( 0 )
+    , mProjectLastModified()
 {
   smInstance = this;
   setupUi( this );
@@ -3599,6 +3601,8 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     }
   }
 
+  mProjectLastModified = QDateTime();
+
   QSettings settings;
 
   closeProject();
@@ -3989,7 +3993,7 @@ bool QgisApp::addProject( QString projectFile )
   // close the previous opened project if any
   closeProject();
 
-  if ( ! QgsProject::instance()->read( projectFile ) )
+  if ( !QgsProject::instance()->read( projectFile ) )
   {
     QApplication::restoreOverrideCursor();
     statusBar()->clearMessage();
@@ -4003,6 +4007,8 @@ bool QgisApp::addProject( QString projectFile )
     mMapCanvas->refresh();
     return false;
   }
+
+  mProjectLastModified = pfi.lastModified();
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
@@ -4123,6 +4129,19 @@ bool QgisApp::fileSave()
   else
   {
     QFileInfo fi( QgsProject::instance()->fileName() );
+    if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
+    {
+      if ( QMessageBox::warning( this,
+                                 tr( "Project file was changed" ),
+                                 tr( "The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?\n"
+                                     "\nLast modification date on load was: %1"
+                                     "\nCurrent last modification date is: %2" )
+                                 .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ) )
+                                 .arg( fi.lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+        return false;
+    }
+
     if ( fi.exists() && ! fi.isWritable() )
     {
       messageBar()->pushMessage( tr( "Insufficient permissions" ),
@@ -4143,6 +4162,9 @@ bool QgisApp::fileSave()
       QSettings settings;
       saveRecentProjectPath( fullPath.filePath(), settings );
     }
+
+    QFileInfo fi( QgsProject::instance()->fileName() );
+    mProjectLastModified = fi.lastModified();
   }
   else
   {
