@@ -249,9 +249,6 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
-
     //! items of symbology items in legend should be checkable
     //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const override;
@@ -283,7 +280,6 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsRendererRangeV2LabelFormat mLabelFormat;
     QScopedPointer<QgsExpression> mRotation;
     QScopedPointer<QgsExpression> mSizeScale;
-    QgsSymbolV2::ScaleMethod mScaleMethod;
     QScopedPointer<QgsExpression> mExpression;
     //! attribute index (derived from attribute name in startRender)
     int mAttrNum;

@@ -48,9 +48,6 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
-
     virtual QString dump() const override;
 
     virtual QgsFeatureRendererV2* clone() const override;
@@ -89,7 +86,6 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     QScopedPointer<QgsSymbolV2> mSymbol;
     QScopedPointer<QgsExpression> mRotation;
     QScopedPointer<QgsExpression> mSizeScale;
-    QgsSymbolV2::ScaleMethod mScaleMethod;
 
     // temporary stuff for rendering
     QScopedPointer<QgsSymbolV2> mTempSymbol;

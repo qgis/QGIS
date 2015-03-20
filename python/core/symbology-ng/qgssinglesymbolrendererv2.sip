@@ -28,9 +28,6 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    QgsSymbolV2::ScaleMethod scaleMethod() const;
-
     virtual QString dump() const;
 
     virtual QgsFeatureRendererV2* clone() const /Factory/;

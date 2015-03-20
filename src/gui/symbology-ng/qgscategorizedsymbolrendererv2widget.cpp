@@ -444,13 +444,6 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   QMenu* advMenu = new QMenu;
 
   advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
-
-  mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer,
-      mRenderer->rotationField(), mRenderer->sizeScaleField(), mRenderer->scaleMethod() );
-  connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( sizeScaleFieldChanged( QString ) ), this, SLOT( sizeScaleFieldChanged( QString ) ) );
-  connect( mDataDefinedMenus, SIGNAL( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ), this, SLOT( scaleMethodChanged( QgsSymbolV2::ScaleMethod ) ) );
-  btnAdvanced->setMenu( advMenu );
 }
 
 QgsCategorizedSymbolRendererV2Widget::~QgsCategorizedSymbolRendererV2Widget()
@@ -747,7 +740,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategories()
   // recreate renderer
   QgsCategorizedSymbolRendererV2 *r = new QgsCategorizedSymbolRendererV2( attrName, cats );
   r->setSourceSymbol( mCategorizedSymbol->clone() );
-  r->setScaleMethod( mRenderer->scaleMethod() );
   r->setSizeScaleField( mRenderer->sizeScaleField() );
   r->setRotationField( mRenderer->rotationField() );
   r->setInvertedColorRamp( cbxInvertedColorRamp->isChecked() );
@@ -813,21 +805,6 @@ void QgsCategorizedSymbolRendererV2Widget::addCategory()
   QgsSymbolV2 *symbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
   QgsRendererCategoryV2 cat( QString(), symbol, QString(), true );
   mModel->addCategory( cat );
-}
-
-void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
-{
-  mRenderer->setRotationField( fldName );
-}
-
-void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
-{
-  mRenderer->setSizeScaleField( fldName );
-}
-
-void QgsCategorizedSymbolRendererV2Widget::scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod )
-{
-  mRenderer->setScaleMethod( scaleMethod );
 }
 
 QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()

@@ -32,7 +32,6 @@
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
     : QgsFeatureRendererV2( "singleSymbol" )
     , mSymbol( symbol )
-    , mScaleMethod( DEFAULT_SCALE_METHOD )
     , mOrigSize( 0.0 )
 {
   Q_ASSERT( symbol );
@@ -54,7 +53,6 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mTempSymbol.data() );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * mOrigSize );
-    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( mTempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -165,12 +163,6 @@ QString QgsSingleSymbolRendererV2::sizeScaleField() const
   return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
 }
 
-void QgsSingleSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
-{
-  mScaleMethod = scaleMethod;
-  setScaleMethodToSymbol( mSymbol.data(), scaleMethod );
-}
-
 QString QgsSingleSymbolRendererV2::dump() const
 {
   return mSymbol.data() ? QString( "SINGLE: %1" ).arg( mSymbol->dump() ) : "";
@@ -182,7 +174,6 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
   return r;
 }
 
@@ -235,8 +226,10 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::create( QDomElement& element )
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() )
   {
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+    if ( QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) )
+      r->setSizeScaleField( "sqrt(" + sizeScaleElem.attribute( "field" ) + ")" );
+    else
+      r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
   }
 
   // TODO: symbol levels
@@ -350,7 +343,6 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
     sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
-  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   return rendererElem;
