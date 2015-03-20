@@ -89,6 +89,22 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool openFormButtonVisible() {return mOpenFormButtonVisible;}
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
+    /**
+     * Determines if the filters are chained
+     *
+     * @return True if filters are chained
+     */
+    bool chainFilters() { return mChainFilters; }
+
+
+    /**
+     * Set if filters are chained.
+     * Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
+     *
+     * @param chainFilters If chaining should be enabled
+     */
+    void setChainFilters( bool chainFilters );
+
     //! return the related feature (from the referenced layer)
     //! if no feature is related, it returns an invalid feature
     QgsFeature referencedFeature();
@@ -156,6 +172,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mAllowMapIdentification;
     bool mOrderByValue;
     bool mOpenFormButtonVisible;
+    bool mChainFilters;
 
     // UI
     QVBoxLayout* mTopLayout;
