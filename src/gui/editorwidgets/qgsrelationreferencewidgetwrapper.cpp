@@ -58,6 +58,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
   if ( config( "FilterFields", QVariant() ).isValid() )
   {
     mWidget->setFilterFields( config( "FilterFields" ).toStringList() );
+    mWidget->setChainFilters( config( "ChainFilters" ).toBool() );
   }
 
   QgsRelation relation = QgsProject::instance()->relationManager()->relation( config( "Relation" ).toString() );

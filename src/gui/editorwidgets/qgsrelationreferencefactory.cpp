@@ -59,6 +59,8 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
       filterFields << fieldElement.attribute( "name" );
     }
     cfg.insert( "FilterFields", filterFields );
+
+    cfg.insert( "ChainFilters", filterNode.toElement().attribute( "ChainFilters" ) == "1" );
   }
   return cfg;
 }
@@ -87,5 +89,7 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
       filterFields.appendChild( fieldElem );
     }
     configElement.appendChild( filterFields );
+
+    filterFields.setAttribute( "ChainFilters", config["ChainFilters"].toBool() );
   }
 }

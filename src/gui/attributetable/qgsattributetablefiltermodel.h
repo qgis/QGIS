@@ -52,6 +52,13 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = 0 );
 
+    /**
+     * Set the attribute table model that backs this model
+     *
+     * @param sourceModel The model
+     *
+     * @note added in 2.0
+     */
     void setSourceModel( QgsAttributeTableModel* sourceModel );
 
     /**
@@ -77,6 +84,11 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     virtual void setFilteredFeatures( QgsFeatureIds ids );
 
+    /**
+     * Get a list of currently filtered feature ids
+     *
+     * @return A list of feature ids
+     */
     QgsFeatureIds filteredFeatures();
 
     /**
@@ -86,6 +98,11 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      */
     void setFilterMode( FilterMode filterMode );
 
+    /**
+     * The current filterModel
+     *
+     * @return Mode
+     */
     FilterMode filterMode() { return mFilterMode; }
 
     /**
@@ -125,6 +142,15 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     virtual QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
 
+    /**
+     * Sort by the given column using the given order.
+     * Prefetches all the data from the layer to speed up sorting.
+     *
+     * @param column The column which should be sorted
+     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
+     */
+    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
+
   protected:
     /**
      * Returns true if the source row will be accepted
@@ -145,15 +171,6 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * selection state of the feature in case selected features are to be shown on top.
      */
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
-
-    /**
-     * Sort by the given column using the given order.
-     * Prefetches all the data from the layer to speed up sorting.
-     *
-     * @param column The column which should be sorted
-     * @param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
-     */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
 
   public slots:
     /**

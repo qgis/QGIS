@@ -80,6 +80,8 @@ void QgsRelationReferenceConfigDlg::setConfig( const QMap<QString, QVariant>& co
     {
       addFilterField( fld );
     }
+
+    mCbxChainFilters->setChecked( config["ChainFilters"].toBool() );
   }
 }
 
@@ -134,6 +136,8 @@ QgsEditorWidgetConfig QgsRelationReferenceConfigDlg::config()
       filterFields << mFilterFieldsList->item( i )->data( Qt::UserRole ).toString();
     }
     myConfig.insert( "FilterFields", filterFields );
+
+    myConfig.insert( "ChainFilters", mCbxChainFilters->isChecked() );
   }
 
   if ( mReferencedLayer )

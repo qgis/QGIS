@@ -138,6 +138,16 @@
       <item row="1" column="0" rowspan="4">
        <widget class="QListWidget" name="mAvailableFieldsList"/>
       </item>
+      <item row="5" column="0" colspan="3">
+       <widget class="QCheckBox" name="mCbxChainFilters">
+        <property name="toolTip">
+         <string>When activated, the filters will restrict the choices of fields to options that are </string>
+        </property>
+        <property name="text">
+         <string>Chain filters</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
