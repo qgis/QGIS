@@ -18,12 +18,24 @@
 #include <qgsfield.h>
 #include <qgsdatadefined.h>
 
+#include <QDialog>
 #include <QFlags>
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
+#include <QScopedPointer>
 
 class QgsVectorLayer;
+
+/** \ingroup gui
+ * \class Qgs
+ * A button for defining data source field mappings or expressions.
+ */
+class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
+{
+  public:
+    virtual QString expressionText() const = 0;
+};
 
 /** \ingroup gui
  * \class QgsDataDefinedButton
@@ -168,6 +180,12 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void clearCheckedWidgets() { mCheckedWidgets.clear(); }
 
     /**
+     * Set an assistant to define expression
+     * takes ownership
+     */
+    void setAssistant( QgsDataDefinedAssistant * assistant ) { mAssistant.reset( assistant ); }
+
+    /**
      * Common descriptions for expected input values
      */
     static QString trString();
@@ -255,6 +273,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
   private:
     void showDescriptionDialog();
     void showExpressionDialog();
+    void showAsssistant();
     void updateGui();
 
     const QgsVectorLayer* mVectorLayer;
@@ -276,6 +295,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QAction* mActionPasteExpr;
     QAction* mActionCopyExpr;
     QAction* mActionClearExpr;
+    QAction* mActionAssistant;
 
     DataTypes mDataTypes;
     QString mDataTypesString;
@@ -283,6 +303,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QString mFullDescription;
     QString mUsageInfo;
     QString mCurrentDefinition;
+
+    QScopedPointer<QgsDataDefinedAssistant> mAssistant;
 
     static QIcon mIconDataDefine;
     static QIcon mIconDataDefineOn;

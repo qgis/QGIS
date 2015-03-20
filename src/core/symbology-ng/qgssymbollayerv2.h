@@ -192,7 +192,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
     void setOffset( QPointF offset ) { mOffset = offset; }
-    QPointF offset() { return mOffset; }
+    QPointF offset() const { return mOffset; }
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
 

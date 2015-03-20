@@ -84,6 +84,7 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   mActionPasteExpr = new QAction( tr( "Paste" ), this );
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
+  mActionAssistant = new QAction( tr( "Assistant..." ), this );
 
   // set up sibling widget connections
   connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
@@ -322,6 +323,11 @@ void QgsDataDefinedButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionPasteExpr );
   }
 
+  if ( mAssistant.data() )
+  {
+    mDefineMenu->addSeparator();
+    mDefineMenu->addAction( mActionAssistant );
+  }
 }
 
 void QgsDataDefinedButton::menuActionTriggered( QAction* action )
@@ -371,6 +377,10 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
     setExpression( QString( "" ) );
     updateGui();
   }
+  else if ( action == mActionAssistant )
+  {
+    showAsssistant();
+  }
   else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
   {
     if ( action->isEnabled() )
@@ -392,6 +402,21 @@ void QgsDataDefinedButton::showDescriptionDialog()
   mv->setWindowTitle( tr( "Data definition description" ) );
   mv->setMessageAsHtml( mFullDescription );
   mv->exec();
+}
+
+void QgsDataDefinedButton::showAsssistant()
+{
+  if ( mAssistant->exec() == QDialog::Accepted )
+  {
+    const QString newExp = mAssistant->expressionText();
+    setExpression( newExp.trimmed() );
+    bool hasExp = !newExp.isEmpty();
+
+    setUseExpression( hasExp );
+    setActive( hasExp );
+    updateGui();
+  }
+  activateWindow(); // reset focus to parent window
 }
 
 void QgsDataDefinedButton::showExpressionDialog()

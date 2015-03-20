@@ -135,6 +135,7 @@ QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, cons
     : QgsLayerTreeModelLegendNode( nodeLayer, parent )
     , mItem( item )
     , mSymbolUsesMapUnits( false )
+    , mIconSize( 16, 16 )
 {
   updateLabel();
 
@@ -167,9 +168,8 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
   }
   else if ( role == Qt::DecorationRole )
   {
-    QSize iconSize( 16, 16 ); // TODO: configurable
     const int indentSize = 20;
-    if ( mPixmap.isNull() )
+    if ( mPixmap.isNull() || mPixmap.size() != mIconSize )
     {
       QPixmap pix;
       if ( mItem.symbol() )
@@ -187,11 +187,67 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
         context.setRendererScale( scale );
         context.setMapToPixel( QgsMapToPixel( mupp ) ); // hope it's ok to leave out other params
 
-        pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), iconSize, validData ? &context : 0 );
+        // crop
+        if ( mItem.symbol()->type() == QgsSymbolV2::Marker )
+        {
+          pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ), validData ? &context : 0 );
+          QImage img = pix.toImage();
+          // find the non-transparent area bbox
+          int xmin = img.width(), xmax = 0, ymin = img.height(), ymax = 0;
+          for ( int x = 0; x < img.width(); x++ )
+          {
+            for ( int y = 0; y < img.height(); y++ )
+            {
+              if ( qAlpha( img.pixel( x, y ) ) )
+              {
+                xmin = x < xmin ? x : xmin;
+                xmax = x > xmax ? x : xmax;
+                ymin = y < ymin ? y : ymin;
+                ymax = y > ymax ? y : ymax;
+              }
+            }
+          }
+          if ( xmax - xmin < mIconSize.width() ) // centers image on x
+          {
+            xmin = qMax(( xmax + xmin ) / 2 - mIconSize.width() / 2, 0 );
+            xmax = xmin + mIconSize.width();
+          }
+          if ( ymax - ymin < mIconSize.height() ) // centers image on y
+          {
+            ymin = qMax(( ymax + ymin ) / 2 - mIconSize.height() / 2, 0 );
+            ymax = ymin + mIconSize.height();
+          }
+          pix.convertFromImage( img.copy( xmin, ymin, xmax - xmin, ymax - ymin ) );
+        }
+        else if ( mItem.symbol()->type() == QgsSymbolV2::Line )
+        {
+          pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( mIconSize.width(), 512 ), validData ? &context : 0 );
+          QImage img = pix.toImage();
+          // find the non-transparent area bbox
+          int ymin = img.height(), ymax = 0;
+          for ( int y = 0; y < img.height(); y++ )
+          {
+            if ( qAlpha( img.pixel( 7, y ) ) )
+            {
+              ymin = y < ymin ? y : ymin;
+              ymax = y > ymax ? y : ymax;
+            }
+          }
+          if ( ymax - ymin < mIconSize.height() ) // centers image on y
+          {
+            ymin = qMax(( ymax + ymin ) / 2 - mIconSize.height() / 2, 0 );
+            ymax = ymin + mIconSize.height();
+          }
+          pix.convertFromImage( img.copy( 0, ymin, mIconSize.width(), ymax - ymin ) );
+        }
+        else
+        {
+          pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), mIconSize, validData ? &context : 0 );
+        }
       }
       else
       {
-        pix = QPixmap( iconSize );
+        pix = QPixmap( mIconSize );
         pix.fill( Qt::transparent );
       }
 

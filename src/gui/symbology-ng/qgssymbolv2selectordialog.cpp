@@ -110,31 +110,31 @@ class SymbolLayerItem : public QStandardItem
     QVariant data( int role ) const override
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
+  {
+    if ( mIsLayer )
+        return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
+      else
       {
-        if ( mIsLayer )
-          return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
-        else
+        switch ( mSymbol->type() )
         {
-          switch ( mSymbol->type() )
-          {
-            case QgsSymbolV2::Marker : return "Marker";
-            case QgsSymbolV2::Fill   : return "Fill";
-            case QgsSymbolV2::Line   : return "Line";
-            default: return "Symbol";
-          }
+          case QgsSymbolV2::Marker : return "Marker";
+          case QgsSymbolV2::Fill   : return "Fill";
+          case QgsSymbolV2::Line   : return "Line";
+          default: return "Symbol";
         }
       }
-      if ( role == Qt::SizeHintRole )
-        return QVariant( QSize( 32, 32 ) );
-      if ( role == Qt::CheckStateRole )
-        return QVariant(); // could be true/false
-      return QStandardItem::data( role );
     }
+    if ( role == Qt::SizeHintRole )
+    return QVariant( QSize( 32, 32 ) );
+    if ( role == Qt::CheckStateRole )
+      return QVariant(); // could be true/false
+      return QStandardItem::data( role );
+      }
 
-  protected:
-    QgsSymbolLayerV2* mLayer;
-    QgsSymbolV2* mSymbol;
-    bool mIsLayer;
+    protected:
+      QgsSymbolLayerV2* mLayer;
+  QgsSymbolV2* mSymbol;
+  bool mIsLayer;
 };
 
 //////////
@@ -333,8 +333,9 @@ void QgsSymbolV2SelectorDialog::layerChanged()
   else
   {
     // then it must be a symbol
+    currentItem->symbol()->setLayer( mVectorLayer );
     // Now populate symbols of that type using the symbols list widget:
-    QWidget *symbolsList = new QgsSymbolsListWidget( currentItem->symbol(), mStyle, mAdvancedMenu, this );
+    QWidget *symbolsList = new QgsSymbolsListWidget( mVectorLayer, currentItem->symbol(), mStyle, mAdvancedMenu, this );
     setWidget( symbolsList );
     connect( symbolsList, SIGNAL( changed() ), this, SLOT( symbolChanged() ) );
   }
