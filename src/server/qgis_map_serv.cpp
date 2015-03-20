@@ -392,6 +392,16 @@ int main( int argc, char * argv[] )
     //Service parameter
     QString serviceString = theRequestHandler->parameter( "SERVICE" );
 
+    if ( serviceString.isEmpty() )
+    {
+      // SERVICE not mandatory for WMS 1.3.0 GetMap & GetFeatureInfo
+      QString requestString = theRequestHandler->parameter( "REQUEST" );
+      if ( requestString == "GetMap" || requestString == "GetFeatureInfo" )
+      {
+        serviceString = "WMS";
+      }
+    }
+
     // Enter core services main switch
     if ( !theRequestHandler->exceptionRaised() )
     {
