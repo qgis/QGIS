@@ -157,6 +157,7 @@ class CORE_EXPORT QgsSymbolV2
 
     QSet<QString> usedAttributes() const;
 
+    //! @note the layer will be NULL after stopRender
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
     const QgsVectorLayer* layer() const { return mLayer; }
 
@@ -252,10 +253,26 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
     QgsMarkerSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
 
     void setAngle( double angle );
-    double angle();
+    double angle() const;
+
+    /** Set "en masse" expression for angle
+     */
+    void setAngleExpression( const QString & exprStr );
+    /** Get "en masse" expression for angle
+     * @return empty if not an expession at the marker level
+     */
+    QString angleExpression() const;
 
     void setSize( double size );
-    double size();
+    double size() const;
+
+    /** Set "en masse" expression for size
+     */
+    void setSizeExpression( const QString & exprStr );
+    /** Get "en masse" expression for size
+     * @return empty if not an expession at the marker level
+     */
+    QString sizeExpression() const;
 
     void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
     ScaleMethod scaleMethod();
@@ -278,7 +295,15 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
     QgsLineSymbolV2( QgsSymbolLayerV2List layers = QgsSymbolLayerV2List() );
 
     void setWidth( double width );
-    double width();
+    double width() const;
+
+    /** Set "en masse" expression for width
+     */
+    void setWidthExpression( const QString & exprStr );
+    /** Get "en masse" expression for width
+     * @return empty if not an expession at the marker level
+     */
+    QString widthExpression() const;
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 

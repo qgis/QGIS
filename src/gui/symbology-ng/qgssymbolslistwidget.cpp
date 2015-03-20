@@ -16,11 +16,14 @@
 
 #include "qgssymbolslistwidget.h"
 
+#include "qgssizescalewidget.h"
+
 #include "qgsstylev2managerdialog.h"
 
 #include "qgssymbolv2.h"
 #include "qgsstylev2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsmarkersymbollayerv2.h"
 
 #include "qgsapplication.h"
 
@@ -33,13 +36,14 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QScopedPointer>
 
-
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent ) : QWidget( parent )
+QgsSymbolsListWidget::QgsSymbolsListWidget( const QgsVectorLayer * layer, QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent )
+    : QWidget( parent )
+    , mSymbol( symbol )
+    , mStyle( style )
+    , mLayer( layer )
 {
-  mSymbol = symbol;
-  mStyle = style;
-
   setupUi( this );
 
   mSymbolUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
@@ -82,6 +86,17 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerAngle( double ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
+
+  connect( mRotationDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setMarkerRotationExpression( const QString& ) ) );
+  connect( mRotationDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveMarkerRotationExpression( bool ) ) );
+  connect( mSizeDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setMarkerSizeExpression( const QString& ) ) );
+  connect( mSizeDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveMarkerSizeExpression( bool ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setLineWidthExpression( const QString& ) ) );
+  connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveLineWidthExpression( bool ) ) );
+
+  if ( mSymbol->type() == QgsSymbolV2::Marker )
+    mSizeDDBtn->setAssistant( new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( mSymbol ) ) );
+
 
   // Live color updates are not undoable to child symbol layers
   btnColor->setAcceptLiveUpdates( false );
@@ -178,6 +193,28 @@ void QgsSymbolsListWidget::setMarkerAngle( double angle )
   emit changed();
 }
 
+void QgsSymbolsListWidget::setActiveMarkerRotationExpression( bool active )
+{
+  if ( active )
+    setMarkerRotationExpression( mRotationDDBtn->currentDefinition() );
+  else
+    setMarkerRotationExpression( QString() );
+  spinAngle->setEnabled( !active );
+}
+
+void QgsSymbolsListWidget::setMarkerRotationExpression( const QString & definition )
+{
+  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  if ( // shall we remove datadefined expressions for layers ?
+    ( markerSymbol->angleExpression().length() && !definition.length() )
+    // shall we set the "en masse" expression for properties ?
+    || definition.length() )
+  {
+    markerSymbol->setAngleExpression( definition );
+    emit changed();
+  }
+}
+
 void QgsSymbolsListWidget::setMarkerSize( double size )
 {
   QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
@@ -187,6 +224,28 @@ void QgsSymbolsListWidget::setMarkerSize( double size )
   emit changed();
 }
 
+void QgsSymbolsListWidget::setActiveMarkerSizeExpression( bool active )
+{
+  if ( active )
+    setMarkerSizeExpression( mSizeDDBtn->currentDefinition() );
+  else
+    setMarkerSizeExpression( QString() );
+  spinSize->setEnabled( !active );
+}
+
+void QgsSymbolsListWidget::setMarkerSizeExpression( const QString & definition )
+{
+  QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
+  if ( // shall we remove datadefined expressions for layers ?
+    ( markerSymbol->sizeExpression().length() && !definition.length() )
+    // shall we set the "en masse" expression for properties ?
+    || definition.length() )
+  {
+    markerSymbol->setSizeExpression( definition );
+    emit changed();
+  }
+}
+
 void QgsSymbolsListWidget::setLineWidth( double width )
 {
   QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
@@ -194,6 +253,29 @@ void QgsSymbolsListWidget::setLineWidth( double width )
     return;
   lineSymbol->setWidth( width );
   emit changed();
+}
+
+void QgsSymbolsListWidget::setActiveLineWidthExpression( bool active )
+{
+  if ( active )
+    setLineWidthExpression( mSizeDDBtn->currentDefinition() );
+  else
+    setLineWidthExpression( QString() );
+  spinWidth->setEnabled( !active );
+}
+
+
+void QgsSymbolsListWidget::setLineWidthExpression( const QString & definition )
+{
+  QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
+  if ( // shall we remove datadefined expressions for layers ?
+    ( lineSymbol->widthExpression().length() && !definition.length() )
+    // shall we set the "en masse" expression for properties ?
+    || definition.length() )
+  {
+    lineSymbol->setWidthExpression( definition );
+    emit changed();
+  }
 }
 
 void QgsSymbolsListWidget::symbolAddedToStyle( QString name, QgsSymbolV2* symbol )
@@ -277,11 +359,28 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( mSymbol );
     spinSize->setValue( markerSymbol->size() );
     spinAngle->setValue( markerSymbol->angle() );
+
+    {
+      QgsDataDefined dd( markerSymbol->sizeExpression() );
+      mSizeDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse size expression" );
+      spinSize->setEnabled( !mSizeDDBtn->isActive() );
+    }
+    {
+      QgsDataDefined dd( markerSymbol->angleExpression() );
+      mRotationDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse rotation expression" );
+      spinAngle->setEnabled( !mRotationDDBtn->isActive() );
+    }
   }
   else if ( mSymbol->type() == QgsSymbolV2::Line )
   {
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
+
+    {
+      QgsDataDefined dd( lineSymbol->widthExpression() );
+      mWidthDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse width expression" );
+      spinWidth->setEnabled( !mWidthDDBtn->isActive() );
+    }
   }
 
   mSymbolUnitWidget->blockSignals( true );

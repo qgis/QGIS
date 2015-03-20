@@ -73,6 +73,8 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     void changeSymbolWidth();
     /**Change marker sizes of selected symbols*/
     void changeSymbolSize();
+    /**Change marker angles of selected symbols*/
+    void changeSymbolAngle();
 
     virtual void copy() {}
     virtual void paste() {}
@@ -125,5 +127,101 @@ class QgsRendererV2DataDefinedMenus : public QObject
     QActionGroup *mSizeAttributeActionGroup;
     QgsVectorLayer* mLayer;
 };
+
+////////////
+
+#include "ui_widget_en_masse_value.h"
+#include "qgssizescalewidget.h"
+
+/**
+Utility classes for "en masse" size definition
+*/
+class QgsEnMasseValueDialog : public QDialog, public Ui::QgsEnMasseValueDialog
+{
+    Q_OBJECT
+
+  public:
+    /** Constructor
+     * @param symbolList must not be empty
+     * @param layer must not be null
+     */
+    QgsEnMasseValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label );
+    virtual ~QgsEnMasseValueDialog() {};
+
+  public slots:
+    void setSymbolExpression( const QString & definition );
+    void setActiveSymbolExpression( bool active );
+
+  protected:
+    QgsDataDefined symbolExpression() const;
+    void init( const QString & description ); // needed in children ctor to call virtual
+
+    virtual QgsDataDefined expression( const QgsSymbolV2 * ) const = 0;
+    virtual double value( const QgsSymbolV2 * ) const = 0;
+    virtual void setExpression( QgsSymbolV2 * symbol, const QString & exprStr ) = 0;
+
+    QList<QgsSymbolV2*>  mSymbolList;
+    QgsVectorLayer * mLayer;
+};
+
+class QgsEnMasseSizeDialog : public QgsEnMasseValueDialog
+{
+    Q_OBJECT
+  public:
+    QgsEnMasseSizeDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer )
+        : QgsEnMasseValueDialog( symbolList, layer, tr( "Size" ) )
+    {
+      init( tr( "En masse size expression" ) );
+      if ( symbolList.length() )
+        mDDBtn->setAssistant( new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( symbolList[0] ) ) );
+
+    }
+
+  protected:
+    QgsDataDefined expression( const QgsSymbolV2 * symbol ) const { return QgsDataDefined( static_cast<const QgsMarkerSymbolV2*>( symbol )->sizeExpression() ); }
+
+    double value( const QgsSymbolV2 * symbol ) const { return static_cast<const QgsMarkerSymbolV2*>( symbol )->size(); }
+
+    void setExpression( QgsSymbolV2 * symbol, const QString & exprStr ) { static_cast<QgsMarkerSymbolV2*>( symbol )->setSizeExpression( exprStr ); }
+};
+
+class QgsEnMasseRotationDialog : public QgsEnMasseValueDialog
+{
+    Q_OBJECT
+  public:
+    QgsEnMasseRotationDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer )
+        : QgsEnMasseValueDialog( symbolList, layer, tr( "Rotation" ) )
+    {
+      init( tr( "En masse rotation expression" ) );
+    }
+
+  protected:
+    QgsDataDefined expression( const QgsSymbolV2 * symbol ) const { return QgsDataDefined( static_cast<const QgsMarkerSymbolV2*>( symbol )->angleExpression() ); }
+
+    double value( const QgsSymbolV2 * symbol ) const { return static_cast<const QgsMarkerSymbolV2*>( symbol )->angle(); }
+
+    void setExpression( QgsSymbolV2 * symbol, const QString & exprStr ) { static_cast<QgsMarkerSymbolV2*>( symbol )->setAngleExpression( exprStr ); }
+};
+
+
+class QgsEnMasseWidthDialog : public QgsEnMasseValueDialog
+{
+    Q_OBJECT
+  public:
+    QgsEnMasseWidthDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer )
+        : QgsEnMasseValueDialog( symbolList, layer, tr( "Width" ) )
+    {
+      init( tr( "En masse width expression" ) );
+    }
+
+  protected:
+    QgsDataDefined expression( const QgsSymbolV2 * symbol ) const { return QgsDataDefined( static_cast<const QgsLineSymbolV2*>( symbol )->widthExpression() ); }
+
+    double value( const QgsSymbolV2 * symbol ) const { return static_cast<const QgsLineSymbolV2*>( symbol )->width(); }
+
+    void setExpression( QgsSymbolV2 * symbol, const QString & exprStr ) { static_cast<QgsLineSymbolV2*>( symbol )->setWidthExpression( exprStr ); }
+};
+
+
 
 #endif // QGSRENDERERV2WIDGET_H

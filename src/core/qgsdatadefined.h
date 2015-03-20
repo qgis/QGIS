@@ -52,6 +52,14 @@ class CORE_EXPORT QgsDataDefined
      */
     explicit QgsDataDefined( const QgsExpression * expression );
 
+    /**
+     * Construct a new data defined object, analyse the expression to determine
+     * if it's a simple field
+     *
+     * @param expression can be empty
+     */
+    explicit QgsDataDefined( const QString& expressionStr );
+
     ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
