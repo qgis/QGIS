@@ -418,6 +418,7 @@ void QgsDxfExport::writeGroup( int code, const QgsPoint &p, double z, bool skipz
 
 void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, int transparencyCode )
 {
+#if 0
   int minDistAt = -1;
   int minDist = INT_MAX;
 
@@ -437,6 +438,7 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, in
     // exact full opaque match
     return;
   }
+#endif
 
   int c = ( color.red() & 0xff ) * 0x10000 + ( color.green() & 0xff ) * 0x100 + ( color.blue() & 0xff );
   writeGroup( rgbCode, c );
@@ -3694,7 +3696,7 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) // iterate over rings
       {
-        writePolyline( geom->asPolyline(), layer, lineStyleName, penColor, width, false );
+        writePolyline( *polyIt, layer, lineStyleName, penColor, width, false );
       }
 
       if ( offsetPolygon != geom )
