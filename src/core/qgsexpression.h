@@ -536,10 +536,10 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); foreach ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const override { bool needs = false; foreach ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
-        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+          virtual void accept( Visitor& v ) const override { v.visit( *this ); }
 
-      protected:
-        Node* mNode;
+          protected:
+            Node* mNode;
         NodeList* mList;
         bool mNotIn;
     };

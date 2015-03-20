@@ -28,12 +28,41 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 
+#include "qgsdatadefined.h"
+
 #include <QColor>
 #include <QImage>
 #include <QPainter>
 #include <QSize>
 
 #include <cmath>
+
+inline
+QString rotateEnMasse( double additionalRotation, const QString & exprStr )
+{
+  return additionalRotation
+         ? QgsExpression( QString::number( additionalRotation ) + " + (" + exprStr + ")" ).dump()
+         : QgsExpression( exprStr ).dump();
+}
+
+inline
+QString scaleEnMasse( double scaleFactor, const QString & exprStr )
+{
+  return ( qAbs( scaleFactor - 1 ) > 1e-6 )
+         ? QgsExpression( QString::number( scaleFactor ) + "*(" + exprStr + ")" ).dump()
+         : QgsExpression( exprStr ).dump();
+}
+
+inline
+QString scaleEnMasseOffset( double scaleFactorX, double scaleFactorY, const QString & exprStr )
+{
+  return QgsExpression(
+           ( scaleFactorX ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprStr + "))" : "'0'" ) +
+           "|| ',' || " +
+           ( scaleFactorY ? "tostring(" + QString::number( scaleFactorY ) + "*(" + exprStr + "))" : "'0'" ) ).dump();
+}
+
+////////////////////
 
 QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
     : mType( type )
@@ -500,7 +529,6 @@ QgsFillSymbolV2* QgsFillSymbolV2::createSimple( const QgsStringMap& properties )
 
 ///////////////////
 
-
 QgsMarkerSymbolV2::QgsMarkerSymbolV2( QgsSymbolLayerV2List layers )
     : QgsSymbolV2( Marker, layers )
 {
@@ -519,7 +547,7 @@ void QgsMarkerSymbolV2::setAngle( double ang )
   }
 }
 
-double QgsMarkerSymbolV2::angle()
+double QgsMarkerSymbolV2::angle() const
 {
   QgsSymbolLayerV2List::const_iterator it = mLayers.begin();
 
@@ -531,6 +559,52 @@ double QgsMarkerSymbolV2::angle()
   return layer->angle();
 }
 
+void QgsMarkerSymbolV2::setAngleExpression( const QString & exprStr )
+{
+  const double rot = angle();
+  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    if ( !exprStr.length() )
+      layer->removeDataDefinedProperty( "angle" );
+    else
+      layer->setDataDefinedProperty( "angle", rotateEnMasse( layer->angle() - rot, exprStr ) );
+  }
+}
+
+QString QgsMarkerSymbolV2::angleExpression() const
+{
+  const double rot = angle();
+  QScopedPointer< QgsExpression > expr;
+
+  // find the base of the "en masse" pattern
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+    if ( layer->angle() == rot && layer->dataDefinedProperty( "angle" ) )
+    {
+      expr.reset( new QgsExpression( layer->dataDefinedPropertyString( "angle" ) ) );
+      break;
+    }
+  }
+
+  if ( !expr.data() ) return "";
+
+  // check that all layers angle expressions match the "en masse" pattern
+  const QString exprStr( expr.data() ? expr->dump() : "" );
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+    const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "angle" ) ).dump() );
+    if ( rotateEnMasse( layer->angle() - rot, exprStr ) != sizeExpr )
+      expr.reset();
+    break;
+  }
+
+  return expr.data() ? expr->dump() : "";
+}
+
+
 void QgsMarkerSymbolV2::setSize( double s )
 {
   double origSize = size();
@@ -540,16 +614,19 @@ void QgsMarkerSymbolV2::setSize( double s )
     QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2*>( *it );
     if ( layer->size() == origSize )
       layer->setSize( s );
-    else
+    else if ( origSize != 0 )
     {
       // proportionally scale size
-      if ( origSize != 0 )
-        layer->setSize( layer->size() * s / origSize );
+      layer->setSize( layer->size() * s / origSize );
     }
+    // also scale offset to maintain relative position
+    if ( origSize != 0 && ( layer->offset().x() || layer->offset().y() ) )
+      layer->setOffset( QPointF( layer->offset().x() * s / origSize,
+                                 layer->offset().y() * s / origSize ) );
   }
 }
 
-double QgsMarkerSymbolV2::size()
+double QgsMarkerSymbolV2::size() const
 {
   // return size of the largest symbol
   double maxSize = 0;
@@ -563,6 +640,68 @@ double QgsMarkerSymbolV2::size()
   return maxSize;
 }
 
+void QgsMarkerSymbolV2::setSizeExpression( const QString & exprStr )
+{
+  const double sz = size();
+
+  if ( sz == 0 ) return;
+
+  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    QgsMarkerSymbolLayerV2* layer = static_cast<QgsMarkerSymbolLayerV2 *>( *it );
+    if ( !exprStr.length() )
+    {
+      layer->removeDataDefinedProperty( "size" );
+      layer->removeDataDefinedProperty( "offset" );
+    }
+    else
+    {
+      layer->setDataDefinedProperty( "size", scaleEnMasse( layer->size() / sz, exprStr ) );
+      if ( layer->offset().x() || layer->offset().y() )
+        layer->setDataDefinedProperty( "offset", scaleEnMasseOffset(
+                                         layer->offset().x() / sz, layer->offset().y() / sz, exprStr ) );
+    }
+  }
+}
+
+QString QgsMarkerSymbolV2::sizeExpression() const
+{
+  const double sz = size();
+
+  if ( !sz ) return "";
+
+  QScopedPointer< QgsExpression > expr;
+
+  // find the base of the "en masse" pattern
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+    if ( layer->size() == sz && layer->dataDefinedProperty( "size" ) )
+    {
+      expr.reset( new QgsExpression( layer->dataDefinedPropertyString( "size" ) ) );
+      break;
+    }
+  }
+
+  if ( !expr.data() ) return "";
+
+  // check that all layers size expressions match the "en masse" pattern
+  const QString exprStr( expr.data() ? expr->dump() : "" );
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
+    const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "size" ) ).dump() );
+    const QString offsetExpr( QgsExpression( layer->dataDefinedPropertyString( "offset" ) ).dump() );
+    if ( scaleEnMasse( layer->size() / sz, exprStr ) != sizeExpr
+         || (( layer->offset().x() || layer->offset().y() ) && scaleEnMasseOffset( layer->offset().x() / sz, layer->offset().y() / sz, exprStr ) != offsetExpr ) )
+    {
+      expr.reset();
+      break;
+    }
+  }
+
+  return expr.data() ? expr->dump() : "";
+}
 
 void QgsMarkerSymbolV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
 {
@@ -658,16 +797,18 @@ void QgsLineSymbolV2::setWidth( double w )
     {
       layer->setWidth( w );
     }
-    else
+    else if ( origWidth != 0 )
     {
       // proportionally scale the width
-      if ( origWidth != 0 )
-        layer->setWidth( layer->width() * w / origWidth );
+      layer->setWidth( layer->width() * w / origWidth );
     }
+    // also scale offset to maintain relative position
+    if ( origWidth != 0 && layer->offset() )
+      layer->setOffset( layer->offset() * w / origWidth );
   }
 }
 
-double QgsLineSymbolV2::width()
+double QgsLineSymbolV2::width() const
 {
   double maxWidth = 0;
   for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
@@ -678,6 +819,68 @@ double QgsLineSymbolV2::width()
       maxWidth = width;
   }
   return maxWidth;
+}
+
+void QgsLineSymbolV2::setWidthExpression( const QString & exprStr )
+{
+  const double wd = width();
+
+  if ( wd == 0 ) return;
+
+  for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    QgsLineSymbolLayerV2* layer = static_cast<QgsLineSymbolLayerV2*>( *it );
+    if ( !exprStr.length() )
+    {
+      layer->removeDataDefinedProperty( "width" );
+      layer->removeDataDefinedProperty( "offset" );
+    }
+    else
+    {
+      layer->setDataDefinedProperty( "width", scaleEnMasse( layer->width() / wd, exprStr ) );
+      if ( layer->offset() )
+        layer->setDataDefinedProperty( "offset", scaleEnMasse( layer->offset() / wd, exprStr ) );
+    }
+  }
+}
+
+QString QgsLineSymbolV2::widthExpression() const
+{
+  const double wd = width();
+
+  if ( !wd ) return "";
+
+  QScopedPointer< QgsExpression > expr;
+
+  // find the base of the "en masse" pattern
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    const QgsLineSymbolLayerV2* layer = static_cast<const QgsLineSymbolLayerV2*>( *it );
+    if ( layer->width() == wd && layer->dataDefinedProperty( "width" ) )
+    {
+      expr.reset( new QgsExpression( layer->dataDefinedPropertyString( "width" ) ) );
+      break;
+    }
+  }
+
+  if ( !expr.data() ) return "";
+
+  // check that all layers width expressions match the "en masse" pattern
+  const QString exprStr( expr.data() ? expr->dump() : "" );
+  for ( QgsSymbolLayerV2List::const_iterator it = mLayers.begin(); it != mLayers.end(); ++it )
+  {
+    const QgsLineSymbolLayerV2* layer = static_cast<const QgsLineSymbolLayerV2*>( *it );
+    const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "width" ) ).dump() );
+    const QString offsetExpr( QgsExpression( layer->dataDefinedPropertyString( "offset" ) ).dump() );
+    if ( scaleEnMasse( layer->width() / wd, exprStr ) != sizeExpr
+         || ( layer->offset() && scaleEnMasse( layer->offset() / wd, exprStr ) != offsetExpr ) )
+    {
+      expr.reset();
+      break;
+    }
+  }
+
+  return expr.data() ? expr->dump() : "";
 }
 
 void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )

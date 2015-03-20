@@ -135,6 +135,8 @@ QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, cons
     : QgsLayerTreeModelLegendNode( nodeLayer, parent )
     , mItem( item )
     , mSymbolUsesMapUnits( false )
+    , mIconSize( 16, 16 )
+    , mCrop( true )
 {
   updateLabel();
 
@@ -167,9 +169,8 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
   }
   else if ( role == Qt::DecorationRole )
   {
-    QSize iconSize( 16, 16 ); // TODO: configurable
     const int indentSize = 20;
-    if ( mPixmap.isNull() )
+    if ( mPixmap.isNull() || mPixmap.size() != mIconSize )
     {
       QPixmap pix;
       if ( mItem.symbol() )
@@ -187,11 +188,31 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
         context.setRendererScale( scale );
         context.setMapToPixel( QgsMapToPixel( mupp ) ); // hope it's ok to leave out other params
 
-        pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), iconSize, validData ? &context : 0 );
+        // crop
+        if ( mItem.symbol()->type() == QgsSymbolV2::Marker && mCrop )
+        {
+          pix = QPixmap::fromImage( QgsSymbolLayerV2Utils::crop(
+                                      QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(),
+                                          QSize( 512, 512 ),
+                                          validData ? &context : 0
+                                                                                ).toImage(), mIconSize ) );
+        }
+        else if ( mItem.symbol()->type() == QgsSymbolV2::Line && mCrop )
+        {
+          pix = QPixmap::fromImage( QgsSymbolLayerV2Utils::crop(
+                                      QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(),
+                                          QSize( mIconSize.width(), 512 ),
+                                          validData ? &context : 0
+                                                                                ).toImage(), mIconSize ) );
+        }
+        else
+        {
+          pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), mIconSize, validData ? &context : 0 );
+        }
       }
       else
       {
-        pix = QPixmap( iconSize );
+        pix = QPixmap( mIconSize );
         pix.fill( Qt::transparent );
       }
 

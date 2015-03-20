@@ -27,9 +27,7 @@ class QgsDataDefined;
 
 /** \ingroup gui
  * \class QgsDataDefinedAssistant
- * An assistant (wizard) dialog, accessible from a QgsDataDefinedButton.
- * Can be used to guide users through creation of an expression for the
- * data defined button.
+ * assistant, accessible from button, to define values
  * @note added in 2.10
  */
 class GUI_EXPORT QgsDataDefinedAssistant: public QDialog

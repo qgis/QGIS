@@ -162,6 +162,18 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
 
     virtual void invalidateMapBasedData() override;
 
+    //! Set the icon size (icon may be smaller if croping is enabled)
+    //! @note added in 2.10
+    void setIconSize( const QSize& sz ) { mIconSize = sz; }
+    //! @note added in 2.10
+    QSize iconSize() const { return mIconSize; }
+
+    //! Enable/dissapbe cropping of symbol to minimun size
+    //! @note added in 2.10
+    void setCrop( bool isCropRequired ) { mCrop = isCropRequired; }
+    //! @note added in 2.10
+    bool crop() const { return mCrop; }
+
   private:
     void updateLabel();
 
@@ -170,6 +182,8 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     mutable QPixmap mPixmap; // cached symbol preview
     QString mLabel;
     bool mSymbolUsesMapUnits;
+    QSize mIconSize;
+    bool mCrop;
 };
 
 

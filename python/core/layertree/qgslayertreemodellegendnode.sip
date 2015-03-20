@@ -134,6 +134,18 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();
+
+    //! Set the icon size (icon may be smaller if croping is enabled)
+    //! @note added in 2.10
+    void setIconSize( const QSize& sz );
+    //! @note added in 2.10
+    QSize iconSize() const;
+
+    //! Enable/dissapbe cropping of symbol to minimun size
+    //! @note added in 2.10
+    void setCrop( bool isCropRequired );
+    //! @note added in 2.10
+    bool crop() const;
 };
 
 

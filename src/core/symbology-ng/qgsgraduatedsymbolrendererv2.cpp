@@ -21,6 +21,7 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
+#include "qgsscaleexpression.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -1148,6 +1149,62 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
     QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( range.symbol(), iconSize );
     lst << qMakePair( range.label(), pix );
   }
+  return lst;
+}
+
+QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
+{
+  const int count = ranges().count();
+  QgsLegendSymbolListV2 lst;
+  if ( mSourceSymbol.data() && mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    // check that all symbols that have the same size expression
+    QString expStr;
+    for ( int i = 0; i < count; i++ )
+    {
+      const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( ranges()[i].symbol() );
+      if ( expStr.length() && expStr != symbol->sizeExpression() )
+      {
+        expStr = "";
+        break;
+      }
+      else
+      {
+        expStr = symbol->sizeExpression();
+      }
+    }
+
+    QgsScaleExpression exp( expStr );
+    if ( exp )
+    {
+      QgsLegendSymbolItemV2 title( NULL, exp.baseExpression(), "" );
+      lst << title;
+      foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      {
+        QgsLegendSymbolItemV2 si( mSourceSymbol.data(), QString::number( v ), "" );
+        QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+        s->setColor( QColor(0,0,0) );
+        s->setSizeExpression( "" );
+        s->setSize( exp.size( v ) );
+        lst << si;
+      }
+      // now list the colors
+      QScopedPointer<QgsSymbolV2> c( QgsSymbolV2::defaultSymbol( QGis::Polygon) );
+      for ( int i = 0; i < count; i++ )
+      {
+        c->setColor( ranges()[i].symbol()->color() );
+        QgsLegendSymbolItemV2 si( c.data(), ranges()[i].label(), QString::number( i ), legendSymbolItemsCheckable() );
+        lst << si;
+      }
+      return lst;
+    }
+  }
+
+  for ( int i = 0; i < count; i++ )
+  {
+    lst << QgsLegendSymbolItemV2(ranges()[i].symbol(), ranges()[i].label(), QString::number( i ), legendSymbolItemsCheckable() );
+  }
+
   return lst;
 }
 
