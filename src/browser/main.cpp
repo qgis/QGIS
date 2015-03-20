@@ -51,6 +51,34 @@ int main( int argc, char ** argv )
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS2" );
 
+#ifdef Q_OS_MACX
+  // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
+  // is not already defined, use the GDAL plugins in the application bundle.
+  QString gdalPlugins( QCoreApplication::applicationDirPath().append( "/lib/gdalplugins" ) );
+  if ( QFile::exists( gdalPlugins ) && !getenv( "GDAL_DRIVER_PATH" ) )
+  {
+    setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+  }
+
+  // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
+  if ( !getenv( "GDAL_DATA" ) )
+  {
+    QStringList gdalShares;
+    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
+    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+    << appResources.append( "/share/gdal" )
+    << appResources.append( "/gdal" );
+    Q_FOREACH ( const QString& gdalShare, gdalShares )
+    {
+      if ( QFile::exists( gdalShare ) )
+      {
+        setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
+        break;
+      }
+    }
+  }
+#endif
+
   QgsBrowser w;
 
   a.connect( &a, SIGNAL( aboutToQuit() ), &w, SLOT( saveWindowState() ) );
