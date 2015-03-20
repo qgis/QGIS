@@ -61,7 +61,6 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QList<QPointF> mCurrentCurve;
 
     QgsPoint toDxfCoordinates( const QPointF& pt ) const;
-    QColor currentColor() const;
     double currentWidth() const;
 
     void moveTo( double dx, double dy );
