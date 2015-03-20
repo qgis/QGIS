@@ -46,6 +46,7 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   else if ( mLayer && mLayer->geometryType() == QGis::Point )
   {
     contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
+    contextMenu->addAction( tr( "Change angle" ), this, SLOT( changeSymbolAngle() ) );
   }
 }
 
@@ -128,17 +129,17 @@ void QgsRendererV2Widget::changeSymbolWidth()
     return;
   }
 
-  bool ok;
-  QgsLineSymbolV2* line = dynamic_cast<QgsLineSymbolV2*>( symbolList.at( 0 ) ) ;
-  double width = QInputDialog::getDouble( this, tr( "Width" ), tr( "Change symbol width" ), line ? line->width() : 0.0 , 0.0, 999999, 1, &ok );
-  if ( ok )
+  QgsEnMasseWidthDialog dlg( symbolList, mLayer );
+
+  if ( QMessageBox::Ok == dlg.exec() )
   {
-    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
-    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    if ( !dlg.mDDBtn->isActive() )
     {
-      line = dynamic_cast<QgsLineSymbolV2*>( *symbolIt );
-      if ( line )
-        line->setWidth( width );
+      QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
+      {
+        dynamic_cast<QgsLineSymbolV2*>( *symbolIt )->setWidth( dlg.mSpinBox->value() );
+      }
     }
     refreshSymbolView();
   }
@@ -152,18 +153,41 @@ void QgsRendererV2Widget::changeSymbolSize()
     return;
   }
 
-  bool ok;
-  QgsMarkerSymbolV2* marker = dynamic_cast<QgsMarkerSymbolV2*>( symbolList.at( 0 ) );
+  QgsEnMasseSizeDialog dlg( symbolList, mLayer );
 
-  double size = QInputDialog::getDouble( this, tr( "Size" ), tr( "Change symbol size" ), marker ? marker->size() : 0.0 , 0.0, 999999, 1, &ok );
-  if ( ok )
+  if ( QMessageBox::Ok == dlg.exec() )
   {
-    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
-    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    if ( !dlg.mDDBtn->isActive() )
     {
-      marker = dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt );
-      if ( marker )
-        marker->setSize( size );
+      QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
+      {
+        dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setSize( dlg.mSpinBox->value() );
+      }
+    }
+    refreshSymbolView();
+  }
+}
+
+void QgsRendererV2Widget::changeSymbolAngle()
+{
+  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  if ( symbolList.size() < 1 )
+  {
+    return;
+  }
+
+  QgsEnMasseRotationDialog dlg( symbolList, mLayer );
+
+  if ( QMessageBox::Ok == dlg.exec() )
+  {
+    if ( !dlg.mDDBtn->isActive() )
+    {
+      QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
+      {
+        dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setAngle( dlg.mSpinBox->value() );
+      }
     }
     refreshSymbolView();
   }
@@ -358,3 +382,53 @@ void QgsRendererV2DataDefinedMenus::updateMenu( QActionGroup* actionGroup, QStri
   }
 }
 #endif
+
+QgsEnMasseValueDialog::QgsEnMasseValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label )
+    : mSymbolList( symbolList )
+    , mLayer( layer )
+{
+  setupUi( this );
+  mLabel->setText( label );
+  connect( mDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setSymbolExpression( const QString& ) ) );
+  connect( mDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveSymbolExpression( bool ) ) );
+
+}
+
+void QgsEnMasseValueDialog::init( const QString & description )
+{
+  QgsDataDefined dd = symbolExpression();
+  mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
+  mSpinBox->setValue( value( mSymbolList.back() ) );
+  mSpinBox->setEnabled( !mDDBtn->isActive() );
+}
+
+QgsDataDefined QgsEnMasseValueDialog::symbolExpression() const
+{
+  // check that all symbols share the same size expression
+  QgsDataDefined dd = expression( mSymbolList.back() );
+for ( auto it : mSymbolList )
+  {
+    if ( expression( it ) != dd )
+      return  QgsDataDefined();
+  }
+  return dd;
+}
+
+void QgsEnMasseValueDialog::setSymbolExpression( const QString & definition )
+{
+  if ( // shall we remove datadefined expressions for layers ?
+    ( symbolExpression().isActive() && !definition.length() )
+    // shall we set the "en masse" expression for properties ?
+    || definition.length() )
+  {
+  for ( auto it : mSymbolList )
+      setExpression( it, definition );
+  }
+}
+
+void QgsEnMasseValueDialog::setActiveSymbolExpression( bool active )
+{
+  setSymbolExpression( active ? mDDBtn->currentDefinition() : "" );
+  mSpinBox->setEnabled( !active );
+}
+
