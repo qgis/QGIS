@@ -48,6 +48,13 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
 
     void openStyleManager();
 
+    void setActiveMarkerSizeExpression( bool active ); 
+    void setMarkerSizeExpression(  const QString & definition ); 
+    void setActiveMarkerRotationExpression( bool active ); 
+    void setMarkerRotationExpression(  const QString & definition ); 
+    void setActiveLineWidthExpression( bool active ); 
+    void setLineWidthExpression(  const QString & definition ); 
+
   signals:
     void changed();
 
