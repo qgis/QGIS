@@ -84,52 +84,6 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
 
 ////////////
 
-#include <QObject>
-
-class QMenu;
-class QgsField;
-class QgsFields;
-
-
-/**
-Utility class for providing GUI for data-defined rendering.
-*/
-class QgsRendererV2DataDefinedMenus : public QObject
-{
-    Q_OBJECT
-
-  public:
-
-    QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod );
-    ~QgsRendererV2DataDefinedMenus();
-
-    void populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup );
-#if 0
-    void updateMenu( QActionGroup* actionGroup, QString fieldName );
-#endif
-  public slots:
-
-    void rotationFieldSelected( QAction *a );
-    void sizeScaleFieldSelected( QAction *a );
-    void scaleMethodSelected( QAction *a );
-
-  signals:
-
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
-
-  protected:
-    QMenu* mRotationMenu;
-    QMenu* mSizeScaleMenu;
-    QActionGroup *mSizeMethodActionGroup;
-    QActionGroup *mRotationAttributeActionGroup;
-    QActionGroup *mSizeAttributeActionGroup;
-    QgsVectorLayer* mLayer;
-};
-
-////////////
-
 #include "ui_widget_en_masse_value.h"
 #include "qgssizescalewidget.h"
 

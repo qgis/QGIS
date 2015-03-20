@@ -284,7 +284,6 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     , mRanges( ranges )
     , mMode( Custom )
     , mInvertedColorRamp( false )
-    , mScaleMethod( DEFAULT_SCALE_METHOD )
     , mAttrNum( -1 )
     , mCounting( false )
 
@@ -335,7 +334,6 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
-    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -516,7 +514,6 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
   return r;
 }
@@ -1047,8 +1044,12 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
   if ( !sizeScaleElem.isNull() )
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-  r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+  {
+    if ( QgsSymbolV2::ScaleArea ==  QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) )
+      r->setSizeScaleField( "sqrt(" + sizeScaleElem.attribute( "field" ) + ")" );
+    else
+      r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
+  }
 
   QDomElement labelFormatElem = element.firstChildElement( "labelformat" );
   if ( ! labelFormatElem.isNull() )
@@ -1141,7 +1142,6 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
     sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
-  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   QDomElement labelFormatElem = doc.createElement( "labelformat" );
@@ -1262,16 +1262,6 @@ void QgsGraduatedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression 
 QString QgsGraduatedSymbolRendererV2::sizeScaleField() const
 {
   return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
-}
-
-void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
-{
-  mScaleMethod = scaleMethod;
-  for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
-  {
-    if ( it->symbol() )
-      setScaleMethodToSymbol( it->symbol(), scaleMethod );
-  }
 }
 
 bool QgsGraduatedSymbolRendererV2::legendSymbolItemsCheckable() const

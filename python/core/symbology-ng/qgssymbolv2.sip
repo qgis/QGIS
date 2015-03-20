@@ -220,9 +220,6 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
     void setSize( double size );
     double size();
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    ScaleMethod scaleMethod();
-
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const /Factory/;

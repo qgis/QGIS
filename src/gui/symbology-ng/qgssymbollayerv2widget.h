@@ -40,12 +40,6 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
 
     void registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description );
 
-    /** Get label for data defined entry.
-     * Implemented only for 'size' of marker symbols
-     * @note added in 2.1
-     */
-    virtual QString dataDefinedPropertyLabel( const QString &entryName );
-
   signals:
     void changed();
 

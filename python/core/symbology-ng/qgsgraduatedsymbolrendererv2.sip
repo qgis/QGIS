@@ -218,9 +218,6 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     void setSizeScaleField( QString fieldOrExpression );
     QString sizeScaleField() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    QgsSymbolV2::ScaleMethod scaleMethod() const;
-
     //! items of symbology items in legend should be checkable
     //! @note added in 2.5
     virtual bool legendSymbolItemsCheckable() const;

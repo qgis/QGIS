@@ -66,29 +66,6 @@ void QgsSymbolLayerV2Widget::updateDataDefinedProperty()
   emit changed();
 }
 
-QString QgsSymbolLayerV2Widget::dataDefinedPropertyLabel( const QString &entryName )
-{
-  QString label = entryName;
-  if ( entryName == "size" )
-  {
-    label = tr( "Size" );
-    QgsMarkerSymbolLayerV2 * layer = dynamic_cast<QgsMarkerSymbolLayerV2 *>( symbolLayer() );
-    if ( layer )
-    {
-      switch ( layer->scaleMethod() )
-      {
-        case QgsSymbolV2::ScaleArea:
-          label += " (" + tr( "area" ) + ")";
-          break;
-        case QgsSymbolV2::ScaleDiameter:
-          label += " (" + tr( "diameter" ) + ")";
-          break;
-      }
-    }
-  }
-  return label;
-}
-
 QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
@@ -1542,47 +1519,47 @@ class QgsSvgListModel : public QAbstractListModel
     {
       Q_UNUSED( parent );
       return mSvgFiles.count();
-    }
+  }
 
     QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override
     {
       QString entry = mSvgFiles.at( index.row() );
 
       if ( role == Qt::DecorationRole ) // icon
+  {
+    QPixmap pixmap;
+    if ( !QPixmapCache::find( entry, pixmap ) )
       {
-        QPixmap pixmap;
-        if ( !QPixmapCache::find( entry, pixmap ) )
-        {
-          // render SVG file
-          QColor fill, outline;
-          double outlineWidth;
-          bool fillParam, outlineParam, outlineWidthParam;
-          QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
+        // render SVG file
+        QColor fill, outline;
+        double outlineWidth;
+        bool fillParam, outlineParam, outlineWidthParam;
+        QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
 
-          bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
-          pixmap = QPixmap::fromImage( img );
-          QPixmapCache::insert( entry, pixmap );
-        }
-
-        return pixmap;
-      }
-      else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
-      {
-        return entry;
+        bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
+        const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30.0, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0, fitsInCache );
+        pixmap = QPixmap::fromImage( img );
+        QPixmapCache::insert( entry, pixmap );
       }
 
-      return QVariant();
+      return pixmap;
     }
+    else if ( role == Qt::UserRole || role == Qt::ToolTipRole )
+  {
+    return entry;
+  }
 
-  protected:
-    QStringList mSvgFiles;
+  return QVariant();
+}
+
+protected:
+  QStringList mSvgFiles;
 };
 
 class QgsSvgGroupsModel : public QStandardItemModel
 {
-  public:
-    QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
+public:
+  QgsSvgGroupsModel( QObject* parent ) : QStandardItemModel( parent )
     {
       QStringList svgPaths = QgsApplication::svgPaths();
       QStandardItem *parentItem = invisibleRootItem();

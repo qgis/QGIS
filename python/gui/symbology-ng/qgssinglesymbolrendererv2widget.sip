@@ -14,9 +14,5 @@ class QgsSingleSymbolRendererV2Widget : QgsRendererV2Widget
   public slots:
     void changeSingleSymbol();
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
-
     void showSymbolLevels();
 };

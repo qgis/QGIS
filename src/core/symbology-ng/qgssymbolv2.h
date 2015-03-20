@@ -274,9 +274,6 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
      */
     QString sizeExpression() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    ScaleMethod scaleMethod();
-
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const override;
