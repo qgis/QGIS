@@ -227,7 +227,7 @@ def recordDifference( record1, record2 ):
                 return "Field {0} differs: {1:.50} versus {2:.50}".format(k,repr(r1k),repr(r2k))
     for k in record2.keys():
         if k not in record1:
-            return "Output contains extra field {0} is missing".format(k)
+            return "Output contains extra field {0}".format(k)
     return ''
 
 def runTest( file, requests, **params ):
@@ -650,9 +650,9 @@ class TestQgsDelimitedTextProvider(TestCase):
         requests=None
         runTest(filename,requests,**params)
 
-    def test_038_long_type(self):
+    def test_038_type_inference(self):
         # Skip lines
-        filename='testlongs.csv'
+        filename='testtypes.csv'
         params={'yField': 'lat', 'xField': 'lon', 'type': 'csv'}
         requests=None
         runTest(filename,requests,**params)
