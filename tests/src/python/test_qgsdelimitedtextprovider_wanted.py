@@ -2035,36 +2035,46 @@ def test_033_reset_subset_string():
     wanted['log']=[]
     return wanted
 
-
 def test_034_csvt_file():
     wanted={}
     wanted['uri']=u'file://testcsvt.csv?geomType=none&type=csv'
-    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'text', 'text', 'text']
+    wanted['fieldTypes']=['integer', 'text', 'integer', 'double', 'text', 'text', 'text', 'text', 'text', 'text', 'longlong', 'longlong']
     wanted['data']={
         2L: {
             'id': u'1',
             'description': u'Test csvt 1',
-            'f1': u'1',
-            'f2': u'1.2',
-            'f3': u'01',
-            'f4': u'text',
-            'f5': u'times',
+            'fint': u'1',
+            'freal': u'1.2',
+            'fstr': u'1',
+            'fstr_1': u'text',
+            'fdatetime': u'2015-03-02T12:30:00',
+            'fdate': u'2014-12-30',
+            'ftime': u'23:55',
+            'flong': u'-456',
+            'flonglong': u'-678',
+            'field_12': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-        },
+            },
         3L: {
             'id': u'2',
             'description': u'Test csvt 2',
-            'f1': u'3',
-            'f2': u'1.5',
-            'f3': u'99',
-            'f4': u'23.5',
-            'f5': u'80',
+            'fint': u'3',
+            'freal': u'1.5',
+            'fstr': u'99',
+            'fstr_1': u'23.5',
+            'fdatetime': u'80',
+            'fdate': u'2015-03-28',
+            'ftime': u'2014-12-30',
+            'flong': u'01:55',
+            'flonglong': u'9189304972279762602',
+            'field_12': u'-3123724580211819352',
             '#fid': 3L,
             '#geometry': 'None',
-        },
-    }
-    wanted['log']=[]
+            },
+        }
+    wanted['log']=[
+        ]
     return wanted
 
 
@@ -2164,4 +2174,98 @@ def test_037_csvt_file_invalid_file():
         },
     }
     wanted['log']=[]
+    return wanted
+
+def test_038_type_inference():
+    wanted={}
+    wanted['uri']=u'file://testtypes.csv?yField=lat&xField=lon&type=csv'
+    wanted['fieldTypes']=['text', 'double', 'double', 'text', 'text', 'integer', 'longlong', 'double', 'text']
+    wanted['data']={
+        2L: {
+            'id': u'line1',
+            'description': u'1.0',
+            'lon': u'1.0',
+            'lat': u'1.0',
+            'empty': u'NULL',
+            'text': u'NULL',
+            'int': u'0',
+            'longlong': u'0',
+            'real': u'NULL',
+            'text2': u'1',
+            '#fid': 2L,
+            '#geometry': 'POINT(1 1)',
+            },
+        3L: {
+            'id': u'line2',
+            'description': u'1.0',
+            'lon': u'1.0',
+            'lat': u'5.0',
+            'empty': u'NULL',
+            'text': u'1',
+            'int': u'NULL',
+            'longlong': u'9189304972279762602',
+            'real': u'1.3',
+            'text2': u'-4',
+            '#fid': 3L,
+            '#geometry': 'POINT(1 5)',
+            },
+        4L: {
+            'id': u'line3',
+            'description': u'5.0',
+            'lon': u'5.0',
+            'lat': u'5.0',
+            'empty': u'NULL',
+            'text': u'1xx',
+            'int': u'2',
+            'longlong': u'345',
+            'real': u'2.0',
+            'text2': u'1x',
+            '#fid': 4L,
+            '#geometry': 'POINT(5 5)',
+            },
+        5L: {
+            'id': u'line4',
+            'description': u'5.0',
+            'lon': u'5.0',
+            'lat': u'1.0',
+            'empty': u'NULL',
+            'text': u'A string',
+            'int': u'-3456',
+            'longlong': u'-3123724580211819352',
+            'real': u'-123.56',
+            'text2': u'NULL',
+            '#fid': 5L,
+            '#geometry': 'POINT(5 1)',
+            },
+        6L: {
+            'id': u'line5',
+            'description': u'3.0',
+            'lon': u'3.0',
+            'lat': u'1.0',
+            'empty': u'NULL',
+            'text': u'NULL',
+            'int': u'NULL',
+            'longlong': u'NULL',
+            'real': u'0.00023',
+            'text2': u'23',
+            '#fid': 6L,
+            '#geometry': 'POINT(3 1)',
+            },
+        7L: {
+            'id': u'line6',
+            'description': u'1.0',
+            'lon': u'1.0',
+            'lat': u'3.0',
+            'empty': u'NULL',
+            'text': u'1.5',
+            'int': u'9',
+            'longlong': u'42',
+            'real': u'99.0',
+            'text2': u'0',
+            '#fid': 7L,
+            '#geometry': 'POINT(1 3)',
+            },
+        }
+    wanted['log']=[
+        ]
     return wanted
