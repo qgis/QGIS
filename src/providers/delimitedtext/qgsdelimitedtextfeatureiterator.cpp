@@ -36,11 +36,10 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // Does the layer have geometry - will revise later to determine if we actually need to
   // load it.
   bool hasGeometry = mSource->mGeomRep != QgsDelimitedTextProvider::GeomNone;
-
   // Does the layer have an explicit or implicit subset (implicit subset is if we have geometry which can
   // be invalid)
 
-  mTestSubset = mSource->mSubsetExpression;
+  mTestSubset = !mSource->mSubsetString.isEmpty();
   mTestGeometry = false;
 
   mMode = FileScan;
@@ -116,11 +115,12 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // We need it if it is asked for explicitly in the request,
   // if we are testing geometry (ie spatial filter), or
   // if testing the subset expression.
+  QgsExpression * expr = new QgsExpression(mSource->mSubsetString);
   if ( hasGeometry
        && (
          !( mRequest.flags() & QgsFeatureRequest::NoGeometry )
          || mTestGeometry
-         || ( mTestSubset && mSource->mSubsetExpression->needsGeometry() )
+         || ( mTestSubset && expr->needsGeometry() )
        )
      )
   {
@@ -335,8 +335,9 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature& feature )
 
     if ( mTestSubset )
     {
-      QVariant isOk = mSource->mSubsetExpression->evaluate( &feature );
-      if ( mSource->mSubsetExpression->hasEvalError() ) continue;
+      QgsExpression * expr = new QgsExpression(mSource->mSubsetString);
+      QVariant isOk = expr->evaluate( &feature );
+      if ( expr->hasEvalError() ) continue;
       if ( ! isOk.toBool() ) continue;
     }
 
@@ -447,7 +448,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 
 QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
     : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression )
+    , mSubsetString ( p->mSubsetExpression ? p->mSubsetExpression->expression() : QString() )
     , mExtent( p->mExtent )
     , mUseSpatialIndex( p->mUseSpatialIndex )
     , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )
