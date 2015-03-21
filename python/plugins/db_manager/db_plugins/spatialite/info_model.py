@@ -25,22 +25,23 @@ from PyQt4.QtGui import QApplication
 from ..info_model import DatabaseInfo
 from ..html_elems import HtmlTable
 
+
 class SLDatabaseInfo(DatabaseInfo):
-        def __init__(self, db):
-                self.db = db
+    def __init__(self, db):
+        self.db = db
 
-        def connectionDetails(self):
-                tbl = [
-                    (QApplication.translate("DBManagerPlugin","Filename:"), self.db.connector.dbname)
-                ]
-                return HtmlTable( tbl )
+    def connectionDetails(self):
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "Filename:"), self.db.connector.dbname)
+        ]
+        return HtmlTable(tbl)
 
-        def generalInfo(self):
-                info = self.db.connector.getInfo()
-                tbl = [
-                    (QApplication.translate("DBManagerPlugin","SQLite version:"), info[0])
-                ]
-                return HtmlTable( tbl )
+    def generalInfo(self):
+        info = self.db.connector.getInfo()
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "SQLite version:"), info[0])
+        ]
+        return HtmlTable(tbl)
 
-        def privilegesDetails(self):
-                return None
+    def privilegesDetails(self):
+        return None
