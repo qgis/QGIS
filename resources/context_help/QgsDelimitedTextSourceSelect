@@ -35,7 +35,9 @@ be double, otherwise the type will be text.
 QGIS can also read the types from an OGR CSV driver compatible &quot;csvt&quot; file.  
 This is a file alongside the data file, but with a &quot;t&quot; appended to the file name. 
 The file should just contain one line which lists the type of each field. 
-Valid types are &quot;integer&quot;, &quot;real&quot;, &quot;string&quot;, &quot;date&quot;, &quot;time&quot;, and &quot;datetime&quot;. The date, time, and datetime types are treated as strings in QGIS.
+Valid types are &quot;integer&quot;, &quot;long&quot;, &quot;longlong&quot;, &quot;real&quot;, 
+&quot;string&quot;, &quot;date&quot;, &quot;time&quot;, and &quot;datetime&quot;. 
+The date, time, and datetime types are treated as strings by the delimited text provider.
 Each type may be followed by a width and precision, for example &quot;real(10.4)&quot;.
 The list of types are separated by commas, regardless of the delimiter used in the data file.  An
 example of a valid format file would be:
@@ -215,9 +217,11 @@ feature id to each record which is the line number in the source file on which
 the record starts.  
 </p>
 <p>
-Each attribute also has a data type, one of string (text), integer, or real number.
+Each attribute also has a data type, one of string (text), integer, longlong,
+or real number.
 The data type is inferred from the content of the fields - if every non blank value
-is a valid integer then the type is integer, otherwise if it is a valid real
+is a valid integer then the type is integer, otherwise if it is a valid long long
+nubmer then the type is longlong, otherwise if it is a valid real
 number then the type is real, otherwise the type is string.  Note that this is
 based on the content of the fields - quoting fields does not change the way they
 are interpreted.

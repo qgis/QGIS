@@ -562,29 +562,46 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     {
 
       QString &value = parts[i];
-      if ( value.isEmpty() ) {
+      // Ignore empty fields - spreadsheet generated CSV files often 
+      // have random empty fields at the end of a row
+      if ( value.isEmpty() )
+        continue;
+
+      // Expand the columns to include this non empty field if necessary
+
+      while ( couldBeInt.size() <= i )
+      {
         isEmpty.append( true );
         couldBeInt.append( false );
         couldBeLongLong.append( false );
         couldBeDouble.append( false );
-        continue;
       }
-      // try to convert attribute values to integer, long and double
-      isEmpty.append( false );
-      // try all possible formats
-      couldBeInt.append( true );
-      couldBeLongLong.append( true );
-      couldBeDouble.append( true );
+
+      // If this column has been empty so far then initiallize it
+      // for possible types
+
+      if ( isEmpty[i] )
+      {
+        isEmpty[i] = false;
+        couldBeInt[i] = true;
+        couldBeLongLong[i] = true;
+        couldBeDouble[i] = true;
+      }
+
+      // Now test for still valid possible types for the field
+      // Types are possible until first record which cannot be parsed
+
       if ( couldBeInt[i] )
       {
         value.toInt( &couldBeInt[i] );
       }
 
-      if ( couldBeLongLong[i] )
+      if ( couldBeLongLong[i] && ! couldBeInt[i] )
       {
         value.toLongLong( &couldBeLongLong[i] );
       }
-      if ( couldBeDouble[i] )
+
+      if ( couldBeDouble[i] && ! couldBeLongLong[i] )
       {
         if ( ! mDecimalPoint.isEmpty() )
         {
@@ -627,7 +644,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         fieldType = QVariant::LongLong; //QVariant doesn't support long
         typeName = "longlong";
       }
-      else if ( csvtTypes[i] == "real" )
+      else if ( csvtTypes[i] == "real" || csvtTypes[i] == "double" )
       {
         fieldType = QVariant::Double;
         typeName = "double";
