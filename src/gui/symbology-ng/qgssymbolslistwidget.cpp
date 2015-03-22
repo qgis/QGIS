@@ -42,7 +42,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* sty
 
   setupUi( this );
 
-  mSymbolUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
+  mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
@@ -236,8 +236,8 @@ void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()
 {
   if ( mSymbol )
   {
-    QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mSymbolUnitWidget->getUnit() );
-    mSymbol->setOutputUnit( unit );
+
+    mSymbol->setOutputUnit( mSymbolUnitWidget->unit() );
     mSymbol->setMapUnitScale( mSymbolUnitWidget->getMapUnitScale() );
 
     emit changed();

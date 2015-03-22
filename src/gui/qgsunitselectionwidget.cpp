@@ -93,11 +93,55 @@ void QgsUnitSelectionWidget::setUnits( const QStringList &units, int mapUnitIdx 
   blockSignals( false );
 }
 
+void QgsUnitSelectionWidget::setUnits( const QgsSymbolV2::OutputUnitList &units )
+{
+  blockSignals( true );
+  mUnitCombo->clear();
+
+  //instead of iterating over the units list, we specifically check for presence of unit types
+  //to ensure that the widget always keeps the same order for units, regardless of the
+  //order specified in the units list
+  mMapUnitIdx = -1;
+  if ( units.contains( QgsSymbolV2::MM ) )
+  {
+    mUnitCombo->addItem( tr( "Millimeter" ), QgsSymbolV2::MM );
+  }
+  if ( units.contains( QgsSymbolV2::Pixel ) )
+  {
+    mUnitCombo->addItem( tr( "Pixels" ), QgsSymbolV2::Pixel );
+  }
+  if ( units.contains( QgsSymbolV2::MapUnit ) )
+  {
+    mUnitCombo->addItem( tr( "Map unit" ), QgsSymbolV2::MapUnit );
+  }
+  blockSignals( false );
+}
+
+QgsSymbolV2::OutputUnit QgsUnitSelectionWidget::unit() const
+{
+  if ( mUnitCombo->count() == 0 )
+      return QgsSymbolV2::Mixed;
+
+  QVariant currentData = mUnitCombo->itemData( mUnitCombo->currentIndex() );
+  if ( currentData.isValid() )
+  {
+    return ( QgsSymbolV2::OutputUnit ) currentData.toInt();
+  }
+  //unknown
+  return QgsSymbolV2::Mixed;
+}
+
 void QgsUnitSelectionWidget::setUnit( int unitIndex )
 {
   blockSignals( true );
   mUnitCombo->setCurrentIndex( unitIndex );
   blockSignals( false );
+}
+
+void QgsUnitSelectionWidget::setUnit( QgsSymbolV2::OutputUnit unit )
+{
+  int idx = mUnitCombo->findData( QVariant(( int ) unit ) );
+  mUnitCombo->setCurrentIndex( idx == -1 ? 0 : idx );
 }
 
 void QgsUnitSelectionWidget::showDialog()
@@ -119,8 +163,13 @@ void QgsUnitSelectionWidget::showDialog()
 
 void QgsUnitSelectionWidget::toggleUnitRangeButton()
 {
-  mMapScaleButton->setVisible( mMapUnitIdx != -1 && mUnitCombo->currentIndex() == mMapUnitIdx );
+  if ( unit() != QgsSymbolV2::Mixed )
+  {
+    mMapScaleButton->setVisible( unit() == QgsSymbolV2::MapUnit );
+  }
+  else
+  {
+    mMapScaleButton->setVisible( mMapUnitIdx != -1 && mUnitCombo->currentIndex() == mMapUnitIdx );
+  }
 }
-
-
 

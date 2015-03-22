@@ -52,6 +52,8 @@ class CORE_EXPORT QgsSymbolV2
       Pixel
     };
 
+    typedef QList<OutputUnit> OutputUnitList;
+
     enum SymbolType
     {
       Marker,
