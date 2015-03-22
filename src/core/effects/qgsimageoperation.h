@@ -49,7 +49,8 @@ class CORE_EXPORT QgsImageOperation
     {
       GrayscaleLightness, /*< keep the lightness of the color, drops the saturation */
       GrayscaleLuminosity, /*< grayscale by perceptual luminosity (weighted sum of color RGB components) */
-      GrayscaleAverage /*< grayscale by taking average of color RGB components */
+      GrayscaleAverage, /*< grayscale by taking average of color RGB components */
+      GrayscaleOff /*< no change */
     };
 
     /** Flip operation types

@@ -24,6 +24,7 @@ class QgsDrawSourceEffect;
 class QgsBlurEffect;
 class QgsGlowEffect;
 class QgsTransformEffect;
+class QgsColorEffect;
 
 
 /** \ingroup gui
@@ -219,6 +220,43 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     void on_mSpinScaleX_valueChanged( double value );
     void on_mSpinScaleY_valueChanged( double value );
     void on_mRotationSpinBox_valueChanged( double value );
+
+};
+
+
+#include "ui_widget_coloreffects.h"
+
+class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetColorEffect
+{
+    Q_OBJECT
+
+  public:
+    QgsColorEffectWidget( QWidget* parent = NULL );
+
+    static QgsPaintEffectWidget* create() { return new QgsColorEffectWidget(); }
+
+    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+
+  private:
+    QgsColorEffect* mEffect;
+
+    void initGui();
+    void blockSignals( const bool block );
+    void enableColorizeControls( const bool enable );
+
+  private slots:
+
+    void on_mTranspSpnBx_valueChanged( double value );
+    void on_mBlendCmbBx_currentIndexChanged( int index );
+    void on_mDrawModeComboBox_currentIndexChanged( int index );
+    void on_mTranspSlider_valueChanged( int value );
+    void on_mBrightnessSpinBox_valueChanged( int value );
+    void on_mContrastSpinBox_valueChanged( int value );
+    void on_mSaturationSpinBox_valueChanged( int value );
+    void on_mColorizeStrengthSpinBox_valueChanged( int value );
+    void on_mColorizeCheck_stateChanged( int state );
+    void on_mColorizeColorButton_colorChanged( const QColor& color );
+    void on_mGrayscaleCombo_currentIndexChanged( int index );
 
 };
 

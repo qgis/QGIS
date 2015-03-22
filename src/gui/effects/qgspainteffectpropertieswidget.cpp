@@ -59,6 +59,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "outerGlow", QgsGlowWidget::create );
   _initWidgetFunction( "innerGlow", QgsGlowWidget::create );
   _initWidgetFunction( "transform", QgsTransformWidget::create );
+  _initWidgetFunction( "color", QgsColorEffectWidget::create );
 
   initialized = true;
 }

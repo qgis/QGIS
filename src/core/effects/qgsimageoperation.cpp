@@ -181,6 +181,11 @@ void QgsImageOperation::runBlockOperationInThreads( QImage &image, BlockOperatio
 
 void QgsImageOperation::convertToGrayscale( QImage &image, const GrayscaleMode mode )
 {
+  if ( mode == GrayscaleOff )
+  {
+    return;
+  }
+
   GrayscalePixelOperation operation( mode );
   runPixelOperation( image, operation );
 }
@@ -191,6 +196,8 @@ void QgsImageOperation::GrayscalePixelOperation::operator()( QRgb &rgb, const in
   Q_UNUSED( y );
   switch ( mMode )
   {
+    case GrayscaleOff:
+      return;
     case GrayscaleLuminosity:
       grayscaleLuminosityOp( rgb );
       return;

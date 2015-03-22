@@ -59,7 +59,7 @@ void QgsTransformEffect::draw( QgsRenderContext &context )
   painter->save();
 
   QTransform t = createTransform( context );
-  painter->setTransform( t );
+  painter->setTransform( t, true );
   drawSource( *painter );
 
   painter->restore();

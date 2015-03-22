@@ -21,6 +21,7 @@
 #include "qgsblureffect.h"
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
+#include "qgscoloreffect.h"
 #include "qgsstylev2.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
@@ -878,5 +879,192 @@ void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
     return;
 
   mEffect->setRotation( value );
+  emit changed();
+}
+
+
+//
+// color effect
+//
+
+QgsColorEffectWidget::QgsColorEffectWidget( QWidget *parent )
+    : QgsPaintEffectWidget( parent )
+    , mEffect( NULL )
+{
+  setupUi( this );
+
+  mBrightnessSpinBox->setClearValue( 0 );
+  mContrastSpinBox->setClearValue( 0 );
+  mSaturationSpinBox->setClearValue( 0 );
+  mColorizeColorButton->setAllowAlpha( false );
+
+  mGrayscaleCombo->addItem( tr( "Off" ), QgsImageOperation::GrayscaleOff );
+  mGrayscaleCombo->addItem( tr( "By lightness" ), QgsImageOperation::GrayscaleLightness );
+  mGrayscaleCombo->addItem( tr( "By luminosity" ), QgsImageOperation::GrayscaleLuminosity );
+  mGrayscaleCombo->addItem( tr( "By average" ), QgsImageOperation::GrayscaleAverage );
+
+  initGui();
+}
+
+void QgsColorEffectWidget::setPaintEffect( QgsPaintEffect *effect )
+{
+  if ( !effect || effect->type() != "color" )
+    return;
+
+  mEffect = static_cast<QgsColorEffect*>( effect );
+  initGui();
+}
+
+void QgsColorEffectWidget::initGui()
+{
+  if ( !mEffect )
+  {
+    return;
+  }
+
+  blockSignals( true );
+
+  mSliderBrightness->setValue( mEffect->brightness() );
+  mSliderContrast->setValue( mEffect->contrast() );
+  mSliderSaturation->setValue(( mEffect->saturation() - 1.0 ) * 100.0 );
+  mColorizeCheck->setChecked( mEffect->colorizeOn() );
+  mSliderColorizeStrength->setValue( mEffect->colorizeStrength() );
+  mColorizeColorButton->setColor( mEffect->colorizeColor() );
+  int grayscaleIdx = mGrayscaleCombo->findData( QVariant(( int ) mEffect->grayscaleMode() ) );
+  mGrayscaleCombo->setCurrentIndex( grayscaleIdx == -1 ? 0 : grayscaleIdx );
+  mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
+  mTranspSlider->setValue( mEffect->transparency() * 1000.0 );
+  mBlendCmbBx->setBlendMode( mEffect->blendMode() );
+  mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
+  enableColorizeControls( mEffect->colorizeOn() );
+
+  blockSignals( false );
+}
+
+void QgsColorEffectWidget::blockSignals( const bool block )
+{
+  mBrightnessSpinBox->blockSignals( block );
+  mContrastSpinBox->blockSignals( block );
+  mSaturationSpinBox->blockSignals( block );
+  mColorizeStrengthSpinBox->blockSignals( block );
+  mColorizeCheck->blockSignals( block );
+  mColorizeColorButton->blockSignals( block );
+  mGrayscaleCombo->blockSignals( block );
+  mTranspSpnBx->blockSignals( block );
+  mTranspSlider->blockSignals( block );
+  mBlendCmbBx->blockSignals( block );
+  mDrawModeComboBox->blockSignals( block );
+}
+
+void QgsColorEffectWidget::enableColorizeControls( const bool enable )
+{
+  mSliderColorizeStrength->setEnabled( enable );
+  mColorizeStrengthSpinBox->setEnabled( enable );
+  mColorizeColorButton->setEnabled( enable );
+}
+
+void QgsColorEffectWidget::on_mTranspSpnBx_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mTranspSlider->blockSignals( true );
+  mTranspSlider->setValue( value * 10.0 );
+  mTranspSlider->blockSignals( false );
+
+  mEffect->setTransparency( value / 100.0 );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mBlendCmbBx_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  if ( !mEffect )
+    return;
+
+  mEffect->setBlendMode( mBlendCmbBx->blendMode() );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mDrawModeComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  if ( !mEffect )
+    return;
+
+  mEffect->setDrawMode( mDrawModeComboBox->drawMode() );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mTranspSlider_valueChanged( int value )
+{
+  mTranspSpnBx->setValue( value / 10.0 );
+}
+
+void QgsColorEffectWidget::on_mBrightnessSpinBox_valueChanged( int value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setBrightness( value );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mContrastSpinBox_valueChanged( int value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setContrast( value );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mSaturationSpinBox_valueChanged( int value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setSaturation( value / 100.0 + 1 );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mColorizeStrengthSpinBox_valueChanged( int value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setColorizeStrength( value );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mColorizeCheck_stateChanged( int state )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setColorizeOn( state == Qt::Checked );
+  enableColorizeControls( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mColorizeColorButton_colorChanged( const QColor &color )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setColorizeColor( color );
+  emit changed();
+}
+
+void QgsColorEffectWidget::on_mGrayscaleCombo_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  if ( !mEffect )
+    return;
+
+  mEffect->setGrayscaleMode(( QgsImageOperation::GrayscaleMode ) mGrayscaleCombo->itemData( mGrayscaleCombo->currentIndex() ).toInt() );
   emit changed();
 }

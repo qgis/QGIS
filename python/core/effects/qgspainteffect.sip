@@ -52,6 +52,14 @@ class QgsPaintEffect
   {
      sipClass = sipClass_QgsInnerGlowEffect;
   }
+  else if (sipCpp->type() == "transform" && dynamic_cast<QgsTransformEffect*>(sipCpp) != NULL)
+  {
+     sipClass = sipClass_QgsTransformEffect;
+  }
+  else if (sipCpp->type() == "color" && dynamic_cast<QgsColorEffect*>(sipCpp) != NULL)
+  {
+     sipClass = sipClass_QgsColorEffect;
+  }
   else
   {
     sipClass = 0;

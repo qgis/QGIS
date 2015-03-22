@@ -55,6 +55,7 @@ SET(QGIS_CORE_SRCS
   effects/qgsgloweffect.cpp
   effects/qgspainteffectregistry.cpp
   effects/qgstransformeffect.cpp
+  effects/qgscoloreffect.cpp
 
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
@@ -577,6 +578,7 @@ SET(QGIS_CORE_HDRS
   effects/qgsgloweffect.h
   effects/qgspainteffectregistry.h
   effects/qgstransformeffect.h
+  effects/qgscoloreffect.h
 
   composer/qgsaddremovemultiframecommand.h
   composer/qgscomposerarrow.h

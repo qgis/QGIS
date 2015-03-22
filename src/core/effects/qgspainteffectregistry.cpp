@@ -19,6 +19,7 @@
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
+#include "qgscoloreffect.h"
 
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString& name, const QString& visibleName )
     : mName( name )
@@ -44,6 +45,8 @@ QgsPaintEffectRegistry::QgsPaintEffectRegistry()
                  QgsDrawSourceEffect::create, NULL ) );
   addEffectType( new QgsPaintEffectMetadata( "transform", QObject::tr( "Transform" ),
                  QgsTransformEffect::create, NULL ) );
+  addEffectType( new QgsPaintEffectMetadata( "color", QObject::tr( "Colorise" ),
+                 QgsColorEffect::create, NULL ) );
 }
 
 QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
