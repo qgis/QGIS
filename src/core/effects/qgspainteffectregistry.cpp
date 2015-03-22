@@ -18,6 +18,7 @@
 #include "qgsdropshadoweffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
+#include "qgstransformeffect.h"
 
 QgsPaintEffectAbstractMetadata::QgsPaintEffectAbstractMetadata( const QString& name, const QString& visibleName )
     : mName( name )
@@ -41,6 +42,8 @@ QgsPaintEffectRegistry::QgsPaintEffectRegistry()
                  QgsInnerGlowEffect::create, NULL ) );
   addEffectType( new QgsPaintEffectMetadata( "drawSource", QObject::tr( "Source" ),
                  QgsDrawSourceEffect::create, NULL ) );
+  addEffectType( new QgsPaintEffectMetadata( "transform", QObject::tr( "Transform" ),
+                 QgsTransformEffect::create, NULL ) );
 }
 
 QgsPaintEffectRegistry::~QgsPaintEffectRegistry()

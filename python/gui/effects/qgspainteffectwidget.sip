@@ -85,8 +85,25 @@ class QgsGlowWidget : QgsPaintEffectWidget
   public:
     QgsGlowWidget( QWidget* parent /TransferThis/ = NULL );
 
-    static QgsPaintEffectWidget* create();
+    static QgsPaintEffectWidget* create() /Factory/;
 
     virtual void setPaintEffect( QgsPaintEffect* effect );
 };
+
+
+class QgsTransformWidget : QgsPaintEffectWidget
+{
+%TypeHeaderCode
+#include <qgspainteffectwidget.h>
+%End
+
+  public:
+    QgsTransformWidget( QWidget* parent /TransferThis/ = NULL );
+
+    static QgsPaintEffectWidget* create() /Factory/;
+
+    virtual void setPaintEffect( QgsPaintEffect* effect );
+
+};
+
 

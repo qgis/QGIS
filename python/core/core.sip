@@ -179,6 +179,7 @@
 %Include effects/qgsblureffect.sip
 %Include effects/qgsdropshadoweffect.sip
 %Include effects/qgsgloweffect.sip
+%Include effects/qgstransformeffect.sip
 %Include effects/qgspainteffectregistry.sip
 
 %Include gps/qgsgpsconnection.sip

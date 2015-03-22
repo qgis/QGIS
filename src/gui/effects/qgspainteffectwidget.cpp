@@ -20,6 +20,7 @@
 #include "qgsdropshadoweffect.h"
 #include "qgsblureffect.h"
 #include "qgsgloweffect.h"
+#include "qgstransformeffect.h"
 #include "qgsstylev2.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
@@ -680,4 +681,202 @@ void QgsGlowWidget::on_mButtonEditRamp_clicked()
       delete ramp;
     }
   }
+}
+
+//
+// transform
+//
+
+QgsTransformWidget::QgsTransformWidget( QWidget *parent )
+    : QgsPaintEffectWidget( parent )
+    , mEffect( NULL )
+{
+  setupUi( this );
+
+  mTranslateUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 2 );
+  mSpinTranslateX->setClearValue( 0 );
+  mSpinTranslateY->setClearValue( 0 );
+  mSpinShearX->setClearValue( 0 );
+  mSpinShearY->setClearValue( 0 );
+  mSpinScaleX->setClearValue( 100.0 );
+  mSpinScaleY->setClearValue( 100.0 );
+
+  initGui();
+}
+
+
+void QgsTransformWidget::setPaintEffect( QgsPaintEffect *effect )
+{
+  if ( !effect || effect->type() != "transform" )
+    return;
+
+  mEffect = static_cast<QgsTransformEffect*>( effect );
+  initGui();
+}
+
+void QgsTransformWidget::initGui()
+{
+  if ( !mEffect )
+  {
+    return;
+  }
+
+  blockSignals( true );
+
+  mReflectXCheckBox->setChecked( mEffect->reflectX() );
+  mReflectYCheckBox->setChecked( mEffect->reflectY() );
+  mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
+  mSpinTranslateX->setValue( mEffect->translateX() );
+  mSpinTranslateY->setValue( mEffect->translateY() );
+  switch ( mEffect->translateUnit() )
+  {
+    case QgsSymbolV2::MM:
+      mTranslateUnitWidget->setUnit( 1 );
+      break;
+    case QgsSymbolV2::MapUnit:
+      mTranslateUnitWidget->setUnit( 2 );
+      break;
+    case QgsSymbolV2::Pixel:
+    default:
+      mTranslateUnitWidget->setUnit( 0 );
+      break;
+  }
+  mTranslateUnitWidget->setMapUnitScale( mEffect->translateMapUnitScale() );
+  mSpinShearX->setValue( mEffect->shearX() );
+  mSpinShearY->setValue( mEffect->shearY() );
+  mSpinScaleX->setValue( mEffect->scaleX() * 100.0 );
+  mSpinScaleY->setValue( mEffect->scaleY() * 100.0 );
+  mRotationSpinBox->setValue( mEffect->rotation() );
+
+  blockSignals( false );
+}
+
+void QgsTransformWidget::blockSignals( const bool block )
+{
+  mDrawModeComboBox->blockSignals( block );
+  mTranslateUnitWidget->blockSignals( block );
+  mSpinTranslateX->blockSignals( block );
+  mSpinTranslateY->blockSignals( block );
+  mReflectXCheckBox->blockSignals( block );
+  mReflectYCheckBox->blockSignals( block );
+  mSpinShearX->blockSignals( block );
+  mSpinShearY->blockSignals( block );
+  mSpinScaleX->blockSignals( block );
+  mSpinScaleY->blockSignals( block );
+  mRotationSpinBox->blockSignals( block );
+}
+
+
+void QgsTransformWidget::on_mDrawModeComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  if ( !mEffect )
+    return;
+
+  mEffect->setDrawMode( mDrawModeComboBox->drawMode() );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mSpinTranslateX_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setTranslateX( value );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mSpinTranslateY_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setTranslateY( value );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mTranslateUnitWidget_changed()
+{
+  if ( !mEffect )
+  {
+    return;
+  }
+  switch ( mTranslateUnitWidget->getUnit() )
+  {
+    case 0:
+      mEffect->setTranslateUnit( QgsSymbolV2::Pixel );
+      break;
+    case 1:
+      mEffect->setTranslateUnit( QgsSymbolV2::MM );
+      break;
+    case 2:
+      mEffect->setTranslateUnit( QgsSymbolV2::MapUnit );
+      break;
+  }
+  mEffect->setTranslateMapUnitScale( mTranslateUnitWidget->getMapUnitScale() );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mReflectXCheckBox_stateChanged( int state )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setReflectX( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mReflectYCheckBox_stateChanged( int state )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setReflectY( state == Qt::Checked );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mSpinShearX_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setShearX( value );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mSpinShearY_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setShearY( value );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mSpinScaleX_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setScaleX( value / 100.0 );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mSpinScaleY_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setScaleY( value / 100.0 );
+  emit changed();
+}
+
+void QgsTransformWidget::on_mRotationSpinBox_valueChanged( double value )
+{
+  if ( !mEffect )
+    return;
+
+  mEffect->setRotation( value );
+  emit changed();
 }

@@ -23,6 +23,7 @@ class QgsDropShadowEffect;
 class QgsDrawSourceEffect;
 class QgsBlurEffect;
 class QgsGlowEffect;
+class QgsTransformEffect;
 
 
 /** \ingroup gui
@@ -185,6 +186,42 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     void applyColorRamp();
     void on_mButtonEditRamp_clicked();
 };
+
+#include "ui_widget_transform.h"
+
+class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::WidgetTransform
+{
+    Q_OBJECT
+
+  public:
+    QgsTransformWidget( QWidget* parent = NULL );
+
+    static QgsPaintEffectWidget* create() { return new QgsTransformWidget(); }
+
+    virtual void setPaintEffect( QgsPaintEffect* effect ) override;
+
+  private:
+    QgsTransformEffect* mEffect;
+
+    void initGui();
+    void blockSignals( const bool block );
+
+  private slots:
+
+    void on_mDrawModeComboBox_currentIndexChanged( int index );
+    void on_mSpinTranslateX_valueChanged( double value );
+    void on_mSpinTranslateY_valueChanged( double value );
+    void on_mTranslateUnitWidget_changed();
+    void on_mReflectXCheckBox_stateChanged( int state );
+    void on_mReflectYCheckBox_stateChanged( int state );
+    void on_mSpinShearX_valueChanged( double value );
+    void on_mSpinShearY_valueChanged( double value );
+    void on_mSpinScaleX_valueChanged( double value );
+    void on_mSpinScaleY_valueChanged( double value );
+    void on_mRotationSpinBox_valueChanged( double value );
+
+};
+
 
 
 #endif //QGSPAINTEFFECTWIDGET_H
