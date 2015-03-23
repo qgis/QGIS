@@ -541,7 +541,7 @@ void QgsImageOperation::ShadeFromArrayOperation::operator()( QRgb &rgb, const in
   double val = distance / mSpread;
   QColor rampColor = mProperties.ramp->color( val );
 
-  if ( distance > mSpread - 1 )
+  if (( mProperties.shadeExterior && distance > mSpread - 1 ) )
   {
     //fade off final pixel to antialias edge
     double alphaMultiplyFactor = mSpread - distance;

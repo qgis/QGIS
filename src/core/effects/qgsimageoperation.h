@@ -323,11 +323,10 @@ class CORE_EXPORT QgsImageOperation
     class ConvertToArrayPixelOperation
     {
       public:
-        ConvertToArrayPixelOperation( const int width, double * array, const bool exterior = true, const int alphaThreshold = 255 )
+        ConvertToArrayPixelOperation( const int width, double * array, const bool exterior = true )
             : mWidth( width )
             , mArray( array )
             , mExterior( exterior )
-            , mAlphaThreshold( alphaThreshold )
         {
         }
 
@@ -337,7 +336,6 @@ class CORE_EXPORT QgsImageOperation
         int mWidth;
         double * mArray;
         bool mExterior;
-        int mAlphaThreshold;
     };
 
     class ShadeFromArrayOperation
