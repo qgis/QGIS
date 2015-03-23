@@ -49,7 +49,7 @@ const QString QgsSimpleMarkerSymbolLayerV2::EXPR_SIZE( "size" );
 
 //////
 
-QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor color, QColor borderColor, double size, double angle )
     : mOutlineStyle( Qt::SolidLine ), mOutlineWidth( 0 ), mOutlineWidthUnit( QgsSymbolV2::MM )
 {
   mName = name;
@@ -58,7 +58,6 @@ QgsSimpleMarkerSymbolLayerV2::QgsSimpleMarkerSymbolLayerV2( QString name, QColor
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
-  mScaleMethod = scaleMethod;
   mSizeUnit = QgsSymbolV2::MM;
   mOffsetUnit = QgsSymbolV2::MM;
   mAngleExpression = NULL;
@@ -73,7 +72,6 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   QColor borderColor = DEFAULT_SIMPLEMARKER_BORDERCOLOR;
   double size = DEFAULT_SIMPLEMARKER_SIZE;
   double angle = DEFAULT_SIMPLEMARKER_ANGLE;
-  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
 
   if ( props.contains( "name" ) )
     name = props["name"];
@@ -96,10 +94,8 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
     size = props["size"].toDouble();
   if ( props.contains( "angle" ) )
     angle = props["angle"].toDouble();
-  if ( props.contains( "scale_method" ) )
-    scaleMethod = QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] );
 
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle, scaleMethod );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( name, color, borderColor, size, angle );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   if ( props.contains( "offset_unit" ) )
@@ -172,7 +168,12 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   }
   if ( props.contains( "size_expression" ) )
   {
-    m->setDataDefinedProperty( "size", props["size_expression"] );
+    if ( props.contains( "scale_method" )
+         && QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] )
+         && props["size_expression"].length() )
+      m->setDataDefinedProperty( "size", "sqrt(" + props["size_expression"] + ")" );
+    else
+      m->setDataDefinedProperty( "size", props["size_expression"] );
   }
   if ( props.contains( "angle_expression" ) )
   {
@@ -516,18 +517,8 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
 
   double scaledSize = mSize;
-  if ( hasDataDefinedSize )
-  {
-    if ( sizeExpression )
-    {
-      scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
-    }
-
-    if ( mScaleMethod == QgsSymbolV2::ScaleArea )
-    {
-      scaledSize = sqrt( scaledSize );
-    }
-  }
+  if ( hasDataDefinedSize && sizeExpression )
+    scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
 
   //offset
   double offsetX = 0;
@@ -655,7 +646,6 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
-  map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
   map["outline_style"] = QgsSymbolLayerV2Utils::encodePenStyle( mOutlineStyle );
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOutlineWidthUnit );
@@ -671,7 +661,7 @@ QgsStringMap QgsSimpleMarkerSymbolLayerV2::properties() const
 
 QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 {
-  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle, mScaleMethod );
+  QgsSimpleMarkerSymbolLayerV2* m = new QgsSimpleMarkerSymbolLayerV2( mName, mColor, mBorderColor, mSize, mAngle );
   m->setOffset( mOffset );
   m->setSizeUnit( mSizeUnit );
   m->setSizeMapUnitScale( mSizeMapUnitScale );
@@ -843,15 +833,6 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     if ( sizeExpression )
     {
       size = sizeExpression->evaluate( const_cast<QgsFeature*>( context->feature() ) ).toDouble();
-    }
-
-    switch ( mScaleMethod )
-    {
-      case QgsSymbolV2::ScaleArea:
-        size = sqrt( size );
-        break;
-      case QgsSymbolV2::ScaleDiameter:
-        break;
     }
 
     size *= QgsSymbolLayerV2Utils::lineWidthScaleFactor( context->renderContext(), mSizeUnit, mSizeMapUnitScale );
@@ -1089,13 +1070,12 @@ QgsMapUnitScale QgsSimpleMarkerSymbolLayerV2::mapUnitScale() const
 //////////
 
 
-QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size, double angle, QgsSymbolV2::ScaleMethod scaleMethod )
+QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size, double angle )
 {
   mPath = QgsSymbolLayerV2Utils::symbolNameToPath( name );
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
-  mScaleMethod = scaleMethod;
   mOutlineWidth = 1.0;
   mOutlineWidthUnit = QgsSymbolV2::MM;
   mFillColor = QColor( Qt::black );
@@ -1108,7 +1088,6 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   QString name = DEFAULT_SVGMARKER_NAME;
   double size = DEFAULT_SVGMARKER_SIZE;
   double angle = DEFAULT_SVGMARKER_ANGLE;
-  QgsSymbolV2::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD;
 
   if ( props.contains( "name" ) )
     name = props["name"];
@@ -1116,10 +1095,8 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
     size = props["size"].toDouble();
   if ( props.contains( "angle" ) )
     angle = props["angle"].toDouble();
-  if ( props.contains( "scale_method" ) )
-    scaleMethod = QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] );
 
-  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle, scaleMethod );
+  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
 
   //we only check the svg default parameters if necessary, since it could be expensive
   if ( !props.contains( "fill" ) && !props.contains( "color" ) && !props.contains( "outline" ) &&
@@ -1213,7 +1190,12 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   //data defined properties
   if ( props.contains( "size_expression" ) )
   {
-    m->setDataDefinedProperty( "size", props["size_expression"] );
+    if ( props.contains( "scale_method" )
+         && QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] )
+         && props["size_expression"].length() )
+      m->setDataDefinedProperty( "size", "sqrt(" + props["size_expression"] + ")" );
+    else
+      m->setDataDefinedProperty( "size", props["size_expression"] );
   }
   if ( props.contains( "outline-width_expression" ) )
   {
@@ -1298,24 +1280,8 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   double scaledSize = mSize;
   QgsExpression* sizeExpression = expression( "size" );
 
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale || sizeExpression;
-
   if ( sizeExpression )
-  {
     scaledSize = sizeExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toDouble();
-  }
-
-  if ( hasDataDefinedSize )
-  {
-    switch ( mScaleMethod )
-    {
-      case QgsSymbolV2::ScaleArea:
-        scaledSize = sqrt( scaledSize );
-        break;
-      case QgsSymbolV2::ScaleDiameter:
-        break;
-    }
-  }
 
   double size = scaledSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), mSizeUnit, mSizeMapUnitScale );
 
@@ -1472,7 +1438,6 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   map["offset_unit"] = QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit );
   map["offset_map_unit_scale"] = QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale );
-  map["scale_method"] = QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod );
   map["color"] = mFillColor.name();
   map["outline_color"] = mOutlineColor.name();
   map["outline_width"] = QString::number( mOutlineWidth );
@@ -1625,18 +1590,6 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
   if ( sizeExpression )
   {
     size = sizeExpression->evaluate( *f ).toDouble();
-  }
-
-  if ( hasDataDefinedSize )
-  {
-    switch ( mScaleMethod )
-    {
-      case QgsSymbolV2::ScaleArea:
-        size = sqrt( size );
-        break;
-      case QgsSymbolV2::ScaleDiameter:
-        break;
-    }
   }
 
   if ( mSizeUnit == QgsSymbolV2::MM )

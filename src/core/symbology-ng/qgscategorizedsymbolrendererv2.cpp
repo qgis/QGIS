@@ -147,7 +147,6 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     , mAttrName( attrName )
     , mCategories( categories )
     , mInvertedColorRamp( false )
-    , mScaleMethod( DEFAULT_SCALE_METHOD )
     , mAttrNum( -1 )
     , mCounting( false )
 {
@@ -220,7 +219,6 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
-    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -491,7 +489,6 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
   return r;
 }
 
@@ -585,10 +582,12 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
     r->setRotationField( rotationElem.attribute( "field" ) );
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
+  if ( !sizeScaleElem.isNull() && sizeScaleElem.attribute( "field" ).length() )
   {
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-    r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+    if ( QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) )
+      r->setSizeScaleField( "sqrt(" + sizeScaleElem.attribute( "field" ) + ")" );
+    else
+      r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
   }
 
   // TODO: symbol levels
@@ -655,7 +654,6 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
     sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
-  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   return rendererElem;
@@ -762,16 +760,6 @@ void QgsCategorizedSymbolRendererV2::updateSymbols( QgsSymbolV2 * sym )
     symbol->setColor( cat.symbol()->color() );
     updateCategorySymbol( i, symbol );
     ++i;
-  }
-}
-
-void QgsCategorizedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
-{
-  mScaleMethod = scaleMethod;
-  QgsCategoryList::const_iterator catIt = mCategories.constBegin();
-  for ( ; catIt != mCategories.constEnd(); ++catIt )
-  {
-    setScaleMethodToSymbol( catIt->symbol(), scaleMethod );
   }
 }
 

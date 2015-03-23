@@ -284,7 +284,6 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     , mRanges( ranges )
     , mMode( Custom )
     , mInvertedColorRamp( false )
-    , mScaleMethod( DEFAULT_SCALE_METHOD )
     , mAttrNum( -1 )
     , mCounting( false )
 
@@ -335,7 +334,6 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( tempSymbol );
     if ( mRotation.data() ) markerSymbol->setAngle( rotation );
     markerSymbol->setSize( sizeScale * static_cast<QgsMarkerSymbolV2*>( symbol )->size() );
-    markerSymbol->setScaleMethod( mScaleMethod );
   }
   else if ( tempSymbol->type() == QgsSymbolV2::Line )
   {
@@ -516,7 +514,6 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setUsingSymbolLevels( usingSymbolLevels() );
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
-  r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
   return r;
 }
@@ -612,151 +609,6 @@ static QList<double> _calcQuantileBreaks( QList<double> values, int classes )
   return breaks;
 }
 
-static QList<double> _calcPrettyBreaks( double minimum, double maximum, int classes )
-{
-
-  // C++ implementation of R's pretty algorithm
-  // Based on code for determining optimal tick placement for statistical graphics
-  // from the R statistical programming language.
-  // Code ported from R implementation from 'labeling' R package
-  //
-  // Computes a sequence of about 'classes' equally spaced round values
-  // which cover the range of values from 'minimum' to 'maximum'.
-  // The values are chosen so that they are 1, 2 or 5 times a power of 10.
-
-  QList<double> breaks;
-  if ( classes < 1 )
-  {
-    breaks.append( maximum );
-    return breaks;
-  }
-
-  int minimumCount = ( int ) classes / 3;
-  double shrink = 0.75;
-  double highBias = 1.5;
-  double adjustBias = 0.5 + 1.5 * highBias;
-  int divisions = classes;
-  double h = highBias;
-  double cell;
-  int U;
-  bool small = false;
-  double dx = maximum - minimum;
-
-  if ( dx == 0 && maximum == 0 )
-  {
-    cell = 1.0;
-    small = true;
-    U = 1;
-  }
-  else
-  {
-    cell = qMax( qAbs( minimum ), qAbs( maximum ) );
-    if ( adjustBias >= 1.5 * h + 0.5 )
-    {
-      U = 1 + ( 1.0 / ( 1 + h ) );
-    }
-    else
-    {
-      U = 1 + ( 1.5 / ( 1 + adjustBias ) );
-    }
-    small = dx < ( cell * U * qMax( 1, divisions ) * 1e-07 * 3.0 );
-  }
-
-  if ( small )
-  {
-    if ( cell > 10 )
-    {
-      cell = 9 + cell / 10;
-      cell = cell * shrink;
-    }
-    if ( minimumCount > 1 )
-    {
-      cell = cell / minimumCount;
-    }
-  }
-  else
-  {
-    cell = dx;
-    if ( divisions > 1 )
-    {
-      cell = cell / divisions;
-    }
-  }
-  if ( cell < 20 * 1e-07 )
-  {
-    cell = 20 * 1e-07;
-  }
-
-  double base = pow( 10.0, floor( log10( cell ) ) );
-  double unit = base;
-  if (( 2 * base ) - cell < h *( cell - unit ) )
-  {
-    unit = 2.0 * base;
-    if (( 5 * base ) - cell < adjustBias *( cell - unit ) )
-    {
-      unit = 5.0 * base;
-      if (( 10.0 * base ) - cell < h *( cell - unit ) )
-      {
-        unit = 10.0 * base;
-      }
-    }
-  }
-  // Maybe used to correct for the epsilon here??
-  int start = floor( minimum / unit + 1e-07 );
-  int end = ceil( maximum / unit - 1e-07 );
-
-  // Extend the range out beyond the data. Does this ever happen??
-  while ( start * unit > minimum + ( 1e-07 * unit ) )
-  {
-    start = start - 1;
-  }
-  while ( end * unit < maximum - ( 1e-07 * unit ) )
-  {
-    end = end + 1;
-  }
-  QgsDebugMsg( QString( "pretty classes: %1" ).arg( end ) );
-
-  // If we don't have quite enough labels, extend the range out
-  // to make more (these labels are beyond the data :( )
-  int k = floor( 0.5 + end - start );
-  if ( k < minimumCount )
-  {
-    k = minimumCount - k;
-    if ( start >= 0 )
-    {
-      end = end + k / 2;
-      start = start - k / 2 + k % 2;
-    }
-    else
-    {
-      start = start - k / 2;
-      end = end + k / 2 + k % 2;
-    }
-  }
-  double minimumBreak = start * unit;
-  //double maximumBreak = end * unit;
-  int count = end - start;
-
-  for ( int i = 1; i < count + 1; i++ )
-  {
-    breaks.append( minimumBreak + i * unit );
-  }
-
-  if ( breaks.isEmpty() )
-    return breaks;
-
-  if ( breaks.first() < minimum )
-  {
-    breaks[0] = minimum;
-  }
-  if ( breaks.last() > maximum )
-  {
-    breaks[breaks.count()-1] = maximum;
-  }
-
-  return breaks;
-} // _calcPrettyBreaks
-
 
 static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList<double> &labels )
 {
@@ -765,7 +617,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
   // as implemented in the 'classInt' package available for the R statistical
   // prgramming language.
 
-  // Returns breaks based on '_calcPrettyBreaks' of the centred and scaled
+  // Returns breaks based on 'prettyBreaks' of the centred and scaled
   // values of 'values', and may have a number of classes different from 'classes'.
 
   // If there are no values to process: bail out
@@ -794,7 +646,7 @@ static QList<double> _calcStdDevBreaks( QList<double> values, int classes, QList
   }
   stdDev = sqrt( stdDev / n );
 
-  QList<double> breaks = _calcPrettyBreaks(( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
+  QList<double> breaks = QgsSymbolLayerV2Utils::prettyBreaks(( minimum - mean ) / stdDev, ( maximum - mean ) / stdDev, classes );
   for ( int i = 0; i < breaks.count(); i++ )
   {
     labels.append( breaks[i] );
@@ -1040,7 +892,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
   }
   else if ( mode == Pretty )
   {
-    breaks = _calcPrettyBreaks( minimum, maximum, nclasses );
+    breaks = QgsSymbolLayerV2Utils::prettyBreaks( minimum, maximum, nclasses );
   }
   else if ( mode == Quantile || mode == Jenks || mode == StdDev )
   {
@@ -1191,9 +1043,13 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
     r->setRotationField( rotationElem.attribute( "field" ) );
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
-    r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
-  r->setScaleMethod( QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) );
+  if ( !sizeScaleElem.isNull() && sizeScaleElem.attribute( "field" ).length() )
+  {
+    if ( QgsSymbolV2::ScaleArea ==  QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) )
+      r->setSizeScaleField( "sqrt(" + sizeScaleElem.attribute( "field" ) + ")" );
+    else
+      r->setSizeScaleField( sizeScaleElem.attribute( "field" ) );
+  }
 
   QDomElement labelFormatElem = element.firstChildElement( "labelformat" );
   if ( ! labelFormatElem.isNull() )
@@ -1286,7 +1142,6 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   QDomElement sizeScaleElem = doc.createElement( "sizescale" );
   if ( mSizeScale.data() )
     sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
-  sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
   QDomElement labelFormatElem = doc.createElement( "labelformat" );
@@ -1407,16 +1262,6 @@ void QgsGraduatedSymbolRendererV2::setSizeScaleField( QString fieldOrExpression 
 QString QgsGraduatedSymbolRendererV2::sizeScaleField() const
 {
   return mSizeScale.data() ? QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) : QString();
-}
-
-void QgsGraduatedSymbolRendererV2::setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod )
-{
-  mScaleMethod = scaleMethod;
-  for ( QgsRangeList::iterator it = mRanges.begin(); it != mRanges.end(); ++it )
-  {
-    if ( it->symbol() )
-      setScaleMethodToSymbol( it->symbol(), scaleMethod );
-  }
 }
 
 bool QgsGraduatedSymbolRendererV2::legendSymbolItemsCheckable() const

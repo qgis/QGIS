@@ -197,9 +197,6 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
     void setSize( double size );
     double size() const;
 
-    void setScaleMethod( QgsSymbolV2::ScaleMethod scaleMethod );
-    QgsSymbolV2::ScaleMethod scaleMethod() const;
-
     void setOffset( QPointF offset );
     QPointF offset();
 

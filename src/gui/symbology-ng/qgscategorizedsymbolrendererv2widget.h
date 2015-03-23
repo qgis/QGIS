@@ -90,10 +90,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void deleteCategories();
     void deleteAllCategories();
 
-    void rotationFieldChanged( QString fldName );
-    void sizeScaleFieldChanged( QString fldName );
-    void scaleMethodChanged( QgsSymbolV2::ScaleMethod scaleMethod );
-
     void showSymbolLevels();
 
     void rowsMoved();
@@ -129,8 +125,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     QgsCategorizedSymbolRendererV2* mRenderer;
 
     QgsSymbolV2* mCategorizedSymbol;
-
-    QgsRendererV2DataDefinedMenus* mDataDefinedMenus;
 
     QgsCategorizedSymbolRendererV2Model* mModel;
 

@@ -218,7 +218,6 @@ class QgsFeatureRendererV2
     static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb );
     static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb );
 
-    void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
   private:
     QgsFeatureRendererV2( const QgsFeatureRendererV2 & );
     QgsFeatureRendererV2 & operator=( const QgsFeatureRendererV2 & );

@@ -46,6 +46,7 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
   else if ( mLayer && mLayer->geometryType() == QGis::Point )
   {
     contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
+    contextMenu->addAction( tr( "Change angle" ), this, SLOT( changeSymbolAngle() ) );
   }
 }
 
@@ -128,17 +129,17 @@ void QgsRendererV2Widget::changeSymbolWidth()
     return;
   }
 
-  bool ok;
-  QgsLineSymbolV2* line = dynamic_cast<QgsLineSymbolV2*>( symbolList.at( 0 ) ) ;
-  double width = QInputDialog::getDouble( this, tr( "Width" ), tr( "Change symbol width" ), line ? line->width() : 0.0 , 0.0, 999999, 1, &ok );
-  if ( ok )
+  QgsEnMasseWidthDialog dlg( symbolList, mLayer );
+
+  if ( QMessageBox::Ok == dlg.exec() )
   {
-    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
-    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    if ( !dlg.mDDBtn->isActive() )
     {
-      line = dynamic_cast<QgsLineSymbolV2*>( *symbolIt );
-      if ( line )
-        line->setWidth( width );
+      QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
+      {
+        dynamic_cast<QgsLineSymbolV2*>( *symbolIt )->setWidth( dlg.mSpinBox->value() );
+      }
     }
     refreshSymbolView();
   }
@@ -152,18 +153,41 @@ void QgsRendererV2Widget::changeSymbolSize()
     return;
   }
 
-  bool ok;
-  QgsMarkerSymbolV2* marker = dynamic_cast<QgsMarkerSymbolV2*>( symbolList.at( 0 ) );
+  QgsEnMasseSizeDialog dlg( symbolList, mLayer );
 
-  double size = QInputDialog::getDouble( this, tr( "Size" ), tr( "Change symbol size" ), marker ? marker->size() : 0.0 , 0.0, 999999, 1, &ok );
-  if ( ok )
+  if ( QMessageBox::Ok == dlg.exec() )
   {
-    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
-    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    if ( !dlg.mDDBtn->isActive() )
     {
-      marker = dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt );
-      if ( marker )
-        marker->setSize( size );
+      QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
+      {
+        dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setSize( dlg.mSpinBox->value() );
+      }
+    }
+    refreshSymbolView();
+  }
+}
+
+void QgsRendererV2Widget::changeSymbolAngle()
+{
+  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  if ( symbolList.size() < 1 )
+  {
+    return;
+  }
+
+  QgsEnMasseRotationDialog dlg( symbolList, mLayer );
+
+  if ( QMessageBox::Ok == dlg.exec() )
+  {
+    if ( !dlg.mDDBtn->isActive() )
+    {
+      QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+      for ( ; symbolIt != symbolList.end(); ++symbolIt )
+      {
+        dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setAngle( dlg.mSpinBox->value() );
+      }
     }
     refreshSymbolView();
   }
@@ -184,177 +208,52 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
 
 ////////////
 
-//#include <QAction>
-#include "qgsfield.h"
-#include <QMenu>
-
-QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
-    : QObject( menu ), mLayer( layer )
+QgsEnMasseValueDialog::QgsEnMasseValueDialog( const QList<QgsSymbolV2*>& symbolList, QgsVectorLayer * layer, const QString & label )
+    : mSymbolList( symbolList )
+    , mLayer( layer )
 {
-  mRotationMenu = new QMenu( tr( "Rotation field" ) );
-  mSizeScaleMenu = new QMenu( tr( "Size scale field" ) );
-
-  mRotationAttributeActionGroup = new QActionGroup( mRotationMenu );
-  mSizeAttributeActionGroup = new QActionGroup( mSizeScaleMenu );
-  mSizeMethodActionGroup = new QActionGroup( mSizeScaleMenu );
-
-  populateMenu( mRotationMenu, rotationField, mRotationAttributeActionGroup );
-  populateMenu( mSizeScaleMenu, sizeScaleField, mSizeAttributeActionGroup );
-
-  mSizeScaleMenu->addSeparator();
-
-  QAction* aScaleByArea = new QAction( tr( "Scale area" ), mSizeMethodActionGroup );
-  QAction* aScaleByDiameter = new QAction( tr( "Scale diameter" ), mSizeMethodActionGroup );
-
-  aScaleByArea->setCheckable( true );
-  aScaleByDiameter->setCheckable( true );
-
-  if ( scaleMethod == QgsSymbolV2::ScaleDiameter )
-  {
-    aScaleByDiameter->setChecked( true );
-  }
-  else
-  {
-    aScaleByArea->setChecked( true );
-  }
-
-  mSizeScaleMenu->addActions( mSizeMethodActionGroup->actions() );
-
-  menu->addMenu( mRotationMenu );
-  menu->addMenu( mSizeScaleMenu );
-
-  connect( mSizeMethodActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( scaleMethodSelected( QAction* ) ) );
-  connect( mRotationAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( rotationFieldSelected( QAction* ) ) );
-  connect( mSizeAttributeActionGroup, SIGNAL( triggered( QAction* ) ), this, SLOT( sizeScaleFieldSelected( QAction* ) ) );
-}
-
-QgsRendererV2DataDefinedMenus::~QgsRendererV2DataDefinedMenus()
-{
-  delete mSizeMethodActionGroup;
-  delete mSizeAttributeActionGroup;
-  delete mRotationAttributeActionGroup;
-  delete mRotationMenu;
-  delete mSizeScaleMenu;
-}
-
-void QgsRendererV2DataDefinedMenus::populateMenu( QMenu* menu, QString fieldName, QActionGroup *actionGroup )
-{
-  QAction* aExpr = new QAction( tr( "- expression -" ), actionGroup );
-  aExpr->setCheckable( true );
-  menu->addAction( aExpr );
-  menu->addSeparator();
-  QAction* aNo = new QAction( tr( "- no field -" ), actionGroup );
-  aNo->setCheckable( true );
-  menu->addAction( aNo );
-  menu->addSeparator();
-
-  bool hasField = false;
-  const QgsFields & flds = mLayer->pendingFields();
-  for ( int idx = 0; idx < flds.count(); ++idx )
-  {
-    const QgsField& fld = flds[idx];
-    if ( fld.type() == QVariant::Int || fld.type() == QVariant::Double )
-    {
-      QAction* a = new QAction( fld.name(), actionGroup );
-      a->setCheckable( true );
-      if ( fieldName == fld.name() )
-      {
-        a->setChecked( true );
-        hasField = true;
-      }
-      menu->addAction( a );
-    }
-  }
-
-  if ( !hasField )
-  {
-    if ( fieldName.isEmpty() )
-    {
-      aNo->setChecked( true );
-    }
-    else
-    {
-      aExpr->setChecked( true );
-      aExpr->setText( tr( "- expression -" ) + fieldName );
-    }
-  }
+  setupUi( this );
+  mLabel->setText( label );
+  connect( mDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setSymbolExpression( const QString& ) ) );
+  connect( mDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveSymbolExpression( bool ) ) );
 
 }
 
-void QgsRendererV2DataDefinedMenus::rotationFieldSelected( QAction* a )
+void QgsEnMasseValueDialog::init( const QString & description )
 {
-  if ( a == NULL )
-    return;
-
-  QString fldName = a->text();
-#if 0
-  updateMenu( mRotationAttributeActionGroup, fldName );
-#endif
-  if ( fldName == tr( "- no field -" ) )
-  {
-    fldName = QString();
-  }
-  else if ( fldName.startsWith( tr( "- expression -" ) ) )
-  {
-    QString expr( fldName );
-    expr.replace( 0, tr( "- expression -" ).length(), "" );
-    QgsExpressionBuilderDialog dialog( mLayer, expr );
-    if ( !dialog.exec() ) return;
-    fldName = dialog.expressionText();
-    Q_ASSERT( !QgsExpression( fldName ).hasParserError() );
-    a->setText( tr( "- expression -" ) + fldName );
-  }
-
-  emit rotationFieldChanged( fldName );
+  QgsDataDefined dd = symbolExpression();
+  mDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, description );
+  mSpinBox->setValue( value( mSymbolList.back() ) );
+  mSpinBox->setEnabled( !mDDBtn->isActive() );
 }
 
-void QgsRendererV2DataDefinedMenus::sizeScaleFieldSelected( QAction* a )
+QgsDataDefined QgsEnMasseValueDialog::symbolExpression() const
 {
-  if ( a == NULL )
-    return;
-
-  QString fldName = a->text();
-#if 0
-  updateMenu( mSizeAttributeActionGroup, fldName );
-#endif
-  if ( fldName == tr( "- no field -" ) )
+  // check that all symbols share the same size expression
+  QgsDataDefined dd = expression( mSymbolList.back() );
+for ( auto it : mSymbolList )
   {
-    fldName = QString();
+    if ( expression( it ) != dd )
+      return  QgsDataDefined();
   }
-  else if ( fldName.startsWith( tr( "- expression -" ) ) )
-  {
-    QString expr( fldName );
-    expr.replace( 0, tr( "- expression -" ).length(), "" );
-    QgsExpressionBuilderDialog dialog( mLayer, expr );
-    if ( !dialog.exec() ) return;
-    fldName = dialog.expressionText();
-    Q_ASSERT( !QgsExpression( fldName ).hasParserError() );
-    a->setText( tr( "- expression -" ) + fldName );
-  }
-
-  emit sizeScaleFieldChanged( fldName );
+  return dd;
 }
 
-void QgsRendererV2DataDefinedMenus::scaleMethodSelected( QAction* a )
+void QgsEnMasseValueDialog::setSymbolExpression( const QString & definition )
 {
-  if ( a == NULL )
-    return;
+  if ( // shall we remove datadefined expressions for layers ?
+    ( symbolExpression().isActive() && !definition.length() )
+    // shall we set the "en masse" expression for properties ?
+    || definition.length() )
+  {
+  for ( auto it : mSymbolList )
+      setExpression( it, definition );
+  }
+}
 
-  if ( a->text() == tr( "Scale area" ) )
-  {
-    emit scaleMethodChanged( QgsSymbolV2::ScaleArea );
-  }
-  else if ( a->text() == tr( "Scale diameter" ) )
-  {
-    emit scaleMethodChanged( QgsSymbolV2::ScaleDiameter );
-  }
-}
-#if 0 // MK: is there any reason for this?
-void QgsRendererV2DataDefinedMenus::updateMenu( QActionGroup* actionGroup, QString fieldName )
+void QgsEnMasseValueDialog::setActiveSymbolExpression( bool active )
 {
-  foreach ( QAction* a, actionGroup->actions() )
-  {
-    a->setChecked( a->text() == fieldName );
-  }
+  setSymbolExpression( active ? mDDBtn->currentDefinition() : "" );
+  mSpinBox->setEnabled( !active );
 }
-#endif
+
