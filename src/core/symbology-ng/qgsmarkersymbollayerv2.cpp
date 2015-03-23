@@ -169,7 +169,8 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::create( const QgsStringMap& prop
   if ( props.contains( "size_expression" ) )
   {
     if ( props.contains( "scale_method" )
-         && QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] ) )
+         && QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] )
+         && props["size_expression"].length() )
       m->setDataDefinedProperty( "size", "sqrt(" + props["size_expression"] + ")" );
     else
       m->setDataDefinedProperty( "size", props["size_expression"] );
@@ -1190,7 +1191,8 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   if ( props.contains( "size_expression" ) )
   {
     if ( props.contains( "scale_method" )
-         && QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] ) )
+         && QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( props["scale_method"] )
+         && props["size_expression"].length() )
       m->setDataDefinedProperty( "size", "sqrt(" + props["size_expression"] + ")" );
     else
       m->setDataDefinedProperty( "size", props["size_expression"] );

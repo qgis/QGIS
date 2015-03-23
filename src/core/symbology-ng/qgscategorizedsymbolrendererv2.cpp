@@ -582,7 +582,7 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::create( QDomElement& eleme
     r->setRotationField( rotationElem.attribute( "field" ) );
 
   QDomElement sizeScaleElem = element.firstChildElement( "sizescale" );
-  if ( !sizeScaleElem.isNull() )
+  if ( !sizeScaleElem.isNull() && sizeScaleElem.attribute( "field" ).length() )
   {
     if ( QgsSymbolV2::ScaleArea == QgsSymbolLayerV2Utils::decodeScaleMethod( sizeScaleElem.attribute( "scalemethod" ) ) )
       r->setSizeScaleField( "sqrt(" + sizeScaleElem.attribute( "field" ) + ")" );
