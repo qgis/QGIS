@@ -62,7 +62,7 @@ class BatchPanel(QWidget, Ui_Form):
 
         # Set icons
         self.btnAdd.setIcon(QgsApplication.getThemeIcon('/mActionSignPlus.png'))
-        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/mActionSignMinus.png'))
+        self.btnRemove.setIcon(QgsApplication.getThemeIcon('/symbologyRemove.png'))
         self.btnAdvanced.setIcon(QIcon(':/processing/images/alg.png'))
 
         self.alg = alg
