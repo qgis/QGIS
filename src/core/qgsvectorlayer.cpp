@@ -593,7 +593,7 @@ QGis::GeometryType QgsVectorLayer::geometryType() const
 {
   if ( mDataProvider )
   {
-    int type = mDataProvider->geometryType();
+    QGis::WkbType type = mDataProvider->geometryType();
     switch ( type )
     {
       case QGis::WKBPoint:
