@@ -107,7 +107,7 @@ echo Creating qmake project file
 $QMAKE -project -o qgis_ts.pro -nopwd src python i18n
 
 echo Updating translations
-$LUPDATE -locations none -verbose qgis_ts.pro
+$LUPDATE -locations absolute -verbose qgis_ts.pro
 
 if [ $1 = push ]; then
 	echo Pushing translation...
