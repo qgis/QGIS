@@ -55,7 +55,7 @@
 #
 # -------------------------------------------------
 
-from PyQt4.QtCore import QTextCodec, QFileInfo, QSettings
+from PyQt4.QtCore import QTextCodec, QFileInfo, QSettings, QCoreApplication
 from PyQt4.QtGui import QDialog, QFileDialog
 from qgis.core import QgsVectorFileWriter, QGis, QgsDistanceArea, QgsGeometry, QgsMapLayer, QgsVectorLayer, QgsMapLayerRegistry, QgsFeature, QgsSpatialIndex
 from qgis.gui import QgsEncodingFileDialog
@@ -282,7 +282,7 @@ def saveDialog( parent, filtering="Shapefiles (*.shp *.SHP)"):
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" )
     encode = settings.value( "/UI/encoding" )
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
+    fileDialog = QgsEncodingFileDialog( parent, QCoreApplication.translate("fTools", "Save output shapefile" ), dirName, filtering, encode )
     fileDialog.setDefaultSuffix( "shp" )
     fileDialog.setFileMode( QFileDialog.AnyFile )
     fileDialog.setAcceptMode( QFileDialog.AcceptSave )
@@ -299,7 +299,12 @@ def openDialog( parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="Single
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" )
     encode = settings.value( "/UI/encoding" )
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
+    fileDialog = QgsEncodingFileDialog(
+        parent,
+        QCoreApplication.translate("fTools", "Select input file" )
+        if dialogMode == "SingleFile" else
+        QCoreApplication.translate("fTools", "Select input files" ),
+        dirName, filtering, encode )
     fileDialog.setFileMode( QFileDialog.ExistingFiles )
     fileDialog.setAcceptMode( QFileDialog.AcceptOpen )
     if not fileDialog.exec_() == QDialog.Accepted:
@@ -316,7 +321,7 @@ def dirDialog( parent ):
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" )
     encode = settings.value( "/UI/encoding" )
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, encode )
+    fileDialog = QgsEncodingFileDialog( parent, QCoreApplication.translate("fTools", "Save output directory" ), dirName, encode )
     fileDialog.setFileMode( QFileDialog.DirectoryOnly )
     fileDialog.setAcceptMode( QFileDialog.AcceptSave )
     fileDialog.setConfirmOverwrite( False )
