@@ -613,12 +613,8 @@ static QgsRectangle _parseBBOX( const QString &bboxStr, bool &ok )
       return QgsRectangle();
   }
 
-  QgsRectangle bbox( d[0], d[1], d[2], d[3] );
-  if ( bbox.isEmpty() )
-    return QgsRectangle();
-
   ok = true;
-  return bbox;
+  return QgsRectangle( d[0], d[1], d[2], d[3] );
 }
 
 
@@ -646,7 +642,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 
     bool bboxOk;
     contentBasedLegendExtent = _parseBBOX( mParameters["BBOX"], bboxOk );
-    if ( !bboxOk )
+    if ( !bboxOk || contentBasedLegendExtent.isEmpty() )
       throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
 
     if ( mParameters.contains( "RULE" ) )
@@ -1772,7 +1768,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   mMapRenderer->setOutputSize( QSize( paintDevice->width(), paintDevice->height() ), paintDevice->logicalDpiX() );
 
   //map extent
-  bool bboxOk = true;
+  bool bboxOk;
   QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX", "0,0,0,0" ), bboxOk );
   if ( !bboxOk )
   {
