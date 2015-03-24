@@ -292,9 +292,11 @@ class QgsVectorLayer : QgsMapLayer
      * @param exp The expression which calculates the field
      * @param fld The field to calculate
      *
-     * @note added in 2.6
+     * @return The index of the new field
+     *
+     * @note added in 2.6, return value added in 2.9
      */
-    void addExpressionField( const QString& exp, const QgsField& fld );
+    int addExpressionField( const QString& exp, const QgsField& fld );
 
     /**
      * Remove an expression field
@@ -304,6 +306,28 @@ class QgsVectorLayer : QgsMapLayer
      * @note added in 2.6
      */
     void removeExpressionField( int index );
+
+    /**
+     * Returns the expressoin used for a given expression field
+     *
+     * @param index An index of an epxression based (virtual) field
+     *
+     * @return The expression for the field at index
+     *
+     * @note added in 2.9
+     */
+    const QString expressionField( int index );
+
+    /**
+     * Changes the expression used to define an expression based (virtual) field
+     *
+     * @param index The index of the expression to change
+     *
+     * @param exp The new expression to set
+     *
+     * @note added in 2.9
+     */
+    void updateExpressionField( int index, const QString& exp );
 
     /** Get the label object associated with this layer */
     QgsLabel *label();
