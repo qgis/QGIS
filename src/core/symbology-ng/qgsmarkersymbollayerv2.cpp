@@ -884,7 +884,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     bc = QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( *f ).toString() );
   }
 
-  QgsExpression* outlinecolorExpression = expression( "outline_color" );
+  QgsExpression* outlinecolorExpression = expression( "color_border" );
   if ( outlinecolorExpression )
   {
     pc = QgsSymbolLayerV2Utils::decodeColor( outlinecolorExpression->evaluate( *f ).toString() );
