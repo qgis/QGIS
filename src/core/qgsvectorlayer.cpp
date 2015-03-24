@@ -2843,12 +2843,13 @@ const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
   return mJoinBuffer->vectorJoins();
 }
 
-void QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
+int QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
 {
   mExpressionFieldBuffer->addExpression( exp, fld );
   updateFields();
   int idx = mUpdatedFields.indexFromName( fld.name() );
   emit attributeAdded( idx );
+  return idx;
 }
 
 void QgsVectorLayer::removeExpressionField( int index )
@@ -2863,6 +2864,12 @@ const QString QgsVectorLayer::expressionField( int index )
 {
   int oi = mUpdatedFields.fieldOriginIndex( index );
   return mExpressionFieldBuffer->expressions().value( oi ).expression;
+}
+
+void QgsVectorLayer::updateExpressionField(   int index, const QString& exp )
+{
+  int oi = mUpdatedFields.fieldOriginIndex( index );
+  mExpressionFieldBuffer->updateExpression( oi, exp );
 }
 
 void QgsVectorLayer::updateFields()

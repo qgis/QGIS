@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsattributetypedialog.h"
 #include "qgsfieldcalculator.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldsproperties.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -249,6 +250,7 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
     expressionWidget->setLayout( new QHBoxLayout );
     QToolButton* editExpressionButton = new QToolButton;
     editExpressionButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+    connect( editExpressionButton, SIGNAL(clicked()), this, SLOT(updateExpression()) );
     expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
     expressionWidget->layout()->addWidget( editExpressionButton );
     expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
@@ -654,6 +656,24 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
         mLayer->remAttributeAlias( idx );
       }
     }
+  }
+}
+
+void QgsFieldsProperties::updateExpression()
+{
+  QToolButton* btn = qobject_cast<QToolButton*>( sender() );
+  Q_ASSERT( btn );
+
+  int index = btn->property( "Index" ).toInt();
+
+  const QString exp = mLayer->expressionField( index );
+
+  QgsExpressionBuilderDialog dlg( mLayer, exp );
+
+  if ( dlg.exec() )
+  {
+    mLayer->updateExpressionField( index, dlg.expressionText() );
+    loadRows();
   }
 }
 
