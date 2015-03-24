@@ -15,7 +15,7 @@
 
 #include "qgspainteffectregistry.h"
 #include "qgsblureffect.h"
-#include "qgsdropshadoweffect.h"
+#include "qgsshadoweffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
 #include "qgstransformeffect.h"
@@ -35,6 +35,8 @@ QgsPaintEffectRegistry::QgsPaintEffectRegistry()
                  QgsBlurEffect::create, NULL ) );
   addEffectType( new QgsPaintEffectMetadata( "dropShadow", QObject::tr( "Drop Shadow" ),
                  QgsDropShadowEffect::create, NULL ) );
+  addEffectType( new QgsPaintEffectMetadata( "innerShadow", QObject::tr( "Inner Shadow" ),
+                 QgsInnerShadowEffect::create, NULL ) );
   addEffectType( new QgsPaintEffectMetadata( "effectStack", QObject::tr( "Stack" ),
                  QgsEffectStack::create, NULL ) );
   addEffectType( new QgsPaintEffectMetadata( "outerGlow", QObject::tr( "Outer Glow" ),

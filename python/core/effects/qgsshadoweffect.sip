@@ -1,61 +1,53 @@
 /** \ingroup core
- * \class QgsDropShadowEffect
- * \brief A paint effect which draws an offset and optionally blurred drop shadow
+ * \class QgsShadowEffect
+ * \brief Base class for paint effects which offset, blurred shadows
  *
  * \note Added in version 2.9
  */
 
-class QgsDropShadowEffect : QgsPaintEffect
+class QgsShadowEffect : QgsPaintEffect
 {
 %TypeHeaderCode
-#include <qgsdropshadoweffect.h>
+#include <qgsshadoweffect.h>
 %End
 
   public:
 
-    /** Creates a new QgsDropShadowEffect effect from a properties string map.
-     * @param map encoded properties string map
-     * @returns new QgsDropShadowEffect
-     */
-    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+    QgsShadowEffect();
+    virtual ~QgsShadowEffect();
 
-    QgsDropShadowEffect();
-    virtual ~QgsDropShadowEffect();
-
-    virtual QString type() const;
-    virtual QgsPaintEffect* clone() const /Factory/;
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap& props );
 
-    /** Sets blur level (strength) for the drop shadow.
+    /** Sets blur level (strength) for the shadow.
      * @param level blur level. Values between 0 and 16 are valid, with larger
      * values indicating greater blur strength.
      * @see blurLevel
      */
     void setBlurLevel( const int level );
 
-    /** Returns the blur level (strength) for the drop shadow.
+    /** Returns the blur level (strength) for the shadow.
      * @returns blur level. Value will be between 0 and 16, with larger
      * values indicating greater blur strength.
      * @see setBlurLevel
      */
     int blurLevel() const;
 
-    /** Sets the angle for offsetting the drop shadow.
+    /** Sets the angle for offsetting the shadow.
      * @param angle offset angle in degrees clockwise from North
      * @see offsetAngle
      * @see setOffsetDistance
      */
     void setOffsetAngle( const int angle );
 
-    /** Returns the angle used for offsetting the drop shadow.
+    /** Returns the angle used for offsetting the shadow.
      * @returns offset angle in degrees clockwise from North
      * @see setOffsetAngle
      * @see offsetDistance
      */
     int offsetAngle() const;
 
-    /** Sets the distance for offsetting the drop shadow.
+    /** Sets the distance for offsetting the shadow.
      * @param distance offset distance. Units are specified via @link setOffsetUnit @endlink
      * @see offsetDistance
      * @see setOffsetUnit
@@ -63,7 +55,7 @@ class QgsDropShadowEffect : QgsPaintEffect
      */
     void setOffsetDistance( const double distance );
 
-    /** Returns the distance used for offsetting the drop shadow.
+    /** Returns the distance used for offsetting the shadow.
      * @returns offset distance. Distance units are retreived via @link offsetUnit @endlink
      * @see setOffsetDistance
      * @see offsetUnit
@@ -71,7 +63,7 @@ class QgsDropShadowEffect : QgsPaintEffect
      */
     double offsetDistance() const;
 
-    /** Sets the units used for the drop shadow offset distance.
+    /** Sets the units used for the shadow offset distance.
      * @param unit units for offset distance
      * @see offsetUnit
      * @see setOffsetDistance
@@ -79,7 +71,7 @@ class QgsDropShadowEffect : QgsPaintEffect
      */
     void setOffsetUnit( const QgsSymbolV2::OutputUnit unit );
 
-    /** Returns the units used for the drop shadow offset distance.
+    /** Returns the units used for the shadow offset distance.
      * @returns units for offset distance
      * @see setOffsetUnit
      * @see offsetDistance
@@ -87,7 +79,7 @@ class QgsDropShadowEffect : QgsPaintEffect
      */
     QgsSymbolV2::OutputUnit offsetUnit() const;
 
-    /** Sets the map unit scale used for the drop shadow offset distance.
+    /** Sets the map unit scale used for the shadow offset distance.
      * @param scale map unit scale for offset distance
      * @see offsetMapUnitScale
      * @see setOffsetDistance
@@ -103,27 +95,13 @@ class QgsDropShadowEffect : QgsPaintEffect
      */
     const QgsMapUnitScale& offsetMapUnitScale() const;
 
-    /** Sets scaling for the drop shadow. Scaling will resize the shadow.
-     * @param scale scale factor for shadow. Values < 1.0 will shrink the shadow, and
-     * values > 1.0 will enlarge the shadow.
-     * @see scale
-     */
-    void setScale( const double scale );
-
-    /** Returns scaling for the drop shadow. Scaling will resize the shadow.
-     * @returns scale factor for shadow. Values < 1.0 indicate that the shadow will be shrunk,
-     * and values > 1.0 will enlarge the shadow.
-     * @see setScale
-     */
-    double scale() const;
-
-    /** Sets the color for the drop shadow.
+    /** Sets the color for the shadow.
      * @param color shadow color
      * @see color
      */
     void setColor( const QColor& color );
 
-    /** Returns the color used for the drop shadow.
+    /** Returns the color used for the shadow.
      * @returns shadow color
      * @see setColor
      */
@@ -161,5 +139,80 @@ class QgsDropShadowEffect : QgsPaintEffect
 
     virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
     virtual void draw( QgsRenderContext& context );
+
+    /** Specifies whether the shadow is drawn outside the picture or within
+     * the picture.
+     * @returns true if shadow is to be drawn outside the picture, or false
+     * to draw shadow within the picture
+     */
+    virtual bool exteriorShadow() const = 0;
+
+};
+
+
+/** \ingroup core
+ * \class QgsDropShadowEffect
+ * \brief A paint effect which draws an offset and optionally blurred drop shadow
+ *
+ * \note Added in version 2.9
+ */
+
+class QgsDropShadowEffect : QgsShadowEffect
+{
+%TypeHeaderCode
+#include <qgsshadoweffect.h>
+%End
+
+  public:
+
+    /** Creates a new QgsDropShadowEffect effect from a properties string map.
+     * @param map encoded properties string map
+     * @returns new QgsDropShadowEffect
+     */
+    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+
+    QgsDropShadowEffect();
+    virtual ~QgsDropShadowEffect();
+
+    virtual QString type() const;
+    virtual QgsPaintEffect* clone() const /Factory/;
+
+  protected:
+
+    virtual bool exteriorShadow() const;
+
+};
+
+
+/** \ingroup core
+ * \class QgsInnerShadowEffect
+ * \brief A paint effect which draws an offset and optionally blurred drop shadow
+ * within a picture.
+ *
+ * \note Added in version 2.9
+ */
+class QgsInnerShadowEffect : QgsShadowEffect
+{
+%TypeHeaderCode
+#include <qgsshadoweffect.h>
+%End
+
+  public:
+
+    /** Creates a new QgsInnerShadowEffect effect from a properties string map.
+     * @param map encoded properties string map
+     * @returns new QgsInnerShadowEffect
+     */
+    static QgsPaintEffect* create( const QgsStringMap& map ) /Factory/;
+
+    QgsInnerShadowEffect();
+    virtual ~QgsInnerShadowEffect();
+
+    virtual QString type() const;
+    virtual QgsPaintEffect* clone() const /Factory/;
+
+  protected:
+
+    virtual bool exteriorShadow() const;
 
 };

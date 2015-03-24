@@ -54,7 +54,8 @@ static void _initWidgetFunctions()
     return;
 
   _initWidgetFunction( "blur", QgsBlurWidget::create );
-  _initWidgetFunction( "dropShadow", QgsDropShadowWidget::create );
+  _initWidgetFunction( "dropShadow", QgsShadowEffectWidget::create );
+  _initWidgetFunction( "innerShadow", QgsShadowEffectWidget::create );
   _initWidgetFunction( "drawSource", QgsDrawSourceWidget::create );
   _initWidgetFunction( "outerGlow", QgsGlowWidget::create );
   _initWidgetFunction( "innerGlow", QgsGlowWidget::create );

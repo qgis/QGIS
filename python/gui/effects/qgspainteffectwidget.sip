@@ -61,14 +61,14 @@ class QgsBlurWidget : QgsPaintEffectWidget
 
 };
 
-class QgsDropShadowWidget : QgsPaintEffectWidget
+class QgsShadowEffectWidget : QgsPaintEffectWidget
 {
 %TypeHeaderCode
 #include <qgspainteffectwidget.h>
 %End
 
   public:
-    QgsDropShadowWidget( QWidget* parent /TransferThis/ = NULL );
+    QgsShadowEffectWidget( QWidget* parent /TransferThis/ = NULL );
 
     static QgsPaintEffectWidget* create() /Factory/;
 

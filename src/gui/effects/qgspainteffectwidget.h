@@ -19,7 +19,7 @@
 #include <QWidget>
 
 class QgsPaintEffect;
-class QgsDropShadowEffect;
+class QgsShadowEffect;
 class QgsDrawSourceEffect;
 class QgsBlurEffect;
 class QgsGlowEffect;
@@ -121,21 +121,21 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 
 
 
-#include "ui_widget_dropshadow.h"
+#include "ui_widget_shadoweffect.h"
 
-class GUI_EXPORT QgsDropShadowWidget : public QgsPaintEffectWidget, private Ui::WidgetDropShadow
+class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui::WidgetShadowEffect
 {
     Q_OBJECT
 
   public:
-    QgsDropShadowWidget( QWidget* parent = NULL );
+    QgsShadowEffectWidget( QWidget* parent = NULL );
 
-    static QgsPaintEffectWidget* create() { return new QgsDropShadowWidget(); }
+    static QgsPaintEffectWidget* create() { return new QgsShadowEffectWidget(); }
 
     virtual void setPaintEffect( QgsPaintEffect* effect ) override;
 
   private:
-    QgsDropShadowEffect* mEffect;
+    QgsShadowEffect* mEffect;
 
     void initGui();
     void blockSignals( const bool block );
@@ -146,7 +146,6 @@ class GUI_EXPORT QgsDropShadowWidget : public QgsPaintEffectWidget, private Ui::
     void on_mShadowOffsetSpnBx_valueChanged( double value );
     void on_mOffsetUnitWidget_changed();
     void on_mShadowTranspSpnBx_valueChanged( double value );
-    void on_mShadowScaleSpnBx_valueChanged( int value );
     void on_mShadowColorBtn_colorChanged( const QColor& color );
     void on_mDrawModeComboBox_currentIndexChanged( int index );
     void on_mShadowBlendCmbBx_currentIndexChanged( int index );

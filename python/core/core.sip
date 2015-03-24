@@ -177,7 +177,7 @@
 %Include effects/qgspainteffect.sip
 %Include effects/qgseffectstack.sip
 %Include effects/qgsblureffect.sip
-%Include effects/qgsdropshadoweffect.sip
+%Include effects/qgsshadoweffect.sip
 %Include effects/qgsgloweffect.sip
 %Include effects/qgstransformeffect.sip
 %Include effects/qgscoloreffect.sip

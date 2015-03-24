@@ -23,7 +23,7 @@
 
 #include "qgspainteffect.h"
 #include "qgsblureffect.h"
-#include "qgsdropshadoweffect.h"
+#include "qgsshadoweffect.h"
 #include "qgseffectstack.h"
 #include "qgsgloweffect.h"
 #include "qgspainteffectregistry.h"
@@ -398,8 +398,6 @@ void TestQgsPaintEffect::dropShadow()
   effect->setOffsetMapUnitScale( QgsMapUnitScale( 1.0, 2.0 ) );
   QCOMPARE( effect->offsetMapUnitScale().minScale, 1.0 );
   QCOMPARE( effect->offsetMapUnitScale().maxScale, 2.0 );
-  effect->setScale( 0.3 );
-  QCOMPARE( effect->scale(), 0.3 );
   effect->setColor( QColor( 56, 67, 89 ) );
   QCOMPARE( effect->color(), QColor( 56, 67, 89 ) );
   effect->setDrawMode( QgsPaintEffect::Modifier );
@@ -417,7 +415,6 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( copy->offsetUnit(), effect->offsetUnit() );
   QCOMPARE( copy->offsetMapUnitScale().minScale, effect->offsetMapUnitScale().minScale );
   QCOMPARE( copy->offsetMapUnitScale().maxScale, effect->offsetMapUnitScale().maxScale );
-  QCOMPARE( copy->scale(), effect->scale() );
   QCOMPARE( copy->color(), effect->color() );
   QCOMPARE( copy->drawMode(), effect->drawMode() );
   delete copy;
@@ -435,7 +432,6 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( cloneCast->offsetUnit(), effect->offsetUnit() );
   QCOMPARE( cloneCast->offsetMapUnitScale().minScale, effect->offsetMapUnitScale().minScale );
   QCOMPARE( cloneCast->offsetMapUnitScale().maxScale, effect->offsetMapUnitScale().maxScale );
-  QCOMPARE( cloneCast->scale(), effect->scale() );
   QCOMPARE( cloneCast->color(), effect->color() );
   QCOMPARE( cloneCast->drawMode(), effect->drawMode() );
   delete cloneCast;
@@ -454,7 +450,6 @@ void TestQgsPaintEffect::dropShadow()
   QCOMPARE( readCast->offsetUnit(), effect->offsetUnit() );
   QCOMPARE( readCast->offsetMapUnitScale().minScale, effect->offsetMapUnitScale().minScale );
   QCOMPARE( readCast->offsetMapUnitScale().maxScale, effect->offsetMapUnitScale().maxScale );
-  QCOMPARE( readCast->scale(), effect->scale() );
   QCOMPARE( readCast->color(), effect->color() );
   QCOMPARE( readCast->drawMode(), effect->drawMode() );
   delete readCast;

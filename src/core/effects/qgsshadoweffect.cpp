@@ -1,6 +1,6 @@
 /***************************************************************************
-                              qgsdropshadoweffect.cpp
-                             ------------------------
+                              qgsshadoweffect.cpp
+                              -------------------
     begin                : December 2014
     copyright            : (C) 2014 Nyall Dawson
     email                : nyall dot dawson at gmail dot com
@@ -15,68 +15,84 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdropshadoweffect.h"
+#include "qgsshadoweffect.h"
 #include "qgsimageoperation.h"
 #include "qgssymbollayerv2utils.h"
 
-QgsPaintEffect *QgsDropShadowEffect::create( const QgsStringMap &map )
-{
-  QgsDropShadowEffect* effect = new QgsDropShadowEffect();
-  effect->readProperties( map );
-  return effect;
-}
-
-QgsDropShadowEffect::QgsDropShadowEffect()
+QgsShadowEffect::QgsShadowEffect()
     : QgsPaintEffect()
     , mBlurLevel( 10 )
     , mOffsetAngle( 135 )
     , mOffsetDist( 2.0 )
     , mOffsetUnit( QgsSymbolV2::MM )
     , mTransparency( 0.0 )
-    , mScale( 1.0 )
     , mColor( Qt::black )
     , mBlendMode( QPainter::CompositionMode_Multiply )
 {
 
 }
 
-QgsDropShadowEffect::~QgsDropShadowEffect()
+QgsShadowEffect::~QgsShadowEffect()
 {
 
 }
 
-void QgsDropShadowEffect::draw( QgsRenderContext &context )
+void QgsShadowEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )
     return;
 
   QImage colorisedIm = sourceAsImage( context )->copy();
+
+  QPainter* painter = context.painter();
+  painter->save();
+  painter->setCompositionMode( mBlendMode );
+
+  if ( !exteriorShadow() )
+  {
+    //inner shadow, first invert the opacity. The color does not matter since we will
+    //be replacing it anyway
+    colorisedIm.invertPixels( QImage::InvertRgba );
+  }
+
   QgsImageOperation::overlayColor( colorisedIm, mColor );
   QgsImageOperation::stackBlur( colorisedIm, mBlurLevel );
 
   double offsetDist = mOffsetDist *
                       QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mOffsetUnit, mOffsetMapUnitScale );
 
-  double angleRad = mOffsetAngle * M_PI / 180; // to radians
+  double   angleRad = mOffsetAngle * M_PI / 180; // to radians
   QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
                    -offsetDist * sin( angleRad + M_PI / 2 ) );
 
   //transparency, scale
   QgsImageOperation::multiplyOpacity( colorisedIm, 1.0 - mTransparency );
 
-  QPainter* painter = context.painter();
-  painter->save();
-  painter->setCompositionMode( mBlendMode );
-  painter->drawImage( imageOffset( context ) + transPt, colorisedIm );
+  if ( !exteriorShadow() )
+  {
+    //inner shadow, do a bit of painter juggling
+    QImage innerShadowIm( colorisedIm.width(), colorisedIm.height(), QImage::Format_ARGB32 );
+    innerShadowIm.fill( Qt::transparent );
+    QPainter imPainter( &innerShadowIm );
+
+    //draw shadow at offset
+    imPainter.drawImage( transPt.x(), transPt.y(), colorisedIm );
+
+    //restrict shadow so it's only drawn on top of original image
+    imPainter.setCompositionMode( QPainter::CompositionMode_DestinationIn );
+    imPainter.drawImage( 0, 0, *sourceAsImage( context ) );
+    imPainter.end();
+
+    painter->drawImage( imageOffset( context ), innerShadowIm );
+  }
+  else
+  {
+    painter->drawImage( imageOffset( context ) + transPt, colorisedIm );
+  }
   painter->restore();
 }
 
-QgsPaintEffect *QgsDropShadowEffect::clone() const
-{
-  return new QgsDropShadowEffect( *this );
-}
-
-QgsStringMap QgsDropShadowEffect::properties() const
+QgsStringMap QgsShadowEffect::properties() const
 {
   QgsStringMap props;
   props.insert( "enabled", mEnabled ? "1" : "0" );
@@ -88,12 +104,11 @@ QgsStringMap QgsDropShadowEffect::properties() const
   props.insert( "offset_distance", QString::number( mOffsetDist ) );
   props.insert( "offset_unit", QgsSymbolLayerV2Utils::encodeOutputUnit( mOffsetUnit ) );
   props.insert( "offset_unit_scale", QgsSymbolLayerV2Utils::encodeMapUnitScale( mOffsetMapUnitScale ) );
-  props.insert( "scale", QString::number( mScale ) );
   props.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
   return props;
 }
 
-void QgsDropShadowEffect::readProperties( const QgsStringMap &props )
+void QgsShadowEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
   QPainter::CompositionMode mode = ( QPainter::CompositionMode )props.value( "blend_mode" ).toInt( &ok );
@@ -125,22 +140,73 @@ void QgsDropShadowEffect::readProperties( const QgsStringMap &props )
   }
   mOffsetUnit = QgsSymbolLayerV2Utils::decodeOutputUnit( props.value( "offset_unit" ) );
   mOffsetMapUnitScale = QgsSymbolLayerV2Utils::decodeMapUnitScale( props.value( "offset_unit_scale" ) );
-  double scale = props.value( "scale" ).toDouble( &ok );
-  if ( ok )
-  {
-    mScale = scale;
-  }
   if ( props.contains( "color" ) )
   {
     mColor = QgsSymbolLayerV2Utils::decodeColor( props.value( "color" ) );
   }
 }
 
-QRectF QgsDropShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
+QRectF QgsShadowEffect::boundingRect( const QRectF &rect, const QgsRenderContext& context ) const
 {
   //offset distance
   double spread = mOffsetDist * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mOffsetUnit, mOffsetMapUnitScale );
   //plus possible extension due to blur, with a couple of extra pixels thrown in for safety
   spread += mBlurLevel * 2 + 10;
   return rect.adjusted( -spread, -spread, spread, spread );
+}
+
+
+//
+// QgsDropShadowEffect
+//
+
+QgsPaintEffect *QgsDropShadowEffect::create( const QgsStringMap &map )
+{
+  QgsDropShadowEffect* effect = new QgsDropShadowEffect();
+  effect->readProperties( map );
+  return effect;
+}
+
+QgsDropShadowEffect::QgsDropShadowEffect()
+    : QgsShadowEffect()
+{
+
+}
+
+QgsDropShadowEffect::~QgsDropShadowEffect()
+{
+
+}
+
+QgsPaintEffect *QgsDropShadowEffect::clone() const
+{
+  return new QgsDropShadowEffect( *this );
+}
+
+
+//
+// QgsInnerShadowEffect
+//
+
+QgsPaintEffect *QgsInnerShadowEffect::create( const QgsStringMap &map )
+{
+  QgsInnerShadowEffect* effect = new QgsInnerShadowEffect();
+  effect->readProperties( map );
+  return effect;
+}
+
+QgsInnerShadowEffect::QgsInnerShadowEffect()
+    : QgsShadowEffect()
+{
+
+}
+
+QgsInnerShadowEffect::~QgsInnerShadowEffect()
+{
+
+}
+
+QgsPaintEffect *QgsInnerShadowEffect::clone() const
+{
+  return new QgsInnerShadowEffect( *this );
 }
