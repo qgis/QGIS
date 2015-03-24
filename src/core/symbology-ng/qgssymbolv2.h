@@ -157,6 +157,26 @@ class CORE_EXPORT QgsSymbolV2
     void setRenderHints( int hints ) { mRenderHints = hints; }
     int renderHints() const { return mRenderHints; }
 
+    /**Sets whether features drawn by the symbol should be clipped to the render context's
+     * extent. If this option is enabled then features which are partially outside the extent
+     * will be clipped. This speeds up rendering of the feature, but may have undesirable
+     * side effects for certain symbol types.
+     * @param clipFeaturesToExtent set to true to enable clipping (defaults to true)
+     * @note added in QGIS 2.9
+     * @see clipFeaturesToExtent
+     */
+    void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
+
+    /**Returns whether features drawn by the symbol will be clipped to the render context's
+     * extent. If this option is enabled then features which are partially outside the extent
+     * will be clipped. This speeds up rendering of the feature, but may have undesirable
+     * side effects for certain symbol types.
+     * @returns true if features will be clipped
+     * @note added in QGIS 2.9
+     * @see setClipFeaturesToExtent
+     */
+    double clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
+
     QSet<QString> usedAttributes() const;
 
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
@@ -178,6 +198,7 @@ class CORE_EXPORT QgsSymbolV2
     qreal mAlpha;
 
     int mRenderHints;
+    bool mClipFeaturesToExtent;
 
     const QgsVectorLayer* mLayer; //current vectorlayer
 };
