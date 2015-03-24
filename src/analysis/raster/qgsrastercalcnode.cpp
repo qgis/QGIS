@@ -163,6 +163,12 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
       case opSIGN:
         leftMatrix.changeSign();
         break;
+      case opLOG:
+        leftMatrix.log();
+        break;
+      case opLOG10:
+        leftMatrix.log10();
+        break;
       default:
         return false;
     }
