@@ -40,6 +40,7 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
     , mLayers( layers )
     , mAlpha( 1.0 )
     , mRenderHints( 0 )
+    , mClipFeaturesToExtent( true )
     , mLayer( 0 )
 {
 
@@ -631,6 +632,7 @@ QgsSymbolV2* QgsMarkerSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 
@@ -728,6 +730,7 @@ QgsSymbolV2* QgsLineSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsLineSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 
@@ -834,6 +837,7 @@ QgsSymbolV2* QgsFillSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsFillSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 
