@@ -118,8 +118,21 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext& context 
   if ( !source() )
     return t;
 
-  t.translate( source()->boundingRect().width() / 2.0,
-               source()->boundingRect().height() / 2.0 );
+  int width = source()->boundingRect().width();
+  int height = source()->boundingRect().height();
+  int top = source()->boundingRect().top();
+  int left = source()->boundingRect().left();
+
+  //remember that the below operations are effectively performed in the opposite order
+  //so, first the reflection applies, then scale, shear, rotate and lastly translation
+
+  double translateX = mTranslateX *
+                      QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
+  double translateY = mTranslateY *
+                      QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
+
+  t.translate( translateX + left + width / 2.0,
+               translateY + top + height / 2.0 );
 
   t.rotate( mRotation );
   t.shear( mShearX, mShearY );
@@ -130,13 +143,8 @@ QTransform QgsTransformEffect::createTransform( const QgsRenderContext& context 
     t.scale( mReflectX ? -1 : 1, mReflectY ? -1 : 1 );
   }
 
-  double translateX = mTranslateX *
-                      QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
-  double translateY = mTranslateY *
-                      QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context, mTranslateUnit, mTranslateMapUnitScale );
-
-  t.translate( -source()->boundingRect().width() / 2.0 + translateX,
-               -source()->boundingRect().height() / 2.0 + translateY );
+  t.translate( -left - width / 2.0,
+               -top - height / 2.0 );
 
   return t;
 }
