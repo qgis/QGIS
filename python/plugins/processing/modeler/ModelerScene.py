@@ -98,7 +98,10 @@ class ModelerScene(QtGui.QGraphicsScene):
             idx = 0
             for parameter in alg.algorithm.parameters:
                 if not parameter.hidden:
-                    value = alg.params[parameter.name]
+                    if parameter.name in alg.params:
+                        value = alg.params[parameter.name]
+                    else:
+                        value = None
                     sourceItems = self.getItemsFromParamValue(value)
                     for sourceItem, sourceIdx in sourceItems:
                         arrow = ModelerArrowItem(sourceItem, sourceIdx, self.algItems[alg.name], idx)
