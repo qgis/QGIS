@@ -705,7 +705,7 @@ bool QgsPostgresProvider::loadFields()
     QString tableoidsFilter = "(" + tableoidsList.join( "," ) + ")";
 
     // Collect formatted field types
-    sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), adsrc"
+    sql = "SELECT attrelid, attnum, pg_catalog.format_type(atttypid,atttypmod), pg_catalog.col_description(attrelid,attnum), pg_catalog.pg_get_expr(adbin,adrelid)"
           " FROM pg_attribute"
           " LEFT OUTER JOIN pg_attrdef ON attrelid=adrelid AND attnum=adnum"
           " WHERE attrelid IN " + tableoidsFilter;
