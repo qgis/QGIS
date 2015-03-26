@@ -205,12 +205,15 @@ integer values</string>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_3">
+            <widget class="QCheckBox" name="hasGeometryCol">
              <property name="text">
               <string>Geometry column</string>
              </property>
-             <property name="indent">
-              <number>40</number>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+             <property name="tristate">
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -381,6 +384,22 @@ columns</string>
     <hint type="destinationlabel">
      <x>142</x>
      <y>451</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>hasGeometryCol</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>geomCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>379</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>525</x>
+     <y>385</y>
     </hint>
    </hints>
   </connection>

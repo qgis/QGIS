@@ -179,9 +179,13 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
     def loadSqlLayer(self):
         uniqueFieldName = self.uniqueCombo.currentText()
-        geomFieldName = self.geomCombo.currentText()
+        hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
+        if hasGeomCol:
+            geomFieldName = self.geomCombo.currentText()
+        else:
+            geomFieldName = None
 
-        if geomFieldName == "" or uniqueFieldName == "":
+        if (hasGeomCol and geomFieldName == "") or uniqueFieldName == "":
             QMessageBox.warning(self, self.tr("DB Manager"), self.tr(
                 "You must fill the required fields: \ngeometry column - column with unique integer values"))
             return
