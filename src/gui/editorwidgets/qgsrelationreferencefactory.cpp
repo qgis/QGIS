@@ -48,6 +48,20 @@ QgsEditorWidgetConfig QgsRelationReferenceFactory::readConfig( const QDomElement
   cfg.insert( "MapIdentification", configElement.attribute( "MapIdentification" ) == "1" );
   cfg.insert( "ReadOnly", configElement.attribute( "ReadOnly" ) == "1" );
 
+  QDomNode filterNode = configElement.elementsByTagName( "FilterFields" ).at( 0 );
+  if ( !filterNode.isNull() )
+  {
+    QStringList filterFields;
+    QDomNodeList fieldNodes = filterNode.toElement().elementsByTagName( "field" );
+    for ( int i = 0; i < fieldNodes.size(); i++ )
+    {
+      QDomElement fieldElement = fieldNodes.at( i ).toElement();
+      filterFields << fieldElement.attribute( "name" );
+    }
+    cfg.insert( "FilterFields", filterFields );
+
+    cfg.insert( "ChainFilters", filterNode.toElement().attribute( "ChainFilters" ) == "1" );
+  }
   return cfg;
 }
 
@@ -63,4 +77,19 @@ void QgsRelationReferenceFactory::writeConfig( const QgsEditorWidgetConfig& conf
   configElement.setAttribute( "Relation", config["Relation"].toString() );
   configElement.setAttribute( "MapIdentification", config["MapIdentification"].toBool() );
   configElement.setAttribute( "ReadOnly", config["ReadOnly"].toBool() );
+
+  if ( config.contains( "FilterFields" ) )
+  {
+    QDomElement filterFields = doc.createElement( "FilterFields" );
+
+    Q_FOREACH ( const QString& field, config["FilterFields"].toStringList() )
+    {
+      QDomElement fieldElem = doc.createElement( "field" );
+      fieldElem.setAttribute( "name", field );
+      filterFields.appendChild( fieldElem );
+    }
+    configElement.appendChild( filterFields );
+
+    filterFields.setAttribute( "ChainFilters", config["ChainFilters"].toBool() );
+  }
 }

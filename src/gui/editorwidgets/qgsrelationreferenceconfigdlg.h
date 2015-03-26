@@ -16,6 +16,8 @@
 #ifndef QGSRELATIONREFERENCECONFIGDLGBASE_H
 #define QGSRELATIONREFERENCECONFIGDLGBASE_H
 
+#include <QListWidget>
+
 #include "ui_qgsrelationreferenceconfigdlgbase.h"
 #include "qgseditorconfigwidget.h"
 
@@ -28,8 +30,18 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
     virtual QgsEditorWidgetConfig config() override;
     virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
 
+  private:
+    void loadFields();
+    void addFilterField( const QString& field );
+    void addFilterField( QListWidgetItem* item );
+    int indexFromListWidgetItem( QListWidgetItem* item );
+
+    QgsVectorLayer* mReferencedLayer;
+
   private slots:
     void relationChanged( int idx );
+    void on_mAddFilterButton_clicked();
+    void on_mRemoveFilterButton_clicked();
 };
 
 #endif // QGSRELATIONREFERENCECONFIGDLGBASE_H

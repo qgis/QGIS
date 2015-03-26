@@ -21,11 +21,15 @@
 #include "qgsfeature.h"
 #include "qgshighlight.h"
 #include "qgsmaptoolidentifyfeature.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsfeaturelistmodel.h"
 
 #include <QComboBox>
 #include <QToolButton>
 #include <QLineEdit>
-#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QStandardItemModel>
 
 class QgsAttributeForm;
 class QgsVectorLayerTools;
@@ -78,10 +82,28 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool orderByValue() { return mOrderByValue; }
     //! Set if the widget will order the combobox entries by value
     void setOrderByValue( bool orderByValue );
+    //! Set the fields for which filter comboboxes will be created
+    void setFilterFields( QStringList filterFields );
 
     //! determines the open form button is visible in the widget
     bool openFormButtonVisible() {return mOpenFormButtonVisible;}
     void setOpenFormButtonVisible( bool openFormButtonVisible );
+
+    /**
+     * Determines if the filters are chained
+     *
+     * @return True if filters are chained
+     */
+    bool chainFilters() { return mChainFilters; }
+
+
+    /**
+     * Set if filters are chained.
+     * Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
+     *
+     * @param chainFilters If chaining should be enabled
+     */
+    void setChainFilters( bool chainFilters );
 
     //! return the related feature (from the referenced layer)
     //! if no feature is related, it returns an invalid feature
@@ -112,6 +134,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void featureIdentified( const QgsFeature& feature );
     void unsetMapTool();
     void mapToolDeactivated();
+    void filterChanged();
 
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
@@ -122,7 +145,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsMapCanvas* mCanvas;
     QgsMessageBar* mMessageBar;
     QVariant mForeignKey;
-    QgsFeatureId mFeatureId;
+    QgsFeature mFeature;
     int mFkeyFieldIdx;
     bool mAllowNull;
     QgsHighlight* mHighlight;
@@ -132,10 +155,16 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsAttributeForm* mReferencedAttributeForm;
     QgsVectorLayer* mReferencedLayer;
     QgsVectorLayer* mReferencingLayer;
+    QgsAttributeTableModel* mMasterModel;
+    QgsAttributeTableFilterModel* mFilterModel;
+    QgsFeatureListModel* mFeatureListModel;
+    QList<QComboBox*> mFilterComboBoxes;
     QWidget* mWindowWidget;
     bool mShown;
     QgsRelation mRelation;
     bool mIsEditable;
+    QStringList mFilterFields;
+    QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
 
     // Q_PROPERTY
     bool mEmbedForm;
@@ -143,6 +172,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     bool mAllowMapIdentification;
     bool mOrderByValue;
     bool mOpenFormButtonVisible;
+    bool mChainFilters;
 
     // UI
     QVBoxLayout* mTopLayout;
@@ -155,6 +185,9 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QAction* mScaleHighlightFeatureAction;
     QAction* mPanHighlightFeatureAction;
     QComboBox* mComboBox;
+    QGroupBox* mChooserGroupBox;
+    QWidget* mFilterContainer;
+    QHBoxLayout* mFilterLayout;
     QgsCollapsibleGroupBox* mAttributeEditorFrame;
     QVBoxLayout* mAttributeEditorLayout;
     QLineEdit* mLineEdit;
