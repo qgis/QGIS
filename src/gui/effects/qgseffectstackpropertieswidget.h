@@ -51,10 +51,17 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QWidget, private Ui::Qg
      */
     QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent = 0 );
 
+    ~QgsEffectStackPropertiesWidget();
+
     /** Returns effect stack attached to the widget
      * @returns QgsEffectStack modified by the widget
      */
     QgsEffectStack* stack() { return mStack; }
+
+    /** Sets the picture to use for effect previews for the dialog
+     * @param picture preview picture
+     */
+    void setPreviewPicture( const QPicture& picture );
 
   public slots:
 
@@ -91,7 +98,8 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QWidget, private Ui::Qg
 
     QgsEffectStack* mStack;
     QStandardItemModel* mModel;
-    QWidget *mPresentWidget;
+    QWidget* mPresentWidget;
+    QPicture* mPreviewPicture;
 
     /** Refreshes the widget to reflect the current state of the stack.
      */
@@ -152,6 +160,11 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
      */
     QgsEffectStack* stack();
 
+    /** Sets the picture to use for effect previews for the dialog
+     * @param picture preview picture
+     */
+    void setPreviewPicture( const QPicture& picture );
+
   protected:
 
     QgsEffectStackPropertiesWidget* mPropertiesWidget;
@@ -199,6 +212,11 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QWidget
      */
     QgsPaintEffect* paintEffect() const { return mStack; }
 
+    /** Sets the picture to use for effect previews for the dialog
+     * @param picture preview picture
+     */
+    void setPreviewPicture( const QPicture &picture );
+
   signals:
 
     /** Emitted when the paint effect properties change
@@ -216,6 +234,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QWidget
     QgsEffectStack* mStack;
     QCheckBox* mEnabledCheckBox;
     QToolButton* mButton;
+    QPicture* mPreviewPicture;
 
 };
 

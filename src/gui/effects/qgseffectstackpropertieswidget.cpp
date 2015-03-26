@@ -92,6 +92,7 @@ class EffectItem : public QStandardItem
 QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent )
     : QWidget( parent )
     , mStack( stack )
+    , mPreviewPicture( 0 )
 {
 
 // TODO
@@ -128,6 +129,22 @@ QgsEffectStackPropertiesWidget::QgsEffectStackPropertiesWidget( QgsEffectStack *
   // set effect as active item in the tree
   QModelIndex newIndex = mEffectsList->model()->index( 0, 0 );
   mEffectsList->setCurrentIndex( newIndex );
+}
+
+QgsEffectStackPropertiesWidget::~QgsEffectStackPropertiesWidget()
+{
+  delete mPreviewPicture;
+}
+
+void QgsEffectStackPropertiesWidget::setPreviewPicture( const QPicture &picture )
+{
+  if ( mPreviewPicture )
+  {
+    delete mPreviewPicture;
+  }
+
+  mPreviewPicture = new QPicture( picture );
+  updatePreview();
 }
 
 void QgsEffectStackPropertiesWidget::loadStack( QgsEffectStack* stack )
@@ -174,21 +191,28 @@ void QgsEffectStackPropertiesWidget::updateUi()
 
 void QgsEffectStackPropertiesWidget::updatePreview()
 {
-  QPicture previewPic;
   QPainter painter;
-  painter.begin( &previewPic );
-  painter.setPen( Qt::red );
-  painter.setBrush( QColor( 255, 100, 100, 255 ) );
-  painter.drawEllipse( QPoint( 75, 75 ), 30, 30 );
-  painter.end();
-
-  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
-
   QImage previewImage( 150, 150, QImage::Format_ARGB32 );
   previewImage.fill( Qt::transparent );
   painter.begin( &previewImage );
   painter.setRenderHint( QPainter::Antialiasing );
-  mStack->render( previewPic, context );
+  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &painter );
+  if ( !mPreviewPicture )
+  {
+    QPicture previewPic;
+    QPainter previewPicPainter;
+    previewPicPainter.begin( &previewPic );
+    previewPicPainter.setPen( Qt::red );
+    previewPicPainter.setBrush( QColor( 255, 100, 100, 255 ) );
+    previewPicPainter.drawEllipse( QPoint( 75, 75 ), 30, 30 );
+    previewPicPainter.end();
+    mStack->render( previewPic, context );
+  }
+  else
+  {
+    context.painter()->translate( 35, 35 );
+    mStack->render( *mPreviewPicture, context );
+  }
   painter.end();
 
   lblPreview->setPixmap( QPixmap::fromImage( previewImage ) );
@@ -340,6 +364,11 @@ QgsEffectStack* QgsEffectStackPropertiesDialog::stack()
   return mPropertiesWidget->stack();
 }
 
+void QgsEffectStackPropertiesDialog::setPreviewPicture( const QPicture &picture )
+{
+  mPropertiesWidget->setPreviewPicture( picture );
+}
+
 //
 // QgsEffectStackCompactWidget
 //
@@ -348,6 +377,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsP
     : QWidget( parent )
     , mEnabledCheckBox( 0 )
     , mButton( 0 )
+    , mPreviewPicture( 0 )
 {
   QHBoxLayout* layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
@@ -359,7 +389,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsP
   layout->addWidget( mEnabledCheckBox );
 
   mButton = new QToolButton( this );
-  mButton->setIcon( QgsApplication::getThemeIcon( "mActionSetProjection.svg" ) );
+  mButton->setIcon( QgsApplication::getThemeIcon( "mIconPaintEffects.svg" ) );
   mButton->setToolTip( tr( "Customise effects" ) );
   layout->addWidget( mButton );
 
@@ -374,7 +404,7 @@ QgsEffectStackCompactWidget::QgsEffectStackCompactWidget( QWidget *parent , QgsP
 
 QgsEffectStackCompactWidget::~QgsEffectStackCompactWidget()
 {
-
+  delete mPreviewPicture;
 }
 
 void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
@@ -402,6 +432,12 @@ void QgsEffectStackCompactWidget::setPaintEffect( QgsPaintEffect *effect )
   mButton->setEnabled( mStack->enabled() );
 }
 
+void QgsEffectStackCompactWidget::setPreviewPicture( const QPicture &picture )
+{
+  delete mPreviewPicture;
+  mPreviewPicture = new QPicture( picture );
+}
+
 void QgsEffectStackCompactWidget::showDialog()
 {
   if ( !mStack )
@@ -409,6 +445,10 @@ void QgsEffectStackCompactWidget::showDialog()
 
   QgsEffectStack* clone = static_cast<QgsEffectStack*>( mStack->clone() );
   QgsEffectStackPropertiesDialog dialog( clone, this );
+  if ( mPreviewPicture )
+  {
+    dialog.setPreviewPicture( *mPreviewPicture );
+  }
   if ( dialog.exec() == QDialog::Accepted )
   {
     *mStack = *clone;

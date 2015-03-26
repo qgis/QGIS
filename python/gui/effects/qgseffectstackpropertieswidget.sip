@@ -23,10 +23,17 @@ class QgsEffectStackPropertiesWidget : QWidget
      */
     QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent /TransferThis/ = 0 );
 
+    ~QgsEffectStackPropertiesWidget();
+
     /** Returns effect stack attached to the widget
      * @returns QgsEffectStack modified by the widget
      */
     QgsEffectStack* stack();
+
+    /** Sets the picture to use for effect previews for the dialog
+     * @param picture preview picture
+     */
+    void setPreviewPicture( const QPicture& picture );
 
   public slots:
 
@@ -121,6 +128,11 @@ class QgsEffectStackPropertiesDialog : QgsDialog
      * @returns QgsEffectStack modified by the dialog
      */
     QgsEffectStack* stack();
+
+    /** Sets the picture to use for effect previews for the dialog
+     * @param picture preview picture
+     */
+    void setPreviewPicture( const QPicture& picture );
     
 };
 
@@ -164,6 +176,11 @@ class QgsEffectStackCompactWidget : QWidget
      * @see setPaintEffect
      */
     QgsPaintEffect* paintEffect() const;
+
+    /** Sets the picture to use for effect previews for the dialog
+     * @param picture preview picture
+     */
+    void setPreviewPicture( const QPicture& picture );
 
   signals:
 

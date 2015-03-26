@@ -19,6 +19,7 @@
 #include <QStandardItem>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QPicture>
 
 #include "qgssymbollayerv2.h"
 #include "qgssymbollayerv2registry.h"
@@ -192,4 +193,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 void QgsLayerPropertiesWidget::emitSignalChanged()
 {
   emit changed();
+
+  // also update paint effect preview
+  mEffectWidget->setPreviewPicture( QgsSymbolLayerV2Utils::symbolLayerPreviewPicture( mLayer, QgsSymbolV2::MM, QSize( 80, 80 ) ) );
 }
