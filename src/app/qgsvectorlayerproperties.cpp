@@ -306,7 +306,7 @@ void QgsVectorLayerProperties::toggleEditing()
   emit toggleEditing( layer );
 
   pbnQueryBuilder->setEnabled( layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
-                               !layer->isEditable() && layer->vectorJoins().size() < 1 );
+                               !layer->isEditable() );
   if ( layer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
@@ -392,7 +392,7 @@ void QgsVectorLayerProperties::syncToLayer( void )
   // a mechanism to check it must be implemented.
   txtSubsetSQL->setEnabled( false );
   pbnQueryBuilder->setEnabled( layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
-                               !layer->isEditable() && layer->vectorJoins().size() < 1 );
+                               !layer->isEditable() );
   if ( layer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
@@ -1056,7 +1056,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
     layer->addJoin( info );
     addJoinToTreeWidget( info );
     pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
-                                 !layer->isEditable() && layer->vectorJoins().size() < 1 );
+                                 !layer->isEditable() );
     mFieldsPropertiesDialog->init();
   }
 }
@@ -1117,7 +1117,7 @@ void QgsVectorLayerProperties::on_mButtonEditJoin_clicked()
     addJoinToTreeWidget( info, idx );
 
     pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
-                                 !layer->isEditable() && layer->vectorJoins().size() < 1 );
+                                 !layer->isEditable() );
     mFieldsPropertiesDialog->init();
   }
 }
@@ -1196,7 +1196,7 @@ void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
   layer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
   pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
-                               !layer->isEditable() && layer->vectorJoins().size() < 1 );
+                               !layer->isEditable() );
   mFieldsPropertiesDialog->init();
 }
 
