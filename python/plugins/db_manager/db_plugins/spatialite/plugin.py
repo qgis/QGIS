@@ -144,6 +144,8 @@ class SLDatabase(Database):
 
         return Database.runAction(self, action)
 
+    def uniqueIdFunction(self):
+        return None
 
 class SLTable(Table):
     def __init__(self, row, db, schema=None):

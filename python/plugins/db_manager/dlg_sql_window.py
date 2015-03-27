@@ -178,17 +178,16 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         QApplication.restoreOverrideCursor()
 
     def loadSqlLayer(self):
-        uniqueFieldName = self.uniqueCombo.currentText()
+        hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked
+        if hasUniqueField:
+            uniqueFieldName = self.uniqueCombo.currentText()
+        else:
+            uniqueFieldName = None
         hasGeomCol = self.hasGeometryCol.checkState() == Qt.Checked
         if hasGeomCol:
             geomFieldName = self.geomCombo.currentText()
         else:
             geomFieldName = None
-
-        if (hasGeomCol and geomFieldName == "") or uniqueFieldName == "":
-            QMessageBox.warning(self, self.tr("DB Manager"), self.tr(
-                "You must fill the required fields: \ngeometry column - column with unique integer values"))
-            return
 
         query = self.editSql.text()
         if query == "":

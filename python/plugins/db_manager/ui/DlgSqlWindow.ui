@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>747</width>
+    <width>800</width>
     <height>525</height>
    </rect>
   </property>
@@ -181,7 +181,7 @@
          <item row="0" column="0">
           <layout class="QHBoxLayout" name="horizontalLayout_6">
            <item>
-            <widget class="QLabel" name="label_4">
+            <widget class="QCheckBox" name="uniqueColumnCheck">
              <property name="text">
               <string>Column with unique 
 integer values</string>
@@ -190,6 +190,9 @@ integer values</string>
            </item>
            <item>
             <widget class="QComboBox" name="uniqueCombo">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -399,6 +402,22 @@ columns</string>
     </hint>
     <hint type="destinationlabel">
      <x>525</x>
+     <y>385</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>uniqueColumnCheck</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>uniqueCombo</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>109</x>
+     <y>385</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>274</x>
      <y>385</y>
     </hint>
    </hints>
