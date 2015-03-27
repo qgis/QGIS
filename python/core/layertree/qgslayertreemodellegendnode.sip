@@ -134,6 +134,8 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();
+
+    void setIconSize(const QSize& sz);
 };
 
 
