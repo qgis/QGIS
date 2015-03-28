@@ -481,7 +481,7 @@ void QgsLabelPropertyDialog::on_mFontSizeSpinBox_valueChanged( double d )
 
 void QgsLabelPropertyDialog::on_mBufferSizeSpinBox_valueChanged( double d )
 {
-  insertChangedValue( QgsPalLayerSettings::PositionX, d );
+  insertChangedValue( QgsPalLayerSettings::BufferSize, d );
 }
 
 void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
