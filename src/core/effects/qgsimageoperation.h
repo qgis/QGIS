@@ -49,7 +49,8 @@ class CORE_EXPORT QgsImageOperation
     {
       GrayscaleLightness, /*< keep the lightness of the color, drops the saturation */
       GrayscaleLuminosity, /*< grayscale by perceptual luminosity (weighted sum of color RGB components) */
-      GrayscaleAverage /*< grayscale by taking average of color RGB components */
+      GrayscaleAverage, /*< grayscale by taking average of color RGB components */
+      GrayscaleOff /*< no change */
     };
 
     /** Flip operation types
@@ -322,11 +323,10 @@ class CORE_EXPORT QgsImageOperation
     class ConvertToArrayPixelOperation
     {
       public:
-        ConvertToArrayPixelOperation( const int width, double * array, const bool exterior = true, const int alphaThreshold = 255 )
+        ConvertToArrayPixelOperation( const int width, double * array, const bool exterior = true )
             : mWidth( width )
             , mArray( array )
             , mExterior( exterior )
-            , mAlphaThreshold( alphaThreshold )
         {
         }
 
@@ -336,7 +336,6 @@ class CORE_EXPORT QgsImageOperation
         int mWidth;
         double * mArray;
         bool mExterior;
-        int mAlphaThreshold;
     };
 
     class ShadeFromArrayOperation

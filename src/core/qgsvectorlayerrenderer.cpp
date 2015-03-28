@@ -28,8 +28,10 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgspainteffect.h"
 
 #include <QSettings>
+#include <QPicture>
 
 // TODO:
 // - passing of cache to QgsVectorLayer
@@ -115,6 +117,13 @@ bool QgsVectorLayerRenderer::render()
   {
     mErrors.append( QObject::tr( "No renderer for drawing." ) );
     return false;
+  }
+
+  bool usingEffect = false;
+  if ( mRendererV2->paintEffect() && mRendererV2->paintEffect()->enabled() )
+  {
+    usingEffect = true;
+    mRendererV2->paintEffect()->begin( mContext );
   }
 
   // Per feature blending mode
@@ -214,6 +223,11 @@ bool QgsVectorLayerRenderer::render()
     drawRendererV2Levels( fit );
   else
     drawRendererV2( fit );
+
+  if ( usingEffect )
+  {
+    mRendererV2->paintEffect()->end( mContext );
+  }
 
   //apply layer transparency for vector layers
   if ( mContext.useAdvancedEffects() && mLayerTransparency != 0 )

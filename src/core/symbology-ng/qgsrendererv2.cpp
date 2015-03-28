@@ -28,6 +28,9 @@
 #include "qgsfeature.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
+#include "qgspainteffectregistry.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -188,12 +191,31 @@ void QgsFeatureRendererV2::setScaleMethodToSymbol( QgsSymbolV2* symbol, int scal
   }
 }
 
+void QgsFeatureRendererV2::copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const
+{
+  if ( !destRenderer || !mPaintEffect )
+    return;
+
+  destRenderer->setPaintEffect( mPaintEffect->clone() );
+}
+
 
 QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
-    : mType( type ), mUsingSymbolLevels( false ),
-    mCurrentVertexMarkerType( QgsVectorLayer::Cross ),
-    mCurrentVertexMarkerSize( 3 )
+    : mType( type )
+    , mUsingSymbolLevels( false )
+    , mCurrentVertexMarkerType( QgsVectorLayer::Cross )
+    , mCurrentVertexMarkerSize( 3 )
+    , mPaintEffect( 0 )
 {
+  QgsEffectStack* stack = new QgsEffectStack();
+  stack->appendEffect( new QgsDrawSourceEffect() );
+  mPaintEffect = stack;
+  mPaintEffect->setEnabled( false );
+}
+
+QgsFeatureRendererV2::~QgsFeatureRendererV2()
+{
+  delete mPaintEffect;
 }
 
 QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType geomType )
@@ -205,7 +227,6 @@ void QgsFeatureRendererV2::startRender( QgsRenderContext& context, const QgsVect
 {
   startRender( context, vlayer->pendingFields() );
 }
-
 
 bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
@@ -384,6 +405,13 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
+
+    //restore layer effect
+    QDomElement effectElem = element.firstChildElement( "effect" );
+    if ( !effectElem.isNull() )
+    {
+      r->setPaintEffect( QgsPaintEffectRegistry::instance()->createEffect( effectElem ) );
+    }
   }
   return r;
 }
@@ -391,7 +419,12 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
 QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
 {
   // create empty renderer element
-  return doc.createElement( RENDERER_TAG_NAME );
+  QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
+
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
+
+  return rendererElem;
 }
 
 QgsFeatureRendererV2* QgsFeatureRendererV2::loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage )
@@ -594,4 +627,15 @@ QgsSymbolV2List QgsFeatureRendererV2::originalSymbolsForFeature( QgsFeature& fea
   QgsSymbolV2* s = originalSymbolForFeature( feat );
   if ( s ) lst.append( s );
   return lst;
+}
+
+QgsPaintEffect *QgsFeatureRendererV2::paintEffect() const
+{
+  return mPaintEffect;
+}
+
+void QgsFeatureRendererV2::setPaintEffect( QgsPaintEffect *effect )
+{
+  delete mPaintEffect;
+  mPaintEffect = effect;
 }

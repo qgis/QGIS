@@ -37,6 +37,10 @@ class QgsFields;
 class QgsSymbolLayerV2;
 class QgsRenderContext;
 class QgsVectorLayer;
+class QgsPaintEffect;
+class QgsMarkerSymbolLayerV2;
+class QgsLineSymbolLayerV2;
+class QgsFillSymbolLayerV2;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
@@ -180,6 +184,7 @@ class CORE_EXPORT QgsSymbolV2
     int mRenderHints;
 
     const QgsVectorLayer* mLayer; //current vectorlayer
+
 };
 
 ///////////////////////
@@ -265,6 +270,11 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, const QPointF& point, QgsSymbolV2RenderContext& context );
+
 };
 
 
@@ -285,6 +295,11 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPolylineUsingLayer( QgsLineSymbolLayerV2* layer, const QPolygonF& points, QgsSymbolV2RenderContext& context );
+
 };
 
 
@@ -302,6 +317,14 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolV2RenderContext &context );
+    /**Calculates the bounds of a polygon including rings*/
+    QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
+    /**Translates the rings in a polygon by a set distance*/
+    QList<QPolygonF>* translateRings( const QList<QPolygonF> *rings, double dx, double dy ) const;
 };
 
 #endif

@@ -174,6 +174,14 @@
 %Include diagram/qgstextdiagram.sip
 
 %Include effects/qgsimageoperation.sip
+%Include effects/qgspainteffect.sip
+%Include effects/qgseffectstack.sip
+%Include effects/qgsblureffect.sip
+%Include effects/qgsshadoweffect.sip
+%Include effects/qgsgloweffect.sip
+%Include effects/qgstransformeffect.sip
+%Include effects/qgscoloreffect.sip
+%Include effects/qgspainteffectregistry.sip
 
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsconnectionregistry.sip
