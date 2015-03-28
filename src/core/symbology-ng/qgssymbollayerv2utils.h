@@ -103,6 +103,16 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QPainter::CompositionMode decodeBlendMode( const QString& s );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
+
+    /** Draws a symbol layer preview to a QPicture
+     * @param layer symbol layer to draw
+     * @param units size units
+     * @param size target size of preview picture
+     * @param scale map unit scale for preview
+     * @returns QPicture containing symbol layer preview
+     * @note added in QGIS 2.9
+     */
+    static QPicture symbolLayerPreviewPicture( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit units, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size, const QgsMapUnitScale& scale = QgsMapUnitScale() );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 

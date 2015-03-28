@@ -378,6 +378,7 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
   l->setCustomDashVector( mCustomDashVector );
   l->setDrawInsidePolygon( mDrawInsidePolygon );
   copyDataDefinedProperties( l );
+  copyPaintEffect( l );
   return l;
 }
 
@@ -1297,6 +1298,7 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   x->setOffsetAlongLineMapUnitScale( mOffsetAlongLineMapUnitScale );
   x->setOffsetAlongLineUnit( mOffsetAlongLineUnit );
   copyDataDefinedProperties( x );
+  copyPaintEffect( x );
   return x;
 }
 

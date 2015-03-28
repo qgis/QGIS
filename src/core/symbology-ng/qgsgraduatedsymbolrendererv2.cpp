@@ -20,6 +20,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgspainteffect.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -518,6 +519,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
+  copyPaintEffect( r );
   return r;
 }
 
@@ -1292,6 +1294,9 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   QDomElement labelFormatElem = doc.createElement( "labelformat" );
   mLabelFormat.saveToDomElement( labelFormatElem );
   rendererElem.appendChild( labelFormatElem );
+
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;
 }
