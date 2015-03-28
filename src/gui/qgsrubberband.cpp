@@ -572,7 +572,12 @@ void QgsRubberBand::updateRect()
 
 void QgsRubberBand::updatePosition( )
 {
-  // nothing to do here...
+  // re-compute rectangle
+  // See http://hub.qgis.org/issues/12392
+  // NOTE: could be optimized by saving map-extent
+  //       of rubberband and simply re-projecting
+  //       that to device-rectange on "updatePosition"
+  updateRect();
 }
 
 void QgsRubberBand::setTranslationOffset( double dx, double dy )
