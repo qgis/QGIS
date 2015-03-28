@@ -34,7 +34,12 @@
 #include <cmath>
 
 QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
-    : mType( type ), mLayers( layers ), mAlpha( 1.0 ), mRenderHints( 0 ), mLayer( NULL )
+    : mType( type )
+    , mLayers( layers )
+    , mAlpha( 1.0 )
+    , mRenderHints( 0 )
+    , mClipFeaturesToExtent( true )
+    , mLayer( NULL )
 {
 
   // check they're all correct symbol layers
@@ -602,6 +607,7 @@ QgsSymbolV2* QgsMarkerSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 
@@ -673,6 +679,7 @@ QgsSymbolV2* QgsLineSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsLineSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 
@@ -725,6 +732,7 @@ QgsSymbolV2* QgsFillSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsFillSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 

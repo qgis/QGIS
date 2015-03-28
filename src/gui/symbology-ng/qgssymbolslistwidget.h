@@ -47,6 +47,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     void on_groupsCombo_editTextChanged( const QString &text );
 
     void openStyleManager();
+    void clipFeaturesToggled( bool checked );
 
   signals:
     void changed();
@@ -54,6 +55,8 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
   protected:
     QgsSymbolV2* mSymbol;
     QgsStyleV2* mStyle;
+    QMenu* mAdvancedMenu;
+    QAction* mClipFeaturesAction;
 
     void populateSymbolView();
     void populateSymbols( QStringList symbols );
