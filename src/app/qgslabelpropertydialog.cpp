@@ -26,6 +26,7 @@
 #include <QColorDialog>
 #include <QFontDatabase>
 #include <QSettings>
+#include <QDialogButtonBox>
 
 
 QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int featureId, const QFont& labelFont, const QString& labelText, QWidget * parent, Qt::WindowFlags f ):
@@ -45,6 +46,14 @@ QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QSettings settings;
   settings.setValue( QString( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+}
+
+void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
+{
+  if ( buttonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
+  {
+    emit applied();
+  }
 }
 
 void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const QString& labelText )
