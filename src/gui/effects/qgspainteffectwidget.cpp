@@ -255,7 +255,7 @@ QgsShadowEffectWidget::QgsShadowEffectWidget( QWidget *parent )
   mShadowColorBtn->setColorDialogTitle( tr( "Select shadow color" ) );
   mShadowColorBtn->setContext( "symbology" );
 
-  mOffsetUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 2 );
+  mOffsetUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Pixel << QgsSymbolV2::MapUnit );
 
   initGui();
 }
@@ -281,19 +281,7 @@ void QgsShadowEffectWidget::initGui()
   mShadowOffsetAngleSpnBx->setValue( mEffect->offsetAngle() );
   mShadowOffsetAngleDial->setValue( mEffect->offsetAngle() );
   mShadowOffsetSpnBx->setValue( mEffect->offsetDistance() );
-  switch ( mEffect->offsetUnit() )
-  {
-    case QgsSymbolV2::MM:
-      mOffsetUnitWidget->setUnit( 1 );
-      break;
-    case QgsSymbolV2::MapUnit:
-      mOffsetUnitWidget->setUnit( 2 );
-      break;
-    case QgsSymbolV2::Pixel:
-    default:
-      mOffsetUnitWidget->setUnit( 0 );
-      break;
-  }
+  mOffsetUnitWidget->setUnit( mEffect->offsetUnit() );
   mOffsetUnitWidget->setMapUnitScale( mEffect->offsetMapUnitScale() );
   mShadowRadiuSpnBx->setValue( mEffect->blurLevel() );
   mShadowTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
@@ -352,18 +340,8 @@ void QgsShadowEffectWidget::on_mOffsetUnitWidget_changed()
   {
     return;
   }
-  switch ( mOffsetUnitWidget->getUnit() )
-  {
-    case 0:
-      mEffect->setOffsetUnit( QgsSymbolV2::Pixel );
-      break;
-    case 1:
-      mEffect->setOffsetUnit( QgsSymbolV2::MM );
-      break;
-    case 2:
-      mEffect->setOffsetUnit( QgsSymbolV2::MapUnit );
-      break;
-  }
+
+  mEffect->setOffsetUnit( mOffsetUnitWidget->unit() );
   mEffect->setOffsetMapUnitScale( mOffsetUnitWidget->getMapUnitScale() );
   emit changed();
 }
@@ -442,7 +420,7 @@ QgsGlowWidget::QgsGlowWidget( QWidget *parent )
   mColorBtn->setColorDialogTitle( tr( "Select glow color" ) );
   mColorBtn->setContext( "symbology" );
 
-  mSpreadUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 2 );
+  mSpreadUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Pixel << QgsSymbolV2::MapUnit );
 
   mRampComboBox->populate( QgsStyleV2::defaultStyle() );
   mRampComboBox->setShowGradientOnly( true );
@@ -471,19 +449,7 @@ void QgsGlowWidget::initGui()
   blockSignals( true );
 
   mSpreadSpnBx->setValue( mEffect->spread() );
-  switch ( mEffect->spreadUnit() )
-  {
-    case QgsSymbolV2::MM:
-      mSpreadUnitWidget->setUnit( 1 );
-      break;
-    case QgsSymbolV2::MapUnit:
-      mSpreadUnitWidget->setUnit( 2 );
-      break;
-    case QgsSymbolV2::Pixel:
-    default:
-      mSpreadUnitWidget->setUnit( 0 );
-      break;
-  }
+  mSpreadUnitWidget->setUnit( mEffect->spreadUnit() );
   mSpreadUnitWidget->setMapUnitScale( mEffect->spreadMapUnitScale() );
   mBlurRadiusSpnBx->setValue( mEffect->blurLevel() );
   mTranspSpnBx->setValue( mEffect->transparency() * 100.0 );
@@ -556,18 +522,8 @@ void QgsGlowWidget::on_mSpreadUnitWidget_changed()
   {
     return;
   }
-  switch ( mSpreadUnitWidget->getUnit() )
-  {
-    case 0:
-      mEffect->setSpreadUnit( QgsSymbolV2::Pixel );
-      break;
-    case 1:
-      mEffect->setSpreadUnit( QgsSymbolV2::MM );
-      break;
-    case 2:
-      mEffect->setSpreadUnit( QgsSymbolV2::MapUnit );
-      break;
-  }
+
+  mEffect->setSpreadUnit( mSpreadUnitWidget->unit() );
   mEffect->setSpreadMapUnitScale( mSpreadUnitWidget->getMapUnitScale() );
   emit changed();
 }
@@ -683,7 +639,7 @@ QgsTransformWidget::QgsTransformWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mTranslateUnitWidget->setUnits( QStringList() << tr( "Pixels" ) << tr( "Millimeter" ) << tr( "Map unit" ), 2 );
+  mTranslateUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Pixel << QgsSymbolV2::MapUnit );
   mSpinTranslateX->setClearValue( 0 );
   mSpinTranslateY->setClearValue( 0 );
   mSpinShearX->setClearValue( 0 );
@@ -718,19 +674,7 @@ void QgsTransformWidget::initGui()
   mDrawModeComboBox->setDrawMode( mEffect->drawMode() );
   mSpinTranslateX->setValue( mEffect->translateX() );
   mSpinTranslateY->setValue( mEffect->translateY() );
-  switch ( mEffect->translateUnit() )
-  {
-    case QgsSymbolV2::MM:
-      mTranslateUnitWidget->setUnit( 1 );
-      break;
-    case QgsSymbolV2::MapUnit:
-      mTranslateUnitWidget->setUnit( 2 );
-      break;
-    case QgsSymbolV2::Pixel:
-    default:
-      mTranslateUnitWidget->setUnit( 0 );
-      break;
-  }
+  mTranslateUnitWidget->setUnit( mEffect->translateUnit() );
   mTranslateUnitWidget->setMapUnitScale( mEffect->translateMapUnitScale() );
   mSpinShearX->setValue( mEffect->shearX() );
   mSpinShearY->setValue( mEffect->shearY() );
@@ -792,18 +736,8 @@ void QgsTransformWidget::on_mTranslateUnitWidget_changed()
   {
     return;
   }
-  switch ( mTranslateUnitWidget->getUnit() )
-  {
-    case 0:
-      mEffect->setTranslateUnit( QgsSymbolV2::Pixel );
-      break;
-    case 1:
-      mEffect->setTranslateUnit( QgsSymbolV2::MM );
-      break;
-    case 2:
-      mEffect->setTranslateUnit( QgsSymbolV2::MapUnit );
-      break;
-  }
+
+  mEffect->setTranslateUnit( mTranslateUnitWidget->unit() );
   mEffect->setTranslateMapUnitScale( mTranslateUnitWidget->getMapUnitScale() );
   emit changed();
 }
