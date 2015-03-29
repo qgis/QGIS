@@ -34,6 +34,7 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString& layerId, int feat
   setupUi( this );
   fillHaliComboBox();
   fillValiComboBox();
+
   init( layerId, featureId, labelText );
 
   QSettings settings;
@@ -111,11 +112,17 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId, const 
   updateFont( mLabelFont, false );
 
   //set all the gui elements to the default layer-level values
+  mLabelDistanceSpinBox->clear();
+  mLabelDistanceSpinBox->setSpecialValueText( tr( "Layer default (%1)" ).arg( QString::number( layerSettings.dist, 'f', mLabelDistanceSpinBox->decimals() ) ) );
+  mBufferSizeSpinBox->clear();
+  mBufferSizeSpinBox->setSpecialValueText( tr( "Layer default (%1)" ).arg( QString::number( layerSettings.bufferSize, 'f', mBufferSizeSpinBox->decimals() ) ) );
+  mRotationSpinBox->clear();
+  mXCoordSpinBox->clear();
+  mYCoordSpinBox->clear();
+
   mShowLabelChkbx->setChecked( true );
   mFontColorButton->setColor( layerSettings.textColor );
   mBufferColorButton->setColor( layerSettings.bufferColor );
-  mLabelDistanceSpinBox->setValue( layerSettings.dist );
-  mBufferSizeSpinBox->setValue( layerSettings.bufferSize );
   mMinScaleSpinBox->setValue( layerSettings.scaleMin );
   mMaxScaleSpinBox->setValue( layerSettings.scaleMax );
   mHaliComboBox->setCurrentIndex( mHaliComboBox->findText( "Left" ) );
@@ -486,17 +493,35 @@ void QgsLabelPropertyDialog::on_mMaxScaleSpinBox_valueChanged( int i )
 
 void QgsLabelPropertyDialog::on_mLabelDistanceSpinBox_valueChanged( double d )
 {
-  insertChangedValue( QgsPalLayerSettings::LabelDistance, d );
+  QVariant distance( d );
+  if ( d < 0 )
+  {
+    //null value so that distance is reset to default
+    distance.clear();
+  }
+  insertChangedValue( QgsPalLayerSettings::LabelDistance, distance );
 }
 
 void QgsLabelPropertyDialog::on_mXCoordSpinBox_valueChanged( double d )
 {
-  insertChangedValue( QgsPalLayerSettings::PositionX, d );
+  QVariant x( d );
+  if ( d < mXCoordSpinBox->minimum() + mXCoordSpinBox->singleStep() )
+  {
+    //null value
+    x.clear();
+  }
+  insertChangedValue( QgsPalLayerSettings::PositionX, x );
 }
 
 void QgsLabelPropertyDialog::on_mYCoordSpinBox_valueChanged( double d )
 {
-  insertChangedValue( QgsPalLayerSettings::PositionY, d );
+  QVariant y( d );
+  if ( d < mYCoordSpinBox->minimum() + mYCoordSpinBox->singleStep() )
+  {
+    //null value
+    y.clear();
+  }
+  insertChangedValue( QgsPalLayerSettings::PositionY, y );
 }
 
 void QgsLabelPropertyDialog::on_mFontFamilyCmbBx_currentFontChanged( const QFont& f )
@@ -554,12 +579,24 @@ void QgsLabelPropertyDialog::on_mFontSizeSpinBox_valueChanged( double d )
 
 void QgsLabelPropertyDialog::on_mBufferSizeSpinBox_valueChanged( double d )
 {
-  insertChangedValue( QgsPalLayerSettings::PositionX, d );
+  QVariant size( d );
+  if ( d < 0 )
+  {
+    //null value so that size is reset to default
+    size.clear();
+  }
+  insertChangedValue( QgsPalLayerSettings::BufferSize, size );
 }
 
 void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
 {
-  insertChangedValue( QgsPalLayerSettings::Rotation, d );
+  QVariant rotation( d );
+  if ( d < 0 )
+  {
+    //null value so that size is reset to default
+    rotation.clear();
+  }
+  insertChangedValue( QgsPalLayerSettings::Rotation, rotation );
 }
 
 void QgsLabelPropertyDialog::on_mFontColorButton_colorChanged( const QColor &color )

@@ -237,7 +237,7 @@
           <property name="value">
            <double>0.000000000000000</double>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>true</bool>
           </property>
          </widget>
@@ -311,7 +311,7 @@
           <property name="maximum">
            <number>999999999</number>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
          </widget>
@@ -330,7 +330,7 @@
           <property name="value">
            <number>10000000</number>
           </property>
-          <property name="showClearButton">
+          <property name="showClearButton" stdset="0">
            <bool>false</bool>
           </property>
          </widget>
@@ -380,11 +380,14 @@
         </item>
         <item>
          <widget class="QgsDoubleSpinBox" name="mBufferSizeSpinBox">
+          <property name="minimum">
+           <double>-1.000000000000000</double>
+          </property>
           <property name="maximum">
            <double>999999.000000000000000</double>
           </property>
-          <property name="showClearButton">
-           <bool>false</bool>
+          <property name="showClearButton" stdset="0">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -438,7 +441,20 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QgsDoubleSpinBox" name="mLabelDistanceSpinBox"/>
+       <widget class="QgsDoubleSpinBox" name="mLabelDistanceSpinBox">
+        <property name="specialValueText">
+         <string>Default</string>
+        </property>
+        <property name="minimum">
+         <double>-1.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>999999.000000000000000</double>
+        </property>
+        <property name="showClearButton" stdset="0">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="mXCoordLabel">
@@ -455,14 +471,17 @@
       </item>
       <item row="1" column="1">
        <widget class="QgsDoubleSpinBox" name="mXCoordSpinBox">
+        <property name="specialValueText">
+         <string>Default</string>
+        </property>
         <property name="minimum">
          <double>-999999999.000000000000000</double>
         </property>
         <property name="maximum">
          <double>999999999.000000000000000</double>
         </property>
-        <property name="showClearButton">
-         <bool>false</bool>
+        <property name="showClearButton" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -481,14 +500,17 @@
       </item>
       <item row="2" column="1">
        <widget class="QgsDoubleSpinBox" name="mYCoordSpinBox">
+        <property name="specialValueText">
+         <string>Default</string>
+        </property>
         <property name="minimum">
          <double>-999999999.000000000000000</double>
         </property>
         <property name="maximum">
          <double>999999999.000000000000000</double>
         </property>
-        <property name="showClearButton">
-         <bool>false</bool>
+        <property name="showClearButton" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -539,8 +561,17 @@
       </item>
       <item row="5" column="1">
        <widget class="QgsDoubleSpinBox" name="mRotationSpinBox">
+        <property name="specialValueText">
+         <string>Default</string>
+        </property>
+        <property name="minimum">
+         <double>-1.000000000000000</double>
+        </property>
         <property name="maximum">
          <double>360.000000000000000</double>
+        </property>
+        <property name="showClearButton" stdset="0">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
@@ -564,6 +595,7 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
