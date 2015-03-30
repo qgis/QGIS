@@ -212,6 +212,29 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     /** Update all the symbols but leave breaks and colors. */
     void updateSymbols( QgsSymbolV2* sym /Transfer/ );
 
+    //! set varying symbol size for classes
+    //! @note the classes must already be set so that symbols exist
+    //! @note added in 2.10
+    void setSymbolSizes( double minSize, double maxSize );
+
+    //! return the min symbol size when graduated by size
+    //! @note added in 2.10
+    double minSymbolSize() const;
+
+    //! return the max symbol size when graduated by size
+    //! @note added in 2.10
+    double maxSymbolSize() const;
+
+    enum GraduatedMethod {GraduatedColor = 0, GraduatedSize = 1 };
+
+    //! return the method used for graduation (either size or color)
+    //! @note added in 2.10
+    GraduatedMethod graduatedMethod() const;
+
+    //! set the method used for graduation (either size or color)
+    //! @note added in 2.10
+    void setGraduatedMethod( GraduatedMethod method );
+
     void setRotationField( QString fieldOrExpression );
     QString rotationField() const;
 
