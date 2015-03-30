@@ -159,6 +159,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 
     QStringListModel* m = new QStringListModel( values, mLineEdit );
     QCompleter* completer = new QCompleter( m, mLineEdit );
+    completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
   }
 }
