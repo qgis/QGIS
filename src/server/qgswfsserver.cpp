@@ -463,10 +463,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         QgsFeature feature;
         QgsAttributeMap featureAttributes;
-        const QgsFields& fields = provider->fields();
+        //const QgsFields& fields = provider->fields();
+        const QgsFields& fields = layer->pendingFields();
 
         mWithGeom = true;
-        QgsAttributeList attrIndexes = provider->attributeIndexes();
+        //QgsAttributeList attrIndexes = provider->attributeIndexes();
+        QgsAttributeList attrIndexes = layer->pendingAllAttributesList();
 
         QDomNodeList queryChildNodes = queryElem.childNodes();
         if ( queryChildNodes.size() )
@@ -804,12 +806,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
       QgsFeature feature;
       QgsAttributeMap featureAttributes;
-      const QgsFields& fields = provider->fields();
+      //const QgsFields& fields = provider->fields();
+      const QgsFields& fields = layer->pendingFields();
 
       //map extent
       searchRect = layer->extent();
 
-      QgsAttributeList attrIndexes = provider->attributeIndexes();
+      //QgsAttributeList attrIndexes = provider->attributeIndexes();
+      QgsAttributeList attrIndexes = layer->pendingAllAttributesList();
       if ( mPropertyName != "*" )
       {
         QStringList attrList = mPropertyName.split( "," );
