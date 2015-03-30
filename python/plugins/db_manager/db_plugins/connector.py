@@ -223,3 +223,7 @@ class DBConnector:
             return getSqlDictionary()
         except ImportError:
             return []
+
+    def getQueryBuilderDictionary(self):
+        return {}
+

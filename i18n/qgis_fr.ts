@@ -1895,6 +1895,69 @@ Colonnes</translation>
     </message>
 </context>
 <context>
+    <name>DbManagerQueryBuilderDlg</name>
+    <message>
+        <source>SQL query builder</source>
+        <translation>Constructeur de requête SQL</translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation>Données</translation>
+    </message>
+    <message>
+        <source>Columns' values</source>
+        <translation>Valeurs</translation>
+    </message>
+    <message>
+        <source>Spatial index</source>
+        <translation>Index spatial</translation>
+    </message>
+    <message>
+        <source>Columns</source>
+        <translation>Colonnes</translation>
+    </message>
+    <message>
+        <source>Aggregates</source>
+        <translation>Agrégats</translation>
+    </message>
+    <message>
+        <source>Functions</source>
+        <translation>Fonctions</translation>
+    </message>
+    <message>
+        <source>String functions</source>
+        <translation>Fonctions sur les chaînes</translation>
+    </message>
+    <message>
+        <source>Operators</source>
+        <translation>Opérateurs</translation>
+    </message>
+    <message>
+        <source>Only 10 first values</source>
+        <translation>Seulement les 10 premières</translation>
+    </message>
+    <message>
+        <source>&amp;Reset</source>
+        <translation>Effacer</translation>
+    </message>
+    <message>
+        <source>Table (with spatial index)</source>
+        <translation>Table (avec index spatial)</translation>
+    </message>
+    <message>
+        <source>Table (Target)</source>
+        <translation>Table (cible)</translation>
+    </message>
+    <message>
+        <source>Use spatial index</source>
+        <translation>Utiliser index spatial</translation>
+    </message>
+    <message>
+        <source>Show system tables</source>
+        <translation>Montrer les tables système</translation>
+    </message>
+</context>
+<context>
     <name>DbManagerDlgTableProperties</name>
     <message>
         <source>Table properties</source>

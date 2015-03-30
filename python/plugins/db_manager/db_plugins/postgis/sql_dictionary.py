@@ -93,75 +93,88 @@ postgis_keywords = []
 
 # functions
 functions = [
-    # TODO get them from a reference page
-    "abs", "changes", "coalesce", "glob", "ifnull", "hex", "last_insert_rowid",
-    "length", "like", "lower", "ltrim", "max", "min", "nullif", "quote", "random",
-    "randomblob", "replace", "round", "rtrim", "soundex", "total_change", "trim",
-    "typeof", "upper", "zeroblob", "date", "datetime", "julianday", "strftime",
-    "avg", "count", "group_concat", "sum", "total"
+    "coalesce",
+    "nullif", "quote", "random",
+    "replace", "soundex"
 ]
+operators=[
+' AND ',' OR ','||',' < ',' <= ',' > ',' >= ',' = ',' <> ',' IS ',' IS NOT ',' IN ',' LIKE ',' GLOB ',' MATCH ',' REGEXP '
+]
+
+math_functions = [
+    # SQL math functions
+    "Abs", "ACos", "ASin", "ATan", "Cos", "Cot", "Degrees", "Exp", "Floor", "Log", "Log2",
+    "Log10", "Pi", "Radians", "Round", "Sign", "Sin", "Sqrt", "StdDev_Pop", "StdDev_Samp", "Tan",
+    "Var_Pop", "Var_Samp" ]
+
+string_functions=["Length", "Lower", "Upper", "Like", "Trim", "LTrim", "RTrim", "Replace", "Substr"]
+
+aggregate_functions=[
+"Max","Min","Avg","Count","Sum","Group_Concat","Total","Var_Pop","Var_Samp","StdDev_Pop","StdDev_Samp"
+]
+
 postgis_functions = [  # from http://www.postgis.org/docs/reference.html
                        # 7.1. PostgreSQL PostGIS Types
-                       "box2d", "box3d", "box3d_extent", "geometry", "geometry_dump", "geography",
+                       "*box2d", "*box3d", "*box3d_extent", "*geometry", "*geometry_dump", "*geography",
                        # 7.2. Management Functions
-                       "addgeometrycolumn", "dropgeometrycolumn", "dropgeometrytable", "postgis_full_version",
-                       "postgis_geos_version", "postgis_libxml_version", "postgis_lib_build_date",
-                       "postgis_lib_version", "postgis_proj_version", "postgis_scripts_build_date",
-                       "postgis_scripts_installed", "postgis_scripts_released", "postgis_uses_stats", "postgis_version",
-                       "populate_geometry_columns", "probe_geometry_columns", "updategeometrysrid",
+                       "*addgeometrycolumn", "*dropgeometrycolumn", "*dropgeometrytable", "*postgis_full_version",
+                       "*postgis_geos_version", "*postgis_libxml_version", "*postgis_lib_build_date",
+                       "*postgis_lib_version", "*postgis_proj_version", "*postgis_scripts_build_date",
+                       "*postgis_scripts_installed", "*postgis_scripts_released", "*postgis_uses_stats", "*postgis_version",
+                       "*populate_geometry_columns", "*probe_geometry_columns", "*updategeometrysrid",
                        # 7.3. Geometry Constructors
-                       "st_bdpolyfromtext", "st_bdmpolyfromtext", "st_geogfromtext", "st_geographyfromtext",
-                       "st_geogfromwkb", "st_geomcollfromtext", "st_geomfromewkb", "st_geomfromewkt",
-                       "st_geometryfromtext", "st_geomfromgml", "st_geomfromkml", "st_gmltosql", "st_geomfromtext",
-                       "st_geomfromwkb", "st_linefrommultipoint", "st_linefromtext", "st_linefromwkb",
-                       "st_linestringfromwkb", "st_makebox2d", "st_makebox3d", "st_makeline", "st_makeenvelope",
-                       "st_makepolygon", "st_makepoint", "st_makepointm", "st_mlinefromtext", "st_mpointfromtext",
-                       "st_mpolyfromtext", "st_point", "st_pointfromtext", "st_pointfromwkb", "st_polygon",
-                       "st_polygonfromtext", "st_wkbtosql", "st_wkttosql",
+                       "*ST_bdpolyfromtext", "*ST_bdmpolyfromtext", "*ST_geogfromtext", "*ST_geographyfromtext",
+                       "*ST_geogfromwkb", "*ST_geomcollfromtext", "*ST_geomfromewkb", "*ST_geomfromewkt",
+                       "*ST_geometryfromtext", "*ST_geomfromgml", "*ST_geomfromkml", "*ST_gmltosql", "*ST_geomfromtext",
+                       "*ST_geomfromwkb", "*ST_linefrommultipoint", "*ST_linefromtext", "*ST_linefromwkb",
+                       "*ST_linestringfromwkb", "*ST_makebox2d", "*ST_makebox3d", "ST_MakeLine", "*ST_makeenvelope",
+                       "ST_MakePolygon", "ST_MakePoint", "ST_MakePointM", "*ST_MLinefromtext", "*ST_mpointfromtext",
+                       "*ST_mpolyfromtext", "ST_Point", "*ST_pointfromtext", "*ST_pointfromwkb", "ST_Polygon",
+                       "*ST_polygonfromtext", "*ST_wkbtosql", "*ST_wkttosql",
                        # 7.4. Geometry Accessors
-                       "geometrytype", "st_boundary", "st_coorddim", "st_dimension", "st_endpoint", "st_envelope",
-                       "st_exteriorring", "st_geometryn", "st_geometrytype", "st_interiorringn", "st_isclosed",
-                       "st_isempty", "st_isring", "st_issimple", "st_isvalid", "st_isvalidreason", "st_m", "st_ndims",
-                       "st_npoints", "st_nrings", "st_numgeometries", "st_numinteriorrings", "st_numinteriorring",
-                       "st_numpoints", "st_pointn", "st_srid", "st_startpoint", "st_summary", "st_x", "st_y", "st_z",
-                       "st_zmflag",
+                       "GeometryType", "ST_Boundary", "*ST_coorddim", "ST_Dimension", "ST_EndPoint", "ST_Envelope",
+                       "ST_ExteriorRing", "ST_GeometryN", "ST_GeometryType", "ST_InteriorRingN", "ST_isClosed",
+                       "ST_isEmpty", "ST_isRing", "ST_isSimple", "ST_isValid", "ST_isValidReason", "ST_M", "ST_NDims",
+                       "ST_NPoints", "ST_NRings", "ST_NumGeometries", "ST_NumInteriorrings", "ST_NumInteriorring",
+                       "ST_NumPoints", "ST_PointN", "ST_Srid", "ST_StartPoint", "ST_Summary", "ST_X", "ST_Y", "ST_Z",
+                       "*ST_zmflag",
                        # 7.5. Geometry Editors
-                       "st_addpoint", "st_affine", "st_force_2d", "st_force_3d", "st_force_3dz", "st_force_3dm",
-                       "st_force_4d", "st_force_collection", "st_forcerhr", "st_linemerge", "st_collectionextract",
-                       "st_multi", "st_removepoint", "st_reverse", "st_rotate", "st_rotatex", "st_rotatey",
-                       "st_rotatez", "st_scale", "st_segmentize", "st_setpoint", "st_setsrid", "st_snaptogrid",
-                       "st_transform", "st_translate", "st_transscale",
+                       "ST_AddPoint", "ST_Affine", "ST_Force2D", "*ST_Force3D", "*ST_Force3dZ", "*ST_Force3DM",
+                       "*ST_Force_4d", "*ST_force_collection", "*ST_forcerhr", "*ST_linemerge", "*ST_collectionextract",
+                       "ST_Multi", "*ST_removepoint", "*ST_reverse", "*ST_rotate", "*ST_rotatex", "*ST_rotatey",
+                       "*ST_rotatez", "*ST_scale", "*ST_segmentize", "*ST_setpoint", "ST_SetSrid", "ST_SnapToGrid",
+                       "ST_Transform", "ST_Translate", "*ST_transscale",
                        # 7.6. Geometry Outputs
-                       "st_asbinary", "st_asewkb", "st_asewkt", "st_asgeojson", "st_asgml", "st_ashexewkb", "st_askml",
-                       "st_assvg", "st_geohash", "st_astext",
+                       "*ST_asbinary", "*ST_asewkb", "*ST_asewkt", "*ST_asgeojson", "*ST_asgml", "*ST_ashexewkb", "*ST_askml",
+                       "*ST_assvg", "*ST_geohash", "ST_Astext",
                        # 7.7. Operators
                        # 7.8. Spatial Relationships and Measurements
-                       "st_area", "st_azimuth", "st_centroid", "st_closestpoint", "st_contains", "st_containsproperly",
-                       "st_covers", "st_coveredby", "st_crosses", "st_linecrossingdirection", "st_disjoint",
-                       "st_distance", "st_hausdorffdistance", "st_maxdistance", "st_distance_sphere",
-                       "st_distance_spheroid", "st_dfullywithin", "st_dwithin", "st_equals", "st_hasarc",
-                       "st_intersects", "st_length", "st_length2d", "st_length3d", "st_length_spheroid",
-                       "st_length2d_spheroid", "st_length3d_spheroid", "st_longestline", "st_orderingequals",
-                       "st_overlaps", "st_perimeter", "st_perimeter2d", "st_perimeter3d", "st_pointonsurface",
-                       "st_relate", "st_shortestline", "st_touches", "st_within",
+                       "ST_Area", "ST_Azimuth", "ST_Centroid", "ST_ClosestPoint", "ST_Contains", "ST_ContainsProperly",
+                       "ST_Covers", "ST_CoveredBy", "ST_Crosses", "*ST_linecrossingdirection", "ST_Cisjoint",
+                       "ST_Distance", "*ST_hausdorffdistance", "*ST_maxdistance", "ST_Distance_Sphere",
+                       "ST_Distance_Spheroid", "*ST_DFullyWithin", "ST_DWithin", "ST_Equals", "*ST_hasarc",
+                       "ST_Intersects", "ST_Length", "*ST_Length2d", "*ST_length3d", "ST_Length_Spheroid",
+                       "*ST_length2d_spheroid", "*ST_length3d_spheroid", "*ST_longestline", "*ST_orderingequals",
+                       "ST_Overlaps", "*ST_perimeter", "*ST_perimeter2d", "*ST_perimeter3d", "ST_PointOnSurface",
+                       "ST_Relate", "ST_ShortestLine", "ST_Touches", "ST_Within",
                        # 7.9. Geometry Processing Functions
-                       "st_buffer", "st_buildarea", "st_collect", "st_convexhull", "st_curvetoline", "st_difference",
-                       "st_dump", "st_dumppoints", "st_dumprings", "st_intersection", "st_linetocurve", "st_memunion",
-                       "st_minimumboundingcircle", "st_polygonize", "st_shift_longitude", "st_simplify",
-                       "st_simplifypreservetopology", "st_symdifference", "st_union",
+                       "ST_Buffer", "ST_BuildArea", "ST_Collect", "ST_ConvexHull", "*ST_curvetoline", "ST_Difference",
+                       "ST_Dump", "*ST_dumppoints", "*ST_dumprings", "ST_Intersection", "*ST_linetocurve", "*ST_memunion",
+                       "*ST_minimumboundingcircle", "*ST_polygonize", "*ST_shift_longitude", "ST_Simplify",
+                       "ST_SimplifyPreserveTopology", "ST_SymDifference", "ST_Union",
                        # 7.10. Linear Referencing
-                       "st_line_interpolate_point", "st_line_locate_point", "st_line_substring",
-                       "st_locate_along_measure", "st_locate_between_measures", "st_locatebetweenelevations",
-                       "st_addmeasure",
+                       "ST_Line_Interpolate_Point", "ST_Line_Locate_Point", "ST_Line_Substring",
+                       "*ST_locate_along_measure", "*ST_locate_between_measures", "*ST_locatebetweenelevations",
+                       "*ST_addmeasure",
                        # 7.11. Long Transactions Support
-                       "addauth", "checkauth", "disablelongtransactions", "enablelongtransactions", "lockrow",
-                       "unlockrows",
+                       "*addauth", "*checkauth", "*disablelongtransactions", "*enablelongtransactions", "*lockrow",
+                       "*unlockrows",
                        # 7.12. Miscellaneous Functions
-                       "st_accum", "box2d", "box3d", "st_estimated_extent", "st_expand", "st_extent", "st_extent3d",
-                       "find_srid", "st_mem_size", "st_point_inside_circle", "st_xmax", "st_xmin", "st_ymax", "st_ymin",
-                       "st_zmax", "st_zmin",
+                       "*ST_accum", "*box2d", "*box3d", "*ST_estimated_extent", "*ST_expand", "ST_Extent", "*ST_extent3d",
+                       "*find_srid", "*ST_mem_size", "*ST_point_inside_circle", "ST_XMax", "ST_XMin", "ST_YMax", "ST_YMin",
+                       "ST_ZMax", "ST_ZMin",
                        # 7.13. Exceptional Functions
-                       "postgis_addbbox", "postgis_dropbbox", "postgis_hasbbox"
+                       "*postgis_addbbox", "*postgis_dropbbox", "*postgis_hasbbox"
 ]
 
 # constants
@@ -170,6 +183,12 @@ postgis_constants = []
 
 
 def getSqlDictionary(spatial=True):
+    def strip_star(s):
+        if s[0] == '*':
+            return s.lower()[1:]
+        else:
+            return s.lower()
+
     k, c, f = list(keywords), list(constants), list(functions)
 
     if spatial:
@@ -177,4 +196,17 @@ def getSqlDictionary(spatial=True):
         f += postgis_functions
         c += postgis_constants
 
-    return {'keyword': k, 'constant': c, 'function': f}
+    return {'keyword': map(strip_star,k), 'constant': map(strip_star,c), 'function': map(strip_star,f)}
+
+def getQueryBuilderDictionary():
+    # concat functions
+    def ff( l ):
+        return filter( lambda s:s[0] != '*', l )
+    def add_paren( l ):
+        return map( lambda s:s+"(", l )
+    foo = sorted(add_paren(ff( list(set.union(set(functions), set(postgis_functions))) )))
+    m = sorted(add_paren(ff( math_functions )))
+    agg = sorted(add_paren(ff(aggregate_functions)))
+    op = ff(operators)
+    s = sorted(add_paren(ff(string_functions)))
+    return {'function': foo, 'math' : m, 'aggregate': agg, 'operator': op, 'string': s }

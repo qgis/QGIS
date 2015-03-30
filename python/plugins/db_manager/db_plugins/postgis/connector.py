@@ -231,7 +231,7 @@ class PostGisDBConnector(DBConnector):
         self._close_cursor(c)
         return res
 
-    def getTables(self, schema=None):
+    def getTables(self, schema=None, add_sys_tables=False):
         """ get list of tables """
         tablenames = []
         items = []
@@ -242,7 +242,7 @@ class PostGisDBConnector(DBConnector):
         try:
             vectors = self.getVectorTables(schema)
             for tbl in vectors:
-                if tbl[1] in sys_tables and tbl[2] in ['', 'public']:
+                if not add_sys_tables and tbl[1] in sys_tables and tbl[2] in ['', 'public']:
                     continue
                 tablenames.append((tbl[2], tbl[1]))
                 items.append(tbl)
@@ -252,7 +252,7 @@ class PostGisDBConnector(DBConnector):
         try:
             rasters = self.getRasterTables(schema)
             for tbl in rasters:
-                if tbl[1] in sys_tables and tbl[2] in ['', 'public']:
+                if not add_sys_tables and tbl[1] in sys_tables and tbl[2] in ['', 'public']:
                     continue
                 tablenames.append((tbl[2], tbl[1]))
                 items.append(tbl)
@@ -988,3 +988,9 @@ UNION SELECT attname FROM pg_attribute WHERE attnum > 0"""
 
         sql_dict["identifier"] = items
         return sql_dict
+
+    def getQueryBuilderDictionary(self):
+        from .sql_dictionary import getQueryBuilderDictionary
+
+        return getQueryBuilderDictionary()
+

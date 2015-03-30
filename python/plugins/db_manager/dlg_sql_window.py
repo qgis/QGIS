@@ -30,6 +30,7 @@ from qgis.core import QgsProject
 
 from .db_plugins.plugin import BaseError
 from .dlg_db_error import DlgDbError
+from .dlg_query_builder import QueryBuilderDlg
 
 try:
     from qgis.gui import QgsCodeEditorSQL
@@ -87,6 +88,9 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
             self.connect(self.getColumnsBtn, SIGNAL("clicked()"), self.fillColumnCombos)
             self.connect(self.loadAsLayerGroup, SIGNAL("toggled(bool)"), self.loadAsLayerToggled)
             self.loadAsLayerToggled(False)
+
+        self.queryBuilderFirst = True
+        self.connect( self.queryBuilderBtn, SIGNAL("clicked()"), self.displayQueryBuilder )
 
     def updatePresetsCombobox(self):
         self.presetCombo.clear()
@@ -326,3 +330,11 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
 
         api.prepare()
         self.editSql.lexer().setAPIs(api)
+
+    def displayQueryBuilder( self ):
+        dlg = QueryBuilderDlg( self.iface, self.db, self, reset = self.queryBuilderFirst )
+        self.queryBuilderFirst = False
+        r = dlg.exec_()
+        if r == QDialog.Accepted:
+            self.editSql.setText( dlg.query )
+
