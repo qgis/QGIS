@@ -45,13 +45,6 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool startServerPlugin( QString packageName ) override;
 #endif
 
-    // functions that do the initialization work
-    bool checkSystemImports();
-    bool checkQgisUser();
-    void doUserImports();
-    void init();
-    void finish();
-
     //! close python interpreter
     void exitPython() override;
 
@@ -120,6 +113,25 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     bool unloadPlugin( QString packageName ) override;
 
   protected:
+
+    /* functions that do the initialization work */
+    
+    //! initialize Python context
+    void init();
+
+    //! check qgis imports and plugins
+    //@return true if all imports worked
+    bool checkSystemImports();
+
+    //@return true if qgis.user could be imported
+    bool checkQgisUser();
+
+    //! import user defined Python code
+    void doUserImports();
+
+    //! cleanup Python context
+    void finish();
+
 
     void installErrorHook();
 
