@@ -547,7 +547,16 @@ void QgsRubberBand::updateRect()
       QgsPoint p( it->x() + mTranslationOffsetX, it->y() + mTranslationOffsetY );
       p = m2p.transform( p );
       QgsRectangle rect( p.x() - w, p.y() - w, p.x() + w, p.y() + w );
-      r.combineExtentWith( &rect );
+
+      if ( r.isEmpty() )
+      {
+        // Get rectangle of the first point
+        r = rect;
+      }
+      else
+      {
+        r.combineExtentWith( &rect );
+      }
     }
   }
 
