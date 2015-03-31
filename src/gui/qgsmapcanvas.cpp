@@ -418,6 +418,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       if ( !currentLayer )
         continue;
       disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      disconnect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -433,6 +434,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
       connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      connect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -1579,6 +1581,15 @@ void QgsMapCanvas::layerStateChange()
 
 } // layerStateChange
 
+void QgsMapCanvas::layerCrsChange()
+{
+  // called when a layer's CRS has been changed
+  QObject *theSender = sender();
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( theSender );
+  QString destAuthId = mSettings.destinationCrs().authid();
+  getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
+
+} // layerCrsChange
 
 
 void QgsMapCanvas::freeze( bool frz )
