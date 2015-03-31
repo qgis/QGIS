@@ -433,13 +433,8 @@ int QgsGrass::error_routine( const char *msg, int fatal )
     //throw QgsGrass::Exception( QString::fromUtf8( msg ) );
     lastError = FATAL;
 
-#if (GRASS_VERSION_MAJOR == 7) && (GRASS_VERSION_MINOR == 0)
-    // G_fatal_error in GRASS 7.0.0beta1 always exits the second time it is called. This was fixed in 7.1.
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1" ).arg( msg ) );
-#endif
-
-#if (GRASS_VERSION_MAJOR < 7) || (GRASS_VERSION_MAJOR == 7 && GRASS_VERSION_MINOR == 0)
-    // longjump() is called by G_fatal_error in GRASS >= 7.1
+#if (GRASS_VERSION_MAJOR < 7)
+    // longjump() is called by G_fatal_error in GRASS >= 7
     longjmp( QgsGrass::jumper, 1 );
 #endif
   }
