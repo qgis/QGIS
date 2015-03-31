@@ -535,7 +535,8 @@ void QgsRubberBand::updateRect()
 
   const QgsMapToPixel& m2p = *( mMapCanvas->getCoordinateTransform() );
 
-  qreal w = ( mIconSize - 1 ) / 2 + mPen.width();
+  qreal res = m2p.mapUnitsPerPixel();
+  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ) / res;
 
   QgsRectangle r;
   for ( int i = 0; i < mPoints.size(); ++i )
@@ -563,7 +564,6 @@ void QgsRubberBand::updateRect()
   // This is an hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
   QgsPoint topLeft = m2p.toMapPoint( r.xMinimum(), r.yMinimum() );
-  double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
   setRect( rect );
