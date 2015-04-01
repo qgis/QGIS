@@ -57,6 +57,9 @@ extern "C"
 #define G__setenv(name,value) G__setenv( ( char * ) (name), (char *) (value) )
 #endif
 
+#define GRASS_LOCK sMutex.lock();
+#define GRASS_UNLOCK sMutex.unlock();
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 QString GRASS_LIB_EXPORT QgsGrass::shortPath( const QString &path )
@@ -411,6 +414,8 @@ QString QgsGrass::mMapsetLock;
 QString QgsGrass::mGisrc;
 QString QgsGrass::mTmp;
 
+QMutex QgsGrass::sMutex;
+
 int QgsGrass::error_routine( char *msg, int fatal )
 {
   return error_routine(( const char* ) msg, fatal );
@@ -418,6 +423,9 @@ int QgsGrass::error_routine( char *msg, int fatal )
 
 int QgsGrass::error_routine( const char *msg, int fatal )
 {
+  // G_fatal_error obviously is not thread safe (everything static in GRASS, especially fatal_jmp_buf)
+  // it means that anything which may end up with G_fatal_error must use mutex
+
   // Unfortunately the exceptions thrown here can only be caught if GRASS libraries are compiled
   // with -fexception option on Linux (works on Windows)
   // GRASS developers are reluctant to add -fexception by default
@@ -802,6 +810,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectors( QString mapsetPath )
 QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
     QString location, QString mapset, QString mapName )
 {
+  GRASS_LOCK
   QgsDebugMsg( QString( "gisdbase = %1 location = %2 mapset = %3 mapName = %4" ).arg( gisdbase ).arg( location ).arg( mapset ).arg( mapName ) );
   QStringList list;
 
@@ -826,6 +835,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
   {
     Q_UNUSED( e );
     QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
+    GRASS_UNLOCK
     return list;
   }
 
@@ -839,12 +849,14 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
 #ifndef Q_OS_WIN
     Vect_close( &map );
 #endif
+    GRASS_UNLOCK
     return list;
   }
   else if ( level < 1 )
   {
     QgsDebugMsg( "Cannot open vector" );
     QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
+    GRASS_UNLOCK
     return list;
   }
 
@@ -926,6 +938,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
 
   Vect_close( &map );
 
+  GRASS_UNLOCK
   return list;
 }
 
