@@ -16,6 +16,8 @@
 #ifndef QGSGRASS_H
 #define QGSGRASS_H
 
+#include <QMutex>
+
 #include <setjmp.h>
 
 // GRASS header files
@@ -308,6 +310,8 @@ class QgsGrass
     static QString mGisrc;
     // Temporary directory where GISRC and sockets are stored
     static QString mTmp;
+    // Mutex for common locking when calling GRASS functions which are mostly non thread safe
+    static QMutex sMutex;
 };
 
 #endif // QGSGRASS_H
