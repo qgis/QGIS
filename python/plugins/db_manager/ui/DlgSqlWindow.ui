@@ -103,6 +103,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QPushButton" name="btnCreateView">
+           <property name="text">
+            <string>Create a view</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

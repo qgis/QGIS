@@ -23,7 +23,7 @@ The content of this file is based on
 """
 
 from PyQt4.QtCore import Qt, QObject, QSettings, QByteArray, SIGNAL
-from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard
+from PyQt4.QtGui import QDialog, QAction, QKeySequence, QDialogButtonBox, QApplication, QCursor, QMessageBox, QClipboard, QInputDialog
 from PyQt4.Qsci import QsciAPIs
 
 from qgis.core import QgsProject
@@ -88,6 +88,11 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
             self.connect(self.getColumnsBtn, SIGNAL("clicked()"), self.fillColumnCombos)
             self.connect(self.loadAsLayerGroup, SIGNAL("toggled(bool)"), self.loadAsLayerToggled)
             self.loadAsLayerToggled(False)
+
+        self._createViewAvailable = self.db.connector.hasCreateSpatialViewSupport()
+        self.btnCreateView.setVisible( self._createViewAvailable )
+        if self._createViewAvailable:
+            self.connect( self.btnCreateView, SIGNAL("clicked()"), self.createView )
 
         self.queryBuilderFirst = True
         self.connect( self.queryBuilderBtn, SIGNAL("clicked()"), self.displayQueryBuilder )
@@ -337,4 +342,13 @@ class DlgSqlWindow(QDialog, Ui_Dialog):
         r = dlg.exec_()
         if r == QDialog.Accepted:
             self.editSql.setText( dlg.query )
+
+    def createView( self ):
+        name, ok = QInputDialog.getText(None, "View name", "View name")
+        if ok:
+            try:
+                self.db.connector.createSpatialView( name, self.editSql.text() )
+            except BaseError as e:
+                DlgDbError.showError(e, self)
+
 

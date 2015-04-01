@@ -176,6 +176,8 @@ class PostGisDBConnector(DBConnector):
     def hasTableColumnEditingSupport(self):
         return True
 
+    def hasCreateSpatialViewSupport( self ):
+        return True
 
     def fieldTypes(self):
         return [
@@ -760,6 +762,9 @@ class PostGisDBConnector(DBConnector):
     def createView(self, view, query):
         sql = u"CREATE VIEW %s AS %s" % (self.quoteId(view), query)
         self._execute_and_commit(sql)
+
+    def createSpatialView(self, view, query):
+        self.createView(view, query)
 
     def deleteView(self, view):
         sql = u"DROP VIEW %s" % self.quoteId(view)
