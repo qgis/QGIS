@@ -567,7 +567,7 @@ void QgsRubberBand::updateRect()
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + r.width()*res, topLeft.y() - r.height()*res );
 
   setRect( rect );
-  setVisible( true );
+  setVisible( isVisible() );
 }
 
 void QgsRubberBand::updatePosition( )

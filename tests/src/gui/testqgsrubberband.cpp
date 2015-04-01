@@ -128,6 +128,7 @@ void TestQgsRubberband::testBoundingRect()
   mRubberband->setIconSize( 5 ); // default, but better be explicit
   mRubberband->setWidth( 1 );    // default, but better be explicit
   mRubberband->addGeometry( geom.data(), mPolygonLayer );
+  mRubberband->setVisible( true );
 
   // 20 pixels for the extent + 3 for pen & icon per side + 2 of padding
   QCOMPARE( mRubberband->boundingRect(), QRectF(QPointF(-1,-1),QSizeF(28,28)) );
@@ -151,6 +152,11 @@ void TestQgsRubberband::testBoundingRect()
     mapSize.height() - ( 30 + 3 ) * 2
   ) );
 
+  // Check visibility after zoom
+  mRubberband->setVisible( false );
+  mCanvas->zoomIn();
+  QCOMPARE( mRubberband->isVisible(), false );
+  
 }
 
 
