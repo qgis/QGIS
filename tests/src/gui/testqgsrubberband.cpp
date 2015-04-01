@@ -138,12 +138,19 @@ void TestQgsRubberband::testBoundingRect()
     mapSize.height() - 30 - 3
   ) );
 
-  mCanvas->zoomByFactor(0.5);
+  mCanvas->setExtent( QgsRectangle( QRectF(
+      QPointF(0,0), mapSize/2
+  ) ) );
 
   // 40 pixels for the extent + 6 for pen & icon per side + 2 of padding
   QCOMPARE( mRubberband->boundingRect(), QRectF(QPointF(-1,-1),QSizeF(54,54)) );
-  // Not sure why should this be the position...
-  QCOMPARE( mRubberband->pos(), QPointF(-305,651) );
+  QCOMPARE( mRubberband->pos(), QPointF(
+    // 10 for extent minx - 3 for pen & icon
+    7 * 2,
+    // 30 for extent maxy - 3 for pen & icon
+    mapSize.height() - ( 30 + 3 ) * 2
+  ) );
+
 }
 
 
