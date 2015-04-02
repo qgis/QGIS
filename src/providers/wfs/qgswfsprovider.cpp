@@ -122,11 +122,16 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
     setDataSourceUri( bkUri );
   }
 
+#if 0 //non-cached mode is broken
   mCached = !uri.contains( "BBOX=" );
   if ( mCached )
   { //"Cache Features" option; get all features in layer immediately
     reloadData();
   } //otherwise, defer feature retrieval until layer is first rendered
+#endif //0
+
+  mCached = true;
+  reloadData();
 
   if ( mValid )
   {
