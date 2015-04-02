@@ -31,7 +31,7 @@
 import math
 
 from PyQt4.QtCore import QObject, SIGNAL, QThread, QMutex, QVariant, QFile
-from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox, QListWidgetItem
 from qgis.core import QGis, QgsFeatureRequest, QgsField, QgsVectorFileWriter, QgsFeature, QgsGeometry
 import ftools_utils
 from ui_frmPointsInPolygon import Ui_Dialog
@@ -54,7 +54,7 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.inPoint, SIGNAL("currentIndexChanged(QString)"), self.listPointFields)
         QObject.connect(self.inPoint, SIGNAL("activated(QString)"), self.listPointFields)
-        
+
         self.progressBar.setValue(0)
         self.populateLayers()
 
@@ -66,7 +66,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.inPoint.clear()
         layers = ftools_utils.getLayerNames([QGis.Point])
         self.inPoint.addItems(layers)
-        
+
     def listPointFields(self):
         if self.inPoint.currentText() == "":
             pass
@@ -74,7 +74,7 @@ class Dialog(QDialog, Ui_Dialog):
         inPnts = ftools_utils.getVectorLayerByName(self.inPoint.currentText())
         if inPnts:
             pointFieldList = ftools_utils.getFieldList(inPnts)
-            
+
             self.attributeList.clear()
             for field in pointFieldList:
                 if field.type() == QVariant.Int or field.type() ==QVariant.Double:
@@ -119,7 +119,7 @@ class Dialog(QDialog, Ui_Dialog):
 
             self.btnOk.setEnabled(False)
 
-            self.workThread = PointsInPolygonThread(self, inPoly, inPnts, self.lnField.text(), self.outShape.text(), self.encoding, 
+            self.workThread = PointsInPolygonThread(inPoly, inPnts, self.lnField.text(), self.outShape.text(), self.encoding,
                                                     self.attributeList,  self.statisticSelector)
 
             QObject.connect(self.workThread, SIGNAL("rangeChanged(int)"), self.setProgressRange)
@@ -171,7 +171,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.btnOk.setEnabled(True)
 
 class PointsInPolygonThread(QThread):
-    def __init__( self, widget,  inPoly, inPoints, fieldName, outPath, encoding,  attributeList,  statisticSelector):
+    def __init__( self, inPoly, inPoints, fieldName, outPath, encoding,  attributeList,  statisticSelector):
         QThread.__init__( self, QThread.currentThread() )
         self.mutex = QMutex()
         self.stopMe = 0
@@ -184,7 +184,6 @@ class PointsInPolygonThread(QThread):
         self.encoding = encoding
         self.attributeList = attributeList
         self.statistics = statisticSelector.currentText()
-        self.widget = widget
 
     def run(self):
         self.mutex.lock()
@@ -196,7 +195,7 @@ class PointsInPolygonThread(QThread):
         polyProvider = self.layerPoly.dataProvider()
         pointProvider = self.layerPoints.dataProvider()
 
-        fieldList = ftools_utils.getFieldList(self.layerPoly)        
+        fieldList = ftools_utils.getFieldList(self.layerPoly)
         index = polyProvider.fieldNameIndex(unicode(self.fieldName))
         if index == -1:
             index = polyProvider.fields().count()
@@ -234,7 +233,7 @@ class PointsInPolygonThread(QThread):
         while polyFit.nextFeature(polyFeat):
             inGeom = polyFeat.geometry()
             atMap = polyFeat.attributes()
-            outFeat.setAttributes(atMap)   
+            outFeat.setAttributes(atMap)
             outFeat.setGeometry(inGeom)
 
             count = 0
@@ -257,7 +256,7 @@ class PointsInPolygonThread(QThread):
                         count += 1
                         for item in selectedItems:
                             valueList[item.text()].append(pntFeat.attribute(item.text()))
-                            
+
                     self.mutex.lock()
                     s = self.stopMe
                     self.mutex.unlock()
@@ -279,7 +278,7 @@ class PointsInPolygonThread(QThread):
                     # Jump over invalid values
                     if non_numeric_values is True:
                         continue
-                    
+
                     if values and len(values) > 0:
                         if self.statistics == "sum":
                             value = reduce(myAdder,  values)
@@ -298,7 +297,7 @@ class PointsInPolygonThread(QThread):
 
             outFeat.setAttributes(atMap)
             writer.addFeature(outFeat)
-            
+
             self.emit( SIGNAL( "updateProgress()" ) )
 
             self.mutex.lock()
@@ -321,10 +320,10 @@ class PointsInPolygonThread(QThread):
         self.mutex.unlock()
 
         QThread.wait( self )
-        
-def myAdder(x,y): 
+
+def myAdder(x,y):
     return x+y
-    
+
 def two_pass_variance(data):
     """
     Variance algorithm taken from Wikipedia:
@@ -333,18 +332,18 @@ def two_pass_variance(data):
     n    = 0.0
     sum1 = 0.0
     sum2 = 0.0
- 
+
     for x in data:
         n    = n + 1.0
         sum1 = sum1 + float(x)
- 
+
     if (n < 2):
         return 0
 
     mean = sum1 / n
- 
+
     for x in data:
         sum2 = sum2 + (x - mean)*(x - mean)
- 
+
     variance = sum2 / (n - 1)
     return variance
