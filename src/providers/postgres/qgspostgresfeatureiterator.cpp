@@ -569,7 +569,6 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p )
     : mConnInfo( p->mUri.connectionInfo() )
     , mGeometryColumn( p->mGeometryColumn )
-    , mSqlWhereClause( p->mSqlWhereClause )
     , mFields( p->mAttributeFields )
     , mSpatialColType( p->mSpatialColType )
     , mRequestedSrid( p->mRequestedSrid )
@@ -582,6 +581,11 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p
     , mQuery( p->mQuery )
     , mShared( p->mShared )
 {
+  mSqlWhereClause = p->filterWhereClause();
+
+  if ( mSqlWhereClause.startsWith( " WHERE " ) )
+    mSqlWhereClause = mSqlWhereClause.mid( 7 );
+
   if ( p->mTransaction )
   {
     mTransactionConnection = p->mTransaction->connection();
