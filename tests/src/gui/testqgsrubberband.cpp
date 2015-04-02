@@ -46,6 +46,7 @@ class TestQgsRubberband : public QObject
 
     void testAddSingleMultiGeometries(); //test for #7728
     void testBoundingRect(); //test for #12392
+    void testVisibility(); //test for 12486
 
   private:
     QgsMapCanvas* mCanvas;
@@ -128,7 +129,6 @@ void TestQgsRubberband::testBoundingRect()
   mRubberband->setIconSize( 5 ); // default, but better be explicit
   mRubberband->setWidth( 1 );    // default, but better be explicit
   mRubberband->addGeometry( geom.data(), mPolygonLayer );
-  mRubberband->setVisible( true );
 
   // 20 pixels for the extent + 3 for pen & icon per side + 2 of padding
   QCOMPARE( mRubberband->boundingRect(), QRectF(QPointF(-1,-1),QSizeF(28,28)) );
@@ -152,7 +152,42 @@ void TestQgsRubberband::testBoundingRect()
     mapSize.height() - ( 30 + 3 ) * 2
   ) );
 
-  // Check visibility after zoom
+}
+
+void TestQgsRubberband::testVisibility()
+{
+  mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
+
+  // Visibility is set to false by default
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Check visibility after setting to empty geometry
+  QSharedPointer<QgsGeometry> emptyGeom( new QgsGeometry );
+  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Check that visibility changes
+  mRubberband->setVisible( true );
+  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Check visibility after setting to valid geometry
+  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt(
+      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+  ) );
+  mRubberband->setToGeometry( geom.data(), mPolygonLayer );
+  QCOMPARE( mRubberband->isVisible(), true );
+
+  // Add point without update
+  mRubberband->reset( true );
+  mRubberband->addPoint( QgsPoint( 10, 10 ), false );
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Add point with update
+  mRubberband->addPoint( QgsPoint( 20, 20 ), true );
+  QCOMPARE( mRubberband->isVisible(), true );
+
+  // Check visibility after zoom (should not be changed)
   mRubberband->setVisible( false );
   mCanvas->zoomIn();
   QCOMPARE( mRubberband->isVisible(), false );
