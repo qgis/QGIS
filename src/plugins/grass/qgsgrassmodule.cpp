@@ -1625,7 +1625,7 @@ void QgsGrassModule::run()
     mOutputTextBrowser->clear();
 
     QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
-    environment.insert( "GRASS_HTML_BROWSER", QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
+    environment.insert( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
 
     // Warning: it is not useful to write requested region to WIND file and
     //          reset then to original beacuse it is reset before

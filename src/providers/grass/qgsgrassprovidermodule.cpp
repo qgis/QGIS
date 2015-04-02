@@ -216,7 +216,7 @@ QGISEXTERN QString providerKey()
 */
 QGISEXTERN QString description()
 {
-  return QString( "GRASS data provider" );
+  return QString( "GRASS %1 vector provider" ).arg( GRASS_VERSION_MAJOR );
 }
 
 /**

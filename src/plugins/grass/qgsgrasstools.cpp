@@ -212,7 +212,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   if ( name == "shell" )
   {
 #ifdef Q_OS_WIN
-    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
+    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
       QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );

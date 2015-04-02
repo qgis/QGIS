@@ -48,7 +48,10 @@ extern "C"
 #include <grass/version.h>
 }
 
-static const QString pluginVersion = QObject::tr( "Version 0.1" );
+static const QString pluginName = QObject::tr( "GRASS %1" ).arg( GRASS_VERSION_MAJOR );
+static const QString pluginDescription = QObject::tr( "GRASS %1 (Geographic Resources Analysis Support System)" ).arg( GRASS_VERSION_MAJOR );
+static const QString pluginCategory = QObject::tr( "Plugins" );
+static const QString pluginVersion = QObject::tr( "Version 2.0" );
 static const QString pluginIcon = ":/images/themes/default/grass/grass_tools.png";
 
 /**
@@ -58,11 +61,7 @@ static const QString pluginIcon = ":/images/themes/default/grass/grass_tools.png
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
-    : pluginNameQString( tr( "GrassVector" ) )
-    , pluginVersionQString( tr( "0.1" ) )
-    , pluginDescriptionQString( tr( "GRASS layer" ) )
-    , pluginCategoryQString( tr( "Plugins" ) )
-    , mToolBarPointer( 0 )
+    : mToolBarPointer( 0 )
     , qGisInterface( theQgisInterFace )
     , mCanvas( 0 )
     , mRegionAction( 0 )
@@ -95,22 +94,22 @@ QgsGrassPlugin::~QgsGrassPlugin()
 /* Following functions return name, description, version, and type for the plugin */
 QString QgsGrassPlugin::name()
 {
-  return pluginNameQString;
+  return pluginName;
 }
 
 QString QgsGrassPlugin::version()
 {
-  return pluginVersionQString;
+  return pluginVersion;
 }
 
 QString QgsGrassPlugin::description()
 {
-  return pluginDescriptionQString;
+  return pluginDescription;
 }
 
 QString QgsGrassPlugin::category()
 {
-  return pluginCategoryQString;
+  return pluginCategory;
 }
 
 void QgsGrassPlugin::help()
@@ -973,19 +972,19 @@ QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-  return QObject::tr( "GRASS" );
+  return pluginName;
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
-  return QObject::tr( "GRASS layer" );
+  return pluginDescription;
 }
 
 // Return the category
 QGISEXTERN QString category()
 {
-  return QObject::tr( "Plugins" );
+  return pluginCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)
