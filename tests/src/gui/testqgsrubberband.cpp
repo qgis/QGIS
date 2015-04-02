@@ -46,6 +46,7 @@ class TestQgsRubberband : public QObject
 
     void testAddSingleMultiGeometries(); //test for #7728
     void testBoundingRect(); //test for #12392
+    void testVisibility(); //test for #12486
 
   private:
     QgsMapCanvas* mCanvas;
@@ -150,6 +151,46 @@ void TestQgsRubberband::testBoundingRect()
     // 30 for extent maxy - 3 for pen & icon
     mapSize.height() - ( 30 + 3 ) * 2
   ) );
+
+}
+
+void TestQgsRubberband::testVisibility()
+{
+  mRubberband = new QgsRubberBand( mCanvas, mPolygonLayer->geometryType() );
+
+  // Visibility is set to false by default
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Check visibility after setting to empty geometry
+  QSharedPointer<QgsGeometry> emptyGeom( new QgsGeometry );
+  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Check that visibility changes
+  mRubberband->setVisible( true );
+  mRubberband->setToGeometry( emptyGeom.data(), mPolygonLayer );
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Check visibility after setting to valid geometry
+  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt(
+      "POLYGON((10 10,10 30,30 30,30 10,10 10))"
+  ) );
+  mRubberband->setToGeometry( geom.data(), mPolygonLayer );
+  QCOMPARE( mRubberband->isVisible(), true );
+
+  // Add point without update
+  mRubberband->reset( true );
+  mRubberband->addPoint( QgsPoint( 10, 10 ), false );
+  QCOMPARE( mRubberband->isVisible(), false );
+
+  // Add point with update
+  mRubberband->addPoint( QgsPoint( 20, 20 ), true );
+  QCOMPARE( mRubberband->isVisible(), true );
+
+  // Check visibility after zoom (should not be changed)
+  mRubberband->setVisible( false );
+  mCanvas->zoomIn();
+  QCOMPARE( mRubberband->isVisible(), false );
 
 }
 
