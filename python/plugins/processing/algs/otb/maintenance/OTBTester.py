@@ -22,18 +22,11 @@ __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import unittest
-import ConfigParser
-import io
-
-from parsing import (
-    File, Command, Comment, BlankLine, Arg, parse, prettify)
+from parsing import parse
 
 from string import Template
 import os
 import traceback
-import logging
-import copy
 
 from ConfigParser import SafeConfigParser
 
@@ -392,7 +385,7 @@ def autoresolve(a_dict):
     return templatized
 
 
-def find_file(file_name, base_dir = os.curdir):
+def find_file(file_name, base_dir=os.curdir):
     import os
     for root, dirs, files in os.walk(base_dir, topdown=False):
         for name in files:
@@ -400,7 +393,7 @@ def find_file(file_name, base_dir = os.curdir):
                 return os.path.join(root, name)
     raise Exception("File not found %s" % file_name)
 
-def find_files(file_name, base_dir = os.curdir):
+def find_files(file_name, base_dir=os.curdir):
     import os
     result = []
     for root, dirs, files in os.walk(base_dir, topdown=False):
@@ -412,12 +405,13 @@ def find_files(file_name, base_dir = os.curdir):
 def resolve_dict(adia, adib):
     init = len(adia)
     fin = len(adia) + 1
+
     def _resolve_dict(dia, dib):
         for key in dib:
             cand_value = dib[key]
             if hasattr(cand_value, 'safe_substitute'):
                 value = cand_value.safe_substitute(dia)
-                if type(value) == type(".") and "$" not in value:
+                if isinstance(value, str) and "$" not in value:
                     dia[key] = value
             else:
                 dia[key] = cand_value
@@ -429,4 +423,3 @@ def resolve_dict(adia, adib):
         init = len(adia)
         _resolve_dict(adia, adib)
         fin = len(adia)
-

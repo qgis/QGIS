@@ -26,6 +26,7 @@
 #include <QToolButton>
 #include <QMenu>
 #include <QSettings>
+#include <QDrag>
 #include <cmath>
 
 
@@ -52,7 +53,7 @@ int QgsColorWidget::componentValue() const
   return componentValue( mComponent );
 }
 
-QPixmap QgsColorWidget::createDragIcon( const QColor color )
+QPixmap QgsColorWidget::createDragIcon( const QColor &color )
 {
   //craft a pixmap for the drag icon
   QPixmap pixmap( 50, 50 );
@@ -318,7 +319,7 @@ void QgsColorWidget::setComponentValue( const int value )
   update();
 }
 
-void QgsColorWidget::setColor( const QColor color, const bool emitSignals )
+void QgsColorWidget::setColor( const QColor &color, const bool emitSignals )
 {
   if ( color == mCurrentColor )
   {
@@ -462,7 +463,7 @@ void QgsColorWheel::paintEvent( QPaintEvent *event )
   painter.end();
 }
 
-void QgsColorWheel::setColor( const QColor color, const bool emitSignals )
+void QgsColorWheel::setColor( const QColor &color, const bool emitSignals )
 {
   if ( color.hue() >= 0 && color.hue() != hue() )
   {
@@ -543,8 +544,6 @@ void QgsColorWheel::setColorFromPos( const QPointF pos )
       b = tan( rad1 ) * a;
       r = sqrt( a * a + b * b );
     }
-    x = ( cos( eventAngleRadians ) * r );
-    y = ( -sin( eventAngleRadians ) * r );
 
     double triangleSideLength = sqrt( 3.0 ) * triangleLength;
     double newL = (( -sin( rad0 ) * r ) / triangleSideLength ) + 0.5;
@@ -770,7 +769,7 @@ void QgsColorBox::paintEvent( QPaintEvent *event )
   painter.setPen( Qt::NoPen );
 
   painter.drawRect( xPos - 1, mMargin, 3, height() - 2 * mMargin - 1 );
-  painter.drawRect( mMargin, yPos - 1 , width() - 2 * mMargin - 1, 3 );
+  painter.drawRect( mMargin, yPos - 1, width() - 2 * mMargin - 1, 3 );
   painter.setPen( Qt::black );
   painter.drawLine( xPos, mMargin, xPos, height() - mMargin - 1 );
   painter.drawLine( mMargin, yPos, width() - mMargin - 1, yPos );
@@ -788,7 +787,7 @@ void QgsColorBox::setComponent( const QgsColorWidget::ColorComponent component )
   QgsColorWidget::setComponent( component );
 }
 
-void QgsColorBox::setColor( const QColor color, const bool emitSignals )
+void QgsColorBox::setColor( const QColor &color, const bool emitSignals )
 {
   //check if we need to redraw the box image
   if ( mComponent == QgsColorWidget::Red && mCurrentColor.red() != color.red() )
@@ -1305,7 +1304,7 @@ void QgsColorSliderWidget::setComponentValue( const int value )
   mSpinBox->blockSignals( false );
 }
 
-void QgsColorSliderWidget::setColor( const QColor color, const bool emitSignals )
+void QgsColorSliderWidget::setColor( const QColor &color, bool emitSignals )
 {
   QgsColorWidget::setColor( color, emitSignals );
   mRampWidget->setColor( color );
@@ -1314,7 +1313,7 @@ void QgsColorSliderWidget::setColor( const QColor color, const bool emitSignals 
   mSpinBox->blockSignals( false );
 }
 
-void QgsColorSliderWidget::rampColorChanged( const QColor color )
+void QgsColorSliderWidget::rampColorChanged( const QColor &color )
 {
   emit colorChanged( color );
 }
@@ -1404,7 +1403,7 @@ QgsColorTextWidget::~QgsColorTextWidget()
 
 }
 
-void QgsColorTextWidget::setColor( const QColor color, const bool emitSignals )
+void QgsColorTextWidget::setColor( const QColor &color, const bool emitSignals )
 {
   QgsColorWidget::setColor( color, emitSignals );
   updateText();

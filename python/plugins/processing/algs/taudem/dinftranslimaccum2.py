@@ -27,10 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithmExecutionException import \
     GeoAlgorithmExecutionException
@@ -39,8 +38,6 @@ from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.outputs import OutputRaster
-
-from processing.tools.system import *
 
 from TauDEMUtils import TauDEMUtils
 
@@ -67,24 +64,25 @@ class DinfTransLimAccum2(GeoAlgorithm):
         self.group = 'Specialized Grid Analysis tools'
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
-                          'D-Infinity Flow Direction Grid', False))
-        self.addParameter(ParameterRaster(self.SUPPLY_GRID, 'Supply Grid',
-                          False))
+            self.tr('D-Infinity Flow Direction Grid'), False))
+        self.addParameter(ParameterRaster(self.SUPPLY_GRID,
+            self.tr('Supply Grid'), False))
         self.addParameter(ParameterRaster(self.CAPACITY_GRID,
-                          'Transport Capacity Grid', False))
+            self.tr('Transport Capacity Grid'), False))
         self.addParameter(ParameterRaster(self.IN_CONCENTR_GRID,
-                          'Input Concentration Grid', False))
+            self.tr('Input Concentration Grid'), False))
         self.addParameter(ParameterVector(self.OUTLETS_SHAPE,
-                          'Outlets Shapefile',
-                          [ParameterVector.VECTOR_TYPE_POINT], True))
+            self.tr('Outlets Shapefile'),
+            [ParameterVector.VECTOR_TYPE_POINT], True))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-                          'Check for edge contamination', True))
+            self.tr('Check for edge contamination'), True))
 
         self.addOutput(OutputRaster(self.TRANSP_LIM_ACCUM_GRID,
-                       'Transport Limited Accumulation Grid'))
-        self.addOutput(OutputRaster(self.DEPOSITION_GRID, 'Deposition Grid'))
+            self.tr('Transport Limited Accumulation Grid')))
+        self.addOutput(OutputRaster(self.DEPOSITION_GRID,
+            self.tr('Deposition Grid')))
         self.addOutput(OutputRaster(self.OUT_CONCENTR_GRID,
-                       'Output Concentration Grid'))
+            self.tr('Output Concentration Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -92,9 +90,9 @@ class DinfTransLimAccum2(GeoAlgorithm):
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -111,7 +109,7 @@ class DinfTransLimAccum2(GeoAlgorithm):
         if param is not None:
             commands.append('-o')
             commands.append(param)
-        if str(self.getParameterValue(self.EDGE_CONTAM)).lower() == 'false':
+        if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
 
         commands.append('-tla')
@@ -120,11 +118,5 @@ class DinfTransLimAccum2(GeoAlgorithm):
         commands.append(self.getOutputValue(self.DEPOSITION_GRID))
         commands.append('-ctpt')
         commands.append(self.getOutputValue(self.OUT_CONCENTR_GRID))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)

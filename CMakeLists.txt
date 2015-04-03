@@ -1,8 +1,11 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "5")
+SET(CPACK_PACKAGE_VERSION_MINOR "9")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
+IF (POLICY CMP0048) # in CMake 3.0.0+
+  CMAKE_POLICY (SET CMP0048 OLD) # keep PROJECT() from clearing VERSION variables
+ENDIF (POLICY CMP0048)
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
 IF (APPLE)
@@ -18,7 +21,7 @@ MESSAGE(STATUS "QGIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSIO
 #############################################################
 # CMake settings
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8.0)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.6)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
@@ -40,11 +43,16 @@ ENDIF (WITH_GRASS)
 
 SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
-# mapserver by us disabled default because it needs FastCGI (which is optional dependency)
-SET (WITH_MAPSERVER FALSE CACHE BOOL "Determines whether QGIS mapserver should be built")
-IF(WITH_MAPSERVER)
-  SET (MAPSERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS mapserver should disable ECW (ECW in server apps requires a special license)")
-ENDIF(WITH_MAPSERVER)
+# server disabled default because it needs FastCGI (which is optional dependency)
+SET (WITH_SERVER FALSE CACHE BOOL "Determines whether QGIS server should be built")
+IF(WITH_SERVER)
+  SET (SERVER_SKIP_ECW FALSE CACHE BOOL "Determines whether QGIS server should disable ECW (ECW in server apps requires a special license)")
+
+  SET (WITH_SERVER_PLUGINS TRUE CACHE BOOL "Determines whether QGIS server support for python plugins should be built")
+  IF(WITH_SERVER_PLUGINS)
+    SET(HAVE_SERVER_PYTHON_PLUGINS TRUE)
+  ENDIF(WITH_SERVER_PLUGINS)
+ENDIF(WITH_SERVER)
 
 # Custom widgets
 SET (WITH_CUSTOM_WIDGETS FALSE CACHE BOOL "Determines whether QGIS custom widgets for Qt Designer should be built")
@@ -58,23 +66,15 @@ IF (WITH_POSTGRESQL)
   SET (POSTGRESQL_PREFIX "" CACHE PATH "Path to POSTGRESQL base directory")
 ENDIF (WITH_POSTGRESQL)
 
-SET (WITH_INTERNAL_QWTPOLAR TRUE CACHE BOOL "Use internal build of QwtPolar")
-
 SET (WITH_INTERNAL_QEXTSERIALPORT TRUE CACHE BOOL "Use internal build of Qextserialport")
 
-SET (WITH_INTERNAL_SPATIALITE FALSE CACHE BOOL "Determines whether SPATIALITE support should be built internally")
 SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
-IF(WITH_INTERNAL_SPATIALITE)
-  SET(SPATIALITE_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/spatialite/headers)
-  IF(WIN32 OR APPLE OR CYGWIN)
-    FIND_PACKAGE(Iconv REQUIRED)
-  ENDIF(WIN32 OR APPLE OR CYGWIN)
-ENDIF (WITH_INTERNAL_SPATIALITE)
 
 SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 IF(WITH_ORACLE)
   SET(HAVE_ORACLE TRUE)
 ENDIF(WITH_ORACLE)
+
 
 # try to configure and build python bindings by default
 SET (WITH_BINDINGS TRUE CACHE BOOL "Determines whether python bindings should be built")
@@ -119,6 +119,12 @@ SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.
 
 # whether unit tests should be build
 SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
+
+# whether coverage tests should be performed
+SET (ENABLE_COVERAGE FALSE CACHE BOOL "Perform coverage tests?")
+
+# whether coverage documentation should be generated
+SET (GENERATE_COVERAGE_DOCS FALSE CACHE BOOL "Generate coverage docs (requires lcov)?")
 
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
@@ -175,31 +181,23 @@ FIND_PACKAGE(Expat REQUIRED)
 FIND_PACKAGE(Spatialindex REQUIRED)
 FIND_PACKAGE(Qwt REQUIRED)
 
-IF (NOT WITH_INTERNAL_QWTPOLAR)
-  FIND_PACKAGE(QwtPolar REQUIRED)
-ENDIF(NOT WITH_INTERNAL_QWTPOLAR)
-
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QEXTSERIALPORT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/core/gps/qextserialport)
 ELSE (WITH_INTERNAL_QEXTSERIALPORT)
   FIND_PACKAGE(Qextserialport REQUIRED)
 ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
 
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  FIND_PACKAGE(Sqlite3)
-  IF (NOT SQLITE3_FOUND)
-    MESSAGE (SEND_ERROR "sqlite3 dependency was not found (try compiling with internal spatialite)!")
-  ENDIF (NOT SQLITE3_FOUND)
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+FIND_PACKAGE(Sqlite3)
+IF (NOT SQLITE3_FOUND)
+  MESSAGE (SEND_ERROR "sqlite3 dependency was not found!")
+ENDIF (NOT SQLITE3_FOUND)
 
 # optional
 IF (WITH_POSTGRESQL)
   FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
 ENDIF (WITH_POSTGRESQL)
 
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  FIND_PACKAGE(SPATIALITE REQUIRED)
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+FIND_PACKAGE(SPATIALITE REQUIRED)
 
 IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "Some dependencies were not found!")
@@ -219,20 +217,40 @@ SET (HAVE_MSSQL TRUE)
 #############################################################
 # search for Qt4
 SET(QT_MIN_VERSION 4.7.0)
-FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} REQUIRED)
-MESSAGE(STATUS "Found Qt version: ${QTVERSION}")
-SET(QT_USE_QTXML 1)
-SET(QT_USE_QTNETWORK 1)
-SET(QT_USE_QTSVG 1)
-SET(QT_USE_QTSQL 1)
-SET(QT_USE_QTWEBKIT 1)
-IF (WITH_CUSTOM_WIDGETS)
-  SET(QT_USE_QTDESIGNER 1)
-ENDIF (WITH_CUSTOM_WIDGETS)
+SET (ENABLE_QT5 FALSE CACHE BOOL "If enabled will try to find Qt5 before looking for Qt4")
+IF (ENABLE_QT5)
+  FIND_PACKAGE(Qt5Core QUIET)
+  FIND_PACKAGE(Qt5Gui REQUIRED)
+  FIND_PACKAGE(Qt5Widgets REQUIRED)
+  FIND_PACKAGE(Qt5Network REQUIRED)
+  FIND_PACKAGE(Qt5Xml REQUIRED)
+  FIND_PACKAGE(Qt5Svg REQUIRED)
+  FIND_PACKAGE(Qt5Concurrent REQUIRED)
+  FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+  FIND_PACKAGE(Qt5WebKit REQUIRED)
+  FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
+  FIND_PACKAGE(Qt5Test REQUIRED)
+  FIND_PACKAGE(Qt5UiTools REQUIRED)
+  FIND_PACKAGE(Qt5Script REQUIRED)
+  FIND_PACKAGE(Qt5Sql REQUIRED)
+  SET(QT5_BUILD TRUE)
+  INCLUDE("cmake/modules/ECMQt4To5Porting.cmake")
+  MESSAGE(STATUS "Found Qt version: ${Qt5Core_VERSION_STRING}")
+ELSE()
+  FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} REQUIRED)
+  SET(QT_USE_QTXML 1)
+  SET(QT_USE_QTNETWORK 1)
+  SET(QT_USE_QTSVG 1)
+  SET(QT_USE_QTSQL 1)
+  SET(QT_USE_QTWEBKIT 1)
+  IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
+    MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
+  ENDIF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
 
-IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
-  MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
-ENDIF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND OR (WITH_CUSTOM_WIDGETS AND NOT QT_QTDESIGNER_FOUND))
+  INCLUDE( ${QT_USE_FILE} )
+
+  MESSAGE(STATUS "Found Qt version: ${QTVERSION}")
+ENDIF()
 
 IF (WITH_QTMOBILITY)
     FIND_PACKAGE(QtMobility 1.1.0)
@@ -258,6 +276,9 @@ ENDIF (WITH_TOUCH)
 # search for QScintilla2 (C++ lib)
 FIND_PACKAGE(QScintilla REQUIRED)
 
+# ModelTest
+SET(ENABLE_MODELTEST FALSE CACHE BOOL "Enable QT ModelTest (not for production)")
+
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
   ENABLE_TESTING()
@@ -272,10 +293,15 @@ IF (ENABLE_TESTS)
     IMMEDIATE @ONLY)
   # For server side testing we have no X, we can use xfvb as a fake x
   # sudo apt-get install xfvb
-  add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10,1024x768x24" ctest --output-on-failure)
+  add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10 1024x768x24" ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
-INCLUDE( ${QT_USE_FILE} )
+IF (SUPPRESS_QT_WARNINGS)
+  # Newer versions of UseQt4.cmake include Qt with -isystem automatically
+  # This can be used to force this behavior on older systems
+  # Can be removed as soon as Travis-CI updates from precise
+  INCLUDE_DIRECTORIES(SYSTEM ${QT_INCLUDE_DIR})
+ENDIF (SUPPRESS_QT_WARNINGS)
 
 # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
 # (Keeps code compatible with Qt/Mac/64bit)
@@ -286,6 +312,34 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
     PATHS ${QT_BINARY_DIR}
     NO_DEFAULT_PATH
     )
+
+#############################################################
+# enable use of c++11 features where available
+# full c++11 support in clang 3.3+: http://clang.llvm.org/cxx_status.html
+# for Mac, this is probably Apple LLVM 4.2 (based on LLVM 3.2svn, in XCode 4.6+)
+#   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
+#   https://gist.github.com/yamaya/2924292
+
+IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
+  EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
+  IF (GCC_VERSION VERSION_GREATER 4.7 OR GCC_VERSION VERSION_EQUAL 4.7)
+    SET(USE_CXX_11 TRUE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+  ENDIF()
+ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+  IF ((NOT APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.2")
+       OR (APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.1"))
+    SET(USE_CXX_11 TRUE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-error=c++11-narrowing")
+  ENDIF()
+ELSE()
+  SET(USE_CXX_11 FALSE)
+ENDIF()
+
+#allow override keyword if available
+IF (NOT USE_CXX_11)
+  ADD_DEFINITIONS("-Doverride=")
+ENDIF()
 
 #############################################################
 # enable warnings
@@ -320,9 +374,9 @@ IF (PEDANTIC)
     # There are redundant declarations in Qt and GDAL
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
-    ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
     # command line -D option overrides environment variable
@@ -339,13 +393,13 @@ IF (PEDANTIC)
 
 ENDIF (PEDANTIC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
@@ -363,6 +417,16 @@ IF(MSVC)
   # disable macros that offend std::numeric_limits<T>::min()/max()
   ADD_DEFINITIONS(-DNOMINMAX)
 ENDIF(MSVC)
+
+IF(ENABLE_COVERAGE)
+  INCLUDE("cmake/modules/coverage/CodeCoverage.cmake")
+  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage --coverage")
+  SETUP_TARGET_FOR_COVERAGE(qgis_coverage ctest coverage)
+ENDIF(ENABLE_COVERAGE)
 
 #############################################################
 # platform specific stuff
@@ -405,6 +469,9 @@ IF (WIN32)
 ELSE (WIN32)
 
   IF (APPLE)
+    IF (POLICY CMP0042) # in CMake 3.0.0+
+      SET (CMAKE_MACOSX_RPATH OFF) # otherwise ON by default
+    ENDIF (POLICY CMP0042)
     # for Mac OS X, everything is put inside an application bundle
     # save the root install prefix for the app later
     SET (QGIS_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
@@ -505,6 +572,7 @@ ADD_DEFINITIONS("-DPYTHON_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DANALYSIS_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DAPP_EXPORT=${DLLIMPORT}")
 ADD_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLIMPORT}")
+ADD_DEFINITIONS("-DSERVER_EXPORT=${DLLIMPORT}")
 
 #############################################################
 # user-changeable settings which can be used to customize
@@ -733,4 +801,5 @@ ELSE(WIN32 AND NOT UNIX)
   #SET(CPACK_SOURCE_STRIP_FILES "")
 ENDIF(WIN32 AND NOT UNIX)
 SET(CPACK_PACKAGE_EXECUTABLES "qgis" "QGIS")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_SOURCE_DIR}/README.md")
 INCLUDE(CPack)

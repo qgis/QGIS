@@ -15,7 +15,7 @@ class QgsColorRampShader : QgsRasterShaderFunction
     {
       //! default constructor
       ColorRampItem();
-      //! convenience constructor - added in v1.6
+      //! convenience constructor
       ColorRampItem( double val, QColor col, QString lbl = QString() );
 
       QString label;

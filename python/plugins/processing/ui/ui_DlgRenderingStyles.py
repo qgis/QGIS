@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'python/plugins/processing/ui/DlgRenderingStyles.ui'
+# Form implementation generated from reading ui file 'DlgRenderingStyles.ui'
 #
-# Created: Wed Oct  2 17:04:59 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:48 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,15 +12,24 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgRenderingStyles(object):
     def setupUi(self, DlgRenderingStyles):
         DlgRenderingStyles.setObjectName(_fromUtf8("DlgRenderingStyles"))
         DlgRenderingStyles.resize(550, 400)
         self.verticalLayout = QtGui.QVBoxLayout(DlgRenderingStyles)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setMargin(9)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.tblStyles = QtGui.QTableWidget(DlgRenderingStyles)
         self.tblStyles.setObjectName(_fromUtf8("tblStyles"))
@@ -44,9 +53,9 @@ class Ui_DlgRenderingStyles(object):
         QtCore.QMetaObject.connectSlotsByName(DlgRenderingStyles)
 
     def retranslateUi(self, DlgRenderingStyles):
-        DlgRenderingStyles.setWindowTitle(QtGui.QApplication.translate("DlgRenderingStyles", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        DlgRenderingStyles.setWindowTitle(_translate("DlgRenderingStyles", "Dialog", None))
         item = self.tblStyles.horizontalHeaderItem(0)
-        item.setText(QtGui.QApplication.translate("DlgRenderingStyles", "Output", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("DlgRenderingStyles", "Output", None))
         item = self.tblStyles.horizontalHeaderItem(1)
-        item.setText(QtGui.QApplication.translate("DlgRenderingStyles", "Style", None, QtGui.QApplication.UnicodeUTF8))
+        item.setText(_translate("DlgRenderingStyles", "Style", None))
 

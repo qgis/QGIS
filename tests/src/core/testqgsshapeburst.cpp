@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -35,14 +35,23 @@
 #include <qgsfillsymbollayerv2.h>
 #include <qgsvectorcolorrampv2.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for shapeburst fill types.
  */
-class TestQgsShapeburst: public QObject
+class TestQgsShapeburst : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsShapeburst()
+        : mTestHasError( false )
+        , mpPolysLayer()
+        , mShapeburstFill( 0 )
+        , mFillSymbol( 0 )
+        , mSymbolRenderer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -125,6 +134,8 @@ void TestQgsShapeburst::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsShapeburst::shapeburstSymbol()
@@ -233,13 +244,14 @@ bool TestQgsShapeburst::imageCheck( QString theTestType )
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
   mMapSettings.setExtent( mpPolysLayer->extent() );
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 200 );
+  myChecker.setColorTolerance( 20 );
+  bool myResultFlag = myChecker.runTest( theTestType, 500 );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
 QTEST_MAIN( TestQgsShapeburst )
-#include "moc_testqgsshapeburst.cxx"
+#include "testqgsshapeburst.moc"

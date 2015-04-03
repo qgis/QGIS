@@ -21,6 +21,7 @@
 #include "qgsmaptopixel.h"
 #include "qgsproject.h"
 #include "qgsrubberband.h"
+#include "qgssnappingutils.h"
 #include <QMouseEvent>
 #include <QSettings>
 #include <cmath>
@@ -31,7 +32,6 @@ QgsMapToolMeasureAngle::QgsMapToolMeasureAngle( QgsMapCanvas* canvas )
     , mResultDisplay( 0 )
 {
   mToolName = tr( "Measure angle" );
-  mSnapper.setMapCanvas( canvas );
 
   connect( canvas, SIGNAL( destinationCrsChanged() ),
            this, SLOT( updateSettings() ) );
@@ -143,15 +143,8 @@ void QgsMapToolMeasureAngle::createRubberBand()
 
 QgsPoint QgsMapToolMeasureAngle::snapPoint( const QPoint& p )
 {
-  QList<QgsSnappingResult> snappingResults;
-  if ( mSnapper.snapToBackgroundLayers( p, snappingResults ) != 0 || snappingResults.size() < 1 )
-  {
-    return mCanvas->getCoordinateTransform()->toMapCoordinates( p );
-  }
-  else
-  {
-    return snappingResults.constBegin()->snappedVertex;
-  }
+  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
+  return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );
 }
 
 void QgsMapToolMeasureAngle::updateSettings()

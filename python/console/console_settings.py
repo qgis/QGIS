@@ -19,8 +19,8 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QCoreApplication, SIGNAL, QSize, QSettings, QFileInfo, Qt
+from PyQt4.QtGui import QDialog, QIcon, QFileDialog, QMessageBox, QTableWidgetItem, QFont, QColor
 from console_compile_apis import PrepareAPIDialog
 
 from ui_console_settings import Ui_SettingsDialogPythonConsole
@@ -74,7 +74,7 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
         settings = QSettings()
         lastDirPath = settings.value("pythonConsole/lastDirAPIPath", "", type=str)
         fileAPI = QFileDialog.getOpenFileName(
-                        self, "Open API File", lastDirPath, "API file (*.api)")
+            self, "Open API File", lastDirPath, "API file (*.api)")
         if fileAPI:
             self.addAPI(fileAPI)
 
@@ -106,13 +106,13 @@ class optionsDialog(QDialog, Ui_SettingsDialogPythonConsole):
 
     def accept(self):
         if not self.preloadAPI.isChecked() and \
-        not self.groupBoxPreparedAPI.isChecked():
+           not self.groupBoxPreparedAPI.isChecked():
             if self.tableWidget.rowCount() == 0:
                 QMessageBox.information(self, self.tr("Warning!"),
                                         self.tr('Please specify API file or check "Use preloaded API files"'))
                 return
         if self.groupBoxPreparedAPI.isChecked() and \
-        not self.lineEdit.text():
+           not self.lineEdit.text():
             QMessageBox.information(self, self.tr("Warning!"),
                                     self.tr('The APIs file was not compiled, click on "Compile APIs..."'))
             return

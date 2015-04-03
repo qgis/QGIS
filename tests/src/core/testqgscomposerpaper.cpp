@@ -25,13 +25,23 @@
 #include "qgslinesymbollayerv2.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerPaper: public QObject
+class TestQgsComposerPaper : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerPaper()
+        : mComposition( 0 )
+        , mSimpleFill( 0 )
+        , mMarkerLine( 0 )
+        , mFillSymbol( 0 )
+        , mMarkerLineSymbol( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -88,6 +98,7 @@ void TestQgsComposerPaper::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerPaper::init()
@@ -132,4 +143,4 @@ void TestQgsComposerPaper::markerLinePaper()
 }
 
 QTEST_MAIN( TestQgsComposerPaper )
-#include "moc_testqgscomposerpaper.cxx"
+#include "testqgscomposerpaper.moc"

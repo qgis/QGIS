@@ -1,5 +1,5 @@
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 
 #include "qgsapplication.h"
@@ -73,6 +73,12 @@ static void _verifyImage( const QString& testName )
 class TestQgsLegendRenderer : public QObject
 {
     Q_OBJECT
+
+  public:
+    TestQgsLegendRenderer()
+        : mRoot( 0 ), mVL1( 0 ), mVL2( 0 ), mVL3( 0 ), mRL( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -127,7 +133,7 @@ void TestQgsLegendRenderer::init()
 
   static char raster_array[] = { 1, 2, 2, 1 };
   QString rasterUri = QString( "MEM:::DATAPOINTER=%1,PIXELS=2,LINES=2" ).arg(( qulonglong ) raster_array );
-  mRL = new QgsRasterLayer( rasterUri, "Raster Layer", "gdal" );
+  mRL = new QgsRasterLayer( rasterUri, QString( "Raster Layer" ), QString( "gdal" ) );
   QgsMapLayerRegistry::instance()->addMapLayer( mRL );
 
   QgsCategoryList cats;
@@ -209,7 +215,9 @@ void TestQgsLegendRenderer::testBigMarker()
   QgsMarkerSymbolV2* sym = new QgsMarkerSymbolV2();
   sym->setColor( Qt::red );
   sym->setSize( sym->size() * 6 );
-  dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategorySymbol( 0, sym );
+  QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategorySymbol( 0, sym );
 
   //dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategoryLabel( 2, "This is a long symbol label" );
 
@@ -225,7 +233,9 @@ void TestQgsLegendRenderer::testLongSymbolText()
 {
   QString testName = "legend_long_symbol_text";
 
-  dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() )->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
+  QgsCategorizedSymbolRendererV2* catRenderer = dynamic_cast<QgsCategorizedSymbolRendererV2*>( mVL3->rendererV2() );
+  QVERIFY( catRenderer );
+  catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
 
   QgsLayerTreeModel legendModel( mRoot );
 
@@ -251,4 +261,4 @@ void TestQgsLegendRenderer::testThreeColumns()
 
 
 QTEST_MAIN( TestQgsLegendRenderer )
-#include "moc_testqgslegendrenderer.cxx"
+#include "testqgslegendrenderer.moc"

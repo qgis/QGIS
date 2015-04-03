@@ -25,12 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
@@ -49,17 +44,17 @@ class OgrSql(OgrAlgorithm):
         self.name = 'Execute SQL'
         self.group = '[OGR] Miscellaneous'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer'),
                           [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterString(self.SQL, 'SQL', ''))
+        self.addParameter(ParameterString(self.SQL, self.tr('SQL'), ''))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'SQL result'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('SQL result')))
 
     def processAlgorithm(self, progress):
         sql = self.getParameterValue(self.SQL)
         if sql == '':
             raise GeoAlgorithmExecutionException(
-                'Empty SQL. Please enter valid SQL expression and try again.')
+                self.tr('Empty SQL. Please enter valid SQL expression and try again.'))
 
         arguments = []
         arguments.append('-sql')

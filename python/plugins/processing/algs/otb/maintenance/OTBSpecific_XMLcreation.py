@@ -42,9 +42,6 @@ try:
 except ImportError, e:
     raise Exception("OTB python plugins must be installed and available in PYTHONPATH")
 
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.ProcessingConfig import ProcessingConfig
-
 from processing.algs.otb.OTBUtils import (renameValueField,
                                     remove_dependant_choices,
                                     remove_other_choices,
@@ -168,7 +165,6 @@ def getOrthoRectification(available_app, original_dom_document):
     remove_parameter_by_key(merged, 'map.utm.zone')
     old_app_name = merged.find('key').text
     merged.find('key').text = '%s-%s' % (old_app_name, 'lambert-WGS84')
-    old_longname = merged.find('longname').text
     merged.find('longname').text = '%s (%s)' % (old_app_name, 'lambert-WGS84')
     defaultWrite('%s-%s' % (available_app, 'lambert-WGS84'), merged)
     the_list.append(merged)
@@ -183,7 +179,6 @@ def getOrthoRectification(available_app, original_dom_document):
     remove_independant_choices(emptyMap, 'outputs.mode', 'autospacing')
     old_app_name = emptyMap.find('key').text
     emptyMap.find('key').text = '%s-%s' % (old_app_name, 'fit-to-ortho')
-    old_longname = emptyMap.find('longname').text
     emptyMap.find('longname').text = '%s (%s)' % (old_app_name, 'fit-to-ortho')
     defaultWrite('%s-%s' % (available_app, 'fit-to-ortho'), emptyMap)
     the_list.append(emptyMap)
@@ -583,7 +578,6 @@ def getComputeModulusAndPhase(available_app, original_dom_document):
             the_doc = split[key]
             old_app_name = the_doc.find('key').text
             the_doc.find('key').text = '%s-%s' % (old_app_name, 'OneEntry')
-            old_longname = the_doc.find('longname').text
             the_doc.find('longname').text = '%s (%s)' % (old_app_name, 'OneEntry')
             defaultWrite('%s-%s' % (available_app, 'OneEntry'), the_doc)
             the_list.append(the_doc)
@@ -591,7 +585,6 @@ def getComputeModulusAndPhase(available_app, original_dom_document):
             the_doc = split[key]
             old_app_name = the_doc.find('key').text
             the_doc.find('key').text = '%s-%s' % (old_app_name, 'TwoEntries')
-            old_longname = the_doc.find('longname').text
             the_doc.find('longname').text = '%s (%s)' % (old_app_name, 'TwoEntries')
             defaultWrite('%s-%s' % (available_app, 'TwoEntries'), the_doc)
             the_list.append(the_doc)

@@ -15,7 +15,7 @@
 ###########################################################################
 
 
-PATH=$PATH:$(dirname $(readlink -f $0))
+PATH=$PATH:$(git rev-parse --show-toplevel)/scripts
 
 if ! type -p astyle.sh >/dev/null; then
 	echo astyle.sh not found
@@ -48,7 +48,7 @@ fi
 
 if [ -z "$MODIFIED" ]; then
 	echo nothing was modified
-	exit 1
+	exit 0
 fi
 
 # save original changes
@@ -66,13 +66,16 @@ ASTYLEDIFF=astyle.$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
-                echo $f skipped
+	src/core/gps/qextserialport/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+		echo $f skipped
 		continue
 		;;
 
-        *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
-                ;;
+	*.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
+		if [ -x "$f" ]; then
+			chmod a-x "$f"
+		fi
+		;;
 
 	*.py)
 		perl -i.prepare -pe "s/[\t ]+$//;" $f
@@ -83,12 +86,12 @@ for f in $MODIFIED; do
 		continue
 		;;
 
-        *)
-                continue
-                ;;
-        esac
+	*)
+		continue
+		;;
+	esac
 
-        m=$f.$REV.prepare
+	m=$f.$REV.prepare
 
 	cp $f $m
 	astyle.sh $f
@@ -111,3 +114,5 @@ else
 fi
 
 exit 0
+
+# vim: set ts=8 noexpandtab :

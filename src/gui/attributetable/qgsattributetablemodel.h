@@ -72,13 +72,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Returns the number of rows
      * @param parent parent index
      */
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Returns the number of columns
      * @param parent parent index
      */
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Returns header data
@@ -86,14 +86,14 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param orientation horizontal or vertical orientation
      * @param role data role
      */
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     /**
      * Returns data on the given index
      * @param index model index
      * @param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role ) const;
+    virtual QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * Updates data on given index
@@ -101,13 +101,13 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param value new data value
      * @param role data role
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Returns item flags for the index
      * @param index model index
      */
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Reloads the model data between indices
@@ -119,7 +119,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /**
      * Remove rows
      */
-    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+    bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
     /**
      * Resets the model
@@ -202,6 +202,11 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param request The request to use to fill this table model.
      */
     void setRequest( const QgsFeatureRequest& request );
+
+    /**
+     * Get the the feature request
+     */
+    const QgsFeatureRequest &request() const;
 
     /**
      * Sets the context in which this table is shown.

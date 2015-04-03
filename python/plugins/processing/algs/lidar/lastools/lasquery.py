@@ -31,7 +31,7 @@ import os
 from LAStoolsUtils import LAStoolsUtils
 from processing.core.parameters import ParameterExtent
 from LAStoolsAlgorithm import LAStoolsAlgorithm
-from qgis.core import QgsMapLayer, QgsMapLayerRegistry, QgsVectorLayer
+from qgis.core import QgsMapLayer, QgsMapLayerRegistry
 
 class lasquery(LAStoolsAlgorithm):
 
@@ -41,14 +41,15 @@ class lasquery(LAStoolsAlgorithm):
         self.name = "lasquery"
         self.group = "LAStools"
         self.addParametersVerboseGUI()
-        self.addParameter(ParameterExtent(self.AOI, 'area of interest'))
+        self.addParameter(ParameterExtent(self.AOI, self.tr('area of interest')))
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
 
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasview")]
         self.addParametersVerboseCommands(commands)
 
-	# get area-of-interest
+    # get area-of-interest
         aoi = str(self.getParameterValue(self.AOI))
         aoiCoords = aoi.split(',')
 
@@ -70,5 +71,6 @@ class lasquery(LAStoolsAlgorithm):
         commands.append(aoiCoords[2])
         commands.append(aoiCoords[1])
         commands.append(aoiCoords[3])
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

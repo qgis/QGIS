@@ -69,7 +69,7 @@ class GUI_EXPORT QgsLayerTreeMapCanvasBridge : public QObject
     bool autoEnableCrsTransform() const { return mAutoEnableCrsTransform; }
 
   public slots:
-    void setHasCustomLayerOrder( bool override );
+    void setHasCustomLayerOrder( bool state );
     void setCustomLayerOrder( const QStringList& order );
 
     //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.

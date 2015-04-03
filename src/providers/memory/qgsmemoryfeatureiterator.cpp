@@ -23,7 +23,7 @@
 
 
 QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsMemoryFeatureSource>( source, ownSource, request )
     , mSelectRectGeom( 0 )
     , mSubsetExpression( 0 )
 {

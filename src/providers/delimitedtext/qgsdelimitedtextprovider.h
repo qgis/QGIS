@@ -81,44 +81,44 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     /* Implementation of functions from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const override;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
-    virtual QString storageType() const;
+    virtual QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
     /**
      * Get feature type.
      * @return int representing the feature type
      */
-    virtual QGis::WkbType geometryType() const;
+    virtual QGis::WkbType geometryType() const override;
 
     /**
      * Number of features in the layer
      * @return long containing number of features
      */
-    virtual long featureCount() const;
+    virtual long featureCount() const override;
 
     /**
      * Return a map of indexes with field names for this layer
      * @return map of fields
      */
-    virtual const QgsFields & fields() const;
+    virtual const QgsFields & fields() const override;
 
     /** Returns a bitmask containing the supported capabilities
         Note, some capabilities may change depending on whether
         a spatial filter is active on this provider, so it may
         be prudent to check this value per intended operation.
      */
-    virtual int capabilities() const;
+    virtual int capabilities() const override;
 
     /** Creates a spatial index on the data
      *  @return indexCreated  Returns true if a spatial index is created
      */
-    virtual bool createSpatialIndex();
+    virtual bool createSpatialIndex() override;
 
     /* Implementation of functions from QgsDataProvider */
 
@@ -135,7 +135,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
         behavior and presume that none of the sub-classes are going to do
         anything strange with regards to their name or description?
      */
-    QString name() const;
+    QString name() const override;
 
     /** return description
 
@@ -147,30 +147,30 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
         behavior and presume that none of the sub-classes are going to do
         anything strange with regards to their name or description?
      */
-    QString description() const;
+    QString description() const override;
 
     /**
      * Return the extent for this data layer
      */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() override;
 
     /**
      * Returns true if this is a valid delimited file
      */
-    bool isValid();
+    bool isValid() override;
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() override;
     /**
      * Set the subset string used to create a subset of features in
      * the layer.
      */
-    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true );
+    virtual bool setSubsetString( QString subset, bool updateFeatureCount = true ) override;
 
     /**
      * provider supports setting of subset strings
 
      */
-    virtual bool supportsSubsetString() { return true; }
+    virtual bool supportsSubsetString() override { return true; }
 
     /**
      * Returns the subset definition string (typically sql) currently in
@@ -178,7 +178,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * Must be overridden in the dataprovider, otherwise returns a null
      * QString.
      */
-    virtual QString subsetString()
+    virtual QString subsetString() override
     {
       return mSubsetString;
     }

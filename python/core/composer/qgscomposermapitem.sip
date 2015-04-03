@@ -15,7 +15,7 @@ class QgsComposerMapItem : QgsComposerObject
      * @param map QgsComposerMap the item is attached to
     */
     QgsComposerMapItem( const QString& name, QgsComposerMap* map );
-    
+
     virtual ~QgsComposerMapItem();
 
     /**Draws the item on to a painter
@@ -53,7 +53,7 @@ class QgsComposerMapItem : QgsComposerObject
      * @returns unique id
     */
     QString id() const;
-    
+
     /**Sets the friendly display name for the item
      * @param name display name
      * @see name
@@ -77,13 +77,14 @@ class QgsComposerMapItem : QgsComposerObject
      * @see setEnabled
     */
     virtual bool enabled() const;
-    
+
     /**Returns true if the item is drawn using advanced effects, such as blend modes.
      * @returns true if item uses advanced effects
     */
     virtual bool usesAdvancedEffects() const;
 
 };
+
 
 
 /**\ingroup MapComposer
@@ -154,7 +155,7 @@ class QgsComposerMapItemStack
     void addItem( QgsComposerMapItem* item /Transfer/);
 
     /**Removes an item from the stack and deletes the corresponding QgsComposerMapItem
-     * @param QgsComposerMapItem id for the QgsComposerMapItem to remove
+     * @param itemId id for the QgsComposerMapItem to remove
      * @note after removing an item from the stack, update()
      * should be called for the QgsComposerMap to prevent rendering artifacts
      * @see addItem
@@ -205,7 +206,7 @@ class QgsComposerMapItemStack
      * @see item
      * @note not available in python bindings
     */
-    //QgsComposerMapItem &operator[]( int idx );
+    // QgsComposerMapItem &operator[]( int idx );
 
     /**Returns a list of QgsComposerMapItems contained by the stack
      * @returns list of items

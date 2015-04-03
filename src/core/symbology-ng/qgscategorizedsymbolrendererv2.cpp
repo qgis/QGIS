@@ -21,6 +21,7 @@
 #include "qgsvectorcolorrampv2.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgspainteffect.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -31,6 +32,7 @@
 #include <QSettings> // for legend
 
 QgsRendererCategoryV2::QgsRendererCategoryV2()
+    : mRender( true )
 {
 }
 
@@ -147,6 +149,8 @@ QgsCategorizedSymbolRendererV2::QgsCategorizedSymbolRendererV2( QString attrName
     , mCategories( categories )
     , mInvertedColorRamp( false )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
+    , mAttrNum( -1 )
+    , mCounting( false )
 {
   for ( int i = 0; i < mCategories.count(); ++i )
   {
@@ -178,7 +182,7 @@ void QgsCategorizedSymbolRendererV2::rebuildHash()
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
 {
   // TODO: special case for int, double
-  QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.toString() );
+  QHash<QString, QgsSymbolV2*>::iterator it = mSymbolHash.find( value.isNull() ? "" : value.toString() );
   if ( it == mSymbolHash.end() )
   {
     if ( mSymbolHash.size() == 0 )
@@ -489,6 +493,8 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2::clone() const
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
+
+  copyPaintEffect( r );
   return r;
 }
 
@@ -655,6 +661,9 @@ QDomElement QgsCategorizedSymbolRendererV2::save( QDomDocument& doc )
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
+
   return rendererElem;
 }
 
@@ -806,12 +815,14 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   if ( renderer->type() == "pointDisplacement" )
   {
     const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
-    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+    if ( pointDisplacementRenderer )
+      return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
   }
   if ( renderer->type() == "invertedPolygonRenderer" )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
-    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
+    if ( invertedPolygonRenderer )
+      return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
   // If not one of the specifically handled renderers, then just grab the symbol from the renderer
@@ -823,6 +834,6 @@ QgsCategorizedSymbolRendererV2* QgsCategorizedSymbolRendererV2::convertFromRende
   {
     r->setSourceSymbol( symbols.at( 0 )->clone() );
   }
-  return r;
 
+  return r;
 }

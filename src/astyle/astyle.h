@@ -118,6 +118,7 @@ class ASResource
 		static const string AS_CLASS, AS_STRUCT, AS_UNION, AS_INTERFACE, AS_NAMESPACE, AS_EXTERN;
 		static const string AS_STATIC;
 		static const string AS_CONST;
+		static const string AS_OVERRIDE;
 		static const string AS_SYNCHRONIZED;
 		static const string AS_OPERATOR, AS_TEMPLATE;
 		static const string AS_OPEN_BRACKET, AS_CLOSE_BRACKET;

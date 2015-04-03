@@ -59,4 +59,11 @@ class QgsOfflineEditing : QObject
 
     /** emit a signal that processing of all layers has finished */
     void progressStopped();
+
+    /**
+     * Emitted when a warning needs to be displayed.
+     * @param title title string for message
+     * @param message A descriptive message for the warning
+     */
+    void warning( const QString& title, const QString& message );
 };

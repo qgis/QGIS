@@ -16,7 +16,6 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
     };
 
     /**Constructor for QgsComposerAttributeTableColumnModel.
-    /**Constructor for QgsComposerAttributeTableColumnModel.
      * @param composerTable QgsComposerAttributeTable the model is attached to
      * @param parent optional parent
      */
@@ -33,7 +32,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
     QModelIndex index( int row, int column, const QModelIndex &parent ) const;
     QModelIndex parent( const QModelIndex &child ) const;
-    
+
     /**Moves the specified row up or down in the model. Used for rearranging the attribute tables
      * columns.
      * @returns true if the move is allowed
@@ -41,14 +40,14 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
      * @param direction direction to move the attribute table column
      * @note added in 2.3
      */
-    bool moveRow( int row , ShiftDirection direction );
+    bool moveRow( int row, ShiftDirection direction );
 
     /**Resets the attribute table's columns to match the source layer's fields. Remove all existing
      * attribute table columns and column customisations.
      * @note added in 2.3
      */
     void resetToLayer();
-    
+
     /**Returns the QgsComposerTableColumn corresponding to an index in the model.
      * @returns QgsComposerTableColumn for specified index
      * @param index a QModelIndex

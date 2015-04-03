@@ -28,12 +28,12 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QVariant, QFile
+from PyQt4.QtGui import QDialog, QDoubleValidator, QDialogButtonBox, QMessageBox
 import ftools_utils
-from qgis.core import *
-from random import *
-from math import *
+from qgis.core import QgsRectangle, QgsGeometry, QgsPoint, QgsFeature, QgsFields, QgsField, QgsVectorFileWriter, QGis
+from random import seed, random, uniform
+from math import sqrt
 from ui_frmRegPoints import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
@@ -69,7 +69,6 @@ class Dialog(QDialog, Ui_Dialog):
             inName = self.inShape.currentText()
             outPath = self.outShape.text()
             self.outShape.clear()
-            outName = ftools_utils.getShapefileName( outPath )
             if self.rdoSpacing.isChecked(): value = self.spnSpacing.value()
             else: value = self.spnNumber.value()
             if self.chkRandom.isChecked(): offset = True
@@ -140,8 +139,10 @@ class Dialog(QDialog, Ui_Dialog):
             x = bound.xMinimum() + inset
             while x <= bound.xMaximum():
                 if offset:
-                    pGeom = QgsGeometry().fromPoint(QgsPoint(uniform(x - (pointSpacing / 2.0), x + (pointSpacing / 2.0)),
-                    uniform(y - (pointSpacing / 2.0), y + (pointSpacing / 2.0))))
+                    pGeom = QgsGeometry().fromPoint( QgsPoint(
+                        uniform(x - (pointSpacing / 2.0), x + (pointSpacing / 2.0)),
+                        uniform(y - (pointSpacing / 2.0), y + (pointSpacing / 2.0))
+                    ))
                 else:
                     pGeom = QgsGeometry().fromPoint(QgsPoint(x, y))
                 if pGeom.intersects(bound):

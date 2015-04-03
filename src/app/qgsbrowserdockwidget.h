@@ -18,9 +18,11 @@
 #include <QDockWidget>
 #include <ui_qgsbrowserdockwidgetbase.h>
 
+#include "qgsdataitem.h"
+
 class QgsBrowserModel;
 class QModelIndex;
-class QgsBrowserTreeView;
+class QgsDockBrowserTreeView;
 class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
@@ -30,6 +32,7 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
     Q_OBJECT
   public:
     explicit QgsBrowserDockWidget( QString name, QWidget *parent = 0 );
+    //~QgsBrowserDockWidget();
     void addFavouriteDirectory( QString favDir );
 
   public slots:
@@ -56,13 +59,16 @@ class APP_EXPORT QgsBrowserDockWidget : public QDockWidget, private Ui::QgsBrows
   protected:
     void refreshModel( const QModelIndex& index );
 
-    void showEvent( QShowEvent * event );
+    void showEvent( QShowEvent * event ) override;
 
     void addLayer( QgsLayerItem *layerItem );
 
-    QgsBrowserTreeView* mBrowserView;
+    QgsDockBrowserTreeView* mBrowserView;
     QgsBrowserModel* mModel;
     QgsBrowserTreeFilterProxyModel* mProxyModel;
+    QString mInitPath;
+
+  private:
 };
 
 #endif // QGSBROWSERDOCKWIDGET_H

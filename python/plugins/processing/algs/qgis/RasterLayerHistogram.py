@@ -27,8 +27,10 @@ __revision__ = '$Format:%H$'
 
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
-from PyQt4.QtCore import *
-from qgis.core import *
+
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsField
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterRaster
@@ -45,13 +47,28 @@ class RasterLayerHistogram(GeoAlgorithm):
     TABLE = 'TABLE'
     BINS = 'BINS'
 
+    def defineCharacteristics(self):
+        self.name = 'Raster layer histogram'
+        self.group = 'Graphics'
+
+        self.addParameter(ParameterRaster(self.INPUT,
+            self.tr('Input layer')))
+        self.addParameter(ParameterNumber(self.BINS,
+           self.tr('Number of bins'), 2, None, 10))
+
+        self.addOutput(OutputHTML(self.PLOT, self.tr('Output plot')))
+        self.addOutput(OutputTable(self.TABLE, self.tr('Output table')))
+
+
     def processAlgorithm(self, progress):
-        uri = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(
+            self.getParameterValue(self.INPUT))
+        nbins = self.getParameterValue(self.BINS)
+
         outputplot = self.getOutputValue(self.PLOT)
         outputtable = self.getOutputFromName(self.TABLE)
+
         values = raster.scanraster(layer, progress)
-        nbins = self.getParameterValue(self.BINS)
 
         # ALERT: this is potentially blocking if the layer is too big
         plt.close()
@@ -60,22 +77,15 @@ class RasterLayerHistogram(GeoAlgorithm):
             if v is not None:
                 valueslist.append(v)
         (n, bins, values) = plt.hist(valueslist, nbins)
+
         fields = [QgsField('CENTER_VALUE', QVariant.Double),
                   QgsField('NUM_ELEM', QVariant.Double)]
         writer = outputtable.getTableWriter(fields)
         for i in xrange(len(values)):
             writer.addRecord([str(bins[i]) + '-' + str(bins[i + 1]), n[i]])
+
         plotFilename = outputplot + '.png'
         lab.savefig(plotFilename)
         f = open(outputplot, 'w')
         f.write('<img src="' + plotFilename + '"/>')
         f.close()
-
-    def defineCharacteristics(self):
-        self.name = 'Raster layer histogram'
-        self.group = 'Graphics'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BINS, 'Number of bins', 2,
-                          None, 10))
-        self.addOutput(OutputHTML(self.PLOT, 'Output plot'))
-        self.addOutput(OutputTable(self.TABLE, 'Output table'))

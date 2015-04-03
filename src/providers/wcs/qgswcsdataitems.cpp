@@ -24,10 +24,11 @@
 #include <QFileInfo>
 #include <QSettings>
 
-QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path )
+QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
+    , mUri( uri )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWcs.svg" );
+  mIconName = "mIconWcs.svg";
 }
 
 QgsWCSConnectionItem::~QgsWCSConnectionItem()
@@ -40,10 +41,9 @@ QVector<QgsDataItem*> QgsWCSConnectionItem::createChildren()
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
 
-  QString encodedUri = mPath;
   QgsDataSourceURI uri;
-  uri.setEncodedUri( encodedUri );
-  QgsDebugMsg( "encodedUri = " + encodedUri );
+  uri.setEncodedUri( mUri );
+  QgsDebugMsg( "mUri = " + mUri );
 
   mCapabilities.setUri( uri );
 
@@ -119,12 +119,13 @@ void QgsWCSConnectionItem::deleteConnection()
 
 // ---------------------------------------------------------------------------
 
-QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, QgsWcsCapabilitiesProperty capabilitiesProperty, QgsDataSourceURI dataSourceUri, QgsWcsCoverageSummary coverageSummary )
+QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWcsCapabilitiesProperty& capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWcsCoverageSummary& coverageSummary )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wcs" ),
     mCapabilities( capabilitiesProperty ),
     mDataSourceUri( dataSourceUri ),
     mCoverageSummary( coverageSummary )
 {
+  mSupportedCRS = mCoverageSummary.supportedCrs;
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
@@ -139,10 +140,9 @@ QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString pat
 
   if ( mChildren.size() == 0 )
   {
-    //mIcon = iconRaster();
-    mIcon = QgsApplication::getThemeIcon( "mIconWcs.svg" );
+    mIconName = "mIconWcs.svg";
   }
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWCSLayerItem::~QgsWCSLayerItem()
@@ -220,8 +220,8 @@ QString QgsWCSLayerItem::createUri()
 QgsWCSRootItem::QgsWCSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWcs.svg" );
-
+  mCapabilities |= Fast;
+  mIconName = "mIconWcs.svg";
   populate();
 }
 
@@ -234,11 +234,8 @@ QVector<QgsDataItem*>QgsWCSRootItem::createChildren()
   QVector<QgsDataItem*> connections;
   foreach ( QString connName, QgsOWSConnection::connectionList( "WCS" ) )
   {
-    //QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName );
     QgsOWSConnection connection( "WCS", connName );
-    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, connection.uri().encodedUri() );
-
-    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
+    QgsDataItem * conn = new QgsWCSConnectionItem( this, connName, mPath + "/" + connName, connection.uri().encodedUri() );
     connections.append( conn );
   }
   return connections;
@@ -298,12 +295,22 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     return new QgsWCSRootItem( parentItem, "WCS", "wcs:" );
   }
 
-  // OWS server
-  QgsDebugMsg( "connection found in uri" );
-  return new QgsWCSConnectionItem( parentItem, "WCS", thePath );
+  // path schema: wcs:/connection name (used by OWS)
+  if ( thePath.startsWith( "wcs:/" ) )
+  {
+    QString connectionName = thePath.split( '/' ).last();
+    if ( QgsOWSConnection::connectionList( "WCS" ).contains( connectionName ) )
+    {
+      QgsOWSConnection connection( "WCS", connectionName );
+      return new QgsWCSConnectionItem( parentItem, "WCS", thePath, connection.uri().encodedUri() );
+    }
+  }
+
+  return 0;
 }
 
 QGISEXTERN QgsWCSSourceSelect * selectWidget( QWidget * parent, Qt::WindowFlags fl )
 {
   return new QgsWCSSourceSelect( parent, fl );
 }
+

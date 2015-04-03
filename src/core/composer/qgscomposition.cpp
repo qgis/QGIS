@@ -96,6 +96,7 @@ void QgsComposition::init()
   mGuidesVisible = true;
   mSmartGuides = true;
   mSnapTolerance = 0;
+  mBoundingBoxesVisible = true;
   mSelectionHandles = 0;
   mActiveItemCommand = 0;
   mActiveMultiFrameCommand = 0;
@@ -239,8 +240,11 @@ void QgsComposition::refreshItems()
 void QgsComposition::setSelectedItem( QgsComposerItem *item )
 {
   setAllUnselected();
-  item->setSelected( true );
-  emit selectedItemChanged( item );
+  if ( item )
+  {
+    item->setSelected( true );
+    emit selectedItemChanged( item );
+  }
 }
 
 void QgsComposition::setAllUnselected()
@@ -866,7 +870,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   if ( !pageStyleSymbolElem.isNull() )
   {
     delete mPageStyleSymbol;
-    mPageStyleSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( pageStyleSymbolElem ) );
+    mPageStyleSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( pageStyleSymbolElem );
   }
 
   if ( widthConversionOk && heightConversionOk )
@@ -1065,11 +1069,11 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
 
     //since we are pasting items, clear the existing selection
     setAllUnselected();
-  }
 
-  if ( pasteInPlace )
-  {
-    pasteInPlacePt = new QPointF( 0, pageNumberAt( *pos ) * ( mPageHeight + mSpaceBetweenPages ) );
+    if ( pasteInPlace )
+    {
+      pasteInPlacePt = new QPointF( 0, pageNumberAt( *pos ) * ( mPageHeight + mSpaceBetweenPages ) );
+    }
   }
   QDomNodeList composerLabelList = elem.elementsByTagName( "ComposerLabel" );
   for ( int i = 0; i < composerLabelList.size(); ++i )
@@ -2140,6 +2144,16 @@ void QgsComposition::setGridStyle( const GridStyle s )
 {
   mGridStyle = s;
   updatePaperItems();
+}
+
+void QgsComposition::setBoundingBoxesVisible( const bool boundsVisible )
+{
+  mBoundingBoxesVisible = boundsVisible;
+
+  if ( mSelectionHandles )
+  {
+    mSelectionHandles->update();
+  }
 }
 
 void QgsComposition::updateSettings()

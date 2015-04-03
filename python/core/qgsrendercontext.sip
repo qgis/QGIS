@@ -33,21 +33,17 @@ class QgsRenderContext
 
     bool forceVectorOutput() const;
 
-    /**Returns true if advanced effects such as blend modes such be used
-      @note added in 1.9*/
+    /**Returns true if advanced effects such as blend modes such be used */
     bool useAdvancedEffects() const;
-    /**Used to enable or disable advanced effects such as blend modes
-      @note: added in version 1.9*/
+    /**Used to enable or disable advanced effects such as blend modes */
     void setUseAdvancedEffects( bool enabled );
 
     bool drawEditingInformation() const;
 
     double rendererScale() const;
 
-    //! Added in QGIS v1.4
     QgsLabelingEngineInterface* labelingEngine();
 
-    //! Added in QGIS v2.0
     QColor selectionColor() const;
 
     /**Returns true if vector selections should be shown in the rendered map
@@ -70,11 +66,8 @@ class QgsRenderContext
     void setRasterScaleFactor( double factor );
     void setRendererScale( double scale );
     void setPainter( QPainter* p );
-    //! Added in QGIS v1.5
     void setForceVectorOutput( bool force );
-    //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
-    //! Added in QGIS v2.0
     void setSelectionColor( const QColor& color );
 
     /**Sets whether vector selections should be shown in the rendered map

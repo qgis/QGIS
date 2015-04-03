@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeature, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -43,17 +42,16 @@ class LinesToPolygons(GeoAlgorithm):
         self.name = 'Lines to polygons'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                                             QGis.WKBPolygon, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs()
+        )
 
         outFeat = QgsFeature()
 

@@ -34,6 +34,8 @@ class QgsFieldModel : QAbstractItemModel
     void setAllowExpression( bool allowExpression );
     bool allowExpression();
 
+    bool isField( const QString& expression );
+
     /**
      * @brief setExpression sets a single expression to be added after the fields at the end of the model
      */

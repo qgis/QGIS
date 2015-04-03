@@ -35,7 +35,8 @@ class QgsRasterCalcNode
       opLE,         // <=
       opAND,
       opOR,
-      opSIGN    //change sign
+      opSIGN,       // change sign
+      opNONE,
     };
 
     QgsRasterCalcNode();

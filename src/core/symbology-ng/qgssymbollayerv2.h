@@ -31,7 +31,6 @@
 #include <QDomElement>
 
 #include "qgssymbolv2.h"
-
 #include "qgssymbollayerv2utils.h" // QgsStringMap
 
 class QPainter;
@@ -41,10 +40,13 @@ class QPolygonF;
 class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
+class QgsPaintEffect;
 
 class CORE_EXPORT QgsSymbolLayerV2
 {
   public:
+
+    virtual ~QgsSymbolLayerV2();
 
     // not necessarily supported by all symbol layers...
     virtual QColor color() const { return mColor; }
@@ -61,8 +63,6 @@ class CORE_EXPORT QgsSymbolLayerV2
     /** Get fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual QColor fillColor() const { return QColor(); }
-
-    virtual ~QgsSymbolLayerV2() { removeDataDefinedProperties(); }
 
     virtual QString layerType() const = 0;
 
@@ -123,6 +123,7 @@ class CORE_EXPORT QgsSymbolLayerV2
                            const QPointF& shift = QPointF( 0.0, 0.0 ) ) const;
 
     virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    virtual double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
 
     virtual QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
 
@@ -131,9 +132,22 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
+    /** Returns the current paint effect for the layer.
+     * @returns paint effect
+     * @note added in QGIS 2.9
+     * @see setPaintEffect
+     */
+    QgsPaintEffect* paintEffect() const;
+
+    /** Sets the current paint effect for the layer.
+     * @param effect paint effect. Ownership is transferred to the layer.
+     * @note added in QGIS 2.9
+     * @see paintEffect
+     */
+    void setPaintEffect( QgsPaintEffect* effect );
+
   protected:
-    QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
-        : mType( type ), mLocked( locked ), mRenderingPass( 0 ) {}
+    QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
     QgsSymbolV2::SymbolType mType;
     bool mLocked;
@@ -141,6 +155,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     int mRenderingPass;
 
     QMap< QString, QgsExpression* > mDataDefinedProperties;
+    QgsPaintEffect* mPaintEffect;
 
     // Configuration of selected symbology implementation
     static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
@@ -153,6 +168,11 @@ class CORE_EXPORT QgsSymbolLayerV2
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
+    /**Copies paint effect of this layer to another symbol layer
+     * @param destLayer destination layer
+     * @note added in QGIS 2.9
+     */
+    void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
 };
 
 //////////////////////
@@ -175,11 +195,11 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
       Bottom
     };
 
-    void startRender( QgsSymbolV2RenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context ) override;
 
     virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }
@@ -193,7 +213,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setOffset( QPointF offset ) { mOffset = offset; }
     QPointF offset() { return mOffset; }
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
+    virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
 
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const
     { Q_UNUSED( props ); element.appendChild( doc.createComment( QString( "QgsMarkerSymbolLayerV2 %1 not implemented yet" ).arg( layerType() ) ) ); }
@@ -210,11 +230,11 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     void setSizeMapUnitScale( const QgsMapUnitScale& scale ) { mSizeMapUnitScale = scale; }
     const QgsMapUnitScale& sizeMapUnitScale() const { return mSizeMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
+    QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    void setMapUnitScale( const QgsMapUnitScale& scale );
-    QgsMapUnitScale mapUnitScale() const;
+    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
 
     void setHorizontalAnchorPoint( HorizontalAnchorPoint h ) { mHorizontalAnchorPoint = h; }
     HorizontalAnchorPoint horizontalAnchorPoint() const { return mHorizontalAnchorPoint; }
@@ -263,11 +283,13 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
   public:
     virtual void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) = 0;
 
-    //! @note added in v1.7
     virtual void renderPolygonOutline( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     virtual void setWidth( double width ) { mWidth = width; }
     virtual double width() const { return mWidth; }
+
+    double offset() const { return mOffset; }
+    void setOffset( double offset ) { mOffset = offset; }
 
     void setWidthUnit( QgsSymbolV2::OutputUnit unit ) { mWidthUnit = unit; }
     QgsSymbolV2::OutputUnit widthUnit() const { return mWidthUnit; }
@@ -275,15 +297,21 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     void setWidthMapUnitScale( const QgsMapUnitScale& scale ) { mWidthMapUnitScale = scale; }
     const QgsMapUnitScale& widthMapUnitScale() const { return mWidthMapUnitScale; }
 
-    void setOutputUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOffsetUnit( QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
 
-    void setMapUnitScale( const QgsMapUnitScale& scale );
-    QgsMapUnitScale mapUnitScale() const;
+    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+    void setOutputUnit( QgsSymbolV2::OutputUnit unit ) override;
+    QgsSymbolV2::OutputUnit outputUnit() const override;
 
-    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    void setMapUnitScale( const QgsMapUnitScale& scale ) override;
+    QgsMapUnitScale mapUnitScale() const override;
+
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
+
+    virtual double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const override;
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );
@@ -291,6 +319,9 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
     double mWidth;
     QgsSymbolV2::OutputUnit mWidthUnit;
     QgsMapUnitScale mWidthMapUnitScale;
+    double mOffset;
+    QgsSymbolV2::OutputUnit mOffsetUnit;
+    QgsMapUnitScale mOffsetMapUnitScale;
 };
 
 class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
@@ -298,7 +329,7 @@ class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
   public:
     virtual void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) = 0;
 
-    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) override;
 
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }

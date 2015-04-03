@@ -5,7 +5,7 @@ class QgsAttributeTableView : QTableView
 %End
 
   public:
-    QgsAttributeTableView( QWidget* parent = 0 );
+    QgsAttributeTableView( QWidget* parent /TransferThis/ = 0 );
     virtual ~QgsAttributeTableView();
 
     virtual void setModel( QgsAttributeTableFilterModel* filterModel );

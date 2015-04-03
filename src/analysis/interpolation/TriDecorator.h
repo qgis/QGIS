@@ -20,41 +20,41 @@
 #include "Triangulation.h"
 
 /**Decorator class for Triangulations (s. Decorator pattern in Gamma et al.)*/
-class TriDecorator: public Triangulation
+class TriDecorator : public Triangulation
 {
   public:
     TriDecorator();
     TriDecorator( Triangulation* t );
     virtual ~TriDecorator();
-    virtual void addLine( Line3D* line, bool breakline );
-    virtual int addPoint( Point3D* p );
+    virtual void addLine( Line3D* line, bool breakline ) override;
+    virtual int addPoint( Point3D* p ) override;
     /**Adds an association to a triangulation*/
     virtual void addTriangulation( Triangulation* t );
     /**Performs a consistency check, remove this later*/
-    virtual void performConsistencyTest();
-    virtual bool calcNormal( double x, double y, Vector3D* result );
-    virtual bool calcPoint( double x, double y, Point3D* result );
-    virtual Point3D* getPoint( unsigned int i ) const;
-    virtual int getNumberOfPoints() const;
+    virtual void performConsistencyTest() override;
+    virtual bool calcNormal( double x, double y, Vector3D* result ) override;
+    virtual bool calcPoint( double x, double y, Point3D* result ) override;
+    virtual Point3D* getPoint( unsigned int i ) const override;
+    virtual int getNumberOfPoints() const override;
     //! @note not available in python bindings
-    bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
-    bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
-    virtual int getOppositePoint( int p1, int p2 );
-    virtual QList<int>* getSurroundingTriangles( int pointno );
-    virtual double getXMax() const;
-    virtual double getXMin() const;
-    virtual double getYMax() const;
-    virtual double getYMin() const;
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b );
-    virtual void setEdgeColor( int r, int g, int b );
-    virtual void setForcedEdgeColor( int r, int g, int b );
-    virtual void setBreakEdgeColor( int r, int g, int b );
-    virtual void setTriangleInterpolator( TriangleInterpolator* interpolator );
-    virtual void eliminateHorizontalTriangles();
-    virtual void ruppertRefinement();
-    virtual bool pointInside( double x, double y );
-    virtual bool swapEdge( double x, double y );
-    virtual QList<int>* getPointsAroundEdge( double x, double y );
+    bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 ) override;
+    bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 ) override;
+    virtual int getOppositePoint( int p1, int p2 ) override;
+    virtual QList<int>* getSurroundingTriangles( int pointno ) override;
+    virtual double getXMax() const override;
+    virtual double getXMin() const override;
+    virtual double getYMax() const override;
+    virtual double getYMin() const override;
+    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b ) override;
+    virtual void setEdgeColor( int r, int g, int b ) override;
+    virtual void setForcedEdgeColor( int r, int g, int b ) override;
+    virtual void setBreakEdgeColor( int r, int g, int b ) override;
+    virtual void setTriangleInterpolator( TriangleInterpolator* interpolator ) override;
+    virtual void eliminateHorizontalTriangles() override;
+    virtual void ruppertRefinement() override;
+    virtual bool pointInside( double x, double y ) override;
+    virtual bool swapEdge( double x, double y ) override;
+    virtual QList<int>* getPointsAroundEdge( double x, double y ) override;
   protected:
     /**Association with a Triangulation object*/
     Triangulation* mTIN;

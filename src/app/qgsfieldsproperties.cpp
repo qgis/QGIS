@@ -20,6 +20,7 @@
 #include "qgsapplication.h"
 #include "qgsattributetypedialog.h"
 #include "qgsfieldcalculator.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldsproperties.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
@@ -37,10 +38,14 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QFileDialog>
+#include <QHBoxLayout>
 
 QgsFieldsProperties::QgsFieldsProperties( QgsVectorLayer *layer, QWidget* parent )
     : QWidget( parent )
     , mLayer( layer )
+    , mDesignerTree( NULL )
+    , mFieldsList( NULL )
+    , mRelationsList( NULL )
 {
   if ( !layer )
     return;
@@ -162,6 +167,10 @@ QTreeWidgetItem *QgsFieldsProperties::loadAttributeEditorTreeItem( QgsAttributeE
       newWidget = mDesignerTree->addItem( parent, DesignerTreeItemData( DesignerTreeItemData::Container, widgetDef->name() ) );
 
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
+      if ( !container )
+      {
+        break;
+      }
 
       Q_FOREACH ( QgsAttributeEditorElement* wdg, container->children() )
       {
@@ -235,9 +244,24 @@ void QgsFieldsProperties::setRow( int row, int idx, const QgsField& field )
   mFieldsList->setItem( row, attrTypeNameCol, new QTableWidgetItem( field.typeName() ) );
   mFieldsList->setItem( row, attrLengthCol, new QTableWidgetItem( QString::number( field.length() ) ) );
   mFieldsList->setItem( row, attrPrecCol, new QTableWidgetItem( QString::number( field.precision() ) ) );
-  mFieldsList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
+  if ( mLayer->pendingFields().fieldOrigin( idx ) == QgsFields::OriginExpression )
+  {
+    QWidget* expressionWidget = new QWidget;
+    expressionWidget->setLayout( new QHBoxLayout );
+    QToolButton* editExpressionButton = new QToolButton;
+    editExpressionButton->setIcon( QgsApplication::getThemeIcon( "/mIconExpression.svg" ) );
+    connect( editExpressionButton, SIGNAL(clicked()), this, SLOT(updateExpression()) );
+    expressionWidget->layout()->setContentsMargins( 0, 0, 0, 0 );
+    expressionWidget->layout()->addWidget( editExpressionButton );
+    expressionWidget->layout()->addWidget( new QLabel( mLayer->expressionField( idx ) ) );
+    mFieldsList->setCellWidget( row, attrCommentCol, expressionWidget );
+  }
+  else
+  {
+    mFieldsList->setItem( row, attrCommentCol, new QTableWidgetItem( field.comment() ) );
+  }
 
-  for ( int i = 0; i < attrEditTypeCol; i++ )
+  for ( int i = 0; i < attrCommentCol; i++ )
     mFieldsList->item( row, i )->setFlags( mFieldsList->item( row, i )->flags() & ~Qt::ItemIsEditable );
 
   FieldConfig cfg( mLayer, idx );
@@ -547,6 +571,9 @@ void QgsFieldsProperties::on_mDeleteAttributeButton_clicked()
     if ( item->column() == 0 )
     {
       int idx = mIndexedWidgets.indexOf( item );
+      if ( idx < 0 )
+        continue;
+
       if ( mLayer->pendingFields().fieldOrigin( idx ) == QgsFields::OriginExpression )
         expressionFields << idx;
       else
@@ -629,6 +656,24 @@ void QgsFieldsProperties::attributesListCellChanged( int row, int column )
         mLayer->remAttributeAlias( idx );
       }
     }
+  }
+}
+
+void QgsFieldsProperties::updateExpression()
+{
+  QToolButton* btn = qobject_cast<QToolButton*>( sender() );
+  Q_ASSERT( btn );
+
+  int index = btn->property( "Index" ).toInt();
+
+  const QString exp = mLayer->expressionField( index );
+
+  QgsExpressionBuilderDialog dlg( mLayer, exp );
+
+  if ( dlg.exec() )
+  {
+    mLayer->updateExpressionField( index, dlg.expressionText() );
+    loadRows();
   }
 }
 
@@ -804,10 +849,15 @@ void QgsFieldsProperties::apply()
  */
 
 QgsFieldsProperties::FieldConfig::FieldConfig()
+    : mEditable( true )
+    , mEditableEnabled( true )
+    , mLabelOnTop( false )
+    , mButton( 0 )
 {
 }
 
 QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
+    : mButton( 0 )
 {
   mEditable = layer->fieldEditable( idx );
   mEditableEnabled = layer->pendingFields().fieldOrigin( idx ) != QgsFields::OriginJoin
@@ -815,6 +865,7 @@ QgsFieldsProperties::FieldConfig::FieldConfig( QgsVectorLayer* layer, int idx )
   mLabelOnTop = layer->labelOnTop( idx );
   mEditorWidgetV2Type = layer->editorWidgetV2( idx );
   mEditorWidgetV2Config = layer->editorWidgetV2Config( idx );
+
 }
 
 /*

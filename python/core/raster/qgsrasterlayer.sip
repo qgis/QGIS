@@ -120,8 +120,7 @@ class QgsRasterLayer : QgsMapLayer
      */
     const QgsRasterDataProvider* dataProvider() const /PyName=constDataProvider/;
 
-    /**Synchronises with changes in the datasource
-    @note added in version 1.6*/
+    /**Synchronises with changes in the datasource */
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -137,8 +136,7 @@ class QgsRasterLayer : QgsMapLayer
                QgsRasterViewPort * myRasterViewPort,
                const QgsMapToPixel* theQgsMapToPixel = 0 );
 
-    /**Returns a list with classification items (Text and color)
-      @note this method was added in version 1.8*/
+    /**Returns a list with classification items (Text and color) */
     QList< QPair< QString, QColor > > legendSymbologyItems() const;
 
     /** \brief Obtain GDAL Metadata for this layer */
@@ -147,9 +145,7 @@ class QgsRasterLayer : QgsMapLayer
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
-     * @note added in 2.0
-     */
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
     QString providerType() const;
 
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
@@ -161,7 +157,7 @@ class QgsRasterLayer : QgsMapLayer
      *  @param theLimits Limits
      *  @param theExtent Extent used to calculate limits, if empty, use full layer extent
      *  @param theSampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param theGenerateLookupTableFlag Generate llokup table. */
+     *  @param theGenerateLookupTableFlag Generate lookup table. */
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm theAlgorithm,
@@ -210,7 +206,7 @@ class QgsRasterLayer : QgsMapLayer
   public slots:
     void showStatusMessage( const QString & theMessage );
 
-    //! @deprecated since 2.4 - does nothing
+    //! @deprecated in 2.4 - does nothing
     void updateProgress( int, int ) /Deprecated/;
 
     /** \brief receive progress signal from provider */
@@ -222,7 +218,6 @@ class QgsRasterLayer : QgsMapLayer
 
     /**
      *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
-     *   @note added in 1.7
      */
     void dataChanged();
 

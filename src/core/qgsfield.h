@@ -231,11 +231,9 @@ class CORE_EXPORT QgsFields
     const QgsField& field( const QString& name ) const { return mFields[ indexFromName( name )].field; }
 
     //! Get field's origin (value from an enumeration)
-    FieldOrigin fieldOrigin( int fieldIdx ) const { return mFields[fieldIdx].origin; }
+    FieldOrigin fieldOrigin( int fieldIdx ) const;
     //! Get field's origin index (its meaning is specific to each type of origin)
     int fieldOriginIndex( int fieldIdx ) const { return mFields[fieldIdx].originIndex; }
-
-
 
     //! Look up field's index from name. Returns -1 on error
     int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }
@@ -263,6 +261,7 @@ class CORE_EXPORT QgsFields
 
     //! map for quick resolution of name to index
     QHash<QString, int> mNameToIndex;
+
 };
 
 

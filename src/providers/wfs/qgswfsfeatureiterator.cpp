@@ -19,7 +19,7 @@
 #include "qgsgeometry.h"
 
 QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsWFSFeatureSource>( source, ownSource, request )
 {
   switch ( request.filterType() )
   {

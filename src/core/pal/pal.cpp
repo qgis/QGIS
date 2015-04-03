@@ -73,6 +73,7 @@ namespace pal
     va_list list;
     va_start( list, fmt );
     vfprintf( stderr, fmt, list );
+    va_end( list );
   }
 
   void geosNotice( const char *fmt, ... )
@@ -80,6 +81,7 @@ namespace pal
     va_list list;
     va_start( list, fmt );
     vfprintf( stdout, fmt, list );
+    va_end( list );
   }
 
   GEOSContextHandle_t geosContext()

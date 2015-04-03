@@ -44,7 +44,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
   protected:
     //! Reimplements dialog keyPress event so we can ignore it
-    void keyPressEvent( QKeyEvent * event );
+    void keyPressEvent( QKeyEvent * event ) override;
 
     void loadSymbol();
     //! @note not available in python bindings

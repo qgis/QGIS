@@ -4,7 +4,7 @@
 #    ---------------------
 #    Date                 : July 2007
 #    Copyright            : (C) 2007 by Tim Sutton
-#    Email                : tim dot linfiniti at com
+#    Email                : tim at linfiniti dot com
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -21,12 +21,11 @@
 # Note the .pro file must NOT be named qgis.pro as this
 # name is reserved for the Windows qmake project file
 
+echo "deprecated - use push_ts.sh and pull_ts.sh" >&2
+
 set -e
 
 cleanup() {
-	if [ -f i18n/python_ts.tar ]; then
-		tar -xf i18n/python_ts.tar
-	fi
 	if [ -f i18n/qgis_ts.tar ]; then
 		echo Restoring excluded translations
 		tar -xf i18n/qgis_ts.tar
@@ -40,7 +39,6 @@ cleanup() {
 		i18n/qgis_*.ts.bak \
 		src/plugins/grass/grasslabels-i18n.cpp \
 		i18n/qgis_ts.tar \
-		i18n/python_ts.tar \
 		qgis_ts.pro
 	do
 		[ -f "$i" ] && rm "$i"
@@ -76,7 +74,7 @@ else
 fi
 
 exclude="--exclude i18n/qgis_en.ts"
-opts=
+opts="-locations none"
 fast=
 while (( $# > 0 )); do
   arg=$1
@@ -102,7 +100,6 @@ done
 
 trap cleanup EXIT
 
-tar --remove-file -cf i18n/python_ts.tar $(find python -name "*.ts")
 if [ "$exclude" != "--exclude i18n/qgis_en.ts" -o -n "$add" ]; then
   echo Saving excluded translations
   tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts $exclude
@@ -139,7 +136,7 @@ if [ -n "$add" ]; then
 	done
 fi
 echo Updating translations
-$LUPDATE$opts -verbose qgis_ts.pro
+$LUPDATE $opts -verbose qgis_ts.pro
 
 if [ -z "$fast" ]; then
 	echo Updating TRANSLATORS File

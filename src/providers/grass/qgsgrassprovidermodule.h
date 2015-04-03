@@ -18,27 +18,43 @@
 
 #include "qgsdataitem.h"
 
-class QgsGrassLocationItem : public QgsDataCollectionItem
+class QgsGrassLocationItem : public QgsDirectoryItem
 {
   public:
-    QgsGrassLocationItem( QgsDataItem* parent, QString path );
+    QgsGrassLocationItem( QgsDataItem* parent, QString dirPath, QString path );
     ~QgsGrassLocationItem();
 
+    QIcon icon() override { return QgsDataItem::icon(); }
+
     static bool isLocation( QString path );
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 };
 
-class QgsGrassMapsetItem : public QgsDataCollectionItem
+class QgsGrassMapsetItem : public QgsDirectoryItem
 {
   public:
-    QgsGrassMapsetItem( QgsDataItem* parent, QString path );
+    QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
     ~QgsGrassMapsetItem();
 
+    QIcon icon() override { return QgsDataItem::icon(); }
+
     static bool isMapset( QString path );
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren() override;
 
     QString mLocation;
     QString mGisdbase;
+};
+
+class QgsGrassVectorLayerItem : public QgsLayerItem
+{
+  public:
+    QgsGrassVectorLayerItem( QgsDataItem* parent, QString mapName, QString layerName, QString path, QString uri, LayerType layerType, QString providerKey );
+    ~QgsGrassVectorLayerItem() {};
+
+    QString layerName() const override;
+
+  private:
+    QString mMapName;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

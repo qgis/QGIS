@@ -21,4 +21,3 @@ def classFactory(iface):
   # load GdalTools class from file GdalTools
   from GdalTools import GdalTools
   return GdalTools(iface)
-

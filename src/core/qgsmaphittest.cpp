@@ -3,6 +3,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrendercontext.h"
 #include "qgsrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
 #include "qgsvectorlayer.h"
 
 
@@ -37,7 +38,7 @@ void QgsMapHitTest::run()
 
     if ( mSettings.hasCrsTransformEnabled() )
     {
-      context.setCoordinateTransform( mSettings.layerTransfrom( vl ) );
+      context.setCoordinateTransform( mSettings.layerTransform( vl ) );
       context.setExtent( mSettings.outputExtentToLayerExtent( vl, mSettings.visibleExtent() ) );
     }
 

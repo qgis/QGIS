@@ -41,10 +41,10 @@ class GUI_EXPORT QgsDetailedItemDelegate :
     /** reimplement for parent class */
     void paint( QPainter * thePainter,
                 const QStyleOptionViewItem & theOption,
-                const QModelIndex & theIndex ) const;
+                const QModelIndex & theIndex ) const override;
     /** reimplement for parent class */
     QSize sizeHint( const QStyleOptionViewItem & theOption,
-                    const QModelIndex & theIndex ) const;
+                    const QModelIndex & theIndex ) const override;
 
     void setVerticalSpacing( int theValue );
 
@@ -65,14 +65,14 @@ class GUI_EXPORT QgsDetailedItemDelegate :
     QStringList wordWrap( QString theString,
                           QFontMetrics theMetrics,
                           int theWidth ) const;
-    void paintManually( QPainter * thePainter,
-                        const QStyleOptionViewItem & theOption,
-                        const QgsDetailedItemData theData ) const;
-    void paintAsWidget( QPainter * thePainter,
-                        const QStyleOptionViewItem & theOption,
-                        const QgsDetailedItemData theData ) const;
-    int height( const QStyleOptionViewItem & theOption,
-                const QgsDetailedItemData theData ) const;
+    void paintManually( QPainter *thePainter,
+                        const QStyleOptionViewItem &theOption,
+                        const QgsDetailedItemData &theData ) const;
+    void paintAsWidget( QPainter *thePainter,
+                        const QStyleOptionViewItem &theOption,
+                        const QgsDetailedItemData &theData ) const;
+    int height( const QStyleOptionViewItem &theOption,
+                const QgsDetailedItemData &theData ) const;
     QgsDetailedItemWidget * mpWidget;
     QCheckBox * mpCheckBox;
     int mVerticalSpacing;

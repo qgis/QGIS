@@ -55,6 +55,7 @@ int QgsMssqlProvider::sConnectionId = 0;
 
 QgsMssqlProvider::QgsMssqlProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mNumberFeatures( 0 )
     , mCrs()
     , mWkbType( QGis::WKBUnknown )
 {
@@ -600,9 +601,12 @@ void QgsMssqlProvider::UpdateStatistics( bool estimate )
 
   if ( query.exec( statement ) )
   {
-    QgsDebugMsg( "Found extents in spatial index" );
-    if ( query.next() )
+    if ( query.next() && ( !query.value( 0 ).isNull() ||
+                           !query.value( 1 ).isNull() ||
+                           !query.value( 2 ).isNull() ||
+                           !query.value( 3 ).isNull() ) )
     {
+      QgsDebugMsg( "Found extents in spatial index" );
       mExtent.setXMinimum( query.value( 0 ).toDouble() );
       mExtent.setYMinimum( query.value( 1 ).toDouble() );
       mExtent.setXMaximum( query.value( 2 ).toDouble() );
@@ -756,7 +760,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
     bool first = true;
     if ( !mDatabase.isOpen() )
     {
-       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+      mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
@@ -919,7 +923,16 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
       }
     }
 
-    query.next();
+    if ( !query.next() )
+    {
+      QString msg = query.lastError().text();
+      QgsDebugMsg( msg );
+      if ( !mSkipFailures )
+      {
+        pushError( msg );
+        return false;
+      }
+    }
     it->setFeatureId( query.value( 0 ).toLongLong() );
   }
 
@@ -989,7 +1002,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
 
   QSqlQuery query = QSqlQuery( mDatabase );
@@ -1008,7 +1021,7 @@ bool QgsMssqlProvider::deleteAttributes( const QgsAttributeIds &attributes )
 }
 
 
-bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   if ( attr_map.isEmpty() )
     return true;
@@ -1024,8 +1037,11 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     if ( FID_IS_NEW( fid ) )
       continue;
 
-    QString statement;
-    statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
+    const QgsAttributeMap& attrs = it.value();
+    if ( attrs.isEmpty() )
+      continue;
+
+    QString statement = QString( "UPDATE [%1].[%2] SET " ).arg( mSchemaName, mTableName );
 
     bool first = true;
     if ( !mDatabase.isOpen() )
@@ -1034,8 +1050,6 @@ bool QgsMssqlProvider::changeAttributeValues( const QgsChangedAttributesMap & at
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
-
-    const QgsAttributeMap& attrs = it.value();
 
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
     {
@@ -1140,7 +1154,7 @@ bool QgsMssqlProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     if ( !mDatabase.isOpen() )
     {
-       mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+      mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
     }
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
@@ -1213,7 +1227,7 @@ bool QgsMssqlProvider::deleteFeatures( const QgsFeatureIds & id )
 
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
@@ -1248,7 +1262,7 @@ bool QgsMssqlProvider::createSpatialIndex()
 
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
@@ -1281,7 +1295,7 @@ bool QgsMssqlProvider::createAttributeIndex( int field )
 {
   if ( !mDatabase.isOpen() )
   {
-     mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
+    mDatabase = GetDatabase( mService, mHost, mDatabaseName, mUserName, mPassword );
   }
   QSqlQuery query = QSqlQuery( mDatabase );
   query.setForwardOnly( true );
@@ -1313,8 +1327,8 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
     // try to load crs
     QSqlQuery query = QSqlQuery( mDatabase );
     query.setForwardOnly( true );
-    query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
-    if ( query.isActive() )
+    bool execOk = query.exec( QString( "select srtext from spatial_ref_sys where srid = %1" ).arg( QString::number( mSRId ) ) );
+    if ( execOk && query.isActive() )
     {
       if ( query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
         return mCrs;
@@ -1322,8 +1336,8 @@ QgsCoordinateReferenceSystem QgsMssqlProvider::crs()
       query.finish();
     }
     query.clear();
-    query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
-    if ( query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
+    execOk = query.exec( QString( "select well_known_text from sys.spatial_reference_systems where spatial_reference_id = %1" ).arg( QString::number( mSRId ) ) );
+    if ( execOk && query.isActive() && query.next() && mCrs.createFromWkt( query.value( 0 ).toString() ) )
       return mCrs;
   }
   return mCrs;
@@ -1727,7 +1741,7 @@ QgsVectorLayerImport::ImportError QgsMssqlProvider::createEmptyLayer(
     for ( int i = 0, n = fields.size(); i < n; ++i )
     {
       QgsField fld = fields[i];
-      if ( fld.name() == primaryKey )
+      if ( oldToNewAttrIdxMap && fld.name() == primaryKey )
       {
         oldToNewAttrIdxMap->insert( fields.indexFromName( fld.name() ), 0 );
         continue;

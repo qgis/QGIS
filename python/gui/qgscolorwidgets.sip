@@ -2,7 +2,7 @@
  * \class QgsColorWidget
  * A base class for interactive color widgets. Widgets can either allow setting a single component of
  * a color (eg the red or green components), or an entire color. The QgsColorWidget also keeps track of
- * any explicitely set hue for the color, so that this information is not lost when the widget is
+ * any explicitly set hue for the color, so that this information is not lost when the widget is
  * set to a color with an ambiguous hue (eg black or white shades).
  * \note Added in version 2.5
  */
@@ -56,11 +56,11 @@ class QgsColorWidget : QWidget
      * @see component
      */
     int componentValue() const;
-    
+
     /**Create an icon for dragging colors
      * @param color for icon
      */
-    static QPixmap createDragIcon( const QColor color );
+    static QPixmap createDragIcon( const QColor &color );
 
   public slots:
 
@@ -69,7 +69,7 @@ class QgsColorWidget : QWidget
      * @param emitSignals set to true to emit the colorChanged signal after setting color
      * @see color
      */
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
     /**Sets the color component which the widget controls
      * @param component color component for widget
@@ -92,7 +92,7 @@ class QgsColorWidget : QWidget
     /**Emitted when the widget's color changes
      * @param color new widget color
      */
-    void colorChanged( const QColor color );
+    void colorChanged( const QColor &color );
 
   protected:
 
@@ -138,7 +138,6 @@ class QgsColorWidget : QWidget
 
     //Reimplemented to accept dropped colors
     void dropEvent( QDropEvent *e );
-
 };
 
 
@@ -163,12 +162,12 @@ class QgsColorWheel : QgsColorWidget
     QgsColorWheel( QWidget* parent /TransferThis/ = 0 );
 
     virtual ~QgsColorWheel();
-    
+
     void paintEvent( QPaintEvent* event );
 
   public slots:
 
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
 
@@ -176,7 +175,7 @@ class QgsColorWheel : QgsColorWidget
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
-    
+
 };
 
 
@@ -205,15 +204,14 @@ class QgsColorBox : QgsColorWidget
     QgsColorBox( QWidget* parent /TransferThis/ = 0, const ColorComponent component = Value );
 
     virtual ~QgsColorBox();
-    
+
     virtual QSize sizeHint() const;
     void paintEvent( QPaintEvent* event );
 
     virtual void setComponent( const ColorComponent component );
- 
-  public slots:
 
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+  public slots:
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
 
@@ -237,7 +235,7 @@ class QgsColorRampWidget : QgsColorWidget
 %End
 
   public:
-  
+
     /*! Specifies the orientation of a color ramp
      */
     enum Orientation
@@ -259,7 +257,7 @@ class QgsColorRampWidget : QgsColorWidget
 
     virtual QSize sizeHint() const;
     void paintEvent( QPaintEvent* event );
-	
+
     /**Sets the orientation for the color ramp
      * @param orientation new orientation for the ramp
      * @see orientation
@@ -307,9 +305,9 @@ class QgsColorRampWidget : QgsColorWidget
      * @param value new value of color component
      */
     void valueChanged( const int value );
-	
+
   protected:
-    
+
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void keyPressEvent( QKeyEvent * event );
@@ -337,10 +335,10 @@ class QgsColorSliderWidget : QgsColorWidget
     QgsColorSliderWidget( QWidget* parent /TransferThis/ = 0, const ColorComponent component = QgsColorWidget::Red );
 
     virtual ~QgsColorSliderWidget();
-    
+
     virtual void setComponent( const ColorComponent component );
     virtual void setComponentValue( const int value );
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
 };
 
@@ -366,12 +364,12 @@ class QgsColorTextWidget : QgsColorWidget
     QgsColorTextWidget( QWidget* parent /TransferThis/ = 0 );
 
     virtual ~QgsColorTextWidget();
-    
-    virtual void setColor( const QColor color, const bool emitSignals = false );
+
+    virtual void setColor( const QColor &color, const bool emitSignals = false );
 
   protected:
     void resizeEvent( QResizeEvent * event );
-    
+
 };
 
 
@@ -415,7 +413,7 @@ class QgsColorPreviewWidget : QgsColorWidget
      * @see color2
      */
     virtual void setColor2( const QColor& color );
-    
+
   protected:
 
     //reimplemented to allow dragging colors
@@ -426,5 +424,5 @@ class QgsColorPreviewWidget : QgsColorWidget
 
     //reimplemented to allow dragging colors
     void mouseMoveEvent( QMouseEvent *e );
-	
+
 };

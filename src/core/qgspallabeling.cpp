@@ -78,17 +78,21 @@ using namespace pal;
 // -------------
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : palLayer( NULL )
+    : upsidedownLabels( Upright )
+    , palLayer( NULL )
     , mCurFeat( 0 )
     , mCurFields( 0 )
+    , xform( NULL )
     , ct( NULL )
     , extentGeom( NULL )
     , mFeaturesToLabel( 0 )
     , mFeatsSendingToPal( 0 )
     , mFeatsRegPal( 0 )
-    , expression( NULL )
+    , expression( 0 )
 {
   enabled = false;
+  isExpression = false;
+  fieldIndex = 0;
 
   // text style
   textFont = QApplication::font();
@@ -311,6 +315,18 @@ QgsPalLayerSettings::QgsPalLayerSettings()
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
+    : palLayer( NULL )
+    , mCurFeat( NULL )
+    , mCurFields( NULL )
+    , fieldIndex( 0 )
+    , xform( NULL )
+    , ct( NULL )
+    , extentGeom( NULL )
+    , mFeaturesToLabel( 0 )
+    , mFeatsSendingToPal( 0 )
+    , mFeatsRegPal( 0 )
+    , showingShadowRects( false )
+    , expression( NULL )
 {
   // copy only permanent stuff
 
@@ -443,10 +459,6 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   // scale factors
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
-
-  ct = NULL;
-  extentGeom = NULL;
-  expression = NULL;
 }
 
 
@@ -1415,10 +1427,16 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     }
   }
   w /= rasterCompressFactor;
-  QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
 
+#if 0 // XXX strk
+  QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
   labelX = qAbs( ptSize.x() - ptZero.x() );
   labelY = qAbs( ptSize.y() - ptZero.y() );
+#else
+  double uPP = xform->mapUnitsPerPixel();
+  labelX = w * uPP;
+  labelY = h * uPP;
+#endif
 }
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context, QString dxfLayer )
@@ -1431,10 +1449,12 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   dataDefinedValues.clear();
 
   // data defined show label? defaults to show label if not 0
-  if ( dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal ) )
+  if ( dataDefinedIsActive( QgsPalLayerSettings::Show ) )
   {
-    QgsDebugMsgLevel( QString( "exprVal Show:%1" ).arg( exprVal.toBool() ? "true" : "false" ), 4 );
-    if ( !exprVal.toBool() )
+    bool showLabel = dataDefinedEvaluate( QgsPalLayerSettings::Show, exprVal );
+    showLabel = exprVal.toBool();
+    QgsDebugMsgLevel( QString( "exprVal Show:%1" ).arg( showLabel ? "true" : "false" ), 4 );
+    if ( !showLabel )
     {
       return;
     }
@@ -1774,6 +1794,17 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     clonedGeometry.reset( geom );
   }
 
+  // Rotate the geometry if needed, before clipping
+  const QgsMapToPixel& m2p = context.mapToPixel();
+  if ( m2p.mapRotation() )
+  {
+    if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
+    {
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
+      return; // really ?
+    }
+  }
+
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
   bool do_clip = false;
@@ -1812,7 +1843,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
       return;
     }
 
-    int divNum = ( int )(( mFeaturesToLabel / maxNumLabels ) + 0.5 );
+    int divNum = ( int )((( double )mFeaturesToLabel / maxNumLabels ) + 0.5 );
     if ( divNum && ( mFeatsRegPal == ( int )( mFeatsSendingToPal / divNum ) ) )
     {
       mFeatsSendingToPal += 1;
@@ -1961,6 +1992,9 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     if ( ok )
     {
       dataDefinedRotation = true;
+      // TODO: add setting to disable having data defined rotation follow
+      //       map rotation ?
+      rotD -= m2p.mapRotation();
       angle = rotD * M_PI / 180.0;
     }
   }
@@ -2062,6 +2096,18 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
             QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception on data-defined position" ).arg( f.id() ), 4 );
             return;
           }
+        }
+
+        //rotate position with map if data-defined
+        if ( dataDefinedPosition && m2p.mapRotation() )
+        {
+          const QgsPoint& center = context.extent().center();
+          QTransform t = QTransform::fromTranslate( center.x(), center.y() );
+          t.rotate( -m2p.mapRotation() );
+          t.translate( -center.x(), -center.y() );
+          qreal xPosR, yPosR;
+          t.map( xPos, yPos, &xPosR, &yPosR );
+          xPos = xPosR; yPos = yPosR;
         }
 
         xPos += xdiff;
@@ -2673,6 +2719,10 @@ void QgsPalLayerSettings::parseTextFormatting()
       else if ( str.compare( "Right", Qt::CaseInsensitive ) == 0 )
       {
         aligntype = QgsPalLayerSettings::MultiRight;
+      }
+      else if ( str.compare( "Follow", Qt::CaseInsensitive ) == 0 )
+      {
+        aligntype = QgsPalLayerSettings::MultiFollowPlacement;
       }
       dataDefinedValues.insert( QgsPalLayerSettings::MultiLineAlignment, QVariant(( int )aligntype ) );
     }
@@ -3375,9 +3425,24 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   //convert geom to geos
   QgsGeometry* geom = feat.geometry();
 
-  if ( layerIt.value().ct && staticWillUseLayer( layerID ) ) // reproject the geometry if feature not already transformed for labeling
+  // reproject the geometry if necessary (but don't modify the features
+  // geometry so that geometry based expression keep working)
+  QScopedPointer<QgsGeometry> clonedGeometry;
+  if ( layerIt.value().ct )
   {
-    geom->transform( *( layerIt.value().ct ) );
+    geom = new QgsGeometry( *geom );
+    clonedGeometry.reset( geom );
+
+    try
+    {
+      geom->transform( *( layerIt.value().ct ) );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception" ).arg( feat.id() ), 4 );
+      return;
+    }
   }
 
   const GEOSGeometry* geos_geom = geom->asGeos();
@@ -3548,7 +3613,7 @@ void QgsPalLabeling::dataDefinedTextFormatting( QgsPalLayerSettings& tmpLyr,
     tmpLyr.wrapChar = ddValues.value( QgsPalLayerSettings::MultiLineWrapChar ).toString();
   }
 
-  if ( !tmpLyr.wrapChar.isEmpty() )
+  if ( !tmpLyr.wrapChar.isEmpty() || tmpLyr.getLabelExpression()->expression().contains( "wordwrap" ) )
   {
 
     if ( ddValues.contains( QgsPalLayerSettings::MultiLineHeight ) )
@@ -3870,7 +3935,16 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   if ( context.renderingStopped() )
     return; // it has been cancelled
 
+#if 1 // XXX strk
+  // features are pre-rotated but not scaled/translated,
+  // so we only disable rotation here. Ideally, they'd be
+  // also pre-scaled/translated, as suggested here:
+  // http://hub.qgis.org/issues/11856
+  QgsMapToPixel xform = mMapSettings->mapToPixel();
+  xform.setMapRotation( 0, 0, 0 );
+#else
   const QgsMapToPixel& xform = mMapSettings->mapToPixel();
+#endif
 
   // draw rectangles with all candidates
   // this is done before actual solution of the problem
@@ -3967,6 +4041,29 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
     QgsDebugMsgLevel( QString( "PAL font definedFont: %1, Style: %2" ).arg( dFont.toString() ).arg( dFont.styleName() ), 4 );
 #endif
     tmpLyr.textFont = dFont;
+
+    if ( tmpLyr.multilineAlign == QgsPalLayerSettings::MultiFollowPlacement )
+    {
+      //calculate font alignment based on label quadrant
+      switch (( *it )->getQuadrant() )
+      {
+        case LabelPosition::QuadrantAboveLeft:
+        case LabelPosition::QuadrantLeft:
+        case LabelPosition::QuadrantBelowLeft:
+          tmpLyr.multilineAlign = QgsPalLayerSettings::MultiRight;
+          break;
+        case LabelPosition::QuadrantAbove:
+        case LabelPosition::QuadrantOver:
+        case LabelPosition::QuadrantBelow:
+          tmpLyr.multilineAlign = QgsPalLayerSettings::MultiCenter;
+          break;
+        case LabelPosition::QuadrantAboveRight:
+        case LabelPosition::QuadrantRight:
+        case LabelPosition::QuadrantBelowRight:
+          tmpLyr.multilineAlign = QgsPalLayerSettings::MultiLeft;
+          break;
+      }
+    }
 
     // update tmpLyr with any data defined text style values
     dataDefinedTextStyle( tmpLyr, ddValues );
@@ -4115,12 +4212,41 @@ QgsPalLabeling::Search QgsPalLabeling::searchMethod() const
 void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
 {
   QgsPoint outPt = xform->transform( lp->getX(), lp->getY() );
-  QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
 
   painter->save();
+
+#if 0 // TODO: generalize some of this
+  double w = lp->getWidth();
+  double h = lp->getHeight();
+  double cx = lp->getX() + w / 2.0;
+  double cy = lp->getY() + h / 2.0;
+  double scale = 1.0 / xform->mapUnitsPerPixel();
+  double rotation = xform->mapRotation();
+  double sw = w * scale;
+  double sh = h * scale;
+  QRectF rect( -sw / 2, -sh / 2, sw, sh );
+
+  painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
+  if ( rotation )
+  {
+    // Only if not horizontal
+    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
+         lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
+         lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+    {
+      painter->rotate( rotation );
+    }
+  }
+  painter->translate( rect.bottomLeft() );
+  painter->rotate( -lp->getAlpha() * 180 / M_PI );
+  painter->translate( -rect.bottomLeft() );
+#else
+  QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
+  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
   painter->translate( QPointF( outPt.x(), outPt.y() ) );
   painter->rotate( -lp->getAlpha() * 180 / M_PI );
-  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+#endif
+
   painter->drawRect( rect );
   painter->restore();
 
@@ -4137,12 +4263,21 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 {
   // NOTE: this is repeatedly called for multi-part labels
   QPainter* painter = context.painter();
-  const QgsMapToPixel* xform = &context.mapToPixel();
+#if 1 // XXX strk
+  // features are pre-rotated but not scaled/translated,
+  // so we only disable rotation here. Ideally, they'd be
+  // also pre-scaled/translated, as suggested here:
+  // http://hub.qgis.org/issues/11856
+  QgsMapToPixel xform = context.mapToPixel();
+  xform.setMapRotation( 0, 0, 0 );
+#else
+  const QgsMapToPixel& xform = context.mapToPixel();
+#endif
 
   QgsLabelComponent component;
   component.setDpiRatio( dpiRatio );
 
-  QgsPoint outPt = xform->transform( label->getX(), label->getY() );
+  QgsPoint outPt = xform.transform( label->getX(), label->getY() );
 //  QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
 //  QRectF labelRect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
 
@@ -4153,8 +4288,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
   {
     // get rotated label's center point
     QgsPoint centerPt( outPt );
-    QgsPoint outPt2 = xform->transform( label->getX() + label->getWidth() / 2,
-                                        label->getY() + label->getHeight() / 2 );
+    QgsPoint outPt2 = xform.transform( label->getX() + label->getWidth() / 2,
+                                       label->getY() + label->getHeight() / 2 );
 
     double xc = outPt2.x() - outPt.x();
     double yc = outPt2.y() - outPt.y();
@@ -4172,8 +4307,8 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     drawLabelBackground( context, component, tmpLyr );
   }
 
-  if ( drawType == QgsPalLabeling::LabelBuffer
-       || drawType == QgsPalLabeling::LabelText )
+  else if ( drawType == QgsPalLabeling::LabelBuffer
+            || drawType == QgsPalLabeling::LabelText )
   {
 
     // TODO: optimize access :)
@@ -4255,8 +4390,34 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
     for ( int i = 0; i < lines; ++i )
     {
       painter->save();
+#if 0 // TODO: generalize some of this
+      LabelPosition* lp = label;
+      double w = lp->getWidth();
+      double h = lp->getHeight();
+      double cx = lp->getX() + w / 2.0;
+      double cy = lp->getY() + h / 2.0;
+      double scale = 1.0 / xform->mapUnitsPerPixel();
+      double rotation = xform->mapRotation();
+      double sw = w * scale;
+      double sh = h * scale;
+      QRectF rect( -sw / 2, -sh / 2, sw, sh );
+      painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
+      if ( rotation )
+      {
+        // Only if not horizontal
+        if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
+             lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
+             lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
+        {
+          painter->rotate( rotation );
+        }
+      }
+      painter->translate( rect.bottomLeft() );
+      painter->rotate( -lp->getAlpha() * 180 / M_PI );
+#else
       painter->translate( QPointF( outPt.x(), outPt.y() ) );
       painter->rotate( -label->getAlpha() * 180 / M_PI );
+#endif
 
       // scale down painter: the font size has been multiplied by raster scale factor
       // to workaround a Qt font scaling bug with small font sizes
@@ -4353,7 +4514,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QgsRenderContext& con
 }
 
 void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
-                                      QgsLabelComponent component,
+                                      const QgsLabelComponent& component,
                                       const QgsPalLayerSettings& tmpLyr )
 {
   QPainter* p = context.painter();
@@ -4384,11 +4545,11 @@ void QgsPalLabeling::drawLabelBuffer( QgsRenderContext& context,
 
   if ( tmpLyr.shadowDraw && tmpLyr.shadowUnder == QgsPalLayerSettings::ShadowBuffer )
   {
-    component.setOrigin( QgsPoint( 0.0, 0.0 ) );
-    component.setPicture( &buffPict );
-    component.setPictureBuffer( penSize / 2.0 );
-
-    drawLabelShadow( context, component, tmpLyr );
+    QgsLabelComponent bufferComponent = component;
+    bufferComponent.setOrigin( QgsPoint( 0.0, 0.0 ) );
+    bufferComponent.setPicture( &buffPict );
+    bufferComponent.setPictureBuffer( penSize / 2.0 );
+    drawLabelShadow( context, bufferComponent, tmpLyr );
   }
 
   p->save();
@@ -4705,7 +4866,7 @@ void QgsPalLabeling::drawLabelBackground( QgsRenderContext& context,
 }
 
 void QgsPalLabeling::drawLabelShadow( QgsRenderContext& context,
-                                      QgsLabelComponent component,
+                                      const QgsLabelComponent& component,
                                       const QgsPalLayerSettings& tmpLyr )
 {
   // incoming component sizes should be multiplied by rasterCompressFactor, as

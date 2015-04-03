@@ -543,9 +543,12 @@
   <tabstop>moveUpButton</tabstop>
   <tabstop>moveDownButton</tabstop>
   <tabstop>removeButton</tabstop>
+  <tabstop>addDefaultActionsButton</tabstop>
   <tabstop>actionType</tabstop>
   <tabstop>captureCB</tabstop>
   <tabstop>actionName</tabstop>
+  <tabstop>actionIcon</tabstop>
+  <tabstop>chooseIconButton</tabstop>
   <tabstop>actionAction</tabstop>
   <tabstop>browseButton</tabstop>
   <tabstop>insertExpressionButton</tabstop>

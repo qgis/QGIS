@@ -26,15 +26,12 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 
-from PyQt4.QtGui import *
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import *
 
 
 class hillshade(GdalAlgorithm):
@@ -52,25 +49,26 @@ class hillshade(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Hillshade'
         self.group = '[GDAL] Analysis'
-        self.addParameter(ParameterRaster(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterNumber(self.BAND, 'Band number', 1, 99, 1))
-        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES, 'Compute edges',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterNumber(self.BAND,
+            self.tr('Band number'), 1, 99, 1))
+        self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
+            self.tr('Compute edges'), False))
         self.addParameter(ParameterBoolean(self.ZEVENBERGEN,
-                "Use Zevenbergen&Thorne formula (instead of the Horn's one)",
-                False))
+            self.tr("Use Zevenbergen&Thorne formula (instead of the Horn's one)"),
+            False))
         self.addParameter(ParameterNumber(self.Z_FACTOR,
-                          'Z factor (vertical exaggeration)', 0.0,
-                          99999999.999999, 1.0))
+            self.tr('Z factor (vertical exaggeration)'),
+            0.0, 99999999.999999, 1.0))
         self.addParameter(ParameterNumber(self.SCALE,
-                          'Scale (ratio of vert. units to horiz.)', 0.0,
-                          99999999.999999, 1.0))
+            self.tr('Scale (ratio of vert. units to horiz.)'),
+            0.0, 99999999.999999, 1.0))
         self.addParameter(ParameterNumber(self.AZIMUTH,
-                          'Azimuth of the light', 0.0, 359.0, 315.0))
+            self.tr('Azimuth of the light'), 0.0, 359.0, 315.0))
         self.addParameter(ParameterNumber(self.ALTITUDE,
-                          'Altitude of the light', 0.0, 99999999.999999, 45.0))
+            self.tr('Altitude of the light'), 0.0, 99999999.999999, 45.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
 
     def processAlgorithm(self, progress):
         arguments = ['hillshade']

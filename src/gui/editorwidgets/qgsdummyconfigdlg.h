@@ -28,8 +28,8 @@ class GUI_EXPORT QgsDummyConfigDlg : public QgsEditorConfigWidget, private Ui::Q
 
     // QgsEditorConfigWidget interface
   public:
-    virtual QgsEditorWidgetConfig config();
-    virtual void setConfig( const QgsEditorWidgetConfig& config );
+    virtual QgsEditorWidgetConfig config() override;
+    virtual void setConfig( const QgsEditorWidgetConfig& config ) override;
 };
 
 #endif // QGSDUMMYCONFIGDLG_H

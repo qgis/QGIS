@@ -523,7 +523,7 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
     if ( !lineStyleElem.isNull() )
     {
       delete mLineSymbol;
-      mLineSymbol = dynamic_cast<QgsLineSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( lineStyleElem ) );
+      mLineSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsLineSymbolV2>( lineStyleElem );
     }
   }
   else

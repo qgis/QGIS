@@ -16,6 +16,7 @@
 
 #include "MathUtils.h"
 #include "qgslogger.h"
+#include <qmath.h>
 
 bool MathUtils::calcBarycentricCoordinates( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )
 {
@@ -104,7 +105,7 @@ double MathUtils::calcBernsteinPoly( int n, int i, double t )
     return 0;
   }
 
-  return lower( n, i )*power( t, i )*power(( 1 - t ), ( n - i ) );
+  return lower( n, i )*qPow( t, i )*qPow(( 1 - t ), ( n - i ) );
 }
 
 double MathUtils::cFDerBernsteinPoly( int n, int i, double t )

@@ -95,9 +95,6 @@ class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttribut
     QgsVectorLayer *mLayer;
     int mFieldIdx;
 
-    bool mFieldEditable;
-    bool mLabelOnTop;
-
     QgsEditorWidgetConfig mWidgetV2Config;
 
     //! Cached configuration dialog (lazy loaded)

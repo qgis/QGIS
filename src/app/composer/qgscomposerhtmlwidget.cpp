@@ -79,7 +79,12 @@ QgsComposerHtmlWidget::QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposer
 
 }
 
-QgsComposerHtmlWidget::QgsComposerHtmlWidget(): QgsComposerItemBaseWidget( 0, 0 )
+QgsComposerHtmlWidget::QgsComposerHtmlWidget()
+    : QgsComposerItemBaseWidget( 0, 0 )
+    , mHtml( NULL )
+    , mFrame( NULL )
+    , mHtmlEditor( NULL )
+    , mStylesheetEditor( NULL )
 {
 }
 

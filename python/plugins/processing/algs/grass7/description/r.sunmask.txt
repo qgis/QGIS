@@ -1,9 +1,9 @@
 r.sunmask
 r.sunmask - Calculates cast shadow areas from sun position and elevation raster map.
 Raster (r.*)
-ParameterRaster|elev|elev|False
-ParameterNumber|altitude|altitude|0|90|0.0
-ParameterNumber|azimuth|azimuth|0|360|0.0
+ParameterRaster|elevation|Elevation raster layer [meters]|False
+ParameterNumber|altitude|Altitude of the sun in degrees above the horizon|0|90|0.0
+ParameterNumber|azimuth|Azimuth of the sun in degrees from north|0|360|0.0
 ParameterNumber|year|year|1950|2050|2000
 ParameterNumber|month|month|0|12|1
 ParameterNumber|day|day|0|31|1
@@ -13,5 +13,6 @@ ParameterNumber|second|second|0|60|0
 ParameterNumber|timezone|East positive, offset from GMT|0|None|0.0
 ParameterNumber|east|Easting coordinate (point of interest)|None|None|0.0
 ParameterNumber|north|Northing coordinate (point of interest)|None|None|0.0
-ParameterBoolean|-z|Don't ignore zero elevation|True
-OutputRaster|output|Output layer
+ParameterBoolean|-z|Do not ignore zero elevation|True
+ParameterBoolean|-s|Calculate sun position only and exit|False
+OutputRaster|output|Output raster layer

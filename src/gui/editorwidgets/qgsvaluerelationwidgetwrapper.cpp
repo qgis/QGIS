@@ -19,6 +19,10 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
+#include "qgsfilterlineedit.h"
+
+#include <QStringListModel>
+#include <QCompleter>
 
 bool orderByKeyLessThan( const QgsValueRelationWidgetWrapper::ValueRelationItem& p1
                          , const QgsValueRelationWidgetWrapper::ValueRelationItem& p2 )
@@ -46,7 +50,11 @@ bool orderByValueLessThan( const QgsValueRelationWidgetWrapper::ValueRelationIte
 }
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mComboBox( 0 )
+    , mListWidget( 0 )
+    , mLineEdit( 0 )
+    , mLayer( 0 )
 {
 }
 
@@ -77,6 +85,18 @@ QVariant QgsValueRelationWidgetWrapper::value()
     v = selection.join( "," ).prepend( "{" ).append( "}" );
   }
 
+  if ( mLineEdit )
+  {
+    Q_FOREACH( const ValueRelationItem& i , mCache )
+    {
+      if ( i.second == mLineEdit->text() )
+      {
+        v = i.first;
+        break;
+      }
+    }
+  }
+
   return v;
 }
 
@@ -86,7 +106,10 @@ QWidget* QgsValueRelationWidgetWrapper::createWidget( QWidget* parent )
   {
     return new QListWidget( parent );
   }
-  else
+  else if ( config( "UseCompleter" ).toBool() )
+  {
+    return new QgsFilterLineEdit( parent );
+  }
   {
     return new QComboBox( parent );
   }
@@ -98,6 +121,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 
   mComboBox = qobject_cast<QComboBox*>( editor );
   mListWidget = qobject_cast<QListWidget*>( editor );
+  mLineEdit= qobject_cast<QLineEdit*>( editor );
 
   if ( mComboBox )
   {
@@ -125,6 +149,19 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
     }
     connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem* ) ), this, SLOT( valueChanged() ) );
   }
+  else if ( mLineEdit )
+  {
+    QStringList values;
+    Q_FOREACH( const ValueRelationItem& i,  mCache )
+    {
+      values << i.second;
+    }
+
+    QStringListModel* m = new QStringListModel( values, mLineEdit );
+    QCompleter* completer = new QCompleter( m, mLineEdit );
+    completer->setCaseSensitivity( Qt::CaseInsensitive );
+    mLineEdit->setCompleter( completer );
+  }
 }
 
 void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
@@ -149,6 +186,17 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
   else if ( mComboBox )
   {
     mComboBox->setCurrentIndex( mComboBox->findData( value ) );
+  }
+  else if ( mLineEdit )
+  {
+    Q_FOREACH( ValueRelationItem i, mCache )
+    {
+      if ( i.first == value )
+      {
+        mLineEdit->setText( i.second );
+        break;
+      }
+    }
   }
 }
 
@@ -216,6 +264,7 @@ QgsValueRelationWidgetWrapper::ValueRelationCache QgsValueRelationWidgetWrapper:
         cache.append( ValueRelationItem( f.attribute( ki ), f.attribute( vi ).toString() ) );
       }
     }
+    delete e;
   }
 
   if ( config.value( "OrderByValue" ).toBool() )

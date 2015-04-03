@@ -96,13 +96,13 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
   public slots:
     //! Close the dialog window (called when the "Close" button clicked)
-    void reject();
+    void reject() override;
 
     //! Set tab of the stacked widget (called from the vertical list item)
     void setCurrentTab( int idx );
 
     //! Update the window title according to the current filters
-    void updateWindowTitle();
+    void updateWindowTitle() override;
 
     //! Handle plugin selection
     void currentPluginChanged( const QModelIndex & theIndex );
@@ -172,7 +172,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
   protected:
     //! Reimplement QgsOptionsDialogBase method as we have a custom window title what would be overwritten by this method
-    void showEvent( QShowEvent* e );
+    void showEvent( QShowEvent* e ) override;
 
   private:
     //! Load translated descriptions. Source strings implemented in external qgspluginmanager_texts.cpp

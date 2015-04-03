@@ -84,18 +84,16 @@ class QgsComposition : QGraphicsScene
 
     /**Sets the number of pages for the composition.
      * @param pages number of pages
-     * @note added in version 1.9
      * @see numPages
     */
     void setNumPages( const int pages );
 
     /**Returns the number of pages in the composition.
      * @returns number of pages
-     * @note added in version 1.9
      * @see setNumPages
     */
     int numPages() const;
-    
+
     /**Returns whether a page is empty, ie, it contains no items except for the background
      * paper item.
      * @param page page number, starting with 1
@@ -223,6 +221,20 @@ class QgsComposition : QGraphicsScene
     */
     int snapTolerance() const;
 
+    /**Sets whether selection bounding boxes should be shown in the composition
+     * @param boundsVisible set to true to show selection bounding box
+     * @see boundingBoxesVisible
+     * @note added in QGIS 2.7
+    */
+    void setBoundingBoxesVisible( const bool boundsVisible );
+
+    /**Returns whether selection bounding boxes should be shown in the composition
+     * @returns true if selection bounding boxes should be shown
+     * @see setBoundingBoxesVisible
+     * @note added in QGIS 2.7
+    */
+    bool boundingBoxesVisible() const;
+
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack();
 
@@ -241,7 +253,7 @@ class QgsComposition : QGraphicsScene
     */
     QgsComposerItem* composerItemAt( const QPointF & position, const QgsComposerItem* belowItem, const bool ignoreLocked = false ) const;
 
-    /** Returns the page number (0-bsaed) given a coordinate */
+    /** Returns the page number (0-based) given a coordinate */
     int pageNumberAt( const QPointF& position ) const;
 
     /** Returns on which page number (0-based) is displayed an item */
@@ -261,10 +273,11 @@ class QgsComposition : QGraphicsScene
 %End
 
     /**Return composer items of a specific type
-      @note not available in python bindings
+     * @param itemList list of item type to store matching items in
+     * @note not available in python bindings
      */
     // template<class T> void composerItems( QList<T*>& itemList );
-    
+
     /**Return composer items of a specific type on a specified page
      * @param itemList list of item type to store matching items in
      * @param pageNumber page number (0 based)
@@ -279,7 +292,6 @@ class QgsComposition : QGraphicsScene
 
     /**Returns the composer html with specified id (a string as named in the
       composer user interface item properties).
-      @note Added in QGIS 2.0
       @param item the item.
       @return QgsComposerHtml pointer or 0 pointer if no such item exists.
      */
@@ -287,7 +299,6 @@ class QgsComposition : QGraphicsScene
 
     /**Returns a composer item given its text identifier.
        Ids are not necessarely unique, but this function returns only one element.
-      @note added in 2.0
       @param theId - A QString representing the identifier of the item to
         retrieve.
       @return QgsComposerItem pointer or 0 pointer if no such item exists.
@@ -295,7 +306,6 @@ class QgsComposition : QGraphicsScene
     const QgsComposerItem* getComposerItemById( const QString theId ) const;
 
     /**Returns a composer item given its unique identifier.
-      @note added in 2.0
       @param theUuid A QString representing the UUID of the item to
       **/
     const QgsComposerItem* getComposerItemByUuid( const QString theUuid ) const;
@@ -312,11 +322,9 @@ class QgsComposition : QGraphicsScene
     QgsComposerMap* worldFileMap();
     void setWorldFileMap( QgsComposerMap* map );
 
-    /**Returns true if a composition should use advanced effects such as blend modes
-      @note added in 1.9*/
+    /**Returns true if a composition should use advanced effects such as blend modes */
     bool useAdvancedEffects() const;
-    /**Used to enable or disable advanced effects such as blend modes in a composition
-      @note: added in version 1.9*/
+    /**Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/
@@ -407,7 +415,7 @@ class QgsComposition : QGraphicsScene
     void lockSelectedItems();
     /**Unlock all items*/
     void unlockAllItems();
-    
+
     /**Creates a new group from a list of composer items and adds it to the composition.
      * @param items items to include in group
      * @returns QgsComposerItemGroup of grouped items, if grouping was possible
@@ -494,7 +502,7 @@ class QgsComposition : QGraphicsScene
     void addComposerTable( QgsComposerAttributeTable* table );
     /**Adds composer html frame and advises composer to create a widget for it (through signal)*/
     void addComposerHtmlFrame( QgsComposerHtml* html /Transfer/, QgsComposerFrame* frame /Transfer/);
-     /**Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
+    /**Adds composer tablev2 frame and advises composer to create a widget for it (through signal)*/
     void addComposerTableFrame( QgsComposerAttributeTableV2* table /Transfer/, QgsComposerFrame* frame /Transfer/);
 
     /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
@@ -511,7 +519,7 @@ class QgsComposition : QGraphicsScene
     //printing
 
     /** Prepare the printer for printing */
-    void beginPrint( QPrinter& printer );
+    void beginPrint( QPrinter& printer, const bool evaluateDDPageSize = false );
     /** Prepare the printer for printing in a PDF */
     void beginPrintAsPDF( QPrinter& printer, const QString& file );
 
@@ -525,7 +533,7 @@ class QgsComposition : QGraphicsScene
     /**Convenience function that prepares the printer and prints
      * @returns true if print was successful
     */
-    bool print( QPrinter &printer );
+    bool print( QPrinter &printer, const bool evaluateDDPageSize = false );
 
     /**Convenience function that prepares the printer for printing in PDF and prints
      * @returns true if export was successful
@@ -538,9 +546,7 @@ class QgsComposition : QGraphicsScene
 
     /**Render a page to a paint device
      * @param p destination painter
-     * @param page page number, 0 based such that the first page is page 0
-     * @note added in version 1.9
-    */
+     * @param page page number, 0 based such that the first page is page 0 */
     void renderPage( QPainter* p, int page );
 
     /** Compute world file parameters */
@@ -587,7 +593,7 @@ class QgsComposition : QGraphicsScene
      * @param active true if data defined property is active, false if it is disabled
      * @param useExpression true if the expression should be used
      * @param expression expression for data defined property
-     * @param field name if the data defined property should take its value from a field
+     * @param field field name if the data defined property should take its value from a field
      * @note this method was added in version 2.5
     */
     void setDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, bool active, bool useExpression, const QString &expression, const QString &field );
@@ -617,7 +623,7 @@ class QgsComposition : QGraphicsScene
      * @param item item to set as selected
      * @note added in version 2.3*/
     void setSelectedItem( QgsComposerItem* item );
-    
+
     /**Clears any selected items in the composition. Call this method rather than
      * QGraphicsScene::clearSelection, as the latter does not correctly emit signals to allow
      * the composition's model to update.
@@ -671,4 +677,7 @@ class QgsComposition : QGraphicsScene
 
     /**Is emitted when item in the composition must be refreshed*/
     void refreshItemsTriggered();
+
+    /**Is emitted when the composition has an updated status bar message for the composer window*/
+    void statusMsgChanged( QString message );
 };

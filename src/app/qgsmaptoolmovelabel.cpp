@@ -24,6 +24,8 @@
 
 QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas* canvas )
     : QgsMapToolLabel( canvas )
+    , mClickOffsetX( 0 )
+    , mClickOffsetY( 0 )
 {
   mToolName = tr( "Move label" );
 }
@@ -174,7 +176,8 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QMouseEvent * e )
   }
   vlayer->endEditCommand();
 
-  mCanvas->refresh();
+  if ( mCanvas )
+    mCanvas->refresh();
 }
 
 

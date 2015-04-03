@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QStandardItemModel, QStandardItem
 
 from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
 
@@ -36,6 +36,8 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
     def __init__(self, options, selectedoptions=None):
         QDialog.__init__(self)
         self.setupUi(self)
+
+        self.lstLayers.setSelectionMode(QAbstractItemView.NoSelection)
 
         self.options = options
         self.selectedoptions = selectedoptions or []

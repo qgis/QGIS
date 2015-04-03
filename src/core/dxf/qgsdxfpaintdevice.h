@@ -32,7 +32,7 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
     QgsDxfPaintDevice( QgsDxfExport* dxf );
     ~QgsDxfPaintDevice();
 
-    QPaintEngine* paintEngine() const;
+    QPaintEngine* paintEngine() const override;
 
     void setDrawingSize( const QSizeF& size ) { mDrawingSize = size; }
     void setOutputSize( const QRectF& r ) { mRectangle = r; }
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
     /*int height() const { return mDrawingSize.height(); }
     int width() const { return mDrawingSize.width(); }*/
 
-    int metric( PaintDeviceMetric metric ) const;
+    int metric( PaintDeviceMetric metric ) const override;
 
     void setLayer( const QString& layer );
 

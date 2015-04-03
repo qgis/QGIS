@@ -30,11 +30,12 @@
 
 import re
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QIODevice, QFile, QTextStream
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import QGis, QgsCoordinateReferenceSystem
+from qgis.gui import QgsGenericProjectionSelector
+
 import ftools_utils
 from ui_frmReProject import Ui_Dialog
 
@@ -56,7 +57,6 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
         # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
         self.inShape.addItems(layers)
         self.cmbLayer.addItems(layers)
@@ -100,7 +100,6 @@ class Dialog(QDialog, Ui_Dialog):
             else:
                 srsDefine = None
                 if self.rdoProjection.isChecked():
-                    outProj = self.txtProjection.text().split( " - " )[ 0 ]
                     srsDefine = self.crs
                 else:
                     destLayer = ftools_utils.getVectorLayerByName(self.cmbLayer.currentText())

@@ -62,9 +62,6 @@ __revision__ = '$Format:%H$'
 #% required : yes
 #%end
 
-import sys
-import os
-import string
 try:
     from grass.script import core as grass
 except ImportError:

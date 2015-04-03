@@ -96,9 +96,9 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
     //! not available in python bindings
     void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
-    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) { return mCreateFunc ? mCreateFunc( map ) : NULL; }
-    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) { return mWidgetFunc ? mWidgetFunc( vl ) : NULL; }
-    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement& elem ) { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : NULL; }
+    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) override { return mCreateFunc ? mCreateFunc( map ) : NULL; }
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) override { return mWidgetFunc ? mWidgetFunc( vl ) : NULL; }
+    virtual QgsSymbolLayerV2* createSymbolLayerFromSld( QDomElement& elem ) override { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : NULL; }
 
   protected:
     QgsSymbolLayerV2CreateFunc mCreateFunc;

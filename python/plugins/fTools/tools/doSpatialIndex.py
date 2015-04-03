@@ -17,11 +17,9 @@
 ***************************************************************************
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL, QThread, QMutex
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QListWidgetItem, QAbstractItemView, QErrorMessage, QMessageBox
+from qgis.core import QGis, QgsProviderRegistry, QgsVectorLayer, QgsVectorDataProvider
 
 import ftools_utils
 
@@ -90,7 +88,7 @@ class Dialog( QDialog, Ui_Dialog ):
 
   def selectFiles( self ):
     filters = QgsProviderRegistry.instance().fileVectorFilters()
-    ( files, self.encoding ) = ftools_utils.openDialog( self, filtering = filters, dialogMode = "MultipleFiles" )
+    files, self.encoding = ftools_utils.openDialog( self, filtering=filters, dialogMode="MultipleFiles" )
     if files is None:
       return
 
@@ -140,7 +138,7 @@ class Dialog( QDialog, Ui_Dialog ):
     QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
 
   def stopProcessing( self ):
-    if self.workThread != None:
+    if self.workThread is not None:
       self.workThread.stop()
       self.workThread = None
 

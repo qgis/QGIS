@@ -46,7 +46,7 @@ class GUI_EXPORT QgsInvertedPolygonRendererWidget : public QgsRendererV2Widget, 
     QgsInvertedPolygonRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer );
 
     /** @returns the current feature renderer */
-    virtual QgsFeatureRendererV2* renderer();
+    virtual QgsFeatureRendererV2* renderer() override;
 
   protected:
     /** the mask renderer */

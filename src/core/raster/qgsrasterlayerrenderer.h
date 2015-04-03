@@ -37,7 +37,7 @@ class QgsRasterLayerRenderer : public QgsMapLayerRenderer
     QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRenderContext& rendererContext );
     ~QgsRasterLayerRenderer();
 
-    virtual bool render();
+    virtual bool render() override;
 
   protected:
 

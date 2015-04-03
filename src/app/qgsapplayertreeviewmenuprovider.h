@@ -27,7 +27,7 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
   public:
     QgsAppLayerTreeViewMenuProvider( QgsLayerTreeView* view, QgsMapCanvas* canvas );
 
-    QMenu* createContextMenu();
+    QMenu* createContextMenu() override;
 
     void addLegendLayerAction( QAction* action, QString menu, QString id,
                                QgsMapLayer::LayerType type, bool allLayers );
@@ -35,7 +35,6 @@ class QgsAppLayerTreeViewMenuProvider : public QObject, public QgsLayerTreeViewM
     void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
     void removeLegendLayerActionsForLayer( QgsMapLayer* layer );
     QList< LegendLayerAction > legendLayerActions( QgsMapLayer::LayerType type ) const;
-
 
   protected:
 

@@ -63,7 +63,7 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
   mButtonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( rename_clicked() ) );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // Create action to select this window
   mWindowAction = new QAction( windowTitle(), this );
   connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
@@ -285,7 +285,7 @@ void QgsComposerManager::openLocalDirectory( const QString& localDirPath )
   QDesktopServices::openUrl( QUrl::fromLocalFile( localDirPath ) );
 }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 void QgsComposerManager::showEvent( QShowEvent* event )
 {
   if ( !event->spontaneous() )

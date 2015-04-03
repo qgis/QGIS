@@ -57,6 +57,12 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 
     void on_cbxEnableIntersectionSnappingCheckBox_stateChanged( int );
 
+    void onSnappingModeIndexChanged( int );
+
+    void initNewProject();
+
+    void emitProjectSnapSettingsChanged();
+
   protected:
     /**Constructor
     @param canvas pointer to the map canvas (for detecting which vector layers are loaded
@@ -67,7 +73,7 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
      * Handle closing of the window
      * @param event unused
      */
-    void closeEvent( QCloseEvent* event );
+    void closeEvent( QCloseEvent* event ) override;
 
   signals:
     void snapSettingsChanged();
@@ -92,6 +98,8 @@ class APP_EXPORT QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialo
 
     /**Set checkbox value based on project setting*/
     void setIntersectionSnappingState();
+
+    void setSnappingMode();
 };
 
 #endif

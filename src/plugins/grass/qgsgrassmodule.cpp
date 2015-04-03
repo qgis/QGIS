@@ -149,8 +149,11 @@ QStringList QgsGrassModule::execArguments( QString module )
 }
 
 QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                                QString path, bool direct, QWidget * parent, Qt::WindowFlags f )
-    : QgsGrassModuleBase(), mSuccess( false ), mDirect( direct )
+                                QString path, bool direct, QWidget *parent, Qt::WindowFlags f )
+    : QgsGrassModuleBase()
+    , mOptions( 0 )
+    , mSuccess( false )
+    , mDirect( direct )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "called" );
@@ -286,6 +289,8 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
     : mIface( iface )
     , mTools( tools )
     , mModule( module )
+    , mParent( 0 )
+    , mRegionModeComboBox( 0 )
     , mDirect( direct )
 {
   QgsDebugMsg( "called." );
@@ -309,8 +314,8 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QgisInterface *iface,
   QString xname, QDomElement qDocElem,
   bool direct, QWidget * parent, Qt::WindowFlags f )
-    : QWidget( parent, f ),
-    QgsGrassModuleOptions( tools, module, iface, direct )
+    : QWidget( parent, f )
+    , QgsGrassModuleOptions( tools, module, iface, direct )
 {
   //QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );
@@ -2031,8 +2036,18 @@ void QgsGrassModule::setDirectLibraryPath( QProcessEnvironment & environment )
 QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     bool direct, QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
-    mControlType( NoControl ), mValueType( String ), mOutputType( None ), mHaveLimits( false ), mIsOutput( false )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    , mControlType( NoControl )
+    , mValueType( String )
+    , mOutputType( None )
+    , mHaveLimits( false )
+    , mMin( INT_MAX )
+    , mMax( INT_MIN )
+    , mComboBox( 0 )
+    , mIsOutput( false )
+    , mValidator( 0 )
+    , mLayout( 0 )
+    , mUsesRegion( false )
 {
   QgsDebugMsg( "called." );
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Minimum );
@@ -2538,11 +2553,14 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     bool direct, QWidget * parent )
     : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    , mType( QgsGrassModuleInput::Vector )
     , mModuleStandardOptions( options )
     , mGeometryTypeOption( "" )
     , mVectorLayerOption( "" )
+    , mLayerComboBox( 0 )
     , mRegionButton( 0 )
     , mUpdate( false )
+    , mUsesRegion( false )
     , mRequired( false )
 {
   QgsDebugMsg( "called." );
@@ -2780,7 +2798,8 @@ void QgsGrassModuleInput::updateQgisLayers()
     if ( item )
     {
       QgsGrassModuleInput *mapInput = dynamic_cast<QgsGrassModuleInput *>( item );
-      sourceMap = mapInput->currentMap();
+      if ( mapInput )
+        sourceMap = mapInput->currentMap();
     }
   }
 

@@ -85,7 +85,7 @@ void QgsVectorLayerCache::setFullCache( bool fullCache )
     // Initialize the cache...
     QgsFeatureIterator it( new QgsCachedFeatureWriterIterator( this, QgsFeatureRequest()
                            .setSubsetOfAttributes( mCachedAttributes )
-                           .setFlags( !mCacheGeometry ? QgsFeatureRequest::NoGeometry : QgsFeatureRequest::Flags( 0 ) ) ) );
+                           .setFlags( mCacheGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry ) ) );
 
     int i = 0;
 
@@ -219,7 +219,7 @@ void QgsVectorLayerCache::onFeatureAdded( QgsFeatureId fid )
     QgsFeature feat;
     featureAtId( fid, feat );
   }
-  emit( featureAdded( fid ) );
+  emit featureAdded( fid );
 }
 
 void QgsVectorLayerCache::attributeAdded( int field )

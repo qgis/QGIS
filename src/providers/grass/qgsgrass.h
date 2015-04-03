@@ -16,6 +16,8 @@
 #ifndef QGSGRASS_H
 #define QGSGRASS_H
 
+#include <QMutex>
+
 #include <setjmp.h>
 
 // GRASS header files
@@ -42,10 +44,22 @@ class QgsRectangle;
 #define EXPAND(x) STR(x)
 #define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
 
+#if (GRASS_VERSION_MAJOR < 7)
 #define G_TRY try { if( !setjmp( QgsGrass::jumper ) )
-// Ready for > 7.0.beta1
-//#define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
+#else
+#define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
+#endif
 #define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
+
+#if GRASS_VERSION_MAJOR >= 7
+#define G_available_mapsets G_get_available_mapsets
+#define G__mapset_permissions2 G_mapset_permissions2
+#define G_suppress_masking Rast_suppress_masking
+#define G__get_window G_get_element_window
+#define G__getenv G_getenv_nofatal
+#define G__setenv G_setenv_nogisrc
+#define BOUND_BOX bound_box
+#endif
 
 /*!
    Methods for C library initialization and error handling.
@@ -296,6 +310,8 @@ class QgsGrass
     static QString mGisrc;
     // Temporary directory where GISRC and sockets are stored
     static QString mTmp;
+    // Mutex for common locking when calling GRASS functions which are mostly non thread safe
+    static QMutex sMutex;
 };
 
 #endif // QGSGRASS_H

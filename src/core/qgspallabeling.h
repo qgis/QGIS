@@ -120,7 +120,9 @@ class CORE_EXPORT QgsPalLayerSettings
     {
       MultiLeft = 0,
       MultiCenter,
-      MultiRight
+      MultiRight,
+      MultiFollowPlacement /*< Alignment follows placement of label, eg labels to the left of a feature
+                               will be drawn with right alignment*/
     };
 
     enum ShapeType
@@ -435,12 +437,12 @@ class CORE_EXPORT QgsPalLayerSettings
     void writeToLayer( QgsVectorLayer* layer );
 
     /** Get a data defined property pointer
-     * @note added in 1.9, helpful for Python access
+     * @note helpful for Python access
      */
     QgsDataDefined* dataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
 
     /** Set a property as data defined
-     * @note added in 1.9, helpful for Python access
+     * @note helpful for Python access
      */
     void setDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p,
                                  bool active, bool useExpr, const QString& expr, const QString& field );
@@ -449,24 +451,24 @@ class CORE_EXPORT QgsPalLayerSettings
     void removeDataDefinedProperty( QgsPalLayerSettings::DataDefinedProperties p );
 
     /** Convert old property value to new one as delimited values
-     * @note not available in python bindings; added in 1.9, as temporary solution until refactoring of project settings
+     * @note not available in python bindings; as temporary solution until refactoring of project settings
      */
     QString updateDataDefinedString( const QString& value );
 
     /** Get property value as separate values split into Qmap
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings
      */
     QMap<QString, QString> dataDefinedMap( QgsPalLayerSettings::DataDefinedProperties p ) const;
 
     /** Get data defined property value from expression string or attribute field name
      * @returns value inside QVariant
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings
      */
     QVariant dataDefinedValue( QgsPalLayerSettings::DataDefinedProperties p, QgsFeature& f, const QgsFields& fields ) const;
 
     /** Get data defined property value from expression string or attribute field name
      * @returns true/false whether result is null or invalid
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings
      */
     bool dataDefinedEvaluate( QgsPalLayerSettings::DataDefinedProperties p, QVariant& exprVal ) const;
 
@@ -500,13 +502,12 @@ class CORE_EXPORT QgsPalLayerSettings
      * @param rasterfactor whether to consider oversampling
      * @param mapUnitScale a mapUnitScale clamper
      * @return size that will render, as double
-     * @note added in 1.9, as a better precision replacement for sizeToPixel
      */
     double scaleToPixelContext( double size, const QgsRenderContext& c, SizeUnit unit, bool rasterfactor = false, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() ) const;
 
     /** Map of data defined enum to names and old-style indecies
      * The QPair contains a new string for layer property key, and a reference to old-style numeric key (< QGIS 2.0)
-     * @note not available in python bindings; added in 1.9
+     * @note not available in python bindings;
      */
     QMap<QgsPalLayerSettings::DataDefinedProperties, QPair<QString, int> > dataDefinedNames() const { return mDataDefinedNames; }
 
@@ -605,44 +606,44 @@ class CORE_EXPORT QgsLabelComponent
 
     // methods
 
-    const QString& text() { return mText; }
+    const QString& text() const { return mText; }
     void setText( const QString& text ) { mText = text; }
 
-    const QgsPoint& origin() { return mOrigin; }
-    void setOrigin( QgsPoint point ) { mOrigin = point; }
+    const QgsPoint& origin() const { return mOrigin; }
+    void setOrigin( const QgsPoint& point ) { mOrigin = point; }
 
     bool useOrigin() const { return mUseOrigin; }
-    void setUseOrigin( bool use ) { mUseOrigin = use; }
+    void setUseOrigin( const bool use ) { mUseOrigin = use; }
 
     double rotation() const { return mRotation; }
-    void setRotation( double rotation ) { mRotation = rotation; }
+    void setRotation( const double rotation ) { mRotation = rotation; }
 
     double rotationOffset() const { return mRotationOffset; }
-    void setRotationOffset( double rotation ) { mRotationOffset = rotation; }
+    void setRotationOffset( const double rotation ) { mRotationOffset = rotation; }
 
     bool useRotation() const { return mUseRotation; }
-    void setUseRotation( bool use ) { mUseRotation = use; }
+    void setUseRotation( const bool use ) { mUseRotation = use; }
 
-    const QgsPoint& center() { return mCenter; }
-    void setCenter( QgsPoint point ) { mCenter = point; }
+    const QgsPoint& center() const { return mCenter; }
+    void setCenter( const QgsPoint& point ) { mCenter = point; }
 
     bool useCenter() const { return mUseCenter; }
-    void setUseCenter( bool use ) { mUseCenter = use; }
+    void setUseCenter( const bool use ) { mUseCenter = use; }
 
-    const QgsPoint& size() { return mSize; }
-    void setSize( QgsPoint point ) { mSize = point; }
+    const QgsPoint& size() const { return mSize; }
+    void setSize( const QgsPoint& point ) { mSize = point; }
 
-    const QgsPoint& offset() { return mOffset; }
-    void setOffset( QgsPoint point ) { mOffset = point; }
+    const QgsPoint& offset() const { return mOffset; }
+    void setOffset( const QgsPoint& point ) { mOffset = point; }
 
-    const QPicture* picture() { return mPicture; }
+    const QPicture* picture() const { return mPicture; }
     void setPicture( QPicture* picture ) { mPicture = picture; }
 
     double pictureBuffer() const { return mPictureBuffer; }
-    void setPictureBuffer( double buffer ) { mPictureBuffer = buffer; }
+    void setPictureBuffer( const double buffer ) { mPictureBuffer = buffer; }
 
     double dpiRatio() const { return mDpiRatio; }
-    void setDpiRatio( double ratio ) { mDpiRatio = ratio; }
+    void setDpiRatio( const double ratio ) { mDpiRatio = ratio; }
 
   private:
     // current label component text,
@@ -717,7 +718,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     QgsPalLabeling();
     ~QgsPalLabeling();
 
-    QgsPalLayerSettings& layer( const QString& layerName );
+    QgsPalLayerSettings& layer( const QString& layerName ) override;
 
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
@@ -748,11 +749,11 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     //! called when we're going to start with rendering
     //! @deprecated since 2.4 - use override with QgsMapSettings
-    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr );
+    Q_DECL_DEPRECATED virtual void init( QgsMapRenderer* mr ) override;
     //! called when we're going to start with rendering
-    virtual void init( const QgsMapSettings& mapSettings );
+    virtual void init( const QgsMapSettings& mapSettings ) override;
     //! called to find out whether the layer is used for labeling
-    virtual bool willUseLayer( QgsVectorLayer* layer );
+    virtual bool willUseLayer( QgsVectorLayer* layer ) override;
 
     //! called to find out whether the layer is used for labeling
     //! @note added in 2.4
@@ -760,36 +761,34 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     static bool staticWillUseLayer( const QString& layerID );
 
     //! clears all PAL layer settings for registered layers
-    //! @note: this method was added in version 1.9
-    virtual void clearActiveLayers();
+    virtual void clearActiveLayers() override;
     //! clears data defined objects from PAL layer settings for a registered layer
-    //! @note: this method was added in version 1.9
-    virtual void clearActiveLayer( const QString& layerID );
+    virtual void clearActiveLayer( const QString& layerID ) override;
     //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx );
+    virtual int prepareLayer( QgsVectorLayer* layer, QStringList &attrNames, QgsRenderContext& ctx ) override;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s );
+    virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings *s ) override;
     //! hook called when drawing for every feature in a layer
-    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null );
-    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
+    virtual void registerFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext(), QString dxfLayer = QString::null ) override;
+    virtual void registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) override;
     //! called when the map is drawn and labels should be placed
-    virtual void drawLabeling( QgsRenderContext& context );
+    virtual void drawLabeling( QgsRenderContext& context ) override;
     //! called when we're done with rendering
-    virtual void exit();
+    virtual void exit() override;
 
     //! return infos about labels at a given (map) position
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p );
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) override;
     //! return infos about labels within a given (map) rectangle
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
-    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r );
+    Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) override;
 
     //! Return pointer to recently computed results (in drawLabeling()) and pass the ownership of results to the caller
     //! @note added in 2.4
     QgsLabelingResults* takeResults();
 
     //! called when passing engine among map renderers
-    virtual QgsLabelingEngineInterface* clone();
+    virtual QgsLabelingEngineInterface* clone() override;
 
     //! @note not available in python bindings
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
@@ -798,19 +797,18 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
     virtual void drawLabel( pal::LabelPosition* label, QgsRenderContext& context, QgsPalLayerSettings& tmpLyr, DrawLabelType drawType, double dpiRatio = 1.0 );
 
     static void drawLabelBuffer( QgsRenderContext& context,
-                                 QgsLabelComponent component,
+                                 const QgsLabelComponent &component,
                                  const QgsPalLayerSettings& tmpLyr );
 
     static void drawLabelBackground( QgsRenderContext& context,
                                      QgsLabelComponent component,
                                      const QgsPalLayerSettings& tmpLyr );
 
-    static void drawLabelShadow( QgsRenderContext& context,
-                                 QgsLabelComponent component,
+    static void drawLabelShadow( QgsRenderContext &context,
+                                 const QgsLabelComponent &component,
                                  const QgsPalLayerSettings& tmpLyr );
 
     //! load/save engine settings to project file
-    //! @note added in QGIS 1.9
     void loadEngineSettings();
     void saveEngineSettings();
     void clearEngineSettings();

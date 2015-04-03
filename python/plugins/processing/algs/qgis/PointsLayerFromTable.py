@@ -25,9 +25,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QGis, QgsCoordinateReferenceSystem, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterTable
 from processing.core.parameters import ParameterTableField
@@ -51,13 +49,12 @@ class PointsLayerFromTable(GeoAlgorithm):
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
         writer = output.getVectorWriter(fields, QGis.WKBPoint, self.crs)
-        xfieldindex = vlayer.fieldNameIndex(
-                self.getParameterValue(self.XFIELD))
-        yfieldindex = vlayer.fieldNameIndex(
-                self.getParameterValue(self.YFIELD))
+        xfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.XFIELD))
+        yfieldindex = vlayer.fieldNameIndex(self.getParameterValue(self.YFIELD))
 
         crsId = self.getParameterValue(self.TARGET_CRS)
-        targetCrs = QgsCoordinateReferenceSystem(crsId)
+        targetCrs = QgsCoordinateReferenceSystem()
+        targetCrs.createFromUserInput(crsId)
         self.crs = targetCrs
 
         outFeat = QgsFeature()
@@ -83,11 +80,12 @@ class PointsLayerFromTable(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Points layer from table'
         self.group = 'Vector creation tools'
-        self.addParameter(ParameterTable(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterTableField(self.XFIELD, 'X field',
-                          self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.YFIELD, 'Y field',
-                          self.INPUT, ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterCrs(self.TARGET_CRS, 'Target CRS',
-                          'EPSG:4326'))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterTable(self.INPUT,
+            self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.XFIELD,
+            self.tr('X field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterTableField(self.YFIELD,
+            self.tr('Y field'), self.INPUT, ParameterTableField.DATA_TYPE_ANY))
+        self.addParameter(ParameterCrs(self.TARGET_CRS,
+            self.tr('Target CRS'), 'EPSG:4326'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))

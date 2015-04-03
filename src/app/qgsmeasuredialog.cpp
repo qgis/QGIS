@@ -43,7 +43,20 @@ QgsMeasureDialog::QgsMeasureDialog( QgsMeasureTool* tool, Qt::WindowFlags f )
   mMeasureArea = tool->measureArea();
   mTotal = 0.;
 
+  mUnitsCombo->addItem( QGis::tr( QGis::Meters ) );
+  mUnitsCombo->addItem( QGis::tr( QGis::Feet ) );
+  mUnitsCombo->addItem( QGis::tr( QGis::Degrees ) );
+  mUnitsCombo->addItem( QGis::tr( QGis::NauticalMiles ) );
+
+  QSettings settings;
+  QString units = settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString();
+  mUnitsCombo->setCurrentIndex( mUnitsCombo->findText( QGis::tr( QGis::fromLiteral( units ) ), Qt::MatchFixedString ) );
+
   updateSettings();
+
+  connect( mUnitsCombo, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( unitsChanged( const QString & ) ) );
+
+  groupBox->setCollapsed( true );
 }
 
 void QgsMeasureDialog::updateSettings()
@@ -52,8 +65,8 @@ void QgsMeasureDialog::updateSettings()
 
   mDecimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
   mCanvasUnits = mTool->canvas()->mapUnits();
-  mDisplayUnits = QGis::fromLiteral( settings.value( "/qgis/measure/displayunits", QGis::toLiteral( QGis::Meters ) ).toString() );
   // Configure QgsDistanceArea
+  mDisplayUnits = QGis::fromTr( mUnitsCombo->currentText() );
   mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs().srsid() );
   mDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
   // Only use ellipsoidal calculation when project wide transformation is enabled.
@@ -74,6 +87,14 @@ void QgsMeasureDialog::updateSettings()
   QgsDebugMsg( QString( "Canvas units : %1" ).arg( QGis::toLiteral( mCanvasUnits ) ) );
 
   mTotal = 0;
+  updateUi();
+}
+
+void QgsMeasureDialog::unitsChanged( const QString &units )
+{
+  mDisplayUnits = QGis::fromTr( units );
+  mTable->clear();
+  mTotal = 0.;
   updateUi();
 }
 
@@ -269,6 +290,7 @@ void QgsMeasureDialog::updateUi()
 
   editTotal->setToolTip( toolTip );
   mTable->setToolTip( toolTip );
+  mNotesLabel->setText( toolTip );
 
   QGis::UnitType newDisplayUnits;
   double dummy = 1.0;
@@ -328,4 +350,3 @@ void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, b
   mDa.convertMeasurement( measure, myUnits, mDisplayUnits, isArea );
   u = myUnits;
 }
-

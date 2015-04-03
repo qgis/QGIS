@@ -12,15 +12,13 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-
 import qgis
+import os
 
 from qgis.core import (QgsGeometry,
                        QgsVectorLayer,
                        QgsFeature,
                        QgsPoint,
-                       QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsRectangle,
                        QGis)
@@ -29,11 +27,9 @@ from utilities import (getQgisTestApp,
                        TestCase,
                        unittest,
                        compareWkt,
-                       expectedFailure,
                        unitTestDataPath,
                        writeShape)
 
-from PyQt4.QtCore import qDebug
 
 # Convenience instances in case you may need them not used in this test
 
@@ -46,55 +42,55 @@ class TestQgsGeometry(TestCase):
         myWKT='POINT(10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.WKBPoint, myGeometry.type()))
+                     (QGis.WKBPoint, myGeometry.type()))
         assert myGeometry.wkbType() == QGis.WKBPoint, myMessage
 
     def testFromPoint(self):
         myPoint = QgsGeometry.fromPoint(QgsPoint(10, 10))
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.WKBPoint, myPoint.type()))
+                     (QGis.WKBPoint, myPoint.type()))
         assert myPoint.wkbType() == QGis.WKBPoint, myMessage
 
     def testFromMultiPoint(self):
         myMultiPoint = QgsGeometry.fromMultiPoint([
             (QgsPoint(0, 0)),(QgsPoint(1, 1))])
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.WKBMultiPoint, myMultiPoint.type()))
+                     (QGis.WKBMultiPoint, myMultiPoint.type()))
         assert myMultiPoint.wkbType() == QGis.WKBMultiPoint, myMessage
 
     def testFromLine(self):
         myLine = QgsGeometry.fromPolyline([QgsPoint(1, 1), QgsPoint(2, 2)])
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.WKBLineString, myLine.type()))
+                     (QGis.WKBLineString, myLine.type()))
         assert myLine.wkbType() == QGis.WKBLineString, myMessage
 
     def testFromMultiLine(self):
         myMultiPolyline = QgsGeometry.fromMultiPolyline(
             [[QgsPoint(0, 0),QgsPoint(1, 1)],[QgsPoint(0, 1), QgsPoint(2, 1)]])
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.WKBMultiLineString, myMultiPolyline.type()))
+                     (QGis.WKBMultiLineString, myMultiPolyline.type()))
         assert myMultiPolyline.wkbType() == QGis.WKBMultiLineString, myMessage
 
     def testFromPolygon(self):
         myPolygon = QgsGeometry.fromPolygon(
             [[QgsPoint(1, 1), QgsPoint(2, 2), QgsPoint(1, 2), QgsPoint(1, 1)]])
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.WKBPolygon, myPolygon.type()))
+                     (QGis.WKBPolygon, myPolygon.type()))
         assert myPolygon.wkbType() == QGis.WKBPolygon, myMessage
 
     def testFromMultiPolygon(self):
         myMultiPolygon = QgsGeometry.fromMultiPolygon([
             [[QgsPoint(1, 1),
-               QgsPoint(2, 2),
-               QgsPoint(1, 2),
-               QgsPoint(1, 1)]],
-               [[QgsPoint(2, 2),
-                 QgsPoint(3, 3),
-                 QgsPoint(3, 1),
-                 QgsPoint(2, 2)]]
-            ])
+                QgsPoint(2, 2),
+                QgsPoint(1, 2),
+                QgsPoint(1, 1)]],
+            [[QgsPoint(2, 2),
+                QgsPoint(3, 3),
+                QgsPoint(3, 1),
+                QgsPoint(2, 2)]]
+        ])
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.WKBMultiPolygon, myMultiPolygon.type()))
+                     (QGis.WKBMultiPolygon, myMultiPolygon.type()))
         assert myMultiPolygon.wkbType() == QGis.WKBMultiPolygon, myMessage
 
     def testIntersection(self):
@@ -105,7 +101,7 @@ class TestQgsGeometry(TestCase):
         myPoint = QgsGeometry.fromPoint(QgsPoint(1, 1))
         intersectionGeom = QgsGeometry.intersection(myLine, myPoint)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.Point, intersectionGeom.type()))
+                     (QGis.Point, intersectionGeom.type()))
         assert intersectionGeom.wkbType() == QGis.WKBPoint, myMessage
 
         layer = QgsVectorLayer("Point", "intersection", "memory")
@@ -118,14 +114,14 @@ class TestQgsGeometry(TestCase):
         provider.addFeatures([ft])
 
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (1, layer.featureCount()))
+                     (1, layer.featureCount()))
         assert layer.featureCount() == 1, myMessage
 
     def testBuffer(self):
         myPoint = QgsGeometry.fromPoint(QgsPoint(1, 1))
         bufferGeom = myPoint.buffer(10, 5)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      (QGis.Polygon, bufferGeom.type()))
+                     (QGis.Polygon, bufferGeom.type()))
         assert bufferGeom.wkbType() == QGis.WKBPolygon, myMessage
         myTestPoint = QgsGeometry.fromPoint(QgsPoint(3, 3))
         assert bufferGeom.intersects(myTestPoint)
@@ -140,8 +136,8 @@ class TestQgsGeometry(TestCase):
         myPoint = QgsGeometry.fromPoint(QgsPoint(1, 1))
         containsGeom = QgsGeometry.contains(myPoly, myPoint)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      ("True", containsGeom))
-        assert containsGeom == True, myMessage
+                     ("True", containsGeom))
+        assert containsGeom, myMessage
 
     def testTouches(self):
         myLine = QgsGeometry.fromPolyline([
@@ -155,8 +151,8 @@ class TestQgsGeometry(TestCase):
             QgsPoint(0, 0)]])
         touchesGeom = QgsGeometry.touches(myLine, myPoly)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      ("True", touchesGeom))
-        assert touchesGeom == True, myMessage
+                     ("True", touchesGeom))
+        assert touchesGeom, myMessage
 
     def testOverlaps(self):
         myPolyA = QgsGeometry.fromPolygon([[
@@ -172,8 +168,8 @@ class TestQgsGeometry(TestCase):
             QgsPoint(0, 0)]])
         overlapsGeom = QgsGeometry.overlaps(myPolyA, myPolyB)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      ("True", overlapsGeom))
-        assert overlapsGeom == True, myMessage
+                     ("True", overlapsGeom))
+        assert overlapsGeom, myMessage
 
     def testWithin(self):
         myLine = QgsGeometry.fromPolyline([
@@ -189,16 +185,16 @@ class TestQgsGeometry(TestCase):
             QgsPoint(0, 0)]])
         withinGeom = QgsGeometry.within(myLine, myPoly)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      ("True", withinGeom))
-        assert withinGeom == True, myMessage
+                     ("True", withinGeom))
+        assert withinGeom, myMessage
 
     def testEquals(self):
         myPointA = QgsGeometry.fromPoint(QgsPoint(1, 1))
         myPointB = QgsGeometry.fromPoint(QgsPoint(1, 1))
         equalsGeom = QgsGeometry.equals(myPointA, myPointB)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      ("True", equalsGeom))
-        assert equalsGeom == True, myMessage
+                     ("True", equalsGeom))
+        assert equalsGeom, myMessage
 
     def testCrosses(self):
         myLine = QgsGeometry.fromPolyline([
@@ -213,8 +209,8 @@ class TestQgsGeometry(TestCase):
             QgsPoint(1, 0)]])
         crossesGeom = QgsGeometry.crosses(myLine, myPoly)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
-                      ("True", crossesGeom))
-        assert crossesGeom == True, myMessage
+                     ("True", crossesGeom))
+        assert crossesGeom, myMessage
 
     def testSimplifyIssue4189(self):
         """Test we can simplify a complex geometry.
@@ -236,7 +232,7 @@ class TestQgsGeometry(TestCase):
            simplegeom from dissolve;'
         """
         myWKTFile = file(os.path.join(unitTestDataPath('wkt'),
-                                       'simplify_error.wkt'), 'rt')
+                                      'simplify_error.wkt'), 'rt')
         myWKT = myWKTFile.readline()
         myWKTFile.close()
         print myWKT
@@ -268,8 +264,7 @@ class TestQgsGeometry(TestCase):
             QgsPoint(20,10),
             QgsPoint(30,10),
             QgsPoint(40,10),
-            ]
-        ))
+        ]))
         myFeature1.setAttributes(['Johny'])
 
         myFeature2 = QgsFeature()
@@ -278,8 +273,7 @@ class TestQgsGeometry(TestCase):
             QgsPoint(20,20),
             QgsPoint(30,30),
             QgsPoint(40,40),
-            ]
-        ))
+        ]))
         myFeature2.setAttributes(['Be'])
 
         myFeature3 = QgsFeature()
@@ -288,14 +282,13 @@ class TestQgsGeometry(TestCase):
             QgsPoint(10,20),
             QgsPoint(10,30),
             QgsPoint(10,40),
-            ]
-        ))
+        ]))
 
         myFeature3.setAttributes(['Good'])
 
         myResult, myFeatures = myProvider.addFeatures(
             [myFeature1, myFeature2, myFeature3])
-        assert myResult == True
+        assert myResult
         assert len(myFeatures) == 3
 
         myClipPolygon = QgsGeometry.fromPolygon([[
@@ -304,8 +297,7 @@ class TestQgsGeometry(TestCase):
             QgsPoint(30,30),
             QgsPoint(30,20),
             QgsPoint(20,20),
-            ]]
-        )
+        ]])
         print 'Clip: %s' % myClipPolygon.exportToWkt()
         writeShape(myMemoryLayer, 'clipGeometryBefore.shp')
         fit = myProvider.getFeatures()
@@ -331,7 +323,7 @@ class TestQgsGeometry(TestCase):
                 # There should only be one feature that intersects this clip
                 # poly so this assertion should work.
                 assert compareWkt( myExpectedWkt,
-                                 mySymmetricalGeometry.exportToWkt() )
+                                   mySymmetricalGeometry.exportToWkt() )
 
                 myNewFeature = QgsFeature()
                 myNewFeature.setAttributes(myFeature.attributes())
@@ -360,7 +352,7 @@ class TestQgsGeometry(TestCase):
         # |
         # 1-+-+-+-+-0 !
         polyline = QgsGeometry.fromPolyline(
-          [ QgsPoint(5,0), QgsPoint(0,0), QgsPoint(0,4), QgsPoint(5,4), QgsPoint(5,1), QgsPoint(1,1), QgsPoint(1,3), QgsPoint(4,3), QgsPoint(4,2), QgsPoint(2,2) ]
+            [ QgsPoint(5,0), QgsPoint(0,0), QgsPoint(0,4), QgsPoint(5,4), QgsPoint(5,1), QgsPoint(1,1), QgsPoint(1,3), QgsPoint(4,3), QgsPoint(4,2), QgsPoint(2,2) ]
         )
 
         (point, atVertex, beforeVertex, afterVertex, dist ) = polyline.closestVertex( QgsPoint(6,1) )
@@ -403,10 +395,10 @@ class TestQgsGeometry(TestCase):
         #   | | |   |
         # 0-1 4 5   8-9
         polyline = QgsGeometry.fromMultiPolyline(
-          [
-            [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
-            [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
-          ]
+            [
+                [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
+                [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
+            ]
         )
         (point, atVertex, beforeVertex, afterVertex, dist ) = polyline.closestVertex( QgsPoint(6,1) )
         self.assertEqual( point, QgsPoint(5,1) )
@@ -426,9 +418,9 @@ class TestQgsGeometry(TestCase):
         # | |
         # 0-1
         polygon = QgsGeometry.fromPolygon(
-          [[
-            QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0),
-          ]]
+            [[
+                QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0),
+            ]]
         )
         (point, atVertex, beforeVertex, afterVertex, dist ) = polygon.closestVertex( QgsPoint(0.7,1.1) )
         self.assertEqual( point, QgsPoint(1,1) )
@@ -451,10 +443,10 @@ class TestQgsGeometry(TestCase):
         # |     |
         # 0-+-+-1
         polygon = QgsGeometry.fromPolygon(
-          [
-            [ QgsPoint(0,0), QgsPoint(3,0), QgsPoint(3,3), QgsPoint(0,3), QgsPoint(0,0) ],
-            [ QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(1,2), QgsPoint(1,1) ],
-          ]
+            [
+                [ QgsPoint(0,0), QgsPoint(3,0), QgsPoint(3,3), QgsPoint(0,3), QgsPoint(0,0) ],
+                [ QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(1,2), QgsPoint(1,1) ],
+            ]
         )
         (point, atVertex, beforeVertex, afterVertex, dist ) = polygon.closestVertex( QgsPoint(1.1,1.9) )
         self.assertEqual( point, QgsPoint(1,2) )
@@ -475,10 +467,10 @@ class TestQgsGeometry(TestCase):
         # | |     | |
         # 0-1     7-8
         polygon = QgsGeometry.fromMultiPolygon(
-          [
-            [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
-            [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
-          ]
+            [
+                [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
+                [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
+            ]
         )
         (point, atVertex, beforeVertex, afterVertex, dist ) = polygon.closestVertex( QgsPoint(4.1,1.1) )
         self.assertEqual( point, QgsPoint(4,1) )
@@ -504,7 +496,7 @@ class TestQgsGeometry(TestCase):
         # |
         # 1-+-+-+-+-0 !
         polyline = QgsGeometry.fromPolyline(
-          [ QgsPoint(5,0), QgsPoint(0,0), QgsPoint(0,4), QgsPoint(5,4), QgsPoint(5,1), QgsPoint(1,1), QgsPoint(1,3), QgsPoint(4,3), QgsPoint(4,2), QgsPoint(2,2) ]
+            [ QgsPoint(5,0), QgsPoint(0,0), QgsPoint(0,4), QgsPoint(5,4), QgsPoint(5,1), QgsPoint(1,1), QgsPoint(1,3), QgsPoint(4,3), QgsPoint(4,2), QgsPoint(2,2) ]
         )
 
         # don't crash
@@ -531,10 +523,10 @@ class TestQgsGeometry(TestCase):
         #   | | |   |
         # 0-1 4 5   8-9
         polyline = QgsGeometry.fromMultiPolyline(
-          [
-            [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
-            [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
-          ]
+            [
+                [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
+                [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
+            ]
         )
 
         (before,after) = polyline.adjacentVertices(-100)
@@ -559,9 +551,9 @@ class TestQgsGeometry(TestCase):
         # | |
         # 0-1
         polygon = QgsGeometry.fromPolygon(
-          [[
-            QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0),
-          ]]
+            [[
+                QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0),
+            ]]
         )
 
         (before,after) = polygon.adjacentVertices(-100)
@@ -586,10 +578,10 @@ class TestQgsGeometry(TestCase):
         # |     |
         # 0-+-+-1
         polygon = QgsGeometry.fromPolygon(
-          [
-            [ QgsPoint(0,0), QgsPoint(3,0), QgsPoint(3,3), QgsPoint(0,3), QgsPoint(0,0) ],
-            [ QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(1,2), QgsPoint(1,1) ],
-          ]
+            [
+                [ QgsPoint(0,0), QgsPoint(3,0), QgsPoint(3,3), QgsPoint(0,3), QgsPoint(0,0) ],
+                [ QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(1,2), QgsPoint(1,1) ],
+            ]
         )
 
         (before,after) = polygon.adjacentVertices(-100)
@@ -614,10 +606,10 @@ class TestQgsGeometry(TestCase):
         # | |     | |
         # 0-1     7-8
         polygon = QgsGeometry.fromMultiPolygon(
-          [
-            [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
-            [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
-          ]
+            [
+                [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
+                [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
+            ]
         )
 
         (before,after) = polygon.adjacentVertices(-100)
@@ -658,7 +650,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
             [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
-          ]
+        ]
         polyline = QgsGeometry.fromMultiPolyline(points)
 
         p = polyline.vertexAt(-100)
@@ -680,7 +672,7 @@ class TestQgsGeometry(TestCase):
         # 0-1
         points = [[
             QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0),
-          ]]
+        ]]
         polygon = QgsGeometry.fromPolygon(points)
 
         p = polygon.vertexAt(-100)
@@ -705,7 +697,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ QgsPoint(0,0), QgsPoint(3,0), QgsPoint(3,3), QgsPoint(0,3), QgsPoint(0,0) ],
             [ QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(1,2), QgsPoint(1,1) ],
-          ]
+        ]
         polygon = QgsGeometry.fromPolygon(points)
 
         p = polygon.vertexAt(-100)
@@ -728,7 +720,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
             [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
-          ]
+        ]
 
         polygon = QgsGeometry.fromMultiPolygon(points)
 
@@ -1093,7 +1085,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
             [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
-          ]
+        ]
         polyline = QgsGeometry.fromMultiPolyline(points)
         expbb = QgsRectangle(0,0,6,1)
         bb = polyline.boundingBox()
@@ -1106,7 +1098,7 @@ class TestQgsGeometry(TestCase):
         # 0-1
         points = [[
             QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0),
-          ]]
+        ]]
         polygon = QgsGeometry.fromPolygon(points)
         expbb = QgsRectangle(0,0,2,2)
         bb = polygon.boundingBox()
@@ -1122,7 +1114,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ QgsPoint(0,0), QgsPoint(3,0), QgsPoint(3,3), QgsPoint(0,3), QgsPoint(0,0) ],
             [ QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(1,2), QgsPoint(1,1) ],
-          ]
+        ]
         polygon = QgsGeometry.fromPolygon(points)
         expbb = QgsRectangle(0,0,3,3)
         bb = polygon.boundingBox()
@@ -1136,7 +1128,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
             [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
-          ]
+        ]
 
         polygon = QgsGeometry.fromMultiPolygon(points)
         expbb = QgsRectangle(0,0,5,2)
@@ -1150,7 +1142,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,0), ],
             [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
-          ]
+        ]
 
         polyline = QgsGeometry.fromPolyline( points[0] )
         assert polyline.addPart( points[1][0:1] ) == 2, "addPart with one point line unexpectedly succeeded."
@@ -1171,7 +1163,7 @@ class TestQgsGeometry(TestCase):
         points = [
             [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0), ] ],
             [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0), ] ]
-          ]
+        ]
 
         polygon = QgsGeometry.fromPolygon( points[0] )
 
@@ -1197,7 +1189,7 @@ class TestQgsGeometry(TestCase):
             [ [ QgsPoint(0,0), QgsPoint(1,0), QgsPoint(1,1), QgsPoint(2,1), QgsPoint(2,2), QgsPoint(0,2), QgsPoint(0,0) ], ],
             [ [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(5,2), QgsPoint(3,2), QgsPoint(3,1), QgsPoint(4,1), QgsPoint(4,0) ], ],
             [ [ QgsPoint(10,0), QgsPoint(13,0), QgsPoint(13,3), QgsPoint(10,3), QgsPoint(10,0) ], [ QgsPoint(11,1), QgsPoint(12,1), QgsPoint(12,2), QgsPoint(11,2), QgsPoint(11,1) ] ]
-          ]
+        ]
         ######## TO POINT ########
         # POINT TO POINT
         point = QgsGeometry.fromPoint(QgsPoint(1,1))
@@ -1283,7 +1275,7 @@ class TestQgsGeometry(TestCase):
 
 
         ######## TO POLYGON ########
-         # MULTIPOINT TO POLYGON
+        # MULTIPOINT TO POLYGON
         multipoint = QgsGeometry.fromMultiPoint(points[0][0])
         wkt = multipoint.convertToType(QGis.Polygon, False).exportToWkt()
         expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"

@@ -95,6 +95,10 @@ static QLocale cLocale("C");
 
 %}
 
+%s BLOCK_COMMENT
+
+line_comment \-\-[^\r\n]*[\r\n]?
+
 white       [ \t\r\n]+
 
 non_ascii    [\x80-\xFF]
@@ -116,6 +120,16 @@ str_char    ('')|(\\.)|[^'\\]
 string      "'"{str_char}*"'"
 
 %%
+
+<INITIAL>{
+  "/*" BEGIN(BLOCK_COMMENT);
+}
+<BLOCK_COMMENT>{
+  "*/" BEGIN(INITIAL);
+  [^*\n]+   // eat comment in chunks
+  "*"       // eat the lone star
+  \n        yylineno++;
+}
 
 "NOT"   { U_OP(uoNot); return NOT; }
 "AND"   { B_OP(boAnd); return AND; }
@@ -141,6 +155,7 @@ string      "'"{str_char}*"'"
 "+"  { B_OP(boPlus); return PLUS; }
 "-"  { B_OP(boMinus); return MINUS; }
 "*"  { B_OP(boMul); return MUL; }
+"//"  { B_OP(boIntDiv); return INTDIV; }
 "/"  { B_OP(boDiv); return DIV; }
 "%"  { B_OP(boMod); return MOD; }
 "^"  { B_OP(boPow); return POW; }
@@ -162,7 +177,7 @@ string      "'"{str_char}*"'"
 {num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok, 10 );
+	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok );
 	if( ok )
 		return NUMBER_INT;
 
@@ -183,6 +198,9 @@ string      "'"{str_char}*"'"
 
 {white}    /* skip blanks and tabs */
 
+{line_comment} /* skip line comments */
+
 .       { return Unknown_CHARACTER; }
+
 
 %%

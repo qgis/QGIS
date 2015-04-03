@@ -77,7 +77,7 @@ class GUI_EXPORT QgsWidgetWrapper : public QObject
      *
      * @param context context information
      */
-    void setContext( const QgsAttributeEditorContext context );
+    void setContext( const QgsAttributeEditorContext& context );
 
     /**
      * Use this inside your overriden classes to access the configuration.

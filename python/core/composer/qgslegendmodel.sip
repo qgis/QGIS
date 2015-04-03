@@ -31,6 +31,7 @@ class QgsLegendModel : QStandardItemModel
     /**Adds a group
       @param text name of group (defaults to translation of "Group")
       @param position insertion position (toplevel position (or -1 if it should be placed at the end of the legend).
+      @param parentItem parent item
       @returns a pointer to the added group
       */
     QStandardItem *addGroup( QString text = QString::null, int position = -1, QStandardItem* parentItem = 0 );

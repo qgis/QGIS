@@ -102,6 +102,7 @@ public:
 
     ~PrivateData()
     {
+        delete colorMap;
     }
 
     QwtRasterData *data;
@@ -110,6 +111,8 @@ public:
     uint renderThreadCount;
 
     QwtPolarSpectrogram::PaintAttributes paintAttributes;
+private:
+    Q_DISABLE_COPY(PrivateData)
 };
 
 //!  Constructor

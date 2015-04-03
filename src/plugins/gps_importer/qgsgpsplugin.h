@@ -43,7 +43,7 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
     //! Show the dialog box
     void run();
     //! Create a new GPX layer
@@ -51,7 +51,7 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     //! Add a vector layer given vectorLayerPath, baseName, providerKey
     void drawVectorLayer( QString, QString, QString );
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! show the help document
     void help();
     //! update the plugins theme when the app tells us its theme is changed

@@ -50,13 +50,15 @@ goto devenv_x86_64
 
 :devenv_x86
 set GRASS_VERSION=6.4.4
-set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
+call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
+if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
+path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
-	-G "Visual Studio 9 2008" ^
-	-D BUILDNAME="OSGeo4W-Nightly-VC9" ^
+	-G "Visual Studio 10" ^
+	-D BUILDNAME="OSGeo4W-Nightly-VC10-32" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb
 goto devenv
@@ -76,6 +78,7 @@ set CMAKE_OPT=^
 	-D BUILDNAME="OSGeo4W-Nightly-VC10-64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG /D QGISDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
@@ -141,8 +144,8 @@ cmake %CMAKE_OPT% ^
 	-D SITE="qgis.org" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
-	-D WITH_MAPSERVER=TRUE ^
-	-D MAPSERVER_SKIP_ECW=TRUE ^
+	-D WITH_SERVER=TRUE ^
+	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_ASTYLE=TRUE ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
@@ -161,7 +164,6 @@ cmake %CMAKE_OPT% ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
 	-D QWT_INCLUDE_DIR=%O4W_ROOT%/include/qwt ^
-	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
@@ -209,7 +211,7 @@ echo PACKAGE: %DATE% %TIME%
 cd ..
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-dev.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
 if errorlevel 1 (echo creation of desktop postinstall failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-desktop.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-dev.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
 if errorlevel 1 (echo creation of desktop preremove failed & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of desktop template failed & goto error)

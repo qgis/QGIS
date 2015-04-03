@@ -89,7 +89,7 @@ class SymbolLayerItem : public QStandardItem
         static_cast<SymbolLayerItem*>( parent() )->updatePreview();
     }
 
-    int type() const { return SymbolLayerItemType; }
+    int type() const override { return SymbolLayerItemType; }
     bool isLayer() { return mIsLayer; }
 
     // returns the symbol pointer; helpful in determining a layer's parent symbol
@@ -107,7 +107,7 @@ class SymbolLayerItem : public QStandardItem
       return NULL;
     }
 
-    QVariant data( int role ) const
+    QVariant data( int role ) const override
     {
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
@@ -142,7 +142,7 @@ class SymbolLayerItem : public QStandardItem
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent, bool embedded )
     : QDialog( parent ), mAdvancedMenu( NULL ), mVectorLayer( vl )
 {
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
   mStyle = style;

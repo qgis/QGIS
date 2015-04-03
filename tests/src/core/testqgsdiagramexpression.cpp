@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -47,9 +47,19 @@
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
-class TestQgsDiagramExpression: public QObject
+class TestQgsDiagramExpression : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsDiagramExpression()
+        : mTestHasError( false )
+        , mMapSettings( 0 )
+        , mPointsLayer( 0 )
+        , mComposition( 0 )
+        , mPieDiagram( 0 )
+        , mComposerMap( 0 )
+    {}
+
   private:
     bool mTestHasError;
     QgsMapSettings * mMapSettings;
@@ -126,6 +136,7 @@ class TestQgsDiagramExpression: public QObject
       delete mComposerMap;
       delete mComposition;
       // delete mPointsLayer;
+      QgsApplication::exitQgis();
     }
 
     void init() {} // will be called before each testfunction is executed.
@@ -176,4 +187,4 @@ class TestQgsDiagramExpression: public QObject
 };
 
 QTEST_MAIN( TestQgsDiagramExpression )
-#include "moc_testqgsdiagramexpression.cxx"
+#include "testqgsdiagramexpression.moc"

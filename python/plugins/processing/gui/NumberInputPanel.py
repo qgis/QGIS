@@ -25,12 +25,12 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QWidget
 from processing.gui.NumberInputDialog import NumberInputDialog
 
-from processing.ui.ui_widgetNumberInput import Ui_widgetNumberInput
+from processing.ui.ui_widgetNumberSelector import Ui_Form
 
-class NumberInputPanel(QWidget, Ui_widgetNumberInput):
+class NumberInputPanel(QWidget, Ui_Form):
 
     def __init__(self, number, minimum, maximum, isInteger):
         QWidget.__init__(self)

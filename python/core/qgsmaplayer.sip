@@ -40,7 +40,7 @@ class QgsMapLayer : QObject
     {
       VectorLayer,
       RasterLayer,
-      PluginLayer // added in 1.5
+      PluginLayer
     };
 
     /** Constructor
@@ -58,9 +58,7 @@ class QgsMapLayer : QObject
      */
     QgsMapLayer::LayerType type() const;
 
-    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry
-     * @note added in 1.7
-     */
+    /** Get this layer's unique ID, this ID is used to access this layer from map layer registry */
     QString id() const;
 
     /** Set the display name of the layer
@@ -73,9 +71,7 @@ class QgsMapLayer : QObject
      */
     const QString & name() const;
 
-    /** Get the original name of the layer
-     * @note added in 1.9
-     */
+    /** Get the original name of the layer */
     const QString & originalName() const;
 
     void setTitle( const QString& title );
@@ -113,7 +109,7 @@ class QgsMapLayer : QObject
     QPainter::CompositionMode blendMode() const;
 
     /**Synchronises with changes in the datasource
-        @note added in version 1.6*/
+        */
     virtual void reload();
 
     /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
@@ -190,6 +186,7 @@ class QgsMapLayer : QObject
     /** stores state in Dom node
        @param layerElement is a Dom element corresponding to ``maplayer'' tag
        @param document is a the dom document being written
+       @param relativeBasePath base path for relative paths
        @note
 
        The Dom node corresponds to a Dom document project file XML element to be
@@ -202,28 +199,25 @@ class QgsMapLayer : QObject
 
        @returns true if successful
     */
-    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document );
+    bool writeLayerXML( QDomElement& layerElement, QDomDocument& document, QString relativeBasePath = QString::null );
 
     /** Returns the given layer as a layer definition document
         Layer definitions store the data source as well as styling and custom properties.
 
         Layer definitions can be used to load a layer and styling all from a single file.
     */
-    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers );
+    static QDomDocument asLayerDefinition( QList<QgsMapLayer*> layers, QString relativeBasePath = QString::null );
 
     /** Creates a new layer from a layer defininition document
     */
     static QList<QgsMapLayer*> fromLayerDefinition( QDomDocument& document );
-    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString qlrfile );
+    static QList<QgsMapLayer*> fromLayerDefinitionFile( const QString &qlrfile );
 
-    /** Set a custom property for layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Set a custom property for layer. Properties are stored in a map and saved in project file. */
     void setCustomProperty( const QString& key, const QVariant& value );
-    /** Read a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Read a custom property from layer. Properties are stored in a map and saved in project file. */
     QVariant customProperty( const QString& value, const QVariant& defaultValue = QVariant() ) const;
-    /** Remove a custom property from layer. Properties are stored in a map and saved in project file.
-     *  @note Added in v1.4 */
+    /** Remove a custom property from layer. Properties are stored in a map and saved in project file. */
     void removeCustomProperty( const QString& key );
 
 
@@ -244,8 +238,7 @@ class QgsMapLayer : QObject
     */
     const QgsCoordinateReferenceSystem& crs() const;
 
-    /** Sets layer's spatial reference system
-    @note emitSignal added in 1.4 */
+    /** Sets layer's spatial reference system */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
     /** A convenience function to (un)capitalise the layer name */
@@ -256,7 +249,6 @@ class QgsMapLayer : QObject
      * record in the users style table in their personal qgis.db)
      * @return a QString with the style file name
      * @see also loadNamedStyle () and saveNamedStyle ();
-     * @note This method was added in QGIS 1.8
      */
     virtual QString styleURI();
 
@@ -287,7 +279,16 @@ class QgsMapLayer : QObject
 
     virtual bool loadNamedStyleFromDb( const QString &db, const QString &theURI, QString &qml /Out/ );
 
-    //TODO edit infos
+    /**
+     * Import the properties of this layer from a QDomDocument
+     * @param doc source QDomDocument
+     * @param errorMsg this QString will be initialized on error
+     * during the execution of readSymbology
+     * @return true on success
+     * @note added in 2.8
+     */
+    virtual bool importNamedStyle( QDomDocument& doc, QString &errorMsg /Out/ );
+
     /**
      * Export the properties of this layer as named style in a QDomDocument
      * @param doc the target QDomDocument
@@ -373,26 +374,78 @@ class QgsMapLayer : QObject
      */
     void setLegend( QgsMapLayerLegend* legend /Transfer/ );
     /**
+     * Can be null.
      * @note added in 2.6
      */
     QgsMapLayerLegend* legend() const;
+
+    /**
+     * Get access to the layer's style manager. Style manager allows switching between multiple styles.
+     * @note added in 2.8
+     */
+    QgsMapLayerStyleManager* styleManager() const;
+
+    /**Returns the minimum scale denominator at which the layer is visible.
+     * Scale based visibility is only used if hasScaleBasedVisibility is true.
+     * @returns minimum scale denominator at which the layer will render
+     * @see setMinimumScale
+     * @see maximumScale
+     * @see hasScaleBasedVisibility
+     */
+    float minimumScale() const;
+
+    /**Returns the maximum scale denominator at which the layer is visible.
+     * Scale based visibility is only used if hasScaleBasedVisibility is true.
+     * @returns minimum scale denominator at which the layer will render
+     * @see setMaximumScale
+     * @see minimumScale
+     * @see hasScaleBasedVisibility
+     */
+    float maximumScale() const;
+
+    /**Returns whether scale based visibility is enabled for the layer.
+     * @returns true if scale based visibility is enabled
+     * @see minimumScale
+     * @see maximumScale
+     * @see setScaleBasedVisibility
+    */
+    bool hasScaleBasedVisibility() const;
 
   public slots:
 
     /** Event handler for when a coordinate transform fails due to bad vertex error */
     virtual void invalidTransformInput();
 
-    /** Accessor and mutator for the minimum scale denominator member */
-    void setMinimumScale( float theMinScale );
-    float minimumScale() const;
+    /**Sets the minimum scale denominator at which the layer will be visible.
+     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
+     * @param theMinScale minimum scale denominator at which the layer should render
+     * @see minimumScale
+     * @see setMaximumScale
+     * @see setScaleBasedVisibility
+     */
+    void setMinimumScale( const float theMinScale );
 
-    /** Accessor and mutator for the maximum scale denominator member */
-    void setMaximumScale( float theMaxScale );
-    float maximumScale() const;
+    /**Sets the maximum scale denominator at which the layer will be visible.
+     * Scale based visibility is only used if setScaleBasedVisibility is set to true.
+     * @param theMaxScale maximum scale denominator at which the layer should render
+     * @see maximumScale
+     * @see setMinimumScale
+     * @see setScaleBasedVisibility
+     */
+    void setMaximumScale( const float theMaxScale );
 
-    /** Accessor and mutator for the scale based visilibility flag */
-    void toggleScaleBasedVisibility( bool theVisibilityFlag );
-    bool hasScaleBasedVisibility() const;
+    /**Sets whether scale based visibility is enabled for the layer.
+     * @param enabled set to true to enable scale based visibility
+     * @see setMinimumScale
+     * @see setMaximumScale
+     * @see scaleBasedVisibility
+     */
+    void setScaleBasedVisibility( const bool enabled );
+
+    /**Accessor for the scale based visilibility flag
+     * @deprecated use setScaleBasedVisibility instead
+    */
+    void toggleScaleBasedVisibility( bool theVisibilityFlag ) /Deprecated/;
 
     /** Clear cached image
      *  @deprecated in 2.4 - use triggerRepaint() - caches automatically listen to repaintRequested() signal to invalidate the cached image */
@@ -423,9 +476,7 @@ class QgsMapLayer : QObject
     /** Emit a signal that the layer name has been changed */
     void layerNameChanged();
 
-    /** Emit a signal that layer's CRS has been reset
-     added in 1.4
-     */
+    /** Emit a signal that layer's CRS has been reset */
     void layerCrsChanged();
 
     /** By emitting this signal the layer tells that either appearance or content have been changed
@@ -439,8 +490,7 @@ class QgsMapLayer : QObject
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();
 
-    /** data of layer changed
-     * added in 1.5 */
+    /** data of layer changed */
     void dataChanged();
 
     /** Signal emitted when the blend mode is changed, through QgsMapLayer::setBlendMode() */
@@ -459,8 +509,7 @@ class QgsMapLayer : QObject
     /** Set the extent */
     virtual void setExtent( const QgsRectangle &rect );
 
-    /** set whether layer is valid or not - should be used in constructor.
-        \note added in v1.5 */
+    /** set whether layer is valid or not - should be used in constructor. */
     void setValid( bool valid );
 
     /** called by readLayerXML(), used by children to read state specific to them from
@@ -474,13 +523,18 @@ class QgsMapLayer : QObject
     virtual bool writeXml( QDomNode & layer_node, QDomDocument & document );
 
 
-    /** Read custom properties from project file. Added in v1.4
+    /** Read custom properties from project file.
       @param layerNode note to read from
       @param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)*/
     void readCustomProperties( const QDomNode& layerNode, const QString& keyStartsWith = "" );
 
-    /** Write custom properties to project file. Added in v1.4 */
+    /** Write custom properties to project file. */
     void writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const;
+
+    /** Read style manager's configuration (if any). To be called by subclasses. */
+    void readStyleManager( const QDomNode& layerNode );
+    /** Write style manager's configuration (if exists). To be called by subclasses. */
+    void writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const;
 
     /** debugging member - invoked when a connect() is made to this object */
     void connectNotify( const char * signal );

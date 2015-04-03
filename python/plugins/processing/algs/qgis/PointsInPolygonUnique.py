@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsField, QgsFeatureRequest, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -43,29 +43,22 @@ class PointsInPolygonUnique(GeoAlgorithm):
     FIELD = 'FIELD'
     CLASSFIELD = 'CLASSFIELD'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Count unique points in polygon'
         self.group = 'Vector analysis tools'
-        self.addParameter(ParameterVector(self.POLYGONS, 'Polygons',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterVector(self.POINTS, 'Points',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterTableField(self.CLASSFIELD, 'Class field',
-                          self.POINTS))
-        self.addParameter(ParameterString(self.FIELD, 'Count field name',
-                          'NUMPOINTS'))
-        self.addOutput(OutputVector(self.OUTPUT, 'Result'))
+        self.addParameter(ParameterVector(self.POLYGONS,
+            self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.POINTS,
+            self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterTableField(self.CLASSFIELD,
+            self.tr('Class field'), self.POINTS))
+        self.addParameter(ParameterString(self.FIELD,
+            self.tr('Count field name'), 'NUMPOINTS'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
 
     def processAlgorithm(self, progress):
-        polyLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
         classFieldName = self.getParameterValue(self.CLASSFIELD)
 
@@ -77,10 +70,8 @@ class PointsInPolygonUnique(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                 polyLayer.pendingFields(), fieldName)
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fields.toList(),
-                                             polyProvider.geometryType(),
-                                             polyProvider.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 
@@ -110,7 +101,7 @@ class PointsInPolygonUnique(GeoAlgorithm):
                     tmpGeom = QgsGeometry(ftPoint.geometry())
                     if geom.contains(tmpGeom):
                         clazz = ftPoint.attributes()[classFieldIndex]
-                        if not clazz in classes:
+                        if clazz not in classes:
                             classes.append(clazz)
 
             outFeat.setGeometry(geom)

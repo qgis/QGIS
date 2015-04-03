@@ -1,4 +1,4 @@
-SUBDIRS( network )
+SUBDIRS(network)
 
 #############################################################
 # sources
@@ -52,16 +52,10 @@ SET(QGIS_ANALYSIS_MOC_HDRS
   openstreetmap/qgsosmimport.h
 )
 
-IF (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(../core/spatialite/headers)
-  INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
-  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
-ENDIF (WITH_INTERNAL_SPATIALITE)
-
+INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
 INCLUDE_DIRECTORIES(BEFORE raster)
+
 ADD_FLEX_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalclexer.ll)
 
 ADD_BISON_FILES_PREFIX(QGIS_ANALYSIS_SRCS raster raster/qgsrastercalcparser.yy)
@@ -77,14 +71,14 @@ IF (PEDANTIC AND MSVC)
   )
 ENDIF (PEDANTIC AND MSVC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   SET_SOURCE_FILES_PROPERTIES(
     interpolation/qgstininterpolator.cpp
     interpolation/NormVecDecorator.cc
     interpolation/CloughTocherInterpolator.cc
     PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual"
   )
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
 QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 

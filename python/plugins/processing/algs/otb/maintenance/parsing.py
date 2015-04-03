@@ -22,7 +22,6 @@ __copyright__ = '(C) 2013, CS Systemes d\'information  (CS SI)'
 
 from collections import namedtuple
 import re
-import os
 
 def merge_pairs(list, should_merge, merge):
     """
@@ -169,4 +168,3 @@ def tokenize(s):
     for tok_type, tok_contents in toks:
         yield line_num, (tok_type, tok_contents.strip())
         line_num += tok_contents.count('\n')
-

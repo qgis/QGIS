@@ -202,6 +202,17 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
+  <tabstop>txtName</tabstop>
+  <tabstop>txtUrl</tabstop>
+  <tabstop>txtUserName</tabstop>
+  <tabstop>txtPassword</tabstop>
+  <tabstop>txtReferer</tabstop>
+  <tabstop>cmbDpiMode</tabstop>
+  <tabstop>cbxIgnoreGetMapURI</tabstop>
+  <tabstop>cbxIgnoreGetFeatureInfoURI</tabstop>
+  <tabstop>cbxIgnoreAxisOrientation</tabstop>
+  <tabstop>cbxInvertAxisOrientation</tabstop>
+  <tabstop>cbxSmoothPixmapTransform</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

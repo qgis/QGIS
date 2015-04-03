@@ -23,16 +23,12 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget
 
 from ui_widgetTileIndex import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
-
-import os.path
 
 class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
@@ -46,16 +42,14 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       self.inSelector.setType( self.inSelector.FILE )
       self.outSelector.setType( self.outSelector.FILE )
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           ( self.inSelector, SIGNAL( "filenameChanged()" ) ),
           #( self.recurseCheck, SIGNAL( "stateChanged( int )" ),
           ( self.outSelector, SIGNAL( "filenameChanged()" ) ),
           ( self.indexFieldEdit, SIGNAL( "textChanged( const QString & )" ), self.indexFieldCheck),
           ( self.absolutePathCheck, SIGNAL( "stateChanged( int )" ), None, 1500 ),
           ( self.skipDifferentProjCheck, SIGNAL( "stateChanged( int )" ), None, 1500 )
-        ]
-      )
+      ])
 
       self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDirEdit )
       self.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFileEdit )
@@ -98,7 +92,6 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
   def addLayerIntoCanvas( self, fileInfo ):
       vl = self.iface.addVectorLayer( fileInfo.filePath(), fileInfo.baseName(), "ogr" )
-      if vl != None and vl.isValid():
+      if vl is not None and vl.isValid():
         if hasattr( self, 'lastEncoding' ):
           vl.setProviderEncoding( self.lastEncoding )
-

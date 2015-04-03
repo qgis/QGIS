@@ -4,7 +4,7 @@
 #    ---------------------
 #    Date                 : April 2012
 #    Copyright            : (C) 2012 by Tim Sutton
-#    Email                : tim dot linfiniti at com
+#    Email                : tim at kartoza dot com
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #

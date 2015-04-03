@@ -12,6 +12,7 @@
 
 %Include qgis.sip
 
+%Include qgstransaction.sip
 %Include qgsapplication.sip
 %Include qgsattributeaction.sip
 %Include qgsbrowsermodel.sip
@@ -25,6 +26,8 @@
 %Include qgscrscache.sip
 %Include qgsdatadefined.sip
 %Include qgsdataitem.sip
+%Include qgsdataitemprovider.sip
+%Include qgsdataitemproviderregistry.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdatumtransformstore.sip
@@ -54,6 +57,7 @@
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayerregistry.sip
 %Include qgsmaplayerrenderer.sip
+%Include qgsmaplayerstylemanager.sip
 %Include qgsmaprenderer.sip
 %Include qgsmaprenderercache.sip
 %Include qgsmaprenderercustompainterjob.sip
@@ -66,6 +70,7 @@
 %Include qgsmessagelog.sip
 %Include qgsmessageoutput.sip
 %Include qgsmimedatautils.sip
+%Include qgsmultirenderchecker.sip
 %Include qgsnetworkaccessmanager.sip
 %Include qgsnetworkcontentfetcher.sip
 %Include qgsofflineediting.sip
@@ -76,6 +81,7 @@
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
 %Include qgspoint.sip
+%Include qgspointlocator.sip
 %Include qgsproject.sip
 %Include qgsprojectproperty.sip
 %Include qgsprojectversion.sip
@@ -94,6 +100,7 @@
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
+%Include qgssnappingutils.sip
 %Include qgsspatialindex.sip
 %Include qgstolerance.sip
 %Include qgsvectordataprovider.sip
@@ -115,6 +122,7 @@
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
 %Include qgsvectorlayerfeatureiterator.sip
+%Include qgslayerdefinition.sip
 
 %Include composer/qgsaddremoveitemcommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip
@@ -164,6 +172,16 @@
 %Include diagram/qgshistogramdiagram.sip
 %Include diagram/qgspiediagram.sip
 %Include diagram/qgstextdiagram.sip
+
+%Include effects/qgsimageoperation.sip
+%Include effects/qgspainteffect.sip
+%Include effects/qgseffectstack.sip
+%Include effects/qgsblureffect.sip
+%Include effects/qgsshadoweffect.sip
+%Include effects/qgsgloweffect.sip
+%Include effects/qgstransformeffect.sip
+%Include effects/qgscoloreffect.sip
+%Include effects/qgspainteffectregistry.sip
 
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsconnectionregistry.sip
@@ -236,6 +254,7 @@
 %Include symbology-ng/qgspointdisplacementrenderer.sip
 %Include symbology-ng/qgsrulebasedrendererv2.sip
 %Include symbology-ng/qgsinvertedpolygonrenderer.sip
+%Include symbology-ng/qgsheatmaprenderer.sip
 %Include symbology-ng/qgsrendererv2.sip
 %Include symbology-ng/qgsrendererv2registry.sip
 

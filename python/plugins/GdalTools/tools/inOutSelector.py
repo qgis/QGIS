@@ -23,13 +23,12 @@ __copyright__ = '(C) 2011, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import SIGNAL, Qt, pyqtProperty
+from PyQt4.QtGui import QWidget, QComboBox
 
 from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
 from ui_inOutSelector import Ui_GdalToolsInOutSelector
-import GdalTools_utils as Utils
 
 class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
   FILE = 0x1
@@ -43,7 +42,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
   __pyqtSignals__ = ("selectClicked()", "filenameChanged(), layerChanged()")
 
 
-  def __init__(self, parent = None, type=None):
+  def __init__(self, parent=None, type=None):
       QWidget.__init__(self, parent)
 
       self.setupUi(self)
@@ -53,7 +52,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       self.clear()
 
       self.typ = None
-      if type == None:
+      if type is None:
         self.resetType()
       else:
         self.setType(type)
@@ -135,7 +134,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       elif isinstance(fn, str) or isinstance(fn, unicode):
         fn = unicode( fn )
 
-      #TODO test
+      # TODO test
       elif isinstance(fn, list):
         if len( fn ) > 0:
           if self.getType() & self.MULTIFILE:
@@ -190,7 +189,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
 
 
   def setLayers(self, layers=None):
-      if layers == None or not hasattr(layers, '__iter__') or len(layers) <= 0:
+      if layers is None or not hasattr(layers, '__iter__') or len(layers) <= 0:
         self.combo.clear()
         return
 
@@ -220,7 +219,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
       self.prevState = ( index, text, layerID )
 
   def restoreComboState(self):
-      if self.prevState == None:
+      if self.prevState is None:
         return
       index, text, layerID = self.prevState
 
@@ -257,8 +256,7 @@ class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
           return self.filenames
         return self.combo.currentText()
       layer = self.layer()
-      if layer != None:
+      if layer is not None:
         return layer.source()
 
       return ''
-

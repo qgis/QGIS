@@ -27,19 +27,19 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsRectangle, QgsCoordinateReferenceSystem, QGis, QgsField, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterCrs
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 
 class Grid(GeoAlgorithm):
     TYPE = 'TYPE'
+    EXTENT = 'EXTENT'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
     HSPACING = 'HSPACING'
@@ -53,53 +53,51 @@ class Grid(GeoAlgorithm):
              'Rectangle (polygon)',
              'Diamond (polygon)',
              'Hexagon (polygon)'
-            ]
+             ]
 
     def defineCharacteristics(self):
         self.name = 'Create grid'
         self.group = 'Vector creation tools'
 
-        self.addParameter(ParameterSelection(
-            self.TYPE, 'Grid type', self.TYPES))
-        self.addParameter(ParameterNumber(
-            self.WIDTH, 'Width', default=360.0))
-        self.addParameter(ParameterNumber(
-            self.HEIGHT, 'Height', default=180.0))
-        self.addParameter(ParameterNumber(
-            self.HSPACING, 'Horizontal spacing', default=10.0))
-        self.addParameter(ParameterNumber(
-            self.VSPACING, 'Vertical spacing', default=10.0))
-        self.addParameter(ParameterNumber(
-            self.CENTERX, 'Center X', default=0.0))
-        self.addParameter(ParameterNumber(
-            self.CENTERY, 'Center Y', default=0.0))
-        self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
+        self.addParameter(ParameterSelection(self.TYPE,
+            self.tr('Grid type'), self.TYPES))
+        self.addParameter(ParameterExtent(self.EXTENT,
+            self.tr('Grid extent')))
+        self.addParameter(ParameterNumber(self.HSPACING,
+            self.tr('Horizontal spacing'), default=10.0))
+        self.addParameter(ParameterNumber(self.VSPACING,
+            self.tr('Vertical spacing'), default=10.0))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         idx = self.getParameterValue(self.TYPE)
-        width = self.getParameterValue(self.WIDTH)
-        height = self.getParameterValue(self.HEIGHT)
+        extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
-        centerX = self.getParameterValue(self.CENTERX)
-        centerY = self.getParameterValue(self.CENTERY)
+
+        bbox = QgsRectangle(float(extent[0]), float(extent[2]),
+                            float(extent[1]), float(extent[3]))
+
+        width = bbox.width()
+        height = bbox.height()
+        centerX = bbox.center().x()
+        centerY = bbox.center().y()
         originX = centerX - width / 2.0
         originY = centerY - height / 2.0
         crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
-                'Invalid grid spacing: %s/%s' % (hSpacing, vSpacing))
+                self.tr('Invalid grid spacing: %s/%s' % (hSpacing, vSpacing)))
 
         if width < hSpacing:
             raise GeoAlgorithmExecutionException(
-                'Horizontal spacing is too small for the covered area')
+                self.tr('Horizontal spacing is too small for the covered area'))
 
         if height < vSpacing:
             raise GeoAlgorithmExecutionException(
-                'Vertical spacing is too small for the covered area')
+                self.tr('Vertical spacing is too small for the covered area'))
 
         if self.TYPES[idx].find('polygon') >= 0:
             geometryType = QGis.WKBPolygon
@@ -110,7 +108,7 @@ class Grid(GeoAlgorithm):
                   QgsField('top', QVariant.Double, '', 24, 16),
                   QgsField('right', QVariant.Double, '', 24, 16),
                   QgsField('bottom', QVariant.Double, '', 24, 16)
-                 ]
+                  ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
             geometryType, crs)
@@ -230,8 +228,8 @@ class Grid(GeoAlgorithm):
         ft = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
-        xVertexLo = 0.288675134594813 * vSpacing;
-        xVertexHi = 0.577350269189626 * vSpacing;
+        xVertexLo = 0.288675134594813 * vSpacing
+        xVertexHi = 0.577350269189626 * vSpacing
         hSpacing = xVertexLo + xVertexHi
 
         halfVSpacing = vSpacing / 2

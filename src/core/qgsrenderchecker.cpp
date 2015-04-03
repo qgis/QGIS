@@ -36,7 +36,7 @@ QgsRenderChecker::QgsRenderChecker() :
     mMismatchCount( 0 ),
     mColorTolerance( 0 ),
     mElapsedTimeTarget( 0 ),
-    mControlPathPrefix( "" )
+    mBufferDashMessages( false )
 {
 }
 
@@ -48,10 +48,10 @@ QString QgsRenderChecker::controlImagePath() const
   return myControlImageDir;
 }
 
-void QgsRenderChecker::setControlName( const QString theName )
+void QgsRenderChecker::setControlName( const QString &theName )
 {
   mControlName = theName;
-  mExpectedImageFile = controlImagePath() + theName + QDir::separator()
+  mExpectedImageFile = controlImagePath() + theName + QDir::separator() + mControlPathSuffix
                        + theName + ".png";
 }
 
@@ -76,6 +76,27 @@ void QgsRenderChecker::setMapRenderer( QgsMapRenderer* thepMapRenderer )
 void QgsRenderChecker::setMapSettings( const QgsMapSettings& mapSettings )
 {
   mMapSettings = mapSettings;
+}
+
+void QgsRenderChecker::drawBackground( QImage* image )
+{
+  // create a 2x2 checker-board image
+  uchar pixDataRGB[] = { 255, 255, 255, 255,
+                         127, 127, 127, 255,
+                         127, 127, 127, 255,
+                         255, 255, 255, 255
+                       };
+
+  QImage img( pixDataRGB, 2, 2, 8, QImage::Format_ARGB32 );
+  QPixmap pix = QPixmap::fromImage( img.scaled( 20, 20 ) );
+
+  // fill image with texture
+  QBrush brush;
+  brush.setTexture( pix );
+  QPainter p( image );
+  p.setRenderHint( QPainter::Antialiasing, false );
+  p.fillRect( QRect( 0, 0, image->width(), image->height() ), brush );
+  p.end();
 }
 
 bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
@@ -110,10 +131,8 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
                      .arg( theDiffImageFile )
                      .arg( myImageHash );
     //foo CDash
-    QString myMeasureMessage = "<DartMeasurement name=\"Anomaly check"
-                               "\" type=\"text/text\">" +  myHashMessage +
-                               "</DartMeasurement>";
-    qDebug() << myMeasureMessage;
+    emitDashMessage( "Anomaly check", QgsDartMeasurement::Text, myHashMessage );
+
     mReport += "<tr><td colspan=3>" + myHashMessage + "</td></tr>";
     if ( myImageHash == myAnomalyHash )
     {
@@ -127,6 +146,19 @@ bool QgsRenderChecker::isKnownAnomaly( QString theDiffImageFile )
              "No anomaly found! ";
   mReport += "</td></tr>";
   return false;
+}
+
+void QgsRenderChecker::emitDashMessage( const QgsDartMeasurement& dashMessage )
+{
+  if ( mBufferDashMessages )
+    mDashMessages << dashMessage;
+  else
+    dashMessage.send();
+}
+
+void QgsRenderChecker::emitDashMessage( const QString& name, QgsDartMeasurement::Type type, const QString& value )
+{
+  emitDashMessage( QgsDartMeasurement( name, type, value ) );
 }
 
 bool QgsRenderChecker::runTest( QString theTestName,
@@ -145,6 +177,15 @@ bool QgsRenderChecker::runTest( QString theTestName,
   // Load the expected result pixmap
   //
   QImage myExpectedImage( mExpectedImageFile );
+  if ( myExpectedImage.isNull() )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not load expected image from " << mExpectedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
+              "Image File could not be loaded.</td></tr></table>\n";
+    return false;
+  }
   mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
   //
   // Now render our layers onto a pixmap
@@ -173,7 +214,15 @@ bool QgsRenderChecker::runTest( QString theTestName,
 
   myImage.setDotsPerMeterX( myExpectedImage.dotsPerMeterX() );
   myImage.setDotsPerMeterY( myExpectedImage.dotsPerMeterY() );
-  myImage.save( mRenderedImageFile, "PNG", 100 );
+  if ( ! myImage.save( mRenderedImageFile, "PNG", 100 ) )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not save rendered image to " << mRenderedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+              "Image File could not be saved.</td></tr></table>\n";
+    return false;
+  }
 
   //create a world file to go with the image...
 
@@ -211,7 +260,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   {
     mRenderedImageFile = theRenderedImageFile;
   }
-  if ( mRenderedImageFile.isEmpty() )
+  else if ( mRenderedImageFile.isEmpty() )
   {
     qDebug( "QgsRenderChecker::runTest failed - Rendered Image File not set." );
     mReport = "<table>"
@@ -225,13 +274,33 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   QImage myExpectedImage( mExpectedImageFile );
   QImage myResultImage( mRenderedImageFile );
+  if ( myResultImage.isNull() )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not load rendered image from " << mRenderedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+              "Image File could not be loaded.</td></tr></table>\n";
+    return false;
+  }
   QImage myDifferenceImage( myExpectedImage.width(),
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
-  QString myDiffImageFile = QDir::tempPath() + QDir::separator() +
-                            QDir::separator()  +
+  QString myDiffImageFile = QDir::tempPath() +
+                            QDir::separator() +
                             theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
+
+  //check for mask
+  QString maskImagePath = mExpectedImageFile;
+  maskImagePath.chop( 4 ); //remove .png extension
+  maskImagePath += "_mask.png";
+  QImage* maskImage = new QImage( maskImagePath );
+  bool hasMask = !maskImage->isNull();
+  if ( hasMask )
+  {
+    qDebug( "QgsRenderChecker using mask image" );
+  }
 
   //
   // Set pixel count score and target
@@ -279,17 +348,18 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                            " src=\"file://" +
                            myDiffImageFile  +
                            "\"></td>\n</tr>\n</table>";
+
+  QString prefix;
+  if ( !mControlPathPrefix.isNull() )
+  {
+    prefix = QString( " (prefix %1)" ).arg( mControlPathPrefix );
+  }
   //
   // To get the images into CDash
   //
-  QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + theTestName + "\""
-                          " type=\"image/png\">" + mRenderedImageFile +
-                          "</DartMeasurementFile>\n"
-                          "<DartMeasurementFile name=\"Expected Image " + theTestName + "\" type=\"image/png\">" +
-                          mExpectedImageFile + "</DartMeasurementFile>\n"
-                          "<DartMeasurementFile name=\"Difference Image " + theTestName + "\" type=\"image/png\">" +
-                          myDiffImageFile + "</DartMeasurementFile>\n";
-  qDebug() << myDashMessage;
+  emitDashMessage( "Rendered Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, mRenderedImageFile );
+  emitDashMessage( "Expected Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, mExpectedImageFile );
+  emitDashMessage( "Difference Image " + theTestName + prefix, QgsDartMeasurement::ImagePng, myDiffImageFile );
 
   //
   // Put the same info to debug too
@@ -305,6 +375,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
     mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
     mReport += "</td></tr>";
     mReport += myImagesString;
+    delete maskImage;
     return false;
   }
 
@@ -315,29 +386,42 @@ bool QgsRenderChecker::compareImages( QString theTestName,
 
   mMismatchCount = 0;
   int colorTolerance = ( int ) mColorTolerance;
-  for ( int x = 0; x < myExpectedImage.width(); ++x )
+  for ( int y = 0; y < myExpectedImage.height(); ++y )
   {
-    for ( int y = 0; y < myExpectedImage.height(); ++y )
+    const QRgb* expectedScanline = ( const QRgb* )myExpectedImage.constScanLine( y );
+    const QRgb* resultScanline = ( const QRgb* )myResultImage.constScanLine( y );
+    const QRgb* maskScanline = hasMask ? ( const QRgb* )maskImage->constScanLine( y ) : 0;
+    QRgb* diffScanline = ( QRgb* )myDifferenceImage.scanLine( y );
+
+    for ( int x = 0; x < myExpectedImage.width(); ++x )
     {
-      QRgb myExpectedPixel = myExpectedImage.pixel( x, y );
-      QRgb myActualPixel = myResultImage.pixel( x, y );
-      if ( mColorTolerance == 0 )
+      int maskTolerance = hasMask ? qRed( maskScanline[ x ] ) : 0;
+      int pixelTolerance = qMax( colorTolerance, maskTolerance );
+      if ( pixelTolerance == 255 )
+      {
+        //skip pixel
+        continue;
+      }
+
+      QRgb myExpectedPixel = expectedScanline[x];
+      QRgb myActualPixel = resultScanline[x];
+      if ( pixelTolerance == 0 )
       {
         if ( myExpectedPixel != myActualPixel )
         {
           ++mMismatchCount;
-          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+          diffScanline[ x ] = qRgb( 255, 0, 0 );
         }
       }
       else
       {
-        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > colorTolerance ||
-             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > colorTolerance ||
-             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > colorTolerance ||
-             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > colorTolerance )
+        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
         {
           ++mMismatchCount;
-          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+          diffScanline[ x ] = qRgb( 255, 0, 0 );
         }
       }
     }
@@ -346,6 +430,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //save the diff image to disk
   //
   myDifferenceImage.save( myDiffImageFile );
+  delete maskImage;
 
   //
   // Send match result to debug
@@ -367,12 +452,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   // And send it to CDash
   //
-  myDashMessage = "<DartMeasurement name=\"Mismatch Count "
-                  "\" type=\"numeric/integer\">" +
-                  QString::number( mMismatchCount ) + "/" +
-                  QString::number( mMatchTarget ) +
-                  "</DartMeasurement>";
-  qDebug() << myDashMessage;
+  emitDashMessage( "Mismatch Count", QgsDartMeasurement::Integer, QString( "%1/%2" ).arg( mMismatchCount ).arg( mMatchTarget ) );
 
   bool myAnomalyMatchFlag = isKnownAnomaly( myDiffImageFile );
 
@@ -385,17 +465,13 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   }
   else
   {
-    QString myMessage = "Difference image did not match any known anomaly.";
     mReport += "<tr><td colspan=3>"
                "</td></tr>";
-    QString myMeasureMessage = "<DartMeasurement name=\"No Anomalies Match"
-                               "\" type=\"text/text\">" +  myMessage +
-                               " If you feel the difference image should be considered an anomaly "
-                               "you can do something like this\n"
-                               "cp " + myDiffImageFile  + " ../tests/testdata/control_images/" + theTestName +
-                               "/<imagename>.{wld,png}"
-                               "</DartMeasurement>";
-    qDebug() << myMeasureMessage;
+    emitDashMessage( "No Anomalies Match", QgsDartMeasurement::Text, "Difference image did not match any known anomaly."
+                     " If you feel the difference image should be considered an anomaly "
+                     "you can do something like this\n"
+                     "cp " + myDiffImageFile  + " ../tests/testdata/control_images/" + theTestName +
+                     "/<imagename>.{wld,png}" );
   }
 
   if ( mMismatchCount <= theMismatchCount )

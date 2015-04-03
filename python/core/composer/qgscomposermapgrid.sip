@@ -105,6 +105,10 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 
 };
 
+//
+// QgsComposerMapGrid
+//
+
 /**\ingroup MapComposer
  * \class QgsComposerMapGrid
  * \brief An individual grid which is drawn above the map content in a
@@ -119,7 +123,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %End
 
   public:
-  
+
     /** Unit for grid values
      */
     enum GridUnit
@@ -139,21 +143,33 @@ class QgsComposerMapGrid : QgsComposerMapItem
       FrameAnnotationsOnly /*< no grid lines over the map, only draw frame and annotations */
     };
 
+    /** Display settings for grid annotations and frames
+     */
+    enum DisplayMode
+    {
+      ShowAll = 0, /*< show both latitude and longitude annotations/divisions */
+      LatitudeOnly, /*< show latitude/y annotations/divisions only */
+      LongitudeOnly, /*< show longitude/x annotations/divisions only */
+      HideAll /*< no annotations */
+    };
+
     /** Position for grid annotations
      */
     enum AnnotationPosition
     {
-      InsideMapFrame,
+      InsideMapFrame = 0,
       OutsideMapFrame, /*< draw annotations outside the map frame */
-      Disabled /*< disable annotation */
+      Disabled /*< disable annotation
+                  * @deprecated in QGIS 2.7, use QgsComposerMapGrid::HideAll instead */
     };
 
     /** Direction of grid annotations
      */
     enum AnnotationDirection
     {
-      Horizontal, /*< draw annotations horizontally */
-      Vertical, /*< draw annotations vertically */
+      Horizontal = 0, /*< draw annotations horizontally */
+      Vertical, /*< draw annotations vertically, ascending */
+      VerticalDescending, /*< draw annotations vertically, descending */
       BoundaryDirection /*< annotations follow the boundary direction */
     };
 
@@ -214,7 +230,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
 
     /**Constructor for QgsComposerMapGrid.
      * @param name friendly display name for grid
-     * @parm map QgsComposerMap the grid stack is attached to
+     * @param map QgsComposerMap the grid is attached to
     */
     QgsComposerMapGrid( const QString& name, QgsComposerMap* map );
 
@@ -262,6 +278,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setBlendMode
     */
     QPainter::CompositionMode blendMode() const;
+
+    bool usesAdvancedEffects() const;
 
     /**Calculates the maximum distance the grid extends beyond the QgsComposerMap's
      * item rect
@@ -489,6 +507,25 @@ class QgsComposerMapGrid : QgsComposerMapItem
     */
     int annotationPrecision() const;
 
+    /**Sets what types of grid annotations should be drawn for a specified side of the map frame,
+     * or whether grid annotations should be disabled for the side.
+     * @param display display mode for annotations
+     * @param border side of map for annotations
+     * @see annotationDisplay
+     * @note added in QGIS 2.7
+    */
+    void setAnnotationDisplay( const DisplayMode display, const BorderSide border );
+
+    /**Gets the display mode for the grid annotations on a specified side of the map
+     * frame. This property also specifies whether annotations have been disabled
+     * from a side of the map frame.
+     * @param border side of map for annotations
+     * @returns display mode for grid annotations
+     * @see setAnnotationDisplay
+     * @note added in QGIS 2.7
+    */
+    DisplayMode annotationDisplay( const BorderSide border ) const;
+
     /**Sets the position for the grid annotations on a specified side of the map
      * frame.
      * @param position position to draw grid annotations
@@ -564,6 +601,22 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see setFrameStyle
     */
     FrameStyle frameStyle() const;
+
+    /**Sets what type of grid divisions should be used for frames on a specified side of the map.
+     * @param divisions grid divisions for frame
+     * @param border side of map for frame
+     * @see frameDivisions
+     * @note added in QGIS 2.7
+    */
+    void setFrameDivisions( const DisplayMode divisions, const BorderSide border );
+
+    /**Gets the type of grid divisions which are used for frames on a specified side of the map.
+     * @param border side of map for frame
+     * @returns grid divisions for frame
+     * @see setFrameDivisions
+     * @note added in QGIS 2.7
+    */
+    DisplayMode frameDivisions( const BorderSide border ) const;
 
     /**Sets flags for grid frame sides. Setting these flags controls which sides
      * of the map item the grid frame is drawn on.
@@ -681,5 +734,5 @@ class QgsComposerMapGrid : QgsComposerMapItem
      * @see frameFillColor1
     */
     QColor frameFillColor2() const;
-  
+
 };

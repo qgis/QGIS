@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -30,14 +30,24 @@
 #include <qgsmultibandcolorrenderer.h>
 #include <qgsrasterlayer.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for layer blend modes
  */
-class TestQgsBlendModes: public QObject
+class TestQgsBlendModes : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsBlendModes()
+        : mpPointsLayer( 0 )
+        , mpPolysLayer( 0 )
+        , mpLinesLayer( 0 )
+        , mRasterLayer1( 0 )
+        , mRasterLayer2( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -112,7 +122,7 @@ void TestQgsBlendModes::initTestCase()
                                       rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer* rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer1->dataProvider(), 2, 3, 4 );
   mRasterLayer1->setRenderer( rasterRenderer );
-  mRasterLayer2->setRenderer( rasterRenderer );
+  mRasterLayer2->setRenderer(( QgsRasterRenderer* ) rasterRenderer->clone() );
   QgsMapLayerRegistry::instance()->addMapLayers(
     QList<QgsMapLayer *>() << mRasterLayer1 );
   QgsMapLayerRegistry::instance()->addMapLayers(
@@ -131,6 +141,8 @@ void TestQgsBlendModes::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsBlendModes::vectorBlending()
@@ -214,13 +226,14 @@ bool TestQgsBlendModes::imageCheck( QString theTestType )
 {
   //use the QgsRenderChecker test utility class to
   //ensure the rendered output matches our control image
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 1500 );
+  myChecker.setColorTolerance( 1 );
+  bool myResultFlag = myChecker.runTest( theTestType, 20 );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
 QTEST_MAIN( TestQgsBlendModes )
-#include "moc_testqgsblendmodes.cxx"
+#include "testqgsblendmodes.moc"

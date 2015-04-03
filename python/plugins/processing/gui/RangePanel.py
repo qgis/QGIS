@@ -25,33 +25,33 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
+from PyQt4.QtGui import QWidget
+
+from processing.ui.ui_widgetRangeSelector import Ui_Form
 
 
-class RangePanel(QtGui.QWidget):
+class RangePanel(QWidget, Ui_Form):
 
     def __init__(self, param):
-        super(RangePanel, self).__init__(None)
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.labelmin = QtGui.QLabel()
-        self.labelmin.setText(self.tr('Min'))
-        self.textmin = QtGui.QLineEdit()
-        self.textmin.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
-        self.labelmax = QtGui.QLabel()
-        self.labelmax.setText(self.tr('Max'))
-        self.textmax = QtGui.QLineEdit()
-        self.textmin.setText(param.default.split(',')[0])
-        self.textmax.setText(param.default.split(',')[1])
-        self.textmax.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.labelmin)
-        self.horizontalLayout.addWidget(self.textmin)
-        self.horizontalLayout.addWidget(self.labelmax)
-        self.horizontalLayout.addWidget(self.textmax)
-        self.setLayout(self.horizontalLayout)
+        QWidget.__init__(self)
+        self.setupUi(self)
+
+        self.isInteger = param.isInteger
+        if self.isInteger:
+            self.spnMin.setDecimals(0)
+            self.spnMax.setDecimals(0)
+
+        values = param.default.split(',')
+        minVal = float(values[0])
+        maxVal = float(values[1])
+        self.spnMin.setValue(minVal)
+        self.spnMax.setValue(maxVal)
+
+        self.spnMin.setMaximum(maxVal)
+        self.spnMin.setMinimum(minVal)
+
+        self.spnMax.setMaximum(maxVal)
+        self.spnMax.setMinimum(minVal)
 
     def getValue(self):
-        return self.textmin.text() + ',' + self.textmax.text()
+        return '{},{}'.format(self.spnMin.value(), self.spnMax.value())

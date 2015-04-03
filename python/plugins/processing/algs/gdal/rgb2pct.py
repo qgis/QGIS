@@ -30,7 +30,7 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputRaster
-from processing.tools.system import *
+from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
@@ -44,10 +44,11 @@ class rgb2pct(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'RGB to PCT'
         self.group = '[GDAL] Conversion'
-        self.addParameter(ParameterRaster(rgb2pct.INPUT, 'Input layer', False))
-        self.addParameter(ParameterNumber(rgb2pct.NCOLORS, 'Number of colors',
-                          1, None, 2))
-        self.addOutput(OutputRaster(rgb2pct.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterRaster(rgb2pct.INPUT,
+            self.tr('Input layer'), False))
+        self.addParameter(ParameterNumber(rgb2pct.NCOLORS,
+            self.tr('Number of colors'), 1, None, 2))
+        self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         arguments = []

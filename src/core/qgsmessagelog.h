@@ -27,8 +27,6 @@
 
  * QGIS application uses QgsMessageLog class for logging messages in a dockable
  * window for the user.
-
- * \note added in 1.9
 */
 class CORE_EXPORT QgsMessageLog : public QObject
 {

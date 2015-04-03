@@ -47,6 +47,7 @@ QgsMessageOutput::~QgsMessageOutput()
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
     : mMessage( "" )
+    , mMsgType( MessageText )
 {
 }
 

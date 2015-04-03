@@ -32,7 +32,7 @@ QgsOracleConnectionItem::QgsOracleConnectionItem( QgsDataItem* parent, QString n
     : QgsDataCollectionItem( parent, name, path )
     , mColumnTypeThread( 0 )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
+  mIconName = "mIconConnect.png";
 }
 
 QgsOracleConnectionItem::~QgsOracleConnectionItem()
@@ -283,7 +283,7 @@ QgsOracleLayerItem::QgsOracleLayerItem( QgsDataItem* parent, QString name, QStri
     , mLayerProperty( layerProperty )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsOracleLayerItem::~QgsOracleLayerItem()
@@ -341,7 +341,7 @@ QString QgsOracleLayerItem::createUri()
 QgsOracleOwnerItem::QgsOracleOwnerItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconDbOwner.png" );
+  mIconName = "mIconDbOwner.png";
 }
 
 QVector<QgsDataItem*> QgsOracleOwnerItem::createChildren()
@@ -404,7 +404,7 @@ void QgsOracleOwnerItem::addLayer( QgsOracleLayerProperty layerProperty )
 QgsOracleRootItem::QgsOracleRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconOracle.svg" );
+  mIconName = "mIconOracle.svg";
   populate();
 }
 

@@ -2,7 +2,7 @@ r.stream.basins
 r.stream.basins - Calculate basins according user input
 Raster (r.*)
 ParameterRaster|direction|Input map: flow direction|False
-ParameterRaster|stream_rast|Input map: stream network|True
+ParameterRaster|stream_raster|Input map: stream network|True
 ParameterVector|points|Basins outlets|0|True
 ParameterBoolean|-z|Create zero-value background|False
 ParameterBoolean|-c|Use unique category sequence|False

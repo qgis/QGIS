@@ -105,7 +105,7 @@ void QgsAttributeTypeLoadDialog::fillComboBoxes( int layerIndex )
   valueComboBox->setEnabled( vLayer != 0 );
 
   keyComboBox->setCurrentIndex( -1 );
-  valueComboBox->setEnabled( -1 );
+  valueComboBox->setCurrentIndex( -1 );
 
   keyComboBox->blockSignals( false );
   valueComboBox->blockSignals( false );

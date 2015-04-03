@@ -62,8 +62,6 @@ class QgsGCPListWidget : public QTableView
     void createItemContextMenu();
     void adjustTableContent();
 
-    QMenu *mItemContextMenu;
-
     QgsGCPList               *mGCPList;
     QgsGCPListModel          *mGCPListModel;
 

@@ -156,7 +156,7 @@ void QgsRelationManager::readProject( const QDomDocument & doc )
     QgsDebugMsg( "No relations data present in this document" );
   }
 
-  emit( relationsLoaded() );
+  emit relationsLoaded();
   emit changed();
 }
 

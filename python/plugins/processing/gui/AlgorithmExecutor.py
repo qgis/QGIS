@@ -25,15 +25,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from qgis.core import *
+import sys
+
+from PyQt4.QtCore import QSettings, QCoreApplication
+from qgis.core import QgsFeature, QgsVectorFileWriter
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.tools import dataobjects
-from processing.tools.system import *
+from processing.tools.system import getTempFilename
 from processing.tools import vector
 from processing.gui.SilentProgress import SilentProgress
 
@@ -53,11 +53,6 @@ def runalg(alg, progress=None):
     except GeoAlgorithmExecutionException, e:
         ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
         progress.error(e.msg)
-        return False
-    except Exception:
-        msg = tr('Uncaught error executing %s.\nSee log for more information') % unicode(alg.name)
-        ProcessingLog.addToLog(sys.exc_info()[0], ProcessingLog.LOG_ERROR)
-        progress.error(msg)
         return False
 
 def runalgIterating(alg, paramToIter, progress):

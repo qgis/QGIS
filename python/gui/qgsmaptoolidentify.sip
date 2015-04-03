@@ -78,6 +78,10 @@ class QgsMapToolIdentify : QgsMapTool
     @return a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, LayerType layerType = AllLayers );
 
+    //! return a pointer to the identify menu which will be used in layer selection mode
+    //! this menu can also be customized
+    QgsIdentifyMenu* identifyMenu();
+
   public slots:
     void formatChanged( QgsRasterLayer *layer );
 
@@ -87,7 +91,6 @@ class QgsMapToolIdentify : QgsMapTool
     void changedRasterResults( QList<QgsMapToolIdentify::IdentifyResult>& );
 
   protected:
-
     /** Performs the identification.
     To avoid beeing forced to specify IdentifyMode with a list of layers
     this has been made private and two publics methods are offered
@@ -96,7 +99,7 @@ class QgsMapToolIdentify : QgsMapTool
     @param mode Identification mode. Can use Qgis default settings or a defined mode.
     @param layerList Performs the identification within the given list of layers.
     @param layerType Only performs identification in a certain type of layers (raster, vector).
-    @return true if identification succeeded and a feature has been found, false otherwise.*/
+    @return a list of IdentifyResult*/
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  QList<QgsMapLayer*> layerList, LayerType layerType = AllLayers );
 
     /** call the right method depending on layer type */

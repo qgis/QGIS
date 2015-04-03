@@ -1019,8 +1019,53 @@ Leave empty to automatically apply the maximum value.</string>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mDisplayDiagramsGroupBox</tabstop>
+  <tabstop>mDiagramPropertiesScrollArea</tabstop>
+  <tabstop>mDiagramTypeComboBox</tabstop>
+  <tabstop>mPrioritySlider</tabstop>
+  <tabstop>mDiagramPropertiesTabWidget</tabstop>
+  <tabstop>mBarWidthSpinBox</tabstop>
+  <tabstop>mTransparencySlider</tabstop>
+  <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>mDiagramPenColorButton</tabstop>
+  <tabstop>mPenWidthSpinBox</tabstop>
+  <tabstop>mAngleOffsetComboBox</tabstop>
+  <tabstop>mDiagramFontButton</tabstop>
+  <tabstop>mVisibilityGroupBox</tabstop>
+  <tabstop>mMinimumDiagramScaleLineEdit</tabstop>
+  <tabstop>mMaximumDiagramScaleLineEdit</tabstop>
+  <tabstop>mFixedSizeCheckBox</tabstop>
+  <tabstop>mDiagramSizeSpinBox</tabstop>
+  <tabstop>mDiagramUnitComboBox</tabstop>
+  <tabstop>mSizeAttributeComboBox</tabstop>
+  <tabstop>mSizeAttributeExpression</tabstop>
+  <tabstop>mFindMaximumValueButton</tabstop>
+  <tabstop>mValueLineEdit</tabstop>
+  <tabstop>mSizeSpinBox</tabstop>
+  <tabstop>mScaleDependencyComboBox</tabstop>
+  <tabstop>mIncreaseSmallDiagramsGroupBox</tabstop>
+  <tabstop>mIncreaseMinimumSizeSpinBox</tabstop>
+  <tabstop>mPlacementComboBox</tabstop>
+  <tabstop>mLineOptionsComboBox</tabstop>
+  <tabstop>mDiagramDistanceSpinBox</tabstop>
+  <tabstop>mDataDefinedPositionGroupBox</tabstop>
+  <tabstop>mDataDefinedXComboBox</tabstop>
+  <tabstop>mDataDefinedYComboBox</tabstop>
+  <tabstop>mEngineSettingsButton</tabstop>
+  <tabstop>mOrientationUpButton</tabstop>
+  <tabstop>mOrientationDownButton</tabstop>
+  <tabstop>mOrientationRightButton</tabstop>
+  <tabstop>mOrientationLeftButton</tabstop>
+  <tabstop>mAttributesTreeWidget</tabstop>
+  <tabstop>mAddAttributeExpression</tabstop>
+  <tabstop>mAddCategoryPushButton</tabstop>
+  <tabstop>mRemoveCategoryPushButton</tabstop>
+  <tabstop>mDiagramAttributesTreeWidget</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

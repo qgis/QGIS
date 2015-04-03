@@ -28,7 +28,7 @@ class QgsComposerItemCommand: QUndoCommand
     /**Returns the target item the command applies to.
      * @returns target composer item
     */
-    QgsComposerItem* item() const;
+    QgsComposerItem *item() const;
 
   protected:
     void saveState( QDomDocument& stateDoc ) const;
@@ -94,7 +94,8 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       ItemOutlineWidth,
       ItemMove,
       ItemRotation,
-      ItemTransparency
+      ItemTransparency,
+      ItemZoomContent
     };
 
     QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );

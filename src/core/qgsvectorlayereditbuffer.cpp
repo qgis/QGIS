@@ -21,6 +21,20 @@
 #include "qgsvectorlayer.h"
 
 
+//! populate two lists (ks, vs) from map - in reverse order
+template <class Key, class T> void mapToReversedLists( const QMap< Key, T >& map, QList<Key>& ks, QList<T>& vs )
+{
+  ks.reserve( map.size() );
+  vs.reserve( map.size() );
+  typename QMap<Key, T>::const_iterator i = map.constEnd();
+  while ( i-- != map.constBegin() )
+  {
+    ks.append( i.key() );
+    vs.append( i.value() );
+  }
+}
+
+
 QgsVectorLayerEditBuffer::QgsVectorLayerEditBuffer( QgsVectorLayer* layer )
     : L( layer )
 {
@@ -425,8 +439,11 @@ bool QgsVectorLayerEditBuffer::commitChanges( QStringList& commitErrors )
     {
       if ( cap & QgsVectorDataProvider::AddFeatures )
       {
-        QList<QgsFeatureId> ids = mAddedFeatures.keys();
-        QgsFeatureList featuresToAdd = mAddedFeatures.values();
+        QList<QgsFeatureId> ids;
+        QgsFeatureList featuresToAdd;
+        // get the list of added features in reversed order
+        // this will preserve the order how they have been added e.g. (-1, -2, -3) while in the map they are ordered (-3, -2, -1)
+        mapToReversedLists( mAddedFeatures, ids, featuresToAdd );
 
         if ( provider->addFeatures( featuresToAdd ) )
         {

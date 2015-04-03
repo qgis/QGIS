@@ -51,7 +51,9 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QMap<QString, QVariant> *options,
     QProgressDialog *progress )
     : mErrorCount( 0 )
+    , mAttributeCount( -1 )
     , mProgress( progress )
+
 {
   mProvider = NULL;
 
@@ -84,8 +86,6 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     mErrorMessage = errMsg;
     return;
   }
-
-  mAttributeCount = -1;
 
   foreach ( int idx, mOldToNewAttrIdx.values() )
   {

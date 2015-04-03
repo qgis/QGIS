@@ -81,7 +81,7 @@ class QgsInvertedPolygonRenderer : QgsFeatureRendererV2
     /**
         @param enabled enables or disables the preprocessing.
         When enabled, geometries will be merged with an union before being rendered.
-        It allows to fix some rendering artefacts (when rendering overlapping polygons for instance).
+        It allows fixing some rendering artefacts (when rendering overlapping polygons for instance).
         This will involve some CPU-demanding computations and is thus disabled by default.
     */
     void setPreprocessingEnabled( bool enabled );

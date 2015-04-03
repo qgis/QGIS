@@ -38,6 +38,38 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= What's new in Version 2.8 'Wien'? =
+
+This is a minor release increment with the following feature:
+- QGIS 2.8 is the basis for a long term release (which will be maintained for a year).
+- >1000 issues which were flagged by static analysis tools have been fixed.
+- New code commits and pull requests are now automatically tested against our testing framework.
+- More responsive QGIS Browser thanks to multithreading support.
+- Support for contextual WMS legend graphics.
+- Custom prefixes for joins.
+- Creation of memory layers is now a core feature.
+- New field calculator bar in attribute table.
+- DXF export improvements.
+- Advanced digitizing tools.
+- Improved snapping options and behaviour.
+- Better simplify tool - including support for on the fly reprojection being enabled.
+- Qt5 support (optional - default packages are still currently built against Qt4).
+- Spatial bookmark import/export.
+- Composer user interface improvements.
+- Grid overlay improvements for composer maps.
+- Raster image fill type.
+- Live heatmap renderer.
+- You can now use multiple styles per layer.
+- Rotation of map canvas is now supported.
+- Improved user interface for data defined symbology.
+- New algorithms in processing.
+- Expressions are now extendable with custom python functions.
+- Comments are now supported in expressions.
+- QGIS server improvements: better caching, layer style support, value relations,
+  DescribeLayer, python plugins.
+-
+
+
 = What's new in Version 2.6.0 'Brighton'? =
 
 This is a minor release increment with the following new features:
@@ -59,7 +91,7 @@ This is a minor release increment with the following new features:
 - New Composer Item tree panel
 - More control over appearance of composer arrow/line items
 - Data defined control of composer items
-- Composer images can be specifed as remote URLS
+- Composer images can be specified as remote URLS
 - Composer Table improvements (header fonts / colors, better pagination support, filter to atlas feature etc.)
 - Composer improvements
 - Improved item snapping

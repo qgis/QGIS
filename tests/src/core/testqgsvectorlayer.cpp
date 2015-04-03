@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -38,7 +38,7 @@
 
 class TestSignalReceiver : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     TestSignalReceiver() : QObject( 0 ),
@@ -67,9 +67,19 @@ class TestSignalReceiver : public QObject
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
-class TestQgsVectorLayer: public QObject
+class TestQgsVectorLayer : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsVectorLayer()
+        : mTestHasError( false )
+        , mpMapRenderer( 0 )
+        , mpPointsLayer( 0 )
+        , mpLinesLayer( 0 )
+        , mpPolysLayer( 0 )
+        , mpNonSpatialLayer( 0 )
+    {}
+
   private:
     bool mTestHasError;
     QgsMapRenderer * mpMapRenderer;
@@ -163,10 +173,11 @@ class TestQgsVectorLayer: public QObject
         myFile.close();
         //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
+      QgsApplication::exitQgis();
 
     }
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}    // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void QgsVectorLayerNonSpatialIterator()
     {
@@ -181,428 +192,114 @@ class TestQgsVectorLayer: public QObject
         myCount++;
       }
       QVERIFY( myCount == 3 );
-    };
+    }
+
+    void QgsVectorLayerstorageType() {}
+    void QgsVectorLayercapabilitiesString() {}
+    void QgsVectorLayerdataComment() {}
+    void QgsVectorLayerproviderType() {}
+    void QgsVectorLayersetDisplayField() {}
+    void QgsVectorLayerdrawLabels() {}
+    void QgsVectorLayerdrawLineString() {}
+    void QgsVectorLayerdrawPolygon() {}
+    void QgsVectorLayerdrawRendererV2() {}
+    void QgsVectorLayerdrawRendererV2Levels() {}
+    void QgsVectorLayerreload() {}
+    void QgsVectorLayerdraw() {}
+    void QgsVectorLayerdeleteCachedGeometries() {}
+    void QgsVectorLayerdrawVertexMarker() {}
+    void QgsVectorLayerselect() {}
+    void QgsVectorLayerinvertSelection() {}
+    void QgsVectorLayerinvertSelectionInRectangle() {}
+    void QgsVectorLayerremoveSelection() {}
+    void QgsVectorLayertriggerRepaint() {}
+    void QgsVectorLayerdataProvider() {}
+    void QgsVectorLayersetProviderEncoding() {}
+    void QgsVectorLayerrenderer() {}
+    void QgsVectorLayersetRenderer() {}
+    void QgsVectorLayergeometryType() {}
+    void QgsVectorLayerwkbType() {}
+    void QgsVectorLayerboundingBoxOfSelected() {}
+    void QgsVectorLayerfeatureCount() {}
+    void QgsVectorLayerupdateFeatureCount() {}
+    void QgsVectorLayerupdateExtents() {}
+    void QgsVectorLayersubsetString() {}
+    void QgsVectorLayersetSubsetString() {}
+    void QgsVectorLayerupdateFeatureAttributes() {}
+    void QgsVectorLayerupdateFeatureGeometry() {}
+    void QgsVectorLayernextFeature() {}
+    void QgsVectorLayerfeatureAtId() {}
+    void QgsVectorLayeraddFeature() {}
+    void QgsVectorLayerinsertVertex() {}
+    void QgsVectorLayermoveVertex() {}
+    void QgsVectorLayerdeleteVertex() {}
+    void QgsVectorLayerdeleteSelectedFeatures() {}
+    void QgsVectorLayeraddRing() {}
+    void QgsVectorLayeraddIsland() {}
+    void QgsVectorLayertranslateFeature() {}
+    void QgsVectorLayersplitFeatures() {}
+    void QgsVectorLayerremovePolygonIntersections() {}
+    void QgsVectorLayeraddTopologicalPoints() {}
+    void QgsVectorLayerlabel() {}
+    void QgsVectorLayerenableLabels() {}
+    void QgsVectorLayerhasLabelsEnabled() {}
+    void QgsVectorLayerstartEditing() {}
+    void QgsVectorLayerreadXml() {}
+    void QgsVectorLayersetDataProvider() {}
+    void QgsVectorLayerwriteXml() {}
+    void QgsVectorLayerreadSymbology() {}
+    void QgsVectorLayerwriteSymbology() {}
+    void QgsVectorLayerchangeGeometry() {}
+    void QgsVectorLayerchangeAttributeValue() {}
+    void QgsVectorLayeraddAttribute() {}
+    void QgsVectorLayeraddAttributeAlias() {}
+    void QgsVectorLayerattributeAlias() {}
+    void QgsVectorLayerattributeDisplayName() {}
+    void QgsVectorLayerdeleteAttribute() {}
+    void QgsVectorLayerdeleteFeature() {}
+    void QgsVectorLayerpendingFields() {}
+    void QgsVectorLayerpendingAllAttributesList() {}
+    void QgsVectorLayerpendingFeatureCount() {}
+    void QgsVectorLayercommitChanges() {}
+    void QgsVectorLayercommitErrors() {}
+    void QgsVectorLayerrollBack() {}
+    void QgsVectorLayersetSelectedFeatures() {}
+    void QgsVectorLayerselectedFeatureCount() {}
+    void QgsVectorLayerselectedFeaturesIds() {}
+    void QgsVectorLayerselectedFeatures() {}
+    void QgsVectorLayeraddFeatures() {}
+    void QgsVectorLayercopySymbologySettings() {}
+    void QgsVectorLayerhasCompatibleSymbology() {}
+    void QgsVectorLayersnapPoint() {}
+    void QgsVectorLayersnapWithContext() {}
+    void QgsVectorLayersnapToGeometry() {}
+    void QgsVectorLayerinsertSegmentVerticesForSnap() {}
+    void QgsVectorLayerboundingBoxFromPointList() {}
+    void QgsVectorLayercurrentVertexMarkerType() {}
+    void QgsVectorLayercurrentVertexMarkerSize() {}
+    void QgsVectorLayerdrawFeature() {}
+    void QgsVectorLayersetCoordinateSystem() {}
+    void QgsVectorLayertransformPoint() {}
+    void QgsVectorLayertransformPoints() {}
+    void QgsVectorLayerdisplayField() {}
+    void QgsVectorLayerisEditable() {}
+    void QgsVectorLayerisModified() {}
+    void QgsVectorLayersetModified() {}
+    void QgsVectorLayereditType() {}
+    void QgsVectorLayersetEditType() {}
+    void QgsVectorLayereditForm() {}
+    void QgsVectorLayersetEditForm() {}
+    void QgsVectorLayersetAnnotationForm() {}
+    void QgsVectorLayereditFormInit() {}
+    void QgsVectorLayersetEditFormInit() {}
+    void QgsVectorLayervalueMap() {}
+    void QgsVectorLayerrange() {}
+    void QgsVectorLayeraddOverlay() {}
+    void QgsVectorLayerremoveOverlay() {}
+    void QgsVectorLayervectorOverlays() {}
+    void QgsVectorLayerfindOverlayByType() {}
+    void QgsVectorLayerrendererV2() {}
 
-    void QgsVectorLayerstorageType()
-    {
-
-    };
-    void QgsVectorLayercapabilitiesString()
-    {
-
-    };
-    void QgsVectorLayerdataComment()
-    {
-
-    };
-    void QgsVectorLayerproviderType()
-    {
-
-    };
-    void QgsVectorLayersetDisplayField()
-    {
-
-    };
-    void QgsVectorLayerdrawLabels()
-    {
-
-    };
-    void QgsVectorLayerdrawLineString()
-    {
-
-    };
-    void QgsVectorLayerdrawPolygon()
-    {
-
-    };
-    void QgsVectorLayerdrawRendererV2()
-    {
-
-    };
-    void QgsVectorLayerdrawRendererV2Levels()
-    {
-
-    };
-    void QgsVectorLayerreload()
-    {
-
-    };
-    void QgsVectorLayerdraw()
-    {
-
-    };
-    void QgsVectorLayerdeleteCachedGeometries()
-    {
-
-    };
-    void QgsVectorLayerdrawVertexMarker()
-    {
-
-    };
-    void QgsVectorLayerselect()
-    {
-
-    };
-    void QgsVectorLayerinvertSelection()
-    {
-
-    };
-    void QgsVectorLayerinvertSelectionInRectangle()
-    {
-
-    };
-    void QgsVectorLayerremoveSelection()
-    {
-
-    };
-    void QgsVectorLayertriggerRepaint()
-    {
-
-    };
-    void QgsVectorLayerdataProvider()
-    {
-
-    };
-    void QgsVectorLayersetProviderEncoding()
-    {
-
-    };
-    void QgsVectorLayerrenderer()
-    {
-
-    };
-    void QgsVectorLayersetRenderer()
-    {
-
-    };
-    void QgsVectorLayergeometryType()
-    {
-
-    };
-    void QgsVectorLayerwkbType()
-    {
-
-    };
-    void QgsVectorLayerboundingBoxOfSelected()
-    {
-
-    };
-    void QgsVectorLayerfeatureCount()
-    {
-
-    };
-    void QgsVectorLayerupdateFeatureCount()
-    {
-
-    };
-    void QgsVectorLayerupdateExtents()
-    {
-
-    };
-    void QgsVectorLayersubsetString()
-    {
-
-    };
-    void QgsVectorLayersetSubsetString()
-    {
-
-    };
-    void QgsVectorLayerupdateFeatureAttributes()
-    {
-
-    };
-    void QgsVectorLayerupdateFeatureGeometry()
-    {
-
-    };
-    void QgsVectorLayernextFeature()
-    {
-
-    };
-    void QgsVectorLayerfeatureAtId()
-    {
-
-    };
-    void QgsVectorLayeraddFeature()
-    {
-
-    };
-    void QgsVectorLayerinsertVertex()
-    {
-
-    };
-    void QgsVectorLayermoveVertex()
-    {
-
-    };
-    void QgsVectorLayerdeleteVertex()
-    {
-
-    };
-    void QgsVectorLayerdeleteSelectedFeatures()
-    {
-
-    };
-    void QgsVectorLayeraddRing()
-    {
-
-    };
-    void QgsVectorLayeraddIsland()
-    {
-
-    };
-    void QgsVectorLayertranslateFeature()
-    {
-
-    };
-    void QgsVectorLayersplitFeatures()
-    {
-
-    };
-    void QgsVectorLayerremovePolygonIntersections()
-    {
-
-    };
-    void QgsVectorLayeraddTopologicalPoints()
-    {
-
-    };
-    void QgsVectorLayerlabel()
-    {
-
-    };
-    void QgsVectorLayerenableLabels()
-    {
-
-    };
-    void QgsVectorLayerhasLabelsEnabled()
-    {
-
-    };
-    void QgsVectorLayerstartEditing()
-    {
-
-    };
-    void QgsVectorLayerreadXml()
-    {
-
-    };
-    void QgsVectorLayersetDataProvider()
-    {
-
-    };
-    void QgsVectorLayerwriteXml()
-    {
-
-    };
-    void QgsVectorLayerreadSymbology()
-    {
-
-    };
-    void QgsVectorLayerwriteSymbology()
-    {
-
-    };
-    void QgsVectorLayerchangeGeometry()
-    {
-
-    };
-    void QgsVectorLayerchangeAttributeValue()
-    {
-
-    };
-    void QgsVectorLayeraddAttribute()
-    {
-
-    };
-    void QgsVectorLayeraddAttributeAlias()
-    {
-
-    };
-    void QgsVectorLayerattributeAlias()
-    {
-
-    };
-    void QgsVectorLayerattributeDisplayName()
-    {
-
-    };
-    void QgsVectorLayerdeleteAttribute()
-    {
-
-    };
-    void QgsVectorLayerdeleteFeature()
-    {
-
-    };
-    void QgsVectorLayerpendingFields()
-    {
-
-    };
-    void QgsVectorLayerpendingAllAttributesList()
-    {
-
-    };
-    void QgsVectorLayerpendingFeatureCount()
-    {
-
-    };
-    void QgsVectorLayercommitChanges()
-    {
-
-    };
-    void QgsVectorLayercommitErrors()
-    {
-
-    };
-    void QgsVectorLayerrollBack()
-    {
-
-    };
-    void QgsVectorLayersetSelectedFeatures()
-    {
-
-    };
-    void QgsVectorLayerselectedFeatureCount()
-    {
-
-    };
-    void QgsVectorLayerselectedFeaturesIds()
-    {
-
-    };
-    void QgsVectorLayerselectedFeatures()
-    {
-
-    };
-    void QgsVectorLayeraddFeatures()
-    {
-
-    };
-    void QgsVectorLayercopySymbologySettings()
-    {
-
-    };
-    void QgsVectorLayerhasCompatibleSymbology()
-    {
-
-    };
-    void QgsVectorLayersnapPoint()
-    {
-
-    };
-    void QgsVectorLayersnapWithContext()
-    {
-
-    };
-    void QgsVectorLayersnapToGeometry()
-    {
-
-    };
-    void QgsVectorLayerinsertSegmentVerticesForSnap()
-    {
-
-    };
-    void QgsVectorLayerboundingBoxFromPointList()
-    {
-
-    };
-    void QgsVectorLayercurrentVertexMarkerType()
-    {
-
-    };
-    void QgsVectorLayercurrentVertexMarkerSize()
-    {
-
-    };
-    void QgsVectorLayerdrawFeature()
-    {
-
-    };
-    void QgsVectorLayersetCoordinateSystem()
-    {
-
-    };
-    void QgsVectorLayertransformPoint()
-    {
-
-    };
-    void QgsVectorLayertransformPoints()
-    {
-
-    };
-    void QgsVectorLayerdisplayField()
-    {
-
-    };
-    void QgsVectorLayerisEditable()
-    {
-
-    };
-    void QgsVectorLayerisModified()
-    {
-
-    };
-    void QgsVectorLayersetModified()
-    {
-
-    };
-    void QgsVectorLayereditType()
-    {
-
-    };
-    void QgsVectorLayersetEditType()
-    {
-
-    };
-    void QgsVectorLayereditForm()
-    {
-
-    };
-    void QgsVectorLayersetEditForm()
-    {
-
-    };
-    void QgsVectorLayersetAnnotationForm()
-    {
-
-    };
-    void QgsVectorLayereditFormInit()
-    {
-
-    };
-    void QgsVectorLayersetEditFormInit()
-    {
-
-    };
-    void QgsVectorLayervalueMap()
-    {
-
-    };
-    void QgsVectorLayerrange()
-    {
-
-    };
-    void QgsVectorLayeraddOverlay()
-    {
-
-    };
-    void QgsVectorLayerremoveOverlay()
-    {
-
-    };
-    void QgsVectorLayervectorOverlays()
-    {
-
-    };
-    void QgsVectorLayerfindOverlayByType()
-    {
-
-    };
-    void QgsVectorLayerrendererV2()
-    {
-
-    };
     void QgsVectorLayersetRendererV2()
     {
       QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
@@ -615,70 +312,27 @@ class TestQgsVectorLayer: public QObject
       vLayer->setRendererV2( symbolRenderer );
       QCOMPARE( receiver.rendererChanged, true );
       QCOMPARE( vLayer->rendererV2(), symbolRenderer );
-    };
-    void QgsVectorLayerisUsingRendererV2()
-    {
-    };
-    void QgsVectorLayersetUsingRendererV2()
-    {
+    }
 
-    };
-    void QgsVectorLayereditGeometryChange()
-    {
-
-    };
-    void QgsVectorLayereditFeatureAdd()
-    {
-
-    };
-    void QgsVectorLayereditFeatureDelete()
-    {
-
-    };
-    void QgsVectorLayereditAttributeChange()
-    {
-
-    };
-    void QgsVectorLayerbeginEditCommand()
-    {
-
-    };
-    void QgsVectorLayerendEditCommand()
-    {
-
-    };
-    void QgsVectorLayerdestroyEditCommand()
-    {
-
-    };
-    void QgsVectorLayerredoEditCommand()
-    {
-
-    };
-    void QgsVectorLayerundoEditCommand()
-    {
-
-    };
-    void QgsVectorLayersetCheckedState()
-    {
-
-    };
-    void QgsVectorLayercheckedState()
-    {
-
-    };
-    void QgsVectorLayerfieldNameIndex()
-    {
-
-    };
-    void QgsVectorLayerstopRendererV2()
-    {
-
-    };
+    void QgsVectorLayerisUsingRendererV2() {}
+    void QgsVectorLayersetUsingRendererV2() {}
+    void QgsVectorLayereditGeometryChange() {}
+    void QgsVectorLayereditFeatureAdd() {}
+    void QgsVectorLayereditFeatureDelete() {}
+    void QgsVectorLayereditAttributeChange() {}
+    void QgsVectorLayerbeginEditCommand() {}
+    void QgsVectorLayerendEditCommand() {}
+    void QgsVectorLayerdestroyEditCommand() {}
+    void QgsVectorLayerredoEditCommand() {}
+    void QgsVectorLayerundoEditCommand() {}
+    void QgsVectorLayersetCheckedState() {}
+    void QgsVectorLayercheckedState() {}
+    void QgsVectorLayerfieldNameIndex() {}
+    void QgsVectorLayerstopRendererV2() {}
 
     void QgsVectorLayersetFeatureBlendMode()
     {
-      QgsVectorLayer* vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
+      QgsVectorLayer *vLayer = static_cast< QgsVectorLayer * >( mpPointsLayer );
       TestSignalReceiver receiver;
       QObject::connect( vLayer, SIGNAL( featureBlendModeChanged( const QPainter::CompositionMode ) ),
                         &receiver, SLOT( onFeatureBlendModeChanged( const QPainter::CompositionMode ) ) );
@@ -704,4 +358,4 @@ class TestQgsVectorLayer: public QObject
 };
 
 QTEST_MAIN( TestQgsVectorLayer )
-#include "moc_testqgsvectorlayer.cxx"
+#include "testqgsvectorlayer.moc"

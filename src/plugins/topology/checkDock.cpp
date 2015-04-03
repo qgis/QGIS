@@ -383,7 +383,6 @@ void checkDock::runTests( ValidateType type )
     disconnect( mTest, SIGNAL( progress( int ) ), &progress, SLOT( setValue( int ) ) );
     mErrorList << errors;
   }
-  mMarkersVisible = true;
   mToggleRubberband->setChecked( true );
   mErrorListModel->resetModel();
 }

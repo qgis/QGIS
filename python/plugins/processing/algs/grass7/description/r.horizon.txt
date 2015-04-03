@@ -1,7 +1,7 @@
 r.horizon
 r.horizon - Horizon angle computation from a digital elevation model.
 Raster (r.*)
-ParameterRaster|elev_in|Elevation layer [meters]|False
+ParameterRaster|elevation|Elevation layer [meters]|False
 ParameterNumber|direction|Direction in which you want to calculate the horizon height|0|360|0.0
 ParameterNumber|maxdistance|The maximum distance to consider when finding the horizon height|0|None|10000
 ParameterString|dist|Sampling distance step coefficient (0.5-1.5)|1.0

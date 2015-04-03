@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QMetaType>
 
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
 #ifdef UNICODE
 #define TCHAR
 #else

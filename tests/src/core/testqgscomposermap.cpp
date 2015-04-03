@@ -24,11 +24,19 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestQgsComposerMap: public QObject
+class TestQgsComposerMap : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerMap()
+        : mComposition( 0 )
+        , mComposerMap( 0 )
+        , mRasterLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -76,7 +84,6 @@ void TestQgsComposerMap::initTestCase()
 void TestQgsComposerMap::cleanupTestCase()
 {
   delete mComposition;
-  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -86,6 +93,8 @@ void TestQgsComposerMap::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerMap::init()
@@ -124,6 +133,9 @@ void TestQgsComposerMap::uniqueId()
       break;
     }
   }
+
+  QVERIFY( newMap );
+
   int oldId = mComposerMap->id();
   int newId = newMap->id();
 
@@ -195,4 +207,4 @@ void TestQgsComposerMap::mapPolygonVertices()
 }
 
 QTEST_MAIN( TestQgsComposerMap )
-#include "moc_testqgscomposermap.cxx"
+#include "testqgscomposermap.moc"

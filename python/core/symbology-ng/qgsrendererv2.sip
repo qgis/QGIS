@@ -42,6 +42,12 @@ class QgsFeatureRendererV2
     sipClass = sipClass_QgsGraduatedSymbolRendererV2;
   else if (sipCpp->type() == "RuleRenderer")
     sipClass = sipClass_QgsRuleBasedRendererV2;
+  else if (sipCpp->type() == "heatmapRenderer")
+    sipClass = sipClass_QgsHeatmapRenderer;
+  else if (sipCpp->type() == "invertedPolygonRenderer")
+    sipClass = sipClass_QgsInvertedPolygonRenderer;
+  else if (sipCpp->type() == "pointDisplacement")
+    sipClass = sipClass_QgsPointDisplacementRenderer;
   else
     sipClass = 0;
 %End
@@ -96,7 +102,6 @@ class QgsFeatureRendererV2
     };
 
     //! returns bitwise OR-ed capabilities of the renderer
-    //! \note added in 2.0
     virtual int capabilities();
 
     //! for symbol levels
@@ -112,8 +117,11 @@ class QgsFeatureRendererV2
     virtual QDomElement save( QDomDocument& doc );
 
     //! create the SLD UserStyle element following the SLD v1.1 specs
-    //! @note added in 1.9
-    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const;
+    //! @deprecated since 2.8 - use the other override with styleName
+    virtual QDomElement writeSld( QDomDocument& doc, const QgsVectorLayer &layer ) const /Deprecated/;
+    //! create the SLD UserStyle element following the SLD v1.1 specs with the given name
+    //! @note added in 2.8
+    virtual QDomElement writeSld( QDomDocument& doc, const QString& styleName ) const;
 
     /** create a new renderer according to the information contained in
      * the UserStyle element of a SLD style document
@@ -124,12 +132,10 @@ class QgsFeatureRendererV2
      * @param errorMessage it will contain the error message if something
      * went wrong
      * @return the renderer
-     * @note added in 1.9
      */
     static QgsFeatureRendererV2* loadSld( const QDomNode &node, QGis::GeometryType geomType, QString &errorMessage ) /Factory/;
 
     //! used from subclasses to create SLD Rule elements following SLD v1.1 specs
-    //! @note added in 1.9
     virtual void toSld( QDomDocument& doc, QDomElement &element ) const;
 
     //! return a list of symbology items for the legend
@@ -148,7 +154,6 @@ class QgsFeatureRendererV2
     virtual void checkLegendSymbolItem( QString key, bool state = true );
 
     //! return a list of item text / symbol
-    //! @note: this method was added in version 1.5
     //! @note not available in python bindings
     // virtual QgsLegendSymbolList legendSymbolItems( double scaleDenominator = -1, QString rule = "" );
 
@@ -165,28 +170,46 @@ class QgsFeatureRendererV2
     void setVertexMarkerAppearance( int type, int size );
 
     //! return rotation field name (or empty string if not set or not supported by renderer)
-    //! @note added in 1.9
     virtual QString rotationField() const;
     //! sets rotation field of renderer (if supported by the renderer)
-    //! @note added in 1.9
     virtual void setRotationField( QString fieldName );
 
     //! return whether the renderer will render a feature or not.
     //! Must be called between startRender() and stopRender() calls.
     //! Default implementation uses symbolForFeature().
-    //! @note added in 1.9
     virtual bool willRenderFeature( QgsFeature& feat );
 
     //! return list of symbols used for rendering the feature.
     //! For renderers that do not support MoreSymbolsPerFeature it is more efficient
     //! to use symbolForFeature()
-    //! @note added in 1.9
     virtual QgsSymbolV2List symbolsForFeature( QgsFeature& feat );
 
     //! Equivalent of originalSymbolsForFeature() call
     //! extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
     //! @note added in 2.6
     virtual QgsSymbolV2List originalSymbolsForFeature( QgsFeature& feat );
+
+    /**Allows for a renderer to modify the extent of a feature request prior to rendering
+     * @param extent reference to request's filter extent. Modify extent to change the
+     * extent of feature request
+     * @param context render context
+     * @note added in QGIS 2.7
+     */
+    virtual void modifyRequestExtent( QgsRectangle& extent, QgsRenderContext& context );
+
+    /** Returns the current paint effect for the renderer.
+     * @returns paint effect
+     * @note added in QGIS 2.9
+     * @see setPaintEffect
+     */
+    QgsPaintEffect* paintEffect() const;
+
+    /** Sets the current paint effect for the renderer.
+     * @param effect paint effect. Ownership is transferred to the renderer.
+     * @note added in QGIS 2.9
+     * @see paintEffect
+     */
+    void setPaintEffect( QgsPaintEffect* effect /Transfer/);
 
   protected:
     QgsFeatureRendererV2( QString type );
@@ -206,10 +229,16 @@ class QgsFeatureRendererV2
     void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
 
     static const unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, const unsigned char* wkb );
-    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb );
-    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb );
+    static const unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
+    static const unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, const unsigned char* wkb, bool clipToExtent = true );
 
     void setScaleMethodToSymbol( QgsSymbolV2* symbol, int scaleMethod );
+
+    /** Copies paint effect of this renderer to another renderer
+     * @param destRenderer destination renderer for copied effect
+     */
+    void copyPaintEffect( QgsFeatureRendererV2 *destRenderer ) const;
+
   private:
     QgsFeatureRendererV2( const QgsFeatureRendererV2 & );
     QgsFeatureRendererV2 & operator=( const QgsFeatureRendererV2 & );

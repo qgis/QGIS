@@ -11,16 +11,7 @@
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -208,15 +199,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsfieldexpressionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorRampComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgscolorrampcombobox.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -225,9 +216,11 @@
   <tabstop>cbxInvertedColorRamp</tabstop>
   <tabstop>viewCategories</tabstop>
   <tabstop>btnAddCategories</tabstop>
+  <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>
   <tabstop>btnJoinCategories</tabstop>
+  <tabstop>btnAdvanced</tabstop>
  </tabstops>
  <resources/>
  <connections/>

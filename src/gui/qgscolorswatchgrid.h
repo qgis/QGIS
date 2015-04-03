@@ -26,7 +26,7 @@
  * @see QgsColorGridAction
  * @note introduced in QGIS 2.5
  */
-class GUI_EXPORT QgsColorSwatchGrid: public QWidget
+class GUI_EXPORT QgsColorSwatchGrid : public QWidget
 {
     Q_OBJECT
 
@@ -42,10 +42,10 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
     virtual ~QgsColorSwatchGrid();
 
     //Reimplemented to set fixed size on widget
-    virtual QSize minimumSizeHint() const;
+    virtual QSize minimumSizeHint() const override;
 
     //Reimplemented to set fixed size on widget
-    virtual QSize sizeHint() const;
+    virtual QSize sizeHint() const override;
 
     /**Get the current context for the grid
      * @returns context string which is passed to scheme for color generation
@@ -57,7 +57,7 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
      * @param context string which is passed to scheme for color generation
      * @see context
      */
-    void setContext( const QString context );
+    void setContext( const QString &context );
 
     /**Get the base color for the widget
      * @returns base color which is passed to scheme for color generation
@@ -69,12 +69,12 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
-    void setBaseColor( const QColor baseColor );
+    void setBaseColor( const QColor &baseColor );
 
     /**Gets the list of colors shown in the grid
      * @returns list of colors currently shown in the grid
      */
-    QgsNamedColorList* colors() { return &mColors; }
+    QgsNamedColorList *colors() { return &mColors; }
 
   public slots:
 
@@ -87,7 +87,7 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
     /**Emitted when a color has been selected from the widget
      * @param color selected color
      */
-    void colorChanged( const QColor color );
+    void colorChanged( const QColor &color );
 
     /**Emitted when mouse hovers over widget
      */
@@ -96,13 +96,13 @@ class GUI_EXPORT QgsColorSwatchGrid: public QWidget
   protected:
 
     //reimplemented QWidget events
-    void paintEvent( QPaintEvent * event );
-    void mouseMoveEvent( QMouseEvent * event );
-    void mousePressEvent( QMouseEvent * event );
-    void mouseReleaseEvent( QMouseEvent * event );
-    void keyPressEvent( QKeyEvent* event );
-    void focusInEvent( QFocusEvent* event );
-    void focusOutEvent( QFocusEvent* event );
+    void paintEvent( QPaintEvent * event ) override;
+    void mouseMoveEvent( QMouseEvent * event ) override;
+    void mousePressEvent( QMouseEvent * event ) override;
+    void mouseReleaseEvent( QMouseEvent * event ) override;
+    void keyPressEvent( QKeyEvent* event ) override;
+    void focusInEvent( QFocusEvent* event ) override;
+    void focusOutEvent( QFocusEvent* event ) override;
 
   private:
     QgsColorScheme* mScheme;
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
-    void setBaseColor( const QColor baseColor );
+    void setBaseColor( const QColor &baseColor );
 
     /**Get the base color for the color grid
      * @returns base color which is passed to scheme for color generation
@@ -193,7 +193,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
      * @param context string which is passed to scheme for color generation
      * @see context
      */
-    void setContext( const QString context );
+    void setContext( const QString &context );
 
   public slots:
 
@@ -206,7 +206,7 @@ class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
     /**Emitted when a color has been selected from the widget
      * @param color selected color
      */
-    void colorChanged( const QColor color );
+    void colorChanged( const QColor &color );
 
   private:
     QMenu* mMenu;

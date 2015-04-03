@@ -1,0 +1,49 @@
+SET (CTEST_SOURCE_DIRECTORY $ENV{TRAVIS_BUILD_DIR})
+SET (CTEST_BINARY_DIRECTORY "$ENV{TRAVIS_BUILD_DIR}/build")
+#SET (CTEST_SOURCE_DIRECTORY /usr/src/QGIS)
+#SET (CTEST_BINARY_DIRECTORY /usr/src/qgis-build)
+
+SET( CTEST_CMAKE_GENERATOR  "Unix Makefiles" )
+SET (CTEST_CMAKE_COMMAND "cmake" )
+SET (CTEST_BUILD_COMMAND "/usr/bin/make -j2 -i -k" )
+SET (CTEST_SITE "travis-ci.org" )
+IF ($ENV{TRAVIS_PULL_REQUEST} STREQUAL "false")
+  # No pull request
+  SET (CTEST_BUILD_NAME "$ENV{TRAVIS_BRANCH} ($ENV{TRAVIS_COMMIT})")
+ELSE()
+  SET (CTEST_BUILD_NAME "PR: $ENV{TRAVIS_PULL_REQUEST} / $ENV{TRAVIS_BRANCH} ($ENV{TRAVIS_COMMIT})")
+ENDIF()
+SET (CTEST_BUILD_CONFIGURATION "Release")
+
+
+SET (INITIAL_CACHE "
+BUILDNAME:STRING=${CTEST_BUILD_NAME}
+SITE:STRING=${CTEST_SITE}
+CTEST_USE_LAUNCHERS:BOOL=ON
+")
+
+SET (CTEST_NOTES_FILES
+${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}
+${CTEST_BINARY_DIRECTORY}/CMakeCache.txt
+)
+
+# Requires a track on the CDash server
+#ctest_start(Experimental TRACK Travis)
+ctest_start(Experimental)
+ctest_build (BUILD "${CTEST_BINARY_DIRECTORY}" RETURN_VALUE BUILDRES)
+IF(NOT ${BUILDRES} EQUAL 0)
+  ctest_submit ()
+  MESSAGE( FATAL_ERROR "Build failed." )
+ENDIF(NOT ${BUILDRES} EQUAL 0)
+ctest_test (BUILD "${CTEST_BINARY_DIRECTORY}" PARALLEL_LEVEL 2 RETURN_VALUE TESTRES)
+IF(NOT ${TESTRES} EQUAL 0)
+  ctest_submit ()
+  MESSAGE( FATAL_ERROR "Test failed." )
+ENDIF(NOT ${TESTRES} EQUAL 0)
+
+ctest_submit (RETRY_COUNT 3 RETRY_DELAY 30)
+# CDash on OTB requires the date to be set for the search to work and that's the timezone this requires
+SET(ENV{TZ} "UTC-6")
+EXECUTE_PROCESS(COMMAND date +%Y-%m-%d OUTPUT_VARIABLE CDASH_DATE)
+MESSAGE("Test results submitted to\n   http://dash.orfeo-toolbox.org/queryTests.php?project=QGIS&date=${CDASH_DATE}&filtercount=1&field1=buildname/string&compare1=63&value1=$ENV{TRAVIS_COMMIT}" )
+

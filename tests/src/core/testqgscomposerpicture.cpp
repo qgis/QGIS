@@ -20,13 +20,17 @@
 #include "qgscompositionchecker.h"
 #include "qgscomposerpicture.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerPicture: public QObject
+class TestQgsComposerPicture : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerPicture();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -66,6 +70,13 @@ class TestQgsComposerPicture: public QObject
     QString mSvgImage;
 };
 
+TestQgsComposerPicture::TestQgsComposerPicture()
+    : mComposition( NULL )
+    , mComposerPicture( NULL )
+{
+
+}
+
 void TestQgsComposerPicture::initTestCase()
 {
   QgsApplication::init();
@@ -97,6 +108,7 @@ void TestQgsComposerPicture::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerPicture::init()
@@ -382,4 +394,4 @@ void TestQgsComposerPicture::pictureRemoteUrl()
 }
 
 QTEST_MAIN( TestQgsComposerPicture )
-#include "moc_testqgscomposerpicture.cxx"
+#include "testqgscomposerpicture.moc"

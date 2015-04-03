@@ -21,9 +21,11 @@
 
 #include <QVector>
 #include "qgsfeature.h"
+#include "qgstolerance.h"
 
 class QgsRubberBand;
-
+class QgsMapToolSimplify;
+class QgsCoordinateTransform;
 
 class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
 {
@@ -31,23 +33,14 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 
   public:
 
-    QgsSimplifyDialog( QWidget* parent = NULL );
+    QgsSimplifyDialog( QgsMapToolSimplify* tool, QWidget* parent = NULL );
 
-    /** Setting range of slide bar */
-    void setRange( int minValue, int maxValue );
+    void updateStatusText();
+    void enableOkButton( bool enabled );
 
-  signals:
-    /** Signal when slidebar is moved */
-    void toleranceChanged( int tol );
+  private:
+    QgsMapToolSimplify* mTool;
 
-    /** Signal to accept changes */
-    void storeSimplified();
-
-  private slots:
-    /** Internal signal when value is changed */
-    void valueChanged( int value );
-    /** Internal signal to store simplified feature */
-    void simplify();
 };
 
 
@@ -55,75 +48,67 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
 class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 {
     Q_OBJECT
-
   public:
     QgsMapToolSimplify( QgsMapCanvas* canvas );
     virtual ~QgsMapToolSimplify();
 
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QMouseEvent * e ) override;
+    void canvasMoveEvent( QMouseEvent * e ) override;
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
+
+    double tolerance() const { return mTolerance; }
+
+    QgsTolerance::UnitType toleranceUnits() const { return mToleranceUnits; }
+
+    QString statusText() const;
 
   public slots:
-    void removeRubberBand();
+    /** slot to change display when slidebar is moved */
+    void setTolerance( double tolerance );
+
+    void setToleranceUnits( int units );
+
+    /** slot to store feture after simplification */
+    void storeSimplified();
+
+    void clearSelection();
 
   private:
-    /** Divider calculation, because slider can go only by whole numbers */
-    int calculateDivider( double minimum, double maximum );
 
-    /** Function to calculate tolerance boudaries for simplifying */
-    bool calculateSliderBoudaries();
+    void selectOneFeature( const QPoint& canvasPoint );
+    void selectFeaturesInRect();
 
-    /** Function to get list of vertexes from feature */
-    QVector<QgsPoint> getPointList( QgsFeature& f );
+    void updateSimplificationPreview();
+
+    int vertexCount( QgsGeometry* g ) const;
 
     // data
     /** Dialog with slider to set correct tolerance value */
     QgsSimplifyDialog* mSimplifyDialog;
 
-    /** Rubber band to draw current state of simplification */
-    QgsRubberBand* mRubberBand;
-
-    /** Feature with which we are working */
-    QgsFeature mSelectedFeature;
-
-    /** tolerance divider is value which tells with which delete value from sidebar */
-    long toleranceDivider;
+    /** Rubber bands to draw current state of simplification */
+    QList<QgsRubberBand*> mRubberBands;
+    /** Features with which we are working */
+    QList<QgsFeature> mSelectedFeatures;
 
     /** real value of tolerance */
     double mTolerance;
 
-  private slots:
-    /** slot to change display when slidebar is moved */
-    void toleranceChanged( int tolerance );
+    QgsTolerance::UnitType mToleranceUnits;
 
-    /** slot to store feture after simplification */
-    void storeSimplified();
+    //! stores actual selection rect
+    QRect mSelectionRect;
+    //! shows actual selection rect
+    QgsRubberBand* mSelectionRubberBand;
+    //! Flag to indicate a map canvas drag operation is taking place
+    bool mDragging;
 
-};
-
-/**
-  Implementation of Douglas-Peucker simplification algorithm.
- */
-class APP_EXPORT QgsSimplifyFeature
-{
-    /** structure for one entry in stack for simplification algorithm */
-    struct StackEntry
-    {
-      int anchor;
-      int floater;
-    };
-
-  public:
-    /** simplify line feature with specified tolerance. Returns true on success */
-    static bool simplifyLine( QgsFeature &lineFeature, double tolerance );
-    /** simplify polygon feature with specified tolerance. Returns true on success */
-    static bool simplifyPolygon( QgsFeature &polygonFeature, double tolerance );
-    /** simplify a line given by a vector of points and tolerance. Returns simplified vector of points */
-    static QVector<QgsPoint> simplifyPoints( const QVector<QgsPoint>& pts, double tolerance );
-
-
+    int mOriginalVertexCount;
+    int mReducedVertexCount;
+    bool mReducedHasErrors;
 };
 
 #endif

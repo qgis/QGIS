@@ -7,6 +7,7 @@
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgsmaplayerstyleguiutils.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
@@ -55,6 +56,8 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
 
+      menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
+
       menu->addAction( actions->actionAddGroup( menu ) );
     }
     else if ( QgsLayerTree::isLayer( node ) )
@@ -86,6 +89,24 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       // assign layer crs to project
       menu->addAction( QgsApplication::getThemeIcon( "/mActionSetProjectCRS.png" ), tr( "Set &Project CRS from Layer" ), QgisApp::instance(), SLOT( setProjectCRSFromLayer() ) );
+
+      // style-related actions
+      if ( layer && mView->selectedLayerNodes().count() == 1 )
+      {
+        QMenu* menuStyleManager = new QMenu( tr( "Styles" ) );
+
+        QgisApp* app = QgisApp::instance();
+        menuStyleManager->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
+        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
+        {
+          menuStyleManager->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
+        }
+
+        menuStyleManager->addSeparator();
+        QgsMapLayerStyleGuiUtils::instance()->addStyleManagerActions( menuStyleManager, layer );
+
+        menu->addMenu( menuStyleManager );
+      }
 
       menu->addSeparator();
 
@@ -127,7 +148,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
         menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
-        if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
+        if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() )
           menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
         menu->addAction( actions->actionShowFeatureCount( menu ) );
@@ -157,16 +178,6 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( mView->selectedNodes( true ).count() >= 2 )
         menu->addAction( actions->actionGroupSelected( menu ) );
-
-      if ( mView->selectedLayerNodes().count() == 1 )
-      {
-        QgisApp* app = QgisApp::instance();
-        menu->addAction( tr( "Copy Style" ), app, SLOT( copyStyle() ) );
-        if ( app->clipboard()->hasFormat( QGSCLIPBOARD_STYLE_MIME ) )
-        {
-          menu->addAction( tr( "Paste Style" ), app, SLOT( pasteStyle() ) );
-        }
-      }
     }
 
   }
@@ -206,8 +217,11 @@ bool QgsAppLayerTreeViewMenuProvider::removeLegendLayerAction( QAction* action )
 
 void QgsAppLayerTreeViewMenuProvider::addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer )
 {
+  if ( !action || !layer )
+    return;
+
   legendLayerActions( layer->type() );
-  if ( !action || !layer || ! mLegendLayerActionMap.contains( layer->type() ) )
+  if ( !mLegendLayerActionMap.contains( layer->type() ) )
     return;
 
   QMap< QgsMapLayer::LayerType, QList< LegendLayerAction > >::iterator it
@@ -277,7 +291,7 @@ void QgsAppLayerTreeViewMenuProvider::addCustomLayerActions( QMenu* menu, QgsMap
           // find or create menu for given menu name
           // adapted from QgisApp::getPluginMenu( QString menuName )
           QString menuName = lyrActions[i].menu;
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
           // Mac doesn't have '&' keyboard shortcuts.
           menuName.remove( QChar( '&' ) );
 #endif

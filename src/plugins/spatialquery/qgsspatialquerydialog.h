@@ -106,7 +106,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Disconnect all slots
     void disconnectAll();
     //! reject - override
-    void reject();
+    void reject() override;
     //! Get Vector layer from combobox
     QgsVectorLayer * getLayerFromCombobox( bool isTarget, int index );
     //! Get Icon for vector layer

@@ -26,11 +26,20 @@
 #include "qgsrasterlayer.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestQgsComposerScaleBar: public QObject
+class TestQgsComposerScaleBar : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerScaleBar()
+        : mComposition( 0 )
+        , mComposerMap( 0 )
+        , mComposerScaleBar( 0 )
+        , mRasterLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -101,7 +110,6 @@ void TestQgsComposerScaleBar::initTestCase()
 void TestQgsComposerScaleBar::cleanupTestCase()
 {
   delete mComposition;
-  delete mRasterLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -111,6 +119,8 @@ void TestQgsComposerScaleBar::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 };
 
 void TestQgsComposerScaleBar::init()
@@ -171,4 +181,4 @@ void TestQgsComposerScaleBar::tick()
 };
 
 QTEST_MAIN( TestQgsComposerScaleBar )
-#include "moc_testqgscomposerscalebar.cxx"
+#include "testqgscomposerscalebar.moc"

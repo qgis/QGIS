@@ -20,15 +20,14 @@
 #include "qgsdxfpaintdevice.h"
 #include "qgslogger.h"
 
-QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf ): QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
+QgsDxfPaintEngine::QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf )
+    : QPaintEngine( QPaintEngine::AllFeatures /*QPaintEngine::PainterPaths | QPaintEngine::PaintOutsidePaintEvent*/ )
     , mPaintDevice( dxfDevice ), mDxf( dxf )
 {
-
 }
 
 QgsDxfPaintEngine::~QgsDxfPaintEngine()
 {
-
 }
 
 bool QgsDxfPaintEngine::begin( QPaintDevice* pdev )
@@ -68,7 +67,7 @@ void QgsDxfPaintEngine::updateState( const QPaintEngineState& state )
   }
 }
 
-void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, PolygonDrawMode mode )
+void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, PolygonDrawMode mode )
 {
   Q_UNUSED( mode );
   if ( !mDxf || !mPaintDevice )
@@ -76,19 +75,28 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF* points, int pointCount, Poly
     return;
   }
 
-  QgsPolyline polyline( pointCount );
+  QgsPolygon polygon( 1 );
+  polygon[0].resize( pointCount );
+
+  QgsPolyline &polyline = polygon[0];
   for ( int i = 0; i < pointCount; ++i )
   {
     polyline[i] = toDxfCoordinates( points[i] );
   }
 
-  bool closed = ( pointCount > 3 && points[0] == points[pointCount - 1] );
-  mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", currentColor(), currentWidth(), closed );
+  if ( mode == QPaintEngine::PolylineMode )
+  {
+    mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", mPen.color(), currentWidth(), true );
+  }
+  else
+  {
+    mDxf->writePolygon( polygon, mLayer, "SOLID", mBrush.color() );
+  }
 }
 
 void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
 {
-  if ( !mDxf || !mPaintDevice || !rects )
+  if ( !mDxf || !mPaintDevice || !rects || mBrush.style() == Qt::NoBrush )
   {
     return;
   }
@@ -103,7 +111,7 @@ void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
     QgsPoint pt2 = toDxfCoordinates( QPointF( right, bottom ) );
     QgsPoint pt3 = toDxfCoordinates( QPointF( left, top ) );
     QgsPoint pt4 = toDxfCoordinates( QPointF( right, top ) );
-    mDxf->writeSolid( mLayer, currentColor(), pt1, pt2, pt3, pt4 );
+    mDxf->writeSolid( mLayer, mBrush.color(), pt1, pt2, pt3, pt4 );
   }
 }
 
@@ -161,7 +169,10 @@ void QgsDxfPaintEngine::endPolygon()
 {
   if ( mCurrentPolygon.size() > 1 )
   {
-    drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::OddEvenMode );
+    if ( mPen.style() != Qt::NoPen )
+      drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::PolylineMode );
+    if ( mBrush.style() != Qt::NoBrush )
+      drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::OddEvenMode );
   }
   mCurrentPolygon.clear();
 }
@@ -197,7 +208,7 @@ void QgsDxfPaintEngine::endCurve()
 
 void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
 {
-  if ( !mDxf || !mPaintDevice || !lines )
+  if ( !mDxf || !mPaintDevice || !lines || mPen.style() == Qt::NoPen )
   {
     return;
   }
@@ -206,7 +217,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   {
     QgsPoint pt1 = toDxfCoordinates( lines[i].p1() );
     QgsPoint pt2 = toDxfCoordinates( lines[i].p2() );
-    mDxf->writeLine( pt1, pt2, mLayer, "CONTINUOUS", currentColor(), currentWidth() );
+    mDxf->writeLine( pt1, pt2, mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
   }
 }
 
@@ -221,20 +232,6 @@ QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
   return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
-QColor QgsDxfPaintEngine::currentColor() const
-{
-  if ( !mDxf )
-  {
-    return QColor();
-  }
-
-  QColor c = mPen.color();
-  if ( mPen.style() == Qt::NoPen )
-  {
-    c = mBrush.color();
-  }
-  return c;
-}
 
 double QgsDxfPaintEngine::currentWidth() const
 {
@@ -297,7 +294,6 @@ double QgsDxfPaintEngine::power( double a, int b )
   double tmp = a;
   for ( int i = 2; i <= qAbs(( double )b ); i++ )
   {
-
     a *= tmp;
   }
   if ( b > 0 )
@@ -306,7 +302,7 @@ double QgsDxfPaintEngine::power( double a, int b )
   }
   else
   {
-    return ( 1.0 / a );
+    return 1.0 / a;
   }
 }
 

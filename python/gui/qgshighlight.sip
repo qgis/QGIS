@@ -28,6 +28,8 @@ class QgsHighlight : QgsMapCanvasItem
 
     const QgsMapLayer *layer() const;
 
+    virtual void updatePosition();
+
   protected:
     virtual void paint( QPainter* p );
 

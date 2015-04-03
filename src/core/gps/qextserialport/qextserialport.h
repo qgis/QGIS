@@ -245,13 +245,13 @@ class QextSerialPort: public QIODevice
 
         void setTimeout(long);
 
-        bool open(OpenMode mode);
-        bool isSequential() const;
-        void close();
+        bool open(OpenMode mode) override;
+        bool isSequential() const override;
+        void close() override;
         void flush();
 
-        qint64 size() const;
-        qint64 bytesAvailable() const;
+        qint64 size() const override;
+        qint64 bytesAvailable() const override;
         QByteArray readAll();
 
         void ungetChar(char c);
@@ -300,8 +300,8 @@ class QextSerialPort: public QIODevice
         void construct(); // common construction
         void platformSpecificDestruct();
         void platformSpecificInit();
-        qint64 readData(char * data, qint64 maxSize);
-        qint64 writeData(const char * data, qint64 maxSize);
+        qint64 readData(char * data, qint64 maxSize) override;
+        qint64 writeData(const char * data, qint64 maxSize) override;
 
     private slots:
         void onWinEvent(HANDLE h);

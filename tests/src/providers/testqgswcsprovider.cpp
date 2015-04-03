@@ -14,7 +14,7 @@
  ***************************************************************************/
 #include <cmath>
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -35,7 +35,7 @@
  */
 class TestQgsWcsProvider: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -89,6 +89,8 @@ void TestQgsWcsProvider::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsWcsProvider::read()
@@ -160,4 +162,4 @@ bool TestQgsWcsProvider::read( QString theIdentifier, QString theWcsUri, QString
 }
 
 QTEST_MAIN( TestQgsWcsProvider )
-#include "moc_testqgswcsprovider.cxx"
+#include "testqgswcsprovider.moc"

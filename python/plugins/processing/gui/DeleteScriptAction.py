@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QMessageBox
 
 from processing.gui.ContextAction import ContextAction
 

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -47,9 +47,19 @@
 /** \ingroup UnitTests
  * This is a unit test for the vector layer class.
  */
-class TestQgsDiagram: public QObject
+class TestQgsDiagram : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsDiagram()
+        : mTestHasError( false )
+        , mPointsLayer( 0 )
+        , mComposition( 0 )
+        , mPieDiagram( 0 )
+        , mComposerMap( 0 )
+    {}
+
   private:
     bool mTestHasError;
     QgsMapSettings mMapSettings;
@@ -109,6 +119,8 @@ class TestQgsDiagram: public QObject
     // will be called after the last testfunction was executed.
     void cleanupTestCase()
     {
+      delete mComposition;
+      QgsApplication::exitQgis();
       QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
       QFile myFile( myReportFile );
       if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -118,10 +130,6 @@ class TestQgsDiagram: public QObject
         myFile.close();
         //QDesktopServices::openUrl( "file:///" + myReportFile );
       }
-
-      delete mComposerMap;
-      delete mComposition;
-      delete mPointsLayer;
     }
     void init() {};// will be called before each testfunction is executed.
     void cleanup() {};// will be called after every testfunction.
@@ -173,4 +181,4 @@ class TestQgsDiagram: public QObject
 };
 
 QTEST_MAIN( TestQgsDiagram )
-#include "moc_testqgsdiagram.cxx"
+#include "testqgsdiagram.moc"

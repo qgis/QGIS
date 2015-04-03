@@ -25,44 +25,44 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui, QtCore
-from processing.gui.CrsSelectionDialog import CrsSelectionDialog
+from PyQt4.QtGui import QWidget
 from qgis.core import QgsCoordinateReferenceSystem
+from qgis.gui import QgsGenericProjectionSelector
 
-class CrsSelectionPanel(QtGui.QWidget):
+from processing.ui.ui_widgetBaseSelector import Ui_Form
+
+class CrsSelectionPanel(QWidget, Ui_Form):
 
     def __init__(self, default):
-        super(CrsSelectionPanel, self).__init__(None)
-        self.authid = QgsCoordinateReferenceSystem(default).authid()
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QLineEdit()
-        self.text.setEnabled(False)
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.showSelectionDialog)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
-        self.setText()
+        QWidget.__init__(self)
+        self.setupUi(self)
 
-    def setAuthid(self, authid):
-        self.authid = authid
-        self.setText()
+        self.leText.setEnabled(False)
 
-    def showSelectionDialog(self):
-        dialog = CrsSelectionDialog()
-        dialog.exec_()
-        if dialog.authid:
-            self.authid = str(dialog.authid)
-            self.setText()
+        self.btnSelect.clicked.connect(self.browseCRS)
+        self.crs = QgsCoordinateReferenceSystem(default).authid()
+        self.updateText()
 
-    def setText(self):
-        if self.authid is not None:
-            self.text.setText(str(self.authid))
+    def setAuthId(self, authid):
+        self.crs = authid
+        self.updateText()
+
+    def browseCRS(self):
+        selector = QgsGenericProjectionSelector()
+        selector.setSelectedAuthId(self.crs)
+        if selector.exec_():
+            authId = selector.selectedAuthId()
+            if authId.upper().startswith("EPSG:"):
+                self.crs = authId
+            else:
+                proj = QgsCoordinateReferenceSystem()
+                proj.createFromSrsId(selector.selectedCrsId())
+                self.crs = proj.toProj4()
+            self.updateText()
+
+    def updateText(self):
+        if self.crs is not None:
+            self.leText.setText(self.crs)
 
     def getValue(self):
-        return self.authid
+        return self.crs

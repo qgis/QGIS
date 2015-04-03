@@ -525,6 +525,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     on_cbxProjectionEnabled_toggled( myProjectionEnabled );
   }
 
+  projectionSelectorInitialized();
   restoreOptionsBaseUi();
   restoreState();
 }

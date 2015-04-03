@@ -40,7 +40,7 @@ void QgsOracleColumnTypeThread::run()
   mStopped = false;
 
   QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
-  QgsOracleConn *conn = QgsOracleConn::connectDb( uri.connectionInfo() );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( uri );
   if ( !conn )
   {
     QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );

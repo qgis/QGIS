@@ -269,19 +269,21 @@ void QgsComposerColumnWidthDelegate::updateEditorGeometry( QWidget *editor, cons
 // QgsAttributeSelectionDialog
 
 QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTableV2* table, QgsVectorLayer* vLayer,
-    QWidget* parent, Qt::WindowFlags f ): QDialog( parent, f ),
-    mComposerTable( table ),
-    mComposerTableV1( 0 ),
-    mVectorLayer( vLayer ),
-    mColumnModel( 0 ),
-    mColumnModelV1( 0 ),
-    mSortedProxyModel( 0 ),
-    mSortedProxyModelV1( 0 ),
-    mAvailableSortProxyModel( 0 ),
-    mAvailableSortProxyModelV1( 0 ),
-    mColumnAlignmentDelegate( 0 ),
-    mColumnSortOrderDelegate( 0 ),
-    mColumnWidthDelegate( 0 )
+    QWidget* parent, Qt::WindowFlags f )
+    : QDialog( parent, f )
+    , mComposerTable( table )
+    , mComposerTableV1( NULL )
+    , mVectorLayer( vLayer )
+    , mColumnModel( NULL )
+    , mColumnModelV1( NULL )
+    , mSortedProxyModel( NULL )
+    , mSortedProxyModelV1( NULL )
+    , mAvailableSortProxyModel( NULL )
+    , mAvailableSortProxyModelV1( NULL )
+    , mColumnAlignmentDelegate( NULL )
+    , mColumnSourceDelegate( NULL )
+    , mColumnSortOrderDelegate( NULL )
+    , mColumnWidthDelegate( NULL )
 {
   setupUi( this );
 
@@ -323,18 +325,20 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
 }
 
 QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent, Qt::WindowFlags f )
-    : QDialog( parent, f ),
-    mComposerTable( 0 ),
-    mComposerTableV1( table ),
-    mVectorLayer( vLayer ),
-    mColumnModel( 0 ),
-    mColumnModelV1( 0 ),
-    mSortedProxyModel( 0 ),
-    mSortedProxyModelV1( 0 ),
-    mAvailableSortProxyModel( 0 ),
-    mAvailableSortProxyModelV1( 0 ),
-    mColumnAlignmentDelegate( 0 ),
-    mColumnSortOrderDelegate( 0 )
+    : QDialog( parent, f )
+    , mComposerTable( NULL )
+    , mComposerTableV1( table )
+    , mVectorLayer( vLayer )
+    , mColumnModel( NULL )
+    , mColumnModelV1( NULL )
+    , mSortedProxyModel( NULL )
+    , mSortedProxyModelV1( NULL )
+    , mAvailableSortProxyModel( NULL )
+    , mAvailableSortProxyModelV1( NULL )
+    , mColumnAlignmentDelegate( NULL )
+    , mColumnSourceDelegate( NULL )
+    , mColumnSortOrderDelegate( NULL )
+    , mColumnWidthDelegate( NULL )
 {
   setupUi( this );
 

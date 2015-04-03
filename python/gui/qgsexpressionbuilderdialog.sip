@@ -8,7 +8,7 @@ class QgsExpressionBuilderDialog : QDialog
 %End
 
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL, QString key = "generic" );
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent /TransferThis/ = NULL, QString key = "generic" );
 
     /** The builder widget that is used by the dialog */
     QgsExpressionBuilderWidget* expressionBuilder();
@@ -17,9 +17,7 @@ class QgsExpressionBuilderDialog : QDialog
 
     QString expressionText();
 
-    /** Sets geometry calculator used in distance/area calculations.
-      * @note added in version 2.0
-      */
+    /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
 
   protected:

@@ -17,6 +17,7 @@ class QgsColorSwatchDelegate : QAbstractItemDelegate
     bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index );
 };
 
+
 /** \ingroup gui
  * \class QgsColorSchemeModel
  * A model for colors in a color scheme
@@ -31,13 +32,13 @@ class QgsColorSchemeModel: QAbstractItemModel
 
   public:
 
-      /**Constructor
+    /**Constructor
      * @param scheme color scheme for list
      * @param context context string for color scheme
      * @param baseColor base color for color scheme
      * @param parent parent object
      */
-    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor(), QObject* parent /TransferThis/ = 0 );
+    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent /TransferThis/ = 0 );
 
     ~QgsColorSchemeModel();
 
@@ -67,7 +68,7 @@ class QgsColorSchemeModel: QAbstractItemModel
      * @param context context for color scheme
      * @param baseColor base color for color scheme
      */
-    void setScheme( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor() );
+    void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     /**Get the current color scheme context for the model
      * @returns context string which is passed to scheme for color generation
@@ -85,7 +86,7 @@ class QgsColorSchemeModel: QAbstractItemModel
      * @param color color to add
      * @param label label for color
      */
-    void addColor( const QColor color, const QString label = QString() );
+    void addColor( const QColor color, const QString &label = QString() );
 
     /**Returns whether the color scheme model has been modified
      * @returns true if colors have been modified
@@ -106,15 +107,15 @@ class QgsColorSchemeList: QTreeView
 #include <qgscolorschemelist.h>
 %End
 
-	public:
-	
+  public:
+
     /**Construct a new color swatch grid.
      * @param parent parent widget
      * @param scheme QgsColorScheme for colors to show in the list
      * @param context context string provided to color scheme
      * @param baseColor base color for color scheme
      */
-    QgsColorSchemeList( QWidget *parent /TransferThis/ = 0, QgsColorScheme* scheme = 0, const QString context = QString(), const QColor baseColor = QColor() );
+    QgsColorSchemeList( QWidget *parent /TransferThis/ = 0, QgsColorScheme* scheme = 0, const QString &context = QString(), const QColor &baseColor = QColor() );
 
     virtual ~QgsColorSchemeList();
 
@@ -148,8 +149,8 @@ class QgsColorSchemeList: QTreeView
      * @param context context string provided to color scheme
      * @param baseColor base color for color scheme
      */
-    void setScheme( QgsColorScheme* scheme, const QString context = QString(), const QColor baseColor = QColor() );
-    
+    void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
+
     /**Removes any selected colors from the list
      */
     void removeSelection();
@@ -158,7 +159,7 @@ class QgsColorSchemeList: QTreeView
      * @param color color to add
      * @param label optional label for color
      */
-    void addColor( const QColor color, const QString label = QString() );
+    void addColor( const QColor &color, const QString &label = QString() );
 
     /**Pastes colors from clipboard to the list
      * @see copyColors
@@ -169,13 +170,13 @@ class QgsColorSchemeList: QTreeView
      * @see pasteColors
      */
     void copyColors();
-    
+
   signals:
 
     /**Emitted when a color is selected from the list
      * @param color color selected
      */
-    void colorSelected( const QColor color );
+    void colorSelected( const QColor &color );
 
   protected:
 
@@ -184,6 +185,6 @@ class QgsColorSchemeList: QTreeView
     void mousePressEvent( QMouseEvent* event );
 
     void mouseReleaseEvent( QMouseEvent* event );
-    
+
 };
 

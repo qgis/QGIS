@@ -42,9 +42,14 @@
 #endif
 
 QgsShapeFile::QgsShapeFile( QString name, QString encoding )
+    : ogrLayer( 0 )
+    , import_canceled( false )
+    , valid( false )
+    , isMulti( false )
+    , hasMoreDimensions( false )
+    , features( 0 )
+    , fileName( name )
 {
-  fileName = name;
-  features = 0;
   QgsApplication::registerOgrDrivers();
 
   QSettings settings;
@@ -57,8 +62,7 @@ QgsShapeFile::QgsShapeFile( QString name, QString encoding )
     ogrLayer = OGR_DS_GetLayer( ogrDataSource, 0 );
     features = OGR_L_GetFeatureCount( ogrLayer, true );
   }
-  else
-    valid = false;
+
   setDefaultTable();
   // init the geometry types
   geometries << "NULL" << "POINT" << "LINESTRING" << "POLYGON" << "MULTIPOINT"

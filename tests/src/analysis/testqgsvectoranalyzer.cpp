@@ -12,16 +12,24 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 
 //header for class being tested
 #include <qgsgeometryanalyzer.h>
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 
-class TestQgsVectorAnalyzer: public QObject
+class TestQgsVectorAnalyzer : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsVectorAnalyzer()
+        : mpLineLayer( 0 )
+        , mpPolyLayer( 0 )
+        , mpPointLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -78,7 +86,7 @@ void  TestQgsVectorAnalyzer::initTestCase()
 }
 void  TestQgsVectorAnalyzer::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 void  TestQgsVectorAnalyzer::init()
 {
@@ -130,4 +138,4 @@ void TestQgsVectorAnalyzer::layerExtent()
 }
 
 QTEST_MAIN( TestQgsVectorAnalyzer )
-#include "moc_testqgsvectoranalyzer.cxx"
+#include "testqgsvectoranalyzer.moc"

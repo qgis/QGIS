@@ -1,7 +1,7 @@
 i.ifft
 i.ifft - Inverse Fast Fourier Transform (IFFT) for image processing.
 Imagery (i.*)
-ParameterRaster|real_image|Name of input raster map (image fft, real part)|False
-ParameterRaster|imaginary_image|Name of input raster map (image fft, imaginary part)|False
-OutputRaster|output_image|Name for output raster map
+ParameterRaster|real|Name of input raster map (image fft, real part)|False
+ParameterRaster|imaginary|Name of input raster map (image fft, imaginary part)|False
+OutputRaster|output|Name for output raster map
 

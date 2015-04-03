@@ -4,7 +4,7 @@ Raster (r.*)
 ParameterRaster|input|Input raster layer|False
 ParameterString|profile|Profile coordinate pairs|0,0,1,1
 ParameterNumber|res|Resolution along profile|0|None|1.0
-ParameterString|null|Character to represent no data cell|*
+ParameterString|null_value|Character to represent no data cell|*
 ParameterBoolean|-g|Output easting and northing in first two columns of four column output|False
 ParameterBoolean|-c|Output RRR:GGG:BBB color values for each profile point|False
 OutputFile|output|Output filename

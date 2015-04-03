@@ -71,7 +71,7 @@ double QgsVector::y() const
   return m_y;
 }
 
-// perpendicular vector (rotated 90° counter-clockwise)
+// perpendicular vector (rotated 90 degrees counter-clockwise)
 QgsVector QgsVector::perpVector() const
 {
   return QgsVector( -m_y, m_x );
@@ -116,6 +116,11 @@ QgsPoint::QgsPoint( const QgsPoint& p )
 {
   m_x = p.x();
   m_y = p.y();
+}
+
+QPointF QgsPoint::toQPointF() const
+{
+  return QPointF( m_x, m_y );
 }
 
 QString QgsPoint::toString() const
@@ -340,6 +345,11 @@ double QgsPoint::azimuth( const QgsPoint& other )
   double dx = other.x() - m_x;
   double dy = other.y() - m_y;
   return ( atan2( dx, dy ) * 180.0 / M_PI );
+}
+
+bool QgsPoint::compare( const QgsPoint &other, double epsilon ) const
+{
+  return ( qgsDoubleNear( m_x, other.x(), epsilon ) && qgsDoubleNear( m_y, other.y(), epsilon ) );
 }
 
 // operators

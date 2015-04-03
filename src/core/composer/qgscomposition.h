@@ -147,14 +147,12 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Sets the number of pages for the composition.
      * @param pages number of pages
-     * @note added in version 1.9
      * @see numPages
     */
     void setNumPages( const int pages );
 
     /**Returns the number of pages in the composition.
      * @returns number of pages
-     * @note added in version 1.9
      * @see setNumPages
     */
     int numPages() const;
@@ -286,6 +284,20 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     */
     int snapTolerance() const { return mSnapTolerance; }
 
+    /**Sets whether selection bounding boxes should be shown in the composition
+     * @param boundsVisible set to true to show selection bounding box
+     * @see boundingBoxesVisible
+     * @note added in QGIS 2.7
+    */
+    void setBoundingBoxesVisible( const bool boundsVisible );
+
+    /**Returns whether selection bounding boxes should be shown in the composition
+     * @returns true if selection bounding boxes should be shown
+     * @see setBoundingBoxesVisible
+     * @note added in QGIS 2.7
+    */
+    bool boundingBoxesVisible() const { return mBoundingBoxesVisible; }
+
     /**Returns pointer to undo/redo command storage*/
     QUndoStack* undoStack() { return mUndoStack; }
 
@@ -341,7 +353,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Returns the composer html with specified id (a string as named in the
       composer user interface item properties).
-      @note Added in QGIS 2.0
       @param item the item.
       @return QgsComposerHtml pointer or 0 pointer if no such item exists.
      */
@@ -349,7 +360,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Returns a composer item given its text identifier.
        Ids are not necessarely unique, but this function returns only one element.
-      @note added in 2.0
       @param theId - A QString representing the identifier of the item to
         retrieve.
       @return QgsComposerItem pointer or 0 pointer if no such item exists.
@@ -357,7 +367,6 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     const QgsComposerItem* getComposerItemById( const QString theId ) const;
 
     /**Returns a composer item given its unique identifier.
-      @note added in 2.0
       @param theUuid A QString representing the UUID of the item to
       **/
     const QgsComposerItem* getComposerItemByUuid( const QString theUuid ) const;
@@ -374,23 +383,21 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     QgsComposerMap* worldFileMap() const { return mWorldFileMap; }
     void setWorldFileMap( QgsComposerMap* map ) { mWorldFileMap = map; }
 
-    /**Returns true if a composition should use advanced effects such as blend modes
-      @note added in 1.9*/
+    /**Returns true if a composition should use advanced effects such as blend modes */
     bool useAdvancedEffects() const {return mUseAdvancedEffects;}
-    /**Used to enable or disable advanced effects such as blend modes in a composition
-      @note: added in version 1.9*/
+    /**Used to enable or disable advanced effects such as blend modes in a composition */
     void setUseAdvancedEffects( const bool effectsEnabled );
 
     /**Returns pointer to map renderer of qgis map canvas*/
     //! @deprecated since 2.4 - use mapSettings() instead. May return null if not initialized with QgsMapRenderer
-    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() {return mMapRenderer;}
+    Q_DECL_DEPRECATED QgsMapRenderer* mapRenderer() { return mMapRenderer; }
 
     //! Return setting of QGIS map canvas
     //! @note added in 2.4
     const QgsMapSettings& mapSettings() const { return mMapSettings; }
 
-    QgsComposition::PlotStyle plotStyle() const {return mPlotStyle;}
-    void setPlotStyle( const QgsComposition::PlotStyle style ) {mPlotStyle = style;}
+    QgsComposition::PlotStyle plotStyle() const { return mPlotStyle; }
+    void setPlotStyle( const QgsComposition::PlotStyle style ) { mPlotStyle = style; }
 
     /**Returns the mm font size for a font that has point size set.
      * Each item that sets a font should call this function before drawing text
@@ -601,8 +608,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
 
     /**Render a page to a paint device
      * @param p destination painter
-     * @param page page number, 0 based such that the first page is page 0
-     * @note added in version 1.9*/
+     * @param page page number, 0 based such that the first page is page 0 */
     void renderPage( QPainter* p, int page );
 
     /** Compute world file parameters */
@@ -749,6 +755,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene
     /**Arbitraty snap lines (horizontal and vertical)*/
     QList< QGraphicsLineItem* > mSnapLines;
 
+    bool mBoundingBoxesVisible;
     QgsComposerMouseHandles* mSelectionHandles;
 
     QUndoStack* mUndoStack;

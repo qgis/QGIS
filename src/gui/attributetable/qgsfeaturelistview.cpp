@@ -40,6 +40,7 @@ QgsFeatureListView::QgsFeatureListView( QWidget *parent )
     , mFeatureSelectionModel( 0 )
     , mItemDelegate( 0 )
     , mEditSelectionDrag( false )
+    , mRowAnchor( 0 )
 {
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 }

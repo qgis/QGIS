@@ -1,0 +1,8 @@
+Cut Shapes Layer
+shapes_tools
+ParameterVector|SHAPES|Vector layer to cut|-1|False
+ParameterSelection|METHOD|Method|[0] completely contained;[1] intersects;[2] center
+Hardcoded|-TARGET 3
+ParameterVector|POLYGONS_POLYGONS|Cutting polygons|-1|False
+OutputVector|CUT|Result
+OutputVector|EXTENT|Extent

@@ -28,10 +28,11 @@
 #include "qgsapplication.h"
 
 // ---------------------------------------------------------------------------
-QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path )
+QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path, QString uri )
     : QgsDataCollectionItem( parent, name, path )
+    , mUri( uri )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
+  mIconName = "mIconConnect.png";
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
@@ -43,9 +44,8 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   QgsDebugMsg( "Entered" );
   QVector<QgsDataItem*> children;
 
-  QString encodedUri = mPath;
   QgsDataSourceURI uri;
-  uri.setEncodedUri( encodedUri );
+  uri.setEncodedUri( mUri );
 #if 0
   if ( mPath.contains( "url=" ) )
   {
@@ -59,10 +59,10 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     encodedUri = uri.encodedUri();
   }
 #endif
-  QgsDebugMsg( "encodedUri = " + encodedUri );
+  QgsDebugMsg( "mUri = " + mUri );
 
   QgsWmsSettings wmsSettings;
-  if ( !wmsSettings.parseUri( encodedUri ) )
+  if ( !wmsSettings.parseUri( mUri ) )
   {
     children.append( new QgsErrorItem( this, tr( "Failed to parse WMS URI" ), mPath + "/error" ) );
     return children;
@@ -70,6 +70,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 
   QgsWmsCapabilitiesDownload capDownload( wmsSettings.baseUrl(), wmsSettings.authorization() );
 
+#if 0
   QWidget *mainWindow = 0;
 
   QWidgetList topLevelWidgets = qApp->topLevelWidgets();
@@ -86,11 +87,9 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
   {
     connect( &capDownload, SIGNAL( statusChanged( QString ) ), mainWindow, SLOT( showStatusMessage( QString ) ) );
   }
+#endif
 
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
   bool res = capDownload.downloadCapabilities();
-  QApplication::restoreOverrideCursor();
 
   if ( !res )
   {
@@ -105,7 +104,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
     return children;
   }
 
-  // Attention: supportedLayers() gives tree leafes, not top level
+  // Attention: supportedLayers() gives tree leafs, not top level
   QVector<QgsWmsLayerProperty> layerProperties = caps.supportedLayers();
   if ( layerProperties.count() )
   {
@@ -245,6 +244,8 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     , mDataSourceUri( dataSourceUri )
     , mLayerProperty( layerProperty )
 {
+  mSupportedCRS = mLayerProperty.crs;
+  mSupportFormats = mCapabilitiesProperty.capability.request.getMap.format;
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );
 
   mUri = createUri();
@@ -256,16 +257,13 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
     QgsDebugMsg( QString::number( layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
     QString pathName = layerProperty.name.isEmpty() ? QString::number( layerProperty.orderId ) : layerProperty.name;
     QgsWMSLayerItem * layer = new QgsWMSLayerItem( this, layerProperty.title, mPath + "/" + pathName, mCapabilitiesProperty, dataSourceUri, layerProperty );
-    mChildren.append( layer );
+    //mChildren.append( layer );
+    addChildItem( layer );
   }
 
-  if ( mChildren.isEmpty() )
-  {
-    //mIcon = iconRaster();
-    mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
-  }
+  mIconName = "mIconWms.svg";
 
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWMSLayerItem::~QgsWMSLayerItem()
@@ -339,7 +337,7 @@ QgsWMTSLayerItem::QgsWMTSLayerItem( QgsDataItem *parent,
     , mTitle( title )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsWMTSLayerItem::~QgsWMTSLayerItem()
@@ -363,8 +361,8 @@ QString QgsWMTSLayerItem::createUri()
 QgsWMSRootItem::QgsWMSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconWms.svg" );
-
+  mCapabilities |= Fast;
+  mIconName = "mIconWms.svg";
   populate();
 }
 
@@ -378,11 +376,9 @@ QVector<QgsDataItem*> QgsWMSRootItem::createChildren()
 
   foreach ( QString connName, QgsWMSConnection::connectionList() )
   {
-    //QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, mPath + "/" + connName );
     QgsWMSConnection connection( connName );
-    QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, connection.uri().encodedUri() );
+    QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, mPath + "/" + connName, connection.uri().encodedUri() );
 
-    conn->setIcon( QgsApplication::getThemeIcon( "mIconConnect.png" ) );
     connections.append( conn );
   }
   return connections;
@@ -441,11 +437,23 @@ QGISEXTERN int dataCapabilities()
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
+  QgsDebugMsg( "thePath = " + thePath );
   if ( thePath.isEmpty() )
   {
     return new QgsWMSRootItem( parentItem, "WMS", "wms:" );
   }
 
-  // The path should contain encoded connection URI
-  return new QgsWMSConnectionItem( parentItem, "WMS", thePath );
+  // path schema: wms:/connection name (used by OWS)
+  if ( thePath.startsWith( "wms:/" ) )
+  {
+    QString connectionName = thePath.split( '/' ).last();
+    if ( QgsWMSConnection::connectionList().contains( connectionName ) )
+    {
+      QgsWMSConnection connection( connectionName );
+      return new QgsWMSConnectionItem( parentItem, "WMS", thePath, connection.uri().encodedUri() );
+    }
+  }
+
+  return 0;
 }
+

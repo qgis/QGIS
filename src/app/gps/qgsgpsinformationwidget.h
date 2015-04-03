@@ -23,8 +23,11 @@
 #include <qgsgpsmarker.h>
 #include <qgsmaptoolcapture.h>
 #include <qwt_plot_curve.h>
+#if (WITH_QWTPOLAR)
 #include <qwt_polar_plot.h>
+#include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
+#endif
 
 class QextSerialPort;
 class QgsGPSConnection;
@@ -85,8 +88,11 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QgsGpsMarker * mpMapMarker;
     QwtPlot * mpPlot;
     QwtPlotCurve * mpCurve;
+#if (WITH_QWTPOLAR)
     QwtPolarPlot * mpSatellitesWidget;
+    QwtPolarGrid *mpSatellitesGrid;
     QList< QwtPolarMarker * > mMarkerList;
+#endif
     void createRubberBand();
     QgsCoordinateReferenceSystem mWgs84CRS;
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );

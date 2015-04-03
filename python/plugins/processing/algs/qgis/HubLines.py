@@ -25,14 +25,11 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeature, QgsGeometry, QgsPoint
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects, vector
@@ -49,15 +46,15 @@ class HubLines(GeoAlgorithm):
         self.group = 'Vector analysis tools'
 
         self.addParameter(ParameterVector(self.HUBS,
-            'Hub point layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.HUB_FIELD, 'Hub ID field', self.HUBS))
+            self.tr('Hub point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.HUB_FIELD,
+            self.tr('Hub ID field'), self.HUBS))
         self.addParameter(ParameterVector(self.SPOKES,
-            'Spoke point layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.SPOKE_FIELD, 'Spoke ID field', self.SPOKES))
+            self.tr('Spoke point layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.SPOKE_FIELD,
+            self.tr('Spoke ID field'), self.SPOKES))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layerHub = dataobjects.getObjectFromUri(
@@ -70,7 +67,7 @@ class HubLines(GeoAlgorithm):
 
         if layerHub.source() == layerSpoke.source():
             raise GeoAlgorithmExecutionException(
-                'Same layer given for both hubs and spokes')
+                self.tr('Same layer given for both hubs and spokes'))
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
             layerSpoke.pendingFields(), QGis.WKBLineString, layerSpoke.crs())

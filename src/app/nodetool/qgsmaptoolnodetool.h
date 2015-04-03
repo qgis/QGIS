@@ -16,7 +16,9 @@
 #ifndef QGSMAPTOOLNODETOOL_H
 #define QGSMAPTOOLNODETOOL_H
 
-#include "qgsmaptoolvertexedit.h"
+#include "qgsfeature.h"
+#include "qgsmaptooledit.h"
+#include "qgspoint.h"
 
 class QRubberBand;
 
@@ -30,27 +32,27 @@ class QgsSelectedFeature;
 typedef QSet<int> Vertexes;
 
 /**A maptool to move/deletes/adds vertices of line or polygon features*/
-class QgsMapToolNodeTool: public QgsMapToolVertexEdit
+class QgsMapToolNodeTool: public QgsMapToolEdit
 {
     Q_OBJECT
   public:
     QgsMapToolNodeTool( QgsMapCanvas* canvas );
     virtual ~QgsMapToolNodeTool();
 
-    void canvasMoveEvent( QMouseEvent * e );
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
-    void canvasDoubleClickEvent( QMouseEvent * e );
+    void canvasDoubleClickEvent( QMouseEvent * e ) override;
 
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QMouseEvent * e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    void keyPressEvent( QKeyEvent* e );
+    void keyPressEvent( QKeyEvent* e ) override;
 
-    void keyReleaseEvent( QKeyEvent* e );
+    void keyReleaseEvent( QKeyEvent* e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   public slots:
     void selectedFeatureDestroyed();

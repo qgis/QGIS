@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'python/plugins/processing/ui/DlgAutofill.ui'
+# Form implementation generated from reading ui file 'DlgAutofill.ui'
 #
-# Created: Wed Oct  2 20:49:45 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:46 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgAutofill(object):
     def setupUi(self, DlgAutofill):
@@ -54,10 +63,10 @@ class Ui_DlgAutofill(object):
         QtCore.QMetaObject.connectSlotsByName(DlgAutofill)
 
     def retranslateUi(self, DlgAutofill):
-        DlgAutofill.setWindowTitle(QtGui.QApplication.translate("DlgAutofill", "Autofill settings", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("DlgAutofill", "Autofill mode", None, QtGui.QApplication.UnicodeUTF8))
-        self.cmbFillType.setItemText(0, QtGui.QApplication.translate("DlgAutofill", "Do not autofill", None, QtGui.QApplication.UnicodeUTF8))
-        self.cmbFillType.setItemText(1, QtGui.QApplication.translate("DlgAutofill", "Fill with numbers", None, QtGui.QApplication.UnicodeUTF8))
-        self.cmbFillType.setItemText(2, QtGui.QApplication.translate("DlgAutofill", "Fill with parameter values", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblParameters.setText(QtGui.QApplication.translate("DlgAutofill", "Parameter to use", None, QtGui.QApplication.UnicodeUTF8))
+        DlgAutofill.setWindowTitle(_translate("DlgAutofill", "Autofill settings", None))
+        self.label.setText(_translate("DlgAutofill", "Autofill mode", None))
+        self.cmbFillType.setItemText(0, _translate("DlgAutofill", "Do not autofill", None))
+        self.cmbFillType.setItemText(1, _translate("DlgAutofill", "Fill with numbers", None))
+        self.cmbFillType.setItemText(2, _translate("DlgAutofill", "Fill with parameter values", None))
+        self.lblParameters.setText(_translate("DlgAutofill", "Parameter to use", None))
 

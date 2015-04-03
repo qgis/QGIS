@@ -1,7 +1,7 @@
 
 /**
  * @brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
- * The content is given by QgsLegendModel instance. Various layout properties can be configured
+ * The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
  * within QgsLegendRenderer.
  *
  * All spacing and sizes are in millimeters.

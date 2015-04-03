@@ -14,7 +14,7 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 #include <qgsextentgroupbox.h>
 %End
   public:
-    explicit QgsExtentGroupBox( QWidget* parent = 0 );
+    explicit QgsExtentGroupBox( QWidget* parent /TransferThis/ = 0 );
 
     enum ExtentState
     {

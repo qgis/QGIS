@@ -10,7 +10,7 @@ ParameterNumber|segmax|Maximum number of points in a segment|None|None|40
 ParameterNumber|npmin|Minimum number of points for approximation in a segment (>segmax)|None|None|300
 ParameterNumber|dmin|Minimum distance between points (to remove almost identical points)|None|None|0.001
 ParameterNumber|dmax|Maximum distance between points on isoline (to insert additional points)|None|None|2.5
-ParameterNumber|zmult|Conversion factor for values used for approximation|None|None|1.0
+ParameterNumber|zscale|Conversion factor for values used for approximation|None|None|1.0
 ParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|0|360|0
 ParameterNumber|scalex|Anisotropy scaling factor|None|None|0
 ParameterBoolean|-t|Use scale dependent tension|False
@@ -18,6 +18,6 @@ ParameterBoolean|-d|Output partial derivatives instead of topographic parameters
 OutputRaster|elevation|Surface
 OutputRaster|slope|Slope
 OutputRaster|aspect|Aspect
-OutputRaster|pcurv|Profile curvature
-OutputRaster|tcurv|Tangential curvature
-OutputRaster|mcurv|Mean curvature
+OutputRaster|pcurvature|Profile curvature
+OutputRaster|tcurvature|Tangential curvature
+OutputRaster|mcurvature|Mean curvature

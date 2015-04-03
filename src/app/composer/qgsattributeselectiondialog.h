@@ -44,10 +44,10 @@ class QgsComposerColumnAlignmentDelegate : public QItemDelegate
 
   public:
     QgsComposerColumnAlignmentDelegate( QObject *parent = 0 );
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 
@@ -61,10 +61,10 @@ class QgsComposerColumnSourceDelegate : public QItemDelegate
 
   public:
     QgsComposerColumnSourceDelegate( QgsVectorLayer* vlayer, QObject *parent = 0 );
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
   public slots:
     void commitAndCloseEditor();
   private:
@@ -80,10 +80,10 @@ class QgsComposerColumnWidthDelegate : public QItemDelegate
 
   public:
     QgsComposerColumnWidthDelegate( QObject *parent = 0 );
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 
@@ -97,10 +97,10 @@ class QgsComposerColumnSortOrderDelegate : public QItemDelegate
 
   public:
     QgsComposerColumnSortOrderDelegate( QObject *parent = 0 );
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
-    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 

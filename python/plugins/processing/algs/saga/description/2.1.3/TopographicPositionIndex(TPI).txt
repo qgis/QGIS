@@ -1,0 +1,11 @@
+Topographic Position Index (TPI)
+ta_morphometry
+ParameterRaster|DEM|Elevation|False
+ParameterBoolean|STANDARD                          |Standardize|True
+ParameterNumber|RADIUS_MIN|Min Radius|0.0|None|0.0
+ParameterNumber|RADIUS_MAX|Max Radius|None|None|100.0
+ParameterSelection|DISTANCE_WEIGHTING_DW_WEIGHTING|Distance Weighting|[0] no distance weighting;[1] inverse distance to a power;[2] exponential;[3] gaussian weighting
+ParameterNumber|DISTANCE_WEIGHTING_DW_IDW_POWER|Inverse Distance Weighting Power|None|None|1
+ParameterBoolean|DISTANCE_WEIGHTING_DW_IDW_OFFSET     |Inverse Distance Offset|True
+ParameterNumber|DISTANCE_WEIGHTING_DW_BANDWIDTH|Gaussian and Exponential Weighting Bandwidth|None|None|75.0
+OutputRaster|TPI|Topographic Position Index

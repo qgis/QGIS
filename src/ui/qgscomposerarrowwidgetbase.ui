@@ -188,12 +188,15 @@
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mOutlineWidthSpinBox">
             <property name="prefix">
              <string/>
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -205,12 +208,15 @@
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QDoubleSpinBox" name="mArrowHeadWidthSpinBox">
+           <widget class="QgsDoubleSpinBox" name="mArrowHeadWidthSpinBox">
             <property name="prefix">
              <string/>
             </property>
             <property name="suffix">
              <string> mm</string>
+            </property>
+            <property name="showClearButton">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -267,15 +273,20 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

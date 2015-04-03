@@ -40,6 +40,7 @@ class QgsPoint;
 #include "qgsfeature.h"
 
 class QgsSpatialIndexData;
+class QgsFeatureIterator;
 
 class CORE_EXPORT QgsSpatialIndex
 {
@@ -50,6 +51,13 @@ class CORE_EXPORT QgsSpatialIndex
 
     /** constructor - creates R-tree */
     QgsSpatialIndex();
+
+    /** constructor - creates R-tree and bulk loads it with features from the iterator.
+     * This is much faster approach than creating an empty index and then inserting features one by one.
+     *
+     * @note added in 2.8
+     */
+    explicit QgsSpatialIndex( const QgsFeatureIterator& fi );
 
     /** copy constructor */
     QgsSpatialIndex( const QgsSpatialIndex& other );
@@ -80,13 +88,15 @@ class CORE_EXPORT QgsSpatialIndex
     /* debugging */
 
     //! get reference count - just for debugging!
-    int refs() const;
+    QAtomicInt refs() const;
 
   protected:
     // @note not available in python bindings
     static SpatialIndex::Region rectToRegion( QgsRectangle rect );
     // @note not available in python bindings
-    bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
+    static bool featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
+
+    friend class QgsFeatureIteratorDataStream; // for access to featureInfo()
 
   private:
 

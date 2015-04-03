@@ -602,6 +602,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
 
     case QGis::WKBLineString25D:
       dims = 3;
+      //intentional fall-through
     case QGis::WKBLineString: // Line center
     {
       Q_ASSERT( geom + sizeof( int ) <= geomend );
@@ -648,6 +649,7 @@ const unsigned char* QgsLabel::labelPoint( labelpoint& point, const unsigned cha
 
     case QGis::WKBPolygon25D:
       dims = 3;
+      //intentional fall-through
     case QGis::WKBPolygon: // centroid of outer ring
     {
       Q_ASSERT( geom + sizeof( int ) <= geomend );

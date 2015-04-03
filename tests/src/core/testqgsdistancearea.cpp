@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QFile>
 #include <QTextStream>
 #include <QObject>
@@ -27,9 +27,10 @@
 class TestQgsDistanceArea: public QObject
 {
 
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();
+    void cleanupTestCase();
     void basic();
     void test_distances();
     void unit_conversions();
@@ -44,6 +45,11 @@ void TestQgsDistanceArea::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+}
+
+void TestQgsDistanceArea::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsDistanceArea::basic()
@@ -74,12 +80,10 @@ void TestQgsDistanceArea::basic()
   QVERIFY( ! qFuzzyCompare( resultA, resultB ) );
 
   // Test assignment
-  QgsDistanceArea * daC;
-  daC = new QgsDistanceArea;
+  QSharedPointer<QgsDistanceArea> daC( new QgsDistanceArea );
   *daC = daB;
   resultC = daC->measureLine( p1, p2 );
   QCOMPARE( resultB, resultC );
-  delete daC;
 
   // Use parameter setting of ellipsoid radii (from WGS72 )
   daA.setEllipsoid( 6378135.0, 6378135.0 - ( 6378135.0 / 298.26 ) );
@@ -162,7 +166,7 @@ void TestQgsDistanceArea::unit_conversions()
 };
 
 QTEST_MAIN( TestQgsDistanceArea )
-#include "moc_testqgsdistancearea.cxx"
+#include "testqgsdistancearea.moc"
 
 
 

@@ -49,11 +49,11 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     void setPenWidth( int width );
 
-    void paint( QPainter* p );
+    void paint( QPainter* p ) override;
 
-    QRectF boundingRect() const;
+    QRectF boundingRect() const override;
 
-    virtual void updatePosition();
+    virtual void updatePosition() override;
 
   protected:
 

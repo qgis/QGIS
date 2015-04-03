@@ -27,6 +27,7 @@ QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimate
     , mName( name )
     , mUseEstimatedMetadata( useEstimatedMetaData )
     , mAllowGeometrylessTables( allowGeometrylessTables )
+    , mStopped( false )
 {
   qRegisterMetaType<QgsPostgresLayerProperty>( "QgsPostgresLayerProperty" );
 }
@@ -62,7 +63,7 @@ void QgsGeomColumnTypeThread::run()
                                 mAllowGeometrylessTables ) ||
        layerProperties.isEmpty() )
   {
-    mConn->disconnect();
+    mConn->unref();
     mConn = 0;
     return;
   }
@@ -108,6 +109,6 @@ void QgsGeomColumnTypeThread::run()
   emit progress( 0, 0 );
   emit progressMessage( tr( "Table retrieval finished." ) );
 
-  mConn->disconnect();
+  mConn->unref();
   mConn = 0;
 }

@@ -18,7 +18,8 @@
 #include "qgscolorschemeregistry.h"
 #include "qgscolorscheme.h"
 #include <QObject>
-#include <QtTest>
+#include <QSharedPointer>
+#include <QtTest/QtTest>
 
 //dummy color scheme for testing
 class DummyColorScheme : public QgsColorScheme
@@ -29,10 +30,10 @@ class DummyColorScheme : public QgsColorScheme
 
     virtual ~DummyColorScheme() {}
 
-    virtual QString schemeName() const { return QString( "Dummy scheme" ); }
+    virtual QString schemeName() const override { return QString( "Dummy scheme" ); }
 
-    virtual QgsNamedColorList fetchColors( const QString context = QString(),
-                                           const QColor baseColor = QColor() )
+    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                           const QColor &baseColor = QColor() ) override
     {
       QList< QPair< QColor, QString> > colors;
       if ( context == QString( "testscheme" ) )
@@ -50,7 +51,7 @@ class DummyColorScheme : public QgsColorScheme
       return colors;
     }
 
-    virtual QgsColorScheme* clone() const
+    virtual QgsColorScheme* clone() const override
     {
       return new DummyColorScheme();
     }
@@ -59,7 +60,7 @@ class DummyColorScheme : public QgsColorScheme
 
 class TestQgsColorSchemeRegistry : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -116,52 +117,47 @@ void TestQgsColorSchemeRegistry::instanceHasDefaultSchemes()
 void TestQgsColorSchemeRegistry::createEmpty()
 {
   //create an empty registry
-  QgsColorSchemeRegistry* registry = new QgsColorSchemeRegistry();
+  QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
-  delete registry;
 }
 
 void TestQgsColorSchemeRegistry::addScheme()
 {
   //create an empty registry
-  QgsColorSchemeRegistry* registry = new QgsColorSchemeRegistry();
+  QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
-  QgsColorScheme* recentScheme = new QgsRecentColorScheme();
+  QgsColorScheme *recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
   QVERIFY( registry->schemes().length() == 1 );
-
-  delete registry;
 }
 
 void TestQgsColorSchemeRegistry::addDefaultSchemes()
 {
   //create an empty registry
-  QgsColorSchemeRegistry* registry = new QgsColorSchemeRegistry();
+  QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   //add default schemes
   registry->addDefaultSchemes();
   QVERIFY( registry->schemes().length() > 0 );
-  delete registry;
 }
 
 void TestQgsColorSchemeRegistry::populateFromInstance()
 {
   //create an empty registry
-  QgsColorSchemeRegistry* registry = new QgsColorSchemeRegistry();
+  QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   //add schemes from instance
   registry->populateFromInstance();
   QCOMPARE( registry->schemes().length(), QgsColorSchemeRegistry::instance()->schemes().length() );
-  delete registry;
 }
 
 void TestQgsColorSchemeRegistry::removeScheme()
 {
   //create an empty registry
-  QgsColorSchemeRegistry* registry = new QgsColorSchemeRegistry();
+  QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   QVERIFY( registry->schemes().length() == 0 );
   //add a scheme
-  QgsColorScheme* recentScheme = new QgsRecentColorScheme();
+  QgsColorScheme *recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
   QVERIFY( registry->schemes().length() == 1 );
   //remove the scheme
@@ -169,18 +165,15 @@ void TestQgsColorSchemeRegistry::removeScheme()
   QVERIFY( registry->schemes().length() == 0 );
   //try removing a scheme not in the registry
   QVERIFY( !registry->removeColorScheme( recentScheme ) );
-
-  delete recentScheme;
-  delete registry;
 }
 
 void TestQgsColorSchemeRegistry::matchingSchemes()
 {
-  QgsColorSchemeRegistry* registry = new QgsColorSchemeRegistry();
+  QSharedPointer<QgsColorSchemeRegistry> registry( new QgsColorSchemeRegistry() );
   //add some schemes
-  QgsColorScheme* recentScheme = new QgsRecentColorScheme();
+  QgsColorScheme *recentScheme = new QgsRecentColorScheme();
   registry->addColorScheme( recentScheme );
-  DummyColorScheme* dummyScheme = new DummyColorScheme();
+  DummyColorScheme *dummyScheme = new DummyColorScheme();
   registry->addColorScheme( dummyScheme );
   QVERIFY( registry->schemes().length() == 2 );
   QList< QgsRecentColorScheme* > recentSchemes;
@@ -191,8 +184,7 @@ void TestQgsColorSchemeRegistry::matchingSchemes()
   registry->schemes( dummySchemes );
   QVERIFY( dummySchemes.length() == 1 );
   QCOMPARE( dummySchemes.at( 0 ), dummyScheme );
-  delete registry;
 }
 
 QTEST_MAIN( TestQgsColorSchemeRegistry )
-#include "moc_testqgscolorschemeregistry.cxx"
+#include "testqgscolorschemeregistry.moc"

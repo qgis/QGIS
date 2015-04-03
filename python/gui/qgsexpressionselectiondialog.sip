@@ -10,7 +10,7 @@ class QgsExpressionSelectionDialog : QDialog
      * @param startText A default expression text to be applied (Defaults to empty)
      * @param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = 0 );
+    QgsExpressionSelectionDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent /TransferThis/ = 0 );
 
     /**
      * The builder widget that is used by the dialog

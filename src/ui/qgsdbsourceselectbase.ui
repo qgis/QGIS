@@ -237,7 +237,11 @@
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
   <tabstop>mTablesTreeView</tabstop>
+  <tabstop>cbxAllowGeometrylessTables</tabstop>
+  <tabstop>mHoldDialogOpen</tabstop>
   <tabstop>mSearchGroupBox</tabstop>
   <tabstop>mSearchTableEdit</tabstop>
   <tabstop>mSearchColumnComboBox</tabstop>

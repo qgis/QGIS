@@ -15,6 +15,7 @@
 #include "qgspostgresfeatureiterator.h"
 #include "qgspostgresprovider.h"
 #include "qgspostgresconnpool.h"
+#include "qgspostgrestransaction.h"
 #include "qgsgeometry.h"
 
 #include "qgslogger.h"
@@ -27,10 +28,22 @@ const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
     , mFeatureQueueSize( sFeatureQueueSize )
+    , mFetched( 0 )
+    , mFetchGeometry( false )
 {
-  mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
+  if ( !source->mTransactionConnection )
+  {
+    mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
+    mIsTransactionConnection = false;
+  }
+  else
+  {
+    mConn = source->mTransactionConnection;
+    mConn->lock();
+    mIsTransactionConnection = true;
+  }
 
   if ( !mConn )
   {
@@ -199,7 +212,14 @@ bool QgsPostgresFeatureIterator::close()
 
   mConn->closeCursor( mCursorName );
 
-  QgsPostgresConnPool::instance()->releaseConnection( mConn );
+  if ( !mIsTransactionConnection )
+  {
+    QgsPostgresConnPool::instance()->releaseConnection( mConn );
+  }
+  else
+  {
+    mConn->unlock();
+  }
   mConn = 0;
 
   while ( !mFeatureQueue.empty() )
@@ -302,7 +322,12 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     if ( mSource->mForce2d )
     {
       geom = QString( "%1(%2)" )
-             .arg( mConn->majorVersion() < 2 ? "force_2d" : "st_force_2d" )
+             // Force_2D before 2.0
+             .arg( mConn->majorVersion() < 2 ? "force_2d"
+                   // ST_Force2D since 2.1.0
+                   : mConn->majorVersion() > 2 || mConn->minorVersion() > 0 ? "st_force2d"
+                   // ST_Force_2D in 2.0.x
+                   : "st_force_2d" )
              .arg( geom );
     }
 
@@ -544,7 +569,6 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p )
     : mConnInfo( p->mUri.connectionInfo() )
     , mGeometryColumn( p->mGeometryColumn )
-    , mSqlWhereClause( p->mSqlWhereClause )
     , mFields( p->mAttributeFields )
     , mSpatialColType( p->mSpatialColType )
     , mRequestedSrid( p->mRequestedSrid )
@@ -557,6 +581,28 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p
     , mQuery( p->mQuery )
     , mShared( p->mShared )
 {
+  mSqlWhereClause = p->filterWhereClause();
+
+  if ( mSqlWhereClause.startsWith( " WHERE " ) )
+    mSqlWhereClause = mSqlWhereClause.mid( 7 );
+
+  if ( p->mTransaction )
+  {
+    mTransactionConnection = p->mTransaction->connection();
+    mTransactionConnection->ref();
+  }
+  else
+  {
+    mTransactionConnection = 0;
+  }
+}
+
+QgsPostgresFeatureSource::~QgsPostgresFeatureSource()
+{
+  if ( mTransactionConnection )
+  {
+    mTransactionConnection->unref();
+  }
 }
 
 QgsFeatureIterator QgsPostgresFeatureSource::getFeatures( const QgsFeatureRequest& request )

@@ -28,7 +28,7 @@ class QgsGrassFeatureSource : public QgsAbstractFeatureSource
     QgsGrassFeatureSource( const QgsGrassProvider* provider );
     ~QgsGrassFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
     struct Map_info* mMap;
@@ -55,13 +55,13 @@ class QgsGrassFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsG
     ~QgsGrassFeatureIterator();
 
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) override;
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() override;
 
   protected:
 

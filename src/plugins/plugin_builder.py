@@ -1,43 +1,50 @@
 #!/usr/bin/python
-#***************************************************************************
-#    plugin_builder.py
-# A script to automate creation of a new QGIS plugin using the plugin_template
-#    --------------------------------------
-#   Date                 : Sun Sep 16 12:11:04 AKDT 2007
-#   Copyright            : (C) Copyright 2007 Martin Dobias
-#   Email                :
-# Original authors of Perl version: Gary Sherman and Tim Sutton
-#***************************************************************************
-#*                                                                         *
-#*   This program is free software; you can redistribute it and/or modify  *
-#*   it under the terms of the GNU General Public License as published by  *
-#*   the Free Software Foundation; either version 2 of the License, or     *
-#*   (at your option) any later version.                                   *
-#*                                                                         *
-#***************************************************************************/
-import os, sys, shutil, re
+"""
+***************************************************************************
+    plugin_builder.py
+ A script to automate creation of a new QGIS plugin using the plugin_template
+    --------------------------------------
+   Date                 : Sun Sep 16 12:11:04 AKDT 2007
+   Copyright            : (C) Copyright 2007 Martin Dobias
+   Email                :
+ Original authors of Perl version: Gary Sherman and Tim Sutton
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************/
+"""
+import os
+import sys
+import shutil
+import re
+
 
 def template_file(file):
-  return os.path.join('plugin_template', file)
+    return os.path.join('plugin_template', file)
+
 
 def plugin_file(pluginDir, file):
-  return os.path.join(pluginDir, file)
+    return os.path.join(pluginDir, file)
 
-# make sure we are in the plugins directory otherwise the changes this script will make will
-# wreak havoc....
+# make sure we are in the plugins directory otherwise the changes this script
+# will make will wreak havoc....
 
 myDir = os.getcwd()
 print "Checking that we are in the <qgis dir>/src/plugins/ directory....",
 
-pluginsDirectory = os.path.join('src','plugins')
+pluginsDirectory = os.path.join('src', 'plugins')
 
 if myDir[-len(pluginsDirectory):] == pluginsDirectory:
-  print "yes"
+    print "yes"
 else:
-  print "no"
-  print myDir
-  print "Please relocate to the plugins directory before attempting to run this script."
-  sys.exit(1)
+    print "no"
+    print myDir
+    print "Please relocate to the plugins directory before attempting to run this script."
+    sys.exit(1)
 
 
 # get the needed information from the user
@@ -107,8 +114,8 @@ print "Create the plugin? [y/n]:",
 createIt = raw_input()
 
 if createIt.lower() != 'y':
-  print "Plugin creation cancelled, exiting"
-  sys.exit(2)
+    print "Plugin creation cancelled, exiting"
+    sys.exit(2)
 
 # create the plugin and modify the build files
 
@@ -130,48 +137,47 @@ shutil.copy(template_file('pluginguibase.ui'),    os.path.join(pluginDir, plugin
 # This is a brute force approach but its quick and dirty :)
 #
 
-files = [ plugin_file(pluginDir, 'CMakeLists.txt'),
-    plugin_file(pluginDir, 'README'),
-    plugin_file(pluginDir, pluginLCaseName + '.qrc'),
-    plugin_file(pluginDir, pluginLCaseName + '.cpp'),
-    plugin_file(pluginDir, pluginLCaseName + '.h'),
-    plugin_file(pluginDir, pluginLCaseName + 'gui.cpp'),
-    plugin_file(pluginDir, pluginLCaseName + 'gui.h'),
-    plugin_file(pluginDir, pluginLCaseName + 'guibase.ui') ]
+files = [plugin_file(pluginDir, 'CMakeLists.txt'),
+         plugin_file(pluginDir, 'README'),
+         plugin_file(pluginDir, pluginLCaseName + '.qrc'),
+         plugin_file(pluginDir, pluginLCaseName + '.cpp'),
+         plugin_file(pluginDir, pluginLCaseName + '.h'),
+         plugin_file(pluginDir, pluginLCaseName + 'gui.cpp'),
+         plugin_file(pluginDir, pluginLCaseName + 'gui.h'),
+         plugin_file(pluginDir, pluginLCaseName + 'guibase.ui')]
 
 # replace occurences of [pluginlcasename], [pluginname], [plugindescription], [menuname], [menutiem]
 # in template with the values from user
-replacements = [ ('\\[pluginlcasename\\]', pluginLCaseName),
-           ('\\[pluginname\\]', pluginName),
-           ('\\[plugindescription\\]', pluginDescription),
-           ('\\[plugincategory\\]', pluginCategory),
-           ('\\[menuname\\]', menuName),
-           ('\\[menuitemname\\]', menuItemName) ]
+replacements = [('\\[pluginlcasename\\]', pluginLCaseName),
+                ('\\[pluginname\\]', pluginName),
+                ('\\[plugindescription\\]', pluginDescription),
+                ('\\[plugincategory\\]', pluginCategory),
+                ('\\[menuname\\]', menuName),
+                ('\\[menuitemname\\]', menuItemName)]
 
 for file in files:
 
-  # read contents of the file
-  f = open(file)
-  content = f.read()
-  f.close()
+    # read contents of the file
+    f = open(file)
+    content = f.read()
+    f.close()
 
-  # replace everything necessary
-  for repl in replacements:
-    content = re.sub(repl[0], repl[1], content)
+    # replace everything necessary
+    for repl in replacements:
+        content = re.sub(repl[0], repl[1], content)
 
-  # write changes to the file
-  f = open(file, "w")
-  f.write(content)
-  f.close()
+    # write changes to the file
+    f = open(file, "w")
+    f.write(content)
+    f.close()
 
 
 # Add an entry to src/plugins/CMakeLists.txt
-f = open('CMakeLists.txt','a')
+f = open('CMakeLists.txt', 'a')
 f.write('\nSUBDIRS ('+pluginDir+')\n')
 f.close()
 
 print "Your plugin %s has been created in %s, CMakeLists.txt has been modified." % (pluginName, pluginDir)
 print
-print "Once your plugin has successfully built, please see %s/README for" % (pluginDir)
+print "Once your plugin has successfully built, please see %s/README for" % pluginDir
 print "hints on how to get started."
-

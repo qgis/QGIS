@@ -19,12 +19,20 @@
 #include "qgscomposermodel.h"
 #include "qgscomposerlabel.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QList>
 
-class TestQgsComposerModel: public QObject
+class TestQgsComposerModel : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerModel()
+        : mComposition( 0 )
+        , mItem1( 0 )
+        , mItem2( 0 )
+        , mItem3( 0 )
+    {}
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -586,4 +594,4 @@ void TestQgsComposerModel::reorderToBottomWithRemoved()
 }
 
 QTEST_MAIN( TestQgsComposerModel )
-#include "moc_testqgscomposermodel.cxx"
+#include "testqgscomposermodel.moc"

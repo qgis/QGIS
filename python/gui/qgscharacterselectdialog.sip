@@ -4,7 +4,7 @@ class QgsCharacterSelectorDialog : QDialog
 #include <qgscharacterselectdialog.h>
 %End
   public:
-    QgsCharacterSelectorDialog( QWidget* parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsCharacterSelectorDialog( QWidget* parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsCharacterSelectorDialog();
 
   public slots:

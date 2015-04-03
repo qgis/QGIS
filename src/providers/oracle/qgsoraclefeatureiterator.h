@@ -41,7 +41,7 @@ class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 
     QString mGeometryColumn;          //! name of the geometry column
     int mSrid;                        //! srid of column
-    QString mSpatialIndex;                   //! name of spatial index of geometry column
+    bool mHasSpatialIndex;            //! has spatial index of geometry column
     QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
     QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
     QString mSqlWhereClause;

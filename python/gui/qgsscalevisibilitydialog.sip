@@ -5,7 +5,7 @@ class QgsScaleVisibilityDialog : QObject
 %End
 
   public:
-    explicit QgsScaleVisibilityDialog( QWidget *parent = 0, QString title = QString(), QgsMapCanvas* mapCanvas = 0 );
+    explicit QgsScaleVisibilityDialog( QWidget *parent /TransferThis/ = 0, QString title = QString(), QgsMapCanvas* mapCanvas = 0 );
 
     //! return if scale visibilty is enabled
     bool hasScaleVisibility();

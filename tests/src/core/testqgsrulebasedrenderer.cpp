@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QDomDocument>
 #include <QFile>
 //header for class being tested
@@ -41,6 +41,11 @@ class TestQgsRuleBasedRenderer: public QObject
       QgsApplication::initQgis();
     }
 
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
+
     void test_load_xml()
     {
       QDomDocument doc;
@@ -59,7 +64,7 @@ class TestQgsRuleBasedRenderer: public QObject
       xml2domElement( "rulebasedrenderer_invalid.xml", doc );
       QDomElement elem = doc.documentElement();
 
-      QgsRuleBasedRendererV2* r = static_cast<QgsRuleBasedRendererV2*>( QgsRuleBasedRendererV2::create( elem ) );
+      QSharedPointer<QgsRuleBasedRendererV2> r( static_cast<QgsRuleBasedRendererV2*>( QgsRuleBasedRendererV2::create( elem ) ) );
       QVERIFY( r == NULL );
     }
 
@@ -104,6 +109,31 @@ class TestQgsRuleBasedRenderer: public QObject
       delete layer;
     }
 
+    void test_clone_ruleKey()
+    {
+      RRule* rootRule = new RRule( 0 );
+      RRule* sub1Rule = new RRule( 0, 0, 0, "fld > 1" );
+      RRule* sub2Rule = new RRule( 0, 0, 0, "fld > 2" );
+      RRule* sub3Rule = new RRule( 0, 0, 0, "fld > 3" );
+      rootRule->appendChild( sub1Rule );
+      sub1Rule->appendChild( sub2Rule );
+      sub2Rule->appendChild( sub3Rule );
+      QgsRuleBasedRendererV2 r( rootRule );
+
+      QgsRuleBasedRendererV2* clone = static_cast<QgsRuleBasedRendererV2*>( r.clone() );
+      RRule* cloneRootRule = clone->rootRule();
+      RRule* cloneSub1Rule = cloneRootRule->children()[0];
+      RRule* cloneSub2Rule = cloneSub1Rule->children()[0];
+      RRule* cloneSub3Rule = cloneSub2Rule->children()[0];
+
+      QCOMPARE( rootRule->ruleKey(), cloneRootRule->ruleKey() );
+      QCOMPARE( sub1Rule->ruleKey(), cloneSub1Rule->ruleKey() );
+      QCOMPARE( sub2Rule->ruleKey(), cloneSub2Rule->ruleKey() );
+      QCOMPARE( sub3Rule->ruleKey(), cloneSub3Rule->ruleKey() );
+
+      delete clone;
+    }
+
   private:
     void xml2domElement( QString testFile, QDomDocument& doc )
     {
@@ -145,5 +175,5 @@ class TestQgsRuleBasedRenderer: public QObject
 
 QTEST_MAIN( TestQgsRuleBasedRenderer )
 
-#include "moc_testqgsrulebasedrenderer.cxx"
+#include "testqgsrulebasedrenderer.moc"
 

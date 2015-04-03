@@ -27,7 +27,7 @@ QgsLegendSymbolItemV2::QgsLegendSymbolItemV2()
 {
 }
 
-QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level )
+QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString& label, const QString& ruleKey, bool checkable, int scaleMinDenom, int scaleMaxDenom, int level, const QString& parentRuleKey )
     : mSymbol( symbol ? symbol->clone() : 0 )
     , mLabel( label )
     , mKey( ruleKey )
@@ -36,6 +36,7 @@ QgsLegendSymbolItemV2::QgsLegendSymbolItemV2( QgsSymbolV2* symbol, const QString
     , mScaleMinDenom( scaleMinDenom )
     , mScaleMaxDenom( scaleMaxDenom )
     , mLevel( level )
+    , mParentKey( parentRuleKey )
 {
 }
 
@@ -64,6 +65,7 @@ QgsLegendSymbolItemV2& QgsLegendSymbolItemV2::operator=( const QgsLegendSymbolIt
   mScaleMinDenom = other.mScaleMinDenom;
   mScaleMaxDenom = other.mScaleMaxDenom;
   mLevel = other.mLevel;
+  mParentKey = other.mParentKey;
 
   return *this;
 }

@@ -23,28 +23,24 @@ __copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
+import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QSize
+from PyQt4.QtGui import QPainter, QColor
 
 from qgis.core import (QgsVectorLayer,
                        QgsVectorSimplifyMethod,
                        QgsMapLayerRegistry,
-                       QgsMapRenderer,
-                       QgsCoordinateReferenceSystem,
-                       QgsRenderChecker,
+                       QgsMultiRenderChecker,
                        QgsRasterLayer,
-                       QgsRasterDataProvider,
                        QgsMultiBandColorRenderer,
-                       QGis)
+                       )
 
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
-                       unittest,
-                       expectedFailure
+                       unittest
                        )
 # Convenience instances in case you may need them
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -64,8 +60,8 @@ class TestQgsBlendModes(TestCase):
         self.mPointLayer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
         self.mMapRegistry.addMapLayer(self.mPointLayer)
 
-        self.mSimplifyMethod = QgsVectorSimplifyMethod();
-        self.mSimplifyMethod.setSimplifyHints(QgsVectorSimplifyMethod.NoSimplification);
+        self.mSimplifyMethod = QgsVectorSimplifyMethod()
+        self.mSimplifyMethod.setSimplifyHints(QgsVectorSimplifyMethod.NoSimplification)
 
         # create polygon layer
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
@@ -112,11 +108,12 @@ class TestQgsBlendModes(TestCase):
         self.mLineLayer.setBlendMode(QPainter.CompositionMode_Difference)
         self.mPolygonLayer.setBlendMode(QPainter.CompositionMode_Difference)
 
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_blendmodes")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("vector_blendmodes", 1500);
+        myResult = checker.runTest("vector_blendmodes", 20)
         myMessage = ('vector blending failed')
         assert myResult, myMessage
 
@@ -137,11 +134,12 @@ class TestQgsBlendModes(TestCase):
         #Set feature blending for line layer
         self.mLineLayer.setFeatureBlendMode(QPainter.CompositionMode_Plus)
 
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_featureblendmodes")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("vector_featureblendmodes", 1500);
+        myResult = checker.runTest("vector_featureblendmodes", 20)
         myMessage = ('vector feature blending failed')
         assert myResult, myMessage
 
@@ -161,11 +159,12 @@ class TestQgsBlendModes(TestCase):
         #Set feature blending for line layer
         self.mLineLayer.setLayerTransparency( 50 )
 
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_vector_layertransparency")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("vector_layertransparency", 1500);
+        myResult = checker.runTest("vector_layertransparency", 20)
         myMessage = ('vector layer transparency failed')
         assert myResult, myMessage
 
@@ -180,11 +179,13 @@ class TestQgsBlendModes(TestCase):
 
         #Set blending mode for top layer
         self.mRasterLayer1.setBlendMode(QPainter.CompositionMode_Plus)
-        checker = QgsRenderChecker()
+        checker = QgsMultiRenderChecker()
         checker.setControlName("expected_raster_blendmodes")
         checker.setMapSettings(self.mapSettings)
+        checker.setColorTolerance( 1 )
+        checker.setColorTolerance( 1 )
 
-        myResult = checker.runTest("raster_blendmodes", 1500);
+        myResult = checker.runTest("raster_blendmodes", 20)
         myMessage = ('raster blending failed')
         assert myResult, myMessage
 

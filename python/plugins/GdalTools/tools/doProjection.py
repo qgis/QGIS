@@ -23,17 +23,15 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL, QCoreApplication, QFile, QFileInfo
+from PyQt4.QtGui import QWidget, QMessageBox
+from qgis.core import QgsMapLayerRegistry, QgsMapLayer
 
 from ui_widgetProjection import Ui_GdalToolsWidget as Ui_Widget
 from widgetBatchBase import GdalToolsBaseBatchWidget as BaseBatchWidget
 from dialogSRS import GdalToolsSRSDialog as SRSDialog
 import GdalTools_utils as Utils
 
-import os.path
 import re
 
 
@@ -54,12 +52,10 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       self.progressBar.hide()
       self.recurseCheck.hide()
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           ( self.inSelector, SIGNAL( "filenameChanged()" ) ),
           ( self.desiredSRSEdit, SIGNAL( "textChanged( const QString & )" ) )
-        ]
-      )
+      ])
 
       self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFileEdit )
       self.connect( self.selectDesiredSRSButton, SIGNAL( "clicked()" ), self.fillDesiredSRSEdit )

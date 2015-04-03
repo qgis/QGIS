@@ -192,6 +192,10 @@ void QgsAttributeTableModel::layerDeleted()
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
   QgsDebugMsgLevel( QString( "(%4) fid: %1, idx: %2, value: %3" ).arg( fid ).arg( idx ).arg( value.toString() ).arg( mFeatureRequest.filterType() ), 3 );
+
+  if ( idx == mCachedField )
+    mFieldCache[ fid ] = value;
+
   // No filter request: skip all possibly heavy checks
   if ( mFeatureRequest.filterType() == QgsFeatureRequest::FilterNone )
   {
@@ -210,8 +214,6 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
         }
         else
         {
-          if ( idx == mCachedField )
-            mFieldCache[ fid ] = value;
           // Update representation
           setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
         }
@@ -309,7 +311,7 @@ void QgsAttributeTableModel::loadLayer()
     if ( t.elapsed() > 1000 )
     {
       bool cancel = false;
-      emit( progress( i, cancel ) );
+      emit progress( i, cancel );
       if ( cancel )
         break;
 
@@ -522,7 +524,7 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
 
   if ( mChangedCellBounds.isNull() )
   {
-    mChangedCellBounds = QRect( index.column(), index.row(), 0, 1 );
+    mChangedCellBounds = QRect( index.column(), index.row(), 1, 1 );
   }
   else
   {
@@ -618,7 +620,8 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
     QStringList fldNames;
     fldNames << fields[ fieldId ].name();
 
-    QgsFeatureIterator it = mLayerCache->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fldNames, fields ) );
+    QgsFeatureRequest r( mFeatureRequest );
+    QgsFeatureIterator it = mLayerCache->getFeatures( r.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fldNames, fields ) );
 
     QgsFeature f;
     while ( it.nextFeature( f ) )
@@ -635,4 +638,9 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
   mFeatureRequest = request;
   if ( layer() && !layer()->hasGeometryType() )
     mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
+}
+
+const QgsFeatureRequest &QgsAttributeTableModel::request() const
+{
+  return mFeatureRequest;
 }

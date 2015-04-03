@@ -35,12 +35,12 @@ class CustomLayerOrderModel : public QAbstractListModel
     {
     }
 
-    int rowCount( const QModelIndex & ) const
+    int rowCount( const QModelIndex & ) const override
     {
       return mOrder.count();
     }
 
-    QVariant data( const QModelIndex &index, int role ) const
+    QVariant data( const QModelIndex &index, int role ) const override
     {
       QString id = mOrder.at( index.row() );
 
@@ -68,7 +68,7 @@ class CustomLayerOrderModel : public QAbstractListModel
       return QVariant();
     }
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role )
+    bool setData( const QModelIndex &index, const QVariant &value, int role ) override
     {
       if ( role == Qt::CheckStateRole )
       {
@@ -83,26 +83,26 @@ class CustomLayerOrderModel : public QAbstractListModel
       return false;
     }
 
-    Qt::ItemFlags flags( const QModelIndex &index ) const
+    Qt::ItemFlags flags( const QModelIndex &index ) const override
     {
       if ( !index.isValid() )
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
       return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled | Qt::ItemIsUserCheckable;
     }
 
-    Qt::DropActions supportedDropActions() const
+    Qt::DropActions supportedDropActions() const override
     {
       return Qt::MoveAction;
     }
 
-    QStringList mimeTypes() const
+    QStringList mimeTypes() const override
     {
       QStringList types;
       types << "application/qgis.layerorderdata";
       return types;
     }
 
-    QMimeData* mimeData( const QModelIndexList& indexes ) const
+    QMimeData* mimeData( const QModelIndexList& indexes ) const override
     {
       QStringList lst;
       foreach ( QModelIndex index, indexes )
@@ -113,7 +113,7 @@ class CustomLayerOrderModel : public QAbstractListModel
       return mimeData;
     }
 
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override
     {
       Q_UNUSED( parent );
       Q_UNUSED( column );
@@ -138,7 +138,7 @@ class CustomLayerOrderModel : public QAbstractListModel
       return true;
     }
 
-    bool removeRows( int row, int count, const QModelIndex& parent )
+    bool removeRows( int row, int count, const QModelIndex& parent ) override
     {
       Q_UNUSED( parent );
       if ( count <= 0 )
@@ -207,11 +207,11 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   setLayout( l );
 }
 
-void QgsCustomLayerOrderWidget::bridgeHasCustomLayerOrderChanged( bool override )
+void QgsCustomLayerOrderWidget::bridgeHasCustomLayerOrderChanged( bool state )
 {
-  mChkOverride->setChecked( override );
+  mChkOverride->setChecked( state );
   mModel->refreshModel( mBridge->hasCustomLayerOrder() ? mBridge->customLayerOrder() : mBridge->defaultLayerOrder() );
-  mView->setEnabled( override );
+  mView->setEnabled( state );
 }
 
 void QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged( const QStringList& order )

@@ -24,23 +24,22 @@
 
 #include <QList>
 #include <QPair>
+#include <QSet>
+#include <QItemDelegate>
 
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 
-#if 0
-#include <QItemDelegate>
 class FieldSelectorDelegate : public QItemDelegate
 {
     Q_OBJECT
   public:
     FieldSelectorDelegate( QObject *parent = 0 );
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
+    void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
-#endif
 
 class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 {
@@ -49,21 +48,27 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = 0 );
     ~QgsVectorLayerAndAttributeModel();
 
-    QModelIndex index( int row, int column, const QModelIndex &parent ) const;
-    QModelIndex parent( const QModelIndex &child ) const;
-    int rowCount( const QModelIndex &index ) const;
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
-    QVariant data( const QModelIndex& index, int role ) const;
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    QList< QPair<QgsVectorLayer *, int> > layers( const QModelIndexList &selectedIndexes ) const;
+    QList< QPair<QgsVectorLayer *, int> > layers() const;
+
+    QgsVectorLayer *vectorLayer( const QModelIndex &index ) const;
+    int attributeIndex( const QgsVectorLayer *vl ) const;
+
+    void applyVisibilityPreset( const QString &name );
+
+    void selectAll();
+    void unSelectAll();
 
   private:
-    QHash<QgsVectorLayer *, int> mAttributeIdx;
+    QHash<const QgsVectorLayer *, int> mAttributeIdx;
+    QSet<QModelIndex> mCheckedLeafs;
 
-#if 0
-    friend FieldSelectorDelegate;
-#endif
+    void applyVisibility( QSet<QString> &visibleLayers, QgsLayerTreeNode *node );
+    void retrieveAllLayers( QgsLayerTreeNode *node, QSet<QString> &layers );
 };
 
 
@@ -80,26 +85,23 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QgsDxfExport::SymbologyExport symbologyMode() const;
     QString saveFile() const;
     bool exportMapExtent() const;
+    QString encoding() const;
 
   public slots:
     /** change the selection of layers in the list */
     void selectAll();
     void unSelectAll();
 
-    void on_mTreeView_clicked( const QModelIndex & current );
-    void on_mLayerAttributeComboBox_fieldChanged( QString );
-
   private slots:
     void on_mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
+    void on_mVisibilityPresets_currentIndexChanged( int index );
 
   private:
     void cleanGroup( QgsLayerTreeNode *node );
     QgsLayerTreeGroup *mLayerTreeGroup;
-#if 0
     FieldSelectorDelegate *mFieldSelectorDelegate;
-#endif
 };
 
 #endif // QGSDXFEXPORTDIALOG_H

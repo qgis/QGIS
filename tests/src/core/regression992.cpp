@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -40,14 +40,18 @@
 /** \ingroup UnitTests
  * This is a regression test for ticket #992.
  */
-class Regression992: public QObject
+class Regression992 : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    Regression992();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
 
     void regression992();
   private:
@@ -56,6 +60,12 @@ class Regression992: public QObject
     QgsRasterLayer *mpRasterLayer;
     QString mReport;
 };
+
+Regression992::Regression992()
+    : mpRasterLayer( NULL )
+{
+
+}
 
 //runs before all tests
 void Regression992::initTestCase()
@@ -105,7 +115,7 @@ void Regression992::cleanupTestCase()
     //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
-  delete mpRasterLayer;
+  QgsApplication::exitQgis();
 }
 
 void Regression992::regression992()
@@ -123,4 +133,4 @@ void Regression992::regression992()
 }
 
 QTEST_MAIN( Regression992 )
-#include "moc_regression992.cxx"
+#include "regression992.moc"

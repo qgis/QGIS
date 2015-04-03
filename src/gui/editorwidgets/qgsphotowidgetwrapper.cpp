@@ -23,6 +23,10 @@
 
 QgsPhotoWidgetWrapper::QgsPhotoWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
     :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mPhotoLabel( NULL )
+    , mWebView( NULL )
+    , mLineEdit( NULL )
+    , mButton( NULL )
 {
 }
 

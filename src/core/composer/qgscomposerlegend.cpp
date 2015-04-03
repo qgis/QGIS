@@ -50,6 +50,7 @@ QgsComposerLegend::QgsComposerLegend()
     , mLegendModel2( 0 )
     , mCustomLayerTree( 0 )
     , mComposerMap( 0 )
+    , mLegendFilterByMap( false )
 {
 
 }

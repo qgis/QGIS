@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -39,7 +39,7 @@
  */
 class TestQgsRasterFileWriter: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -74,6 +74,7 @@ void TestQgsRasterFileWriter::initTestCase()
 //runs after all tests
 void TestQgsRasterFileWriter::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -133,6 +134,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->set( provider->clone() ) )
   {
     logError( "Cannot set pipe provider" );
+    delete pipe;
     return false;
   }
   qDebug() << "provider set";
@@ -146,6 +148,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->insert( 1, nuller ) )
   {
     logError( "Cannot set pipe nuller" );
+    delete pipe;
     return false;
   }
   qDebug() << "nuller set";
@@ -156,6 +159,7 @@ bool TestQgsRasterFileWriter::writeTest( QString theRasterName )
   if ( !pipe->insert( 2, projector ) )
   {
     logError( "Cannot set pipe projector" );
+    delete pipe;
     return false;
   }
   qDebug() << "projector set";
@@ -186,4 +190,4 @@ void TestQgsRasterFileWriter::logError( QString msg )
 }
 
 QTEST_MAIN( TestQgsRasterFileWriter )
-#include "moc_testqgsrasterfilewriter.cxx"
+#include "testqgsrasterfilewriter.moc"

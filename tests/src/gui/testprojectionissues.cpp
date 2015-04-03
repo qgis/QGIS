@@ -22,17 +22,24 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestProjectionIssues: public QObject
+class TestProjectionIssues : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestProjectionIssues()
+        : mRasterLayer( 0 )
+        , mMapCanvas( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void issue5895();// test for #5895
+
   private:
     QgsRasterLayer* mRasterLayer;
     QgsMapCanvas*   mMapCanvas;
@@ -81,7 +88,8 @@ void TestProjectionIssues::initTestCase()
 void TestProjectionIssues::cleanupTestCase()
 {
   delete mMapCanvas;
-  delete mRasterLayer;
+
+  QgsApplication::exitQgis();
 };
 
 void TestProjectionIssues::init()
@@ -102,4 +110,4 @@ void TestProjectionIssues::issue5895()
 };
 
 QTEST_MAIN( TestProjectionIssues )
-#include "moc_testprojectionissues.cxx"
+#include "testprojectionissues.moc"

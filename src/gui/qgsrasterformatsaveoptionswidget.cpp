@@ -281,7 +281,7 @@ void QgsRasterFormatSaveOptionsWidget::helpOptions()
   textEdit->setText( message );
   dlg->layout()->addWidget( textEdit );
   dlg->resize( 600, 400 );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   dlg->exec(); //modal
 #else
   dlg->show(); //non modal
@@ -310,7 +310,7 @@ QString QgsRasterFormatSaveOptionsWidget::validateOptions( bool gui, bool report
       settings.setValue( "/Projections/defaultBehaviour", "useProject" );
     }
     tmpLayer = true;
-    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), "gdal" );
+    rasterLayer = new QgsRasterLayer( mRasterFileName, QFileInfo( mRasterFileName ).baseName(), QString( "gdal" ) );
     // restore /Projections/defaultBehaviour
     if ( defaultProjectionOption == "prompt" )
     {

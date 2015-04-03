@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.jpg">developers/essen-2012.jpg</file>
+        <file alias="last-hackfest.jpg">developers/essen-2014.jpg</file>
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
@@ -155,6 +155,7 @@
         <file>themes/default/mActionComposerManager.svg</file>
         <file>themes/default/mActionContextHelp.png</file>
         <file>themes/default/mActionCopySelected.png</file>
+        <file>themes/default/mActionCreateMemory.png</file>
         <file>themes/default/mActionCustomProjection.svg</file>
         <file>themes/default/mActionDecreaseBrightness.svg</file>
         <file>themes/default/mActionDecreaseContrast.svg</file>
@@ -194,6 +195,7 @@
         <file>themes/default/mActionHelpContents.svg</file>
         <file>themes/default/mActionHelpSponsors.png</file>
         <file>themes/default/mActionHideAllLayers.png</file>
+        <file>themes/default/mActionHideSelectedLayers.png</file>
         <file>themes/default/mActionIdentify.svg</file>
         <file>themes/default/mActionIncreaseBrightness.svg</file>
         <file>themes/default/mActionIncreaseContrast.svg</file>
@@ -266,6 +268,7 @@
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
+        <file>themes/default/mActionShowSelectedLayers.png</file>
         <file>themes/default/mActionSignMinus.png</file>
         <file>themes/default/mActionSignPlus.png</file>
         <file>themes/default/mActionSimplify.png</file>
@@ -328,6 +331,7 @@
         <file>themes/default/mIconLayer.png</file>
         <file>themes/default/mIconLineLayer.svg</file>
         <file>themes/default/mIconLock.png</file>
+        <file>themes/default/mIconLoading.gif</file>
         <file>themes/default/mIconMssql.svg</file>
         <file>themes/default/mIconNew.png</file>
         <file>themes/default/mIconNext.png</file>
@@ -458,8 +462,6 @@
         <file>flags/sq.png</file>
         <file>flags/nb.png</file>
         <file>flags/sr.png</file>
-        <file>flags/sr_Cyrl.png</file>
-        <file>flags/sr_Latn.png</file>
         <file>flags/te.png</file>
         <file>flags/tl.png</file>
         <file>themes/default/mActionZoomToArea.svg</file>
@@ -467,6 +469,17 @@
         <file>themes/default/mActionHighlightFeature.svg</file>
         <file>themes/default/mActionScaleHighlightFeature.svg</file>
         <file>themes/default/mActionPanHighlightFeature.svg</file>
+        <file>themes/default/cadtools/construction.png</file>
+        <file>themes/default/cadtools/delta.png</file>
+        <file>themes/default/cadtools/cad.png</file>
+        <file>themes/default/cadtools/lock.png</file>
+        <file>themes/default/cadtools/parallel.png</file>
+        <file>themes/default/cadtools/perpendicular.png</file>
+        <file>themes/default/mIconSuccess.png</file>
+        <file>themes/default/bubble.svg</file>
+        <file>themes/default/mIconClear.png</file>
+        <file>flags/zh.png</file>
+        <file>themes/default/mIconPaintEffects.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -98,8 +98,8 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 
     myQPainter.setRenderHint( QPainter::SmoothPixmapTransform );
 
-    double centerXDouble = myQPixmap.width() / 2;
-    double centerYDouble = myQPixmap.height() / 2;
+    double centerXDouble = myQPixmap.width() / 2.0;
+    double centerYDouble = myQPixmap.height() / 2.0;
     //save the current canvas rotation
     myQPainter.save();
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );

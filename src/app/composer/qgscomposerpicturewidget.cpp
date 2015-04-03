@@ -90,7 +90,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   }
 
   //show file dialog
-  QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select svg or image file" ), openDir );
+  QString filePath = QFileDialog::getOpenFileName( this, tr( "Select svg or image file" ), openDir );
   if ( filePath.isEmpty() )
   {
     return;
@@ -165,7 +165,7 @@ void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWi
 void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
 {
   //let user select a directory
-  QString directory = QFileDialog::getExistingDirectory( 0, tr( "Select new preview directory" ) );
+  QString directory = QFileDialog::getExistingDirectory( this, tr( "Select new preview directory" ) );
   if ( directory.isNull() )
   {
     return; //dialog canceled by user
@@ -486,7 +486,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       QIcon icon( filePath );
       listItem->setIcon( icon );
     }
-    else if ( fileIsPixel ) //for pixel formats: create icon from scaled pixmap
+    else //for pixel formats: create icon from scaled pixmap
     {
       QPixmap iconPixmap( filePath );
       if ( iconPixmap.isNull() )
@@ -497,10 +497,6 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString& path )
       QPixmap scaledPixmap( iconPixmap.scaled( QSize( 30, 30 ), Qt::KeepAspectRatio ) );
       QIcon icon( scaledPixmap );
       listItem->setIcon( icon );
-    }
-    else
-    {
-      ++counter; continue;
     }
 
     listItem->setText( "" );

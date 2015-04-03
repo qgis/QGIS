@@ -26,8 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
@@ -42,6 +41,7 @@ from rgb2pct import rgb2pct
 from translate import translate
 from pct2rgb import pct2rgb
 from merge import merge
+from buildvrt import buildvrt
 from polygonize import polygonize
 from gdaladdo import gdaladdo
 from ClipByExtent import ClipByExtent
@@ -64,10 +64,22 @@ from GridInvDist import GridInvDist
 from GridAverage import GridAverage
 from GridNearest import GridNearest
 from GridDataMetrics import GridDataMetrics
+from gdaltindex import gdaltindex
+from gdalcalc import gdalcalc
 
 from ogr2ogr import Ogr2Ogr
 from ogr2ogrclip import Ogr2OgrClip
 from ogr2ogrclipextent import Ogr2OgrClipExtent
+from ogr2ogrtopostgis import Ogr2OgrToPostGis
+from ogr2ogrtopostgislist import Ogr2OgrToPostGisList
+from ogr2ogrpointsonlines import Ogr2OgrPointsOnLines
+from ogr2ogrbuffer import Ogr2OgrBuffer
+from ogr2ogrdissolve import Ogr2OgrDissolve
+from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
+from ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
+from ogr2ogrbuffer import Ogr2OgrBuffer
+from ogr2ogrdissolve import Ogr2OgrDissolve
+from ogr2ogronesidebuffer import Ogr2OgrOneSideBuffer
 from ogrinfo import OgrInfo
 from ogrsql import OgrSql
 
@@ -98,7 +110,7 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         return os.path.dirname(__file__) + '/scripts'
 
     def getDescription(self):
-        return 'GDAL/OGR'
+        return self.tr('GDAL/OGR')
 
     def getName(self):
         return 'gdalogr'
@@ -114,15 +126,18 @@ class GdalOgrAlgorithmProvider(AlgorithmProvider):
         # extending GeoAlgorithm directly (those that execute GDAL
         # using the console)
         self.preloadedAlgs = [nearblack(), information(), warp(), translate(),
-            rgb2pct(), pct2rgb(), merge(), polygonize(), gdaladdo(),
+            rgb2pct(), pct2rgb(), merge(), buildvrt(), polygonize(), gdaladdo(),
             ClipByExtent(), ClipByMask(), contour(), rasterize(), proximity(),
             sieve(), fillnodata(), ExtractProjection(), gdal2xyz(),
             hillshade(), slope(), aspect(), tri(), tpi(), roughness(),
             ColorRelief(), GridInvDist(), GridAverage(), GridNearest(),
-            GridDataMetrics(),
+            GridDataMetrics(), gdaltindex(), gdalcalc(),
             # ----- OGR tools -----
-            OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(), OgrSql(),
-            ]
+            OgrInfo(), Ogr2Ogr(), Ogr2OgrClip(), Ogr2OgrClipExtent(),
+            Ogr2OgrToPostGis(), Ogr2OgrToPostGisList(), Ogr2OgrPointsOnLines(),
+            Ogr2OgrBuffer(), Ogr2OgrDissolve(), Ogr2OgrOneSideBuffer(),
+            Ogr2OgrTableToPostGisList(), OgrSql(),
+        ]
 
         # And then we add those that are created as python scripts
         folder = self.scriptsFolder()

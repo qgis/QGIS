@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>457</width>
-    <height>271</height>
+    <width>389</width>
+    <height>189</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,16 +23,7 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="leftMargin">
-    <number>1</number>
-   </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>1</number>
    </property>
    <item row="0" column="0">
@@ -45,7 +36,7 @@
    <item row="0" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QDoubleSpinBox" name="mHorizontalDistanceSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mHorizontalDistanceSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -61,10 +52,27 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHorizontalDistanceUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mHorizontalDistanceDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mHorizontalDistanceUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -78,7 +86,7 @@
    <item row="1" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QDoubleSpinBox" name="mVerticalDistanceSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mVerticalDistanceSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -93,6 +101,16 @@
        </property>
        <property name="singleStep">
         <double>0.200000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mVerticalDistanceDDBtn">
+       <property name="text">
+        <string>...</string>
        </property>
       </widget>
      </item>
@@ -111,7 +129,7 @@
    <item row="2" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QDoubleSpinBox" name="mHorizontalDisplacementSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mHorizontalDisplacementSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -127,10 +145,27 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mHorizontalDisplacementUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mHorizontalDisplacementDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mHorizontalDisplacementUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -144,7 +179,7 @@
    <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_5">
      <item>
-      <widget class="QDoubleSpinBox" name="mVerticalDisplacementSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mVerticalDisplacementSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -160,34 +195,48 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mVerticalDisplacementUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mVerticalDisplacementDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mVerticalDisplacementUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

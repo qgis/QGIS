@@ -35,9 +35,7 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 
     QString expressionText();
 
-    /** Sets geometry calculator used in distance/area calculations.
-      * @note added in version 2.0
-      */
+    /** Sets geometry calculator used in distance/area calculations. */
     void setGeomCalculator( const QgsDistanceArea & da );
 
   protected:
@@ -47,9 +45,9 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      *
      * @param r result value (unused)
      */
-    virtual void done( int r );
+    virtual void done( int r ) override;
 
-    virtual void accept();
+    virtual void accept() override;
 
   private:
     QString mRecentKey;

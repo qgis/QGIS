@@ -6,14 +6,108 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>497</width>
-    <height>365</height>
+    <width>467</width>
+    <height>358</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QSlider" name="mBlurSlider">
+       <property name="maximum">
+        <number>18</number>
+       </property>
+       <property name="pageStep">
+        <number>3</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="tickPosition">
+        <enum>QSlider::TicksBelow</enum>
+       </property>
+       <property name="tickInterval">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="mSpinBlurRadius">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximum">
+        <number>18</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mBlurRadiusDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QGroupBox" name="mGradientTypeGroupBox">
      <property name="title">
@@ -49,6 +143,13 @@
          </widget>
         </item>
         <item>
+         <widget class="QgsDataDefinedButton" name="mStartColorDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QgsColorButtonV2" name="btnChangeColor2">
           <property name="minimumSize">
            <size>
@@ -64,6 +165,13 @@
           </property>
           <property name="text">
            <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mEndColorDDBtn">
+          <property name="text">
+           <string>...</string>
           </property>
          </widget>
         </item>
@@ -112,177 +220,7 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2">
-    <widget class="QGroupBox" name="mShadeDistanceGroupBox">
-     <property name="title">
-      <string>Shading style</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="mRadioUseWholeShape">
-        <property name="text">
-         <string>Shade whole shape</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="mIgnoreRingsCheckBox">
-        <property name="text">
-         <string>Ignore rings in polygons while shading</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <property name="spacing">
-         <number>6</number>
-        </property>
-        <item>
-         <widget class="QRadioButton" name="mRadioUseMaxDistance">
-          <property name="text">
-           <string>Shade to a set distance:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QDoubleSpinBox" name="mSpinMaxDistance">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>1</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="maximum">
-           <double>999999999.000000000000000</double>
-          </property>
-          <property name="value">
-           <double>5.000000000000000</double>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true"/>
-        </item>
-       </layout>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Blur strength</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QSlider" name="mBlurSlider">
-       <property name="maximum">
-        <number>18</number>
-       </property>
-       <property name="pageStep">
-        <number>3</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="tickPosition">
-        <enum>QSlider::TicksBelow</enum>
-       </property>
-       <property name="tickInterval">
-        <number>1</number>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="mSpinBlurRadius">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="maximum">
-        <number>18</number>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_6">
-     <property name="text">
-      <string>Offset X,Y</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetX">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-999.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>999.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetY">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-999.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>999.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true"/>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
+   <item row="4" column="0">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -295,6 +233,154 @@
      </property>
     </spacer>
    </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Offset X,Y</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Blur strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="mShadeDistanceGroupBox">
+     <property name="title">
+      <string>Shading style</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <item>
+         <widget class="QRadioButton" name="mRadioUseWholeShape">
+          <property name="text">
+           <string>Shade whole shape</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mShadeWholeShapeDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QRadioButton" name="mRadioUseMaxDistance">
+          <property name="text">
+           <string>Shade to a set distance:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDoubleSpinBox" name="mSpinMaxDistance">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+            <horstretch>1</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximum">
+           <double>999999999.000000000000000</double>
+          </property>
+          <property name="value">
+           <double>5.000000000000000</double>
+          </property>
+          <property name="showClearButton" stdset="0">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mShadeDistanceDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <item>
+         <widget class="QCheckBox" name="mIgnoreRingsCheckBox">
+          <property name="text">
+           <string>Ignore rings in polygons while shading</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QgsDataDefinedButton" name="mIgnoreRingsDDBtn">
+          <property name="text">
+           <string>...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -302,12 +388,23 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsColorRampComboBox</class>
@@ -318,20 +415,24 @@
  <tabstops>
   <tabstop>radioTwoColor</tabstop>
   <tabstop>btnChangeColor</tabstop>
+  <tabstop>mStartColorDDBtn</tabstop>
   <tabstop>btnChangeColor2</tabstop>
+  <tabstop>mEndColorDDBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>
   <tabstop>cboGradientColorRamp</tabstop>
+  <tabstop>mButtonEditRamp</tabstop>
   <tabstop>mRadioUseWholeShape</tabstop>
+  <tabstop>mShadeWholeShapeDDBtn</tabstop>
   <tabstop>mRadioUseMaxDistance</tabstop>
   <tabstop>mSpinMaxDistance</tabstop>
-  <tabstop>mDistanceUnitWidget</tabstop>
+  <tabstop>mShadeDistanceDDBtn</tabstop>
   <tabstop>mIgnoreRingsCheckBox</tabstop>
+  <tabstop>mIgnoreRingsDDBtn</tabstop>
   <tabstop>mBlurSlider</tabstop>
   <tabstop>mSpinBlurRadius</tabstop>
+  <tabstop>mBlurRadiusDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
-  <tabstop>mOffsetUnitWidget</tabstop>
-  <tabstop>mDataDefinedPropertiesButton</tabstop>
  </tabstops>
  <resources/>
  <connections>

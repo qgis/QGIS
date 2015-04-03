@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>418</width>
-    <height>447</height>
+    <width>996</width>
+    <height>416</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,144 +24,44 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QSplitter" name="splitter_2">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
      </property>
-     <widget class="QSplitter" name="splitter">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <widget class="QGroupBox" name="moperationListGroup">
-       <property name="title">
-        <string>Function list</string>
+     <property name="documentMode">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Expression</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <property name="margin">
+        <number>0</number>
        </property>
-       <property name="flat">
-        <bool>true</bool>
-       </property>
-       <layout class="QGridLayout" name="gridLayout_6">
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <item row="4" column="0">
-         <widget class="QTreeView" name="expressionTree">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Sunken</enum>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="uniformRowHeights">
-           <bool>false</bool>
-          </property>
-          <property name="sortingEnabled">
-           <bool>false</bool>
-          </property>
-          <property name="animated">
-           <bool>true</bool>
-          </property>
-          <attribute name="headerVisible">
-           <bool>false</bool>
-          </attribute>
-         </widget>
-        </item>
-        <item row="2" column="0">
-         <widget class="QgsFilterLineEdit" name="txtSearchEdit">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="sizeConstraint">
-         <enum>QLayout::SetDefaultConstraint</enum>
-        </property>
-        <property name="topMargin">
-         <number>0</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QGroupBox" name="mFunctionHelGroup">
-          <property name="title">
-           <string>Selected function help</string>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QTextEdit" name="txtHelpText">
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QGroupBox" name="mValueGroupBox">
-          <property name="title">
-           <string>Field values</string>
-          </property>
-          <property name="flat">
-           <bool>true</bool>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_7">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <property name="spacing">
-            <number>0</number>
-           </property>
-           <item row="0" column="0" colspan="2">
-            <widget class="QListWidget" name="mValueListWidget">
+       <item row="0" column="0">
+        <widget class="QSplitter" name="splitter">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="handleWidth">
+          <number>4</number>
+         </property>
+         <widget class="QWidget" name="layoutWidget_1">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QGroupBox" name="groupBox">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
              </property>
              <property name="maximumSize">
               <size>
@@ -169,356 +69,570 @@
                <height>16777215</height>
               </size>
              </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
+             <property name="baseSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
              </property>
-             <property name="editTriggers">
-              <set>QAbstractItemView::NoEditTriggers</set>
+             <property name="title">
+              <string>Expression</string>
              </property>
-             <property name="showDropIndicator" stdset="0">
-              <bool>false</bool>
-             </property>
-             <property name="alternatingRowColors">
+             <property name="flat">
               <bool>true</bool>
              </property>
-             <property name="viewMode">
-              <enum>QListView::ListMode</enum>
-             </property>
+             <layout class="QGridLayout" name="gridLayout">
+              <property name="margin">
+               <number>0</number>
+              </property>
+              <item row="2" column="0" colspan="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_4">
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="toolTip">
+                   <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
+                  </property>
+                  <property name="text">
+                   <string>Output preview: </string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLabel" name="lblPreview">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="font">
+                   <font>
+                    <weight>50</weight>
+                    <italic>true</italic>
+                    <bold>false</bold>
+                    <underline>false</underline>
+                   </font>
+                  </property>
+                  <property name="toolTip">
+                   <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
+                  </property>
+                  <property name="frameShape">
+                   <enum>QFrame::NoFrame</enum>
+                  </property>
+                  <property name="frameShadow">
+                   <enum>QFrame::Sunken</enum>
+                  </property>
+                  <property name="lineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="midLineWidth">
+                   <number>0</number>
+                  </property>
+                  <property name="text">
+                   <string/>
+                  </property>
+                  <property name="scaledContents">
+                   <bool>false</bool>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>false</bool>
+                  </property>
+                  <property name="textInteractionFlags">
+                   <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="0" column="0">
+               <widget class="QFrame" name="mOperatorsGroupBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Maximum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>27</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>300</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="sizeIncrement">
+                 <size>
+                  <width>20</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="baseSize">
+                 <size>
+                  <width>7</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="layoutDirection">
+                 <enum>Qt::LeftToRight</enum>
+                </property>
+                <property name="autoFillBackground">
+                 <bool>false</bool>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_2">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QPushButton" name="btnEqualPushButton">
+                   <property name="toolTip">
+                    <string>Equal operator</string>
+                   </property>
+                   <property name="text">
+                    <string>=</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnPlusPushButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="toolTip">
+                    <string>Addition operator</string>
+                   </property>
+                   <property name="text">
+                    <string>+</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnMinusPushButton">
+                   <property name="toolTip">
+                    <string>Subtraction operator</string>
+                   </property>
+                   <property name="text">
+                    <string>-</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnDividePushButton">
+                   <property name="toolTip">
+                    <string>Division operator</string>
+                   </property>
+                   <property name="text">
+                    <string>/</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnMultiplyPushButton">
+                   <property name="toolTip">
+                    <string>Multiplication operator</string>
+                   </property>
+                   <property name="text">
+                    <string>*</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnExpButton">
+                   <property name="toolTip">
+                    <string>Power operator</string>
+                   </property>
+                   <property name="text">
+                    <string>^</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnConcatButton">
+                   <property name="toolTip">
+                    <string>String Concatenation</string>
+                   </property>
+                   <property name="text">
+                    <string>||</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnOpenBracketPushButton">
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Maximum">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>10</height>
+                    </size>
+                   </property>
+                   <property name="toolTip">
+                    <string>Open Bracket </string>
+                   </property>
+                   <property name="text">
+                    <string>(</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="btnCloseBracketPushButton">
+                   <property name="toolTip">
+                    <string>Close Bracket </string>
+                   </property>
+                   <property name="text">
+                    <string>)</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="1" column="0" colspan="2">
+               <widget class="QgsCodeEditorSQL" name="txtExpressionString" native="true"/>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
          </widget>
-        </item>
-        <item>
-         <widget class="QWidget" name="mLoadGroupBox" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <spacer name="horizontalSpacer">
+         <widget class="QGroupBox" name="moperationListGroup">
+          <property name="title">
+           <string>Functions</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_5">
+           <item row="0" column="0">
+            <widget class="QSplitter" name="functionsplit">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>5</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QLabel" name="lblLoad">
-             <property name="text">
-              <string>Load values</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btnLoadAll">
-             <property name="text">
-              <string>all unique</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="btnLoadSample">
-             <property name="text">
-              <string>10 samples</string>
-             </property>
+             <widget class="QWidget" name="layoutWidget">
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <item>
+                <widget class="QgsFilterLineEdit" name="txtSearchEdit">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QTreeView" name="expressionTree">
+                 <property name="frameShape">
+                  <enum>QFrame::StyledPanel</enum>
+                 </property>
+                 <property name="frameShadow">
+                  <enum>QFrame::Sunken</enum>
+                 </property>
+                 <property name="editTriggers">
+                  <set>QAbstractItemView::NoEditTriggers</set>
+                 </property>
+                 <property name="uniformRowHeights">
+                  <bool>false</bool>
+                 </property>
+                 <property name="sortingEnabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="animated">
+                  <bool>true</bool>
+                 </property>
+                 <attribute name="headerVisible">
+                  <bool>false</bool>
+                 </attribute>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+             <widget class="QWidget" name="layoutWidget2">
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <widget class="QTextEdit" name="txtHelpText">
+                 <property name="readOnly">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <layout class="QVBoxLayout" name="verticalLayout_2">
+                 <property name="spacing">
+                  <number>0</number>
+                 </property>
+                 <property name="sizeConstraint">
+                  <enum>QLayout::SetDefaultConstraint</enum>
+                 </property>
+                 <property name="topMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item>
+                  <widget class="QFrame" name="mValueGroupBox">
+                   <layout class="QGridLayout" name="gridLayout_7">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <property name="spacing">
+                     <number>0</number>
+                    </property>
+                    <item row="1" column="0" colspan="2">
+                     <widget class="QListWidget" name="mValueListWidget">
+                      <property name="sizePolicy">
+                       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                        <horstretch>0</horstretch>
+                        <verstretch>0</verstretch>
+                       </sizepolicy>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>16777215</height>
+                       </size>
+                      </property>
+                      <property name="autoFillBackground">
+                       <bool>false</bool>
+                      </property>
+                      <property name="editTriggers">
+                       <set>QAbstractItemView::NoEditTriggers</set>
+                      </property>
+                      <property name="showDropIndicator" stdset="0">
+                       <bool>false</bool>
+                      </property>
+                      <property name="alternatingRowColors">
+                       <bool>true</bool>
+                      </property>
+                      <property name="viewMode">
+                       <enum>QListView::ListMode</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="0">
+                     <widget class="QLabel" name="label_4">
+                      <property name="text">
+                       <string>Values</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QWidget" name="mLoadGroupBox" native="true">
+                   <layout class="QHBoxLayout" name="horizontalLayout">
+                    <property name="margin">
+                     <number>0</number>
+                    </property>
+                    <item>
+                     <spacer name="horizontalSpacer">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>5</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QLabel" name="lblLoad">
+                      <property name="text">
+                       <string>Load values</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnLoadAll">
+                      <property name="text">
+                       <string>all unique</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QPushButton" name="btnLoadSample">
+                      <property name="text">
+                       <string>10 samples</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
             </widget>
            </item>
           </layout>
          </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
-     <widget class="QWidget" name="layoutWidget_1">
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QgsCollapsibleGroupBox" name="mOperatorsGroupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>27</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>300</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="sizeIncrement">
-          <size>
-           <width>20</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>7</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="autoFillBackground">
-          <bool>false</bool>
-         </property>
-         <property name="title">
-          <string>Operators</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
-          <property name="spacing">
-           <number>2</number>
-          </property>
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QPushButton" name="btnEqualPushButton">
-            <property name="toolTip">
-             <string>Equal operator</string>
-            </property>
-            <property name="text">
-             <string>=</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnPlusPushButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Addition operator</string>
-            </property>
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnMinusPushButton">
-            <property name="toolTip">
-             <string>Subtraction operator</string>
-            </property>
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnDividePushButton">
-            <property name="toolTip">
-             <string>Division operator</string>
-            </property>
-            <property name="text">
-             <string>/</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnMultiplyPushButton">
-            <property name="toolTip">
-             <string>Multiplication operator</string>
-            </property>
-            <property name="text">
-             <string>*</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnExpButton">
-            <property name="toolTip">
-             <string>Power operator</string>
-            </property>
-            <property name="text">
-             <string>^</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnConcatButton">
-            <property name="toolTip">
-             <string>String Concatenation</string>
-            </property>
-            <property name="text">
-             <string>||</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnOpenBracketPushButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>10</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Open Bracket </string>
-            </property>
-            <property name="text">
-             <string>(</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="btnCloseBracketPushButton">
-            <property name="toolTip">
-             <string>Close Bracket </string>
-            </property>
-            <property name="text">
-             <string>)</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
        </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="title">
+       <string>Function Editor</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item row="1" column="0">
+        <widget class="QgsCodeEditorPython" name="txtPython" native="true"/>
+       </item>
+       <item row="0" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
          </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
+         <property name="topMargin">
+          <number>3</number>
          </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="baseSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Expression</string>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>9</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
-            </property>
-            <property name="text">
-             <string>Output preview: </string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QLabel" name="lblPreview">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <italic>true</italic>
-              <bold>false</bold>
-              <underline>false</underline>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Sunken</enum>
-            </property>
-            <property name="lineWidth">
-             <number>0</number>
-            </property>
-            <property name="midLineWidth">
-             <number>0</number>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-            <property name="scaledContents">
-             <bool>false</bool>
-            </property>
-            <property name="wordWrap">
-             <bool>false</bool>
-            </property>
-            <property name="textInteractionFlags">
-             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" colspan="2">
-           <widget class="QgsCodeEditorSQL" name="txtExpressionString" native="true"/>
-          </item>
-         </layout>
-        </widget>
+         <item>
+          <widget class="QToolButton" name="btnRun">
+           <property name="toolTip">
+            <string>Run the current editor text in QGIS (also saves current script). 
+
+Use this when testing your functions.
+
+Saved scripts are auto loaded on QGIS startup.</string>
+           </property>
+           <property name="text">
+            <string>Run Script</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/console/iconRunScriptConsole.png</normaloff>:/images/themes/default/console/iconRunScriptConsole.png</iconset>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeType">
+            <enum>QSizePolicy::Minimum</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnNewFile">
+           <property name="toolTip">
+            <string>Create a new function file based on the template file.
+
+Change the name of the script and save to allow QGIS to auto load on startup.</string>
+           </property>
+           <property name="text">
+            <string>New file</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/console/iconTabEditorConsole.png</normaloff>:/images/themes/default/console/iconTabEditorConsole.png</iconset>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cmbFileNames">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip">
+            <string>Name of the file to save. 
+
+Existing files are listed here and loaded when selected.</string>
+           </property>
+           <property name="editable">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="btnSaveFile">
+           <property name="toolTip">
+            <string>Save the current script into the users function file folder.</string>
+           </property>
+           <property name="text">
+            <string>Save file</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/console/iconSaveConsole.png</normaloff>:/images/themes/default/console/iconSaveConsole.png</iconset>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonTextUnderIcon</enum>
+           </property>
+           <property name="autoRaise">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
@@ -533,18 +647,20 @@
    <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCodeEditorSQL</class>
    <extends>QWidget</extends>
    <header>qgscodeeditorsql.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsCodeEditorPython</class>
+   <extends>QWidget</extends>
+   <header>qgscodeeditorpython.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

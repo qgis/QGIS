@@ -47,15 +47,21 @@ class lasoverlap(LAStoolsAlgorithm):
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
         self.addParametersFilter1ReturnClassFlagsGUI()
-        self.addParameter(ParameterNumber(lasoverlap.CHECK_STEP, "size of grid used for overlap check", 0, None, 2.0))
-        self.addParameter(ParameterSelection(lasoverlap.ATTRIBUTE, "attribute to check", lasoverlap.ATTRIBUTES, 0))
-        self.addParameter(ParameterSelection(lasoverlap.OPERATION, "operation on attribute per cell", lasoverlap.OPERATIONS, 0))
-        self.addParameter(ParameterBoolean(lasoverlap.CREATE_OVERLAP_RASTER, "create overlap raster", True))
-        self.addParameter(ParameterBoolean(lasoverlap.CREATE_DIFFERENCE_RASTER, "create difference raster", True))
+        self.addParameter(ParameterNumber(lasoverlap.CHECK_STEP,
+            self.tr("size of grid used for overlap check"), 0, None, 2.0))
+        self.addParameter(ParameterSelection(lasoverlap.ATTRIBUTE,
+            self.tr("attribute to check"), lasoverlap.ATTRIBUTES, 0))
+        self.addParameter(ParameterSelection(lasoverlap.OPERATION,
+            self.tr("operation on attribute per cell"), lasoverlap.OPERATIONS, 0))
+        self.addParameter(ParameterBoolean(lasoverlap.CREATE_OVERLAP_RASTER,
+            self.tr("create overlap raster"), True))
+        self.addParameter(ParameterBoolean(lasoverlap.CREATE_DIFFERENCE_RASTER,
+            self.tr("create difference raster"), True))
         self.addParametersRasterOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasoverlap")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersFilter1ReturnClassFlagsCommands(commands)
@@ -70,10 +76,11 @@ class lasoverlap(LAStoolsAlgorithm):
         operation = self.getParameterValue(lasoverlap.OPERATION)
         if operation != 0:
             commands.append("-" + lasoverlap.OPERATIONS[operation])
-        if self.getParameterValue(lasoverlap.CREATE_OVERLAP_RASTER) != True:
+        if not self.getParameterValue(lasoverlap.CREATE_OVERLAP_RASTER):
             commands.append("-no_over")
-        if self.getParameterValue(lasoverlap.CREATE_DIFFERENCE_RASTER) != True:
+        if not self.getParameterValue(lasoverlap.CREATE_DIFFERENCE_RASTER):
             commands.append("-no_diff")
         self.addParametersRasterOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

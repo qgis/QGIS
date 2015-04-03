@@ -144,6 +144,7 @@ namespace pal
 
           struct StackElement
           {
+            StackElement() : m_node( NULL ), m_branchIndex( 0 ) {}
             Node* m_node;
             int m_branchIndex;
           };
@@ -155,10 +156,10 @@ namespace pal
           ~Iterator()                                   { }
 
           /// Is iterator invalid
-          bool IsNull()                                 { return ( m_tos <= 0 ); }
+          bool IsNull() const                           { return ( m_tos <= 0 ); }
 
           /// Is iterator pointing to valid data
-          bool IsNotNull()                              { return ( m_tos > 0 ); }
+          bool IsNotNull() const                        { return ( m_tos > 0 ); }
 
           /// Access the current data element. Caller must be sure iterator is not NULL first.
           DATATYPE& operator*()

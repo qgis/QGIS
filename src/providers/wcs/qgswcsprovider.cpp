@@ -92,6 +92,8 @@ QgsWcsProvider::QgsWcsProvider( QString const &uri )
     , mCachedMemFile( 0 )
     , mCachedGdalDataset( 0 )
     , mCachedViewExtent( 0 )
+    , mCachedViewWidth( 0 )
+    , mCachedViewHeight( 0 )
     , mCoordinateTransform( 0 )
     , mExtentDirty( true )
     , mGetFeatureInfoUrlBase( "" )
@@ -514,7 +516,7 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   // TODO: set block to null values, move that to function and call only if fails
   memset( block, 0, pixelWidth * pixelHeight * QgsRasterBlock::typeSize( dataType( bandNo ) ) );
 
-  // Requested extent must at least partialy overlap coverage extent, otherwise
+  // Requested extent must at least partially overlap coverage extent, otherwise
   // server gives error. QGIS usually does not request blocks outside raster extent
   // (higher level checks) but it is better to do check here as well
   if ( !viewExtent.intersects( mCoverageExtent ) )
@@ -1196,7 +1198,7 @@ int QgsWcsProvider::capabilities() const
   return capability;
 }
 
-QString QgsWcsProvider::coverageMetadata( QgsWcsCoverageSummary coverage )
+QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage )
 {
   QString metadata;
 

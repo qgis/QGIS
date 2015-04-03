@@ -126,9 +126,6 @@ __revision__ = '$Format:%H$'
 #% description: to export features with category (labeled) only. Otherwise all features are exported
 #%end
 
-import sys
-import os
-import string
 try:
     from grass.script import core as grass
 except ImportError:
@@ -155,7 +152,7 @@ def main():
     if user: dsn += " user=" + user
     if password: dsn += " password=" + password
 
-    if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0:
+    if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer) != 0:
          grass.fatal("Cannot export vector to database.")
 
 if __name__ == "__main__":

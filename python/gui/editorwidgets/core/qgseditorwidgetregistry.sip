@@ -27,7 +27,7 @@ class QgsEditorWidgetRegistry : QObject
      * This class is a singleton and has therefore to be accessed with this method instead
      * of a constructor.
      *
-     * @return
+     * @return The one and only instance of the editor widget registry
      */
     static QgsEditorWidgetRegistry* instance();
 
@@ -51,7 +51,7 @@ class QgsEditorWidgetRegistry : QObject
                                     const QgsEditorWidgetConfig& config,
                                     QWidget* editor,
                                     QWidget* parent /TransferThis/,
-                                    const QgsAttributeEditorContext context = QgsAttributeEditorContext() ) /Factory/;
+                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
 
     /**
      * Creates a configuration widget

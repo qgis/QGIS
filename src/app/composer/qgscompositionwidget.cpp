@@ -527,7 +527,11 @@ void QgsCompositionWidget::on_mPageStyleButton_clicked()
   }
 
   QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( mComposition->pageStyleSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer );
+  if ( !newSymbol )
+  {
+    newSymbol = new QgsFillSymbolV2();
+  }
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), coverageLayer, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

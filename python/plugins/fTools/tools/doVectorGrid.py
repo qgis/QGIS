@@ -28,10 +28,11 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL, QVariant, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QDoubleValidator, QMessageBox, QApplication
+from qgis.core import QGis, QgsMapLayerRegistry, QgsMapLayer, QgsRectangle, QgsFields, QgsField, QgsVectorFileWriter, QgsPoint, QgsFeature, QgsGeometry
+
 import ftools_utils
-from qgis.core import *
 from ui_frmVectorGrid import Ui_Dialog
 import math
 
@@ -94,10 +95,6 @@ class Dialog(QDialog, Ui_Dialog):
                     QMessageBox.information(self, self.tr("Vector grid"), self.tr("Please select a raster layer"))
                 else:
                     # get extents and pixel size
-                    xMin = boundBox.xMinimum()
-                    yMin = boundBox.yMinimum()
-                    xMax = boundBox.xMaximum()
-                    yMax = boundBox.yMaximum()
                     boundBox2 = mLayer.extent()
                     dx = math.fabs(boundBox2.xMaximum()-boundBox2.xMinimum()) / mLayer.width()
                     dy = math.fabs(boundBox2.yMaximum()-boundBox2.yMinimum()) / mLayer.height()
@@ -130,10 +127,10 @@ class Dialog(QDialog, Ui_Dialog):
         else:
             try:
                 boundBox = QgsRectangle(
-                float( self.xMin.text() ),
-                float( self.yMin.text() ),
-                float( self.xMax.text() ),
-                float( self.yMax.text() ) )
+                    float( self.xMin.text() ),
+                    float( self.yMin.text() ),
+                    float( self.xMax.text() ),
+                    float( self.yMax.text() ) )
             except:
                 QMessageBox.information(self, self.tr("Vector grid"), self.tr("Invalid extent coordinates entered"))
             xSpace = self.spnX.value()
@@ -159,6 +156,9 @@ class Dialog(QDialog, Ui_Dialog):
     def compute( self, bound, xOffset, yOffset, polygon ):
         crs = None
         layer = ftools_utils.getMapLayerByName(unicode(self.inShape.currentText()))
+        
+        if self.angle.value() != 0.0:
+            bound = self.initRotation(bound)
 
         if layer is None:
           crs = self.iface.mapCanvas().mapRenderer().destinationCrs()
@@ -171,10 +171,10 @@ class Dialog(QDialog, Ui_Dialog):
         fieldCount = 1
 
         if polygon:
-            fields.append( QgsField("XMIN", QVariant.Double) )
-            fields.append( QgsField("XMAX", QVariant.Double) )
-            fields.append( QgsField("YMIN", QVariant.Double) )
-            fields.append( QgsField("YMAX", QVariant.Double) )
+            fields.append( QgsField("X_MIN", QVariant.Double) )
+            fields.append( QgsField("X_MAX", QVariant.Double) )
+            fields.append( QgsField("Y_MIN", QVariant.Double) )
+            fields.append( QgsField("Y_MAX", QVariant.Double) )
             fieldCount = 5
             check = QFile(self.shapefileName)
             if check.exists():
@@ -204,6 +204,11 @@ class Dialog(QDialog, Ui_Dialog):
             while y >= bound.yMinimum():
                 pt1 = QgsPoint(bound.xMinimum(), y)
                 pt2 = QgsPoint(bound.xMaximum(), y)
+                
+                if self.angle.value() != 0.0:
+                    self.rotatePoint(pt1)
+                    self.rotatePoint(pt2)
+
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
                 outFeat.setAttribute(0, idVar)
@@ -224,6 +229,11 @@ class Dialog(QDialog, Ui_Dialog):
             while x <= bound.xMaximum():
                 pt1 = QgsPoint(x, bound.yMaximum())
                 pt2 = QgsPoint(x, bound.yMinimum())
+
+                if self.angle.value() != 0.0:
+                    self.rotatePoint(pt1)
+                    self.rotatePoint(pt2)
+
                 line = [pt1, pt2]
                 outFeat.setGeometry(outGeom.fromPolyline(line))
                 outFeat.setAttribute(0, idVar)
@@ -244,11 +254,20 @@ class Dialog(QDialog, Ui_Dialog):
             while y >= bound.yMinimum():
                 x = bound.xMinimum()
                 while x <= bound.xMaximum():
+                        
                     pt1 = QgsPoint(x, y)
                     pt2 = QgsPoint(x + xOffset, y)
                     pt3 = QgsPoint(x + xOffset, y - yOffset)
                     pt4 = QgsPoint(x, y - yOffset)
                     pt5 = QgsPoint(x, y)
+                    
+                    if self.angle.value() != 0.0:
+                        self.rotatePoint(pt1)
+                        self.rotatePoint(pt2)
+                        self.rotatePoint(pt3)
+                        self.rotatePoint(pt4)
+                        self.rotatePoint(pt5)
+                        
                     polygon = [[pt1, pt2, pt3, pt4, pt5]]
                     outFeat.setGeometry(outGeom.fromPolygon(polygon))
                     outFeat.setAttribute(0, idVar)
@@ -266,6 +285,40 @@ class Dialog(QDialog, Ui_Dialog):
 
         self.progressBar.setValue( 100 )
         del writer
+
+    def initRotation(self,  boundBox):
+        # calculate rotation parameters..interpreted from affine transformation plugin
+
+        anchorPoint = boundBox.center()
+        # We convert the angle from degree to radiant
+        rad = self.angle.value()  * math.pi / 180.0
+
+        a = math.cos( rad );
+        b = -1 * math.sin( rad );
+        c = anchorPoint.x() - math.cos( rad ) * anchorPoint.x() + math.sin( rad ) * anchorPoint.y();
+        d = math.sin( rad );
+        e = math.cos( rad );
+        f = anchorPoint.y() - math.sin( rad ) * anchorPoint.x() - math.cos( rad ) * anchorPoint.y();
+
+        self.rotationParams = (a,b,c,d,e,f)
+        
+        # Rotate the bounding box to set a new extent
+        ptMin = QgsPoint(boundBox.xMinimum(),  boundBox.yMinimum())
+        ptMax = QgsPoint(boundBox.xMaximum(),  boundBox.yMaximum())
+        
+        self.rotatePoint(ptMin)
+        self.rotatePoint(ptMax)
+        
+        newBoundBox = QgsRectangle(ptMin,  ptMax)
+        newBoundBox.combineExtentWith(boundBox)
+        
+        return newBoundBox
+
+    def rotatePoint(self,  point):
+        x = self.rotationParams[0] * point.x() + self.rotationParams[1] * point.y() + self.rotationParams[2];
+        y = self.rotationParams[3] * point.x() + self.rotationParams[4] * point.y() + self.rotationParams[5];
+        point.setX(x)
+        point.setY(y)
 
     def outFile(self):
         self.outShape.clear()

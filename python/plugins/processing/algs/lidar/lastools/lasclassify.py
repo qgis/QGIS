@@ -40,12 +40,14 @@ class lasclassify(LAStoolsAlgorithm):
         self.addParametersPointInputGUI()
         self.addParametersHorizontalAndVerticalFeetGUI()
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclassify")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         self.addParametersHorizontalAndVerticalFeetCommands(commands)
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

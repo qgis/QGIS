@@ -129,13 +129,16 @@ void QgsRendererV2Widget::changeSymbolWidth()
   }
 
   bool ok;
-  double width = QInputDialog::getDouble( this, tr( "Width" ), tr( "Change symbol width" ), dynamic_cast<QgsLineSymbolV2*>( symbolList.at( 0 ) )->width(), 0.0, 999999, 1, &ok );
+  QgsLineSymbolV2* line = dynamic_cast<QgsLineSymbolV2*>( symbolList.at( 0 ) ) ;
+  double width = QInputDialog::getDouble( this, tr( "Width" ), tr( "Change symbol width" ), line ? line->width() : 0.0 , 0.0, 999999, 1, &ok );
   if ( ok )
   {
     QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
     for ( ; symbolIt != symbolList.end(); ++symbolIt )
     {
-      dynamic_cast<QgsLineSymbolV2*>( *symbolIt )->setWidth( width );
+      line = dynamic_cast<QgsLineSymbolV2*>( *symbolIt );
+      if ( line )
+        line->setWidth( width );
     }
     refreshSymbolView();
   }
@@ -150,13 +153,17 @@ void QgsRendererV2Widget::changeSymbolSize()
   }
 
   bool ok;
-  double size = QInputDialog::getDouble( this, tr( "Size" ), tr( "Change symbol size" ), dynamic_cast<QgsMarkerSymbolV2*>( symbolList.at( 0 ) )->size(), 0.0, 999999, 1, &ok );
+  QgsMarkerSymbolV2* marker = dynamic_cast<QgsMarkerSymbolV2*>( symbolList.at( 0 ) );
+
+  double size = QInputDialog::getDouble( this, tr( "Size" ), tr( "Change symbol size" ), marker ? marker->size() : 0.0 , 0.0, 999999, 1, &ok );
   if ( ok )
   {
     QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
     for ( ; symbolIt != symbolList.end(); ++symbolIt )
     {
-      dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setSize( size );
+      marker = dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt );
+      if ( marker )
+        marker->setSize( size );
     }
     refreshSymbolView();
   }

@@ -128,7 +128,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsPoint in Destination Coordinate System
      */
-    QgsPoint transform( const QgsPoint p, TransformDirection direction = ForwardTransform ) const;
+    QgsPoint transform( const QgsPoint &p, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * longitude line is required
      * @return QgsRectangle in Destination Coordinate System
      */
-    QgsRectangle transformBoundingBox( const QgsRectangle theRect, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
+    QgsRectangle transformBoundingBox( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
 
     // Same as for the other transform() functions, but alters the x
     // and y variables in place. The second one works with good old-fashioned
@@ -182,7 +182,7 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * @param direction TransformDirection (defaults to ForwardTransform)
      * @return QgsRectangle in Destination Coordinate System
      */
-    QgsRectangle transform( const QgsRectangle theRect, TransformDirection direction = ForwardTransform ) const;
+    QgsRectangle transform( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform ) const;
 
     /*! Transform an array of coordinates to a different Coordinate System
      * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
@@ -200,12 +200,12 @@ class CORE_EXPORT QgsCoordinateTransform : public QObject
      * Flag to indicate whether the coordinate systems have been initialised
      * @return true if initialised, otherwise false
      */
-    bool isInitialised() const {return mInitialisedFlag;};
+    bool isInitialised() const {return mInitialisedFlag;}
 
     /*! See if the transform short circuits because src and dest are equivalent
      * @return bool True if it short circuits
      */
-    bool isShortCircuited() {return mShortCircuit;};
+    bool isShortCircuited() {return mShortCircuit;}
 
     /*! Change the destination coordinate system by passing it a qgis srsid
     * A QGIS srsid is a unique key value to an entry on the tbl_srs in the

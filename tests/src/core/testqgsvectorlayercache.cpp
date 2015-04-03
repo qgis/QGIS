@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QTemporaryFile>
 
@@ -31,9 +31,15 @@
  *
  * @see QgsVectorLayerCache
  */
-class TestVectorLayerCache: public QObject
+class TestVectorLayerCache : public QObject
 {
     Q_OBJECT
+  public:
+    TestVectorLayerCache()
+        : mVectorLayerCache( 0 )
+        , mFeatureIdIndex( 0 )
+        , mPointsLayer( 0 )
+    {}
 
   private slots:
     void initTestCase();      // will be called before the first testfunction is executed.
@@ -119,7 +125,6 @@ void TestVectorLayerCache::cleanupTestCase()
 
 
   delete mPointsLayer;
-  mPointsLayer = NULL;
 
   // Clean tmp files
   QMap<QString, QString>::const_iterator it;
@@ -137,6 +142,8 @@ void TestVectorLayerCache::cleanupTestCase()
 
   // also clean up newly created .qix file
   QFile::remove( QString( TEST_DATA_DIR ) + QDir::separator() + "points.qix" );
+
+  QgsApplication::exitQgis();
 }
 
 void TestVectorLayerCache::testCacheOverflow()
@@ -233,5 +240,5 @@ void TestVectorLayerCache::onCommittedFeaturesAdded( QString layerId, QgsFeature
 }
 
 QTEST_MAIN( TestVectorLayerCache )
-#include "moc_testqgsvectorlayercache.cxx"
+#include "testqgsvectorlayercache.moc"
 

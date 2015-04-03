@@ -8,7 +8,7 @@ class QgsFileDropEdit: QLineEdit
 #include <qgsfiledropedit.h>
 %End
   public:
-    QgsFileDropEdit( QWidget *parent = 0 );
+    QgsFileDropEdit( QWidget *parent /TransferThis/ = 0 );
     virtual ~QgsFileDropEdit();
 
     bool isDirOnly() const;

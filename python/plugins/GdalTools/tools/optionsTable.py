@@ -23,14 +23,14 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import SIGNAL
+from PyQt4.QtGui import QWidget, QTableWidgetItem
 
 from ui_optionsTable import Ui_GdalToolsOptionsTable as Ui_OptionsTable
 
 class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
 
-  def __init__(self, parent = None):
+  def __init__(self, parent=None):
       QWidget.__init__(self, parent)
 
       self.setupUi(self)
@@ -49,7 +49,7 @@ class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
   def addNewRow(self):
       self.table.insertRow(self.table.rowCount())
       # select the added row
-      newRow = self.table.rowCount()-1;
+      newRow = self.table.rowCount()-1
       item = QTableWidgetItem()
       self.table.setItem(newRow, 0, item)
       self.table.setCurrentItem(item)
@@ -76,4 +76,3 @@ class GdalToolsOptionsTable(QWidget, Ui_OptionsTable):
 
         options.append( name.text() + "=" + value.text())
       return options
-

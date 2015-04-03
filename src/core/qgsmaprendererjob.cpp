@@ -27,6 +27,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerrenderer.h"
+#include "qgsmaplayerstylemanager.h"
 #include "qgsmaprenderercache.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayerrenderer.h"
@@ -54,6 +55,11 @@ QgsMapRendererJob::Errors QgsMapRendererJob::errors() const
 void QgsMapRendererJob::setCache( QgsMapRendererCache* cache )
 {
   mCache = cache;
+}
+
+const QgsMapSettings& QgsMapRendererJob::mapSettings() const
+{
+  return mSettings;
 }
 
 
@@ -160,12 +166,11 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       continue;
     }
 
-    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5  blendmode:%6" )
+    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  blendmode:%5" )
                  .arg( ml->name() )
                  .arg( ml->minimumScale() )
                  .arg( ml->maximumScale() )
                  .arg( ml->hasScaleBasedVisibility() )
-                 .arg( ml->extent().toString() )
                  .arg( ml->blendMode() )
                );
 
@@ -180,7 +185,7 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
 
     if ( mSettings.hasCrsTransformEnabled() )
     {
-      ct = mSettings.layerTransfrom( ml );
+      ct = mSettings.layerTransform( ml );
       if ( ct )
       {
         reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
@@ -250,7 +255,14 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter* painter, QgsPalLabelin
       job.context.setPainter( mypPainter );
     }
 
+    bool hasStyleOverride = mSettings.layerStyleOverrides().contains( ml->id() );
+    if ( hasStyleOverride )
+      ml->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
+
     job.renderer = ml->createMapRenderer( job.context );
+
+    if ( hasStyleOverride )
+      ml->styleManager()->restoreOverrideStyle();
 
     if ( mRequestedGeomCacheForLayers.contains( ml->id() ) )
     {

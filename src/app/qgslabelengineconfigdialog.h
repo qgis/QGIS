@@ -28,7 +28,6 @@ class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEng
 
   public slots:
     void onOK();
-    /** @note Added in QGIS 1.9 */
     void setDefaults();
 
   protected:

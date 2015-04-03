@@ -25,7 +25,6 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
 from processing.core.Processing import Processing
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.parameters import ParameterSelection
@@ -61,6 +60,7 @@ def algoptions(name):
 def alghelp(name):
     alg = Processing.getAlgorithm(name)
     if alg is not None:
+        alg = alg.getCopy()
         print str(alg)
         algoptions(name)
     else:

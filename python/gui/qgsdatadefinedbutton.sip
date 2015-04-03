@@ -22,7 +22,7 @@ class QgsDataDefinedButton :  QToolButton
      * @param datatypes The expected data types to be compared against the variant type of the QgsField from data source and expression result
      * @param description The description of expected input data
      */
-    QgsDataDefinedButton( QWidget* parent = 0,
+    QgsDataDefinedButton( QWidget* parent /TransferThis/ = 0,
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
                           DataTypes datatypes = AnyType,
@@ -146,6 +146,7 @@ class QgsDataDefinedButton :  QToolButton
     static QString intPosOneDesc();
     static QString doubleDesc();
     static QString doublePosDesc();
+    static QString double0to1Desc();
     static QString doubleXYDesc();
     static QString double180RotDesc();
     static QString intTranspDesc();
@@ -158,6 +159,19 @@ class QgsDataDefinedButton :  QToolButton
     static QString penJoinStyleDesc();
     static QString blendModesDesc();
     static QString svgPathDesc();
+    static QString filePathDesc();
+    static QString paperSizeDesc();
+    static QString paperOrientationDesc();
+    static QString horizontalAnchorDesc();
+    static QString verticalAnchorDesc();
+    static QString gradientTypeDesc();
+    static QString gradientCoordModeDesc();
+    static QString gradientSpreadDesc();
+    static QString lineStyleDesc();
+    static QString capStyleDesc();
+    static QString fillStyleDesc();
+    static QString markerStyleDesc();
+    static QString customDashDesc();
 
   public slots:
     /**

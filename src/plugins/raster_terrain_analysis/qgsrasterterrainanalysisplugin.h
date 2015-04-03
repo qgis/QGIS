@@ -34,9 +34,9 @@ class QgsRasterTerrainAnalysisPlugin: public QObject, public QgisPlugin
     ~QgsRasterTerrainAnalysisPlugin();
 
     /**initialize connection to GUI*/
-    void initGui();
+    void initGui() override;
     /**Unload the plugin and cleanup the GUI*/
-    void unload();
+    void unload() override;
 
   private slots:
     void hillshade();

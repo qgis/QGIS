@@ -99,7 +99,7 @@ class eVis: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
 
     //! Main button actions
     void launchDatabaseConnection();
@@ -107,7 +107,7 @@ class eVis: public QObject, public QgisPlugin
     void launchEventBrowser();
 
     //! unload the plugin
-    void unload();
+    void unload() override;
 
     //! show the help document
     void help();

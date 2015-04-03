@@ -59,6 +59,10 @@ int QgsGmlFeatureClass::fieldIndex( const QString & name )
 // --------------------------- QgsGmlSchema -------------------------------
 QgsGmlSchema::QgsGmlSchema()
     : QObject()
+    , mCurrentFeature( NULL )
+    , mFeatureCount( 0 )
+    , mLevel( 0 )
+    , mSkipLevel( std::numeric_limits<int>::max() )
 {
   mGeometryTypes << "Point" << "MultiPoint"
   << "LineString" << "MultiLineString"
@@ -356,7 +360,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
   Q_UNUSED( attr );
   mLevel++;
 
-  QString elementName( el );
+  QString elementName = QString::fromUtf8( el );
   QgsDebugMsgLevel( QString( "-> %1 %2 %3" ).arg( mLevel ).arg( elementName ).arg( mLevel >= mSkipLevel ? "skip" : "" ), 5 );
 
   if ( mLevel >= mSkipLevel )
@@ -455,7 +459,7 @@ void QgsGmlSchema::startElement( const XML_Char* el, const XML_Char** attr )
 
 void QgsGmlSchema::endElement( const XML_Char* el )
 {
-  QString elementName( el );
+  QString elementName = QString::fromUtf8( el );
   QgsDebugMsgLevel( QString( "<- %1 %2" ).arg( mLevel ).arg( elementName ), 5 );
 
   if ( mLevel >= mSkipLevel )

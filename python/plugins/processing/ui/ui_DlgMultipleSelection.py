@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'DlgMultipleSelection.ui'
 #
-# Created: Tue May 20 13:40:43 2014
-#      by: PyQt4 UI code generator 4.9.6
+# Created: Fri Nov 21 13:25:48 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -34,7 +34,6 @@ class Ui_DlgMultipleSelection(object):
         self.lstLayers = QtGui.QListView(DlgMultipleSelection)
         self.lstLayers.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
         self.lstLayers.setAlternatingRowColors(True)
-        self.lstLayers.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.lstLayers.setObjectName(_fromUtf8("lstLayers"))
         self.horizontalLayout.addWidget(self.lstLayers)
         self.buttonBox = QtGui.QDialogButtonBox(DlgMultipleSelection)

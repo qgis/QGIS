@@ -1,5 +1,5 @@
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 
 #include "qgsapplication.h"
@@ -276,4 +276,4 @@ void TestQgsMapRendererJob::testCache()
 
 
 QTEST_MAIN( TestQgsMapRendererJob )
-#include "moc_testmaprendererjob.cxx"
+#include "testmaprendererjob.moc"

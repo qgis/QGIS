@@ -24,6 +24,7 @@
 #include "qgsrulebasedrendererv2widget.h"
 #include "qgspointdisplacementrendererwidget.h"
 #include "qgsinvertedpolygonrendererwidget.h"
+#include "qgsheatmaprendererwidget.h"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -68,11 +69,15 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
   _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
   _initRenderer( "invertedPolygonRenderer", QgsInvertedPolygonRendererWidget::create );
+  _initRenderer( "heatmapRenderer", QgsHeatmapRendererWidget::create );
   initialized = true;
 }
 
 QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* layer, QgsStyleV2* style, bool embedded )
-    : mLayer( layer ), mStyle( style ), mActiveWidget( NULL )
+    : mLayer( layer )
+    , mStyle( style )
+    , mActiveWidget( NULL )
+    , mPaintEffect( 0 )
 {
   setupUi( this );
 
@@ -102,6 +107,13 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   connect( mLayerTransparencySlider, SIGNAL( valueChanged( int ) ), mLayerTransparencySpnBx, SLOT( setValue( int ) ) );
   connect( mLayerTransparencySpnBx, SIGNAL( valueChanged( int ) ), mLayerTransparencySlider, SLOT( setValue( int ) ) );
 
+  //paint effect widget
+  if ( mLayer->rendererV2() && mLayer->rendererV2()->paintEffect() )
+  {
+    mPaintEffect = mLayer->rendererV2()->paintEffect()->clone();
+    mEffectWidget->setPaintEffect( mPaintEffect );
+  }
+
   QPixmap pix;
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QStringList renderers = reg->renderersList();
@@ -130,6 +142,11 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   // no renderer found... this mustn't happen
   Q_ASSERT( false && "there must be a renderer!" );
 
+}
+
+QgsRendererV2PropertiesDialog::~QgsRendererV2PropertiesDialog()
+{
+  delete mPaintEffect;
 }
 
 
@@ -194,6 +211,7 @@ void QgsRendererV2PropertiesDialog::apply()
   QgsFeatureRendererV2* renderer = mActiveWidget->renderer();
   if ( renderer )
   {
+    renderer->setPaintEffect( mPaintEffect->clone() );
     mLayer->setRendererV2( renderer->clone() );
   }
 

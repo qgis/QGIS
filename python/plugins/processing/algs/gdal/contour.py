@@ -25,10 +25,6 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
-from qgis.core import *
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 
 from processing.core.parameters import ParameterRaster
@@ -51,19 +47,19 @@ class contour(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Contour'
         self.group = '[GDAL] Extraction'
-        self.addParameter(ParameterRaster(self.INPUT_RASTER, 'Input layer',
-                          False))
+        self.addParameter(ParameterRaster(self.INPUT_RASTER,
+            self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(self.INTERVAL,
-                          'Interval between contour lines', 0.0,
-                          99999999.999999, 10.0))
+            self.tr('Interval between contour lines'), 0.0,
+            99999999.999999, 10.0))
         self.addParameter(ParameterString(self.FIELD_NAME,
-            'Attribute name (if not set, no elevation attribute is attached)',
+            self.tr('Attribute name (if not set, no elevation attribute is attached)'),
             'ELEV', optional=True))
         self.addParameter(ParameterString(self.EXTRA,
-                          'Additional creation parameters', '', optional=True))
+            self.tr('Additional creation parameters'), '', optional=True))
 
         self.addOutput(OutputVector(self.OUTPUT_VECTOR,
-                       'Output file for contour lines (vector)'))
+            self.tr('Output file for contour lines (vector)')))
 
     def processAlgorithm(self, progress):
         interval = str(self.getParameterValue(self.INTERVAL))

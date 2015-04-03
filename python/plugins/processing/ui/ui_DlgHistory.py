@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'DlgHistory.ui'
 #
-# Created: Fri Sep 13 14:15:41 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:47 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,15 +12,24 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgHistory(object):
     def setupUi(self, DlgHistory):
         DlgHistory.setObjectName(_fromUtf8("DlgHistory"))
         DlgHistory.resize(800, 500)
         self.verticalLayout = QtGui.QVBoxLayout(DlgHistory)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setMargin(9)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.splitter = QtGui.QSplitter(DlgHistory)
         self.splitter.setOrientation(QtCore.Qt.Vertical)
@@ -45,5 +54,5 @@ class Ui_DlgHistory(object):
         QtCore.QMetaObject.connectSlotsByName(DlgHistory)
 
     def retranslateUi(self, DlgHistory):
-        DlgHistory.setWindowTitle(QtGui.QApplication.translate("DlgHistory", "History and log", None, QtGui.QApplication.UnicodeUTF8))
+        DlgHistory.setWindowTitle(_translate("DlgHistory", "History and log", None))
 

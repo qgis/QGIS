@@ -46,7 +46,6 @@ QgsColorSchemeRegistry *QgsColorSchemeRegistry::instance()
 
 QgsColorSchemeRegistry::QgsColorSchemeRegistry()
 {
-
 }
 
 QgsColorSchemeRegistry::~QgsColorSchemeRegistry()

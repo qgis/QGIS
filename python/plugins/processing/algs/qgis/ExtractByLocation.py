@@ -25,11 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeatureRequest, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterBoolean
+from processing.core.parameters import ParameterGeometryPredicate
 from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
@@ -38,79 +37,40 @@ class ExtractByLocation(GeoAlgorithm):
 
     INPUT = 'INPUT'
     INTERSECT = 'INTERSECT'
-    TOUCHES = 'TOUCHES'
-    OVERLAPS = 'OVERLAPS'
-    WITHIN = 'WITHIN'
+    PREDICATE = 'PREDICATE'
     OUTPUT = 'OUTPUT'
-
-    METHODS = ['creating new selection', 'adding to current selection',
-               'removing from current selection']
-    opFlags = 0
-    operators = {'TOUCHES':1,'OVERLAPS':2,'WITHIN':4}
 
     def defineCharacteristics(self):
         self.name = 'Extract by location'
         self.group = 'Vector selection tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Layer to select from',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Layer to select from'),
+            [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.INTERSECT,
-                          'Additional layer (intersection layer)',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterBoolean(self.TOUCHES,
-                          'Include input features that touch the selection features',
-                          [True]))
-        self.addParameter(ParameterBoolean(self.OVERLAPS,
-                          'Include input features that overlap/cross the selection features',
-                          [True]))
-        self.addParameter(ParameterBoolean(self.WITHIN,
-                          'Include input features completely within the selection features',
-                          [True]))
-        self.addOutput(OutputVector(self.OUTPUT, 'Selection'))
+            self.tr('Additional layer (intersection layer)'),
+            [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterGeometryPredicate(self.PREDICATE,
+            self.tr('Geometric predicate'),
+            left=self.INPUT, right=self.INTERSECT))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Selection')))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
         layer = dataobjects.getObjectFromUri(filename)
         filename = self.getParameterValue(self.INTERSECT)
         selectLayer = dataobjects.getObjectFromUri(filename)
+        predicates = self.getParameterValue(self.PREDICATE)
+
         index = vector.spatialindex(layer)
-
-        def _points_op(geomA,geomB):
-            return geomA.intersects(geomB)
-
-        def _poly_lines_op(geomA,geomB):
-            if geomA.disjoint(geomB):
-                return False
-            intersects = False
-            if self.opFlags & self.operators['TOUCHES']:
-                intersects |= geomA.touches(geomB)
-            if not intersects and (self.opFlags & self.operators['OVERLAPS']):
-                if geomB.type() == QGis.Line or geomA.type() == QGis.Line:
-                    intersects |= geomA.crosses(geomB)
-                else:
-                    intersects |= geomA.overlaps(geomB)
-            if not intersects and (self.opFlags & self.operators['WITHIN']):
-                intersects |= geomA.contains(geomB)
-            return intersects
-
-        def _sp_operator():
-            if layer.geometryType() == QGis.Point:
-                return _points_op
-            else:
-                return _poly_lines_op
-
-        self.opFlags = 0
-        if self.getParameterValue(self.TOUCHES):
-            self.opFlags |= self.operators['TOUCHES']
-        if self.getParameterValue(self.OVERLAPS):
-            self.opFlags |= self.operators['OVERLAPS']
-        if self.getParameterValue(self.WITHIN):
-            self.opFlags |= self.operators['WITHIN']
-
-        sp_operator = _sp_operator()
 
         output = self.getOutputFromName(self.OUTPUT)
         writer = output.getVectorWriter(layer.pendingFields(),
                 layer.dataProvider().geometryType(), layer.crs())
+
+        if 'disjoint' in predicates:
+            disjoinSet = []
+            for feat in vector.features(layer):
+                disjoinSet.append(feat.id())
 
         geom = QgsGeometry()
         selectedSet = []
@@ -118,16 +78,44 @@ class ExtractByLocation(GeoAlgorithm):
         features = vector.features(selectLayer)
         featureCount = len(features)
         total = 100.0 / float(len(features))
-        for current,f in enumerate(features):
+        for current, f in enumerate(features):
             geom = QgsGeometry(f.geometry())
             intersects = index.intersects(geom.boundingBox())
             for i in intersects:
                 request = QgsFeatureRequest().setFilterFid(i)
                 feat = layer.getFeatures(request).next()
                 tmpGeom = QgsGeometry(feat.geometry())
-                if sp_operator(geom,tmpGeom):
-                    selectedSet.append(feat.id())
+                res = False
+                for predicate in predicates:
+                    if predicate == 'disjoint':
+                        if tmpGeom.intersects(geom):
+                            try:
+                                disjoinSet.remove(feat.id())
+                            except:
+                                pass  # already removed
+                    else:
+                        if predicate == 'intersects':
+                            res = tmpGeom.intersects(geom)
+                        elif predicate == 'contains':
+                            res = tmpGeom.contains(geom)
+                        elif predicate == 'equals':
+                            res = tmpGeom.equals(geom)
+                        elif predicate == 'touches':
+                            res = tmpGeom.touches(geom)
+                        elif predicate == 'overlaps':
+                            res = tmpGeom.overlaps(geom)
+                        elif predicate == 'within':
+                            res = tmpGeom.within(geom)
+                        elif predicate == 'crosses':
+                            res = tmpGeom.crosses(geom)
+                        if res:
+                            selectedSet.append(feat.id())
+                            break
+
             progress.setPercentage(int(current * total))
+
+        if 'disjoint' in predicates:
+            selectedSet = selectedSet + disjoinSet
 
         for i, f in enumerate(vector.features(layer)):
             if f.id() in selectedSet:

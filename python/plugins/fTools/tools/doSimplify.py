@@ -28,11 +28,10 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import QObject, SIGNAL, QThread, QMutex, QFile
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
 
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import QGis, QgsVectorFileWriter, QgsPoint, QgsGeometry, QgsFeature
 
 import ftools_utils
 
@@ -108,9 +107,10 @@ class Dialog( QDialog, Ui_Dialog ):
                                     self.spnTolerance.value(), True, outFileName, self.encoding )
     else:
       res = QMessageBox.warning( self, self.tr( "Warning"),
-                                 self.tr( "Currently QGIS doesn't allow simultaneous access from "
-                                 "different threads to the same datasource. Make sure your layer's "
-                                 "attribute tables are closed. Continue?"),
+                                 self.tr(
+                                     "Currently QGIS doesn't allow simultaneous access from "
+                                     "different threads to the same datasource. Make sure your layer's "
+                                     "attribute tables are closed. Continue?"),
                                  QMessageBox.Yes | QMessageBox.No )
       if res == QMessageBox.No:
         return
@@ -157,7 +157,7 @@ class Dialog( QDialog, Ui_Dialog ):
     self.restoreGui()
 
   def stopProcessing( self ):
-    if self.workThread != None:
+    if self.workThread is not None:
       self.workThread.stop()
       self.workThread = None
 
@@ -377,7 +377,7 @@ class GeomThread( QThread ):
     if self.inputLayer.isEditable():
       self.inputLayer.endEditCommand()
 
-    if shapeFileWriter != None:
+    if shapeFileWriter is not None:
       del shapeFileWriter
 
     if not interrupted:
@@ -497,7 +497,7 @@ class GeomThread( QThread ):
     if self.inputLayer.isEditable():
       self.inputLayer.endEditCommand()
 
-    if shapeFileWriter != None:
+    if shapeFileWriter is not None:
       del shapeFileWriter
 
     if not interrupted:

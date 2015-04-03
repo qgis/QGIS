@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'DlgResults.ui'
 #
-# Created: Fri Sep 13 14:16:05 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:48 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,15 +12,24 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgResults(object):
     def setupUi(self, DlgResults):
         DlgResults.setObjectName(_fromUtf8("DlgResults"))
         DlgResults.resize(623, 515)
         self.verticalLayout = QtGui.QVBoxLayout(DlgResults)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setMargin(9)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.splitter = QtGui.QSplitter(DlgResults)
         self.splitter.setOrientation(QtCore.Qt.Horizontal)
@@ -47,6 +56,6 @@ class Ui_DlgResults(object):
         QtCore.QMetaObject.connectSlotsByName(DlgResults)
 
     def retranslateUi(self, DlgResults):
-        DlgResults.setWindowTitle(QtGui.QApplication.translate("DlgResults", "Results", None, QtGui.QApplication.UnicodeUTF8))
+        DlgResults.setWindowTitle(_translate("DlgResults", "Results", None))
 
 from PyQt4 import QtWebKit

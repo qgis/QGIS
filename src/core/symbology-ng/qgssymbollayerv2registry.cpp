@@ -46,6 +46,8 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsGradientFillSymbolLayerV2::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "ShapeburstFill", QObject::tr( "Shapeburst fill" ), QgsSymbolV2::Fill,
                       QgsShapeburstFillSymbolLayerV2::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "RasterFill", QObject::tr( "Raster image fill" ), QgsSymbolV2::Fill,
+                      QgsRasterFillSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QObject::tr( "SVG fill" ), QgsSymbolV2::Fill,
                       QgsSVGFillSymbolLayer::create, QgsSVGFillSymbolLayer::createFromSld ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "CentroidFill", QObject::tr( "Centroid fill" ), QgsSymbolV2::Fill,

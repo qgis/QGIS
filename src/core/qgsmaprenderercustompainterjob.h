@@ -35,11 +35,11 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter );
     ~QgsMapRendererCustomPainterJob();
 
-    virtual void start();
-    virtual void cancel();
-    virtual void waitForFinished();
-    virtual bool isActive() const;
-    virtual QgsLabelingResults* takeLabelingResults();
+    virtual void start() override;
+    virtual void cancel() override;
+    virtual void waitForFinished() override;
+    virtual bool isActive() const override;
+    virtual QgsLabelingResults* takeLabelingResults() override;
 
     //! @note not available in python bindings
     const LayerRenderJobs& jobs() const { return mLayerJobs; }

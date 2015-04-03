@@ -63,7 +63,7 @@ class QgisAlgsTest(unittest.TestCase):
             'PT_NUM_A',
             'NUMPOINTS',
             None,
-            )
+        )
         output = outputs['OUTPUT']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -89,7 +89,7 @@ class QgisAlgsTest(unittest.TestCase):
             'PT_ST_A',
             'NUMPOINTS',
             None,
-            )
+        )
         output = outputs['OUTPUT']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -116,7 +116,7 @@ class QgisAlgsTest(unittest.TestCase):
             1,
             0,
             None,
-            )
+        )
         output = outputs['SAVENAME']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -162,7 +162,7 @@ class QgisAlgsTest(unittest.TestCase):
             'LENGTH',
             'COUNT',
             None,
-            )
+        )
         output = outputs['OUTPUT']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -191,7 +191,7 @@ class QgisAlgsTest(unittest.TestCase):
             0,
             0,
             None,
-            )
+        )
         output = outputs['SAVENAME']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -222,7 +222,7 @@ class QgisAlgsTest(unittest.TestCase):
             0,
             0,
             None,
-            )
+        )
         output = outputs['SAVENAME']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -253,7 +253,7 @@ class QgisAlgsTest(unittest.TestCase):
             0,
             3,
             None,
-            )
+        )
         output = outputs['SAVENAME']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -334,7 +334,7 @@ class QgisAlgsTest(unittest.TestCase):
             'PERIM',
             'HEIGHT',
             'WIDTH',
-            ]
+        ]
         expectedtypes = [
             'Real',
             'Real',
@@ -346,7 +346,7 @@ class QgisAlgsTest(unittest.TestCase):
             'Real',
             'Real',
             'Real',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -366,7 +366,7 @@ class QgisAlgsTest(unittest.TestCase):
             '408.106853811652',
             '93.4659406356514',
             '110.587486270175',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270759.84833131 4458902.27146471,270759.84833131 4458995.73740534,270870.43581758 4458995.73740534,270870.43581758 4458902.27146471,270759.84833131 4458902.27146471))'
@@ -389,7 +389,7 @@ class QgisAlgsTest(unittest.TestCase):
             'PERIM',
             'HEIGHT',
             'WIDTH',
-            ]
+        ]
         expectedtypes = [
             'Real',
             'Real',
@@ -401,7 +401,7 @@ class QgisAlgsTest(unittest.TestCase):
             'Real',
             'Real',
             'Real',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -421,7 +421,7 @@ class QgisAlgsTest(unittest.TestCase):
             '275.930753853521',
             '79.2597541967407',
             '58.70562273002',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270759.84833131 4458914.21983449,270759.84833131 4458993.47958869,270818.55395404 4458993.47958869,270818.55395404 4458914.21983449,270759.84833131 4458914.21983449))'
@@ -666,7 +666,7 @@ class QgisAlgsTest(unittest.TestCase):
             5,
             False,
             None,
-            )
+        )
         output = outputs['OUTPUT']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -694,7 +694,7 @@ class QgisAlgsTest(unittest.TestCase):
             5,
             True,
             None,
-            )
+        )
         output = outputs['OUTPUT']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -743,7 +743,7 @@ class QgisAlgsTest(unittest.TestCase):
             5,
             True,
             None,
-            )
+        )
         output = outputs['OUTPUT']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -771,7 +771,7 @@ class QgisAlgsTest(unittest.TestCase):
             5,
             False,
             None,
-            )
+        )
         output = outputs['OUTPUT']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -889,7 +889,7 @@ class QgisAlgsTest(unittest.TestCase):
             'id_2',
             'POLY_NUM_B',
             'POLY_ST_B',
-            ]
+        ]
         expectedtypes = [
             'Integer',
             'Real',
@@ -897,7 +897,7 @@ class QgisAlgsTest(unittest.TestCase):
             'Integer',
             'Real',
             'String',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -913,7 +913,7 @@ class QgisAlgsTest(unittest.TestCase):
             '2',
             '1',
             'string a',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
@@ -975,7 +975,7 @@ class QgisAlgsTest(unittest.TestCase):
             'id_2',
             'POLY_NUM_B',
             'POLY_ST_B',
-            ]
+        ]
         expectedtypes = [
             'Integer',
             'Real',
@@ -983,7 +983,7 @@ class QgisAlgsTest(unittest.TestCase):
             'Integer',
             'Real',
             'String',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -999,7 +999,7 @@ class QgisAlgsTest(unittest.TestCase):
             '2',
             '1.0',
             'string a',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'
@@ -1036,7 +1036,7 @@ class QgisAlgsTest(unittest.TestCase):
             10,
             0,
             None,
-            )
+        )
         output = outputs['OUTPUT_LAYER']
         layer = dataobjects.getObjectFromUri(output, True)
         fields = layer.pendingFields()
@@ -1070,7 +1070,7 @@ class QgisAlgsTest(unittest.TestCase):
             'POLY_NUM_B',
             'POLY_ST_B',
             'NUM_FIELD',
-            ]
+        ]
         expectedtypes = [
             'Integer',
             'Real',
@@ -1079,7 +1079,7 @@ class QgisAlgsTest(unittest.TestCase):
             'Real',
             'String',
             'Integer',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -1096,7 +1096,7 @@ class QgisAlgsTest(unittest.TestCase):
             '1.0',
             'string a',
             '0',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POINT(270781.07973944 4458932.92171896)'

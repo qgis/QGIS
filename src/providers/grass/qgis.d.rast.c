@@ -280,5 +280,7 @@ static int cell_draw( char *name,
   }
 
   G_close_cell( cellfile );
+  fclose( fo );
+
   return ( 0 );
 }

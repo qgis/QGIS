@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -48,14 +48,18 @@
 /** \ingroup UnitTests
  * This is a unit test for raster sublayers
  */
-class TestQgsRasterSubLayer: public QObject
+class TestQgsRasterSubLayer : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsRasterSubLayer();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
 
     void subLayersList();
     void checkStats();
@@ -66,6 +70,13 @@ class TestQgsRasterSubLayer: public QObject
     QString mReport;
     bool mHasNetCDF;
 };
+
+TestQgsRasterSubLayer::TestQgsRasterSubLayer()
+    : mpRasterLayer( NULL )
+    , mHasNetCDF( false )
+{
+
+}
 
 //runs before all tests
 void TestQgsRasterSubLayer::initTestCase()
@@ -107,6 +118,7 @@ void TestQgsRasterSubLayer::initTestCase()
 //runs after all tests
 void TestQgsRasterSubLayer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -115,7 +127,6 @@ void TestQgsRasterSubLayer::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
-  if ( mHasNetCDF ) delete mpRasterLayer;
 }
 
 void TestQgsRasterSubLayer::subLayersList()
@@ -178,4 +189,4 @@ void TestQgsRasterSubLayer::checkStats()
 
 
 QTEST_MAIN( TestQgsRasterSubLayer )
-#include "moc_testqgsrastersublayer.cxx"
+#include "testqgsrastersublayer.moc"

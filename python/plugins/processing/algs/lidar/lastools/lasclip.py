@@ -47,20 +47,25 @@ class lasclip(LAStoolsAlgorithm):
     def defineCharacteristics(self):
         self.name = "lasclip"
         self.group = "LAStools"
-        self.addParametersVerboseGUI();
+        self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterVector(lasclip.POLYGON, "Input polygon(s)", ParameterVector.VECTOR_TYPE_POLYGON))
-        self.addParameter(ParameterBoolean(lasclip.INTERIOR, "interior", False))
-        self.addParameter(ParameterSelection(lasclip.OPERATION, "what to do with points", lasclip.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lasclip.CLASSIFY_AS, "classify as", 0, None, 12))
+        self.addParameter(ParameterVector(lasclip.POLYGON,
+            self.tr("Input polygon(s)"), ParameterVector.VECTOR_TYPE_POLYGON))
+        self.addParameter(ParameterBoolean(lasclip.INTERIOR,
+            self.tr("interior"), False))
+        self.addParameter(ParameterSelection(lasclip.OPERATION,
+            self.tr("what to do with points"), lasclip.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lasclip.CLASSIFY_AS,
+            self.tr("classify as"), 0, None, 12))
         self.addParametersPointOutputGUI()
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclip.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasclip")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         poly = self.getParameterValue(lasclip.POLYGON)
-        if poly != None:
+        if poly is not None:
             commands.append("-poly")
             commands.append(poly)
         if self.getParameterValue(lasclip.INTERIOR):
@@ -71,5 +76,6 @@ class lasclip(LAStoolsAlgorithm):
             classify_as = self.getParameterValue(lasclip.CLASSIFY_AS)
             commands.append(str(classify_as))
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

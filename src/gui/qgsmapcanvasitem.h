@@ -42,7 +42,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     //! paint function called by map canvas
     virtual void paint( QPainter * painter,
                         const QStyleOptionGraphicsItem * option,
-                        QWidget * widget = 0 );
+                        QWidget * widget = 0 ) override;
 
     //! schedules map canvas for repaint
     void updateCanvas();
@@ -50,8 +50,7 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     /**Sets render context parameters
     @param p painter for rendering
     @param context out: configured context
-    @return true in case of success
-    @note added in version 1.5*/
+    @return true in case of success */
     bool setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const;
 
   public:
@@ -60,38 +59,49 @@ class GUI_EXPORT QgsMapCanvasItem : public QGraphicsItem
     virtual void updatePosition();
 
     //! default implementation for canvas items
-    virtual QRectF boundingRect() const;
+    virtual QRectF boundingRect() const override;
 
     //! sets current offset, to be called from QgsMapCanvas
     //! @deprecated since v2.4 - not called by QgsMapCanvas anymore
     Q_DECL_DEPRECATED void setPanningOffset( const QPoint& point );
 
-    //! returns canvas item rectangle
+    //! returns canvas item rectangle in map units
     QgsRectangle rect() const;
 
-    //! sets canvas item rectangle
-    void setRect( const QgsRectangle& r );
+    //! sets canvas item rectangle in map units
+    void setRect( const QgsRectangle& r, bool resetRotation = true );
 
     //! transformation from screen coordinates to map coordinates
-    QgsPoint toMapCoordinates( const QPoint& point );
+    QgsPoint toMapCoordinates( const QPoint& point ) const;
 
     //! transformation from map coordinates to screen coordinates
-    QPointF toCanvasCoordinates( const QgsPoint& point );
+    QPointF toCanvasCoordinates( const QgsPoint& point ) const;
 
   protected:
 
     //! pointer to map canvas
     QgsMapCanvas* mMapCanvas;
 
-    //! canvas item rectangle (in map coordinates)
+    //! cached canvas item rectangle in map coordinates
+    //! encodes position (xmin,ymax) and size (width/height)
+    //! used to re-position and re-size the item on zoom/pan
+    //! while waiting for the renderer to complete.
+    //!
+    //! NOTE: does not include rotation information, so cannot
+    //!       be used to correctly present pre-rendered map
+    //!       on rotation change
     QgsRectangle mRect;
+
+    double mRectRotation;
 
     //! offset from normal position due current panning operation,
     //! used when converting map coordinates to move map canvas items
+    //! @deprecated since v2.4
     QPoint mPanningOffset;
 
     //! cached size of the item (to return in boundingRect())
     QSizeF mItemSize;
+
 };
 
 

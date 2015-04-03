@@ -45,13 +45,13 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
     //! Creates a map layer action which can run on any layer
     //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatiblity reasons.
-    QgsMapLayerAction( QString name, QObject *parent, Targets targets = AllActions );
+    QgsMapLayerAction( QString name, QObject *parent, Targets targets = AllActions, QIcon icon = QIcon() );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer, Targets targets = AllActions );
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer* layer, Targets targets = AllActions, QIcon icon = QIcon() );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions );
+    QgsMapLayerAction( QString name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions, QIcon icon = QIcon() );
 
     ~QgsMapLayerAction();
 

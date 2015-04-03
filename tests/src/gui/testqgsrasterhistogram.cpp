@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
@@ -38,9 +38,11 @@
 /** \ingroup UnitTests
  * This is a unit test to verify that raster histogram works
  */
-class TestRasterHistogram: public QObject
+class TestRasterHistogram : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+    TestRasterHistogram() {}
 
   private:
 
@@ -293,4 +295,4 @@ int TestRasterHistogram::testFile( QString theTestType,
 
 
 QTEST_MAIN( TestRasterHistogram )
-#include "moc_testqgsrasterhistogram.cxx"
+#include "testqgsrasterhistogram.moc"

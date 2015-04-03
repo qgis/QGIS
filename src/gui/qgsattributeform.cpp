@@ -37,7 +37,7 @@
 
 int QgsAttributeForm::sFormCounter = 0;
 
-QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature feature, QgsAttributeEditorContext context, QWidget* parent )
+QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget* parent )
     : QWidget( parent )
     , mLayer( vl )
     , mContext( context )
@@ -278,7 +278,7 @@ void QgsAttributeForm::onAttributeAdded( int idx )
   {
     QgsAttributes attrs = mFeature.attributes();
     Q_ASSERT( attrs.size() == idx );
-    attrs.append( QVariant() );
+    attrs.append( QVariant( layer()->pendingFields()[idx].type() ) );
     mFeature.setFields( &layer()->pendingFields() );
     mFeature.setAttributes( attrs );
   }
@@ -386,6 +386,9 @@ void QgsAttributeForm::init()
       if ( widgDef->type() == QgsAttributeEditorElement::AeTypeContainer )
       {
         QgsAttributeEditorContainer* containerDef = dynamic_cast<QgsAttributeEditorContainer*>( widgDef );
+        if ( !containerDef )
+          continue;
+
         containerDef->setIsGroupBox( false ); // Toplevel widgets are tabs not groupboxes
         QString dummy1;
         bool dummy2;
@@ -421,6 +424,9 @@ void QgsAttributeForm::init()
     Q_FOREACH ( const QgsField& field, mLayer->pendingFields().toList() )
     {
       int idx = mLayer->fieldNameIndex( field.name() );
+      if ( idx < 0 )
+        continue;
+
       //show attribute alias if available
       QString fieldName = mLayer->attributeDisplayName( idx );
 
@@ -562,7 +568,10 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
     case QgsAttributeEditorElement::AeTypeField:
     {
       const QgsAttributeEditorField* fieldDef = dynamic_cast<const QgsAttributeEditorField*>( widgetDef );
-      int fldIdx = fieldDef->idx();
+      if ( !fieldDef )
+        break;
+
+      int fldIdx = vl->fieldNameIndex( fieldDef->name() );
       if ( fldIdx < vl->pendingFields().count() && fldIdx >= 0 )
       {
         const QString widgetType = mLayer->editorWidgetV2( fldIdx );
@@ -597,8 +606,10 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
     case QgsAttributeEditorElement::AeTypeContainer:
     {
       const QgsAttributeEditorContainer* container = dynamic_cast<const QgsAttributeEditorContainer*>( widgetDef );
-      QWidget* myContainer;
+      if ( !container )
+        break;
 
+      QWidget* myContainer;
       if ( container->isGroupBox() )
       {
         QGroupBox* groupBox = new QGroupBox( parent );
@@ -757,7 +768,7 @@ bool QgsAttributeForm::eventFilter( QObject* object, QEvent* e )
   if ( e->type() == QEvent::KeyPress )
   {
     QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>( e );
-    if ( keyEvent->key() == Qt::Key_Escape )
+    if ( keyEvent && keyEvent->key() == Qt::Key_Escape )
     {
       // Re-emit to this form so it will be forwarded to parent
       event( e );

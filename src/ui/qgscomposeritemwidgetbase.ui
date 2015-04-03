@@ -98,14 +98,17 @@
          </widget>
         </item>
         <item row="0" column="1" colspan="3">
-         <widget class="QSpinBox" name="mPageSpinBox">
+         <widget class="QgsSpinBox" name="mPageSpinBox">
           <property name="minimum">
            <number>1</number>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item row="3" column="1" colspan="2">
-         <widget class="QDoubleSpinBox" name="mWidthSpin">
+         <widget class="QgsDoubleSpinBox" name="mWidthSpin">
           <property name="suffix">
            <string> mm</string>
           </property>
@@ -114,11 +117,14 @@
           </property>
           <property name="maximum">
            <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item row="4" column="1" colspan="2">
-         <widget class="QDoubleSpinBox" name="mHeightSpin">
+         <widget class="QgsDoubleSpinBox" name="mHeightSpin">
           <property name="suffix">
            <string> mm</string>
           </property>
@@ -127,11 +133,14 @@
           </property>
           <property name="maximum">
            <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item row="2" column="1" colspan="2">
-         <widget class="QDoubleSpinBox" name="mYPosSpin">
+         <widget class="QgsDoubleSpinBox" name="mYPosSpin">
           <property name="suffix">
            <string> mm</string>
           </property>
@@ -143,11 +152,14 @@
           </property>
           <property name="maximum">
            <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
         <item row="1" column="1" colspan="2">
-         <widget class="QDoubleSpinBox" name="mXPosSpin">
+         <widget class="QgsDoubleSpinBox" name="mXPosSpin">
           <property name="suffix">
            <string> mm</string>
           </property>
@@ -159,6 +171,9 @@
           </property>
           <property name="maximum">
            <double>9999999.000000000000000</double>
+          </property>
+          <property name="showClearButton">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -340,7 +355,7 @@
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
         <item>
-         <widget class="QDoubleSpinBox" name="mItemRotationSpinBox">
+         <widget class="QgsDoubleSpinBox" name="mItemRotationSpinBox">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -445,7 +460,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+       <widget class="QgsDoubleSpinBox" name="mOutlineWidthSpinBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
           <horstretch>0</horstretch>
@@ -454,6 +469,9 @@
         </property>
         <property name="suffix">
          <string> mm</string>
+        </property>
+        <property name="showClearButton">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -631,7 +649,13 @@
          </widget>
         </item>
         <item>
-         <widget class="QSpinBox" name="mTransparencySpnBx">
+         <widget class="QgsSpinBox" name="mTransparencySpnBx">
+          <property name="minimumSize">
+           <size>
+            <width>80</width>
+            <height>25</height>
+           </size>
+          </property>
           <property name="maximum">
            <number>100</number>
           </property>
@@ -687,9 +711,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -698,15 +722,25 @@
    <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
-   <container>1</container>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPenJoinStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>

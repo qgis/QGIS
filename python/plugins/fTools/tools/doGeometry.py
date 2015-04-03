@@ -28,13 +28,11 @@
 #
 #---------------------------------------------------------------------
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QObject, SIGNAL, QFile, QThread, QSettings, QVariant
+from PyQt4.QtGui import QDialog, QDialogButtonBox, QMessageBox
+from qgis.core import QGis, QgsVectorFileWriter, QgsFeature, QgsGeometry, QgsCoordinateTransform, QgsFields, QgsField, QgsFeatureRequest, QgsPoint, QgsDistanceArea
 from ui_frmGeometry import Ui_Dialog
 import ftools_utils
-import math
-from itertools import izip
 import voronoi
 from sets import Set
 
@@ -82,7 +80,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     else:
       self.outShape.clear()
       self.geometry( self.inShape.currentText(), self.lineEdit.value(),
-                    self.cmbField.currentText() )
+                     self.cmbField.currentText() )
 
   def outFile( self ):
     self.outShape.clear()
@@ -160,7 +158,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
         self.lineEdit.setRange( 0, 100 )
         self.lineEdit.setSingleStep( 5 )
         self.lineEdit.setValue( 0 )
-      elif self.myFunction == 11: #Lines to polygons
+      elif self.myFunction == 11:  # Lines to polygons
         self.setWindowTitle( self.tr(  "Lines to polygons" ) )
         self.lblOutputShapefile.setText( self.tr( "Output shapefile" ) )
         self.label_3.setText( self.tr( "Input line vector layer" ) )
@@ -220,7 +218,6 @@ class GeometryDialog( QDialog, Ui_Dialog ):
       vlayer = ftools_utils.getMapLayerByName( myLayer )
     else:
       vlayer = ftools_utils.getVectorLayerByName( myLayer )
-    error = False
 
     if ( self.myFunction == 5 and self.chkWriteShapefile.isChecked() ) or self.myFunction != 5:
       check = QFile( self.shapefileName )
@@ -236,8 +233,8 @@ class GeometryDialog( QDialog, Ui_Dialog ):
 
       res = QMessageBox.warning( self, self.tr( "Geometry"),
                                  self.tr( "Currently QGIS doesn't allow simultaneous access from "
-                                 "different threads to the same datasource. Make sure your layer's "
-                                 "attribute tables are closed. Continue?"),
+                                          "different threads to the same datasource. Make sure your layer's "
+                                          "attribute tables are closed. Continue?"),
                                  QMessageBox.Yes | QMessageBox.No )
       if res == QMessageBox.No:
         return
@@ -423,7 +420,6 @@ class geometryThread( QThread ):
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     inGeom = QgsGeometry()
-    outGeom = QgsGeometry()
     nFeat = vprovider.featureCount()
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0 )
@@ -483,12 +479,9 @@ class geometryThread( QThread ):
 
     fit = vprovider.getFeatures()
     while fit.nextFeature( inFeat ):
-      multi = False
       nElement += 1
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
       inGeom = inFeat.geometry()
-      if inGeom.isMultipart():
-        multi = True
       atMap = inFeat.attributes()
       lineList = self.extractAsLine( inGeom )
       outFeat.setAttributes( atMap )
@@ -504,7 +497,6 @@ class geometryThread( QThread ):
                                   QGis.WKBPolygon, vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
-    inGeom = QgsGeometry()
     nFeat = vprovider.featureCount()
     nElement = 0
     self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
@@ -513,16 +505,14 @@ class geometryThread( QThread ):
     fit = vprovider.getFeatures()
     while fit.nextFeature( inFeat ):
       outGeomList = []
-      multi = False
       nElement += 1
       self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
       if inFeat.geometry().isMultipart():
         outGeomList = inFeat.geometry().asMultiPolyline()
-        multi = True
       else:
         outGeomList.append( inFeat.geometry().asPolyline() )
       polyGeom = self.remove_bad_lines( outGeomList )
-      if len( polyGeom ) <> 0:
+      if len( polyGeom ) != 0:
         outFeat.setGeometry( QgsGeometry.fromPolygon( polyGeom ) )
         atMap = inFeat.attributes()
         outFeat.setAttributes( atMap )
@@ -715,7 +705,7 @@ class geometryThread( QThread ):
       return False
     uniqueSet = Set( item for item in pts )
     ids = [ pts.index( item ) for item in uniqueSet ]
-    sl = voronoi.SiteList( [ voronoi.Site( i[ 0 ], i[ 1 ], sitenum = j ) for j, i in enumerate( uniqueSet ) ] )
+    sl = voronoi.SiteList( [ voronoi.Site( i[ 0 ], i[ 1 ], sitenum=j ) for j, i in enumerate( uniqueSet ) ] )
     voronoi.voronoi( sl, c )
     inFeat = QgsFeature()
     nFeat = len( c.polygons )
@@ -1085,10 +1075,10 @@ class geometryThread( QThread ):
                       QGis.WKBPoint25D, QGis.WKBMultiPoint25D ):
         return QGis.WKBMultiPoint
       elif wkbType in ( QGis.WKBLineString, QGis.WKBMultiLineString,
-                         QGis.WKBMultiLineString25D, QGis.WKBLineString25D ):
+                        QGis.WKBMultiLineString25D, QGis.WKBLineString25D ):
         return QGis.WKBMultiLineString
       elif wkbType in ( QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                         QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D ):
+                        QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D ):
         return QGis.WKBMultiPolygon
       else:
         return QGis.WKBUnknown
@@ -1101,10 +1091,10 @@ class geometryThread( QThread ):
                       QGis.WKBPoint25D, QGis.WKBMultiPoint25D ):
         return QGis.WKBPoint
       elif wkbType in ( QGis.WKBLineString, QGis.WKBMultiLineString,
-                         QGis.WKBMultiLineString25D, QGis.WKBLineString25D ):
+                        QGis.WKBMultiLineString25D, QGis.WKBLineString25D ):
         return QGis.WKBLineString
       elif wkbType in ( QGis.WKBPolygon, QGis.WKBMultiPolygon,
-                         QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D ):
+                        QGis.WKBMultiPolygon25D, QGis.WKBPolygon25D ):
         return QGis.WKBPolygon
       else:
         return QGis.WKBUnknown
@@ -1138,7 +1128,6 @@ class geometryThread( QThread ):
     return temp_geom
 
   def extractAsMulti( self, geom ):
-    temp_geom = []
     if geom.type() == 0:
       if geom.isMultipart():
         return geom.asMultiPoint()

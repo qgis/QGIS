@@ -83,6 +83,8 @@ int QgsGraph::findVertex( const QgsPoint& pt ) const
 }
 
 QgsGraphArc::QgsGraphArc()
+    : mOut( 0 )
+    , mIn( 0 )
 {
 
 }

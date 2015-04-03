@@ -30,6 +30,7 @@ class QgsGeometry;
 
 class QgsPostgresFeatureIterator;
 class QgsPostgresSharedData;
+class QgsPostgresTransaction;
 
 #include "qgsdatasourceuri.h"
 
@@ -75,21 +76,21 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //! Destructor
     virtual ~QgsPostgresProvider();
 
-    virtual QgsAbstractFeatureSource* featureSource() const;
+    virtual QgsAbstractFeatureSource* featureSource() const override;
 
     /**
       *   Returns the permanent storage type for this layer as a friendly name.
       */
-    virtual QString storageType() const;
+    virtual QString storageType() const override;
 
     /*! Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
      * If the provider isn't capable of returning
      * its projection an empty srs will be returned
      */
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
     /** Get the feature type. This corresponds to
      * WKBPoint,
@@ -100,7 +101,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * WKBMultiPolygon
      * as defined in qgis.h
      */
-    QGis::WkbType geometryType() const;
+    QGis::WkbType geometryType() const override;
 
     /** return the number of layers for the current data source
      * @note Should this be subLayerCount() instead?
@@ -110,7 +111,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Get the number of features in the layer
      */
-    long featureCount() const;
+    long featureCount() const override;
 
     /**
      * Return a string representation of the endian-ness for the layer
@@ -125,11 +126,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** Return the extent for this data layer
     */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() override;
 
     /** Update the extent
     */
-    virtual void updateExtents();
+    virtual void updateExtents() override;
 
     /** Determine the fields making up the primary key
     */
@@ -139,78 +140,74 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    const QgsFields &fields() const;
+    const QgsFields &fields() const override;
 
     /**
      * Return a short comment for the data that this provider is
      * providing access to (e.g. the comment for postgres table).
      */
-    QString dataComment() const;
+    QString dataComment() const override;
 
     /** Returns the minimum value of an attribute
      *  @param index the index of the attribute */
-    QVariant minimumValue( int index );
+    QVariant minimumValue( int index ) override;
 
     /** Returns the maximum value of an attribute
      *  @param index the index of the attribute */
-    QVariant maximumValue( int index );
+    QVariant maximumValue( int index ) override;
 
     /** Return the unique values of an attribute
      *  @param index the index of the attribute
      *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
+    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) override;
 
     /**Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
       or if the given attribute is not an enum type.
      * @param index the index of the attribute
-     * @param enumList reference to the list to fill
-      @note: added in version 1.2*/
-    virtual void enumValues( int index, QStringList& enumList );
+     * @param enumList reference to the list to fill */
+    virtual void enumValues( int index, QStringList& enumList ) override;
 
     /**Returns true if layer is valid
     */
-    bool isValid();
+    bool isValid() override;
 
 
     /**
      * It returns true. Saving style to db is supported by this provider
      */
-    virtual bool isSaveAndLoadStyleToDBSupported() { return true; }
+    virtual bool isSaveAndLoadStyleToDBSupported() override { return true; }
 
-    QgsAttributeList attributeIndexes();
+    QgsAttributeList attributeIndexes() override;
 
-    QgsAttributeList pkAttributeIndexes() { return mPrimaryKeyAttrs; }
-
-    /**Returns the default value for field specified by @c fieldName */
-    QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
+    QgsAttributeList pkAttributeIndexes() override { return mPrimaryKeyAttrs; }
 
     /**Returns the default value for field specified by @c fieldId */
-    QVariant defaultValue( int fieldId );
+    QVariant defaultValue( int fieldId ) override;
 
     /**Adds a list of features
       @return true in case of success and false in case of failure*/
-    bool addFeatures( QgsFeatureList & flist );
+    bool addFeatures( QgsFeatureList & flist ) override;
 
     /**Deletes a list of features
       @param id list of feature ids
       @return true in case of success and false in case of failure*/
-    bool deleteFeatures( const QgsFeatureIds & id );
+    bool deleteFeatures( const QgsFeatureIds & id ) override;
 
     /**Adds new attributes
       @param name map with attribute name as key and type as value
       @return true in case of success and false in case of failure*/
-    bool addAttributes( const QList<QgsField> &attributes );
+    bool addAttributes( const QList<QgsField> &attributes ) override;
 
     /**Deletes existing attributes
       @param names of the attributes to delete
       @return true in case of success and false in case of failure*/
-    bool deleteAttributes( const QgsAttributeIds & name );
+    bool deleteAttributes( const QgsAttributeIds & name ) override;
 
     /**Changes attribute values of existing features
       @param attr_map a map containing the new attributes. The integer is the feature id,
       the first QString is the attribute name and the second one is the new attribute value
       @return true in case of success and false in case of failure*/
-    bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
+    bool changeAttributeValues( const QgsChangedAttributesMap & attr_map ) override;
 
     /**
        Changes geometries of existing features
@@ -218,7 +215,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                              the second map parameter being the new geometries themselves
        @return               true in case of success and false in case of failure
      */
-    bool changeGeometryValues( QgsGeometryMap & geometry_map );
+    bool changeGeometryValues( QgsGeometryMap & geometry_map ) override;
 
     //! Get the postgres connection
     PGconn * pgConnection();
@@ -227,15 +224,15 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString getTableName();
 
     /** Accessor for sql where clause used to limit dataset */
-    QString subsetString();
+    QString subsetString() override;
 
     /** mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
+    bool setSubsetString( QString theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() { return true; }
+    virtual bool supportsSubsetString() override { return true; }
 
     /**Returns a bitmask containing the supported capabilities*/
-    int capabilities() const;
+    int capabilities() const override;
 
     /** The Postgres provider does its own transforms so we return
      * true for the following three functions to indicate that transforms
@@ -261,7 +258,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString name() const;
+    QString name() const override;
 
     /** return description
 
@@ -274,7 +271,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString description() const;
+    QString description() const override;
+
+    /**
+     * Returns the transaction this data provider is included in, if any.
+     */
+    virtual QgsTransaction* transaction() const override;
 
   signals:
     /**
@@ -297,7 +299,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void repaintRequested();
 
   private:
-    int mProviderId; // id to append to provider specific identified (like cursors)
 
     bool declareCursor( const QString &cursorName,
                         const QgsAttributeList &fetchAttributes,
@@ -465,16 +466,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsPostgresConn *mConnectionRO; //! read-only database connection (initially)
     QgsPostgresConn *mConnectionRW; //! read-write database connection (on update)
 
-    //! establish read-write connection
-    bool connectRW()
-    {
-      if ( mConnectionRW )
-        return mConnectionRW;
-
-      mConnectionRW = QgsPostgresConn::connectDb( mUri.connectionInfo(), false );
-
-      return mConnectionRW;
-    }
+    QgsPostgresConn* connectionRO() const;
+    QgsPostgresConn* connectionRW();
 
     void disconnectDb();
 
@@ -482,6 +475,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
 
     friend class QgsPostgresFeatureSource;
+
+    QgsPostgresTransaction* mTransaction;
+
+    void setTransaction( QgsTransaction* transaction ) override;
+
+    QHash<int, QString> mDefaultValues;
 };
 
 

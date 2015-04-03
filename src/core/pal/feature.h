@@ -44,7 +44,7 @@
 
 #include "pointset.h"
 #include "util.h"
-
+#include "labelposition.h"
 
 namespace pal
 {
@@ -321,6 +321,9 @@ namespace pal
 
       void addSizePenalty( int nbp, LabelPosition** lPos, double bbx[4], double bby[4] );
 
+    private:
+
+      LabelPosition::Quadrant quadrantFromOffset() const;
   };
 
 } // end namespace pal

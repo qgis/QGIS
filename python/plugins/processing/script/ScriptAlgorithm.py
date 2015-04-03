@@ -195,7 +195,7 @@ class ScriptAlgorithm(GeoAlgorithm):
             param = ParameterString(tokens[0], desc, default)
         elif tokens[1].lower().strip().startswith('longstring'):
             default = tokens[1].strip()[len('longstring') + 1:]
-            param = ParameterString(tokens[0], desc, default, multiline = True)
+            param = ParameterString(tokens[0], desc, default, multiline=True)
         elif tokens[1].lower().strip().startswith('crs'):
             default = tokens[1].strip()[len('crs') + 1:]
             if not default:
@@ -212,7 +212,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         elif tokens[1].lower().strip().startswith('output file'):
             out = OutputFile()
             subtokens = tokens[1].split(' ')
-            if len(subtokens > 2):
+            if len(subtokens) > 2:
                 out.ext = subtokens[2]
         elif tokens[1].lower().strip().startswith('output directory'):
             out = OutputDirectory()
@@ -253,6 +253,7 @@ class ScriptAlgorithm(GeoAlgorithm):
 
         ns = {}
         ns['progress'] = progress
+        ns['scriptDescriptionFile'] = self.descriptionFile
 
         for param in self.parameters:
             ns[param.name] = param.value

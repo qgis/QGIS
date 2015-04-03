@@ -54,7 +54,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     ~QgsGeorefPluginGui();
 
   protected:
-    void closeEvent( QCloseEvent * );
+    void closeEvent( QCloseEvent * ) override;
 
   private slots:
     // file

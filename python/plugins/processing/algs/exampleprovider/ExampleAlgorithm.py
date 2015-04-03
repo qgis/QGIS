@@ -25,11 +25,9 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QSettings
+from qgis.core import QgsVectorFileWriter
 
-from processing.core.Processing import Processing
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -69,12 +67,12 @@ class ExampleAlgorithm(GeoAlgorithm):
 
         # We add the input vector layer. It can have any kind of geometry
         # It is a mandatory (not optional) one, hence the False argument
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
 
         # We add a vector layer as output
         self.addOutput(OutputVector(self.OUTPUT_LAYER,
-                       'Output layer with selected features'))
+            self.tr('Output layer with selected features')))
 
     def processAlgorithm(self, progress):
         """Here is where the processing itself takes place."""

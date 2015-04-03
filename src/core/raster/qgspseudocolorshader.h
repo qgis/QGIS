@@ -39,10 +39,10 @@ class CORE_EXPORT QgsPseudoColorShader : public QgsRasterShaderFunction
     bool shade( double, double, double, int*, int*, int* );
 
     /** \brief Set the maximum value */
-    void setMaximumValue( double );
+    void setMaximumValue( double ) override;
 
     /** \brief Return the minimum value */
-    void setMinimumValue( double );
+    void setMinimumValue( double ) override;
 
     double classBreakMin1() const { return mClassBreakMin1; }
     double classBreakMax1() const { return mClassBreakMax1; }

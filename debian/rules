@@ -23,7 +23,7 @@ ifeq (,$(DISTRIBUTION))
 	DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie precise saucy trusty utopic sid-oracle"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"wheezy jessie precise trusty utopic vivid sid-oracle"))
 	DISTRIBUTION := sid
 endif
 
@@ -39,19 +39,19 @@ QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p
 QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
-GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|sed -e "s/\.//g" -e "s/RC/-/"))
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 
 CMAKE_OPTS := \
 	-DBUILDNAME=$(DEB_BUILD_NAME) \
 	-DCMAKE_VERBOSE_MAKEFILE=1 \
 	-DCMAKE_INSTALL_PREFIX=/usr \
-	-DGRASS_PREFIX=/usr/lib/grass64 \
+	-DGRASS_PREFIX=/usr/lib/$(GRASS) \
 	-DBINDINGS_GLOBAL_INSTALL=TRUE \
 	-DPEDANTIC=TRUE \
 	-DWITH_QSPATIALITE=TRUE \
-	-DWITH_MAPSERVER=TRUE \
-	-DMAPSERVER_SKIP_ECW=TRUE \
+	-DWITH_SERVER=TRUE \
+	-DWITH_SERVER_PLUGINS=TRUE \
+	-DSERVER_SKIP_ECW=TRUE \
 	-DQGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-DWITH_APIDOC=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
@@ -69,7 +69,7 @@ ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie sid precise saucy"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy precise"))
 	CMAKE_OPTS += -DWITH_PYSPATIALITE=TRUE
 endif
 
@@ -77,7 +77,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid sid-oracle"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie saucy trusty utopic sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie trusty utopic vivid sid sid-oracle"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
@@ -91,6 +91,9 @@ endif
 
 ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DCMAKE_BUILD_TYPE=Debug
+ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+	CMAKE_OPTS += -DENABLE_COVERAGE=TRUE
+endif
 endif
 
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
@@ -99,7 +102,7 @@ else
 	CMAKE_OPTS += -DENABLE_TESTS=TRUE
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie saucy trusty sid sid-oracle"))
+ifneq (,$(findstring $(DISTRIBUTION),"wheezy jessie trusty sid sid-oracle"))
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)
 CFLAGS   := $(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS := $(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
@@ -133,7 +136,7 @@ $(2): $(1)
 		-e "s#\{QT_PLUGIN_DIR\}#$(QT_PLUGIN_DIR)#g" \
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
-		-e "s/\{GRASS_ABI\}/$(GRASS_ABI)/g" $$^ >$$@
+		$$^ >$$@
 
 templates:: $(2)
 
@@ -163,19 +166,23 @@ override_dh_clean: cleantemplates
 override_dh_auto_configure: templates
 	dh_auto_configure -- $(CMAKE_OPTS)
 
-override_dh_auto_build-arch:
-	dh_auto_build --arch
-
-override_dh_auto_test:
 ifeq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
+override_dh_auto_test:
 	# Code to run the package test suite - and ignore the outcome for now
-	-LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) PATH=/usr/sbin:$(PATH) LC_CTYPE=C.UTF-8 $(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
+	mkdir -p debian/tmp/locale/
+	localedef -f UTF-8 -i en_US ./debian/tmp/locale/en_US.UTF-8/
+	-LOCPATH=$(CURDIR)/debian/tmp/locale/ \
+	LC_ALL=en_US.UTF-8 \
+	LD_LIBRARY_PATH=$(CURDIR)/debian/build/output/lib:$(LD_LIBRARY_PATH) \
+	PATH=/usr/sbin:$(PATH) \
+	$(TESTMAKE) -C debian/build $(DEB_TEST_TARGET)
 else
+override_dh_auto_test:
 	@echo Skipping tests.
 endif
 
-override_dh_auto_install-arch:
-	dh_auto_install --arch
+override_dh_auto_install:
+	dh_auto_install
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
@@ -235,6 +242,7 @@ override_dh_install:
 	-find $(CURDIR)/debian/tmp/usr/share/qgis/resources/cpt-city-qgis-min/ -name COPYING.xml -delete
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1
@@ -259,7 +267,7 @@ override_dh_compress:
 	dh_compress --exclude=pdf
 
 override_dh_makeshlibs:
-	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets$(QGIS_ABI) -- -c0 -v$(QGIS_VERSION)
+	dh_makeshlibs -Xqgis-plugin-grass -Xlibqgis-customwidgets -- -c0 -v$(QGIS_VERSION)
 
 override_dh_shlibdeps:
 	dh_shlibdeps -l/usr/lib/$(GRASS)/lib

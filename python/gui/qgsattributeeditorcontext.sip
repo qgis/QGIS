@@ -28,13 +28,12 @@ class QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext();
-
-
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode );
-
     QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode formMode );
 
+
     void setDistanceArea( const QgsDistanceArea& distanceArea );
+    const QgsDistanceArea& distanceArea() const;
 
     void setVectorLayerTools( QgsVectorLayerTools* vlTools );
     const QgsVectorLayerTools* vectorLayerTools() const;

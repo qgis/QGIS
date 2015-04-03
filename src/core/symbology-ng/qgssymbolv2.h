@@ -37,6 +37,10 @@ class QgsFields;
 class QgsSymbolLayerV2;
 class QgsRenderContext;
 class QgsVectorLayer;
+class QgsPaintEffect;
+class QgsMarkerSymbolLayerV2;
+class QgsLineSymbolLayerV2;
+class QgsFillSymbolLayerV2;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
@@ -48,8 +52,11 @@ class CORE_EXPORT QgsSymbolV2
     {
       MM = 0,
       MapUnit,
-      Mixed //mixed units in symbol layers
+      Mixed, //mixed units in symbol layers
+      Pixel
     };
+
+    typedef QList<OutputUnit> OutputUnitList;
 
     enum SymbolType
     {
@@ -64,7 +71,6 @@ class CORE_EXPORT QgsSymbolV2
       ScaleDiameter
     };
 
-    //! @note added in 1.5
     enum RenderHint
     {
       DataDefinedSizeScale = 1,
@@ -80,8 +86,29 @@ class CORE_EXPORT QgsSymbolV2
 
     // symbol layers handling
 
+    /**Returns list of symbol layers contained in the symbol.
+     * @returns symbol layers list
+     * @note added in QGIS 2.7
+     * @see symbolLayer
+     * @see symbolLayerCount
+     */
+    QgsSymbolLayerV2List symbolLayers() { return mLayers; }
+
+    /**Returns a specific symbol layers contained in the symbol.
+     * @param layer layer number
+     * @returns corresponding symbol layer
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayerCount
+     */
     QgsSymbolLayerV2* symbolLayer( int layer );
 
+    /**Returns total number of symbol layers contained in the symbol.
+     * @returns count of symbol layers
+     * @note added in QGIS 2.7
+     * @see symbolLayers
+     * @see symbolLayer
+     */
     int symbolLayerCount() { return mLayers.count(); }
 
     //! insert symbol layer to specified index
@@ -131,10 +158,28 @@ class CORE_EXPORT QgsSymbolV2
     //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
-    //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
-    //! @note added in 1.5
     int renderHints() const { return mRenderHints; }
+
+    /**Sets whether features drawn by the symbol should be clipped to the render context's
+     * extent. If this option is enabled then features which are partially outside the extent
+     * will be clipped. This speeds up rendering of the feature, but may have undesirable
+     * side effects for certain symbol types.
+     * @param clipFeaturesToExtent set to true to enable clipping (defaults to true)
+     * @note added in QGIS 2.9
+     * @see clipFeaturesToExtent
+     */
+    void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
+
+    /**Returns whether features drawn by the symbol will be clipped to the render context's
+     * extent. If this option is enabled then features which are partially outside the extent
+     * will be clipped. This speeds up rendering of the feature, but may have undesirable
+     * side effects for certain symbol types.
+     * @returns true if features will be clipped
+     * @note added in QGIS 2.9
+     * @see setClipFeaturesToExtent
+     */
+    double clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
 
     QSet<QString> usedAttributes() const;
 
@@ -148,7 +193,6 @@ class CORE_EXPORT QgsSymbolV2
 
     //! check whether a symbol layer type can be used within the symbol
     //! (marker-marker, line-line, fill-fill/line)
-    //! @note added in 1.7
     bool isSymbolLayerCompatible( SymbolType t );
 
     SymbolType mType;
@@ -158,8 +202,10 @@ class CORE_EXPORT QgsSymbolV2
     qreal mAlpha;
 
     int mRenderHints;
+    bool mClipFeaturesToExtent;
 
     const QgsVectorLayer* mLayer; //current vectorlayer
+
 };
 
 ///////////////////////
@@ -167,12 +213,11 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha = 1.0, bool selected = false, int renderHints = 0, const QgsFeature* f = 0, const QgsFields* fields = 0, const QgsMapUnitScale& mapUnitScale = QgsMapUnitScale() );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
     const QgsRenderContext& renderContext() const { return mRenderContext; }
-    //void setRenderContext( QgsRenderContext& c ) { mRenderContext = c;}
 
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
@@ -188,9 +233,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
 
-    //! @note added in 1.5
     int renderHints() const { return mRenderHints; }
-    //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
 
     void setFeature( const QgsFeature* f ) { mFeature = f; }
@@ -231,7 +274,6 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
   public:
     /** Create a marker symbol with one symbol layer: SimpleMarker with specified properties.
       This is a convenience method for easier creation of marker symbols.
-      \note added in v1.7
     */
     static QgsMarkerSymbolV2* createSimple( const QgsStringMap& properties );
 
@@ -248,7 +290,12 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
 
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const;
+    virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, const QPointF& point, QgsSymbolV2RenderContext& context );
+
 };
 
 
@@ -258,7 +305,6 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
   public:
     /** Create a line symbol with one symbol layer: SimpleLine with specified properties.
       This is a convenience method for easier creation of line symbols.
-      \note added in v1.7
     */
     static QgsLineSymbolV2* createSimple( const QgsStringMap& properties );
 
@@ -269,7 +315,12 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
 
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const;
+    virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPolylineUsingLayer( QgsLineSymbolLayerV2* layer, const QPolygonF& points, QgsSymbolV2RenderContext& context );
+
 };
 
 
@@ -279,7 +330,6 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
   public:
     /** Create a fill symbol with one symbol layer: SimpleFill with specified properties.
       This is a convenience method for easier creation of fill symbols.
-      \note added in v1.7
     */
     static QgsFillSymbolV2* createSimple( const QgsStringMap& properties );
 
@@ -287,7 +337,15 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
     void setAngle( double angle );
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
-    virtual QgsSymbolV2* clone() const;
+    virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolV2RenderContext &context );
+    /**Calculates the bounds of a polygon including rings*/
+    QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
+    /**Translates the rings in a polygon by a set distance*/
+    QList<QPolygonF>* translateRings( const QList<QPolygonF> *rings, double dx, double dy ) const;
 };
 
 #endif

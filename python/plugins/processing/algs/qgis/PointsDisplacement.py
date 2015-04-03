@@ -26,8 +26,7 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import math
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
 from processing.tools import dataobjects, vector
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -47,22 +46,21 @@ class PointsDisplacement(GeoAlgorithm):
         self.name = 'Points displacement'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
         self.addParameter(ParameterNumber(self.DISTANCE,
-                          'Displacement distance', 0.00001, 999999999.999990,
-                          0.00015))
+            self.tr('Displacement distance'),
+            0.00001, 999999999.999990, 0.00015))
         self.addParameter(ParameterBoolean(self.HORIZONTAL,
-                          'Horizontal distribution for two point case'))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Horizontal distribution for two point case')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         radius = self.getParameterValue(self.DISTANCE)
         horizontal = self.getParameterValue(self.HORIZONTAL)
         output = self.getOutputFromName(self.OUTPUT_LAYER)
 
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
 
         provider = layer.dataProvider()
         writer = output.getVectorWriter(provider.fields(),

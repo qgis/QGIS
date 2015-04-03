@@ -54,9 +54,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-1149</y>
-        <width>444</width>
-        <height>2196</height>
+        <y>0</y>
+        <width>447</width>
+        <height>2546</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -140,7 +140,7 @@
           <item row="2" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QDoubleSpinBox" name="mMapRotationSpinBox">
+             <widget class="QgsDoubleSpinBox" name="mMapRotationSpinBox">
               <property name="suffix">
                <string> °</string>
               </property>
@@ -158,14 +158,14 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mDrawCanvasItemsCheckBox">
             <property name="text">
              <string>Draw map canvas items</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="0" colspan="2">
+          <item row="5" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
              <widget class="QCheckBox" name="mKeepLayerListCheckBox">
@@ -204,6 +204,13 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="6" column="0" colspan="2">
+           <widget class="QCheckBox" name="mKeepLayerStylesCheckBox">
+            <property name="text">
+             <string>Lock layer styles for map item</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -382,7 +389,7 @@
           <item row="0" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
-             <widget class="QSpinBox" name="mAtlasMarginSpinBox">
+             <widget class="QgsSpinBox" name="mAtlasMarginSpinBox">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -543,7 +550,7 @@
             <property name="collapsed" stdset="0">
              <bool>false</bool>
             </property>
-            <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,1">
+            <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0">
              <item row="0" column="0">
               <widget class="QLabel" name="mGridTypeLabel_2">
                <property name="accessibleName">
@@ -613,7 +620,7 @@
              <item row="3" column="1">
               <layout class="QVBoxLayout" name="verticalLayout_9">
                <item>
-                <widget class="QDoubleSpinBox" name="mIntervalXSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mIntervalXSpinBox">
                  <property name="prefix">
                   <string>X </string>
                  </property>
@@ -626,7 +633,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QDoubleSpinBox" name="mIntervalYSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mIntervalYSpinBox">
                  <property name="prefix">
                   <string>Y </string>
                  </property>
@@ -653,7 +660,7 @@
              <item row="4" column="1">
               <layout class="QVBoxLayout" name="verticalLayout_10">
                <item>
-                <widget class="QDoubleSpinBox" name="mOffsetXSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mOffsetXSpinBox">
                  <property name="prefix">
                   <string>X </string>
                  </property>
@@ -666,7 +673,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QDoubleSpinBox" name="mOffsetYSpinBox">
+                <widget class="QgsDoubleSpinBox" name="mOffsetYSpinBox">
                  <property name="prefix">
                   <string>Y </string>
                  </property>
@@ -691,12 +698,15 @@
               </widget>
              </item>
              <item row="5" column="1">
-              <widget class="QDoubleSpinBox" name="mCrossWidthSpinBox">
+              <widget class="QgsDoubleSpinBox" name="mCrossWidthSpinBox">
                <property name="suffix">
                 <string> mm</string>
                </property>
                <property name="decimals">
                 <number>2</number>
+               </property>
+               <property name="showClearButton" stdset="0">
+                <bool>false</bool>
                </property>
               </widget>
              </item>
@@ -784,9 +794,12 @@
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QDoubleSpinBox" name="mGridFramePenSizeSpinBox">
+                 <widget class="QgsDoubleSpinBox" name="mGridFramePenSizeSpinBox">
                   <property name="suffix">
                    <string> mm</string>
+                  </property>
+                  <property name="showClearButton" stdset="0">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -854,7 +867,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="0" colspan="3">
+                <item row="8" column="0" colspan="3">
                  <layout class="QGridLayout" name="gridLayout_4">
                   <item row="0" column="0">
                    <widget class="QCheckBox" name="mCheckGridLeftSide">
@@ -921,11 +934,54 @@
                  </widget>
                 </item>
                 <item row="1" column="1" colspan="2">
-                 <widget class="QDoubleSpinBox" name="mFrameWidthSpinBox">
+                 <widget class="QgsDoubleSpinBox" name="mFrameWidthSpinBox">
                   <property name="suffix">
                    <string> mm</string>
                   </property>
+                  <property name="showClearButton" stdset="0">
+                   <bool>false</bool>
+                  </property>
                  </widget>
+                </item>
+                <item row="5" column="0">
+                 <widget class="QLabel" name="mRightDivisionsLabel">
+                  <property name="text">
+                   <string>Right divisions</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0">
+                 <widget class="QLabel" name="mLeftDivisionsLabel">
+                  <property name="text">
+                   <string>Left divisions</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="6" column="0">
+                 <widget class="QLabel" name="mTopDivisionsLabel">
+                  <property name="text">
+                   <string>Top divisions</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="0">
+                 <widget class="QLabel" name="mBottomDivisionsLabel">
+                  <property name="text">
+                   <string>Bottom divisions</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="1" colspan="2">
+                 <widget class="QComboBox" name="mFrameDivisionsLeftComboBox"/>
+                </item>
+                <item row="5" column="1" colspan="2">
+                 <widget class="QComboBox" name="mFrameDivisionsRightComboBox"/>
+                </item>
+                <item row="6" column="1" colspan="2">
+                 <widget class="QComboBox" name="mFrameDivisionsTopComboBox"/>
+                </item>
+                <item row="7" column="1" colspan="2">
+                 <widget class="QComboBox" name="mFrameDivisionsBottomComboBox"/>
                 </item>
                </layout>
               </widget>
@@ -957,15 +1013,21 @@
                 <property name="rightMargin">
                  <number>6</number>
                 </property>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="mAnnotationFormatLabel">
+                <item row="4" column="0">
+                 <widget class="QLabel" name="mAnnotationPositionLabelRight">
                   <property name="text">
-                   <string>Format</string>
+                   <string>Right</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="buddy">
+                   <cstring>mAnnotationPositionRightComboBox</cstring>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QComboBox" name="mAnnotationFormatComboBox"/>
+                <item row="4" column="1">
+                 <widget class="QComboBox" name="mAnnotationDisplayRightComboBox"/>
                 </item>
                 <item row="1" column="0">
                  <widget class="QLabel" name="mAnnotationPositionLabelLeft">
@@ -980,91 +1042,62 @@
                   </property>
                  </widget>
                 </item>
-                <item row="1" column="1">
-                 <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
+                <item row="0" column="0">
+                 <widget class="QLabel" name="mAnnotationFormatLabel">
+                  <property name="text">
+                   <string>Format</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QComboBox" name="mAnnotationFormatComboBox"/>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="mAnnotationPositionLabelRight">
-                  <property name="text">
-                   <string>Right</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                  <property name="buddy">
-                   <cstring>mAnnotationPositionRightComboBox</cstring>
-                  </property>
-                 </widget>
+                 <widget class="QComboBox" name="mAnnotationPositionLeftComboBox"/>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
-                </item>
-                <item row="4" column="1">
-                 <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
-                </item>
-                <item row="5" column="0">
-                 <widget class="QLabel" name="mAnnotationPositionLabelTop">
-                  <property name="text">
-                   <string>Top</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                  <property name="buddy">
-                   <cstring>mAnnotationPositionTopComboBox</cstring>
-                  </property>
-                 </widget>
+                 <widget class="QComboBox" name="mAnnotationDirectionComboBoxLeft"/>
                 </item>
                 <item row="5" column="1">
-                 <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
+                 <widget class="QComboBox" name="mAnnotationPositionRightComboBox"/>
                 </item>
                 <item row="6" column="1">
-                 <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
-                </item>
-                <item row="7" column="0">
-                 <widget class="QLabel" name="mAnnotationPositionLabelBottom">
-                  <property name="text">
-                   <string>Bottom</string>
-                  </property>
-                  <property name="wordWrap">
-                   <bool>true</bool>
-                  </property>
-                  <property name="buddy">
-                   <cstring>mAnnotationPositionRightComboBox</cstring>
-                  </property>
-                 </widget>
-                </item>
-                <item row="7" column="1">
-                 <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
+                 <widget class="QComboBox" name="mAnnotationDirectionComboBoxRight"/>
                 </item>
                 <item row="8" column="1">
+                 <widget class="QComboBox" name="mAnnotationPositionTopComboBox"/>
+                </item>
+                <item row="9" column="1">
+                 <widget class="QComboBox" name="mAnnotationDirectionComboBoxTop"/>
+                </item>
+                <item row="11" column="1">
+                 <widget class="QComboBox" name="mAnnotationPositionBottomComboBox"/>
+                </item>
+                <item row="12" column="1">
                  <widget class="QComboBox" name="mAnnotationDirectionComboBoxBottom"/>
                 </item>
-                <item row="9" column="0">
+                <item row="13" column="0">
                  <widget class="QLabel" name="label">
                   <property name="text">
                    <string>Font</string>
                   </property>
                  </widget>
                 </item>
-                <item row="9" column="1">
+                <item row="13" column="1">
                  <widget class="QPushButton" name="mAnnotationFontButton">
                   <property name="text">
                    <string>Font...</string>
                   </property>
                  </widget>
                 </item>
-                <item row="10" column="0">
+                <item row="14" column="0">
                  <widget class="QLabel" name="mFontColorLabel">
                   <property name="text">
                    <string>Font color</string>
                   </property>
                  </widget>
                 </item>
-                <item row="10" column="1">
+                <item row="14" column="1">
                  <widget class="QgsColorButtonV2" name="mAnnotationFontColorButton">
                   <property name="minimumSize">
                    <size>
@@ -1083,7 +1116,7 @@
                   </property>
                  </widget>
                 </item>
-                <item row="11" column="0">
+                <item row="15" column="0">
                  <widget class="QLabel" name="mDistanceToFrameLabel">
                   <property name="text">
                    <string>Distance to map frame</string>
@@ -1096,14 +1129,14 @@
                   </property>
                  </widget>
                 </item>
-                <item row="11" column="1">
-                 <widget class="QDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
+                <item row="15" column="1">
+                 <widget class="QgsDoubleSpinBox" name="mDistanceToMapFrameSpinBox">
                   <property name="suffix">
                    <string> mm</string>
                   </property>
                  </widget>
                 </item>
-                <item row="12" column="0">
+                <item row="16" column="0">
                  <widget class="QLabel" name="mCoordinatePrecisionLabel">
                   <property name="text">
                    <string>Coordinate precision</string>
@@ -1116,8 +1149,47 @@
                   </property>
                  </widget>
                 </item>
-                <item row="12" column="1">
-                 <widget class="QSpinBox" name="mCoordinatePrecisionSpinBox"/>
+                <item row="16" column="1">
+                 <widget class="QgsSpinBox" name="mCoordinatePrecisionSpinBox">
+                  <property name="showClearButton" stdset="0">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1">
+                 <widget class="QComboBox" name="mAnnotationDisplayLeftComboBox"/>
+                </item>
+                <item row="7" column="0">
+                 <widget class="QLabel" name="mAnnotationPositionLabelTop">
+                  <property name="text">
+                   <string>Top</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="buddy">
+                   <cstring>mAnnotationPositionTopComboBox</cstring>
+                  </property>
+                 </widget>
+                </item>
+                <item row="7" column="1">
+                 <widget class="QComboBox" name="mAnnotationDisplayTopComboBox"/>
+                </item>
+                <item row="10" column="1">
+                 <widget class="QComboBox" name="mAnnotationDisplayBottomComboBox"/>
+                </item>
+                <item row="10" column="0">
+                 <widget class="QLabel" name="mAnnotationPositionLabelBottom">
+                  <property name="text">
+                   <string>Bottom</string>
+                  </property>
+                  <property name="wordWrap">
+                   <bool>true</bool>
+                  </property>
+                  <property name="buddy">
+                   <cstring>mAnnotationPositionRightComboBox</cstring>
+                  </property>
+                 </widget>
                 </item>
                </layout>
               </widget>
@@ -1148,7 +1220,7 @@
             <item>
              <widget class="QPushButton" name="mAddOverviewPushButton">
               <property name="toolTip">
-               <string>Add a new grid</string>
+               <string>Add a new overview</string>
               </property>
               <property name="text">
                <string/>
@@ -1162,7 +1234,7 @@
             <item>
              <widget class="QPushButton" name="mRemoveOverviewPushButton">
               <property name="toolTip">
-               <string>Remove selected grid</string>
+               <string>Remove selected overview</string>
               </property>
               <property name="text">
                <string/>
@@ -1176,7 +1248,7 @@
             <item>
              <widget class="QPushButton" name="mOverviewUpButton">
               <property name="toolTip">
-               <string>Move selected grid up</string>
+               <string>Move selected overview up</string>
               </property>
               <property name="text">
                <string/>
@@ -1190,7 +1262,7 @@
             <item>
              <widget class="QPushButton" name="mOverviewDownButton">
               <property name="toolTip">
-               <string>Move selected grid down</string>
+               <string>Move selected overview down</string>
               </property>
               <property name="text">
                <string/>
@@ -1300,9 +1372,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <class>QgsColorButtonV2</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbuttonv2.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1311,9 +1383,19 @@
    <header>qgsdatadefinedbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1334,6 +1416,7 @@
   <tabstop>mDrawCanvasItemsCheckBox</tabstop>
   <tabstop>mKeepLayerListCheckBox</tabstop>
   <tabstop>mLayerListFromPresetButton</tabstop>
+  <tabstop>mKeepLayerStylesCheckBox</tabstop>
   <tabstop>mExtentsCheckBox</tabstop>
   <tabstop>mXMinLineEdit</tabstop>
   <tabstop>mXMinDDBtn</tabstop>
@@ -1376,18 +1459,26 @@
   <tabstop>mGridFramePenColorButton</tabstop>
   <tabstop>mGridFrameFill1ColorButton</tabstop>
   <tabstop>mGridFrameFill2ColorButton</tabstop>
+  <tabstop>mFrameDivisionsLeftComboBox</tabstop>
+  <tabstop>mFrameDivisionsRightComboBox</tabstop>
+  <tabstop>mFrameDivisionsTopComboBox</tabstop>
+  <tabstop>mFrameDivisionsBottomComboBox</tabstop>
   <tabstop>mCheckGridLeftSide</tabstop>
   <tabstop>mCheckGridRightSide</tabstop>
   <tabstop>mCheckGridTopSide</tabstop>
   <tabstop>mCheckGridBottomSide</tabstop>
   <tabstop>mDrawAnnotationGroupBox</tabstop>
   <tabstop>mAnnotationFormatComboBox</tabstop>
+  <tabstop>mAnnotationDisplayLeftComboBox</tabstop>
   <tabstop>mAnnotationPositionLeftComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxLeft</tabstop>
+  <tabstop>mAnnotationDisplayRightComboBox</tabstop>
   <tabstop>mAnnotationPositionRightComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxRight</tabstop>
+  <tabstop>mAnnotationDisplayTopComboBox</tabstop>
   <tabstop>mAnnotationPositionTopComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxTop</tabstop>
+  <tabstop>mAnnotationDisplayBottomComboBox</tabstop>
   <tabstop>mAnnotationPositionBottomComboBox</tabstop>
   <tabstop>mAnnotationDirectionComboBoxBottom</tabstop>
   <tabstop>mAnnotationFontButton</tabstop>

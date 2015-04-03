@@ -26,23 +26,44 @@ __copyright__ = '(C) 2012, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.core import QgsApplication
 import subprocess
+
+from PyQt4.QtCore import QCoreApplication
+from qgis.core import QgsApplication
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import isMac
 
 
 class TauDEMUtils:
 
     TAUDEM_FOLDER = 'TAUDEM_FOLDER'
+    TAUDEM_MULTIFILE_FOLDER = 'TAUDEM_MULTIFILE_FOLDER'
+    TAUDEM_USE_SINGLEFILE = 'TAUDEM_USE_SINGLEFILE'
+    TAUDEM_USE_MULTIFILE = 'TAUDEM_USE_MULTIFILE'
     MPIEXEC_FOLDER = 'MPIEXEC_FOLDER'
     MPI_PROCESSES = 'MPI_PROCESSES'
 
     @staticmethod
     def taudemPath():
         folder = ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_FOLDER)
+        if folder is None:
+            folder = ''
+
+        if isMac():
+            testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
+            if os.path.exists(os.path.join(testfolder, 'slopearea')):
+                folder = testfolder
+            else:
+                testfolder = '/usr/local/bin'
+                if os.path.exists(os.path.join(testfolder, 'slopearea')):
+                    folder = testfolder
+        return folder
+
+    @staticmethod
+    def taudemMultifilePath():
+        folder = ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_MULTIFILE_FOLDER)
         if folder is None:
             folder = ''
 
@@ -74,14 +95,16 @@ class TauDEMUtils:
 
     @staticmethod
     def taudemDescriptionPath():
-        return os.path.normpath(os.path.join(os.path.dirname(__file__),
-                                'description'))
+        return os.path.normpath(
+            os.path.join(os.path.dirname(__file__), 'description'))
 
     @staticmethod
     def executeTauDEM(command, progress):
         loglines = []
-        loglines.append('TauDEM execution console output')
+        loglines.append(TauDEMUtils.tr('TauDEM execution console output'))
         fused_command = ''.join(['"%s" ' % c for c in command])
+        progress.setInfo(TauDEMUtils.tr('TauDEM command:'))
+        progress.setCommand(fused_command.replace('" "', ' ').strip('"'))
         proc = subprocess.Popen(
             fused_command,
             shell=True,
@@ -89,7 +112,14 @@ class TauDEMUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         for line in iter(proc.readline, ''):
+            progress.setConsoleInfo(line)
             loglines.append(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
+
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'TauDEMUtils'
+        return QCoreApplication.translate(context, string)

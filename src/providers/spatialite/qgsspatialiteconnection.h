@@ -155,6 +155,12 @@ class QgsSqliteHandle
     static QgsSqliteHandle *openDb( const QString & dbPath, bool shared = true );
     static bool checkMetadata( sqlite3 * handle );
     static void closeDb( QgsSqliteHandle * &handle );
+
+    /**
+     * Will close any cached connection
+     * To be called on application exit
+     */
+    static void closeAll();
     //static void closeDb( QMap < QString, QgsSqliteHandle * >&handlesRO, QgsSqliteHandle * &handle );
 
   private:

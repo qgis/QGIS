@@ -21,12 +21,17 @@
 #include <QObject>
 #include <QLineEdit>
 #include <QComboBox>
-#include <QSignalSpy>
-#include <QtTest>
+#include <QtTest/QSignalSpy>
+#include <QtTest/QtTest>
 
-class TestQgsScaleComboBox: public QObject
+class TestQgsScaleComboBox : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsScaleComboBox()
+        : s( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -51,6 +56,7 @@ void TestQgsScaleComboBox::initTestCase()
 void TestQgsScaleComboBox::cleanupTestCase()
 {
   delete s;
+  QgsApplication::exitQgis();
 };
 
 void TestQgsScaleComboBox::init()
@@ -81,6 +87,24 @@ void TestQgsScaleComboBox::basic()
   QTest::keyClick( l, Qt::Key_Return );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale::system().toString( 42 ) ) );
   QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 42.0 );
+
+  // Testing conversion from number to "1:x,000"
+  l->setText( "" );
+  QString str = QString( "1%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  QTest::keyClicks( l, str );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( str ) );
+  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 1000000.0 );
+
+  // Testing conversion from number to "1:x,000" with wonky seperators
+  //(eg four digits between thousands, which should be fixed automatically)
+  l->setText( "" );
+  str = QString( "1%010000%01000" ).arg( QLocale::system().groupSeparator() );
+  QString fixedStr = QString( "10%01000%01000" ).arg( QLocale::system().groupSeparator() );
+  QTest::keyClicks( l, str );
+  QTest::keyClick( l, Qt::Key_Return );
+  QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( fixedStr ) );
+  QCOMPARE( s->scale(), ( double ) 1.0 / ( double ) 10000000.0 );
 
   // Testing rounding and conversion from illegal
 
@@ -130,4 +154,4 @@ void TestQgsScaleComboBox::cleanup()
 };
 
 QTEST_MAIN( TestQgsScaleComboBox )
-#include "moc_testqgsscalecombobox.cxx"
+#include "testqgsscalecombobox.moc"

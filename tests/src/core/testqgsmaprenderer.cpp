@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -49,14 +49,18 @@
  * It will do some performance testing too
  *
  */
-class TestQgsMapRenderer: public QObject
+class TestQgsMapRenderer : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsMapRenderer();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     /** This method tests render perfomance */
     void performanceTest();
@@ -70,6 +74,13 @@ class TestQgsMapRenderer: public QObject
     QgsMapLayer * mpPolysLayer;
     QString mReport;
 };
+
+TestQgsMapRenderer::TestQgsMapRenderer()
+    : mError( QgsVectorFileWriter::NoError )
+    , mpPolysLayer( NULL )
+{
+
+}
 
 void TestQgsMapRenderer::initTestCase()
 {
@@ -171,6 +182,8 @@ void TestQgsMapRenderer::initTestCase()
 
 void TestQgsMapRenderer::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
+
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
   if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
@@ -189,12 +202,13 @@ void TestQgsMapRenderer::performanceTest()
   myChecker.setControlName( "expected_maprender" );
   mMapSettings.setFlag( QgsMapSettings::Antialiasing );
   myChecker.setMapSettings( mMapSettings );
+  myChecker.setColorTolerance( 5 );
   bool myResultFlag = myChecker.runTest( "maprender" );
   mReport += myChecker.report();
   QVERIFY( myResultFlag );
 }
 
 QTEST_MAIN( TestQgsMapRenderer )
-#include "moc_testqgsmaprenderer.cxx"
+#include "testqgsmaprenderer.moc"
 
 

@@ -36,8 +36,7 @@ from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.Providers import Providers
 from processing.tools import dataobjects
 
-from processing.tests.TestData import points, points2, polygons, polygons2, \
-    lines, union, table, raster
+from processing.tests.TestData import points, polygons, union, raster
 
 
 class ModelerAlgorithmTest(unittest.TestCase):
@@ -190,7 +189,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
             'POLY_NUM_B',
             'POLY_ST_B',
             'NewField',
-            ]
+        ]
         expectedtypes = [
             'Integer',
             'Real',
@@ -199,7 +198,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
             'Real',
             'String',
             'Integer',
-            ]
+        ]
         names = [str(f.name()) for f in fields]
         types = [str(f.typeName()) for f in fields]
         self.assertEqual(expectednames, names)
@@ -216,7 +215,7 @@ class ModelerAlgorithmTest(unittest.TestCase):
             '1',
             'string a',
             '10',
-            ]
+        ]
         values = [str(attr) for attr in attrs]
         self.assertEqual(expectedvalues, values)
         wkt = 'POLYGON((270807.08580285 4458940.1594565,270798.42294527 4458914.62661676,270780.81854858 4458914.21983449,270763.52289518 4458920.715993,270760.3449542 4458926.6570575,270763.78234766 4458958.22561242,270794.30290024 4458942.16424502,270807.08580285 4458940.1594565))'

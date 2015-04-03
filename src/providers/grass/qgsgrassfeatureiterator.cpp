@@ -67,7 +67,7 @@ QMutex QgsGrassFeatureIterator::sMutex;
 
 
 QgsGrassFeatureIterator::QgsGrassFeatureIterator( QgsGrassFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsGrassFeatureSource>( source, ownSource, request )
 {
   sMutex.lock();
 
@@ -275,7 +275,12 @@ bool QgsGrassFeatureIterator::fetchFeature( QgsFeature& feature )
   else
   {
     feature.setAttribute( 0, id );
+#if GRASS_VERSION_MAJOR < 7
     if ( mSource->mLayerType == QgsGrassProvider::TOPO_POINT || mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
+#else
+    /* No more topo points in GRASS 7 */
+    if ( mSource->mLayerType == QgsGrassProvider::TOPO_LINE )
+#endif
     {
       feature.setAttribute( 1, QgsGrassProvider::primitiveTypeName( type ) );
 
@@ -619,6 +624,7 @@ QgsGrassFeatureSource::QgsGrassFeatureSource( const QgsGrassProvider* p )
   int layerId = QgsGrassProvider::openLayer( p->mGisdbase, p->mLocation, p->mMapset, p->mMapName, p->mLayerField );
 
   Q_ASSERT( layerId == mLayerId );
+  Q_UNUSED( layerId ); //avoid compilier warning
 }
 
 QgsGrassFeatureSource::~QgsGrassFeatureSource()

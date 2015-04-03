@@ -52,7 +52,7 @@ class QgsPluginLayerRenderer : public QgsMapLayerRenderer
         , mRendererContext( rendererContext )
     {}
 
-    virtual bool render()
+    virtual bool render() override
     {
       return mLayer->draw( mRendererContext );
     }

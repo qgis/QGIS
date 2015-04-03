@@ -137,15 +137,30 @@ bool QgsField::convertCompatible( QVariant& v ) const
     return true;
   }
 
+  if ( mType == QVariant::Int && v.toInt() != v.toLongLong() )
+  {
+    v = QVariant( mType );
+    return false;
+  }
+
   if ( !v.convert( mType ) )
   {
+    v = QVariant( mType );
     return false;
   }
 
   if ( mType == QVariant::Double && mPrecision > 0 )
   {
-    v = qRound64( v.toDouble() * qPow( 10, mPrecision ) ) / qPow( 10, mPrecision );
+    double s = qPow( 10, mPrecision );
+    double d = v.toDouble() * s;
+    v = QVariant(( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
     return true;
+  }
+
+  if ( mType == QVariant::String && mLength > 0 && v.toString().length() > mLength )
+  {
+    v = v.toString().left( mLength );
+    return false;
   }
 
   return true;
@@ -185,6 +200,9 @@ bool QgsFields::appendExpressionField( const QgsField& field, int originIndex )
 
 void QgsFields::remove( int fieldIdx )
 {
+  if ( !exists( fieldIdx ) )
+    return;
+
   mNameToIndex.remove( mFields[fieldIdx].field.name() );
   mFields.remove( fieldIdx );
 }
@@ -195,6 +213,14 @@ void QgsFields::extend( const QgsFields& other )
   {
     append( other.at( i ), other.fieldOrigin( i ), other.fieldOriginIndex( i ) );
   }
+}
+
+QgsFields::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
+{
+  if ( !exists( fieldIdx ) )
+    return OriginUnknown;
+
+  return mFields[fieldIdx].origin;
 }
 
 QList<QgsField> QgsFields::toList() const

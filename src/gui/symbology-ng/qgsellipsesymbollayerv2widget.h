@@ -30,8 +30,8 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsEllipseSymbolLayerV2Widget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
-    virtual QgsSymbolLayerV2* symbolLayer();
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) override;
+    virtual QgsSymbolLayerV2* symbolLayer() override;
 
   protected:
     QgsEllipseSymbolLayerV2* mLayer;
@@ -55,7 +55,6 @@ class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, p
     void on_mOffsetUnitWidget_changed();
     void on_mHorizontalAnchorComboBox_currentIndexChanged( int index );
     void on_mVerticalAnchorComboBox_currentIndexChanged( int index );
-    void on_mDataDefinedPropertiesButton_clicked();
 
     void setOffset();
 };

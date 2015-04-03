@@ -17,14 +17,20 @@
 #include <QPainter>
 #include <cmath>
 
-QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas ): QgsMapCanvasItem( canvas ), mOrientation( Clockwise ), mRotation( 0.0 )
+QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas* canvas )
+    : QgsMapCanvasItem( canvas )
+    , mOrientation( Clockwise )
+    , mRotation( 0.0 )
 {
   //setup font
   mFont.setPointSize( 12 );
   mFont.setBold( true );
 }
 
-QgsPointRotationItem::QgsPointRotationItem(): QgsMapCanvasItem( 0 ), mRotation( 0.0 )
+QgsPointRotationItem::QgsPointRotationItem()
+    : QgsMapCanvasItem( 0 )
+    , mOrientation( Clockwise )
+    , mRotation( 0.0 )
 {
 
 }

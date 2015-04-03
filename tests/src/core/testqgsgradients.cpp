@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -40,9 +40,19 @@
 /** \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
-class TestQgsGradients: public QObject
+class TestQgsGradients : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsGradients()
+        : mTestHasError( false )
+        , mpPolysLayer( 0 )
+        , mGradientFill( 0 )
+        , mFillSymbol( 0 )
+        , mSymbolRenderer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -128,6 +138,8 @@ void TestQgsGradients::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsGradients::gradientSymbol()
@@ -287,4 +299,4 @@ bool TestQgsGradients::imageCheck( QString theTestType )
 }
 
 QTEST_MAIN( TestQgsGradients )
-#include "moc_testqgsgradients.cxx"
+#include "testqgsgradients.moc"

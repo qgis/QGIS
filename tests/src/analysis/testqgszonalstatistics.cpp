@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include <QDir>
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
@@ -23,14 +23,18 @@
 /** \ingroup UnitTests
  * This is a unit test for the zonal statistics class
  */
-class TestQgsZonalStatistics: public QObject
+class TestQgsZonalStatistics : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsZonalStatistics();
+
   private slots:
     void initTestCase();
-    void cleanupTestCase() {};
-    void init() {};
-    void cleanup() {};
+    void cleanupTestCase();
+    void init() {}
+    void cleanup() {}
 
     void testStatistics();
 
@@ -38,6 +42,12 @@ class TestQgsZonalStatistics: public QObject
     QgsVectorLayer* mVectorLayer;
     QString mRasterPath;
 };
+
+TestQgsZonalStatistics::TestQgsZonalStatistics()
+    : mVectorLayer( NULL )
+{
+
+}
 
 void TestQgsZonalStatistics::initTestCase()
 {
@@ -60,6 +70,11 @@ void TestQgsZonalStatistics::initTestCase()
 
   mVectorLayer = new QgsVectorLayer( myTempPath + "polys.shp", "poly", "ogr" );
   mRasterPath = myTempPath + "edge_problem.asc";
+}
+
+void TestQgsZonalStatistics::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
 }
 
 void TestQgsZonalStatistics::testStatistics()
@@ -117,4 +132,4 @@ void TestQgsZonalStatistics::testStatistics()
 }
 
 QTEST_MAIN( TestQgsZonalStatistics )
-#include "moc_testqgszonalstatistics.cxx"
+#include "testqgszonalstatistics.moc"

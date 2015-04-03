@@ -129,7 +129,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     bool isExpressionValid( const QString expressionStr );
 
   protected:
-    void changeEvent( QEvent* event );
+    void changeEvent( QEvent* event ) override;
 
   private:
     QComboBox* mCombo;

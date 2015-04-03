@@ -40,6 +40,63 @@ class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkRequest;
 
+/**
+ * \class Handles asynchronous download of WMS legend
+ *
+ * \todo turn into a generic async image downloader ?
+ *
+ */
+class QgsWmsLegendDownloadHandler : public QgsImageFetcher
+{
+    Q_OBJECT
+  public:
+
+    QgsWmsLegendDownloadHandler( QgsNetworkAccessManager& networkAccessManager, const QgsWmsSettings& settings, const QUrl& url );
+    ~QgsWmsLegendDownloadHandler( );
+
+    // Make sure to connect to "finish" before starting
+    void start() override;
+
+  private:
+
+    // Make sure to connect to "finish" before starting
+    void startUrl( const QUrl& url );
+
+    // Delete reply (later), emit error and finish with empty image
+    void sendError( const QString& msg );
+    // Delete reply (later), emit finish
+    void sendSuccess( const QImage& img );
+
+    QgsNetworkAccessManager& mNetworkAccessManager;
+    const QgsWmsSettings& mSettings;
+    QNetworkReply* mReply;
+    QSet<QUrl> mVisitedUrls;
+    QUrl mInitialUrl;
+
+  private slots:
+
+    void errored( QNetworkReply::NetworkError code );
+    void finished();
+    void progressed( qint64, qint64 );
+};
+
+class QgsCachedImageFetcher: public QgsImageFetcher
+{
+    Q_OBJECT;
+  public:
+    QgsCachedImageFetcher( const QImage& img );
+    virtual ~QgsCachedImageFetcher();
+    virtual void start() override;
+  private:
+    const QImage _img; // copy is intentional
+  private slots:
+    void send()
+    {
+      QgsDebugMsg( QString( "XXX Sending %1x%2 image" ).arg( _img.width() ).arg( _img.height() ) );
+      emit finish( _img );
+    }
+};
+
 
 /**
 
@@ -68,7 +125,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Destructor
     virtual ~QgsWmsProvider();
 
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface * clone() const override;
 
 
     /*! Get the QgsCoordinateReferenceSystem for this layer
@@ -76,23 +133,22 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * If the provider isn't capable of returning
      * its projection an empty srs will be return, ti will return 0
      */
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server
      * (in order from bottom to top)
      * \note   layers must have been previously added.
      */
-    virtual void setLayerOrder( QStringList const & layers );
+    virtual void setLayerOrder( QStringList const & layers ) override;
 
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( const QString &name, bool vis );
+    virtual void setSubLayerVisibility( const QString &name, bool vis ) override;
 
     /**
      * Set the name of the connection for use in authentication where required
-     * \note added in 1.1
      */
     void setConnectionName( QString const & connName );
 
@@ -110,40 +166,33 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
      *           shared across library boundaries
      */
-    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight );
+    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight ) override;
 
-    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data );
+    void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
 
     /** Return the extent for this data layer
     */
-    virtual QgsRectangle extent();
+    virtual QgsRectangle extent() override;
 
     /**Returns true if layer is valid
      */
-    bool isValid();
+    bool isValid() override;
 
 #if 0
     /**Returns true if layer has tile set profiles
-     * @added in 1.5
      */
     virtual bool hasTiles() const;
 #endif
 
-    /**Returns the GetMap url
-     * @added in 1.5
-     */
+    /**Returns the GetMap url */
     virtual QString getMapUrl() const;
 
-    /**Returns the GetFeatureInfo url
-     * @added in 1.5
-     */
+    /**Returns the GetFeatureInfo url */
     virtual QString getFeatureInfoUrl() const;
 
-    /**Return the GetTile url
-     * @added in 1.9
-     */
+    /**Return the GetTile url */
     virtual QString getTileUrl() const;
 
     /**Return the GetLegendGraphic url
@@ -161,7 +210,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * layers in some way at the server, before it serves them to this
      * WMS client.
      */
-    QStringList subLayers() const;
+    QStringList subLayers() const override;
 
     /**
      * Sub-layer styles for each sub-layer handled by this provider,
@@ -171,7 +220,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * layers in some way at the server, before it serves them to this
      * WMS client.
      */
-    QStringList subLayerStyles() const;
+    QStringList subLayerStyles() const override;
 
 
     /**
@@ -184,8 +233,26 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * in getCapability
      * \param scale Optional parameter that is the Scale of the wms layer
      * \param forceRefresh Optional bool parameter to force refresh getLegendGraphic call
+     * \param visibleExtent Visible extent for providers supporting contextual legends
+     *
+     * \note visibleExtent parameter added in 2.8
      */
-    QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false );
+    QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false, const QgsRectangle * visibleExtent = 0 ) override;
+
+    /**
+     * \class Get an image downloader for the raster legend
+     *
+     * \param mapSettings map settings for legend providers supporting
+     *                    contextual legends.
+     *
+     * \return a download handler or null if the provider does not support
+     *         legend at all. Ownership of the returned object is transferred
+     *         to caller.
+     *
+     * \note added in 2.8
+     *
+     */
+    virtual QgsImageFetcher* getLegendGraphicFetcher( const QgsMapSettings* mapSettings ) override;
 
     // TODO: Get the WMS connection
 
@@ -196,22 +263,22 @@ class QgsWmsProvider : public QgsRasterDataProvider
         sublayers are visible on this provider, so it may
         be prudent to check this value per intended operation.
       */
-    int capabilities() const;
+    int capabilities() const override;
 
     /** Server identify capabilities, used by source select. */
     int identifyCapabilities() const;
 
-    QGis::DataType dataType( int bandNo ) const;
-    QGis::DataType srcDataType( int bandNo ) const;
-    int bandCount() const;
+    QGis::DataType dataType( int bandNo ) const override;
+    QGis::DataType srcDataType( int bandNo ) const override;
+    int bandCount() const override;
 
     /**
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    QString metadata();
+    QString metadata() override;
 
-    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 );
+    QgsRasterIdentifyResult identify( const QgsPoint & thePoint, QgsRaster::IdentifyFormat theFormat, const QgsRectangle &theExtent = QgsRectangle(), int theWidth = 0, int theHeight = 0 ) override;
 
     /**
      * \brief   Returns the caption error text for the last error in this provider
@@ -221,7 +288,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString lastErrorTitle();
+    QString lastErrorTitle() override;
 
     /**
      * \brief   Returns the verbose error text for the last error in this provider
@@ -231,12 +298,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
      */
-    QString lastError();
+    QString lastError() override;
 
     /**
      * \brief   Returns the format of the error message (text or html)
      */
-    QString lastErrorFormat();
+    QString lastErrorFormat() override;
 
     /** return a provider name
 
@@ -252,7 +319,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString name() const;
+    QString name() const override;
 
 
     /** return description
@@ -266,11 +333,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
     anything strange with regards to their name or description?
 
     */
-    QString description() const;
+    QString description() const override;
 
     /**Reloads the data from the source. Needs to be implemented by providers with data caches to
       synchronize with changes in the data source*/
-    virtual void reloadData();
+    virtual void reloadData() override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -302,7 +369,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private slots:
     void identifyReplyFinished();
-    void getLegendGraphicReplyFinished();
+    void getLegendGraphicReplyFinished( const QImage& );
     void getLegendGraphicReplyProgress( qint64, qint64 );
 
   private:
@@ -355,7 +422,23 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     bool calculateExtent();
 
+    /* \brief Bounding box in WMS format
+     *
+     * \note it does not perform any escape
+     */
+    QString toParamValue( const QgsRectangle& rect, bool changeXY );
+
+    /* \brief add SRS or CRS parameter */
+    void setSRSQueryItem( QUrl& url );
+
   private:
+
+    /**Return the full url to request legend graphic
+     * The visibleExtent isi only used if provider supports contextual
+     * legends according to the QgsWmsSettings
+     * @added in 2.8
+     */
+    QUrl getLegendGraphicFullURL( double scale, const QgsRectangle& visibleExtent );
 
     //QStringList identifyAs( const QgsPoint &point, QString format );
 
@@ -400,6 +483,10 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     double mGetLegendGraphicScale;
 
+    QgsRectangle mGetLegendGraphicExtent;
+
+    QScopedPointer<QgsImageFetcher> mLegendGraphicFetcher;
+
     /**
      * Visibility status of the given active sublayer
      */
@@ -416,11 +503,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * with the same parameters.
      */
     QImage *mCachedImage;
-
-    /**
-     * The reply to the GetLegendGraphic request
-     */
-    QNetworkReply *mGetLegendGraphicReply;
 
     /**
      * The reply to the capabilities request

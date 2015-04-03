@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'DlgConfig.ui'
 #
-# Created: Fri Sep 13 14:13:04 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:47 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,15 +12,24 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgConfig(object):
     def setupUi(self, DlgConfig):
         DlgConfig.setObjectName(_fromUtf8("DlgConfig"))
         DlgConfig.resize(640, 450)
         self.verticalLayout = QtGui.QVBoxLayout(DlgConfig)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setMargin(9)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.searchBox = QgsFilterLineEdit(DlgConfig)
         self.searchBox.setObjectName(_fromUtf8("searchBox"))
@@ -42,7 +51,7 @@ class Ui_DlgConfig(object):
         QtCore.QMetaObject.connectSlotsByName(DlgConfig)
 
     def retranslateUi(self, DlgConfig):
-        DlgConfig.setWindowTitle(QtGui.QApplication.translate("DlgConfig", "Processing options", None, QtGui.QApplication.UnicodeUTF8))
-        self.searchBox.setToolTip(QtGui.QApplication.translate("DlgConfig", "Enter setting name to filter list", None, QtGui.QApplication.UnicodeUTF8))
+        DlgConfig.setWindowTitle(_translate("DlgConfig", "Processing options", None))
+        self.searchBox.setToolTip(_translate("DlgConfig", "Enter setting name to filter list", None))
 
 from qgis.gui import QgsFilterLineEdit

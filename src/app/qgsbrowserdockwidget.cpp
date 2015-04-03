@@ -23,6 +23,7 @@
 #include <QSortFilterProxyModel>
 
 #include "qgsbrowsermodel.h"
+#include "qgsbrowsertreeview.h"
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
@@ -46,25 +47,26 @@ accept drops of the items on our view - but if we ignore the drag enter action
 then qgis application consumes the drag events and it is possible to drop the
 items on the tree view although the drop is actually managed by qgis app.
  */
-class QgsBrowserTreeView : public QTreeView
+class QgsDockBrowserTreeView : public QgsBrowserTreeView
 {
   public:
-    QgsBrowserTreeView( QWidget* parent ) : QTreeView( parent )
+    QgsDockBrowserTreeView( QWidget* parent ) : QgsBrowserTreeView( parent )
     {
       setDragDropMode( QTreeView::DragDrop ); // sets also acceptDrops + dragEnabled
       setSelectionMode( QAbstractItemView::ExtendedSelection );
       setContextMenuPolicy( Qt::CustomContextMenu );
       setHeaderHidden( true );
       setDropIndicatorShown( true );
+
     }
 
-    void dragEnterEvent( QDragEnterEvent* e )
+    void dragEnterEvent( QDragEnterEvent* e ) override
     {
       // accept drag enter so that our widget will not get ignored
       // and drag events will not get passed to QgisApp
       e->accept();
     }
-    void dragMoveEvent( QDragMoveEvent* e )
+    void dragMoveEvent( QDragMoveEvent* e ) override
     {
       // do not accept drops above/below items
       /*if ( dropIndicatorPosition() != QAbstractItemView::OnItem )
@@ -193,42 +195,57 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
       return false;
     }
 
-    bool filterAcceptsRow( int sourceRow,
-                           const QModelIndex &sourceParent ) const
+    // It would be better to apply the filer only to expanded (visible) items, but using mapFromSource() + view here was causing strange errors
+    bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override
     {
-      // if ( filterRegExp().pattern() == QString( "" ) ) return true;
-      if ( mFilter == "" ) return true;
+      if ( mFilter == "" || !mModel ) return true;
 
-      QModelIndex index = sourceModel()->index( sourceRow, 0, sourceParent );
-      QgsDataItem* item = mModel->dataItem( index );
-      QgsDataItem* parentItem = mModel->dataItem( sourceParent );
+      QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
+      return filterAcceptsItem( sourceIndex ) || filterAcceptsAncestor( sourceIndex ) || filterAcceptsDescendant( sourceIndex );
+    }
 
-      // accept "invalid" items and data collections
-      if ( ! item )
+    // returns true if at least one ancestor is accepted by filter
+    bool filterAcceptsAncestor( const QModelIndex &sourceIndex ) const
+    {
+      if ( !mModel )
         return true;
-      if ( qobject_cast<QgsDataCollectionItem*>( item ) )
+
+      QModelIndex sourceParentIndex = mModel->parent( sourceIndex );
+      if ( !sourceParentIndex.isValid() )
+        return false;
+      if ( filterAcceptsItem( sourceParentIndex ) )
         return true;
 
-      // filter layer items - this could be delegated to the providers but a little overkill
-      if ( parentItem && qobject_cast<QgsLayerItem*>( item ) )
+      return filterAcceptsAncestor( sourceParentIndex );
+    }
+
+    // returns true if at least one descendant s accepted by filter
+    bool filterAcceptsDescendant( const QModelIndex &sourceIndex ) const
+    {
+      if ( !mModel )
+        return true;
+
+      for ( int i = 0; i < mModel->rowCount( sourceIndex ); i++ )
       {
-        // filter normal files by extension
-        if ( qobject_cast<QgsDirectoryItem*>( parentItem ) )
-        {
-          QFileInfo fileInfo( item->path() );
-          return filterAcceptsString( fileInfo.fileName() );
-        }
-        // filter other items (postgis, etc.) by name
-        else if ( qobject_cast<QgsDataCollectionItem*>( parentItem ) )
-        {
-          return filterAcceptsString( item->name() );
-        }
+        QgsDebugMsg( QString( "i = %1" ).arg( i ) );
+        QModelIndex sourceChildIndex = mModel->index( i, 0, sourceIndex );
+        if ( filterAcceptsItem( sourceChildIndex ) )
+          return true;
+        if ( filterAcceptsDescendant( sourceChildIndex ) )
+          return true;
       }
+      return false;
+    }
 
-      // accept anything else
-      return true;
+    // filter accepts item name
+    bool filterAcceptsItem( const QModelIndex &sourceIndex ) const
+    {
+      if ( !mModel )
+        return true;
+      return filterAcceptsString( mModel->data( sourceIndex, Qt::DisplayRole ).toString() );
     }
 };
+
 QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL ), mProxyModel( NULL )
 {
@@ -236,7 +253,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
 
   setWindowTitle( name );
 
-  mBrowserView = new QgsBrowserTreeView( this );
+  mBrowserView = new QgsDockBrowserTreeView( this );
   mLayoutBrowser->addWidget( mBrowserView );
 
   mBtnRefresh->setIcon( QgsApplication::getThemeIcon( "mActionDraw.svg" ) );
@@ -244,9 +261,8 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   mBtnCollapse->setIcon( QgsApplication::getThemeIcon( "mActionCollapseTree.png" ) );
 
   mWidgetFilter->hide();
+  mLeFilter->setPlaceholderText( tr( "Type here to filter current item..." ) );
   // icons from http://www.fatcow.com/free-icons License: CC Attribution 3.0
-  mBtnFilterShow->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
-  mBtnFilter->setIcon( QgsApplication::getThemeIcon( "mActionFilter.png" ) );
 
   QMenu* menu = new QMenu( this );
   menu->setSeparatorsCollapsible( false );
@@ -279,10 +295,9 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
   connect( mBtnAddLayers, SIGNAL( clicked() ), this, SLOT( addSelectedLayers() ) );
   connect( mBtnCollapse, SIGNAL( clicked() ), mBrowserView, SLOT( collapseAll() ) );
   connect( mBtnFilterShow, SIGNAL( toggled( bool ) ), this, SLOT( showFilterWidget( bool ) ) );
-  connect( mBtnFilter, SIGNAL( clicked() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( returnPressed() ), this, SLOT( setFilter() ) );
   connect( mLeFilter, SIGNAL( cleared() ), this, SLOT( setFilter() ) );
-  // connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
+  connect( mLeFilter, SIGNAL( textChanged( const QString & ) ), this, SLOT( setFilter() ) );
   connect( group, SIGNAL( triggered( QAction * ) ), this, SLOT( setFilterSyntax( QAction * ) ) );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
@@ -300,20 +315,12 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
 
     mProxyModel = new QgsBrowserTreeFilterProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
+    mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 instances ow browser
     mBrowserView->setModel( mProxyModel );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
     mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
     mBrowserView->header()->setStretchLastSection( false );
-
-    // expand root favourites item
-    for ( int i = 0; i < mModel->rowCount(); i++ )
-    {
-      QModelIndex index = mModel->index( i, 0 );
-      QgsDataItem* item = mModel->dataItem( index );
-      if ( item && item->type() == QgsDataItem::Favourites )
-        mBrowserView->expand( index );
-    }
   }
 
   QDockWidget::showEvent( e );
@@ -332,7 +339,7 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
   {
     QSettings settings;
     QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
-    bool inFavDirs = favDirs.contains( item->path() );
+    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favourites;
 
     if ( item->parent() && !inFavDirs )
     {
@@ -387,10 +394,11 @@ void QgsBrowserDockWidget::addFavourite()
   if ( !item )
     return;
 
-  if ( item->type() != QgsDataItem::Directory )
+  QgsDirectoryItem * dirItem = dynamic_cast<QgsDirectoryItem *>( item );
+  if ( !dirItem )
     return;
 
-  addFavouriteDirectory( item->path() );
+  addFavouriteDirectory( dirItem->dirPath() );
 }
 
 void QgsBrowserDockWidget::addFavouriteDirectory()
@@ -414,36 +422,45 @@ void QgsBrowserDockWidget::removeFavourite()
 
 void QgsBrowserDockWidget::refresh()
 {
-  QApplication::setOverrideCursor( Qt::WaitCursor );
   refreshModel( QModelIndex() );
-  QApplication::restoreOverrideCursor();
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
 {
   QgsDebugMsg( "Entered" );
-  if ( index.isValid() )
+  QgsDataItem *item = mModel->dataItem( index );
+  if ( item )
   {
-    QgsDataItem *item = mModel->dataItem( index );
-    if ( item )
-    {
-      QgsDebugMsg( "path = " + item->path() );
-    }
-    else
-    {
-      QgsDebugMsg( "invalid item" );
-    }
+    QgsDebugMsg( "path = " + item->path() );
+  }
+  else
+  {
+    QgsDebugMsg( "invalid item" );
   }
 
-  mModel->refresh( index );
+  if ( item && ( item->capabilities2() & QgsDataItem::Fertile ) )
+  {
+    mModel->refresh( index );
+  }
 
   for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
     QModelIndex proxyIdx = mProxyModel->mapFromSource( idx );
-    if ( mBrowserView->isExpanded( proxyIdx ) || !mProxyModel->hasChildren( proxyIdx ) )
+    QgsDataItem *child = mModel->dataItem( idx );
+
+    // Check also expanded descendants so that the whole expanded path does not get collapsed if one item is collapsed.
+    // Fast items (usually root items) are refreshed so that when collapsed, it is obvious they are if empty (no expand symbol).
+    if ( mBrowserView->isExpanded( proxyIdx ) || mBrowserView->hasExpandedDescendant( proxyIdx ) || ( child && child->capabilities2() & QgsDataItem::Fast ) )
     {
       refreshModel( idx );
+    }
+    else
+    {
+      if ( child && ( child->capabilities2() & QgsDataItem::Fertile ) )
+      {
+        child->depopulate();
+      }
     }
   }
 }
@@ -453,7 +470,7 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   if ( layerItem == NULL )
     return;
 
-  QString uri = layerItem->uri();
+  QString uri = QgisApp::instance()->crsAndFormatAdjustedLayerUri( layerItem->uri(), layerItem->supportedCRS(), layerItem->supportedFormats() );
   if ( uri.isEmpty() )
     return;
 
@@ -469,10 +486,15 @@ void QgsBrowserDockWidget::addLayer( QgsLayerItem *layerItem )
   {
     QgisApp::instance()->addRasterLayer( uri, layerItem->layerName(), providerKey );
   }
+  if ( type == QgsMapLayer::PluginLayer )
+  {
+    QgisApp::instance()->addPluginLayer( uri, layerItem->layerName(), providerKey );
+  }
 }
 
 void QgsBrowserDockWidget::addLayerAtIndex( const QModelIndex& index )
 {
+  QgsDebugMsg( QString( "rowCount() = %1" ).arg( mModel->rowCount( mProxyModel->mapToSource( index ) ) ) );
   QgsDataItem *item = mModel->dataItem( mProxyModel->mapToSource( index ) );
 
   if ( item != NULL && item->type() == QgsDataItem::Layer )
@@ -573,6 +595,11 @@ void QgsBrowserDockWidget::showProperties()
           delete layer;
         }
       }
+      else if ( type == QgsMapLayer::PluginLayer )
+      {
+        // TODO: support display of properties for plugin layers
+        return;
+      }
 
       // restore /Projections/defaultBehaviour
       if ( defaultProjectionOption == "prompt" )
@@ -645,8 +672,6 @@ void QgsBrowserDockWidget::toggleFastScan()
     settings.setValue( "/qgis/scanItemsFastScanUris", fastScanDirs );
   }
 }
-
-
 
 void QgsBrowserDockWidget::showFilterWidget( bool visible )
 {

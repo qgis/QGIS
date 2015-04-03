@@ -2,11 +2,11 @@ v.surf.bspline
 v.surf.bspline.sparse - Bicubic or bilinear spline interpolation with Tykhonov regularization.
 Vector (v.*)
 ParameterVector|input|Input points layer|-1|False
-ParameterVector|sparse|Input layer of sparse points|-1|False
-ParameterNumber|sie|Length of each spline step in the east-west direction|None|None|4
-ParameterNumber|sin|Length of each spline step in the north-south direction|None|None|4
+ParameterVector|sparse_input|Input layer of sparse points|-1|False
+ParameterNumber|ew_step|Length of each spline step in the east-west direction|None|None|4
+ParameterNumber|ns_step|Length of each spline step in the north-south direction|None|None|4
 ParameterSelection|method|Spline interpolation algorithm|bilinear;bicubic
 ParameterNumber|lambda_i|Tykhonov regularization parameter (affects smoothing)|None|None|0.01
 ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
 ParameterSelection|layer|layer|1;0
-OutputRaster|raster|Output raster layer
+OutputRaster|raster_output|Output raster layer

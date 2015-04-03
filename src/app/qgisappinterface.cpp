@@ -32,6 +32,7 @@
 #include "qgscomposerview.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaptooladvanceddigitizing.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgslayertreeview.h"
@@ -45,9 +46,10 @@
 
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
-    : qgis( _qgis ),
-    legendIface( _qgis->layerTreeView() ),
-    pluginManagerIface( _qgis->pluginManager() )
+    : qgis( _qgis )
+    , mTimer( NULL )
+    , legendIface( _qgis->layerTreeView() )
+    , pluginManagerIface( _qgis->pluginManager() )
 {
   // connect signals
   connect( qgis->layerTreeView(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
@@ -64,6 +66,8 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( newProjectCreated() ) );
   connect( qgis, SIGNAL( projectRead() ),
            this, SIGNAL( projectRead() ) );
+  connect( qgis, SIGNAL( layerSavedAs( QgsMapLayer*, QString ) ),
+           this, SIGNAL( layerSavedAs( QgsMapLayer*, QString ) ) );
 }
 
 QgisAppInterface::~QgisAppInterface()
@@ -635,6 +639,10 @@ QgsAttributeDialog* QgisAppInterface::getFeatureForm( QgsVectorLayer *l, QgsFeat
   context.setDistanceArea( myDa );
   context.setVectorLayerTools( qgis->vectorLayerTools() );
   QgsAttributeDialog *dialog = new QgsAttributeDialog( l, &feature, false, NULL, true, context );
+  if ( !feature.isValid() )
+  {
+    dialog->setIsAddDialog( true );
+  }
   return dialog;
 }
 

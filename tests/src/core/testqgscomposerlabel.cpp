@@ -24,11 +24,19 @@
 #include "qgsvectordataprovider.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestQgsComposerLabel: public QObject
+class TestQgsComposerLabel : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerLabel()
+        : mComposition( 0 )
+        , mComposerLabel( 0 )
+        , mVectorLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -41,6 +49,9 @@ class TestQgsComposerLabel: public QObject
     void feature_evaluation();
     // test "$page" expressions
     void page_evaluation();
+
+    void marginMethods(); //tests getting/setting margins
+
   private:
     QgsComposition* mComposition;
     QgsComposerLabel* mComposerLabel;
@@ -75,7 +86,8 @@ void TestQgsComposerLabel::initTestCase()
 void TestQgsComposerLabel::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerLabel::init()
@@ -173,5 +185,37 @@ void TestQgsComposerLabel::page_evaluation()
   }
 }
 
+void TestQgsComposerLabel::marginMethods()
+{
+  QgsComposerLabel label( mComposition );
+  //test setting margins separately
+  label.setMarginX( 3.0 );
+  label.setMarginY( 4.0 );
+  QCOMPARE( label.marginX(), 3.0 );
+  QCOMPARE( label.marginY(), 4.0 );
+  //test setting margins together
+  label.setMargin( 5.0 );
+  QCOMPARE( label.marginX(), 5.0 );
+  QCOMPARE( label.marginY(), 5.0 );
+
+  //test reading label margins from pre 2.7 projects
+  QDomDocument labelDoc;
+  QString labelXml;
+  labelXml = "<ComposerLabel margin=\"9\"><ComposerItem></ComposerItem></ComposerLabel";
+  labelDoc.setContent( labelXml );
+  QgsComposerLabel label2( mComposition );
+  label2.readXML( labelDoc.firstChildElement(), labelDoc );
+  QCOMPARE( label2.marginX(), 9.0 );
+  QCOMPARE( label2.marginY(), 9.0 );
+
+  //test reading label margins from >=2.7 projects
+  labelXml = "<ComposerLabel marginX=\"11\" marginY=\"12\"><ComposerItem></ComposerItem></ComposerLabel";
+  labelDoc.setContent( labelXml );
+  QgsComposerLabel label3( mComposition );
+  label3.readXML( labelDoc.firstChildElement(), labelDoc );
+  QCOMPARE( label3.marginX(), 11.0 );
+  QCOMPARE( label3.marginY(), 12.0 );
+}
+
 QTEST_MAIN( TestQgsComposerLabel )
-#include "moc_testqgscomposerlabel.cxx"
+#include "testqgscomposerlabel.moc"

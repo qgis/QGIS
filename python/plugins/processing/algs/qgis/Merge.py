@@ -25,11 +25,8 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
 
@@ -45,11 +42,11 @@ class Merge(GeoAlgorithm):
         self.group = 'Vector general tools'
 
         self.addParameter(ParameterVector(self.LAYER1,
-            'Input layer 1', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Input layer 1'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.LAYER2,
-            'Input layer 2', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layer1 = dataobjects.getObjectFromUri(
@@ -59,7 +56,7 @@ class Merge(GeoAlgorithm):
 
         if layer1.wkbType() != layer2.wkbType():
             raise GeoAlgorithmExecutionException(
-                'Merged layers must have be same type of geometry')
+                self.tr('Merged layers must have be same type of geometry'))
 
         count = 0
         fields = []
@@ -71,7 +68,7 @@ class Merge(GeoAlgorithm):
                 found = None
                 for dfield in fields:
                     if dfield.name() == sfield.name() and \
-                            dfield.type() == sfield.type():
+                       dfield.type() == sfield.type():
                         found = dfield
                         break
 
@@ -89,7 +86,7 @@ class Merge(GeoAlgorithm):
                 i = 0
                 for sfield in layer.pendingFields():
                     if sfield.name() == dfield.name() and \
-                            sfield.type() == dfield.type():
+                       sfield.type() == dfield.type():
                         idx[dfield] = i
                         break
                     i += 1

@@ -56,7 +56,7 @@ class QgsGPSPoint : public QgsGPSObject
 {
   public:
     QgsGPSPoint();
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) override;
     double lat, lon, ele;
     QString sym;
 };
@@ -69,7 +69,7 @@ class QgsGPSExtended : public QgsGPSObject
 {
   public:
     QgsGPSExtended();
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) override;
     double xMin, xMax, yMin, yMax;
     int number;
 };
@@ -84,7 +84,7 @@ typedef QgsGPSPoint QgsTrackpoint;
 class QgsWaypoint : public QgsGPSPoint
 {
   public:
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) override;
     QgsFeatureId id;
 };
 
@@ -94,7 +94,7 @@ class QgsWaypoint : public QgsGPSPoint
 class QgsRoute : public QgsGPSExtended
 {
   public:
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) override;
     QVector<QgsRoutepoint> points;
     QgsFeatureId id;
 };
@@ -116,7 +116,7 @@ class QgsTrackSegment
 class QgsTrack : public QgsGPSExtended
 {
   public:
-    virtual void writeXML( QTextStream& stream );
+    virtual void writeXML( QTextStream& stream ) override;
     QVector<QgsTrackSegment> segments;
     QgsFeatureId id;
 };
@@ -257,7 +257,7 @@ class QgsGPXHandler
 {
   public:
 
-    QgsGPXHandler( QgsGPSData& data ) : mData( data ) { }
+    QgsGPXHandler( QgsGPSData& data ) : mData( data ), mObj( NULL ), mString( NULL ), mDouble( NULL ), mInt( NULL ) { }
 
     /** This function is called when expat encounters a new start element in
         the XML stream. */

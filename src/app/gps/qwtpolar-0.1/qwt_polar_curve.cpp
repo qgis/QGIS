@@ -56,6 +56,8 @@ class QwtPolarCurve::PrivateData
     QwtSymbol *symbol;
     QPen pen;
     QwtCurveFitter *curveFitter;
+  private:
+    Q_DISABLE_COPY(PrivateData)
 };
 
 //! Constructor

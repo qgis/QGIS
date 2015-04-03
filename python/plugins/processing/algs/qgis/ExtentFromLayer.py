@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsField, QgsPoint, QgsGeometry, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
@@ -41,26 +41,20 @@ class ExtentFromLayer(GeoAlgorithm):
 
     OUTPUT = 'OUTPUT'
 
-    #==========================================================================
-    #def getIcon(self):
-    #   return QIcon(os.path.dirname(__file__) + "/icons/layer_extent.png")
-    #==========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Polygon from layer extent'
         self.group = 'Vector general tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterBoolean(self.BY_FEATURE,
-                          'Calculate extent for each feature separately',
-                          False))
+            self.tr('Calculate extent for each feature separately'), False))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+            self.getParameterValue(self.INPUT_LAYER))
         byFeature = self.getParameterValue(self.BY_FEATURE)
 
         fields = [
@@ -74,7 +68,7 @@ class ExtentFromLayer(GeoAlgorithm):
             QgsField('PERIM', QVariant.Double),
             QgsField('HEIGHT', QVariant.Double),
             QgsField('WIDTH', QVariant.Double),
-            ]
+        ]
 
         writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(fields,
                 QGis.WKBPolygon, layer.crs())
@@ -115,7 +109,7 @@ class ExtentFromLayer(GeoAlgorithm):
             perim,
             height,
             width,
-            ]
+        ]
         feat.setAttributes(attrs)
         writer.addFeature(feat)
 
@@ -152,7 +146,7 @@ class ExtentFromLayer(GeoAlgorithm):
                 perim,
                 height,
                 width,
-                ]
+            ]
             feat.setAttributes(attrs)
 
             writer.addFeature(feat)

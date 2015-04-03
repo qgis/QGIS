@@ -31,14 +31,14 @@ bool QgsOverlayAnalyzer::intersection( QgsVectorLayer* layerA, QgsVectorLayer* l
                                        const QString& shapefileName, bool onlySelectedFeatures,
                                        QProgressDialog* p )
 {
-  if ( !layerA && !layerB )
+  if ( !layerA || !layerB )
   {
     return false;
   }
 
-  QgsVectorDataProvider* dpA = layerA->dataProvider();
-  QgsVectorDataProvider* dpB = layerB->dataProvider();
-  if ( !dpA && !dpB )
+  QgsVectorDataProvider *dpA = layerA->dataProvider();
+  QgsVectorDataProvider *dpB = layerB->dataProvider();
+  if ( !dpA || !dpB )
   {
     return false;
   }

@@ -13,13 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
 
+#include <qgsapplication.h>
 #include <qgsgeometry.h>
 #include <qgsspatialindex.h>
+#include <qgsvectordataprovider.h>
+#include <qgsvectorlayer.h>
 
 
 #if QT_VERSION < 0x40701
@@ -57,6 +60,16 @@ class TestQgsSpatialIndex : public QObject
     Q_OBJECT
 
   private slots:
+
+    void initTestCase()
+    {
+      QgsApplication::init();
+      QgsApplication::initQgis();
+    }
+    void cleanupTestCase()
+    {
+      QgsApplication::exitQgis();
+    }
 
     void testQuery()
     {
@@ -132,10 +145,71 @@ class TestQgsSpatialIndex : public QObject
       }
     }
 
+    void benchmarkBulkLoad()
+    {
+      QgsVectorLayer* vl = new QgsVectorLayer( "Point", "x", "memory" );
+      for ( int i = 0; i < 100; ++i )
+      {
+        QgsFeatureList flist;
+        for ( int k = 0; k < 500; ++k )
+        {
+          QgsFeature f( i*1000 + k );
+          f.setGeometry( QgsGeometry::fromPoint( QgsPoint( i / 10, i % 10 ) ) );
+          flist << f;
+        }
+        vl->dataProvider()->addFeatures( flist );
+      }
+
+      QTime t;
+      QgsSpatialIndex* indexBulk;
+      QgsSpatialIndex* indexInsert;
+
+      t.start();
+      {
+        QgsFeature f;
+        QgsFeatureIterator fi = vl->getFeatures();
+        while ( fi.nextFeature( f ) )
+          ;
+      }
+      qDebug( "iter only: %d ms", t.elapsed() );
+
+      t.start();
+      {
+        QgsFeatureIterator fi = vl->getFeatures();
+        indexBulk = new QgsSpatialIndex( fi );
+      }
+      qDebug( "bulk load: %d ms", t.elapsed() );
+
+      t.start();
+      {
+        QgsFeatureIterator fi = vl->getFeatures();
+        QgsFeature f;
+        indexInsert = new QgsSpatialIndex;
+        while ( fi.nextFeature( f ) )
+          indexInsert->insertFeature( f );
+      }
+      qDebug( "insert:    %d ms", t.elapsed() );
+
+      // test whether a query will give us the same results
+      QgsRectangle rect( 4.9, 4.9, 5.1, 5.1 );
+      QList<QgsFeatureId> resBulk = indexBulk->intersects( rect );
+      QList<QgsFeatureId> resInsert = indexInsert->intersects( rect );
+
+      QCOMPARE( resBulk.count(), 500 );
+      QCOMPARE( resInsert.count(), 500 );
+      // the trees are built differently so they will give also different order of fids
+      qSort( resBulk );
+      qSort( resInsert );
+      QCOMPARE( resBulk, resInsert );
+
+      delete indexBulk;
+      delete indexInsert;
+    }
+
 };
 
 QTEST_MAIN( TestQgsSpatialIndex )
 
-#include "moc_testqgsspatialindex.cxx"
+#include "testqgsspatialindex.moc"
 
 

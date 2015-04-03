@@ -24,13 +24,22 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgsfillsymbollayerv2.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerShapes: public QObject
+class TestQgsComposerShapes : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerShapes()
+        : mComposition( 0 )
+        , mComposerShape( 0 )
+        , mSimpleFill( 0 )
+        , mFillSymbol( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -83,6 +92,7 @@ void TestQgsComposerShapes::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerShapes::init()
@@ -145,4 +155,4 @@ void TestQgsComposerShapes::symbolV2()
 }
 
 QTEST_MAIN( TestQgsComposerShapes )
-#include "moc_testqgscomposershapes.cxx"
+#include "testqgscomposershapes.moc"

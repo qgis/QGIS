@@ -21,6 +21,7 @@
 #include <QRectF>
 #include <QString>
 #include <QTextStream>
+#include <QTransform>
 #include <QRegExp>
 #include <qnumeric.h>
 
@@ -226,7 +227,6 @@ QString QgsRectangle::asWktPolygon() const
 }
 
 //! returns a QRectF with same coordinates.
-//@note added in 2.0
 QRectF QgsRectangle::toRectF() const
 {
   return QRectF(( qreal )xmin, ( qreal )ymin, ( qreal )xmax - xmin, ( qreal )ymax - ymin );

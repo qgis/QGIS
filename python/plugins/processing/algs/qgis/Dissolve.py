@@ -25,12 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterTableField
@@ -54,14 +51,14 @@ class Dissolve(GeoAlgorithm):
         useField = not self.getParameterValue(Dissolve.DISSOLVE_ALL)
         fieldname = self.getParameterValue(Dissolve.FIELD)
         vlayerA = dataobjects.getObjectFromUri(
-                self.getParameterValue(Dissolve.INPUT))
+            self.getParameterValue(Dissolve.INPUT))
         field = vlayerA.fieldNameIndex(fieldname)
         vproviderA = vlayerA.dataProvider()
         fields = vproviderA.fields()
         writer = self.getOutputFromName(
-                Dissolve.OUTPUT).getVectorWriter(fields,
-                                                 vproviderA.geometryType(),
-                                                 vproviderA.crs())
+            Dissolve.OUTPUT).getVectorWriter(fields,
+                                             vproviderA.geometryType(),
+                                             vproviderA.crs())
         outFeat = QgsFeature()
         nElement = 0
         nFeat = vproviderA.featureCount()
@@ -84,7 +81,7 @@ class Dissolve(GeoAlgorithm):
                         outFeat.setGeometry(tmpOutGeom)
                     except:
                         raise GeoAlgorithmExecutionException(
-                                'Geometry exception while dissolving')
+                            self.tr('Geometry exception while dissolving'))
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
         else:
@@ -111,11 +108,11 @@ class Dissolve(GeoAlgorithm):
                             tmpOutGeom = QgsGeometry(outFeat.geometry())
                             try:
                                 tmpOutGeom = QgsGeometry(
-                                        tmpOutGeom.combine(tmpInGeom))
+                                    tmpOutGeom.combine(tmpInGeom))
                                 outFeat.setGeometry(tmpOutGeom)
                             except:
                                 raise GeoAlgorithmExecutionException(
-                                        'Geometry exception while dissolving')
+                                    self.tr('Geometry exception while dissolving'))
                 if add:
                     outFeat.setAttributes(attrs)
                     writer.addFeature(outFeat)
@@ -124,11 +121,11 @@ class Dissolve(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Dissolve'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(Dissolve.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON,
-                          ParameterVector.VECTOR_TYPE_LINE]))
+        self.addParameter(ParameterVector(Dissolve.INPUT,
+            self.tr('Input layer'),
+            [ParameterVector.VECTOR_TYPE_POLYGON, ParameterVector.VECTOR_TYPE_LINE]))
         self.addParameter(ParameterBoolean(Dissolve.DISSOLVE_ALL,
-                          'Dissolve all (do not use field)', True))
-        self.addParameter(ParameterTableField(Dissolve.FIELD, 'Unique ID field'
-                          , Dissolve.INPUT, optional=True))
-        self.addOutput(OutputVector(Dissolve.OUTPUT, 'Dissolved'))
+            self.tr('Dissolve all (do not use field)'), True))
+        self.addParameter(ParameterTableField(Dissolve.FIELD,
+            self.tr('Unique ID field'), Dissolve.INPUT, optional=True))
+        self.addOutput(OutputVector(Dissolve.OUTPUT, self.tr('Dissolved')))

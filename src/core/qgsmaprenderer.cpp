@@ -42,6 +42,7 @@
 QgsMapRenderer::QgsMapRenderer()
 {
   mScale = 1.0;
+  mRotation = 0.0;
   mScaleCalculator = new QgsScaleCalculator;
   mDistArea = new QgsDistanceArea;
 
@@ -121,6 +122,18 @@ bool QgsMapRenderer::setExtent( const QgsRectangle& extent )
   return true;
 }
 
+void QgsMapRenderer::setRotation( double rotation )
+{
+  mRotation = rotation;
+  // TODO: adjust something ?
+
+  emit rotationChanged( rotation );
+}
+
+double QgsMapRenderer::rotation( ) const
+{
+  return mRotation;
+}
 
 
 void QgsMapRenderer::setOutputSize( QSize size, int dpi )
@@ -162,7 +175,7 @@ void QgsMapRenderer::adjustExtentToSize()
   if ( !myWidth || !myHeight )
   {
     mScale = 1.0;
-    newCoordXForm.setParameters( 0, 0, 0, 0 );
+    newCoordXForm.setParameters( 1, 0, 0, 0 );
     return;
   }
 
@@ -671,7 +684,14 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs,
     if ( transformExtent && !mExtent.isEmpty() )
     {
       QgsCoordinateTransform transform( *mDestCRS, crs );
-      rect = transform.transformBoundingBox( mExtent );
+      try
+      {
+        rect = transform.transformBoundingBox( mExtent );
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+      }
     }
 
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
@@ -1098,7 +1118,7 @@ const QgsCoordinateTransform *QgsMapRenderer::transformation( const QgsMapLayer 
        || ctIt->destAuthId == mDestCRS->authid()
      )
   {
-    return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid(), -1, -1 );
+    return QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mDestCRS->authid() );
   }
   return QgsCoordinateTransformCache::instance()->transform( ctIt->srcAuthId, ctIt->destAuthId, ctIt->srcDatumTransform, ctIt->destDatumTransform );
 }

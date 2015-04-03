@@ -33,7 +33,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
   public:
 
-    /**Added in version 1.8*/
     enum Alignment
     {
       Left = 0,
@@ -41,7 +40,6 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       Right
     };
 
-    /**Added in version 1.9*/
     enum ScaleBarUnits
     {
       MapUnits = 0,
@@ -53,11 +51,11 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerScaleBar; }
+    /** return correct graphics item type. */
+    virtual int type() const override { return ComposerScaleBar; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     //getters and setters
     int numSegments() const {return mNumSegments;}
@@ -152,17 +150,13 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     double segmentMillimeters() const {return mSegmentMillimeters;}
 
-    /**Left / Middle/ Right
-      @note: this method was added in version 1.8*/
+    /**Left / Middle/ Right */
     Alignment alignment() const { return mAlignment; }
 
-    /**@note: this method was added in version 1.8*/
     void setAlignment( Alignment a );
 
-    /**@note: this method was added in version 1.9*/
     ScaleBarUnits units() const { return mUnits; }
 
-    /**@note: this method was added in version 1.9*/
     void setUnits( ScaleBarUnits u );
 
     /** Returns the join style used for drawing lines in the scalebar
@@ -195,8 +189,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /**Apply default settings*/
     void applyDefaultSettings();
-    /**Apply default size (scale bar 1/5 of map item width)
-      @note this method was added in version 1.7*/
+    /**Apply default size (scale bar 1/5 of map item width) */
     void applyDefaultSize( ScaleBarUnits u = Meters );
 
     /**Sets style by name
@@ -225,19 +218,19 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** sets state from Dom document
        * @param itemElem is Dom node corresponding to item tag
        * @param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /**Moves scalebar position to the left / right depending on alignment and change in item width*/
     void correctXPositionAlignment( double width, double widthAfter );
 
     //overriden to apply minimum size
-    void setSceneRect( const QRectF &rectangle );
+    void setSceneRect( const QRectF &rectangle ) override;
 
   public slots:
     void updateSegmentSize();

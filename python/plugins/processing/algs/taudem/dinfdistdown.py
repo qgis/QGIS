@@ -27,20 +27,16 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithmExecutionException import \
-    GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
-
-from processing.tools.system import *
 
 from TauDEMUtils import TauDEMUtils
 
@@ -66,7 +62,7 @@ class DinfDistDown(GeoAlgorithm):
         1: 'h',
         2: 'v',
         3: 's',
-        }
+    }
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/taudem.png')
@@ -77,22 +73,22 @@ class DinfDistDown(GeoAlgorithm):
         self.group = 'Specialized Grid Analysis tools'
 
         self.addParameter(ParameterRaster(self.DINF_FLOW_DIR_GRID,
-                          'D-Infinity Flow Direction Grid', False))
+            self.tr('D-Infinity Flow Direction Grid'), False))
         self.addParameter(ParameterRaster(self.PIT_FILLED_GRID,
-                          'Pit Filled Elevation Grid', False))
+            self.tr('Pit Filled Elevation Grid'), False))
         self.addParameter(ParameterRaster(self.STREAM_GRID,
-                          'Stream Raster Grid', False))
+            self.tr('Stream Raster Grid'), False))
         self.addParameter(ParameterRaster(self.WEIGHT_PATH_GRID,
-                          'Weight Path Grid', True))
+            self.tr('Weight Path Grid'), True))
         self.addParameter(ParameterSelection(self.STAT_METHOD,
-                          'Statistical Method', self.STATISTICS, 2))
+            self.tr('Statistical Method'), self.STATISTICS, 2))
         self.addParameter(ParameterSelection(self.DIST_METHOD,
-                          'Distance Method', self.DISTANCE, 1))
+            self.tr('Distance Method'), self.DISTANCE, 1))
         self.addParameter(ParameterBoolean(self.EDGE_CONTAM,
-                          'Check for edge contamination', True))
+            self.tr('Check for edge contamination'), True))
 
         self.addOutput(OutputRaster(self.DIST_DOWN_GRID,
-                       'D-Infinity Drop to Stream Grid'))
+            self.tr('D-Infinity Drop to Stream Grid')))
 
     def processAlgorithm(self, progress):
         commands = []
@@ -100,9 +96,9 @@ class DinfDistDown(GeoAlgorithm):
 
         processNum = ProcessingConfig.getSetting(TauDEMUtils.MPI_PROCESSES)
         if processNum <= 0:
-            raise GeoAlgorithmExecutionException('Wrong number of MPI \
-                processes used.\nPlease set correct number before running \
-                TauDEM algorithms.')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Wrong number of MPI processes used. Please set '
+                        'correct number before running TauDEM algorithms.'))
 
         commands.append('-n')
         commands.append(str(processNum))
@@ -122,15 +118,9 @@ class DinfDistDown(GeoAlgorithm):
             self.STAT_METHOD)]))
         commands.append(str(self.DIST_DICT[self.getParameterValue(
             self.DIST_METHOD)]))
-        if str(self.getParameterValue(self.EDGE_CONTAM)).lower() == 'false':
+        if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
         commands.append('-dd')
         commands.append(self.getOutputValue(self.DIST_DOWN_GRID))
-
-        loglines = []
-        loglines.append('TauDEM execution command')
-        for line in commands:
-            loglines.append(line)
-        ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
         TauDEMUtils.executeTauDEM(commands, progress)

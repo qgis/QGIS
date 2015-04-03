@@ -155,31 +155,9 @@ datasets with maximum width and height specified below.</string>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="mCrsComboBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>250</width>
-         <height>0</height>
-        </size>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mChangeCrsPushButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>Change...</string>
+      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
      </item>
@@ -200,9 +178,9 @@ datasets with maximum width and height specified below.</string>
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>550</width>
-        <height>618</height>
+        <y>-179</y>
+        <width>541</width>
+        <height>583</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -665,21 +643,15 @@ datasets with maximum width and height specified below.</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsRasterFormatSaveOptionsWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsrasterformatsaveoptionswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsRasterPyramidsOptionsWidget</class>
+   <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
-   <header>qgsrasterpyramidsoptionswidget.h</header>
+   <header location="global">qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -688,7 +660,50 @@ datasets with maximum width and height specified below.</string>
    <header>qgsextentgroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsRasterFormatSaveOptionsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsrasterformatsaveoptionswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsRasterPyramidsOptionsWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsrasterpyramidsoptionswidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mRawModeRadioButton</tabstop>
+  <tabstop>mRenderedModeRadioButton</tabstop>
+  <tabstop>mFormatComboBox</tabstop>
+  <tabstop>mTileModeCheckBox</tabstop>
+  <tabstop>mSaveAsLineEdit</tabstop>
+  <tabstop>mBrowseButton</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>mScrollArea</tabstop>
+  <tabstop>mResolutionRadioButton</tabstop>
+  <tabstop>mXResolutionLineEdit</tabstop>
+  <tabstop>mYResolutionLineEdit</tabstop>
+  <tabstop>mOriginalResolutionPushButton</tabstop>
+  <tabstop>mSizeRadioButton</tabstop>
+  <tabstop>mColumnsLineEdit</tabstop>
+  <tabstop>mRowsLineEdit</tabstop>
+  <tabstop>mOriginalSizePushButton</tabstop>
+  <tabstop>mMaximumSizeXLineEdit</tabstop>
+  <tabstop>mMaximumSizeYLineEdit</tabstop>
+  <tabstop>mCreateOptionsGroupBox</tabstop>
+  <tabstop>mPyramidsGroupBox</tabstop>
+  <tabstop>mPyramidsUseExistingCheckBox</tabstop>
+  <tabstop>mPyramidResolutionsLineEdit</tabstop>
+  <tabstop>mNoDataGroupBox</tabstop>
+  <tabstop>mNoDataTableWidget</tabstop>
+  <tabstop>mAddNoDataManuallyToolButton</tabstop>
+  <tabstop>mRemoveSelectedNoDataToolButton</tabstop>
+  <tabstop>mLoadTransparentNoDataToolButton</tabstop>
+  <tabstop>mRemoveAllNoDataToolButton</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

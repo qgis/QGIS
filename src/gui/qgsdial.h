@@ -9,5 +9,5 @@ class GUI_EXPORT QgsDial : public QDial
   public:
     QgsDial( QWidget *parent = 0 );
   protected:
-    virtual void paintEvent( QPaintEvent * event );
+    virtual void paintEvent( QPaintEvent * event ) override;
 };

@@ -218,7 +218,7 @@ QModelIndex QgsGraduatedSymbolRendererV2Model::index( int row, int column, const
 {
   if ( hasIndex( row, column, parent ) )
   {
-    return createIndex( row, column, 0 );
+    return createIndex( row, column );
   }
   return QModelIndex();
 }
@@ -283,7 +283,7 @@ bool QgsGraduatedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Qt:
     QgsDebugMsg( QString( "move %1 to %2" ).arg( rows[i] ).arg( to ) );
     int t = to;
     // moveCategory first removes and then inserts
-    if ( rows[i] < to ) t--;
+    if ( rows[i] < t ) t--;
     mRenderer->moveClass( rows[i], t );
     // current moved under another, shift its index up
     for ( int j = 0; j < i; j++ )
@@ -293,7 +293,7 @@ bool QgsGraduatedSymbolRendererV2Model::dropMimeData( const QMimeData *data, Qt:
     // removed under 'to' so the target shifted down
     if ( rows[i] < to ) to--;
   }
-  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
   emit rowsMoved();
   return false;
 }
@@ -331,13 +331,13 @@ void QgsGraduatedSymbolRendererV2Model::sort( int column, Qt::SortOrder order )
     mRenderer->sortByLabel( order );
   }
   emit rowsMoved();
-  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
   QgsDebugMsg( "Done" );
 }
 
 void QgsGraduatedSymbolRendererV2Model::updateSymbology()
 {
-  emit dataChanged( createIndex( 0, 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
+  emit dataChanged( createIndex( 0, 0 ), createIndex( mRenderer->ranges().size(), 0 ) );
 }
 
 void QgsGraduatedSymbolRendererV2Model::updateLabels()
@@ -548,9 +548,8 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 
   int nclasses = spinGraduatedClasses->value();
 
-  QgsVectorColorRampV2* ramp = cboGraduatedColorRamp->currentColorRamp();
-
-  if ( ramp == NULL )
+  QSharedPointer<QgsVectorColorRampV2> ramp( cboGraduatedColorRamp->currentColorRamp() );
+  if ( !ramp )
   {
     if ( cboGraduatedColorRamp->count() == 0 )
       QMessageBox::critical( this, tr( "Error" ), tr( "There are no available color ramps. You can add them in Style Manager." ) );
@@ -571,13 +570,12 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   else // default should be quantile for now
     mode = QgsGraduatedSymbolRendererV2::Quantile;
 
-
   // Jenks is n^2 complexity, warn for big dataset (more than 50k records)
   // and give the user the chance to cancel
-  if ( QgsGraduatedSymbolRendererV2::Jenks == mode
-       && mLayer->featureCount() > 50000 )
+  if ( QgsGraduatedSymbolRendererV2::Jenks == mode && mLayer->featureCount() > 50000 )
   {
-    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) ) return;
+    if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Warning" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
+      return;
   }
 
   // create and set new renderer
@@ -585,15 +583,14 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
   mRenderer->setClassAttribute( attrName );
   mRenderer->setMode( mode );
   mRenderer->setSourceColorRamp( ramp->clone() );
-  bool updateUiCount = true;
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mRenderer->updateClasses( mLayer, mode, nclasses );
   mRenderer->calculateLabelPrecision();
   QApplication::restoreOverrideCursor();
   // PrettyBreaks and StdDev calculation don't generate exact
   // number of classes - leave user interface unchanged for these
-  updateUiCount = false;
-  updateUiFromRenderer( updateUiCount );
+  updateUiFromRenderer( false );
 }
 
 void QgsGraduatedSymbolRendererV2Widget::reapplyColorRamp()

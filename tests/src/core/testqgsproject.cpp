@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 
 #include <qgsapplication.h>
@@ -74,4 +74,4 @@ void TestQgsProject::testReadPath()
 
 
 QTEST_MAIN( TestQgsProject )
-#include "moc_testqgsproject.cxx"
+#include "testqgsproject.moc"

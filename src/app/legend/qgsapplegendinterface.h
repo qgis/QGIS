@@ -44,68 +44,68 @@ class QgsAppLegendInterface : public QgsLegendInterface
     ~QgsAppLegendInterface();
 
     //! Return a string list of groups
-    QStringList groups();
+    QStringList groups() override;
 
     //! Return the relationship between groups and layers in the legend
-    QList< GroupLayerInfo > groupLayerRelationship();
+    QList< GroupLayerInfo > groupLayerRelationship() override;
 
     //! Returns the currently selected layers of QgsLegendLayers.
-    QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false ) const;
+    QList<QgsMapLayer *> selectedLayers( bool inDrawOrder = false ) const override;
 
     //! Return all layers in the project in drawing order
-    QList< QgsMapLayer * > layers() const;
+    QList< QgsMapLayer * > layers() const override;
 
     //! Check if a group exists
-    bool groupExists( int groupIndex );
+    bool groupExists( int groupIndex ) override;
 
     //! Check if a group is expanded
-    bool isGroupExpanded( int groupIndex );
+    bool isGroupExpanded( int groupIndex ) override;
 
     //! Check if a group is visible
-    bool isGroupVisible( int groupIndex );
+    bool isGroupVisible( int groupIndex ) override;
 
     //! Check if a layer is expanded
-    bool isLayerExpanded( QgsMapLayer * ml );
+    bool isLayerExpanded( QgsMapLayer * ml ) override;
 
     //! Check if a layer is visible
-    bool isLayerVisible( QgsMapLayer * ml );
+    bool isLayerVisible( QgsMapLayer * ml ) override;
 
     void addLegendLayerAction( QAction* action, QString menu, QString id,
-                               QgsMapLayer::LayerType type, bool allLayers );
-    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer );
-    bool removeLegendLayerAction( QAction* action );
+                               QgsMapLayer::LayerType type, bool allLayers ) override;
+    void addLegendLayerActionForLayer( QAction* action, QgsMapLayer* layer ) override;
+    bool removeLegendLayerAction( QAction* action ) override;
 
-    QgsMapLayer* currentLayer();
-    bool setCurrentLayer( QgsMapLayer *layer );
+    QgsMapLayer* currentLayer() override;
+    bool setCurrentLayer( QgsMapLayer *layer ) override;
 
   public slots:
 
     //! Add a new group
-    int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent = 0 );
+    int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent = 0 ) override;
 
     //! Add a new group at a specified index
-    int addGroup( QString name, bool expand, int groupIndex );
+    int addGroup( QString name, bool expand, int groupIndex ) override;
 
     //! Remove all groups with the given name
-    void removeGroup( int groupIndex );
+    void removeGroup( int groupIndex ) override;
 
     //! Move a layer to a group
-    void moveLayer( QgsMapLayer *ml, int groupIndex );
+    void moveLayer( QgsMapLayer *ml, int groupIndex ) override;
 
     //! Collapse or expand a group
-    virtual void setGroupExpanded( int groupIndex, bool expand );
+    virtual void setGroupExpanded( int groupIndex, bool expand ) override;
 
     //! Collapse or expand a layer
-    virtual void setLayerExpanded( QgsMapLayer * ml, bool expand );
+    virtual void setLayerExpanded( QgsMapLayer * ml, bool expand ) override;
 
     //! Set the visibility of a group
-    virtual void setGroupVisible( int groupIndex, bool visible );
+    virtual void setGroupVisible( int groupIndex, bool visible ) override;
 
     //! Set the visibility of a layer
-    virtual void setLayerVisible( QgsMapLayer * ml, bool visible );
+    virtual void setLayerVisible( QgsMapLayer * ml, bool visible ) override;
 
     //! refresh layer symbology
-    void refreshLayerSymbology( QgsMapLayer *ml );
+    void refreshLayerSymbology( QgsMapLayer *ml ) override;
 
   protected slots:
     void onAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );

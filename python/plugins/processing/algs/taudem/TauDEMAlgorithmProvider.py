@@ -27,14 +27,16 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingConfig import Setting
+from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
+
 from TauDEMAlgorithm import TauDEMAlgorithm
+from TauDEMMultifileAlgorithm import TauDEMMultifileAlgorithm
 from TauDEMUtils import TauDEMUtils
+
 from peukerdouglas import PeukerDouglas
 from slopearea import SlopeArea
 from lengtharea import LengthArea
@@ -45,16 +47,25 @@ from gridnet import GridNet
 from dinftranslimaccum import DinfTransLimAccum
 from dinftranslimaccum2 import DinfTransLimAccum2
 
+from peukerdouglas_multi import PeukerDouglasMulti
+from slopearea_multi import SlopeAreaMulti
+from lengtharea_multi import LengthAreaMulti
+from dropanalysis_multi import DropAnalysisMulti
+from dinfdistdown_multi import DinfDistDownMulti
+from dinfdistup_multi import DinfDistUpMulti
+from gridnet_multi import GridNetMulti
+from dinftranslimaccum_multi import DinfTransLimAccumMulti
+from dinftranslimaccum2_multi import DinfTransLimAccum2Multi
+
 
 class TauDEMAlgorithmProvider(AlgorithmProvider):
 
     def __init__(self):
         AlgorithmProvider.__init__(self)
         self.activate = False
-        self.createAlgsList()
 
     def getDescription(self):
-        return 'TauDEM (hydrologic analysis)'
+        return self.tr('TauDEM (hydrologic analysis)')
 
     def getName(self):
         return 'taudem'
@@ -64,53 +75,90 @@ class TauDEMAlgorithmProvider(AlgorithmProvider):
 
     def initializeSettings(self):
         AlgorithmProvider.initializeSettings(self)
+
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    TauDEMUtils.TAUDEM_FOLDER,
-                                    'TauDEM command line tools folder',
-                                    TauDEMUtils.taudemPath()))
+            TauDEMUtils.TAUDEM_FOLDER,
+            self.tr('TauDEM command line tools folder'),
+            TauDEMUtils.taudemPath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    TauDEMUtils.MPIEXEC_FOLDER,
-                                    'MPICH2/OpenMPI bin directory',
-                                    TauDEMUtils.mpiexecPath()))
+            TauDEMUtils.TAUDEM_MULTIFILE_FOLDER,
+            self.tr('TauDEM multifile command line tools folder'),
+            TauDEMUtils.taudemMultifilePath()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    TauDEMUtils.MPI_PROCESSES,
-                                    'Number of MPI parallel processes to use',
-                                    2))
+            TauDEMUtils.TAUDEM_USE_SINGLEFILE,
+            self.tr('Enable singlefile TauDEM tools'), True))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+            TauDEMUtils.TAUDEM_USE_MULTIFILE,
+            self.tr('Enable multifile TauDEM tools'), False))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+            TauDEMUtils.MPIEXEC_FOLDER,
+            self.tr('MPICH2/OpenMPI bin directory'),
+            TauDEMUtils.mpiexecPath()))
+        ProcessingConfig.addSetting(Setting(self.getDescription(),
+            TauDEMUtils.MPI_PROCESSES,
+            self.tr('Number of MPI parallel processes to use'), 2))
 
     def unload(self):
         AlgorithmProvider.unload(self)
+
         ProcessingConfig.removeSetting(TauDEMUtils.TAUDEM_FOLDER)
+        ProcessingConfig.removeSetting(TauDEMUtils.TAUDEM_MULTIFILE_FOLDER)
+        ProcessingConfig.removeSetting(TauDEMUtils.TAUDEM_USE_SINGLEFILE)
+        ProcessingConfig.removeSetting(TauDEMUtils.TAUDEM_USE_MULTIFILE)
         ProcessingConfig.removeSetting(TauDEMUtils.MPIEXEC_FOLDER)
         ProcessingConfig.removeSetting(TauDEMUtils.MPI_PROCESSES)
 
     def _loadAlgorithms(self):
-        self.algs = self.preloadedAlgs
+        self.algs = []
+        basePath = TauDEMUtils.taudemDescriptionPath()
 
-    def createAlgsList(self):
-        self.preloadedAlgs = []
-        folder = TauDEMUtils.taudemDescriptionPath()
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('txt'):
-                try:
-                    alg = TauDEMAlgorithm(os.path.join(folder,
-                            descriptionFile))
-                    if alg.name.strip() != '':
-                        self.preloadedAlgs.append(alg)
-                    else:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not open TauDEM algorithm: '
-                                + descriptionFile)
-                except Exception, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not open TauDEM algorithm: '
-                            + descriptionFile)
+        if ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_USE_SINGLEFILE):
+            folder = os.path.join(basePath, 'single')
 
-        self.preloadedAlgs.append(PeukerDouglas())
-        self.preloadedAlgs.append(SlopeArea())
-        self.preloadedAlgs.append(LengthArea())
-        self.preloadedAlgs.append(DropAnalysis())
-        self.preloadedAlgs.append(DinfDistDown())
-        self.preloadedAlgs.append(DinfDistUp())
-        self.preloadedAlgs.append(GridNet())
-        self.preloadedAlgs.append(DinfTransLimAccum())
-        self.preloadedAlgs.append(DinfTransLimAccum2())
+            for descriptionFile in os.listdir(folder):
+                if descriptionFile.endswith('txt'):
+                    descriptionFile = os.path.join(folder, descriptionFile)
+                    self._algFromDescription(descriptionFile)
+
+            self.algs.append(PeukerDouglas())
+            self.algs.append(SlopeArea())
+            self.algs.append(LengthArea())
+            self.algs.append(DropAnalysis())
+            self.algs.append(DinfDistDown())
+            self.algs.append(DinfDistUp())
+            self.algs.append(GridNet())
+            self.algs.append(DinfTransLimAccum())
+            self.algs.append(DinfTransLimAccum2())
+
+        if ProcessingConfig.getSetting(TauDEMUtils.TAUDEM_USE_MULTIFILE):
+            folder = os.path.join(basePath, 'multi')
+
+            for descriptionFile in os.listdir(folder):
+                if descriptionFile.endswith('txt'):
+                    descriptionFile = os.path.join(folder, descriptionFile)
+                    self._algFromDescription(descriptionFile, True)
+
+            self.algs.append(PeukerDouglasMulti())
+            self.algs.append(SlopeAreaMulti())
+            self.algs.append(LengthAreaMulti())
+            self.algs.append(DropAnalysisMulti())
+            self.algs.append(DinfDistDownMulti())
+            self.algs.append(DinfDistUpMulti())
+            self.algs.append(GridNetMulti())
+            self.algs.append(DinfTransLimAccumMulti())
+            self.algs.append(DinfTransLimAccum2Multi())
+
+    def _algFromDescription(self, descriptionFile, multifile=False):
+        try:
+            if multifile:
+                alg = TauDEMMultifileAlgorithm(descriptionFile)
+            else:
+                alg = TauDEMAlgorithm(descriptionFile)
+            if alg.name.strip() != '':
+                self.algs.append(alg)
+            else:
+                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                    self.tr('Could not open TauDEM algorithm: %s' % descriptionFile))
+        except Exception, e:
+            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
+                self.tr('Could not open TauDEM algorithm %s:\n%s' % (descriptionFile, str(e))))

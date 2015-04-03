@@ -25,12 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsExpression, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterNumber
@@ -58,24 +57,23 @@ class FieldsCalculator(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Field calculator'
         self.group = 'Vector table tools'
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterString(self.FIELD_NAME, 'Result field name'
-                          ))
-        self.addParameter(ParameterSelection(self.FIELD_TYPE, 'Field type',
-                          self.TYPE_NAMES))
-        self.addParameter(ParameterNumber(self.FIELD_LENGTH, 'Field length',
-                          1, 255, 10))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterString(self.FIELD_NAME,
+            self.tr('Result field name')))
+        self.addParameter(ParameterSelection(self.FIELD_TYPE,
+            self.tr('Field type'), self.TYPE_NAMES))
+        self.addParameter(ParameterNumber(self.FIELD_LENGTH,
+            self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-                          'Field precision', 0, 15, 3))
+            self.tr('Field precision'), 0, 15, 3))
         self.addParameter(ParameterBoolean(self.NEW_FIELD,
-                          'Create new field', True))
-        self.addParameter(ParameterString(self.FORMULA, 'Formula'))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Create new field'), True))
+        self.addParameter(ParameterString(self.FORMULA, self.tr('Formula')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT_LAYER))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT_LAYER))
         fieldName = self.getParameterValue(self.FIELD_NAME)
         fieldType = self.TYPES[self.getParameterValue(self.FIELD_TYPE)]
         width = self.getParameterValue(self.FIELD_LENGTH)
@@ -87,7 +85,8 @@ class FieldsCalculator(GeoAlgorithm):
 
         if output.value == '':
             ext = output.getDefaultFileExtension(self)
-            output.value = system.getTempFilenameInTempFolder(output.name + '.' + ext)
+            output.value = system.getTempFilenameInTempFolder(
+                output.name + '.' + ext)
 
         provider = layer.dataProvider()
         fields = layer.pendingFields()
@@ -101,16 +100,15 @@ class FieldsCalculator(GeoAlgorithm):
 
         da = QgsDistanceArea()
         da.setSourceCrs(layer.crs().srsid())
-        canvas = iface.mapCanvas()
-        da.setEllipsoidalMode(canvas.mapRenderer().hasCrsTransformEnabled())
-        da.setEllipsoid(QgsProject.instance().readEntry('Measure',
-                                                        '/Ellipsoid',
-                                                        GEO_NONE)[0])
+        da.setEllipsoidalMode(
+            iface.mapCanvas().mapSettings().hasCrsTransformEnabled())
+        da.setEllipsoid(QgsProject.instance().readEntry(
+            'Measure', '/Ellipsoid', GEO_NONE)[0])
         exp.setGeomCalculator(da)
 
         if not exp.prepare(layer.pendingFields()):
             raise GeoAlgorithmExecutionException(
-                'Evaluation error: ' + exp.evalErrorString())
+                self.tr('Evaluation error: %s' % exp.evalErrorString()))
 
         outFeature = QgsFeature()
         outFeature.initAttributes(len(fields))
@@ -144,20 +142,20 @@ class FieldsCalculator(GeoAlgorithm):
 
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
-                'An error occured while evaluating the calculation '
-                'string:\n' + error)
+                self.tr('An error occured while evaluating the calculation '
+                        'string:\n%s' % error))
 
     def checkParameterValuesBeforeExecuting(self):
         newField = self.getParameterValue(self.NEW_FIELD)
         fieldName = self.getParameterValue(self.FIELD_NAME)
         if newField and len(fieldName) == 0:
-            raise GeoAlgorithmExecutionException('Field name is not set. '
-                                                 'Please enter a field name')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Field name is not set. Please enter a field name'))
 
         outputName = self.getOutputValue(self.OUTPUT_LAYER)
         if outputName == '':
-            raise GeoAlgorithmExecutionException('Output is not set. '
-                'Please specify valid filename')
+            raise GeoAlgorithmExecutionException(
+                self.tr('Output is not set. Please specify valid filename'))
 
     def getCustomParametersDialog(self):
         return FieldsCalculatorDialog(self)

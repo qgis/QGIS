@@ -37,7 +37,12 @@
 * @param parent - Pointer the to parent QWidget for modality
 * @param fl - Windown flags
 */
-eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags fl ) : QWidget( parent, fl )
+eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags fl )
+    : QWidget( parent, fl )
+    , mCurrentHttpImageRequestId( 0 )
+    , mImageSizeRatio( 0.0 )
+    , mScaleFactor( 1.0 )
+    , mScaleToFit( 0.0 )
 {
   //Setup zoom buttons
   pbtnZoomIn = new QPushButton();
@@ -91,9 +96,14 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget* parent, Qt::WindowFlags
 
   //setup http connection
   mHttpBuffer = new QBuffer();
+#if QT_VERSION < 0x050000
   mHttpConnection = new QHttp();
+#endif
   mHttpBuffer->open( QBuffer::ReadWrite );
+// TODO
+#if QT_VERSION < 0x050000
   connect( mHttpConnection, SIGNAL( requestFinished( int, bool ) ), this, SLOT( displayUrlImage( int, bool ) ) );
+#endif
 
   //initialize remaining variables
   mScaleByHeight = false;
@@ -108,7 +118,9 @@ eVisImageDisplayWidget::~eVisImageDisplayWidget()
   delete mImageLabel;
   delete mImage;
   delete mHttpBuffer;
+#if QT_VERSION < 0x050000
   delete mHttpConnection;
+#endif
   delete pbtnZoomIn;
   delete pbtnZoomOut;
   delete pbtnZoomFull;
@@ -186,8 +198,10 @@ void eVisImageDisplayWidget::displayImage()
 void eVisImageDisplayWidget::displayUrlImage( QString url )
 {
   QUrl myUrl( url );
+#if QT_VERSION < 0x050000
   mHttpConnection->setHost( myUrl.host() );
   mCurrentHttpImageRequestId = mHttpConnection->get( myUrl.path().replace( "\\", "/" ), mHttpBuffer );
+#endif
 }
 
 /**

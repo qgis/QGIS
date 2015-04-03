@@ -23,12 +23,15 @@
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import Qt, QObject, QSettings, QDir, QUrl
+from PyQt4.QtGui import QMessageBox, QLabel, QFrame, QApplication
+from PyQt4.QtNetwork import QNetworkRequest
+
+import qgis
+from qgis.core import QgsApplication, QgsNetworkAccessManager
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface, startPlugin, unloadPlugin, loadPlugin, reloadPlugin, updateAvailablePlugins
-from installer_data import *
+from installer_data import repositories, plugins, officialRepo, settingsGroup, reposGroup, removeDir
 from qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
 from qgsplugininstallerpluginerrordialog import QgsPluginInstallerPluginErrorDialog
 from qgsplugininstallerfetchingdialog import QgsPluginInstallerFetchingDialog
@@ -84,7 +87,7 @@ class QgsPluginInstaller(QObject):
       msg.exec_()
       if not msg.result():
         # uninstall, update utils and reload if enabled
-        self.uninstallPlugin(key, quiet = True)
+        self.uninstallPlugin(key, quiet=True)
         updateAvailablePlugins()
         settings = QSettings()
         if settings.value("/PythonPlugins/"+key, False, type=bool):
@@ -164,19 +167,18 @@ class QgsPluginInstaller(QObject):
     iface.pluginManagerInterface().clearRepositoryList()
     for key in repositories.all():
         url = repositories.all()[key]["url"] + repositories.urlParams()
-        repository = repositories.all()[key]
         if repositories.inspectionFilter():
           enabled = ( key == repositories.inspectionFilter() )
         else:
           enabled = repositories.all()[key]["enabled"]
         iface.pluginManagerInterface().addToRepositoryList({
-          "name" : key,
-          "url"  : url,
-          "enabled" : enabled and "true" or "false",
-          "valid" : repositories.all()[key]["valid"] and "true" or "false",
-          "state" : str(repositories.all()[key]["state"]),
-          "error" : repositories.all()[key]["error"],
-          "inspection_filter" : repositories.inspectionFilter() and "true" or "false"
+            "name" : key,
+            "url"  : url,
+            "enabled" : enabled and "true" or "false",
+            "valid" : repositories.all()[key]["valid"] and "true" or "false",
+            "state" : str(repositories.all()[key]["state"]),
+            "error" : repositories.all()[key]["error"],
+            "inspection_filter" : repositories.inspectionFilter() and "true" or "false"
         })
 
 
@@ -187,38 +189,38 @@ class QgsPluginInstaller(QObject):
     for key in plugins.all():
       plugin = plugins.all()[key]
       iface.pluginManagerInterface().addPluginMetadata({
-        "id" : key,
-        "plugin_id" : plugin["plugin_id"] or "",
-        "name" : plugin["name"],
-        "description" : plugin["description"],
-        "about" : plugin["about"],
-        "category" : plugin["category"],
-        "tags" : plugin["tags"],
-        "changelog" : plugin["changelog"],
-        "author_name" : plugin["author_name"],
-        "author_email" : plugin["author_email"],
-        "homepage" : plugin["homepage"],
-        "tracker" : plugin["tracker"],
-        "code_repository" : plugin["code_repository"],
-        "version_installed" : plugin["version_installed"],
-        "library" : plugin["library"],
-        "icon" : plugin["icon"],
-        "readonly" : plugin["readonly"] and "true" or "false",
-        "installed": plugin["installed"] and "true" or "false",
-        "available": plugin["available"] and "true" or "false",
-        "status" : plugin["status"],
-        "error" : plugin["error"],
-        "error_details" : plugin["error_details"],
-        "experimental" : plugin["experimental"] and "true" or "false",
-        "deprecated" : plugin["deprecated"] and "true" or "false",
-        "version_available" : plugin["version_available"],
-        "zip_repository" : plugin["zip_repository"],
-        "download_url" : plugin["download_url"],
-        "filename" : plugin["filename"],
-        "downloads" : plugin["downloads"],
-        "average_vote" : plugin["average_vote"],
-        "rating_votes" : plugin["rating_votes"],
-        "pythonic" : "true"
+          "id" : key,
+          "plugin_id" : plugin["plugin_id"] or "",
+          "name" : plugin["name"],
+          "description" : plugin["description"],
+          "about" : plugin["about"],
+          "category" : plugin["category"],
+          "tags" : plugin["tags"],
+          "changelog" : plugin["changelog"],
+          "author_name" : plugin["author_name"],
+          "author_email" : plugin["author_email"],
+          "homepage" : plugin["homepage"],
+          "tracker" : plugin["tracker"],
+          "code_repository" : plugin["code_repository"],
+          "version_installed" : plugin["version_installed"],
+          "library" : plugin["library"],
+          "icon" : plugin["icon"],
+          "readonly" : plugin["readonly"] and "true" or "false",
+          "installed": plugin["installed"] and "true" or "false",
+          "available": plugin["available"] and "true" or "false",
+          "status" : plugin["status"],
+          "error" : plugin["error"],
+          "error_details" : plugin["error_details"],
+          "experimental" : plugin["experimental"] and "true" or "false",
+          "deprecated" : plugin["deprecated"] and "true" or "false",
+          "version_available" : plugin["version_available"],
+          "zip_repository" : plugin["zip_repository"],
+          "download_url" : plugin["download_url"],
+          "filename" : plugin["filename"],
+          "downloads" : plugin["downloads"],
+          "average_vote" : plugin["average_vote"],
+          "rating_votes" : plugin["rating_votes"],
+          "pythonic" : "true"
       })
     iface.pluginManagerInterface().reloadModel()
 
@@ -226,7 +228,7 @@ class QgsPluginInstaller(QObject):
   # ----------------------------------------- #
   def reloadAndExportData(self):
     """ Reload All repositories and export data to the Plugin Manager """
-    self.fetchAvailablePlugins(reloadMode = True)
+    self.fetchAvailablePlugins(reloadMode=True)
     self.exportRepositoriesToManager()
     self.exportPluginsToManager()
 
@@ -239,7 +241,7 @@ class QgsPluginInstaller(QObject):
       iface.mainWindow().statusBar().removeWidget(self.statusLabel)
       self.statusLabel = None
 
-    self.fetchAvailablePlugins(reloadMode = False)
+    self.fetchAvailablePlugins(reloadMode=False)
     self.exportRepositoriesToManager()
     self.exportPluginsToManager()
 
@@ -342,7 +344,7 @@ class QgsPluginInstaller(QObject):
         if dlg.result():
           # revert installation
           pluginDir = qgis.utils.home_plugin_path + "/" + plugin["id"]
-          removeDir(pluginDir)
+          result = removeDir(pluginDir)
           if QDir(pluginDir).exists():
             error = True
             infoString = (self.tr("Plugin uninstall failed"), result)
@@ -371,7 +373,7 @@ class QgsPluginInstaller(QObject):
   # ----------------------------------------- #
   def uninstallPlugin(self, key, quiet=False):
     """ Uninstall given plugin """
-    if plugins.all().has_key(key):
+    if key in plugins.all():
       plugin = plugins.all()[key]
     else:
       plugin = plugins.localCache[key]
@@ -433,7 +435,7 @@ class QgsPluginInstaller(QObject):
     settings.beginGroup(reposGroup)
     reposName = dlg.editName.text()
     reposURL = dlg.editURL.text().strip()
-    if repositories.all().has_key(reposName):
+    if reposName in repositories.all():
       reposName = reposName + "(2)"
     # add to settings
     settings.setValue(reposName+"/url", reposURL)
@@ -473,7 +475,7 @@ class QgsPluginInstaller(QObject):
     settings.beginGroup(reposGroup)
     settings.remove(reposName)
     newName = dlg.editName.text()
-    if repositories.all().has_key(newName) and newName != reposName:
+    if newName in repositories.all() and newName != reposName:
       newName = newName + "(2)"
     settings.setValue(newName+"/url", dlg.editURL.text().strip())
     settings.setValue(newName+"/enabled", bool(dlg.checkBoxEnabled.checkState()))
@@ -507,7 +509,7 @@ class QgsPluginInstaller(QObject):
 
 
   # ----------------------------------------- #
-  def setRepositoryInspectionFilter(self, reposName = None):
+  def setRepositoryInspectionFilter(self, reposName=None):
     """ temporarily block another repositories to fetch only one for inspection """
     if reposName is not None:
       reposName = reposName.decode("utf-8")
@@ -524,6 +526,6 @@ class QgsPluginInstaller(QObject):
     url = "http://plugins.qgis.org/plugins/RPC2/"
     params = "{\"id\":\"djangorpc\",\"method\":\"plugin.vote\",\"params\":[%s,%s]}" % (str(plugin_id), str(vote))
     req = QNetworkRequest(QUrl(url))
-    req.setRawHeader("Content-Type", "application/json");
-    reply = QgsNetworkAccessManager.instance().post(req, params)
+    req.setRawHeader("Content-Type", "application/json")
+    QgsNetworkAccessManager.instance().post(req, params)
     return True

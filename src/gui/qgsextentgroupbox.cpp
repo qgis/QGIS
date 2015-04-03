@@ -5,6 +5,7 @@
 
 QgsExtentGroupBox::QgsExtentGroupBox( QWidget* parent )
     : QgsCollapsibleGroupBox( parent )
+    , mExtentState( OriginalExtent )
 {
   setupUi( this );
 

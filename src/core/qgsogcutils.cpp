@@ -7,7 +7,7 @@
 #include <QStringList>
 #include <QTextStream>
 
-#ifndef Q_WS_WIN
+#ifndef Q_OS_WIN
 #include <netinet/in.h>
 #else
 #include <winsock.h>
@@ -1108,6 +1108,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
     }
     case QGis::WKBMultiPoint25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiPoint:
     {
       QDomElement multiPointElem = doc.createElement( "gml:MultiPoint" );
@@ -1140,6 +1141,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
     }
     case QGis::WKBLineString25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBLineString:
     {
       QDomElement lineStringElem = doc.createElement( "gml:LineString" );
@@ -1173,6 +1175,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
     }
     case QGis::WKBMultiLineString25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiLineString:
     {
       QDomElement multiLineStringElem = doc.createElement( "gml:MultiLineString" );
@@ -1218,6 +1221,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
     }
     case QGis::WKBPolygon25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBPolygon:
     {
       QDomElement polygonElem = doc.createElement( "gml:Polygon" );
@@ -1274,6 +1278,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
     }
     case QGis::WKBMultiPolygon25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiPolygon:
     {
       QDomElement multiPolygonElem = doc.createElement( "gml:MultiPolygon" );
@@ -1603,7 +1608,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     return NULL;
   }
 
-  for( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
+  for ( operandElem = operandElem.nextSiblingElement(); !operandElem.isNull(); operandElem = operandElem.nextSiblingElement() )
   {
     QgsExpression::Node* opRight = nodeFromOgcFilter( operandElem, errorMessage );
     if ( !opRight )
@@ -1617,7 +1622,7 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     expr = new QgsExpression::NodeBinaryOperator(( QgsExpression::BinaryOperator ) op, expr, opRight );
   }
 
-  if( expr == leftOp )
+  if ( expr == leftOp )
   {
     if ( errorMessage.isEmpty() )
       errorMessage = QString( "only one operand for '%1' binary operator" ).arg( element.tagName() );
@@ -1625,7 +1630,11 @@ QgsExpression::NodeBinaryOperator* QgsOgcUtils::nodeBinaryOperatorFromOgcFilter(
     return NULL;
   }
 
-  return dynamic_cast< QgsExpression::NodeBinaryOperator * >( expr );
+  QgsExpression::NodeBinaryOperator *ret = dynamic_cast< QgsExpression::NodeBinaryOperator * >( expr );
+  if ( !ret )
+    delete expr;
+
+  return ret;
 }
 
 
@@ -1652,7 +1661,8 @@ QgsExpression::NodeFunction* QgsOgcUtils::nodeSpatialOperatorFromOgcFilter( QDom
   }
   else
   {
-    errorMessage = QString( "No OGC Geometry found" );
+    errorMessage = "No OGC Geometry found";
+    delete gml2Args;
     return NULL;
   }
 

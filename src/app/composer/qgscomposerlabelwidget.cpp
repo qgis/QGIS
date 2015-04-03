@@ -36,6 +36,9 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QgsCo
   mFontColorButton->setColorDialogTitle( tr( "Select font color" ) );
   mFontColorButton->setContext( "composer" );
 
+  mMarginXDoubleSpinBox->setClearValue( 0.0 );
+  mMarginYDoubleSpinBox->setClearValue( 0.0 );
+
   if ( mComposerLabel )
   {
     setGuiElementValues();
@@ -88,12 +91,7 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   if ( mComposerLabel )
   {
     bool ok;
-#if defined(Q_WS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mComposerLabel->font() );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mComposerLabel->font() );
     if ( ok )
     {
       mComposerLabel->beginCommand( tr( "Label font changed" ) );
@@ -104,12 +102,23 @@ void QgsComposerLabelWidget::on_mFontButton_clicked()
   }
 }
 
-void QgsComposerLabelWidget::on_mMarginDoubleSpinBox_valueChanged( double d )
+void QgsComposerLabelWidget::on_mMarginXDoubleSpinBox_valueChanged( double d )
 {
   if ( mComposerLabel )
   {
     mComposerLabel->beginCommand( tr( "Label margin changed" ) );
-    mComposerLabel->setMargin( d );
+    mComposerLabel->setMarginX( d );
+    mComposerLabel->update();
+    mComposerLabel->endCommand();
+  }
+}
+
+void QgsComposerLabelWidget::on_mMarginYDoubleSpinBox_valueChanged( double d )
+{
+  if ( mComposerLabel )
+  {
+    mComposerLabel->beginCommand( tr( "Label margin changed" ) );
+    mComposerLabel->setMarginY( d );
     mComposerLabel->update();
     mComposerLabel->endCommand();
   }
@@ -228,7 +237,8 @@ void QgsComposerLabelWidget::setGuiElementValues()
   blockAllSignals( true );
   mTextEdit->setPlainText( mComposerLabel->text() );
   mTextEdit->moveCursor( QTextCursor::End, QTextCursor::MoveAnchor );
-  mMarginDoubleSpinBox->setValue( mComposerLabel->margin() );
+  mMarginXDoubleSpinBox->setValue( mComposerLabel->marginX() );
+  mMarginYDoubleSpinBox->setValue( mComposerLabel->marginY() );
   mHtmlCheckBox->setChecked( mComposerLabel->htmlState() );
   mTopRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignTop );
   mMiddleRadioButton->setChecked( mComposerLabel->vAlign() == Qt::AlignVCenter );
@@ -244,7 +254,8 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
 {
   mTextEdit->blockSignals( block );
   mHtmlCheckBox->blockSignals( block );
-  mMarginDoubleSpinBox->blockSignals( block );
+  mMarginXDoubleSpinBox->blockSignals( block );
+  mMarginYDoubleSpinBox->blockSignals( block );
   mTopRadioButton->blockSignals( block );
   mMiddleRadioButton->blockSignals( block );
   mBottomRadioButton->blockSignals( block );

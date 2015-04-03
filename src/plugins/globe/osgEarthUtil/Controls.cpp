@@ -131,7 +131,8 @@ _activeColor( osg::Vec4f(.4,.4,.4,1) ),
 _active( false ),
 _absorbEvents( false ),
 _hfill( false ),
-_vfill( false )
+_vfill( false ),
+_dirty( false )
 {
     //nop
 }
@@ -1747,7 +1748,8 @@ ControlNode::traverse( osg::NodeVisitor& nv )
 ControlNode::PerViewData::PerViewData() :
 _obscured   ( true ),
 _visibleTime( 0.0 ),
-_screenPos  ( 0.0, 0.0, 0.0 )
+_screenPos  ( 0.0, 0.0, 0.0 ),
+_visitFrame ( false )
 {
     //nop
 }
@@ -1799,18 +1801,19 @@ ControlNodeBin::draw( const ControlContext& context, bool newContext, int bin )
 
     if ( _sortingEnabled && _sortByDistance )
     {
-        for( ControlNodeCollection::iterator i = _controlNodes.begin(); i != _controlNodes.end(); ++i )
+        for( ControlNodeCollection::iterator i = _controlNodes.begin(); i != _controlNodes.end(); )
         {
             ControlNode* node = i->second.get();
             if ( node->getNumParents() == 0 )
             {
               _renderNodes.erase( node );
-              _controlNodes.erase( i );
+              _controlNodes.erase( i++ );
             }
             else
 	    {
 	      ControlNode::PerViewData& nodeData = node->getData( context._view );
 	      byDepth.insert( ControlNodePair(nodeData._screenPos.z(), node) );
+              ++i;
 	    }
         }
 

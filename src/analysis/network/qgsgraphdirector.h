@@ -42,7 +42,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   public:
     //! Destructor
-    virtual ~QgsGraphDirector() { };
+    virtual ~QgsGraphDirector() { }
 
     /**
      * Make a graph using RgGraphBuilder

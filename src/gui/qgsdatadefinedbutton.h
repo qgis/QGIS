@@ -28,7 +28,6 @@ class QgsVectorLayer;
 /** \ingroup gui
  * \class QgsDataDefinedButton
  * A button for defining data source field mappings or expressions.
- * @note added in QGIS 1.9
  */
 
 class GUI_EXPORT QgsDataDefinedButton: public QToolButton
@@ -59,7 +58,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
                           const QgsVectorLayer* vl = 0,
                           const QgsDataDefined* datadefined = 0,
                           DataTypes datatypes = AnyType,
-                          QString description = QString( "" ) );
+                          QString description = "" );
     ~QgsDataDefinedButton();
 
     /**
@@ -179,6 +178,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     static QString intPosOneDesc();
     static QString doubleDesc();
     static QString doublePosDesc();
+    static QString double0to1Desc();
     static QString doubleXYDesc();
     static QString double180RotDesc();
     static QString intTranspDesc();
@@ -191,8 +191,19 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     static QString penJoinStyleDesc();
     static QString blendModesDesc();
     static QString svgPathDesc();
+    static QString filePathDesc();
     static QString paperSizeDesc();
     static QString paperOrientationDesc();
+    static QString horizontalAnchorDesc();
+    static QString verticalAnchorDesc();
+    static QString gradientTypeDesc();
+    static QString gradientCoordModeDesc();
+    static QString gradientSpreadDesc();
+    static QString lineStyleDesc();
+    static QString capStyleDesc();
+    static QString fillStyleDesc();
+    static QString markerStyleDesc();
+    static QString customDashDesc();
 
   public slots:
     /**
@@ -224,7 +235,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void dataDefinedActivated( bool active );
 
   protected:
-    void mouseReleaseEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
     /**
      * Set whether the current expression is to be used instead of field mapping

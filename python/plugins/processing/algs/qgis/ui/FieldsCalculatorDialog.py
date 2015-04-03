@@ -28,15 +28,12 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QSettings
+from PyQt4.QtGui import QDialog, QFileDialog, QApplication, QCursor, QMessageBox
+from qgis.gui import QgsEncodingFileDialog
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
 from processing.gui.AlgorithmExecutor import runalg
 from processing.tools import dataobjects
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -47,7 +44,7 @@ from ui_DlgFieldsCalculator import Ui_FieldsCalculator
 class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
     def __init__(self, alg):
         QDialog.__init__(self)
-        self.setupUi( self )
+        self.setupUi(self)
 
         self.executed = False
         self.alg = alg
@@ -57,8 +54,7 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.btnBrowse.clicked.connect(self.selectFile)
         self.mNewFieldGroupBox.toggled.connect(self.toggleExistingGroup)
         self.mUpdateExistingGroupBox.toggled.connect(self.toggleNewGroup)
-        self.mOutputFieldTypeComboBox.currentIndexChanged.connect(
-                self.setupSpinboxes)
+        self.mOutputFieldTypeComboBox.currentIndexChanged.connect(self.setupSpinboxes)
 
         # Default values for field width and precision
         self.mOutputFieldWidthSpinBox.setValue(10)
@@ -189,33 +185,27 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         return True
 
     def accept(self):
-        keepOpen = ProcessingConfig.getSetting(
-                ProcessingConfig.KEEP_DIALOG_OPEN)
+        keepOpen = ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
         try:
             if self.setParamValues():
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
                 ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM,
                                      self.alg.getAsCommand())
-                ret = runalg(self.alg, self)
-                QApplication.restoreOverrideCursor()
-                if ret:
+
+                self.executed =  runalg(self.alg, self)
+                if self.executed:
                     handleAlgorithmResults(self.alg,
-                                                          self,
-                                                          not keepOpen)
-                self.executed = True
-                QDialog.reject(self)
+                                           self,
+                                           not keepOpen)
+                if not keepOpen:
+                    QDialog.reject(self)
             else:
                 QMessageBox.critical(self,
                                      self.tr('Unable to execute algorithm'),
                                      self.tr('Wrong or missing parameter '
                                              'values'))
-                return
-        except GeoAlgorithmExecutionException, e:
+        finally:
             QApplication.restoreOverrideCursor()
-            QMessageBox.critical(self, "Error",e.msg)
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
-            self.executed = False
-            QDialog.reject(self)
 
     def reject(self):
         self.executed = False
@@ -228,4 +218,5 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         pass
 
     def error(self, text):
+        QMessageBox.critical(self, "Error", text)
         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, text)

@@ -16,9 +16,11 @@
 #include <cfloat>
 
 QgsRasterCalcNode::QgsRasterCalcNode()
-    : mLeft( 0 )
+    : mType( tNumber )
+    , mLeft( 0 )
     , mRight( 0 )
     , mNumber( 0 )
+    , mOperator( opNONE )
 {
 }
 
@@ -27,6 +29,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( double number )
     , mLeft( 0 )
     , mRight( 0 )
     , mNumber( number )
+    , mOperator( opNONE )
 {
 }
 
@@ -45,7 +48,10 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName )
     , mRight( 0 )
     , mNumber( 0 )
     , mRasterName( rasterName )
+    , mOperator( opNONE )
 {
+  if ( mRasterName.startsWith( '"' ) && mRasterName.endsWith( '"' ) )
+    mRasterName = mRasterName.mid( 1, mRasterName.size() - 2 );
 }
 
 QgsRasterCalcNode::~QgsRasterCalcNode()
@@ -153,8 +159,15 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
         break;
       case opATAN:
         leftMatrix.atangens();
+        break;
       case opSIGN:
         leftMatrix.changeSign();
+        break;
+      case opLOG:
+        leftMatrix.log();
+        break;
+      case opLOG10:
+        leftMatrix.log10();
         break;
       default:
         return false;

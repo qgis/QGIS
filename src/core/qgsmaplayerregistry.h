@@ -23,6 +23,8 @@
 #include <QSet>
 #include <QObject>
 #include <QStringList>
+
+#include "qgssingleton.h"
 class QString;
 class QgsMapLayer;
 
@@ -30,14 +32,11 @@ class QgsMapLayer;
 * This class tracks map layers that are currently loaded and provides
 * a means to fetch a pointer to a map layer and delete it.
 */
-class CORE_EXPORT QgsMapLayerRegistry : public QObject
+class CORE_EXPORT QgsMapLayerRegistry : public QObject, public QgsSingleton<QgsMapLayerRegistry>
 {
     Q_OBJECT
 
   public:
-    //! Returns the instance pointer, creating the object on the first call
-    static QgsMapLayerRegistry * instance();
-
     //! Return the number of registered layers.
     int count();
 
@@ -72,7 +71,6 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      *         it will not be part of the returned QList.
      *
      * @note As a side-effect QgsProject is made dirty.
-     * @note Added in QGIS 1.8
      * @note takeOwner not available in python binding - always takes ownership
      */
     QList<QgsMapLayer *> addMapLayers( QList<QgsMapLayer *> theMapLayers,
@@ -149,16 +147,12 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * freeing up any memory they may have been using. Layer
      * caches are used to speed up rendering in certain situations
      * see ticket #1974 for more details.
-     *
-     * @note Added in QGIS 1.4
      */
     //! @deprecated since 2.4 - does nothing
     Q_DECL_DEPRECATED void clearAllLayerCaches();
 
     /**
      * Reload all provider data caches (currently used for WFS and WMS providers)
-     *
-     * @note Added in QGIS 1.6
      */
     void reloadAllLayers();
 
@@ -201,8 +195,6 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * {@link layerWillBeRemoved()} signals are emitted. You will still get these signals
      * in any case.
      * You can use this signal to do easy (and fast) cleanup.
-     *
-     * @note Added in 2.0
      */
     void removeAll();
 
@@ -233,24 +225,25 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
      * advertised by this signal.
      *
      * @param theMapLayers  The {@link QgsMapLayer}s which are added to the legend.
-     *
-     * @note Added in 2.0
      */
     void legendLayersAdded( QList<QgsMapLayer*> theMapLayers );
 
   protected:
+#if 0
     /** debugging member
         invoked when a connect() is made to this object
     */
-    void connectNotify( const char * signal );
+    void connectNotify( const char * signal ) override;
+#endif
 
   private:
     //! private singleton constructor
     QgsMapLayerRegistry( QObject * parent = 0 );
 
-    static QgsMapLayerRegistry *mInstance;
     QMap<QString, QgsMapLayer*> mMapLayers;
     QSet<QgsMapLayer*> mOwnedLayers;
+
+    friend class QgsSingleton<QgsMapLayerRegistry>; // Let QgsSingleton access private constructor
 }; // class QgsMapLayerRegistry
 
 #endif //QgsMapLayerRegistry_H

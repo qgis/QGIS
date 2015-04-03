@@ -44,7 +44,7 @@ class TableAttribute:
          self.notnull,
          self.hasdefault,
          self.default,
-        ) = row
+         ) = row
 
 
 class TableConstraint:
@@ -57,7 +57,7 @@ class TableConstraint:
         'f': TypeForeignKey,
         'p': TypePrimaryKey,
         'u': TypeUnique,
-        }
+    }
 
     on_action = {
         'a': 'NO ACTION',
@@ -65,12 +65,11 @@ class TableConstraint:
         'c': 'CASCADE',
         'n': 'SET NULL',
         'd': 'SET DEFAULT',
-        }
+    }
     match_types = {'u': 'UNSPECIFIED', 'f': 'FULL', 'p': 'PARTIAL'}
 
     def __init__(self, row):
-        (self.name, con_type, self.is_defferable, self.is_deffered, keys) = \
-            row[:5]
+        (self.name, con_type, self.is_defferable, self.is_deffered, keys) = row[:5]
         self.keys = map(int, keys.split(' '))
         self.con_type = TableConstraint.types[con_type]  # Convert to enum
         if self.con_type == TableConstraint.TypeCheck:
@@ -410,7 +409,7 @@ class GeoDB:
             srid,
             self._quote_str(geom_type),
             dim,
-            )
+        )
         self._exec_sql_and_commit(sql)
 
     def delete_geometry_column(self, table, geom_column, schema=None):
@@ -701,11 +700,11 @@ class GeoDB:
         # VACUUM ANALYZE must be run outside transaction block - we
         # have to change isolation level
         self.con.set_isolation_level(
-                psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
+            psycopg2.extensions.ISOLATION_LEVEL_AUTOCOMMIT)
         c = self.con.cursor()
         self._exec_sql(c, 'VACUUM ANALYZE %s' % t)
         self.con.set_isolation_level(
-                psycopg2.extensions.ISOLATION_LEVEL_READ_COMMITTED)
+            psycopg2.extensions.ISOLATION_LEVEL_READ_COMMITTED)
 
     def sr_info_for_srid(self, srid):
         if not self.has_postgis:

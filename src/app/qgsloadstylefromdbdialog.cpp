@@ -16,6 +16,7 @@
 
 QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
     : QDialog( parent )
+    , mSectionLimit( 0 )
 {
   setupUi( this );
   setWindowTitle( "Load style from database" );

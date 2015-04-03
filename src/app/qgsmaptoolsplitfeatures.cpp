@@ -18,6 +18,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolsplitfeatures.h"
 #include "qgsproject.h"
+#include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
 
 #include <QMouseEvent>
@@ -33,7 +34,7 @@ QgsMapToolSplitFeatures::~QgsMapToolSplitFeatures()
 
 }
 
-void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSplitFeatures::canvasMapReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -56,21 +57,17 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    QList<QgsSnappingResult> snapResults;
-
     //If we snap the first point on a vertex of a line layer, we directly split the feature at this point
     if ( vlayer->geometryType() == QGis::Line && points().isEmpty() )
     {
-      if ( mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex ) == 0 )
+      QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToCurrentLayer( e->pos(), QgsPointLocator::Vertex );
+      if ( m.isValid() )
       {
-        if ( snapResults.size() > 0 )
-        {
-          split = true;
-        }
+        split = true;
       }
     }
 
-    int error = addVertex( e->pos() );
+    int error = addVertex( e->mapPoint() );
     if ( error == 1 )
     {
       //current layer is not a vector layer

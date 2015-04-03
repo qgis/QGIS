@@ -67,9 +67,12 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
 
   mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
-  mDatabase.setConnectOptions( "OCI_ATTR_PREFETCH_ROWS=1000" );
+  QString options = uri.hasParam( "dboptions" ) ? uri.param( "dboptions" ) : "OCI_ATTR_PREFETCH_ROWS=1000";
+  mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
+
+  QgsDebugMsg( QString( "Connecting with options: " ) + options );
 
   if ( !mDatabase.open() )
   {
@@ -358,10 +361,21 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
+  QgsDebugMsg( "entering: " + layerProperty.toString() );
+
+  if ( layerProperty.isView )
+  {
+    layerProperty.pkCols = pkCandidates( layerProperty.ownerName, layerProperty.tableName );
+    if ( layerProperty.pkCols.isEmpty() )
+    {
+      QgsMessageLog::logMessage( tr( "View %1.%2 doesn't have integer columns for use as keys." )
+                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ),
+                                 tr( "Oracle" ) );
+    }
+  }
+
   if ( layerProperty.geometryColName.isEmpty() )
     return;
-
-  QgsDebugMsg( "entering: " + layerProperty.toString() );
 
   QString table;
   QString where;
@@ -461,17 +475,6 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   {
     layerProperty.types << QGis::WKBUnknown;
     layerProperty.srids << ( srids.size() == 1 ? *srids.constBegin() : 0 );
-  }
-
-  if ( layerProperty.isView )
-  {
-    layerProperty.pkCols = pkCandidates( layerProperty.ownerName, layerProperty.tableName );
-    if ( layerProperty.pkCols.isEmpty() )
-    {
-      QgsMessageLog::logMessage( tr( "View %1.%2 doesn't have integer columns for use as keys." )
-                                 .arg( layerProperty.ownerName ).arg( layerProperty.tableName ),
-                                 tr( "Oracle" ) );
-    }
   }
 
   QgsDebugMsg( "leaving." );
@@ -706,6 +709,10 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
   QgsDataSourceURI uri;
   uri.setConnection( host, port, database, username, password );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
+  if ( !settings.value( key + "/dboptions" ).toString().isEmpty() )
+  {
+    uri.setParam( "dboptions", settings.value( key + "/dboptions" ).toString() );
+  }
 
   return uri;
 }

@@ -25,9 +25,7 @@ class QgisInterface : QObject
     /** Virtual destructor */
     virtual ~QgisInterface();
 
-    /** Get pointer to legend interface
-      \note added in 1.4
-     */
+    /** Get pointer to legend interface */
     virtual QgsLegendInterface* legendInterface() = 0;
 
     virtual QgsPluginManagerInterface* pluginManagerInterface() = 0;
@@ -69,7 +67,6 @@ class QgisInterface : QObject
 
     //! Set the active layer (layer gets selected in the legend)
     //! returns true if the layer exists, false otherwise
-    //! added in 1.4
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
     //! Add an icon to the plugins toolbar
@@ -99,16 +96,12 @@ class QgisInterface : QObject
     virtual QAction* addRasterToolBarWidget( QWidget* widget ) = 0;
 
     //! Add an icon to the Raster toolbar
-    //! @note added in 2.0
     virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
 
     //! Remove an action (icon) from the Raster toolbar
-    //! @note added in 2.0
     virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
 
     //! Add an icon to the Vector toolbar
-    //! @note added in 2.0
-
     virtual int addVectorToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -122,11 +115,9 @@ class QgisInterface : QObject
     virtual QAction* addVectorToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Vector toolbar
-    //! @note added in 2.0
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 
     //! Add an icon to the Database toolbar
-    //! @note added in 2.0
     virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -140,11 +131,9 @@ class QgisInterface : QObject
     virtual QAction* addDatabaseToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Database toolbar
-    //! @note added in 2.0
     virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
 
     //! Add an icon to the Web toolbar
-    //! @note added in 2.0
     virtual int addWebToolBarIcon( QAction *qAction ) = 0;
 
     /**
@@ -158,7 +147,6 @@ class QgisInterface : QObject
     virtual QAction* addWebToolBarWidget( QWidget* widget ) = 0;
 
     //! Remove an action (icon) from the Web toolbar
-    //! @note added in 2.0
     virtual void removeWebToolBarIcon( QAction *qAction ) = 0;
 
     //! Add toolbar with specified name
@@ -183,7 +171,7 @@ class QgisInterface : QObject
     /** Create a new composer
      * @param title window title for new composer (one will be generated if empty)
      * @return pointer to composer's view
-     * @note new composer window will be shown and activated (added in 1.9)
+     * @note new composer window will be shown and activated
      */
     virtual QgsComposerView* createNewComposer( QString title = QString( "" ) ) = 0;
 
@@ -191,34 +179,25 @@ class QgisInterface : QObject
      * @param composerView pointer to existing composer view
      * @param title window title for duplicated composer (one will be generated if empty)
      * @return pointer to duplicate composer's view
-     * @note dupicate composer window will be hidden until loaded, then shown and activated (added in 1.9)
+     * @note dupicate composer window will be hidden until loaded, then shown and activated
      */
     virtual QgsComposerView* duplicateComposer( QgsComposerView* composerView, QString title = QString( "" ) ) = 0;
 
-    /** Deletes parent composer of composer view, after closing composer window
-     * @note (added in 1.9)
-     */
+    /** Deletes parent composer of composer view, after closing composer window */
     virtual void deleteComposer( QgsComposerView* composerView ) = 0;
 
-    /** Return changeable options built from settings and/or defaults
-     * @note (added in 1.9)
-     */
+    /** Return changeable options built from settings and/or defaults */
     virtual QMap<QString, QVariant> defaultStyleSheetOptions() = 0;
 
     /** Generate stylesheet
      * @param opts generated default option values, or a changed copy of them
-     * @note added in 1.9
      */
     virtual void buildStyleSheet( const QMap<QString, QVariant>& opts ) = 0;
 
-    /** Save changed default option keys/values to user settings
-      * @note added in 1.9
-      */
+    /** Save changed default option keys/values to user settings */
     virtual void saveStyleSheetOptions( const QMap<QString, QVariant>& opts ) = 0;
 
-    /** Get reference font for initial qApp (may not be same as QgisApp)
-     * @note added in 1.9
-     */
+    /** Get reference font for initial qApp (may not be same as QgisApp) */
     virtual QFont defaultStyleSheetFont() = 0;
 
     /** Add action to the plugins menu */
@@ -227,72 +206,46 @@ class QgisInterface : QObject
     /** Remove action from the plugins menu */
     virtual void removePluginMenu( QString name, QAction* action ) = 0;
 
-    /** Add "add layer" action to layer menu
-     * @note added in 1.7
-     */
+    /** Add "add layer" action to layer menu */
     virtual void insertAddLayerAction( QAction *action ) = 0;
 
-    /** Remove "add layer" action from layer menu
-     * @note added in 1.7
-     */
+    /** Remove "add layer" action from layer menu */
     virtual void removeAddLayerAction( QAction *action ) = 0;
 
-    /** Add action to the Database menu
-     * @note added in 1.7
-     */
+    /** Add action to the Database menu */
     virtual void addPluginToDatabaseMenu( QString name, QAction* action ) = 0;
 
-    /** Remove action from the Database menu
-     * @note added in 1.7
-     */
+    /** Remove action from the Database menu */
     virtual void removePluginDatabaseMenu( QString name, QAction* action ) = 0;
 
-    /** Add action to the Raster menu
-     * @note added in 2.0
-     */
+    /** Add action to the Raster menu */
     virtual void addPluginToRasterMenu( QString name, QAction* action ) = 0;
 
-    /** Remove action from the Raster menu
-     * @note added in 2.0
-     */
+    /** Remove action from the Raster menu */
     virtual void removePluginRasterMenu( QString name, QAction* action ) = 0;
 
-    /** Add action to the Vector menu
-     * @note added in 2.0
-     */
+    /** Add action to the Vector menu */
     virtual void addPluginToVectorMenu( QString name, QAction* action ) = 0;
 
-    /** Remove action from the Vector menu
-     * @note added in 2.0
-     */
+    /** Remove action from the Vector menu */
     virtual void removePluginVectorMenu( QString name, QAction* action ) = 0;
 
-    /** Add action to the Web menu
-     * @note added in 2.0
-     */
+    /** Add action to the Web menu */
     virtual void addPluginToWebMenu( QString name, QAction* action ) = 0;
 
-    /** Remove action from the Web menu
-     * @note added in 2.0
-     */
+    /** Remove action from the Web menu */
     virtual void removePluginWebMenu( QString name, QAction* action ) = 0;
 
     /** Add a dock widget to the main window */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
 
-    /** Remove specified dock widget from main window (doesn't delete it).
-     * @note Added in 1.1
-     */
+    /** Remove specified dock widget from main window (doesn't delete it). */
     virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
 
-    /** open layer properties dialog
-     \note added in 1.5
-     */
+    /** open layer properties dialog */
     virtual void showLayerProperties( QgsMapLayer *l ) = 0;
 
-    /** open attribute table dialog
-     \note added in 1.7
-     */
+    /** open attribute table dialog */
     virtual void showAttributeTable( QgsVectorLayer *l ) = 0;
 
     /** Add window to Window menu. The action title is the window title
@@ -303,14 +256,10 @@ class QgisInterface : QObject
      * windows which are hidden rather than deleted when closed. */
     virtual void removeWindow( QAction *action ) = 0;
 
-    /** Register action to the shortcuts manager so its shortcut can be changed in GUI
-      \note added in 1.2
-    */
+    /** Register action to the shortcuts manager so its shortcut can be changed in GUI */
     virtual bool registerMainWindowAction( QAction* action, QString defaultShortcut ) = 0;
 
-    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded)
-      \note added in 1.2
-    */
+    /** Unregister a previously registered action. (e.g. when plugin is going to be unloaded) */
     virtual bool unregisterMainWindowAction( QAction* action ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
@@ -334,23 +283,14 @@ class QgisInterface : QObject
     virtual QMenu *editMenu() = 0;
     virtual QMenu *viewMenu() = 0;
     virtual QMenu *layerMenu() = 0;
-    /** \note added in 2.0
-    */
     virtual QMenu *newLayerMenu() = 0;
-    /** \note added in 2.5
-    */
+    /** @note added in 2.5 */
     virtual QMenu *addLayerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
     virtual QMenu *rasterMenu() = 0;
-    /** \note added in 1.7
-    */
     virtual QMenu *databaseMenu() = 0;
-    /** \note added in 2.0
-    */
     virtual QMenu *vectorMenu() = 0;
-    /** \note added in 2.0
-    */
     virtual QMenu *webMenu() = 0;
     virtual QMenu *firstRightStandardMenu() = 0;
     virtual QMenu *windowMenu() = 0;
@@ -361,21 +301,13 @@ class QgisInterface : QObject
     virtual QToolBar *layerToolBar() = 0;
     virtual QToolBar *mapNavToolToolBar() = 0;
     virtual QToolBar *digitizeToolBar() = 0;
-    virtual QToolBar *advancedDigitizeToolBar() = 0; // added in v1.5
+    virtual QToolBar *advancedDigitizeToolBar() = 0;
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
-    /** \note added in 1.7
-    */
     virtual QToolBar *rasterToolBar() = 0;
-    /** \note added in 2.0
-    */
     virtual QToolBar *vectorToolBar() = 0;
-    /** \note added in 2.0
-    */
     virtual QToolBar *databaseToolBar() = 0;
-    /** \note added in 2.0
-    */
     virtual QToolBar *webToolBar() = 0;
 
     // Project menu actions
@@ -461,34 +393,23 @@ class QgisInterface : QObject
     virtual QAction *actionAddRasterLayer() = 0;
     virtual QAction *actionAddPgLayer() = 0;
     virtual QAction *actionAddWmsLayer() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionCopyLayerStyle() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionOpenFieldCalculator() = 0;
     virtual QAction *actionToggleEditing() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionSaveActiveLayerEdits() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionAllEdits() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionSaveEdits() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionSaveAllEdits() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionRollbackEdits() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionRollbackAllEdits() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionCancelEdits() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionCancelAllEdits() = 0;
     virtual QAction *actionLayerSaveAs() = 0;
     /** @deprecated in 2.4 - returns null pointer */
     virtual QAction *actionLayerSelectionSaveAs() = 0 /Deprecated/;
     virtual QAction *actionRemoveLayer() = 0;
-    /** @note added in 1.9 */
     virtual QAction *actionDuplicateLayer() = 0;
     virtual QAction *actionLayerProperties() = 0;
     virtual QAction *actionAddToOverview() = 0;
@@ -521,7 +442,6 @@ class QgisInterface : QObject
      * @param f feature to show/modify
      * @param updateFeatureOnly only update the feature update (don't change any attributes of the layer) [UNUSED]
      * @param showModal if true, will wait for the dialog to be executed (only shown otherwise)
-     * @note added in 1.6
      */
     virtual bool openFeatureForm( QgsVectorLayer *l, QgsFeature &f, bool updateFeatureOnly = false, bool showModal = true ) = 0;
 
@@ -559,12 +479,10 @@ class QgisInterface : QObject
 
     /** Return vector layers in edit mode
      * @param modified whether to return only layers that have been modified
-     * @returns list of layers in legend order, or empty list
-     * @note added in 1.9 */
+     * @returns list of layers in legend order, or empty list */
     virtual QList<QgsMapLayer *> editableLayers( bool modified = false ) const = 0;
 
-    /** Get timeout for timed messages: default of 5 seconds
-     * @note added in 1.9 */
+    /** Get timeout for timed messages: default of 5 seconds */
     virtual int messageTimeout() = 0;
 
   signals:
@@ -575,18 +493,15 @@ class QgisInterface : QObject
 
     /**
      * This signal is emitted when a new composer instance has been created
-     * @note added in 1.4
      */
     void composerAdded( QgsComposerView* v );
 
     /**
      * This signal is emitted before a new composer instance is going to be removed
-     * @note added in 1.4
      */
     void composerWillBeRemoved( QgsComposerView* v );
     /**
      * This signal is emitted when the initialization is complete
-     * @note added in 1.6
      */
     void initializationCompleted();
     /** emitted when a project file is successfully read
@@ -594,8 +509,6 @@ class QgisInterface : QObject
         This is useful for plug-ins that store properties with project files.  A
         plug-in can connect to this signal.  When it is emitted, the plug-in
         knows to then check the project properties for any relevant state.
-
-        Added in 1.6
      */
     void projectRead();
     /** emitted when starting an entirely new project
@@ -605,8 +518,12 @@ class QgisInterface : QObject
         overloaded to be used in the case of new projects instead.  However,
         it's probably more semantically correct to have an entirely separate
         signal for when this happens.
-
-        Added in 1.6
       */
     void newProjectCreated();
+
+    /**This signal is emitted when a layer has been saved using save as
+       @note
+       added in version 2.7
+    */
+    void layerSavedAs( QgsMapLayer* l, QString path );
 };

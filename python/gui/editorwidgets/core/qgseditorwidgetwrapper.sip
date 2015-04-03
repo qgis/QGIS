@@ -65,11 +65,28 @@ class QgsEditorWidgetWrapper : QObject
     QgsField field();
 
     /**
+     * Access the default value of the field.
+     *
+     * @return the default value of the field
+     *
+     * @see layer()
+     */
+    QVariant defaultValue();
+
+    /**
      * Will return a wrapper for a given widget
      * @param widget The widget which was created by a wrapper
      * @return The wrapper for the widget or NULL
      */
     static QgsEditorWidgetWrapper* fromWidget( QWidget* widget );
+
+    /**
+     * Is used to enable or disable the edit functionality of the managed widget.
+     * By default this will enable or disable the whole widget
+     *
+     * @param enabled  Enable or Disable?
+     */
+    void setEnabled( bool enabled );
 
   protected:
     virtual QWidget* createWidget( QWidget* parent ) = 0;
@@ -101,8 +118,6 @@ class QgsEditorWidgetWrapper : QObject
      * @param value The new value of the attribute
      */
     virtual void setValue( const QVariant& value ) = 0;
-
-    virtual void setEnabled( bool enabled );
 
   protected slots:
     /**

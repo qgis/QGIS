@@ -113,7 +113,6 @@ namespace pal
       unsigned long arrangementFlags;
       LabelMode mode;
       bool mergeLines;
-      double repeatDistance;
 
       UpsideDownLabels upsidedownLabels;
 
@@ -290,8 +289,8 @@ namespace pal
       void setMergeConnectedLines( bool m ) { mergeLines = m; }
       bool getMergeConnectedLines() const { return mergeLines; }
 
-      void setRepeatDistance( double distance ) { repeatDistance = distance; }
-      double getRepeatDistance() const { return repeatDistance; }
+      // void setRepeatDistance( double distance ) { repeatDistance = distance; }
+      // double getRepeatDistance() const { return repeatDistance; }
 
       void setUpsidedownLabels( UpsideDownLabels ud ) { upsidedownLabels = ud; }
       UpsideDownLabels getUpsidedownLabels() const { return upsidedownLabels; }

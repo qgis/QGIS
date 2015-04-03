@@ -15,7 +15,10 @@ class QgsComposerHtml: QgsComposerMultiFrame
     };
 
     QgsComposerHtml( QgsComposition* c /TransferThis/, bool createUndoCommands );
+
+    //should be private - fix for QGIS 3.0
     QgsComposerHtml();
+
     ~QgsComposerHtml();
 
     /**Sets the source mode for item's HTML content.
@@ -183,14 +186,15 @@ class QgsComposerHtml: QgsComposerMultiFrame
   public slots:
 
     /**Reloads the html source from the url and redraws the item.
+     * @param useCache set to true to use a cached copy of remote html
+     * content
      * @see setUrl
      * @see url
      */
-    void loadHtml();
+    void loadHtml( const bool useCache = false );
 
     /**Recalculates the frame sizes for the current viewport dimensions*/
     void recalculateFrameSizes();
-
     void refreshExpressionContext();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );

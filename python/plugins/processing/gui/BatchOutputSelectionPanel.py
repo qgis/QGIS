@@ -25,8 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4 import QtGui, QtCore
+import os
+
+from PyQt4.QtGui import QWidget, QPushButton, QLineEdit, QHBoxLayout, QSizePolicy, QFileDialog
+from PyQt4.QtCore import QSettings
+
 from processing.gui.AutofillDialog import AutofillDialog
 from processing.core.parameters import ParameterMultipleInput
 from processing.core.parameters import ParameterRaster
@@ -35,38 +38,49 @@ from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterBoolean
 from processing.core.parameters import ParameterSelection
 from processing.core.parameters import ParameterFixedTable
+from processing.core.outputs import OutputDirectory
 
 
-class BatchOutputSelectionPanel(QtGui.QWidget):
+class BatchOutputSelectionPanel(QWidget):
 
-    def __init__(self, output, alg, row, col, batchDialog):
+    def __init__(self, output, alg, row, col, panel):
         super(BatchOutputSelectionPanel, self).__init__(None)
         self.alg = alg
         self.row = row
         self.col = col
         self.output = output
-        self.batchDialog = batchDialog
-        self.table = batchDialog.table
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
+        self.panel = panel
+        self.table = self.panel.tblParameters
+        self.horizontalLayout = QHBoxLayout(self)
         self.horizontalLayout.setSpacing(2)
         self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QLineEdit()
+        self.text = QLineEdit()
         self.text.setText('')
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
+        self.text.setSizePolicy(QSizePolicy.Expanding,
+                                QSizePolicy.Expanding)
         self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
+        self.pushButton = QPushButton()
         self.pushButton.setText('...')
         self.pushButton.clicked.connect(self.showSelectionDialog)
         self.horizontalLayout.addWidget(self.pushButton)
         self.setLayout(self.horizontalLayout)
 
     def showSelectionDialog(self):
+        if isinstance(self.output, OutputDirectory):
+            self.selectDirectory()
+            return
+
         filefilter = self.output.getFileFilter(self.alg)
-        filename = QtGui.QFileDialog.getSaveFileName(self, self.tr('Save file'), '',
+        settings = QSettings()
+        if settings.contains('/Processing/LastBatchOutputPath'):
+            path = unicode(settings.value('/Processing/LastBatchOutputPath'))
+        else:
+            path = ''
+        filename = QFileDialog.getSaveFileName(self, self.tr('Save file'), path,
                 filefilter)
         if filename:
             filename = unicode(filename)
+            settings.setValue('/Processing/LastBatchOutputPath', os.path.dirname(filename))
             dlg = AutofillDialog(self.alg)
             dlg.exec_()
             if dlg.mode is not None:
@@ -107,6 +121,21 @@ class BatchOutputSelectionPanel(QtGui.QWidget):
                                     self.col).setValue(name)
                 except:
                     pass
+
+    def selectDirectory(self):
+
+        settings = QSettings()
+        if settings.contains('/Processing/LastBatchOutputPath'):
+            lastDir = unicode(settings.value('/Processing/LastBatchOutputPath'))
+        else:
+            lastDir = ''
+
+        dirName = QFileDialog.getExistingDirectory(self,
+            self.tr('Select directory'), lastDir, QFileDialog.ShowDirsOnly)
+
+        if dirName:
+            self.table.cellWidget(self.row, self.col).setValue(dirName)
+            settings.setValue('/Processing/LastBatchOutputPath', dirName)
 
     def setValue(self, text):
         return self.text.setText(text)

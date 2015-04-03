@@ -27,17 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
-from qgis.core import *
-
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
-from processing.tools.system import *
+from processing.tools.system import isWindows
 
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -65,7 +60,8 @@ FORMATS = [
     'ODS',
     'XLSX',
     'PDF',
-    ]
+]
+
 EXTS = [
     '.shp',
     '.geojson',
@@ -89,7 +85,7 @@ EXTS = [
     '.ods',
     '.xlsx',
     '.pdf',
-    ]
+]
 
 
 class Ogr2Ogr(OgrAlgorithm):
@@ -103,18 +99,18 @@ class Ogr2Ogr(OgrAlgorithm):
         self.name = 'Convert format'
         self.group = '[OGR] Conversion'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
         self.addParameter(ParameterSelection(self.FORMAT,
-                          'Destination Format', FORMATS))
-        self.addParameter(ParameterString(self.OPTIONS, 'Creation Options',
-                          '', optional=True))
+            self.tr('Destination Format'), FORMATS))
+        self.addParameter(ParameterString(self.OPTIONS,
+            self.tr('Creation options'), '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = self.ogrConnectionString(inLayer)
+        ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
 
         output = self.getOutputFromName(self.OUTPUT_LAYER)
         outFile = output.value
@@ -140,6 +136,7 @@ class Ogr2Ogr(OgrAlgorithm):
 
         arguments.append(output)
         arguments.append(ogrLayer)
+        arguments.append(self.ogrLayerName(inLayer))
 
         commands = []
         if isWindows():
@@ -149,4 +146,3 @@ class Ogr2Ogr(OgrAlgorithm):
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
         GdalUtils.runGdal(commands, progress)
-

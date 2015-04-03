@@ -82,6 +82,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     QgsField field();
 
     /**
+     * Access the default value of the field.
+     *
+     * @return the default value of the field
+     *
+     * @see layer()
+     */
+    QVariant defaultValue();
+
+    /**
      * Will return a wrapper for a given widget
      * @param widget The widget which was created by a wrapper
      * @return The wrapper for the widget or NULL
@@ -94,7 +103,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @param enabled  Enable or Disable?
      */
-    void setEnabled( bool enabled );
+    void setEnabled( bool enabled ) override;
 
   signals:
     /**
@@ -112,7 +121,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * @param feature The new feature
      */
-    void setFeature( const QgsFeature& feature );
+    void setFeature( const QgsFeature& feature ) override;
 
     /**
      * Is called, when the value of the widget needs to be changed. Update the widget representation

@@ -63,7 +63,7 @@ class QgsGrassTools: public QDialog, private Ui::QgsGrassToolsBase
     void close( void );
 
     //! Close event
-    void closeEvent( QCloseEvent *e );
+    void closeEvent( QCloseEvent *e ) override;
 
     //! Restore window position
     void restorePosition();

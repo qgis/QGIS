@@ -26,7 +26,8 @@
 #include <QTextStream>
 
 QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTextFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
-    : QgsAbstractFeatureIteratorFromSource( source, ownSource, request )
+    : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
+    , mTestGeometryExact( false )
 {
 
   // Determine mode to use based on request...
@@ -446,7 +447,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature& feature, int f
 
 QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p )
     : mGeomRep( p->mGeomRep )
-    , mSubsetExpression( p->mSubsetExpression )
+    , mSubsetExpression( p->mSubsetExpression ? new QgsExpression(p->mSubsetExpression->expression()) : 0 )
     , mExtent( p->mExtent )
     , mUseSpatialIndex( p->mUseSpatialIndex )
     , mSpatialIndex( p->mSpatialIndex ? new QgsSpatialIndex( *p->mSpatialIndex ) : 0 )
@@ -471,6 +472,7 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
 {
+  delete mSubsetExpression;
   delete mSpatialIndex;
   delete mFile;
 }

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>293</height>
+    <width>345</width>
+    <height>176</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,46 +23,54 @@
    <property name="horizontalSpacing">
     <number>28</number>
    </property>
-   <property name="leftMargin">
+   <property name="margin">
     <number>1</number>
    </property>
-   <property name="topMargin">
-    <number>1</number>
-   </property>
-   <property name="rightMargin">
-    <number>1</number>
-   </property>
-   <property name="bottomMargin">
-    <number>1</number>
-   </property>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QLabel" name="mAngleLabel">
      <property name="text">
       <string>Angle</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QDoubleSpinBox" name="mAngleSpinBox">
-     <property name="maximum">
-      <double>360.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-    </widget>
+   <item row="1" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="mAngleSpinBox">
+       <property name="suffix">
+        <string> °</string>
+       </property>
+       <property name="maximum">
+        <double>360.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.500000000000000</double>
+       </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mAngleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item row="1" column="0">
+   <item row="3" column="0">
     <widget class="QLabel" name="mDistanceLabel">
      <property name="text">
       <string>Distance</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="3" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QDoubleSpinBox" name="mDistanceSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mDistanceSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -78,24 +86,41 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true"/>
+      <widget class="QgsDataDefinedButton" name="mDistanceDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="mOffsetLabel">
      <property name="text">
       <string>Offset</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="4" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
-      <widget class="QDoubleSpinBox" name="mOffsetSpinBox">
+      <widget class="QgsDoubleSpinBox" name="mOffsetSpinBox">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -114,6 +139,9 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -121,27 +149,24 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

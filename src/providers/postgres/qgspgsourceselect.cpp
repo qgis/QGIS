@@ -157,6 +157,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool 
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
     , mColumnTypeThread( 0 )
+    , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 

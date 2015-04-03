@@ -1,0 +1,9 @@
+D-Infinity Decaying Accumulation
+dinfdecayaccum
+Specialized Grid Analysis tools
+ParameterRaster|-ang|D-Infinity Flow Direction Grid|False
+ParameterRaster|-dm|Decay Multiplier Grid|False
+ParameterRaster|-wg|Weight Grid|True
+ParameterVector|-o|Outlets Shapefile|0|True
+ParameterBoolean|-nc|Check for edge contamination|True
+OutputRaster|-dsca|Decayed Specific Catchment Area Grid

@@ -28,8 +28,10 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgspainteffect.h"
 
 #include <QSettings>
+#include <QPicture>
 
 // TODO:
 // - passing of cache to QgsVectorLayer
@@ -117,6 +119,13 @@ bool QgsVectorLayerRenderer::render()
     return false;
   }
 
+  bool usingEffect = false;
+  if ( mRendererV2->paintEffect() && mRendererV2->paintEffect()->enabled() )
+  {
+    usingEffect = true;
+    mRendererV2->paintEffect()->begin( mContext );
+  }
+
   // Per feature blending mode
   if ( mContext.useAdvancedEffects() && mFeatureBlendMode != QPainter::CompositionMode_SourceOver )
   {
@@ -127,8 +136,11 @@ bool QgsVectorLayerRenderer::render()
 
   mRendererV2->startRender( mContext, mFields );
 
+  QgsRectangle requestExtent = mContext.extent();
+  mRendererV2->modifyRequestExtent( requestExtent, mContext );
+
   QgsFeatureRequest featureRequest = QgsFeatureRequest()
-                                     .setFilterRect( mContext.extent() )
+                                     .setFilterRect( requestExtent )
                                      .setSubsetOfAttributes( mAttrNames, mFields );
 
   // enable the simplification of the geometries (Using the current map2pixel context) before send it to renderer engine.
@@ -211,6 +223,11 @@ bool QgsVectorLayerRenderer::render()
     drawRendererV2Levels( fit );
   else
     drawRendererV2( fit );
+
+  if ( usingEffect )
+  {
+    mRendererV2->paintEffect()->end( mContext );
+  }
 
   //apply layer transparency for vector layers
   if ( mContext.useAdvancedEffects() && mLayerTransparency != 0 )
@@ -338,7 +355,7 @@ void QgsVectorLayerRenderer::drawRendererV2Levels( QgsFeatureIterator& fit )
       mCache->cacheGeometry( fet.id(), *fet.geometry() );
     }
 
-    if ( sym && mContext.labelingEngine() )
+    if ( mContext.labelingEngine() )
     {
       if ( mLabeling )
       {

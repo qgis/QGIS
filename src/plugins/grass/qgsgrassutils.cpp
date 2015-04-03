@@ -65,7 +65,15 @@ bool QgsGrassUtils::itemExists( QString element, QString item )
   return fi.exists();
 }
 
-QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent ) : QObject(), mParent( parent )
+QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
+    : QObject()
+    , mDialog( 0 )
+    , mLineEdit( 0 )
+    , mLabel( 0 )
+    , mErrorLabel( 0 )
+    , mOkButton( 0 )
+    , mCancelButton( 0 )
+    , mParent( parent )
 {
 }
 

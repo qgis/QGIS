@@ -101,7 +101,7 @@ namespace pal
     private:
 
       /**
-       * How many layers are lebelled ?
+       * How many layers are labelled ?
        */
       int nbLabelledLayers;
 

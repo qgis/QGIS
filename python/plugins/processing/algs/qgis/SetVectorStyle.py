@@ -26,8 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import *
-from qgis.core import *
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -46,11 +44,11 @@ class SetVectorStyle(GeoAlgorithm):
         #self.allowOnlyOpenedLayers = True
         self.name = 'Set style for vector layer'
         self.group = 'Vector general tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Vector layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Vector layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterFile(self.STYLE,
-                          'Style file', False, False, 'qml'))
-        self.addOutput(OutputVector(self.OUTPUT, 'Styled layer', True))
+            self.tr('Style file'), False, False, 'qml'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Styled layer'), True))
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)

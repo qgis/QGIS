@@ -77,9 +77,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
+    , mQSettingsAction( 0 )
+    , mQShortestPathDock( 0 )
 {
-
-  mQShortestPathDock = NULL;
   mSettings = new RgLineVectorLayerSettings();
   mTimeUnitName = "h";
   mDistanceUnitName = "km";

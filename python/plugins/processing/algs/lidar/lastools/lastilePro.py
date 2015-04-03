@@ -43,20 +43,28 @@ class lastilePro(LAStoolsAlgorithm):
         self.group = "LAStools Production"
         self.addParametersPointInputFolderGUI()
         self.addParametersFilesAreFlightlinesGUI()
-        self.addParameter(ParameterNumber(lastilePro.TILE_SIZE, "tile size (side length of square tile)",  None, None, 1000.0))
-        self.addParameter(ParameterNumber(lastilePro.BUFFER, "buffer around each tile (avoids edge artifacts)",  None, None, 25.0))
-        self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS, "more than 2000 tiles", False))
+        self.addParametersApplyFileSourceIdGUI()
+        self.addParameter(ParameterNumber(lastilePro.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+            None, None, 1000.0))
+        self.addParameter(ParameterNumber(lastilePro.BUFFER,
+            self.tr("buffer around each tile (avoids edge artifacts)"),
+            None, None, 25.0))
+        self.addParameter(ParameterBoolean(lastilePro.EXTRA_PASS,
+            self.tr("more than 2000 tiles"), False))
         self.addParametersOutputDirectoryGUI()
-        self.addParameter(ParameterString(lastilePro.BASE_NAME, "tile base name (using sydney.laz creates sydney_274000_4714000.laz)"))
+        self.addParameter(ParameterString(lastilePro.BASE_NAME,
+            self.tr("tile base name (using sydney.laz creates sydney_274000_4714000.laz)")))
         self.addParametersPointOutputFormatGUI()
         self.addParametersAdditionalGUI()
         self.addParametersVerboseGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputFolderCommands(commands)
         self.addParametersFilesAreFlightlinesCommands(commands)
+        self.addParametersApplyFileSourceIdCommands(commands)
         tile_size = self.getParameterValue(lastilePro.TILE_SIZE)
         commands.append("-tile_size")
         commands.append(str(tile_size))
@@ -68,7 +76,7 @@ class lastilePro(LAStoolsAlgorithm):
             commands.append("-extra_pass")
         self.addParametersOutputDirectoryCommands(commands)
         base_name = self.getParameterValue(lastilePro.BASE_NAME)
-        if base_name != None:
+        if base_name is not None:
             commands.append("-o")
             commands.append(base_name)
         self.addParametersPointOutputFormatCommands(commands)

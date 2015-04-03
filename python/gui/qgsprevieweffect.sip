@@ -18,7 +18,7 @@ class QgsPreviewEffect : QGraphicsEffect
       PreviewDeuteranope
     };
 
-    QgsPreviewEffect( QObject* parent );
+    QgsPreviewEffect( QObject* parent /TransferThis/ );
     ~QgsPreviewEffect();
 
     /**Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.

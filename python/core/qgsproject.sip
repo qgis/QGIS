@@ -132,36 +132,6 @@ class QgsProject : QObject
     bool write();
     //@}
 
-
-    /// syntactic sugar for property lists
-    // DEPRECATED typedef QPair< QString, QVariant >  PropertyValue;
-    // DEPRECATED typedef QValueList< PropertyValue > Properties;
-
-    /** extra properties, typically added by plug-ins
-
-       This allows for extra properties to be associated with projects.  Think
-       of it as a registry bound to a project.
-
-       Properties are arbitrary values keyed by a name and associated with a
-       scope.  The scope would presumably refer to your plug-in.
-       E.g., "openmodeller".
-
-       @note
-
-       E.g., open modeller might use:
-
-       <code>"QgsProject::instance()->properties("openmodeller")["foo"]</code>.
-
-       @todo "properties" is, overall, a good name; but that might imply that
-       the qgis specific state properites are different since they aren't
-       accessible here.  Actually, what if we make "qgis" yet another
-       scope that stores its state in the properties list?  E.g.,
-       QgsProject::instance()->properties()["qgis"]?
-
-
-     */
-    // DEPRECATED Properties & properties( QString const & scope );
-
     /**
        removes all project properties
 
@@ -229,21 +199,17 @@ class QgsProject : QObject
     */
     void dumpProperties() const;
 
-    /** prepare a filename to save it to the project file
-      @note added in 1.3 */
+    /** prepare a filename to save it to the project file */
     QString writePath( QString filename, QString relativeBasePath = QString::null ) const;
 
-    /** turn filename read from the project file to an absolute path
-      @note added in 1.3 */
+    /** turn filename read from the project file to an absolute path */
     QString readPath( QString filename ) const;
 
-    /** Return error message from previous read/write
-      @note added in 1.4 */
+    /** Return error message from previous read/write */
     QString error() const;
 
     /** Change handler for missing layers.
-      Deletes old handler and takes ownership of the new one.
-      @note added in 1.4 */
+      Deletes old handler and takes ownership of the new one. */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler /Transfer/ );
 
     /** Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
@@ -251,38 +217,33 @@ class QgsProject : QObject
 
     /** Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
-      @note: added in version 1.8
      */
     /*
     bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
     */
+
     /** Create layer group instance defined in an arbitrary project file.
      * @note: added in version 2.4
      */
-    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath );
+    QgsLayerTreeGroup* createEmbeddedGroup( const QString& groupName, const QString& projectFilePath, const QStringList &invisibleLayers );
 
-    /** Convenience function to set snap settings per layer
-      @note added in version 1.9*/
+    /** Convenience function to set snap settings per layer */
     void setSnapSettingsForLayer( const QString& layerId, bool enabled, QgsSnapper::SnappingType type, QgsTolerance::UnitType unit, double tolerance,
                                   bool avoidIntersection );
 
-    /** Convenience function to query snap settings of a layer
-      @note added in version 1.9*/
+    /** Convenience function to query snap settings of a layer */
     bool snapSettingsForLayer( const QString& layerId, bool& enabled /Out/, QgsSnapper::SnappingType& type /Out/, QgsTolerance::UnitType& units /Out/, double& tolerance /Out/,
                                bool& avoidIntersection /Out/ ) const;
 
-    /** Convenience function to set topological editing
-        @note added in version 1.9*/
+    /** Convenience function to set topological editing */
     void setTopologicalEditing( bool enabled );
 
-    /** Convenience function to query topological editing status
-      @note added in version 1.9*/
+    /** Convenience function to query topological editing status */
     bool topologicalEditing() const;
 
     /** Return project's home path
-      @return home path of project (or QString::null if not set)
-      @note added in version 2.0 */
+      @return home path of project (or QString::null if not set) */
     QString homePath() const;
 
     QgsRelationManager* relationManager() const;
@@ -299,12 +260,10 @@ class QgsProject : QObject
 
   protected:
 
-    /** Set error message from read/write operation
-      @note added in 1.4 */
+    /** Set error message from read/write operation */
     void setError( QString errorMessage );
 
-    /** Clear error message
-      @note added in 1.4 */
+    /** Clear error message */
     void clearError();
 
     //Creates layer and adds it to maplayer registry
@@ -316,9 +275,6 @@ class QgsProject : QObject
 
     //! @note not available in python bindings
     // void loadEmbeddedNodes( QgsLayerTreeGroup* group );
-
-    //! @note not available in python bindings
-    // void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup* group );
 
   signals:
     //! emitted when project is being read
@@ -369,8 +325,7 @@ class QgsProject : QObject
 }; // QgsProject
 
 
-/** Interface for classes that handle missing layer files when reading project file.
-  @note added in 1.4 */
+/** Interface for classes that handle missing layer files when reading project file. */
 class QgsProjectBadLayerHandler
 {
 %TypeHeaderCode
@@ -383,8 +338,7 @@ class QgsProjectBadLayerHandler
 };
 
 
-/** Default bad layer handler which ignores any missing layers.
-  @note added in 1.4 */
+/** Default bad layer handler which ignores any missing layers. */
 class QgsProjectBadLayerDefaultHandler : QgsProjectBadLayerHandler
 {
 %TypeHeaderCode

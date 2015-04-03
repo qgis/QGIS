@@ -26,9 +26,7 @@ class QgsComposerArrow: QgsComposerItem
 
     ~QgsComposerArrow();
 
-    /**Return composer item type.
-     * @note added in QGIS 1.7
-     */
+    /** Return composer item type. */
     virtual int type() const;
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */

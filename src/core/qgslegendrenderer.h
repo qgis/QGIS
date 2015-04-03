@@ -32,7 +32,7 @@ class QgsSymbolV2;
 
 /**
  * @brief The QgsLegendRenderer class handles automatic layout and rendering of legend.
- * The content is given by QgsLegendModel instance. Various layout properties can be configured
+ * The content is given by QgsLayerTreeModel instance. Various layout properties can be configured
  * within QgsLegendRenderer.
  *
  * All spacing and sizes are in millimeters.
@@ -73,6 +73,7 @@ class CORE_EXPORT QgsLegendRenderer
     class Nucleon
     {
       public:
+        Nucleon() : item( 0 ), labelXOffset( 0.0 ) {}
         QObject* item;
         // Symbol size size without any space around for symbol item
         QSizeF symbolSize;

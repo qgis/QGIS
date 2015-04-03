@@ -54,15 +54,6 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     Qt::PenCapStyle penCapStyle() const;
     void setPenCapStyle( Qt::PenCapStyle style );
 
-    double offset() const;
-    void setOffset( double offset );
-
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit offsetUnit() const;
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale);
-    const QgsMapUnitScale& offsetMapUnitScale() const;
-
     bool useCustomDashPattern() const;
     void setUseCustomDashPattern( bool b );
 
@@ -84,6 +75,7 @@ class QgsSimpleLineSymbolLayerV2 : QgsLineSymbolLayerV2
     Qt::PenStyle dxfPenStyle() const;
 
     double dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
+    double dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const;
     QColor dxfColor( const QgsSymbolV2RenderContext& context ) const;
 };
 
@@ -151,9 +143,6 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
     double interval() const;
     void setInterval( double interval );
 
-    double offset() const;
-    void setOffset( double offset );
-
     Placement placement() const;
     void setPlacement( Placement p );
 
@@ -211,12 +200,6 @@ class QgsMarkerLineSymbolLayerV2 : QgsLineSymbolLayerV2
 
     void setIntervalMapUnitScale( const QgsMapUnitScale& scale );
     const QgsMapUnitScale& intervalMapUnitScale() const;
-
-    void setOffsetUnit( QgsSymbolV2::OutputUnit unit );
-    QgsSymbolV2::OutputUnit offsetUnit() const;
-
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale );
-    const QgsMapUnitScale& offsetMapUnitScale() const;
 
     void setOutputUnit( QgsSymbolV2::OutputUnit unit );
     QgsSymbolV2::OutputUnit outputUnit() const;

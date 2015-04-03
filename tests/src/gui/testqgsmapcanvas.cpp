@@ -1,13 +1,28 @@
 
-#include <QtTest>
+#include <QtTest/QtTest>
 
 #include <qgsapplication.h>
 #include <qgsmapcanvas.h>
 #include <qgsmaprenderer.h>
 
+namespace QTest
+{
+  template<>
+  char* toString( const QgsRectangle& r )
+  {
+    QByteArray ba = r.toString().toLocal8Bit();
+    return qstrdup( ba.data() );
+  }
+}
+
 class TestQgsMapCanvas : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsMapCanvas()
+        : mCanvas( 0 )
+    {}
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -91,4 +106,4 @@ void TestQgsMapCanvas::testMapRendererInteraction()
 
 
 QTEST_MAIN( TestQgsMapCanvas )
-#include "moc_testqgsmapcanvas.cxx"
+#include "testqgsmapcanvas.moc"

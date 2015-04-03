@@ -20,7 +20,6 @@
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
 
-
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )
     , mPainter( painter )
@@ -298,7 +297,7 @@ void QgsMapRendererJob::drawOldLabeling( const QgsMapSettings& settings, QgsRend
 
     if ( settings.hasCrsTransformEnabled() )
     {
-      ct = settings.layerTransfrom( ml );
+      ct = settings.layerTransform( ml );
       if ( ct )
         reprojectToLayerExtent( ct, ml->crs().geographicFlag(), r1, r2 );
     }

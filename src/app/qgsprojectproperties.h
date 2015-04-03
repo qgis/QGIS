@@ -76,25 +76,17 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void showProjectionsTab();
 
     /*! Let the user add a scale to the list of project scales
-     * used in scale combobox instead of global ones
-     * @note added in QGIS 2.0
-     */
+     * used in scale combobox instead of global ones */
     void on_pbnAddScale_clicked();
 
     /*! Let the user remove a scale from the list of project scales
-     * used in scale combobox instead of global ones
-     * @note added in QGIS 2.0
-     */
+     * used in scale combobox instead of global ones */
     void on_pbnRemoveScale_clicked();
 
-    /** Let the user load scales from file
-     * @note added in QGIS 2.0
-     */
+    /** Let the user load scales from file */
     void on_pbnImportScales_clicked();
 
-    /** Let the user load scales from file
-     * @note added in QGIS 2.0
-     */
+    /** Let the user load scales from file */
     void on_pbnExportScales_clicked();
 
     /*!
@@ -155,9 +147,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void setMapUnitsToCurrentProjection();
 
     /* Update ComboBox accorindg to the selected new index
-     * Also sets the new selected Ellipsoid.
-     * @note added in 2.0
-     */
+     * Also sets the new selected Ellipsoid. */
     void updateEllipsoidUI( int newIndex );
 
     //! sets the right ellipsoid for measuring (from settings)

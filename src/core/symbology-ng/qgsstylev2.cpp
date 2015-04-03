@@ -405,6 +405,12 @@ bool QgsStyleV2::save( QString filename )
 
 bool QgsStyleV2::renameSymbol( QString oldName, QString newName )
 {
+  if ( mSymbols.contains( newName ) )
+  {
+    QgsDebugMsg( "Symbol of new name already exists" );
+    return false;
+  }
+
   QgsSymbolV2 *symbol = mSymbols.take( oldName );
   if ( !symbol )
     return false;
@@ -431,6 +437,12 @@ bool QgsStyleV2::renameSymbol( QString oldName, QString newName )
 
 bool QgsStyleV2::renameColorRamp( QString oldName, QString newName )
 {
+  if ( mColorRamps.contains( newName ) )
+  {
+    QgsDebugMsg( "Color ramp of new name already exists." );
+    return false;
+  }
+
   QgsVectorColorRampV2 *ramp = mColorRamps.take( oldName );
   if ( !ramp )
     return false;
@@ -608,7 +620,7 @@ int QgsStyleV2::addGroup( QString groupName, int parentid )
   sqlite3_stmt *ppStmt;
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   if ( nErr == SQLITE_OK )
-    sqlite3_step( ppStmt );
+    ( void )sqlite3_step( ppStmt );
 
   sqlite3_finalize( ppStmt );
 
@@ -624,7 +636,7 @@ int QgsStyleV2::addTag( QString tagname )
   char *query = sqlite3_mprintf( "INSERT INTO tag VALUES (NULL, '%q')", tagname.toUtf8().constData() );
   int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
   if ( nErr == SQLITE_OK )
-    sqlite3_step( ppStmt );
+    ( void )sqlite3_step( ppStmt );
   sqlite3_finalize( ppStmt );
 
   return ( int )sqlite3_last_insert_rowid( mCurrentDB );

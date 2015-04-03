@@ -28,20 +28,10 @@ __revision__ = '$Format:%H$'
 
 import math
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt
+from PyQt4.QtGui import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QComboBox, QCheckBox, QDialogButtonBox, QMessageBox
 
-from processing.core.parameters import Parameter
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterMultipleInput
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterFile
+from processing.core.parameters import Parameter, ParameterBoolean, ParameterRaster, ParameterTable, ParameterVector, ParameterMultipleInput, ParameterNumber, ParameterString, ParameterTableField, ParameterExtent, ParameterFile
 
 
 class ModelerParameterDefinitionDialog(QDialog):
@@ -70,7 +60,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         PARAMETER_TABLE,
         PARAMETER_TABLE_FIELD,
         PARAMETER_VECTOR,
-        ]
+    ]
 
     def __init__(self, alg, paramType=None, param=None):
         self.alg = alg
@@ -106,9 +96,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         if isinstance(self.param, Parameter):
             self.nameTextBox.setText(self.param.description)
 
-        if self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN \
-                or isinstance(self.param, ParameterBoolean):
+        if self.paramType == ModelerParameterDefinitionDialog.PARAMETER_BOOLEAN or \
+           isinstance(self.param, ParameterBoolean):
             self.state = QCheckBox()
             self.state.setText(self.tr('Checked'))
             self.state.setChecked(False)
@@ -116,9 +105,8 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.state.setChecked(True if self.param.value else False)
             self.horizontalLayout2.addWidget(self.state)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
-                or isinstance(self.param, ParameterTableField):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or \
+                isinstance(self.param, ParameterTableField):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Parent layer')))
             self.parentCombo = QComboBox()
             idx = 0
@@ -131,33 +119,30 @@ class ModelerParameterDefinitionDialog(QDialog):
                     idx += 1
             self.horizontalLayout2.addWidget(self.parentCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_RASTER \
-                or isinstance(self.param, ParameterRaster):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or \
+                isinstance(self.param, ParameterRaster):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Required')))
             self.yesNoCombo = QComboBox()
             self.yesNoCombo.addItem(self.tr('Yes'))
             self.yesNoCombo.addItem(self.tr('No'))
             if self.param is not None:
                 self.yesNoCombo.setCurrentIndex(
-                        (1 if self.param.optional else 0))
+                    1 if self.param.optional else 0)
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_TABLE \
-                or isinstance(self.param, ParameterTable):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE or \
+                isinstance(self.param, ParameterTable):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Required')))
             self.yesNoCombo = QComboBox()
             self.yesNoCombo.addItem(self.tr('Yes'))
             self.yesNoCombo.addItem(self.tr('No'))
             if self.param is not None:
                 self.yesNoCombo.setCurrentIndex(
-                        (1 if self.param.optional else 0))
+                    1 if self.param.optional else 0)
             self.horizontalLayout2.addWidget(self.yesNoCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_VECTOR \
-                or isinstance(self.param, ParameterVector):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or \
+                isinstance(self.param, ParameterVector):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Required')))
             self.yesNoCombo = QComboBox()
             self.yesNoCombo.addItem(self.tr('Yes'))
@@ -171,15 +156,13 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.shapetypeCombo.addItem(self.tr('Polygon'))
             if self.param is not None:
                 self.yesNoCombo.setCurrentIndex(
-                        (1 if self.param.optional else 0))
-                self.shapetypeCombo.setCurrentIndex(self.param.shapetype[0]
-                        + 1)
+                    1 if self.param.optional else 0)
+                self.shapetypeCombo.setCurrentIndex(self.param.shapetype[0] + 1)
             self.horizontalLayout3.addWidget(self.shapetypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE \
-                or isinstance(self.param, ParameterMultipleInput):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE or \
+                isinstance(self.param, ParameterMultipleInput):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Mandatory')))
             self.yesNoCombo = QComboBox()
             self.yesNoCombo.addItem(self.tr('Yes'))
@@ -195,14 +178,13 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.datatypeCombo.addItem(self.tr('Table'))
             if self.param is not None:
                 self.yesNoCombo.setCurrentIndex(
-                        (1 if self.param.optional else 0))
+                    1 if self.param.optional else 0)
                 self.datatypeCombo.setCurrentIndex(self.param.datatype + 1)
             self.horizontalLayout3.addWidget(self.datatypeCombo)
             self.verticalLayout.addLayout(self.horizontalLayout3)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_NUMBER \
-                or isinstance(self.param, ParameterNumber):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or \
+                isinstance(self.param, ParameterNumber):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Min/Max values')))
             self.minTextBox = QLineEdit()
             self.maxTextBox = QLineEdit()
@@ -222,25 +204,23 @@ class ModelerParameterDefinitionDialog(QDialog):
                 self.defaultTextBox.setText(str(default))
             self.horizontalLayout3.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayout3)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_STRING \
-                or isinstance(self.param, ParameterString):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or \
+                isinstance(self.param, ParameterString):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Default value')))
             self.defaultTextBox = QLineEdit()
             if self.param is not None:
                 self.defaultTextBox.setText(self.param.default)
             self.horizontalLayout2.addWidget(self.defaultTextBox)
             self.verticalLayout.addLayout(self.horizontalLayout2)
-        elif self.paramType == \
-                ModelerParameterDefinitionDialog.PARAMETER_FILE \
-                or isinstance(self.param, ParameterFile):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_FILE or \
+                isinstance(self.param, ParameterFile):
             self.horizontalLayout2.addWidget(QLabel(self.tr('Type')))
             self.fileFolderCombo = QComboBox()
             self.fileFolderCombo.addItem(self.tr('File'))
             self.fileFolderCombo.addItem(self.tr('Folder'))
             if self.param is not None:
                 self.fileFolderCombo.setCurrentIndex(
-                        (1 if self.param.isFolder else 0))
+                    1 if self.param.isFolder else 0)
             self.horizontalLayout2.addWidget(self.fileFolderCombo)
             self.verticalLayout.addLayout(self.horizontalLayout2)
 
@@ -275,40 +255,38 @@ class ModelerParameterDefinitionDialog(QDialog):
                 or isinstance(self.param, ParameterBoolean):
             self.param = ParameterBoolean(name, description,
                     self.state.isChecked())
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD \
-                or isinstance(self.param, ParameterTableField):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE_FIELD or \
+                isinstance(self.param, ParameterTableField):
             if self.parentCombo.currentIndex() < 0:
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
             parent = self.parentCombo.itemData(self.parentCombo.currentIndex())
             self.param = ParameterTableField(name, description, parent)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_RASTER \
-                or isinstance(self.param, ParameterRaster):
-            self.param = ParameterRaster(name, description,
-                    self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_TABLE \
-                or isinstance(self.param, ParameterTable):
-            self.param = ParameterTable(name, description,
-                    self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_VECTOR \
-                or isinstance(self.param, ParameterVector):
-            self.param = ParameterVector(name, description,
-                    [self.shapetypeCombo.currentIndex() - 1],
-                    self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE \
-                or isinstance(self.param, ParameterMultipleInput):
-            self.param = ParameterMultipleInput(name, description,
-                    self.datatypeCombo.currentIndex() - 1,
-                    self.yesNoCombo.currentIndex() == 1)
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_NUMBER \
-                or isinstance(self.param, ParameterNumber):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_RASTER or \
+                isinstance(self.param, ParameterRaster):
+            self.param = ParameterRaster(
+                name, description,
+                self.yesNoCombo.currentIndex() == 1)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_TABLE or \
+                isinstance(self.param, ParameterTable):
+            self.param = ParameterTable(
+                name, description,
+                self.yesNoCombo.currentIndex() == 1)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_VECTOR or \
+                isinstance(self.param, ParameterVector):
+            self.param = ParameterVector(
+                name, description,
+                [self.shapetypeCombo.currentIndex() - 1],
+                self.yesNoCombo.currentIndex() == 1)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_MULTIPLE or \
+                isinstance(self.param, ParameterMultipleInput):
+            self.param = ParameterMultipleInput(
+                name, description,
+                self.datatypeCombo.currentIndex() - 1,
+                self.yesNoCombo.currentIndex() == 1)
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_NUMBER or \
+                isinstance(self.param, ParameterNumber):
             try:
                 vmin = str(self.minTextBox.text()).strip()
                 if vmin == '':
@@ -326,18 +304,15 @@ class ModelerParameterDefinitionDialog(QDialog):
                 QMessageBox.warning(self, self.tr('Unable to define parameter'),
                                     self.tr('Wrong or missing parameter values'))
                 return
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_STRING \
-                or isinstance(self.param, ParameterString):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_STRING or \
+                isinstance(self.param, ParameterString):
             self.param = ParameterString(name, description,
                     unicode(self.defaultTextBox.text()))
-        elif self.paramType \
-                == ModelerParameterDefinitionDialog.PARAMETER_EXTENT \
-                or isinstance(self.param, ParameterExtent):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_EXTENT or \
+                isinstance(self.param, ParameterExtent):
             self.param = ParameterExtent(name, description)
-        elif self.paramType == \
-                ModelerParameterDefinitionDialog.PARAMETER_FILE \
-                or isinstance(self.param, ParameterFile):
+        elif self.paramType == ModelerParameterDefinitionDialog.PARAMETER_FILE or \
+                isinstance(self.param, ParameterFile):
             isFolder = self.fileFolderCombo.currentIndex() == 1
             self.param = ParameterFile(name, description, isFolder=isFolder)
         self.close()

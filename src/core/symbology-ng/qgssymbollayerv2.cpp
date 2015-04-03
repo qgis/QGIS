@@ -20,6 +20,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsdxfexport.h"
 #include "qgsgeometrysimplifier.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
 
 #include <QSize>
 #include <QPainter>
@@ -101,6 +103,13 @@ double QgsSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2Rende
   return 1.0;
 }
 
+double QgsSymbolLayerV2::dxfOffset( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
+{
+  Q_UNUSED( e );
+  Q_UNUSED( context );
+  return 0.0;
+}
+
 QColor QgsSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& context ) const
 {
   Q_UNUSED( context );
@@ -129,6 +138,29 @@ Qt::BrushStyle QgsSymbolLayerV2::dxfBrushStyle() const
   return Qt::NoBrush;
 }
 
+QgsPaintEffect *QgsSymbolLayerV2::paintEffect() const
+{
+  return mPaintEffect;
+}
+
+void QgsSymbolLayerV2::setPaintEffect( QgsPaintEffect *effect )
+{
+  delete mPaintEffect;
+  mPaintEffect = effect;
+}
+
+QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
+    : mType( type )
+    , mLocked( locked )
+    , mRenderingPass( 0 )
+    , mPaintEffect( 0 )
+{
+  QgsEffectStack* stack = new QgsEffectStack();
+  stack->appendEffect( new QgsDrawSourceEffect() );
+  mPaintEffect = stack;
+  mPaintEffect->setEnabled( false );
+}
+
 void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
 {
   if ( !fields )
@@ -148,6 +180,12 @@ void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale
       }
     }
   }
+}
+
+QgsSymbolLayerV2::~QgsSymbolLayerV2()
+{
+  removeDataDefinedProperties();
+  delete mPaintEffect;
 }
 
 QSet<QString> QgsSymbolLayerV2::usedAttributes() const
@@ -202,11 +240,21 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
   }
 }
 
+void QgsSymbolLayerV2::copyPaintEffect( QgsSymbolLayerV2 *destLayer ) const
+{
+  if ( !destLayer || !mPaintEffect )
+    return;
+
+  destLayer->setPaintEffect( mPaintEffect->clone() );
+}
 
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked )
+    , mAngle( 0 )
+    , mSize( 2.0 )
     , mSizeUnit( QgsSymbolV2::MM )
     , mOffsetUnit( QgsSymbolV2::MM )
+    , mScaleMethod( QgsSymbolV2::ScaleArea )
     , mHorizontalAnchorPoint( HCenter )
     , mVerticalAnchorPoint( VCenter )
 {
@@ -217,7 +265,10 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
 
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Line, locked )
+    , mWidth( 0 )
     , mWidthUnit( QgsSymbolV2::MM )
+    , mOffset( 0 )
+    , mOffsetUnit( QgsSymbolV2::MM )
 {
 }
 
@@ -403,7 +454,7 @@ void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
   QPolygonF points;
   // we're adding 0.5 to get rid of blurred preview:
   // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
-  points << QPointF( 0, size.height() / 2 + 0.5 ) << QPointF( size.width(), size.height() / 2 + 0.5 );
+  points << QPointF( 0, int( size.height() / 2 ) + 0.5 ) << QPointF( size.width(), int( size.height() / 2 ) + 0.5 );
 
   startRender( context );
   renderPolyline( points, context );
@@ -423,7 +474,7 @@ void QgsLineSymbolLayerV2::renderPolygonOutline( const QPolygonF& points, QList<
 double QgsLineSymbolLayerV2::dxfWidth( const QgsDxfExport& e, const QgsSymbolV2RenderContext& context ) const
 {
   Q_UNUSED( context );
-  return ( width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() ) );
+  return width() * e.mapUnitScaleFactor( e.symbologyScaleDenominator(), widthUnit(), e.mapUnits() );
 }
 
 

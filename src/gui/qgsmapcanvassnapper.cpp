@@ -92,7 +92,7 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   QgsSnapper::SnapLayer snapLayer;
   snapLayer.mLayer = vlayer;
   snapLayer.mSnapTo = snap_to;
-  snapLayer.mUnitType = QgsTolerance::MapUnits;
+  snapLayer.mUnitType = QgsTolerance::LayerUnits;
 
   if ( snappingTol < 0 )
   {
@@ -108,13 +108,19 @@ int QgsMapCanvasSnapper::snapToCurrentLayer( const QPoint& p, QList<QgsSnappingR
   snapLayers.append( snapLayer );
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
+  if ( mSnapper->snapMapPoint( p, results, excludePoints ) != 0 )
     return 4;
 
   return 0;
 }
 
 int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
+{
+  const QgsPoint mapCoordPoint = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( p.x(), p.y() );
+  return snapToBackgroundLayers( mapCoordPoint, results, excludePoints );
+}
+
+int QgsMapCanvasSnapper::snapToBackgroundLayers( const QgsPoint& point, QList<QgsSnappingResult>& results, const QList<QgsPoint>& excludePoints )
 {
   results.clear();
 
@@ -244,14 +250,14 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
     //default snapping tolerance (returned in map units)
     snapLayer.mTolerance = QgsTolerance::defaultTolerance( currentVectorLayer, mMapCanvas->mapSettings() );
-    snapLayer.mUnitType = QgsTolerance::MapUnits;
+    snapLayer.mUnitType = QgsTolerance::LayerUnits;
 
     snapLayers.append( snapLayer );
   }
 
   mSnapper->setSnapLayers( snapLayers );
 
-  if ( mSnapper->snapPoint( p, results, excludePoints ) != 0 )
+  if ( mSnapper->snapMapPoint( point, results, excludePoints ) != 0 )
     return 4;
 
   if ( intersectionSnapping != 1 )
@@ -305,7 +311,8 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
       if ( intersectionPoint->type()  == QGis::Point )
       {
         //We have to check the intersection point is inside the tolerance distance for both layers
-        double toleranceA, toleranceB;
+        double toleranceA = 0;
+        double toleranceB = 0;
         for ( int i = 0 ;i < snapLayers.size();++i )
         {
           if ( snapLayers[i].mLayer == oSegIt->layer )
@@ -317,7 +324,6 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
             toleranceB = QgsTolerance::toleranceInMapUnits( snapLayers[i].mTolerance, snapLayers[i].mLayer, mMapCanvas->mapSettings(), snapLayers[i].mUnitType );
           }
         }
-        QgsPoint point = mMapCanvas->getCoordinateTransform()->toMapCoordinates( p );
         QgsGeometry* cursorPoint = QgsGeometry::fromPoint( point );
         double distance = intersectionPoint->distance( *cursorPoint );
         if ( distance < toleranceA && distance < toleranceB )

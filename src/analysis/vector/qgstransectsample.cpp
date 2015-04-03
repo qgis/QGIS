@@ -22,6 +22,11 @@ QgsTransectSample::QgsTransectSample( QgsVectorLayer* strataLayer, QString strat
 }
 
 QgsTransectSample::QgsTransectSample()
+    : mStrataLayer( NULL )
+    , mBaselineLayer( NULL )
+    , mShareBaseline( false )
+    , mMinDistanceUnits( Meters )
+    , mMinTransectLength( 0.0 )
 {
 }
 
@@ -141,9 +146,8 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
     }
 
     //find baseline for strata
-    bool strataIdOk = true;
     QVariant strataId = fet.attribute( mStrataIdAttribute );
-    QgsGeometry* baselineGeom = findBaselineGeometry( strataIdOk ? strataId : -1 );
+    QgsGeometry* baselineGeom = findBaselineGeometry( strataId.isValid() ? strataId : -1 );
     if ( !baselineGeom )
     {
       continue;
@@ -595,6 +599,7 @@ QgsGeometry* QgsTransectSample::clipBufferLine( QgsGeometry* stratumGeom, QgsGeo
       bufferLine = QgsGeometry::fromMultiPolyline( mpl );
     }
     bufferLineClipped = bufferLine->intersection( stratumGeom );
+    delete bufferLine;
 
     if ( bufferLineClipped && bufferLineClipped->type() == QGis::Line )
     {
@@ -619,11 +624,13 @@ QgsGeometry* QgsTransectSample::clipBufferLine( QgsGeometry* stratumGeom, QgsGeo
 
       if ( bufferLineClippedIntersectsStratum )
       {
+        delete clipBaselineBuffer;
         return bufferLineClipped;
       }
     }
 
-    delete bufferLineClipped; delete clipBaselineBuffer; delete bufferLine;
+    delete bufferLineClipped;
+    delete clipBaselineBuffer;
     currentBufferDist /= 2;
   }
 

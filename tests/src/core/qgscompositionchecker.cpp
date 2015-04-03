@@ -22,13 +22,19 @@
 #include <QPainter>
 
 QgsCompositionChecker::QgsCompositionChecker( const QString& testName, QgsComposition* composition )
-    : QgsRenderChecker(),
-    mTestName( testName ),
-    mComposition( composition )
+    : QgsMultiRenderChecker()
+    , mTestName( testName )
+    , mComposition( composition )
+    , mSize( 1122, 794 )
+    , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
+  // The composer has some slight render inconsistencies on the whole image sometimes
+  setColorTolerance( 5 );
 }
 
 QgsCompositionChecker::QgsCompositionChecker()
+    : mComposition( NULL )
+    , mDotsPerMeter( 96 / 25.4 * 1000 )
 {
 }
 
@@ -36,7 +42,7 @@ QgsCompositionChecker::~QgsCompositionChecker()
 {
 }
 
-bool QgsCompositionChecker::testComposition( QString &report, int page, int pixelDiff )
+bool QgsCompositionChecker::testComposition( QString &theReport, int page, int pixelDiff )
 {
   if ( !mComposition )
   {
@@ -48,11 +54,11 @@ bool QgsCompositionChecker::testComposition( QString &report, int page, int pixe
 #if 0
   //fake mode to generate expected image
   //assume 96 dpi and size of the control image 1122 * 794
-  QImage newImage( QSize( 1122, 794 ), QImage::Format_ARGB32 );
+  QImage newImage( QSize( 1122, 794 ), QImage::Format_RGB32 );
   mComposition->setPlotStyle( QgsComposition::Print );
   newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
   newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
-  newImage.fill( 0 );
+  drawBackground( &newImage );
   QPainter expectedPainter( &newImage );
   //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
   //QRectF targetArea( 0, 0, 3507, 2480 );
@@ -62,18 +68,12 @@ bool QgsCompositionChecker::testComposition( QString &report, int page, int pixe
   return true;
 #endif //0
 
-  //load expected image
-  QImage expectedImage( mExpectedImageFile );
-
-  //get width/height, create image and render the composition to it
-  int width = expectedImage.width();
-  int height = expectedImage.height();
-  QImage outputImage( QSize( width, height ), QImage::Format_ARGB32 );
+  QImage outputImage( mSize, QImage::Format_RGB32 );
 
   mComposition->setPlotStyle( QgsComposition::Print );
-  outputImage.setDotsPerMeterX( expectedImage.dotsPerMeterX() );
-  outputImage.setDotsPerMeterY( expectedImage.dotsPerMeterX() );
-  outputImage.fill( 0 );
+  outputImage.setDotsPerMeterX( mDotsPerMeter );
+  outputImage.setDotsPerMeterY( mDotsPerMeter );
+  drawBackground( &outputImage );
   QPainter p( &outputImage );
   mComposition->renderPage( &p, page );
   p.end();
@@ -81,19 +81,11 @@ bool QgsCompositionChecker::testComposition( QString &report, int page, int pixe
   QString renderedFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_rendered.png";
   outputImage.save( renderedFilePath, "PNG" );
 
-  QString diffFilePath = QDir::tempPath() + QDir::separator() + QFileInfo( mTestName ).baseName() + "_result_diff.png";
+  setRenderedImage( renderedFilePath );
 
-  bool testResult = compareImages( mTestName, pixelDiff, renderedFilePath );
+  bool testResult = runTest( mTestName, pixelDiff );
 
-  QString myDashMessage = "<DartMeasurementFile name=\"Rendered Image " + mTestName + "\""
-                          " type=\"image/png\">" + renderedFilePath +
-                          "</DartMeasurementFile>"
-                          "<DartMeasurementFile name=\"Expected Image " + mTestName + "\" type=\"image/png\">" +
-                          mExpectedImageFile + "</DartMeasurementFile>"
-                          "<DartMeasurementFile name=\"Difference Image " + mTestName + "\" type=\"image/png\">" +
-                          diffFilePath + "</DartMeasurementFile>";
-  qDebug() << myDashMessage;
+  theReport += report();
 
-  report += mReport;
   return testResult;
 }

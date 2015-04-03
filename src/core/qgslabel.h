@@ -80,7 +80,7 @@ class CORE_EXPORT QgsLabel
       BorderColor,
       BorderStyle,
       MultilineEnabled,
-      StrikeOut,     // added in 1.5
+      StrikeOut,
       LabelFieldCount
     };
 
@@ -95,7 +95,6 @@ class CORE_EXPORT QgsLabel
      *  \param feature feature to render the label for
      *  \param selected feature is selected
      *  \param classAttributes attributes to create the label from
-     *  \note added in 1.2
      */
     void renderLabel( QgsRenderContext &renderContext, QgsFeature &feature, bool selected, QgsLabelAttributes *classAttributes = 0 );
 
@@ -148,9 +147,7 @@ class CORE_EXPORT QgsLabel
     bool scaleBasedVisibility() const;
 
   private:
-    /** Does the actual rendering of a label at the given point
-     *
-     */
+    /** Does the actual rendering of a label at the given point */
     void renderLabel( QgsRenderContext &renderContext, QgsPoint point,
                       QString text, QFont font, QPen pen,
                       int dx, int dy,

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -27,15 +27,18 @@
 /** \ingroup UnitTests
  * This is a unit test for the QgsDataItem class.
  */
-class TestQgsDataItem: public QObject
+class TestQgsDataItem : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsDataItem();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();;// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void testValid();
     void testDirItemChildren();
@@ -45,6 +48,12 @@ class TestQgsDataItem: public QObject
     QString mScanItemsSetting;
     bool isValidDirItem( QgsDirectoryItem *item );
 };
+
+TestQgsDataItem::TestQgsDataItem()
+    : mDirItem( NULL )
+{
+
+}
 
 void TestQgsDataItem::initTestCase()
 {
@@ -75,6 +84,8 @@ void TestQgsDataItem::cleanupTestCase()
   settings.setValue( "/qgis/scanItemsInBrowser2", mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
+
+  QgsApplication::exitQgis();
 }
 
 bool TestQgsDataItem::isValidDirItem( QgsDirectoryItem *item )
@@ -161,10 +172,10 @@ void TestQgsDataItem::testDirItemChildren()
       }
 
     }
-    if ( dirItem )
-      delete dirItem;
+
+    delete dirItem;
   }
 }
 
 QTEST_MAIN( TestQgsDataItem )
-#include "moc_testqgsdataitem.cxx"
+#include "testqgsdataitem.moc"

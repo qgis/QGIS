@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -31,19 +31,23 @@
 #include <qgsproviderregistry.h>
 #include <qgsmaplayerregistry.h>
 //qgis test includes
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsInvertedPolygon: public QObject
+class TestQgsInvertedPolygon : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsInvertedPolygon();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void singleSubRenderer();
     void graduatedSubRenderer();
@@ -60,6 +64,13 @@ class TestQgsInvertedPolygon: public QObject
     QString mReport;
 };
 
+
+TestQgsInvertedPolygon::TestQgsInvertedPolygon()
+    : mTestHasError( false )
+    , mpPolysLayer( NULL )
+{
+
+}
 
 void TestQgsInvertedPolygon::initTestCase()
 {
@@ -101,6 +112,8 @@ void TestQgsInvertedPolygon::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsInvertedPolygon::singleSubRenderer()
@@ -170,13 +183,14 @@ bool TestQgsInvertedPolygon::imageCheck( QString theTestType, const QgsRectangle
   {
     mMapSettings.setExtent( *extent );
   }
-  QgsRenderChecker myChecker;
+  QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_" + theTestType );
   myChecker.setMapSettings( mMapSettings );
-  bool myResultFlag = myChecker.runTest( theTestType, 1000 ); // allow some mismatched pixels
+  myChecker.setColorTolerance( 20 );
+  bool myResultFlag = myChecker.runTest( theTestType, 100 );
   mReport += myChecker.report();
   return myResultFlag;
 }
 
 QTEST_MAIN( TestQgsInvertedPolygon )
-#include "moc_testqgsinvertedpolygonrenderer.cxx"
+#include "testqgsinvertedpolygonrenderer.moc"

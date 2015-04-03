@@ -32,22 +32,27 @@ class CORE_EXPORT QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
     /**Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface* input, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
-    QgsRasterInterface * clone() const;
+    QgsRasterInterface * clone() const override;
 
     static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterInterface* input );
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height );
+    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) override;
 
     /**Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
     QgsRasterShader* shader() { return mShader; }
     const QgsRasterShader* shader() const { return mShader; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const override;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const override;
 
-    QList<int> usesBands() const;
+    QList<int> usesBands() const override;
+
+    /**Returns the band used by the renderer
+     * @note added in QGIS 2.7
+     */
+    int band() const { return mBand; }
 
     double classificationMin() const { return mClassificationMin; }
     double classificationMax() const { return mClassificationMax; }

@@ -53,6 +53,12 @@ namespace pal
 
 
   PointSet::PointSet()
+      : holeOf( NULL )
+      , parent( NULL )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     nbPoints = cHullSize =  0;
     x = NULL;
@@ -62,6 +68,13 @@ namespace pal
   }
 
   PointSet::PointSet( int nbPoints, double *x, double *y )
+      : cHullSize( 0 )
+      , holeOf( NULL )
+      , parent( NULL )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     this->nbPoints = nbPoints;
     this->x = new double[nbPoints];
@@ -77,13 +90,15 @@ namespace pal
     cHull = NULL;
   }
 
-  PointSet::PointSet( double x, double y )
+  PointSet::PointSet( double aX, double aY )
+      : xmin( aX ), xmax( aY )
+      , ymin( aX ), ymax( aY )
   {
-    nbPoints = cHullSize =  1;
-    this->x = new double[1];
-    this->y = new double[1];
-    this->x[0] = x;
-    this->y[0] = y;
+    nbPoints = cHullSize = 1;
+    x = new double[1];
+    y = new double[1];
+    x[0] = aX;
+    y[0] = aY;
 
     cHull = NULL;
     parent = NULL;
@@ -93,13 +108,17 @@ namespace pal
   }
 
   PointSet::PointSet( PointSet &ps )
+      : parent( 0 )
+      , xmin( DBL_MAX )
+      , xmax( -DBL_MAX )
+      , ymin( DBL_MAX )
+      , ymax( -DBL_MAX )
   {
     int i;
 
     nbPoints = ps.nbPoints;
     x = new double[nbPoints];
     y = new double[nbPoints];
-
 
     for ( i = 0; i < nbPoints; i++ )
     {
@@ -110,6 +129,7 @@ namespace pal
     if ( ps.cHull )
     {
       cHullSize = ps.cHullSize;
+      cHull = new int[cHullSize];
       for ( i = 0; i < cHullSize; i++ )
       {
         cHull[i] = ps.cHull[i];
@@ -364,7 +384,7 @@ namespace pal
 
 
         // iterate on all shape points except points which are in the hole
-        double isValid;
+        bool isValid;
         int k, l;
         for ( i = ( cHull[holeE] + 1 ) % nbp; i != ( cHull[holeS] - 1 + nbp ) % nbp; i = j )
         {

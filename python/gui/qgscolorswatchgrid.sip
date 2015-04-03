@@ -6,21 +6,20 @@
  * @see QgsColorGridAction
  * @note introduced in QGIS 2.5
  */
-
-class QgsColorSwatchGrid: QWidget
+class QgsColorSwatchGrid : QWidget
 {
 %TypeHeaderCode
 #include <qgscolorswatchgrid.h>
 %End
 
-	public:
-	
+  public:
+
     /**Construct a new color swatch grid.
      * @param scheme QgsColorScheme for colors to show in grid
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGrid( QgsColorScheme* scheme, QString context = QString(), QWidget *parent = 0 );
+    QgsColorSwatchGrid( QgsColorScheme* scheme, QString context = QString(), QWidget *parent /TransferThis/ = 0 );
 
     virtual ~QgsColorSwatchGrid();
 
@@ -52,12 +51,12 @@ class QgsColorSwatchGrid: QWidget
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
-    void setBaseColor( const QColor baseColor );
+    void setBaseColor( const QColor &baseColor );
 
     /**Gets the list of colors shown in the grid
      * @returns list of colors currently shown in the grid
      */
-    QgsNamedColorList* colors();
+    QgsNamedColorList *colors();
 
   public slots:
 
@@ -70,13 +69,15 @@ class QgsColorSwatchGrid: QWidget
     /**Emitted when a color has been selected from the widget
      * @param color selected color
      */
-    void colorChanged( const QColor color );
-	
+    void colorChanged( const QColor &color );
+
     /**Emitted when mouse hovers over widget
      */
-    void hovered();	
+    void hovered();
 
   protected:
+
+    //reimplemented QWidget events
     void paintEvent( QPaintEvent * event );
     void mouseMoveEvent( QMouseEvent * event );
     void mousePressEvent( QMouseEvent * event );
@@ -86,6 +87,7 @@ class QgsColorSwatchGrid: QWidget
     void focusOutEvent( QFocusEvent* event );
 
 };
+
 
 /** \ingroup gui
  * \class QgsColorGridAction
@@ -109,7 +111,7 @@ class QgsColorSwatchGridAction: QWidgetAction
      * @param context context string provided to color scheme
      * @param parent parent widget
      */
-    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = 0, QString context = QString(), QWidget *parent = 0 );
+    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = 0, QString context = QString(), QWidget *parent /TransferThis/ = 0 );
 
     virtual ~QgsColorSwatchGridAction();
 
@@ -117,7 +119,7 @@ class QgsColorSwatchGridAction: QWidgetAction
      * @param baseColor base color to pass to scheme for color generation
      * @see baseColor
      */
-    void setBaseColor( const QColor baseColor );
+    void setBaseColor( const QColor &baseColor );
 
     /**Get the base color for the color grid
      * @returns base color which is passed to scheme for color generation
@@ -135,7 +137,7 @@ class QgsColorSwatchGridAction: QWidgetAction
      * @param context string which is passed to scheme for color generation
      * @see context
      */
-    void setContext( const QString context );
+    void setContext( const QString &context );
 
   public slots:
 
@@ -148,6 +150,6 @@ class QgsColorSwatchGridAction: QWidgetAction
     /**Emitted when a color has been selected from the widget
      * @param color selected color
      */
-    void colorChanged( const QColor color );
+    void colorChanged( const QColor &color );
 
 };

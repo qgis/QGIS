@@ -38,7 +38,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
     QgsNetworkProxyFactory() {}
     virtual ~QgsNetworkProxyFactory() {}
 
-    virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() )
+    virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() ) override
     {
       QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
@@ -85,12 +85,6 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };
-
-QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
-{
-  static QgsNetworkAccessManager sInstance;
-  return &sInstance;
-}
 
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
     : QNetworkAccessManager( parent )

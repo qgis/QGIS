@@ -29,7 +29,6 @@ class QgsComposerMultiFrameCommand : QUndoCommand
     bool checkFirstRun();
 };
 
-
 /**A composer command that merges together with other commands having the same context (=id)
  * for multi frame items. Keeps the oldest previous state and uses the newest after state.
  * The purpose is to avoid too many micro changes in the history*/

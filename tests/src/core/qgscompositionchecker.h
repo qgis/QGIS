@@ -16,28 +16,28 @@
 #ifndef QGSCOMPOSITIONCHECKER_H
 #define QGSCOMPOSITIONCHECKER_H
 
-#include "qgsrenderchecker.h"
+#include "qgsmultirenderchecker.h"
 #include <QString>
 
 class QgsComposition;
 class QImage;
 
 /**Renders a composition to an image and compares with an expected output*/
-class QgsCompositionChecker : public QgsRenderChecker
+class QgsCompositionChecker : public QgsMultiRenderChecker
 {
   public:
     QgsCompositionChecker( const QString& testName, QgsComposition* composition );
     ~QgsCompositionChecker();
 
-    bool testComposition( QString &report, int page = 0, int pixelDiff = 0 );
+    bool testComposition( QString &theReport, int page = 0, int pixelDiff = 0 );
 
   private:
     QgsCompositionChecker(); //forbidden
 
     QString mTestName;
     QgsComposition* mComposition;
-
-
+    QSize mSize;
+    int mDotsPerMeter;
 };
 
 #endif // QGSCOMPOSITIONCHECKER_H

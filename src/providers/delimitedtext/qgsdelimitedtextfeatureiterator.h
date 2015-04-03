@@ -27,7 +27,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     QgsDelimitedTextFeatureSource( const QgsDelimitedTextProvider* p );
     ~QgsDelimitedTextFeatureSource();
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
 
   protected:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
@@ -68,10 +68,10 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     ~QgsDelimitedTextFeatureIterator();
 
     //! reset the iterator to the starting position
-    virtual bool rewind();
+    virtual bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
     bool wantGeometry( const QgsPoint & point ) const;
@@ -79,7 +79,7 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
 
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature& feature ) override;
 
     bool setNextFeatureId( qint64 fid );
 

@@ -17,33 +17,34 @@
 
 
 #include <QDateTime>
-#include <QDomNode>
-#include <QFileInfo>
-#include <QSettings> // TODO: get rid of it [MD]
 #include <QDir>
-#include <QFile>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QDomImplementation>
+#include <QDomNode>
+#include <QFile>
+#include <QFileInfo>
+#include <QSettings> // TODO: get rid of it [MD]
 #include <QTextStream>
 #include <QUrl>
 
 #include <sqlite3.h>
 
-#include "qgslogger.h"
-#include "qgsrectangle.h"
-#include "qgsmaplayer.h"
-#include "qgscoordinatereferencesystem.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdatasourceuri.h"
+#include "qgslogger.h"
+#include "qgsmaplayer.h"
 #include "qgsmaplayerlegend.h"
-#include "qgsproject.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgspluginlayer.h"
 #include "qgspluginlayerregistry.h"
 #include "qgsprojectfiletransform.h"
-#include "qgsdatasourceuri.h"
-#include "qgsvectorlayer.h"
-#include "qgsrasterlayer.h"
-#include "qgspluginlayer.h"
+#include "qgsproject.h"
 #include "qgsproviderregistry.h"
+#include "qgsrasterlayer.h"
+#include "qgsrectangle.h"
+#include "qgsvectorlayer.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
@@ -55,6 +56,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
     mLayerType( type ),
     mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
     , mLegend( 0 )
+    , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   mCRS = new QgsCoordinateReferenceSystem();
 
@@ -84,6 +86,7 @@ QgsMapLayer::~QgsMapLayer()
 {
   delete mCRS;
   delete mLegend;
+  delete mStyleManager;
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -342,7 +345,7 @@ bool QgsMapLayer::readLayerXML( const QDomElement& layerElement )
   }
 
   // use scale dependent visibility flag
-  toggleScaleBasedVisibility( layerElement.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+  setScaleBasedVisibility( layerElement.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( layerElement.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( layerElement.attribute( "maximumScale" ).toFloat() );
 
@@ -614,15 +617,16 @@ bool QgsMapLayer::writeLayerXML( QDomElement& layerElement, QDomDocument& docume
 QDomDocument QgsMapLayer::asLayerDefinition( QList<QgsMapLayer *> layers, QString relativeBasePath )
 {
   QDomDocument doc( "qgis-layer-definition" );
+  QDomElement qgiselm = doc.createElement( "qlr" );
+  doc.appendChild( qgiselm );
   QDomElement layerselm = doc.createElement( "maplayers" );
   foreach ( QgsMapLayer* layer, layers )
   {
     QDomElement layerelm = doc.createElement( "maplayer" );
     layer->writeLayerXML( layerelm, doc, relativeBasePath );
-    layerelm.removeChild( layerelm.firstChildElement( "id" ) );
     layerselm.appendChild( layerelm );
   }
-  doc.appendChild( layerselm );
+  qgiselm.appendChild( layerselm );
   return doc;
 }
 
@@ -637,7 +641,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
 
     QString type = layerElem.attribute( "type" );
     QgsDebugMsg( type );
-    QgsMapLayer *layer = NULL;
+    QgsMapLayer *layer = 0;
 
     if ( type == "vector" )
     {
@@ -653,6 +657,9 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
       layer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
     }
 
+    if ( !layer )
+      continue;
+
     bool ok = layer->readLayerXML( layerElem );
     if ( ok )
       layers << layer;
@@ -660,7 +667,7 @@ QList<QgsMapLayer*> QgsMapLayer::fromLayerDefinition( QDomDocument& document )
   return layers;
 }
 
-QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString qlrfile )
+QList<QgsMapLayer *> QgsMapLayer::fromLayerDefinitionFile( const QString &qlrfile )
 {
   QFile file( qlrfile );
   if ( !file.open( QIODevice::ReadOnly ) )
@@ -702,6 +709,25 @@ void QgsMapLayer::writeCustomProperties( QDomNode &layerNode, QDomDocument &doc 
   mCustomProperties.writeXml( layerNode, doc );
 }
 
+void QgsMapLayer::readStyleManager( const QDomNode& layerNode )
+{
+  QDomElement styleMgrElem = layerNode.firstChildElement( "map-layer-style-manager" );
+  if ( !styleMgrElem.isNull() )
+    mStyleManager->readXml( styleMgrElem );
+  else
+    mStyleManager->reset();
+}
+
+void QgsMapLayer::writeStyleManager( QDomNode& layerNode, QDomDocument& doc ) const
+{
+  if ( mStyleManager )
+  {
+    QDomElement styleMgrElem = doc.createElement( "map-layer-style-manager" );
+    mStyleManager->writeXml( styleMgrElem );
+    layerNode.appendChild( styleMgrElem );
+  }
+}
+
 
 
 
@@ -728,17 +754,18 @@ QString QgsMapLayer::lastError()
   return QString();
 }
 
+#if 0
 void QgsMapLayer::connectNotify( const char * signal )
 {
   Q_UNUSED( signal );
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
 } //  QgsMapLayer::connectNotify
-
+#endif
 
 
 void QgsMapLayer::toggleScaleBasedVisibility( bool theVisibilityFlag )
 {
-  mScaleBasedVisibility = theVisibilityFlag;
+  setScaleBasedVisibility( theVisibilityFlag );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
@@ -746,7 +773,7 @@ bool QgsMapLayer::hasScaleBasedVisibility() const
   return mScaleBasedVisibility;
 }
 
-void QgsMapLayer::setMinimumScale( float theMinScale )
+void QgsMapLayer::setMinimumScale( const float theMinScale )
 {
   mMinScale = theMinScale;
 }
@@ -757,16 +784,20 @@ float QgsMapLayer::minimumScale() const
 }
 
 
-void QgsMapLayer::setMaximumScale( float theMaxScale )
+void QgsMapLayer::setMaximumScale( const float theMaxScale )
 {
   mMaxScale = theMaxScale;
+}
+
+void QgsMapLayer::setScaleBasedVisibility( const bool enabled )
+{
+  mScaleBasedVisibility = enabled;
 }
 
 float QgsMapLayer::maximumScale() const
 {
   return mMaxScale;
 }
-
 
 QStringList QgsMapLayer::subLayers() const
 {
@@ -860,8 +891,6 @@ QString QgsMapLayer::styleURI()
       myURI.chop( 7 );
     else if ( myURI.endsWith( ".tgz", Qt::CaseInsensitive ) )
       myURI.chop( 4 );
-    else if ( myURI.endsWith( ".gz", Qt::CaseInsensitive ) )
-      myURI.chop( 3 );
     myFileInfo.setFile( myURI );
     // get the file name for our .qml style file
     key = myFileInfo.path() + QDir::separator() + myFileInfo.completeBaseName() + ".qml";
@@ -893,7 +922,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI
 
   QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( theURI ).arg( db ) );
 
-  if ( !QFile( db ).exists() )
+  if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
 
   myResult = sqlite3_open_v2( db.toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, NULL );
@@ -922,6 +951,7 @@ bool QgsMapLayer::loadNamedStyleFromDb( const QString &db, const QString &theURI
 
   return theResultFlag;
 }
+
 
 QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag )
 {
@@ -971,6 +1001,16 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
     return myErrorMessage;
   }
 
+  theResultFlag = importNamedStyle( myDocument, myErrorMessage );
+  if ( !theResultFlag )
+    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( myErrorMessage );
+
+  return myErrorMessage;
+}
+
+
+bool QgsMapLayer::importNamedStyle( QDomDocument& myDocument, QString& myErrorMessage )
+{
   // get style file version string, if any
   QgsProjectVersion fileVersion( myDocument.firstChildElement( "qgis" ).attribute( "version" ) );
   QgsProjectVersion thisVersion( QGis::QGIS_VERSION );
@@ -993,13 +1033,12 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
   QDomElement myRoot = myDocument.firstChildElement( "qgis" );
   if ( myRoot.isNull() )
   {
-    myErrorMessage = tr( "Error: qgis element could not be found in %1" ).arg( theURI );
-    theResultFlag = false;
-    return myErrorMessage;
+    myErrorMessage = tr( "Root <qgis> element could not be found" );
+    return false;
   }
 
   // use scale dependent visibility flag
-  toggleScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
+  setScaleBasedVisibility( myRoot.attribute( "hasScaleBasedVisibilityFlag" ).toInt() == 1 );
   setMinimumScale( myRoot.attribute( "minimumScale" ).toFloat() );
   setMaximumScale( myRoot.attribute( "maximumScale" ).toFloat() );
 
@@ -1015,15 +1054,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &theURI, bool &theResultFlag 
   }
 #endif
 
-  QString errorMsg;
-  theResultFlag = readSymbology( myRoot, errorMsg );
-  if ( !theResultFlag )
-  {
-    myErrorMessage = tr( "Loading style file %1 failed because:\n%2" ).arg( theURI ).arg( errorMsg );
-    return myErrorMessage;
-  }
-
-  return "";
+  return readSymbology( myRoot, myErrorMessage );
 }
 
 void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg )
@@ -1420,6 +1451,11 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend* legend )
 QgsMapLayerLegend*QgsMapLayer::legend() const
 {
   return mLegend;
+}
+
+QgsMapLayerStyleManager* QgsMapLayer::styleManager() const
+{
+  return mStyleManager;
 }
 
 void QgsMapLayer::clearCacheImage()

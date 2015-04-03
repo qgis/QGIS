@@ -93,7 +93,7 @@ class QgsSvgCache : QObject
 
   protected:
     //! protected constructor
-    QgsSvgCache( QObject * parent = 0 );
+    QgsSvgCache( QObject * parent /TransferThis/ = 0 );
 
     /**Creates new cache entry and returns pointer to it
      * @param file Absolute or relative path to SVG file. If the path is relative the file is searched by QgsSymbolLayerV2Utils::symbolNameToPath() in SVG paths.

@@ -17,9 +17,12 @@
 
 #include "qgsdetaileditemdata.h"
 QgsDetailedItemData::QgsDetailedItemData()
+    : mCheckableFlag( false )
+    , mCheckedFlag( false )
+    , mEnabledFlag( true )
+    , mRenderAsWidgetFlag( false )
 {
-  mRenderAsWidgetFlag = false;
-  mEnabledFlag = true;
+
 }
 
 QgsDetailedItemData::~QgsDetailedItemData()

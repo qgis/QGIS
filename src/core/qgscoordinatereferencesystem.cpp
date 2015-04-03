@@ -1512,13 +1512,12 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
   }
   QgsDebugMsg( QString( "Update or insert sql \n%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  sqlite3_step( myPreparedStatement );
-
-  QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
   qint64 return_id;
-  if ( myResult == SQLITE_OK )
+  if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
+
     return_id = sqlite3_last_insert_rowid( myDatabase );
     setInternalId( return_id );
 
@@ -1716,14 +1715,13 @@ int QgsCoordinateReferenceSystem::syncDb()
   {
     qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
-
   }
 
   // fix up database, if not done already //
   if ( sqlite3_exec( database, "alter table tbl_srs add noupdate boolean", 0, 0, 0 ) == SQLITE_OK )
-    sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", 0, 0, 0 );
+    ( void )sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", 0, 0, 0 );
 
-  sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", 0, 0, 0 );
+  ( void )sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", 0, 0, 0 );
 
   OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
   const char *tail;
@@ -2166,4 +2164,46 @@ QString QgsCoordinateReferenceSystem::geographicCRSAuthId() const
   {
     return "";
   }
+}
+
+QStringList QgsCoordinateReferenceSystem::recentProjections()
+{
+  QStringList projections;
+
+  // Read settings from persistent storage
+  QSettings settings;
+  projections = settings.value( "/UI/recentProjections" ).toStringList();
+  /*** The reading (above) of internal id from persistent storage should be removed sometime in the future */
+  /*** This is kept now for backwards compatibility */
+
+  QStringList projectionsProj4  = settings.value( "/UI/recentProjectionsProj4" ).toStringList();
+  QStringList projectionsAuthId = settings.value( "/UI/recentProjectionsAuthId" ).toStringList();
+  if ( projectionsAuthId.size() >= projections.size() )
+  {
+    // We had saved state with AuthId and Proj4. Use that instead
+    // to find out the crs id
+    projections.clear();
+    for ( int i = 0; i <  projectionsAuthId.size(); i++ )
+    {
+      // Create a crs from the EPSG
+      QgsCoordinateReferenceSystem crs;
+      crs.createFromOgcWmsCrs( projectionsAuthId.at( i ) );
+      if ( ! crs.isValid() )
+      {
+        // Couldn't create from EPSG, try the Proj4 string instead
+        if ( i >= projectionsProj4.size() || !crs.createFromProj4( projectionsProj4.at( i ) ) )
+        {
+          // No? Skip this entry
+          continue;
+        }
+        //If the CRS can be created but do not correspond to a CRS in the database, skip it (for example a deleted custom CRS)
+        if ( crs.srsid() == 0 )
+        {
+          continue;
+        }
+      }
+      projections << QString::number( crs.srsid() );
+    }
+  }
+  return projections;
 }

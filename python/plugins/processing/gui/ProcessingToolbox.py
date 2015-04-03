@@ -26,18 +26,18 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt, QSettings, QCoreApplication
+from PyQt4.QtGui import QDockWidget, QMenu, QAction, QTreeWidgetItem
 from qgis.utils import iface
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.core.Processing import Processing
 from processing.core.ProcessingLog import ProcessingLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.gui.MissingDependencyDialog import MissingDependencyDialog
+from processing.gui.MessageDialog import MessageDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
-from processing.gui.ParametersDialog import ParametersDialog
-from processing.gui.BatchProcessingDialog import BatchProcessingDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
+from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.EditRenderingStylesDialog import EditRenderingStylesDialog
 
 from processing.ui.ui_ProcessingToolbox import Ui_ProcessingToolbox
@@ -67,7 +67,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
         self.searchBox.textChanged.connect(self.textChanged)
         self.algorithmTree.customContextMenuRequested.connect(
-                self.showPopupMenu)
+            self.showPopupMenu)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
 
         if hasattr(self.searchBox, 'setPlaceholderText'):
@@ -116,7 +116,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
     def algsListHasChanged(self):
         self.fillTree()
 
-    def updateProvider(self, providerName, updateAlgsList = True):
+    def updateProvider(self, providerName, updateAlgsList=True):
         if updateAlgsList:
             Processing.updateAlgsList()
         for i in xrange(self.algorithmTree.invisibleRootItem().childCount()):
@@ -140,17 +140,17 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             popupmenu.addAction(executeAction)
             if alg.canRunInBatchMode and not alg.allowOnlyOpenedLayers:
                 executeBatchAction = QAction(
-                        self.tr('Execute as batch process'),
-                        self.algorithmTree)
+                    self.tr('Execute as batch process'),
+                    self.algorithmTree)
                 executeBatchAction.triggered.connect(
-                        self.executeAlgorithmAsBatchProcess)
+                    self.executeAlgorithmAsBatchProcess)
                 popupmenu.addAction(executeBatchAction)
             popupmenu.addSeparator()
             editRenderingStylesAction = QAction(
-                    self.tr('Edit rendering styles for outputs'),
-                    self.algorithmTree)
+                self.tr('Edit rendering styles for outputs'),
+                self.algorithmTree)
             editRenderingStylesAction.triggered.connect(
-                    self.editRenderingStyles)
+                self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
             actions = Processing.contextMenuActions
             if len(actions) > 0:
@@ -177,7 +177,8 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
         if isinstance(item, TreeAlgorithmItem):
             alg = Processing.getAlgorithm(item.alg.commandLineName())
             alg = alg.getCopy()
-            dlg = BatchProcessingDialog(alg)
+            dlg = BatchAlgorithmDialog(alg)
+            dlg.show()
             dlg.exec_()
 
     def executeAlgorithm(self):
@@ -186,13 +187,17 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             alg = Processing.getAlgorithm(item.alg.commandLineName())
             message = alg.checkBeforeOpeningParametersDialog()
             if message:
-                dlg = MissingDependencyDialog(message)
+                dlg = MessageDialog()
+                dlg.setTitle(self.tr('Missing dependency'))
+                dlg.setMessage(
+                    self.tr('<h3>Missing dependency. This algorithm cannot '
+                            'be run :-( </h3>\n%s') % message)
                 dlg.exec_()
                 return
             alg = alg.getCopy()
             dlg = alg.getCustomParametersDialog()
             if not dlg:
-                dlg = ParametersDialog(alg)
+                dlg = AlgorithmDialog(alg)
             canvas = iface.mapCanvas()
             prevMapTool = canvas.mapTool()
             dlg.show()
@@ -205,7 +210,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
                 canvas.setMapTool(prevMapTool)
             if dlg.executed:
                 showRecent = ProcessingConfig.getSetting(
-                        ProcessingConfig.SHOW_RECENT_ALGORITHMS)
+                    ProcessingConfig.SHOW_RECENT_ALGORITHMS)
                 if showRecent:
                     self.addRecentAlgorithms(True)
         if isinstance(item, TreeActionItem):
@@ -225,7 +230,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
 
     def addRecentAlgorithms(self, updating):
         showRecent = ProcessingConfig.getSetting(
-                ProcessingConfig.SHOW_RECENT_ALGORITHMS)
+            ProcessingConfig.SHOW_RECENT_ALGORITHMS)
         if showRecent:
             recent = ProcessingLog.getRecentAlgorithms()
             if len(recent) != 0:
@@ -234,7 +239,7 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
                     recentItem = self.algorithmTree.topLevelItem(0)
                     treeWidget = recentItem.treeWidget()
                     treeWidget.takeTopLevelItem(
-                            treeWidget.indexOfTopLevelItem(recentItem))
+                        treeWidget.indexOfTopLevelItem(recentItem))
 
                 recentItem = QTreeWidgetItem()
                 recentItem.setText(0, self.tr('Recently used algorithms'))
@@ -260,8 +265,8 @@ class ProcessingToolbox(QDockWidget, Ui_ProcessingToolbox):
             name = 'ACTIVATE_' + providerName.upper().replace(' ', '_')
             if not ProcessingConfig.getSetting(name):
                 continue
-            if providerName in providersToExclude \
-                        or len(ModelerUtils.providers[providerName].actions) != 0:
+            if providerName in providersToExclude or \
+                    len(ModelerUtils.providers[providerName].actions) != 0:
                 continue
             algs = provider.values()
 
@@ -399,10 +404,7 @@ class TreeProviderItem(QTreeWidgetItem):
             groupItem.addChild(algItem)
 
         self.setText(0, self.provider.getDescription()
-                    + ' [' + str(count) + ' geoalgorithms]')
+                  + QCoreApplication.translate( "TreeProviderItem", " [{0} geoalgorithms]" ).format( count ) )
         self.setToolTip(0, self.text(0))
         for groupItem in groups.values():
             self.addChild(groupItem)
-
-
-

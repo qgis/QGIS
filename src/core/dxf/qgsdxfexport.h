@@ -40,12 +40,12 @@ class CORE_EXPORT QgsDxfExport
     };
 
     QgsDxfExport();
-    QgsDxfExport( const QgsDxfExport& dxfExport );
+    QgsDxfExport( const QgsDxfExport &dxfExport );
     ~QgsDxfExport();
-    QgsDxfExport& operator=( const QgsDxfExport& dxfExport );
+    QgsDxfExport &operator=( const QgsDxfExport &dxfExport );
 
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
-    int writeToFile( QIODevice* d );  //maybe add progress dialog? //other parameters (e.g. scale, dpi)?
+    int writeToFile( QIODevice *d, QString codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
     void setSymbologyScaleDenominator( double d ) { mSymbologyScaleDenominator = d; }
     double symbologyScaleDenominator() const { return mSymbologyScaleDenominator; }
@@ -56,7 +56,7 @@ class CORE_EXPORT QgsDxfExport
     void setSymbologyExport( SymbologyExport e ) { mSymbologyExport = e; }
     SymbologyExport symbologyExport() const { return mSymbologyExport; }
 
-    void setExtent( const QgsRectangle& r ) { mExtent = r; }
+    void setExtent( const QgsRectangle &r ) { mExtent = r; }
     QgsRectangle extent() const { return mExtent; }
 
     //get closest entry in dxf palette
@@ -68,38 +68,47 @@ class CORE_EXPORT QgsDxfExport
     void writeGroup( int code, int i );
     //! @note available in python bindings as writeGroupDouble
     void writeGroup( int code, double d );
-    void writeGroup( int code, const QString& s );
+    void writeGroup( int code, const QString &s );
     void writeGroupCode( int code );
     void writeInt( int i );
     void writeDouble( double d );
-    void writeString( const QString& s );
+    void writeString( const QString &s );
     void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false );
-    void writeGroup( QColor color, int exactMatch = 62, int rgbCode = 420, int tranparencyCode = 440 );
+    void writeGroup( QColor color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 
     int writeHandle( int code = 5, int handle = 0 );
 
-    //draw dxf primitives
-    void writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color,
+    //! draw dxf primitives
+    void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, QColor color,
                         double width = -1, bool polygon = false );
 
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, QColor color );
 
-    void writeSolid( const QString& layer, QColor color, const QgsPoint& pt1, const QgsPoint& pt2, const QgsPoint& pt3, const QgsPoint& pt4 );
+    void writeSolid( const QString &layer, QColor color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 );
 
-    //write line (as a polyline)
-    void writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QString& layer, const QString& lineStyleName, QColor color, double width = -1 );
+    //! write line (as a polyline)
+    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, QColor color, double width = -1 );
 
-    void writePoint( const QString& layer, QColor color, const QgsPoint& pt );
+    void writePoint( const QString &layer, QColor color, const QgsPoint &pt );
 
-    void writeCircle( const QString& layer, QColor color, const QgsPoint& pt, double radius );
+    void writeFilledCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius );
 
-    void writeText( const QString& layer, const QString& text, const QgsPoint& pt, double size, double angle, QColor color );
+    void writeCircle( const QString &layer, QColor color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width );
 
-    void writeMText( const QString& layer, const QString& text, const QgsPoint& pt, double width, double angle, QColor color );
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, QColor color );
+
+    void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, QColor color );
 
     static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
 
-    static QString dxfLayerName( const QString& name );
+    //! return cleaned layer name for use in DXF
+    static QString dxfLayerName( const QString &name );
+
+    //! return DXF encoding for Qt encoding
+    static QString dxfEncoding( const QString &name );
+
+    //! return list of available DXF encodings
+    static QStringList encodings();
 
   private:
     QList< QPair<QgsVectorLayer*, int> > mLayers;
@@ -114,6 +123,7 @@ class CORE_EXPORT QgsDxfExport
     QTextStream mTextStream;
 
     static int mDxfColors[][3];
+    static const char *mDxfEncodings[][2];
 
     int mSymbolLayerCounter; //internal counter
     int mNextHandleId;
@@ -123,42 +133,29 @@ class CORE_EXPORT QgsDxfExport
     QHash< const QgsSymbolLayerV2*, QString > mPointSymbolBlocks; //reference to point symbol blocks
 
     //AC1009
-    void writeHeader();
+    void writeHeader( QString codepage );
     void writeTables();
     void writeBlocks();
     void writeEntities();
-    void writeEntitiesSymbolLevels( QgsVectorLayer* layer );
+    void writeEntitiesSymbolLevels( QgsVectorLayer *layer );
     void writeEndFile();
 
     void startSection();
     void endSection();
 
-    void writePoint( const QgsPoint& pt, const QString& layer, QColor color, const QgsFeature* f, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
-    void writeVertex( const QgsPoint& pt, const QString& layer );
+    void writePoint( const QgsPoint &pt, const QString &layer, QColor color, const QgsFeature *f, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
+    void writeVertex( const QgsPoint &pt, const QString &layer );
     void writeDefaultLinetypes();
-    void writeSymbolLayerLinetype( const QgsSymbolLayerV2* symbolLayer );
-    void writeLinetype( const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
-
-#if 0
-    //AC1018
-    void writeHeaderAC1018( QTextStream& stream );
-    void writeTablesAC1018( QTextStream& stream );
-    void writeEntitiesAC1018( QTextStream& stream );
-    void writeEntitiesSymbolLevelsAC1018( QTextStream& stream, QgsVectorLayer* layer );
-    void writeSymbolLayerLinetypeAC1018( QTextStream& stream, const QgsSymbolLayerV2* symbolLayer );
-    void writeLinetypeAC1018( QTextStream& stream, const QString& styleName, const QVector<qreal>& pattern, QgsSymbolV2::OutputUnit u );
-    void writeVertexAC1018( QTextStream& stream, const QgsPoint& pt );
-    void writePolylineAC1018( QTextStream& stream, const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color,
-                              double width = -1, bool polygon = false );
-#endif
+    void writeSymbolLayerLinetype( const QgsSymbolLayerV2 *symbolLayer );
+    void writeLinetype( const QString &styleName, const QVector<qreal> &pattern, QgsSymbolV2::OutputUnit u );
 
     QgsRectangle dxfExtent() const;
 
-    void addFeature( const QgsSymbolV2RenderContext& ctx, const QString& layer, const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2* symbol );
+    void addFeature( const QgsSymbolV2RenderContext &ctx, const QString &layer, const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2 *symbol );
 
     //returns dxf palette index from symbol layer color
-    static QColor colorFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer, const QgsSymbolV2RenderContext& ctx );
-    QString lineStyleFromSymbolLayer( const QgsSymbolLayerV2* symbolLayer );
+    static QColor colorFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer, const QgsSymbolV2RenderContext &ctx );
+    QString lineStyleFromSymbolLayer( const QgsSymbolLayerV2 *symbolLayer );
 
     //functions for dxf palette
     static int color_distance( QRgb p1, int index );
@@ -167,15 +164,15 @@ class CORE_EXPORT QgsDxfExport
     //helper functions for symbology export
     QgsRenderContext renderContext() const;
 
-    QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2* > > symbolLayers();
-    static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> >& symbolLayers );
-    static bool hasDataDefinedProperties( const QgsSymbolLayerV2* sl, const QgsSymbolV2* symbol );
+    QList< QPair< QgsSymbolLayerV2 *, QgsSymbolV2 * > > symbolLayers();
+    static int nLineTypes( const QList< QPair< QgsSymbolLayerV2*, QgsSymbolV2*> > &symbolLayers );
+    static bool hasDataDefinedProperties( const QgsSymbolLayerV2 *sl, const QgsSymbolV2 *symbol );
     double dashSize() const;
     double dotSize() const;
     double dashSeparatorSize() const;
     double sizeToMapUnits( double s ) const;
     static QString lineNameFromPenStyle( Qt::PenStyle style );
-    bool layerIsScaleBasedVisible( const QgsMapLayer* layer ) const;
+    bool layerIsScaleBasedVisible( const QgsMapLayer *layer ) const;
 
     int mModelSpaceBR;
 };

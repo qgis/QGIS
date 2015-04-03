@@ -121,7 +121,7 @@ class CORE_EXPORT QgsComposerMapOverviewStack : public QgsComposerMapItemStack
      * @returns true if read was successful
      * @see writeXML
      */
-    bool readXML( const QDomElement& elem, const QDomDocument& doc );
+    bool readXML( const QDomElement& elem, const QDomDocument& doc ) override;
 
 };
 
@@ -149,23 +149,23 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
     /**Draws an overview
      * @param painter destination QPainter
      */
-    void draw( QPainter* painter );
+    void draw( QPainter* painter ) override;
 
     /**Stores overview state in DOM element
      * @param elem is DOM element corresponding to a 'ComposerMap' tag
      * @param doc DOM document
      * @see readXML
     */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /**Sets overview state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
      * @param doc is DOM document
      * @see writeXML
     */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
-    bool usesAdvancedEffects() const;
+    bool usesAdvancedEffects() const override;
 
     /**Sets overview frame map.
      * @param mapId source map id. -1 disables the overview frame

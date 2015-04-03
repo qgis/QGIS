@@ -30,8 +30,8 @@ from PyQt4 import QtGui
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.outputs import OutputRaster
-from processing.tools.system import *
-from SagaUtils import SagaUtils
+from processing.tools.system import getTempFilename, isWindows
+import SagaUtils
 
 
 class SplitRGBBands(GeoAlgorithm):
@@ -47,11 +47,14 @@ class SplitRGBBands(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Split RGB bands'
         self.group = 'Grid - Tools'
-        self.addParameter(ParameterRaster(SplitRGBBands.INPUT, 'Input layer',
-                          False))
-        self.addOutput(OutputRaster(SplitRGBBands.R, 'Output R band layer'))
-        self.addOutput(OutputRaster(SplitRGBBands.G, 'Output G band layer'))
-        self.addOutput(OutputRaster(SplitRGBBands.B, 'Output B band layer'))
+        self.addParameter(ParameterRaster(SplitRGBBands.INPUT,
+            self.tr('Input layer'), False))
+        self.addOutput(OutputRaster(SplitRGBBands.R,
+            self.tr('Output R band layer')))
+        self.addOutput(OutputRaster(SplitRGBBands.G,
+            self.tr('Output G band layer')))
+        self.addOutput(OutputRaster(SplitRGBBands.B,
+            self.tr('Output B band layer')))
 
     def processAlgorithm(self, progress):
         # TODO: check correct num of bands

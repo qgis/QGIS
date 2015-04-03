@@ -30,11 +30,10 @@ import os
 import stat
 import subprocess
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QSettings, QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import userFolder, isWindows, mkdir
 
 
 class RUtils:
@@ -86,13 +85,13 @@ class RUtils:
                 execDir = 'i386'
             command = [
                 RUtils.RFolder() + os.sep + 'bin' + os.sep + execDir + os.sep
-                    + 'R.exe',
+                + 'R.exe',
                 'CMD',
                 'BATCH',
                 '--vanilla',
                 RUtils.getRScriptFilename(),
                 RUtils.getConsoleOutputFilename(),
-                ]
+            ]
         else:
             os.chmod(RUtils.getRScriptFilename(), stat.S_IEXEC | stat.S_IREAD
                      | stat.S_IWRITE)
@@ -106,11 +105,11 @@ class RUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            )
+        )
         proc.wait()
         RUtils.createConsoleOutput()
         loglines = []
-        loglines.append('R execution console output')
+        loglines.append(RUtils.tr('R execution console output'))
         loglines += RUtils.allConsoleResults
         for line in loglines:
             progress.setConsoleInfo(line)
@@ -124,7 +123,7 @@ class RUtils:
         if os.path.exists(RUtils.getConsoleOutputFilename()):
             lines = open(RUtils.getConsoleOutputFilename())
             for line in lines:
-                line = line.strip('\n').strip(' ')
+                line = line.strip().strip(' ')
                 if line.startswith('>'):
                     line = line[1:].strip(' ')
                     if line in RUtils.verboseCommands:
@@ -138,7 +137,7 @@ class RUtils:
     @staticmethod
     def getConsoleOutput():
         s = '<font face="courier">\n'
-        s += '<h2> R Output</h2>\n'
+        s += RUtils.tr('<h2>R Output</h2>\n')
         for line in RUtils.consoleResults:
             s += line
         s += '</font>\n'
@@ -150,8 +149,8 @@ class RUtils:
         if isWindows():
             path = RUtils.RFolder()
             if path == '':
-                return 'R folder is not configured.\nPlease configure it \
-                        before running R scripts.'
+                return RUtils.tr('R folder is not configured.\nPlease configure '
+                                 'it before running R scripts.')
 
         R_INSTALLED = 'R_INSTALLED'
         settings = QSettings()
@@ -174,16 +173,18 @@ class RUtils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
 
         for line in iter(proc.readline, ''):
             if 'R version' in line:
                 settings.setValue(R_INSTALLED, True)
                 return
-        html = '<p>This algorithm requires R to be run. Unfortunately, it \
-                seems that R is not installed in your system, or it is not \
-                correctly configured to be used from QGIS</p> \
-                <p><a href= "http://docs.qgis.org/2.0/en/docs/user_manual/processing/3rdParty.html">Click here</a>to know more about how to install and configure R to be used with QGIS</p>'
+        html = RUtils.tr(
+            '<p>This algorithm requires R to be run. Unfortunately, it '
+            'seems that R is not installed in your system, or it is not '
+            'correctly configured to be used from QGIS</p>'
+            '<p><a href="http://docs.qgis.org/testing/en/docs/user_manual/processing/3rdParty.html">Click here</a> '
+            'to know more about how to install and configure R to be used with QGIS</p>')
 
         return html
 
@@ -191,3 +192,9 @@ class RUtils:
     def getRequiredPackages(code):
         regex = re.compile('library\("?(.*?)"?\)')
         return regex.findall(code)
+
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'RUtils'
+        return QCoreApplication.translate(context, string)

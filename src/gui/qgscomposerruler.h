@@ -21,7 +21,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     QgsComposerRuler( QgsComposerRuler::Direction d );
     ~QgsComposerRuler();
 
-    QSize minimumSizeHint() const;
+    QSize minimumSizeHint() const override;
 
     void setSceneTransform( const QTransform& transform );
     void updateMarker( const QPointF& pos ) { mMarkerPos = pos; repaint(); }
@@ -32,10 +32,10 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     int rulerSize() { return mRulerMinSize; }
 
   protected:
-    void paintEvent( QPaintEvent* event );
-    void mouseMoveEvent( QMouseEvent* event );
-    void mouseReleaseEvent( QMouseEvent* event );
-    void mousePressEvent( QMouseEvent* event );
+    void paintEvent( QPaintEvent* event ) override;
+    void mouseMoveEvent( QMouseEvent* event ) override;
+    void mouseReleaseEvent( QMouseEvent* event ) override;
+    void mousePressEvent( QMouseEvent* event ) override;
 
   private:
     static const int validScaleMultiples[];

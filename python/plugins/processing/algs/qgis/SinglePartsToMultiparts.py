@@ -25,11 +25,9 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.outputs import OutputVector
@@ -42,31 +40,24 @@ class SinglePartsToMultiparts(GeoAlgorithm):
     FIELD = 'FIELD'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/single_to_multi.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Singleparts to multipart'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer'))
-        self.addParameter(ParameterTableField(self.FIELD, 'Unique ID field',
-                          self.INPUT))
+        self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Unique ID field'), self.INPUT))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
         fieldName = self.getParameterValue(self.FIELD)
 
         geomType = self.singleToMultiGeom(layer.dataProvider().geometryType())
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                                             geomType, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            layer.pendingFields().toList(), geomType, layer.crs())
 
         inFeat = QgsFeature()
         outFeat = QgsFeature()
@@ -108,7 +99,7 @@ class SinglePartsToMultiparts(GeoAlgorithm):
 
             del writer
         else:
-            raise GeoAlgorithmExecutionException('Invalid unique ID field')
+            raise GeoAlgorithmExecutionException(self.tr('Invalid unique ID field'))
 
     def singleToMultiGeom(self, wkbType):
         try:

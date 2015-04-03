@@ -25,8 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsGeometry, QgsFeatureRequest, QgsFeature, QgsField
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -41,28 +41,21 @@ class PointsInPolygon(GeoAlgorithm):
     OUTPUT = 'OUTPUT'
     FIELD = 'FIELD'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/sum_points.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Count points in polygon'
         self.group = 'Vector analysis tools'
-        self.addParameter(ParameterVector(self.POLYGONS, 'Polygons',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addParameter(ParameterVector(self.POINTS, 'Points',
-                          [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterString(self.FIELD, 'Count field name',
-                          'NUMPOINTS'))
+        self.addParameter(ParameterVector(self.POLYGONS,
+            self.tr('Polygons'), [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.POINTS,
+            self.tr('Points'), [ParameterVector.VECTOR_TYPE_POINT]))
+        self.addParameter(ParameterString(self.FIELD,
+            self.tr('Count field name'), 'NUMPOINTS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Result'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Result')))
 
     def processAlgorithm(self, progress):
-        polyLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POLYGONS))
-        pointLayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.POINTS))
+        polyLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POLYGONS))
+        pointLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.POINTS))
         fieldName = self.getParameterValue(self.FIELD)
 
         polyProvider = polyLayer.dataProvider()
@@ -72,10 +65,8 @@ class PointsInPolygon(GeoAlgorithm):
         (idxCount, fieldList) = vector.findOrCreateField(polyLayer,
                 polyLayer.pendingFields(), fieldName)
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(fields.toList(),
-                                             polyProvider.geometryType(),
-                                             polyProvider.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            fields.toList(), polyProvider.geometryType(), polyProvider.crs())
 
         spatialIndex = vector.spatialindex(pointLayer)
 

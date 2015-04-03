@@ -40,7 +40,7 @@ QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget* parent )
   {
     Qt::PenStyle style = styles.at( i ).first;
     QString name = styles.at( i ).second;
-    addItem( iconForPen( style ), name, QVariant( style ) );
+    addItem( iconForPen( style ), name, QVariant(( int ) style ) );
   }
 }
 
@@ -51,7 +51,7 @@ Qt::PenStyle QgsPenStyleComboBox::penStyle() const
 
 void QgsPenStyleComboBox::setPenStyle( Qt::PenStyle style )
 {
-  int idx = findData( QVariant( style ) );
+  int idx = findData( QVariant(( int ) style ) );
   setCurrentIndex( idx == -1 ? 0 : idx );
 }
 

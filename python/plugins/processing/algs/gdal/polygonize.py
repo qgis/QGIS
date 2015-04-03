@@ -30,7 +30,7 @@ from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterString
 from processing.core.outputs import OutputVector
-from processing.tools.system import *
+from processing.tools.system import isWindows
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
@@ -46,11 +46,11 @@ class polygonize(GdalAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Polygonize (raster to vector)'
         self.group = '[GDAL] Conversion'
-        self.addParameter(ParameterRaster(polygonize.INPUT, 'Input layer',
-                          False))
-        self.addParameter(ParameterString(polygonize.FIELD, 'Output field name'
-                          , 'DN'))
-        self.addOutput(OutputVector(polygonize.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterRaster(polygonize.INPUT,
+            self.tr('Input layer'), False))
+        self.addParameter(ParameterString(polygonize.FIELD,
+            self.tr('Output field name'), 'DN'))
+        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         arguments = []

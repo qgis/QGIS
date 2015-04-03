@@ -34,7 +34,9 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 
-//#include "modeltest.h"
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -64,7 +66,9 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   setupUi( this );
 
   mModel = new QgsRuleBasedRendererV2Model( mRenderer );
-  //new ModelTest( mModel, this ); // for model validity checking
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mModel, this ); // for model validity checking
+#endif
   viewRules->setModel( mModel );
 
   mDeleteAction = new QAction( tr( "Remove Rule" ), this );
@@ -560,7 +564,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
     : QDialog( parent ), mRule( rule ), mLayer( layer ), mSymbolSelector( NULL ), mSymbol( NULL )
 {
   setupUi( this );
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
 
@@ -577,8 +581,10 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::
   {
     groupScale->setChecked( true );
     // caution: rule uses scale denom, scale widget uses true scales
-    mScaleRangeWidget->setMaximumScale( 1.0 / rule->scaleMinDenom() );
-    mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
+    if ( rule->scaleMinDenom() > 0 )
+      mScaleRangeWidget->setMaximumScale( 1.0 / rule->scaleMinDenom() );
+    if ( rule->scaleMaxDenom() > 0 )
+      mScaleRangeWidget->setMinimumScale( 1.0 / rule->scaleMaxDenom() );
   }
 
   if ( mRule->symbol() )
@@ -794,8 +800,8 @@ QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role )
     {
       case 0: return rule->label();
       case 1: return rule->filterExpression();
-      case 2: return rule->scaleMinDenom();
-      case 3: return rule->scaleMaxDenom();
+      case 2: return rule->scaleMaxDenom();
+      case 3: return rule->scaleMinDenom();
       default: return QVariant();
     }
   }
@@ -900,10 +906,10 @@ bool QgsRuleBasedRendererV2Model::setData( const QModelIndex & index, const QVar
       rule->setFilterExpression( value.toString() );
       break;
     case 2: // scale min
-      rule->setScaleMinDenom( value.toInt() );
+      rule->setScaleMaxDenom( value.toInt() );
       break;
     case 3: // scale max
-      rule->setScaleMaxDenom( value.toInt() );
+      rule->setScaleMinDenom( value.toInt() );
       break;
     default:
       return false;

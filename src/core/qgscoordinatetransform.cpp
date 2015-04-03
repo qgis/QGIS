@@ -39,6 +39,7 @@ extern "C"
 
 QgsCoordinateTransform::QgsCoordinateTransform()
     : QObject()
+    , mShortCircuit( false )
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
@@ -50,6 +51,7 @@ QgsCoordinateTransform::QgsCoordinateTransform()
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source, const QgsCoordinateReferenceSystem& dest )
     : QObject()
+    , mShortCircuit( false )
     , mInitialisedFlag( false )
     , mSourceProjection( 0 )
     , mDestinationProjection( 0 )
@@ -273,7 +275,7 @@ void QgsCoordinateTransform::initialise()
 //
 
 
-QgsPoint QgsCoordinateTransform::transform( const QgsPoint thePoint, TransformDirection direction ) const
+QgsPoint QgsCoordinateTransform::transform( const QgsPoint &thePoint, TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return thePoint;
@@ -296,7 +298,7 @@ QgsPoint QgsCoordinateTransform::transform( const QgsPoint thePoint, TransformDi
 }
 
 
-QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY = 0, TransformDirection direction ) const
+QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, TransformDirection direction ) const
 {
   try
   {
@@ -310,7 +312,7 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
   }
 }
 
-QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle theRect, TransformDirection direction ) const
+QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle &theRect, TransformDirection direction ) const
 {
   if ( mShortCircuit || !mInitialisedFlag )
     return theRect;
@@ -520,7 +522,7 @@ void QgsCoordinateTransform::transformInPlace(
 #endif //ANDROID
 
 
-QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle rect, TransformDirection direction, const bool handle180Crossover ) const
+QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &rect, TransformDirection direction, const bool handle180Crossover ) const
 {
   // Calculate the bounding box of a QgsRectangle in the source CRS
   // when projected to the destination CRS (or the inverse).
@@ -696,14 +698,20 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
     dir = ( direction == ForwardTransform ) ? tr( "forward transform" ) : tr( "inverse transform" );
 
+    char *srcdef = pj_get_def( mSourceProjection, 0 );
+    char *dstdef = pj_get_def( mDestinationProjection, 0 );
+
     QString msg = tr( "%1 of\n"
                       "%2"
                       "PROJ.4: %3 +to %4\n"
                       "Error: %5" )
                   .arg( dir )
                   .arg( points )
-                  .arg( mSourceCRS.toProj4() ).arg( mDestCRS.toProj4() )
+                  .arg( srcdef ).arg( dstdef )
                   .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
+
+    pj_dalloc( srcdef );
+    pj_dalloc( dstdef );
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
 

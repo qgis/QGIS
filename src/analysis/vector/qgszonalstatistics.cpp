@@ -43,6 +43,7 @@ QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QStr
 QgsZonalStatistics::QgsZonalStatistics()
     : mRasterBand( 0 )
     , mPolygonLayer( 0 )
+    , mInputNodataValue( -1 )
 {
 
 }
@@ -362,6 +363,8 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
           }
           delete intersectGeometry;
         }
+        delete pixelRectGeometry;
+        pixelRectGeometry = 0;
       }
       currentX += cellSizeX;
     }

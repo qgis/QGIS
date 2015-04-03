@@ -27,11 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import sys
-import hashlib
 
 from PyQt4 import QtGui, QtCore
-from qgis.core import QgsApplication, QgsVectorLayer, QgsRasterLayer, \
-    QgsRectangle, QgsCoordinateReferenceSystem
+from qgis.core import QgsApplication
 
 from qgis.gui import QgsMapCanvas
 from qgis_interface import QgisInterface

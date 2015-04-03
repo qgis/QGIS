@@ -46,7 +46,7 @@ class CORE_EXPORT QgsVector
     double x() const;
     double y() const;
 
-    // perpendicular vector (rotated 90° counter-clockwise)
+    // perpendicular vector (rotated 90 degrees counter-clockwise)
     QgsVector perpVector() const;
 
     double angle( void ) const;
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVector
 };
 
 /** \ingroup core
- * A class to represent a point geometry.
+ * A class to represent a point.
  * Currently no Z axis / 2.5D support is implemented.
  */
 class CORE_EXPORT QgsPoint
@@ -76,6 +76,22 @@ class CORE_EXPORT QgsPoint
      */
     QgsPoint( double x, double y )
         : m_x( x ), m_y( y )
+    {}
+
+    /*! Create a point from a QPointF
+     * @param point QPointF source
+     * @note added in QGIS 2.7
+     */
+    QgsPoint( const QPointF& point )
+        : m_x( point.x() ), m_y( point.y() )
+    {}
+
+    /*! Create a point from a QPoint
+     * @param point QPoint source
+     * @note added in QGIS 2.7
+     */
+    QgsPoint( const QPoint& point )
+        : m_x( point.x() ), m_y( point.y() )
     {}
 
     ~QgsPoint()
@@ -120,6 +136,12 @@ class CORE_EXPORT QgsPoint
       return m_y;
     }
 
+    /** Converts a point to a QPointF
+     * @returns QPointF with same x and y values
+     * @note added in QGIS 2.7
+     */
+    QPointF toQPointF() const;
+
     //! String representation of the point (x,y)
     QString toString() const;
 
@@ -134,7 +156,6 @@ class CORE_EXPORT QgsPoint
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes and seconds to use two decimals,
      *  eg, '05' instead of '5'.
-     *  @note added in QGIS 1.4
      */
     QString toDegreesMinutesSeconds( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
@@ -146,7 +167,6 @@ class CORE_EXPORT QgsPoint
      *  set to false to use a "-" prefix for west and south coordinates
      *  @param padded set to true to force minutes to use two decimals,
      *  eg, '05' instead of '5'.
-     *  @note added in QGIS 1.9
      */
     QString toDegreesMinutes( int thePrecision, const bool useSuffix = true, const bool padded = false ) const;
 
@@ -163,13 +183,19 @@ class CORE_EXPORT QgsPoint
     /**Returns the squared distance between this and other point*/
     double sqrDist( const QgsPoint& other ) const;
 
-    /**Returns the minimum distance between this point and a segment
-    @note added in QGIS 1.5*/
+    /**Returns the minimum distance between this point and a segment */
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
-    /**Calculates azimut between this point and other one (clockwise in degree, starting from north)
-      @note: this function has been added in version 1.7*/
+    /**Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
     double azimuth( const QgsPoint& other );
+
+    /** Compares this point with another point with a fuzzy tolerance
+     * @param other point to compare with
+     * @param epsilon maximum difference for coordinates between the points
+     * @returns true if points are equal within specified tolerance
+     * @note added in QGIS 2.9
+    */
+    bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
 
     //! equality operator
     bool operator==( const QgsPoint &other );

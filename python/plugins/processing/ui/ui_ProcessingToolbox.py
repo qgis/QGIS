@@ -2,8 +2,8 @@
 
 # Form implementation generated from reading ui file 'ProcessingToolbox.ui'
 #
-# Created: Fri Sep 13 14:18:19 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:49 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,7 +12,16 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_ProcessingToolbox(object):
     def setupUi(self, ProcessingToolbox):
@@ -21,7 +30,7 @@ class Ui_ProcessingToolbox(object):
         self.dockWidgetContents = QtGui.QWidget()
         self.dockWidgetContents.setObjectName(_fromUtf8("dockWidgetContents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.dockWidgetContents)
-        self.verticalLayout.setSpacing(2)
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.searchBox = QgsFilterLineEdit(self.dockWidgetContents)
@@ -42,7 +51,7 @@ class Ui_ProcessingToolbox(object):
         QtCore.QMetaObject.connectSlotsByName(ProcessingToolbox)
 
     def retranslateUi(self, ProcessingToolbox):
-        ProcessingToolbox.setWindowTitle(QtGui.QApplication.translate("ProcessingToolbox", "Processing Toolbox", None, QtGui.QApplication.UnicodeUTF8))
-        self.searchBox.setToolTip(QtGui.QApplication.translate("ProcessingToolbox", "Enter algorithm name to filter list", None, QtGui.QApplication.UnicodeUTF8))
+        ProcessingToolbox.setWindowTitle(_translate("ProcessingToolbox", "Processing Toolbox", None))
+        self.searchBox.setToolTip(_translate("ProcessingToolbox", "Enter algorithm name to filter list", None))
 
 from qgis.gui import QgsFilterLineEdit

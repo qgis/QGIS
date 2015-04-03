@@ -63,9 +63,7 @@ class CORE_EXPORT QgsLabelPosition
     bool isPinned;
 };
 
-/** Labeling engine interface.
- * \note Added in QGIS v1.4
- */
+/** Labeling engine interface. */
 class CORE_EXPORT QgsLabelingEngineInterface
 {
   public:
@@ -80,16 +78,12 @@ class CORE_EXPORT QgsLabelingEngineInterface
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
     //! clears all PAL layer settings for registered layers
-    //! @note: this method was added in version 1.9
     virtual void clearActiveLayers() = 0;
     //! clears data defined objects from PAL layer settings for a registered layer
-    //! @note: this method was added in version 1.9
     virtual void clearActiveLayer( const QString& layerID ) = 0;
     //! called when starting rendering of a layer
-    //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QStringList& attrNames, QgsRenderContext& ctx ) = 0;
     //! returns PAL layer settings for a registered layer
-    //! @note: this method was added in version 1.9
     virtual QgsPalLayerSettings& layer( const QString& layerName ) = 0;
     //! adds a diagram layer to the labeling engine
     virtual int addDiagramLayer( QgsVectorLayer* layer, const QgsDiagramLayerSettings* s )
@@ -104,11 +98,9 @@ class CORE_EXPORT QgsLabelingEngineInterface
     //! called when we're done with rendering
     virtual void exit() = 0;
     //! return infos about labels at a given (map) position
-    //! @note: this method was added in version 1.7
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsAtPosition( const QgsPoint& p ) = 0;
     //! return infos about labels within a given (map) rectangle
-    //! @note: this method was added in version 1.9
     //! @deprecated since 2.4 - use takeResults() and methods of QgsLabelingResults
     Q_DECL_DEPRECATED virtual QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle& r ) = 0;
 
@@ -191,6 +183,15 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! returns current extent
     QgsRectangle extent() const;
+
+    //! sets rotation
+    //! value in clockwise degrees
+    //! @note added in 2.8
+    void setRotation( double degrees );
+
+    //! returns current rotation in clockwise degrees
+    //! @note added in 2.8
+    double rotation() const;
 
     const QgsMapToPixel* coordinateTransform() { return &( mRenderContext.mapToPixel() ); }
 
@@ -300,19 +301,15 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     QgsRenderContext* rendererContext() {return &mRenderContext;}
 
     //! Labeling engine (NULL if there's no custom engine)
-    //! \note Added in QGIS v1.4
     QgsLabelingEngineInterface* labelingEngine() { return mLabelingEngine; }
 
     //! Set labeling engine. Previous engine (if any) is deleted.
     //! Takes ownership of the engine.
-    //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface );
 
     //! Returns a QPainter::CompositionMode corresponding to a BlendMode
-    //! Added in 1.9
     static QPainter::CompositionMode getCompositionMode( const QgsMapRenderer::BlendMode &blendMode );
     //! Returns a BlendMode corresponding to a QPainter::CompositionMode
-    //! Added in 1.9
     static QgsMapRenderer::BlendMode getBlendModeEnum( const QPainter::CompositionMode &blendMode );
 
     void addLayerCoordinateTransform( const QString& layerId, const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
@@ -365,6 +362,10 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! @note added in 2.4
     void extentsChanged();
 
+    //! emitted when the current rotation gets changed
+    //! @note added in 2.8
+    void rotationChanged( double );
+
     //! Notifies higher level components to show the datum transform dialog and add a QgsLayerCoordinateTransformInfo for that layer
     void datumTransformInfoRequested( const QgsMapLayer* ml, const QString& srcAuthId, const QString& destAuthId ) const;
 
@@ -388,6 +389,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! Map scale denominator at its current zoom level
     double mScale;
 
+    //! Map rotation
+    double mRotation;
+
     //! scale calculator
     QgsScaleCalculator * mScaleCalculator;
 
@@ -397,8 +401,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     /** Last extent to we drew so we know if we can
         used layer render caching or not. Note there are no
         accessors for this as it is intended to internal
-        use only.
-        @note added in QGIS 1.4 */
+        use only. */
     QgsRectangle mLastExtent;
 
     //! indicates whether it's map image for overview

@@ -44,16 +44,21 @@ class lasnoise(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(lasnoise.ISOLATED, "isolated if surrounding cells have only", 0, None, 5))
-        self.addParameter(ParameterNumber(lasnoise.STEP_XY, "resolution of isolation grid in xy", 0, None, 4.0))
-        self.addParameter(ParameterNumber(lasnoise.STEP_Z, "resolution of isolation grid in z ", 0, None, 4.0))
-        self.addParameter(ParameterSelection(lasnoise.OPERATION, "what to do with isolated points", lasnoise.OPERATIONS, 0))
-        self.addParameter(ParameterNumber(lasnoise.CLASSIFY_AS, "classify as", 0, None, 7))
+        self.addParameter(ParameterNumber(lasnoise.ISOLATED,
+            self.tr("isolated if surrounding cells have only"), 0, None, 5))
+        self.addParameter(ParameterNumber(lasnoise.STEP_XY,
+            self.tr("resolution of isolation grid in xy"), 0, None, 4.0))
+        self.addParameter(ParameterNumber(lasnoise.STEP_Z,
+            self.tr("resolution of isolation grid in z"), 0, None, 4.0))
+        self.addParameter(ParameterSelection(lasnoise.OPERATION,
+            self.tr("what to do with isolated points"), lasnoise.OPERATIONS, 0))
+        self.addParameter(ParameterNumber(lasnoise.CLASSIFY_AS,
+            self.tr("classify as"), 0, None, 7))
         self.addParametersPointOutputGUI()
-
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasnoise.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasnoise")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         isolated = self.getParameterValue(lasnoise.ISOLATED)
@@ -73,5 +78,6 @@ class lasnoise(LAStoolsAlgorithm):
             classify_as = self.getParameterValue(lasnoise.CLASSIFY_AS)
             commands.append(str(classify_as))
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

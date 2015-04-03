@@ -14,8 +14,9 @@
  ***************************************************************************/
 
 
-#include <QtTest>
+#include <QtTest/QtTest>
 
+#include <editorwidgets/core/qgseditorwidgetregistry.h>
 #include <attributetable/qgsattributetableview.h>
 #include <attributetable/qgsdualview.h>
 #include <qgsapplication.h>
@@ -23,9 +24,16 @@
 #include <qgsmapcanvas.h>
 #include <qgsfeature.h>
 
-class TestQgsDualView: public QObject
+class TestQgsDualView : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsDualView()
+        : mCanvas( 0 )
+        , mPointsLayer( 0 )
+        , mDualView( 0 )
+    {}
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -46,6 +54,7 @@ void TestQgsDualView::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   QgsApplication::showSettings();
+  QgsEditorWidgetRegistry::initEditors();
 
   // Setup a map canvas with a vector layer loaded...
   QString myDataDir( TEST_DATA_DIR ); //defined in CmakeLists.txt
@@ -66,6 +75,7 @@ void TestQgsDualView::cleanupTestCase()
 {
   delete mPointsLayer;
   delete mCanvas;
+  QgsApplication::exitQgis();
 }
 
 void TestQgsDualView::init()
@@ -94,7 +104,7 @@ void TestQgsDualView::testSelectAll()
 }
 
 QTEST_MAIN( TestQgsDualView )
-#include "moc_testqgsdualview.cxx"
+#include "testqgsdualview.moc"
 
 
 

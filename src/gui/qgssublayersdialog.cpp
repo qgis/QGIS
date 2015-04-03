@@ -153,14 +153,14 @@ int QgsSublayersDialog::exec()
   // if we got here, disable override cursor, open dialog and return result
   // TODO add override cursor where it is missing (e.g. when opening via "Add Raster")
   QCursor cursor;
-  bool override = ( QApplication::overrideCursor() != 0 );
-  if ( override )
+  bool overrideCursor = ( QApplication::overrideCursor() != 0 );
+  if ( overrideCursor )
   {
     cursor = QCursor( * QApplication::overrideCursor() );
     QApplication::restoreOverrideCursor();
   }
   int ret = QDialog::exec();
-  if ( override )
+  if ( overrideCursor )
     QApplication::setOverrideCursor( cursor );
   return ret;
 }

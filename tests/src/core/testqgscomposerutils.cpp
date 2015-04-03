@@ -22,12 +22,15 @@
 #include "qgsdatadefined.h"
 #include "qgsfontutils.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QMap>
 
-class TestQgsComposerUtils: public QObject
+class TestQgsComposerUtils : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsComposerUtils();
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -66,6 +69,12 @@ class TestQgsComposerUtils: public QObject
 
 };
 
+TestQgsComposerUtils::TestQgsComposerUtils()
+    : mComposition( NULL )
+{
+
+}
+
 void TestQgsComposerUtils::initTestCase()
 {
   QgsApplication::init();
@@ -85,6 +94,8 @@ void TestQgsComposerUtils::initTestCase()
 void TestQgsComposerUtils::cleanupTestCase()
 {
   delete mComposition;
+
+  QgsApplication::exitQgis();
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -682,4 +693,4 @@ bool TestQgsComposerUtils::renderCheck( QString testName, QImage &image, int mis
 }
 
 QTEST_MAIN( TestQgsComposerUtils )
-#include "moc_testqgscomposerutils.cxx"
+#include "testqgscomposerutils.moc"

@@ -49,6 +49,8 @@
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WindowFlags f )
     : QGraphicsView( parent )
+    , mCurrentTool( Select )
+    , mPreviousTool( Select )
     , mRubberBandItem( 0 )
     , mRubberBandLineItem( 0 )
     , mMoveContentItem( 0 )
@@ -1723,13 +1725,13 @@ void QgsComposerView::paintEvent( QPaintEvent* event )
 
 void QgsComposerView::hideEvent( QHideEvent* e )
 {
-  emit( composerViewHide( this ) );
+  emit composerViewHide( this );
   e->ignore();
 }
 
 void QgsComposerView::showEvent( QShowEvent* e )
 {
-  emit( composerViewShow( this ) );
+  emit composerViewShow( this );
   e->ignore();
 }
 

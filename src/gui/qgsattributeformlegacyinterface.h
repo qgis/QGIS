@@ -31,7 +31,7 @@ class GUI_EXPORT QgsAttributeFormLegacyInterface : public QgsAttributeFormInterf
     ~QgsAttributeFormLegacyInterface();
 
     // QgsAttributeFormInterface interface
-    void featureChanged();
+    void featureChanged() override;
 
   private:
     QString mPyFunctionName;

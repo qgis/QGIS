@@ -26,11 +26,21 @@
 #include "qgsfeature.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestQgsComposerTable: public QObject
+class TestQgsComposerTable : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerTable()
+        : mComposition( 0 )
+        , mComposerMap( 0 )
+        , mComposerTextTable( 0 )
+        , mVectorLayer( 0 )
+        , mComposerAttributeTable( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -92,7 +102,8 @@ void TestQgsComposerTable::initTestCase()
 void TestQgsComposerTable::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerTable::init()
@@ -506,5 +517,5 @@ void TestQgsComposerTable::attributeTableVisibleOnly()
 }
 
 QTEST_MAIN( TestQgsComposerTable )
-#include "moc_testqgscomposertable.cxx"
+#include "testqgscomposertable.moc"
 

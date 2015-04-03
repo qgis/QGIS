@@ -167,6 +167,7 @@ QgsRasterBlock * QgsRasterResampleFilter::block( int bandNo, QgsRectangle  const
   if ((( oversampling < 1.0 || qgsDoubleNear( oversampling, 1.0 ) ) && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
   {
     QgsDebugMsg( "No oversampling." );
+    delete outputBlock;
     return mInput->block( bandNumber, extent, width, height );
   }
 

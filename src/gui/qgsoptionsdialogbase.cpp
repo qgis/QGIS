@@ -31,8 +31,14 @@ QgsOptionsDialogBase::QgsOptionsDialogBase( QString settingsKey, QWidget* parent
     : QDialog( parent, fl )
     , mOptsKey( settingsKey )
     , mInit( false )
+    , mOptListWidget( NULL )
+    , mOptStackedWidget( NULL )
+    , mOptSplitter( NULL )
+    , mOptButtonBox( NULL )
     , mDialogTitle( "" )
+    , mIconOnly( false )
     , mSettings( settings )
+    , mDelSettings( false )
 {
 }
 

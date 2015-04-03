@@ -58,11 +58,11 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
     void setVisible( Qt::CheckState visible );
 
     static QgsLayerTreeLayer* readXML( QDomElement& element );
-    virtual void writeXML( QDomElement& parentElement );
+    virtual void writeXML( QDomElement& parentElement ) override;
 
-    virtual QString dump() const;
+    virtual QString dump() const override;
 
-    virtual QgsLayerTreeNode* clone() const;
+    virtual QgsLayerTreeNode* clone() const override;
 
   protected slots:
     void registryLayersAdded( QList<QgsMapLayer*> layers );

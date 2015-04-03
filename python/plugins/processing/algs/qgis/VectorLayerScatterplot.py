@@ -27,14 +27,14 @@ __revision__ = '$Format:%H$'
 
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
-from PyQt4.QtCore import *
-from qgis.core import *
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
-from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputHTML
-from processing.tools import *
+
+from processing.tools import vector
+from processing.tools import dataobjects
 
 
 class VectorLayerScatterplot(GeoAlgorithm):
@@ -44,29 +44,34 @@ class VectorLayerScatterplot(GeoAlgorithm):
     XFIELD = 'XFIELD'
     YFIELD = 'YFIELD'
 
+    def defineCharacteristics(self):
+        self.name = 'Vector layer scatterplot'
+        self.group = 'Graphics'
+
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.XFIELD,
+            self.tr('X attribute'), self.INPUT,
+            ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterTableField(self.YFIELD,
+            self.tr('Y attribute'), self.INPUT,
+            ParameterTableField.DATA_TYPE_NUMBER))
+
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
+
     def processAlgorithm(self, progress):
-        uri = self.getParameterValue(self.INPUT)
-        layer = getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(
+            self.getParameterValue(self.INPUT))
         xfieldname = self.getParameterValue(self.YFIELD)
         yfieldname = self.getParameterValue(self.XFIELD)
-        output = self.getOutputValue(self.OUTPUT)
-        values = vector.getAttributeValues(layer, xfieldname, yfieldname)
-        plt.close()
 
+        output = self.getOutputValue(self.OUTPUT)
+
+        values = vector.values(layer, xfieldname, yfieldname)
+        plt.close()
         plt.scatter(values[xfieldname], values[yfieldname])
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
         f = open(output, 'w')
         f.write('<img src="' + plotFilename + '"/>')
         f.close()
-
-    def defineCharacteristics(self):
-        self.name = 'Vector layer scatterplot'
-        self.group = 'Graphics'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.XFIELD, 'X attribute',
-                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterTableField(self.YFIELD, 'Y attribute',
-                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addOutput(OutputHTML(self.OUTPUT, 'Output'))

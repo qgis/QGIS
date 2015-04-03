@@ -115,14 +115,12 @@ void QgsScaleComboBox::showPopup()
 }
 
 //! Function to read the selected scale as text
-// @note added in 2.0
 QString QgsScaleComboBox::scaleString()
 {
   return toString( mScale );
 }
 
 //! Function to set the selected scale from text
-// @note added in 2.0
 bool QgsScaleComboBox::setScaleString( QString scaleTxt )
 {
   bool ok;
@@ -141,14 +139,12 @@ bool QgsScaleComboBox::setScaleString( QString scaleTxt )
 }
 
 //! Function to read the selected scale as double
-// @note added in 2.0
 double QgsScaleComboBox::scale()
 {
   return mScale;
 }
 
 //! Function to set the selected scale from double
-// @note added in 2.0
 void QgsScaleComboBox::setScale( double scale )
 {
   setScaleString( toString( scale ) );
@@ -210,27 +206,29 @@ double QgsScaleComboBox::toDouble( QString scaleString, bool * returnOk )
   bool ok = false;
   QString scaleTxt( scaleString );
 
-  double scale = QLocale::system().toDouble( scaleTxt, &ok );
+  double scale = QGis::permissiveToDouble( scaleTxt, ok );
   if ( ok )
   {
     // Create a text version and set that text and rescan
     // Idea is to get the same rounding.
     scaleTxt = toString( scale );
   }
-  // It is now either X:Y or not valid
-  ok = false;
-  QStringList txtList = scaleTxt.split( ':' );
-  if ( 2 == txtList.size() )
+  else
   {
-    bool okX = false;
-    bool okY = false;
-    int x = QLocale::system().toInt( txtList[ 0 ], &okX );
-    int y = QLocale::system().toInt( txtList[ 1 ], &okY );
-    if ( okX && okY )
+    // It is now either X:Y or not valid
+    QStringList txtList = scaleTxt.split( ':' );
+    if ( 2 == txtList.size() )
     {
-      // Scale is fraction of x and y
-      scale = ( double )x / ( double )y;
-      ok = true;
+      bool okX = false;
+      bool okY = false;
+      int x = QGis::permissiveToInt( txtList[ 0 ], okX );
+      int y = QGis::permissiveToInt( txtList[ 1 ], okY );
+      if ( okX && okY )
+      {
+        // Scale is fraction of x and y
+        scale = ( double )x / ( double )y;
+        ok = true;
+      }
     }
   }
 

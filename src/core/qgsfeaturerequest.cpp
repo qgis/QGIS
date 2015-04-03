@@ -24,6 +24,7 @@ const QString QgsFeatureRequest::AllAttributes = QString( "#!allattributes!#" );
 
 QgsFeatureRequest::QgsFeatureRequest()
     : mFilter( FilterNone )
+    , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
 {
@@ -40,6 +41,7 @@ QgsFeatureRequest::QgsFeatureRequest( QgsFeatureId fid )
 QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
     : mFilter( FilterRect )
     , mFilterRect( rect )
+    , mFilterFid( -1 )
     , mFilterExpression( 0 )
     , mFlags( 0 )
 {
@@ -47,6 +49,7 @@ QgsFeatureRequest::QgsFeatureRequest( const QgsRectangle& rect )
 
 QgsFeatureRequest::QgsFeatureRequest( const QgsExpression& expr )
     : mFilter( FilterExpression )
+    , mFilterFid( -1 )
     , mFilterExpression( new QgsExpression( expr.expression() ) )
     , mFlags( 0 )
 {

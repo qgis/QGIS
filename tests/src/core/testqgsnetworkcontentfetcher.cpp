@@ -16,13 +16,19 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetcher.h"
+#include "qgsapplication.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QNetworkReply>
 
-class TestQgsNetworkContentFetcher: public QObject
+class TestQgsNetworkContentFetcher : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsNetworkContentFetcher()
+        : mLoaded( false )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -37,29 +43,26 @@ class TestQgsNetworkContentFetcher: public QObject
     void contentLoaded();
 
   private:
-
     bool mLoaded;
-
 };
 
 void TestQgsNetworkContentFetcher::initTestCase()
 {
-
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsNetworkContentFetcher::cleanupTestCase()
 {
-
+  QgsApplication::exitQgis();
 }
 
 void TestQgsNetworkContentFetcher::init()
 {
-
 }
 
 void TestQgsNetworkContentFetcher::cleanup()
 {
-
 }
 
 void TestQgsNetworkContentFetcher::fetchEmptyUrl()
@@ -157,4 +160,4 @@ void TestQgsNetworkContentFetcher::contentLoaded()
 }
 
 QTEST_MAIN( TestQgsNetworkContentFetcher )
-#include "moc_testqgsnetworkcontentfetcher.cxx"
+#include "testqgsnetworkcontentfetcher.moc"

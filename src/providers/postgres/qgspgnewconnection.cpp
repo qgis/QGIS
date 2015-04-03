@@ -191,7 +191,7 @@ void QgsPgNewConnection::testConnection()
                               tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
 
     // free pg connection resources
-    conn->disconnect();
+    conn->unref();
   }
   else
   {

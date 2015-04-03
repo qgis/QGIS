@@ -29,9 +29,9 @@ class QgsGeorefToolMovePoint : public QgsMapTool
   public:
     QgsGeorefToolMovePoint( QgsMapCanvas *canvas );
 
-    void canvasPressEvent( QMouseEvent *e );
-    void canvasMoveEvent( QMouseEvent *e );
-    void canvasReleaseEvent( QMouseEvent *e );
+    void canvasPressEvent( QMouseEvent *e ) override;
+    void canvasMoveEvent( QMouseEvent *e ) override;
+    void canvasReleaseEvent( QMouseEvent *e ) override;
 
     bool isCanvas( QgsMapCanvas * );
 

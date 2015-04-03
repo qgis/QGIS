@@ -235,7 +235,7 @@ QgsColorDialogV2::QgsColorDialogV2( QWidget *parent, Qt::WindowFlags fl, const Q
   int currentTab = settings.value( "/Windows/ColorDialog/activeTab", 0 ).toInt();
   mTabWidget->setCurrentIndex( currentTab );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   //disable color picker tab for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
@@ -782,7 +782,7 @@ void QgsColorDialogV2::stopPicking( const QPoint &eventPos, const bool takeSampl
   mColorPreview->setColor( snappedColor, true );
 }
 
-void QgsColorDialogV2::setColor( const QColor color )
+void QgsColorDialogV2::setColor( const QColor &color )
 {
   if ( !color.isValid() )
   {

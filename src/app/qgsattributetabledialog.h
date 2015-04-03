@@ -40,6 +40,7 @@ class QSignalMapper;
 
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
+class QgsRubberBand;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog
 {
@@ -171,13 +172,13 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      * Handle closing of the window
      * @param event unused
      */
-    void closeEvent( QCloseEvent* event );
+    void closeEvent( QCloseEvent* event ) override;
 
     /*
      * Handle KeyPress event of the window
      * @param event
      */
-    void keyPressEvent( QKeyEvent* event );
+    void keyPressEvent( QKeyEvent* event ) override;
 
   private slots:
     /**
@@ -185,7 +186,9 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     void columnBoxInit();
 
+    void runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds = QgsFeatureIds() );
     void updateFieldFromExpression();
+    void updateFieldFromExpressionSelected();
 
   private:
     QMenu* mMenuActions;
@@ -199,6 +202,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsVectorLayer* mLayer;
     QgsFieldModel* mFieldModel;
+
+    QgsRubberBand *mRubberBand;
 };
 
 #endif

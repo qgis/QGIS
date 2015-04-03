@@ -27,14 +27,14 @@ __revision__ = '$Format:%H$'
 
 import matplotlib.pyplot as plt
 import matplotlib.pylab as lab
-from PyQt4.QtCore import *
-from qgis.core import *
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterNumber
 from processing.core.outputs import OutputHTML
-from processing.tools import *
+from processing.tools import vector
+from processing.tools import dataobjects
 
 
 class VectorLayerHistogram(GeoAlgorithm):
@@ -44,28 +44,33 @@ class VectorLayerHistogram(GeoAlgorithm):
     FIELD = 'FIELD'
     BINS = 'BINS'
 
+    def defineCharacteristics(self):
+        self.name = 'Vector layer histogram'
+        self.group = 'Graphics'
+
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Attribute'), self.INPUT,
+            ParameterTableField.DATA_TYPE_NUMBER))
+        self.addParameter(ParameterNumber(self.BINS,
+            self.tr('number of bins'), 2, None, 10))
+
+        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Output')))
+
     def processAlgorithm(self, progress):
-        uri = self.getParameterValue(self.INPUT)
-        layer = getObjectFromUri(uri)
+        layer = dataobjects.getObjectFromUri(
+            self.getParameterValue(self.INPUT))
         fieldname = self.getParameterValue(self.FIELD)
-        output = self.getOutputValue(self.OUTPUT)
-        values = vector.getAttributeValues(layer, fieldname)
-        plt.close()
         bins = self.getParameterValue(self.BINS)
+
+        output = self.getOutputValue(self.OUTPUT)
+
+        values = vector.values(layer, fieldname)
+        plt.close()
         plt.hist(values[fieldname], bins)
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
         f = open(output, 'w')
         f.write('<img src="' + plotFilename + '"/>')
         f.close()
-
-    def defineCharacteristics(self):
-        self.name = 'Vector layer histogram'
-        self.group = 'Graphics'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(self.FIELD, 'Attribute',
-                          self.INPUT, ParameterTableField.DATA_TYPE_NUMBER))
-        self.addParameter(ParameterNumber(self.BINS, 'number of bins', 2,
-                          None, 10))
-        self.addOutput(OutputHTML(self.OUTPUT, 'Output'))

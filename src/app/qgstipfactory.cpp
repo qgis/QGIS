@@ -45,7 +45,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " the QGIS home page."
                       ) );
   addGenericTip( myTip );
-  myTip.setTitle( tr( "Become an QGIS translator" ) );
+  myTip.setTitle( tr( "Become a QGIS translator" ) );
   myTip.setContent( tr( "Would you like to see QGIS"
                         " in your native language? We are looking for more translators"
                         " and would appreciate your help! The translation process is"
@@ -192,6 +192,32 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " Check out the plugins and see what they can do for you."
                       ) );
   addGenericTip( myTip );
+  // by yjacolin
+  myTip.setTitle( tr( "Add an action to layer" ) );
+  myTip.setContent( tr( "Action in a layer allow user to trigger action when clicking on a geometry"
+                        " with 'Run Feature Action' tools."
+                        "For example, you can open an html page using the field value of the geometry "
+                        "as a parameter. Look at the <a href=\"http://docs.qgis.org/latest/en/docs/user_manual/working_with_vector/vector_properties.html?#actions-menu\">documentation</a>."
+                      ) );
+  addGuiTip( myTip );
+  // by yjacolin
+  myTip.setTitle( tr( "Copy, paste and cut in QGIS" ) );
+  myTip.setContent( tr( "Copy, paste, and cut work as in another applications in QGIS. Select a "
+                        "feature (a geometry or an attribut row in the attribute table) and use "
+                        "one of this shortcuts: Ctrl+C to copy, Ctrl+X to cut, and Ctrl+V to paste."
+                      ) );
+  addGuiTip( myTip );
+  // by yjacolin
+  myTip.setTitle( tr( "Right click with identify tools" ) );
+  myTip.setContent( tr( "Right click with the identify tool to show a context menu from which you can "
+                        "choose the layer in which to identify a feature. A sub menu will list features "
+                        "identified and a third sub-menu will show the action link setup for the layer."
+                        "If one of this sub-menu doesn't contain any information, the next sub-menu"
+                        "will appear instead. For example, if you have just one layer, and click "
+                        "somewhere with several features, the first menu will list the feature list "
+                        "instead of layer list."
+                      ) );
+  addGuiTip( myTip );
 
   /* Template for adding more tips
   myTip.setTitle(tr(""));
@@ -219,8 +245,7 @@ void QgsTipFactory::addGenericTip( QgsTip theTip )
 }
 QgsTip QgsTipFactory::getTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mAllTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mAllTips.at( myValue );
   return myTip;
@@ -232,16 +257,14 @@ QgsTip QgsTipFactory::getTip( int thePosition )
 }
 QgsTip QgsTipFactory::getGenericTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGenericTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGenericTips.at( myValue );
   return myTip;
 }
 QgsTip QgsTipFactory::getGuiTip()
 {
-  srand( QTime::currentTime().msec() );
-  int myRand = rand();
+  int myRand = qrand();
   int myValue = static_cast<int>( myRand % mGuiTips.count() ); //range [0,(count-1)]
   QgsTip myTip = mGuiTips.at( myValue );
   return myTip;

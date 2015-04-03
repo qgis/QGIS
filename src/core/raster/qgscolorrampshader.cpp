@@ -25,7 +25,10 @@ originally part of the larger QgsRasterLayer class
 
 #include <cmath>
 
-QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue ) : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
+QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue )
+    : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
+    , mColorRampType( INTERPOLATED )
+    , mClip( false )
 {
   QgsDebugMsg( "called." );
   mMaximumColorCacheSize = 1024; //good starting value

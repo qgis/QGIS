@@ -25,9 +25,10 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+
+from PyQt4.QtGui import QIcon
+
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.ProcessingLog import ProcessingLog
@@ -84,6 +85,7 @@ class ModelerAlgorithmProvider(AlgorithmProvider):
                         alg = ModelerAlgorithm.fromFile(fullpath)
                         if alg.name:
                             alg.provider = self
+                            alg.descriptionFile = fullpath
                             self.algs.append(alg)
                         else:
                             ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,

@@ -29,15 +29,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+from PyQt4.QtCore import QCoreApplication
 from qgis.core import QgsApplication
 import subprocess
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import isMac, isWindows
 import logging
 import xml.etree.ElementTree as ET
 import traceback
-import qgis.core
 
 
 class OTBUtils:
@@ -110,15 +110,15 @@ class OTBUtils:
     @staticmethod
     def otbSRTMPath():
         folder = ProcessingConfig.getSetting(OTBUtils.OTB_SRTM_FOLDER)
-        if folder == None:
-            folder =""
+        if folder is None:
+            folder = ""
         return folder
 
     @staticmethod
     def otbGeoidPath():
         filepath = ProcessingConfig.getSetting(OTBUtils.OTB_GEOID_FILE)
-        if filepath == None:
-            filepath =""
+        if filepath is None:
+            filepath = ""
         return filepath
 
     @staticmethod
@@ -128,7 +128,7 @@ class OTBUtils:
     @staticmethod
     def executeOtb(commands, progress):
         loglines = []
-        loglines.append("OTB execution console output")
+        loglines.append(OTBUtils.tr("OTB execution console output"))
         os.putenv('ITK_AUTOLOAD_PATH', OTBUtils.otbLibPath())
         fused_command = ''.join(['"%s" ' % c for c in commands])
         proc = subprocess.Popen(fused_command, shell=True, stdout=subprocess.PIPE, stdin=open(os.devnull),stderr=subprocess.STDOUT, universal_newlines=True).stdout
@@ -144,7 +144,11 @@ class OTBUtils:
 
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)
 
-
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'OTBUtils'
+        return QCoreApplication.translate(context, string)
 
 def get_choices_of(doc, parameter):
     choices = []
@@ -216,7 +220,6 @@ def split_by_choice(doc, parameter):
         #set a new name according to the choice
         old_app_name = working_copy.find('key').text
         working_copy.find('key').text = '%s-%s' % (old_app_name, choice)
-        old_longname = working_copy.find('longname').text
         working_copy.find('longname').text = '%s (%s)' % (old_app_name, choice)
         #add it to the dictionary
         result[choice] = working_copy
@@ -230,7 +233,6 @@ def remove_parameter_by_criteria(doc, criteria):
 def defaultWrite(available_app, original_dom_document):
     fh = open("description/%s.xml" % available_app, "w")
     the_root = original_dom_document
-    logger = logging.getLogger('OTBGenerator')
     ET.ElementTree(the_root).write(fh)
     fh.close()
 

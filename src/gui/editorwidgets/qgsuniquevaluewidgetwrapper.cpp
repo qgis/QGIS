@@ -22,7 +22,9 @@
 #include <QSettings>
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent )
-    :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
+    , mComboBox( NULL )
+    , mLineEdit( NULL )
 {
 }
 

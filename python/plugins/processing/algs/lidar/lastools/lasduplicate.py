@@ -42,15 +42,19 @@ class lasduplicate(LAStoolsAlgorithm):
         self.group = "LAStools"
         self.addParametersVerboseGUI()
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterBoolean(lasduplicate.LOWEST_Z, "keep duplicate with lowest z coordinate", False))
-        self.addParameter(ParameterBoolean(lasduplicate.UNIQUE_XYZ, "only remove duplicates in x y and z", False))
-        self.addParameter(ParameterBoolean(lasduplicate.SINGLE_RETURNS, "mark surviving duplicate as single return", False))
-        self.addParameter(ParameterFile(lasduplicate.RECORD_REMOVED, "record removed duplictates to LAS/LAZ file"))
+        self.addParameter(ParameterBoolean(lasduplicate.LOWEST_Z,
+            self.tr("keep duplicate with lowest z coordinate"), False))
+        self.addParameter(ParameterBoolean(lasduplicate.UNIQUE_XYZ,
+            self.tr("only remove duplicates in x y and z"), False))
+        self.addParameter(ParameterBoolean(lasduplicate.SINGLE_RETURNS,
+            self.tr("mark surviving duplicate as single return"), False))
+        self.addParameter(ParameterFile(lasduplicate.RECORD_REMOVED,
+            self.tr("record removed duplicates to LAS/LAZ file")))
         self.addParametersPointOutputGUI()
-
+        self.addParametersAdditionalGUI()
 
     def processAlgorithm(self, progress):
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasduplicate.exe")]
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasduplicate")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         if self.getParameterValue(lasduplicate.LOWEST_Z):
@@ -64,5 +68,6 @@ class lasduplicate(LAStoolsAlgorithm):
             commands.append("-record_removed")
             commands.append(record_removed)
         self.addParametersPointOutputCommands(commands)
+        self.addParametersAdditionalCommands(commands)
 
         LAStoolsUtils.runLAStools(commands, progress)

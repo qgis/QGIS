@@ -140,7 +140,7 @@ class QgsRandomColorsV2 : QgsVectorColorRampV2
     double value( int index ) const;
 
     QColor color( double value ) const;
-    
+
     /*Sets the desired total number of unique colors for the resultant ramp. Calling
      * this method pregenerates a set of visually distinct colors which are returned
      * by subsequent calls to color().

@@ -43,9 +43,9 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     // Constructor to create model for icons in a specific path
     QgsSvgSelectorListModel( QObject* parent, QString path );
 
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const;
+    int rowCount( const QModelIndex & parent = QModelIndex() ) const override;
 
-    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const;
+    QVariant data( const QModelIndex & index, int role = Qt::DisplayRole ) const override;
 
   protected:
     QStringList mSvgFiles;

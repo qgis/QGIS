@@ -12,23 +12,19 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
 import qgis
-from PyQt4.QtCore import QFileInfo
-from PyQt4.QtXml import QDomDocument
-from PyQt4.QtGui import (QPainter, QColor)
+
+from PyQt4.QtGui import QColor
 
 from qgis.core import (QgsComposerShape,
-                       QgsRectangle,
                        QgsComposition,
                        QgsMapSettings
-                     )
+                       )
 from utilities import (unitTestDataPath,
                        getQgisTestApp,
                        TestCase,
-                       unittest,
-                       expectedFailure
-                      )
+                       unittest
+                       )
 from qgscompositionchecker import QgsCompositionChecker
 
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
@@ -59,7 +55,7 @@ class TestQgsComposerShapes(TestCase):
         checker = QgsCompositionChecker('composershapes_rectangle', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testEllipse(self):
         """Test ellipse composer shape"""
@@ -69,7 +65,7 @@ class TestQgsComposerShapes(TestCase):
         checker = QgsCompositionChecker('composershapes_ellipse', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testTriangle(self):
         """Test triangle composer shape"""
@@ -79,7 +75,7 @@ class TestQgsComposerShapes(TestCase):
         checker = QgsCompositionChecker('composershapes_triangle', self.mComposition)
         myTestResult, myMessage = checker.testComposition()
 
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
     def testRoundedRectangle(self):
         """Test rounded rectangle composer shape"""
@@ -91,8 +87,7 @@ class TestQgsComposerShapes(TestCase):
         myTestResult, myMessage = checker.testComposition()
 
         self.mComposerShape.setCornerRadius(0)
-        assert myTestResult == True, myMessage
+        assert myTestResult, myMessage
 
 if __name__ == '__main__':
     unittest.main()
-

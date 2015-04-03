@@ -30,11 +30,20 @@
 #include "qgsdatadefined.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestQgsComposerDD: public QObject
+class TestQgsComposerDD : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerDD()
+        : mComposition( 0 )
+        , mVectorLayer( 0 )
+        , mAtlasMap( 0 )
+        , mAtlas( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -105,7 +114,6 @@ void TestQgsComposerDD::initTestCase()
 void TestQgsComposerDD::cleanupTestCase()
 {
   delete mComposition;
-  delete mVectorLayer;
 
   QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
@@ -115,6 +123,7 @@ void TestQgsComposerDD::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerDD::init()
@@ -136,5 +145,5 @@ void TestQgsComposerDD::ddEvaluate()
 }
 
 QTEST_MAIN( TestQgsComposerDD )
-#include "moc_testqgscomposerdd.cxx"
+#include "testqgscomposerdd.moc"
 

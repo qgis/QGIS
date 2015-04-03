@@ -57,8 +57,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //TODO: Verify that these all need to be public
     /** \brief Applies the settings made in the dialog without closing the box */
     void apply();
-    /** \brief Slot to update layer display name as original is edited
-     * @note added in QGIS 1.9 */
+    /** \brief Slot to update layer display name as original is edited. */
     void on_mLayerOrigNameLineEd_textEdited( const QString& text );
     /** \brief this slot asks the rasterlayer to construct pyramids */
     void on_buttonBuildPyramids_clicked();
@@ -66,8 +65,8 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void on_pbnAddValuesFromDisplay_clicked();
     /** \brief slot executed when user presses "Add Values Manually" button on the transparency page */
     void on_pbnAddValuesManually_clicked();
-    /** Override the CRS specified when the layer was loaded */
-    void on_pbnChangeSpatialRefSys_clicked();
+    /** \brief slot executed when user changes the layer's CRS */
+    void on_mCrsSelector_crsChanged( QgsCoordinateReferenceSystem crs );
     /** \brief slot executed when user wishes to reset noNoDataValue and transparencyTable to default value */
     void on_pbnDefaultValues_clicked();
     /** \brief slot executed when user wishes to export transparency values */
@@ -89,19 +88,17 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
   private slots:
     void on_mRenderTypeComboBox_currentIndexChanged( int index );
     /** Load the default style when appropriate button is pressed. */
-    void on_pbnLoadDefaultStyle_clicked();
+    void loadDefaultStyle_clicked();
     /** Save the default style when appropriate button is pressed. */
-    void on_pbnSaveDefaultStyle_clicked();
+    void saveDefaultStyle_clicked();
     /** Load a saved style when appropriate button is pressed. */
-    void on_pbnLoadStyle_clicked();
+    void loadStyle_clicked();
     /** Save a style when appriate button is pressed. */
-    void on_pbnSaveStyleAs_clicked();
+    void saveStyleAs_clicked();
     /** Help button */
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-    /** Slot to reset all color rendering options to default
-     * @note added in 1.9
-     */
+    /** Slot to reset all color rendering options to default */
     void on_mResetColorRenderingBtn_clicked();
 
     /**Enable or disable Build pyramids button depending on selection in pyramids list*/
@@ -115,6 +112,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
 
     /** Transparency cell changed */
     void transparencyCellTextEdited( const QString & text );
+
+    void aboutToShowStyleMenu();
+
+    /** make GUI reflect the layer's state */
+    void syncToLayer();
 
   signals:
     /** emitted when changes to layer were saved to update legend */

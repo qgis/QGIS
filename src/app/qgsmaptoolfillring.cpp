@@ -28,15 +28,13 @@
 QgsMapToolFillRing::QgsMapToolFillRing( QgsMapCanvas* canvas )
     : QgsMapToolCapture( canvas, QgsMapToolCapture::CapturePolygon )
 {
-  mToolName = tr( "Fill ring" );
 }
 
 QgsMapToolFillRing::~QgsMapToolFillRing()
 {
-
 }
 
-void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolFillRing::canvasMapReleaseEvent( QgsMapMouseEvent * e )
 {
   //check if we operate on a vector layer
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
@@ -56,7 +54,7 @@ void QgsMapToolFillRing::canvasReleaseEvent( QMouseEvent * e )
   //add point to list and to rubber band
   if ( e->button() == Qt::LeftButton )
   {
-    int error = addVertex( e->pos() );
+    int error = addVertex( e->mapPoint() );
     if ( error == 1 )
     {
       //current layer is not a vector layer

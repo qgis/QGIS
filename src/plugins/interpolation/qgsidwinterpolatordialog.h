@@ -32,7 +32,7 @@ class QgsIDWInterpolatorDialog: public QgsInterpolatorDialog, private Ui::QgsIDW
 
     /**Creates an IDW interpolator with the specified distance coefficient
      @return 0 in case of error*/
-    QgsInterpolator* createInterpolator() const;
+    QgsInterpolator* createInterpolator() const override;
 };
 
 #endif

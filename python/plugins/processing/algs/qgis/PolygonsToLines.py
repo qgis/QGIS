@@ -25,8 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeature, QgsGeometry
 
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
@@ -39,27 +38,20 @@ class PolygonsToLines(GeoAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    # =========================================================================
-    # def getIcon(self):
-    #    return QIcon(os.path.dirname(__file__) + "/icons/to_lines.png")
-    # =========================================================================
-
     def defineCharacteristics(self):
         self.name = 'Polygons to lines'
         self.group = 'Vector geometry tools'
 
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_POLYGON]))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
 
-        writer = self.getOutputFromName(
-                self.OUTPUT).getVectorWriter(layer.pendingFields().toList(),
-                                             QGis.WKBLineString, layer.crs())
+        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
+            layer.pendingFields().toList(), QGis.WKBLineString, layer.crs())
 
         outFeat = QgsFeature()
         inGeom = QgsGeometry()

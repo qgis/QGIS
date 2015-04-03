@@ -16,13 +16,13 @@
 #ifndef QGSMAPTOOLDELETERING_H
 #define QGSMAPTOOLDELETERING_H
 
-#include "qgsmaptoolvertexedit.h"
+#include "qgsmaptooledit.h"
 #include "qgsrubberband.h"
 
 class QgsVertexMarker;
 /**Map tool to delete vertices from line/polygon features*/
 
-class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
+class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
 {
     Q_OBJECT
 
@@ -30,14 +30,14 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolVertexEdit
     QgsMapToolDeleteRing( QgsMapCanvas* canvas );
     virtual ~QgsMapToolDeleteRing();
 
-    void canvasMoveEvent( QMouseEvent * e );
+    void canvasMoveEvent( QMouseEvent * e ) override;
 
-    void canvasPressEvent( QMouseEvent * e );
+    void canvasPressEvent( QMouseEvent * e ) override;
 
-    void canvasReleaseEvent( QMouseEvent * e );
+    void canvasReleaseEvent( QMouseEvent * e ) override;
 
     //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   private:
     QgsVectorLayer* vlayer;

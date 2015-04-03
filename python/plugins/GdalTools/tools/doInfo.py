@@ -23,17 +23,14 @@ __copyright__ = '(C) 2010, Giuseppe Sucameli'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL
+from PyQt4.QtGui import QWidget, QAction, QApplication, QMenu
 
 from ui_widgetInfo import Ui_GdalToolsWidget as Ui_Widget
 from widgetPluginBase import GdalToolsBasePluginWidget as BasePluginWidget
 import GdalTools_utils as Utils
 
 import platform
-import string
 
 class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
 
@@ -49,13 +46,11 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       # make window large
       self.base.resize( 400, 360 )
 
-      self.setParamsStatus(
-        [
+      self.setParamsStatus([
           (self.inSelector, SIGNAL("filenameChanged()") ),
           ( self.suppressGCPCheck, SIGNAL( "stateChanged( int )" ) ),
           ( self.suppressMDCheck, SIGNAL( "stateChanged( int )" ) )
-        ]
-      )
+      ])
 
       self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFileEdit )
 
@@ -138,4 +133,3 @@ class GdalToolsDialog( QWidget, Ui_Widget, BasePluginWidget ):
       menu.addAction( self.copyLine )
       menu.addAction( self.copyAll )
       menu.exec_( event.globalPos() )
-

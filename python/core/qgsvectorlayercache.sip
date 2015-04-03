@@ -14,7 +14,7 @@ class QgsVectorLayerCache : QObject
 %End
 
   public:
-    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent = NULL );
+    QgsVectorLayerCache( QgsVectorLayer* layer, int cacheSize, QObject* parent /TransferThis/ = NULL );
 
     /**
      * Sets the maximum number of features to keep in the cache. Some features will be removed from

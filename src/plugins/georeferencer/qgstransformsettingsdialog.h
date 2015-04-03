@@ -36,8 +36,8 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     static void resetSettings();
 
   protected:
-    void changeEvent( QEvent *e );
-    void accept();
+    void changeEvent( QEvent *e ) override;
+    void accept() override;
 
   private slots:
     void on_tbnOutputRaster_clicked();

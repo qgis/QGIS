@@ -122,6 +122,7 @@ QgsMssqlSourceSelect::QgsMssqlSourceSelect( QWidget *parent, Qt::WindowFlags fl,
     , mManagerMode( managerMode )
     , mEmbeddedMode( embeddedMode )
     , mColumnTypeThread( NULL )
+    , mUseEstimatedMetadata( false )
 {
   setupUi( this );
 
@@ -540,7 +541,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   // issue the sql query
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );
-  q.exec( query );
+  ( void )q.exec( query );
 
   if ( q.isActive() )
   {
@@ -553,6 +554,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
       layer.pkCols = QStringList(); //TODO
+      layer.isGeography = false;
 
       QString type = layer.type;
       QString srid = layer.srid;

@@ -21,8 +21,6 @@
   Handler for missing layers within project.
 
   Gives user a chance to select path to the missing layers.
-
-  @note added in 1.4
  */
 class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjectBadLayerHandler
 {
@@ -32,7 +30,7 @@ class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjec
     QgsProjectBadLayerGuiHandler();
 
     /** implementation of the handler */
-    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
+    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) override;
 
     /** Flag to store the Ignore button press of MessageBox used by QgsLegend */
     static bool mIgnore;

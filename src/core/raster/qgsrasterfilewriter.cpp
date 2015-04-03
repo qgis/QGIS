@@ -37,6 +37,17 @@ QgsRasterFileWriter::QgsRasterFileWriter( const QString& outputUrl ):
 }
 
 QgsRasterFileWriter::QgsRasterFileWriter()
+    : mMode( Raw )
+    , mOutputProviderKey( "gdal" )
+    , mOutputFormat( "GTiff" )
+    , mTiledMode( false )
+    , mMaxTileWidth( 500 )
+    , mMaxTileHeight( 500 )
+    , mBuildPyramidsFlag( QgsRaster::PyramidsFlagNo )
+    , mPyramidsFormat( QgsRaster::PyramidsGTiff )
+    , mProgressDialog( 0 )
+    , mPipe( 0 )
+    , mInput( 0 )
 {
 
 }
@@ -310,7 +321,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
   QgsDebugMsg( "Entered" );
 
   const QgsRasterInterface* iface = iter->input();
-  const QgsRasterDataProvider* srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
+  const QgsRasterDataProvider *srcProvider = dynamic_cast<const QgsRasterDataProvider*>( iface->srcInput() );
   int nBands = iface->bandCount();
   QgsDebugMsg( QString( "nBands = %1" ).arg( nBands ) );
 
@@ -394,7 +405,7 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster(
     QList<QgsRasterBlock*> destBlockList;
     for ( int i = 1; i <= nBands; ++i )
     {
-      if ( srcProvider->dataType( i ) == destDataType )
+      if ( srcProvider && srcProvider->dataType( i ) == destDataType )
       {
         destBlockList.push_back( blockList[i-1] );
       }
@@ -453,9 +464,11 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeImageRaster( QgsRaste
   }
 
   const QgsRasterInterface* iface = iter->input();
+  if ( !iface )
+    return SourceProviderError;
+
   QGis::DataType inputDataType = iface->dataType( 1 );
-  if ( !iface || ( inputDataType != QGis::ARGB32 &&
-                   inputDataType != QGis::ARGB32_Premultiplied ) )
+  if ( inputDataType != QGis::ARGB32 && inputDataType != QGis::ARGB32_Premultiplied )
   {
     return SourceProviderError;
   }

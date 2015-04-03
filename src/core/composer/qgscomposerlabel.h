@@ -34,11 +34,11 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     QgsComposerLabel( QgsComposition *composition );
     ~QgsComposerLabel();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerLabel; }
+    /** return correct graphics item type. */
+    virtual int type() const override { return ComposerLabel; }
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget ) override;
 
     /**resizes the widget such that the text fits to the item. Keeps top left point*/
     void adjustSizeToText();
@@ -49,8 +49,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     int htmlState() { return mHtmlState; }
     void setHtmlState( int state );
 
-    /**Returns the text as it appears on screen (with replaced data field)
-      @note this function was added in version 1.2*/
+    /**Returns the text as it appears on screen (with replaced data field) */
     QString displayText() const;
 
     /** Sets the current feature, the current layer and a list of local variable substitutions for evaluating expressions */
@@ -76,32 +75,87 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
      * @returns void
      */
     void setVAlign( Qt::AlignmentFlag a ) { mVAlignment = a; }
-    //!brief Accessor for the margin of the label
-    double margin() { return mMargin; }
-    //!brief Mutator for the margin of the label
-    void setMargin( double m ) { mMargin = m; }
 
-    /**Sets text color
-        @note: this function was added in version 1.4*/
+    /**Returns the margin between the edge of the frame and the label contents
+     * @returns margin in mm
+     * @deprecated use marginX and marginY instead
+    */
+    Q_DECL_DEPRECATED double margin() { return mMarginX; }
+
+    /**Returns the horizontal margin between the edge of the frame and the label
+     * contents.
+     * @returns horizontal margin in mm
+     * @note added in QGIS 2.7
+    */
+    double marginX() const { return mMarginX; }
+
+    /**Returns the vertical margin between the edge of the frame and the label
+     * contents.
+     * @returns vertical margin in mm
+     * @note added in QGIS 2.7
+    */
+    double marginY() const { return mMarginY; }
+
+    /**Sets the margin between the edge of the frame and the label contents.
+     * This method sets both the horizontal and vertical margins to the same
+     * value. The margins can be individually controlled using the setMarginX
+     * and setMarginY methods.
+     * @param m margin in mm
+     * @see setMarginX
+     * @see setMarginY
+    */
+    void setMargin( const double m );
+
+    /**Sets the horizontal margin between the edge of the frame and the label
+     * contents.
+     * @param margin horizontal margin in mm
+     * @see setMargin
+     * @see setMarginY
+     * @note added in QGIS 2.7
+    */
+    void setMarginX( const double margin );
+
+    /**Sets the vertical margin between the edge of the frame and the label
+     * contents.
+     * @param margin vertical margin in mm
+     * @see setMargin
+     * @see setMarginX
+     * @note added in QGIS 2.7
+    */
+    void setMarginY( const double margin );
+
+    /**Sets text color */
     void setFontColor( const QColor& c ) { mFontColor = c; }
-    /**Get font color
-        @note: this function was added in version 1.4*/
+    /**Get font color */
     QColor fontColor() const { return mFontColor; }
 
     /** stores state in Dom element
        * @param elem is Dom element corresponding to 'Composer' tag
        * @param doc document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /** sets state from Dom document
        * @param itemElem is Dom element corresponding to 'ComposerLabel' tag
        * @param doc document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     //Overriden to contain part of label's text
-    virtual QString displayName() const;
+    virtual QString displayName() const override;
+
+    /**In case of negative margins, the bounding rect may be larger than the
+     * label's frame
+    */
+    QRectF boundingRect() const override;
+
+    /**Reimplemented to call prepareGeometryChange after toggling frame
+    */
+    virtual void setFrameEnabled( const bool drawFrame ) override;
+
+    /**Reimplemented to call prepareGeometryChange after changing outline width
+    */
+    virtual void setFrameOutlineWidth( const double outlineWidth ) override;
 
   public slots:
     void refreshExpressionContext();
@@ -126,8 +180,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     // Font
     QFont mFont;
 
-    // Border between text and fram (in mm)
-    double mMargin;
+    /**Horizontal margin between contents and frame (in mm)*/
+    double mMarginX;
+    /**Vertical margin between contents and frame (in mm)*/
+    double mMarginY;
 
     // Font color
     QColor mFontColor;

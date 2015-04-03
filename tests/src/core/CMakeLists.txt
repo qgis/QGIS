@@ -9,6 +9,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/effects
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
@@ -55,10 +56,8 @@ ENDIF (APPLE)
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
-  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${QT_QTXML_LIBRARY}
     ${QT_QTCORE_LIBRARY}
@@ -77,6 +76,7 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(qgistest testqgis.cpp)
 ADD_QGIS_TEST(clippertest testqgsclipper.cpp)
 ADD_QGIS_TEST(distanceareatest testqgsdistancearea.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
@@ -106,6 +106,7 @@ ADD_QGIS_TEST(vectorlayertest testqgsvectorlayer.cpp)
 ADD_QGIS_TEST(rulebasedrenderertest testqgsrulebasedrenderer.cpp)
 ADD_QGIS_TEST(ziplayertest testziplayer.cpp)
 ADD_QGIS_TEST(dataitemtest testqgsdataitem.cpp)
+ADD_QGIS_TEST(datadefined testqgsdatadefined.cpp)
 ADD_QGIS_TEST(composerobject testqgscomposerobject.cpp)
 ADD_QGIS_TEST(composerutils testqgscomposerutils.cpp)
 ADD_QGIS_TEST(compositiontest testqgscomposition.cpp)
@@ -134,10 +135,20 @@ ADD_QGIS_TEST(vectorlayercachetest testqgsvectorlayercache.cpp )
 # ADD_QGIS_TEST(maprendererjobtest testmaprendererjob.cpp )
 ADD_QGIS_TEST(spatialindextest testqgsspatialindex.cpp)
 ADD_QGIS_TEST(gradienttest testqgsgradients.cpp )
+ADD_QGIS_TEST(rasterfilltest testqgsrasterfill.cpp )
 ADD_QGIS_TEST(shapebursttest testqgsshapeburst.cpp )
 ADD_QGIS_TEST(invertedpolygontest testqgsinvertedpolygonrenderer.cpp )
 ADD_QGIS_TEST(colorschemeregistry testqgscolorschemeregistry.cpp)
 ADD_QGIS_TEST(colorscheme testqgscolorscheme.cpp)
+ADD_QGIS_TEST(maptopixeltest testqgsmaptopixel.cpp)
+ADD_QGIS_TEST(maprotationtest testqgsmaprotation.cpp)
+ADD_QGIS_TEST(mapsettingstest testqgsmapsettings.cpp)
 ADD_QGIS_TEST(networkcontentfetcher testqgsnetworkcontentfetcher.cpp )
 ADD_QGIS_TEST(legendrenderertest testqgslegendrenderer.cpp )
 ADD_QGIS_TEST(vectorlayerjoinbuffer testqgsvectorlayerjoinbuffer.cpp )
+ADD_QGIS_TEST(maplayerstylemanager testqgsmaplayerstylemanager.cpp )
+ADD_QGIS_TEST(pointlocatortest testqgspointlocator.cpp )
+ADD_QGIS_TEST(snappingutilstest testqgssnappingutils.cpp )
+ADD_QGIS_TEST(imageoperationtest testqgsimageoperation.cpp)
+ADD_QGIS_TEST(painteffecttest testqgspainteffect.cpp)
+ADD_QGIS_TEST(painteffectregistrytest testqgspainteffectregistry.cpp)

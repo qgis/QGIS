@@ -62,7 +62,7 @@ class QgsSimpleBabelFormat : public QgsBabelFormat
     QStringList importCommand( const QString& babel,
                                const QString& featuretype,
                                const QString& input,
-                               const QString& output ) const;
+                               const QString& output ) const override;
   protected:
     QString mFormat;
 };
@@ -76,11 +76,11 @@ class QgsBabelCommand : public QgsBabelFormat
     QStringList importCommand( const QString& babel,
                                const QString& featuretype,
                                const QString& input,
-                               const QString& output ) const;
+                               const QString& output ) const override;
     QStringList exportCommand( const QString& babel,
                                const QString& featuretype,
                                const QString& input,
-                               const QString& output ) const;
+                               const QString& output ) const override;
   protected:
     QStringList mImportCmd;
     QStringList mExportCmd;

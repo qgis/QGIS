@@ -4,8 +4,6 @@ Vector (v.*)
 ParameterVector|input|Vector layer defining sample points|0|False
 ParameterTableField|column|Vector layer attribute column to use for comparison|input|-1|False
 ParameterRaster|raster|Raster map to be sampled|False
-ParameterNumber|z|Sampled raster values will be multiplied by this factor|None|None|1.0
-ParameterBoolean|-b|Bilinear interpolation (default is nearest neighbor)|False
-ParameterBoolean|-c|Cubic convolution interpolation (default is nearest neighbor)|False
+ParameterNumber|zscale|Sampled raster values will be multiplied by this factor|None|None|1.0
+ParameterSelection|method|Sampling interpolation method|nearest;bilinear;bicubic
 OutputVector|output|Output vector layer
-

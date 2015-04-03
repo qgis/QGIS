@@ -6,7 +6,7 @@ class QgsMapOverviewCanvas : QWidget
 %End
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL );
+    QgsMapOverviewCanvas( QWidget * parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = NULL );
 
     ~QgsMapOverviewCanvas();
 
@@ -39,6 +39,7 @@ class QgsMapOverviewCanvas : QWidget
 
   protected slots:
     void mapRenderingFinished();
+    void layerRepaintRequested();
 
   protected:
 

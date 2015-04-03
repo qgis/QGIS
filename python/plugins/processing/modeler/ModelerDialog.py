@@ -26,14 +26,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import codecs
-import json
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import sys
+import os
+
+from PyQt4.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QSettings
+from PyQt4.QtGui import QDialog, QGraphicsView, QTreeWidget, QIcon, QMessageBox, QFileDialog, QImage, QPainter, QTreeWidgetItem
+from qgis.core import QgsApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.ProcessingLog import ProcessingLog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.gui.ParametersDialog import ParametersDialog
+from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
 from processing.modeler.ModelerAlgorithm import ModelerAlgorithm, ModelerParameter
@@ -41,10 +44,10 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.WrongModelException import WrongModelException
-from processing.tools.system import *
 
 from processing.ui.ui_DlgModeler import Ui_DlgModeler
 
+import processing.resources_rc
 
 class ModelerDialog(QDialog, Ui_DlgModeler):
 
@@ -82,7 +85,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 if text in ModelerParameterDefinitionDialog.paramTypes:
                     self.addInputOfType(text, event.pos())
                 else:
-                    alg = ModelerUtils.getAlgorithm(text);
+                    alg = ModelerUtils.getAlgorithm(text)
                     if alg is not None:
                         self._addAlgorithm(alg.getCopy(), event.pos())
                 event.accept()
@@ -96,7 +99,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 event.ignore()
 
         def _wheelEvent(event):
-            self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse);
+            self.view.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
             factor = 1.05
             if event.delta() > 0:
                 factor = 1/factor
@@ -107,14 +110,16 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         def _enterEvent(e):
             QGraphicsView.enterEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
+
         def _mousePressEvent(e):
             QGraphicsView.mousePressEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
+
         def _mouseReleaseEvent(e):
             QGraphicsView.mouseReleaseEvent(self.view, e)
             self.view.viewport().setCursor(Qt.ArrowCursor)
 
-        self.view.setDragMode(QGraphicsView.ScrollHandDrag);
+        self.view.setDragMode(QGraphicsView.ScrollHandDrag)
         self.view.dragEnterEvent = _dragEnterEvent
         self.view.dropEvent = _dropEvent
         self.view.dragMoveEvent = _dragMoveEvent
@@ -148,14 +153,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
         self.algorithmTree.setDropIndicatorShown(True)
 
         # Set icons
-        self.btnOpen.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
-        self.btnSave.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileSave.svg'))
-        self.btnSaveAs.setIcon(
-                QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.btnExportImage.setIcon(
-                QgsApplication.getThemeIcon('/mActionSaveMapAsImage.png'))
+        self.btnOpen.setIcon(QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
+        self.btnSave.setIcon(QgsApplication.getThemeIcon('/mActionFileSave.svg'))
+        self.btnSaveAs.setIcon(QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
+        self.btnExportImage.setIcon(QgsApplication.getThemeIcon('/mActionSaveMapAsImage.png'))
         self.btnEditHelp.setIcon(QIcon(':/processing/images/edithelp.png'))
         self.btnRun.setIcon(QIcon(':/processing/images/runalgorithm.png'))
 
@@ -203,11 +204,10 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
 
     def closeEvent(self, evt):
         if self.hasChanged:
-            ret = QMessageBox.question(self, self.tr('Message'),
-                    self.tr('There are unsaved changes in model. Close '
-                            'modeler without saving?'),
-                    QMessageBox.Yes | QMessageBox.No,
-                    QMessageBox.No)
+            ret = QMessageBox.question(
+                self, self.tr('Unsaved changes'),
+                self.tr('There are unsaved changes in model. Continue?'),
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
 
             if ret == QMessageBox.Yes:
                 evt.accept()
@@ -217,8 +217,14 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             evt.accept()
 
     def editHelp(self):
-        dlg = HelpEditionDialog(self.alg.getCopy())
+        if self.alg.provider is None:
+            # Might happen if model is opened from modeler dialog
+            self.alg.provider = ModelerUtils.providers['model']
+        alg = self.alg.getCopy()
+        dlg = HelpEditionDialog(alg)
         dlg.exec_()
+        if dlg.descriptions:
+            self.hasChanged = True
 
     def runModel(self):
         if len(self.alg.algs) == 0:
@@ -231,7 +237,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             # Might happen if model is opened from modeler dialog
             self.alg.provider = ModelerUtils.providers['model']
         alg = self.alg.getCopy()
-        dlg = ParametersDialog(alg)
+        dlg = AlgorithmDialog(alg)
         dlg.exec_()
 
     def save(self):
@@ -269,9 +275,9 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
     def saveModel(self, saveAs):
         if unicode(self.textGroup.text()).strip() == '' \
                 or unicode(self.textName.text()).strip() == '':
-            QMessageBox.warning(self, self.tr('Warning'),
-                    self.tr('Please enter group and model names before saving'
-                    ))
+            QMessageBox.warning(
+                self, self.tr('Warning'), self.tr('Please enter group and model names before saving')
+            )
             return
         self.alg.name = unicode(self.textName.text())
         self.alg.group = unicode(self.textGroup.text())
@@ -293,8 +299,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
             except:
                 if saveAs:
                     QMessageBox.warning(self, self.tr('I/O error'),
-                            self.tr('Unable to save edits. Reason:\n %s')
-                            % unicode(sys.exc_info()[1]))
+                            self.tr('Unable to save edits. Reason:\n %s') % unicode(sys.exc_info()[1]))
                 else:
                     QMessageBox.warning(self, self.tr("Can't save model"),
                             self.tr("This model can't be saved in its "
@@ -330,7 +335,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                     self.tr('Could not load model %s\n%s') % (filename, e.msg))
                 QMessageBox.critical(self, self.tr('Could not open model'),
                         self.tr('The selected model could not be loaded.\n'
-                                 'See the log for more information.'))
+                                'See the log for more information.'))
             except Exception, e:
                 ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
                     self.tr('Could not load model %s\n%s') % (filename, e.args[0]))
@@ -359,7 +364,7 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                 if pos is None:
                     pos = self.getPositionForParameterItem()
                 if isinstance(pos, QPoint):
-                    pos =  QPointF(pos)
+                    pos = QPointF(pos)
                 self.alg.addParameter(ModelerParameter(dlg.param, pos))
                 self.repaintModel()
                 #self.view.ensureVisible(self.scene.getLastParameterItem())
@@ -413,7 +418,6 @@ class ModelerDialog(QDialog, Ui_DlgModeler):
                             * ModelerGraphicItem.BOX_HEIGHT)
                 self.alg.addAlgorithm(dlg.alg)
                 self.repaintModel()
-                #self.view.ensureVisible(self.scene.getLastAlgorithmItem())
                 self.hasChanged = True
 
     def getPositionForAlgorithmItem(self):

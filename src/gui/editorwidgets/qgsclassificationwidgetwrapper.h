@@ -28,14 +28,14 @@ class GUI_EXPORT QgsClassificationWidgetWrapper : public QgsEditorWidgetWrapper
 
     // QgsEditorWidgetWrapper interface
   public:
-    QVariant value();
+    QVariant value() override;
 
   protected:
-    QWidget*createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
+    QWidget*createWidget( QWidget* parent ) override;
+    void initWidget( QWidget* editor ) override;
 
   public slots:
-    void setValue( const QVariant& value );
+    void setValue( const QVariant& value ) override;
 
   private:
     QComboBox* mComboBox;

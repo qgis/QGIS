@@ -1012,6 +1012,45 @@
     <string>Atlas &amp;Settings</string>
    </property>
   </action>
+  <action name="mActionShowBoxes">
+   <property name="text">
+    <string>Show Bounding Boxes</string>
+   </property>
+   <property name="toolTip">
+    <string>Show bounding boxes</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+B</string>
+   </property>
+  </action>
+  <action name="mActionToggleFullScreen">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toggle Full Scr&amp;een</string>
+   </property>
+   <property name="toolTip">
+    <string>Toggle full screen mode</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
+   </property>
+  </action>
+  <action name="mActionHidePanels">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Hide Panels</string>
+   </property>
+   <property name="toolTip">
+    <string>Hide panels</string>
+   </property>
+   <property name="shortcut">
+    <string>F10</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../python/plugins/fTools/resources.qrc"/>

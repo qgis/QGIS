@@ -31,7 +31,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     Q_OBJECT
 
   public:
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature feature = QgsFeature(), QgsAttributeEditorContext context = QgsAttributeEditorContext(), QWidget *parent = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent = 0 );
     ~QgsAttributeForm();
 
     const QgsFeature& feature() { return mFeature; }
@@ -96,7 +96,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      *
      * @return         true if the event has been handled (key was ESC)
      */
-    bool eventFilter( QObject* object, QEvent* event );
+    bool eventFilter( QObject* object, QEvent* event ) override;
 
   signals:
     /**

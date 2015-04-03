@@ -24,13 +24,10 @@
  ***************************************************************************/
 """
 
-import sys
-import time
-
-from PyQt4.QtGui import *
+from PyQt4.QtGui import QDialog, QTreeWidgetItem
 
 from ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase
-from installer_data import *
+from installer_data import repositories
 
 
 

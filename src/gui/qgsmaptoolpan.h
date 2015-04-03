@@ -31,12 +31,12 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     QgsMapToolPan( QgsMapCanvas* canvas );
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    virtual bool isTransient() { return true; }
+    virtual bool isTransient() override { return true; }
 
   private:
 

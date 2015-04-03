@@ -700,19 +700,19 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
     html += QString( "<table bgcolor=\"#FFFFAA\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#880000\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "There is a new version available" ) );
-  };
+  }
   if ( metadata->value( "status" ) == "new" )
   {
     html += QString( "<table bgcolor=\"#CCFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#008800\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "This is a new plugin" ) );
-  };
+  }
   if ( metadata->value( "status" ) == "newer" )
   {
     html += QString( "<table bgcolor=\"#FFFFCC\" cellspacing=\"2\" cellpadding=\"6\" width=\"100%\">"
                      "  <tr><td width=\"100%\" style=\"color:#550000\"><b>%1</b></td></tr>"
                      "</table>" ).arg( tr( "Installed version of this plugin is higher than any version found in repository" ) );
-  };
+  }
   if ( metadata->value( "experimental" ) == "true" )
   {
     html += QString( "<table bgcolor=\"#EEEEBB\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
@@ -720,7 +720,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "    <img src=\"qrc:/images/themes/default/pluginExperimental.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is experimental" ) );
-  };
+  }
   if ( metadata->value( "deprecated" ) == "true" )
   {
     html += QString( "<table bgcolor=\"#EEBBCC\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
@@ -728,7 +728,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem * item )
                      "    <img src=\"qrc:/images/themes/default/pluginDeprecated.png\" width=\"32\"><b>%1</b>"
                      "  </td></tr>"
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
-  };
+  }
 
   // Now the metadata
 
@@ -1226,8 +1226,8 @@ void QgsPluginManager::on_buttonUninstall_clicked()
 
 void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 {
-  buttonEditRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
-  buttonDeleteRep->setEnabled( ! treeRepositories -> selectedItems().isEmpty() );
+  buttonEditRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
+  buttonDeleteRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
 }
 
 

@@ -132,24 +132,24 @@ void ModelTest::nonDestructiveBasicTest()
   fetchingMore = false;
   Qt::ItemFlags flags = model->flags( QModelIndex() );
   Q_ASSERT( flags == Qt::ItemIsDropEnabled || flags == 0 );
-  model->hasChildren( QModelIndex() );
-  model->hasIndex( 0, 0 );
-  model->headerData( 0, Qt::Horizontal );
-  model->index( 0, 0 );
-  model->itemData( QModelIndex() );
+  ( void )model->hasChildren( QModelIndex() );
+  ( void )model->hasIndex( 0, 0 );
+  ( void )model->headerData( 0, Qt::Horizontal );
+  ( void )model->index( 0, 0 );
+  ( void )model->itemData( QModelIndex() );
   QVariant cache;
-  model->match( QModelIndex(), -1, cache );
-  model->mimeTypes();
+  ( void )model->match( QModelIndex(), -1, cache );
+  ( void )model->mimeTypes();
   Q_ASSERT( model->parent( QModelIndex() ) == QModelIndex() );
   Q_ASSERT( model->rowCount() >= 0 );
   QVariant variant;
-  model->setData( QModelIndex(), variant, -1 );
-  model->setHeaderData( -1, Qt::Horizontal, QVariant() );
-  model->setHeaderData( 999999, Qt::Horizontal, QVariant() );
+  ( void )model->setData( QModelIndex(), variant, -1 );
+  ( void )model->setHeaderData( -1, Qt::Horizontal, QVariant() );
+  ( void )model->setHeaderData( 999999, Qt::Horizontal, QVariant() );
   QMap<int, QVariant> roles;
-  model->sibling( 0, 0, QModelIndex() );
-  model->span( QModelIndex() );
-  model->supportedDropActions();
+  ( void )model->sibling( 0, 0, QModelIndex() );
+  ( void )model->span( QModelIndex() );
+  ( void )model->supportedDropActions();
 }
 
 /*!
@@ -497,7 +497,7 @@ void ModelTest::data()
  */
 void ModelTest::rowsAboutToBeInserted( const QModelIndex &parent, int start, int end )
 {
-//     Q_UNUSED(end);
+  Q_UNUSED( end );
 //    qDebug() << "rowsAboutToBeInserted" << "start=" << start << "end=" << end << "parent=" << model->data ( parent ).toString()
 //    << "current count of parent=" << model->rowCount ( parent ); // << "display of last=" << model->data( model->index(start-1, 0, parent) );
 //     qDebug() << model->index(start-1, 0, parent) << model->data( model->index(start-1, 0, parent) );

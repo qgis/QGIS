@@ -36,6 +36,11 @@ QgsComposerMapOverview::QgsComposerMapOverview( const QString& name, QgsComposer
 
 QgsComposerMapOverview::QgsComposerMapOverview()
     : QgsComposerMapItem( QString(), 0 )
+    , mFrameMapId( -1 )
+    , mFrameSymbol( 0 )
+    , mBlendMode( QPainter::CompositionMode_SourceOver )
+    , mInverted( false )
+    , mCentered( false )
 {
 }
 
@@ -183,7 +188,7 @@ bool QgsComposerMapOverview::readXML( const QDomElement &itemElem, const QDomDoc
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
-    mFrameSymbol = dynamic_cast<QgsFillSymbolV2*>( QgsSymbolLayerV2Utils::loadSymbol( frameStyleElem ) );
+    mFrameSymbol = QgsSymbolLayerV2Utils::loadSymbol<QgsFillSymbolV2>( frameStyleElem );
   }
   return ok;
 }

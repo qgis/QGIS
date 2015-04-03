@@ -25,9 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QgsFeature
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTable
@@ -47,15 +46,16 @@ class JoinAttributes(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Join attributes table'
         self.group = 'Vector general tools'
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterTable(self.INPUT_LAYER_2, 'Input layer 2',
-                          False))
-        self.addParameter(ParameterTableField(self.TABLE_FIELD, 'Table field',
-                          self.INPUT_LAYER))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterTable(self.INPUT_LAYER_2,
+            self.tr('Input layer 2'), False))
+        self.addParameter(ParameterTableField(self.TABLE_FIELD,
+            self.tr('Table field'), self.INPUT_LAYER))
         self.addParameter(ParameterTableField(self.TABLE_FIELD_2,
-                          'Table field 2', self.INPUT_LAYER_2))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Table field 2'), self.INPUT_LAYER_2))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER,
+            self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         input = self.getParameterValue(self.INPUT_LAYER)
@@ -71,7 +71,6 @@ class JoinAttributes(GeoAlgorithm):
 
         # Layer 2
         layer2 = dataobjects.getObjectFromUri(input2)
-        provider2 = layer2.dataProvider()
 
         joinField2Index = layer2.fieldNameIndex(field2)
 
@@ -94,7 +93,7 @@ class JoinAttributes(GeoAlgorithm):
             # Put the attributes into the dict if the join key is not contained in the keys of the dict.
             # Note: This behavior is same as previous behavior of this function,
             # but different from the attribute cache function of QGIS core.
-            if not joinValue2 in cache:
+            if joinValue2 not in cache:
                 cache[joinValue2] = attrs2
 
         # Create output vector layer with additional attribute

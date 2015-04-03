@@ -67,7 +67,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @return Returns always false, so the event gets processed
      */
-    virtual bool eventFilter( QObject* object, QEvent* event );
+    virtual bool eventFilter( QObject* object, QEvent* event ) override;
 
   protected:
     /**
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void mousePressEvent( QMouseEvent *event );
+    void mousePressEvent( QMouseEvent *event ) override;
 
     /**
      * Called for mouse release events on a table cell.
@@ -84,7 +84,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void mouseReleaseEvent( QMouseEvent *event );
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
     /**
      * Called for mouse move events on a table cell.
@@ -92,7 +92,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void mouseMoveEvent( QMouseEvent *event );
+    void mouseMoveEvent( QMouseEvent *event ) override;
 
     /**
      * Called for key press events
@@ -100,7 +100,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The mouse event
      */
-    void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
     /**
      * @brief
@@ -109,13 +109,13 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * @param event The associated event object.
      */
-    void contextMenuEvent( QContextMenuEvent* event );
+    void contextMenuEvent( QContextMenuEvent* event ) override;
 
     /**
      * Saves geometry to the settings on close
      * @param event not used
      */
-    void closeEvent( QCloseEvent *event );
+    void closeEvent( QCloseEvent *event ) override;
 
   signals:
     /**
@@ -133,7 +133,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   public slots:
     void repaintRequested( QModelIndexList indexes );
     void repaintRequested();
-    virtual void selectAll();
+    virtual void selectAll() override;
     virtual void selectRow( int row );
     virtual void _q_selectRow( int row );
 

@@ -50,12 +50,14 @@ goto devenv_x86_64
 
 :devenv_x86
 set GRASS_VERSION=6.4.4
-set VS90COMNTOOLS=%PF86%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PF86%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
+call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
+if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
+path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
-	-G "Visual Studio 9 2008" ^
-	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe
+	-G "Visual Studio 10" ^
+	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib
 goto devenv
 
 :devenv_x86_64
@@ -72,12 +74,13 @@ set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
+	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :devenv
 set PYTHONPATH=
-path %PF86%\CMake 2.8\bin;%PATH%;c:\cygwin\bin
+path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
 
 PROMPT qgis%VERSION%$g 
 
@@ -134,8 +137,8 @@ set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 cmake %CMAKE_OPT% ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
-	-D WITH_MAPSERVER=TRUE ^
-	-D MAPSERVER_SKIP_ECW=TRUE ^
+	-D WITH_SERVER=TRUE ^
+	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
@@ -154,7 +157,6 @@ cmake %CMAKE_OPT% ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^
 	-D QT_HEADERS_DIR=%O4W_ROOT%/include/qt4 ^
 	-D QWT_INCLUDE_DIR=%O4W_ROOT%/include/qwt ^
-	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
@@ -268,8 +270,12 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-server/%PACKAGENAME
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
 	"apps/%PACKAGENAME%/bin/qgis_mapserv.fcgi.exe" ^
+	"apps/%PACKAGENAME%/bin/qgis_server.dll" ^
 	"apps/%PACKAGENAME%/bin/admin.sld" ^
 	"apps/%PACKAGENAME%/bin/wms_metadata.xml" ^
+	"apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	"apps/%PACKAGENAME%/python/qgis/_server.lib" ^
+	"apps/%PACKAGENAME%/python/qgis/server/" ^
 	"httpd.d/httpd_%PACKAGENAME%.conf.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%-server.bat" ^
 	"etc/preremove/%PACKAGENAME%-server.bat"
@@ -298,6 +304,9 @@ if not exist %ARCH%\release\qgis\%PACKAGENAME% mkdir %ARCH%\release\qgis\%PACKAG
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/_server.pyd" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/_server.lib" ^
+	--exclude "apps/%PACKAGENAME%/python/qgis/server/" ^
 	"bin/%PACKAGENAME%-browser-bin.exe" ^
 	"bin/%PACKAGENAME%-bin.exe" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^

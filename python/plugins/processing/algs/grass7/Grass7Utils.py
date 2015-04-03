@@ -4,8 +4,8 @@
 ***************************************************************************
     GrassUtils.py
     ---------------------
-    Date                 : April 2014
-    Copyright            : (C) 2014 by Victor Olaya
+    Date                 : February 2015
+    Copyright            : (C) 2014-2015 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'April 2014'
-__copyright__ = '(C) 2014, Victor Olaya'
+__date__ = 'February 2015'
+__copyright__ = '(C) 2014-2015, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -28,11 +28,12 @@ __revision__ = '$Format:%H$'
 import stat
 import shutil
 import subprocess
+import os
 from qgis.core import QgsApplication
-from PyQt4.QtCore import *
+from PyQt4.QtCore import QCoreApplication
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.ProcessingLog import ProcessingLog
-from processing.tools.system import *
+from processing.tools.system import userFolder, isWindows, isMac, tempFolder, mkdir
 from processing.tests.TestData import points
 
 
@@ -119,7 +120,7 @@ class Grass7Utils:
         shell = Grass7Utils.grassWinShell()
 
         script = Grass7Utils.grassScriptFilename()
-        gisrc = userFolder() + os.sep + 'processing.gisrc7'  #FIXME: use temporary file
+        gisrc = userFolder() + os.sep + 'processing.gisrc7'  # FIXME: use temporary file
 
         # Temporary gisrc file
         output = open(gisrc, 'w')
@@ -148,8 +149,7 @@ class Grass7Utils:
         output.write('if "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%PATH%\n')
         output.write('if not "%GRASS_ADDON_PATH%"=="" set PATH=%WINGISBASE%\\bin;%WINGISBASE%\\lib;%GRASS_ADDON_PATH%;%PATH%\n')
         output.write('\n')
-        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion()
-                + '\n')
+        output.write('set GRASS_VERSION=' + Grass7Utils.getGrassVersion() + '\n')
         output.write('if not "%LANG%"=="" goto langset\n')
         output.write('FOR /F "usebackq delims==" %%i IN (`"%WINGISBASE%\\etc\\winlocale"`) DO @set LANG=%%i\n')
         output.write(':langset\n')
@@ -201,19 +201,17 @@ class Grass7Utils:
         folder = Grass7Utils.grassMapsetFolder()
         mkdir(os.path.join(folder, 'PERMANENT'))
         mkdir(os.path.join(folder, 'PERMANENT', '.tmp'))
-        Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT',
-                                    'DEFAULT_WIND'))
+        Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'DEFAULT_WIND'))
         outfile = open(os.path.join(folder, 'PERMANENT', 'MYNAME'), 'w')
         outfile.write(
             'QGIS GRASS GIS 7 interface: temporary data processing location.\n')
         outfile.close()
 
-        # FIXME: in GRASS 7 the SQLite driver is default (and more powerful)
         Grass7Utils.writeGrass7Window(os.path.join(folder, 'PERMANENT', 'WIND'))
-        mkdir(os.path.join(folder, 'PERMANENT', 'dbf'))
+        mkdir(os.path.join(folder, 'PERMANENT', 'sqlite'))
         outfile = open(os.path.join(folder, 'PERMANENT', 'VAR'), 'w')
-        outfile.write('DB_DRIVER: dbf\n')
-        outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/dbf/\n')
+        outfile.write('DB_DRIVER: sqlite\n')
+        outfile.write('DB_DATABASE: $GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\n')
         outfile.close()
 
     @staticmethod
@@ -265,7 +263,7 @@ class Grass7Utils:
     @staticmethod
     def executeGrass7(commands, progress, outputCommands=None):
         loglines = []
-        loglines.append('GRASS GIS 7 execution console output')
+        loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command = Grass7Utils.prepareGrass7Execution(commands)
         proc = subprocess.Popen(
@@ -275,12 +273,11 @@ class Grass7Utils:
             stdin=open(os.devnull),
             stderr=subprocess.STDOUT,
             universal_newlines=True,
-            ).stdout
+        ).stdout
         for line in iter(proc.readline, ''):
             if 'GRASS_INFO_PERCENT' in line:
                 try:
-                    progress.setPercentage(int(line[len('GRASS_INFO_PERCENT')
-                            + 2:]))
+                    progress.setPercentage(int(line[len('GRASS_INFO_PERCENT') + 2:]))
                 except:
                     pass
             else:
@@ -304,7 +301,7 @@ class Grass7Utils:
                 stdin=open(os.devnull),
                 stderr=subprocess.STDOUT,
                 universal_newlines=True,
-                ).stdout
+            ).stdout
             for line in iter(proc.readline, ''):
                 if 'GRASS_INFO_PERCENT' in line:
                     try:
@@ -347,23 +344,25 @@ class Grass7Utils:
 
     @staticmethod
     def addSessionLayers(exportedLayers):
-        Grass7Utils.sessionLayers = dict(Grass7Utils.sessionLayers.items()
-                + exportedLayers.items())
+        Grass7Utils.sessionLayers = dict(
+            Grass7Utils.sessionLayers.items()
+            + exportedLayers.items())
 
     @staticmethod
     def checkGrass7IsInstalled(ignorePreviousState=False):
         if isWindows():
             path = Grass7Utils.grassPath()
             if path == '':
-                return 'GRASS GIS 7 folder is not configured.\nPlease configure \
-                        it before running GRASS GIS 7 algorithms.'
+                return Grass7Utils.tr(
+                    'GRASS GIS 7 folder is not configured. Please configure '
+                    'it before running GRASS GIS 7 algorithms.')
             cmdpath = os.path.join(path, 'bin', 'r.out.gdal.exe')
             if not os.path.exists(cmdpath):
-                return 'The specified GRASS GIS 7 folder does not contain a valid \
-                        set of GRASS GIS 7 modules.\n' \
-                        + 'Please, go to the Processing settings dialog, and \
-                        check that the GRASS GIS 7\n' \
-                        + 'folder is correctly configured'
+                return Grass7Utils.tr(
+                    'The specified GRASS GIS 7 folder does not contain a valid '
+                    'set of GRASS GIS 7 modules.\nPlease, go to the Processing '
+                    'settings dialog, and check that the GRASS GIS 7\n'
+                    'folder is correctly configured')
 
         if not ignorePreviousState:
             if Grass7Utils.isGrass7Installed:
@@ -380,14 +379,21 @@ class Grass7Utils:
                 0.0001,
                 0,
                 None,
-                )
+            )
             if not os.path.exists(result['output']):
-                return 'It seems that GRASS GIS 7 is not correctly installed and \
-                    configured in your system.\nPlease install it before \
-                    running GRASS GIS 7 algorithms.'
+                return Grass7Utils.tr(
+                    'It seems that GRASS GIS 7 is not correctly installed and '
+                    'configured in your system.\nPlease install it before '
+                    'running GRASS GIS 7 algorithms.')
         except:
-            return 'Error while checking GRASS GIS 7 installation. GRASS GIS 7 might not \
-                be correctly configured.\n'
+            return Grass7Utils.tr(
+                'Error while checking GRASS GIS 7 installation. GRASS GIS 7 '
+                'might not be correctly configured.\n')
 
         Grass7Utils.isGrass7Installed = True
 
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'Grass7Utils'
+        return QCoreApplication.translate(context, string)

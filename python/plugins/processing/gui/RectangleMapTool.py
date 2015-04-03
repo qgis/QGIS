@@ -25,13 +25,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
-from qgis.gui import *
+from PyQt4.QtCore import pyqtSignal
+from PyQt4.QtGui import QColor
+from qgis.core import QGis, QgsPoint, QgsRectangle
+from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 
 class RectangleMapTool(QgsMapToolEmitPoint):
+
+    rectangleCreated = pyqtSignal()
+    deactovated = pyqtSignal()
 
     def __init__(self, canvas):
         self.canvas = canvas
@@ -58,7 +61,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
     def canvasReleaseEvent(self, e):
         self.isEmittingPoint = False
         if self.rectangle() is not None:
-            self.emit(SIGNAL('rectangleCreated()'))
+            self.rectangleCreated.emit()
 
     def canvasMoveEvent(self, e):
         if not self.isEmittingPoint:
@@ -107,4 +110,4 @@ class RectangleMapTool(QgsMapToolEmitPoint):
 
     def deactivate(self):
         QgsMapTool.deactivate(self)
-        self.emit(SIGNAL('deactivated()'))
+        self.deactivated.emit()

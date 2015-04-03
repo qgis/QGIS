@@ -182,8 +182,8 @@ QgsRasterBlock * QgsRasterDataProvider::block( int theBandNo, QgsRectangle  cons
           return block;
         }
 
-        qgssize tmpIndex = tmpRow * tmpWidth + tmpCol;
-        qgssize index = row * theWidth + col;
+        qgssize tmpIndex = ( qgssize )tmpRow * ( qgssize )tmpWidth + tmpCol;
+        qgssize index = row * ( qgssize )theWidth + col;
 
         char *tmpBits = tmpBlock->bits( tmpIndex );
         char *bits = block->bits( index );

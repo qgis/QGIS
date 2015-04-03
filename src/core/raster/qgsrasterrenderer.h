@@ -56,17 +56,17 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
     virtual ~QgsRasterRenderer();
 
-    QgsRasterInterface * clone() const = 0;
+    QgsRasterInterface * clone() const override = 0;
 
-    virtual int bandCount() const;
+    virtual int bandCount() const override;
 
-    virtual QGis::DataType dataType( int bandNo ) const;
+    virtual QGis::DataType dataType( int bandNo ) const override;
 
     virtual QString type() const { return mType; }
 
-    virtual bool setInput( QgsRasterInterface* input );
+    virtual bool setInput( QgsRasterInterface* input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) = 0;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) override = 0;
 
     bool usesTransparency() const;
 
@@ -83,7 +83,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
 
     /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& rendererElem );
+    void readXML( const QDomElement& rendererElem ) override;
 
     /**Returns a list of band numbers used by the renderer*/
     virtual QList<int> usesBands() const { return QList<int>(); }

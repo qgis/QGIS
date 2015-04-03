@@ -10,5 +10,5 @@ class GUI_EXPORT QgsSlider : public QSlider
     QgsSlider( QWidget *parent = 0 );
     QgsSlider( Qt::Orientation orientation, QWidget * parent = 0 );
   protected:
-    virtual void paintEvent( QPaintEvent * event );
+    virtual void paintEvent( QPaintEvent * event ) override;
 };

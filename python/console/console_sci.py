@@ -19,12 +19,9 @@ email                : lrssvtml (at) gmail (dot) com
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.Qsci import (QsciScintilla,
-                        QsciScintillaBase,
-                        QsciLexerPython,
-                        QsciAPIs)
+from PyQt4.QtCore import Qt, QSettings, QByteArray, QCoreApplication, QFile, QSize
+from PyQt4.QtGui import QDialog, QMenu, QColor, QShortcut, QKeySequence, QFont, QFontMetrics, QStandardItemModel, QStandardItem, QApplication, QClipboard
+from PyQt4.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 import sys
 import os
@@ -244,7 +241,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         the data is stored internally. """
         len = self.SendScintilla(self.SCI_GETLENGTH)+1
         bb = QByteArray(len,'0')
-        N = self.SendScintilla(self.SCI_GETTEXT, len, bb)
+        self.SendScintilla(self.SCI_GETTEXT, len, bb)
         return bytes(bb)[:-1]
 
     def getTextLength(self):
@@ -297,7 +294,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.history.append(line)
         elif not command == "":
             if len(self.history) <= 0 or \
-            not command == self.history[-1]:
+               command != self.history[-1]:
                 self.history.append(command)
         self.historyIndex = len(self.history)
 
@@ -424,9 +421,8 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 self.setCursorPosition(line, 4)
             self.recolor()
 
-        elif (e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and \
-            e.key() == Qt.Key_V) or \
-            (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
+        elif (e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_V) or \
+             (e.modifiers() & Qt.ShiftModifier and e.key() == Qt.Key_Insert):
             self.paste()
             e.accept()
 
@@ -449,7 +445,7 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                     self.insert(self.opening[i] + selText + self.closing[i])
                     self.setCursorPosition(endLine, endPos+2)
                     return
-                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt) \
+                elif t == '(' and (re.match(r'^[ \t]*def \w+$', txt)
                                    or re.match(r'^[ \t]*class \w+$', txt)):
                         self.insert('):')
                 else:
@@ -476,35 +472,35 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         subMenu = QMenu(menu)
         titleHistoryMenu = QCoreApplication.translate("PythonConsole", "Command History")
         subMenu.setTitle(titleHistoryMenu)
-        showHistoryAction = subMenu.addAction(
-                            QCoreApplication.translate("PythonConsole", "Show"),
-                            self.showHistory, 'Ctrl+Shift+SPACE')
+        subMenu.addAction(
+            QCoreApplication.translate("PythonConsole", "Show"),
+            self.showHistory, 'Ctrl+Shift+SPACE')
         subMenu.addSeparator()
-        saveHistoryAction = subMenu.addAction(
-                            QCoreApplication.translate("PythonConsole", "Save"),
-                            self.writeHistoryFile)
+        subMenu.addAction(
+            QCoreApplication.translate("PythonConsole", "Save"),
+            self.writeHistoryFile)
         subMenu.addSeparator()
-        clearHistoryAction = subMenu.addAction(
-                             QCoreApplication.translate("PythonConsole", "Clear File"),
-                             self.clearHistory)
-        clearSessHistoryAction = subMenu.addAction(
-                                 QCoreApplication.translate("PythonConsole", "Clear Session"),
-                                 self.clearHistorySession)
+        subMenu.addAction(
+            QCoreApplication.translate("PythonConsole", "Clear File"),
+            self.clearHistory)
+        subMenu.addAction(
+            QCoreApplication.translate("PythonConsole", "Clear Session"),
+            self.clearHistorySession)
         menu.addMenu(subMenu)
         menu.addSeparator()
         copyAction = menu.addAction(
-                     QCoreApplication.translate("PythonConsole", "Copy"),
-                     self.copy, QKeySequence.Copy)
+            QCoreApplication.translate("PythonConsole", "Copy"),
+            self.copy, QKeySequence.Copy)
         pasteAction = menu.addAction(
-                      QCoreApplication.translate("PythonConsole", "Paste"),
-                      self.paste, QKeySequence.Paste)
+            QCoreApplication.translate("PythonConsole", "Paste"),
+            self.paste, QKeySequence.Paste)
         copyAction.setEnabled(False)
         pasteAction.setEnabled(False)
         if self.hasSelectedText():
             copyAction.setEnabled(True)
         if QApplication.clipboard().text():
             pasteAction.setEnabled(True)
-        action = menu.exec_(self.mapToGlobal(e.pos()))
+        menu.exec_(self.mapToGlobal(e.pos()))
 
     def mousePressEvent(self, e):
         """
@@ -579,7 +575,6 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
 
     def currentCommand(self):
         linenr, index = self.getCursorPosition()
-        txtLength = len(self.text(linenr))
         string = self.text()
         cmdLine = string[4:]
         cmd = unicode(cmdLine)

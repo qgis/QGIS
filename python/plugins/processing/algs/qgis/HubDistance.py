@@ -25,17 +25,18 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QGis, QgsField, QgsGeometry, QgsDistanceArea, QgsFeature
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import \
-        GeoAlgorithmExecutionException
+from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputVector
 
 from processing.tools import dataobjects, vector
+
+from math import sqrt
 
 class HubDistance(GeoAlgorithm):
     POINTS = 'POINTS'
@@ -47,31 +48,31 @@ class HubDistance(GeoAlgorithm):
 
     GEOMETRIES = ['Point',
                   'Line to hub'
-                 ]
+                  ]
 
     UNITS = ['Meters',
              'Feet',
              'Miles',
              'Kilometers',
              'Layer units'
-            ]
+             ]
 
     def defineCharacteristics(self):
         self.name = 'Distance to nearest hub'
         self.group = 'Vector analysis tools'
 
         self.addParameter(ParameterVector(self.POINTS,
-            'Source points layer', [ParameterVector.VECTOR_TYPE_ANY]))
+            self.tr('Source points layer'), [ParameterVector.VECTOR_TYPE_ANY]))
         self.addParameter(ParameterVector(self.HUBS,
-            'Destination hubs layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterTableField(
-            self.FIELD, 'Hub layer name attribute', self.HUBS))
-        self.addParameter(ParameterSelection(
-            self.GEOMETRY, 'Output shape type', self.GEOMETRIES))
-        self.addParameter(ParameterSelection(
-            self.UNIT, 'Measurement unit', self.UNITS))
+            self.tr('Destination hubs layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addParameter(ParameterTableField(self.FIELD,
+            self.tr('Hub layer name attribute'), self.HUBS))
+        self.addParameter(ParameterSelection(self.GEOMETRY,
+            self.tr('Output shape type'), self.GEOMETRIES))
+        self.addParameter(ParameterSelection(self.UNIT,
+            self.tr('Measurement unit'), self.UNITS))
 
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layerPoints = dataobjects.getObjectFromUri(
@@ -85,7 +86,7 @@ class HubDistance(GeoAlgorithm):
 
         if layerPoints.source() == layerHubs.source():
             raise GeoAlgorithmExecutionException(
-                'Same layer given for both hubs and spokes')
+                self.tr('Same layer given for both hubs and spokes'))
 
         geomType = QGis.WKBPoint
         if addLines:
@@ -135,8 +136,8 @@ class HubDistance(GeoAlgorithm):
                 attributes.append(hubDist / 1000.0)
             elif units != 'Meters':
                 attributes.append(sqrt(
-                    pow(source.x() - closest.point.x(), 2.0) +
-                    pow(source.y() - closest.point.y(), 2.0)))
+                    pow(src.x() - closest.point.x(), 2.0) +
+                    pow(src.y() - closest.point.y(), 2.0)))
             else:
                 attributes.append(hubDist)
 

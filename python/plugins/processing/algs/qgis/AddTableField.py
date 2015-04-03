@@ -25,9 +25,8 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import QVariant
+from qgis.core import QgsField, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterString
@@ -53,16 +52,18 @@ class AddTableField(GeoAlgorithm):
         self.name = 'Add field to attributes table'
         self.group = 'Vector table tools'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_ANY], False))
-        self.addParameter(ParameterString(self.FIELD_NAME, 'Field name'))
-        self.addParameter(ParameterSelection(self.FIELD_TYPE, 'Field type',
-                          self.TYPE_NAMES))
-        self.addParameter(ParameterNumber(self.FIELD_LENGTH, 'Field length',
-                          1, 255, 10))
+        self.addParameter(ParameterVector(self.INPUT_LAYER,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY], False))
+        self.addParameter(ParameterString(self.FIELD_NAME,
+            self.tr('Field name')))
+        self.addParameter(ParameterSelection(self.FIELD_TYPE,
+            self.tr('Field type'), self.TYPE_NAMES))
+        self.addParameter(ParameterNumber(self.FIELD_LENGTH,
+            self.tr('Field length'), 1, 255, 10))
         self.addParameter(ParameterNumber(self.FIELD_PRECISION,
-                          'Field precision', 0, 10, 0))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, 'Output layer'))
+            self.tr('Field precision'), 0, 10, 0))
+        self.addOutput(OutputVector(
+            self.OUTPUT_LAYER, self.tr('Output layer')))
 
     def processAlgorithm(self, progress):
         fieldType = self.getParameterValue(self.FIELD_TYPE)

@@ -42,6 +42,7 @@
 #include "qgsexpressionselectiondialog.h"
 #include "qgsfeaturelistmodel.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsrubberband.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -52,7 +53,7 @@ class QgsAttributeTableDock : public QDockWidget
       setObjectName( "AttributeTable" ); // set object name so the position can be saved
     }
 
-    virtual void closeEvent( QCloseEvent * ev )
+    virtual void closeEvent( QCloseEvent * ev ) override
     {
       Q_UNUSED( ev );
       deleteLater();
@@ -63,6 +64,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     : QDialog( parent, flags )
     , mDock( 0 )
     , mLayer( theLayer )
+    , mRubberBand( 0 )
 {
   setupUi( this );
 
@@ -87,8 +89,24 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   context.setDistanceArea( *myDa );
   context.setVectorLayerTools( QgisApp::instance()->vectorLayerTools() );
 
+  QgsFeatureRequest r;
+  if ( mLayer->geometryType() != QGis::NoGeometry &&
+       settings.value( "/qgis/attributeTableBehaviour", QgsAttributeTableFilterModel::ShowAll ).toInt() == QgsAttributeTableFilterModel::ShowVisible )
+  {
+    QgsMapCanvas *mc = QgisApp::instance()->mapCanvas();
+    QgsRectangle extent( mc->mapSettings().mapToLayerCoordinates( theLayer, mc->extent() ) );
+    r.setFilterRect( extent );
+
+    QgsGeometry *g = QgsGeometry::fromRect( extent );
+    mRubberBand = new QgsRubberBand( mc, true );
+    mRubberBand->setToGeometry( g, theLayer );
+    delete g;
+
+    mActionShowAllFilter->setText( tr( "Show All Features In Initial Canvas Extent" ) );
+  }
+
   // Initialize dual view
-  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), QgsFeatureRequest(), context );
+  mMainView->init( mLayer, QgisApp::instance()->mapCanvas(), r, context );
 
   // Initialize filter gui elements
   mFilterActionMapper = new QSignalMapper( this );
@@ -203,6 +221,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mFieldModel->setLayer( mLayer );
   mFieldCombo->setModel( mFieldModel );
   connect( mRunFieldCalc, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpression() ) );
+  connect( mRunFieldCalcSelected, SIGNAL( clicked() ), this, SLOT( updateFieldFromExpressionSelected() ) );
   // NW TODO Fix in 2.6 - Doesn't work with field model for some reason.
 //  connect( mUpdateExpressionText, SIGNAL( returnPressed() ), this, SLOT( updateFieldFromExpression() ) );
   connect( mUpdateExpressionText, SIGNAL( fieldChanged( QString, bool ) ), this, SLOT( updateButtonStatus( QString, bool ) ) );
@@ -214,22 +233,27 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
   delete myDa;
+  delete mRubberBand;
 }
 
 void QgsAttributeTableDialog::updateTitle()
 {
   QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
-  w->setWindowTitle( tr( "Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4" )
+  w->setWindowTitle( tr( "Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5" )
                      .arg( mLayer->name() )
                      .arg( mMainView->featureCount() )
                      .arg( mMainView->filteredFeatureCount() )
                      .arg( mLayer->selectedFeatureCount() )
+                     .arg( mRubberBand ? tr( ", spatially limited" ) : "" )
                    );
 
   if ( mMainView->filterMode() == QgsAttributeTableFilterModel::ShowAll )
     mRunFieldCalc->setText( tr( "Update All" ) );
   else
     mRunFieldCalc->setText( tr( "Update Filtered" ) );
+
+  bool enabled = mLayer->selectedFeatureCount() > 0;
+  mRunFieldCalcSelected->setEnabled( enabled );
 }
 
 void QgsAttributeTableDialog::updateButtonStatus( QString fieldName, bool isValid )
@@ -283,7 +307,11 @@ void QgsAttributeTableDialog::columnBoxInit()
 
   foreach ( const QgsField field, fields )
   {
-    if ( mLayer->editorWidgetV2( mLayer->fieldNameIndex( field.name() ) ) != "Hidden" )
+    int idx = mLayer->fieldNameIndex( field.name() );
+    if ( idx < 0 )
+      continue;
+
+    if ( mLayer->editorWidgetV2( idx ) != "Hidden" )
     {
       QIcon icon = QgsApplication::getThemeIcon( "/mActionNewAttribute.png" );
       QString text = field.name();
@@ -299,51 +327,54 @@ void QgsAttributeTableDialog::columnBoxInit()
 
 void QgsAttributeTableDialog::updateFieldFromExpression()
 {
+  bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
+  QgsFeatureIds filteredIds = filtered ? mMainView->filteredFeatures() : QgsFeatureIds();
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+}
+
+void QgsAttributeTableDialog::updateFieldFromExpressionSelected()
+{
+  QgsFeatureIds filteredIds = mLayer->selectedFeaturesIds();
+  runFieldCalculation( mLayer, mFieldCombo->currentText(), mUpdateExpressionText->currentField(), filteredIds );
+}
+
+void QgsAttributeTableDialog::runFieldCalculation( QgsVectorLayer* layer, QString fieldName, QString expression, QgsFeatureIds filteredIds )
+{
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   mLayer->beginEditCommand( "Field calculator" );
 
-  QModelIndex modelindex = mFieldModel->indexFromName( mFieldCombo->currentText() );
+  QModelIndex modelindex = mFieldModel->indexFromName( fieldName );
   int fieldindex = modelindex.data( QgsFieldModel::FieldIndexRole ).toInt();
 
   bool calculationSuccess = true;
   QString error;
 
-
-  QgsExpression exp( mUpdateExpressionText->currentField() );
+  QgsExpression exp( expression );
   exp.setGeomCalculator( *myDa );
   bool useGeometry = exp.needsGeometry();
 
-  QgsFeatureRequest request;
+  QgsFeatureRequest request( mMainView->masterModel()->request() );
+  useGeometry |= request.filterType() == QgsFeatureRequest::FilterRect;
   request.setFlags( useGeometry ? QgsFeatureRequest::NoFlags : QgsFeatureRequest::NoGeometry );
-  QgsFeatureIds filteredIds = mMainView->filteredFeatures();
-  QgsDebugMsg( QString( filteredIds.size() ) );
 
-  // This would be nice but doesn't work on all providers
-//  if ( mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll )
-//  {
-//    QgsDebugMsg( " Updating only selected features " );
-//    request.setFilterFids( mMainView->filteredFeatures() );
-//  }
-
-  bool filtered = mMainView->filterMode() != QgsAttributeTableFilterModel::ShowAll;
   int rownum = 1;
 
+  const QgsField &fld = layer->pendingFields()[ fieldindex ];
+
   //go through all the features and change the new attributes
-  QgsFeatureIterator fit = mLayer->getFeatures( request );
+  QgsFeatureIterator fit = layer->getFeatures( request );
   QgsFeature feature;
   while ( fit.nextFeature( feature ) )
   {
-    if ( filtered )
+    if ( !filteredIds.isEmpty() && !filteredIds.contains( feature.id() ) )
     {
-      if ( !filteredIds.contains( feature.id() ) )
-      {
-        continue;
-      }
+      continue;
     }
 
     exp.setCurrentRowNumber( rownum );
     QVariant value = exp.evaluate( &feature );
+    fld.convertCompatible( value );
     // Bail if we have a update error
     if ( exp.hasEvalError() )
     {
@@ -644,8 +675,11 @@ void QgsAttributeTableDialog::filterQueryChanged( const QString& query )
 
     const QgsFields& flds = mLayer->pendingFields();
     int fldIndex = mLayer->fieldNameIndex( fieldName );
+    if ( fldIndex < 0 )
+      return;
+
     QVariant::Type fldType = flds[fldIndex].type();
-    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
+    bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double || fldType == QVariant::LongLong );
 
     QString sensString = "ILIKE";
     if ( mCbxCaseSensitive->isChecked() )
@@ -721,7 +755,7 @@ void QgsAttributeTableDialog::setFilterExpression( QString filterString )
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   filterExpression.setGeomCalculator( myDa );
-  QgsFeatureRequest request;
+  QgsFeatureRequest request( mMainView->masterModel()->request() );
   request.setSubsetOfAttributes( filterExpression.referencedColumns(), mLayer->pendingFields() );
   if ( !fetchGeom )
   {

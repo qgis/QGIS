@@ -13,14 +13,15 @@ class QgsLayerTreeModelLegendNode : QObject
 %TypeHeaderCode
 #include <qgslayertreemodellegendnode.h>
 %End
-    
+
   public:
     ~QgsLayerTreeModelLegendNode();
 
     enum LegendNodeRoles
     {
       RuleKeyRole,                    //!< rule key of the node (QString)
-      SymbolV2LegacyRuleKeyRole       //!< for QgsSymbolV2LegendNode only - legacy rule key (void ptr, to be cast to QgsSymbolV2 ptr)
+      SymbolV2LegacyRuleKeyRole,      //!< for QgsSymbolV2LegendNode only - legacy rule key (void ptr, to be cast to QgsSymbolV2 ptr)
+      ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
     };
 
     /** Return pointer to the parent layer node */
@@ -188,6 +189,4 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
     virtual QVariant data( int role ) const;
 
     QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
-
 };
-

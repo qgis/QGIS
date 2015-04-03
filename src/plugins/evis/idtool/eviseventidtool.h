@@ -51,7 +51,7 @@ class eVisEventIdTool : public QgsMapTool
     eVisEventIdTool( QgsMapCanvas* );
 
     /** \brief Method to handle mouse release, i.e., select, event */
-    void canvasReleaseEvent( QMouseEvent* );
+    void canvasReleaseEvent( QMouseEvent* ) override;
 
   private:
 

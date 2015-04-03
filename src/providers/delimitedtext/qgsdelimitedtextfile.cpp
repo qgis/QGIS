@@ -43,6 +43,7 @@ QgsDelimitedTextFile::QgsDelimitedTextFile( QString url ) :
     mSkipLines( 0 ),
     mMaxFields( 0 ),
     mMaxNameLength( 200 ), // Don't want field names to be too unweildy!
+    mAnchoredRegexp( false ),
     mLineNumber( -1 ),
     mRecordLineNumber( -1 ),
     mRecordNumber( -1 ),
@@ -123,7 +124,7 @@ bool QgsDelimitedTextFile::open()
 void QgsDelimitedTextFile::updateFile()
 {
   close();
-  emit( fileUpdated() );
+  emit fileUpdated();
 }
 
 // Clear information based on current definition of file

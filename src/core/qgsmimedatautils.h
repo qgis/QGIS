@@ -16,6 +16,7 @@
 #define QGSMIMEDATAUTILS_H
 
 #include <QMimeData>
+#include <QStringList>
 
 class QgsLayerItem;
 
@@ -34,6 +35,8 @@ class CORE_EXPORT QgsMimeDataUtils
       QString providerKey;
       QString name;
       QString uri;
+      QStringList supportedCrs;
+      QStringList supportedFormats;
     };
     typedef QList<Uri> UriList;
 
@@ -43,6 +46,11 @@ class CORE_EXPORT QgsMimeDataUtils
 
     static UriList decodeUriList( const QMimeData* data );
 
+  private:
+    static QString encode( const QStringList& items );
+    static QStringList decode( const QString& encoded );
+
 };
 
 #endif // QGSMIMEDATAUTILS_H
+

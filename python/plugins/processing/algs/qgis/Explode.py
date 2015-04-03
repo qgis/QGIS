@@ -25,9 +25,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QGis, QgsFeature, QgsGeometry
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -41,7 +39,7 @@ class Explode(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         vlayer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+            self.getParameterValue(self.INPUT))
         output = self.getOutputFromName(self.OUTPUT)
         vprovider = vlayer.dataProvider()
         fields = vprovider.fields()
@@ -72,7 +70,7 @@ class Explode(GeoAlgorithm):
                 segments.extend(self.getPolylineAsSingleSegments(polyline))
         else:
             segments.extend(self.getPolylineAsSingleSegments(
-                    geom.asPolyline()))
+                geom.asPolyline()))
         return segments
 
     def getPolylineAsSingleSegments(self, polyline):
@@ -87,6 +85,6 @@ class Explode(GeoAlgorithm):
     def defineCharacteristics(self):
         self.name = 'Explode lines'
         self.group = 'Vector geometry tools'
-        self.addParameter(ParameterVector(self.INPUT, 'Input layer',
-                          [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output layer'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output layer')))

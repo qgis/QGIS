@@ -20,12 +20,15 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
 
-QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData ): mDataIsCached( false ), mLayerData( layerData )
+QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData )
+    : mDataIsCached( false )
+    , mLayerData( layerData )
 {
 
 }
 
 QgsInterpolator::QgsInterpolator()
+    : mDataIsCached( false )
 {
 
 }
@@ -114,6 +117,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
   {
     case QGis::WKBPoint25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBPoint:
     {
       currentWkbPtr >> theVertex.x >> theVertex.y;
@@ -130,6 +134,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
     }
     case QGis::WKBLineString25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBLineString:
     {
       int nPoints;
@@ -152,6 +157,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
 #if 0
     case QGis::WKBPolygon25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBPolygon:
     {
       int nRings;
@@ -196,6 +202,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
     }
     case QGis::WKBMultiPoint25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiPoint:
     {
       int nPoints;
@@ -220,6 +227,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
     }
     case QGis::WKBMultiLineString25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiLineString:
     {
       int nLines;
@@ -265,6 +273,7 @@ int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double 
     }
     case QGis::WKBMultiPolygon25D:
       hasZValue = true;
+      //intentional fall-through
     case QGis::WKBMultiPolygon:
     {
       int nPolys;

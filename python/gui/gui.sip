@@ -40,7 +40,6 @@
 %Include qgscolorwidgets.sip
 %Include qgscomposerview.sip
 %Include qgscredentialdialog.sip
-%Include qgsdatetimeedit.sip
 %Include qgsdetaileditemdata.sip
 %Include qgsdetaileditemdelegate.sip
 %Include qgsdialog.sip
@@ -86,10 +85,12 @@
 %Include qgsmessagelogviewer.sip
 %Include qgsmessageviewer.sip
 %Include qgsnewhttpconnection.sip
+%Include qgsnewmemorylayerdialog.sip
 %Include qgsnewvectorlayerdialog.sip
 %Include qgsnumericsortlistviewitem.sip
 %Include qgsowssourceselect.sip
 %Include qgsprojectbadlayerguihandler.sip
+%Include qgsprojectionselectionwidget.sip
 %Include qgsprojectionselector.sip
 %Include qgsquerybuilder.sip
 %Include qgsrasterformatsaveoptionswidget.sip
@@ -98,6 +99,7 @@
 %Include qgsrubberband.sip
 %Include qgsscalecombobox.sip
 %Include qgsscalerangewidget.sip
+%Include qgsscalewidget.sip
 %Include qgsscalevisibilitydialog.sip
 %Include qgssearchquerybuilder.sip
 %Include qgstextannotationitem.sip
@@ -148,6 +150,7 @@
 %Include symbology-ng/qgsellipsesymbollayerv2widget.sip
 %Include symbology-ng/qgsgraduatedsymbolrendererv2widget.sip
 %Include symbology-ng/qgsinvertedpolygonrendererwidget.sip
+%Include symbology-ng/qgsheatmaprendererwidget.sip
 %Include symbology-ng/qgslayerpropertieswidget.sip
 %Include symbology-ng/qgspenstylecombobox.sip
 %Include symbology-ng/qgspointdisplacementrendererwidget.sip
@@ -171,6 +174,11 @@
 %Include symbology-ng/qgsstylev2exportimportdialog.sip
 %Include symbology-ng/qgssvgselectorwidget.sip
 
+%Include effects/qgseffectdrawmodecombobox.sip
+%Include effects/qgspainteffectpropertieswidget.sip
+%Include effects/qgspainteffectwidget.sip
+%Include effects/qgseffectstackpropertieswidget.sip
+
 %Include editorwidgets/core/qgseditorconfigwidget.sip
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetregistry.sip
@@ -179,5 +187,6 @@
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
 %Include editorwidgets/qgsspinbox.sip
+%Include editorwidgets/qgsdatetimeedit.sip
 
 %Include layertree/qgslayertreeview.sip

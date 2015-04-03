@@ -93,6 +93,9 @@ bool QgsWmsSettings::parseUri( QString uriString )
 
   mCrsId = uri.param( "crs" );
 
+  mEnableContextualLegend = uri.param( "contextualWMSLegend" ).toInt();
+  QgsDebugMsg( QString( "Contextual legend: %1" ).arg( mEnableContextualLegend ) );
+
   mFeatureCount = uri.param( "featureCount" ).toInt(); // default to 0
 
   return true;
@@ -105,6 +108,7 @@ bool QgsWmsSettings::parseUri( QString uriString )
 QgsWmsCapabilities::QgsWmsCapabilities()
     : mValid( false )
     , mLayerCount( -1 )
+    , mCapabilities()
 {
 }
 
@@ -1841,6 +1845,7 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString& baseUrl, 
     : QObject( parent )
     , mBaseUrl( baseUrl )
     , mAuth( auth )
+    , mCapabilitiesReply( NULL )
 {
 }
 
@@ -1865,6 +1870,8 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
   request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
   QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
+  // This is causing Qt warning: "Cannot create children for a parent that is in a different thread."
+  // but it only means that the reply will have no parent
   mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
   connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );

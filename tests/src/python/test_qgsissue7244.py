@@ -12,12 +12,10 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import os
-import random
 import qgis
+import os
 
-from qgis.core import *
-from qgis.gui import *
+from qgis.core import QgsPoint, QgsVectorLayer
 
 from utilities import (getQgisTestApp,
                        TestCase,
@@ -117,10 +115,5 @@ class TestQgsSpatialiteProvider(TestCase):
         layer.featureCount() == 1 or die("wrong number of features, polygon should be unafected by cut")
 
 
-
-
-
 if __name__ == '__main__':
     unittest.main()
-
-

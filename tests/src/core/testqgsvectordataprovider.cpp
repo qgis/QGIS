@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
@@ -33,6 +33,12 @@ Q_DECLARE_METATYPE( QgsFeatureRequest );
 class TestQgsVectorDataProvider : public QObject
 {
     Q_OBJECT
+  public:
+    TestQgsVectorDataProvider()
+        : vlayerPoints( 0 )
+        , vlayerLines( 0 )
+    {}
+
   private slots:
 
     void initTestCase();// will be called before the first testfunction is executed.
@@ -229,4 +235,4 @@ void TestQgsVectorDataProvider::featureAtId()
 
 QTEST_MAIN( TestQgsVectorDataProvider )
 
-#include "moc_testqgsvectordataprovider.cxx"
+#include "testqgsvectordataprovider.moc"

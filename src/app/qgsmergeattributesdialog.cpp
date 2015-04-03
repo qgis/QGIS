@@ -57,6 +57,9 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog()
     : QDialog()
+    , mVectorLayer( NULL )
+    , mMapCanvas( NULL )
+    , mSelectionRubberBand( NULL )
 {
   setupUi( this );
 
@@ -156,14 +159,11 @@ QComboBox *QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     newComboBox->addItem( tr( "Maximum" ), "maximum" );
     newComboBox->addItem( tr( "Median" ), "median" );
     newComboBox->addItem( tr( "Sum" ), "sum" );
+    newComboBox->addItem( tr( "Mean" ), "mean" );
   }
   else if ( columnType == QVariant::String )
   {
     newComboBox->addItem( tr( "Concatenation" ), "concat" );
-  }
-  else if ( columnType == QVariant::Double )
-  {
-    newComboBox->addItem( tr( "Mean" ), "mean" );
   }
 
   newComboBox->addItem( tr( "Skip attribute" ), "skip" );
@@ -194,6 +194,9 @@ void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
     return;
   }
   int column = findComboColumn( senderComboBox );
+  if ( column < 0 )
+    return;
+
   refreshMergedValue( column );
 }
 

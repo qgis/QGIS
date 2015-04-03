@@ -28,12 +28,10 @@ class CORE_EXPORT QgsGeometryValidator : public QThread
     QgsGeometryValidator( QgsGeometry *g, QList<QgsGeometry::Error> *errors = 0 );
     ~QgsGeometryValidator();
 
-    void run();
+    void run() override;
     void stop();
 
-    /** Validate geometry and produce a list of geometry errors
-     * @note added in 1.9
-     **/
+    /** Validate geometry and produce a list of geometry errors */
     static void validateGeometry( QgsGeometry *g, QList<QgsGeometry::Error> &errors );
 
   signals:

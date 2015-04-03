@@ -39,7 +39,8 @@ QgsComposerLabel::QgsComposerLabel( QgsComposition *composition )
     , mHtmlState( 0 )
     , mHtmlUnitsToMM( 1.0 )
     , mHtmlLoaded( false )
-    , mMargin( 1.0 )
+    , mMarginX( 1.0 )
+    , mMarginY( 1.0 )
     , mFontColor( QColor( 0, 0, 0 ) )
     , mHAlignment( Qt::AlignLeft )
     , mVAlignment( Qt::AlignTop )
@@ -104,7 +105,9 @@ void QgsComposerLabel::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   painter->setRenderHint( QPainter::Antialiasing, true );
 
   double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
-  QRectF painterRect( penWidth + mMargin, penWidth + mMargin, rect().width() - 2 * penWidth - 2 * mMargin, rect().height() - 2 * penWidth - 2 * mMargin );
+  double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
+  double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
+  QRectF painterRect( xPenAdjust + mMarginX, yPenAdjust + mMarginY, rect().width() - 2 * xPenAdjust - 2 * mMarginX, rect().height() - 2 * yPenAdjust - 2 * mMarginY );
 
   QString textToDraw = displayText();
 
@@ -309,6 +312,25 @@ void QgsComposerLabel::setFont( const QFont& f )
   mFont = f;
 }
 
+void QgsComposerLabel::setMargin( const double m )
+{
+  mMarginX = m;
+  mMarginY = m;
+  prepareGeometryChange();
+}
+
+void QgsComposerLabel::setMarginX( const double margin )
+{
+  mMarginX = margin;
+  prepareGeometryChange();
+}
+
+void QgsComposerLabel::setMarginY( const double margin )
+{
+  mMarginY = margin;
+  prepareGeometryChange();
+}
+
 void QgsComposerLabel::adjustSizeToText()
 {
   double textWidth = QgsComposerUtils::textWidthMM( mFont, displayText() );
@@ -316,8 +338,8 @@ void QgsComposerLabel::adjustSizeToText()
 
   double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
 
-  double width = textWidth + 2 * mMargin + 2 * penWidth + 1;
-  double height = fontHeight + 2 * mMargin + 2 * penWidth;
+  double width = textWidth + 2 * mMarginX + 2 * penWidth + 1;
+  double height = fontHeight + 2 * mMarginY + 2 * penWidth;
 
   //keep alignment point constant
   double xShift = 0;
@@ -348,8 +370,8 @@ bool QgsComposerLabel::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLabelElem.setAttribute( "htmlState", mHtmlState );
 
   composerLabelElem.setAttribute( "labelText", mText );
-  composerLabelElem.setAttribute( "margin", QString::number( mMargin ) );
-
+  composerLabelElem.setAttribute( "marginX", QString::number( mMarginX ) );
+  composerLabelElem.setAttribute( "marginY", QString::number( mMarginY ) );
   composerLabelElem.setAttribute( "halign", mHAlignment );
   composerLabelElem.setAttribute( "valign", mVAlignment );
 
@@ -387,7 +409,17 @@ bool QgsComposerLabel::readXML( const QDomElement& itemElem, const QDomDocument&
   mHtmlState = itemElem.attribute( "htmlState" ).toInt();
 
   //margin
-  mMargin = itemElem.attribute( "margin" ).toDouble();
+  bool marginXOk = false;
+  bool marginYOk = false;
+  mMarginX = itemElem.attribute( "marginX" ).toDouble( &marginXOk );
+  mMarginY = itemElem.attribute( "marginY" ).toDouble( &marginYOk );
+  if ( !marginXOk || !marginYOk )
+  {
+    //upgrade old projects where margins where stored in a single attribute
+    double margin = itemElem.attribute( "margin", "1.0" ).toDouble();
+    mMarginX = margin;
+    mMarginY = margin;
+  }
 
   //Horizontal alignment
   mHAlignment = ( Qt::AlignmentFlag )( itemElem.attribute( "halign" ).toInt() );
@@ -463,6 +495,36 @@ QString QgsComposerLabel::displayName() const
   {
     return text.simplified();
   }
+}
+
+QRectF QgsComposerLabel::boundingRect() const
+{
+  QRectF rectangle = rect();
+  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  rectangle.adjust( -penWidth, -penWidth, penWidth, penWidth );
+
+  if ( mMarginX < 0 )
+  {
+    rectangle.adjust( mMarginX, 0, -mMarginX, 0 );
+  }
+  if ( mMarginY < 0 )
+  {
+    rectangle.adjust( 0, mMarginY, 0, -mMarginY );
+  }
+
+  return rectangle;
+}
+
+void QgsComposerLabel::setFrameEnabled( const bool drawFrame )
+{
+  QgsComposerItem::setFrameEnabled( drawFrame );
+  prepareGeometryChange();
+}
+
+void QgsComposerLabel::setFrameOutlineWidth( const double outlineWidth )
+{
+  QgsComposerItem::setFrameOutlineWidth( outlineWidth );
+  prepareGeometryChange();
 }
 
 void QgsComposerLabel::itemShiftAdjustSize( double newWidth, double newHeight, double& xShift, double& yShift ) const

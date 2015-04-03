@@ -60,8 +60,6 @@ class TestPyQgsAppStartup(unittest.TestCase):
                 os.mkdir(testDir)
             myTestFile = os.path.join(testDir, testFile)
 
-        # print 'myTestFile: ', myTestFile
-
         if os.path.exists(myTestFile):
             os.remove(myTestFile)
 
@@ -71,7 +69,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         # whether to enable GUI customization
         customize = '' if customization else '--nocustomization'
 
-        # environnement variables = system variables + provided 'env'
+        # environment variables = system variables + provided 'env'
         myenv = os.environ.copy()
         if env is not None:
             myenv.update(env)
@@ -132,6 +130,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
                 testDir=testDir,
                 testFile="plugin_started.txt",
                 timeOut=10,
+                loadPlugins=True,
                 env={'QGIS_PLUGINPATH':
                          str(QtCore.QString(testDir).toLocal8Bit())})
 
@@ -141,7 +140,7 @@ class TestPyQgsAppStartup(unittest.TestCase):
         testfile = 'pyqgis_startup.txt'
         testfilepath = os.path.join(self.TMP_DIR, testfile)
         testcode = [
-            "f = open('{0}', 'w')\n".format(testfilepath),
+            "f = open('{0}', 'w')\n".format(testfilepath.replace('\\','\\\\')),
             "f.write('This is a test')\n",
             "f.close()\n"
         ]

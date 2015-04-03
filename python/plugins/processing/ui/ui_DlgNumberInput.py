@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'python/plugins/processing/ui/DlgNumberInput.ui'
+# Form implementation generated from reading ui file 'DlgNumberInput.ui'
 #
-# Created: Tue Oct 15 17:27:23 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:48 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,15 +12,24 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgNumberInput(object):
     def setupUi(self, DlgNumberInput):
         DlgNumberInput.setObjectName(_fromUtf8("DlgNumberInput"))
         DlgNumberInput.resize(445, 300)
         self.verticalLayout = QtGui.QVBoxLayout(DlgNumberInput)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setContentsMargins(0, 5, 0, 0)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setMargin(9)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.label = QtGui.QLabel(DlgNumberInput)
         self.label.setWordWrap(True)
@@ -50,7 +59,7 @@ class Ui_DlgNumberInput(object):
         QtCore.QMetaObject.connectSlotsByName(DlgNumberInput)
 
     def retranslateUi(self, DlgNumberInput):
-        DlgNumberInput.setWindowTitle(QtGui.QApplication.translate("DlgNumberInput", "Enter number or expression", None, QtGui.QApplication.UnicodeUTF8))
-        self.label.setText(QtGui.QApplication.translate("DlgNumberInput", "<html><head/><body><p>Enter expression in the text field. Double click on elements in the tree to add their values to the expression.</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
-        self.lblWarning.setText(QtGui.QApplication.translate("DlgNumberInput", "<html><head/><body><p><span style=\" font-weight:600;\">Warning</span>: if expression result is float value, but integer required, result will be rounded to integer.</p></body></html>", None, QtGui.QApplication.UnicodeUTF8))
+        DlgNumberInput.setWindowTitle(_translate("DlgNumberInput", "Enter number or expression", None))
+        self.label.setText(_translate("DlgNumberInput", "<html><head/><body><p>Enter expression in the text field. Double click on elements in the tree to add their values to the expression.</p></body></html>", None))
+        self.lblWarning.setText(_translate("DlgNumberInput", "<html><head/><body><p><span style=\" font-weight:600;\">Warning</span>: if expression result is float value, but integer required, result will be rounded to integer.</p></body></html>", None))
 

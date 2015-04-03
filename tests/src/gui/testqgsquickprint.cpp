@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
 #include <QStringList>
 #include <QObject>
@@ -36,9 +36,17 @@
 /** \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
-class TestQgsQuickPrint: public QObject
+class TestQgsQuickPrint : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsQuickPrint()
+        : mpMapRenderer( 0 )
+        , mpPointsLayer( 0 )
+        , mpLinesLayer( 0 )
+        , mpPolysLayer( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -169,5 +177,5 @@ bool TestQgsQuickPrint::imageCheck( QString theTestType )
 }
 
 QTEST_MAIN( TestQgsQuickPrint )
-#include "moc_testqgsquickprint.cxx"
+#include "testqgsquickprint.moc"
 

@@ -25,24 +25,19 @@ __copyright__ = '(C) 2014, Alexander Bruy'
 
 __revision__ = '$Format:%H$'
 
-import os
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.Qsci import *
-
-from qgis.core import *
+from PyQt4.QtCore import Qt, QSettings
+from PyQt4.QtGui import QColor, QFont, QShortcut, QKeySequence
+from PyQt4.Qsci import QsciScintilla, QsciLexerSQL
 
 
 class SqlEdit(QsciScintilla):
-
     LEXER_PYTHON = 0
     LEXER_R = 1
 
     def __init__(self, parent=None):
         QsciScintilla.__init__(self, parent)
 
-        self.lexer = None
+        self.mylexer = None
         self.api = None
 
         self.setCommonOptions()
@@ -135,12 +130,12 @@ class SqlEdit(QsciScintilla):
                            + shift)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
 
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
         #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
         self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                + Qt.Key_Space), self)
+                                                           + Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -148,7 +143,7 @@ class SqlEdit(QsciScintilla):
         self.autoCompleteFromAll()
 
     def initLexer(self):
-        self.lexer = QsciLexerSQL()
+        self.mylexer = QsciLexerSQL()
 
         colorDefault = QColor('#2e3436')
         colorComment = QColor('#c00')
@@ -158,44 +153,26 @@ class SqlEdit(QsciScintilla):
         colorKeyword = QColor('#204a87')
         colorString = QColor('#ce5c00')
 
-        self.lexer.setDefaultFont(self.defaultFont)
-        self.lexer.setDefaultColor(colorDefault)
+        self.mylexer.setDefaultFont(self.defaultFont)
+        self.mylexer.setDefaultColor(colorDefault)
 
-        self.lexer.setColor(colorComment, 1)
-        self.lexer.setColor(colorNumber, 2)
-        self.lexer.setColor(colorString, 3)
-        self.lexer.setColor(colorString, 4)
-        self.lexer.setColor(colorKeyword, 5)
-        self.lexer.setColor(colorString, 6)
-        self.lexer.setColor(colorString, 7)
-        self.lexer.setColor(colorType, 8)
-        self.lexer.setColor(colorCommentBlock, 12)
-        self.lexer.setColor(colorString, 15)
+        self.mylexer.setColor(colorComment, 1)
+        self.mylexer.setColor(colorNumber, 2)
+        self.mylexer.setColor(colorString, 3)
+        self.mylexer.setColor(colorString, 4)
+        self.mylexer.setColor(colorKeyword, 5)
+        self.mylexer.setColor(colorString, 6)
+        self.mylexer.setColor(colorString, 7)
+        self.mylexer.setColor(colorType, 8)
+        self.mylexer.setColor(colorCommentBlock, 12)
+        self.mylexer.setColor(colorString, 15)
 
-        self.lexer.setFont(self.italicFont, 1)
-        self.lexer.setFont(self.boldFont, 5)
-        self.lexer.setFont(self.boldFont, 8)
-        self.lexer.setFont(self.italicFont, 12)
+        self.mylexer.setFont(self.italicFont, 1)
+        self.mylexer.setFont(self.boldFont, 5)
+        self.mylexer.setFont(self.boldFont, 8)
+        self.mylexer.setFont(self.italicFont, 12)
 
-        self.setLexer(self.lexer)
+        self.setLexer(self.mylexer)
 
-    def initCompleter(self, db):
-        dictionary = None
-        if db:
-            dictionary = db.connector.getSqlDictionary()
-        if not dictionary:
-            # use the generic sql dictionary
-            from .sql_dictionary import getSqlDictionary
-            dictionary = getSqlDictionary()
-
-        wordlist = []
-        for name, value in dictionary.iteritems():
-            wordlist += value   # concat lists
-        wordlist = list(set(wordlist))  # remove duplicates
-
-        self.api = QsciAPIs(self.lexer)
-        for word in wordlist:
-            self.api.add(word)
-
-        self.api.prepare()
-        self.lexer.setAPIs(self.api)
+    def lexer(self):
+        return self.mylexer

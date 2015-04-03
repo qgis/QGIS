@@ -48,9 +48,11 @@ static const QString sPluginIcon = ":/compass.svn";
 QgsCompassPlugin::QgsCompassPlugin( QgisInterface *themQGisIface )
     : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( themQGisIface )
+    , mActionRunCompass( 0 )
+    , mActionAboutCompass( 0 )
+    , mQgsCompassPluginGui( 0 )
+    , mDock( 0 )
 {
-  /** Initialize the plugin */
-  mDock = NULL;
 }
 
 QgsCompassPlugin::~QgsCompassPlugin()

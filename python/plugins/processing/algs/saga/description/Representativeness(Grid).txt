@@ -1,6 +1,0 @@
-Representativeness|Representativeness (Grid)
-geostatistics_grid
-ParameterRaster|INPUT|Grid|False
-ParameterNumber|RADIUS|Radius (Cells)|1.0|None|10
-ParameterNumber|EXPONENT|Exponent|None|None|1
-OutputRaster|RESULT|Representativeness

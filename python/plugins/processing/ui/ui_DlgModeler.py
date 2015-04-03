@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'python/plugins/processing/ui/DlgModeler.ui'
+# Form implementation generated from reading ui file 'DlgModeler.ui'
 #
-# Created: Sun Sep 22 14:25:36 2013
-#      by: PyQt4 UI code generator 4.9.1
+# Created: Fri Nov 21 13:25:48 2014
+#      by: PyQt4 UI code generator 4.11.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,27 +12,39 @@ from PyQt4 import QtCore, QtGui
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
 except AttributeError:
-    _fromUtf8 = lambda s: s
+    def _fromUtf8(s):
+        return s
+
+try:
+    _encoding = QtGui.QApplication.UnicodeUTF8
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+except AttributeError:
+    def _translate(context, text, disambig):
+        return QtGui.QApplication.translate(context, text, disambig)
 
 class Ui_DlgModeler(object):
     def setupUi(self, DlgModeler):
         DlgModeler.setObjectName(_fromUtf8("DlgModeler"))
         DlgModeler.resize(1000, 600)
         self.verticalLayout = QtGui.QVBoxLayout(DlgModeler)
-        self.verticalLayout.setSpacing(2)
-        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setMargin(9)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
         self.horizontalLayout = QtGui.QHBoxLayout()
-        self.horizontalLayout.setSpacing(-1)
+        self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setMargin(3)
         self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
         self.btnOpen = QtGui.QToolButton(DlgModeler)
+        self.btnOpen.setAutoRaise(True)
         self.btnOpen.setObjectName(_fromUtf8("btnOpen"))
         self.horizontalLayout.addWidget(self.btnOpen)
         self.btnSave = QtGui.QToolButton(DlgModeler)
+        self.btnSave.setAutoRaise(True)
         self.btnSave.setObjectName(_fromUtf8("btnSave"))
         self.horizontalLayout.addWidget(self.btnSave)
         self.btnSaveAs = QtGui.QToolButton(DlgModeler)
+        self.btnSaveAs.setAutoRaise(True)
         self.btnSaveAs.setObjectName(_fromUtf8("btnSaveAs"))
         self.horizontalLayout.addWidget(self.btnSaveAs)
         self.line = QtGui.QFrame(DlgModeler)
@@ -41,6 +53,7 @@ class Ui_DlgModeler(object):
         self.line.setObjectName(_fromUtf8("line"))
         self.horizontalLayout.addWidget(self.line)
         self.btnExportImage = QtGui.QToolButton(DlgModeler)
+        self.btnExportImage.setAutoRaise(True)
         self.btnExportImage.setObjectName(_fromUtf8("btnExportImage"))
         self.horizontalLayout.addWidget(self.btnExportImage)
         self.line_2 = QtGui.QFrame(DlgModeler)
@@ -49,6 +62,7 @@ class Ui_DlgModeler(object):
         self.line_2.setObjectName(_fromUtf8("line_2"))
         self.horizontalLayout.addWidget(self.line_2)
         self.btnEditHelp = QtGui.QToolButton(DlgModeler)
+        self.btnEditHelp.setAutoRaise(True)
         self.btnEditHelp.setObjectName(_fromUtf8("btnEditHelp"))
         self.horizontalLayout.addWidget(self.btnEditHelp)
         self.line_3 = QtGui.QFrame(DlgModeler)
@@ -57,6 +71,7 @@ class Ui_DlgModeler(object):
         self.line_3.setObjectName(_fromUtf8("line_3"))
         self.horizontalLayout.addWidget(self.line_3)
         self.btnRun = QtGui.QToolButton(DlgModeler)
+        self.btnRun.setAutoRaise(True)
         self.btnRun.setObjectName(_fromUtf8("btnRun"))
         self.horizontalLayout.addWidget(self.btnRun)
         spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
@@ -120,23 +135,27 @@ class Ui_DlgModeler(object):
         QtCore.QMetaObject.connectSlotsByName(DlgModeler)
 
     def retranslateUi(self, DlgModeler):
-        DlgModeler.setWindowTitle(QtGui.QApplication.translate("DlgModeler", "Processing modeler", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnOpen.setToolTip(QtGui.QApplication.translate("DlgModeler", "Open model", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnOpen.setText(QtGui.QApplication.translate("DlgModeler", "...", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnSave.setToolTip(QtGui.QApplication.translate("DlgModeler", "Save", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnSave.setText(QtGui.QApplication.translate("DlgModeler", "...", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnSaveAs.setToolTip(QtGui.QApplication.translate("DlgModeler", "Save as...", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnSaveAs.setText(QtGui.QApplication.translate("DlgModeler", "...", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnExportImage.setToolTip(QtGui.QApplication.translate("DlgModeler", "Export as image", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnExportImage.setText(QtGui.QApplication.translate("DlgModeler", "...", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnEditHelp.setToolTip(QtGui.QApplication.translate("DlgModeler", "Edit model help", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnEditHelp.setText(QtGui.QApplication.translate("DlgModeler", "...", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRun.setToolTip(QtGui.QApplication.translate("DlgModeler", "Run model", None, QtGui.QApplication.UnicodeUTF8))
-        self.btnRun.setText(QtGui.QApplication.translate("DlgModeler", "...", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QtGui.QApplication.translate("DlgModeler", "Inputs", None, QtGui.QApplication.UnicodeUTF8))
-        self.searchBox.setToolTip(QtGui.QApplication.translate("DlgModeler", "Enter algorithm name to filter list", None, QtGui.QApplication.UnicodeUTF8))
-        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QtGui.QApplication.translate("DlgModeler", "Algorithms", None, QtGui.QApplication.UnicodeUTF8))
-        self.textName.setToolTip(QtGui.QApplication.translate("DlgModeler", "Enter model name here", None, QtGui.QApplication.UnicodeUTF8))
-        self.textGroup.setToolTip(QtGui.QApplication.translate("DlgModeler", "Enter group name here", None, QtGui.QApplication.UnicodeUTF8))
+        DlgModeler.setWindowTitle(_translate("DlgModeler", "Processing modeler", None))
+        self.btnOpen.setToolTip(_translate("DlgModeler", "Open model", None))
+        self.btnOpen.setText(_translate("DlgModeler", "...", None))
+        self.btnOpen.setShortcut(_translate("DlgModeler", "Ctrl+O", None))
+        self.btnSave.setToolTip(_translate("DlgModeler", "Save", None))
+        self.btnSave.setText(_translate("DlgModeler", "...", None))
+        self.btnSave.setShortcut(_translate("DlgModeler", "Ctrl+S", None))
+        self.btnSaveAs.setToolTip(_translate("DlgModeler", "Save as...", None))
+        self.btnSaveAs.setText(_translate("DlgModeler", "...", None))
+        self.btnSaveAs.setShortcut(_translate("DlgModeler", "Ctrl+Shift+S", None))
+        self.btnExportImage.setToolTip(_translate("DlgModeler", "Export as image", None))
+        self.btnExportImage.setText(_translate("DlgModeler", "...", None))
+        self.btnEditHelp.setToolTip(_translate("DlgModeler", "Edit model help", None))
+        self.btnEditHelp.setText(_translate("DlgModeler", "...", None))
+        self.btnRun.setToolTip(_translate("DlgModeler", "Run model", None))
+        self.btnRun.setText(_translate("DlgModeler", "...", None))
+        self.btnRun.setShortcut(_translate("DlgModeler", "F5", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("DlgModeler", "Inputs", None))
+        self.searchBox.setToolTip(_translate("DlgModeler", "Enter algorithm name to filter list", None))
+        self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("DlgModeler", "Algorithms", None))
+        self.textName.setToolTip(_translate("DlgModeler", "Enter model name here", None))
+        self.textGroup.setToolTip(_translate("DlgModeler", "Enter group name here", None))
 
 from qgis.gui import QgsFilterLineEdit

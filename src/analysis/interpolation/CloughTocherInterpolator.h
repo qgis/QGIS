@@ -85,32 +85,11 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
     /**destructor*/
     virtual ~CloughTocherInterpolator();
     /**Calculates the normal vector and assigns it to vec (not implemented at the moment)*/
-    virtual bool calcNormVec( double x, double y, Vector3D* result );
+    virtual bool calcNormVec( double x, double y, Vector3D* result ) override;
     /**Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point*/
-    virtual bool calcPoint( double x, double y, Point3D* result );
+    virtual bool calcPoint( double x, double y, Point3D* result ) override;
     virtual void setTriangulation( NormVecDecorator* tin );
 };
-
-
-inline CloughTocherInterpolator::CloughTocherInterpolator() : mTIN( 0 ), mEdgeTolerance( 0.00001 )
-{
-
-}
-
-inline CloughTocherInterpolator::CloughTocherInterpolator( NormVecDecorator* tin ) : mTIN( tin ), mEdgeTolerance( 0.00001 )
-{
-
-}
-
-inline CloughTocherInterpolator::~CloughTocherInterpolator()
-{
-  //nothing to do
-}
-
-inline void CloughTocherInterpolator::setTriangulation( NormVecDecorator* tin )
-{
-  mTIN = tin;
-}
 
 #endif
 

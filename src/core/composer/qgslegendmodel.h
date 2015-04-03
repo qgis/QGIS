@@ -87,18 +87,18 @@ class CORE_EXPORT QgsLegendModel : public QStandardItemModel
     bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
     bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
 
-    Qt::DropActions supportedDropActions() const;
-    Qt::ItemFlags flags( const QModelIndex &index ) const;
+    Qt::DropActions supportedDropActions() const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**Implemented to support drag operations*/
-    virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+    virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() ) override;
 
     /**For the drag operation*/
-    QMimeData* mimeData( const QModelIndexList &indexes ) const;
-    QStringList mimeTypes() const;
+    QMimeData* mimeData( const QModelIndexList &indexes ) const override;
+    QStringList mimeTypes() const override;
 
     /**Implements the drop operation*/
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     void setAutoUpdate( bool autoUpdate );
     bool autoUpdate() { return mAutoUpdate; }

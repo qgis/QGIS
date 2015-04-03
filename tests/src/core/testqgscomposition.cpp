@@ -25,11 +25,14 @@
 #include "qgsmapsettings.h"
 
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 
-class TestQgsComposition: public QObject
+class TestQgsComposition : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposition();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -46,6 +49,12 @@ class TestQgsComposition: public QObject
     QgsMapSettings mMapSettings;
     QString mReport;
 };
+
+TestQgsComposition::TestQgsComposition()
+    : mComposition( NULL )
+{
+
+}
 
 void TestQgsComposition::initTestCase()
 {
@@ -75,6 +84,7 @@ void TestQgsComposition::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposition::init()
@@ -242,5 +252,5 @@ void TestQgsComposition::pageIsEmpty()
 }
 
 QTEST_MAIN( TestQgsComposition )
-#include "moc_testqgscomposition.cxx"
+#include "testqgscomposition.moc"
 

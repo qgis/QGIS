@@ -10,7 +10,7 @@ ParameterNumber|threshold|Minimum size of exterior watershed basin|None|None|0
 ParameterNumber|max.slope.length|Maximum length of surface flow, for USLE|None|None|0
 ParameterNumber|convergence|Convergence factor for MFD (1-10)|1|10|5
 ParameterNumber|memory|Maximum memory to be used with -m flag (in MB)|1|None|300
-ParameterBoolean|-f|SFD (D8) flow (default is MFD)|False
+ParameterBoolean|-f|Enable Multiple Flow Direction flow (default is Single Flow Direction (D8))|False
 ParameterBoolean|-4|Allow only horizontal and vertical flow of water|True
 ParameterBoolean|-m|Enable disk swap memory option (-m): Operation is slow|False
 ParameterBoolean|-a|Use positive flow accumulation even for likely underestimates|False

@@ -61,6 +61,8 @@ public:
     QwtCurveFitter *curveFitter;
 
     QwtPolarCurve::LegendAttributes legendAttributes;
+private:
+    Q_DISABLE_COPY(PrivateData)
 };
 
 //! Constructor

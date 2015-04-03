@@ -26,15 +26,15 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+
+from PyQt4.QtGui import QIcon
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.core.ProcessingLog import ProcessingLog
 from GrassUtils import GrassUtils
 from GrassAlgorithm import GrassAlgorithm
 from nviz import nviz
-from processing.tools.system import *
+from processing.tools.system import isMac, isWindows
 
 
 class GrassAlgorithmProvider(AlgorithmProvider):
@@ -47,17 +47,17 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         AlgorithmProvider.initializeSettings(self)
         if isWindows() or isMac():
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    GrassUtils.GRASS_FOLDER, 'GRASS folder',
-                    GrassUtils.grassPath()))
+                GrassUtils.GRASS_FOLDER, self.tr('GRASS folder'),
+                GrassUtils.grassPath()))
             ProcessingConfig.addSetting(Setting(self.getDescription(),
-                    GrassUtils.GRASS_WIN_SHELL, 'Msys folder',
-                    GrassUtils.grassWinShell()))
+                GrassUtils.GRASS_WIN_SHELL, self.tr('Msys folder'),
+                GrassUtils.grassWinShell()))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    GrassUtils.GRASS_LOG_COMMANDS,
-                                    'Log execution commands', False))
+            GrassUtils.GRASS_LOG_COMMANDS,
+            self.tr('Log execution commands'), False))
         ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    GrassUtils.GRASS_LOG_CONSOLE,
-                                    'Log console output', False))
+            GrassUtils.GRASS_LOG_CONSOLE,
+            self.tr('Log console output'), False))
 
     def unload(self):
         AlgorithmProvider.unload(self)
@@ -78,19 +78,17 @@ class GrassAlgorithmProvider(AlgorithmProvider):
                         self.preloadedAlgs.append(alg)
                     else:
                         ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                'Could not open GRASS algorithm: '
-                                + descriptionFile)
+                            self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
                 except Exception, e:
                     ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not open GRASS algorithm: '
-                            + descriptionFile)
+                        self.tr('Could not open GRASS algorithm: %s' % descriptionFile))
         self.preloadedAlgs.append(nviz())
 
     def _loadAlgorithms(self):
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
-        return 'GRASS commands'
+        return self.tr('GRASS commands')
 
     def getName(self):
         return 'grass'

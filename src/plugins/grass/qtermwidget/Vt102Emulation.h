@@ -87,27 +87,27 @@ namespace Konsole
       ~Vt102Emulation();
 
       // reimplemented
-      virtual void clearEntireScreen();
-      virtual void reset();
+      virtual void clearEntireScreen() override;
+      virtual void reset() override;
 
       // reimplemented
-      virtual char getErase() const;
+      virtual char getErase() const override;
 
     public slots:
 
       // reimplemented
-      virtual void sendString( const char*, int length = -1 );
-      virtual void sendText( const QString& text );
-      virtual void sendKeyEvent( QKeyEvent* );
-      virtual void sendMouseEvent( int buttons, int column, int line , int eventType );
+      virtual void sendString( const char*, int length = -1 ) override;
+      virtual void sendText( const QString& text ) override;
+      virtual void sendKeyEvent( QKeyEvent* ) override;
+      virtual void sendMouseEvent( int buttons, int column, int line , int eventType ) override;
 
     protected:
       // reimplemented
-      virtual void setMode( int mode );
-      virtual void resetMode( int mode );
+      virtual void setMode( int mode ) override;
+      virtual void resetMode( int mode ) override;
 
       // reimplemented
-      virtual void receiveChar( int cc );
+      virtual void receiveChar( int cc ) override;
 
 
     private slots:

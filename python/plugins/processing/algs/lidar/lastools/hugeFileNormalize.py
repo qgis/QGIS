@@ -45,11 +45,18 @@ class hugeFileNormalize(LAStoolsAlgorithm):
         self.name = "hugeFileNormalize"
         self.group = "LAStools Pipelines"
         self.addParametersPointInputGUI()
-        self.addParameter(ParameterNumber(hugeFileNormalize.TILE_SIZE, "tile size (side length of square tile)",  0, None, 1000.0))
-        self.addParameter(ParameterNumber(hugeFileNormalize.BUFFER, "buffer around each tile (avoids edge artifacts)",  0, None, 25.0))
-        self.addParameter(ParameterBoolean(hugeFileNormalize.AIRBORNE, "airborne LiDAR", True))
-        self.addParameter(ParameterSelection(hugeFileNormalize.TERRAIN, "terrain type", hugeFileNormalize.TERRAINS, 1))
-        self.addParameter(ParameterSelection(hugeFileNormalize.GRANULARITY, "preprocessing", hugeFileNormalize.GRANULARITIES, 1))
+        self.addParameter(ParameterNumber(hugeFileNormalize.TILE_SIZE,
+            self.tr("tile size (side length of square tile)"),
+            0, None, 1000.0))
+        self.addParameter(ParameterNumber(hugeFileNormalize.BUFFER,
+            self.tr("buffer around each tile (avoids edge artifacts)"),
+            0, None, 25.0))
+        self.addParameter(ParameterBoolean(hugeFileNormalize.AIRBORNE,
+            self.tr("airborne LiDAR"), True))
+        self.addParameter(ParameterSelection(hugeFileNormalize.TERRAIN,
+            self.tr("terrain type"), hugeFileNormalize.TERRAINS, 1))
+        self.addParameter(ParameterSelection(hugeFileNormalize.GRANULARITY,
+            self.tr("preprocessing"), hugeFileNormalize.GRANULARITIES, 1))
         self.addParametersTemporaryDirectoryGUI()
         self.addParametersPointOutputGUI()
         self.addParametersCoresGUI()
@@ -57,9 +64,8 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
     def processAlgorithm(self, progress):
 
-#   first we tile the data with option '-reversible'
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
+        # first we tile the data with option '-reversible'
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersPointInputCommands(commands)
         tile_size = self.getParameterValue(hugeFileNormalize.TILE_SIZE)
@@ -76,13 +82,12 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we ground classify the reversible tiles
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground.exe")]
+        # then we ground classify the reversible tiles
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasground")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileNormalize*.laz")
         airborne = self.getParameterValue(hugeFileNormalize.AIRBORNE)
-        if airborne != True:
+        if not airborne:
             commands.append("-not_airborne")
         method = self.getParameterValue(hugeFileNormalize.TERRAIN)
         if method != 1:
@@ -98,9 +103,8 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we height-normalize each points in the reversible tiles
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight.exe")]
+        # then we height-normalize each points in the reversible tiles
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lasheight")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileNormalize*_g.laz")
         self.addParametersTemporaryDirectoryAsOutputDirectoryCommands(commands)
@@ -112,9 +116,8 @@ class hugeFileNormalize(LAStoolsAlgorithm):
 
         LAStoolsUtils.runLAStools(commands, progress)
 
-#   then we reverse the tiling
-
-        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile.exe")]
+        # then we reverse the tiling
+        commands = [os.path.join(LAStoolsUtils.LAStoolsPath(), "bin", "lastile")]
         self.addParametersVerboseCommands(commands)
         self.addParametersTemporaryDirectoryAsInputFilesCommands(commands, "hugeFileNormalize*_gh.laz")
         commands.append("-reverse_tiling")

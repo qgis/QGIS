@@ -35,8 +35,12 @@
 // ---------------------------------------------------------------------------
 QgsMssqlConnectionItem::QgsMssqlConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
+    , mUseGeometryColumns( false )
+    , mUseEstimatedMetadata( false )
+    , mAllowGeometrylessTables( true )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconConnect.png" );
+  mCapabilities |= Fast;
+  mIconName = "mIconConnect.png";
 }
 
 QgsMssqlConnectionItem::~QgsMssqlConnectionItem()
@@ -132,7 +136,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
   // issue the sql query
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );
-  q.exec( query );
+  ( void )q.exec( query );
 
   if ( q.isActive() )
   {
@@ -146,6 +150,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
       layer.pkCols = QStringList(); //TODO
+      layer.isGeography = false;
 
       // skip layers which are added already
       bool skip = false;
@@ -391,7 +396,7 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction 
     QMessageBox::information( 0, tr( "Import to MSSQL database" ), tr( "Import was successful." ) );
   }
 
-  if ( mPopulated )
+  if ( state() == Populated )
     refresh();
   else
     populate();
@@ -406,7 +411,7 @@ QgsMssqlLayerItem::QgsMssqlLayerItem( QgsDataItem* parent, QString name, QString
     , mLayerProperty( layerProperty )
 {
   mUri = createUri();
-  mPopulated = true;
+  setState( Populated );
 }
 
 QgsMssqlLayerItem::~QgsMssqlLayerItem()
@@ -441,7 +446,7 @@ QString QgsMssqlLayerItem::createUri()
 QgsMssqlSchemaItem::QgsMssqlSchemaItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconDbSchema.png" );
+  mIconName = "mIconDbSchema.png";
 }
 
 QVector<QgsDataItem*> QgsMssqlSchemaItem::createChildren()
@@ -521,7 +526,7 @@ QgsMssqlLayerItem* QgsMssqlSchemaItem::addLayer( QgsMssqlLayerProperty layerProp
 QgsMssqlRootItem::QgsMssqlRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QgsApplication::getThemeIcon( "mIconMssql.svg" );
+  mIconName = "mIconMssql.svg";
   populate();
 }
 

@@ -25,10 +25,10 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4 import QtGui
+from PyQt4.QtCore import Qt, QCoreApplication
+from PyQt4.QtGui import QProgressBar
 from qgis.utils import iface
-from qgis.gui import *
+from qgis.gui import QgsMessageBar
 
 
 class MessageBarProgress:
@@ -36,7 +36,7 @@ class MessageBarProgress:
     def __init__(self):
         self.progressMessageBar = \
             iface.messageBar().createMessage(self.tr('Executing algorithm'))
-        self.progress = QtGui.QProgressBar()
+        self.progress = QProgressBar()
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)

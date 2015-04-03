@@ -49,7 +49,7 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     int      selectedType;  // RASTER or GROUP
 
   public slots:
-    void accept();
+    void accept() override;
 
     //! Open dialog for Gisdbase
     void on_GisdbaseBrowse_clicked();

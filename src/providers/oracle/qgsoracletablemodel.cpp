@@ -303,7 +303,7 @@ bool QgsOracleTableModel::setData( const QModelIndex &idx, const QVariant &value
   return true;
 }
 
-QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
+QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSourceURI &connInfo )
 {
   if ( !index.isValid() )
   {
@@ -355,7 +355,6 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QString &
 
   QgsDataSourceURI uri( connInfo );
   uri.setDataSource( ownerName, tableName, geomColumnName, sql, pkColumnName );
-  uri.setUseEstimatedMetadata( useEstimatedMetadata );
   uri.setWkbType( wkbType );
   uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );

@@ -65,6 +65,30 @@ bool QgsGuiVectorLayerTools::startEditing( QgsVectorLayer* layer ) const
   return res;
 }
 
+bool QgsGuiVectorLayerTools::saveEdits( QgsVectorLayer* layer ) const
+{
+  bool res = true;
+
+  if ( layer->isModified() )
+  {
+    if ( !layer->commitChanges() )
+    {
+      commitError( layer );
+      // Leave the in-memory editing state alone,
+      // to give the user a chance to enter different values
+      // and try the commit again later
+      res = false;
+    }
+    layer->startEditing();
+  }
+  else //layer not modified
+  {
+    res = true;
+  }
+  return res;
+}
+
+
 bool QgsGuiVectorLayerTools::stopEditing( QgsVectorLayer* layer, bool allowCancel ) const
 {
   bool res = true;

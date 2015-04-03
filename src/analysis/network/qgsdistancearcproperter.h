@@ -25,6 +25,6 @@
 class ANALYSIS_EXPORT QgsDistanceArcProperter : public QgsArcProperter
 {
   public:
-    virtual QVariant property( double distance, const QgsFeature& ) const;
+    virtual QVariant property( double distance, const QgsFeature& ) const override;
 };
 #endif //QGSEDGEDISTANCEPROPERTYH

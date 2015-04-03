@@ -523,7 +523,8 @@ void QgsWMSSourceSelect::addClicked()
       }
     }
 
-    Q_ASSERT( layer );
+    if ( !layer )
+      return;
 
     if ( !layer->dimensions.isEmpty() )
     {
@@ -564,6 +565,8 @@ void QgsWMSSourceSelect::addClicked()
   {
     uri.setParam( "featureCount", mFeatureCount->text() );
   }
+
+  uri.setParam( "contextualWMSLegend", mContextualLegendCheckbox->isChecked() ? "1" : "0" );
 
   emit addRasterLayer( uri.encodedUri(),
                        leLayerName->text().isEmpty() ? titles.join( "/" ) : leLayerName->text(),

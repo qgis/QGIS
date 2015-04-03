@@ -73,7 +73,10 @@ namespace pal
     }
   }
 
-  Problem::Problem() : nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( 0 ), labelpositions( NULL ), featStartId( NULL ), featNbLp( NULL ), inactiveCost( NULL ), sol( NULL )
+  Problem::Problem() : nbLabelledLayers( 0 ), labelledLayersName( NULL ), nblp( 0 ), all_nblp( 0 ), nbft( 0 ), displayAll( false ),
+      scale( 0 ), labelPositionCost( NULL ), nbOlap( NULL ),
+      labelpositions( NULL ), featStartId( NULL ), featNbLp( NULL ), inactiveCost( NULL ), sol( NULL ), nbActive( 0 ), nbOverlap( 0.0 ),
+      pal( NULL )
   {
     bbox[0] = 0;
     bbox[1] = 0;
@@ -562,6 +565,8 @@ namespace pal
 #ifdef _VERBOSE_
           std::cerr << "Unknown search method..." << std::endl;
 #endif
+          delete[] ok;
+          delete[] parts;
           return;
       }
 
@@ -677,8 +682,8 @@ namespace pal
     int *sub;
 
     int id;
-    register int featS;
-    register int p;
+    int featS;
+    int p;
     int i;
 
     int n = 0;
@@ -1385,7 +1390,7 @@ namespace pal
     int subSize    = part->subSize;
     int *sub       = part->sub;
     int *sol       = part->sol;
-    register int subseed;
+    int subseed;
 
     double delta;
     double delta_min;
@@ -2192,7 +2197,7 @@ namespace pal
 
     maxit = probSize * pal->tabuMaxIt;
 
-    itwimp = probSize * pal->tabuMinIt;;
+    itwimp = probSize * pal->tabuMinIt;
 
     stop_it = itwimp;
 
@@ -2350,7 +2355,7 @@ namespace pal
           std::cout << "new_best" << std::endl;
 #endif
           best_cost = cur_cost;
-          memcpy( best_sol, sol, sizeof( int ) *subSize );
+          memcpy( best_sol, sol, sizeof( int ) * subSize );
 
           stop_it = ( it + itwimp > maxit ? maxit : it + itwimp );
         }

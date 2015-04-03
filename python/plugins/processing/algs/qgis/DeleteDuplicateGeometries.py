@@ -25,8 +25,7 @@ __copyright__ = '(C) 2010, Michael Minn'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from qgis.core import *
+from qgis.core import QgsGeometry, QgsFeatureRequest
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.outputs import OutputVector
@@ -41,13 +40,13 @@ class DeleteDuplicateGeometries(GeoAlgorithm):
         self.name = 'Delete duplicate geometries'
         self.group = 'Vector general tools'
 
-        self.addParameter(ParameterVector(
-            self.INPUT, 'Input layer', [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(self.OUTPUT, 'Output'))
+        self.addParameter(ParameterVector(self.INPUT,
+            self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
 
     def processAlgorithm(self, progress):
         layer = dataobjects.getObjectFromUri(
-                self.getParameterValue(self.INPUT))
+            self.getParameterValue(self.INPUT))
 
         fields = layer.pendingFields()
 

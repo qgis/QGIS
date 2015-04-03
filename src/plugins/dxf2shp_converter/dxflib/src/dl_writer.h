@@ -1,21 +1,15 @@
 /****************************************************************************
-** $Id: dl_writer.h 2398 2005-06-06 18:12:14Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2013 RibbonSoft, GmbH. All rights reserved.
 ** Copyright (C) 2001 Robert J. Campbell Jr.
 **
 ** This file is part of the dxflib project.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** This program is free software; you can redistribute it and/or modify
+** This file is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation; version 2 of the License
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use
+** Licensees holding valid dxflib Professional Edition licenses may use 
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -32,13 +26,18 @@
 #ifndef DL_WRITER_H
 #define DL_WRITER_H
 
+#include "dl_global.h"
+
+#ifndef _WIN32
+#include <strings.h>
+#endif
+
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-#if defined(__OS2__)||defined(__EMX__)||defined(_WIN32)
-#define strcasecmp(s,t) stricmp(s,t)
-#endif
+#include <iostream>
+#include <algorithm>
 
 #include "dl_attributes.h"
 #include "dl_codes.h"
@@ -49,24 +48,22 @@
  * Defines interface for writing low level DXF constructs to
  * a file. Implementation is defined in derived classes that write
  * to binary or ASCII files.
- *
+ * 
  * Implements functions that write higher level constructs in terms of
  * the low level ones.
  *
  * @todo Add error checking for string/entry length.
  */
-class DL_Writer
-{
-  public:
+class DXFLIB_EXPORT DL_Writer {
+public:
     /**
-     * @para version DXF version. Defaults to VER_2002.
+     * @param version DXF version. Defaults to DL_VERSION_2002.
      */
-    DL_Writer( DL_Codes::version version ) : m_handle( 0x30 )
-    {
-      this->version = version;
-      modelSpaceHandle = 0;
-      paperSpaceHandle = 0;
-      paperSpace0Handle = 0;
+    DL_Writer(DL_Codes::version version) : m_handle(0x30) {
+        this->version = version;
+        modelSpaceHandle = 0;
+        paperSpaceHandle = 0;
+        paperSpace0Handle = 0;
     }
 
     virtual ~DL_Writer() {}
@@ -81,10 +78,9 @@ class DL_Writer
      *  name
      * </pre>
      */
-    void section( const char* name ) const
-    {
-      dxfString( 0, "SECTION" );
-      dxfString( 2, name );
+    void section(const char* name) const {
+        dxfString(0, "SECTION");
+        dxfString(2, name);
     }
 
     /**
@@ -97,9 +93,8 @@ class DL_Writer
      *  HEADER
      * </pre>
      */
-    void sectionHeader() const
-    {
-      section( "HEADER" );
+    void sectionHeader() const {
+        section("HEADER");
     }
 
     /**
@@ -112,9 +107,8 @@ class DL_Writer
      *  TABLES
      * </pre>
      */
-    void sectionTables() const
-    {
-      section( "TABLES" );
+    void sectionTables() const {
+        section("TABLES");
     }
 
     /**
@@ -127,9 +121,8 @@ class DL_Writer
      *  BLOCKS
      * </pre>
      */
-    void sectionBlocks() const
-    {
-      section( "BLOCKS" );
+    void sectionBlocks() const {
+        section("BLOCKS");
     }
 
     /**
@@ -142,9 +135,8 @@ class DL_Writer
      *  ENTITIES
      * </pre>
      */
-    void sectionEntities() const
-    {
-      section( "ENTITIES" );
+    void sectionEntities() const {
+        section("ENTITIES");
     }
 
     /**
@@ -157,9 +149,8 @@ class DL_Writer
      *  CLASSES
      * </pre>
      */
-    void sectionClasses() const
-    {
-      section( "CLASSES" );
+    void sectionClasses() const {
+        section("CLASSES");
     }
 
     /**
@@ -172,9 +163,8 @@ class DL_Writer
      *  OBJECTS
      * </pre>
      */
-    void sectionObjects() const
-    {
-      section( "OBJECTS" );
+    void sectionObjects() const {
+        section("OBJECTS");
     }
 
     /**
@@ -185,9 +175,8 @@ class DL_Writer
      *  ENDSEC
      * </pre>
      */
-    void sectionEnd() const
-    {
-      dxfString( 0, "ENDSEC" );
+    void sectionEnd() const {
+        dxfString(0, "ENDSEC");
     }
 
     /**
@@ -202,16 +191,19 @@ class DL_Writer
      *   num
      * </pre>
      */
-    void table( const char* name, int num, int handle ) const
-    {
-      dxfString( 0, "TABLE" );
-      dxfString( 2, name );
-      if ( version >= VER_2000 )
-      {
-        dxfHex( 5, handle );
-        dxfString( 100, "AcDbSymbolTable" );
-      }
-      dxfInt( 70, num );
+    void table(const char* name, int num, int h=0) const {
+        dxfString(0, "TABLE");
+        dxfString(2, name);
+        if (version>=DL_VERSION_2000) {
+            if (h==0) {
+                handle();
+            }
+            else {
+                dxfHex(5, h);
+            }
+            dxfString(100, "AcDbSymbolTable");
+        }
+        dxfInt(70, num);
     }
 
     /** Table for layers.
@@ -227,9 +219,8 @@ class DL_Writer
      *      num
      * </pre>
      */
-    void tableLayers( int num ) const
-    {
-      table( "LAYER", num, 2 );
+    void tableLayers(int num) const {
+        table("LAYER", num, 2);
     }
 
     /** Table for line types.
@@ -245,10 +236,9 @@ class DL_Writer
      *      num
      * </pre>
      */
-    void tableLineTypes( int num ) const
-    {
-      //lineTypeHandle = 5;
-      table( "LTYPE", num, 5 );
+    void tableLinetypes(int num) const {
+        //linetypeHandle = 5;
+        table("LTYPE", num, 5);
     }
 
     /** Table for application id.
@@ -264,9 +254,25 @@ class DL_Writer
      *      num
      * </pre>
      */
-    void tableAppid( int num ) const
-    {
-      table( "APPID", num, 9 );
+    void tableAppid(int num) const {
+        table("APPID", num, 9);
+    }
+
+    /** Table for text style.
+     *
+     * @param num Number of text styles.
+     *
+     * <pre>
+     *   0
+     *  TABLE
+     *   2
+     *  STYLE
+     *   70
+     *      num
+     * </pre>
+     */
+    void tableStyle(int num) const {
+        table("STYLE", num, 3);
     }
 
     /**
@@ -277,9 +283,8 @@ class DL_Writer
      *  ENDTAB
      * </pre>
      */
-    void tableEnd() const
-    {
-      dxfString( 0, "ENDTAB" );
+    void tableEnd() const {
+        dxfString(0, "ENDTAB");
     }
 
     /**
@@ -290,9 +295,8 @@ class DL_Writer
      *  EOF
      * </pre>
      */
-    void dxfEOF() const
-    {
-      dxfString( 0, "EOF" );
+    void dxfEOF() const {
+        dxfString(0, "EOF");
     }
 
     /**
@@ -303,9 +307,8 @@ class DL_Writer
      *  text
      * </pre>
      */
-    void comment( const char* text ) const
-    {
-      dxfString( 999, text );
+    void comment(const char* text) const {
+        dxfString(999, text);
     }
 
     /**
@@ -315,16 +318,14 @@ class DL_Writer
      *   0
      *  entTypeName
      * </pre>
-    *
-    * @return Unique handle or 0.
+     *
+     * @return Unique handle or 0.
      */
-    void entity( const char* entTypeName ) const
-    {
-      dxfString( 0, entTypeName );
-      if ( version >= VER_2000 )
-      {
-        handle();
-      }
+    void entity(const char* entTypeName) const {
+        dxfString(0, entTypeName);
+        if (version>=DL_VERSION_2000) {
+            handle();
+        }
     }
 
     /**
@@ -341,36 +342,37 @@ class DL_Writer
      *  linetype
      * </pre>
      */
-    void entityAttributes( const DL_Attributes& attrib ) const
-    {
-
-      // layer name:
-      dxfString( 8, attrib.getLayer() );
-
-      // R12 doesn't accept BYLAYER values. The value has to be missing
-      //   in that case.
-      if ( version >= VER_2000 ||
-           attrib.getColor() != 256 )
-      {
-        dxfInt( 62, attrib.getColor() );
-      }
-      if ( version >= VER_2000 )
-      {
-        dxfInt( 370, attrib.getWidth() );
-      }
-      if ( version >= VER_2000 ||
-           strcasecmp( attrib.getLineType().c_str(), "BYLAYER" ) )
-      {
-        dxfString( 6, attrib.getLineType() );
-      }
+    void entityAttributes(const DL_Attributes& attrib) const {
+    
+        // layer name:
+        dxfString(8, attrib.getLayer());
+        
+        // R12 doesn't accept BYLAYER values. The value has to be missing
+        //   in that case.
+        if (version>=DL_VERSION_2000 || attrib.getColor()!=256) {
+            dxfInt(62, attrib.getColor());
+        }
+        if (version>=DL_VERSION_2000 && attrib.getColor24()!=-1) {
+            dxfInt(420, attrib.getColor24());
+        }
+        if (version>=DL_VERSION_2000) {
+            dxfInt(370, attrib.getWidth());
+        }
+        if (version>=DL_VERSION_2000) {
+            dxfReal(48, attrib.getLinetypeScale());
+        }
+        std::string linetype = attrib.getLinetype();
+        std::transform(linetype.begin(), linetype.end(), linetype.begin(), ::toupper);
+        if (version>=DL_VERSION_2000 || linetype=="BYLAYER") {
+            dxfString(6, attrib.getLinetype());
+        }
     }
 
     /**
      * Subclass.
      */
-    void subClass( const char* sub ) const
-    {
-      dxfString( 100, sub );
+    void subClass(const char* sub) const {
+        dxfString(100, sub);
     }
 
     /**
@@ -381,22 +383,17 @@ class DL_Writer
      *  LAYER
      * </pre>
      */
-    void tableLayerEntry( unsigned long int h = 0 )  const
-    {
-      dxfString( 0, "LAYER" );
-      if ( version >= VER_2000 )
-      {
-        if ( h == 0 )
-        {
-          handle();
+    void tableLayerEntry(unsigned long int h=0)  const {
+        dxfString(0, "LAYER");
+        if (version>=DL_VERSION_2000) {
+            if (h==0) {
+                handle();
+            } else {
+                dxfHex(5, h);
+            }
+            dxfString(100, "AcDbSymbolTableRecord");
+            dxfString(100, "AcDbLayerTableRecord");
         }
-        else
-        {
-          dxfHex( 5, h );
-        }
-        dxfString( 100, "AcDbSymbolTableRecord" );
-        dxfString( 100, "AcDbLayerTableRecord" );
-      }
     }
 
     /**
@@ -407,23 +404,18 @@ class DL_Writer
      *  LTYPE
      * </pre>
      */
-    void tableLineTypeEntry( unsigned long int h = 0 )  const
-    {
-      dxfString( 0, "LTYPE" );
-      if ( version >= VER_2000 )
-      {
-        if ( h == 0 )
-        {
-          handle();
+    void tableLinetypeEntry(unsigned long int h=0)  const {
+        dxfString(0, "LTYPE");
+        if (version>=DL_VERSION_2000) {
+            if (h==0) {
+                handle();
+            } else {
+                dxfHex(5, h);
+            }
+            //dxfHex(330, 0x5);
+            dxfString(100, "AcDbSymbolTableRecord");
+            dxfString(100, "AcDbLinetypeTableRecord");
         }
-        else
-        {
-          dxfHex( 5, h );
-        }
-        //dxfHex(330, 0x5);
-        dxfString( 100, "AcDbSymbolTableRecord" );
-        dxfString( 100, "AcDbLinetypeTableRecord" );
-      }
     }
 
     /**
@@ -434,23 +426,18 @@ class DL_Writer
      *  APPID
      * </pre>
      */
-    void tableAppidEntry( unsigned long int h = 0 )  const
-    {
-      dxfString( 0, "APPID" );
-      if ( version >= VER_2000 )
-      {
-        if ( h == 0 )
-        {
-          handle();
+    void tableAppidEntry(unsigned long int h=0)  const {
+        dxfString(0, "APPID");
+        if (version>=DL_VERSION_2000) {
+            if (h==0) {
+                handle();
+            } else {
+                dxfHex(5, h);
+            }
+            //dxfHex(330, 0x9);
+            dxfString(100, "AcDbSymbolTableRecord");
+            dxfString(100, "AcDbRegAppTableRecord");
         }
-        else
-        {
-          dxfHex( 5, h );
-        }
-        //dxfHex(330, 0x9);
-        dxfString( 100, "AcDbSymbolTableRecord" );
-        dxfString( 100, "AcDbRegAppTableRecord" );
-      }
     }
 
     /**
@@ -461,28 +448,22 @@ class DL_Writer
      *  BLOCK
      * </pre>
      */
-    void sectionBlockEntry( unsigned long int h = 0 )  const
-    {
-      dxfString( 0, "BLOCK" );
-      if ( version >= VER_2000 )
-      {
-        if ( h == 0 )
-        {
-          handle();
+    void sectionBlockEntry(unsigned long int h=0)  const {
+        dxfString(0, "BLOCK");
+        if (version>=DL_VERSION_2000) {
+            if (h==0) {
+                handle();
+            } else {
+                dxfHex(5, h);
+            }
+            //dxfHex(330, blockHandle);
+            dxfString(100, "AcDbEntity");
+            if (h==0x1C) {
+                dxfInt(67, 1);
+            }
+            dxfString(8, "0");                 // TODO: Layer for block
+            dxfString(100, "AcDbBlockBegin");
         }
-        else
-        {
-          dxfHex( 5, h );
-        }
-        //dxfHex(330, blockHandle);
-        dxfString( 100, "AcDbEntity" );
-        if ( h == 0x1C )
-        {
-          dxfInt( 67, 1 );
-        }
-        dxfString( 8, "0" );               // TODO: Layer for block
-        dxfString( 100, "AcDbBlockBegin" );
-      }
     }
 
     /**
@@ -493,135 +474,112 @@ class DL_Writer
      *  ENDBLK
      * </pre>
      */
-    void sectionBlockEntryEnd( unsigned long int h = 0 )  const
-    {
-      dxfString( 0, "ENDBLK" );
-      if ( version >= VER_2000 )
-      {
-        if ( h == 0 )
-        {
-          handle();
+    void sectionBlockEntryEnd(unsigned long int h=0)  const {
+        dxfString(0, "ENDBLK");
+        if (version>=DL_VERSION_2000) {
+            if (h==0) {
+                handle();
+            } else {
+                dxfHex(5, h);
+            }
+            //dxfHex(330, blockHandle);
+            dxfString(100, "AcDbEntity");
+            if (h==0x1D) {
+                dxfInt(67, 1);
+            }
+            dxfString(8, "0");                 // TODO: Layer for block
+            dxfString(100, "AcDbBlockEnd");
         }
-        else
-        {
-          dxfHex( 5, h );
+    }
+
+    void color(int col=256) const {
+        dxfInt(62, col);
+    }
+    void linetype(const char *lt) const {
+        dxfString(6, lt);
+    }
+    void linetypeScale(double scale) const {
+        dxfReal(48, scale);
+    }
+    void lineWeight(int lw) const {
+        dxfInt(370, lw);
+    }
+
+    void coord(int gc, double x, double y, double z=0) const {
+        dxfReal(gc, x);
+        dxfReal(gc+10, y);
+        dxfReal(gc+20, z);
+    }
+
+    void coordTriplet(int gc, const double* value) const {
+        if (value) {
+            dxfReal(gc, *value++);
+            dxfReal(gc+10, *value++);
+            dxfReal(gc+20, *value++);
         }
-        //dxfHex(330, blockHandle);
-        dxfString( 100, "AcDbEntity" );
-        if ( h == 0x1D )
-        {
-          dxfInt( 67, 1 );
-        }
-        dxfString( 8, "0" );               // TODO: Layer for block
-        dxfString( 100, "AcDbBlockEnd" );
-      }
     }
 
-    void color( int col = 256 ) const
-    {
-      dxfInt( 62, col );
-    }
-    void lineType( const char *lt ) const
-    {
-      dxfString( 6, lt );
-    }
-    void lineTypeScale( double scale ) const
-    {
-      dxfReal( 48, scale );
-    }
-    void lineWeight( int lw ) const
-    {
-      dxfInt( 370, lw );
-    }
-
-    void coord( int gc, double x, double y, double z = 0 ) const
-    {
-      dxfReal( gc, x );
-      dxfReal( gc + 10, y );
-      dxfReal( gc + 20, z );
-    }
-
-    void coordTriplet( int gc, const double* value ) const
-    {
-      if ( value )
-      {
-        dxfReal( gc, *value++ );
-        dxfReal( gc + 10, *value++ );
-        dxfReal( gc + 20, *value++ );
-      }
-    }
-
-    void resetHandle() const
-    {
-      m_handle = 1;
+    void resetHandle() const {
+        m_handle = 1;
     }
 
     /**
      * Writes a unique handle and returns it.
      */
-    unsigned long handle( int gc = 5 ) const
-    {
-      // handle has to be hex
-      dxfHex( gc, m_handle );
-      return m_handle++;
+    unsigned long handle(int gc=5) const {
+        // handle has to be hex
+        dxfHex(gc, m_handle);
+        return m_handle++;
     }
 
     /**
      * @return Next handle that will be written.
      */
-    unsigned long getNextHandle() const
-    {
-      return m_handle;
+    unsigned long getNextHandle() const {
+        return m_handle;
     }
-
+    
     /**
      * Increases handle, so that the handle returned remains available.
      */
-    unsigned long incHandle() const
-    {
-      return m_handle++;
+    unsigned long incHandle() const {
+        return m_handle++;
     }
 
     /**
-     * Sets the handle of the model space. Entities refer to
+     * Sets the handle of the model space. Entities refer to 
      * this handle.
      */
-    void setModelSpaceHandle( unsigned long h )
-    {
-      modelSpaceHandle = h;
+    void setModelSpaceHandle(unsigned long h) {
+        modelSpaceHandle = h;
     }
 
-    unsigned long getModelSpaceHandle()
-    {
-      return modelSpaceHandle;
+    unsigned long getModelSpaceHandle() {
+        return modelSpaceHandle;
     }
 
     /**
-     * Sets the handle of the paper space. Some special blocks refer to
+     * Sets the handle of the paper space. Some special blocks refer to 
      * this handle.
      */
-    void setPaperSpaceHandle( unsigned long h )
-    {
-      paperSpaceHandle = h;
+    void setPaperSpaceHandle(unsigned long h) {
+        paperSpaceHandle = h;
     }
 
-    unsigned long getPaperSpaceHandle()
-    {
-      return paperSpaceHandle;
+    unsigned long getPaperSpaceHandle() {
+        return paperSpaceHandle;
     }
 
     /**
-     * Sets the handle of the paper space 0. Some special blocks refer to
+     * Sets the handle of the paper space 0. Some special blocks refer to 
      * this handle.
      */
-    void setPaperSpace0Handle( unsigned long h )
-    {
-      paperSpace0Handle = h;
+    void setPaperSpace0Handle(unsigned long h) {
+        paperSpace0Handle = h;
     }
 
-    unsigned long getPaperSpace0Handle()
-    {
-      return paperSpace0Handle;
+    unsigned long getPaperSpace0Handle() {
+        return paperSpace0Handle;
     }
 
     /**
@@ -631,7 +589,7 @@ class DL_Writer
      * @param gc Group code.
      * @param value The real value.
      */
-    virtual void dxfReal( int gc, double value ) const = 0;
+    virtual void dxfReal(int gc, double value) const = 0;
 
     /**
      * Must be overwritten by the implementing class to write an
@@ -640,7 +598,18 @@ class DL_Writer
      * @param gc Group code.
      * @param value The int value.
      */
-    virtual void dxfInt( int gc, int value ) const = 0;
+    virtual void dxfInt(int gc, int value) const = 0;
+
+    /**
+     * Can be overwritten by the implementing class to write a
+     * bool value to the file.
+     *
+     * @param gc Group code.
+     * @param value The bool value.
+     */
+    virtual void dxfBool(int gc, bool value) const {
+        dxfInt(gc, (int)value);
+    }
 
     /**
      * Must be overwritten by the implementing class to write an
@@ -649,7 +618,7 @@ class DL_Writer
      * @param gc Group code.
      * @param value The int value.
      */
-    virtual void dxfHex( int gc, int value ) const = 0;
+    virtual void dxfHex(int gc, int value) const = 0;
 
     /**
      * Must be overwritten by the implementing class to write a
@@ -658,7 +627,7 @@ class DL_Writer
      * @param gc Group code.
      * @param value The string.
      */
-    virtual void dxfString( int gc, const char* value ) const = 0;
+    virtual void dxfString(int gc, const char* value) const = 0;
 
     /**
      * Must be overwritten by the implementing class to write a
@@ -667,9 +636,9 @@ class DL_Writer
      * @param gc Group code.
      * @param value The string.
      */
-    virtual void dxfString( int gc, const string& value ) const = 0;
+    virtual void dxfString(int gc, const std::string& value) const = 0;
 
-  protected:
+protected:
     mutable unsigned long m_handle;
     mutable unsigned long modelSpaceHandle;
     mutable unsigned long paperSpaceHandle;
@@ -679,7 +648,7 @@ class DL_Writer
      * DXF version to be created.
      */
     DL_Codes::version version;
-  private:
+private:
 };
 
 #endif

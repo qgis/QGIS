@@ -48,7 +48,8 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
     , mPrimaryKeyType( pktUnknown )
     , mDetectedGeomType( QGis::WKBUnknown )
     , mRequestedGeomType( QGis::WKBUnknown )
-    , mSpatialIndex( QString::null )
+    , mHasSpatialIndex( false )
+    , mSpatialIndexName( QString::null )
     , mShared( new QgsOracleSharedData )
 {
   static int geomMetaType = -1;
@@ -68,7 +69,7 @@ QgsOracleProvider::QgsOracleProvider( QString const & uri )
   mRequestedGeomType = mUri.wkbType();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
-  mConnection = QgsOracleConn::connectDb( mUri.connectionInfo() );
+  mConnection = QgsOracleConn::connectDb( mUri );
   if ( !mConnection )
   {
     return;
@@ -664,29 +665,21 @@ bool QgsOracleProvider::loadFields()
       {
         if ( qry.next() )
         {
-          mSpatialIndex = qry.value( 0 ).toString();
+          mSpatialIndexName = qry.value( 0 ).toString();
           if ( qry.value( 1 ).toString() != "VALID" )
           {
             QgsMessageLog::logMessage( tr( "Invalid spatial index %1 on column %2.%3.%4 found - expect poor performance." )
-                                       .arg( mSpatialIndex )
+                                       .arg( mSpatialIndexName )
                                        .arg( mOwnerName )
                                        .arg( mTableName )
                                        .arg( mGeometryColumn ),
                                        tr( "Oracle" ) );
-            mSpatialIndex = QString::null;
           }
           else
           {
-            QgsDebugMsg( QString( "Valid spatial index %1 found" ).arg( mSpatialIndex ) );
+            QgsDebugMsg( QString( "Valid spatial index %1 found" ).arg( mSpatialIndexName ) );
+            mHasSpatialIndex = true;
           }
-        }
-        else
-        {
-          QgsMessageLog::logMessage( tr( "No spatial index on column %1.%2.%3 found - expect poor performance." )
-                                     .arg( mOwnerName )
-                                     .arg( mTableName )
-                                     .arg( mGeometryColumn ),
-                                     tr( "Oracle" ) );
         }
       }
       else
@@ -697,6 +690,22 @@ bool QgsOracleProvider::loadFields()
                                    .arg( mGeometryColumn )
                                    .arg( qry.lastError().text() ),
                                    tr( "Oracle" ) );
+      }
+
+      if ( !mHasSpatialIndex )
+      {
+        mHasSpatialIndex = qry.exec( QString( "SELECT %2 FROM %1 WHERE sdo_filter(%2,mdsys.sdo_geometry(2003,%3,NULL,mdsys.sdo_elem_info_array(1,1003,3),mdsys.sdo_ordinate_array(1,1,-1,-1)))='TRUE'" )
+                                     .arg( mQuery )
+                                     .arg( quotedIdentifier( mGeometryColumn ) )
+                                     .arg( mSrid < 1 ? "NULL" : QString::number( mSrid ) ) );
+        if ( !mHasSpatialIndex )
+        {
+          QgsMessageLog::logMessage( tr( "No spatial index on column %1.%2.%3 found - expect poor performance." )
+                                     .arg( mOwnerName )
+                                     .arg( mTableName )
+                                     .arg( mGeometryColumn ),
+                                     tr( "Oracle" ) );
+        }
       }
     }
 
@@ -1131,7 +1140,7 @@ QString QgsOracleProvider::paramValue( QString fieldValue, const QString &defaul
   else if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
     QSqlQuery qry( *mConnection );
-    if ( !exec( qry, QString( "SELECT %1" ).arg( defaultValue ) ) || !qry.next() )
+    if ( !exec( qry, QString( "SELECT %1 FROM dual" ).arg( defaultValue ) ) || !qry.next() )
     {
       throw OracleException( tr( "Evaluation of default value failed" ), qry );
     }
@@ -1562,12 +1571,15 @@ bool QgsOracleProvider::deleteAttributes( const QgsAttributeIds& ids )
   return returnvalue;
 }
 
-bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
   bool returnvalue = true;
 
   if ( mIsQuery )
     return false;
+
+  if ( attr_map.isEmpty() )
+    return true;
 
   QSqlDatabase db( *mConnection );
 
@@ -1589,9 +1601,12 @@ bool QgsOracleProvider::changeAttributeValues( const QgsChangedAttributesMap & a
       if ( FID_IS_NEW( fid ) )
         continue;
 
+      const QgsAttributeMap& attrs = iter.value();
+      if ( attrs.isEmpty() )
+        continue;
+
       QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
 
-      const QgsAttributeMap& attrs = iter.value();
       bool pkChanged = false;
 
       // cycle through the changed attributes of the feature
@@ -2006,7 +2021,7 @@ QgsRectangle QgsOracleProvider::extent()
 
     bool ok = false;
 
-    if ( !mSpatialIndex.isNull() && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )
+    if ( mHasSpatialIndex && ( mUseEstimatedMetadata || mSqlWhereClause.isEmpty() ) )
     {
       sql = QString( "SELECT SDO_TUNE.EXTENT_OF(%1,%2) FROM dual" )
             .arg( quotedValue( QString( "%1.%2" ).arg( mOwnerName ).arg( mTableName ) ) )
@@ -2080,7 +2095,7 @@ bool QgsOracleProvider::getGeometryDetails()
 
   int detectedSrid = -1;
   QGis::WkbType detectedType = QGis::WKBUnknown;
-  mSpatialIndex = QString::null;
+  mHasSpatialIndex = false;
 
   if ( mIsQuery )
   {
@@ -2289,7 +2304,7 @@ bool QgsOracleProvider::createSpatialIndex()
     QgsDebugMsg( "geographic CRS" );
   }
 
-  if ( mSpatialIndex.isNull() )
+  if ( !mHasSpatialIndex )
   {
     int n = 0;
     if ( exec( qry, QString( "SELECT coalesce(substr(max(index_name),10),'0') FROM all_indexes WHERE index_name LIKE 'QGIS_IDX_%' ESCAPE '#' ORDER BY index_name" ) ) &&
@@ -2311,11 +2326,11 @@ bool QgsOracleProvider::createSpatialIndex()
       return false;
     }
 
-    mSpatialIndex = QString( "QGIS_IDX_%1" ).arg( n, 10, 10, QChar( '0' ) );
+    mSpatialIndexName = QString( "QGIS_IDX_%1" ).arg( n, 10, 10, QChar( '0' ) );
   }
   else
   {
-    if ( !exec( qry, QString( "ALTER INDEX %1 REBUILD" ).arg( mSpatialIndex ) ) )
+    if ( !exec( qry, QString( "ALTER INDEX %1 REBUILD" ).arg( mSpatialIndexName ) ) )
     {
       QgsMessageLog::logMessage( tr( "Rebuild of spatial index failed.\nSQL:%1\nError: %2" )
                                  .arg( qry.lastQuery() )
@@ -2402,7 +2417,7 @@ QgsVectorLayerImport::ImportError QgsOracleProvider::createEmptyLayer(
   QgsDebugMsg( QString( "Connection info is: %1" ).arg( dsUri.connectionInfo() ) );
 
   // create the table
-  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri.connectionInfo() );
+  QgsOracleConn *conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )
   {
     if ( errorMessage )
@@ -2891,7 +2906,7 @@ QGISEXTERN bool deleteLayer( const QString& uri, QString& errCause )
   QString tableName = dsUri.table();
   QString geometryCol = dsUri.geometryColumn();
 
-  QgsOracleConn* conn = QgsOracleConn::connectDb( dsUri.connectionInfo() );
+  QgsOracleConn* conn = QgsOracleConn::connectDb( dsUri );
   if ( !conn )
   {
     errCause = QObject::tr( "Connection to database failed" );

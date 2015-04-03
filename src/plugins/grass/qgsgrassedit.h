@@ -210,7 +210,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     void columnTypeChanged( int row, int col );
 
     // ! Close event
-    void closeEvent( QCloseEvent *e );
+    void closeEvent( QCloseEvent *e ) override;
 
     static bool isEditable( QgsMapLayer *layer );
 
@@ -444,7 +444,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     bool mProjectionEnabled;
 
     // Canvas items
-    QgsGrassEditLayer* mCanvasEdit;
+    QgsGrassEditLayer *mCanvasEdit;
     QgsRubberBand *mRubberBandLine;
     QgsVertexMarker *mRubberBandIcon;
 

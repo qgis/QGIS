@@ -50,14 +50,14 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * @param doc DOM document
      * @see readXML
     */
-    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /**Sets map item state from a DOM document
      * @param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
      * @param doc is DOM document
      * @see writeXML
     */
-    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /**Sets composer map for the item
      * @param map composer map

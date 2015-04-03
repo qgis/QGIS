@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.script.ScriptUtils import ScriptUtils
-import os
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'December 2012'
@@ -28,10 +25,23 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
+import os
+
+try:
+    import matplotlib.pyplot
+    hasMatplotlib = True
+except:
+    hasMatplotlib = False
+
+from PyQt4.QtGui import QIcon
 
 from processing.core.AlgorithmProvider import AlgorithmProvider
+from processing.script.ScriptUtils import ScriptUtils
 
+from RegularPoints import RegularPoints
+from SymetricalDifference import SymetricalDifference
+from VectorSplit import VectorSplit
+from VectorGrid import VectorGrid
 from RandomExtract import RandomExtract
 from RandomExtractWithinSubsets import RandomExtractWithinSubsets
 from ExtractByLocation import ExtractByLocation
@@ -113,12 +123,9 @@ from ImportIntoPostGIS import ImportIntoPostGIS
 from SetVectorStyle import SetVectorStyle
 from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
-# from VectorLayerHistogram import VectorLayerHistogram
-# from VectorLayerScatterplot import VectorLayerScatterplot
-# from MeanAndStdDevPlot import MeanAndStdDevPlot
-# from BarPlot import BarPlot
-# from PolarPlot import PolarPlot
-# from RasterLayerHistogram import RasterLayerHistogram
+from HypsometricCurves import HypsometricCurves
+from SplitLinesWithLines import SplitLinesWithLines
+from processing.algs.qgis.FieldsMapper import FieldsMapper
 
 import processing.resources_rc
 
@@ -145,7 +152,8 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(), RandomExtract(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
-                        SpatialJoin(), DeleteColumn(),
+                        SpatialJoin(), RegularPoints(), SymetricalDifference(),
+                        VectorSplit(), VectorGrid(), DeleteColumn(),
                         DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), Grid(),
                         Gridify(), HubDistance(), HubLines(), Merge(),
@@ -161,14 +169,25 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomPointsPolygonsVariable(),
                         RandomPointsAlongLines(), PointsToPaths(),
                         PostGISExecuteSQL(), ImportIntoPostGIS(),
-                        SetVectorStyle(), SetRasterStyle(), SelectByExpression()
-                        # ------ raster ------
-                        # CreateConstantRaster(),
-                        # ------ graphics ------
-                        # VectorLayerHistogram(), VectorLayerScatterplot(),
-                        # RasterLayerHistogram(), MeanAndStdDevPlot(),
-                        # BarPlot(), PolarPlot()
-                       ]
+                        SetVectorStyle(), SetRasterStyle(),
+                        SelectByExpression(), HypsometricCurves(),
+                        SplitLinesWithLines(), CreateConstantRaster(),
+                        FieldsMapper(),
+                        ]
+
+        if hasMatplotlib:
+            from VectorLayerHistogram import VectorLayerHistogram
+            from RasterLayerHistogram import RasterLayerHistogram
+            from VectorLayerScatterplot import VectorLayerScatterplot
+            from MeanAndStdDevPlot import MeanAndStdDevPlot
+            from BarPlot import BarPlot
+            from PolarPlot import PolarPlot
+
+            self.alglist.extend([
+                VectorLayerHistogram(), RasterLayerHistogram(),
+                VectorLayerScatterplot(), MeanAndStdDevPlot(), BarPlot(),
+                PolarPlot(),
+            ])
 
         folder = os.path.join(os.path.dirname(__file__), 'scripts')
         scripts = ScriptUtils.loadFromFolder(folder)
@@ -188,7 +207,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
         return 'qgis'
 
     def getDescription(self):
-        return 'QGIS geoalgorithms'
+        return self.tr('QGIS geoalgorithms')
 
     def getIcon(self):
         return self._icon

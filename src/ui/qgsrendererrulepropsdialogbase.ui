@@ -88,7 +88,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget">
+       <widget class="QgsScaleRangeWidget" name="mScaleRangeWidget" native="true">
         <property name="toolTip">
          <string/>
         </property>
@@ -142,6 +142,7 @@
   <tabstop>btnTestFilter</tabstop>
   <tabstop>editDescription</tabstop>
   <tabstop>groupScale</tabstop>
+  <tabstop>groupSymbol</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

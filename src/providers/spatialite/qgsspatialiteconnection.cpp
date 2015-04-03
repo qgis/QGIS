@@ -613,7 +613,9 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 * handle, const c
   char table_raster[4192];
   char sql[4192];
 
-  strcpy( table_raster, table );
+  strncpy( table_raster, table, sizeof sql );
+  table_raster[ sizeof sql - 1 ] = '\0';
+
   len =  strlen( table_raster );
   if ( strlen( table_raster ) < 9 )
     return false;
@@ -761,7 +763,7 @@ QgsSqliteHandle* QgsSqliteHandle::openDb( const QString & dbPath, bool shared )
     return NULL;
   }
   // activating Foreign Key constraints
-  sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL );
+  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, NULL );
 
   QgsDebugMsg( "Connection to the database was successful" );
 
@@ -798,6 +800,18 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle * &handle )
   }
 
   handle = NULL;
+}
+
+void QgsSqliteHandle::closeAll()
+{
+  QMap < QString, QgsSqliteHandle * >::iterator i;
+  for ( i = handles.begin(); i != handles.end(); ++i )
+  {
+    i.value()->sqliteClose();
+    delete i.value();
+  }
+
+  handles.clear();
 }
 
 void QgsSqliteHandle::sqliteClose()

@@ -169,7 +169,7 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
           fieldType = tr( "string" );
           break;
         case QVariant::Int:
-          fieldMatch = mDataTypes.testFlag( Int );
+          fieldMatch = mDataTypes.testFlag( Int ) || mDataTypes.testFlag( Double );
           fieldType = tr( "integer" );
           break;
         case QVariant::Double:
@@ -640,6 +640,11 @@ QString QgsDataDefinedButton::doublePosDesc()
   return tr( "double [&gt;= 0.0]" );
 }
 
+QString QgsDataDefinedButton::double0to1Desc()
+{
+  return tr( "double [0.0-1.0]" );
+}
+
 QString QgsDataDefinedButton::doubleXYDesc()
 {
   return tr( "double coord [<b>X,Y</b>] as &lt;= 0.0 =&gt;" );
@@ -687,7 +692,7 @@ QString QgsDataDefinedButton::textVertAlignDesc()
 
 QString QgsDataDefinedButton::penJoinStyleDesc()
 {
-  return trString() + "[<b>Bevel</b>|<b>Miter</b>|<b>Round</b>]";
+  return trString() + "[<b>bevel</b>|<b>miter</b>|<b>round</b>]";
 }
 
 QString QgsDataDefinedButton::blendModesDesc()
@@ -704,6 +709,11 @@ QString QgsDataDefinedButton::svgPathDesc()
                                "project-relative|URL" );
 }
 
+QString QgsDataDefinedButton::filePathDesc()
+{
+  return tr( "string [<b>filepath</b>]" );
+}
+
 QString QgsDataDefinedButton::paperSizeDesc()
 {
   return trString() + QString( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
@@ -716,4 +726,56 @@ QString QgsDataDefinedButton::paperSizeDesc()
 QString QgsDataDefinedButton::paperOrientationDesc()
 {
   return trString() + QString( "[<b>portrait</b>|<b>landscape</b>]" );
+}
+
+QString QgsDataDefinedButton::horizontalAnchorDesc()
+{
+  return trString() + QString( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
+}
+
+QString QgsDataDefinedButton::verticalAnchorDesc()
+{
+  return trString() + QString( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
+}
+
+QString QgsDataDefinedButton::gradientTypeDesc()
+{
+  return trString() + QString( "[<b>linear</b>|<b>radial</b>|<b>conical</b>]" );
+}
+
+QString QgsDataDefinedButton::gradientCoordModeDesc()
+{
+  return trString() + QString( "[<b>feature</b>|<b>viewport</b>]" );
+}
+
+QString QgsDataDefinedButton::gradientSpreadDesc()
+{
+  return trString() + QString( "[<b>pad</b>|<b>repeat</b>|<b>reflect</b>]" );
+}
+
+QString QgsDataDefinedButton::lineStyleDesc()
+{
+  return trString() + QString( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
+}
+
+QString QgsDataDefinedButton::capStyleDesc()
+{
+  return trString() + QString( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
+}
+
+QString QgsDataDefinedButton::fillStyleDesc()
+{
+  return trString() + QString( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                               "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                               "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+}
+
+QString QgsDataDefinedButton::markerStyleDesc()
+{
+  return trString() + QString( "[<b>circle</b>|<b>rectangle</b>|<b>cross</b>|<b>triangle</b>]" );
+}
+
+QString QgsDataDefinedButton::customDashDesc()
+{
+  return tr( "[<b><dash>;<space></b>] e.g. '8;2;1;2'" );
 }

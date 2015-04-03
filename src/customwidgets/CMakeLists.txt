@@ -2,6 +2,12 @@ ADD_DEFINITIONS(-DQT_PLUGIN)
 ADD_DEFINITIONS(-DQT_NO_DEBUG)
 ADD_DEFINITIONS(-DQT_SHARED)
 
+IF (QT5_BUILD)
+  FIND_PACKAGE(Qt5Designer REQUIRED)
+ENDIF (QT5_BUILD)
+
+SET(QT_USE_QTDESIGNER ON)
+
 IF (WIN32)
   IF (MSVC)
     ADD_DEFINITIONS("-DCUSTOMWIDGETS_EXPORT=${DLLEXPORT}")
@@ -25,9 +31,11 @@ SET (QGIS_CUSTOMWIDGETS_SRCS
   qgsfieldexpressionwidgetplugin.cpp
   qgsfilterlineeditplugin.cpp
   qgsmaplayercomboboxplugin.cpp
+  qgsprojectionselectionwidgetplugin.cpp
   qgsrelationeditorwidgetplugin.cpp
   qgsrelationreferencewidgetplugin.cpp
   qgsscalerangewidgetplugin.cpp
+  qgsscalewidgetplugin.cpp
   qgsspinboxplugin.cpp
 )
 
@@ -43,13 +51,13 @@ SET (QGIS_CUSTOMWIDGETS_MOC_HDRS
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
+  qgsprojectionselectionwidgetplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
+  qgsscalewidgetplugin.h
   qgsspinboxplugin.h
 )
-
-QT4_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 
 IF(MSVC)
   SET_SOURCE_FILES_PROPERTIES(${QGIS_CUSTOMWIDGETS_MOC_SRCS} PROPERTIES COMPILE_FLAGS "/wd4996" )
@@ -69,9 +77,11 @@ SET(QGIS_CUSTOMWIDGETS_HDRS
   qgsfieldexpressionwidgetplugin.h
   qgsfilterlineeditplugin.h
   qgsmaplayercomboboxplugin.h
+  qgsprojectionselectionwidgetplugin.h
   qgsrelationeditorwidgetplugin.h
   qgsrelationreferencewidgetplugin.h
   qgsscalerangewidgetplugin.h
+  qgsscalewidgetplugin.h
   qgsspinboxplugin.h
 )
 
@@ -89,7 +99,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/../gui/editorwidgets/
   ${CMAKE_CURRENT_BINARY_DIR}/../ui/
   ${GEOS_INCLUDE_DIR}
+  ${Qt5Designer_INCLUDE_DIRS} # For Qt5
+  ${QT_QTDESIGNER_INCLUDE_DIR} # For Qt4
 )
+
+QT4_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
 
 #############################################################
 # qgis_customwidgets library

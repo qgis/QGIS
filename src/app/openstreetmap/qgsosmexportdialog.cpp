@@ -40,6 +40,8 @@ QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent ) :
   connect( radPolylines, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
   connect( radPolygons, SIGNAL( clicked() ), this, SLOT( updateLayerName() ) );
   connect( btnLoadTags, SIGNAL( clicked() ), this, SLOT( onLoadTags() ) );
+  connect( btnSelectAll, SIGNAL( clicked() ), this, SLOT( onSelectAll() ) );
+  connect( btnUnselectAll, SIGNAL( clicked() ), this, SLOT( onUnselectAll() ) );
 
   mTagsModel = new QStandardItemModel( this );
   mTagsModel->setHorizontalHeaderLabels( QStringList() << tr( "Tag" ) << tr( "Count" ) );
@@ -181,4 +183,20 @@ void QgsOSMExportDialog::onOK()
 void QgsOSMExportDialog::onClose()
 {
   reject();
+}
+
+void QgsOSMExportDialog::onSelectAll()
+{
+  for ( int i = 0; i < mTagsModel->rowCount(); ++i )
+  {
+    mTagsModel->item( i, 0 )->setCheckState( Qt::Checked );
+  }
+}
+
+void QgsOSMExportDialog::onUnselectAll()
+{
+  for ( int i = 0; i < mTagsModel->rowCount(); ++i )
+  {
+    mTagsModel->item( i, 0 )->setCheckState( Qt::Unchecked );
+  }
 }

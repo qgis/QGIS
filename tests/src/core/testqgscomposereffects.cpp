@@ -21,13 +21,21 @@
 #include "qgscomposershape.h"
 #include "qgsmaprenderer.h"
 #include <QObject>
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QColor>
 #include <QPainter>
 
-class TestQgsComposerEffects: public QObject
+class TestQgsComposerEffects : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsComposerEffects()
+        : mComposition( 0 )
+        , mComposerRect1( 0 )
+        , mComposerRect2( 0 )
+    {}
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -77,6 +85,8 @@ void TestQgsComposerEffects::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+
+  QgsApplication::exitQgis();
 }
 
 void TestQgsComposerEffects::init()
@@ -108,4 +118,4 @@ void TestQgsComposerEffects::transparency()
 }
 
 QTEST_MAIN( TestQgsComposerEffects )
-#include "moc_testqgscomposereffects.cxx"
+#include "testqgscomposereffects.moc"

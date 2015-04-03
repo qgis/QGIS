@@ -27,8 +27,8 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
     QgsComposerTextTable( QgsComposition* c );
     ~QgsComposerTextTable();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerTextTable; }
+    /** return correct graphics item type. */
+    virtual int type() const override { return ComposerTextTable; }
 
     /**Sets the text to use for the header row for the table
      * @param labels list of strings to use for each column's header row
@@ -49,21 +49,21 @@ class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
      * @param doc QDomDocument for the destination xml.
      * @see readXML
      */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXML( QDomElement& elem, QDomDocument & doc ) const override;
 
     /**Reads the properties specific to a text table from xml.
      * @param itemElem a QDomElement holding the text table's desired properties.
      * @param doc QDomDocument for the source xml.
      * @see writeXML
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) override;
 
     /**Queries the text table for text to show in the cells.
      * @param attributeMaps list of QgsAttributeMaps where the cell text will be stored
      * @returns true if attribute values were successfully set from table's text
      * @note not available in python bindings
      */
-    bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps );
+    bool getFeatureAttributes( QList<QgsAttributeMap>& attributeMaps ) override;
 
   private:
     /**One stringlist per row*/

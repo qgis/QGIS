@@ -6,23 +6,60 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>457</width>
-    <height>342</height>
+    <width>506</width>
+    <height>248</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
+   <item row="6" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mJoinStyleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_5">
      <property name="text">
-      <string>Colors</string>
+      <string>Border width</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Join style</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item row="0" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -65,6 +102,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsDataDefinedButton" name="mFillColorDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_3">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -100,6 +144,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QgsDataDefinedButton" name="mBorderColorDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -114,7 +165,41 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Colors</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Offset X,Y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mFillStyleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Fill style</string>
@@ -124,49 +209,10 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>Border style</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QgsPenStyleComboBox" name="cboBorderStyle"/>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>Join style</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QgsPenJoinStyleComboBox" name="cboJoinStyle"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="label_5">
-     <property name="text">
-      <string>Border width</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1">
+   <item row="7" column="1">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QDoubleSpinBox" name="spinBorderWidth">
+      <widget class="QgsDoubleSpinBox" name="spinBorderWidth">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>1</horstretch>
@@ -182,99 +228,111 @@
        <property name="singleStep">
         <double>0.200000000000000</double>
        </property>
+       <property name="showClearButton" stdset="0">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
-      <widget class="QgsUnitSelectionWidget" name="mBorderWidthUnitWidget"/>
+      <widget class="QgsDataDefinedButton" name="mBorderWidthDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mBorderWidthUnitWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_6">
+   <item row="8" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QgsDoubleSpinBox" name="spinOffsetX">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsDoubleSpinBox" name="spinOffsetY">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals">
+        <number>6</number>
+       </property>
+       <property name="minimum">
+        <double>-999.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>999.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.200000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="1">
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QgsPenStyleComboBox" name="cboBorderStyle"/>
+     </item>
+     <item>
+      <widget class="QgsDataDefinedButton" name="mBorderStyleDDBtn">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_4">
      <property name="text">
-      <string>Offset X,Y</string>
+      <string>Border style</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
      </property>
     </widget>
-   </item>
-   <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetX">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-999.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>999.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QDoubleSpinBox" name="spinOffsetY">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals">
-        <number>6</number>
-       </property>
-       <property name="minimum">
-        <double>-999.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>999.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.200000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget"/>
-     </item>
-    </layout>
-   </item>
-   <item row="6" column="0" colspan="2">
-    <widget class="QPushButton" name="mDataDefinedPropertiesButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Data defined properties...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
    </item>
   </layout>
  </widget>
@@ -283,11 +341,12 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsPenJoinStyleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgspenstylecombobox.h</header>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>
@@ -301,11 +360,39 @@
    <header>qgspenstylecombobox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsDataDefinedButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsdatadefinedbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPenJoinStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsBrushStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsbrushstylecombobox.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>mFillColorDDBtn</tabstop>
+  <tabstop>btnChangeBorderColor</tabstop>
+  <tabstop>mBorderColorDDBtn</tabstop>
+  <tabstop>cboFillStyle</tabstop>
+  <tabstop>mFillStyleDDBtn</tabstop>
+  <tabstop>cboBorderStyle</tabstop>
+  <tabstop>mBorderStyleDDBtn</tabstop>
+  <tabstop>cboJoinStyle</tabstop>
+  <tabstop>mJoinStyleDDBtn</tabstop>
+  <tabstop>spinBorderWidth</tabstop>
+  <tabstop>mBorderWidthDDBtn</tabstop>
+  <tabstop>mBorderWidthUnitWidget</tabstop>
+  <tabstop>spinOffsetX</tabstop>
+  <tabstop>spinOffsetY</tabstop>
+  <tabstop>mOffsetUnitWidget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

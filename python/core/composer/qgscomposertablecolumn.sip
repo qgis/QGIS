@@ -25,7 +25,7 @@ class QgsComposerTableColumn: QObject
      * @see writeXML
      */
     virtual bool readXML( const QDomElement& columnElem );
-    
+
     /**Returns the width for a column.
      * @returns column width in mm, or 0 if column width is automatically calculated.
      * @note added in 2.5

@@ -7,7 +7,7 @@ class QgsEncodingFileDialog : QFileDialog
 %End
 
   public:
-    QgsEncodingFileDialog( QWidget * parent = 0,
+    QgsEncodingFileDialog( QWidget * parent /TransferThis/ = 0,
                            const QString & caption = QString(), const QString & directory = QString(),
                            const QString & filter = QString(), const QString & encoding = QString() );
     ~QgsEncodingFileDialog();

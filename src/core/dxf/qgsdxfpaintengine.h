@@ -30,17 +30,17 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QgsDxfPaintEngine( const QgsDxfPaintDevice* dxfDevice, QgsDxfExport* dxf );
     ~QgsDxfPaintEngine();
 
-    bool begin( QPaintDevice* pdev );
-    bool end();
-    QPaintEngine::Type type() const;
-    void updateState( const QPaintEngineState& state );
+    bool begin( QPaintDevice* pdev ) override;
+    bool end() override;
+    QPaintEngine::Type type() const override;
+    void updateState( const QPaintEngineState& state ) override;
 
-    void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr );
+    void drawPixmap( const QRectF& r, const QPixmap& pm, const QRectF& sr ) override;
 
-    void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode );
-    void drawRects( const QRectF * rects, int rectCount );
-    void drawPath( const QPainterPath& path );
-    void drawLines( const QLineF* lines, int lineCount );
+    void drawPolygon( const QPointF * points, int pointCount, PolygonDrawMode mode ) override;
+    void drawRects( const QRectF * rects, int rectCount ) override;
+    void drawPath( const QPainterPath& path ) override;
+    void drawLines( const QLineF* lines, int lineCount ) override;
 
     void setLayer( const QString& layer ) { mLayer = layer; }
     QString layer() const { return mLayer; }
@@ -61,7 +61,6 @@ class CORE_EXPORT QgsDxfPaintEngine: public QPaintEngine
     QList<QPointF> mCurrentCurve;
 
     QgsPoint toDxfCoordinates( const QPointF& pt ) const;
-    QColor currentColor() const;
     double currentWidth() const;
 
     void moveTo( double dx, double dy );

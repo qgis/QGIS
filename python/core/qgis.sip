@@ -65,6 +65,7 @@ class QGis
     static bool isSingleType( WkbType type );
     static bool isMultiType( WkbType type );
     static int wkbDimensions( WkbType type );
+
     enum GeometryType
     {
       Point,
@@ -123,16 +124,35 @@ class QGis
     };
 
     //! Provides the canonical name of the type value
-    // Added in version 2.0
     static QString toLiteral( QGis::UnitType unit );
     //! Converts from the canonical name to the type value
-    // Added in version 2.0
     static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
     //! Provides translated version of the type value
-    // Added in version 2.0
     static QString tr( QGis::UnitType unit );
+    //! Provides type value from translated version
+    static UnitType fromTr( QString literal, QGis::UnitType defaultType = UnknownUnit );
     //! Returns the conversion factor between the specified units
     static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+
+    /** Converts a string to a double in a permissive way, eg allowing for incorrect
+     * numbers of digits between thousand seperators
+     * @param string string to convert
+     * @param ok will be set to true if conversion was successful
+     * @returns string converted to double if possible
+     * @note added in version 2.9
+     * @see permissiveToInt
+     */
+    static double permissiveToDouble( QString string, bool& ok );
+
+    /** Converts a string to an integer in a permissive way, eg allowing for incorrect
+     * numbers of digits between thousand seperators
+     * @param string string to convert
+     * @param ok will be set to true if conversion was successful
+     * @returns string converted to int if possible
+     * @note added in version 2.9
+     * @see permissiveToDouble
+     */
+    static int permissiveToInt( QString string, bool& ok );
 
     //! User defined event types
     enum UserEvent
@@ -173,7 +193,7 @@ class QGis
 
 
 /** Wkt string that represents a geographic coord sys
- * @note added in 1.8 to replace GEOWkt
+ * @note added to replace GEOWkt
  */
 const QString GEOWKT;
 const QString PROJECT_SCALES;
@@ -199,7 +219,6 @@ const int LAT_PREFIX_LEN;
 const int USER_CRS_START_ID;
 
 //! Constant that holds the string representation for "No ellips/No CRS"
-// Added in version 2.0
 const QString GEO_NONE;
 
 //
@@ -212,7 +231,7 @@ const double MINIMUM_POINT_SIZE;
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;
 
-/** default snapping tolerance for segments (@note added in 1.8) */
+/** default snapping tolerance for segments */
 const double DEFAULT_SEGMENT_EPSILON;
 
 /** qgssize is used instead of size_t, because size_t is stdlib type, unknown

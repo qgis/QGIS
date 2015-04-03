@@ -91,8 +91,9 @@
 #include <QProgressDialog>
 #include <QShortcut>
 
-//For model testing
-//#include "modeltest.h"
+#ifdef ENABLE_MODELTEST
+#include "modeltest.h"
+#endif
 
 // sort function for QList<QAction*>, e.g. menu listings
 static bool cmpByText_( QAction* a, QAction* b )
@@ -190,10 +191,11 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionSnapGuides->setCheckable( true );
   mActionSmartGuides->setCheckable( true );
   mActionShowRulers->setCheckable( true );
+  mActionShowBoxes->setCheckable( true );
 
   mActionAtlasPreview->setCheckable( true );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   mActionQuit->setText( tr( "Close" ) );
   mActionQuit->setShortcut( QKeySequence::Close );
   QMenu *appMenu = menuBar()->addMenu( tr( "QGIS" ) );
@@ -305,7 +307,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QShortcut* ctrlEquals = new QShortcut( QKeySequence( "Ctrl+=" ), this );
   connect( ctrlEquals, SIGNAL( activated() ), mActionZoomIn, SLOT( trigger() ) );
 
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
   //disabled for OSX - see #10761
   //also see http://qt-project.org/forums/viewthread/3630 QGraphicsEffects are not well supported on OSX
   QMenu *previewMenu = viewMenu->addMenu( "&Preview" );
@@ -332,6 +334,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   viewMenu->addAction( mActionSmartGuides );
   viewMenu->addAction( mActionClearGuides );
   viewMenu->addSeparator();
+  viewMenu->addAction( mActionShowBoxes );
   viewMenu->addAction( mActionShowRulers );
 
   // Panel and toolbar submenus
@@ -340,6 +343,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mToolbarMenu = new QMenu( tr( "&Toolbars" ), this );
   mToolbarMenu->setObjectName( "mToolbarMenu" );
   viewMenu->addSeparator();
+  viewMenu->addAction( mActionToggleFullScreen );
+  viewMenu->addAction( mActionHidePanels );
   viewMenu->addMenu( mPanelMenu );
   viewMenu->addMenu( mToolbarMenu );
   // toolBar already exists, add other widgets as they are created
@@ -399,7 +404,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QMenu *settingsMenu = menuBar()->addMenu( tr( "&Settings" ) );
   settingsMenu->addAction( mActionOptions );
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // this doesn't work on Mac anymore: menuBar()->addMenu( mQgis->windowMenu() );
   // QgsComposer::populateWithOtherMenu should work recursively with submenus and regardless of Qt version
   mWindowMenu = new QMenu( tr( "Window" ), this );
@@ -455,6 +460,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mStatusCompositionLabel->setMinimumWidth( 350 );
   mStatusAtlasLabel = new QLabel( mStatusBar );
 
+  //hide borders from child items in status bar under Windows
+  mStatusBar->setStyleSheet( "QStatusBar::item {border: none;}" );
+
   mStatusBar->addWidget( mStatusCursorXLabel );
   mStatusBar->addWidget( mStatusCursorYLabel );
   mStatusBar->addWidget( mStatusCursorPageLabel );
@@ -491,7 +499,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   connect( mActionShowRulers, SIGNAL( triggered( bool ) ), this, SLOT( toggleRulers( bool ) ) );
 
   //init undo/redo buttons
-  mComposition  = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
+  mComposition = new QgsComposition( mQgis->mapCanvas()->mapSettings() );
 
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
@@ -532,11 +540,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mItemsDock->setObjectName( "ItemsDock" );
   mPanelMenu->addAction( mItemsDock->toggleViewAction() );
 
-  mGeneralDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mItemDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mUndoDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mAtlasDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
-  mItemsDock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  foreach ( QDockWidget* dock, docks )
+  {
+    dock->setFeatures( QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetClosable );
+    connect( dock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( dockVisibilityChanged( bool ) ) );
+  }
 
   createCompositionWidget();
 
@@ -547,8 +556,9 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   //items tree widget
   mItemsTreeView = new QTreeView( mItemsDock );
   mItemsTreeView->setModel( mComposition->itemsModel() );
-  //for testing:
-  //new ModelTest( mComposition->itemsModel(), this );
+#ifdef ENABLE_MODELTEST
+  new ModelTest( mComposition->itemsModel(), this );
+#endif
 
   mItemsTreeView->setColumnWidth( 0, 30 );
   mItemsTreeView->setColumnWidth( 1, 30 );
@@ -793,7 +803,7 @@ void QgsComposer::activate()
   }
 }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
 void QgsComposer::changeEvent( QEvent* event )
 {
   QMainWindow::changeEvent( event );
@@ -998,7 +1008,7 @@ void QgsComposer::on_mActionAtlasPreview_triggered( bool checked )
   if ( checked )
   {
     mapCanvas()->stopRendering();
-    emit( atlasPreviewFeatureChanged() );
+    emit atlasPreviewFeatureChanged();
   }
   else
   {
@@ -1020,7 +1030,7 @@ void QgsComposer::on_mActionAtlasNext_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->nextFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::on_mActionAtlasPrev_triggered()
@@ -1035,7 +1045,7 @@ void QgsComposer::on_mActionAtlasPrev_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->prevFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::on_mActionAtlasFirst_triggered()
@@ -1050,7 +1060,7 @@ void QgsComposer::on_mActionAtlasFirst_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->firstFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::on_mActionAtlasLast_triggered()
@@ -1065,7 +1075,7 @@ void QgsComposer::on_mActionAtlasLast_triggered()
 
   loadAtlasPredefinedScalesFromProject();
   atlasMap->lastFeature();
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )
@@ -1189,6 +1199,15 @@ void QgsComposer::on_mActionSmartGuides_triggered( bool checked )
   }
 }
 
+void QgsComposer::on_mActionShowBoxes_triggered( bool checked )
+{
+  //show or hide bounding boxes
+  if ( mComposition )
+  {
+    mComposition->setBoundingBoxesVisible( checked );
+  }
+}
+
 void QgsComposer::on_mActionClearGuides_triggered()
 {
   //clear guide lines
@@ -1217,6 +1236,77 @@ void QgsComposer::on_mActionAtlasSettings_triggered()
   }
 
   mAtlasDock->raise();
+}
+
+void QgsComposer::on_mActionToggleFullScreen_triggered()
+{
+  if ( mActionToggleFullScreen->isChecked() )
+  {
+    showFullScreen();
+  }
+  else
+  {
+    showNormal();
+  }
+}
+
+void QgsComposer::on_mActionHidePanels_triggered()
+{
+  /*
+  workaround the limited Qt dock widget API
+  see http://qt-project.org/forums/viewthread/1141/
+  and http://qt-project.org/faq/answer/how_can_i_check_which_tab_is_the_current_one_in_a_tabbed_qdockwidget
+  */
+
+  bool showPanels = !mActionHidePanels->isChecked();
+  QList<QDockWidget *> docks = findChildren<QDockWidget *>();
+  QList<QTabBar *> tabBars = findChildren<QTabBar *>();
+
+  if ( !showPanels )
+  {
+    mPanelStatus.clear();
+    //record status of all docks
+
+    foreach ( QDockWidget* dock, docks )
+    {
+      mPanelStatus.insert( dock->windowTitle(), PanelStatus( dock->isVisible(), false ) );
+      dock->setVisible( false );
+    }
+
+    //record active dock tabs
+    foreach ( QTabBar* tabBar, tabBars )
+    {
+      QString currentTabTitle = tabBar->tabText( tabBar->currentIndex() );
+      mPanelStatus[ currentTabTitle ].isActive = true;
+    }
+  }
+  else
+  {
+    //restore visibility of all docks
+    foreach ( QDockWidget* dock, docks )
+    {
+      if ( ! mPanelStatus.contains( dock->windowTitle() ) )
+      {
+        dock->setVisible( true );
+        continue;
+      }
+      dock->setVisible( mPanelStatus.value( dock->windowTitle() ).isVisible );
+    }
+
+    //restore previously active dock tabs
+    foreach ( QTabBar* tabBar, tabBars )
+    {
+      //loop through all tabs in tab bar
+      for ( int i = 0; i < tabBar->count(); ++i )
+      {
+        QString tabTitle = tabBar->tabText( i );
+        if ( mPanelStatus.value( tabTitle ).isActive )
+        {
+          tabBar->setCurrentIndex( i );
+        }
+      }
+    }
+  }
 }
 
 void QgsComposer::disablePreviewMode()
@@ -1306,6 +1396,16 @@ void QgsComposer::setComposition( QgsComposition* composition )
 
   //default printer page setup
   setPrinterPageDefaults();
+}
+
+void QgsComposer::dockVisibilityChanged( bool visible )
+{
+  if ( visible )
+  {
+    mActionHidePanels->blockSignals( true );
+    mActionHidePanels->setChecked( false );
+    mActionHidePanels->blockSignals( false );
+  }
 }
 
 void QgsComposer::on_mActionExportAtlasAsPDF_triggered()
@@ -2910,7 +3010,7 @@ void QgsComposer::showEvent( QShowEvent* event )
     restoreComposerMapStates();
   }
 
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
   // add to menu if (re)opening window (event not due to unminimize)
   if ( !event->spontaneous() )
   {
@@ -3152,6 +3252,8 @@ void QgsComposer::restoreGridSettings()
   mActionShowGuides->setChecked( mComposition->snapLinesVisible() );
   mActionSnapGuides->setChecked( mComposition->alignmentSnap() );
   mActionSmartGuides->setChecked( mComposition->smartGuidesEnabled() );
+  //general view settings
+  mActionShowBoxes->setChecked( mComposition->boundingBoxesVisible() );
 }
 
 void QgsComposer::deleteItemWidgets()
@@ -3539,6 +3641,14 @@ void QgsComposer::createComposerView()
   mView->setHorizontalRuler( mHorizontalRuler );
   mView->setVerticalRuler( mVerticalRuler );
   mViewLayout->addWidget( mView, 1, 1 );
+
+  //view does not accept focus via tab
+  mView->setFocusPolicy( Qt::ClickFocus );
+  //instead, if view is focused and tab is pressed than mActionHidePanels is triggered,
+  //to toggle display of panels
+  QShortcut* tab = new QShortcut( Qt::Key_Tab, mView );
+  tab->setContext( Qt::WidgetWithChildrenShortcut );
+  connect( tab, SIGNAL( activated() ), mActionHidePanels, SLOT( trigger() ) );
 }
 
 void QgsComposer::writeWorldFile( QString worldFileName, double a, double b, double c, double d, double e, double f ) const
@@ -3591,7 +3701,7 @@ void QgsComposer::setAtlasFeature( QgsMapLayer* layer, const QgsFeature& feat )
 
   //set current preview feature id
   atlas.prepareForFeature( &feat );
-  emit( atlasPreviewFeatureChanged() );
+  emit atlasPreviewFeatureChanged();
 }
 
 void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
@@ -3604,7 +3714,9 @@ void QgsComposer::updateAtlasMapLayerAction( QgsVectorLayer *coverageLayer )
 
   if ( coverageLayer )
   {
-    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, coverageLayer, QgsMapLayerAction::SingleFeature );
+    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ),
+        this, coverageLayer, QgsMapLayerAction::SingleFeature ,
+        QgsApplication::getThemeIcon( "/mIconAtlas.svg" ) );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }
@@ -3649,7 +3761,9 @@ void QgsComposer::updateAtlasMapLayerAction( bool atlasEnabled )
   if ( atlasEnabled )
   {
     QgsAtlasComposition& atlas = mComposition->atlasComposition();
-    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ), this, atlas.coverageLayer(), QgsMapLayerAction::SingleFeature );
+    mAtlasFeatureAction = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( mTitle ),
+        this, atlas.coverageLayer(), QgsMapLayerAction::SingleFeature ,
+        QgsApplication::getThemeIcon( "/mIconAtlas.svg" ) );
     QgsMapLayerActionRegistry::instance()->addMapLayerAction( mAtlasFeatureAction );
     connect( mAtlasFeatureAction, SIGNAL( triggeredForFeature( QgsMapLayer*, const QgsFeature& ) ), this, SLOT( setAtlasFeature( QgsMapLayer*, const QgsFeature& ) ) );
   }

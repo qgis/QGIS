@@ -33,7 +33,7 @@ class QgsComposerPicture: QgsComposerItem
     QgsComposerPicture( QgsComposition *composition /TransferThis/);
     ~QgsComposerPicture();
 
-    /** return correct graphics item type. Added in v1.7 */
+    /** return correct graphics item type. */
     virtual int type() const;
 
     /**Reimplementation of QCanvasItem::paint*/
@@ -57,7 +57,7 @@ class QgsComposerPicture: QgsComposerItem
     */
     QString pictureFile() const /Deprecated/;
 
-     /**Sets the source path of the image (may be svg or a raster format). Data defined
+    /**Sets the source path of the image (may be svg or a raster format). Data defined
      * picture source may override this value. The path can either be a local path
      * or a remote (http) path.
      * @param path path for the source image
@@ -75,7 +75,6 @@ class QgsComposerPicture: QgsComposerItem
      * @note added in QGIS 2.5
     */
     QString picturePath() const;
-
 
     /**Sets this items bound in scene coordinates such that 1 item size units
      * corresponds to 1 scene size unit and resizes the svg symbol / image
@@ -262,6 +261,8 @@ class QgsComposerPicture: QgsComposerItem
      * @note added in 2.3
      */
     void recalculateSize();
+
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
 
   signals:
     /**Is emitted on picture rotation change*/

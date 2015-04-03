@@ -25,18 +25,11 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import string
 import re
+import os
+import psycopg2
 
-try:
-    from osgeo import ogr
-    ogrAvailable = True
-except:
-    ogrAvailable = False
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from qgis.core import QgsDataSourceURI, QgsCredentials
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.tools import dataobjects
@@ -61,8 +54,45 @@ class OgrAlgorithm(GdalAlgorithm):
             # user='ktryjh_iuuqef' password='xyqwer' sslmode=disable
             # key='gid' estimatedmetadata=true srid=4326 type=MULTIPOLYGON
             # table="t4" (geom) sql=
-            s = re.sub(''' sslmode=.+''', '', unicode(layer.source()))
-            ogrstr = 'PG:%s' % s
+            dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+            conninfo = dsUri.connectionInfo()
+            conn = None
+            ok = False
+            while not conn:
+                try:
+                    conn = psycopg2.connect(dsUri.connectionInfo())
+                except psycopg2.OperationalError, e:
+                    (ok, user, passwd ) = QgsCredentials.instance().get(conninfo, dsUri.username(), dsUri.password())
+                    if not ok:
+                        break
+
+                    dsUri.setUsername( user )
+                    dsUri.setPassword( passwd )
+
+            if not conn:
+                raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
+
+            if ok:
+                QgsCredentials.instance().put(conninfo, user, passwd)
+
+            ogrstr = "PG:%s" % dsUri.connectionInfo()
         else:
-            ogrstr = unicode(layer.source())
-        return ogrstr
+            ogrstr = unicode(layer.source()).split("|")[0]
+
+        return '"' + ogrstr + '"'
+
+    def ogrLayerName(self, uri):
+        if 'host' in uri:
+            regex = re.compile('(table=")(.+?)(\.)(.+?)"')
+            r = regex.search(uri)
+            return '"' + r.groups()[1] + '.' + r.groups()[3] +'"'
+        elif 'dbname' in uri:
+            regex = re.compile('(table=")(.+?)"')
+            r = regex.search(uri)
+            return r.groups()[1]
+        elif 'layername' in uri:
+            regex = re.compile('(layername=)(.*)')
+            r = regex.search(uri)
+            return r.groups()[1]
+        else:
+            return os.path.basename(os.path.splitext(uri)[0])

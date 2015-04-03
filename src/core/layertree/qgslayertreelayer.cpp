@@ -23,10 +23,11 @@
 QgsLayerTreeLayer::QgsLayerTreeLayer( QgsMapLayer *layer )
     : QgsLayerTreeNode( NodeLayer )
     , mLayerId( layer->id() )
-    , mLayer( layer )
+    , mLayer( 0 )
     , mVisible( Qt::Checked )
 {
   Q_ASSERT( QgsMapLayerRegistry::instance()->mapLayer( mLayerId ) == layer );
+  attachToLayer();
 }
 
 QgsLayerTreeLayer::QgsLayerTreeLayer( QString layerId, QString name )
@@ -148,8 +149,8 @@ void QgsLayerTreeLayer::registryLayersAdded( QList<QgsMapLayer*> layers )
   {
     if ( l->id() == mLayerId )
     {
-      mLayer = l;
       disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layersAdded( QList<QgsMapLayer*> ) ), this, SLOT( registryLayersAdded( QList<QgsMapLayer*> ) ) );
+      attachToLayer();
       emit layerLoaded();
       break;
     }

@@ -17,29 +17,19 @@ __copyright__ = 'Copyright 2013, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
+import qgis
 import sys
 import os
 import glob
 import shutil
-import tempfile
-import time
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
 
-from qgis.core import *
+from PyQt4.QtCore import QSettings, qDebug
 
-from utilities import (
-    unittest,
-    expectedFailure,
-    mapSettingsString
-)
+from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
 
-from qgis_local_server import (
-    QgisLocalServer,
-    FcgiServerProcess,
-    WebServerProcess,
-    getLocalServer
-)
+from utilities import mapSettingsString
+
+from qgis_local_server import getLocalServer
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
 from test_qgspallabeling_tests import (

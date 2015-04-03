@@ -188,7 +188,7 @@ bool QgsComposerAttributeTableColumnModel::setData( const QModelIndex& index, co
       if ( column->heading().isEmpty() || ( column->heading() == column->attribute() ) )
       {
         column->setHeading( value.toString() );
-        emit dataChanged( createIndex( index.row(), 1, 0 ), createIndex( index.row(), 1, 0 ) );
+        emit dataChanged( createIndex( index.row(), 1 ), createIndex( index.row(), 1 ) );
       }
       column->setAttribute( value.toString() );
       emit dataChanged( index, index );

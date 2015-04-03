@@ -52,11 +52,11 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
 
     ~QgsQueryBuilder();
 
-    void showEvent( QShowEvent *event );
+    void showEvent( QShowEvent *event ) override;
 
   public slots:
-    void accept();
-    void reject();
+    void accept() override;
+    void reject() override;
     void clear();
     void on_btnEqual_clicked();
     void on_btnLessThan_clicked();

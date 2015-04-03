@@ -36,7 +36,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
     : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
 {
   mToolTip = uri;
-  mPopulated = true; // children are not expected
+  setState( Populated ); // children are not expected
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem()
@@ -140,7 +140,7 @@ static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name,
   OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-  int ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
+  OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
   switch ( ogrType )
   {
     case wkbUnknown:
@@ -252,8 +252,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   bool scanExtSetting = false;
   if (( settings.value( "/qgis/scanItemsInBrowser2",
                         "extension" ).toString() == "extension" ) ||
-      ( settings.value( "/qgis/scanItemsFastScanUris",
-                        QStringList() ).toStringList().contains( parentItem->path() ) ) ||
+      ( parentItem && settings.value( "/qgis/scanItemsFastScanUris",
+                                      QStringList() ).toStringList().contains( parentItem->path() ) ) ||
       (( is_vsizip || is_vsitar ) && parentItem && parentItem->parent() &&
        settings.value( "/qgis/scanItemsFastScanUris",
                        QStringList() ).toStringList().contains( parentItem->parent()->path() ) ) )
@@ -326,11 +326,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if ( !thePath.startsWith( vsiPrefix ) )
       thePath = vsiPrefix + thePath;
     // if this is a /vsigzip/path_to_zip.zip/file_inside_zip remove the full path from the name
+    // no need to change the name I believe
+    /*
     if (( is_vsizip || is_vsitar ) && ( thePath != vsiPrefix + parentItem->path() ) )
     {
       name = thePath;
       name = name.replace( vsiPrefix + parentItem->path() + "/", "" );
     }
+    */
   }
 
   // return item without testing if:

@@ -71,6 +71,8 @@ protected:
 private:
     class PrivateData;
     PrivateData *d_data;
+
+    Q_DISABLE_COPY(QwtPolarLayout)
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QwtPolarLayout::Options )

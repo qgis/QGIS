@@ -50,6 +50,7 @@ private:
 
     class PrivateData;
     PrivateData *d_data;
+    Q_DISABLE_COPY(QwtPolarItemDict);
 };
 
 #endif

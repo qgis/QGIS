@@ -343,7 +343,7 @@ void QgsColorButton::showContextMenu( QMouseEvent *event )
   QAction* pasteColorAction = new QAction( tr( "Paste color" ), 0 );
   pasteColorAction->setEnabled( false );
   colorContextMenu.addAction( pasteColorAction );
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
   //disabled for OSX, as it is impossible to grab the mouse under OSX
   //see note for QWidget::grabMouse() re OSX Cocoa
   //http://qt-project.org/doc/qt-4.8/qwidget.html#grabMouse
@@ -369,7 +369,7 @@ void QgsColorButton::showContextMenu( QMouseEvent *event )
     //paste color
     setColor( clipColor );
   }
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
   else if ( selectedAction == pickColorAction )
   {
     //pick color

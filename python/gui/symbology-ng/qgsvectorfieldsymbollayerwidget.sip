@@ -4,7 +4,7 @@ class QgsVectorFieldSymbolLayerWidget: QgsSymbolLayerV2Widget
 #include <qgsvectorfieldsymbollayerwidget.h>
 %End
   public:
-    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = 0 );
+    QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent /TransferThis/ = 0 );
     ~QgsVectorFieldSymbolLayerWidget();
 
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) /Factory/;

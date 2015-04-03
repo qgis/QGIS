@@ -25,6 +25,7 @@
 #include "qgsogcutils.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgspainteffect.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -33,6 +34,7 @@ QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
     : QgsFeatureRendererV2( "singleSymbol" )
     , mSymbol( symbol )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
+    , mOrigSize( 0.0 )
 {
   Q_ASSERT( symbol );
 }
@@ -182,6 +184,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
+  copyPaintEffect( r );
   return r;
 }
 
@@ -352,6 +355,9 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
 
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
+
   return rendererElem;
 }
 
@@ -391,13 +397,14 @@ QgsSingleSymbolRendererV2* QgsSingleSymbolRendererV2::convertFromRenderer( const
   if ( renderer->type() == "pointDisplacement" )
   {
     const QgsPointDisplacementRenderer* pointDisplacementRenderer = dynamic_cast<const QgsPointDisplacementRenderer*>( renderer );
-    return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
+    if ( pointDisplacementRenderer )
+      return convertFromRenderer( pointDisplacementRenderer->embeddedRenderer() );
   }
   if ( renderer->type() == "invertedPolygonRenderer" )
   {
     const QgsInvertedPolygonRenderer* invertedPolygonRenderer = dynamic_cast<const QgsInvertedPolygonRenderer*>( renderer );
-    return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
-
+    if ( invertedPolygonRenderer )
+      return convertFromRenderer( invertedPolygonRenderer->embeddedRenderer() );
   }
 
   QgsSymbolV2List symbols = const_cast<QgsFeatureRendererV2 *>( renderer )->symbols();

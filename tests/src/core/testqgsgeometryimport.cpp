@@ -18,8 +18,9 @@
 #include "qgspoint.h"
 #include <QPolygonF>
 
-#include <QtTest>
+#include <QtTest/QtTest>
 #include <QObject>
+#include <QSharedPointer>
 
 class TestQgsGeometryImport: public QObject
 {
@@ -63,11 +64,10 @@ void TestQgsGeometryImport::pointWkt()
   QFETCH( double, x );
   QFETCH( double, y );
 
-  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
+  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wktString ) );
 
   QCOMPARE( geom->wkbType(), QGis::WKBPoint );
   QgsPoint point = geom->asPoint();
-  delete geom;
 
   QVERIFY( qgsDoubleNear( point.x(), x ) );
   QVERIFY( qgsDoubleNear( point.y(), y ) );
@@ -147,12 +147,11 @@ void TestQgsGeometryImport::linestringWkt()
   QFETCH( QString, wktString );
   QFETCH( QVariantList, line );
 
-  QgsGeometry* geom = QgsGeometry::fromWkt( wktString );
+  QSharedPointer<QgsGeometry> geom( QgsGeometry::fromWkt( wktString ) );
   QCOMPARE( geom->wkbType(), QGis::WKBLineString );
 
   QgsPolyline polyLine = geom->asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
-  delete geom;
 }
 
 void TestQgsGeometryImport::linestringWkb_data()
@@ -239,5 +238,5 @@ bool TestQgsGeometryImport::compareLineStrings( const QgsPolyline& polyline, QVa
 }
 
 QTEST_MAIN( TestQgsGeometryImport )
-#include "moc_testqgsgeometryimport.cxx"
+#include "testqgsgeometryimport.moc"
 

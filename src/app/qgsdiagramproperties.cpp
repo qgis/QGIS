@@ -30,15 +30,15 @@
 #include "qgsvectordataprovider.h"
 #include "qgsfeatureiterator.h"
 #include "qgscolordialog.h"
+#include "qgisgui.h"
 
-#include <QColorDialog>
-#include <QFontDialog>
 #include <QList>
 #include <QMessageBox>
 #include <QSettings>
 
 QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent )
     : QWidget( parent )
+    , mAvailableAttributes( 0 )
 {
   mLayer = layer;
 
@@ -413,9 +413,9 @@ void QgsDiagramProperties::addAttribute( QTreeWidgetItem * item )
   newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
 
   //set initial color for diagram category
-  int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-  int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-  int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+  int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+  int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
   QColor randomColor( red, green, blue );
   newItem->setBackground( 1, QBrush( randomColor ) );
   mDiagramAttributesTreeWidget->addTopLevelItem( newItem );
@@ -493,7 +493,7 @@ void QgsDiagramProperties::on_mDisplayDiagramsGroupBox_toggled( bool checked )
 void QgsDiagramProperties::on_mDiagramFontButton_clicked()
 {
   bool ok;
-  mDiagramFont = QFontDialog::getFont( &ok, mDiagramFont );
+  mDiagramFont = QgisGui::getFont( ok, mDiagramFont );
 }
 
 
@@ -760,9 +760,9 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
       newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
 
       //set initial color for diagram category
-      int red = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-      int green = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
-      int blue = 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) );
+      int red = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+      int green = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
+      int blue = 1 + ( int )( 255.0 * qrand() / ( RAND_MAX + 1.0 ) );
       QColor randomColor( red, green, blue );
       newItem->setBackground( 1, QBrush( randomColor ) );
       mDiagramAttributesTreeWidget->addTopLevelItem( newItem );

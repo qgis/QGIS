@@ -56,7 +56,7 @@ class QgsPgTableModel : public QStandardItemModel
       dbtmColumns
     };
 
-    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     QString layerURI( const QModelIndex &index, const QString& connInfo, bool useEstimatedMetadata );
 
