@@ -33,8 +33,6 @@ try:
 except ImportError:
         pass
 
-
-
 def classFactory():
         return SpatiaLiteDBPlugin
 
@@ -86,7 +84,6 @@ class SLDatabase(Database):
         def connectorsFactory(self, uri):
                 return SpatiaLiteDBConnector(uri)
 
-
         def dataTablesFactory(self, row, db, schema=None):
                 return SLTable(row, db, schema)
 
@@ -95,7 +92,6 @@ class SLDatabase(Database):
 
         def rasterTablesFactory(self, row, db, schema=None):
                 return SLRasterTable(row, db, schema)
-
 
         def info(self):
                 from .info_model import SLDatabaseInfo
@@ -224,10 +220,10 @@ class SLRasterTable(SLTable, RasterTable):
                 return uri
 
         def toMapLayer(self):
-                from qgis.core import QgsRasterLayer
+                from qgis.core import QgsRasterLayer, QgsContrastEnhancement
                 rl = QgsRasterLayer(self.gdalUri(), self.name)
                 if rl.isValid():
-                        rl.setContrastEnhancementAlgorithm("StretchToMinimumMaximum")
+                        rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
                 return rl
 
 
