@@ -409,7 +409,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();
-    
+
     //! This slot is connected to the layer's CRS change
     void layerCrsChange();
 
