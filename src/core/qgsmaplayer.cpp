@@ -80,6 +80,24 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
   mMinScale = 0;
   mMaxScale = 100000000;
   mScaleBasedVisibility = false;
+  
+  //If min/maxScaleDenominator are in uri, take it
+  QStringList uriParts = mDataSource.split( "&" );
+  QStringListIterator iter( uriParts );
+  while ( iter.hasNext() )
+        {
+          QString item = iter.next();
+          if ( item.startsWith( "minScaleDenominator=" ) )
+          {
+	    mMinScale = item.mid( 20 ).toFloat();
+            mScaleBasedVisibility = true;
+          } else if ( item.startsWith( "maxScaleDenominator=" ) )
+	  {
+	    mMaxScale = item.mid( 20 ).toFloat();
+	    mScaleBasedVisibility = true;
+	  }
+	}
+  
 }
 
 QgsMapLayer::~QgsMapLayer()

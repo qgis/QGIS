@@ -251,6 +251,7 @@ struct QgsWmsFeatureListUrlProperty
 // TODO: Fill to WMS specifications
 struct QgsWmsLayerProperty
 {
+  QgsWmsLayerProperty() : minimumScaleDenominator( 0 ), maximumScaleDenominator( 0 ) {}
   // WMS layer properties
   int                                     orderId;
   QString                                 name;
