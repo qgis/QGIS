@@ -198,11 +198,12 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
   QgsRectangle extent;
   extent.setMinimal();
 
+  double targetScale = 0;
   for ( int i = 0; i < layers.size(); ++i )
   {
     QgsMapLayer* layer = layers.at( i );
     QgsRectangle layerExtent = layer->extent();
-
+    
     QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer*>( layer );
     if ( vLayer )
     {
@@ -224,6 +225,12 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
       layerExtent = canvas->mapSettings().layerExtentToOutputExtent( layer, layerExtent );
 
     extent.combineExtentWith( &layerExtent );
+    if ( layer->hasScaleBasedVisibility() ) {
+      if ( targetScale == 0 || targetScale > layer->maximumScale() ){
+	 targetScale = layer->maximumScale();
+      }
+    }
+    
   }
 
   if ( extent.isNull() )
@@ -232,6 +239,21 @@ void QgsLayerTreeViewDefaultActions::zoomToLayers( QgsMapCanvas* canvas, const Q
   // Increase bounding box with 5%, so that layer is a bit inside the borders
   extent.scale( 1.05 );
 
+  if (targetScale != 0) {
+      //compute new Scale
+      double newScale;
+      if ( canvas->extent().width() < canvas->extent().height() ) {
+	newScale = extent.width()/canvas->extent().width()*canvas->scale();
+      } else {
+	newScale = extent.height()/canvas->extent().height()*canvas->scale();
+      }
+      
+      if (newScale > targetScale){
+	extent.scale( (targetScale-1)/newScale );
+      }
+  }
+  
+  
   //zoom to bounding box
   canvas->setExtent( extent );
   canvas->refresh();
