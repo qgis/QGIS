@@ -17,7 +17,7 @@
    <item row="5" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Statistical method for atribute aggregation</string>
+      <string>Statistical method for attribute aggregation</string>
      </property>
     </widget>
    </item>
