@@ -2218,7 +2218,7 @@ bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression* parent, const Qgs
 
 QString QgsExpression::NodeUnaryOperator::dump() const
 {
-  return QString( "%1%2" ).arg( UnaryOperatorText[mOp] ).arg( mOperand->dump() );
+  return QString( "%1 %2" ).arg( UnaryOperatorText[mOp] ).arg( mOperand->dump() );
 }
 
 //
