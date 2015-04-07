@@ -19,6 +19,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayerrenderer.h"
 #include "qgspallabeling.h"
+#include "qgsvectorlayer.h"
 
 QgsMapRendererCustomPainterJob::QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter )
     : QgsMapRendererJob( settings )

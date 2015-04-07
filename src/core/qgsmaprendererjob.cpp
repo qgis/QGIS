@@ -31,7 +31,7 @@
 #include "qgsmaprenderercache.h"
 #include "qgspallabeling.h"
 #include "qgsvectorlayerrenderer.h"
-
+#include "qgsvectorlayer.h"
 
 QgsMapRendererJob::QgsMapRendererJob( const QgsMapSettings& settings )
     : mSettings( settings )

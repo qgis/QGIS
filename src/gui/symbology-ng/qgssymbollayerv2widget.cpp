@@ -28,7 +28,7 @@
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorcolorrampv2.h"
 #include "qgsvectorgradientcolorrampv2dialog.h"
-
+#include "qgsdatadefined.h"
 #include "qgsstylev2.h" //for symbol selector dialog
 
 #include "qgsapplication.h"

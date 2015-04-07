@@ -21,17 +21,6 @@
 #ifndef QGSPALLABELING_H
 #define QGSPALLABELING_H
 
-class QFontMetricsF;
-class QPainter;
-class QPicture;
-class QgsGeometry;
-class QgsMapRenderer;
-class QgsRectangle;
-class QgsCoordinateTransform;
-class QgsLabelSearchTree;
-
-class QgsMapSettings;
-
 #include <QString>
 #include <QFont>
 #include <QFontDatabase>
@@ -39,6 +28,10 @@ class QgsMapSettings;
 #include <QHash>
 #include <QList>
 #include <QRectF>
+#include "qgspoint.h"
+#include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
+#include "qgsdiagramrendererv2.h"
+#include "qgsmapunitscale.h"
 
 namespace pal
 {
@@ -47,19 +40,21 @@ namespace pal
   class LabelPosition;
 }
 
+class QgsRectangle;
 class QgsMapToPixel;
 class QgsFeature;
-
-#include "qgspoint.h"
-#include "qgsrectangle.h"
-#include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
-#include "qgsexpression.h"
-#include "qgsdatadefined.h"
-#include "qgsdiagramrendererv2.h"
-#include "qgsmapunitscale.h"
-
 class QgsPalGeometry;
 class QgsVectorLayer;
+class QgsDataDefined;
+class QgsExpression;
+class QFontMetricsF;
+class QPainter;
+class QPicture;
+class QgsGeometry;
+class QgsMapRenderer;
+class QgsCoordinateTransform;
+class QgsLabelSearchTree;
+class QgsMapSettings;
 
 class CORE_EXPORT QgsPalLayerSettings
 {

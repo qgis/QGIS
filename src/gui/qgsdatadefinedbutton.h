@@ -15,15 +15,14 @@
 #ifndef QGSDATADEFINEDBUTTON_H
 #define QGSDATADEFINEDBUTTON_H
 
-#include <qgsfield.h>
-#include <qgsdatadefined.h>
-
+#include "qgsfield.h"
 #include <QFlags>
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
 
 class QgsVectorLayer;
+class QgsDataDefined;
 
 /** \ingroup gui
  * \class QgsDataDefinedButton

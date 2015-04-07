@@ -15,13 +15,12 @@
 #ifndef QGSDATADEFINED_H
 #define QGSDATADEFINED_H
 
-#include "qgsfield.h"
-#include "qgsvectorlayer.h"
-
 #include <QStringList>
+#include <QDomElement>
+#include <QMap>
 
 class QgsExpression;
-
+class QgsVectorLayer;
 
 /** \ingroup core
  * \class QgsDataDefined
