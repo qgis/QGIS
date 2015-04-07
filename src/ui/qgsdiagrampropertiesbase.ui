@@ -298,7 +298,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>630</width>
-                   <height>376</height>
+                   <height>372</height>
                   </rect>
                  </property>
                  <layout class="QHBoxLayout" name="horizontalLayout_6">
@@ -472,7 +472,7 @@
                        <bool>false</bool>
                       </property>
                       <property name="columnCount">
-                       <number>2</number>
+                       <number>3</number>
                       </property>
                       <column>
                        <property name="text">
@@ -482,6 +482,11 @@
                       <column>
                        <property name="text">
                         <string>Color</string>
+                       </property>
+                      </column>
+                      <column>
+                       <property name="text">
+                        <string>Legend</string>
                        </property>
                       </column>
                      </widget>
@@ -525,8 +530,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>318</width>
+                   <height>377</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout">
@@ -870,8 +875,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>586</width>
+                   <height>318</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_11">
@@ -1148,8 +1153,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>326</width>
+                   <height>272</height>
                   </rect>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
@@ -1437,8 +1442,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>630</width>
-                   <height>376</height>
+                   <width>123</width>
+                   <height>171</height>
                   </rect>
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_3">
