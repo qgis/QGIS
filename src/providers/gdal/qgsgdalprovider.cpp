@@ -45,7 +45,6 @@
 #include <QFile>
 #include <QHash>
 #include <QTime>
-#include <QSettings>
 #include <QTextDocument>
 #include <QDebug>
 

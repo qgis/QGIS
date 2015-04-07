@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationconfigdlg.h"
-#include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 
 #include <QSettings>

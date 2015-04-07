@@ -25,9 +25,6 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsogcutils.h"
-
-#include "qgsapplication.h"
-#include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsrendercontext.h"
 

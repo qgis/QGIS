@@ -29,7 +29,6 @@ email                : morb at ozemail dot com dot au
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsmessagelog.h"
 #include "qgsgeometryvalidator.h"
 
 #include <QDebug>

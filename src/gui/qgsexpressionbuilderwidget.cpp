@@ -24,7 +24,6 @@
 #include <QMenu>
 #include <QFile>
 #include <QTextStream>
-#include <QSettings>
 #include <QDir>
 #include <QComboBox>
 

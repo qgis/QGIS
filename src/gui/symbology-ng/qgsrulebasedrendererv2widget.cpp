@@ -211,7 +211,6 @@ void QgsRuleBasedRendererV2Widget::currentRuleChanged( const QModelIndex& curren
 #include "qgsexpressionbuilderdialog.h"
 #include <QDialogButtonBox>
 #include <QInputDialog>
-#include <QKeyEvent>
 #include <QClipboard>
 
 void QgsRuleBasedRendererV2Widget::refineRule( int type )
