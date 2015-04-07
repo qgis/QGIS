@@ -29,6 +29,7 @@
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 
 // typedefs for provider plugin functions of interest
@@ -204,11 +205,13 @@ typedef void cleanupProviderFunction_t();
 
 QgsProviderRegistry::~QgsProviderRegistry()
 {
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
   Providers::const_iterator it = mProviders.begin();
 
   while ( it != mProviders.end() )
   {
-    QgsDebugMsg( QString( "cleanup: %1" ).arg( it->first ) );
+    QgsDebugMsg( QString( "cleanup:%1" ).arg( it->first ) );
     QString lib = it->second->library();
     QLibrary myLib( lib );
     if ( myLib.isLoaded() )
@@ -405,7 +408,7 @@ QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
 
 #if QT_VERSION >= 0x050000
 QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
-    QString const & functionName )
+                                                QString const & functionName )
 {
   QLibrary myLib( library( providerKey ) );
 

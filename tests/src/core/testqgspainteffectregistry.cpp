@@ -50,7 +50,6 @@ class TestQgsPaintEffectRegistry : public QObject
     void addEffect(); // check adding an effect to an empty registry
     void fetchEffects(); //check fetching effects
     void createEffect(); //check creating effect
-    void cleanUpRegistry();
 
   private:
 
@@ -151,12 +150,6 @@ void TestQgsPaintEffectRegistry::createEffect()
   //try creating a bad effect
   effect = registry->createEffect( QString( "bad effect" ) );
   QVERIFY( !effect );
-}
-
-void TestQgsPaintEffectRegistry::cleanUpRegistry()
-{
-  QgsPaintEffectRegistry* registry = QgsPaintEffectRegistry::instance();
-  registry->cleanup();
 }
 
 QTEST_MAIN( TestQgsPaintEffectRegistry )

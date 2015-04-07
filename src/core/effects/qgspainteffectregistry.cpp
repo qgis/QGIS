@@ -60,6 +60,12 @@ QgsPaintEffectRegistry::~QgsPaintEffectRegistry()
   mMetadata.clear();
 }
 
+QgsPaintEffectRegistry* QgsPaintEffectRegistry::instance()
+{
+  static QgsPaintEffectRegistry sInstance;
+  return &sInstance;
+}
+
 QgsPaintEffectAbstractMetadata *QgsPaintEffectRegistry::effectMetadata( const QString &name ) const
 {
   if ( mMetadata.contains( name ) )
