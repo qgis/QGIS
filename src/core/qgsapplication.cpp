@@ -623,14 +623,11 @@ void QgsApplication::initQgis()
 
 void QgsApplication::exitQgis()
 {
-  // Cleanup known singletons
-  QgsMapLayerRegistry::cleanup();
-  QgsNetworkAccessManager::cleanup();
-  QgsCoordinateTransformCache::cleanup();
-  QgsDataItemProviderRegistry::cleanup();
+  delete QgsMapLayerRegistry::instance();
 
-  // Cleanup providers
   delete QgsProviderRegistry::instance();
+
+  delete QgsNetworkAccessManager::instance();
 }
 
 QString QgsApplication::showSettings()

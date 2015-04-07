@@ -19,16 +19,16 @@
 #define QGSCRSCACHE_H
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgssingleton.h"
 #include <QHash>
 
 class QgsCoordinateTransform;
 
 /**Cache coordinate transform by authid of source/dest transformation to avoid the
 overhead of initialisation for each redraw*/
-class CORE_EXPORT QgsCoordinateTransformCache : public QgsSingleton<QgsCoordinateTransformCache>
+class CORE_EXPORT QgsCoordinateTransformCache
 {
   public:
+    static QgsCoordinateTransformCache* instance();
     ~QgsCoordinateTransformCache();
     /**Returns coordinate transformation. Cache keeps ownership
         @param srcAuthId auth id string of source crs
@@ -41,6 +41,7 @@ class CORE_EXPORT QgsCoordinateTransformCache : public QgsSingleton<QgsCoordinat
     void invalidateCrs( const QString& crsAuthId );
 
   private:
+    static QgsCoordinateTransformCache* mInstance;
     QMultiHash< QPair< QString, QString >, QgsCoordinateTransform* > mTransforms; //same auth_id pairs might have different datum transformations
 };
 
