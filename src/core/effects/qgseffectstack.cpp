@@ -100,7 +100,11 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     QPicture *resultPic = new QPicture();
     QPainter p( resultPic );
     context.setPainter( &p );
+    //effect stack has it's own handling of the QPicture DPI issue, so
+    //we disable QgsPaintEffect's internal workaround
+    effect->requiresQPainterDpiFix = false;
     effect->render( *pic, context );
+    effect->requiresQPainterDpiFix = true;
     p.end();
 
     results << resultPic;
@@ -113,7 +117,6 @@ void QgsEffectStack::draw( QgsRenderContext &context )
   sourcePic = 0;
 
   context.setPainter( destPainter );
-
   //then, we render all the results in the opposite order
   for ( int i = 0; i < mEffectList.count(); ++i )
   {
@@ -125,7 +128,11 @@ void QgsEffectStack::draw( QgsRenderContext &context )
     QPicture* pic = results.takeLast();
     if ( mEffectList[i]->drawMode() != QgsPaintEffect::Modifier )
     {
+      context.painter()->save();
+      fixQPictureDpi( context.painter() );
       context.painter()->drawPicture( 0, 0, *pic );
+      context.painter()->restore();
+
     }
     delete pic;
   }

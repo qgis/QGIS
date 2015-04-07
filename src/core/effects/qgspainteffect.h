@@ -161,6 +161,7 @@ class CORE_EXPORT QgsPaintEffect
 
     bool mEnabled;
     DrawMode mDrawMode;
+    bool requiresQPainterDpiFix;
 
     /** Handles drawing of the effect's result on to the specified render context.
      * Derived classes must reimplement this method to apply any transformations to
@@ -216,6 +217,13 @@ class CORE_EXPORT QgsPaintEffect
      */
     virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const;
 
+    /** Applies a workaround to a QPainter to avoid an issue with incorrect scaling
+     * when drawing QPictures. This may need to be called by derived classes prior
+     * to rendering results onto a painter.
+     * @param painter destination painter
+     */
+    void fixQPictureDpi( QPainter* painter ) const;
+
   private:
 
     const QPicture* mPicture;
@@ -227,6 +235,8 @@ class CORE_EXPORT QgsPaintEffect
     QPicture* mTempPicture;
 
     QRectF imageBoundingRect( const QgsRenderContext& context ) const;
+
+    friend class QgsEffectStack;
 
 };
 
