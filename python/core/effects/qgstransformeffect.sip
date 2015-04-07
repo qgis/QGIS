@@ -11,7 +11,7 @@ class QgsTransformEffect : QgsPaintEffect
 %TypeHeaderCode
 #include <qgstransformeffect.h>
 %End
- 
+
   public:
 
     /** Creates a new QgsTransformEffect effect from a properties string map.

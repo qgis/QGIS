@@ -11,7 +11,7 @@ class QgsColorEffect : QgsPaintEffect
 %TypeHeaderCode
 #include <qgscoloreffect.h>
 %End
- 
+
   public:
 
     /** Creates a new QgsColorEffect effect from a properties string map.

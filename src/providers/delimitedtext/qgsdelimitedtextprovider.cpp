@@ -88,7 +88,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   // Add supported types to enable creating expression fields in field calculator
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 0, 10 )
-  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)"), "int8", QVariant::LongLong )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), "int8", QVariant::LongLong )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
   ;
@@ -563,7 +563,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     {
 
       QString &value = parts[i];
-      // Ignore empty fields - spreadsheet generated CSV files often 
+      // Ignore empty fields - spreadsheet generated CSV files often
       // have random empty fields at the end of a row
       if ( value.isEmpty() )
         continue;
@@ -640,7 +640,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         fieldType = QVariant::Int;
         typeName = "integer";
       }
-      else if ( csvtTypes[i] == "long" || csvtTypes[i]== "longlong" || csvtTypes[i] == "int8" )
+      else if ( csvtTypes[i] == "long" || csvtTypes[i] == "longlong" || csvtTypes[i] == "int8" )
       {
         fieldType = QVariant::LongLong; //QVariant doesn't support long
         typeName = "longlong";

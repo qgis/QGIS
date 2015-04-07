@@ -538,7 +538,7 @@ void QgsRubberBand::updateRect()
   const QgsMapToPixel& m2p = *( mMapCanvas->getCoordinateTransform() );
 
   qreal res = m2p.mapUnitsPerPixel();
-  qreal w = ( ( mIconSize - 1 ) / 2 + mPen.width() ) / res;
+  qreal w = (( mIconSize - 1 ) / 2 + mPen.width() ) / res;
 
   QgsRectangle r;
   for ( int i = 0; i < mPoints.size(); ++i )

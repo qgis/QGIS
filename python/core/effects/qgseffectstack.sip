@@ -83,13 +83,13 @@ class QgsEffectStack : QgsPaintEffect
      * @param index position of effect to take
      */
     QgsPaintEffect* takeEffect( const int index );
-    
+
     /** Returns a pointer to the list of effects currently contained by
      * the stack
      * @returns list of QgsPaintEffects within the stack
      */
     QList< QgsPaintEffect* >* effectList();
-    
+
     /** Returns count of effects contained by the stack
      * @returns count of effects
      */

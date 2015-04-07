@@ -2055,7 +2055,7 @@ def test_034_csvt_file():
             'field_12': u'NULL',
             '#fid': 2L,
             '#geometry': 'None',
-            },
+        },
         3L: {
             'id': u'2',
             'description': u'Test csvt 2',
@@ -2071,10 +2071,9 @@ def test_034_csvt_file():
             'field_12': u'-3123724580211819352',
             '#fid': 3L,
             '#geometry': 'None',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted
 
 
@@ -2194,7 +2193,7 @@ def test_038_type_inference():
             'text2': u'1',
             '#fid': 2L,
             '#geometry': 'POINT(1 1)',
-            },
+        },
         3L: {
             'id': u'line2',
             'description': u'1.0',
@@ -2208,7 +2207,7 @@ def test_038_type_inference():
             'text2': u'-4',
             '#fid': 3L,
             '#geometry': 'POINT(1 5)',
-            },
+        },
         4L: {
             'id': u'line3',
             'description': u'5.0',
@@ -2222,7 +2221,7 @@ def test_038_type_inference():
             'text2': u'1x',
             '#fid': 4L,
             '#geometry': 'POINT(5 5)',
-            },
+        },
         5L: {
             'id': u'line4',
             'description': u'5.0',
@@ -2236,7 +2235,7 @@ def test_038_type_inference():
             'text2': u'NULL',
             '#fid': 5L,
             '#geometry': 'POINT(5 1)',
-            },
+        },
         6L: {
             'id': u'line5',
             'description': u'3.0',
@@ -2250,7 +2249,7 @@ def test_038_type_inference():
             'text2': u'23',
             '#fid': 6L,
             '#geometry': 'POINT(3 1)',
-            },
+        },
         7L: {
             'id': u'line6',
             'description': u'1.0',
@@ -2264,8 +2263,7 @@ def test_038_type_inference():
             'text2': u'0',
             '#fid': 7L,
             '#geometry': 'POINT(1 3)',
-            },
-        }
-    wanted['log']=[
-        ]
+        },
+    }
+    wanted['log']=[]
     return wanted

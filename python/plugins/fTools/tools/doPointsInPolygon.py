@@ -80,11 +80,11 @@ class Dialog(QDialog, Ui_Dialog):
                 if field.type() == QVariant.Int or field.type() ==QVariant.Double:
                     if field.type() == QVariant.Int:
                         global typeInt
-                        item = QListWidgetItem(str(field.name()),  None,  typeInt)
+                        item = QListWidgetItem(str(field.name()), None, typeInt)
                     else:
                         global typeDouble
-                        item = QListWidgetItem(str(field.name()),  None,  typeDouble)
-                    item.setToolTip("Attribute <%s> of type %s"%(field.name(),  field.typeName()))
+                        item = QListWidgetItem(str(field.name()), None, typeDouble)
+                    item.setToolTip("Attribute <%s> of type %s" % (field.name(), field.typeName()))
                     self.attributeList.addItem(item)
 
     def outFile(self):
@@ -272,7 +272,7 @@ class PointsInPolygonThread(QThread):
                     # Check if the input contains non-numeric values
                     non_numeric_values = False
                     for value in values:
-                        if (isinstance(value,  type(float())) != True) and (isinstance(value,  type(int())) != True):
+                        if not isinstance(value, type(float())) and not isinstance(value, type(int())):
                             non_numeric_values = True
                             break
                     # Jump over invalid values

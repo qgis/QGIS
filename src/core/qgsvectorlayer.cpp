@@ -2866,7 +2866,7 @@ const QString QgsVectorLayer::expressionField( int index )
   return mExpressionFieldBuffer->expressions().value( oi ).expression;
 }
 
-void QgsVectorLayer::updateExpressionField(   int index, const QString& exp )
+void QgsVectorLayer::updateExpressionField( int index, const QString& exp )
 {
   int oi = mUpdatedFields.fieldOriginIndex( index );
   mExpressionFieldBuffer->updateExpression( oi, exp );

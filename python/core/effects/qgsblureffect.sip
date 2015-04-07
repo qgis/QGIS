@@ -34,7 +34,7 @@ class QgsBlurEffect : QgsPaintEffect
     virtual QgsStringMap properties() const;
     virtual void readProperties( const QgsStringMap& props );
     virtual QgsPaintEffect* clone() const /Factory/;
-    
+
     /** Sets blur level (strength)
      * @param level blur level. Depending on the current @link blurMethod @endlink, this parameter
      * has different effects

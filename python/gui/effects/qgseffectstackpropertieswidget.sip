@@ -133,7 +133,7 @@ class QgsEffectStackPropertiesDialog : QgsDialog
      * @param picture preview picture
      */
     void setPreviewPicture( const QPicture& picture );
-    
+
 };
 
 /** \ingroup gui

@@ -293,7 +293,7 @@ class QgsDrawSourceEffect : QgsPaintEffect
      * @see setBlendMode
      */
     QPainter::CompositionMode blendMode() const;
-  
+
   protected:
 
     virtual void draw( QgsRenderContext& context );

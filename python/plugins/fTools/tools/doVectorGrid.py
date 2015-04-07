@@ -46,7 +46,7 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
         QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
         QObject.connect(self.chkAlign, SIGNAL("toggled(bool)"), self.chkAlignToggled)
-        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
+        self.buttonOk = self.buttonBox_2.button(QDialogButtonBox.Ok)
         self.setWindowTitle(self.tr("Vector grid"))
         self.xMin.setValidator(QDoubleValidator(self.xMin))
         self.xMax.setValidator(QDoubleValidator(self.xMax))
@@ -156,7 +156,7 @@ class Dialog(QDialog, Ui_Dialog):
     def compute( self, bound, xOffset, yOffset, polygon ):
         crs = None
         layer = ftools_utils.getMapLayerByName(unicode(self.inShape.currentText()))
-        
+
         if self.angle.value() != 0.0:
             bound = self.initRotation(bound)
 
@@ -204,7 +204,7 @@ class Dialog(QDialog, Ui_Dialog):
             while y >= bound.yMinimum():
                 pt1 = QgsPoint(bound.xMinimum(), y)
                 pt2 = QgsPoint(bound.xMaximum(), y)
-                
+
                 if self.angle.value() != 0.0:
                     self.rotatePoint(pt1)
                     self.rotatePoint(pt2)
@@ -254,20 +254,20 @@ class Dialog(QDialog, Ui_Dialog):
             while y >= bound.yMinimum():
                 x = bound.xMinimum()
                 while x <= bound.xMaximum():
-                        
+
                     pt1 = QgsPoint(x, y)
                     pt2 = QgsPoint(x + xOffset, y)
                     pt3 = QgsPoint(x + xOffset, y - yOffset)
                     pt4 = QgsPoint(x, y - yOffset)
                     pt5 = QgsPoint(x, y)
-                    
+
                     if self.angle.value() != 0.0:
                         self.rotatePoint(pt1)
                         self.rotatePoint(pt2)
                         self.rotatePoint(pt3)
                         self.rotatePoint(pt4)
                         self.rotatePoint(pt5)
-                        
+
                     polygon = [[pt1, pt2, pt3, pt4, pt5]]
                     outFeat.setGeometry(outGeom.fromPolygon(polygon))
                     outFeat.setAttribute(0, idVar)
@@ -293,30 +293,30 @@ class Dialog(QDialog, Ui_Dialog):
         # We convert the angle from degree to radiant
         rad = self.angle.value()  * math.pi / 180.0
 
-        a = math.cos( rad );
-        b = -1 * math.sin( rad );
-        c = anchorPoint.x() - math.cos( rad ) * anchorPoint.x() + math.sin( rad ) * anchorPoint.y();
-        d = math.sin( rad );
-        e = math.cos( rad );
-        f = anchorPoint.y() - math.sin( rad ) * anchorPoint.x() - math.cos( rad ) * anchorPoint.y();
+        a = math.cos(rad)
+        b = -1 * math.sin( rad )
+        c = anchorPoint.x() - math.cos( rad ) * anchorPoint.x() + math.sin( rad ) * anchorPoint.y()
+        d = math.sin( rad )
+        e = math.cos( rad )
+        f = anchorPoint.y() - math.sin( rad ) * anchorPoint.x() - math.cos( rad ) * anchorPoint.y()
 
         self.rotationParams = (a,b,c,d,e,f)
-        
+
         # Rotate the bounding box to set a new extent
         ptMin = QgsPoint(boundBox.xMinimum(),  boundBox.yMinimum())
         ptMax = QgsPoint(boundBox.xMaximum(),  boundBox.yMaximum())
-        
+
         self.rotatePoint(ptMin)
         self.rotatePoint(ptMax)
-        
+
         newBoundBox = QgsRectangle(ptMin,  ptMax)
         newBoundBox.combineExtentWith(boundBox)
-        
+
         return newBoundBox
 
     def rotatePoint(self,  point):
-        x = self.rotationParams[0] * point.x() + self.rotationParams[1] * point.y() + self.rotationParams[2];
-        y = self.rotationParams[3] * point.x() + self.rotationParams[4] * point.y() + self.rotationParams[5];
+        x = self.rotationParams[0] * point.x() + self.rotationParams[1] * point.y() + self.rotationParams[2]
+        y = self.rotationParams[3] * point.x() + self.rotationParams[4] * point.y() + self.rotationParams[5]
         point.setX(x)
         point.setY(y)
 

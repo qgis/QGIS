@@ -87,7 +87,7 @@ QVariant QgsValueRelationWidgetWrapper::value()
 
   if ( mLineEdit )
   {
-    Q_FOREACH( const ValueRelationItem& i , mCache )
+    Q_FOREACH ( const ValueRelationItem& i , mCache )
     {
       if ( i.second == mLineEdit->text() )
       {
@@ -121,7 +121,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
 
   mComboBox = qobject_cast<QComboBox*>( editor );
   mListWidget = qobject_cast<QListWidget*>( editor );
-  mLineEdit= qobject_cast<QLineEdit*>( editor );
+  mLineEdit = qobject_cast<QLineEdit*>( editor );
 
   if ( mComboBox )
   {
@@ -152,7 +152,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
   else if ( mLineEdit )
   {
     QStringList values;
-    Q_FOREACH( const ValueRelationItem& i,  mCache )
+    Q_FOREACH ( const ValueRelationItem& i,  mCache )
     {
       values << i.second;
     }
@@ -189,7 +189,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant& value )
   }
   else if ( mLineEdit )
   {
-    Q_FOREACH( ValueRelationItem i, mCache )
+    Q_FOREACH ( ValueRelationItem i, mCache )
     {
       if ( i.first == value )
       {

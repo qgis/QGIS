@@ -120,7 +120,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsSymbolV2::OutputUnitList &units 
 QgsSymbolV2::OutputUnit QgsUnitSelectionWidget::unit() const
 {
   if ( mUnitCombo->count() == 0 )
-      return QgsSymbolV2::Mixed;
+    return QgsSymbolV2::Mixed;
 
   QVariant currentData = mUnitCombo->itemData( mUnitCombo->currentIndex() );
   if ( currentData.isValid() )

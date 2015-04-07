@@ -67,7 +67,7 @@ class QgsSymbolLayerV2
   public:
 
     virtual ~QgsSymbolLayerV2();
-    
+
     // not necessarily supported by all symbol layers...
     virtual QColor color() const;
     virtual void setColor( const QColor& color );
