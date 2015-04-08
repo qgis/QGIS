@@ -7,7 +7,7 @@ ParameterRaster|MATERIAL|Material|True
 ParameterRaster|TARGET|Target|True
 ParameterNumber|STEP|Step|None|None|1
 ParameterRaster|TARGETS|Target Areas|True
-ParameterSelection|Method|Method|[0] Deterministic 8;[1] Rho 8;[2] Deterministic Infinity;[3] Multiple Flow Direction
+ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Rho 8;[2] Deterministic Infinity;[3] Multiple Flow Direction
 ParameterNumber|CONVERGENCE|Convergence|None|None|1.1
 OutputRaster|CAREA|Catchment Area
 OutputRaster|CHEIGHT|Catchment Height
