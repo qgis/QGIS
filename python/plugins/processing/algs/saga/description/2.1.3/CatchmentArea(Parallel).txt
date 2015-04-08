@@ -1,5 +1,5 @@
 Catchment Area|Catchment Area (Parallel)
 ta_hydrology
 ParameterRaster|ELEVATION|Elevation|False
-ParameterSelection|Method|Method|[0] Deterministic 8;[1] Rho 8;[2] Braunschweiger Reliefmodell;[3] Deterministic Infinity;[4] Multiple Flow Direction;[5] Multiple Triangular Flow Directon
+ParameterSelection|METHOD|Method|[0] Deterministic 8;[1] Rho 8;[2] Braunschweiger Reliefmodell;[3] Deterministic Infinity;[4] Multiple Flow Direction;[5] Multiple Triangular Flow Directon
 OutputRaster|CAREA|Catchment Area
