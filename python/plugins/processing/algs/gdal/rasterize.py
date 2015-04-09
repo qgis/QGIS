@@ -103,7 +103,7 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterBoolean(self.TFW,
             self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
         self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Output layer: mandatory if the (*) option is selected')))
+            self.tr('Output layer: mandatory to choose an existing raster layer if the (*) option is selected')))
 
     def processAlgorithm(self, progress):
         writeOver = self.getParameterValue(self.WRITEOVER)
