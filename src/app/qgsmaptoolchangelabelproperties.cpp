@@ -33,7 +33,7 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent *e )
 {
   deleteRubberBands();
 
-  if ( !labelAtPosition( e, mCurrentLabelPos ) )
+  if ( !labelAtPosition( e, mCurrentLabelPos ) || mCurrentLabelPos.isDiagram )
   {
     return;
   }
