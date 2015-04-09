@@ -3484,9 +3484,8 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   if ( ddPos )
   {
     bool posXOk, posYOk;
-    //data defined diagram position is always centered
-    ddPosX = feat.attribute( ddColX ).toDouble( &posXOk ) - diagramWidth / 2.0;
-    ddPosY = feat.attribute( ddColY ).toDouble( &posYOk ) - diagramHeight / 2.0;
+    ddPosX = feat.attribute( ddColX ).toDouble( &posXOk );
+    ddPosY = feat.attribute( ddColY ).toDouble( &posYOk );
     if ( !posXOk || !posYOk )
     {
       ddPos = false;
@@ -3499,6 +3498,9 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
         double z = 0;
         ct->transformInPlace( ddPosX, ddPosY, z );
       }
+      //data defined diagram position is always centered
+      ddPosX -= diagramWidth / 2.0;
+      ddPosY -= diagramHeight / 2.0;
     }
   }
 
@@ -4019,7 +4021,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         //for diagrams, remove the additional 'd' at the end of the layer id
         QString layerId = layerName;
         layerId.chop( 1 );
-        mResults->mLabelSearchTree->insertLabel( *it, QString( palGeometry->strId() ).toInt(), QString( "" ), layerId, QFont(), true, false );
+        mResults->mLabelSearchTree->insertLabel( *it, QString( palGeometry->strId() ).toInt(), layerId, QString( "" ), QFont(), true, false );
       }
       continue;
     }
