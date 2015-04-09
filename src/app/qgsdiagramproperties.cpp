@@ -521,11 +521,13 @@ void QgsDiagramProperties::apply()
   QSettings().setValue( "/Windows/VectorLayerProperties/diagram/tab",
                         mDiagramPropertiesTabWidget->currentIndex() );
 
+  bool diagramsEnabled = mDisplayDiagramsGroupBox->isChecked();
+
   QgsDiagram* diagram = 0;
   int index = mDiagramTypeComboBox->currentIndex();
   QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
 
-  if ( 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
+  if ( diagramsEnabled && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
   {
     QgisApp::instance()->messageBar()->pushMessage(
       tr( "Diagrams: No attributes added." ),
@@ -568,7 +570,7 @@ void QgsDiagramProperties::apply()
       }
     }
 
-    if ( maxVal != DBL_MIN )
+    if ( diagramsEnabled && maxVal != DBL_MIN )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Interpolation value" ),
