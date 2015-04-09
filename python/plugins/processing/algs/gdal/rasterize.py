@@ -101,7 +101,7 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterSelection(self.BIGTIFF,
             self.tr('Control whether the created file is a BigTIFF or a classic TIFF'), self.BIGTIFFTYPE, 0))
         self.addParameter(ParameterBoolean(self.TFW,
-            self.tr('Force the generation of an associated ESRI world file (.tfw))'), False))
+            self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
         self.addOutput(OutputRaster(self.OUTPUT,
             self.tr('Output layer: mandatory to choose an existing raster layer if the (*) option is selected')))
 
@@ -127,19 +127,22 @@ class rasterize(OgrAlgorithm):
              arguments.append('-ot')
              arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         dimType = self.getParameterValue(self.DIMENSIONS)
-        if dimType == 0:
-            # size in pixels
-            arguments.append('-ts')
-            arguments.append(str(self.getParameterValue(self.WIDTH)))
-            arguments.append(str(self.getParameterValue(self.HEIGHT)))
-        else:
-             # resolution in map units per pixel
-             arguments.append('-tr')
-             arguments.append(str(self.getParameterValue(self.WIDTH)))
-             arguments.append(str(self.getParameterValue(self.HEIGHT)))
-        if len(noData) > 0:
-            arguments.append('-a_nodata')
-            arguments.append(noData)
+        if not writeOver:
+           if dimType == 0:
+               # size in pixels
+               arguments.append('-ts')
+               arguments.append(str(self.getParameterValue(self.WIDTH)))
+               arguments.append(str(self.getParameterValue(self.HEIGHT)))
+           else:
+               # resolution in map units per pixel
+               arguments.append('-tr')
+               arguments.append(str(self.getParameterValue(self.WIDTH)))
+               arguments.append(str(self.getParameterValue(self.HEIGHT)))
+
+           if len(noData) > 0:
+              arguments.append('-a_nodata')
+              arguments.append(noData)
+
         if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff") and (writeOver is False):
             arguments.append("-co COMPRESS="+compress)
             if compress == 'JPEG':
