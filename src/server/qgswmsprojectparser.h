@@ -127,13 +127,7 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
     virtual QStringList identifyDisabledLayers() const override;
 
     /**Reads layer drawing order from the legend section of the project file and appends it to the parent elemen (usually the <Capability> element)*/
-    void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc ) const;
-
-    /**Adds drawing order info from layer element or group element (recursive)*/
-    void addDrawingOrder( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const;
-
-    /**Adds drawing order info from embedded layer element or embedded group element (recursive)*/
-    void addDrawingOrderEmbeddedGroup( QDomElement groupElem, bool useDrawingOrder, QMap<int, QString>& orderedLayerList ) const;
+    void addDrawingOrder( QDomElement& parentElem, QDomDocument& doc, const QHash<QString, QString> &idNameMap, const QStringList &layerIDList ) const;
 
     void addLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem, const QString& version ) const;
 
@@ -143,7 +137,9 @@ class QgsWMSProjectParser : public QgsWMSConfigParser
                     const QMap<QString, QgsMapLayer *> &layerMap,
                     const QStringList &nonIdentifiableLayers,
                     QString version, //1.1.1 or 1.3.0
-                    bool fullProjectSettings = false ) const;
+                    bool fullProjectSettings,
+                    QHash<QString, QString> &idNameMap,
+                    QStringList &layerIDList ) const;
 
     void addOWSLayerStyles( QgsMapLayer* currentLayer, QDomDocument& doc, QDomElement& layerElem ) const;
 
