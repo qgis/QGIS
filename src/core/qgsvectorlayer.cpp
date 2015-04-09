@@ -711,6 +711,11 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   return retval;
 }
 
+bool QgsVectorLayer::diagramsEnabled() const
+{
+  return mDiagramRenderer && mDiagramLayerSettings;
+}
+
 long QgsVectorLayer::featureCount() const
 {
   if ( !mDataProvider )

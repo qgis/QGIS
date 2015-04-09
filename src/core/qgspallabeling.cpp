@@ -3152,7 +3152,8 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
   // don't do QgsPalLayerSettings::readFromLayer( layer ) if not needed
   bool enabled = false;
   if ( layer->customProperty( "labeling" ).toString() == QString( "pal" ) )
-    enabled = layer->customProperty( "labeling/enabled", QVariant( false ) ).toBool();
+    enabled = layer->customProperty( "labeling/enabled", QVariant( false ) ).toBool()
+              || layer->diagramsEnabled();
 
   return enabled;
 }

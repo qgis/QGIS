@@ -427,6 +427,12 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
+    /** Returns whether the layer contains diagrams which are enabled and should be drawn.
+     * @return true if layer contains enabled diagrams
+     * @note added in QGIS 2.9
+     */
+    bool diagramsEnabled() const;
+
     /** Sets diagram rendering object (takes ownership) */
     void setDiagramRenderer( QgsDiagramRendererV2* r /Transfer/ );
     const QgsDiagramRendererV2* diagramRenderer() const;

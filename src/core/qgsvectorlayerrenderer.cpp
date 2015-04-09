@@ -489,7 +489,7 @@ void QgsVectorLayerRenderer::prepareDiagrams( QgsVectorLayer* layer, QStringList
   if ( !mContext.labelingEngine() )
     return;
 
-  if ( !layer->diagramRenderer() || !layer->diagramLayerSettings() )
+  if ( !layer->diagramsEnabled() )
     return;
 
   mDiagrams = true;
