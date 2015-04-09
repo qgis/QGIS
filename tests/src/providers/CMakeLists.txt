@@ -23,11 +23,6 @@ ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
 
 ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
 
-# Temporarily set to old version until server is reconfigured 
-#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
-SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
-ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
-
 #############################################################
 # libraries
 
@@ -74,6 +69,14 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
+# Temporarily set to old version until server is reconfigured
+#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
+SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
+#ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
+SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
+  COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
+)
+
 ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
 #############################################################
@@ -118,3 +121,41 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   INSTALL(FILES wcs-servers.json DESTINATION ${QGIS_DATA_DIR}/resources)
 
 ENDIF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
+
+########################### GRASS ##################################
+ADD_DEFINITIONS("-DGRASS_EXPORT=${DLLIMPORT} -DGRASS_LIB_EXPORT=${DLLIMPORT}")
+MACRO (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
+  SET(qgis_${testname}${grass_build_version}_SRCS ${testsrc} ${util_SRCS})
+  ADD_CUSTOM_TARGET(qgis_${testname}${grass_build_version}moc ALL DEPENDS ${qgis_${testname}${grass_build_version}_MOC_SRCS})
+  ADD_EXECUTABLE(qgis_${testname}${grass_build_version} ${qgis_${testname}${grass_build_version}_SRCS})
+
+  GET_PROPERTY(INCLUDE_DIRECTORIES DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+  LIST(APPEND INCLUDE_DIRECTORIES
+    ${GRASS_INCLUDE_DIR${grass_build_version}}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/grass
+  )
+
+  SET_TARGET_PROPERTIES(qgis_${testname}${grass_build_version} PROPERTIES
+    AUTOMOC TRUE
+    INCLUDE_DIRECTORIES "${INCLUDE_DIRECTORIES}"
+    COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX${grass_build_version}}\\\" \"-DGRASS_BUILD_VERSION=${grass_build_version}\""
+  )
+  TARGET_LINK_LIBRARIES(qgis_${testname}${grass_build_version}
+    ${QT_QTXML_LIBRARY}
+    ${QT_QTCORE_LIBRARY}
+    ${QT_QTSVG_LIBRARY}
+    ${QT_QTTEST_LIBRARY}
+    ${PROJ_LIBRARY}
+    ${GEOS_LIBRARY}
+    ${GDAL_LIBRARY}
+    qgis_core
+    qgisgrass${GRASS_BUILD_VERSION}
+  )
+  ADD_TEST(qgis_${testname}${grass_build_version} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname}${grass_build_version})
+ENDMACRO (ADD_QGIS_GRASS_TEST)
+
+FOREACH(GRASS_BUILD_VERSION 6 7)
+  IF(GRASS_FOUND${GRASS_BUILD_VERSION})
+    ADD_QGIS_GRASS_TEST(${GRASS_BUILD_VERSION} grassprovidertest testqgsgrassprovider.cpp)
+  ENDIF(GRASS_FOUND${GRASS_BUILD_VERSION})
+ENDFOREACH(GRASS_BUILD_VERSION 6 7)
