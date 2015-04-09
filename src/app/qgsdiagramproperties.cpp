@@ -160,6 +160,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mDiagramSizeSpinBox->setValue( 30 );
     mBarWidthSpinBox->setValue( 5 );
     mVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
+    mShowAllCheckBox->setChecked( true );
     mMaximumDiagramScaleLineEdit->setText( QString::number( layer->maximumScale() ) );
     mMinimumDiagramScaleLineEdit->setText( QString::number( layer->minimumScale() ) );
 
@@ -308,6 +309,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       }
       mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement ) );
       mLineOptionsComboBox->setCurrentIndex( mLineOptionsComboBox->findData( dls->placementFlags ) );
+      mShowAllCheckBox->setChecked( dls->showAll );
     }
 
     if ( dr->diagram() )
@@ -675,6 +677,7 @@ void QgsDiagramProperties::apply()
   QgsDiagramLayerSettings dls;
   dls.dist = mDiagramDistanceSpinBox->value();
   dls.priority = mPrioritySlider->value();
+  dls.showAll = mShowAllCheckBox->isChecked();
   if ( mDataDefinedPositionGroupBox->isChecked() )
   {
     dls.xPosColumn = mDataDefinedXComboBox->itemData( mDataDefinedXComboBox->currentIndex() ).toInt();

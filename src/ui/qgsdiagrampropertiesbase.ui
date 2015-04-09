@@ -39,8 +39,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>756</width>
-           <height>627</height>
+           <width>740</width>
+           <height>640</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="scrollAreaLayout">
@@ -127,6 +127,19 @@
               <string>Appearance</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_8">
+              <item row="0" column="1">
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>0</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
               <item row="0" column="0" rowspan="2">
                <layout class="QGridLayout" name="gridLayout">
                 <item row="4" column="2">
@@ -269,7 +282,7 @@
                 </item>
                </layout>
               </item>
-              <item row="2" column="0">
+              <item row="3" column="0">
                <widget class="QGroupBox" name="mVisibilityGroupBox">
                 <property name="toolTip">
                  <string>Only show diagrams with a size inside the specified range.</string>
@@ -319,18 +332,15 @@
                 </layout>
                </widget>
               </item>
-              <item row="0" column="1">
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+              <item row="2" column="0">
+               <widget class="QCheckBox" name="mShowAllCheckBox">
+                <property name="text">
+                 <string>Show all diagrams</string>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>0</width>
-                  <height>20</height>
-                 </size>
+                <property name="checked">
+                 <bool>true</bool>
                 </property>
-               </spacer>
+               </widget>
               </item>
              </layout>
             </widget>

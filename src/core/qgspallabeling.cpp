@@ -3476,6 +3476,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   }
 
   //  feature to the layer
+  bool alwaysShow = layerIt.value().showAll;
   int ddColX = layerIt.value().xPosColumn;
   int ddColY = layerIt.value().yPosColumn;
   double ddPosX = 0.0;
@@ -3506,7 +3507,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
 
   try
   {
-    if ( !layerIt.value().palLayer->registerFeature( lbl->strId(), lbl, diagramWidth, diagramHeight, "", ddPosX, ddPosY, ddPos ) )
+    if ( !layerIt.value().palLayer->registerFeature( lbl->strId(), lbl, diagramWidth, diagramHeight, "", ddPosX, ddPosY, ddPos, 0.0, false, 0, 0, 0, 0, alwaysShow ) )
     {
       return;
     }
