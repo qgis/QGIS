@@ -2,13 +2,10 @@
 name=Processing
 description=Spatial data processing framework for QGIS
 category=Analysis
-version=2.6
-qgisMinimumVersion=2.0
+version=2.9.99
+qgisMinimumVersion=2.6
 
 author=Victor Olaya
 email=volayaf@gmail.com
-website=www.qgis.org
 
 icon=images/alg.png
-
-class_name=ProcessingPlugin
