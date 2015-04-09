@@ -138,10 +138,11 @@ class rasterize(OgrAlgorithm):
                arguments.append('-tr')
                arguments.append(str(self.getParameterValue(self.WIDTH)))
                arguments.append(str(self.getParameterValue(self.HEIGHT)))
-        if not writeOver:
+
            if len(noData) > 0:
               arguments.append('-a_nodata')
               arguments.append(noData)
+
         if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff") and (writeOver is False):
             arguments.append("-co COMPRESS="+compress)
             if compress == 'JPEG':
