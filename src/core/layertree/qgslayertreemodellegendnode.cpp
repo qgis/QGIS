@@ -136,6 +136,7 @@ QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, cons
     , mItem( item )
     , mSymbolUsesMapUnits( false )
     , mIconSize( 16, 16 )
+    , mCrop( true )
 {
   updateLabel();
 
@@ -188,7 +189,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
         context.setMapToPixel( QgsMapToPixel( mupp ) ); // hope it's ok to leave out other params
 
         // crop
-        if ( mItem.symbol()->type() == QgsSymbolV2::Marker )
+        if ( mItem.symbol()->type() == QgsSymbolV2::Marker && mCrop )
         {
           pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( 512, 512 ), validData ? &context : 0 );
           QImage img = pix.toImage();
@@ -217,9 +218,9 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
             ymin = qMax(( ymax + ymin ) / 2 - mIconSize.height() / 2, 0 );
             ymax = ymin + mIconSize.height();
           }
-          pix.convertFromImage( img.copy( xmin, ymin, xmax - xmin, ymax - ymin ) );
+          pix = QPixmap::fromImage( img.copy( xmin, ymin, xmax - xmin, ymax - ymin ) );
         }
-        else if ( mItem.symbol()->type() == QgsSymbolV2::Line )
+        else if ( mItem.symbol()->type() == QgsSymbolV2::Line && mCrop )
         {
           pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), QSize( mIconSize.width(), 512 ), validData ? &context : 0 );
           QImage img = pix.toImage();
@@ -238,7 +239,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
             ymin = qMax(( ymax + ymin ) / 2 - mIconSize.height() / 2, 0 );
             ymax = ymin + mIconSize.height();
           }
-          pix.convertFromImage( img.copy( 0, ymin, mIconSize.width(), ymax - ymin ) );
+          pix = QPixmap::fromImage( img.copy( 0, ymin, mIconSize.width(), ymax - ymin ) );
         }
         else
         {

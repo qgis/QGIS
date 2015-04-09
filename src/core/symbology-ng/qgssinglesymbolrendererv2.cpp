@@ -29,6 +29,70 @@
 #include <QDomDocument>
 #include <QDomElement>
 
+// utility class to retrieve parameters of a
+// scale expression to create the legend
+struct QgsScaleExpression
+{
+  enum Type {Linear, Area, Flannery};
+
+  QgsScaleExpression( const QString & expr )
+  {
+    QStringList args;
+    if ( expr.indexOf( "scale_linear(" ) == 0 )
+    {
+      args = expr.mid( 13, expr.length() - 14 ).split( "," );
+      if ( args.length() == 5 ) mType = Linear;
+      else args = QStringList();
+    }
+    else if ( expr.indexOf( "scale_exp(" ) == 0 )
+    {
+      args = expr.mid( 10, expr.length() - 11 ).split( "," );
+      if ( args.length() == 6 ) mType = ( qAbs( QVariant( args[5] ).toDouble() - .57 ) < .001 ) ? Flannery : Area;
+      else args = QStringList();
+    }
+
+    if ( args.length() >= 5 )
+    {
+      bool ok;
+      mMinValue = QVariant( args[1] ).toDouble( &ok );
+      if ( ! ok ) return;
+      mMaxValue = QVariant( args[2] ).toDouble( &ok );
+      if ( ! ok ) return;
+      mMinSize = QVariant( args[3] ).toDouble( &ok );
+      if ( ! ok ) return;
+      mMaxSize = QVariant( args[4] ).toDouble( &ok );
+      if ( ! ok ) return;
+      mExpression = args[0].trimmed().replace( "\"", "" );
+    }
+  }
+
+  double size( double value )
+  {
+    switch ( mType )
+    {
+      case Linear: return mMinSize + ( qBound( mMinValue, value, mMaxValue ) - mMinValue ) * ( mMaxSize - mMinSize ) / ( mMaxValue - mMinValue );
+      case Area: return pow( qBound( mMinValue, value, mMaxValue ) - mMinValue, .5 ) * ( mMaxSize - mMinSize ) / pow( mMaxValue - mMinValue, .5 );
+      case Flannery: return pow( qBound( mMinValue, value, mMaxValue ) - mMinValue, .57 ) * ( mMaxSize - mMinSize ) / pow( mMaxValue - mMinValue, .57 );
+    }
+    return 0;
+  }
+  operator bool() const { return !mExpression.isEmpty(); }
+  double minSize() const { return mMinSize; }
+  double maxSize() const { return mMaxSize; }
+  double minValue() const { return mMinValue; }
+  double maxValue() const { return mMaxValue; }
+  QString expression() const { return mExpression; }
+
+private:
+  QString mExpression;
+  Type mType;
+  double mMinSize;
+  double mMaxSize;
+  double mMinValue;
+  double mMaxValue;
+
+};
+
 QgsSingleSymbolRendererV2::QgsSingleSymbolRendererV2( QgsSymbolV2* symbol )
     : QgsFeatureRendererV2( "singleSymbol" )
     , mSymbol( symbol )
@@ -363,6 +427,7 @@ QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize ic
   {
     QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol.data(), iconSize );
     lst << qMakePair( QString(), pix );
+
   }
   return lst;
 }
@@ -379,7 +444,28 @@ QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDe
 QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 lst;
+  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  {
+    const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( mSymbol.data() );
+    QgsScaleExpression exp( symbol->sizeExpression() );
+    if ( exp )
+    {
+      QgsLegendSymbolItemV2 title( NULL, exp.expression(), 0 );
+      lst << title;
+      foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      {
+        QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), 0 );
+        QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+        s->setSizeExpression( "" );
+        s->setSize( exp.size( v ) );
+        lst << si;
+      }
+      return lst;
+    }
+  }
+
   lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), 0 );
+
   return lst;
 }
 

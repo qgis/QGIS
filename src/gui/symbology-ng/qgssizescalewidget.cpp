@@ -100,9 +100,9 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
       if ( args.length() == 6 )
       {
         if ( qAbs( QVariant( args[5] ).toDouble() - .57 ) < .001 )
-          scaleMethodComboBox->setCurrentIndex( 1 );
-        else
           scaleMethodComboBox->setCurrentIndex( 0 );
+        else
+          scaleMethodComboBox->setCurrentIndex( 1 );
       }
       else
         args = QStringList();
@@ -161,7 +161,7 @@ void QgsSizeScaleWidget::updatePreview()
 {
   const double min = minValueSpinBox->value();
   const double max = maxValueSpinBox->value();
-  QList<double> breaks = QgsSymbolLayerV2Utils::prettyBreaks( min, max, 5 );
+  QList<double> breaks = QgsSymbolLayerV2Utils::prettyBreaks( min, max, 4 );
 
   treeView->setIconSize( QSize( 512, 512 ) );
   mPreviewList.clear();

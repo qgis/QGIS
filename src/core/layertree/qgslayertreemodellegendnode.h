@@ -163,6 +163,10 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     virtual void invalidateMapBasedData() override;
 
     void setIconSize( const QSize& sz ) { mIconSize = sz; }
+    QSize iconSize() const { return mIconSize; }
+
+    void setCrop( bool isCropRequired ) { mCrop = isCropRequired; }
+
   private:
     void updateLabel();
 
@@ -172,6 +176,7 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     QString mLabel;
     bool mSymbolUsesMapUnits;
     QSize mIconSize;
+    bool mCrop;
 };
 
 
