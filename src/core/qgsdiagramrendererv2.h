@@ -110,7 +110,8 @@ class CORE_EXPORT QgsDiagramSettings
     };
 
     QgsDiagramSettings()
-        : sizeType( MM )
+        : enabled( true )
+        , sizeType( MM )
         , penWidth( 0.0 )
         , labelPlacementMethod( QgsDiagramSettings::Height )
         , diagramOrientation( QgsDiagramSettings::Up )
@@ -122,6 +123,7 @@ class CORE_EXPORT QgsDiagramSettings
         , maxScaleDenominator( -1 )
         , minimumSize( 0.0 )
     {}
+    bool enabled;
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;

@@ -70,6 +70,7 @@ class QgsDiagramSettings
     };
 
     QgsDiagramSettings();
+    bool enabled;
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;

@@ -74,6 +74,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
 {
   Q_UNUSED( layer );
 
+  enabled = ( elem.attribute( "enabled", "1" ) != "0" );
   font.fromString( elem.attribute( "font" ) );
   backgroundColor.setNamedColor( elem.attribute( "backgroundColor" ) );
   backgroundColor.setAlpha( elem.attribute( "backgroundAlpha" ).toInt() );
@@ -186,6 +187,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   Q_UNUSED( layer );
 
   QDomElement categoryElem = doc.createElement( "DiagramCategory" );
+  categoryElem.setAttribute( "enabled", enabled );
   categoryElem.setAttribute( "font", font.toString() );
   categoryElem.setAttribute( "backgroundColor", backgroundColor.name() );
   categoryElem.setAttribute( "backgroundAlpha", backgroundColor.alpha() );

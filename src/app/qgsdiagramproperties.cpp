@@ -183,8 +183,6 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   }
   else // already a diagram renderer present
   {
-    mDisplayDiagramsGroupBox->setChecked( true );
-
     //single category renderer or interpolated one?
     mFixedSizeCheckBox->setChecked( dr->rendererName() == "SingleCategory" );
 
@@ -192,6 +190,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( settingList.size() > 0 )
     {
+      mDisplayDiagramsGroupBox->setChecked( settingList.at( 0 ).enabled );
       mDiagramFont = settingList.at( 0 ).font;
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
@@ -520,184 +519,178 @@ void QgsDiagramProperties::apply()
   QSettings().setValue( "/Windows/VectorLayerProperties/diagram/tab",
                         mDiagramPropertiesTabWidget->currentIndex() );
 
-  if ( !mDisplayDiagramsGroupBox->isChecked() )
+  QgsDiagram* diagram = 0;
+  int index = mDiagramTypeComboBox->currentIndex();
+  QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
+
+  if ( 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
   {
-    mLayer->setDiagramRenderer( 0 );
+    QgisApp::instance()->messageBar()->pushMessage(
+      tr( "Diagrams: No attributes added." ),
+      tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ),
+      QgsMessageBar::WARNING );
   }
-  else
+
+  bool scaleAttributeValueOk = false;
+  // Check if a (usable) scale attribute value is inserted
+  mValueLineEdit->text().toDouble( &scaleAttributeValueOk );
+
+  if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueOk )
   {
-    QgsDiagram* diagram = 0;
-    int index = mDiagramTypeComboBox->currentIndex();
-    QString diagramType = mDiagramTypeComboBox->itemData( index ).toString();
+    double maxVal = DBL_MIN;
+    QgsVectorDataProvider* provider = mLayer->dataProvider();
 
-    if ( 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
+    if ( provider )
     {
-      QgisApp::instance()->messageBar()->pushMessage(
-        tr( "Diagrams: No attributes added." ),
-        tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ),
-        QgsMessageBar::WARNING );
-    }
-
-    bool scaleAttributeValueOk = false;
-    // Check if a (usable) scale attribute value is inserted
-    mValueLineEdit->text().toDouble( &scaleAttributeValueOk );
-
-    if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueOk )
-    {
-      double maxVal = DBL_MIN;
-      QgsVectorDataProvider* provider = mLayer->dataProvider();
-
-      if ( provider )
+      if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
       {
-        if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
+        // Find maximum value
+        for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
         {
-          // Find maximum value
-          for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
+          QString fldName = mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toString();
+          if ( fldName.count() >= 2 && fldName.at( 0 ) == '"' && fldName.at( fldName.count() - 1 ) == '"' )
+            fldName = fldName.mid( 1, fldName.count() - 2 ); // remove enclosing double quotes
+          int fld = provider->fieldNameIndex( fldName );
+          if ( fld != -1 )
           {
-            QString fldName = mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toString();
-            if ( fldName.count() >= 2 && fldName.at( 0 ) == '"' && fldName.at( fldName.count() - 1 ) == '"' )
-              fldName = fldName.mid( 1, fldName.count() - 2 ); // remove enclosing double quotes
-            int fld = provider->fieldNameIndex( fldName );
-            if ( fld != -1 )
-            {
-              bool ok = false;
-              double val = provider->maximumValue( fld ).toDouble( &ok );
-              if ( ok )
-                maxVal = qMax( maxVal, val );
-            }
+            bool ok = false;
+            double val = provider->maximumValue( fld ).toDouble( &ok );
+            if ( ok )
+              maxVal = qMax( maxVal, val );
           }
         }
-        else
-        {
-          maxVal = provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toDouble();
-        }
-      }
-
-      if ( maxVal != DBL_MIN )
-      {
-        QgisApp::instance()->messageBar()->pushMessage(
-          tr( "Interpolation value" ),
-          tr( "You did not specify an interpolation value. A default value of %1 has been set." ).arg( QString::number( maxVal ) ),
-          QgsMessageBar::INFO,
-          5 );
-
-        mValueLineEdit->setText( QString::number( maxVal ) );
-      }
-    }
-
-    if ( diagramType == DIAGRAM_NAME_TEXT )
-    {
-      diagram = new QgsTextDiagram();
-    }
-    else if ( diagramType == DIAGRAM_NAME_PIE )
-    {
-      diagram = new QgsPieDiagram();
-    }
-    else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
-    {
-      diagram = new QgsHistogramDiagram();
-    }
-
-    QgsDiagramSettings ds;
-    ds.font = mDiagramFont;
-    ds.transparency = mTransparencySlider->value();
-
-    QList<QColor> categoryColors;
-    QList<QString> categoryAttributes;
-    for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
-    {
-      QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();
-      color.setAlpha( 255 - ds.transparency );
-      categoryColors.append( color );
-      categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toString() );
-    }
-    ds.categoryColors = categoryColors;
-    ds.categoryAttributes = categoryAttributes;
-    ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
-    ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
-    ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
-    ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
-
-    if ( mIncreaseSmallDiagramsGroupBox->isChecked() )
-    {
-      ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
-    }
-    else
-    {
-      ds.minimumSize = 0;
-    }
-
-    ds.backgroundColor = mBackgroundColorButton->color();
-    ds.penColor = mDiagramPenColorButton->color();
-    ds.penWidth = mPenWidthSpinBox->value();
-    if ( mVisibilityGroupBox->isChecked() )
-    {
-      ds.minScaleDenominator = mMinimumDiagramScaleLineEdit->text().toDouble();
-      ds.maxScaleDenominator = mMaximumDiagramScaleLineEdit->text().toDouble();
-    }
-    else
-    {
-      ds.minScaleDenominator = -1;
-      ds.maxScaleDenominator = -1;
-    }
-
-    // Diagram angle offset (pie)
-    ds.angleOffset = mAngleOffsetComboBox->itemData( mAngleOffsetComboBox->currentIndex() ).toInt();
-
-    // Diagram orientation (histogram)
-    ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
-
-    ds.barWidth = mBarWidthSpinBox->value();
-
-    if ( mFixedSizeCheckBox->isChecked() )
-    {
-      QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();
-      dr->setDiagram( diagram );
-      dr->setDiagramSettings( ds );
-      mLayer->setDiagramRenderer( dr );
-    }
-    else
-    {
-      QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
-      dr->setLowerValue( 0.0 );
-      dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
-      dr->setUpperValue( mValueLineEdit->text().toDouble() );
-      dr->setUpperSize( QSizeF( mSizeSpinBox->value(), mSizeSpinBox->value() ) );
-      bool isExpression = mSizeAttributeComboBox->currentIndex() >= mAvailableAttributes;
-      dr->setClassificationAttributeIsExpression( isExpression );
-      if ( isExpression )
-      {
-        dr->setClassificationAttributeExpression( mSizeAttributeComboBox->currentText() );
       }
       else
       {
-        dr->setClassificationAttribute( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() );
+        maxVal = provider->maximumValue( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() ).toDouble();
       }
-      dr->setDiagram( diagram );
-      dr->setDiagramSettings( ds );
-      mLayer->setDiagramRenderer( dr );
     }
 
-    QgsDiagramLayerSettings dls;
-    dls.dist = mDiagramDistanceSpinBox->value();
-    dls.priority = mPrioritySlider->value();
-    if ( mDataDefinedPositionGroupBox->isChecked() )
+    if ( maxVal != DBL_MIN )
     {
-      dls.xPosColumn = mDataDefinedXComboBox->itemData( mDataDefinedXComboBox->currentIndex() ).toInt();
-      dls.yPosColumn = mDataDefinedYComboBox->itemData( mDataDefinedYComboBox->currentIndex() ).toInt();
+      QgisApp::instance()->messageBar()->pushMessage(
+        tr( "Interpolation value" ),
+        tr( "You did not specify an interpolation value. A default value of %1 has been set." ).arg( QString::number( maxVal ) ),
+        QgsMessageBar::INFO,
+        5 );
+
+      mValueLineEdit->setText( QString::number( maxVal ) );
+    }
+  }
+
+  if ( diagramType == DIAGRAM_NAME_TEXT )
+  {
+    diagram = new QgsTextDiagram();
+  }
+  else if ( diagramType == DIAGRAM_NAME_PIE )
+  {
+    diagram = new QgsPieDiagram();
+  }
+  else // if ( diagramType == DIAGRAM_NAME_HISTOGRAM )
+  {
+    diagram = new QgsHistogramDiagram();
+  }
+
+  QgsDiagramSettings ds;
+  ds.enabled = mDisplayDiagramsGroupBox->isChecked();
+  ds.font = mDiagramFont;
+  ds.transparency = mTransparencySlider->value();
+
+  QList<QColor> categoryColors;
+  QList<QString> categoryAttributes;
+  for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
+  {
+    QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();
+    color.setAlpha( 255 - ds.transparency );
+    categoryColors.append( color );
+    categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toString() );
+  }
+  ds.categoryColors = categoryColors;
+  ds.categoryAttributes = categoryAttributes;
+  ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
+  ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
+  ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
+  ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
+
+  if ( mIncreaseSmallDiagramsGroupBox->isChecked() )
+  {
+    ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
+  }
+  else
+  {
+    ds.minimumSize = 0;
+  }
+
+  ds.backgroundColor = mBackgroundColorButton->color();
+  ds.penColor = mDiagramPenColorButton->color();
+  ds.penWidth = mPenWidthSpinBox->value();
+  if ( mVisibilityGroupBox->isChecked() )
+  {
+    ds.minScaleDenominator = mMinimumDiagramScaleLineEdit->text().toDouble();
+    ds.maxScaleDenominator = mMaximumDiagramScaleLineEdit->text().toDouble();
+  }
+  else
+  {
+    ds.minScaleDenominator = -1;
+    ds.maxScaleDenominator = -1;
+  }
+
+  // Diagram angle offset (pie)
+  ds.angleOffset = mAngleOffsetComboBox->itemData( mAngleOffsetComboBox->currentIndex() ).toInt();
+
+  // Diagram orientation (histogram)
+  ds.diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
+
+  ds.barWidth = mBarWidthSpinBox->value();
+
+  if ( mFixedSizeCheckBox->isChecked() )
+  {
+    QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();
+    dr->setDiagram( diagram );
+    dr->setDiagramSettings( ds );
+    mLayer->setDiagramRenderer( dr );
+  }
+  else
+  {
+    QgsLinearlyInterpolatedDiagramRenderer* dr = new QgsLinearlyInterpolatedDiagramRenderer();
+    dr->setLowerValue( 0.0 );
+    dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
+    dr->setUpperValue( mValueLineEdit->text().toDouble() );
+    dr->setUpperSize( QSizeF( mSizeSpinBox->value(), mSizeSpinBox->value() ) );
+    bool isExpression = mSizeAttributeComboBox->currentIndex() >= mAvailableAttributes;
+    dr->setClassificationAttributeIsExpression( isExpression );
+    if ( isExpression )
+    {
+      dr->setClassificationAttributeExpression( mSizeAttributeComboBox->currentText() );
     }
     else
     {
-      dls.xPosColumn = -1;
-      dls.yPosColumn = -1;
+      dr->setClassificationAttribute( mSizeAttributeComboBox->itemData( mSizeAttributeComboBox->currentIndex() ).toInt() );
     }
-    dls.placement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( mPlacementComboBox->currentIndex() ).toInt();
-    if ( mLineOptionsComboBox->isEnabled() )
-    {
-      dls.placementFlags = static_cast<QgsDiagramLayerSettings::LinePlacementFlags>( mLineOptionsComboBox->itemData( mLineOptionsComboBox->currentIndex() ).toInt() );
-    }
-    mLayer->setDiagramLayerSettings( dls );
+    dr->setDiagram( diagram );
+    dr->setDiagramSettings( ds );
+    mLayer->setDiagramRenderer( dr );
   }
+
+  QgsDiagramLayerSettings dls;
+  dls.dist = mDiagramDistanceSpinBox->value();
+  dls.priority = mPrioritySlider->value();
+  if ( mDataDefinedPositionGroupBox->isChecked() )
+  {
+    dls.xPosColumn = mDataDefinedXComboBox->itemData( mDataDefinedXComboBox->currentIndex() ).toInt();
+    dls.yPosColumn = mDataDefinedYComboBox->itemData( mDataDefinedYComboBox->currentIndex() ).toInt();
+  }
+  else
+  {
+    dls.xPosColumn = -1;
+    dls.yPosColumn = -1;
+  }
+  dls.placement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( mPlacementComboBox->currentIndex() ).toInt();
+  if ( mLineOptionsComboBox->isEnabled() )
+  {
+    dls.placementFlags = static_cast<QgsDiagramLayerSettings::LinePlacementFlags>( mLineOptionsComboBox->itemData( mLineOptionsComboBox->currentIndex() ).toInt() );
+  }
+  mLayer->setDiagramLayerSettings( dls );
 }
 
 void QgsDiagramProperties::showSizeAttributeExpressionDialog()
