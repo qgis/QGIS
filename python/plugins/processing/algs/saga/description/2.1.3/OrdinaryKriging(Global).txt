@@ -18,5 +18,5 @@ ParameterNumber|POW_B|Power Function - B|None|None|0.5
 ParameterNumber|USER_CELL_SIZE|Grid Size|0|None|1.0
 ParameterBoolean|USER_FIT_EXTENT        |Fit Extent|True
 Extent USER_X_EXTENT_MIN USER_X_EXTENT_MAX USER_Y_EXTENT_MIN USER_Y_EXTENT_MIN
-OutputRaster|GRID|Grid
+OutputRaster|GRID|Ordinary kriging global
 OutputRaster|VARIANCE|Variance

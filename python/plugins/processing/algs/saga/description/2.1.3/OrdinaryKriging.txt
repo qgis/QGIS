@@ -21,5 +21,5 @@ ParameterBoolean|USER_BVARIANCE              |Create Quality Grid|True
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 ParameterNumber|USER_SIZE|Cellsize|0|None|1.0
 ParameterSelection|USER_FIT|Search Direction|[0] nodes;[1] cells
-OutputRaster|USER_GRID|Grid
+OutputRaster|USER_GRID|Ordinary kriging
 OutputRaster|USER_VARIANCE|Variance

@@ -1,4 +1,4 @@
 Crop to Data
 grid_tools
 ParameterRaster|INPUT|Input layer|False
-OutputRaster|OUTPUT|Cropped layer
+OutputRaster|OUTPUT|Cropped
