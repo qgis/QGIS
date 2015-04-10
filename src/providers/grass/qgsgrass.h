@@ -55,7 +55,7 @@ class QgsRectangle;
 #define G_available_mapsets G_get_available_mapsets
 #define G__mapset_permissions2 G_mapset_permissions2
 #define G_suppress_masking Rast_suppress_masking
-#define G__get_window G_get_element_window
+#define G__get_window(window,element,name,mapset) (G_get_element_window(window,element,name,mapset),0)
 #define G__getenv G_getenv_nofatal
 #define G__setenv G_setenv_nogisrc
 #define BOUND_BOX bound_box
@@ -67,7 +67,7 @@ class QgsRectangle;
 class QgsGrass
 {
   public:
-    static jmp_buf jumper; // used to get back from fatal error
+    static GRASS_LIB_EXPORT jmp_buf jumper; // used to get back from fatal error
 
     // This does not work (gcc/Linux), such exception cannot be caught
     // so I have enabled the old version, if you are able to fix it, please

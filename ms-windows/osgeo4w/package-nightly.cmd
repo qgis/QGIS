@@ -49,7 +49,7 @@ if "%ARCH%"=="x86" goto devenv_x86
 goto devenv_x86_64
 
 :devenv_x86
-set GRASS_VERSION=6.4.4
+set GRASS_VERSIONS=6.4.4 7.0.0
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" x86
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x86 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -59,12 +59,16 @@ set CMAKE_OPT=^
 	-D BUILDNAME="OSGeo4W-Nightly-VC10-32" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
+	-D WITH_GRASS6=TRUE ^
+	-D WITH_GRASS7=TRUE ^
+	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.4 ^
+	-D GRASS_PREFIX7=%O4W_ROOT%/apps/grass/grass-7.0.0 ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb
 goto devenv
 
 :devenv_x86_64
-set GRASS_VERSION=6.4.3
+set GRASS_VERSIONS=6.4.3
 call "%PF86%\Microsoft Visual Studio 10.0\VC\vcvarsall.bat" amd64
 if exist "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" call "c:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.Cmd" /x64 /Release
 path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
@@ -77,6 +81,9 @@ set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
 	-D BUILDNAME="OSGeo4W-Nightly-VC10-64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
+	-D WITH_GRASS6=TRUE ^
+	-D WITH_GRASS7=FALSE ^
+	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-6.4.3 ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/bin/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt5.lib ^
 	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG /D QGISDEBUG" ^
@@ -97,6 +104,8 @@ set SRCDIR=%CD%
 
 if "%BUILDDIR:~1,1%"==":" %BUILDDIR:~0,2%
 cd %BUILDDIR%
+
+set PKGDIR=%OSGEO4W_ROOT%\apps\%PACKAGENAME%
 
 if exist repackage goto package
 
@@ -138,7 +147,6 @@ if errorlevel 1 goto error
 
 set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
-set GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION%
 
 cmake %CMAKE_OPT% ^
 	-D SITE="qgis.org" ^
@@ -150,7 +158,6 @@ cmake %CMAKE_OPT% ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
-	-D WITH_GRASS=TRUE ^
 	-D WITH_CUSTOM_WIDGETS=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
@@ -194,8 +201,6 @@ if not exist ..\skiptests (
 	if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 )
 
-set PKGDIR=%OSGEO4W_ROOT%\apps\%PACKAGENAME%
-
 if exist %PKGDIR% (
 	echo REMOVE: %DATE% %TIME%
 	rmdir /s /q %PKGDIR%
@@ -209,18 +214,24 @@ if errorlevel 1 (echo INSTALL failed & goto error)
 echo PACKAGE: %DATE% %TIME%
 
 cd ..
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' postinstall-dev.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversions@/%GRASS_VERSIONS%/g' postinstall-dev.bat >%OSGEO4W_ROOT%\etc\postinstall\%PACKAGENAME%.bat
 if errorlevel 1 (echo creation of desktop postinstall failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' preremove-dev.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversions@/%GRASS_VERSIONS%/g' preremove-dev.bat >%OSGEO4W_ROOT%\etc\preremove\%PACKAGENAME%.bat
 if errorlevel 1 (echo creation of desktop preremove failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%.bat.tmpl
-if errorlevel 1 (echo creation of desktop template failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' designer-qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\designer-%PACKAGENAME%.bat.tmpl
+
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' designer-qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\designer-%PACKAGENAME%.bat.tmpl
 if errorlevel 1 (echo creation of designer template failed & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser.bat.tmpl
-if errorlevel 1 (echo creation of browser template & goto error)
-sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%GRASS_VERSION%/g' qgis.reg.tmpl >%PKGDIR%\bin\qgis.reg.tmpl
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.reg.tmpl >%PKGDIR%\bin\qgis.reg.tmpl
 if errorlevel 1 (echo creation of registry template & goto error)
+
+for %%g IN (%GRASS_VERSIONS%) do (
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g%%g.bat.tmpl
+	if errorlevel 1 (echo creation of desktop template failed & goto error)
+	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-g%%g.bat.tmpl
+	if errorlevel 1 (echo creation of browser template & goto error)
+)
+
 
 REM sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %PKGDIR%\python\qgis\qgisconfig.py >%PKGDIR%\python\qgis\qgisconfig.py.tmpl
 REM if errorlevel 1 (echo creation of qgisconfig.py.tmpl failed & goto error)

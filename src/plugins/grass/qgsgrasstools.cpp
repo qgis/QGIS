@@ -43,6 +43,10 @@
 #include <QSortFilterProxyModel>
 #include <QStandardItem>
 
+#ifdef Q_OS_WIN
+#include "qgsgrassutils.h"
+#endif
+
 
 QgsGrassTools::QgsGrassTools( QgisInterface *iface,
                               QWidget * parent, const char * name, Qt::WindowFlags f )

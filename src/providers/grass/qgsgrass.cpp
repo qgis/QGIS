@@ -14,6 +14,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifdef _MSC_VER
+// to avoid conflicting SF_UNKNOWN
+#define _OLE2_H_
+#endif
+
 #include <setjmp.h>
 
 #include "qgsgrass.h"

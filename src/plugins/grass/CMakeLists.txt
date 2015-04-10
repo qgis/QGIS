@@ -18,111 +18,105 @@ ENDIF (WIN32)
 # Files
 
 SET (GRASS_PLUGIN_SRCS
-   qgsgrassplugin.cpp
-   qgsgrassselect.cpp
-   qgsgrassbrowser.cpp
-   qgsgrassedit.cpp
-   qgsgrassedittools.cpp
-   qgsgrasstools.cpp
-   qgsgrassmodel.cpp
-   qgsgrassmapcalc.cpp
-   qgsgrassmodule.cpp
-   qgsgrassnewmapset.cpp
-   qgsgrassattributes.cpp
-   qgsgrassregion.cpp
-   qgsgrassutils.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassbrowser.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedit.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedittools.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodel.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassutils.cpp
 )
 
 
 SET (GRASS_PLUGIN_UIS
-   qgsgrasstoolsbase.ui
-   qgsgrassselectbase.ui
-   qgsgrasseditbase.ui
-   qgsgrassmapcalcbase.ui
-   qgsgrassmodulebase.ui
-   qgsgrassnewmapsetbase.ui
-   qgsgrassattributesbase.ui
-   qgsgrassregionbase.ui
-   ../../ui/qgsprojectionselectorbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstoolsbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselectbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalcbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodulebase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapsetbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributesbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregionbase.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/../../ui/qgsprojectionselectorbase.ui
 )
 
 SET (GRASS_PLUGIN_MOC_HDRS
-   qgsgrassplugin.h
-   qgsgrassselect.h
-   qgsgrassbrowser.h
-   qgsgrassedit.h
-   qgsgrasstools.h
-   qgsgrassmodel.h
-   qgsgrassmapcalc.h
-   qgsgrassmodule.h
-   qgsgrassnewmapset.h
-   qgsgrassattributes.h
-   qgsgrassregion.h
-   qgsgrassutils.h
-   qgsgrassedittools.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassselect.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassbrowser.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedit.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasstools.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodel.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmapcalc.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassmodule.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassnewmapset.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassattributes.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassregion.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassutils.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassedittools.h
 )
 
 IF(NOT WIN32)
   SET (GRASS_PLUGIN_SRCS ${GRASS_PLUGIN_SRCS}
-    qgsgrassshell.cpp
-    qtermwidget/BlockArray.cpp
-    qtermwidget/Emulation.cpp
-    qtermwidget/Filter.cpp
-    qtermwidget/History.cpp
-    qtermwidget/KeyboardTranslator.cpp
-    qtermwidget/Pty.cpp
-    qtermwidget/Screen.cpp
-    qtermwidget/ScreenWindow.cpp
-    qtermwidget/Session.cpp
-    qtermwidget/ShellCommand.cpp
-    qtermwidget/TerminalCharacterDecoder.cpp
-    qtermwidget/TerminalDisplay.cpp
-    qtermwidget/Vt102Emulation.cpp
-    qtermwidget/k3process.cpp
-    qtermwidget/k3processcontroller.cpp
-    qtermwidget/konsole_wcwidth.cpp
-    qtermwidget/kpty.cpp
-    qtermwidget/qtermwidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassshell.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/BlockArray.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Emulation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Filter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/History.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/KeyboardTranslator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Pty.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Screen.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/ScreenWindow.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Session.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/ShellCommand.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/TerminalCharacterDecoder.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/TerminalDisplay.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Vt102Emulation.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3process.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3processcontroller.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/konsole_wcwidth.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kpty.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/qtermwidget.cpp
   )
 
   SET (GRASS_PLUGIN_MOC_HDRS ${GRASS_PLUGIN_MOC_HDRS}
-    qgsgrassshell.h
-    qtermwidget/Emulation.h
-    qtermwidget/Filter.h
-    qtermwidget/Pty.h
-    qtermwidget/ScreenWindow.h
-    qtermwidget/Session.h
-    qtermwidget/TerminalDisplay.h
-    qtermwidget/Vt102Emulation.h
-    qtermwidget/k3process.h
-    qtermwidget/k3processcontroller.h
-    qtermwidget/qtermwidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassshell.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Emulation.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Filter.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Pty.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/ScreenWindow.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Session.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/TerminalDisplay.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Vt102Emulation.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3process.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3processcontroller.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/qtermwidget.h
   )
 
   IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
     SET_SOURCE_FILES_PROPERTIES(
       ${CMAKE_CURRENT_BINARY_DIR}/qtermwidget/moc_Pty.cxx
-      qtermwidget/Pty.cpp
-      qtermwidget/Session.cpp
-      qtermwidget/kpty.cpp
-      qtermwidget/k3process.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Pty.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/Session.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/kpty.cpp
+      ${CMAKE_CURRENT_SOURCE_DIR}/qtermwidget/k3process.cpp
       PROPERTIES COMPILE_FLAGS "-Wno-overloaded-virtual -Wno-mismatched-tags"
     )
   ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 ENDIF(NOT WIN32)
 
-SET (GRASS_PLUGIN_RCCS  qgsgrass_plugin.qrc)
-
-SET (GRASS_BROWSER_SRCS qgis.g.browser.cpp)
+SET (GRASS_PLUGIN_RCCS ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrass_plugin.qrc)
+SET (GRASS_BROWSER_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/qgis.g.browser.cpp)
 
 ########################################################
 # Build
 
-QT4_WRAP_UI (GRASS_PLUGIN_UIS_H  ${GRASS_PLUGIN_UIS})
-
-QT4_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS  ${GRASS_PLUGIN_MOC_HDRS})
-
-QT4_ADD_RESOURCES(GRASS_PLUGIN_RCC_SRCS ${GRASS_PLUGIN_RCCS})
 
 INCLUDE_DIRECTORIES(
   ..
@@ -138,14 +132,14 @@ INCLUDE_DIRECTORIES(
   qtermwidget
 )
 
-FOREACH(GRASS_BUILD_VERSION 6) # GRASS 6 and GRASS 7
-  IF(GRASS_FOUND${GRASS_BUILD_VERSION})
+MACRO(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     SET(GRASS_PREFIX ${GRASS_PREFIX${GRASS_BUILD_VERSION}})
     SET(GRASS_MAJOR_VERSION ${GRASS_MAJOR_VERSION${GRASS_BUILD_VERSION}})
     SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
 
-    GET_PROPERTY(INCLUDE_DIRECTORIES DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-    LIST(APPEND INCLUDE_DIRECTORIES ${GRASS_INCLUDE_DIR${GRASS_BUILD_VERSION}})
+    QT4_WRAP_UI (GRASS_PLUGIN_UIS_H ${GRASS_PLUGIN_UIS})
+    QT4_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS ${GRASS_PLUGIN_MOC_HDRS})
+    QT4_ADD_RESOURCES(GRASS_PLUGIN_RCC_SRCS ${GRASS_PLUGIN_RCCS})
 
     ADD_LIBRARY (grassplugin${GRASS_BUILD_VERSION} MODULE
       ${GRASS_PLUGIN_SRCS}
@@ -155,7 +149,6 @@ FOREACH(GRASS_BUILD_VERSION 6) # GRASS 6 and GRASS 7
     )
 
     SET_TARGET_PROPERTIES(grassplugin${GRASS_BUILD_VERSION} PROPERTIES
-      INCLUDE_DIRECTORIES "${INCLUDE_DIRECTORIES}"
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
 
@@ -177,7 +170,6 @@ FOREACH(GRASS_BUILD_VERSION 6) # GRASS 6 and GRASS 7
     ADD_EXECUTABLE(qgis.g.browser${GRASS_BUILD_VERSION} ${GRASS_BROWSER_SRCS})
 
     SET_TARGET_PROPERTIES(qgis.g.browser${GRASS_BUILD_VERSION} PROPERTIES
-      INCLUDE_DIRECTORIES "${INCLUDE_DIRECTORIES}"
       COMPILE_FLAGS "-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\""
     )
 
@@ -193,17 +185,21 @@ FOREACH(GRASS_BUILD_VERSION 6) # GRASS 6 and GRASS 7
       RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
       LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 
-
-    FILE (GLOB GMLS *.gml)
-    INSTALL (FILES ${GMLS}
-             DESTINATION ${QGIS_DATA_DIR}/grass)
-
-    INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
-             DESTINATION ${QGIS_DATA_DIR}/grass/modules)
-
     INSTALL(TARGETS qgis.g.browser${GRASS_BUILD_VERSION}
-            RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/bin
-            PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+        RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/bin
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     )
+ENDMACRO(ADD_GRASSPLUGIN)
+
+FILE (GLOB GMLS *.gml)
+INSTALL (FILES ${GMLS}
+         DESTINATION ${QGIS_DATA_DIR}/grass)
+
+INSTALL (FILES themes/default/grass_arrow.svg themes/default/grass_plus.svg themes/default/grass_arrow.png themes/default/grass_plus.png
+         DESTINATION ${QGIS_DATA_DIR}/grass/modules)
+
+FOREACH(GRASS_BUILD_VERSION 6) # GRASS 6, but not yet GRASS 7
+  IF(GRASS_FOUND${GRASS_BUILD_VERSION})
+    ADD_SUBDIRECTORY(${GRASS_BUILD_VERSION})
   ENDIF(GRASS_FOUND${GRASS_BUILD_VERSION})
-ENDFOREACH(GRASS_BUILD_VERSION 6 7)
+ENDFOREACH(GRASS_BUILD_VERSION)

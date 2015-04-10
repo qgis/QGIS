@@ -21,7 +21,7 @@
 #include "ui_qgsjoindialogbase.h"
 
 class QgsVectorLayer;
-class QgsVectorJoinInfo;
+struct QgsVectorJoinInfo;
 
 class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 {

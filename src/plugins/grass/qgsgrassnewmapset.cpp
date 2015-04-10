@@ -1275,7 +1275,11 @@ void QgsGrassNewMapset::createMapset()
 
     try
     {
+#if GRASS_VERSION_MAJOR < 7
       ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
+#else
+      ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits );
+#endif
     }
     catch ( QgsGrass::Exception &e )
     {
