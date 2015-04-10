@@ -71,7 +71,7 @@ class proximity(GdalAlgorithm):
             -1, 9999, -1))
         self.addParameter(ParameterSelection(self.RTYPE,
             self.tr('Output raster type'), self.TYPE, 5))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Distance')))
 
     def processAlgorithm(self, progress):
         output = self.getOutputValue(self.OUTPUT)

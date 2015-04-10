@@ -63,7 +63,7 @@ class ColorRelief(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.MATCH_MODE,
             self.tr('Matching mode'), self.MATCHING_MODES, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Color relief')))
 
     def processAlgorithm(self, progress):
         arguments = ['color-relief']

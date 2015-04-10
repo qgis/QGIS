@@ -52,7 +52,7 @@ class gdaltindex(GdalAlgorithm):
             'location', optional=True))
         self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
             self.tr('Skip files with different projection reference'), False))
-        self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Tiled')))
 
     def processAlgorithm(self, progress):
         fieldName = str(self.getParameterValue(self.FIELD_NAME))

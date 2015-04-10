@@ -50,7 +50,7 @@ class nearblack(GdalAlgorithm):
         self.addParameter(ParameterBoolean(nearblack.WHITE,
             self.tr('Search for nearly white pixels instead of nearly black'),
             False))
-        self.addOutput(OutputRaster(nearblack.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(nearblack.OUTPUT, self.tr('Nearblack')))
 
     def processAlgorithm(self, progress):
         arguments = []

@@ -84,7 +84,7 @@ class GridInvDist(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.RTYPE,
             self.tr('Output raster type'), self.TYPE, 5))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Interpolated IDW')))
 
     def processAlgorithm(self, progress):
         arguments = ['-l']
