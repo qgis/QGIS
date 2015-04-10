@@ -39,7 +39,7 @@ from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 
 from RegularPoints import RegularPoints
-from SymetricalDifference import SymetricalDifference
+from SymmetricalDifference import SymmetricalDifference
 from VectorSplit import VectorSplit
 from VectorGrid import VectorGrid
 from RandomExtract import RandomExtract
@@ -152,7 +152,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(), RandomExtract(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
-                        SpatialJoin(), RegularPoints(), SymetricalDifference(),
+                        SpatialJoin(), RegularPoints(), SymmetricalDifference(),
                         VectorSplit(), VectorGrid(), DeleteColumn(),
                         DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), Grid(),
