@@ -766,8 +766,12 @@ void QgsWMSProjectParser::addDrawingOrder( QDomElement& parentElem, QDomDocument
 
   if ( !layerList.isEmpty() )
   {
+    QStringList reversedList;
+    for ( int i = layerList.size() - 1; i >= 0; --i )
+      reversedList << layerList[ i ];
+
     QDomElement layerDrawingOrderElem = doc.createElement( "LayerDrawingOrder" );
-    QDomText drawingOrderText = doc.createTextNode( layerList.join( "," ) );
+    QDomText drawingOrderText = doc.createTextNode( reversedList.join( "," ) );
     layerDrawingOrderElem.appendChild( drawingOrderText );
     parentElem.appendChild( layerDrawingOrderElem );
   }
