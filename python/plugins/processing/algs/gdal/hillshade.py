@@ -68,7 +68,7 @@ class hillshade(GdalAlgorithm):
         self.addParameter(ParameterNumber(self.ALTITUDE,
             self.tr('Altitude of the light'), 0.0, 99999999.999999, 45.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Hillshade')))
 
     def processAlgorithm(self, progress):
         arguments = ['hillshade']

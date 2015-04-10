@@ -50,7 +50,7 @@ class tpi(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
             self.tr('Compute edges'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Topographic Position Index')))
 
     def processAlgorithm(self, progress):
         arguments = ['TPI']

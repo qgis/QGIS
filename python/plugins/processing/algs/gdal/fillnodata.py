@@ -64,7 +64,7 @@ class fillnodata(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.NO_DEFAULT_MASK,
             self.tr('Do not use default validity mask'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Filled')))
 
     def processAlgorithm(self, progress):
         output = self.getOutputValue(self.OUTPUT)

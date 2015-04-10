@@ -57,7 +57,7 @@ class merge(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.RTYPE,
             self.tr('Output raster type'), self.TYPE, 5))
 
-        self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Merged')))
 
     def processAlgorithm(self, progress):
         arguments = []

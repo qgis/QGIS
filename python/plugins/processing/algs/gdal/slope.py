@@ -61,7 +61,7 @@ class slope(GdalAlgorithm):
             self.tr('Scale (ratio of vert. units to horiz.)'),
             0.0, 99999999.999999, 1.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Slope')))
 
     def processAlgorithm(self, progress):
         arguments = ['slope']
