@@ -7,4 +7,4 @@ ParameterSelection|SCALE_UP_METHOD|Interpolation Method (Scale Up)|[0] Nearest N
 ParameterSelection|SCALE_DOWN_METHOD|Interpolation Method (Scale Down)|[0] Nearest Neighbor;[1] Bilinear Interpolation;[2] Inverse Distance Interpolation;[3] Bicubic Spline Interpolation;[4] B-Spline Interpolation
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
-OutputRaster|USER_GRID|Grid
+OutputRaster|USER_GRID|Resampled

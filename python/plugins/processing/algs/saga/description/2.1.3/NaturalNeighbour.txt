@@ -6,4 +6,4 @@ Hardcoded|-TARGET_DEFINITION 0
 ParameterBoolean|SIBSON         |Sibson|True
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
 ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
-OutputRaster|USER_GRID|Grid
+OutputRaster|USER_GRID|Natural neighbour
