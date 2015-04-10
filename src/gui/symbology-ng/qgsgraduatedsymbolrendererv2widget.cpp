@@ -607,8 +607,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
   // Change the selected symbols alone if anything is selected
   QItemSelectionModel* m = viewGraduated->selectionModel();
-  QModelIndexList i = m->selectedRows();
-  if ( m && i.size() > 0 )
+  if ( m && m->selectedRows().size() > 0 )
   {
     changeSelectedSymbols();
     return;
@@ -694,8 +693,7 @@ void QgsGraduatedSymbolRendererV2Widget::rangesClicked( const QModelIndex & idx 
 void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
 {
   QItemSelectionModel* m = viewGraduated->selectionModel();
-  QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && m->selectedRows( 1 ).size() > 0 )
   {
     QgsSymbolV2* newSymbol = mGraduatedSymbol->clone();
     QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
@@ -705,6 +703,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeSelectedSymbols()
       return;
     }
 
+    QModelIndexList selectedIndexes = m->selectedRows( 1 );
     foreach ( QModelIndex idx, selectedIndexes )
     {
       if ( idx.isValid() )
@@ -870,10 +869,10 @@ QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
   QList<QgsSymbolV2*> selectedSymbols;
 
   QItemSelectionModel* m = viewGraduated->selectionModel();
-  QModelIndexList selectedIndexes = m->selectedRows( 1 );
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && m->selectedRows( 1 ).size() > 0 )
   {
     const QgsRangeList& ranges = mRenderer->ranges();
+    QModelIndexList selectedIndexes = m->selectedRows( 1 );
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {

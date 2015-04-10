@@ -522,11 +522,10 @@ void QgsCategorizedSymbolRendererV2Widget::changeSelectedSymbols()
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
-  // When there is a slection, change the selected symbols alone
+  // When there is a selection, change the selected symbols alone
   QItemSelectionModel* m = viewCategories->selectionModel();
-  QModelIndexList i = m->selectedRows();
 
-  if ( m && i.size() > 0 )
+  if ( m && m->selectedRows().size() > 0 )
   {
     changeSelectedSymbols();
     return;
@@ -835,11 +834,10 @@ QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
   QList<QgsSymbolV2*> selectedSymbols;
 
   QItemSelectionModel* m = viewCategories->selectionModel();
-  QModelIndexList selectedIndexes = m->selectedRows( 1 );
-
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && m->selectedRows( 1 ).size() > 0 )
   {
     const QgsCategoryList& categories = mRenderer->categories();
+    QModelIndexList selectedIndexes = m->selectedRows( 1 );
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {
@@ -859,10 +857,9 @@ QgsCategoryList QgsCategorizedSymbolRendererV2Widget::selectedCategoryList()
   QgsCategoryList cl;
 
   QItemSelectionModel* m = viewCategories->selectionModel();
-  QModelIndexList selectedIndexes = m->selectedRows( 1 );
-
-  if ( m && selectedIndexes.size() > 0 )
+  if ( m && m->selectedRows( 1 ).size() > 0 )
   {
+    QModelIndexList selectedIndexes = m->selectedRows( 1 );
     QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
     for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
     {
