@@ -66,14 +66,13 @@ QgsOracleFeatureIterator::QgsOracleFeatureIterator( QgsOracleFeatureSource* sour
                        .arg( qgsDoubleToString( rect.yMaximum() ) );
 
         whereClause = QString( "sdo_filter(%1,%2)='TRUE'" ).arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) ).arg( bbox );
-#if 0
-        if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
+
+        if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect && mConnection->hasSpatial() )
         {
           whereClause += QString( " AND sdo_relate(%1,%2,'mask=ANYINTERACT')='TRUE'" )
-                         .arg( quotedIdentifier( P->mGeometryColumn ) )
+                         .arg( QgsOracleProvider::quotedIdentifier( mSource->mGeometryColumn ) )
                          .arg( bbox );
         }
-#endif
       }
       break;
 
