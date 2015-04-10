@@ -33,14 +33,14 @@ from processing.core.outputs import OutputVector
 from processing.tools import dataobjects, vector
 
 
-class SymetricalDifference(GeoAlgorithm):
+class SymmetricalDifference(GeoAlgorithm):
 
     INPUT = 'INPUT'
     OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
     def defineCharacteristics(self):
-        self.name = 'Symetrical difference'
+        self.name = 'Symmetrical difference'
         self.group = 'Vector overlay tools'
         self.addParameter(ParameterVector(self.INPUT,
             self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
