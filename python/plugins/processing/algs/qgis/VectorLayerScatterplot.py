@@ -70,6 +70,8 @@ class VectorLayerScatterplot(GeoAlgorithm):
         values = vector.values(layer, xfieldname, yfieldname)
         plt.close()
         plt.scatter(values[xfieldname], values[yfieldname])
+        plt.ylabel(yfieldname)
+        plt.xlabel(xfieldname)
         plotFilename = output + '.png'
         lab.savefig(plotFilename)
         f = open(output, 'w')
