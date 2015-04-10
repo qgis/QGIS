@@ -13,6 +13,9 @@ REM *   the Free Software Foundation; either version 2 of the License, or     *
 REM *   (at your option) any later version.                                   *
 REM *                                                                         *
 REM ***************************************************************************
+
+setlocal enabledelayedexpansion
+
 set VERSION=%1
 set PACKAGE=%2
 set PACKAGENAME=%3
@@ -225,13 +228,19 @@ if errorlevel 1 (echo creation of designer template failed & goto error)
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' qgis.reg.tmpl >%PKGDIR%\bin\qgis.reg.tmpl
 if errorlevel 1 (echo creation of registry template & goto error)
 
+set batches=
 for %%g IN (%GRASS_VERSIONS%) do (
 	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' qgis.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-g%%g.bat.tmpl
 	if errorlevel 1 (echo creation of desktop template failed & goto error)
+	set batches=!batches! bin/%PACKAGENAME%-g%%g.bat.tmpl
+
 	sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' -e 's/@grassversion@/%%g/g' browser.bat.tmpl >%OSGEO4W_ROOT%\bin\%PACKAGENAME%-browser-g%%g.bat.tmpl
 	if errorlevel 1 (echo creation of browser template & goto error)
+	set batches=!batches! bin/%PACKAGENAME%-browser-g%%g.bat.tmpl
 )
 
+sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' python.bat.tmpl >%OSGEO4W_ROOT%\bin\python-%PACKAGENAME%.bat.tmpl
+if errorlevel 1 (echo creation of python wrapper failed & goto error)
 
 REM sed -e 's/%OSGEO4W_ROOT:\=\\\\\\\\%/@osgeo4w@/' %PKGDIR%\python\qgis\qgisconfig.py >%PKGDIR%\python\qgis\qgisconfig.py.tmpl
 REM if errorlevel 1 (echo creation of qgisconfig.py.tmpl failed & goto error)
@@ -266,9 +275,9 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%-bin.exe ^
 	bin/%PACKAGENAME%-browser-bin.exe ^
-	bin/%PACKAGENAME%.bat.tmpl ^
-	bin/%PACKAGENAME%-browser.bat.tmpl ^
+	%batches% ^
 	bin/designer-%PACKAGENAME%.bat.tmpl ^
+	bin/python-%PACKAGENAME%.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat
 if errorlevel 1 (echo tar failed & goto error)
@@ -292,3 +301,5 @@ if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%
 
 :end
 echo FINISHED: %DATE% %TIME%
+
+endlocal

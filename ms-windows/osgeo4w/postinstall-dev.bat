@@ -1,4 +1,5 @@
 textreplace -std -t bin\designer-@package@.bat
+textreplace -std -t bin\python-@package@.bat
 
 for %%g in (@grassversions@) do (
 	textreplace -std -t bin\@package@-g%%g.bat
