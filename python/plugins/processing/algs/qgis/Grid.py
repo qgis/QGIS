@@ -34,18 +34,15 @@ from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecution
 from processing.core.parameters import ParameterExtent
 from processing.core.parameters import ParameterNumber
 from processing.core.parameters import ParameterSelection
+from processing.core.parameters import ParameterCrs
 from processing.core.outputs import OutputVector
 
 
 class Grid(GeoAlgorithm):
     TYPE = 'TYPE'
     EXTENT = 'EXTENT'
-    WIDTH = 'WIDTH'
-    HEIGHT = 'HEIGHT'
     HSPACING = 'HSPACING'
     VSPACING = 'VSPACING'
-    CENTERX = 'CENTERX'
-    CENTERY = 'CENTERY'
     CRS = 'CRS'
     OUTPUT = 'OUTPUT'
 
@@ -67,14 +64,16 @@ class Grid(GeoAlgorithm):
             self.tr('Horizontal spacing'), default=10.0))
         self.addParameter(ParameterNumber(self.VSPACING,
             self.tr('Vertical spacing'), default=10.0))
+        self.addParameter(ParameterCrs(self.CRS, 'Grid CRS'))
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Output')))
+        self.addOutput(OutputVector(self.OUTPUT, self.tr('Grid')))
 
     def processAlgorithm(self, progress):
         idx = self.getParameterValue(self.TYPE)
         extent = self.getParameterValue(self.EXTENT).split(',')
         hSpacing = self.getParameterValue(self.HSPACING)
         vSpacing = self.getParameterValue(self.VSPACING)
+        crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         bbox = QgsRectangle(float(extent[0]), float(extent[2]),
                             float(extent[1]), float(extent[3]))
@@ -85,7 +84,6 @@ class Grid(GeoAlgorithm):
         centerY = bbox.center().y()
         originX = centerX - width / 2.0
         originY = centerY - height / 2.0
-        crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
 
         if hSpacing <= 0 or vSpacing <= 0:
             raise GeoAlgorithmExecutionException(
