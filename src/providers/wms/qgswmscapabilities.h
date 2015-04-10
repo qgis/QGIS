@@ -420,7 +420,7 @@ enum QgsWmsDpiMode
   dpiQGIS = 1,
   dpiUMN = 2,
   dpiGeoServer = 4,
-  dpiAll = dpiQGIS | dpiUMN | dpiUMN,
+  dpiAll = dpiQGIS | dpiUMN | dpiGeoServer,
 };
 
 
