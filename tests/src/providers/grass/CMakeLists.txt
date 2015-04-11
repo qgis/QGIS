@@ -1,6 +1,6 @@
 ADD_DEFINITIONS("-DGRASS_EXPORT=${DLLIMPORT} -DGRASS_LIB_EXPORT=${DLLIMPORT}")
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/providers/grass)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/providers/grass)
 
 
 MACRO (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
@@ -23,7 +23,7 @@ MACRO (ADD_QGIS_GRASS_TEST grass_build_version testname testsrc)
     qgis_core
     qgisgrass${grass_build_version}
   )
-  ADD_TEST(qgis_${testname}${grass_build_version} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname}${grass_build_version})
+  ADD_TEST(qgis_${testname}${grass_build_version} ${CMAKE_BINARY_DIR}/output/bin/qgis_${testname}${grass_build_version})
 ENDMACRO (ADD_QGIS_GRASS_TEST)
 
 MACRO (ADD_QGIS_GRASS_TESTS version)
