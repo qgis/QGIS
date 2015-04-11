@@ -47,7 +47,6 @@ class rasterize(OgrAlgorithm):
     DIMENSIONS = 'DIMENSIONS'
     WIDTH = 'WIDTH'
     HEIGHT = 'HEIGHT'
-    WRITEOVER = 'WRITEOVER'
     RTYPE = 'RTYPE'
     OUTPUT = 'OUTPUT'
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
@@ -71,8 +70,6 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
             self.tr('Attribute field'), self.INPUT))
-        self.addParameter(ParameterBoolean(self.WRITEOVER,
-            self.tr('Write values inside an existing raster layer(*)'), False))
         self.addParameter(ParameterSelection(self.DIMENSIONS,
             self.tr('Set output raster size (ignored if above option is checked)'),
             ['Output size in pixels', 'Output resolution in map units per pixel'], 1))
@@ -103,10 +100,9 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterBoolean(self.TFW,
             self.tr('Force the generation of an associated ESRI world file (.tfw)'), False))
         self.addOutput(OutputRaster(self.OUTPUT,
-            self.tr('Output layer: mandatory to choose an existing raster layer if the (*) option is selected')))
+            self.tr('Rasterized')))
 
     def processAlgorithm(self, progress):
-        writeOver = self.getParameterValue(self.WRITEOVER)
         inLayer = self.getParameterValue(self.INPUT)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         noData = str(self.getParameterValue(self.NO_DATA))
@@ -123,27 +119,26 @@ class rasterize(OgrAlgorithm):
         arguments.append('-a')
         arguments.append(str(self.getParameterValue(self.FIELD)))
 
-        if not writeOver:
-             arguments.append('-ot')
-             arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+
+        arguments.append('-ot')
+        arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
         dimType = self.getParameterValue(self.DIMENSIONS)
-        if not writeOver:
-           if dimType == 0:
-               # size in pixels
-               arguments.append('-ts')
-               arguments.append(str(self.getParameterValue(self.WIDTH)))
-               arguments.append(str(self.getParameterValue(self.HEIGHT)))
-           else:
-               # resolution in map units per pixel
-               arguments.append('-tr')
-               arguments.append(str(self.getParameterValue(self.WIDTH)))
-               arguments.append(str(self.getParameterValue(self.HEIGHT)))
+        if dimType == 0:
+           # size in pixels
+           arguments.append('-ts')
+           arguments.append(str(self.getParameterValue(self.WIDTH)))
+           arguments.append(str(self.getParameterValue(self.HEIGHT)))
+        else:
+           # resolution in map units per pixel
+           arguments.append('-tr')
+           arguments.append(str(self.getParameterValue(self.WIDTH)))
+           arguments.append(str(self.getParameterValue(self.HEIGHT)))
 
-           if len(noData) > 0:
-              arguments.append('-a_nodata')
-              arguments.append(noData)
+        if len(noData) > 0:
+           arguments.append('-a_nodata')
+           arguments.append(noData)
 
-        if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff") and (writeOver is False):
+        if (GdalUtils.getFormatShortNameFromFilename(out) == "GTiff"):
             arguments.append("-co COMPRESS="+compress)
             if compress == 'JPEG':
                arguments.append("-co JPEG_QUALITY="+jpegcompression)
