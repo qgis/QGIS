@@ -286,6 +286,7 @@ QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, Qg
     , mMode( Custom )
     , mInvertedColorRamp( false )
     , mScaleMethod( DEFAULT_SCALE_METHOD )
+    , mGraduatedMethod( GraduatedColor )
     , mAttrNum( -1 )
     , mCounting( false )
 
@@ -519,6 +520,7 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::clone() const
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
   r->setLabelFormat( labelFormat() );
+  r->setGraduatedMethod( graduatedMethod() );
   copyPaintEffect( r );
   return r;
 }
@@ -527,6 +529,7 @@ void QgsGraduatedSymbolRendererV2::toSld( QDomDocument& doc, QDomElement &elemen
 {
   QgsStringMap props;
   props[ "attribute" ] = mAttrName;
+  props[ "method" ] = graduatedMethodStr( mGraduatedMethod );
   if ( mRotation.data() )
     props[ "angle" ] = mRotation->expression();
   if ( mSizeScale.data() )
@@ -962,6 +965,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
 QList<double> QgsGraduatedSymbolRendererV2::getDataValues( QgsVectorLayer *vlayer )
 {
   QList<double> values;
+
   QScopedPointer<QgsExpression> expression;
   int attrNum = vlayer->fieldNameIndex( mAttrName );
 
@@ -1022,7 +1026,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
     if ( values.isEmpty() )
       return;
 
-    qSort( values );
+    qSort( values ); // vmora: is wondering if O( n log(n) ) is really necessary here, min and max are O( n )
     minimum = values.first();
     maximum = values.last();
     valuesLoaded = true;
@@ -1146,6 +1150,16 @@ QgsFeatureRendererV2* QgsGraduatedSymbolRendererV2::create( QDomElement& element
 
   QgsGraduatedSymbolRendererV2* r = new QgsGraduatedSymbolRendererV2( attrName, ranges );
 
+  QString attrMethod = element.attribute( "graduatedMethod" );
+  if ( attrMethod.length() )
+  {
+    if ( attrMethod == graduatedMethodStr( GraduatedColor ) )
+      r->setGraduatedMethod( GraduatedColor );
+    else if ( attrMethod == graduatedMethodStr( GraduatedSize ) )
+      r->setGraduatedMethod( GraduatedSize );
+  }
+
+
   // delete symbols if there are any more
   QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
 
@@ -1214,6 +1228,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
   rendererElem.setAttribute( "type", "graduatedSymbol" );
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
   rendererElem.setAttribute( "attr", mAttrName );
+  rendererElem.setAttribute( "graduatedMethod", graduatedMethodStr( mGraduatedMethod ) );
 
   // ranges
   int i = 0;
@@ -1348,6 +1363,52 @@ void QgsGraduatedSymbolRendererV2::setSourceColorRamp( QgsVectorColorRampV2* ram
   mSourceColorRamp.reset( ramp );
 }
 
+double QgsGraduatedSymbolRendererV2::minSymbolSize() const
+{
+  double min = DBL_MAX;
+  for ( int i = 0; i < mRanges.count(); i++ )
+  {
+    double sz = 0;
+    if ( mRanges[i].symbol()->type() == QgsSymbolV2::Marker )
+      sz = static_cast< QgsMarkerSymbolV2 * >( mRanges[i].symbol() )->size();
+    else if ( mRanges[i].symbol()->type() == QgsSymbolV2::Line )
+      sz = static_cast< QgsLineSymbolV2 * >( mRanges[i].symbol() )->width();
+    min = qMin( sz, min );
+  }
+  return min;
+}
+
+double QgsGraduatedSymbolRendererV2::maxSymbolSize() const
+{
+  double max = DBL_MIN;
+  for ( int i = 0; i < mRanges.count(); i++ )
+  {
+    double sz = 0;
+    if ( mRanges[i].symbol()->type() == QgsSymbolV2::Marker )
+      sz = static_cast< QgsMarkerSymbolV2 * >( mRanges[i].symbol() )->size();
+    else if ( mRanges[i].symbol()->type() == QgsSymbolV2::Line )
+      sz = static_cast< QgsLineSymbolV2 * >( mRanges[i].symbol() )->width();
+    max = qMax( sz, max );
+  }
+  return max;
+}
+
+void QgsGraduatedSymbolRendererV2::setSymbolSizes( double minSize, double maxSize )
+{
+  for ( int i = 0; i < mRanges.count(); i++ )
+  {
+    QScopedPointer<QgsSymbolV2> symbol( mRanges[i].symbol() ? mRanges[i].symbol()->clone() : 0 );
+    const double size =  mRanges.count() > 1
+                         ? minSize + i * ( maxSize - minSize ) / ( mRanges.count() - 1 )
+                         : .5 * ( maxSize + minSize );
+    if ( symbol->type() == QgsSymbolV2::Marker )
+      static_cast< QgsMarkerSymbolV2 * >( symbol.data() )->setSize( size );
+    if ( symbol->type() == QgsSymbolV2::Line )
+      static_cast< QgsLineSymbolV2 * >( symbol.data() )->setWidth( size );
+    updateRangeSymbol( i, symbol.take() );
+  }
+}
+
 void QgsGraduatedSymbolRendererV2::updateColorRamp( QgsVectorColorRampV2 *ramp, bool inverted )
 {
   int i = 0;
@@ -1386,9 +1447,21 @@ void QgsGraduatedSymbolRendererV2::updateSymbols( QgsSymbolV2 *sym )
   int i = 0;
   foreach ( QgsRendererRangeV2 range, mRanges )
   {
-    QgsSymbolV2 *symbol = sym->clone();
-    symbol->setColor( range.symbol()->color() );
-    updateRangeSymbol( i, symbol );
+    QScopedPointer<QgsSymbolV2> symbol( sym->clone() );
+    if ( mGraduatedMethod == GraduatedColor )
+    {
+      symbol->setColor( range.symbol()->color() );
+    }
+    else if ( mGraduatedMethod == GraduatedSize )
+    {
+      if ( symbol->type() == QgsSymbolV2::Marker )
+        static_cast<QgsMarkerSymbolV2 *>( symbol.data() )->setSize(
+          static_cast<QgsMarkerSymbolV2 *>( range.symbol() )->size() );
+      else if ( symbol->type() == QgsSymbolV2::Line )
+        static_cast<QgsLineSymbolV2 *>( symbol.data() )->setWidth(
+          static_cast<QgsLineSymbolV2 *>( range.symbol() )->width() );
+    }
+    updateRangeSymbol( i, symbol.take() );
     ++i;
   }
   setSourceSymbol( sym->clone() );
@@ -1602,3 +1675,15 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::convertFromRenderer(
 
   return r;
 }
+
+const char * QgsGraduatedSymbolRendererV2::graduatedMethodStr( GraduatedMethod method )
+{
+  switch ( method )
+  {
+    case GraduatedColor: return "GraduatedColor";
+    case GraduatedSize: return "GraduatedSize";
+  }
+  return "";
+}
+
+
