@@ -419,6 +419,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
+  methodComboBox->blockSignals( true );
   methodComboBox->addItem( "Color" );
   if ( mGraduatedSymbol->type() == QgsSymbolV2::Marker )
   {
@@ -432,6 +433,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
     minSizeSpinBox->setValue( .1 );
     maxSizeSpinBox->setValue( 2 );
   }
+  methodComboBox->blockSignals( false );
 
   connect( mExpressionWidget, SIGNAL( fieldChanged( QString ) ), this, SLOT( graduatedColumnChanged( QString ) ) );
   connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
@@ -446,8 +448,6 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( cbxLinkBoundaries, SIGNAL( toggled( bool ) ), this, SLOT( toggleBoundariesLink( bool ) ) );
 
   connect( mSizeUnitWidget, SIGNAL( changed() ), this, SLOT( on_mSizeUnitWidget_changed() ) );
-
-  connect( methodComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( on_methodComboBox_currentChanged( int ) ) );
 
   connectUpdateHandlers();
 
@@ -564,6 +564,7 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
   }
 
   // set source color ramp
+  methodComboBox->blockSignals( true );
   if ( mRenderer->graduatedMethod() == QgsGraduatedSymbolRendererV2::GraduatedColor )
   {
     methodComboBox->setCurrentIndex( 0 );
@@ -580,6 +581,8 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer( bool updateCount 
       maxSizeSpinBox->setValue( mRenderer->maxSymbolSize() );
     }
   }
+  mMethodStackedWidget->setCurrentIndex( methodComboBox->currentIndex() );
+  methodComboBox->blockSignals( false );
 
   QgsRendererRangeV2LabelFormat labelFormat = mRenderer->labelFormat();
   txtLegendFormat->setText( labelFormat.format() );
@@ -598,9 +601,9 @@ void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged( QString field )
   mRenderer->setClassAttribute( field );
 }
 
-void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentChanged( int idx )
+void QgsGraduatedSymbolRendererV2Widget::on_methodComboBox_currentIndexChanged( int idx )
 {
-  stackedWidget->setCurrentIndex( idx );
+  mMethodStackedWidget->setCurrentIndex( idx );
   if ( idx == 0 )
   {
     mRenderer->setGraduatedMethod( QgsGraduatedSymbolRendererV2::GraduatedColor );

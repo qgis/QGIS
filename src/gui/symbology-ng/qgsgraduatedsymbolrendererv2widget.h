@@ -110,7 +110,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void rowsMoved();
     void modelDataChanged();
     void on_mSizeUnitWidget_changed();
-    void on_methodComboBox_currentChanged( int );
+    void on_methodComboBox_currentIndexChanged( int );
 
   protected:
     void updateUiFromRenderer( bool updateCount = true );
