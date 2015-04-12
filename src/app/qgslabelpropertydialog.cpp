@@ -199,7 +199,7 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
   mRotationSpinBox->blockSignals( block );
 }
 
-void QgsLabelPropertyDialog::setDataDefinedValues( QgsPalLayerSettings layerSettings, QgsVectorLayer* vlayer )
+void QgsLabelPropertyDialog::setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer )
 {
   //loop through data defined properties and set all the GUI widget values. We can do this
   //even if the data defined property is set to an expression, as it's useful to show

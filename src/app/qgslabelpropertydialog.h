@@ -73,7 +73,7 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     /**Block / unblock all input element signals*/
     void blockElementSignals( bool block );
 
-    void setDataDefinedValues( QgsPalLayerSettings layerSettings, QgsVectorLayer* vlayer );
+    void setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer );
     void enableDataDefinedWidgets( QgsVectorLayer* vlayer );
 
     /** Updates font when family or style is updated */
