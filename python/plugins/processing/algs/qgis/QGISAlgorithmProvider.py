@@ -123,6 +123,7 @@ from ImportIntoPostGIS import ImportIntoPostGIS
 from SetVectorStyle import SetVectorStyle
 from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
+from SelectByAttributeSum import SelectByAttributeSum
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
 from processing.algs.qgis.FieldsMapper import FieldsMapper
@@ -172,7 +173,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(),
+                        FieldsMapper(),SelectByAttributeSum()
                         ]
 
         if hasMatplotlib:
