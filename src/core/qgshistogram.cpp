@@ -103,7 +103,7 @@ QList<int> QgsHistogram::counts( int bins ) const
   for ( int i = 0; i < bins; ++i )
   {
     int count = 0;
-    while ( mValues.at( currentValueIndex ) < edges.at( i + 1 ) )
+    while ( currentValueIndex < mValues.count() && mValues.at( currentValueIndex ) < edges.at( i + 1 ) )
     {
       count++;
       currentValueIndex++;

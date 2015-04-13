@@ -1357,6 +1357,37 @@ void QgsGraduatedSymbolRendererV2::addClass( double lower, double upper )
   mRanges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
 }
 
+void QgsGraduatedSymbolRendererV2::addBreak( double breakValue, bool updateSymbols )
+{
+  QMutableListIterator< QgsRendererRangeV2 > it( mRanges );
+  while ( it.hasNext() )
+  {
+    QgsRendererRangeV2 range = it.next();
+    if ( range.lowerValue() < breakValue && range.upperValue() > breakValue )
+    {
+      QgsRendererRangeV2 newRange = QgsRendererRangeV2();
+      newRange.setLowerValue( breakValue );
+      newRange.setUpperValue( range.upperValue() );
+      newRange.setLabel( mLabelFormat.labelForRange( newRange ) );
+      newRange.setSymbol( mSourceSymbol->clone() );
+
+      //update old range
+      bool isDefaultLabel = range.label() == mLabelFormat.labelForRange( range );
+      range.setUpperValue( breakValue );
+      if ( isDefaultLabel ) range.setLabel( mLabelFormat.labelForRange( range.lowerValue(), breakValue ) );
+      it.setValue( range );
+
+      it.insert( newRange );
+      break;
+    }
+  }
+
+  if ( updateSymbols && mGraduatedMethod == GraduatedColor )
+  {
+    updateColorRamp( mSourceColorRamp.data(), mInvertedColorRamp );
+  }
+}
+
 void QgsGraduatedSymbolRendererV2::addClass( QgsRendererRangeV2 range )
 {
   mRanges.append( range );

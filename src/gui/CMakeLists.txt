@@ -8,6 +8,7 @@ raster/qgspalettedrendererwidget.cpp
 raster/qgssinglebandgrayrendererwidget.cpp
 raster/qgssinglebandpseudocolorrendererwidget.cpp
 raster/qgsrasterhistogramwidget.cpp
+raster/qwt5_histogram_item.cpp
 
 symbology-ng/qgsbrushstylecombobox.cpp
 symbology-ng/qgscolorrampcombobox.cpp
@@ -19,6 +20,7 @@ symbology-ng/qgsrendererv2widget.cpp
 symbology-ng/qgssinglesymbolrendererv2widget.cpp
 symbology-ng/qgscategorizedsymbolrendererv2widget.cpp
 symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp
+symbology-ng/qgsgraduatedhistogramwidget.cpp
 symbology-ng/qgsrulebasedrendererv2widget.cpp
 symbology-ng/qgsheatmaprendererwidget.cpp
 symbology-ng/qgsinvertedpolygonrendererwidget.cpp
@@ -174,6 +176,7 @@ qgsfilterlineedit.cpp
 qgsformannotationitem.cpp
 qgsgenericprojectionselector.cpp
 qgshighlight.cpp
+qgshistogramwidget.cpp
 qgsidentifymenu.cpp
 qgshtmlannotationitem.cpp
 qgslegendinterface.cpp
@@ -287,6 +290,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfilterlineedit.h
   qgsformannotationitem.h
   qgsgenericprojectionselector.h
+  qgshistogramwidget.h
   qgshtmlannotationitem.h
   qgsidentifymenu.h
   qgslegendinterface.h
@@ -352,6 +356,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsdatadefinedsymboldialog.h
   symbology-ng/qgsellipsesymbollayerv2widget.h
   symbology-ng/qgsgraduatedsymbolrendererv2widget.h
+  symbology-ng/qgsgraduatedhistogramwidget.h
   symbology-ng/qgsheatmaprendererwidget.h
   symbology-ng/qgsinvertedpolygonrendererwidget.h
   symbology-ng/qgslayerpropertieswidget.h
