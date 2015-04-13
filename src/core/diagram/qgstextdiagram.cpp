@@ -109,13 +109,6 @@ void QgsTextDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext&
     return;
   }
 
-  double scaleDenominator = c.rendererScale();
-  if (( s.minScaleDenominator != -1 && scaleDenominator < s.minScaleDenominator )
-      || ( s.maxScaleDenominator != -1 && scaleDenominator > s.maxScaleDenominator ) )
-  {
-    return;
-  }
-
   //convert from mm / map units to painter units
   QSizeF spu = sizePainterUnits( s.size, s, c );
   double w = spu.width();
