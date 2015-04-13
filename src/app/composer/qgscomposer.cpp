@@ -3568,15 +3568,18 @@ void QgsComposer::on_mActionPageSetup_triggered()
 
 void QgsComposer::restoreComposerMapStates()
 {
-  //go through maps and restore original preview modes (show on demand after loading from project file)
-  QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
-  for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+  if ( !mMapsToRestore.isEmpty() )
   {
-    mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
-    mapIt.key()->cache();
-    mapIt.key()->update();
+    //go through maps and restore original preview modes (show on demand after loading from project file)
+    QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
+    for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+    {
+      mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
+      mapIt.key()->cache();
+      mapIt.key()->update();
+    }
+    mMapsToRestore.clear();
   }
-  mMapsToRestore.clear();
 }
 
 void QgsComposer::populatePrintComposersMenu()
