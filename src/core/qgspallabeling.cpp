@@ -3360,20 +3360,18 @@ void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, con
 
 QgsGeometry* QgsPalLabeling::prepareGeometry( QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
 {
-  QgsGeometry* geom = geometry;
-  if ( !geom )
+  if ( !geometry )
   {
     return 0;
   }
 
-  // reproject the geometry if necessary (but don't modify the features
-  // geometry so that geometry based expression keep working)
-  QScopedPointer<QgsGeometry> clonedGeometry;
+  //don't modify the feature's geometry so that geometry based expressions keep working
+  QgsGeometry* geom = new QgsGeometry( *geometry );
+  QScopedPointer<QgsGeometry> clonedGeometry( geom );
+
+  //reproject the geometry if necessary
   if ( ct )
   {
-    geom = new QgsGeometry( *geom );
-    clonedGeometry.reset( geom );
-
     try
     {
       geom->transform( *ct );
