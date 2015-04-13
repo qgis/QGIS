@@ -789,6 +789,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
+    /** Returns whether the layer contains labels which are enabled and should be drawn.
+     * @return true if layer contains enabled labels
+     * @note added in QGIS 2.9
+     */
+    bool labelsEnabled() const;
+
     /** Returns whether the layer contains diagrams which are enabled and should be drawn.
      * @return true if layer contains enabled diagrams
      * @note added in QGIS 2.9
@@ -1068,11 +1074,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
-    /** Set labels on */
-    void enableLabels( bool on );
+    /** Set labels on
+     * @deprecated this method is for the old labeling engine
+    */
+    Q_DECL_DEPRECATED void enableLabels( bool on );
 
-    /** Label is on */
-    bool hasLabelsEnabled() const;
+    /** Label is on
+     * @deprecated this method is for the old labeling engine, use labelsEnabled instead
+    */
+    Q_DECL_DEPRECATED bool hasLabelsEnabled() const;
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const override;
@@ -1116,8 +1126,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool draw( QgsRenderContext& rendererContext ) override;
 
-    /** Draws the layer labels using coordinate transformation */
-    void drawLabels( QgsRenderContext& rendererContext ) override;
+    /** Draws the layer labels using the old labeling engine
+     * @note deprecated
+    */
+    Q_DECL_DEPRECATED void drawLabels( QgsRenderContext& rendererContext ) override;
 
     /** Return the extent of the layer as a QRect */
     QgsRectangle extent() override;

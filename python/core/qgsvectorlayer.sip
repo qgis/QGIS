@@ -427,6 +427,12 @@ class QgsVectorLayer : QgsMapLayer
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
 
+    /** Returns whether the layer contains labels which are enabled and should be drawn.
+     * @return true if layer contains enabled labels
+     * @note added in QGIS 2.9
+     */
+    bool labelsEnabled() const;
+
     /** Returns whether the layer contains diagrams which are enabled and should be drawn.
      * @return true if layer contains enabled diagrams
      * @note added in QGIS 2.9
@@ -706,11 +712,15 @@ class QgsVectorLayer : QgsMapLayer
      */
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
-    /** Set labels on */
-    void enableLabels( bool on );
+    /** Set labels on
+     * @deprecated this method is for the old labeling engine
+    */
+    void enableLabels( bool on ) /Deprecated/;
 
-    /** Label is on */
-    bool hasLabelsEnabled() const;
+    /** Label is on
+     * @deprecated this method is for the old labeling engine, use labelsEnabled instead
+    */
+    bool hasLabelsEnabled() const /Deprecated/;
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const;
@@ -754,8 +764,10 @@ class QgsVectorLayer : QgsMapLayer
      */
     bool draw( QgsRenderContext& rendererContext );
 
-    /** Draws the layer labels using coordinate transformation */
-    void drawLabels( QgsRenderContext& rendererContext );
+    /** Draws the layer labels using the old labeling engine
+     * @note deprecated
+    */
+    void drawLabels( QgsRenderContext& rendererContext ) /Deprecated/;
 
     /** Return the extent of the layer as a QRect */
     QgsRectangle extent();

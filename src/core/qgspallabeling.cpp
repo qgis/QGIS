@@ -714,7 +714,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 
   // NOTE: set defaults for newly added properties, for backwards compatibility
 
-  enabled = layer->customProperty( "labeling/enabled" ).toBool();
+  enabled = layer->labelsEnabled();
 
   // text style
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
@@ -3152,8 +3152,7 @@ bool QgsPalLabeling::staticWillUseLayer( QgsVectorLayer* layer )
   // don't do QgsPalLayerSettings::readFromLayer( layer ) if not needed
   bool enabled = false;
   if ( layer->customProperty( "labeling" ).toString() == QString( "pal" ) )
-    enabled = layer->customProperty( "labeling/enabled", QVariant( false ) ).toBool()
-              || layer->diagramsEnabled();
+    enabled = layer->labelsEnabled() || layer->diagramsEnabled();
 
   return enabled;
 }
@@ -3187,7 +3186,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 {
   Q_ASSERT( mMapSettings != NULL );
 
-  if ( !willUseLayer( layer ) )
+  if ( !willUseLayer( layer ) || !layer->labelsEnabled() )
   {
     return 0;
   }

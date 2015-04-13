@@ -562,7 +562,9 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         QList<QgsMapLayer *>() << newLayer );
 
       // copy style
+      Q_NOWARN_DEPRECATED_PUSH
       bool hasLabels = layer->hasLabelsEnabled();
+      Q_NOWARN_DEPRECATED_POP
       if ( !hasLabels )
       {
         // NOTE: copy symbology before adding the layer so it is displayed correctly
