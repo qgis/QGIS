@@ -64,8 +64,8 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
 
     if ( i == uri.length() || uri[i] != '=' )
     {
-      QgsDebugMsg( "= expected after parameter name" );
-      return;
+      QgsDebugMsg( QString( "= expected after parameter name, skipping text '%1'" ).arg( pname ) );
+      continue;
     }
 
     i++;
@@ -101,7 +101,6 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
           i++;
 
           int start = i;
-          QString col;
           while ( i < uri.length() && uri[i] != ')' )
           {
             if ( uri[i] == '\\' )
