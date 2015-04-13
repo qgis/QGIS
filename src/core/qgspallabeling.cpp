@@ -1723,42 +1723,6 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     maxcharangleout = -( qAbs( maxcharangleout ) );
   }
 
-  QgsGeometry* geom = f.geometry();
-  if ( !geom )
-  {
-    return;
-  }
-
-  // reproject the geometry if necessary (but don't modify the features
-  // geometry so that geometry based expression keep working)
-  QScopedPointer<QgsGeometry> clonedGeometry;
-  if ( ct )
-  {
-    geom = new QgsGeometry( *geom );
-    clonedGeometry.reset( geom );
-
-    try
-    {
-      geom->transform( *ct );
-    }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception" ).arg( f.id() ), 4 );
-      return;
-    }
-  }
-
-  if ( !checkMinimumSizeMM( context, geom, minFeatureSize ) )
-  {
-    return;
-  }
-
-  // whether we're going to create a centroid for polygon
-  bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
-                         || placement == QgsPalLayerSettings::OverPoint )
-                       && geom->type() == QGis::Polygon );
-
   // data defined centroid whole or clipped?
   bool wholeCentroid = centroidWhole;
   if ( dataDefinedEvaluate( QgsPalLayerSettings::CentroidWhole, exprVal ) )
@@ -1779,51 +1743,30 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  if ( !geom->asGeos() )
-    return;  // there is something really wrong with the geometry
-
-  // fix invalid polygons
-  if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
+  QgsGeometry* geom = f.geometry();
+  if ( !geom )
   {
-    QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
-    if ( !bufferGeom )
-    {
-      return;
-    }
-    geom = bufferGeom;
-    clonedGeometry.reset( geom );
+    return;
   }
 
-  // Rotate the geometry if needed, before clipping
-  const QgsMapToPixel& m2p = context.mapToPixel();
-  if ( m2p.mapRotation() )
-  {
-    if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
-    {
-      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
-      return; // really ?
-    }
-  }
+  // whether we're going to create a centroid for polygon
+  bool centroidPoly = (( placement == QgsPalLayerSettings::AroundPoint
+                         || placement == QgsPalLayerSettings::OverPoint )
+                       && geom->type() == QGis::Polygon );
 
   // CLIP the geometry if it is bigger than the extent
   // don't clip if centroid is requested for whole feature
-  bool do_clip = false;
+  bool doClip = false;
   if ( !centroidPoly || ( centroidPoly && !wholeCentroid ) )
   {
-    do_clip = !extentGeom->contains( geom );
-    if ( do_clip )
-    {
-      QgsGeometry* clipGeom = geom->intersection( extentGeom ); // creates new geometry
-      if ( !clipGeom )
-      {
-        return;
-      }
-      geom = clipGeom;
-      clonedGeometry.reset( geom );
-    }
+    doClip = true;
   }
 
-  const GEOSGeometry* geos_geom = geom->asGeos();
+  QScopedPointer<QgsGeometry> preparedGeom( QgsPalLabeling::prepareGeometry( geom, context, ct, minFeatureSize, doClip ? extentGeom : 0 ) );
+  if ( !preparedGeom.data() )
+    return;
+
+  const GEOSGeometry* geos_geom = preparedGeom.data()->asGeos();
 
   if ( geos_geom == NULL )
     return; // invalid geometry
@@ -1983,6 +1926,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     angle = angleOffset * M_PI / 180; // convert to radians
   }
 
+  const QgsMapToPixel& m2p = context.mapToPixel();
   //data defined rotation?
   if ( dataDefinedEvaluate( QgsPalLayerSettings::Rotation, exprVal ) )
   {
@@ -3414,6 +3358,117 @@ void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, con
   lyr.registerFeature( f, context, dxfLayer );
 }
 
+QgsGeometry* QgsPalLabeling::prepareGeometry( QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
+{
+  QgsGeometry* geom = geometry;
+  if ( !geom )
+  {
+    return 0;
+  }
+
+  // reproject the geometry if necessary (but don't modify the features
+  // geometry so that geometry based expression keep working)
+  QScopedPointer<QgsGeometry> clonedGeometry;
+  if ( ct )
+  {
+    geom = new QgsGeometry( *geom );
+    clonedGeometry.reset( geom );
+
+    try
+    {
+      geom->transform( *ct );
+    }
+    catch ( QgsCsException &cse )
+    {
+      Q_UNUSED( cse );
+      QgsDebugMsgLevel( QString( "Ignoring feature due to transformation exception" ), 4 );
+      return 0;
+    }
+  }
+
+  if ( minSize > 0 && !checkMinimumSizeMM( context, geom, minSize ) )
+  {
+    return 0;
+  }
+
+  if ( !geom->asGeos() )
+    return 0;  // there is something really wrong with the geometry
+
+  // fix invalid polygons
+  if ( geom->type() == QGis::Polygon && !geom->isGeosValid() )
+  {
+    QgsGeometry* bufferGeom = geom->buffer( 0, 0 );
+    if ( !bufferGeom )
+    {
+      return 0;
+    }
+    geom = bufferGeom;
+    clonedGeometry.reset( geom );
+  }
+
+  // Rotate the geometry if needed, before clipping
+  const QgsMapToPixel& m2p = context.mapToPixel();
+  if ( m2p.mapRotation() )
+  {
+    if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
+    {
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom->exportToWkt() ) );
+      return 0;
+    }
+  }
+
+  if ( clipGeometry && !clipGeometry->contains( geom ) )
+  {
+    QgsGeometry* clipGeom = geom->intersection( clipGeometry ); // creates new geometry
+    if ( !clipGeom )
+    {
+      return 0;
+    }
+    geom = clipGeom;
+    clonedGeometry.reset( geom );
+  }
+
+  return clonedGeometry.take();
+}
+
+bool QgsPalLabeling::checkMinimumSizeMM( const QgsRenderContext& context, QgsGeometry* geom, double minSize )
+{
+  if ( minSize <= 0 )
+  {
+    return true;
+  }
+
+  if ( !geom )
+  {
+    return false;
+  }
+
+  QGis::GeometryType featureType = geom->type();
+  if ( featureType == QGis::Point ) //minimum size does not apply to point features
+  {
+    return true;
+  }
+
+  double mapUnitsPerMM = context.mapToPixel().mapUnitsPerPixel() * context.scaleFactor();
+  if ( featureType == QGis::Line )
+  {
+    double length = geom->length();
+    if ( length >= 0.0 )
+    {
+      return ( length >= ( minSize * mapUnitsPerMM ) );
+    }
+  }
+  else if ( featureType == QGis::Polygon )
+  {
+    double area = geom->area();
+    if ( area >= 0.0 )
+    {
+      return ( sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
+    }
+  }
+  return true; //should never be reached. Return true in this case to label such geometries anyway.
+}
+
 void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature& feat, const QgsRenderContext& context )
 {
   //get diagram layer settings, diagram renderer
@@ -3445,28 +3500,13 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
 
   //convert geom to geos
   QgsGeometry* geom = feat.geometry();
+  QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mMapSettings->visibleExtent() ) );
 
-  // reproject the geometry if necessary (but don't modify the features
-  // geometry so that geometry based expression keep working)
-  QScopedPointer<QgsGeometry> clonedGeometry;
-  if ( layerIt.value().ct )
-  {
-    geom = new QgsGeometry( *geom );
-    clonedGeometry.reset( geom );
+  QScopedPointer<QgsGeometry> preparedGeom( QgsPalLabeling::prepareGeometry( geom, context, layerIt.value().ct, -1, extentGeom.data() ) );
+  if ( !preparedGeom.data() )
+    return;
 
-    try
-    {
-      geom->transform( *( layerIt.value().ct ) );
-    }
-    catch ( QgsCsException &cse )
-    {
-      Q_UNUSED( cse );
-      QgsDebugMsgLevel( QString( "Ignoring feature %1 due transformation exception" ).arg( feat.id() ), 4 );
-      return;
-    }
-  }
-
-  const GEOSGeometry* geos_geom = geom->asGeos();
+  const GEOSGeometry* geos_geom = preparedGeom.data()->asGeos();
   if ( geos_geom == 0 )
   {
     return; // invalid geometry
