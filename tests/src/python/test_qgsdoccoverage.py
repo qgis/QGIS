@@ -32,7 +32,7 @@ from PyQt4.QtCore import qDebug
 # DON'T LOWER THIS THRESHOLD UNLESS MEMBERS HAVE BEEN REMOVED FROM THE API
 # (changes which raise this threshold are welcomed though!)
 
-ACCEPTABLE_COVERAGE = 52.673
+ACCEPTABLE_COVERAGE = 53.66
 
 
 def elemIsDocumentableClass(elem):
