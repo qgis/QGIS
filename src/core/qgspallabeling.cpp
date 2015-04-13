@@ -1762,11 +1762,19 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     doClip = true;
   }
 
-  QScopedPointer<QgsGeometry> preparedGeom( QgsPalLabeling::prepareGeometry( geom, context, ct, minFeatureSize, doClip ? extentGeom : 0 ) );
-  if ( !preparedGeom.data() )
-    return;
-
-  const GEOSGeometry* geos_geom = preparedGeom.data()->asGeos();
+  const GEOSGeometry* geos_geom = 0;
+  QScopedPointer<QgsGeometry> preparedGeom;
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, ct, doClip ? extentGeom : 0 ) )
+  {
+    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, ct, minFeatureSize, doClip ? extentGeom : 0 ) );
+    if ( !preparedGeom.data() )
+      return;
+    geos_geom = preparedGeom.data()->asGeos();
+  }
+  else
+  {
+    geos_geom = geom->asGeos();
+  }
 
   if ( geos_geom == NULL )
     return; // invalid geometry
@@ -3358,6 +3366,33 @@ void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, con
   lyr.registerFeature( f, context, dxfLayer );
 }
 
+bool QgsPalLabeling::geometryRequiresPreparation( QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
+{
+  if ( !geometry )
+  {
+    return false;
+  }
+
+  //requires reprojection
+  if ( ct )
+    return true;
+
+  //requires fixing
+  if ( geometry->type() == QGis::Polygon && !geometry->isGeosValid() )
+    return true;
+
+  //requires rotation
+  const QgsMapToPixel& m2p = context.mapToPixel();
+  if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
+    return true;
+
+  //requires clip
+  if ( clipGeometry && !clipGeometry->contains( geometry ) )
+    return true;
+
+  return false;
+}
+
 QgsGeometry* QgsPalLabeling::prepareGeometry( QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
 {
   if ( !geometry )
@@ -3406,7 +3441,7 @@ QgsGeometry* QgsPalLabeling::prepareGeometry( QgsGeometry* geometry, const QgsRe
 
   // Rotate the geometry if needed, before clipping
   const QgsMapToPixel& m2p = context.mapToPixel();
-  if ( m2p.mapRotation() )
+  if ( !qgsDoubleNear( m2p.mapRotation(), 0 ) )
   {
     if ( geom->rotate( m2p.mapRotation(), context.extent().center() ) )
     {
@@ -3500,11 +3535,20 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   QgsGeometry* geom = feat.geometry();
   QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mMapSettings->visibleExtent() ) );
 
-  QScopedPointer<QgsGeometry> preparedGeom( QgsPalLabeling::prepareGeometry( geom, context, layerIt.value().ct, -1, extentGeom.data() ) );
-  if ( !preparedGeom.data() )
-    return;
+  const GEOSGeometry* geos_geom = 0;
+  QScopedPointer<QgsGeometry> preparedGeom;
+  if ( QgsPalLabeling::geometryRequiresPreparation( geom, context, layerIt.value().ct, extentGeom.data() ) )
+  {
+    preparedGeom.reset( QgsPalLabeling::prepareGeometry( geom, context, layerIt.value().ct, 0, extentGeom.data() ) );
+    if ( !preparedGeom.data() )
+      return;
+    geos_geom = preparedGeom.data()->asGeos();
+  }
+  else
+  {
+    geos_geom = geom->asGeos();
+  }
 
-  const GEOSGeometry* geos_geom = preparedGeom.data()->asGeos();
   if ( geos_geom == 0 )
   {
     return; // invalid geometry

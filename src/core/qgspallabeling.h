@@ -823,6 +823,16 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
      */
     static QgsGeometry* prepareGeometry( QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, double minSize = 0, QgsGeometry *clipGeometry = 0 );
 
+    /** Checks whether a geometry requires preparation before registration with PAL
+     * @param geometry geometry to prepare
+     * @param context render context
+     * @param ct coordinate transform
+     * @param clipGeometry geometry to clip features to, if applicable
+     * @returns true if geometry requires preparation
+     * @note added in QGIS 2.9
+     */
+    static bool geometryRequiresPreparation( QgsGeometry *geometry, const QgsRenderContext &context, const QgsCoordinateTransform *ct, QgsGeometry *clipGeometry = 0 );
+
   protected:
     // update temporary QgsPalLayerSettings with any data defined text style values
     void dataDefinedTextStyle( QgsPalLayerSettings& tmpLyr,
