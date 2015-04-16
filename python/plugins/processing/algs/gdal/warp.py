@@ -78,7 +78,7 @@ class warp(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.RTYPE,
             self.tr('Output raster type'), self.TYPE, 5))
         self.addParameter(ParameterSelection(self.COMPRESS,
-            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 5))
+            self.tr('GeoTIFF options. Compression type:'), self.COMPRESSTYPE, 4))
         self.addParameter(ParameterNumber(self.JPEGCOMPRESSION,
             self.tr('Set the JPEG compression level'),
             1, 100, 75))
