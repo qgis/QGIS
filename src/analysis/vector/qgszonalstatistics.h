@@ -54,6 +54,9 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     void statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
                                             double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
 
+    /**Tests whether a pixel's value should be included in the result*/
+    bool validPixel( float value ) const;
+
     QString getUniqueFieldName( QString fieldName );
 
     QString mRasterFilePath;
@@ -63,6 +66,7 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QString mAttributePrefix;
     /**The nodata value of the input layer*/
     float mInputNodataValue;
+
 };
 
 #endif // QGSZONALSTATISTICS_H
