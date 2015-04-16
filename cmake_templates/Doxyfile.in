@@ -585,6 +585,7 @@ INPUT                  = @CMAKE_SOURCE_DIR@/doc \
                          @CMAKE_SOURCE_DIR@/src/gui/attributetable \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets \
                          @CMAKE_SOURCE_DIR@/src/gui/editorwidgets/core \
+                         @CMAKE_SOURCE_DIR@/src/gui/effects \
                          @CMAKE_SOURCE_DIR@/src/gui/layertree \
                          @CMAKE_SOURCE_DIR@/src/gui/raster \
                          @CMAKE_SOURCE_DIR@/src/gui/symbology-ng \
