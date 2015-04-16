@@ -302,20 +302,16 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
     cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
     for ( int j = 0; j < nCellsX; ++j )
     {
-      GEOSGeom_destroy_r( geosctxt, currentCellCenter );
-      cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
-      GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
-      GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
-      currentCellCenter = GEOSGeom_createPoint_r( geosctxt, cellCenterCoords );
-
-      if ( scanLine[j] != mInputNodataValue ) //don't consider nodata values
+      if ( validPixel( scanLine[j] ) )
       {
+        GEOSGeom_destroy_r( geosctxt, currentCellCenter );
+        cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
+        GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
+        GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
+        currentCellCenter = GEOSGeom_createPoint_r( geosctxt, cellCenterCoords );
         if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared, currentCellCenter ) )
         {
-          if ( !qIsNaN( scanLine[j] ) )
-          {
-            sum += scanLine[j];
-          }
+          sum += scanLine[j];
           ++count;
         }
       }
@@ -323,6 +319,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
     }
     cellCenterY -= cellSizeY;
   }
+  GEOSGeom_destroy_r( geosctxt, currentCellCenter );
   CPLFree( scanLine );
   GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
 }
@@ -347,6 +344,9 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
     for ( int col = 0; col < nCellsX; ++col )
     {
       GDALRasterIO( band, GF_Read, pixelOffsetX + col, pixelOffsetY + row, nCellsX, 1, pixelData, 1, 1, GDT_Float32, 0, 0 );
+      if ( !validPixel( *pixelData ) )
+        continue;
+
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
       if ( pixelRectGeometry )
       {
@@ -371,6 +371,15 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
     currentY -= cellSizeY;
   }
   CPLFree( pixelData );
+}
+
+bool QgsZonalStatistics::validPixel( float value ) const
+{
+  if ( value == mInputNodataValue || qIsNaN( value ) )
+  {
+    return false;
+  }
+  return true;
 }
 
 QString QgsZonalStatistics::getUniqueFieldName( QString fieldName )
