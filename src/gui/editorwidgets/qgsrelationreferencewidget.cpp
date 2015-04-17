@@ -364,7 +364,7 @@ QVariant QgsRelationReferenceWidget::foreignKey()
     }
     else
     {
-      return mFidFkMap.value( varFid.value<QgsFeatureId>() );
+      return mFeature.attribute( mFkeyFieldIdx );
     }
   }
 }
@@ -510,8 +510,12 @@ void QgsRelationReferenceWidget::init()
     mFeatureListModel->setInjectNull( mAllowNull );
     if ( mOrderByValue )
     {
-      int sortIdx = mReferencedLayer->fieldNameIndex( QgsExpression( mReferencedLayer->displayExpression() ).referencedColumns().first() );
-      mFilterModel->sort( sortIdx );
+      const QStringList referencedColumns = QgsExpression( mReferencedLayer->displayExpression() ).referencedColumns();
+      if ( referencedColumns.size() > 0 )
+      {
+        int sortIdx = mReferencedLayer->fieldNameIndex( referencedColumns.first() );
+        mFilterModel->sort( sortIdx );
+      }
     }
 
     mComboBox->setModel( mFeatureListModel );
@@ -531,7 +535,7 @@ void QgsRelationReferenceWidget::init()
     mComboBox->setCurrentIndex( mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole ) );
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
-    connect( mComboBox, SIGNAL( activated( int ) ), this, SLOT( comboReferenceChanged( int ) ) );
+    connect( mComboBox, SIGNAL( currentIndexChanged(int) ), this, SLOT( comboReferenceChanged( int ) ) );
     QApplication::restoreOverrideCursor();
   }
 }
@@ -671,12 +675,11 @@ void QgsRelationReferenceWidget::mapIdentification()
 
 void QgsRelationReferenceWidget::comboReferenceChanged( int index )
 {
-  QgsFeatureId fid = mComboBox->itemData( index ).value<QgsFeatureId>();
-  QgsFeature feat;
-  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( feat );
-  highlightFeature( feat );
-  updateAttributeEditorFrame( feat );
-  emit foreignKeyChanged( mFidFkMap.value( fid ) );
+  QgsFeatureId fid = mComboBox->itemData( index, QgsAttributeTableModel::FeatureIdRole ).value<QgsFeatureId>();
+  mReferencedLayer->getFeatures( QgsFeatureRequest().setFilterFid( fid ) ).nextFeature( mFeature );
+  highlightFeature( mFeature );
+  updateAttributeEditorFrame( mFeature );
+  emit foreignKeyChanged( mFeature.attribute( mFkeyFieldIdx ) );
 }
 
 void QgsRelationReferenceWidget::updateAttributeEditorFrame( const QgsFeature feature )
@@ -708,6 +711,7 @@ void QgsRelationReferenceWidget::featureIdentified( const QgsFeature& feature )
   else
   {
     mComboBox->setCurrentIndex( mComboBox->findData( feature.attribute( mFkeyFieldIdx ), QgsAttributeTableModel::FeatureIdRole ) );
+    mFeature = feature;
   }
 
   mRemoveFKButton->setEnabled( mIsEditable );
@@ -801,8 +805,6 @@ void QgsRelationReferenceWidget::filterChanged()
     if ( cb->currentIndex() != 0 )
     {
       const QString fieldName = cb->property( "Field" ).toString();
-
-      cb->itemData( cb->currentIndex() );
 
       if ( cb->currentText() == nullValue.toString() )
       {
