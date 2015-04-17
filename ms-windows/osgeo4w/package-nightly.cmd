@@ -198,11 +198,23 @@ cmake --build %BUILDDIR% --config %BUILDCONF%
 if errorlevel 1 cmake --build %BUILDDIR% --config %BUILDCONF%
 if errorlevel 1 (echo build failed twice & goto error)
 
-if not exist ..\skiptests (
-	echo RUN_TESTS: %DATE% %TIME%
-	cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
-	if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
+if exist ..\skiptests goto skiptests
+
+echo RUN_TESTS: %DATE% %TIME%
+
+set oldpath=%PATH%
+for %%g IN (%GRASS_VERSIONS%) do (
+	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
+	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
 )
+PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
+
+cmake --build %BUILDDIR% --target RUN_TESTS --config %BUILDCONF%
+if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
+
+PATH %oldpath%
+
+:skiptests
 
 if exist %PKGDIR% (
 	echo REMOVE: %DATE% %TIME%
