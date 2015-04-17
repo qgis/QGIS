@@ -50,16 +50,16 @@ class TestQgsGrassProvider: public QObject
 
     void vectorLayers();
   private:
-    void reportRow(QString message);
+    void reportRow( QString message );
     QString mGisdbase;
     QString mLocation;
     QString mReport;
 };
 
 
-void TestQgsGrassProvider::reportRow(QString message)
+void TestQgsGrassProvider::reportRow( QString message )
 {
-    mReport += message + "<br>";
+  mReport += message + "<br>";
 }
 
 //runs before all tests
@@ -75,7 +75,7 @@ void TestQgsGrassProvider::initTestCase()
   //QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
   mySettings = mySettings.replace( "\n", "<br />" );
-  mReport += QString("<h1>GRASS %1 provider tests</h1>\n").arg( GRASS_BUILD_VERSION );
+  mReport += QString( "<h1>GRASS %1 provider tests</h1>\n" ).arg( GRASS_BUILD_VERSION );
   mReport += "<p>" + mySettings + "</p>";
 
   QgsGrass::init();
@@ -106,40 +106,40 @@ void TestQgsGrassProvider::cleanupTestCase()
 
 void TestQgsGrassProvider::vectorLayers()
 {
-  QString mapset = QString("test%1").arg( GRASS_BUILD_VERSION );
+  QString mapset = QString( "test%1" ).arg( GRASS_BUILD_VERSION );
   QString mapName = "test";
   QStringList expectedLayers;
   expectedLayers << "1_point" << "2_line" << "3_polygon";
 
-  reportRow("");
-  reportRow("QgsGrass::vectorLayers test");
-  reportRow("mapset: " + mapset);
-  reportRow("mapName: " + mapName);
-  reportRow("expectedLayers: " + expectedLayers.join(", "));
+  reportRow( "" );
+  reportRow( "QgsGrass::vectorLayers test" );
+  reportRow( "mapset: " + mapset );
+  reportRow( "mapName: " + mapName );
+  reportRow( "expectedLayers: " + expectedLayers.join( ", " ) );
 
   bool ok = true;
   G_TRY
   {
-    QStringList layers = QgsGrass::vectorLayers(mGisdbase, mLocation, mapset, mapName);
-    reportRow("layers:" + layers.join(", "));
+    QStringList layers = QgsGrass::vectorLayers( mGisdbase, mLocation, mapset, mapName );
+    reportRow( "layers:" + layers.join( ", " ) );
 
-    foreach( QString expectedLayer, expectedLayers)
+    foreach ( QString expectedLayer, expectedLayers )
     {
-      if ( !layers.contains(expectedLayer) )
+      if ( !layers.contains( expectedLayer ) )
       {
         ok = false;
-        reportRow("ERROR: expected layer '" + expectedLayer + "' missing");
+        reportRow( "ERROR: expected layer '" + expectedLayer + "' missing" );
       }
     }
   }
   G_CATCH( QgsGrass::Exception &e )
   {
     ok = false;
-    reportRow( QString("ERROR: %1").arg(e.what()) );
+    reportRow( QString( "ERROR: %1" ).arg( e.what() ) );
   }
 
   QVERIFY( ok );
-  reportRow("OK");
+  reportRow( "OK" );
 }
 
 QTEST_MAIN( TestQgsGrassProvider )

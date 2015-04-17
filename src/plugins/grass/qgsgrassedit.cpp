@@ -71,7 +71,7 @@ class QgsGrassEditLayer : public QgsMapCanvasItem
     virtual QRectF boundingRect() const override
     {
       return QRectF( 0, 0, mMapCanvas->width(), mMapCanvas->height() );
-  }
+    }
 
     virtual void updatePosition() override
     {

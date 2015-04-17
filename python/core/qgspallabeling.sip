@@ -742,7 +742,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
     bool isStoredWithProject() const /Deprecated/;
     //! @deprecated since 2.4 - settings are always stored in project
     void setStoredWithProject( bool store ) /Deprecated/;
-    
+
     /** Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
      * @param geometry geometry to prepare
      * @param context render context
@@ -787,7 +787,7 @@ class QgsPalLabeling : QgsLabelingEngineInterface
                                 const QMap< QgsPalLayerSettings::DataDefinedProperties, QVariant >& ddValues );
 
     void deleteTemporaryData();
-    
+
     /** Checks whether a geometry exceeds the minimum required size for a geometry to be labeled.
      * @param context render context
      * @param geom geometry
