@@ -177,16 +177,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnJoinCategories">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Join</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btnAdvanced">
        <property name="text">
         <string>Advanced</string>
@@ -219,7 +209,6 @@
   <tabstop>btnAddCategory</tabstop>
   <tabstop>btnDeleteCategories</tabstop>
   <tabstop>btnDeleteAllCategories</tabstop>
-  <tabstop>btnJoinCategories</tabstop>
   <tabstop>btnAdvanced</tabstop>
  </tabstops>
  <resources/>
