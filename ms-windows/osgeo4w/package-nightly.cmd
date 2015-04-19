@@ -59,7 +59,6 @@ path %path%;%PF86%\Microsoft Visual Studio 10.0\VC\bin
 
 set CMAKE_OPT=^
 	-G "Visual Studio 10" ^
-	-D BUILDNAME="OSGeo4W-Nightly-VC10-32" ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
 	-D QWT_LIBRARY=%O4W_ROOT%/lib/qwt.lib ^
 	-D WITH_GRASS6=TRUE ^
@@ -82,7 +81,6 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
 	-G "Visual Studio 10 Win64" ^
-	-D BUILDNAME="OSGeo4W-Nightly-VC10-64" ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D WITH_GRASS6=TRUE ^
 	-D WITH_GRASS7=FALSE ^
@@ -152,6 +150,7 @@ set LIB=%LIB%;%OSGEO4W_ROOT%\lib
 set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 
 cmake %CMAKE_OPT% ^
+	-D BUILDNAME="%VERSION%-Nightly-VC10-%ARCH%" ^
 	-D SITE="qgis.org" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_QSPATIALITE=TRUE ^
