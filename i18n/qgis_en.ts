@@ -635,11 +635,15 @@ Open the results dialog to check it.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Nodata value, leave blank to take the nodata value from input</translation>
+    </message>
+    <message>
+        <source>Clipped</source>
+        <translation type="unfinished">Clipped</translation>
     </message>
 </context>
 <context>
@@ -743,7 +747,11 @@ Open the results dialog to check it.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Color relief</source>
+        <translation type="unfinished">Color relief</translation>
     </message>
 </context>
 <context>
@@ -3196,6 +3204,45 @@ Are you sure you want to proceed?</translation>
     </message>
 </context>
 <context>
+    <name>DinfDistDownMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished">Pit Filled Elevation Grid</translation>
+    </message>
+    <message>
+        <source>Stream Raster Grid</source>
+        <translation type="unfinished">Stream Raster Grid</translation>
+    </message>
+    <message>
+        <source>Weight Path Grid</source>
+        <translation type="unfinished">Weight Path Grid</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished">Statistical Method</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished">Distance Method</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Check for edge contamination</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished">D-Infinity Drop to Stream Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
     <name>DinfDistUp</name>
     <message>
         <source>D-Infinity Flow Direction Grid</source>
@@ -3232,6 +3279,45 @@ Are you sure you want to proceed?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfDistUpMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished">Pit Filled Elevation Grid</translation>
+    </message>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished">Slope Grid</translation>
+    </message>
+    <message>
+        <source>Statistical Method</source>
+        <translation type="unfinished">Statistical Method</translation>
+    </message>
+    <message>
+        <source>Distance Method</source>
+        <translation type="unfinished">Distance Method</translation>
+    </message>
+    <message>
+        <source>Proportion Threshold</source>
+        <translation type="unfinished">Proportion Threshold</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Check for edge contamination</translation>
+    </message>
+    <message>
+        <source>D-Infinity Distance Up</source>
+        <translation type="unfinished">D-Infinity Distance Up</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
     </message>
 </context>
 <context>
@@ -3310,6 +3396,84 @@ Are you sure you want to proceed?</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccum2Multi</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished">Supply Grid</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished">Transport Capacity Grid</translation>
+    </message>
+    <message>
+        <source>Input Concentration Grid</source>
+        <translation type="unfinished">Input Concentration Grid</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished">Outlets Shapefile</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Check for edge contamination</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished">Transport Limited Accumulation Grid</translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation type="unfinished">Deposition Grid</translation>
+    </message>
+    <message>
+        <source>Output Concentration Grid</source>
+        <translation type="unfinished">Output Concentration Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
+    <name>DinfTransLimAccumMulti</name>
+    <message>
+        <source>D-Infinity Flow Direction Grid</source>
+        <translation type="unfinished">D-Infinity Flow Direction Grid</translation>
+    </message>
+    <message>
+        <source>Supply Grid</source>
+        <translation type="unfinished">Supply Grid</translation>
+    </message>
+    <message>
+        <source>Transport Capacity Grid</source>
+        <translation type="unfinished">Transport Capacity Grid</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished">Outlets Shapefile</translation>
+    </message>
+    <message>
+        <source>Check for edge contamination</source>
+        <translation type="unfinished">Check for edge contamination</translation>
+    </message>
+    <message>
+        <source>Transport Limited Accumulation Grid</source>
+        <translation type="unfinished">Transport Limited Accumulation Grid</translation>
+    </message>
+    <message>
+        <source>Deposition Grid</source>
+        <translation type="unfinished">Deposition Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
     </message>
 </context>
 <context>
@@ -3945,6 +4109,53 @@ geometry column - column with unique integer values</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
+    <name>DropAnalysisMulti</name>
+    <message>
+        <source>D8 Contributing Area Grid</source>
+        <translation type="unfinished">D8 Contributing Area Grid</translation>
+    </message>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished">D8 Flow Direction Grid</translation>
+    </message>
+    <message>
+        <source>Pit Filled Elevation Grid</source>
+        <translation type="unfinished">Pit Filled Elevation Grid</translation>
+    </message>
+    <message>
+        <source>Accumulated Stream Source Grid</source>
+        <translation type="unfinished">Accumulated Stream Source Grid</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished">Outlets Shapefile</translation>
+    </message>
+    <message>
+        <source>Minimum Threshold</source>
+        <translation type="unfinished">Minimum Threshold</translation>
+    </message>
+    <message>
+        <source>Maximum Threshold</source>
+        <translation type="unfinished">Maximum Threshold</translation>
+    </message>
+    <message>
+        <source>Number of Threshold Values</source>
+        <translation type="unfinished">Number of Threshold Values</translation>
+    </message>
+    <message>
+        <source>Spacing for Threshold Values</source>
+        <translation type="unfinished">Spacing for Threshold Values</translation>
+    </message>
+    <message>
+        <source>D-Infinity Drop to Stream Grid</source>
+        <translation type="unfinished">D-Infinity Drop to Stream Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
     </message>
 </context>
 <context>
@@ -6808,7 +7019,7 @@ Please install it before running GRASS algorithms.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Output</translation>
+        <translation type="obsolete">Output</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -6821,6 +7032,10 @@ Please install it before running GRASS algorithms.</translation>
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation>Vertical spacing is too small for the covered area</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished">Grid</translation>
     </message>
 </context>
 <context>
@@ -6859,7 +7074,11 @@ Please install it before running GRASS algorithms.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation type="unfinished">Average</translation>
     </message>
 </context>
 <context>
@@ -6902,7 +7121,11 @@ Please install it before running GRASS algorithms.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Interpolated metrics</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6949,11 +7172,15 @@ Please install it before running GRASS algorithms.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>Smoothing</translation>
+    </message>
+    <message>
+        <source>Interpolated IDW</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7031,7 +7258,11 @@ Please install it before running GRASS algorithms.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Interpolated nearest neighbor</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -7067,6 +7298,41 @@ Please install it before running GRASS algorithms.</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
+    <name>GridNetMulti</name>
+    <message>
+        <source>D8 Flow Direction Grid</source>
+        <translation type="unfinished">D8 Flow Direction Grid</translation>
+    </message>
+    <message>
+        <source>Outlets Shapefile</source>
+        <translation type="unfinished">Outlets Shapefile</translation>
+    </message>
+    <message>
+        <source>Mask Grid</source>
+        <translation type="unfinished">Mask Grid</translation>
+    </message>
+    <message>
+        <source>Mask Threshold</source>
+        <translation type="unfinished">Mask Threshold</translation>
+    </message>
+    <message>
+        <source>Longest Upslope Length Grid</source>
+        <translation type="unfinished">Longest Upslope Length Grid</translation>
+    </message>
+    <message>
+        <source>Total Upslope Length Grid</source>
+        <translation type="unfinished">Total Upslope Length Grid</translation>
+    </message>
+    <message>
+        <source>Strahler Network Order Grid</source>
+        <translation type="unfinished">Strahler Network Order Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
     </message>
 </context>
 <context>
@@ -7566,6 +7832,10 @@ are stored on the installation folder</translation>
         <source>Elevation</source>
         <translation>Elevation</translation>
     </message>
+    <message>
+        <source>Feature %d is smaller than raster cell size</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ImportIntoPostGIS</name>
@@ -7901,6 +8171,33 @@ Please configure it before running LAStools algorithms.</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
+    <name>LengthAreaMulti</name>
+    <message>
+        <source>Length Grid</source>
+        <translation type="unfinished">Length Grid</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished">Contributing Area Grid</translation>
+    </message>
+    <message>
+        <source>Threshold</source>
+        <translation type="unfinished">Threshold</translation>
+    </message>
+    <message>
+        <source>Exponent</source>
+        <translation type="unfinished">Exponent</translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished">Stream Source Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
     </message>
 </context>
 <context>
@@ -9455,6 +9752,10 @@ Acts on currently active editable layer</translation>
         <source>seconds</source>
         <translation>seconds</translation>
     </message>
+    <message>
+        <source>Record parsing error</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ModelerAlgorithm</name>
@@ -10592,6 +10893,33 @@ Please check the configuration in the Processing settings dialog.</translation>
     <message>
         <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
         <translation>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
+    <name>PeukerDouglasMulti</name>
+    <message>
+        <source>Elevation Grid</source>
+        <translation type="unfinished">Elevation Grid</translation>
+    </message>
+    <message>
+        <source>Center Smoothing Weight</source>
+        <translation type="unfinished">Center Smoothing Weight</translation>
+    </message>
+    <message>
+        <source>Side Smoothing Weight</source>
+        <translation type="unfinished">Side Smoothing Weight</translation>
+    </message>
+    <message>
+        <source>Diagonal Smoothing Weight</source>
+        <translation type="unfinished">Diagonal Smoothing Weight</translation>
+    </message>
+    <message>
+        <source>Stream Source Grid</source>
+        <translation type="unfinished">Stream Source Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
     </message>
 </context>
 <context>
@@ -14137,7 +14465,7 @@ Response was:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</translation>
+        <translation type="obsolete">Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -16651,7 +16979,7 @@ Parser error:
     </message>
     <message>
         <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</source>
-        <translation>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</translation>
+        <translation type="obsolete">Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4</translation>
     </message>
     <message>
         <source>Update Filtered</source>
@@ -16698,6 +17026,22 @@ Parser error:
     <message>
         <source>Update Selected</source>
         <translation>Update Selected</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation type="unfinished">Ctrl+R</translation>
+    </message>
+    <message>
+        <source>Show All Features In Initial Canvas Extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5</source>
+        <translation type="unfinished">Attribute table - %1 :: Features total: %2, filtered: %3, selected: %4%5 {1 ?} {2,?} {3,?}</translation>
+    </message>
+    <message>
+        <source>, spatially limited</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24056,6 +24400,18 @@ not displayed</translation>
         <source>The file has been updated by another application - reloading</source>
         <translation>The file has been updated by another application - reloading</translation>
     </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation type="unfinished">Whole number (integer)</translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation type="unfinished">Decimal number (double)</translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation type="unfinished">Text, unlimited length (text)</translation>
+    </message>
 </context>
 <context>
     <name>QgsDelimitedTextSourceSelect</name>
@@ -29522,7 +29878,7 @@ at line %2 column %3</translation>
     </message>
     <message>
         <source>Cannot activate grass</source>
-        <translation>Cannot activate grass</translation>
+        <translation type="obsolete">Cannot activate grass</translation>
     </message>
 </context>
 <context>
@@ -33168,19 +33524,19 @@ This may be a problem in your network connection or at the WMS server.</numerusf
     </message>
     <message>
         <source>Meters</source>
-        <translation>Meters</translation>
+        <translation type="obsolete">Meters</translation>
     </message>
     <message>
         <source>Feet</source>
-        <translation>Feet</translation>
+        <translation type="obsolete">Feet</translation>
     </message>
     <message>
         <source>Degrees</source>
-        <translation>Degrees</translation>
+        <translation type="obsolete">Degrees</translation>
     </message>
     <message>
         <source>Nautical Miles</source>
-        <translation>Nautical Miles</translation>
+        <translation type="obsolete">Nautical Miles</translation>
     </message>
 </context>
 <context>
@@ -50264,6 +50620,33 @@ Problem with line %d</translation>
     </message>
 </context>
 <context>
+    <name>SlopeAreaMulti</name>
+    <message>
+        <source>Slope Grid</source>
+        <translation type="unfinished">Slope Grid</translation>
+    </message>
+    <message>
+        <source>Contributing Area Grid</source>
+        <translation type="unfinished">Contributing Area Grid</translation>
+    </message>
+    <message>
+        <source>Slope Exponent</source>
+        <translation type="unfinished">Slope Exponent</translation>
+    </message>
+    <message>
+        <source>Area Exponent</source>
+        <translation type="unfinished">Area Exponent</translation>
+    </message>
+    <message>
+        <source>Slope Area Grid</source>
+        <translation type="unfinished">Slope Area Grid</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
+    </message>
+</context>
+<context>
     <name>SpatialJoin</name>
     <message>
         <source>Target vector layer</source>
@@ -50429,23 +50812,46 @@ Problem with line %d</translation>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
-        <translation>Input layer</translation>
+        <translation type="obsolete">Input layer</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>Difference layer</translation>
+        <translation type="obsolete">Difference layer</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Symetrical difference</translation>
+        <translation type="obsolete">Symetrical difference</translation>
     </message>
     <message>
         <source>Geometry exception while computing symetrical difference</source>
-        <translation>Geometry exception while computing symetrical difference</translation>
+        <translation type="obsolete">Geometry exception while computing symetrical difference</translation>
     </message>
     <message>
         <source>Feature exception while computing symetrical difference</source>
-        <translation>Feature exception while computing symetrical difference</translation>
+        <translation type="obsolete">Feature exception while computing symetrical difference</translation>
+    </message>
+</context>
+<context>
+    <name>SymmetricalDifference</name>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">Input layer</translation>
+    </message>
+    <message>
+        <source>Difference layer</source>
+        <translation type="unfinished">Difference layer</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished">Symetrical difference</translation>
+    </message>
+    <message>
+        <source>Geometry exception while computing symetrical difference</source>
+        <translation type="unfinished">Geometry exception while computing symetrical difference</translation>
+    </message>
+    <message>
+        <source>Feature exception while computing symetrical difference</source>
+        <translation type="unfinished">Feature exception while computing symetrical difference</translation>
     </message>
 </context>
 <context>
@@ -50482,6 +50888,36 @@ Problem with line %d</translation>
     <message>
         <source>TauDEM (hydrologic analysis)</source>
         <translation>TauDEM (hydrologic analysis)</translation>
+    </message>
+    <message>
+        <source>TauDEM multifile command line tools folder</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable singlefile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable multifile TauDEM tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open TauDEM algorithm %s:
+%s</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>TauDEMMultifileAlgorithm</name>
+    <message>
+        <source>Could not load TauDEM algorithm: %s
+%s</source>
+        <translation type="unfinished">Could not load TauDEM algorithm: %s
+%s</translation>
+    </message>
+    <message>
+        <source>Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</source>
+        <translation type="unfinished">Wrong number of MPI processes used. Please set correct number before running TauDEM algorithms.</translation>
     </message>
 </context>
 <context>
@@ -51905,7 +52341,11 @@ Problem with line %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Virtual</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -53910,7 +54350,7 @@ The following options can be added
 
 
 </source>
-        <translation>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
 Loads and displays delimited text files
 &lt;p&gt;
 &lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
@@ -54949,6 +55389,327 @@ When you toggle to edition the layer, a new row of functions appears in the attr
 To edit values, select the field to modify with the filter button on the left and fill the text box with the new value or an expression to calculate new value. Then, press &lt;label&gt;Update all&lt;/label&gt; button to update all the rows of the attribute table or &lt;label&gt;Update selected&lt;/label&gt; button if some features are selected or a filter is applied on the attribute table display. You can also use the &lt;label&gt;Expression builder&lt;/label&gt; button to calculate the new value in the column.&lt;br&gt;
 </translation>
     </message>
+    <message>
+        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+Loads and displays delimited text files
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
+is split into fields by a delimiter such as a comma.  
+This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
+Typically the first line of a delimited text file contains the names of the fields.  
+&lt;/p&gt;
+&lt;p&gt;
+Delimited text files can be loaded into QGIS as a layer. 
+The records can be displayed spatially either as a point
+defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
+describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
+only table, which can then be joined to other tables in QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
+QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
+as integer then the type will be integer, if all can be interpreted as real numbers then the type will
+be double, otherwise the type will be text.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
+This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
+The file should just contain one line which lists the type of each field. 
+Valid types are &amp;quot;integer&amp;quot;, &amp;quot;long&amp;quot;, &amp;quot;longlong&amp;quot;, &amp;quot;real&amp;quot;, 
+&amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. 
+The date, time, and datetime types are treated as strings by the delimited text provider.
+Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
+The list of types are separated by commas, regardless of the delimiter used in the data file.  An
+example of a valid format file would be:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, longlong,
+or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid long long
+nubmer then the type is longlong, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>contour</name>
@@ -55869,7 +56630,11 @@ Plugin will not be enabled.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Filled</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -60658,7 +61423,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>xyz</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -60685,7 +61454,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Pyramidized</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -62510,7 +63283,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Hillshade</source>
+        <translation type="unfinished">Hillshade</translation>
     </message>
 </context>
 <context>
@@ -63498,7 +64275,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Merged</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63517,7 +64298,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Nearblack</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63616,7 +64401,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63631,7 +64420,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Vectorized</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63666,7 +64459,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation type="unfinished">Distance</translation>
     </message>
 </context>
 <context>
@@ -63681,7 +64478,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Write values inside an existing raster layer(*)</source>
-        <translation>Write values inside an existing raster layer(*)</translation>
+        <translation type="obsolete">Write values inside an existing raster layer(*)</translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -63701,7 +64498,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
-        <translation>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</translation>
+        <translation type="obsolete">Output layer: mandatory to choose an existing raster layer if the (*) option is selected</translation>
     </message>
     <message>
         <source>Nodata value</source>
@@ -63733,7 +64530,15 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
-        <translation>Force the generation of an associated ESRI world file (.tfw))</translation>
+        <translation type="obsolete">Force the generation of an associated ESRI world file (.tfw))</translation>
+    </message>
+    <message>
+        <source>Force the generation of an associated ESRI world file (.tfw)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterized</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63748,7 +64553,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63767,7 +64576,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Roughness</source>
+        <translation type="unfinished">Roughness</translation>
     </message>
 </context>
 <context>
@@ -63856,7 +64669,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
+    </message>
+    <message>
+        <source>Sieved</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -63887,7 +64704,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation type="unfinished">Slope</translation>
     </message>
 </context>
 <context>
@@ -64045,7 +64866,11 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output file</source>
-        <translation>Output file</translation>
+        <translation type="obsolete">Output file</translation>
+    </message>
+    <message>
+        <source>Topographic Position Index</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -64088,7 +64913,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -64121,6 +64946,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Force the generation of an associated ESRI world file (.tfw))</translation>
+    </message>
+    <message>
+        <source>Translated</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -64319,7 +65148,7 @@ Format a date type or string into a custom string format. Uses Qt data time form
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Output layer</translation>
+        <translation type="obsolete">Output layer</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -64352,6 +65181,10 @@ Format a date type or string into a custom string format. Uses Qt data time form
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Force the generation of an associated ESRI world file (.tfw))</translation>
+    </message>
+    <message>
+        <source>Warped</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

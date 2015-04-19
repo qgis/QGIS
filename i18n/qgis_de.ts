@@ -632,11 +632,15 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
         <translation>Leerwert, auf &apos;none&apos; belassen, um den Leerwert aus der Eingabe zu übernehmen</translation>
+    </message>
+    <message>
+        <source>Clipped</source>
+        <translation>Zugeschnitten</translation>
     </message>
 </context>
 <context>
@@ -740,7 +744,11 @@ Zum Überprüfen Ergebnisdialog öffnen.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Color relief</source>
+        <translation>Farbrelief</translation>
     </message>
 </context>
 <context>
@@ -7007,7 +7015,7 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Output</source>
-        <translation>Ausgabe</translation>
+        <translation type="obsolete">Ausgabe</translation>
     </message>
     <message>
         <source>Invalid grid spacing: %s/%s</source>
@@ -7020,6 +7028,10 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     <message>
         <source>Vertical spacing is too small for the covered area</source>
         <translation>Vertikaler Abstand ist zu klein für abgedeckten Bereich</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation>Gitter</translation>
     </message>
 </context>
 <context>
@@ -7058,7 +7070,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Average</source>
+        <translation>Gemittelt</translation>
     </message>
 </context>
 <context>
@@ -7101,7 +7117,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Interpolated metrics</source>
+        <translation>Interpolierte Maße</translation>
     </message>
 </context>
 <context>
@@ -7148,11 +7168,15 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
     </message>
     <message>
         <source>Smoothing</source>
         <translation>Glättung</translation>
+    </message>
+    <message>
+        <source>Interpolated IDW</source>
+        <translation>Interpolierte IDW</translation>
     </message>
 </context>
 <context>
@@ -7230,7 +7254,11 @@ Bitte installieren bevor GRASS-Algorithmen ausgeführt werden.</translation>
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Interpolated nearest neighbor</source>
+        <translation>Interpolierter nächster Nachbar</translation>
     </message>
 </context>
 <context>
@@ -14421,7 +14449,7 @@ Antwort war:
     </message>
     <message>
         <source>Fatal error occurred in GRASS library. QGIS gets over the error but any next fatal error will cause QGIS exit without warning. This is a problem of GRASS 7.0.0beta1 but it is fixed in GRASS 7.1 and higher. Error message: %1</source>
-        <translation>Fataler Fehler in der GRASS Bibliothek. QGIS überspringt diesen Fehler, wird jedoch beim nächsten fatalen Fehler ohne Warnung beendet. Dies ist ein Problem von GRASS 7.0.0beta1, wurde aber bereits für GRASS 7.1 und höher behoben. Fehlermeldung: %1</translation>
+        <translation type="obsolete">Fataler Fehler in der GRASS Bibliothek. QGIS überspringt diesen Fehler, wird jedoch beim nächsten fatalen Fehler ohne Warnung beendet. Dies ist ein Problem von GRASS 7.0.0beta1, wurde aber bereits für GRASS 7.1 und höher behoben. Fehlermeldung: %1</translation>
     </message>
     <message>
         <source>Raster image fill</source>
@@ -16992,6 +17020,10 @@ Ausdruckfehler:
     <message>
         <source>, spatially limited</source>
         <translation>, räumlich beschränkt</translation>
+    </message>
+    <message>
+        <source>Ctrl+R</source>
+        <translation>Strg+R</translation>
     </message>
 </context>
 <context>
@@ -24443,6 +24475,18 @@ nicht angezeigt</translation>
         <source>The file has been updated by another application - reloading</source>
         <translation>Die Datei wurde von einer anderen Applikation geändert - wird neugeladen</translation>
     </message>
+    <message>
+        <source>Whole number (integer)</source>
+        <translation>Ganzzahl (integer)</translation>
+    </message>
+    <message>
+        <source>Decimal number (double)</source>
+        <translation>Dezimalzahl (double)</translation>
+    </message>
+    <message>
+        <source>Text, unlimited length (text)</source>
+        <translation>Text, unbegrenzte Länge (text)</translation>
+    </message>
 </context>
 <context>
     <name>QgsDelimitedTextSourceSelect</name>
@@ -29906,7 +29950,7 @@ in Zeile %2, Spalte %3</translation>
     </message>
     <message>
         <source>Cannot activate grass</source>
-        <translation>Kann GRASS nicht aktivieren</translation>
+        <translation type="obsolete">Kann GRASS nicht aktivieren</translation>
     </message>
 </context>
 <context>
@@ -50811,6 +50855,29 @@ Fehler in Zeile %d</translation>
     <name>SymetricalDifference</name>
     <message>
         <source>Input layer</source>
+        <translation type="obsolete">Eingabelayer</translation>
+    </message>
+    <message>
+        <source>Difference layer</source>
+        <translation type="obsolete">Differenzlayer</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="obsolete">Symmetrische Differenz</translation>
+    </message>
+    <message>
+        <source>Geometry exception while computing symetrical difference</source>
+        <translation type="obsolete">Geometrieausnahme bei Berechnung der symmetrischen Differenz</translation>
+    </message>
+    <message>
+        <source>Feature exception while computing symetrical difference</source>
+        <translation type="obsolete">Objektausnahme beim Berechnen der symmetrischen Differenz</translation>
+    </message>
+</context>
+<context>
+    <name>SymmetricalDifference</name>
+    <message>
+        <source>Input layer</source>
         <translation>Eingabelayer</translation>
     </message>
     <message>
@@ -52318,7 +52385,11 @@ Fehler in Zeile %d</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Virtual</source>
+        <translation>Virtuell</translation>
     </message>
 </context>
 <context>
@@ -54304,7 +54375,7 @@ The following options can be added
 
 
 </source>
-        <translation>&lt;h3&gt;Getrennter Textlayer&lt;/h3&gt;
+        <translation type="obsolete">&lt;h3&gt;Getrennter Textlayer&lt;/h3&gt;
 Lädt und zeigt getrennten Text an
 &lt;p&gt;
 &lt;a href=&quot;#re&quot;&gt;Überblick&lt;/a&gt;&lt;br/&gt;
@@ -55239,6 +55310,560 @@ Die Ergebnisse können in eine neue Attributspalte geschrieben oder eine vorhand
 Um den Feldrechner zu öffnen, müssen Sie den Vektorlayer zuvor in den Bearbeitungsmodus versetzen.
 </translation>
     </message>
+    <message>
+        <source>&lt;h3&gt;Delimited Text File Layer&lt;/h3&gt;
+Loads and displays delimited text files
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Overview&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Overview&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;A &amp;quot;delimited text file&amp;quot; contains data in which each record starts on a new line, and 
+is split into fields by a delimiter such as a comma.  
+This type of file is commonly exported from spreadsheets (for example CSV files) or databases.  
+Typically the first line of a delimited text file contains the names of the fields.  
+&lt;/p&gt;
+&lt;p&gt;
+Delimited text files can be loaded into QGIS as a layer. 
+The records can be displayed spatially either as a point
+defined by X and Y coordinates, or using a Well Known Text (WKT) definition of a geometry which may
+describe points, lines, and polygons of arbitrary complexity.  The file can also be loaded as an attribute
+only table, which can then be joined to other tables in QGIS.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the geometry definition the file can contain text, integer, and real number fields.  By default 
+QGIS will choose the type of field based on its the non blank values of the field.  If all can be interpreted
+as integer then the type will be integer, if all can be interpreted as real numbers then the type will
+be double, otherwise the type will be text.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS can also read the types from an OGR CSV driver compatible &amp;quot;csvt&amp;quot; file.  
+This is a file alongside the data file, but with a &amp;quot;t&amp;quot; appended to the file name. 
+The file should just contain one line which lists the type of each field. 
+Valid types are &amp;quot;integer&amp;quot;, &amp;quot;long&amp;quot;, &amp;quot;longlong&amp;quot;, &amp;quot;real&amp;quot;, 
+&amp;quot;string&amp;quot;, &amp;quot;date&amp;quot;, &amp;quot;time&amp;quot;, and &amp;quot;datetime&amp;quot;. 
+The date, time, and datetime types are treated as strings by the delimited text provider.
+Each type may be followed by a width and precision, for example &amp;quot;real(10.4)&amp;quot;.
+The list of types are separated by commas, regardless of the delimiter used in the data file.  An
+example of a valid format file would be:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&amp;quot;integer&amp;quot;,&amp;quot;string&amp;quot;,&amp;quot;string(20)&amp;quot;,&amp;quot;real(20.4)&amp;quot;
+&lt;/pre&gt;
+
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Creating a delimited text layer&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Creating a delimited text layer involves choosing the data file, defining the format (how each record is to
+be split into fields), and defining the geometry is represented.  
+This is managed with the delimited text dialog as detailed below.  
+The dialog box displays a sample from the beginning of the file which shows how the format
+options have been applied.
+&lt;/p&gt;
+&lt;h5&gt;Choosing the data file&lt;/h5&gt;
+&lt;p&gt;Use the &amp;quot;Browse...&amp;quot; button to select the data file.  Once the file is selected the
+layer name will automatically be populated based on the file name.  The layer name is used to represent
+the data in the QGIS legend.  
+&lt;/p&gt;
+&lt;p&gt;
+By default files are assumed to be encoded as UTF-8.  However other file
+encodings can be selected.  For example &amp;quot;System&amp;quot; uses the default encoding for the operating system.  
+It is safer to use an explicit coding if the QGIS project needs to be portable.
+&lt;/p&gt;
+&lt;h5&gt;Specifying the file format&lt;/h5&gt;
+&lt;p&gt;The file format can be one of
+&lt;ul&gt;
+    &lt;li&gt;CSV file format.  This is a format commonly used by spreadsheets, in which fields are delimited
+    by a comma character, and quoted using a &amp;quot;(quote) character.  Within quoted fields, a quote
+    mark is entered as &amp;quot;&amp;quot;.&lt;/li&gt;
+    &lt;li&gt;Selected delimiters.  Each record is split into fields using one or more  delimiter character.
+    Quote characters are used for fields which may contain delimiters.  Escape characters may be used 
+    to treat the following character as a normal character (ie to include delimiter, quote, and 
+    new line characters in text fields).  The use of delimiter, quote, and escape characters is detailed &lt;a href=&quot;#csv&quot;&gt;below&lt;/a&gt;.
+    &lt;li&gt;Regular expression.  Each line is split into fields using a &amp;quot;regular expression&amp;quot; delimiter.
+    The use of regular expressions is details &lt;a href=&quot;#regexp&quot;&gt;below&lt;/a&gt;.
+&lt;/ul&gt;
+&lt;h5&gt;Record and field options&lt;/h5&gt;
+&lt;p&gt;The following options affect the selection of records and fields from the data file&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Number of header lines to discard: used to ignore header lines at the beginning of the text file&lt;/li&gt;
+    &lt;li&gt;First record has fields names: if selected then the first record in the file (after the discarded lines) is interpreted as names of fields, rather than as a data record.&lt;/li&gt;
+    &lt;li&gt;Trim fields: if selected then leading and trailing whitespace characters will be removed from each field (except quoted fields). &lt;/li&gt;
+    &lt;li&gt;Discard empty fields: if selected then empty fields (after trimming) will be discard.  This 
+    affects the alignment of data into fields and is equivalent to treating consecutive delimiters as a 
+    single delimiter.  Quoted fields are never discarded.&lt;/li&gt;
+    &lt;li&gt;Decimal separator is comma: if selected then commas instead of points are used as the decimal separator in real numbers.  For
+    example &lt;tt&gt;-51,354&lt;/tt&gt; is equivalent to -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometry definition&lt;/h5&gt;
+&lt;p&gt;The geometry is can be define as one of&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Point coordinates: each feature is represented as a point defined by X and Y coordinates.&lt;/li&gt;
+    &lt;li&gt;Well known text (WKT) geometry: each feature is represented as a well known text string, for example
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  See details of the &lt;a href=&quot;#wkt&quot;&gt;well known text&lt;/a&gt; format.
+    &lt;li&gt;No geometry (attribute only table): records will not be displayed on the map, but can be viewed
+    in the attribute table and joined to other layers in QGIS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For point coordinates the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X field: specifies the field containing the X coordinate&lt;/li&gt;
+    &lt;li&gt;Y field: specifies the field containing the Y coordinate&lt;/li&gt;
+    &lt;li&gt;DMS angles: if selected coordinates are represented as degrees/minutes/seconds
+    or degrees/minutes.  QGIS is quite permissive in its interpretation of degrees/minutes/seconds.
+    A valid DMS coordinate will contain three numeric fields with an optional hemisphere prefix or suffix
+    (N, E, or + are positive, S, W, or - are negative).  Additional non numeric characters are 
+    generally discarded.  For example &lt;tt&gt;N41d54&apos;01.54&amp;quot;&lt;/tt&gt; is a valid coordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;For well known text geometry the following options apply:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometry field: the field containing the well known text definition.&lt;/li&gt;
+    &lt;li&gt;Geometry type: one of &amp;quot;Detect&amp;quot; (detect), &amp;quot;Point&amp;quot;, &amp;quot;Line&amp;quot;, or &amp;quot;Polygon&amp;quot;.
+    QGIS layers can only display one type of geometry feature (point, line, or polygon). This option selects
+    which geometry type is displayed in text files containing multiple geometry types. Records containing
+   other geometry types are discarded.   
+    If &amp;quot;Detect&amp;quot; is selected then the type of the first geometry in the file will be used.
+    &amp;quot;Point&amp;quot; includes POINT and MULTIPOINT WKT types, &amp;quot;Line&amp;quot; includes LINESTRING and
+    MULTLINESTRING WKT types, and &amp;quot;Polygon&amp;quot; includes POLYGON and MULTIPOLYGON WKT types.
+&lt;/ul&gt;
+&lt;h5&gt;Layer settings&lt;/h5&gt;
+&lt;p&gt;Layer settings control the way the layer is managed in QGIS.  The options available are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Use spatial index. Create a spatial index to improve the performance of displaying and selecting spatial objects.
+This option may be useful for files larger than a few megabytes in size.&lt;/li&gt;
+&lt;li&gt;Use subset index. Create an index if a subset of records is being used (either by explicitly setting a subset string 
+from the layer properties dialog, or an implicit subset of features for which the geometry is valid in files
+for which all not geometries are valid).  The index will only be created when a subset is defined.&lt;/li&gt;
+&lt;li&gt;Watch file.  If this options is selected QGIS will watch the file for changes by other applications, and 
+reload the file when it is changed.  The map will not be updated until refreshed by the user, but indexes and
+extents will be reloaded.  This option should be selected if indexes are used and it is likely that another
+application will change the file. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;How the delimiter, quote, and escape characters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Records are split into fields using three character sets: 
+delimiter characters, quote characters, and escape characters.  
+Other characters in the record are considered as data, split into
+fields by delimiter characters. 
+Quote characters occur in pairs and cause the text between them to be treated as a data.  Escape characters cause the character following them to be treated as data.   
+&lt;/p&gt;
+&lt;p&gt;
+Quote and escape characters cannot be the same as delimiter characters - they
+will be ignored if they are. Escape characters can be the same as quote characters, but behave differently
+if they are.&lt;/p&gt;
+&lt;p&gt;The delimiter characters are used to mark the end of each field.  If more than one delimiter character
+is defined then any one of the characters can mark the end of a field.  The quote and escape characters 
+can override the delimiter character, so that it is treated as a normal data character.&lt;/p&gt;
+&lt;p&gt;Quote characters may be used to mark the beginning and end of quoted fields. Quoted fields can 
+contain delimiters and may span multiple lines in the text file.  If a field is quoted then it must
+start and end with the same quote character.  Quote characters cannot occur within a field unless they
+are escaped.&lt;/p&gt;
+&lt;p&gt;Escape characters which are not quote characters force the following character to be treated as data.  
+(that is, to stop it being treated as a new line, delimiter, or quote character).  
+&lt;/p&gt;
+&lt;p&gt;Escape characters that are also quote characters have much more limited effect.  They only apply within quotes and only escape themselves.  For example, if 
+&lt;tt&gt;&apos;&lt;/tt&gt; is a quote and escape character, then the string
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; will represent the value Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;How regular expression delimiters work&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Regular expressions are mini-language used to represent character patterns.  There are many variations
+of regular expression syntax - QGIS uses the syntax provided by the &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; class of the &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; framework.&lt;/p&gt;
+&lt;p&gt;In a regular expression delimited file each line is treated as a record.  Each match of the regular expression in the line is treated as the end of a field.  
+If the regular expression contains capture groups (eg &lt;tt&gt;(cat|dog)&lt;/tt&gt;)
+ then these are extracted as fields. 
+ If this is not desired then use non-capturing groups (eg &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;The regular expression is treated differently if it is anchored to the start of the line (that is, the pattern starts with &lt;tt&gt;^&lt;/tt&gt;).
+In this case the regular expression is matched against each line.  If the line does not match it is discarded
+as an invalid record.  Each capture group in the expression is treated as a field.  The regular expression
+is invalid if it does not have capture groups.  As an example this can be used as a (somewhat 
+unintuitive) means of loading data with fixed width fields.  For example the 
+expression
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;will extract four fields of widths 5, 10, 20, and 20 characters from each line.  
+Lines less than 55 characters long will be discarded.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;How WKT text is interpreted&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+The delimited text layer recognizes the following 
+&lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;well known text&lt;/a&gt; types - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+It will accept geometries with
+a Z coordinate (eg &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), a measure (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;), or both (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+It can also handle the PostGIS EWKT variation, in which the geometry is preceded by an spatial reference 
+system id (eg &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;), and a variant used by Informix in which the WKT is 
+preceded by an integer spatial reference id (eg &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In both cases the SRID is ignored.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attributes in delimited text files&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Each record in the delimited text file is split into fields representing
+attributes of the record.  Usually the attribute names are taken from the first
+data record in the file.  However if this does not contain attribute names, then they will be named &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt;, and so on.  
+Also if records have more fields than are defined in the header record then these
+will be named &lt;tt&gt;field_#&lt;/tt&gt;, where # is the field number (note that empty fields at the end of a record are ignored).
+QGIS may override 
+the names in the text file if they are numbers, or have names like &lt;tt&gt;field_#&lt;/tt&gt;,
+or are duplicated.
+&lt;/p&gt;
+&lt;p&gt;
+In addition to the attributes explicitly in the data file QGIS assigns a unique 
+feature id to each record which is the line number in the source file on which
+the record starts.  
+&lt;/p&gt;
+&lt;p&gt;
+Each attribute also has a data type, one of string (text), integer, longlong,
+or real number.
+The data type is inferred from the content of the fields - if every non blank value
+is a valid integer then the type is integer, otherwise if it is a valid long long
+nubmer then the type is longlong, otherwise if it is a valid real
+number then the type is real, otherwise the type is string.  Note that this is
+based on the content of the fields - quoting fields does not change the way they
+are interpreted.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Example of a text file with X,Y point coordinates&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; Uses &lt;b&gt;;&lt;/b&gt; as delimiter. Any character can be used to delimit the fields.&lt;/li&gt;
+&lt;li&gt;The first row is the header row. It contains the field names X, Y and ELEV.&lt;/li&gt;
+&lt;li&gt;The x coordinates are contained in the X field.&lt;/li&gt;
+&lt;li&gt;The y coordinates are contained in the Y field.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Example of a text file with WKT geometries&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;This file:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Has two fields defined in the header row: id and wkt.
+  &lt;li&gt;Uses &lt;b&gt;|&lt;/b&gt; as a delimiter.&lt;/li&gt;
+  &lt;li&gt;Specifies each point using the WKT notation
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Using delimited text layers in Python&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Delimited text data sources can be creating from Python in a similar way to other vector layers.
+The pattern is:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;This could be used to load the second example file above.&lt;/p&gt;
+&lt;p&gt;The configuration of the delimited text layer is defined by adding query items to the uri.
+The following options can be added
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; defines the file encoding.  The default is &amp;quot;UTF-8&amp;quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; defines the delimiter type.  Valid values are csv, 
+       regexp, and whitespace (which is just a special case of regexp).  The default is csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; defines the delimiters that will be used for csv formatted files, 
+       or the regular expression for regexp formatted files.  The default is , for CSV files.  There is
+       no default for regexp files.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (for csv files) defines the characters used to quote fields. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (for csv files) defines the characters used to escape the special meaning of the next character. The default is &amp;quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; defines the number of lines to discard from the beginning of the file. The default is 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; defines whether the first data record contains the names of the data fields. The default is yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; defines whether leading and trailing whitespace is to be removed from unquoted fields. The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; defines the maximum number of fields that will be loaded from the file.  
+       Additional fields in each record will be discarded. The default is 0 - include all fields.
+       (This option is not available from the delimited text layer dialog box).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; defines whether empty unquoted fields will be discarded (applied after trimFields). The default is no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; specifies an alternative character that may be used as a decimal point in numeric fields.  The default is a point (full stop) character.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field containing a well known text geometry definition&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the X coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=fieldname&lt;/tt&gt; specifies the name or number (starting at 1) of the field the Y coordinate (only applies if wktField is not defined)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; specifies type of geometry for wkt fields, or none to load the file as an attribute-only table.  The default is auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; specifies an expression used to identify a subset of the records that will be 
+       used.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; specifies the coordinate system to use for the vector layer, in a format accepted by QgsCoordinateReferenceSystem.createFromString (for example &amp;quot;EPSG:4167&amp;quot;).  If this is not 
+       specified then a dialog box may request this information from the user
+       when the layer is loaded (depending on QGIS CRS settings).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build an index to define subset during the initial file scan.  The index will apply both for explicitly defined subsets, and for the implicit subset of features for which the geometry definition is valid.  By default the subset index is built if it is applicable.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; specifies whether the provider should build a spatial index during the initial file scan.  By default the spatial index is not built. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; specifies whether the provider should use a file system watcher to monitor for changes to the file.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; specifies whether errors encountered loading the layer are presented in a dialog box (they will be written to the QGIS log in any case). The default is no.  This option is not available from the GUI&lt;/li&gt;
+&lt;/ul&gt;
+
+
+</source>
+        <translation>&lt;h3&gt;Getrennter Textlayer&lt;/h3&gt;
+Lädt und zeigt getrennten Text an
+&lt;p&gt;
+&lt;a href=&quot;#re&quot;&gt;Überblick&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#creating&quot;&gt;Erzeugung eines getrennten Textlayers&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#csv&quot;&gt;Wie Trenn-, Anführungs- und Ausnahmezeichen funktionieren&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#regexp&quot;&gt;Wie reguläre Ausdrücke als Trennzeichen funktionieren&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#wkt&quot;&gt;Wie WKT interpretiert wird&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#attributes&quot;&gt;Attribute in getrennten Textdateien&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;#example&quot;&gt;Beispiel einer Textdatei mit X,Y-Punktkoordinaten&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#wkt_example&quot;&gt;Beispiel einer Textdatei mit WKT-Geometrien&lt;/a&gt;&lt;br/&gt;
+&lt;a href=&quot;#python&quot;&gt;Getrennte Textdateilayern in Python benutzen&lt;/a&gt;&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;&lt;a name=&quot;re&quot;&gt;Überblick&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Eine &quot;getrennter Text&quot;-Datei enthält Daten in denen jeder Datensatz in einer neuen Zeile beginnt, die durch Trennzeichen wie ein Komma in Felder aufgeteilt ist.
+Dieser Dateityp wird üblicherweise von Tabellenkalkulationen (z.B. CSV-Dateien) oder Datenbanken ausgegeben.  
+Normalerweise enthält die erste Zeile einer getrennten Textdatei die Feldnamen.  
+&lt;/p&gt;
+&lt;p&gt;
+Getrennte Textdateien können in QGIS als Layer geladen werden. 
+Die Datensätze können räumlich entweder als durch X- und Y-Koordinaten definierte Punktkoordinaten oder als Well-Known-Text-Geometriedefinition (WKT), die Punkte, Linien und Polygone beliebiger Komplexität beschreibt, dargestellt werden. Die Datei kann auch nur als Attributtabelle geladen werden, die mit anderen Tabellen in QGIS verknüpft werden können.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;p&gt;
+Zusätzlich zur Geometriedefinition kann die Datei Text, ganze und Fließkommazahlen enthalten. QGIS wird den Feldtyp nach dem Inhalt der nicht leeren Felder wählen. Wenn alle als ganze Zahl interpretiert werden können, werden sie als gnaze Zahl, wenn alle als Fließkommazahl, werden sie als Fließkommazahl und ansonsten als Zeichenkette angesehen.
+&lt;/p&gt;
+&lt;p&gt;
+QGIS kann die Typen auch einer OGR-CSV-Treiber kompatiblen &quot;csvt&quot;-Datei lesen. Diese Datei liegt nebene der Datendatei, aber mit einem an den Dateinamen angehängtem &quot;t&quot;. Die Datei sollte nur eine Zeile enthalten, die die Feldtypen auflistet. Gültige Typen sind &quot;integer&quot; (ganze Zahl), &quot;real&quot; (Fließkommazahl), &quot;string&quot; (Zeichenkette), &quot;date&quot; (Datum), &quot;time&quot; (Zeit) und &quot;datetime&quot; (Datum&amp;Zeit). Datum, Zeit und Datum&amp;Zeit werden in QGIS als Zeichenketten behandelt. Jedem Typ kann die Breite und Genauigkeit angefügt werden (z.B. &quot;real(10.4)&quot;. Die einzelnen Typen werden unabhängig von den Trennzeichen der Datendatei durch Kommata getrennt.  Ein Beispiel für eine gültige Formatdatei könnte sein:
+&lt;/p&gt;
+
+&lt;pre&gt;
+&quot;integer&quot;,&quot;string&quot;,&quot;string(20)&quot;,&quot;real(20.4)&quot;
+&lt;/pre&gt;
+
+&lt;/p&gt;
+&lt;h4&gt;&lt;a name=&quot;creating&quot;&gt;Getrennten Textlayer erzeugen&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Zur Erzeugung eines getrennten Textlayers muß eine Datei gewählt, das Format definiert (wie jeder Datensatz in Felder aufgeteilt wird) und festgelegt werden wird die Geometrierepräsentation angegeben werden.  
+Dies wird über den im folgenden beschriebenen Getrennter Textdialog eingegeben.  
+Der dialog zeigt ein Beispiele am Anfang der Datei an, die zeigen wie sich die Einstellungen auswirken.
+&lt;/p&gt;
+&lt;h5&gt;Dateiauswahl&lt;/h5&gt;
+&lt;p&gt;Klicken Sie auf den &quot;Durchsuchen...&quot;-Knopf um die Datei zu wählen.  Sobald die Datei gewählt ist, wird der Layername automatisch mit dem Dateinamen gefüllt.  Der Layername wird benutzt, um die Daten in der Legende anzuzeigen.  
+&lt;/p&gt;
+&lt;p&gt;
+Normalerweise wird davon ausgegangen, dass die Dateien in UTF-8 kodiert sind.  Es können jedoch andere Kodierungen gewählt werden.  Z.B. nutzt &quot;System&quot; die voreingestellte Kodierung des Betriebssystems. 
+Es ist sicherer eine explizite Kodierung anzugeben, wenn das QGIS-Projekt portierbar sein muß.
+&lt;/p&gt;
+&lt;h5&gt;Dateiformat festlegen&lt;/h5&gt;
+&lt;p&gt;Folgende Dateiformat sind verfügbar:
+&lt;ul&gt;
+    &lt;li&gt;CSV-Dateiformat.  Dies ist ein Format, das üblicherweise von Tabellenkalkulationen benutzt wird. Hier sind die Felder durch ein Komma begrenzt und durch das Anführungszeichen &quot; umschlossen.  Zwischen den Anführungszeichen wird ein Anführungszeichen durch &quot;&quot; eingegeben.&lt;/li&gt;
+    &lt;li&gt;Gewählte Trennzeichen.  Jeder Datensatz wird durch ein oder mehrere Trennzeichen in Felder ausgeteilt.
+    Anführungszeichen werden für Felder verwendet, die Trennzeichen enthalten können.  Ausnahmezeichen könnten verwendet werden, um das darauffolgenden Zeichen als normales Zeichen (um Trennzeichen, Anführungszeichen und Zeilenumbrüche in Textfelden anzugeben).  Die Verwendung von Trenn-, Anführungs- und Ausnahmezeichen ist  &lt;a href=&quot;#csv&quot;&gt;unten&lt;/a&gt; näher ausgeführt.
+    &lt;li&gt;Regulärer Ausdruck.  Jede Zeile wird mit &quot;regulären Ausdrücken&quot; als Trennzeichen in Felder aufgeteilt.
+    Der Verwendung von regulären Ausdrücken ist &lt;a href=&quot;#regexp&quot;&gt;unten&lt;/a&gt; näher ausgeführt.
+&lt;/ul&gt;
+&lt;h5&gt;Datensatz und Feldoptionen&lt;/h5&gt;
+&lt;p&gt;Die folgenden Optionen beeinflussen die Auswahl von Datensätzen und Feldern aus der Datei&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Anzahl der zu überspringenden führenden Zeilen: um führende Zeilen zu ignorieren&lt;/li&gt;
+    &lt;li&gt;Erster Datensatz enthält Feldnamen: wenn gewählt wird die erste Zeile (nach den ignorierten Zeilen) als Feldnamenzeile statt Datenzeile interpretiert.&lt;/li&gt;
+    &lt;li&gt;Felder kürzen: wenn gewählt, werden führende und schließende Leerzeichen abgeschnitten (außer für Felder in Anführungszeichen).&lt;/li&gt;
+    &lt;li&gt;Leere Felder verwerfen: wenn gewählt, werden leere Felder (nach Kürzung) verworfen.  Dies beeinflußt die Zurordnung der Daten zu Feldern und entspricht der Behandlung von aufeinanderfolgenden Trennzeichen als ein Trennzeichen.  Felder in Anführungszeichen werden nie verworfen.&lt;/li&gt;
+    &lt;li&gt;Dezimaltrennzeichen ist Komma: wenn gewählt, werden Kommata statt Punkte als Dezimaltrennzeichen in Fließkommazahlen verwendet.  Beispiel &lt;tt&gt;-51,354&lt;/tt&gt; entspricht -51.354.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;h5&gt;Geometrie-Definition&lt;/h5&gt;
+&lt;p&gt;Folgende Geometriedefinitionen sind verfügbar:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Punktkoordinaten: jedes Objekt wird als durch X- und Y-Koordinaten repräsentiert.&lt;/li&gt;
+    &lt;li&gt;Well-Known-Text-Geometrie (WKT): jedes Objekt wird durch eine WKT-Zeichenkette repräsentiert, z.B.
+    &lt;tt&gt;POINT(1.525622 51.20836)&lt;/tt&gt;.  Siehe &lt;a href=&quot;#wkt&quot;&gt;Well-Known-Text&lt;/a&gt;-Format.
+    &lt;li&gt;Keine Geometrie (Nur Attributtabelle): Datensätze werden nicht in der Karte angezeigt, können aber in der Attributtabelle angezeigt und mit anderen Tabellen in QGIS verknüpft werden.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Für Punktkoordinaten gelten folgenden Einstellungen:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;X-Feld: gibt das Feld an, das die X-Koordinate enthält&lt;/li&gt;
+    &lt;li&gt;Y Feld: gibt das Feld an, das die Y-Koordinate enthält&lt;/li&gt;
+    &lt;li&gt;DMS-Winkel: wenn gewählt, werden Koordinaten in Grad/Minute/Sekunde oder Grad/Minute repräsentiert. QGIS ist bei der Interpretation von Grad/Minuten/Sekunden ser nachsichtig. Eine gültige DMS-Koordinaten enthält drei numerische Felder mit einem optionalen Hemisphärenpräfix oder -suffix (N, E oder + sind positiv, S, W oder - sind  negativ).  Weitere nicht numerische Zeichen werden verworfen.  Z.B. ist &lt;tt&gt;N41d54&apos;01.54&quot;&lt;/tt&gt; eine gültige Koordinate.
+    &lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Für Well-Known-Text-Geometrien gelten folgende Einstellungen:&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Geometriefeld: das Feld, dass die Well-Known-Text-Definition enthält.&lt;/li&gt;
+    &lt;li&gt;Geometrietyp: &quot;Bestimmen&quot; (bestimmen), &quot;Punkt&quot;, &quot;Linie&quot;, oder &quot;Polygon&quot;. QGIS-Layer können nur einen Geometrietyp ( Punkt, Linie oder Polygon) darstellen. Diese Einstellung legt fest welcher Geometrietyp angezeigt wird, wenn eine Datei mehrere Geometrietypen enthält. Datensätze die davon abweichen werden verworfen. Wenn &quot;Bestimmen&quot; gewählt ist, wird der Geometrietyp der ersten Geometrie der Datei verwendet.
+    &quot;Punkt&quot; umfaßt POINT und MULTIPOINT WKT-Typen, &quot;Line&quot; umfaßt LINESTRING und MULTLINESTRING WKT-Typen und &quot;Polygon&quot; umfaßt POLYGON und MULTIPOLYGON WKT-Typen.
+&lt;/ul&gt;
+&lt;h5&gt;Layereinstellungen&lt;/h5&gt;
+&lt;p&gt;Layereinstellungen steuern wie ein Layer in QGIS behandelt wird.  Folgende Einstellungen sind verfügbar:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Räumlichen Index nutzen. Einen räumlichen Index erzeugen, der die Anzeige- und räumliche Auswahlgeschwindigkeit verbessert.
+Diese Option kann für Dateien sinnvoll sein, deren Größe einige MB übersteigt.&lt;/li&gt;
+&lt;li&gt;Untermengen-Index nutzen. Einen Index erzeugen, wenn eine Untermenge verwendet wird (entweder durch die Angabe eines Filters in den Layereigenschaftendialog oder implizite Untermenge, wenn nicht alle Geometrien gültig sind).  Der Index wird nur erzeugt, wenn eine Untermenge definiert ist.&lt;/li&gt;
+&lt;li&gt;Datei überwachen.  Wenn dies eingestellt ist, überwacht QGIS die Datei auf Änderungen durch Applikationen und läd sie neue, wenn es geändert wird.  Die Karte wird nicht neugezeichnet bis der Benutzer sie aktualisiert, aber Indizes und Ausmaße werden neugeladen.  Diese Option sollte gewählt werden, wenn Indizes benutzt werden und es wahrscheinlich ist, dass anderen Applikationen die Datei ändern.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;csv&quot;&gt;Wie Trenn-, Anführungs- und Ausnahmezeichen verwendet werden&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Datensätze werden durch drei Zeichenarten in Felder aufgeteilt: 
+Trenn-, Anführungs- und Ausnahmezeichen.  
+Andere Zeichen im Datensatz werden als Daten betrachtet und durch Trennzeichen in Felder aufgeteilt. Anführungszeichen treten gepaart auf und bewriken das der Text dazwischen wie Daten behandelt wird.  Ausnahmezeichen bewirken, dass darauffolgede Zeichen als Daten behandelt werden.   
+&lt;/p&gt;
+&lt;p&gt;
+Anführungs- und Ausnahmezeichen dürfen keine Trennzeichen sein - sie werden ignoriert, wenn sie es sind. Ausnahmezeichen können auch Anführungszeichen sein, verhalten sich aber unterschiedlich, wenn sie es sind.&lt;/p&gt;
+&lt;p&gt;Trennzeichen markieren die Feldenden.  Wenn mehr als ein Trennzeichen definiert ist, kann ein jedes das Feldende markieren. Die Anführungs- und Ausnahmezeichen   übersteuern das Trennzeichen, sodaß es als normales Datenzeichen behandelt wird.&lt;/p&gt;
+&lt;p&gt;Anführungszeichen können verwendet werden, um den Anfang und das Ende von Feldern zu markieren. Solche Felder können Trennzeichen enthalten und über mehrere Zeilen der Textdatei gehen. Wenn ein Feld in Anführungszeichen steht müssen die Anführungszeichen an beiden Ende übereinstimmen. Anführungszeichen für nicht in einem vorkommen außer sie sind mit einem Ausnahmezeichen versehen.&lt;/p&gt;
+&lt;p&gt;Ausnahmezeichen, die keine Anführungszeichen sind sorgen dafür, dass das folgende Zeichen als Datenzeichen behandelt wird (d.h. nicht mehr als Zeilenumbruch, Trenn- oder Anführungszeichen behandelt wird).  
+&lt;/p&gt;
+&lt;p&gt;Ausnahmezeichen, die auch Anführungszeichen sind, haben einen sehr viel begrenzden Effekt.  Sie wirken nur innerhalb von Anführungszeichen und nehme nur sich selbst aus. Wenn beispielsweise 
+&lt;tt&gt;&apos;&lt;/tt&gt; ein Anführungs- und Ausnahmezeichen ist, repräsentiert die Zeichenkette
+&lt;tt&gt;&apos;Smith&apos;&apos;s&amp;nbsp;Creek&apos;&lt;/tt&gt; den Wert Smith&apos;s&amp;nbsp;Creek.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;regexp&quot;&gt;Wie reguläre Ausdrücke funktionieren&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Reguläre Ausdrücke sind eine Minisprache um Zeichenmuster auszudrücken.  Es gibt viele Syntaxvarianten für reguläre Ausdrücke - QGIS nutzt die Syntax der Klasse &lt;a href=&quot;http://qt-project.org/doc/qt-4.8/qregexp.html&quot;&gt;QRegExp&lt;/a&gt; des &lt;a href=&quot;http://qt.digia.com&quot;&gt;Qt&lt;/a&gt; Frameworks.&lt;/p&gt;
+&lt;p&gt;In einer durch regulären Ausdruck getrennten Datei wird jede Zeile als Datensatz behandelt.  Jeder Treffer des regulären Ausdrucks in der Zeile wird als Feldende behandelt. Wenn der reguläre Ausdruck Erfassungsgruppen (engl. capture groups; z.B. &lt;tt&gt;(cat|dog)&lt;/tt&gt;) enthält werden diese als Felder extrahiert. Wenn dies nicht gewünscht ist, sollten Nicht-Erfassungsgruppen (z.B. &lt;tt&gt;(?:cat|dog)&lt;/tt&gt;) verwendet werden.
+&lt;/p&gt;
+&lt;p&gt;Der reguläre Ausdruck wird anders behandelt, wenn es sich auf den Anfang der Zeile bezieht (d.h, wenn das Muster mit &lt;tt&gt;^&lt;/tt&gt; beginnt).
+In diesem Fall wird der Ausdruck auf jede Zeile angewendet. Wenn die Zeile kein Treffer ist, wird sie als ungültige Datensatz verworfen.  Jede Erfassungsgruppe im Ausdruck wird als Feld behandelt.  Der reguläre Ausdruck ist ungültig, wenn er keine Erfassungsgruppen enthält.  Zum Beispiel kann folgendes als ein (etwas uneingängiges) Mittel zum Laden von Daten mit festen Feldbreite verwendet werden:
+&lt;pre&gt;
+^(.{5})(.{10})(.{20})(.{20})
+&lt;/pre&gt;
+&lt;p&gt;extrahiert vier Felder der Breiten 5, 10, 20 und 20 Zeichen einer jeden Zeile.  
+Zeilen mit weniger als 55 Zeichen werden verworfen.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;wkt&quot;&gt;Wie WKT-Texte interpretiert werden&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;
+Ein getrennter Textlayer erkennt folgende &lt;a href=&quot;http://en.wikipedia.org/wiki/Well-known_text&quot;&gt;Well-Known-Text&lt;/a&gt;-Typen - 
+&lt;tt&gt;POINT&lt;/tt&gt;, &lt;tt&gt;MULTIPOINT&lt;/tt&gt;, &lt;tt&gt;LINESTRING&lt;/tt&gt;, &lt;tt&gt;MULTILINESTRING&lt;/tt&gt;, &lt;tt&gt;POLYGON&lt;/tt&gt;, and &lt;tt&gt;MULTIPOLYGON&lt;/tt&gt;.  
+Es akzeptiert Geometrien mit einer Z-Koordinate (z.B. &lt;tt&gt;POINT&amp;nbsp;Z&lt;/tt&gt;), eine Messung (&lt;tt&gt;POINT&amp;nbsp;M&lt;/tt&gt;) oder beides (&lt;tt&gt;POINT&amp;nbsp;ZM&lt;/tt&gt;).
+&lt;/p&gt;
+&lt;p&gt;
+Es unterstützt auch die PostGIS-EWKT-Variante, in der die Geometrie mit einer räumlichen Referenzsystem-ID eingeleitet wird (z.B. &lt;tt&gt;SRID=4326;POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;) und die Informix-Variante in der eine WKT nur mit einer ganzzahligen räumlichen Referenzsystem-ID eingeleitet wird (z.B. &lt;tt&gt;1 POINT(175.3&amp;nbsp;41.2)&lt;/tt&gt;).
+In beiden Fällen wird die SRID ignoriert.
+&lt;/p&gt;
+
+
+
+&lt;h4&gt;&lt;a name=&quot;attributes&quot;&gt;Attribute in getrennten Textdateien&lt;/a&gt;&lt;/h4&gt; 
+&lt;p&gt;Jeder Datensatz wird in Felder aufgeteilt, die die Attribute des Datensatzes repräsentieren.  Normalerweise werden die Attributname der ersten Zeile entnommen.  Wenn sie keine Feldnamen enthält werden sie mit &lt;tt&gt;field_1&lt;/tt&gt;, &lt;tt&gt;field_2&lt;/tt&gt; usw. benannt.  
+Auch wenn es mehr Datensätzen mehr Felder als die in der Kopfzeile definierten hat, werden diese mit &lt;tt&gt;field_#&lt;/tt&gt; benannt, wobei # die Feldnummer ist (zu beachten ist, das leere Felder am Ende des Datensatzes ignoriert werden).
+QGIS kann andere Feldnamen verwenden, wenn die Namen in der Textdateien Zahlen sind oder Namen wie &lt;tt&gt;field_#&lt;/tt&gt; haben oder doppelt vorkommen.
+&lt;/p&gt;
+&lt;p&gt;
+Zusätzlich zu den Attributen, die explizit in der Datei vorkommen, vergibt QGIS jedem Datensatz die Zeilennummer in der er beginnt als eindeutige Objektkennung.  
+&lt;/p&gt;
+&lt;p&gt;
+Jedes Attribut hat auch einen Datentyp aus Zeichenkette (String, Text), ganzer Zahl oder Fließkommazahl.
+Der Datentyp wird aus dem Inhalt des Felds hergeleitet -wenn jeder nicht leere Wert eine ganze Zahl ist der Feldtyp Ganzzahl, wenn er eine gültige Fließkommazahl ist, ist der Feldtype Fließkommazahl und sonst ist der Typ Zeichenkette .  Zu beachten ist, das dies auf den Inhalten der Felder basiert, Anführungszeichen beeinflußen die Interpretation der Werte nicht.
+&lt;/p&gt;
+
+
+&lt;h4&gt;&lt;a name=&quot;example&quot;&gt;Beispiel für eine Textdatei mit X-,Y-Punktkoordinaten&lt;/a&gt;&lt;/h4&gt; 
+&lt;pre&gt;
+X;Y;ELEV
+-300120;7689960;13
+-654360;7562040;52
+1640;7512840;3
+&lt;/pre&gt;
+&lt;p&gt;Die Datei:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt; benutzt &lt;b&gt;;&lt;/b&gt; als Trennzeichen. Jedes Zeichen kann als Trennzeichen für Felder verwendet werden.&lt;/li&gt;
+&lt;li&gt;Die erste Zeile ist die Kopfzeile. Es enthält die Feldnamen X, Y und ELEV.&lt;/li&gt;
+&lt;li&gt;Die X-Koordinaten stehen im Feld X.&lt;/li&gt;
+&lt;li&gt;Die Y Koordinaten stehen im Feld Y.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4&gt;&lt;a name=&quot;wkt_example&quot;&gt;Beispiel für eine Textdatei mit WKT-Geometrien&lt;/a&gt;&lt;/h4&gt;
+&lt;pre&gt;
+id|wkt
+1|POINT(172.0702250 -43.6031036)
+2|POINT(172.0702250 -43.6031036)
+3|POINT(172.1543206 -43.5731302)
+4|POINT(171.9282585 -43.5493308)
+5|POINT(171.8827359 -43.5875983)
+&lt;/pre&gt;
+&lt;p&gt;Diese Datei&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;hat zwei Felder in der Kopfzeile: id und wkt.
+  &lt;li&gt;nutzt &lt;b&gt;|&lt;/b&gt; als Trennzeichen.&lt;/li&gt;
+  &lt;li&gt;gibt jeden Punkt in WKT-Notation an
+&lt;/ul&gt;
+
+&lt;h4&gt;&lt;a name=&quot;python&quot;&gt;Getrennte Textlayer mit Python verwenden&lt;/a&gt;&lt;/h4&gt;
+&lt;p&gt;Getrennte Textlayerdatenquellen können mit Python in ähnlicher Weise wie andere Vektorlayer erzeugt werden.
+Das Muster ist:
+&lt;/p&gt;
+&lt;pre&gt;
+from PyQt4.QtCore import QUrl, QString
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
+
+# Define the data source
+filename=&quot;test.csv&quot;
+uri=QUrl.fromLocalFile(filename)
+uri.addQueryItem(&quot;type&quot;,&quot;csv&quot;)
+uri.addQueryItem(&quot;delimiter&quot;,&quot;|&quot;)
+uri.addQueryItem(&quot;wktField&quot;,&quot;wkt&quot;)
+# ... other delimited text parameters
+layer=QgsVectorLayer(QString(uri.toEncoded()),&quot;Test CSV layer&quot;,&quot;delimitedtext&quot;)
+# Add the layer to the map
+if layer.isValid():
+    QgsMapLayerRegistry.instance().addMapLayer( layer )
+&lt;/pre&gt;
+&lt;p&gt;Dies könnte zum Laden des &lt;a href=&quot;#wkt_example&quot;&gt;zweiten&lt;/a&gt; Beispiels oben verwendet werden.&lt;/p&gt;
+&lt;p&gt;Die Konfiguration wird durch die Query-Items in der URI festgelegt.
+Die folgenden Optionen können verwendet werden
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;&lt;tt&gt;encoding=..&lt;/tt&gt; legt die Dateikodierung fest.  Voreingestellt ist &quot;UTF-8&quot;&lt;/li&gt;
+    &lt;li&gt;&lt;tt&gt;type=(csv|regexp|whitespace)&lt;/tt&gt; legt den Trennzeichentyp fest.  Gültige Werte sind  csv, 
+       regexp, und whitespace (das nur ein Sonderfall von regexp ist).  Voreingestellt ist csv.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;delimiter=...&lt;/tt&gt; legt das Trennzeichen, das für CSV oder regexp formatierte Dateien verwendet wird, fest.  Voreingestellt ist CSV-Dateien ist &lt;tt&gt;,&lt;/tt&gt;.  Für regexp gibt es keine Voreinstellung.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quote=..&lt;/tt&gt; (für CSV-Dateien) legt die Anführungszeichen fest. Voreingestellt ist &quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;escape=..&lt;/tt&gt; (für CSV-Dateien) legt Ausnahmezeichen fest, das das folgende Zeichen von ihrer Sonderbedeutung ausnimmt. Voreingestellt ist &quot;&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipLines=#&lt;/tt&gt; legt die Anzahl der Zeilen fest, die am Anfang der Datei übersprungen werden sollen. Voreingestellt ist 0.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;useHeader=(yes|no)&lt;/tt&gt; legt fest, ob der erste Datensatz Feldnamen enthält. Voreingestellt ist yes.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;trimFields=(yes|no)&lt;/tt&gt; legt fest, ob führende oder schließende Leerzeichen abgeschnitten von nicht mit Anführungszeichen umschlossenen Felder abgeschnitten werden sollen. Voreingestellt ist no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;maxFields=#&lt;/tt&gt; legt die Feldhöchstzahl fest, die aus der Datei geladen werden. Weitere Felder in den Datensätzen werden verworfen.Voreingestellt ist 0 - alle Felder einschließen
+       (Diese Option ist in der Dialogbox nicht vorhanden).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;skipEmptyFields=(yes|no)&lt;/tt&gt; legt fest, ob leere nicht in Anführungszeichen stehende Felder verworfen werden (angewendet nach trimFields). Voreingestellt ist no.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;decimalPoint=.&lt;/tt&gt; legt einen alternatives Zeichen als Dezimaltrennerzeichen in numerischen Feldern fest.  Voreingestellt ist Punkt (&lt;tt&gt;.&lt;/tt&gt;).&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;wktField=feldname&lt;/tt&gt; legt den Namen oder die Feldnummer (beginnend mit 1) des Feldes fest, das eine WKT-Geometrie enthält&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;xField=feldname&lt;/tt&gt; legt den Name oder die Feldnummer (beginnend mit 1) des Feldes fest, das die X-Koordinate enthält (gilt nur, wenn kein wktField angegeben ist)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;yField=feldname&lt;/tt&gt; legt den Name oder die Feldnummer (beginnend mit 1) des Feldes fest, das die Y-Koordinate enthält (gilt nur, wenn kein wktField angegeben ist)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;geomType=(auto|point|line|polygon|none)&lt;/tt&gt; legt den Geometrietyp der WKT-Felder an oder &lt;tt&gt;none&lt;/t&gt;, um nur die Attributtabelle zu laden.  Voreingestellt ist auto.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subset=expression&lt;/tt&gt; legt einen Ausdruck fest, der die zu verwendende Untermenge der Datensätze identifiziert.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;crs=...&lt;/tt&gt; legt das zu verwendende Koordinatensystem des Vektorlayers in einem durch QgsCoordinateReferenceSystem.createFromString (z.B. &quot;EPSG:4167&quot;) akzeptierten Formats fest.  Wenn dies nicht angegeben ist, kann die ein Dialog diese vom Benutzer erfragen (abhängig von der QGIS-KBS-Einstellung)&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;subsetIndex=(yes|no)&lt;/tt&gt; legt fest, das der Datenlieferanz einen Index beim ersten Laden aufbauen soll, um die Untermenge festzulegen.  Der Index kommt bei explizit definierten Untermengen und implizite Untermenge mit gültigen Geometrien zu Anwendung.  Voreingestellt ist, dass der Index, wenn möglicht erstellt wird.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;spatialIndex=(yes|no)&lt;/tt&gt; legt fest, das ein räumlicher Index beim ersten Lesen der Datei erstellt werden soll.  Voreingestellt ist, dass kein Index erstellt wird. &lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;watchFile=(yes|no)&lt;/tt&gt; legt fest, dass der Datenlieferant das Dateisystem auf Dateiänderungen überwachen soll.&lt;/li&gt;
+       &lt;li&gt;&lt;tt&gt;quiet=(yes|no)&lt;/tt&gt; legt fest, ob Fehler beim Laden des Layers in einem Dialog angezeigt werden sollen (in jedem Fall werden sie in QGIS-Protokoll geschrieben). Voreingestellt ist no.  Diese Option ist in der Oberfläche nicht verfügbar&lt;/li&gt;
+&lt;/ul&gt;</translation>
+    </message>
 </context>
 <context>
     <name>contour</name>
@@ -56157,7 +56782,11 @@ Erweiterung wird nicht aktiviert.</translation>
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Filled</source>
+        <translation>Gefüllt</translation>
     </message>
 </context>
 <context>
@@ -60861,7 +61490,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>xyz</source>
+        <translation>xyz</translation>
     </message>
 </context>
 <context>
@@ -60888,6 +61521,10 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Pyramidized</source>
         <translation>Ausgabelayer</translation>
     </message>
 </context>
@@ -62713,7 +63350,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Hillshade</source>
+        <translation>Schummerung</translation>
     </message>
 </context>
 <context>
@@ -63701,7 +64342,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Merged</source>
+        <translation>Verschmolzen</translation>
     </message>
 </context>
 <context>
@@ -63720,7 +64365,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Nearblack</source>
+        <translation>Fast-Schwarz</translation>
     </message>
 </context>
 <context>
@@ -63819,7 +64468,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation>PCT nach RGB</translation>
     </message>
 </context>
 <context>
@@ -63834,7 +64487,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Vectorized</source>
+        <translation>Vektorisiert</translation>
     </message>
 </context>
 <context>
@@ -63869,7 +64526,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Distance</source>
+        <translation>Entfernung</translation>
     </message>
 </context>
 <context>
@@ -63884,7 +64545,7 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Write values inside an existing raster layer(*)</source>
-        <translation>Werte in einen vorhandenen Rasterlayer(*) eintragen </translation>
+        <translation type="obsolete">Werte in einen vorhandenen Rasterlayer(*) eintragen </translation>
     </message>
     <message>
         <source>Set output raster size (ignored if above option is checked)</source>
@@ -63904,7 +64565,7 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer: mandatory to choose an existing raster layer if the (*) option is selected</source>
-        <translation>Ausgabelayer: Auswahl eines vorhandenen Rasters zwingend, wenn (*)  Option gewählt ist</translation>
+        <translation type="obsolete">Ausgabelayer: Auswahl eines vorhandenen Rasters zwingend, wenn (*)  Option gewählt ist</translation>
     </message>
     <message>
         <source>Nodata value</source>
@@ -63936,7 +64597,15 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
+        <translation type="obsolete">Erzeugung der zugehörigen ESRI-Worlddatei (.tfw) erzwingen</translation>
+    </message>
+    <message>
+        <source>Force the generation of an associated ESRI world file (.tfw)</source>
         <translation>Erzeugung der zugehörigen ESRI-Worlddatei (.tfw) erzwingen</translation>
+    </message>
+    <message>
+        <source>Rasterized</source>
+        <translation>Gerastert</translation>
     </message>
 </context>
 <context>
@@ -63951,7 +64620,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation>RGB nach PCT</translation>
     </message>
 </context>
 <context>
@@ -63970,7 +64643,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Roughness</source>
+        <translation>Rauhigkeit</translation>
     </message>
 </context>
 <context>
@@ -64059,7 +64736,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
+    </message>
+    <message>
+        <source>Sieved</source>
+        <translation>Gesiebt</translation>
     </message>
 </context>
 <context>
@@ -64090,7 +64771,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Slope</source>
+        <translation>Neigung</translation>
     </message>
 </context>
 <context>
@@ -64248,7 +64933,11 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output file</source>
-        <translation>Ausgabedatei</translation>
+        <translation type="obsolete">Ausgabedatei</translation>
+    </message>
+    <message>
+        <source>Topographic Position Index</source>
+        <translation>Topographischer Positionsindex</translation>
     </message>
 </context>
 <context>
@@ -64291,7 +64980,7 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -64324,6 +65013,10 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Erzeugung der zugehörigen ESRI-Worlddatei (.tfw) erzwingen</translation>
+    </message>
+    <message>
+        <source>Translated</source>
+        <translation>Umgewandelt</translation>
     </message>
 </context>
 <context>
@@ -64522,7 +65215,7 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     </message>
     <message>
         <source>Output layer</source>
-        <translation>Ausgabelayer</translation>
+        <translation type="obsolete">Ausgabelayer</translation>
     </message>
     <message>
         <source>Nodata value, leave blank to take the nodata value from input</source>
@@ -64555,6 +65248,10 @@ Formatiert ein Datum oder eine Zeichenkette in eine Zeichenkette.  Nutzt die Qt 
     <message>
         <source>Force the generation of an associated ESRI world file (.tfw))</source>
         <translation>Erzeugung der zugehörigen ESRI-Worlddatei (.tfw) erzwingen</translation>
+    </message>
+    <message>
+        <source>Warped</source>
+        <translation>Entzerrt</translation>
     </message>
 </context>
 </TS>
