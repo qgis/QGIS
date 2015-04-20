@@ -19,6 +19,7 @@
 #define QGSZONALSTATISTICSDIALOG_H
 
 #include "ui_qgszonalstatisticsdialogbase.h"
+#include "qgszonalstatistics.h"
 
 class QgisInterface;
 class QgsVectorLayer;
@@ -34,6 +35,7 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
     int rasterBand() const {return 1;} //todo: expose that in the GUI
     QgsVectorLayer* polygonLayer() const;
     QString attributePrefix() const;
+    QgsZonalStatistics::Statistics selectedStats() const;
 
   private:
     QgsZonalStatisticsDialog();

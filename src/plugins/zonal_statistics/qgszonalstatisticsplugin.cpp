@@ -72,7 +72,7 @@ void QgsZonalStatisticsPlugin::run()
     return;
   }
 
-  QgsZonalStatistics zs( vl, rasterFile, d.attributePrefix(), 1 ); //atm hardcode first band
+  QgsZonalStatistics zs( vl, rasterFile, d.attributePrefix(), 1, d.selectedStats() ); //atm hardcode first band
   QProgressDialog p( tr( "Calculating zonal statistics..." ), tr( "Abort..." ), 0, 0 );
   p.setWindowModality( Qt::WindowModal );
   zs.calculateStatistics( &p );

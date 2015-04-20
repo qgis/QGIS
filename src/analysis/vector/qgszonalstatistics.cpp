@@ -30,12 +30,13 @@
 #define TO8F(x) QFile::encodeName( x ).constData()
 #endif
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand , Statistics stats )
     : mRasterFilePath( rasterFile )
     , mRasterBand( rasterBand )
     , mPolygonLayer( polygonLayer )
     , mAttributePrefix( attributePrefix )
     , mInputNodataValue( -1 )
+    , mStatistics( stats )
 {
 
 }
@@ -44,6 +45,7 @@ QgsZonalStatistics::QgsZonalStatistics()
     : mRasterBand( 0 )
     , mPolygonLayer( 0 )
     , mInputNodataValue( -1 )
+    , mStatistics( QgsZonalStatistics::All )
 {
 
 }
@@ -110,26 +112,41 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   QgsRectangle rasterBBox( geoTransform[0], geoTransform[3] - ( nCellsYGDAL * cellsizeY ),
                            geoTransform[0] + ( nCellsXGDAL * cellsizeX ), geoTransform[3] );
 
-  //add the new count, sum, mean fields to the provider
+  //add the new fields to the provider
   QList<QgsField> newFieldList;
-  QString countFieldName = getUniqueFieldName( mAttributePrefix + "count" );
-  QString sumFieldName = getUniqueFieldName( mAttributePrefix + "sum" );
-  QString meanFieldName = getUniqueFieldName( mAttributePrefix + "mean" );
-  QgsField countField( countFieldName, QVariant::Double, "double precision" );
-  QgsField sumField( sumFieldName, QVariant::Double, "double precision" );
-  QgsField meanField( meanFieldName, QVariant::Double, "double precision" );
-  newFieldList.push_back( countField );
-  newFieldList.push_back( sumField );
-  newFieldList.push_back( meanField );
+  QString countFieldName;
+  if ( mStatistics & QgsZonalStatistics::Count )
+  {
+    countFieldName = getUniqueFieldName( mAttributePrefix + "count" );
+    QgsField countField( countFieldName, QVariant::Double, "double precision" );
+    newFieldList.push_back( countField );
+  }
+  QString sumFieldName;
+  if ( mStatistics & QgsZonalStatistics::Sum )
+  {
+    sumFieldName = getUniqueFieldName( mAttributePrefix + "sum" );
+    QgsField sumField( sumFieldName, QVariant::Double, "double precision" );
+    newFieldList.push_back( sumField );
+  }
+  QString meanFieldName;
+  if ( mStatistics & QgsZonalStatistics::Mean )
+  {
+    meanFieldName = getUniqueFieldName( mAttributePrefix + "mean" );
+    QgsField meanField( meanFieldName, QVariant::Double, "double precision" );
+    newFieldList.push_back( meanField );
+  }
   vectorProvider->addAttributes( newFieldList );
 
   //index of the new fields
-  int countIndex = vectorProvider->fieldNameIndex( countFieldName );
-  int sumIndex = vectorProvider->fieldNameIndex( sumFieldName );
-  int meanIndex = vectorProvider->fieldNameIndex( meanFieldName );
+  int countIndex = mStatistics & QgsZonalStatistics::Count ? vectorProvider->fieldNameIndex( countFieldName ) : -1;
+  int sumIndex = mStatistics & QgsZonalStatistics::Sum ? vectorProvider->fieldNameIndex( sumFieldName ) : -1;
+  int meanIndex = mStatistics & QgsZonalStatistics::Mean ? vectorProvider->fieldNameIndex( meanFieldName ) : -1;
 
-  if ( countIndex == -1 || sumIndex == -1 || meanIndex == -1 )
+  if (( mStatistics & QgsZonalStatistics::Count && countIndex == -1 )
+      || ( mStatistics & QgsZonalStatistics::Sum && sumIndex == -1 )
+      || ( mStatistics & QgsZonalStatistics::Mean && meanIndex == -1 ) )
   {
+    //failed to create a required field
     return 8;
   }
 
@@ -204,22 +221,24 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
                                          rasterBBox, sum, count );
     }
 
-
-    if ( count == 0 )
+    if ( mStatistics & QgsZonalStatistics::Mean && count > 0 )
     {
-      mean = 0;
+      mean = sum / count;
     }
     else
     {
-      mean = sum / count;
+      mean = 0;
     }
 
     //write the statistics value to the vector data provider
     QgsChangedAttributesMap changeMap;
     QgsAttributeMap changeAttributeMap;
-    changeAttributeMap.insert( countIndex, QVariant( count ) );
-    changeAttributeMap.insert( sumIndex, QVariant( sum ) );
-    changeAttributeMap.insert( meanIndex, QVariant( mean ) );
+    if ( mStatistics & QgsZonalStatistics::Count )
+      changeAttributeMap.insert( countIndex, QVariant( count ) );
+    if ( mStatistics & QgsZonalStatistics::Sum )
+      changeAttributeMap.insert( sumIndex, QVariant( sum ) );
+    if ( mStatistics & QgsZonalStatistics::Mean )
+      changeAttributeMap.insert( meanIndex, QVariant( mean ) );
     changeMap.insert( f.id(), changeAttributeMap );
     vectorProvider->changeAttributeValues( changeMap );
 

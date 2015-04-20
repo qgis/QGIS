@@ -23,10 +23,27 @@
 #include "qgisinterface.h"
 
 #include <QSettings>
+#include <QListWidgetItem>
 
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog( iface->mainWindow() ), mIface( iface )
 {
   setupUi( this );
+
+  QListWidgetItem* countItem = new QListWidgetItem( tr( "Count" ), mStatsListWidget );
+  countItem->setFlags( countItem->flags() | Qt::ItemIsUserCheckable );
+  countItem->setCheckState( Qt::Checked );
+  countItem->setData( Qt::UserRole, QgsZonalStatistics::Count );
+  mStatsListWidget->addItem( countItem );
+  QListWidgetItem* sumItem = new QListWidgetItem( tr( "Sum" ), mStatsListWidget );
+  sumItem->setFlags( sumItem->flags() | Qt::ItemIsUserCheckable );
+  sumItem->setCheckState( Qt::Checked );
+  sumItem->setData( Qt::UserRole, QgsZonalStatistics::Sum );
+  mStatsListWidget->addItem( sumItem );
+  QListWidgetItem* meanItem = new QListWidgetItem( tr( "Mean" ), mStatsListWidget );
+  meanItem->setFlags( meanItem->flags() | Qt::ItemIsUserCheckable );
+  meanItem->setCheckState( Qt::Checked );
+  meanItem->setData( Qt::UserRole, QgsZonalStatistics::Mean );
+  mStatsListWidget->addItem( meanItem );
 
   QSettings settings;
   restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
@@ -105,6 +122,20 @@ QgsVectorLayer* QgsZonalStatisticsDialog::polygonLayer() const
 QString QgsZonalStatisticsDialog::attributePrefix() const
 {
   return mColumnPrefixLineEdit->text();
+}
+
+QgsZonalStatistics::Statistics QgsZonalStatisticsDialog::selectedStats() const
+{
+  QgsZonalStatistics::Statistics stats = 0;
+  for ( int i = 0; i < mStatsListWidget->count(); ++i )
+  {
+    QListWidgetItem* item = mStatsListWidget->item( i );
+    if ( item->checkState() == Qt::Checked )
+    {
+      stats |= ( QgsZonalStatistics::Statistic )( item->data( Qt::UserRole ).toInt() );
+    }
+  }
+  return stats;
 }
 
 QString QgsZonalStatisticsDialog::proposeAttributePrefix() const

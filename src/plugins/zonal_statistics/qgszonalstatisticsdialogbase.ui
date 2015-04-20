@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>193</height>
+    <width>254</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,6 +47,16 @@
       <string/>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Statistics to calculate:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="mStatsListWidget"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

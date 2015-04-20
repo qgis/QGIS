@@ -29,7 +29,19 @@ class QProgressDialog;
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
-    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1 );
+
+    //! Enumeration of flags that specify statistics to be calculated
+    enum Statistic
+    {
+      Count       = 0x01,  //!< Pixel count
+      Sum    = 0x02,  //!< Sum of pixel values
+      Mean = 0x04,  //!< Mean of pixel values
+      All = Count | Sum | Mean
+    };
+    Q_DECLARE_FLAGS( Statistics, Statistic )
+
+    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1,
+                        Statistics stats = Statistic::All );
     ~QgsZonalStatistics();
 
     /**Starts the calculation
@@ -66,7 +78,9 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     QString mAttributePrefix;
     /**The nodata value of the input layer*/
     float mInputNodataValue;
-
+    Statistics mStatistics;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
 
 #endif // QGSZONALSTATISTICS_H
