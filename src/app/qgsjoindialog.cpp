@@ -169,7 +169,7 @@ void QgsJoinDialog::updateJoinFieldsSubsetView( QgsVectorLayer* vLayer  ){
     mUseJoinFieldsSubset->setChecked( false );
     QStandardItemModel* subsetModel = new QStandardItemModel( this );
     const QgsFields& layerFields = vLayer->pendingFields();
-    for ( int idx = 0; idx < layerFields.count()-1; ++idx )
+    for ( int idx = 0; idx < layerFields.count(); ++idx )
     {
       if (layerFields[idx].name() != joinField) {
           QStandardItem* subsetItem = new QStandardItem( layerFields[idx].name() );
