@@ -86,6 +86,8 @@ SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql drive
 SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 IF(WITH_ORACLE)
   SET(HAVE_ORACLE TRUE)
+  SET(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
+  SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
 ENDIF(WITH_ORACLE)
 
 
