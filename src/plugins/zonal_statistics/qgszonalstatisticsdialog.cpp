@@ -120,7 +120,7 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
       QgsRasterDataProvider* rp = rl->dataProvider();
       if ( rp && rp->name() == "gdal" )
       {
-        mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+        mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->id() ) );
       }
     }
     else
@@ -138,14 +138,27 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
   }
 }
 
-QString QgsZonalStatisticsDialog::rasterFilePath() const
+QgsRasterLayer* QgsZonalStatisticsDialog::rasterLayer() const
 {
   int index = mRasterLayerComboBox->currentIndex();
   if ( index == -1 )
   {
-    return "";
+    return 0;
   }
-  return mRasterLayerComboBox->itemData( index ).toString();
+  QString id = mRasterLayerComboBox->itemData( index ).toString();
+  QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+  return layer;
+}
+
+QString QgsZonalStatisticsDialog::rasterFilePath() const
+{
+  QgsRasterLayer* layer = rasterLayer();
+  return layer ? layer->source() : QString();
+}
+
+int QgsZonalStatisticsDialog::rasterBand() const
+{
+  return mBandComboBox->currentIndex() + 1;
 }
 
 QgsVectorLayer* QgsZonalStatisticsDialog::polygonLayer() const
@@ -171,7 +184,7 @@ QgsZonalStatistics::Statistics QgsZonalStatisticsDialog::selectedStats() const
     QListWidgetItem* item = mStatsListWidget->item( i );
     if ( item->checkState() == Qt::Checked )
     {
-      stats |= ( QgsZonalStatistics::Statistic )( item->data( Qt::UserRole ).toInt() );
+      stats |= ( QgsZonalStatistics::Statistic )item->data( Qt::UserRole ).toInt();
     }
   }
   return stats;
@@ -217,4 +230,25 @@ bool QgsZonalStatisticsDialog::prefixIsValid( const QString& prefix ) const
     }
   }
   return true;
+}
+
+void QgsZonalStatisticsDialog::on_mRasterLayerComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  QgsRasterLayer* layer = rasterLayer();
+  if ( !layer )
+  {
+    mBandComboBox->setEnabled( false );
+    return;
+  }
+
+  mBandComboBox->setEnabled( true );
+  mBandComboBox->clear();
+
+  int bandCountInt = layer->bandCount();
+  for ( int i = 1; i <= bandCountInt; ++i )
+  {
+    mBandComboBox->addItem( layer->bandName( i ) );
+  }
 }
