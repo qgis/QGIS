@@ -246,6 +246,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   FeatureStats featureStats( statsStoreValues, statsStoreValueCount );
   int featureCounter = 0;
 
+  QgsChangedAttributesMap changeMap;
   while ( fi.nextFeature( f ) )
   {
     if ( p )
@@ -300,7 +301,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     }
 
     //write the statistics value to the vector data provider
-    QgsChangedAttributesMap changeMap;
     QgsAttributeMap changeAttributeMap;
     if ( mStatistics & QgsZonalStatistics::Count )
       changeAttributeMap.insert( countIndex, QVariant( featureStats.count ) );
@@ -364,10 +364,10 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     }
 
     changeMap.insert( f.id(), changeAttributeMap );
-    vectorProvider->changeAttributeValues( changeMap );
-
     ++featureCounter;
   }
+
+  vectorProvider->changeAttributeValues( changeMap );
 
   if ( p )
   {
