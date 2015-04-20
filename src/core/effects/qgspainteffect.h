@@ -189,7 +189,7 @@ class CORE_EXPORT QgsPaintEffect
 
     /** Returns the source QPicture rendered to a new QImage. The @link draw @endlink member can
      * utilise this when drawing the effect. The image will be padded or cropped from the original
-     * source QPicture by the results of the @link boundingRectFor @endlink member.
+     * source QPicture by the results of the @link boundingRect @endlink method.
      * The result is cached to speed up subsequent calls to sourceAsImage.
      * @returns source QPicture rendered to an image
      * @see drawSource
