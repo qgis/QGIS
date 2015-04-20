@@ -41,10 +41,12 @@ class APP_EXPORT QgsJoinDialog: public QDialog, private Ui::QgsJoinDialogBase
 
   private slots:
     void joinedLayerChanged( QgsMapLayer* layer );
+    void updateJoinFieldsSubsetView();
 
   private:
     /**Target layer*/
     QgsVectorLayer* mLayer;
+    void updateJoinFieldsSubsetView( QgsVectorLayer* vLayer  );
 };
 
 

@@ -135,17 +135,9 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
     return;
   }
 
-  mUseJoinFieldsSubset->setChecked( false );
-  QStandardItemModel* subsetModel = new QStandardItemModel( this );
-  const QgsFields& layerFields = vLayer->pendingFields();
-  for ( int idx = 0; idx < layerFields.count(); ++idx )
-  {
-    QStandardItem* subsetItem = new QStandardItem( layerFields[idx].name() );
-    subsetItem->setCheckable( true );
-    //subsetItem->setFlags( subsetItem->flags() | Qt::ItemIsUserCheckable );
-    subsetModel->appendRow( subsetItem );
-  }
-  mJoinFieldsSubsetView->setModel( subsetModel );
+  disconnect( mJoinFieldComboBox,SIGNAL(fieldChanged( QString )),this,SLOT( updateJoinFieldsSubsetView() ) );
+  updateJoinFieldsSubsetView( vLayer );
+  connect( mJoinFieldComboBox,SIGNAL(fieldChanged( QString )),this,SLOT( updateJoinFieldsSubsetView() ) );
 
   QgsVectorDataProvider* dp = vLayer->dataProvider();
   bool canCreateAttrIndex = dp && ( dp->capabilities() & QgsVectorDataProvider::CreateAttributeIndex );
@@ -163,4 +155,28 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer* layer )
   {
     mCustomPrefix->setText( layer->name() + "_" );
   }
+}
+
+void QgsJoinDialog::updateJoinFieldsSubsetView(){
+    QgsVectorLayer* vLayer = dynamic_cast<QgsFieldComboBox*>(QObject::sender())->layer();
+    if (vLayer) {
+        updateJoinFieldsSubsetView( vLayer );
+    }
+}
+
+void QgsJoinDialog::updateJoinFieldsSubsetView( QgsVectorLayer* vLayer  ){
+    QString joinField = mJoinFieldComboBox->currentField();
+    mUseJoinFieldsSubset->setChecked( false );
+    QStandardItemModel* subsetModel = new QStandardItemModel( this );
+    const QgsFields& layerFields = vLayer->pendingFields();
+    for ( int idx = 0; idx < layerFields.count()-1; ++idx )
+    {
+      if (layerFields[idx].name() != joinField) {
+          QStandardItem* subsetItem = new QStandardItem( layerFields[idx].name() );
+          subsetItem->setCheckable( true );
+          //subsetItem->setFlags( subsetItem->flags() | Qt::ItemIsUserCheckable );
+          subsetModel->appendRow( subsetItem );
+      }
+    }
+    mJoinFieldsSubsetView->setModel( subsetModel );
 }
