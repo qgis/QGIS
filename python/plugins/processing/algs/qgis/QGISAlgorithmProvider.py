@@ -84,6 +84,7 @@ from DensifyGeometriesInterval import DensifyGeometriesInterval
 from Eliminate import Eliminate
 from SpatialJoin import SpatialJoin
 from DeleteColumn import DeleteColumn
+from DeleteHoles import DeleteHoles
 from DeleteDuplicateGeometries import DeleteDuplicateGeometries
 from TextToFloat import TextToFloat
 from ExtractByAttribute import ExtractByAttribute
@@ -151,7 +152,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         VariableDistanceBuffer(), Dissolve(), Difference(),
                         Intersection(), Union(), Clip(), ExtentFromLayer(),
                         RandomSelection(), RandomSelectionWithinSubsets(),
-                        SelectByLocation(), RandomExtract(),
+                        SelectByLocation(), RandomExtract(), DeleteHoles(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
                         SpatialJoin(), RegularPoints(), SymmetricalDifference(),
                         VectorSplit(), VectorGrid(), DeleteColumn(),
