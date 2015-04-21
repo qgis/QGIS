@@ -26,8 +26,16 @@ __copyright__ = '(C) 2013, Alexander Bruy'
 __revision__ = '$Format:%H$'
 
 import numpy
-from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
+
+try:
+    from scipy.stats.mstats import mode
+    hasSciPy = True
+except:
+    hasSciPy = False
+
 from osgeo import gdal, ogr, osr
+from qgis.core import QgsRectangle, QgsGeometry, QgsFeature
+
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
@@ -144,6 +152,9 @@ class ZonalStatistics(GeoAlgorithm):
                 columnPrefix + 'var', 21, 6)
         (idxMedian, fields) = vector.findOrCreateField(layer, fields,
                 columnPrefix + 'median', 21, 6)
+        if hasSciPy:
+            (idxMode, fields) = vector.findOrCreateField(layer, fields,
+                    columnPrefix + 'mode', 21, 6)
 
         writer = self.getOutputFromName(self.OUTPUT_LAYER).getVectorWriter(
             fields.toList(), layer.dataProvider().geometryType(), layer.crs())
@@ -225,6 +236,8 @@ class ZonalStatistics(GeoAlgorithm):
             attrs.insert(idxRange, float(masked.max()) - float(masked.min()))
             attrs.insert(idxVar, float(masked.var()))
             attrs.insert(idxMedian, float(numpy.ma.median(masked)))
+            if hasSciPy:
+                attrs.insert(idxMode, float(mode(masked, axis=None)[0][0]))
 
             outFeat.setAttributes(attrs)
             writer.addFeature(outFeat)
