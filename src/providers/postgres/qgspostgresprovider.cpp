@@ -545,7 +545,7 @@ QString QgsPostgresUtils::whereClause( QgsFeatureIds featureIds, const QgsFields
     whereClauses << whereClause( featureId, fields, conn, pkType, pkAttrs, sharedData );
   }
 
-  return whereClauses.join( " OR " );
+  return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
 }
 
 QString QgsPostgresProvider::filterWhereClause() const
