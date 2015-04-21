@@ -21,6 +21,7 @@
 
 class QgsExpression;
 class QgsVectorLayer;
+class QgsFields;
 
 /** \ingroup core
  * \class QgsDataDefined
@@ -51,6 +52,12 @@ class CORE_EXPORT QgsDataDefined
      */
     explicit QgsDataDefined( const QgsExpression * expression );
 
+    /**
+     * Copy constructor. Note that copies of data defined objects with expressions
+     * will not be prepared.
+     */
+    QgsDataDefined( const QgsDataDefined& other );
+
     ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
@@ -75,7 +82,22 @@ class CORE_EXPORT QgsDataDefined
     void setExpressionParams( QMap<QString, QVariant> params ) { mExpressionParams = params; }
     void insertExpressionParam( QString key, QVariant param );
 
+    /** Prepares the expression using a vector layer
+     * @param layer vector layer
+     * @returns true if expression was successfully prepared
+     */
     bool prepareExpression( QgsVectorLayer* layer );
+
+    /** Prepares the expression using a fields collection
+     * @param fields
+     * @returns true if expression was successfully prepared
+     * @note added in QGIS 2.9
+     */
+    bool prepareExpression( const QgsFields &fields );
+
+    /** Returns whether the data defined object's expression is prepared
+     * @returns true if expression is prepared
+     */
     bool expressionIsPrepared() const { return mExpressionPrepared; }
 
     QgsExpression* expression() { return mExpression; }
@@ -108,6 +130,11 @@ class CORE_EXPORT QgsDataDefined
     bool operator==( const QgsDataDefined &other ) const;
     bool operator!=( const QgsDataDefined &other ) const;
 
+    /** Assignment operator. Note that after assignment the data defined
+     * object's expression will not be prepared.
+     */
+    QgsDataDefined& operator=( QgsDataDefined const & rhs );
+
   private:
     QgsExpression* mExpression;
 
@@ -118,7 +145,8 @@ class CORE_EXPORT QgsDataDefined
 
     QMap<QString, QVariant> mExpressionParams;
     bool mExpressionPrepared;
-    QStringList mExprRefColmuns;
+    QStringList mExprRefColumns;
+
 };
 
 #endif // QGSDATADEFINED_H

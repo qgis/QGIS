@@ -75,10 +75,12 @@ void TestQgsDataDefined::create()
 void TestQgsDataDefined::copy()
 {
   QgsDataDefined dd( true, true, QString( "sqrt(2)" ), QString( "field" ) );
-  dd.prepareExpression(NULL);
+  dd.prepareExpression( NULL );
   QgsDataDefined cpy( dd );
+  QVERIFY( cpy == dd );
   QgsDataDefined assigned;
-  assigned = cpy;
+  assigned = dd;
+  QVERIFY( assigned == dd );
 }
 
 void TestQgsDataDefined::gettersSetters()

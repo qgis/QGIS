@@ -43,9 +43,20 @@ QgsDataDefined::QgsDataDefined( const QgsExpression * expression )
   mExpressionPrepared = false;
 }
 
+QgsDataDefined::QgsDataDefined( const QgsDataDefined &other )
+    : mExpression( 0 )
+    , mActive( other.isActive() )
+    , mUseExpression( other.useExpression() )
+    , mExpressionString( other.expressionString() )
+    , mField( other.field() )
+    , mExpressionParams( other.expressionParams() )
+    , mExpressionPrepared( false )
+{
+
+}
+
 QgsDataDefined::~QgsDataDefined()
 {
-  mExpressionParams.clear();
   delete mExpression;
 }
 
@@ -61,6 +72,20 @@ void QgsDataDefined::setExpressionString( const QString &expr )
 }
 
 bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
+{
+  if ( layer )
+  {
+    return prepareExpression( layer->pendingFields() );
+  }
+  else
+  {
+    //preparing expression without a layer set, so pass empty field list
+    QgsFields empty;
+    return prepareExpression( empty );
+  }
+}
+
+bool QgsDataDefined::prepareExpression( const QgsFields &fields )
 {
   if ( !mUseExpression || mExpressionString.isEmpty() )
   {
@@ -86,16 +111,7 @@ bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
     }
   }
 
-  if ( layer )
-  {
-    mExpression->prepare( layer->pendingFields() );
-  }
-  else
-  {
-    //preparing expression without a layer set, so pass empty field list
-    QgsFields empty;
-    mExpression->prepare( empty );
-  }
+  mExpression->prepare( fields );
 
   if ( mExpression->hasEvalError() )
   {
@@ -104,16 +120,16 @@ bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
   }
 
   mExpressionPrepared = true;
-  mExprRefColmuns = mExpression->referencedColumns();
+  mExprRefColumns = mExpression->referencedColumns();
 
   return true;
 }
 
 QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
 {
-  if ( !mExprRefColmuns.isEmpty() )
+  if ( !mExprRefColumns.isEmpty() )
   {
-    return mExprRefColmuns;
+    return mExprRefColumns;
   }
 
   if ( mUseExpression )
@@ -125,10 +141,10 @@ QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
   }
   else if ( !mField.isEmpty() )
   {
-    mExprRefColmuns << mField;
+    mExprRefColumns << mField;
   }
 
-  return mExprRefColmuns;
+  return mExprRefColumns;
 }
 
 void QgsDataDefined::insertExpressionParam( QString key, QVariant param )
@@ -180,4 +196,21 @@ bool QgsDataDefined::operator==( const QgsDataDefined &other ) const
 bool QgsDataDefined::operator!=( const QgsDataDefined &other ) const
 {
   return !( *this == other );
+}
+
+QgsDataDefined &QgsDataDefined::operator=( const QgsDataDefined & rhs )
+{
+  if ( &rhs == this )
+    return *this;
+
+  delete mExpression;
+  mExpression = 0;
+  mActive = rhs.isActive();
+  mUseExpression = rhs.useExpression();
+  mExpressionString = rhs.expressionString();
+  mField = rhs.field();
+  mExpressionParams = rhs.expressionParams();
+  mExpressionPrepared = false;
+  mExprRefColumns.clear();
+  return *this;
 }
