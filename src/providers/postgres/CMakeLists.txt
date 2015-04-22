@@ -13,6 +13,7 @@ SET(PG_SRCS
   qgspgnewconnection.cpp
   qgspgtablemodel.cpp
   qgscolumntypethread.cpp
+  qgspostgresexpressioncompiler.cpp
 )
 SET(PG_MOC_HDRS
   qgspostgresprovider.h
@@ -27,6 +28,7 @@ SET(PG_MOC_HDRS
 
 SET(PG_HDRS
   qgspostgrestransaction.h
+  qgspostgresexpressioncompiler.h
 )
 
 ########################################################
