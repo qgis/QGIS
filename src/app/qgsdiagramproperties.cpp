@@ -88,32 +88,23 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   {
     mPlacementComboBox->addItem( tr( "Around Point" ), QgsDiagramLayerSettings::AroundPoint );
     mPlacementComboBox->addItem( tr( "Over Point" ), QgsDiagramLayerSettings::OverPoint );
+    mPlacementFrame->setVisible( true );
+    mLinePlacementFrame->setVisible( false );
   }
 
-  if ( layerType == QGis::Line || layerType == QGis::Polygon )
+  if ( layerType == QGis::Line )
   {
-    mPlacementComboBox->addItem( tr( "Line" ), QgsDiagramLayerSettings::Line );
-    mPlacementComboBox->addItem( tr( "Horizontal" ), QgsDiagramLayerSettings::Horizontal );
+    mPlacementFrame->setVisible( false );
+    mLinePlacementFrame->setVisible( true );
   }
 
   if ( layerType == QGis::Polygon )
   {
+    mPlacementComboBox->addItem( tr( "Line" ), QgsDiagramLayerSettings::Line );
+    mPlacementComboBox->addItem( tr( "Horizontal" ), QgsDiagramLayerSettings::Horizontal );
     mPlacementComboBox->addItem( tr( "Free" ), QgsDiagramLayerSettings::Free );
   }
   mPlacementComboBox->blockSignals( false );
-
-  if ( layerType == QGis::Line )
-  {
-    mLineOptionsComboBox->addItem( tr( "On line" ), QgsDiagramLayerSettings::OnLine );
-    mLineOptionsComboBox->addItem( tr( "Above line" ), QgsDiagramLayerSettings::AboveLine );
-    mLineOptionsComboBox->addItem( tr( "Below Line" ), QgsDiagramLayerSettings::BelowLine );
-    mLineOptionsComboBox->addItem( tr( "Map orientation" ), QgsDiagramLayerSettings::MapOrientation );
-  }
-  else
-  {
-    mLineOptionsComboBox->setVisible( false );
-    mLineOptionsLabel->setVisible( false );
-  }
 
   mDiagramTypeComboBox->blockSignals( true );
   QPixmap pix = QgsApplication::getThemePixmap( "pie-chart" );
@@ -186,7 +177,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "mm" ) ) );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
     mDiagramSizeSpinBox->setEnabled( true );
-    mDiagramSizeSpinBox->setValue( 30 );
+    mDiagramSizeSpinBox->setValue( 15 );
     mLinearScaleFrame->setEnabled( false );
     mIncreaseMinimumSizeSpinBox->setEnabled( false );
     mIncreaseMinimumSizeLabel->setEnabled( false );
@@ -199,14 +190,17 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     switch ( layerType )
     {
       case QGis::Point:
-        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( 0 ) );
+        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::AroundPoint ) );
         break;
       case QGis::Line:
-        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( 3 ) );
-        mLineOptionsComboBox->setCurrentIndex( mLineOptionsComboBox->findData( 2 ) );
+        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::Line ) );
+        chkLineAbove->setChecked( true );
+        chkLineBelow->setChecked( false );
+        chkLineOn->setChecked( false );
+        chkLineOrientationDependent->setChecked( false );
         break;
       case QGis::Polygon:
-        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( 0 ) );
+        mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( QgsDiagramLayerSettings::AroundPoint ) );
         break;
       case QGis::UnknownGeometry:
       case QGis::NoGeometry:
@@ -360,7 +354,13 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         mDataDefinedPositionGroupBox->setChecked( true );
       }
       mPlacementComboBox->setCurrentIndex( mPlacementComboBox->findData( dls->placement ) );
-      mLineOptionsComboBox->setCurrentIndex( mLineOptionsComboBox->findData( dls->placementFlags ) );
+
+      chkLineAbove->setChecked( dls->placementFlags & QgsDiagramLayerSettings::AboveLine );
+      chkLineBelow->setChecked( dls->placementFlags & QgsDiagramLayerSettings::BelowLine );
+      chkLineOn->setChecked( dls->placementFlags & QgsDiagramLayerSettings::OnLine );
+      if ( !( dls->placementFlags & QgsDiagramLayerSettings::MapOrientation ) )
+        chkLineOrientationDependent->setChecked( true );
+
       mShowAllCheckBox->setChecked( dls->showAll );
     }
 
@@ -727,10 +727,17 @@ void QgsDiagramProperties::apply()
     dls.yPosColumn = -1;
   }
   dls.placement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( mPlacementComboBox->currentIndex() ).toInt();
-  if ( mLineOptionsComboBox->isEnabled() )
-  {
-    dls.placementFlags = static_cast<QgsDiagramLayerSettings::LinePlacementFlags>( mLineOptionsComboBox->itemData( mLineOptionsComboBox->currentIndex() ).toInt() );
-  }
+
+  dls.placementFlags = ( QgsDiagramLayerSettings::LinePlacementFlags )0;
+  if ( chkLineAbove->isChecked() )
+    dls.placementFlags |= QgsDiagramLayerSettings::AboveLine;
+  if ( chkLineBelow->isChecked() )
+    dls.placementFlags |= QgsDiagramLayerSettings::BelowLine;
+  if ( chkLineOn->isChecked() )
+    dls.placementFlags |= QgsDiagramLayerSettings::OnLine;
+  if ( ! chkLineOrientationDependent->isChecked() )
+    dls.placementFlags |= QgsDiagramLayerSettings::MapOrientation;
+
   mLayer->setDiagramLayerSettings( dls );
 }
 
