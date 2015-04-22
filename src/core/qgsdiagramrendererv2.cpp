@@ -91,6 +91,14 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
 
   minScaleDenominator = elem.attribute( "minScaleDenominator", "-1" ).toDouble();
   maxScaleDenominator = elem.attribute( "maxScaleDenominator", "-1" ).toDouble();
+  if ( elem.hasAttribute( "scaleBasedVisibility" ) )
+  {
+    scaleBasedVisibility = ( elem.attribute( "scaleBasedVisibility", "1" ) != "0" );
+  }
+  else
+  {
+    scaleBasedVisibility = minScaleDenominator >= 0 && maxScaleDenominator >= 0;
+  }
 
   //mm vs map units
   if ( elem.attribute( "sizeType" ) == "MM" )
@@ -199,6 +207,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   categoryElem.setAttribute( "penColor", penColor.name() );
   categoryElem.setAttribute( "penAlpha", penColor.alpha() );
   categoryElem.setAttribute( "penWidth", QString::number( penWidth ) );
+  categoryElem.setAttribute( "scaleBasedVisibility", scaleBasedVisibility );
   categoryElem.setAttribute( "minScaleDenominator", QString::number( minScaleDenominator ) );
   categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
   categoryElem.setAttribute( "transparency", QString::number( transparency ) );
