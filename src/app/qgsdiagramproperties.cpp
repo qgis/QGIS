@@ -160,6 +160,12 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   const QgsFields& layerFields = layer->pendingFields();
   for ( int idx = 0; idx < layerFields.count(); ++idx )
   {
+    QTreeWidgetItem *newItem = new QTreeWidgetItem( mAttributesTreeWidget );
+    QString name = QString( "\"%1\"" ).arg( layerFields[idx].name() );
+    newItem->setText( 0, name );
+    newItem->setData( 0, Qt::UserRole, name );
+    newItem->setFlags( newItem->flags() & ~Qt::ItemIsDropEnabled );
+
     mDataDefinedXComboBox->addItem( layerFields[idx].name(), idx );
     mDataDefinedYComboBox->addItem( layerFields[idx].name(), idx );
   }
