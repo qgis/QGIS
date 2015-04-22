@@ -123,7 +123,8 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     return;
   }
 
-  addLayers();
+  if ( !addLayers() )
+    return;
 
   // if there are already parsed capabilities, use them!
   if ( capabilities )
@@ -265,15 +266,14 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
   return url.isEmpty() ? url : prepareUri( url );
 }
 
-void QgsWmsProvider::addLayers()
+bool QgsWmsProvider::addLayers()
 {
   QgsDebugMsg( "Entering: layers:" + mSettings.mActiveSubLayers.join( ", " ) + ", styles:" + mSettings.mActiveSubStyles.join( ", " ) );
 
   if ( mSettings.mActiveSubLayers.size() != mSettings.mActiveSubStyles.size() )
   {
     QgsMessageLog::logMessage( tr( "Number of layers and styles don't match" ), tr( "WMS" ) );
-    mValid = false;
-    return;
+    return false;
   }
 
   // Set the visibility of these new layers on by default
@@ -290,6 +290,8 @@ void QgsWmsProvider::addLayers()
     mTileLayer = 0;
 
   QgsDebugMsg( "Exiting." );
+
+  return true;
 }
 
 void QgsWmsProvider::setConnectionName( QString const &connName )
