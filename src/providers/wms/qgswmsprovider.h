@@ -385,7 +385,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Add the list of WMS layer names to be rendered by this server
      */
-    void addLayers();
+    bool addLayers();
 
     /**
      * Set the image projection (in WMS CRS format) used in the transfer from the WMS server
