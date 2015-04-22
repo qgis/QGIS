@@ -29,6 +29,9 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
   public:
     QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent );
+
+    ~QgsDiagramProperties();
+
     /**Adds an attribute from the list of available attributes to the assigned attributes with a random color.*/
     void addAttribute( QTreeWidgetItem * item );
 
@@ -39,13 +42,14 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
     void on_mAddCategoryPushButton_clicked();
     void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_mFindMaximumValueButton_clicked();
-    void on_mDisplayDiagramsGroupBox_toggled( bool checked );
     void on_mRemoveCategoryPushButton_clicked();
     void on_mDiagramFontButton_clicked();
     void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
     void on_mEngineSettingsButton_clicked();
     void showSizeAttributeExpressionDialog();
     void showAddAttributeExpressionDialog();
+    void on_mDiagramStackedWidget_currentChanged( int index );
+    void on_mPlacementComboBox_currentIndexChanged( int index );
 
   protected:
     QFont mDiagramFont;
@@ -54,6 +58,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
 
   private:
     int mAvailableAttributes;
+
 };
 
 #endif // QGSDIAGRAMPROPERTIES_H

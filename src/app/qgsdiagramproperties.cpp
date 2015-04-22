@@ -49,9 +49,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
   setupUi( this );
 
-  int tabIdx = QSettings().value( "/Windows/VectorLayerProperties/diagram/tab", 0 ).toInt();
+  // get rid of annoying outer focus rect on Mac
+  mDiagramOptionsListWidget->setAttribute( Qt::WA_MacShowFocusRect, false );
 
-  mDiagramPropertiesTabWidget->setCurrentIndex( tabIdx );
+  connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramTypeFrame, SLOT( setEnabled( bool ) ) );
+  connect( mEnableDiagramsCheckBox, SIGNAL( toggled( bool ) ), mDiagramFrame, SLOT( setEnabled( bool ) ) );
 
   mBackgroundColorButton->setColorDialogTitle( tr( "Select background color" ) );
   mBackgroundColorButton->setAllowAlpha( true );
@@ -74,12 +76,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   QGis::GeometryType layerType = layer->geometryType();
   if ( layerType == QGis::UnknownGeometry || layerType == QGis::NoGeometry )
   {
-    mDisplayDiagramsGroupBox->setChecked( false );
-    mDisplayDiagramsGroupBox->setEnabled( false );
+    mEnableDiagramsCheckBox->setChecked( false );
+    mEnableDiagramsCheckBox->setEnabled( false );
+    mDiagramTypeFrame->setEnabled( false );
+    mDiagramFrame->setEnabled( false );
   }
 
   //insert placement options
-
+  mPlacementComboBox->blockSignals( true );
   if ( layerType == QGis::Point || layerType == QGis::Polygon )
   {
     mPlacementComboBox->addItem( tr( "Around Point" ), QgsDiagramLayerSettings::AroundPoint );
@@ -96,6 +100,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   {
     mPlacementComboBox->addItem( tr( "Free" ), QgsDiagramLayerSettings::Free );
   }
+  mPlacementComboBox->blockSignals( false );
 
   if ( layerType == QGis::Line )
   {
@@ -110,12 +115,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     mLineOptionsLabel->setVisible( false );
   }
 
+  mDiagramTypeComboBox->blockSignals( true );
   QPixmap pix = QgsApplication::getThemePixmap( "pie-chart" );
   mDiagramTypeComboBox->addItem( pix, tr( "Pie chart" ), DIAGRAM_NAME_PIE );
   pix = QgsApplication::getThemePixmap( "text" );
   mDiagramTypeComboBox->addItem( pix, tr( "Text diagram" ), DIAGRAM_NAME_TEXT );
   pix = QgsApplication::getThemePixmap( "histogram" );
   mDiagramTypeComboBox->addItem( pix, tr( "Histogram" ), DIAGRAM_NAME_HISTOGRAM );
+  mDiagramTypeComboBox->blockSignals( false );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
@@ -130,6 +137,25 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   mAngleOffsetComboBox->addItem( tr( "Right" ), 0 );
   mAngleOffsetComboBox->addItem( tr( "Bottom" ), 270 * 16 );
   mAngleOffsetComboBox->addItem( tr( "Left" ), 180 * 16 );
+
+  QSettings settings;
+
+  // reset horiz strech of left side of options splitter (set to 1 for previewing in Qt Designer)
+  QSizePolicy policy( mDiagramOptionsListFrame->sizePolicy() );
+  policy.setHorizontalStretch( 0 );
+  mDiagramOptionsListFrame->setSizePolicy( policy );
+  if ( !settings.contains( QString( "/Windows/Diagrams/OptionsSplitState" ) ) )
+  {
+    // set left list widget width on intial showing
+    QList<int> splitsizes;
+    splitsizes << 115;
+    mDiagramOptionsSplitter->setSizes( splitsizes );
+  }
+
+  // restore dialog, splitters and current tab
+  mDiagramOptionsSplitter->restoreState( settings.value( QString( "/Windows/Diagrams/OptionsSplitState" ) ).toByteArray() );
+  mDiagramOptionsListWidget->setCurrentRow( settings.value( QString( "/Windows/Diagrams/Tab" ), 0 ).toInt() );
+
 
   //insert all attributes into the combo boxes
   const QgsFields& layerFields = layer->pendingFields();
@@ -153,11 +179,17 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
   const QgsDiagramRendererV2* dr = layer->diagramRenderer();
   if ( !dr ) //no diagram renderer yet, insert reasonable default
   {
-    mDisplayDiagramsGroupBox->setChecked( false );
-    mFixedSizeCheckBox->setChecked( true );
+    mEnableDiagramsCheckBox->setChecked( false );
+    mDiagramTypeFrame->setEnabled( false );
+    mDiagramFrame->setEnabled( false );
+    mFixedSizeRadio->setChecked( true );
     mDiagramUnitComboBox->setCurrentIndex( mDiagramUnitComboBox->findText( tr( "mm" ) ) );
     mLabelPlacementComboBox->setCurrentIndex( mLabelPlacementComboBox->findText( tr( "x-height" ) ) );
+    mDiagramSizeSpinBox->setEnabled( true );
     mDiagramSizeSpinBox->setValue( 30 );
+    mLinearScaleFrame->setEnabled( false );
+    mIncreaseMinimumSizeSpinBox->setEnabled( false );
+    mIncreaseMinimumSizeLabel->setEnabled( false );
     mBarWidthSpinBox->setValue( 5 );
     mVisibilityGroupBox->setChecked( layer->hasScaleBasedVisibility() );
     mShowAllCheckBox->setChecked( true );
@@ -181,17 +213,33 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         break;
     }
     mBackgroundColorButton->setColor( QColor( 255, 255, 255, 255 ) );
+    mDiagramTypeComboBox->blockSignals( true );
+    mDiagramTypeComboBox->setCurrentIndex( 0 );
+    mDiagramTypeComboBox->blockSignals( false );
+    //force a refresh of widget status to match diagram type
+    on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
   }
   else // already a diagram renderer present
   {
     //single category renderer or interpolated one?
-    mFixedSizeCheckBox->setChecked( dr->rendererName() == "SingleCategory" );
+    if ( dr->rendererName() == "SingleCategory" )
+    {
+      mFixedSizeRadio->setChecked( true );
+    }
+    else
+    {
+      mAttributeBasedScalingRadio->setChecked( true );
+    }
+    mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
+    mLinearScaleFrame->setEnabled( mAttributeBasedScalingRadio->isChecked() );
 
     //assume single category or linearly interpolated diagram renderer for now
     QList<QgsDiagramSettings> settingList = dr->diagramSettings();
     if ( settingList.size() > 0 )
     {
-      mDisplayDiagramsGroupBox->setChecked( settingList.at( 0 ).enabled );
+      mEnableDiagramsCheckBox->setChecked( settingList.at( 0 ).enabled );
+      mDiagramTypeFrame->setEnabled( mEnableDiagramsCheckBox->isChecked() );
+      mDiagramFrame->setEnabled( mEnableDiagramsCheckBox->isChecked() );
       mDiagramFont = settingList.at( 0 ).font;
       QSizeF size = settingList.at( 0 ).size;
       mBackgroundColorButton->setColor( settingList.at( 0 ).backgroundColor );
@@ -248,7 +296,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
       mBarWidthSpinBox->setValue( settingList.at( 0 ).barWidth );
 
-      mIncreaseSmallDiagramsGroupBox->setChecked( settingList.at( 0 ).minimumSize != 0 );
+      mIncreaseSmallDiagramsCheck->setChecked( settingList.at( 0 ).minimumSize != 0 );
+      mIncreaseMinimumSizeSpinBox->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
+      mIncreaseMinimumSizeLabel->setEnabled( mIncreaseSmallDiagramsCheck->isChecked() );
+
       mIncreaseMinimumSizeSpinBox->setValue( settingList.at( 0 ).minimumSize );
 
       if ( settingList.at( 0 ).scaleByArea )
@@ -282,6 +333,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
       if ( lidr )
       {
         mDiagramSizeSpinBox->setEnabled( false );
+        mLinearScaleFrame->setEnabled( true );
         mValueLineEdit->setText( QString::number( lidr->upperValue(), 'f' ) );
         mSizeSpinBox->setValue(( lidr->upperSize().width() + lidr->upperSize().height() ) / 2 );
         if ( lidr->classificationAttributeIsExpression() )
@@ -315,7 +367,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     if ( dr->diagram() )
     {
       QString diagramName = dr->diagram()->diagramName();
+      mDiagramTypeComboBox->blockSignals( true );
       mDiagramTypeComboBox->setCurrentIndex( mDiagramTypeComboBox->findData( diagramName ) );
+      mDiagramTypeComboBox->blockSignals( false );
+      //force a refresh of widget status to match diagram type
+      on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
       if ( mDiagramTypeComboBox->currentIndex() == -1 )
       {
         QMessageBox::warning( this, tr( "Unknown diagram type." ),
@@ -325,11 +381,15 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
     }
   } // if ( !dr )
 
-  // Trigger a clicked event, so all the items get properly enabled and disabled
-  on_mDisplayDiagramsGroupBox_toggled( mDisplayDiagramsGroupBox->isChecked() );
-
   connect( mSizeAttributeExpression, SIGNAL( clicked() ), this, SLOT( showSizeAttributeExpressionDialog() ) );
   connect( mAddAttributeExpression, SIGNAL( clicked() ), this, SLOT( showAddAttributeExpressionDialog() ) );
+}
+
+QgsDiagramProperties::~QgsDiagramProperties()
+{
+  QSettings settings;
+  settings.setValue( QString( "/Windows/Diagrams/OptionsSplitState" ), mDiagramOptionsSplitter->saveState() );
+  settings.setValue( QString( "/Windows/Diagrams/Tab" ), mDiagramOptionsListWidget->currentRow() );
 }
 
 void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int index )
@@ -338,16 +398,14 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
 
   if ( DIAGRAM_NAME_TEXT == diagramType )
   {
-    mLabelPlacementComboBox->show();
-    mLabelPlacementLabel->show();
+    mTextOptionsFrame->show();
     mBackgroundColorLabel->show();
     mBackgroundColorButton->show();
     mDiagramFontButton->show();
   }
   else
   {
-    mLabelPlacementComboBox->hide();
-    mLabelPlacementLabel->hide();
+    mTextOptionsFrame->hide();
     mBackgroundColorLabel->hide();
     mBackgroundColorButton->hide();
     mDiagramFontButton->hide();
@@ -357,30 +415,21 @@ void QgsDiagramProperties::on_mDiagramTypeComboBox_currentIndexChanged( int inde
   {
     mBarWidthLabel->show();
     mBarWidthSpinBox->show();
-    mOrientationFrame->show();
-    mFixedSizeCheckBox->setChecked( false );
-    mFixedSizeCheckBox->setVisible( false );
-    mDiagramSizeSpinBox->setVisible( false );
+    mBarOptionsFrame->show();
+    mAttributeBasedScalingRadio->setChecked( true );
+    mFixedSizeRadio->setEnabled( false );
+    mDiagramSizeSpinBox->setEnabled( false );
     mLinearlyScalingLabel->setText( tr( "Bar length: Scale linearly, such as the following value matches the specified size." ) );
   }
   else
   {
     mBarWidthLabel->hide();
     mBarWidthSpinBox->hide();
-    mOrientationFrame->hide();
+    mBarOptionsFrame->hide();
     mLinearlyScalingLabel->setText( tr( "Scale linearly between 0 and the following attribute value / diagram size:" ) );
-    mAttributeBasedScalingOptions->show();
-    mFixedSizeCheckBox->setVisible( true );
-    mDiagramSizeSpinBox->setVisible( true );
-  }
-
-  if ( DIAGRAM_NAME_HISTOGRAM == diagramType || DIAGRAM_NAME_TEXT == diagramType )
-  {
-    mDiagramPropertiesTabWidget->setTabEnabled( 3, true );
-  }
-  else
-  {
-    mDiagramPropertiesTabWidget->setTabEnabled( 3, false );
+    mAttributeBasedScalingRadio->setEnabled( true );
+    mFixedSizeRadio->setEnabled( true );
+    mDiagramSizeSpinBox->setEnabled( mFixedSizeRadio->isChecked() );
   }
 
   if ( DIAGRAM_NAME_TEXT == diagramType || DIAGRAM_NAME_PIE == diagramType )
@@ -481,16 +530,6 @@ void QgsDiagramProperties::on_mFindMaximumValueButton_clicked()
   mValueLineEdit->setText( QString( "%1" ).arg( maxValue ) );
 }
 
-void QgsDiagramProperties::on_mDisplayDiagramsGroupBox_toggled( bool checked )
-{
-  // if enabled show diagram specific options
-  if ( checked )
-  {
-    on_mDiagramTypeComboBox_currentIndexChanged( mDiagramTypeComboBox->currentIndex() );
-    // Update enabled/disabled state
-  }
-}
-
 void QgsDiagramProperties::on_mDiagramFontButton_clicked()
 {
   bool ok;
@@ -518,10 +557,7 @@ void QgsDiagramProperties::on_mEngineSettingsButton_clicked()
 
 void QgsDiagramProperties::apply()
 {
-  QSettings().setValue( "/Windows/VectorLayerProperties/diagram/tab",
-                        mDiagramPropertiesTabWidget->currentIndex() );
-
-  bool diagramsEnabled = mDisplayDiagramsGroupBox->isChecked();
+  bool diagramsEnabled = mEnableDiagramsCheckBox->isChecked();
 
   QgsDiagram* diagram = 0;
   int index = mDiagramTypeComboBox->currentIndex();
@@ -539,7 +575,7 @@ void QgsDiagramProperties::apply()
   // Check if a (usable) scale attribute value is inserted
   mValueLineEdit->text().toDouble( &scaleAttributeValueOk );
 
-  if ( !mFixedSizeCheckBox->isChecked() && !scaleAttributeValueOk )
+  if ( !mFixedSizeRadio->isChecked() && !scaleAttributeValueOk )
   {
     double maxVal = DBL_MIN;
     QgsVectorDataProvider* provider = mLayer->dataProvider();
@@ -596,7 +632,7 @@ void QgsDiagramProperties::apply()
   }
 
   QgsDiagramSettings ds;
-  ds.enabled = mDisplayDiagramsGroupBox->isChecked();
+  ds.enabled = mEnableDiagramsCheckBox->isChecked();
   ds.font = mDiagramFont;
   ds.transparency = mTransparencySlider->value();
 
@@ -616,7 +652,7 @@ void QgsDiagramProperties::apply()
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
   ds.scaleByArea = mScaleDependencyComboBox->itemData( mScaleDependencyComboBox->currentIndex() ).toBool();
 
-  if ( mIncreaseSmallDiagramsGroupBox->isChecked() )
+  if ( mIncreaseSmallDiagramsCheck->isChecked() )
   {
     ds.minimumSize = mIncreaseMinimumSizeSpinBox->value();
   }
@@ -647,7 +683,7 @@ void QgsDiagramProperties::apply()
 
   ds.barWidth = mBarWidthSpinBox->value();
 
-  if ( mFixedSizeCheckBox->isChecked() )
+  if ( mFixedSizeRadio->isChecked() )
   {
     QgsSingleCategoryDiagramRenderer* dr = new QgsSingleCategoryDiagramRenderer();
     dr->setDiagram( diagram );
@@ -767,4 +803,26 @@ void QgsDiagramProperties::showAddAttributeExpressionDialog()
     }
   }
   activateWindow(); // set focus back parent
+}
+
+void QgsDiagramProperties::on_mDiagramStackedWidget_currentChanged( int index )
+{
+  mDiagramOptionsListWidget->blockSignals( true );
+  mDiagramOptionsListWidget->setCurrentRow( index );
+  mDiagramOptionsListWidget->blockSignals( false );
+}
+
+void QgsDiagramProperties::on_mPlacementComboBox_currentIndexChanged( int index )
+{
+  QgsDiagramLayerSettings::Placement currentPlacement = ( QgsDiagramLayerSettings::Placement )mPlacementComboBox->itemData( index ).toInt();
+  if ( currentPlacement == QgsDiagramLayerSettings::OverPoint )
+  {
+    mDiagramDistanceLabel->setEnabled( false );
+    mDiagramDistanceSpinBox->setEnabled( false );
+  }
+  else
+  {
+    mDiagramDistanceLabel->setEnabled( true );
+    mDiagramDistanceSpinBox->setEnabled( true );
+  }
 }
