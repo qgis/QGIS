@@ -3608,7 +3608,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
 
   try
   {
-    if ( !layerIt.value().palLayer->registerFeature( lbl->strId(), lbl, diagramWidth, diagramHeight, "", ddPosX, ddPosY, ddPos, 0.0, false, 0, 0, 0, 0, alwaysShow ) )
+    if ( !layerIt.value().palLayer->registerFeature( lbl->strId(), lbl, diagramWidth, diagramHeight, "", ddPosX, ddPosY, ddPos, 0.0, true, 0, 0, 0, 0, alwaysShow ) )
     {
       return;
     }
@@ -4112,8 +4112,23 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
         {
           feature.setFields( &dit.value().fields );
           palGeometry->feature( feature );
-          QgsPoint outPt = xform.transform(( *it )->getX(), ( *it )->getY() );
-          dit.value().renderer->renderDiagram( feature, context, outPt.toQPointF() );
+
+          //calculate top-left point for diagram
+          //first, calculate the centroid of the label (accounts for PAL creating
+          //rotated labels when we do not want to draw the diagrams rotated)
+          double centerX = 0;
+          double centerY = 0;
+          for ( int i = 0; i < 4; ++i )
+          {
+            centerX += ( *it )->getX( i );
+            centerY += ( *it )->getY( i );
+          }
+          QgsPoint outPt( centerX / 4.0, centerY / 4.0 );
+          //then, calculate the top left point for the diagram with this center position
+          QgsPoint centerPt = xform.transform( outPt.x() - ( *it )->getWidth() / 2,
+                                               outPt.y() - ( *it )->getHeight() / 2 );
+
+          dit.value().renderer->renderDiagram( feature, context, centerPt.toQPointF() );
         }
       }
 
