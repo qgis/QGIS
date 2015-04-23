@@ -255,11 +255,6 @@ bool QgsPostgresFeatureIterator::close()
   return true;
 }
 
-int QgsPostgresFeatureIterator::count()
-{
-
-}
-
 ///////////////
 
 QString QgsPostgresFeatureIterator::whereClauseRect()
