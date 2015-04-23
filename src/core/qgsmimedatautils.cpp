@@ -44,6 +44,7 @@ QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
 
 QgsMimeDataUtils::Uri::Uri( QString& encData )
 {
+  QgsDebugMsg( "encData: " + encData );
   QStringList decoded = decode( encData );
   if ( decoded.size() < 4 )
     return;
@@ -119,6 +120,7 @@ QString QgsMimeDataUtils::encode( const QStringList& items )
   foreach ( const QString& item, items )
   {
     QString str = item;
+    str.replace( "\\", "\\\\" );
     str.replace( ":", "\\:" );
     encoded += str + ":";
   }
