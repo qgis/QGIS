@@ -95,16 +95,16 @@ class QgsGrass
      *  Active mode means that GISRC is set up and GISRC file is available,
      *  in that case default GISDBASE, LOCATION and MAPSET may be read by GetDefaul*() functions.
      *  Passive mode means, that GISRC is not available. */
-    static GRASS_LIB_EXPORT bool activeMode( void );
+    static GRASS_LIB_EXPORT bool activeMode();
 
     //! Get default GISDBASE, returns GISDBASE name or empty string if not in active mode
-    static GRASS_LIB_EXPORT QString getDefaultGisdbase( void );
+    static GRASS_LIB_EXPORT QString getDefaultGisdbase();
 
     //! Get default LOCATION_NAME, returns LOCATION_NAME name or empty string if not in active mode
-    static GRASS_LIB_EXPORT QString getDefaultLocation( void );
+    static GRASS_LIB_EXPORT QString getDefaultLocation();
 
     //! Get default MAPSET, returns MAPSET name or empty string if not in active mode
-    static GRASS_LIB_EXPORT QString getDefaultMapset( void );
+    static GRASS_LIB_EXPORT QString getDefaultMapset();
 
     //! Init or reset GRASS library
     /*!
@@ -144,8 +144,8 @@ class QgsGrass
     /** \brief Open existing GRASS mapset
      * \return NULL string or error message
      */
-    static GRASS_LIB_EXPORT QString openMapset( QString gisdbase,
-        QString location, QString mapset );
+    static GRASS_LIB_EXPORT QString openMapset( const QString& gisdbase,
+        const QString& location, const QString& mapset );
 
     /** \brief Close mapset if it was opened from QGIS.
      *         Delete GISRC, lock and temporary directory
@@ -154,31 +154,32 @@ class QgsGrass
     static GRASS_LIB_EXPORT QString closeMapset();
 
     //! Check if given directory contains a GRASS installation
-    static GRASS_LIB_EXPORT bool isValidGrassBaseDir( QString const gisBase );
+    static GRASS_LIB_EXPORT bool isValidGrassBaseDir( const QString& gisBase );
 
     //! Returns list of locations in given gisbase
-    static QStringList GRASS_LIB_EXPORT locations( QString gisbase );
+    static QStringList GRASS_LIB_EXPORT locations( const QString& gisdbase );
 
     //! Returns list of mapsets in location
-    static GRASS_LIB_EXPORT QStringList mapsets( QString gisbase, QString locationName );
-    static GRASS_LIB_EXPORT QStringList mapsets( QString locationPath );
+    static GRASS_LIB_EXPORT QStringList mapsets( const QString& gisdbase, const QString& locationName );
+    static GRASS_LIB_EXPORT QStringList mapsets( const QString& locationPath );
 
     //! List of vectors and rasters
-    static GRASS_LIB_EXPORT QStringList vectors( QString gisbase, QString locationName,
-        QString mapsetName );
-    static GRASS_LIB_EXPORT QStringList vectors( QString mapsetPath );
+    static GRASS_LIB_EXPORT QStringList vectors( const QString& gisdbase, const QString& locationName,
+        const QString& mapsetName );
+    static GRASS_LIB_EXPORT QStringList vectors( const QString& mapsetPath );
 
-    static GRASS_LIB_EXPORT QStringList rasters( QString gisbase, QString locationName,
-        QString mapsetName );
-    static GRASS_LIB_EXPORT QStringList rasters( QString mapsetPath );
+    static GRASS_LIB_EXPORT QStringList rasters( const QString& gisdbase, const QString& locationName,
+        const QString& mapsetNamee );
+    static GRASS_LIB_EXPORT QStringList rasters( const QString& mapsetPath );
 
     //! Get list of vector layers
-    static GRASS_LIB_EXPORT QStringList vectorLayers( QString, QString, QString, QString );
+    static GRASS_LIB_EXPORT QStringList vectorLayers( const QString& gisdbase, const QString& location,
+        const QString& mapset, const QString& mapName );
 
     //! List of elements
-    static GRASS_LIB_EXPORT QStringList elements( QString gisbase, QString locationName,
-        QString mapsetName, QString element );
-    static GRASS_LIB_EXPORT QStringList elements( QString mapsetPath, QString element );
+    static GRASS_LIB_EXPORT QStringList elements( const QString& gisdbase, const QString& locationName,
+        const QString& mapsetName, const QString& element );
+    static GRASS_LIB_EXPORT QStringList elements( const QString&  mapsetPath, const QString&  element );
 
     //! Initialize GRASS region
     static GRASS_LIB_EXPORT void initRegion( struct Cell_head *window );
@@ -186,20 +187,20 @@ class QgsGrass
     static GRASS_LIB_EXPORT void setRegion( struct Cell_head *window, QgsRectangle rect );
 
     // ! Get map region
-    static GRASS_LIB_EXPORT bool mapRegion( int type, QString gisbase,
+    static GRASS_LIB_EXPORT bool mapRegion( int type, QString gisdbase,
                                             QString location, QString mapset, QString map,
                                             struct Cell_head *window );
 
     // ! String representation of region
-    static GRASS_LIB_EXPORT QString regionString( struct Cell_head *window );
+    static GRASS_LIB_EXPORT QString regionString( const struct Cell_head *window );
 
     // ! Read current mapset region
-    static GRASS_LIB_EXPORT bool region( QString gisbase, QString location, QString mapset,
+    static GRASS_LIB_EXPORT bool region( const QString& gisdbase, const QString& location, const QString& mapset,
                                          struct Cell_head *window );
 
     // ! Write current mapset region
-    static GRASS_LIB_EXPORT bool writeRegion( QString gisbase, QString location, QString mapset,
-        struct Cell_head *window );
+    static GRASS_LIB_EXPORT bool writeRegion( const QString& gisbase, const QString& location, const QString& mapset,
+        const struct Cell_head *window );
 
     // ! Set (copy) region extent, resolution is not changed
     static GRASS_LIB_EXPORT void copyRegionExtent( struct Cell_head *source,
@@ -225,10 +226,14 @@ class QgsGrass
     static GRASS_LIB_EXPORT QString gisrcFilePath();
 
     // ! Start a GRASS module in any gisdbase/location
-    static GRASS_LIB_EXPORT QProcess *startModule( QString gisdbase, QString location, QString module, QStringList arguments, QTemporaryFile &gisrcFile );
+    static GRASS_LIB_EXPORT QProcess *startModule( const QString& gisdbase, const QString&  location,
+        const QString&  moduleName, const QStringList& arguments,
+        QTemporaryFile &gisrcFile );
 
     // ! Run a GRASS module in any gisdbase/location
-    static GRASS_LIB_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments, int timeOut = 30000 );
+    static GRASS_LIB_EXPORT QByteArray runModule( const QString& gisdbase, const QString&  location,
+        const QString&  moduleName, const QStringList& arguments,
+        int timeOut = 30000 );
 
     /** \brief Get info string from qgis.g.info module
      * @param info info type
@@ -243,27 +248,39 @@ class QgsGrass
      * @sampleSize sample size for statistics
      * @timeOut timeout
      */
-    static GRASS_LIB_EXPORT QString getInfo( QString info, QString gisdbase,
-        QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0, QgsRectangle extent = QgsRectangle(), int sampleRows = 0, int sampleCols = 0, int timeOut = 30000 );
+    static GRASS_LIB_EXPORT QString getInfo( const QString&  info, const QString&  gisdbase,
+        const QString&  location, const QString&  mapset = "",
+        const QString&  map = "", const MapType type = None,
+        double x = 0.0, double y = 0.0,
+        const QgsRectangle& extent = QgsRectangle(), int sampleRows = 0,
+        int sampleCols = 0, int timeOut = 30000 );
 
     // ! Get location projection
-    static GRASS_LIB_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location );
+    static GRASS_LIB_EXPORT QgsCoordinateReferenceSystem crs( const QString& gisdbase, const QString& location, bool interactive = true );
 
     // ! Get location projection calling directly GRASS library
-    static GRASS_LIB_EXPORT QgsCoordinateReferenceSystem crsDirect( QString gisdbase, QString location );
+    static GRASS_LIB_EXPORT QgsCoordinateReferenceSystem crsDirect( const QString& gisdbase, const QString& location );
 
     // ! Get map extent
-    static GRASS_LIB_EXPORT QgsRectangle extent( QString gisdbase, QString location,
-        QString mapset, QString map, MapType type = None );
+    // @param interactive - show warning dialog on error
+    static GRASS_LIB_EXPORT QgsRectangle extent( const QString& gisdbase, const QString& location,
+        const QString& mapset, const QString& map,
+        MapType type = None, bool interactive = true );
 
     // ! Get raster map size
-    static GRASS_LIB_EXPORT void size( QString gisdbase, QString location,
-                                       QString mapset, QString map, int *cols, int *rows );
+    static GRASS_LIB_EXPORT void size( const QString& gisdbase, const QString& location,
+                                       const QString& mapset, const QString& map, int *cols, int *rows );
 
     // ! Get raster info, info is either 'info' or 'stats'
     //   extent and sampleSize are stats options
-    static GRASS_LIB_EXPORT QHash<QString, QString> info( QString gisdbase, QString location,
-        QString mapset, QString map, MapType type, QString info = "info", QgsRectangle extent = QgsRectangle(), int sampleRows = 0, int sampleCols = 0, int timeOut = 30000 );
+    // @param interactive - show warning dialog on error
+    static GRASS_LIB_EXPORT QHash<QString, QString> info( const QString& gisdbase, const QString& location,
+        const QString& mapset, const QString& map,
+        MapType type,
+        const QString& info = "info",
+        const QgsRectangle& extent = QgsRectangle(),
+        int sampleRows = 0, int sampleCols = 0,
+        int timeOut = 30000, bool interactive = true );
 
     // ! List of Color
     static GRASS_LIB_EXPORT QList<QgsGrass::Color> colors( QString gisdbase, QString location,
