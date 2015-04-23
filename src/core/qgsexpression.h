@@ -352,11 +352,11 @@ class CORE_EXPORT QgsExpression
         QStringList mAliases;
     };
 
-    static const QList<Function*> &Functions();
     static QList<Function*> gmFunctions;
+    static const QList<Function*>& Functions();
 
     static QStringList gmBuiltinFunctions;
-    static const QStringList &BuiltinFunctions();
+    static const QStringList& BuiltinFunctions();
 
     static bool registerFunction( Function* function );
     static bool unregisterFunction( QString name );
@@ -574,7 +574,11 @@ class CORE_EXPORT QgsExpression
       public:
         NodeLiteral( QVariant value ) : mValue( value ) {}
 
+<<<<<<< HEAD
         QVariant value() const { return mValue; }
+=======
+        inline QVariant value() const { return mValue; }
+>>>>>>> c943e22... Revert "Add convenience method QgsVectorLayer::getFeatures( expression )"
 
         virtual NodeType nodeType() const override { return ntLiteral; }
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields ) override;

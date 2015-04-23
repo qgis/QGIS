@@ -1657,7 +1657,7 @@ bool QgsExpression::unregisterFunction( QString name )
 
 QStringList QgsExpression::gmBuiltinFunctions;
 
-const QStringList &QgsExpression::BuiltinFunctions()
+const QStringList& QgsExpression::BuiltinFunctions()
 {
   if ( gmBuiltinFunctions.isEmpty() )
   {
@@ -1700,7 +1700,7 @@ const QStringList &QgsExpression::BuiltinFunctions()
 
 QList<QgsExpression::Function*> QgsExpression::gmFunctions;
 
-const QList<QgsExpression::Function*> &QgsExpression::Functions()
+const QList<QgsExpression::Function*>& QgsExpression::Functions()
 {
   if ( gmFunctions.isEmpty() )
   {
