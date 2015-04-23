@@ -225,11 +225,9 @@ class QgsExpression
     };
 
 
-    static const QList<QgsExpression::Function *> &Functions();
-    // static QList<Function*> gmFunctions;
+    static const QList<QgsExpression::Function *>& Functions();
 
-    // static QStringList gmBuiltinFunctions;
-    static const QStringList &BuiltinFunctions();
+    static const QStringList& BuiltinFunctions();
 
     static bool registerFunction( Function* function );
     static bool unregisterFunction( QString name );
