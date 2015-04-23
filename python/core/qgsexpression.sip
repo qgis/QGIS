@@ -194,7 +194,7 @@ class QgsExpression
     class Function
     {
       public:
-        Function( QString fnname, int params, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList() );
+        Function( const QString& fnname, int params, const QString& group, const QString& helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false );
         /** The name of the function. */
         QString name();
         /** The number of parameters this function takes. */
@@ -219,7 +219,7 @@ class QgsExpression
         /** The group the function belongs to. */
         QString group();
         /** The help text for the function. */
-        QString helptext();
+        const QString helptext();
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) = 0;
     };
@@ -309,7 +309,7 @@ class QgsExpression
         ~NodeList();
         void append( QgsExpression::Node* node /Transfer/ );
         int count();
-        QList<QgsExpression::Node*> list();
+        const QList<QgsExpression::Node*>& list();
 
         virtual QString dump() const;
 
@@ -420,9 +420,9 @@ class QgsExpression
     class NodeLiteral : QgsExpression::Node
     {
       public:
-        NodeLiteral( QVariant value );
+        NodeLiteral( const QVariant& value );
 
-        QVariant value() const;
+        const QVariant& value() const;
 
         virtual QgsExpression::NodeType nodeType() const;
         virtual bool prepare( QgsExpression* parent, const QgsFields &fields );
@@ -437,7 +437,7 @@ class QgsExpression
     class NodeColumnRef : QgsExpression::Node
     {
       public:
-        NodeColumnRef( QString name );
+        NodeColumnRef( const QString& name );
 
         QString name() const;
 

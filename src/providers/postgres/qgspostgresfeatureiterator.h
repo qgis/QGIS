@@ -81,9 +81,6 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     //! end of iterating: free the resources / lock
     virtual bool close() override;
 
-    //! the number of features
-    virtual int count() override;
-
   protected:
     //! fetch next feature, return true on success
     virtual bool fetchFeature( QgsFeature& feature ) override;
