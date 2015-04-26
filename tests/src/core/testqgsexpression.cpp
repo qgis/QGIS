@@ -1099,6 +1099,16 @@ class TestQgsExpression: public QObject
       QCOMPARE( QgsExpression::evaluateToDouble( QString( "a" ), 9.0 ), 9.0 );
       QCOMPARE( QgsExpression::evaluateToDouble( QString(), 9.0 ), 9.0 );
     }
+
+    void eval_isField()
+    {
+      QCOMPARE( QgsExpression( "" ).isField(), false );
+      QCOMPARE( QgsExpression( "42" ).isField(), false );
+      QCOMPARE( QgsExpression( "foo" ).isField(), true );
+      QCOMPARE( QgsExpression( "\"foo bar\"" ).isField(), true );
+      QCOMPARE( QgsExpression( "sqrt(foo)" ).isField(), false );
+      QCOMPARE( QgsExpression( "foo + bar" ).isField(), false );
+    }
 };
 
 QTEST_MAIN( TestQgsExpression )

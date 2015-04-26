@@ -155,6 +155,11 @@ class CORE_EXPORT QgsExpression
     //! @note added in 2.2
     static bool hasSpecialColumn( const QString& name );
 
+    /** Checks whether an expression consists only of a single field reference
+     * @note added in 2.9
+     */
+    bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
+
     static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
 
     void setScale( double scale ) { mScale = scale; }
