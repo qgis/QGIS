@@ -70,6 +70,22 @@ void TestQgsDataDefined::create()
   QVERIFY( dd->useExpression() );
   QCOMPARE( dd->expressionString(), QString( "exp" ) );
   QCOMPARE( dd->field(), QString( "field" ) );
+
+  //test with string constructor
+  QScopedPointer<QgsDataDefined> stringConstructorField( new QgsDataDefined( QString( "\"col1\"" ) ) );
+  QVERIFY( stringConstructorField->isActive() );
+  QVERIFY( ! stringConstructorField->useExpression() );
+  QVERIFY( stringConstructorField->expressionString().isEmpty() );
+  QCOMPARE( stringConstructorField->field(), QString( "col1" ) );
+
+  QScopedPointer<QgsDataDefined> stringConstructorExp( new QgsDataDefined( QString( "1 + 2" ) ) );
+  QVERIFY( stringConstructorExp->isActive() );
+  QVERIFY( stringConstructorExp->useExpression() );
+  QCOMPARE( stringConstructorExp->expressionString(), QString( "1 + 2" ) );
+  QVERIFY( stringConstructorExp->field().isEmpty() );
+
+  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString( "" ) ) );
+  QVERIFY( ! stringConstructorEmpty->isActive() );
 }
 
 void TestQgsDataDefined::copy()

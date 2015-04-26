@@ -23,12 +23,19 @@ class QgsDataDefined
                     const QString& field = QString() );
 
     /**
-     * Construct a new data defined object, analyse the expression to determine
-     * if it's a simple field
-     *
+     * Construct a new data defined object, analysing the expression to determine
+     * if it's a simple field reference or an expression.
      * @param expression can be null
      */
-    QgsDataDefined( const QgsExpression * expression );
+    explicit QgsDataDefined( const QgsExpression * expression );
+
+    /**
+     * Construct a new data defined object, analysing the string to determine
+     * if it's a simple field reference or an expression
+     * @param string field reference or an expression, can be empty
+     * @note added in QGIS 2.9
+     */
+    explicit QgsDataDefined( const QString& string );
 
     /**
      * Copy constructor. Note that copies of data defined objects with expressions
@@ -36,7 +43,7 @@ class QgsDataDefined
      */
     QgsDataDefined( const QgsDataDefined& other );
 
-    ~QgsDataDefined();
+    virtual ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
