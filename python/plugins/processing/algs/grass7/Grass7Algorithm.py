@@ -194,7 +194,7 @@ class Grass7Algorithm(GeoAlgorithm):
                             )
 
         if cellsize == 0:
-            cellsize = 1
+            cellsize = 100
         return cellsize
 
     def processAlgorithm(self, progress):
@@ -359,18 +359,19 @@ class Grass7Algorithm(GeoAlgorithm):
                 outputCommands.append('g.region raster=' + out.name
                                       + uniqueSufix)
                 if self.grassName == 'r.composite':
-                    command = 'r.out.tiff -t --verbose' # FIXME r.out.tiff deprecated, use r.out.gdal
+                    command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
                     command += out.name + uniqueSufix
                     command += ' output="' + filename + '"'
-                    commands.append(command)
-                    outputCommands.append(command)
                 else:
                     command = 'r.out.gdal -c createopt="TFW=YES,COMPRESS=LZW"'
                     command += ' input='
 
                 if self.grassName == 'r.horizon':
                     command += out.name + uniqueSufix + '_0'
+                elif  self.grassName == 'r.composite':
+                    commands.append(command)
+                    outputCommands.append(command)
                 else:
                     command += out.name + uniqueSufix
                     command += ' output="' + filename + '"'
