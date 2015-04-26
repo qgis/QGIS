@@ -17645,7 +17645,7 @@ Database: %2</translation>
     </message>
     <message>
         <source>Join</source>
-        <translation>Join</translation>
+        <translation type="obsolete">Join</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -37308,9 +37308,15 @@ error:%2
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>Connection failed - Check settings and try again.
+        <translation type="obsolete">Connection failed - Check settings and try again.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38263,9 +38269,15 @@ Error: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>Connection failed - Check settings and try again.
+        <translation type="obsolete">Connection failed - Check settings and try again.
 
 </translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

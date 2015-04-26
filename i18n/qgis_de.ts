@@ -17627,7 +17627,7 @@ Datenbank: %2</translation>
     </message>
     <message>
         <source>Join</source>
-        <translation>Verbinden</translation>
+        <translation type="obsolete">Verbinden</translation>
     </message>
     <message>
         <source>Advanced</source>
@@ -37360,8 +37360,15 @@ Fehler:%2
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>Verbindung gescheitert - Einstellungen überprüfen und wiederholen.
+        <translation type="obsolete">Verbindung gescheitert - Einstellungen überprüfen und wiederholen.
 
+</translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation type="unfinished">Verbindung fehlgeschlagen - bitte das Protokoll für Details konsultieren.j
 </translation>
     </message>
 </context>
@@ -38314,8 +38321,15 @@ Fehler: %2</translation>
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation>Verbindung gescheitert - Einstellungen überprüfen und wiederholen.
+        <translation type="obsolete">Verbindung gescheitert - Einstellungen überprüfen und wiederholen.
 
+</translation>
+    </message>
+    <message>
+        <source>Connection failed - consult message log for details.
+
+</source>
+        <translation>Verbindung fehlgeschlagen - bitte das Protokoll für Details konsultieren.
 </translation>
     </message>
 </context>
