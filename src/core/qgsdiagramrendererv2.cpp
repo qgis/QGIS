@@ -551,7 +551,7 @@ QList< QgsLayerTreeModelLegendNode * > QgsDiagramSettings::legendItems( QgsLayer
     QPixmap pix( 16, 16 );
     pix.fill( categoryColors[i] );
     list.append(
-      new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ) ) );
+      new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ), 0, "diagram_"+QString::number(i) ) );
   }
   return list;
 }
