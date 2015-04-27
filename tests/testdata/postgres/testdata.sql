@@ -4,7 +4,7 @@
 
 -- Dumped from database version 9.3.6
 -- Dumped by pg_dump version 9.3.6
--- Started on 2015-04-23 18:42:07 CEST
+-- Started on 2015-05-21 09:37:33 CEST
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -37,7 +37,8 @@ SET default_with_oids = false;
 CREATE TABLE "someData" (
     pk integer NOT NULL,
     cnt integer,
-    name text
+    name text,
+    geom public.geometry(Point,4326)
 );
 
 
@@ -49,12 +50,12 @@ ALTER TABLE qgis_test."someData" OWNER TO postgres;
 -- Data for Name: someData; Type: TABLE DATA; Schema: qgis_test; Owner: postgres
 --
 
-COPY "someData" (pk, cnt, name) FROM stdin;
-1	100	Orange
-2	200	Apple
-3	300	Pear
-4	400	Honey
-5	-200	\N
+COPY "someData" (pk, cnt, name, geom) FROM stdin;
+5	-200	\N	0101000020E61000001D5A643BDFC751C01F85EB51B88E5340
+3	300	Pear	\N
+1	100	Orange	0101000020E61000006891ED7C3F9551C085EB51B81E955040
+2	200	Apple	0101000020E6100000CDCCCCCCCC0C51C03333333333B35140
+4	400	Honey	0101000020E610000014AE47E17A5450C03333333333935340
 \.
 
 
@@ -67,7 +68,7 @@ ALTER TABLE ONLY "someData"
     ADD CONSTRAINT "someData_pkey" PRIMARY KEY (pk);
 
 
--- Completed on 2015-04-23 18:42:07 CEST
+-- Completed on 2015-05-21 09:37:33 CEST
 
 --
 -- PostgreSQL database dump complete
