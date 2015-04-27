@@ -155,7 +155,7 @@ class ConnectionItem(TreeItem):
                     return False
 
             except BaseError, e:
-                DlgDbError.showError(unicode(e), None)
+                DlgDbError.showError(e, None)
                 return False
 
         database = connection.database()
