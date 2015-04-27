@@ -84,6 +84,7 @@ QgsDataDefinedButton::QgsDataDefinedButton( QWidget* parent,
   mActionPasteExpr = new QAction( tr( "Paste" ), this );
   mActionCopyExpr = new QAction( tr( "Copy" ), this );
   mActionClearExpr = new QAction( tr( "Clear" ), this );
+  mActionAssistant = new QAction( tr( "Assistant..." ), this );
 
   // set up sibling widget connections
   connect( this, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( disableEnabledWidgets( bool ) ) );
@@ -322,6 +323,11 @@ void QgsDataDefinedButton::aboutToShowMenu()
     mDefineMenu->addAction( mActionPasteExpr );
   }
 
+  if ( mAssistant.data() )
+  {
+    mDefineMenu->addSeparator();
+    mDefineMenu->addAction( mActionAssistant );
+  }
 }
 
 void QgsDataDefinedButton::menuActionTriggered( QAction* action )
@@ -371,6 +377,10 @@ void QgsDataDefinedButton::menuActionTriggered( QAction* action )
     setExpression( QString( "" ) );
     updateGui();
   }
+  else if ( action == mActionAssistant )
+  {
+    showAssistant();
+  }
   else if ( mFieldsMenu->actions().contains( action ) )  // a field name clicked
   {
     if ( action->isEnabled() )
@@ -392,6 +402,25 @@ void QgsDataDefinedButton::showDescriptionDialog()
   mv->setWindowTitle( tr( "Data definition description" ) );
   mv->setMessageAsHtml( mFullDescription );
   mv->exec();
+}
+
+void QgsDataDefinedButton::showAssistant()
+{
+  if ( !mAssistant.data() )
+    return;
+
+  if ( mAssistant->exec() == QDialog::Accepted )
+  {
+    QScopedPointer<QgsDataDefined> dd( mAssistant->dataDefined() );
+    setUseExpression( dd->useExpression() );
+    setActive( dd->isActive() );
+    if ( dd->isActive() && dd->useExpression() )
+      setExpression( dd->expressionString() );
+    else if ( dd->isActive() )
+      setField( dd->field() );
+    updateGui();
+  }
+  activateWindow(); // reset focus to parent window
 }
 
 void QgsDataDefinedButton::showExpressionDialog()
@@ -574,6 +603,12 @@ QList<QWidget*> QgsDataDefinedButton::registeredCheckedWidgets()
     wdgtList << mCheckedWidgets.at( i );
   }
   return wdgtList;
+}
+
+void QgsDataDefinedButton::setAssistant( QgsDataDefinedAssistant *assistant )
+{
+  mAssistant.reset( assistant );
+  mAssistant.data()->setParent( this, Qt::Dialog );
 }
 
 void QgsDataDefinedButton::checkCheckedWidgets( bool check )

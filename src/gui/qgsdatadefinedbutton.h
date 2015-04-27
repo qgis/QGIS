@@ -15,14 +15,28 @@
 #ifndef QGSDATADEFINEDBUTTON_H
 #define QGSDATADEFINEDBUTTON_H
 
-#include "qgsfield.h"
+#include <QDialog>
 #include <QFlags>
 #include <QMap>
 #include <QPointer>
 #include <QToolButton>
+#include <QScopedPointer>
 
 class QgsVectorLayer;
 class QgsDataDefined;
+
+/** \ingroup gui
+ * \class QgsDataDefinedAssistant
+ * An assistant (wizard) dialog, accessible from a QgsDataDefinedButton.
+ * Can be used to guide users through creation of an expression for the
+ * data defined button.
+ * @note added in 2.10
+ */
+class GUI_EXPORT QgsDataDefinedAssistant: public QDialog
+{
+  public:
+    virtual QgsDataDefined* dataDefined() const = 0;
+};
 
 /** \ingroup gui
  * \class QgsDataDefinedButton
@@ -167,6 +181,15 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     void clearCheckedWidgets() { mCheckedWidgets.clear(); }
 
     /**
+     * Sets an assistant used to define the data defined object properties.
+     * Ownership of the assistant is transferred to the widget.
+     * @param assistant data defined assistant. Set to null to remove the assistant
+     * option from the button.
+     * @note added in 2.10
+     */
+    void setAssistant( QgsDataDefinedAssistant * assistant );
+
+    /**
      * Common descriptions for expected input values
      */
     static QString trString();
@@ -254,10 +277,10 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
   private:
     void showDescriptionDialog();
     void showExpressionDialog();
+    void showAssistant();
     void updateGui();
 
     const QgsVectorLayer* mVectorLayer;
-    QgsFields mFields;
     QStringList mFieldNameList;
     QStringList mFieldTypeList;
     QMap< QString, QString > mProperty;
@@ -275,6 +298,7 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QAction* mActionPasteExpr;
     QAction* mActionCopyExpr;
     QAction* mActionClearExpr;
+    QAction* mActionAssistant;
 
     DataTypes mDataTypes;
     QString mDataTypesString;
@@ -282,6 +306,8 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     QString mFullDescription;
     QString mUsageInfo;
     QString mCurrentDefinition;
+
+    QScopedPointer<QgsDataDefinedAssistant> mAssistant;
 
     static QIcon mIconDataDefine;
     static QIcon mIconDataDefineOn;
