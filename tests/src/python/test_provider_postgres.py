@@ -22,6 +22,8 @@ from utilities import (unitTestDataPath,
                        TestCase,
                        unittest
                        )
+from providertestutils import runGetFeatureTests
+
 QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
 TEST_DATA_DIR = unitTestDataPath()
 
@@ -41,25 +43,12 @@ class TestPyQgsPostgresProvider(TestCase):
         # Delete test database
 
     def testGetFeaturesUncompiled(self):
-        QSettings().setValue( "providers/postgres/compileExpressions", False )
-        self.runGetFeatureTests()
+        QSettings().setValue( "/qgis/postgres/compileExpressions", False )
+        runGetFeatureTests( self.vl )
 
     def testGetFeaturesCompiled(self):
-        QSettings().setValue( "providers/postgres/compileExpressions", True )
-        self.runGetFeatureTests()
-
-    def runGetFeatureTests(self):
-        assert len( [f for f in self.vl.getFeatures()] ) == 5
-        assert len( [f for f in self.vl.getFeatures( 'name IS NOT NULL' )] ) == 4
-        assert len( [f for f in self.vl.getFeatures( 'name LIKE \'Apple\'' )] ) == 1
-        assert len( [f for f in self.vl.getFeatures( 'name ILIKE \'aPple\'' )] ) == 1
-        assert len( [f for f in self.vl.getFeatures( 'name ILIKE \'%pp%\'' )] ) == 1
-        assert len( [f for f in self.vl.getFeatures( 'cnt > 0' )] ) == 4
-        assert len( [f for f in self.vl.getFeatures( 'cnt < 0' )] ) == 1
-        assert len( [f for f in self.vl.getFeatures( 'cnt >= 100' )] ) == 4
-        assert len( [f for f in self.vl.getFeatures( 'cnt <= 100' )] ) == 2
-        assert len( [f for f in self.vl.getFeatures( 'pk IN (1, 2, 4, 8)' )] ) == 3
-
+        QSettings().setValue( "/qgis/postgres/compileExpressions", True )
+        runGetFeatureTests( self.vl )
 
 if __name__ == '__main__':
     unittest.main()
