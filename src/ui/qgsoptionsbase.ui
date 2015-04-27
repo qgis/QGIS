@@ -281,7 +281,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -1570,6 +1570,13 @@
                    <widget class="QCheckBox" name="cbxAddOracleDC">
                     <property name="text">
                      <string>Add Oracle layers with double click and select in extended mode</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QCheckBox" name="cbxCompileExpressions">
+                    <property name="text">
+                     <string>Execute expressions on postgres server-side if possible (Experimental)</string>
                     </property>
                    </widget>
                   </item>
