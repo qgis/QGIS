@@ -162,6 +162,15 @@ class CORE_EXPORT QgsImageOperation
      */
     static void flipImage( QImage &image, FlipType type );
 
+    /** Crop any transparent border from around an image.
+     * @param image source image
+     * @param minSize minimum size for cropped image, if desired. If the
+     * cropped image is smaller than the minimum size, it will be centered
+     * in the returned image.
+     * @note added in QGIS 2.9
+     */
+    static QImage cropTransparent( const QImage & image, const QSize& minSize = QSize() );
+
   private:
 
     //for blocked operations

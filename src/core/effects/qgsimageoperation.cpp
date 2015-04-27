@@ -793,6 +793,44 @@ void QgsImageOperation::flipImage( QImage &image, QgsImageOperation::FlipType ty
   runLineOperation( image, flipOperation );
 }
 
+QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &minSize )
+{
+  int width = image.width();
+  int height = image.height();
+  int xmin = width;
+  int xmax = 0;
+  int ymin = height;
+  int ymax = 0;
+
+  for ( int x = 0; x < width; ++x )
+  {
+    for ( int y = 0; y < height; ++y )
+    {
+      if ( qAlpha( image.pixel( x, y ) ) )
+      {
+        xmin = qMin( x, xmin );
+        xmax = qMax( x, xmax );
+        ymin = qMin( y, ymin );
+        ymax = qMax( y, ymax );
+      }
+    }
+  }
+  if ( minSize.isValid() )
+  {
+    if ( xmax - xmin < minSize.width() ) // centers image on x
+    {
+      xmin = qMax(( xmax + xmin ) / 2 - minSize.width() / 2, 0 );
+      xmax = xmin + minSize.width();
+    }
+    if ( ymax - ymin < minSize.height() ) // centers image on y
+    {
+      ymin = qMax(( ymax + ymin ) / 2 - minSize.height() / 2, 0 );
+      ymax = ymin + minSize.height();
+    }
+  }
+  return image.copy( xmin, ymin, xmax - xmin, ymax - ymin );
+}
+
 void QgsImageOperation::FlipLineOperation::operator()( QRgb *startRef, const int lineLength, const int bytesPerLine )
 {
   int increment = ( mDirection == QgsImageOperation::ByRow ) ? 4 : bytesPerLine;
