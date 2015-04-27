@@ -46,80 +46,102 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
   delete mSnapVertexMarker;
 }
 
-void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
-{
-  deleteRubberBandAndGeometry();
-  mGeometryModified = false;
-  mForceCopy = false;
 
+void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
+{
   if ( !mCanvas )
   {
     return;
   }
 
-  //get selected features or snap to nearest feature if no selection
   QgsVectorLayer* layer = currentVectorLayer();
   if ( !layer )
   {
+    deleteRubberBandAndGeometry();
     notifyNotVectorLayer();
     return;
   }
 
-  QgsSnappingUtils* snapping = mCanvas->snappingUtils();
-
-  // store previous settings
-  int oldType;
-  double oldSearchRadius;
-  QgsTolerance::UnitType oldSearchRadiusUnit;
-  QgsSnappingUtils::SnapToMapMode oldMode = snapping->snapToMapMode();
-  snapping->defaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
-
-  // setup new settings (temporary)
-  QSettings settings;
-  snapping->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
-  snapping->setDefaultSettings( QgsPointLocator::Edge,
-                                settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble(),
-                                ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
-
-  QgsPointLocator::Match match = snapping->snapToMap( e->pos() );
-
-  // restore old settings
-  snapping->setSnapToMapMode( oldMode );
-  snapping->setDefaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
-
-  if ( match.hasEdge() && match.layer() )
-  {
-    mSourceLayerId = match.layer()->id();
-    QgsFeature fet;
-    if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
-    {
-      mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
-      mOriginalGeometry = createOriginGeometry( match.layer(), match, fet );
-      mRubberBand = createRubberBand();
-      if ( mRubberBand )
-      {
-        mRubberBand->setToGeometry( mOriginalGeometry, layer );
-      }
-      mModifiedFeature = fet.id();
-      createDistanceItem();
-    }
-  }
-}
-
-void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
-{
-  Q_UNUSED( e );
-  QgsVectorLayer* vlayer = currentVectorLayer();
-  if ( !vlayer )
+  if ( e->button() == Qt::RightButton )
   {
     deleteRubberBandAndGeometry();
+    layer->destroyEditCommand();
+    deleteDistanceItem();
     return;
   }
 
+  if ( !mOriginalGeometry )
+  {
+    deleteRubberBandAndGeometry();
+    mGeometryModified = false;
+    mForceCopy = false;
+
+    if ( e->button() == Qt::RightButton )
+    {
+      return;
+    }
+
+    QgsSnappingUtils* snapping = mCanvas->snappingUtils();
+
+    // store previous settings
+    int oldType;
+    double oldSearchRadius;
+    QgsTolerance::UnitType oldSearchRadiusUnit;
+    QgsSnappingUtils::SnapToMapMode oldMode = snapping->snapToMapMode();
+    snapping->defaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
+
+    // setup new settings (temporary)
+    QSettings settings;
+    snapping->setSnapToMapMode( QgsSnappingUtils::SnapAllLayers );
+    snapping->setDefaultSettings( QgsPointLocator::Edge,
+                                  settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble(),
+                                  ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() );
+
+    QgsPointLocator::Match match = snapping->snapToMap( e->pos() );
+
+    // restore old settings
+    snapping->setSnapToMapMode( oldMode );
+    snapping->setDefaultSettings( oldType, oldSearchRadius, oldSearchRadiusUnit );
+
+    if ( match.hasEdge() && match.layer() )
+    {
+      mSourceLayerId = match.layer()->id();
+      QgsFeature fet;
+      if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
+      {
+        mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
+        mOriginalGeometry = createOriginGeometry( match.layer(), match, fet );
+        mRubberBand = createRubberBand();
+        if ( mRubberBand )
+        {
+          mRubberBand->setToGeometry( mOriginalGeometry, layer );
+        }
+        mModifiedFeature = fet.id();
+        createDistanceItem();
+      }
+    }
+    return;
+  }
+
+  applyOffset();
+}
+
+void QgsMapToolOffsetCurve::applyOffset()
+{
+  QgsVectorLayer* layer = currentVectorLayer();
+  if ( !layer )
+  {
+    deleteRubberBandAndGeometry();
+    notifyNotVectorLayer();
+    return;
+  }
+
+  // no modification
   if ( !mGeometryModified )
   {
     deleteRubberBandAndGeometry();
-    vlayer->destroyEditCommand();
+    layer->destroyEditCommand();
+    deleteDistanceItem();
     return;
   }
 
@@ -128,12 +150,12 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
     mModifiedGeometry.convertToMultiType();
   }
 
-  vlayer->beginEditCommand( tr( "Offset curve" ) );
+  layer->beginEditCommand( tr( "Offset curve" ) );
 
   bool editOk;
-  if ( mSourceLayerId == vlayer->id() && !mForceCopy )
+  if ( mSourceLayerId == layer->id() && !mForceCopy )
   {
-    editOk = vlayer->changeGeometry( mModifiedFeature, &mModifiedGeometry );
+    editOk = layer->changeGeometry( mModifiedFeature, &mModifiedGeometry );
   }
   else
   {
@@ -141,23 +163,23 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
     f.setGeometry( mModifiedGeometry );
 
     //add empty values for all fields (allows inserting attribute values via the feature form in the same session)
-    QgsAttributes attrs( vlayer->pendingFields().count() );
-    const QgsFields& fields = vlayer->pendingFields();
+    QgsAttributes attrs( layer->pendingFields().count() );
+    const QgsFields& fields = layer->pendingFields();
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
       attrs[idx] = QVariant();
     }
     f.setAttributes( attrs );
-    editOk = vlayer->addFeature( f );
+    editOk = layer->addFeature( f );
   }
 
   if ( editOk )
   {
-    vlayer->endEditCommand();
+    layer->endEditCommand();
   }
   else
   {
-    vlayer->destroyEditCommand();
+    layer->destroyEditCommand();
   }
 
   deleteRubberBandAndGeometry();
@@ -204,6 +226,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
   {
     mDistanceItem->show();
     mDistanceItem->setPos( e->posF() + QPointF( 10, 10 ) );
+    mDistanceSpinBox->setFocus( Qt::TabFocusReason );
   }
 
   mGeometryModified = true;
@@ -325,7 +348,8 @@ void QgsMapToolOffsetCurve::createDistanceItem()
 #endif
   mDistanceSpinBox->setFocus( Qt::TabFocusReason );
 
-  QObject::connect( mDistanceSpinBox, SIGNAL( editingFinished() ), this, SLOT( placeOffsetCurveToValue() ) );
+  QObject::connect( mDistanceSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( placeOffsetCurveToValue() ) );
+  QObject::connect( mDistanceSpinBox, SIGNAL( editingFinished() ), this, SLOT( applyOffset() ) );
 }
 
 void QgsMapToolOffsetCurve::deleteDistanceItem()
@@ -337,7 +361,7 @@ void QgsMapToolOffsetCurve::deleteDistanceItem()
   delete mDistanceItem;
   mDistanceItem = 0;
 #ifdef Q_OS_UNIX
-  QgisApp::instance()->statusBar()->removeWidget( mDistanceSpinBox );
+  mDistanceSpinBox->deleteLater();
   delete mDistanceSpinBox;
 #endif
   mDistanceSpinBox = 0;
