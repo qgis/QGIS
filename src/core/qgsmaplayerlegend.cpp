@@ -208,7 +208,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
     nodes[0]->setEmbeddedInParent( true );
 
 
-  if ( mLayer->diagramRenderer() )
+  if ( mLayer->diagramsEnabled() )
   {
     foreach ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
     {
