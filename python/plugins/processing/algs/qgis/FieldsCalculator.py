@@ -147,15 +147,13 @@ class FieldsCalculator(GeoAlgorithm):
 
     def checkParameterValuesBeforeExecuting(self):
         newField = self.getParameterValue(self.NEW_FIELD)
-        fieldName = self.getParameterValue(self.FIELD_NAME)
+        fieldName = self.getParameterValue(self.FIELD_NAME).strip()
         if newField and len(fieldName) == 0:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Field name is not set. Please enter a field name'))
+            return self.tr('Field name is not set. Please enter a field name')
 
-        outputName = self.getOutputValue(self.OUTPUT_LAYER)
+        outputName = self.getOutputValue(self.OUTPUT_LAYER).strip()
         if outputName == '':
-            raise GeoAlgorithmExecutionException(
-                self.tr('Output is not set. Please specify valid filename'))
+            return self.tr('Output is not set. Please specify valid filename')
 
     def getCustomParametersDialog(self):
         return FieldsCalculatorDialog(self)
