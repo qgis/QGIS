@@ -356,13 +356,15 @@ void QgsMapToolOffsetCurve::deleteDistanceItem()
 {
   if ( mDistanceSpinBox )
   {
+    QObject::disconnect( mDistanceSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( placeOffsetCurveToValue() ) );
+    QObject::disconnect( mDistanceSpinBox, SIGNAL( editingFinished() ), this, SLOT( applyOffset() ) );
     mDistanceSpinBox->releaseKeyboard();
   }
   delete mDistanceItem;
   mDistanceItem = 0;
 #ifdef Q_OS_UNIX
   mDistanceSpinBox->deleteLater();
-  delete mDistanceSpinBox;
+  mDistanceSpinBox = 0;
 #endif
   mDistanceSpinBox = 0;
 }
