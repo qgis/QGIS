@@ -16,7 +16,6 @@
 #ifndef QGSPAINTEFFECTREGISTRY_H
 #define QGSPAINTEFFECTREGISTRY_H
 
-#include "qgssingleton.h"
 #include "qgis.h"
 #include <QDomElement>
 #include <QDomDocument>
@@ -152,9 +151,10 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
  *
  * \note Added in version 2.9
  */
-class CORE_EXPORT QgsPaintEffectRegistry : public QgsSingleton<QgsPaintEffectRegistry>
+class CORE_EXPORT QgsPaintEffectRegistry
 {
   public:
+    static QgsPaintEffectRegistry* instance();
 
     /** Returns the metadata for a specific effect.
      * @param name unique string name for paint effect class
@@ -194,8 +194,6 @@ class CORE_EXPORT QgsPaintEffectRegistry : public QgsSingleton<QgsPaintEffectReg
     ~QgsPaintEffectRegistry();
 
     QMap<QString, QgsPaintEffectAbstractMetadata*> mMetadata;
-
-    friend class QgsSingleton<QgsPaintEffectRegistry>; // Let QgsSingleton access private constructor
 };
 
 #endif //QGSPAINTEFFECTREGISTRY_H

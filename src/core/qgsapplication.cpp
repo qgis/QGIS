@@ -623,11 +623,7 @@ void QgsApplication::initQgis()
 
 void QgsApplication::exitQgis()
 {
-  delete QgsMapLayerRegistry::instance();
-
   delete QgsProviderRegistry::instance();
-
-  delete QgsNetworkAccessManager::instance();
 }
 
 QString QgsApplication::showSettings()

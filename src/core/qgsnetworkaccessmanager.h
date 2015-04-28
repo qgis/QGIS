@@ -100,7 +100,6 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
     bool mUseSystemProxy;
-    static QgsNetworkAccessManager* sInstance;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
