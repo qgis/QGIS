@@ -1948,9 +1948,10 @@ QDomElement QgsOgcUtils::expressionUnaryOperatorToOgcFilter( const QgsExpression
         uoElem.appendChild( doc.createTextNode( "-" + operandElem.text() ) );
         doc.removeChild(operandElem);
       }
-      else // not sure if this will ever happen
+      else
       {
-        uoElem.appendChild( doc.createTextNode( "-" ) );
+          errorMessage = QString( "This use of unary operator not implemented yet" );
+          return QDomElement();
       }
       break;
     case QgsExpression::uoNot:
