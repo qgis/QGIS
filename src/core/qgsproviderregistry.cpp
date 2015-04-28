@@ -29,6 +29,7 @@
 #include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
 
 // typedefs for provider plugin functions of interest
@@ -204,6 +205,8 @@ typedef void cleanupProviderFunction_t();
 
 QgsProviderRegistry::~QgsProviderRegistry()
 {
+  QgsMapLayerRegistry::instance()->removeAllMapLayers();
+
   Providers::const_iterator it = mProviders.begin();
 
   while ( it != mProviders.end() )
