@@ -64,11 +64,11 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
   mMagnetSpinBox = new QgsSpinBox( this );
   mMagnetSpinBox->setMinimum( 0 );
   mMagnetSpinBox->setMaximum( 180 );
-  mMagnetSpinBox->setPrefix( tr( "snapp to " ) );
+  mMagnetSpinBox->setPrefix( tr( "Snap to " ) );
   mMagnetSpinBox->setSuffix( QString::fromUtf8( "°" ) );
   mMagnetSpinBox->setSingleStep( 15 );
   mMagnetSpinBox->setValue( 0 );
-  mMagnetSpinBox->setClearValue( 0, tr( "do not snapp" ) );
+  mMagnetSpinBox->setClearValue( 0, tr( "No snapping" ) );
   mLayout->addWidget( mMagnetSpinBox );
 
   // connect signals
