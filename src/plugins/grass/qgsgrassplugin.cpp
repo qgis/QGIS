@@ -88,8 +88,11 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
 
 QgsGrassPlugin::~QgsGrassPlugin()
 {
-  if ( mTools )
-    mTools->closeTools();
+  QgsDebugMsg( "entered." );
+  // When main app is closed, QgsGrassTools (probably because of dock widget) are destroyed before QgsGrassPlugin
+  // -> do not call mTools here
+  //if ( mTools )
+  //  mTools->closeTools();
   if ( mEdit )
     mEdit->closeEdit();
   QString err = QgsGrass::closeMapset();
@@ -243,35 +246,24 @@ void QgsGrassPlugin::initGui()
   mRegionBand->setWidth( mRegionPen.width() );
 
   mapsetChanged();
+
+  // open tools when plugin is loaded so that main app restores tools dock widget state
+  mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
+  qGisInterface->addDockWidget( Qt::RightDockWidgetArea, mTools );
 }
 
 void QgsGrassPlugin::mapsetChanged()
 {
   if ( !QgsGrass::activeMode() )
   {
-#ifdef GRASS_DIRECT
-    mOpenToolsAction->setEnabled( true );
-#else
-    mOpenToolsAction->setEnabled( false );
-#endif
     mRegionAction->setEnabled( false );
     mEditRegionAction->setEnabled( false );
     mRegionBand->reset();
     mCloseMapsetAction->setEnabled( false );
     mNewVectorAction->setEnabled( false );
-
-#if 0
-    if ( mTools )
-    {
-      mTools->hide();
-      delete mTools;
-      mTools = 0;
-    }
-#endif
   }
   else
   {
-    mOpenToolsAction->setEnabled( true );
     mRegionAction->setEnabled( true );
     mEditRegionAction->setEnabled( true );
     mCloseMapsetAction->setEnabled( true );
@@ -282,12 +274,11 @@ void QgsGrassPlugin::mapsetChanged()
     mRegionAction->setChecked( on );
     switchRegion( on );
 
-#if 0
     if ( mTools )
     {
       mTools->mapsetChanged();
     }
-#endif
+
     QString gisdbase = QgsGrass::getDefaultGisdbase();
     QString location = QgsGrass::getDefaultLocation();
     try
@@ -304,7 +295,6 @@ void QgsGrassPlugin::mapsetChanged()
     setTransform();
     redrawRegion();
   }
-  if ( mTools ) mTools->mapsetChanged();
 }
 
 void QgsGrassPlugin::saveMapset()
@@ -475,13 +465,14 @@ void QgsGrassPlugin::addRaster()
 // Open tools
 void QgsGrassPlugin::openTools()
 {
+#if 0
   if ( !mTools )
   {
     mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow(), 0, Qt::Dialog );
 
     connect( mTools, SIGNAL( regionChanged() ), this, SLOT( redrawRegion() ) );
   }
-
+#endif
   mTools->show();
 }
 
@@ -885,11 +876,8 @@ void QgsGrassPlugin::unload()
   delete mEditAction;
   delete mNewVectorAction;
 
-  if ( mToolBarPointer )
-  {
-    delete mToolBarPointer;
-    mToolBarPointer = 0;
-  }
+  delete mToolBarPointer;
+  mToolBarPointer = 0;
 
   // disconnect slots of QgsGrassPlugin so they're not fired also after unload
   disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
@@ -899,6 +887,9 @@ void QgsGrassPlugin::unload()
   QWidget* qgis = qGisInterface->mainWindow();
   disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
+
+  delete mTools;
+  mTools = 0;
 }
 
 // Set icons to the current theme
