@@ -30,6 +30,17 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
+// hack to show wrapped text without spaces
+class QgsBrowserPropertiesWrapLabel : public QTextEdit
+{
+    Q_OBJECT
+  public:
+    QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent = 0 );
+
+  private slots:
+    void adjustHeight( const QSizeF& size );
+};
+
 class QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
@@ -44,8 +55,10 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     Q_OBJECT
   public:
     QgsBrowserLayerProperties( QWidget* parent = 0 );
-
     void setItem( QgsDataItem* item ) override;
+
+  private:
+    QgsBrowserPropertiesWrapLabel *mUriLabel;
 };
 
 class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , private Ui::QgsBrowserDirectoryPropertiesBase
@@ -57,6 +70,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget , privat
     void setItem( QgsDataItem* item ) override;
   private:
     QgsDirectoryParamWidget* mDirectoryWidget;
+    QgsBrowserPropertiesWrapLabel *mPathLabel;
 };
 
 class QgsBrowserPropertiesDialog : public QDialog , private Ui::QgsBrowserPropertiesDialogBase

@@ -14,12 +14,14 @@
  ***************************************************************************/
 #include "qgsbrowserdockwidget.h"
 
+#include <QAbstractTextDocumentLayout>
 #include <QHeaderView>
 #include <QTreeView>
 #include <QMenu>
 #include <QSettings>
 #include <QToolButton>
 #include <QFileDialog>
+#include <QPlainTextDocumentLayout>
 #include <QSortFilterProxyModel>
 
 #include "qgsbrowsermodel.h"
@@ -243,6 +245,29 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
     }
 };
 
+QgsBrowserPropertiesWrapLabel::QgsBrowserPropertiesWrapLabel( const QString& text, QWidget* parent )
+    : QTextEdit( text, parent )
+{
+  setReadOnly( true );
+  setFrameStyle( QFrame::NoFrame );
+  setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
+  QPalette pal = palette();
+  pal.setColor( QPalette::Base, Qt::transparent );
+  setPalette( pal );
+  setLineWrapMode( QTextEdit::WidgetWidth );
+  setWordWrapMode( QTextOption::WrapAnywhere );
+  connect( qobject_cast<QObject*>( document()->documentLayout() ), SIGNAL( documentSizeChanged( QSizeF ) ),
+           this, SLOT( adjustHeight( QSizeF ) ) );
+  setMaximumHeight( 20 );
+}
+
+void QgsBrowserPropertiesWrapLabel::adjustHeight( const QSizeF& size )
+{
+  int height = size.height() + 2 * frameWidth();
+  setMinimumHeight( height );
+  setMaximumHeight( height );
+}
+
 QgsBrowserPropertiesWidget::QgsBrowserPropertiesWidget( QWidget* parent ) :
     QWidget( parent )
 {
@@ -268,6 +293,9 @@ QgsBrowserLayerProperties::QgsBrowserLayerProperties( QWidget* parent ) :
     QgsBrowserPropertiesWidget( parent )
 {
   setupUi( this );
+
+  mUriLabel = new QgsBrowserPropertiesWrapLabel( "", this );
+  mHeaderGridLayout->addItem( new QWidgetItem( mUriLabel ), 1, 1 );
 }
 
 void QgsBrowserLayerProperties::setItem( QgsDataItem* item )
@@ -363,6 +391,9 @@ QgsBrowserDirectoryProperties::QgsBrowserDirectoryProperties( QWidget* parent ) 
     , mDirectoryWidget( 0 )
 {
   setupUi( this );
+
+  mPathLabel = new QgsBrowserPropertiesWrapLabel( "", mHeaderWidget );
+  mHeaderGridLayout->addItem( new QWidgetItem( mPathLabel ), 0, 1 );
 }
 
 void QgsBrowserDirectoryProperties::setItem( QgsDataItem* item )
