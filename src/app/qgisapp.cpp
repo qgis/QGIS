@@ -199,6 +199,7 @@
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
+#include "qgsuserinputtoolbar.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -979,6 +980,8 @@ QgisApp::~QgisApp()
   delete mMapTools.mSvgAnnotation;
   delete mMapTools.mTextAnnotation;
 
+  delete mUserInputToolBar;
+
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -1722,13 +1725,16 @@ void QgisApp::createToolBars()
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   // Help Toolbar
-
   QAction* actionWhatsThis = QWhatsThis::createAction( this );
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
   mHelpToolBar->addAction( actionWhatsThis );
 
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
+
+  // User Input Tool Bar
+  mUserInputToolBar = new QgsUserInputToolBar();
+  addToolBar( mUserInputToolBar, Qt::BottomToolBarArea );
 }
 
 void QgisApp::createStatusBar()
@@ -2401,6 +2407,11 @@ QgsMessageBar* QgisApp::messageBar()
 {
   Q_ASSERT( mInfoBar );
   return mInfoBar;
+}
+
+void QgisApp::addUserInputWidget( QWidget *widget )
+{
+  mUserInputToolBar->addUserInputWidget( widget );
 }
 
 

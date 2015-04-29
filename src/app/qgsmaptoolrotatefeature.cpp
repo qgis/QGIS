@@ -24,10 +24,10 @@
 #include "qgsvertexmarker.h"
 #include "qgisapp.h"
 #include "qgsspinbox.h"
+#include "qgsdoublespinbox.h"
 
 #include <QMouseEvent>
 #include <QSettings>
-#include <QDoubleSpinBox>
 #include <QEvent>
 #include <QHBoxLayout>
 #include <QKeyEvent>
@@ -49,16 +49,17 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( QString label , QWidget *parent )
   if ( !label.isNull() )
   {
     QLabel* lbl = new QLabel( label, this );
-    lbl->setAlignment( Qt::AlignRight );
+    lbl->setAlignment( Qt::AlignRight | Qt::AlignCenter );
     mLayout->addWidget( lbl );
   }
 
-  mAngleSpinBox = new QDoubleSpinBox( this );
+  mAngleSpinBox = new QgsDoubleSpinBox( this );
   mAngleSpinBox->setMinimum( -360 );
   mAngleSpinBox->setMaximum( 360 );
   mAngleSpinBox->setSuffix( QString::fromUtf8( "°" ) );
   mAngleSpinBox->setSingleStep( 1 );
   mAngleSpinBox->setValue( 0 );
+  mAngleSpinBox->setShowClearButton( false );
   mLayout->addWidget( mAngleSpinBox );
 
   mMagnetSpinBox = new QgsSpinBox( this );
@@ -134,10 +135,8 @@ QgsMapToolRotateFeature::QgsMapToolRotateFeature( QgsMapCanvas* canvas )
     , mRotationOffset( 0 )
     , mAnchorPoint( 0 )
     , mRotationActive( false )
-    , mRotationBarItem( 0 )
     , mRotationWidget( 0 )
 {
-
 }
 
 QgsMapToolRotateFeature::~QgsMapToolRotateFeature()
@@ -465,7 +464,7 @@ void QgsMapToolRotateFeature::createRotationWidget()
   deleteRotationWidget();
 
   mRotationWidget = new QgsAngleMagnetWidget( "Rotation:" );
-  mRotationBarItem = QgisApp::instance()->messageBar()->pushWidget( mRotationWidget );
+  QgisApp::instance()->addUserInputWidget( mRotationWidget );
   mRotationWidget->setFocus( Qt::TabFocusReason );
 
   QObject::connect( mRotationWidget, SIGNAL( angleChanged( double ) ), this, SLOT( updateRubberband( double ) ) );
@@ -479,12 +478,8 @@ void QgsMapToolRotateFeature::deleteRotationWidget()
     QObject::disconnect( mRotationWidget, SIGNAL( angleChanged( double ) ), this, SLOT( updateRubberband( double ) ) );
     QObject::disconnect( mRotationWidget, SIGNAL( angleEditingFinished( double ) ), this, SLOT( applyRotation( double ) ) );
     mRotationWidget->releaseKeyboard();
+    mRotationWidget->deleteLater();
   }
-  if ( mRotationBarItem )
-  {
-    QgisApp::instance()->messageBar()->popWidget( mRotationBarItem );
-  }
-  mRotationBarItem = 0;
   mRotationWidget = 0;
 }
 

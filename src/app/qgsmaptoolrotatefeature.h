@@ -22,12 +22,10 @@
 #include "qgsvectorlayer.h"
 
 
-class QDoubleSpinBox;
+class QgsDoubleSpinBox;
 class QHBoxLayout;
 class QgsSpinBox;
 class QgsVertexMarker;
-class QgsMessageBarItem;
-
 
 class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 {
@@ -60,7 +58,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
   private:
     QHBoxLayout* mLayout;
-    QDoubleSpinBox* mAngleSpinBox;
+    QgsDoubleSpinBox* mAngleSpinBox;
     QgsSpinBox* mMagnetSpinBox;
 };
 
@@ -112,8 +110,6 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 
     bool mRotationActive;
 
-    /** Message bar item for the angle magnet widget*/
-    QgsMessageBarItem* mRotationBarItem;
     /** Shows current angle value and allows numerical editing*/
     QgsAngleMagnetWidget* mRotationWidget;
 };

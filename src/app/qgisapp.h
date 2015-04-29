@@ -62,6 +62,7 @@ class QgsPythonUtils;
 class QgsRectangle;
 class QgsSnappingUtils;
 class QgsUndoWidget;
+class QgsUserInputToolBar;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsDoubleSpinBox;
@@ -193,6 +194,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Return the messageBar object which allows displaying unobtrusive messages to the user.*/
     QgsMessageBar *messageBar();
+
+    /** Adds a widget to the user input tool br.*/
+    void addUserInputWidget( QWidget* widget );
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
@@ -1647,6 +1651,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! a bar to display warnings in a non-blocker manner
     QgsMessageBar *mInfoBar;
     QWidget *mMacrosWarn;
+
+    //! A tool bar for user input
+    QgsUserInputToolBar* mUserInputToolBar;
 
     QgsVectorLayerTools* mVectorLayerTools;
 
