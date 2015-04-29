@@ -232,6 +232,7 @@
         <file>themes/default/mActionPanToSelected.svg</file>
         <file>themes/default/mActionPinLabels.svg</file>
         <file>themes/default/mActionProjectProperties.png</file>
+        <file>themes/default/mActionPropertiesWidget.png</file>
         <file>themes/default/mActionPropertyItem.png</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
