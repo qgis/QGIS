@@ -124,6 +124,9 @@
         <property name="checked">
          <bool>false</bool>
         </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
