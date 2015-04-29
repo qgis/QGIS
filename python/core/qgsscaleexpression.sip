@@ -1,23 +1,3 @@
-/***************************************************************************
- qgsscaleexpression.h
- ---------------------
- begin                : November 2014
- copyright            : (C) 2014 by Vincent Mora
- email                : vincent dor mora at oslandia dot com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-#ifndef QGSSCALEEXPRESSION_H
-#define QGSSCALEEXPRESSION_H
-
-#include "qgsexpression.h"
-
 /** \ingroup core
 * \class QgsScaleExpression
 * \brief Class storing parameters of a scale expression, which is a subclass of
@@ -25,8 +5,12 @@
 * \note Added in version 2.9
 */
 
-class QgsScaleExpression: public QgsExpression
+class QgsScaleExpression : QgsExpression
 {
+%TypeHeaderCode
+#include <qgsscaleexpression.h>
+%End
+
   public:
 
     enum Type
@@ -54,7 +38,7 @@ class QgsScaleExpression: public QgsExpression
      */
     QgsScaleExpression( Type type, const QString& baseExpression, double minValue, double maxValue, double minSize, double maxSize );
 
-    operator bool() const { return ! mExpression.isEmpty(); }
+    operator bool() const;
 
     /** Calculates the size corresponding to a specific value.
      * @param value
@@ -65,49 +49,34 @@ class QgsScaleExpression: public QgsExpression
     /** Returns the minimum size calculated by the expression
      * @see maxSize
      */
-    double minSize() const { return mMinSize; }
+    double minSize() const;
 
     /** Returns the maximum size calculated by the expression
      * @see minSize
      */
-    double maxSize() const { return mMaxSize; }
+    double maxSize() const;
 
     /** Returns the minimum value expected by the expression. The minimum
      * value corresponds to the expression's minimum size.
      * @see maxValue
      */
-    double minValue() const { return mMinValue; }
+    double minValue() const;
 
     /** Returns the maximum value expected by the expression. The maximum
      * value corresponds to the expression's maximum size.
      * @see minValue
      */
-    double maxValue() const { return mMaxValue; }
+    double maxValue() const;
 
     /** Returns the base expression string (or field reference) used for
      * calculating the values to be mapped to a size.
      */
-    QString baseExpression() const { return mExpression; }
+    QString baseExpression() const;
 
     /** Returns the scale expression's type (method used to calculate
      * the size from a value).
      */
-    Type type() const { return mType; }
-
-  private:
-    QString mExpression;
-    Type mType;
-    double mMinSize;
-    double mMaxSize;
-    double mMinValue;
-    double mMaxValue;
-
-    void init();
-    static QString createExpression( Type type, const QString& baseExpr, double minValue, double maxValue, double minSize, double maxSize );
+    Type type() const;
 
 };
-
-#endif
-
-
 

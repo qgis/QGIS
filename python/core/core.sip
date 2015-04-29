@@ -97,6 +97,7 @@
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
+%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip

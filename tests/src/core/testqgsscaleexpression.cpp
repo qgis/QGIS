@@ -1,9 +1,9 @@
 /***************************************************************************
-     test_template.cpp
-     --------------------------------------
-    Date                 : Sun Sep 16 12:22:23 AKDT 2007
-    Copyright            : (C) 2007 by Gary E. Sherman
-    Email                : sherman at mrcc dot com
+ testqgsscaleexpression.cpp
+ --------------------------
+ begin                : November 2014
+ copyright            : (C) 2014 by Vincent Mora
+ email                : vincent dor mora at oslandia dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,20 +12,13 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include <QtTest/QtTest>
 #include <QObject>
 #include <QString>
 #include <QObject>
-#include <QtConcurrentMap>
-#include <QSharedPointer>
 
-#include <qgsapplication.h>
-//header for class being tested
 #include <qgsscaleexpression.h>
-#include <qgsfeature.h>
-#include <qgsfeaturerequest.h>
-#include <qgsgeometry.h>
-#include <qgsrenderchecker.h>
 
 #if QT_VERSION < 0x40701
 // See http://hub.qgis.org/issues/4284
@@ -37,23 +30,8 @@ class TestQgsScaleExpression: public QObject
     Q_OBJECT
   private slots:
 
-    void initTestCase()
-    {
-      //
-      // Runs once before any tests are run
-      //
-      // init QGIS's paths - true means that all path will be inited from prefix
-      QgsApplication::init();
-      QgsApplication::initQgis();
-      // Will make sure the settings dir with the style file for color ramp is created
-      QgsApplication::createDB();
-      QgsApplication::showSettings();
-    }
-
-    void cleanupTestCase()
-    {
-      QgsApplication::exitQgis();
-    }
+    void initTestCase() {}
+    void cleanupTestCase() {}
 
     void parsing()
     {
@@ -80,11 +58,18 @@ class TestQgsScaleExpression: public QObject
       {
         QgsScaleExpression exp( "scale_exp(column, 1, 7, 2, 10, 0.51)" );
         QCOMPARE( bool(exp), false );
+        QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
       }
       {
         QgsScaleExpression exp( "scale_exp(column, 1, 7, a, 10, 0.5)" );
         QCOMPARE( bool(exp), false );
+        QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
       }
+        {
+          QgsScaleExpression exp( "scale_exp(column, 1, 7)" );
+          QCOMPARE( bool(exp), false );
+          QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
+        }
       {
         QgsScaleExpression exp( QgsScaleExpression::Linear, "column", 1, 7, 2, 10 );
         QCOMPARE( bool(exp), true );
