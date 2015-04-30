@@ -25,7 +25,7 @@
 * \note Added in version 2.9
 */
 
-class QgsScaleExpression: public QgsExpression
+class CORE_EXPORT QgsScaleExpression : public QgsExpression
 {
   public:
 
