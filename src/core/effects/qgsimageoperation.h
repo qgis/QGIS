@@ -47,18 +47,18 @@ class CORE_EXPORT QgsImageOperation
     */
     enum GrayscaleMode
     {
-      GrayscaleLightness, /*< keep the lightness of the color, drops the saturation */
-      GrayscaleLuminosity, /*< grayscale by perceptual luminosity (weighted sum of color RGB components) */
-      GrayscaleAverage, /*< grayscale by taking average of color RGB components */
-      GrayscaleOff /*< no change */
+      GrayscaleLightness, /*!< keep the lightness of the color, drops the saturation */
+      GrayscaleLuminosity, /*!< grayscale by perceptual luminosity (weighted sum of color RGB components) */
+      GrayscaleAverage, /*!< grayscale by taking average of color RGB components */
+      GrayscaleOff /*!< no change */
     };
 
     /** Flip operation types
     */
     enum FlipType
     {
-      FlipHorizontal, /*< flip the image horizontally */
-      FlipVertical /*< flip the image vertically */
+      FlipHorizontal, /*!< flip the image horizontally */
+      FlipVertical /*!< flip the image vertically */
     };
 
     /**Convert a QImage to a grayscale image. Alpha channel is preserved.

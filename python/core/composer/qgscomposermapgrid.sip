@@ -128,9 +128,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     enum GridUnit
     {
-      MapUnit, /*< grid units follow map units */
-      MM, /*< grid units in millimetres */
-      CM /*< grid units in centimetres */
+      MapUnit, /*!< grid units follow map units */
+      MM, /*!< grid units in millimetres */
+      CM /*!< grid units in centimetres */
     };
 
     /** Grid drawing style
@@ -138,19 +138,19 @@ class QgsComposerMapGrid : QgsComposerMapItem
     enum GridStyle
     {
       Solid,
-      Cross, /*< draw line crosses at intersections of grid lines */
-      Markers, /*< draw markers at intersections of grid lines */
-      FrameAnnotationsOnly /*< no grid lines over the map, only draw frame and annotations */
+      Cross, /*!< draw line crosses at intersections of grid lines */
+      Markers, /*!< draw markers at intersections of grid lines */
+      FrameAnnotationsOnly /*!< no grid lines over the map, only draw frame and annotations */
     };
 
     /** Display settings for grid annotations and frames
      */
     enum DisplayMode
     {
-      ShowAll = 0, /*< show both latitude and longitude annotations/divisions */
-      LatitudeOnly, /*< show latitude/y annotations/divisions only */
-      LongitudeOnly, /*< show longitude/x annotations/divisions only */
-      HideAll /*< no annotations */
+      ShowAll = 0, /*!< show both latitude and longitude annotations/divisions */
+      LatitudeOnly, /*!< show latitude/y annotations/divisions only */
+      LongitudeOnly, /*!< show longitude/x annotations/divisions only */
+      HideAll /*!< no annotations */
     };
 
     /** Position for grid annotations
@@ -158,8 +158,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
     enum AnnotationPosition
     {
       InsideMapFrame = 0,
-      OutsideMapFrame, /*< draw annotations outside the map frame */
-      Disabled /*< disable annotation
+      OutsideMapFrame, /*!< draw annotations outside the map frame */
+      Disabled /*!< disable annotation
                   * @deprecated in QGIS 2.7, use QgsComposerMapGrid::HideAll instead */
     };
 
@@ -167,24 +167,24 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     enum AnnotationDirection
     {
-      Horizontal = 0, /*< draw annotations horizontally */
-      Vertical, /*< draw annotations vertically, ascending */
-      VerticalDescending, /*< draw annotations vertically, descending */
-      BoundaryDirection /*< annotations follow the boundary direction */
+      Horizontal = 0, /*!< draw annotations horizontally */
+      Vertical, /*!< draw annotations vertically, ascending */
+      VerticalDescending, /*!< draw annotations vertically, descending */
+      BoundaryDirection /*!< annotations follow the boundary direction */
     };
 
     /** Format for displaying grid annotations
      */
     enum AnnotationFormat
     {
-      Decimal, /*< decimal degrees, use - for S/W coordinates */
-      DegreeMinute, /*< degree/minutes, use NSEW suffix */
-      DegreeMinuteSecond, /*< degree/minutes/seconds, use NSEW suffix */
-      DecimalWithSuffix, /*< decimal degrees, use NSEW suffix */
-      DegreeMinuteNoSuffix, /*< degree/minutes, use - for S/W coordinates */
-      DegreeMinutePadded, /*< degree/minutes, with minutes using leading zeros were required */
-      DegreeMinuteSecondNoSuffix, /*< degree/minutes/seconds, use - for S/W coordinates */
-      DegreeMinuteSecondPadded /*< degree/minutes/seconds, with minutes using leading zeros were required */
+      Decimal, /*!< decimal degrees, use - for S/W coordinates */
+      DegreeMinute, /*!< degree/minutes, use NSEW suffix */
+      DegreeMinuteSecond, /*!< degree/minutes/seconds, use NSEW suffix */
+      DecimalWithSuffix, /*!< decimal degrees, use NSEW suffix */
+      DegreeMinuteNoSuffix, /*!< degree/minutes, use - for S/W coordinates */
+      DegreeMinutePadded, /*!< degree/minutes, with minutes using leading zeros were required */
+      DegreeMinuteSecondNoSuffix, /*!< degree/minutes/seconds, use - for S/W coordinates */
+      DegreeMinuteSecondPadded /*!< degree/minutes/seconds, with minutes using leading zeros were required */
     };
 
     /** Border sides for annotations
@@ -192,31 +192,31 @@ class QgsComposerMapGrid : QgsComposerMapItem
     enum BorderSide
     {
       Left,
-      Right, /*< right border */
-      Bottom, /*< bottom border */
-      Top /*< top border */
+      Right, /*!< right border */
+      Bottom, /*!< bottom border */
+      Top /*!< top border */
     };
 
     /** Style for grid frame
      */
     enum FrameStyle
     {
-      NoFrame, /*< disable grid frame */
-      Zebra, /*< black/white pattern */
-      InteriorTicks,  /*< tick markers drawn inside map frame */
-      ExteriorTicks,  /*< tick markers drawn outside map frame */
-      InteriorExteriorTicks, /*< tick markers drawn both inside and outside the map frame */
-      LineBorder /*< simple solid line frame */
+      NoFrame, /*!< disable grid frame */
+      Zebra, /*!< black/white pattern */
+      InteriorTicks,  /*!< tick markers drawn inside map frame */
+      ExteriorTicks,  /*!< tick markers drawn outside map frame */
+      InteriorExteriorTicks, /*!< tick markers drawn both inside and outside the map frame */
+      LineBorder /*!< simple solid line frame */
     };
 
     /** Flags for controlling which side of the map a frame is drawn on
      */
     enum FrameSideFlag
     {
-      FrameLeft, /*< left side of map */
-      FrameRight, /*< right side of map */
-      FrameTop, /*< top side of map */
-      FrameBottom /*< bottom side of map */
+      FrameLeft, /*!< left side of map */
+      FrameRight, /*!< right side of map */
+      FrameTop, /*!< top side of map */
+      FrameBottom /*!< bottom side of map */
     };
     typedef QFlags<QgsComposerMapGrid::FrameSideFlag> FrameSideFlags;
 
@@ -224,8 +224,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
      */
     enum AnnotationCoordinate
     {
-      Longitude, /*< coordinate is a longitude value */
-      Latitude /*< coordinate is a latitude value */
+      Longitude, /*!< coordinate is a longitude value */
+      Latitude /*!< coordinate is a latitude value */
     };
 
     /**Constructor for QgsComposerMapGrid.

@@ -44,9 +44,9 @@ class CORE_EXPORT QgsColorScheme
      */
     enum SchemeFlag
     {
-      ShowInColorDialog = 0x01, /*< show scheme in color picker dialog */
-      ShowInColorButtonMenu = 0x02, /*< show scheme in color button drop down menu */
-      ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu /*< show scheme in all contexts */
+      ShowInColorDialog = 0x01, /*!< show scheme in color picker dialog */
+      ShowInColorButtonMenu = 0x02, /*!< show scheme in color button drop down menu */
+      ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu /*!< show scheme in all contexts */
     };
     Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
 

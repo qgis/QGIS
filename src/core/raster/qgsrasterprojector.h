@@ -147,7 +147,7 @@ class CORE_EXPORT QgsRasterProjector : public QgsRasterInterface
     /** \brief insert columns to matrix */
     void insertCols( const QgsCoordinateTransform* ct );
 
-    /* calculate single control point in current matrix */
+    /** calculate single control point in current matrix */
     void calcCP( int theRow, int theCol, const QgsCoordinateTransform* ct );
 
     /** \brief calculate matrix row */

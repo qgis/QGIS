@@ -37,8 +37,8 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
     /** Available blur methods (algorithms) */
     enum BlurMethod
     {
-      StackBlur, /*< stack blur, a fast but low quality blur. Valid blur level values are between 0 - 16.*/
-      GaussianBlur /*< Gaussian blur, a slower but high quality blur. Blur level values are the distance in pixels for the blur operation. */
+      StackBlur, /*!< stack blur, a fast but low quality blur. Valid blur level values are between 0 - 16.*/
+      GaussianBlur /*!< Gaussian blur, a slower but high quality blur. Blur level values are the distance in pixels for the blur operation. */
     };
 
     /** Creates a new QgsBlurEffect effect from a properties string map.
