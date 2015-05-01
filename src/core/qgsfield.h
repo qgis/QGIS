@@ -19,10 +19,12 @@
 #include <QString>
 #include <QVariant>
 #include <QVector>
+#include <QSharedDataPointer>
 
 typedef QList<int> QgsAttributeList;
 
 class QgsExpression;
+class QgsFieldPrivate;
 
 /** \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -52,6 +54,14 @@ class CORE_EXPORT QgsField
               int prec = 0,
               QString comment = QString() );
 
+    /** Copy constructor
+     */
+    QgsField( const QgsField& other );
+
+    /** Assignment operator
+     */
+    QgsField& operator =( const QgsField &other );
+
     //! Destructor
     ~QgsField();
 
@@ -59,7 +69,7 @@ class CORE_EXPORT QgsField
     bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
-    const QString & name() const;
+    const QString& name() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -70,15 +80,13 @@ class CORE_EXPORT QgsField
       the data store reports it, with no attempt to standardize the value.
       @return QString containing the field type
      */
-    const QString & typeName() const;
-
+    const QString& typeName() const;
 
     /**
       Gets the length of the field.
       @return int containing the length of the field
      */
     int length() const;
-
 
     /**
       Gets the precision of the field. Not all field types have a related precision.
@@ -89,13 +97,13 @@ class CORE_EXPORT QgsField
     /**
     Returns the field comment
     */
-    const QString & comment() const;
+    const QString& comment() const;
 
     /**
       Set the field name.
-      @param nam Name of the field
+      @param name Name of the field
      */
-    void setName( const QString & nam );
+    void setName( const QString& name );
 
     /**
       Set variant type.
@@ -104,9 +112,9 @@ class CORE_EXPORT QgsField
 
     /**
       Set the field type.
-      @param typ Field type
+      @param typeName Field type
      */
-    void setTypeName( const QString & typ );
+    void setTypeName( const QString& typeName );
 
     /**
       Set the field length.
@@ -116,15 +124,14 @@ class CORE_EXPORT QgsField
 
     /**
       Set the field precision.
-      @param prec Precision of the field
+      @param precision Precision of the field
      */
-    void setPrecision( int prec );
-
+    void setPrecision( int precision );
 
     /**
       Set the field comment
       */
-    void setComment( const QString & comment );
+    void setComment( const QString& comment );
 
     /** Formats string for display*/
     QString displayString( const QVariant& v ) const;
@@ -140,23 +147,7 @@ class CORE_EXPORT QgsField
 
   private:
 
-    //! Name
-    QString mName;
-
-    //! Variant type
-    QVariant::Type mType;
-
-    //! Type name from provider
-    QString mTypeName;
-
-    //! Length
-    int mLength;
-
-    //! Precision
-    int mPrecision;
-
-    //! Comment
-    QString mComment;
+    QSharedDataPointer<QgsFieldPrivate> d;
 
 }; // class QgsField
 
