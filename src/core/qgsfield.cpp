@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsfield.h"
+#include "qgsfield_p.h"
 
 #include <QSettings>
 #include <QtCore/qmath.h>
@@ -35,13 +36,19 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 
 QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
 {
-  d = new QgsField::FieldData( name, type, typeName, len, prec, comment );
+  d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
 }
 
 QgsField::QgsField( const QgsField &other )
     : d( other.d )
 {
 
+}
+
+QgsField &QgsField::operator =( const QgsField & other )
+{
+  d = other.d;
+  return *this;
 }
 
 

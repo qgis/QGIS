@@ -24,6 +24,7 @@
 typedef QList<int> QgsAttributeList;
 
 class QgsExpression;
+class QgsFieldPrivate;
 
 /** \ingroup core
   * Encapsulate a field in an attribute table or data source.
@@ -56,6 +57,10 @@ class CORE_EXPORT QgsField
     /** Copy constructor
      */
     QgsField( const QgsField& other );
+
+    /** Assignment operator
+     */
+    QgsField& operator =( const QgsField &other );
 
     //! Destructor
     ~QgsField();
@@ -142,63 +147,7 @@ class CORE_EXPORT QgsField
 
   private:
 
-    class FieldData : public QSharedData
-    {
-      public:
-
-        FieldData( QString name = QString(),
-                   QVariant::Type type = QVariant::Invalid,
-                   QString typeName = QString(),
-                   int len = 0,
-                   int prec = 0,
-                   QString comment = QString() )
-            : name( name )
-            , type( type )
-            , typeName( typeName )
-            , length( len )
-            , precision( prec )
-            , comment( comment )
-        {}
-
-        FieldData( const FieldData& other )
-            : QSharedData( other )
-            , name( other.name )
-            , type( other.type )
-            , typeName( other.typeName )
-            , length( other.length )
-            , precision( other.precision )
-            , comment( other.comment )
-        {
-        }
-
-        ~FieldData() {}
-
-        bool operator==( const FieldData& other ) const
-        {
-          return (( name == other.name ) && ( type == other.type )
-                  && ( length == other.length ) && ( precision == other.precision ) );
-        }
-
-        //! Name
-        QString name;
-
-        //! Variant type
-        QVariant::Type type;
-
-        //! Type name from provider
-        QString typeName;
-
-        //! Length
-        int length;
-
-        //! Precision
-        int precision;
-
-        //! Comment
-        QString comment;
-    };
-
-    QSharedDataPointer<FieldData> d;
+    QSharedDataPointer<QgsFieldPrivate> d;
 
 }; // class QgsField
 
