@@ -34,6 +34,10 @@ public:
               int prec = 0,
               QString comment = QString() );
 
+    /** Copy constructor
+     */
+    QgsField( const QgsField& other );
+
     //! Destructor
     ~QgsField();
 
@@ -75,9 +79,9 @@ public:
 
     /**
       Set the field name.
-      @param nam Name of the field
+      @param name Name of the field
      */
-    void setName( const QString & nam );
+    void setName( const QString& name );
 
     /**
       Set variant type.
@@ -86,9 +90,9 @@ public:
 
     /**
       Set the field type.
-      @param typ Field type
+      @param typeName Field type
      */
-    void setTypeName( const QString & typ );
+    void setTypeName( const QString& typeName );
 
     /**
       Set the field length.
@@ -98,15 +102,15 @@ public:
 
     /**
       Set the field precision.
-      @param prec Precision of the field
+      @param precision Precision of the field
      */
-    void setPrecision( int prec );
+    void setPrecision( int precision );
 
 
     /**
       Set the field comment
       */
-    void setComment( const QString & comment );
+    void setComment( const QString& comment );
 
     /** Formats string for display*/
     QString displayString( const QVariant& v ) const;
