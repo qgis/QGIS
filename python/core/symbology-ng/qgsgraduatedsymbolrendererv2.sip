@@ -155,7 +155,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! Evaluates the data expression and returns the list of values from the layer
     //! @param vlayer  The layer for which to evaluate the expression
     //! @note Added in 2.6
-    QList<double> getDataValues( QgsVectorLayer *vlayer );
+    //! @deprecated use QgsVectorLayer::getDoubleValues instead
+    QList<double> getDataValues( QgsVectorLayer *vlayer ) /Deprecated/;
 
     //! Return the label format used to generate default classification labels
     //! @note Added in 2.6
