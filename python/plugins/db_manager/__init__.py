@@ -20,6 +20,8 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
+
 def classFactory(iface):
     from .db_manager_plugin import DBManagerPlugin
+
     return DBManagerPlugin(iface)

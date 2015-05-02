@@ -31,7 +31,6 @@
 #include <QDomElement>
 
 #include "qgssymbolv2.h"
-
 #include "qgssymbollayerv2utils.h" // QgsStringMap
 
 class QPainter;
@@ -41,10 +40,13 @@ class QPolygonF;
 class QgsDxfExport;
 class QgsExpression;
 class QgsRenderContext;
+class QgsPaintEffect;
 
 class CORE_EXPORT QgsSymbolLayerV2
 {
   public:
+
+    virtual ~QgsSymbolLayerV2();
 
     // not necessarily supported by all symbol layers...
     virtual QColor color() const { return mColor; }
@@ -61,8 +63,6 @@ class CORE_EXPORT QgsSymbolLayerV2
     /** Get fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual QColor fillColor() const { return QColor(); }
-
-    virtual ~QgsSymbolLayerV2() { removeDataDefinedProperties(); }
 
     virtual QString layerType() const = 0;
 
@@ -132,9 +132,22 @@ class CORE_EXPORT QgsSymbolLayerV2
     virtual QColor dxfBrushColor( const QgsSymbolV2RenderContext& context ) const;
     virtual Qt::BrushStyle dxfBrushStyle() const;
 
+    /** Returns the current paint effect for the layer.
+     * @returns paint effect
+     * @note added in QGIS 2.9
+     * @see setPaintEffect
+     */
+    QgsPaintEffect* paintEffect() const;
+
+    /** Sets the current paint effect for the layer.
+     * @param effect paint effect. Ownership is transferred to the layer.
+     * @note added in QGIS 2.9
+     * @see paintEffect
+     */
+    void setPaintEffect( QgsPaintEffect* effect );
+
   protected:
-    QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )
-        : mType( type ), mLocked( locked ), mRenderingPass( 0 ) {}
+    QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false );
 
     QgsSymbolV2::SymbolType mType;
     bool mLocked;
@@ -142,6 +155,7 @@ class CORE_EXPORT QgsSymbolLayerV2
     int mRenderingPass;
 
     QMap< QString, QgsExpression* > mDataDefinedProperties;
+    QgsPaintEffect* mPaintEffect;
 
     // Configuration of selected symbology implementation
     static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
@@ -154,6 +168,11 @@ class CORE_EXPORT QgsSymbolLayerV2
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
     /**Copies data defined properties of this layer to another symbol layer*/
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
+    /**Copies paint effect of this layer to another symbol layer
+     * @param destLayer destination layer
+     * @note added in QGIS 2.9
+     */
+    void copyPaintEffect( QgsSymbolLayerV2* destLayer ) const;
 };
 
 //////////////////////

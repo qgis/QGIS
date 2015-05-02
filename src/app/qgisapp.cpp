@@ -199,6 +199,7 @@
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
+#include "qgsuserinputtoolbar.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -513,6 +514,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mpTileScaleWidget( 0 )
     , mpGpsWidget( 0 )
     , mSnappingUtils( 0 )
+    , mProjectLastModified()
 {
   if ( smInstance )
   {
@@ -738,9 +740,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     // enable Python in the Plugin Manager and pass the PythonUtils to it
     mPluginManager->setPythonUtils( mPythonUtils );
   }
-  else
+  else if ( mActionShowPythonDialog )
   {
-    mActionShowPythonDialog->setVisible( false );
+    // python is disabled so get rid of the action for python console
+    delete mActionShowPythonDialog;
+    mActionShowPythonDialog = 0;
   }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
@@ -914,6 +918,7 @@ QgisApp::QgisApp()
     , mVectorLayerTools( 0 )
     , mBtnFilterLegend( 0 )
     , mSnappingUtils( 0 )
+    , mProjectLastModified()
 {
   smInstance = this;
   setupUi( this );
@@ -975,6 +980,8 @@ QgisApp::~QgisApp()
   delete mMapTools.mSvgAnnotation;
   delete mMapTools.mTextAnnotation;
 
+  delete mUserInputToolBar;
+
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -996,8 +1003,6 @@ QgisApp::~QgisApp()
   delete QgsProject::instance();
 
   delete mPythonUtils;
-
-  QgsMapLayerStyleGuiUtils::cleanup();
 }
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
@@ -1039,6 +1044,10 @@ void QgisApp::dropEvent( QDropEvent *event )
       else if ( u.layerType == "raster" )
       {
         addRasterLayer( uri, u.name, u.providerKey );
+      }
+      else if ( u.layerType == "plugin" )
+      {
+        addPluginLayer( uri, u.name, u.providerKey );
       }
     }
   }
@@ -1716,13 +1725,16 @@ void QgisApp::createToolBars()
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   // Help Toolbar
-
   QAction* actionWhatsThis = QWhatsThis::createAction( this );
   actionWhatsThis->setIcon( QgsApplication::getThemeIcon( "/mActionWhatsThis.svg" ) );
   mHelpToolBar->addAction( actionWhatsThis );
 
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
+
+  // User Input Tool Bar
+  mUserInputToolBar = new QgsUserInputToolBar();
+  addToolBar( mUserInputToolBar, Qt::BottomToolBarArea );
 }
 
 void QgisApp::createStatusBar()
@@ -1765,7 +1777,7 @@ void QgisApp::createStatusBar()
   mCoordsLabel->setObjectName( "mCoordsLabel" );
   mCoordsLabel->setFont( myFont );
   mCoordsLabel->setMinimumWidth( 10 );
-  mCoordsLabel->setMaximumHeight( 20 );
+  //mCoordsLabel->setMaximumHeight( 20 );
   mCoordsLabel->setMargin( 3 );
   mCoordsLabel->setAlignment( Qt::AlignCenter );
   mCoordsLabel->setFrameStyle( QFrame::NoFrame );
@@ -1779,7 +1791,7 @@ void QgisApp::createStatusBar()
   mCoordsEdit->setFont( myFont );
   mCoordsEdit->setMinimumWidth( 10 );
   mCoordsEdit->setMaximumWidth( 300 );
-  mCoordsEdit->setMaximumHeight( 20 );
+  //mCoordsEdit->setMaximumHeight( 20 );
   mCoordsEdit->setContentsMargins( 0, 0, 0, 0 );
   mCoordsEdit->setAlignment( Qt::AlignCenter );
   QRegExp coordValidator( "[+-]?\\d+\\.?\\d*\\s*,\\s*[+-]?\\d+\\.?\\d*" );
@@ -1799,7 +1811,7 @@ void QgisApp::createStatusBar()
   mScaleLabel->setObjectName( "mScaleLable" );
   mScaleLabel->setFont( myFont );
   mScaleLabel->setMinimumWidth( 10 );
-  mScaleLabel->setMaximumHeight( 20 );
+  //mScaleLabel->setMaximumHeight( 20 );
   mScaleLabel->setMargin( 3 );
   mScaleLabel->setAlignment( Qt::AlignCenter );
   mScaleLabel->setFrameStyle( QFrame::NoFrame );
@@ -1815,7 +1827,7 @@ void QgisApp::createStatusBar()
   mScaleEdit->lineEdit()->setFont( myFont );
   mScaleEdit->setMinimumWidth( 10 );
   mScaleEdit->setMaximumWidth( 100 );
-  mScaleEdit->setMaximumHeight( 20 );
+  //mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
@@ -1830,7 +1842,7 @@ void QgisApp::createStatusBar()
     mRotationLabel->setObjectName( "mRotationLabel" );
     mRotationLabel->setFont( myFont );
     mRotationLabel->setMinimumWidth( 10 );
-    mRotationLabel->setMaximumHeight( 20 );
+    //mRotationLabel->setMaximumHeight( 20 );
     mRotationLabel->setMargin( 3 );
     mRotationLabel->setAlignment( Qt::AlignCenter );
     mRotationLabel->setFrameStyle( QFrame::NoFrame );
@@ -2395,6 +2407,11 @@ QgsMessageBar* QgisApp::messageBar()
 {
   Q_ASSERT( mInfoBar );
   return mInfoBar;
+}
+
+void QgisApp::addUserInputWidget( QWidget *widget )
+{
+  mUserInputToolBar->addUserInputWidget( widget );
 }
 
 
@@ -3593,6 +3610,8 @@ void QgisApp::fileNew( bool thePromptToSaveFlag, bool forceBlank )
     }
   }
 
+  mProjectLastModified = QDateTime();
+
   QSettings settings;
 
   closeProject();
@@ -3983,7 +4002,7 @@ bool QgisApp::addProject( QString projectFile )
   // close the previous opened project if any
   closeProject();
 
-  if ( ! QgsProject::instance()->read( projectFile ) )
+  if ( !QgsProject::instance()->read( projectFile ) )
   {
     QApplication::restoreOverrideCursor();
     statusBar()->clearMessage();
@@ -3997,6 +4016,8 @@ bool QgisApp::addProject( QString projectFile )
     mMapCanvas->refresh();
     return false;
   }
+
+  mProjectLastModified = pfi.lastModified();
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
@@ -4117,6 +4138,19 @@ bool QgisApp::fileSave()
   else
   {
     QFileInfo fi( QgsProject::instance()->fileName() );
+    if ( fi.exists() && !mProjectLastModified.isNull() && mProjectLastModified != fi.lastModified() )
+    {
+      if ( QMessageBox::warning( this,
+                                 tr( "Project file was changed" ),
+                                 tr( "The loaded project file on disk was meanwhile changed.  Do you want to overwrite the changes?\n"
+                                     "\nLast modification date on load was: %1"
+                                     "\nCurrent last modification date is: %2" )
+                                 .arg( mProjectLastModified.toString( Qt::DefaultLocaleLongDate ) )
+                                 .arg( fi.lastModified().toString( Qt::DefaultLocaleLongDate ) ),
+                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+        return false;
+    }
+
     if ( fi.exists() && ! fi.isWritable() )
     {
       messageBar()->pushMessage( tr( "Insufficient permissions" ),
@@ -4137,6 +4171,9 @@ bool QgisApp::fileSave()
       QSettings settings;
       saveRecentProjectPath( fullPath.filePath(), settings );
     }
+
+    QFileInfo fi( QgsProject::instance()->fileName() );
+    mProjectLastModified = fi.lastModified();
   }
   else
   {
@@ -5038,6 +5075,9 @@ void QgisApp::saveAsRasterFile()
                                 this );
   if ( d.exec() == QDialog::Accepted )
   {
+    QSettings settings;
+    settings.setValue( "/UI/lastRasterFileDir", QFileInfo( d.outputFileName() ).absolutePath() );
+
     QgsRasterFileWriter fileWriter( d.outputFileName() );
     if ( d.tileMode() )
     {
@@ -5289,11 +5329,13 @@ void QgisApp::checkForDeprecatedLabelsInProject()
         continue;
       }
 
+      Q_NOWARN_DEPRECATED_PUSH
       depLabelsUsed = vl->hasLabelsEnabled();
       if ( depLabelsUsed )
       {
         break;
       }
+      Q_NOWARN_DEPRECATED_POP
     }
     if ( depLabelsUsed )
     {
@@ -5667,7 +5709,7 @@ bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
 void QgisApp::deletePrintComposers()
 {
   QSet<QgsComposer*>::iterator it = mPrintComposers.begin();
-  for ( ; it != mPrintComposers.end(); ++it )
+  while ( it != mPrintComposers.end() )
   {
     emit composerWillBeRemoved(( *it )->view() );
 
@@ -5683,8 +5725,8 @@ void QgisApp::deletePrintComposers()
     {
       delete composition;
     }
+    it = mPrintComposers.erase( it );
   }
-  mPrintComposers.clear();
   mLastComposerId = 0;
   markDirty();
 }
@@ -7522,11 +7564,6 @@ void QgisApp::loadPythonSupport()
 
     QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ), QString::null, QgsMessageLog::INFO );
   }
-  else
-  {
-    delete mActionShowPythonDialog;
-    mActionShowPythonDialog = 0;
-  }
 }
 
 void QgisApp::checkQgisVersion()
@@ -9131,7 +9168,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( !vlayer || !vlayer->isEditable() ||
-         ( !vlayer->diagramRenderer() && vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) ) )
+         ( !vlayer->diagramsEnabled() && vlayer->customProperty( "labeling" ).toString() != QString( "pal" ) ) )
       continue;
 
     int colX, colY, colShow, colAng;
@@ -9813,6 +9850,22 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 //
 ///////////////////////////////////////////////////////////////////
 
+
+QgsPluginLayer* QgisApp::addPluginLayer( const QString& uri, const QString& baseName, const QString& providerKey )
+{
+  QgsPluginLayer* layer = QgsPluginLayerRegistry::instance()->createLayer( providerKey, uri );
+  if ( !layer )
+    return 0;
+
+  layer->setLayerName( baseName );
+
+  QgsMapLayerRegistry::instance()->addMapLayer( layer );
+
+  return layer;
+}
+
+
+
 #ifdef ANDROID
 void QgisApp::keyReleaseEvent( QKeyEvent *event )
 {
@@ -9834,6 +9887,10 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
     }
     event->setAccepted( accepted ); // don't close my Top Level Widget !
     accepted = false;// close the app next time when the user press back button
+  }
+  else
+  {
+    QMainWindow::keyReleaseEvent( event );
   }
 }
 #endif

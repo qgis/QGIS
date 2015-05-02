@@ -39,7 +39,7 @@ from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.script.ScriptUtils import ScriptUtils
 
 from RegularPoints import RegularPoints
-from SymetricalDifference import SymetricalDifference
+from SymmetricalDifference import SymmetricalDifference
 from VectorSplit import VectorSplit
 from VectorGrid import VectorGrid
 from RandomExtract import RandomExtract
@@ -123,6 +123,7 @@ from ImportIntoPostGIS import ImportIntoPostGIS
 from SetVectorStyle import SetVectorStyle
 from SetRasterStyle import SetRasterStyle
 from SelectByExpression import SelectByExpression
+from SelectByAttributeSum import SelectByAttributeSum
 from HypsometricCurves import HypsometricCurves
 from SplitLinesWithLines import SplitLinesWithLines
 from processing.algs.qgis.FieldsMapper import FieldsMapper
@@ -152,7 +153,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         RandomSelection(), RandomSelectionWithinSubsets(),
                         SelectByLocation(), RandomExtract(),
                         RandomExtractWithinSubsets(), ExtractByLocation(),
-                        SpatialJoin(), RegularPoints(), SymetricalDifference(),
+                        SpatialJoin(), RegularPoints(), SymmetricalDifference(),
                         VectorSplit(), VectorGrid(), DeleteColumn(),
                         DeleteDuplicateGeometries(), TextToFloat(),
                         ExtractByAttribute(), SelectByAttribute(), Grid(),
@@ -172,7 +173,7 @@ class QGISAlgorithmProvider(AlgorithmProvider):
                         SetVectorStyle(), SetRasterStyle(),
                         SelectByExpression(), HypsometricCurves(),
                         SplitLinesWithLines(), CreateConstantRaster(),
-                        FieldsMapper(),
+                        FieldsMapper(),SelectByAttributeSum()
                         ]
 
         if hasMatplotlib:

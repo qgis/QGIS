@@ -98,7 +98,7 @@ class QgsRasterDataProvider : QgsDataProvider, QgsRasterInterface
     /** Read block of data using given extent and size. */
     virtual QgsRasterBlock *block( int theBandNo, const QgsRectangle &theExtent, int theWidth, int theHeight ) / Factory /;
 
-    /* Return true if source band has no data value */
+    /** Return true if source band has no data value */
     virtual bool srcHasNoDataValue( int bandNo ) const;
 
     /** \brief Get source nodata value usage */

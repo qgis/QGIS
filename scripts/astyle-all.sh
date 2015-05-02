@@ -33,7 +33,7 @@ find python src tests -type f -print | while read f; do
         fi
 
 	echo -ne "Reformatting $f $elcr"
-	astyle.sh "$f"
+	astyle.sh "$f" || true
 done
 
 echo

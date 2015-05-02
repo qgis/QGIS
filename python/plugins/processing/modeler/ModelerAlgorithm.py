@@ -475,7 +475,6 @@ class ModelerAlgorithm(GeoAlgorithm):
             self.modelerdialog.repaintModel()
 
     def help(self):
-        print self.helpContent
         try:
             return True, getHtmlFromDescriptionsDict(self, self.helpContent)
         except:

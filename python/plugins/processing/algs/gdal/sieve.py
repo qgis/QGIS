@@ -56,7 +56,7 @@ class sieve(GdalAlgorithm):
         self.addParameter(ParameterSelection(self.CONNECTIONS,
             self.tr('Pixel connection'), self.PIXEL_CONNECTIONS, 0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Sieved')))
 
     def processAlgorithm(self, progress):
         output = self.getOutputValue(self.OUTPUT)

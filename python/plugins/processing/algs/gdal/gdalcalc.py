@@ -98,7 +98,7 @@ class gdalcalc(GdalAlgorithm):
         #    self.DEBUG, self.tr('Print debugging information'), False))
         self.addParameter(ParameterString(self.EXTRA,
             self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Calculated')))
 
     def processAlgorithm(self, progress):
         out = self.getOutputValue(self.OUTPUT)

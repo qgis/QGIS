@@ -308,13 +308,13 @@ void TestQgsAtlasComposition::predefinedscales_render()
   mAtlasMap->setAtlasDriven( true );
   mAtlasMap->setAtlasScalingMode( QgsComposerMap::Predefined );
 
-  QVector<double> scales;
-  scales << 1800000;
-  scales << 5000000;
+  QVector<qreal> scales;
+  scales << 1800000.0;
+  scales << 5000000.0;
   mAtlas->setPredefinedScales( scales );
 
   {
-    const QVector<double>& setScales = mAtlas->predefinedScales();
+    const QVector<qreal> &setScales = mAtlas->predefinedScales();
     for ( int i = 0; i < setScales.size(); i++ )
     {
       QVERIFY( setScales[i] == scales[i] );

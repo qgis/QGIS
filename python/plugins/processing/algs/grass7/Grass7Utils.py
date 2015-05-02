@@ -163,7 +163,7 @@ class Grass7Utils:
         output.write('g.gisenv.exe set="GISDBASE=' + gisdbase + '"\n')
         output.write('g.gisenv.exe set="GRASS_GUI=text"\n')
         for command in commands:
-            output.write(command + '\n')
+            output.write(command.encode('utf8') + '\n')
         output.write('\n')
         output.write('exit\n')
         output.close()
@@ -172,7 +172,7 @@ class Grass7Utils:
     def createGrass7BatchJobFileFromGrass7Commands(commands):
         fout = open(Grass7Utils.grassBatchJobFilename(), 'w')
         for command in commands:
-            fout.write(command + '\n')
+            fout.write(command.encode('utf8') + '\n')
         fout.write('exit')
         fout.close()
 

@@ -48,12 +48,30 @@ namespace pal
 
 
   /**
-   * \brief LabelPositon is a candidate feature label position
+   * \brief LabelPosition is a candidate feature label position
    */
   class CORE_EXPORT LabelPosition
   {
       friend class CostCalculator;
       friend class PolygonCostCalculator;
+
+    public:
+
+      /**
+       * \brief Position of label candidate relative to feature.
+       */
+      enum Quadrant
+      {
+        QuadrantAboveLeft,
+        QuadrantAbove,
+        QuadrantAboveRight,
+        QuadrantLeft,
+        QuadrantOver,
+        QuadrantRight,
+        QuadrantBelowLeft,
+        QuadrantBelow,
+        QuadrantBelowRight
+      };
 
     protected:
 
@@ -81,10 +99,13 @@ namespace pal
 
       bool upsideDown;
 
+      LabelPosition::Quadrant quadrant;
+
       bool isInConflictSinglePart( LabelPosition* lp );
       bool isInConflictMultiPart( LabelPosition* lp );
 
     public:
+
       /**
        * \brief create a new LabelPosition
        *
@@ -97,11 +118,12 @@ namespace pal
        * \param cost geographic cost
        * \param feature labelpos owners
        * \param isReversed label is reversed
+       * \param quadrant relative position of label to feature
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature, bool isReversed = false );
+                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
       /** copy constructor */
       LabelPosition( const LabelPosition& other );
@@ -214,6 +236,8 @@ namespace pal
       double getAlpha() const;
       bool getReversed() const { return reversed; }
       bool getUpsideDown() const { return upsideDown; }
+
+      Quadrant getQuadrant() const { return quadrant; }
 
       void print();
 

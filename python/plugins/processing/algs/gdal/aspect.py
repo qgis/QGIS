@@ -64,7 +64,7 @@ class aspect(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.ZERO_FLAT,
             self.tr('Return 0 for flat (instead of -9999)'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, 'Output file'))
+        self.addOutput(OutputRaster(self.OUTPUT, 'Aspect'))
 
     def processAlgorithm(self, progress):
         arguments = ['aspect']

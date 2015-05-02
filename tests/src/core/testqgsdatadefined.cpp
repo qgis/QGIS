@@ -34,6 +34,7 @@ class TestQgsDataDefined: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void create();//test creating a data defined container
+    void copy();// test cpy destruction (double delete)
     void gettersSetters(); //test getters and setters
     void defaultValues(); //test hasDefaultValues method
     void equality(); //test equality operators
@@ -69,6 +70,33 @@ void TestQgsDataDefined::create()
   QVERIFY( dd->useExpression() );
   QCOMPARE( dd->expressionString(), QString( "exp" ) );
   QCOMPARE( dd->field(), QString( "field" ) );
+
+  //test with string constructor
+  QScopedPointer<QgsDataDefined> stringConstructorField( new QgsDataDefined( QString( "\"col1\"" ) ) );
+  QVERIFY( stringConstructorField->isActive() );
+  QVERIFY( ! stringConstructorField->useExpression() );
+  QVERIFY( stringConstructorField->expressionString().isEmpty() );
+  QCOMPARE( stringConstructorField->field(), QString( "col1" ) );
+
+  QScopedPointer<QgsDataDefined> stringConstructorExp( new QgsDataDefined( QString( "1 + 2" ) ) );
+  QVERIFY( stringConstructorExp->isActive() );
+  QVERIFY( stringConstructorExp->useExpression() );
+  QCOMPARE( stringConstructorExp->expressionString(), QString( "1 + 2" ) );
+  QVERIFY( stringConstructorExp->field().isEmpty() );
+
+  QScopedPointer<QgsDataDefined> stringConstructorEmpty( new QgsDataDefined( QString( "" ) ) );
+  QVERIFY( ! stringConstructorEmpty->isActive() );
+}
+
+void TestQgsDataDefined::copy()
+{
+  QgsDataDefined dd( true, true, QString( "sqrt(2)" ), QString( "field" ) );
+  dd.prepareExpression( NULL );
+  QgsDataDefined cpy( dd );
+  QVERIFY( cpy == dd );
+  QgsDataDefined assigned;
+  assigned = dd;
+  QVERIFY( assigned == dd );
 }
 
 void TestQgsDataDefined::gettersSetters()

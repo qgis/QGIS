@@ -32,10 +32,13 @@ class QgsDataItem : QObject
       Populated     //!< children created
     };
 
+    //! @note added in 2.8
     State state() const;
 
     /** Set item state. It also take care about starting/stopping loading icon animation.
-     * @param state */
+     * @param state
+     * @note added in 2.8
+     */
     virtual void setState( State state );
 
     //! @deprecated in 2.8, use state()
@@ -170,7 +173,8 @@ class QgsLayerItem : QgsDataItem
       Polygon,
       TableLayer,
       Database,
-      Table
+      Table,
+      Plugin     //!< added in 2.10
     };
 
     QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );

@@ -112,6 +112,8 @@ void QgsWMSServer::executeRequest()
   {
     QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
     mRequestHandler->setServiceException( QgsMapServiceException( "OperationNotSupported", "Please check the value of the REQUEST parameter" ) );
+    cleanupAfterRequest();
+    return;
   }
 
   //version
@@ -593,29 +595,26 @@ static QgsLayerTreeModelLegendNode* _findLegendNodeForRule( QgsLayerTreeModel* l
 }
 
 
-static QgsRectangle _parseBBOX( const QString& bboxStr, bool* ok )
+static QgsRectangle _parseBBOX( const QString &bboxStr, bool &ok )
 {
-  *ok = false;
-  QgsRectangle bbox;
+  ok = false;
 
   QStringList lst = bboxStr.split( "," );
   if ( lst.count() != 4 )
-    return bbox;
+    return QgsRectangle();
 
-  bool convOk;
-  bbox.setXMinimum( lst[0].toDouble( &convOk ) );
-  if ( !convOk ) return bbox;
-  bbox.setYMinimum( lst[1].toDouble( &convOk ) );
-  if ( !convOk ) return bbox;
-  bbox.setXMaximum( lst[2].toDouble( &convOk ) );
-  if ( !convOk ) return bbox;
-  bbox.setYMaximum( lst[3].toDouble( &convOk ) );
-  if ( !convOk ) return bbox;
+  double d[4];
+  for ( int i = 0; i < 4; i++ )
+  {
+    bool ok;
+    lst[i].replace( " ", "+" );
+    d[i] = lst[i].toDouble( &ok );
+    if ( !ok )
+      return QgsRectangle();
+  }
 
-  if ( bbox.isEmpty() ) return bbox;
-
-  *ok = true;
-  return bbox;
+  ok = true;
+  return QgsRectangle( d[0], d[1], d[2], d[3] );
 }
 
 
@@ -642,8 +641,8 @@ QImage* QgsWMSServer::getLegendGraphics()
     contentBasedLegend = true;
 
     bool bboxOk;
-    contentBasedLegendExtent = _parseBBOX( mParameters["BBOX"], &bboxOk );
-    if ( !bboxOk )
+    contentBasedLegendExtent = _parseBBOX( mParameters["BBOX"], bboxOk );
+    if ( !bboxOk || contentBasedLegendExtent.isEmpty() )
       throw QgsMapServiceException( "InvalidParameterValue", "Invalid BBOX parameter" );
 
     if ( mParameters.contains( "RULE" ) )
@@ -1417,11 +1416,11 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   }
   else
   {
-      infoPoint = new QgsPoint();
-      if( !infoPointToMapCoordinates( i, j, infoPoint, mMapRenderer ) )
-      {
-          return 5;
-      }
+    infoPoint = new QgsPoint();
+    if ( !infoPointToMapCoordinates( i, j, infoPoint, mMapRenderer ) )
+    {
+      return 5;
+    }
   }
 
   //get the layer registered in QgsMapLayerRegistry and apply possible filters
@@ -1552,9 +1551,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
         QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( currentLayer );
         if ( rasterLayer )
         {
-          if( !infoPoint )
+          if ( !infoPoint )
           {
-              continue;
+            continue;
           }
           QgsPoint layerInfoPoint = mMapRenderer->mapToLayerCoordinates( currentLayer, *infoPoint );
           if ( featureInfoFromRasterLayer( rasterLayer, &layerInfoPoint, result, layerElement, version, infoFormat ) != 0 )
@@ -1769,24 +1768,8 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   mMapRenderer->setOutputSize( QSize( paintDevice->width(), paintDevice->height() ), paintDevice->logicalDpiX() );
 
   //map extent
-  bool conversionSuccess;
-  double minx, miny, maxx, maxy;
-  QString bbString = mParameters.value( "BBOX", "0,0,0,0" );
-
-  bool bboxOk = true;
-  minx = bbString.section( ",", 0, 0 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
-    bboxOk = false;
-  miny = bbString.section( ",", 1, 1 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
-    bboxOk = false;
-  maxx = bbString.section( ",", 2, 2 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
-    bboxOk = false;
-  maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
-  if ( !conversionSuccess )
-    bboxOk = false;
-
+  bool bboxOk;
+  QgsRectangle mapExtent = _parseBBOX( mParameters.value( "BBOX", "0,0,0,0" ), bboxOk );
   if ( !bboxOk )
   {
     //throw a service exception
@@ -1842,15 +1825,9 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   QString version = mParameters.value( "VERSION", "1.3.0" );
   if ( version != "1.1.1" && outputCRS.axisInverted() )
   {
-    //switch coordinates of extent
-    double tmp;
-    tmp = minx;
-    minx = miny; miny = tmp;
-    tmp = maxx;
-    maxx = maxy; maxy = tmp;
+    mapExtent.invert();
   }
 
-  QgsRectangle mapExtent( minx, miny, maxx, maxy );
   mMapRenderer->setExtent( mapExtent );
 
   if ( mConfigParser )

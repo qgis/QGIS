@@ -653,6 +653,8 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType()
 {
   if ( mLayerType == QgsLayerItem::Raster )
     return QgsMapLayer::RasterLayer;
+  if ( mLayerType == QgsLayerItem::Plugin )
+    return QgsMapLayer::PluginLayer;
   return QgsMapLayer::VectorLayer;
 }
 

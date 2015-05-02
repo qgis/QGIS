@@ -48,6 +48,14 @@ SET(QGIS_CORE_SRCS
   diagram/qgshistogramdiagram.cpp
   
   effects/qgsimageoperation.cpp
+  effects/qgspainteffect.cpp
+  effects/qgseffectstack.cpp
+  effects/qgsblureffect.cpp
+  effects/qgsshadoweffect.cpp
+  effects/qgsgloweffect.cpp
+  effects/qgspainteffectregistry.cpp
+  effects/qgstransformeffect.cpp
+  effects/qgscoloreffect.cpp
 
   layertree/qgslayertreegroup.cpp
   layertree/qgslayertreelayer.cpp
@@ -154,11 +162,13 @@ SET(QGIS_CORE_SRCS
   qgsrectangle.cpp
   qgsrunprocess.cpp
   qgsscalecalculator.cpp
+  qgsscaleexpression.cpp
   qgsscaleutils.cpp
   qgssimplifymethod.cpp
   qgssnapper.cpp
   qgssnappingutils.cpp
   qgsspatialindex.cpp
+  qgsstatisticalsummary.cpp
   qgstransaction.cpp
   qgstolerance.cpp
   qgsvectordataprovider.cpp
@@ -495,6 +505,7 @@ SET(QGIS_CORE_HDRS
   qgsfeaturerequest.h
   qgsfeaturestore.h
   qgsfield.h
+  qgsfield_p.h
   qgsfontutils.h
   qgsgeometry.h
   qgsgeometrycache.h
@@ -538,12 +549,13 @@ SET(QGIS_CORE_HDRS
   qgsrenderchecker.h
   qgsrendercontext.h
   qgsscalecalculator.h
+  qgsscaleexpression.h
   qgsscaleutils.h
   qgssimplifymethod.h
-  qgssingleton.h
   qgssnapper.h
   qgssnappingutils.h
   qgsspatialindex.h
+  qgsstatisticalsummary.h
   qgstolerance.h
   qgstransaction.h
   qgsvectordataprovider.h
@@ -563,6 +575,14 @@ SET(QGIS_CORE_HDRS
   diagram/qgshistogramdiagram.h
   
   effects/qgsimageoperation.h
+  effects/qgspainteffect.h
+  effects/qgseffectstack.h
+  effects/qgsblureffect.h
+  effects/qgsshadoweffect.h
+  effects/qgsgloweffect.h
+  effects/qgspainteffectregistry.h
+  effects/qgstransformeffect.h
+  effects/qgscoloreffect.h
 
   composer/qgsaddremovemultiframecommand.h
   composer/qgscomposerarrow.h
@@ -753,7 +773,6 @@ TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTNETWORK_LIBRARY}
   ${QT_QTSVG_LIBRARY}
   ${QT_QTWEBKIT_LIBRARY}
-  ${QSCINTILLA_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}

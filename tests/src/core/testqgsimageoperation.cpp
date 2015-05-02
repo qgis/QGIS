@@ -84,6 +84,7 @@ class TestQgsImageOperation : public QObject
 
     QString mReport;
     QString mSampleImage;
+    QString mTransparentSampleImage;
 
     bool imageCheck( QString testName, QImage &image, int mismatchCount );
 };
@@ -92,6 +93,7 @@ void TestQgsImageOperation::initTestCase()
 {
   mReport += "<h1>Image Operation Tests</h1>\n";
   mSampleImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_image.png";
+  mTransparentSampleImage = QString( TEST_DATA_DIR ) + QDir::separator() +  "sample_alpha_image.png";
 }
 
 void TestQgsImageOperation::cleanupTestCase()
@@ -280,7 +282,7 @@ void TestQgsImageOperation::overlayColor()
 
 void TestQgsImageOperation::distanceTransformMaxDist()
 {
-  QImage image( mSampleImage );
+  QImage image( mTransparentSampleImage );
   QgsVectorGradientColorRampV2 ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;
@@ -295,7 +297,7 @@ void TestQgsImageOperation::distanceTransformMaxDist()
 
 void TestQgsImageOperation::distanceTransformSetSpread()
 {
-  QImage image( mSampleImage );
+  QImage image( mTransparentSampleImage );
   QgsVectorGradientColorRampV2 ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = false;
@@ -311,7 +313,7 @@ void TestQgsImageOperation::distanceTransformSetSpread()
 
 void TestQgsImageOperation::distanceTransformInterior()
 {
-  QImage image( mSampleImage );
+  QImage image( mTransparentSampleImage );
   QgsVectorGradientColorRampV2 ramp;
   QgsImageOperation::DistanceTransformProperties props;
   props.useMaxDistance = true;

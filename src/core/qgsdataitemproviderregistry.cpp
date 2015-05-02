@@ -38,11 +38,11 @@ class QgsDataItemProviderFromPlugin : public QgsDataItemProvider
     {
     }
 
-    virtual QString name() { return mName; }
+    virtual QString name() override { return mName; }
 
-    virtual int capabilities() { return mCapabilitiesFunc(); }
+    virtual int capabilities() override { return mCapabilitiesFunc(); }
 
-    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) { return mDataItemFunc( path, parentItem ); }
+    virtual QgsDataItem* createDataItem( const QString& path, QgsDataItem* parentItem ) override { return mDataItemFunc( path, parentItem ); }
 
   protected:
     QString mName;
@@ -77,6 +77,12 @@ QgsDataItemProviderRegistry::QgsDataItemProviderRegistry()
 
     mProviders.append( new QgsDataItemProviderFromPlugin( library->fileName(), dataCapabilities, dataItem ) );
   }
+}
+
+QgsDataItemProviderRegistry* QgsDataItemProviderRegistry::instance()
+{
+  static QgsDataItemProviderRegistry sInstance;
+  return &sInstance;
 }
 
 QgsDataItemProviderRegistry::~QgsDataItemProviderRegistry()

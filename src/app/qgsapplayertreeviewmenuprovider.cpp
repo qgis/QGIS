@@ -148,7 +148,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
         menu->addAction( tr( "Save As..." ), QgisApp::instance(), SLOT( saveAsFile() ) );
         menu->addAction( tr( "Save As Layer Definition File..." ), QgisApp::instance(), SLOT( saveAsLayerDefinition() ) );
 
-        if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
+        if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() )
           menu->addAction( tr( "&Filter..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
         menu->addAction( actions->actionShowFeatureCount( menu ) );

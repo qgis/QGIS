@@ -29,7 +29,12 @@
 
 extern "C"
 {
+#include <grass/version.h>
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#endif
 }
 
 

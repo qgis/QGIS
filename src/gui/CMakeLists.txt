@@ -40,6 +40,11 @@ symbology-ng/qgssvgselectorwidget.cpp
 symbology-ng/qgslayerpropertieswidget.cpp
 symbology-ng/qgssmartgroupeditordialog.cpp
 
+effects/qgseffectdrawmodecombobox.cpp
+effects/qgspainteffectpropertieswidget.cpp
+effects/qgspainteffectwidget.cpp
+effects/qgseffectstackpropertieswidget.cpp
+
 attributetable/qgsattributetabledelegate.cpp
 attributetable/qgsattributetablefiltermodel.cpp
 attributetable/qgsattributetablemodel.cpp
@@ -222,6 +227,7 @@ qgsslider.cpp
 qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
+qgsuserinputtoolbar.cpp
 qgsvertexmarker.cpp
 qgsunitselectionwidget.cpp
 )
@@ -326,6 +332,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsslider.h
   qgssublayersdialog.h
   qgsunitselectionwidget.h
+  qgsuserinputtoolbar.h
 
   raster/qgsrasterminmaxwidget.h
   raster/qgspalettedrendererwidget.h
@@ -377,6 +384,11 @@ SET(QGIS_GUI_MOC_HDRS
   attributetable/qgsgenericfeatureselectionmanager.h
   attributetable/qgsifeatureselectionmanager.h
   attributetable/qgsvectorlayerselectionmanager.h
+  
+  effects/qgseffectdrawmodecombobox.h
+  effects/qgspainteffectpropertieswidget.h  
+  effects/qgspainteffectwidget.h
+  effects/qgseffectstackpropertieswidget.h
 
   editorwidgets/core/qgseditorconfigwidget.h
   editorwidgets/core/qgseditorwidgetregistry.h
@@ -454,6 +466,7 @@ SET(QGIS_GUI_HDRS
   qgsrubberband.h
   qgssvgannotationitem.h
   qgstextannotationitem.h
+  qgsuserinputtoolbar.h
   qgsvectorlayertools.h
   qgsvertexmarker.h
 
@@ -515,11 +528,13 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets
   ${CMAKE_CURRENT_SOURCE_DIR}/editorwidgets/core
   ${CMAKE_CURRENT_SOURCE_DIR}/layertree
+  ${CMAKE_CURRENT_SOURCE_DIR}/effects  
   ../core
   ../core/composer
   ../core/layertree
   ../core/raster
   ../core/symbology-ng
+  ../core/effects
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QWT_INCLUDE_DIR}

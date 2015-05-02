@@ -87,13 +87,13 @@ class QgsComposerMap : QgsComposerItem
      */
     enum AtlasScalingMode
     {
-      Fixed,      /*< The current scale of the map is used for each feature of the atlas */
-      Predefined, /*< A scale is chosen from the predefined scales. The smallest scale from
+      Fixed,      /*!< The current scale of the map is used for each feature of the atlas */
+      Predefined, /*!< A scale is chosen from the predefined scales. The smallest scale from
                     the list of scales where the atlas feature is fully visible is chosen.
                     @see QgsAtlasComposition::setPredefinedScales.
                     @note This mode is only valid for polygon or line atlas coverage layers
                 */
-      Auto        /*< The extent is adjusted so that each feature is fully visible.
+      Auto        /*!< The extent is adjusted so that each feature is fully visible.
                     A margin is applied around the center @see setAtlasMargin
                     @note This mode is only valid for polygon or line atlas coverage layers*/
     };
@@ -757,9 +757,12 @@ class QgsComposerMap : QgsComposerItem
 
   public slots:
 
-    /**Called if map canvas has changed*/
+    /**Forces an update of the cached map image*/
     void updateCachedImage();
-    /**Call updateCachedImage if item is in render mode*/
+
+    /**Updates the cached map image if the map is set to Render mode
+     * @see updateCachedImage
+    */
     void renderModeUpdateCachedImage();
 
     /**Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle */
@@ -769,4 +772,13 @@ class QgsComposerMap : QgsComposerItem
     void overviewExtentChanged();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties );
+
+  protected slots:
+
+    /**Called when layers are added or removed from the layer registry. Updates the maps
+     * layer set and redraws the map if required.
+     * @note added in QGIS 2.9
+    */
+    void layersChanged();
+
 };

@@ -23,7 +23,6 @@
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayer.h>
-#include <qgsmaplayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsgeometry.h>
 #include <qgsvertexmarker.h>

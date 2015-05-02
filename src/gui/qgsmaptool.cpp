@@ -68,7 +68,7 @@ QgsRectangle QgsMapTool::toLayerCoordinates( QgsMapLayer* layer, const QgsRectan
 
 QPoint QgsMapTool::toCanvasCoordinates( const QgsPoint& point )
 {
-  double x = point.x(), y = point.y();
+  qreal x = point.x(), y = point.y();
   mCanvas->getCoordinateTransform()->transformInPlace( x, y );
   return QPoint( qRound( x ), qRound( y ) );
 }
@@ -105,7 +105,8 @@ void QgsMapTool::setAction( QAction* action )
   if ( mAction )
     disconnect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
   mAction = action;
-  connect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+  if ( mAction )
+    connect( mAction, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
 }
 
 void QgsMapTool::actionDestroyed()

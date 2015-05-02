@@ -15,13 +15,13 @@
 #ifndef QGSDATADEFINED_H
 #define QGSDATADEFINED_H
 
-#include "qgsfield.h"
-#include "qgsvectorlayer.h"
-
 #include <QStringList>
+#include <QDomElement>
+#include <QMap>
 
 class QgsExpression;
-
+class QgsVectorLayer;
+class QgsFields;
 
 /** \ingroup core
  * \class QgsDataDefined
@@ -45,14 +45,27 @@ class CORE_EXPORT QgsDataDefined
                     const QString& field = QString() );
 
     /**
-     * Construct a new data defined object, analyse the expression to determine
-     * if it's a simple field
-     *
+     * Construct a new data defined object, analysing the expression to determine
+     * if it's a simple field reference or an expression.
      * @param expression can be null
      */
     explicit QgsDataDefined( const QgsExpression * expression );
 
-    ~QgsDataDefined();
+    /**
+     * Construct a new data defined object, analysing the string to determine
+     * if it's a simple field reference or an expression
+     * @param string field reference or an expression, can be empty
+     * @note added in QGIS 2.9
+     */
+    explicit QgsDataDefined( const QString& string );
+
+    /**
+     * Copy constructor. Note that copies of data defined objects with expressions
+     * will not be prepared.
+     */
+    QgsDataDefined( const QgsDataDefined& other );
+
+    virtual ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
@@ -76,7 +89,22 @@ class CORE_EXPORT QgsDataDefined
     void setExpressionParams( QMap<QString, QVariant> params ) { mExpressionParams = params; }
     void insertExpressionParam( QString key, QVariant param );
 
+    /** Prepares the expression using a vector layer
+     * @param layer vector layer
+     * @returns true if expression was successfully prepared
+     */
     bool prepareExpression( QgsVectorLayer* layer );
+
+    /** Prepares the expression using a fields collection
+     * @param fields
+     * @returns true if expression was successfully prepared
+     * @note added in QGIS 2.9
+     */
+    bool prepareExpression( const QgsFields &fields );
+
+    /** Returns whether the data defined object's expression is prepared
+     * @returns true if expression is prepared
+     */
     bool expressionIsPrepared() const { return mExpressionPrepared; }
 
     QgsExpression* expression() { return mExpression; }
@@ -109,6 +137,11 @@ class CORE_EXPORT QgsDataDefined
     bool operator==( const QgsDataDefined &other ) const;
     bool operator!=( const QgsDataDefined &other ) const;
 
+    /** Assignment operator. Note that after assignment the data defined
+     * object's expression will not be prepared.
+     */
+    QgsDataDefined& operator=( QgsDataDefined const & rhs );
+
   private:
     QgsExpression* mExpression;
 
@@ -119,7 +152,8 @@ class CORE_EXPORT QgsDataDefined
 
     QMap<QString, QVariant> mExpressionParams;
     bool mExpressionPrepared;
-    QStringList mExprRefColmuns;
+    QStringList mExprRefColumns;
+
 };
 
 #endif // QGSDATADEFINED_H

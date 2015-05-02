@@ -22,15 +22,14 @@
 #include <QList>
 #include <QDomDocument>
 
-#include "qgsfield.h"
-#include "qgsdistancearea.h"
-
 class QgsFeature;
 class QgsGeometry;
 class QgsOgcUtils;
 class QgsVectorLayer;
 class QgsVectorDataProvider;
-
+class QgsField;
+class QgsFields;
+class QgsDistanceArea;
 class QDomElement;
 
 /**
@@ -155,6 +154,11 @@ class CORE_EXPORT QgsExpression
     //! Check whether a special column exists
     //! @note added in 2.2
     static bool hasSpecialColumn( const QString& name );
+
+    /** Checks whether an expression consists only of a single field reference
+     * @note added in 2.9
+     */
+    bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
 
     static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
 

@@ -243,6 +243,9 @@ class Eliminate(GeoAlgorithm):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 
+                        if iGeom == None:
+                            continue
+
                         if boundary:
                             selValue = iGeom.length()
                         else:

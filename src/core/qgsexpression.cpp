@@ -2235,8 +2235,8 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
     case boPlus:
       if ( vL.type() == QVariant::String && vR.type() == QVariant::String )
       {
-        QString sL = getStringValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
-        QString sR = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        QString sL = isNull( vL ) ? QString() : getStringValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        QString sR = isNull( vR ) ? QString() : getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
         return QVariant( sL + sR );
       }
       //intentional fall-through
@@ -2252,6 +2252,10 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
         // both are integers - let's use integer arithmetics
         int iL = getIntValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
         int iR = getIntValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+
+        if ( mOp == boMod && iR == 0 )
+          return QVariant();
+
         return QVariant( computeInt( iL, iR ) );
       }
       else if ( isDateTimeSafe( vL ) && isIntervalSafe( vR ) )
@@ -2270,7 +2274,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
         // general floating point arithmetic
         double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
         double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
-        if ( mOp == boDiv && fR == 0 )
+        if (( mOp == boDiv || mOp == boMod ) && fR == 0. )
           return QVariant(); // silently handle division by zero and return NULL
         return QVariant( computeDouble( fL, fR ) );
       }
@@ -2280,7 +2284,7 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, const Q
       //integer division
       double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
       double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
-      if ( fR == 0 )
+      if ( fR == 0. )
         return QVariant(); // silently handle division by zero and return NULL
       return QVariant( qFloor( fL / fR ) );
     }

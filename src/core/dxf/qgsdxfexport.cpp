@@ -431,10 +431,10 @@ void QgsDxfExport::writeGroup( QColor color, int exactMatchCode, int rgbCode, in
     minDist = dist;
   }
 
-  writeGroup( exactMatchCode, minDistAt );
-  if ( minDist == 0 && color.alpha() == 255 )
+  if ( minDist == 0 && color.alpha() == 255 && minDistAt != 7 )
   {
-    // exact full opaque match
+    // exact full opaque match, not black/white
+    writeGroup( exactMatchCode, minDistAt );
     return;
   }
 
@@ -480,10 +480,8 @@ int QgsDxfExport::writeToFile( QIODevice* d, QString encoding )
   }
 
   mTextStream.setDevice( d );
-  QgsDebugMsg( "encoding:" + encoding );
   mTextStream.setCodec( encoding.toLocal8Bit() );
 
-  QgsDebugMsg( "dxfEncoding:" + dxfEncoding( encoding ) );
   writeHeader( dxfEncoding( encoding ) );
   writeTables();
   writeBlocks();
@@ -504,7 +502,7 @@ void QgsDxfExport::writeHeader( QString codepage )
   writeGroup( 9, "$ACADVER" );
   writeGroup( 1, "AC1015" );
 
-  QgsRectangle ext = dxfExtent();
+  QgsRectangle ext( mExtent.isEmpty() ? dxfExtent() : mExtent );
   if ( !ext.isEmpty() )
   {
     // EXTMIN
@@ -664,8 +662,7 @@ void QgsDxfExport::writeTables()
   writeHandle();
   writeGroup( 100, "AcDbSymbolTable" );
 
-#if 0
-  QgsRectangle ext( dxfExtent() );
+  QgsRectangle ext( mExtent.isEmpty() ? dxfExtent() : mExtent );
 
   writeGroup( 0, "VPORT" );
   writeHandle();
@@ -673,37 +670,36 @@ void QgsDxfExport::writeTables()
   writeGroup( 100, "AcDbViewportTableRecord" );
   writeGroup( 2, "*ACTIVE" );
   writeGroup( 70, 0 );  // flags
-  writeGroup( 0, QgsPoint( ext.xMinimum(), ext.yMinimum() ) ); // lower-left corner
-  writeGroup( 1, QgsPoint( ext.xMaximum(), ext.yMaximum() ) ); // upper right corner
-  writeGroup( 2, ext.center() );                       // view center point
-  writeGroup( 3, QgsPoint( 0.0, 0.0 ) );               // snap base point
-  writeGroup( 4, QgsPoint( 0.5, 0.5 ) );               // snap spacing x/y
-  writeGroup( 5, QgsPoint( 0.5, 0.5 ) );               // grid spacing x/y
-  writeGroup( 6, QgsPoint( 0.0, 0.0 ), 1.0, false );   // view direction from target point
-  writeGroup( 7, QgsPoint( 0.0, 0.0 ), 0.0, false );   // view target point
-  writeGroup( 40, 10.0 );                          // ?
-  writeGroup( 42, 50.0 );                              // lens length
-  writeGroup( 43, 0.0 );                               // front clipping plan
-  writeGroup( 44, 0.0 );                               // back clipping plan
-  writeGroup( 50, 0.0 );                               // snap rotation angle
-  writeGroup( 51, 0.0 );                               // view twist angle
-  writeGroup( 71, 0 );                                 // view mode
-  writeGroup( 72, 1000 );                              // circle sides
-  writeGroup( 73, 1 );                                 // ?
-  writeGroup( 74, 3 );                                 // UCSICON setting
-  writeGroup( 75, 0 );                                 // ?
-  writeGroup( 76, 0 );                                 // ?
-  writeGroup( 77, 0 );                                 // ?
-  writeGroup( 78, 0 );                                 // ?
-  writeGroup( 281, 0 );                                // Render mode (2D)
-  writeGroup( 100, QgsPoint( 0.0, 0.0 ), 0.0, false ); // UCS origin
-  writeGroup( 101, QgsPoint( 1.0, 0.0 ), 0.0, false ); // UCS x axis
-  writeGroup( 102, QgsPoint( 0.0, 1.0 ), 0.0, false ); // UCS y axis
-  writeGroup( 79, 0 );                                 // Orthographic type of UCS (not orthographic)
-  writeGroup( 146, 0.0 );                              // elevation
-  writeGroup( 60, 3 );                                 // ?
-  writeGroup( 61, 5 );                                 // major grid line
-#endif
+  writeGroup( 0, QgsPoint( 0.0, 0.0 ), 0.0, true ); // lower left
+  writeGroup( 1, QgsPoint( 1.0, 1.0 ), 0.0, true ); // upper right
+  writeGroup( 2, QgsPoint( 0.0, 0.0 ), 0.0, true ); // view center point
+  writeGroup( 3, QgsPoint( 0.0, 0.0 ), 0.0, true ); // snap base point
+  writeGroup( 4, QgsPoint( 1.0, 1.0 ), 0.0, true ); // snap spacing
+  writeGroup( 5, QgsPoint( 1.0, 1.0 ), 0.0, true ); // grid spacing
+  writeGroup( 6, QgsPoint( 0.0, 0.0 ), 1.0 );       // view direction from target point
+  writeGroup( 7, ext.center(), 0.0, true );         // view target point
+  writeGroup( 40, ext.height() );                   // view height
+  writeGroup( 41, ext.width() / ext.height() );     // view aspect ratio
+  writeGroup( 42, 50.0 );                           // lens length
+  writeGroup( 43, 0.0 );                            // front clipping plane
+  writeGroup( 44, 0.0 );                            // back clipping plane
+  writeGroup( 50, 0.0 );                            // snap rotation
+  writeGroup( 51, 0.0 );                            // view twist angle
+  writeGroup( 71, 0 );                              // view mode (0 = deactivates)
+  writeGroup( 72, 100 );                            // circle zoom percent
+  writeGroup( 73, 1 );                              // fast zoom setting
+  writeGroup( 74, 1 );                              // UCSICON setting
+  writeGroup( 75, 0 );                              // snapping off
+  writeGroup( 76, 0 );                              // grid off
+  writeGroup( 77, 0 );                              // snap style
+  writeGroup( 78, 0 );                              // snap isopair
+  writeGroup( 281, 0 );                             // render mode (0 = 2D optimized)
+  writeGroup( 65, 1 );                              // value of UCSVP for this viewport
+  writeGroup( 100, QgsPoint( 0.0, 0.0 ) );          // UCS origin
+  writeGroup( 101, QgsPoint( 1.0, 0.0 ) );          // UCS x axis
+  writeGroup( 102, QgsPoint( 0.0, 1.0 ) );          // UCS y axis
+  writeGroup( 79, 0 );                              // Orthographic type of UCS (0 = UCS is not orthographic)
+  writeGroup( 146, 0.0 );                           // Elevation
 
   writeGroup( 70, 0 );
   writeGroup( 0, "ENDTAB" );
@@ -3367,21 +3363,20 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
 
 void QgsDxfExport::writePolygon( const QgsPolygon& polygon, const QString& layer, const QString& hatchPattern, QColor color )
 {
-  writeGroup( 0, "HATCH" );                     // Entity type
+  writeGroup( 0, "HATCH" );         // Entity type
   writeHandle();
   writeGroup( 330, mModelSpaceBR );
   writeGroup( 100, "AcDbEntity" );
+  writeGroup( 8, layer );           // Layer name
+  writeGroup( color );              // Color
   writeGroup( 100, "AcDbHatch" );
 
-  writeGroup( 8, layer );   // Layer name
-  writeGroup( 0, QgsPoint( 0, 0 ) );  // Elevation point (in OCS)
+  writeGroup( 0, QgsPoint( 0, 0 ) ); // Elevation point (in OCS)
   writeGroup( 200, QgsPoint( 0, 0 ), 1.0 );
 
   writeGroup( 2, hatchPattern );  // Hatch pattern name
   writeGroup( 70, hatchPattern == "SOLID" ); // Solid fill flag (solid fill = 1; pattern fill = 0)
   writeGroup( 71, 0 );    // Associativity flag (associative = 1; non-associative = 0)
-
-  writeGroup( color );           // Color (0 by block, 256 by layer)
 
   writeGroup( 91, polygon.size() );  // Number of boundary paths (loops)
   for ( int i = 0; i < polygon.size(); ++i )
@@ -3517,10 +3512,6 @@ void QgsDxfExport::writeMText( const QString& layer, const QString& text, const 
   writeGroup( color );
 
   writeGroup( 0, pt );
-
-  QgsDebugMsg( QString( "text:%1" ).arg( text ) );
-  QgsDebugMsg( QString( "canEncode:%1" ).arg( mTextStream.codec()->canEncode( text ) ? "yes" : "no" ) );
-  QgsDebugMsg( QString( "fromUnicode:%1" ).arg( mTextStream.codec()->fromUnicode( text ).constData() ) );
 
   QString t( text );
   while ( t.length() > 250 )
@@ -3694,7 +3685,7 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) // iterate over rings
       {
-        writePolyline( geom->asPolyline(), layer, lineStyleName, penColor, width, false );
+        writePolyline( *polyIt, layer, lineStyleName, penColor, width, false );
       }
 
       if ( offsetPolygon != geom )

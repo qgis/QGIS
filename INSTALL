@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Wednesday February 25, 2015
+Thursday March 19, 2015
 
 
-Last Updated: Wednesday February 25, 2015
-Last Change : Wednesday February 25, 2015
+Last Updated: Thursday March 19, 2015
+Last Change : Thursday March 19, 2015
 
 
   1. Introduction
@@ -108,7 +108,10 @@ Required build dependencies:
 
 Optional dependencies:
 
-- for GRASS plugin - GRASS >= 6.0.0 (libraries compiled with exceptions support on Linux 32bit)
+- for GRASS providers and plugin - GRASS >= 6.0.0. QGIS may be compiled with GRASS 6 or GRASS 7.
+      It can also be compiled with both GRASS versions in a single build but only if QGIS
+      is not installed with rpath. The desired GRASS version is choosen on runtime by setting
+      LD_LIBRARY_PATH or PATH.
 - for georeferencer - GSL >= 1.8
 - for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 - for gps plugin - gpsbabel
@@ -246,8 +249,9 @@ Now we create a build directory and run ccmake:
   ccmake ..
 
 When you run ccmake (note the .. is required!), a menu will appear where
-you can configure various aspects of the build. If you do not have root
-access or do not want to overwrite existing QGIS installs (by your
+you can configure various aspects of the build. If you want QGIS to have
+debugging capabilities then set CMAKE_BUILD_TYPE to Debug. If you do not have
+root access or do not want to overwrite existing QGIS installs (by your
 packagemanager for example), set the CMAKE_INSTALL_PREFIX to somewhere you
 have write access to (I usually use ${HOME}/apps). Now press
 'c' to configure, 'e' to dismiss any error messages that may appear.
@@ -268,7 +272,10 @@ After that you can try to run QGIS:
   $HOME/apps/bin/qgis
 
 If all has worked properly the QGIS application should start up and appear
-on your screen.
+on your screen.  If you get the error message "error while loading shared libraries",
+execute this command in your shell.
+
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:${HOME}/apps/lib/
 
 
   3.8. Building Debian packages

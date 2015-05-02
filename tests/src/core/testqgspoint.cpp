@@ -51,6 +51,8 @@ class TestQgsPoint: public QObject
     void sqrDist();
     void multiply();
     void onSegment();
+    void compare();
+
   private:
     QgsPoint mPoint1;
     QgsPoint mPoint2;
@@ -589,6 +591,17 @@ void TestQgsPoint::multiply()
 void TestQgsPoint::onSegment()
 {
 
+}
+
+void TestQgsPoint::compare()
+{
+  QgsPoint point1( 5.000000000001, 9.0 );
+  QgsPoint point2( 5.0, 8.999999999999999 );
+  QVERIFY( point1.compare( point2, 0.00000001 ) );
+  QgsPoint point3( 5.0, 6.0 );
+  QVERIFY( !( point3.compare( point1 ) ) );
+  QgsPoint point4( 10 / 3.0, 12 / 7.0 );
+  QVERIFY( point4.compare( QgsPoint( 10 / 3.0, 12 / 7.0 ) ) );
 }
 
 QTEST_MAIN( TestQgsPoint )

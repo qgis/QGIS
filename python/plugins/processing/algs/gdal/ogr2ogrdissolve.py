@@ -78,7 +78,7 @@ class Ogr2OgrDissolve(OgrAlgorithm):
             self.tr('Additional creation options (see ogr2ogr manual)'),
             '', optional=True))
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Output layer')))
+        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Dissolved')))
 
     def processAlgorithm(self, progress):
         inLayer = self.getParameterValue(self.INPUT_LAYER)

@@ -50,7 +50,7 @@ class gdal2xyz(GdalAlgorithm):
         self.addParameter(ParameterNumber(self.BAND,
             self.tr('Band number'), 1, 9999, 1))
 
-        self.addOutput(OutputTable(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputTable(self.OUTPUT, self.tr('xyz')))
 
     def processAlgorithm(self, progress):
         arguments = []

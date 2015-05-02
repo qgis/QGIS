@@ -122,7 +122,6 @@ class QgsEditorWidgetFactory
      */
     virtual QVariant createCache( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config );
 
-  private:
     /**
      * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
      *
@@ -134,6 +133,7 @@ class QgsEditorWidgetFactory
      */
     virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
 
+  private:
     /**
      * This method allows disabling this editor widget type for a certain field.
      * By default, it returns true for all fields.

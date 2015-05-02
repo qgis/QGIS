@@ -66,8 +66,8 @@ class OgrAlgorithm(GdalAlgorithm):
                     if not ok:
                         break
 
-                    dsUri.setUsername( user )
-                    dsUri.setPassword( passwd )
+                    dsUri.setUsername(user)
+                    dsUri.setPassword(passwd)
 
             if not conn:
                 raise RuntimeError('Could not connect to PostgreSQL database - check connection info')
@@ -76,6 +76,35 @@ class OgrAlgorithm(GdalAlgorithm):
                 QgsCredentials.instance().put(conninfo, user, passwd)
 
             ogrstr = "PG:%s" % dsUri.connectionInfo()
+        elif provider == "oracle":
+            # OCI:user/password@host:port/service:table
+            dsUri = QgsDataSourceURI(layer.dataProvider().dataSourceUri())
+            ogrstr = "OCI:"
+            if dsUri.username() != "":
+                ogrstr += dsUri.username()
+                if dsUri.password() != "":
+                    ogr += "/" + dsUri.password()
+                delim = "@"
+
+            if dsUri.host() != "":
+                ogrstr += delim + dsUri.host()
+                delim = ""
+                if dsUri.port() != "" and dsUri.port() != 1521:
+                    ogrstr += ":%d" % dsUri.port()
+                ogrstr += "/"
+                if dsUri.database() != "":
+                    ogrstr += dsUri.database()
+            elif dsUri.database() != "":
+                ogrstr += delim + dsUri.database()
+
+            if ogrstr == "OCI:":
+                raise RuntimeError('Invalid oracle data source - check connection info')
+
+            ogrstr += ":"
+            if dsUri.schema() != "":
+                ogrstr += dsUri.schema() + "."
+
+            ogrstr += dsUri.table()
         else:
             ogrstr = unicode(layer.source()).split("|")[0]
 

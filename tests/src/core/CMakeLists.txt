@@ -76,12 +76,15 @@ ENDMACRO (ADD_QGIS_TEST)
 #############################################################
 # Tests:
 
+ADD_QGIS_TEST(qgistest testqgis.cpp)
 ADD_QGIS_TEST(clippertest testqgsclipper.cpp)
 ADD_QGIS_TEST(distanceareatest testqgsdistancearea.cpp)
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
 ADD_QGIS_TEST(diagramtest testqgsdiagram.cpp)
 ADD_QGIS_TEST(diagramexpressiontest testqgsdiagramexpression.cpp)
 ADD_QGIS_TEST(expressiontest testqgsexpression.cpp)
+ADD_QGIS_TEST(fieldtest testqgsfield.cpp)
+ADD_QGIS_TEST(scaleexpressiontest testqgsscaleexpression.cpp)
 ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
 ADD_QGIS_TEST(projecttest testqgsproject.cpp)
 ADD_QGIS_TEST(regression992 regression992.cpp)
@@ -149,3 +152,7 @@ ADD_QGIS_TEST(maplayerstylemanager testqgsmaplayerstylemanager.cpp )
 ADD_QGIS_TEST(pointlocatortest testqgspointlocator.cpp )
 ADD_QGIS_TEST(snappingutilstest testqgssnappingutils.cpp )
 ADD_QGIS_TEST(imageoperationtest testqgsimageoperation.cpp)
+ADD_QGIS_TEST(painteffecttest testqgspainteffect.cpp)
+ADD_QGIS_TEST(painteffectregistrytest testqgspainteffectregistry.cpp)
+ADD_QGIS_TEST(statisticalsummarytest testqgsstatisticalsummary.cpp)
+

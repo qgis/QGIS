@@ -73,7 +73,7 @@ class gdaladdo(GdalAlgorithm):
             self.tr('Resampling method'), self.METHODS, 0))
         self.addParameter(ParameterSelection(self.FORMAT,
             self.tr('Overview format'), self.FORMATS, 0))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer'), True))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Pyramidized'), True))
 
     def processAlgorithm(self, progress):
         inFile = self.getParameterValue(self.INPUT)

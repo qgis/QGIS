@@ -31,6 +31,18 @@ class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
     virtual void canvasPressEvent( QMouseEvent * e ) override;
     virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
+  protected:
+
+    /** Applies the label property changes
+     * @param changes attribute map of changes
+     * @note added in QGIS 2.9
+     */
+    void applyChanges( const QgsAttributeMap& changes );
+
+  private slots:
+
+    void dialogPropertiesApplied();
+
 };
 
 #endif // QGSMAPTOOLCHANGELABEL_H

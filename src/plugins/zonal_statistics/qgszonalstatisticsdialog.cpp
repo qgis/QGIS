@@ -23,11 +23,67 @@
 #include "qgisinterface.h"
 
 #include <QSettings>
+#include <QListWidgetItem>
 
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog( iface->mainWindow() ), mIface( iface )
 {
   setupUi( this );
 
+  QListWidgetItem* countItem = new QListWidgetItem( tr( "Count" ), mStatsListWidget );
+  countItem->setFlags( countItem->flags() | Qt::ItemIsUserCheckable );
+  countItem->setCheckState( Qt::Checked );
+  countItem->setData( Qt::UserRole, QgsZonalStatistics::Count );
+  mStatsListWidget->addItem( countItem );
+  QListWidgetItem* sumItem = new QListWidgetItem( tr( "Sum" ), mStatsListWidget );
+  sumItem->setFlags( sumItem->flags() | Qt::ItemIsUserCheckable );
+  sumItem->setCheckState( Qt::Checked );
+  sumItem->setData( Qt::UserRole, QgsZonalStatistics::Sum );
+  mStatsListWidget->addItem( sumItem );
+  QListWidgetItem* meanItem = new QListWidgetItem( tr( "Mean" ), mStatsListWidget );
+  meanItem->setFlags( meanItem->flags() | Qt::ItemIsUserCheckable );
+  meanItem->setCheckState( Qt::Checked );
+  meanItem->setData( Qt::UserRole, QgsZonalStatistics::Mean );
+  mStatsListWidget->addItem( meanItem );
+  QListWidgetItem* medianItem = new QListWidgetItem( tr( "Median" ), mStatsListWidget );
+  medianItem->setFlags( medianItem->flags() | Qt::ItemIsUserCheckable );
+  medianItem->setCheckState( Qt::Unchecked );
+  medianItem->setData( Qt::UserRole, QgsZonalStatistics::Median );
+  mStatsListWidget->addItem( medianItem );
+  QListWidgetItem* stdevItem = new QListWidgetItem( tr( "Standard deviation" ), mStatsListWidget );
+  stdevItem->setFlags( stdevItem->flags() | Qt::ItemIsUserCheckable );
+  stdevItem->setCheckState( Qt::Unchecked );
+  stdevItem->setData( Qt::UserRole, QgsZonalStatistics::StDev );
+  mStatsListWidget->addItem( stdevItem );
+  QListWidgetItem* minItem = new QListWidgetItem( tr( "Minimum" ), mStatsListWidget );
+  minItem->setFlags( minItem->flags() | Qt::ItemIsUserCheckable );
+  minItem->setCheckState( Qt::Checked );
+  minItem->setData( Qt::UserRole, QgsZonalStatistics::Min );
+  mStatsListWidget->addItem( minItem );
+  QListWidgetItem* maxItem = new QListWidgetItem( tr( "Maximum" ), mStatsListWidget );
+  maxItem->setFlags( maxItem->flags() | Qt::ItemIsUserCheckable );
+  maxItem->setCheckState( Qt::Checked );
+  maxItem->setData( Qt::UserRole, QgsZonalStatistics::Max );
+  mStatsListWidget->addItem( maxItem );
+  QListWidgetItem* rangeItem = new QListWidgetItem( tr( "Range" ), mStatsListWidget );
+  rangeItem->setFlags( rangeItem->flags() | Qt::ItemIsUserCheckable );
+  rangeItem->setCheckState( Qt::Unchecked );
+  rangeItem->setData( Qt::UserRole, QgsZonalStatistics::Range );
+  mStatsListWidget->addItem( rangeItem );
+  QListWidgetItem* minorityItem = new QListWidgetItem( tr( "Minority" ), mStatsListWidget );
+  minorityItem->setFlags( minorityItem->flags() | Qt::ItemIsUserCheckable );
+  minorityItem->setCheckState( Qt::Unchecked );
+  minorityItem->setData( Qt::UserRole, QgsZonalStatistics::Minority );
+  mStatsListWidget->addItem( minorityItem );
+  QListWidgetItem* majorityItem = new QListWidgetItem( tr( "Majority" ), mStatsListWidget );
+  majorityItem->setFlags( majorityItem->flags() | Qt::ItemIsUserCheckable );
+  majorityItem->setCheckState( Qt::Unchecked );
+  majorityItem->setData( Qt::UserRole, QgsZonalStatistics::Majority );
+  mStatsListWidget->addItem( majorityItem );
+  QListWidgetItem* varietyItem = new QListWidgetItem( tr( "Variety" ), mStatsListWidget );
+  varietyItem->setFlags( varietyItem->flags() | Qt::ItemIsUserCheckable );
+  varietyItem->setCheckState( Qt::Unchecked );
+  varietyItem->setData( Qt::UserRole, QgsZonalStatistics::Variety );
+  mStatsListWidget->addItem( varietyItem );
   QSettings settings;
   restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
 
@@ -64,7 +120,7 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
       QgsRasterDataProvider* rp = rl->dataProvider();
       if ( rp && rp->name() == "gdal" )
       {
-        mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->source() ) );
+        mRasterLayerComboBox->addItem( rl->name(), QVariant( rl->id() ) );
       }
     }
     else
@@ -82,14 +138,27 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
   }
 }
 
-QString QgsZonalStatisticsDialog::rasterFilePath() const
+QgsRasterLayer* QgsZonalStatisticsDialog::rasterLayer() const
 {
   int index = mRasterLayerComboBox->currentIndex();
   if ( index == -1 )
   {
-    return "";
+    return 0;
   }
-  return mRasterLayerComboBox->itemData( index ).toString();
+  QString id = mRasterLayerComboBox->itemData( index ).toString();
+  QgsRasterLayer* layer = dynamic_cast<QgsRasterLayer*>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+  return layer;
+}
+
+QString QgsZonalStatisticsDialog::rasterFilePath() const
+{
+  QgsRasterLayer* layer = rasterLayer();
+  return layer ? layer->source() : QString();
+}
+
+int QgsZonalStatisticsDialog::rasterBand() const
+{
+  return mBandComboBox->currentIndex() + 1;
 }
 
 QgsVectorLayer* QgsZonalStatisticsDialog::polygonLayer() const
@@ -105,6 +174,20 @@ QgsVectorLayer* QgsZonalStatisticsDialog::polygonLayer() const
 QString QgsZonalStatisticsDialog::attributePrefix() const
 {
   return mColumnPrefixLineEdit->text();
+}
+
+QgsZonalStatistics::Statistics QgsZonalStatisticsDialog::selectedStats() const
+{
+  QgsZonalStatistics::Statistics stats = 0;
+  for ( int i = 0; i < mStatsListWidget->count(); ++i )
+  {
+    QListWidgetItem* item = mStatsListWidget->item( i );
+    if ( item->checkState() == Qt::Checked )
+    {
+      stats |= ( QgsZonalStatistics::Statistic )item->data( Qt::UserRole ).toInt();
+    }
+  }
+  return stats;
 }
 
 QString QgsZonalStatisticsDialog::proposeAttributePrefix() const
@@ -147,4 +230,25 @@ bool QgsZonalStatisticsDialog::prefixIsValid( const QString& prefix ) const
     }
   }
   return true;
+}
+
+void QgsZonalStatisticsDialog::on_mRasterLayerComboBox_currentIndexChanged( int index )
+{
+  Q_UNUSED( index );
+
+  QgsRasterLayer* layer = rasterLayer();
+  if ( !layer )
+  {
+    mBandComboBox->setEnabled( false );
+    return;
+  }
+
+  mBandComboBox->setEnabled( true );
+  mBandComboBox->clear();
+
+  int bandCountInt = layer->bandCount();
+  for ( int i = 1; i <= bandCountInt; ++i )
+  {
+    mBandComboBox->addItem( layer->bandName( i ) );
+  }
 }

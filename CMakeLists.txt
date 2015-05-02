@@ -35,11 +35,24 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 #SET (CMAKE_USE_RELATIVE_PATHS ON)
 
 # try to configure and build GRASS plugin by default
-SET (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS plugin should be built")
-IF (WITH_GRASS)
-  FIND_PACKAGE(GRASS)
-  SET (GRASS_PREFIX ${GRASS_PREFIX} CACHE PATH "Path to GRASS base directory")
-ENDIF (WITH_GRASS)
+FOREACH (GRASS_SEARCH_VERSION 6 7)
+  # For GRASS 6 are used cached variables without version suffix so that existing caches don't have to be reconfigured.
+  # Cached variables: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
+  # Everywhere else each variable has version major appended.
+  # Normal variables: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
+  # In addition there is also GRASS_FOUND, which is TRUE if at least one version of GRASS was found
+  IF (GRASS_SEARCH_VERSION EQUAL 6)
+    SET (GRASS_CACHE_VERSION "")
+  ELSE (GRASS_SEARCH_VERSION EQUAL 6)
+    SET (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
+  ENDIF (GRASS_SEARCH_VERSION EQUAL 6)
+
+  SET (WITH_GRASS${GRASS_CACHE_VERSION} TRUE CACHE BOOL "Determines whether GRASS ${GRASS_SEARCH_VERSION} plugin should be built")
+  IF (WITH_GRASS${GRASS_CACHE_VERSION})
+    FIND_PACKAGE(GRASS ${GRASS_SEARCH_VERSION})
+    SET (GRASS_PREFIX${GRASS_CACHE_VERSION} ${GRASS_PREFIX${GRASS_SEARCH_VERSION}} CACHE PATH "Path to GRASS ${GRASS_SEARCH_VERSION} base directory")
+  ENDIF (WITH_GRASS${GRASS_CACHE_VERSION})
+ENDFOREACH (GRASS_SEARCH_VERSION)
 
 SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
@@ -73,6 +86,8 @@ SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql drive
 SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 IF(WITH_ORACLE)
   SET(HAVE_ORACLE TRUE)
+  SET(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
+  SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
 ENDIF(WITH_ORACLE)
 
 
@@ -293,7 +308,7 @@ IF (ENABLE_TESTS)
     IMMEDIATE @ONLY)
   # For server side testing we have no X, we can use xfvb as a fake x
   # sudo apt-get install xfvb
-  add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10 1024x768x24" ctest --output-on-failure)
+  add_custom_target(check-no-x COMMAND xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
 IF (SUPPRESS_QT_WARNINGS)

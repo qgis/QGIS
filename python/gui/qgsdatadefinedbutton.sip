@@ -1,4 +1,24 @@
-class QgsDataDefinedButton :  QToolButton
+/** \ingroup gui
+ * \class QgsDataDefinedAssistant
+ * An assistant (wizard) dialog, accessible from a QgsDataDefinedButton.
+ * Can be used to guide users through creation of an expression for the
+ * data defined button.
+ * @note added in 2.10
+ */
+class QgsDataDefinedAssistant: QDialog
+{
+%TypeHeaderCode
+#include <qgsdatadefinedbutton.h>
+%End
+  public:
+    virtual QgsDataDefined* dataDefined() const = 0 /Factory/;
+};
+
+/** \ingroup gui
+ * \class QgsDataDefinedButton
+ * A button for defining data source field mappings or expressions.
+ */
+class QgsDataDefinedButton : QToolButton
 {
 %TypeHeaderCode
 #include <qgsdatadefinedbutton.h>
@@ -134,6 +154,15 @@ class QgsDataDefinedButton :  QToolButton
      * Clears list of checkable sibling widgets
      */
     void clearCheckedWidgets();
+
+    /**
+     * Sets an assistant used to define the data defined object properties.
+     * Ownership of the assistant is transferred to the widget.
+     * @param assistant data defined assistant. Set to null to remove the assistant
+     * option from the button.
+     * @note added in 2.10
+     */
+    void setAssistant( QgsDataDefinedAssistant * assistant /Transfer/ );
 
     /**
      * Common descriptions for expected input values

@@ -24,6 +24,7 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsdistancearea.h"
 
 #include <QCoreApplication>
 #include <QPainter>

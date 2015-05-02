@@ -42,7 +42,7 @@
 #define ERROR(message) QgsError(message,"GRASS provider")
 
 static QString PROVIDER_KEY = "grassraster";
-static QString PROVIDER_DESCRIPTION = "GRASS raster provider";
+static QString PROVIDER_DESCRIPTION = QString( "GRASS %1 raster provider" ).arg( GRASS_VERSION_MAJOR );
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
     : QgsRasterDataProvider( uri )

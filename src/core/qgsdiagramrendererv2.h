@@ -64,7 +64,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     //pal placement properties
     Placement placement;
-    LinePlacementFlags placementFlags;
+    unsigned int  placementFlags;
     int priority; // 0 = low, 10 = high
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
@@ -79,6 +79,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
 
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
     int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
+    bool showAll;
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
@@ -110,7 +111,8 @@ class CORE_EXPORT QgsDiagramSettings
     };
 
     QgsDiagramSettings()
-        : sizeType( MM )
+        : enabled( true )
+        , sizeType( MM )
         , penWidth( 0.0 )
         , labelPlacementMethod( QgsDiagramSettings::Height )
         , diagramOrientation( QgsDiagramSettings::Up )
@@ -118,10 +120,12 @@ class CORE_EXPORT QgsDiagramSettings
         , transparency( 0 )
         , scaleByArea( true )
         , angleOffset( 90 * 16 ) //top
+        , scaleBasedVisibility( false )
         , minScaleDenominator( -1 )
         , maxScaleDenominator( -1 )
         , minimumSize( 0.0 )
     {}
+    bool enabled;
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
@@ -137,6 +141,7 @@ class CORE_EXPORT QgsDiagramSettings
     bool scaleByArea;
     int angleOffset;
 
+    bool scaleBasedVisibility;
     //scale range (-1 if no lower / upper bound )
     double minScaleDenominator;
     double maxScaleDenominator;

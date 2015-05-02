@@ -28,7 +28,6 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
-#include "qgscomposerlabel.h"
 #include "qgscomposermodel.h"
 #include "qgscomposerattributetable.h"
 #include "qgscomposerattributetablev2.h"

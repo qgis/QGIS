@@ -24,7 +24,6 @@
 #include <QMenu>
 #include <QFile>
 #include <QTextStream>
-#include <QSettings>
 #include <QDir>
 #include <QComboBox>
 
@@ -149,7 +148,7 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
 
   fileName = mFunctionsPath + QDir::separator() + fileName;
   QFile myFile( fileName );
-  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  if ( myFile.open( QIODevice::WriteOnly ) )
   {
     QTextStream myFileStream( &myFile );
     myFileStream << txtPython->text() << endl;

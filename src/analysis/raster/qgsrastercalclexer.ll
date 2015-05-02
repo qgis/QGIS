@@ -59,6 +59,8 @@ raster_band_ref_quoted  \"(\\.|[^"])*\"
 "asin" { rasterlval.op = QgsRasterCalcNode::opASIN; return FUNCTION;}
 "acos" { rasterlval.op = QgsRasterCalcNode::opACOS; return FUNCTION;}
 "atan" { rasterlval.op = QgsRasterCalcNode::opATAN; return FUNCTION;}
+"ln" { rasterlval.op = QgsRasterCalcNode::opLOG; return FUNCTION;}
+"log10" { rasterlval.op = QgsRasterCalcNode::opLOG10; return FUNCTION;}
 
 "AND" { return AND; }
 "OR" { return OR; }

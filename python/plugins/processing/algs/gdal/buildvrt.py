@@ -57,7 +57,7 @@ class buildvrt(GdalAlgorithm):
             self.tr('Layer stack'), True))
         self.addParameter(ParameterBoolean(self.PROJ_DIFFERENCE,
             self.tr('Allow projection difference'), False))
-        self.addOutput(OutputRaster(buildvrt.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(buildvrt.OUTPUT, self.tr('Virtual')))
 
     def processAlgorithm(self, progress):
         arguments = []

@@ -1025,7 +1025,7 @@ void QgsRasterHistogramWidget::on_btnHistoMin_toggled()
       QApplication::setOverrideCursor( Qt::PointingHandCursor );
     }
     if ( mHistoZoomer != NULL )
-      mHistoZoomer->setEnabled( ! btnHistoMax->isChecked() );
+      mHistoZoomer->setEnabled( ! btnHistoMin->isChecked() );
     mHistoPicker->setEnabled( btnHistoMin->isChecked() );
   }
   updateHistoMarkers();

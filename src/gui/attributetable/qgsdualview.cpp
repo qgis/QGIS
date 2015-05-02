@@ -25,7 +25,6 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsmessagelog.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectordataprovider.h"
 #include "qgsvectorlayercache.h"
 
 #include <QDialog>

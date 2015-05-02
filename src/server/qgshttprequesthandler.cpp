@@ -505,7 +505,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
   parameters.clear();
 
 
-  //insert key and value into the map (parameters are separated by &
+  //insert key and value into the map (parameters are separated by &)
   foreach ( QString element, request.split( "&" ) )
   {
     int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
@@ -515,10 +515,11 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
     }
 
     QString key = element.left( sepidx );
+    key = QUrl::fromPercentEncoding( key.toLocal8Bit() ); //replace encoded special characters and utf-8 encodings
+
     QString value = element.mid( sepidx + 1 );
     value.replace( "+", " " );
-    value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
-    key = QUrl::fromPercentEncoding( key.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
+    value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special characters and utf-8 encodings
 
     if ( key.compare( "SLD_BODY", Qt::CaseInsensitive ) == 0 )
     {

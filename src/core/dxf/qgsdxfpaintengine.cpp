@@ -84,12 +84,19 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
     polyline[i] = toDxfCoordinates( points[i] );
   }
 
-  mDxf->writePolygon( polygon, mLayer, "SOLID", currentColor() );
+  if ( mode == QPaintEngine::PolylineMode )
+  {
+    mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", mPen.color(), currentWidth(), true );
+  }
+  else
+  {
+    mDxf->writePolygon( polygon, mLayer, "SOLID", mBrush.color() );
+  }
 }
 
 void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
 {
-  if ( !mDxf || !mPaintDevice || !rects )
+  if ( !mDxf || !mPaintDevice || !rects || mBrush.style() == Qt::NoBrush )
   {
     return;
   }
@@ -104,7 +111,7 @@ void QgsDxfPaintEngine::drawRects( const QRectF* rects, int rectCount )
     QgsPoint pt2 = toDxfCoordinates( QPointF( right, bottom ) );
     QgsPoint pt3 = toDxfCoordinates( QPointF( left, top ) );
     QgsPoint pt4 = toDxfCoordinates( QPointF( right, top ) );
-    mDxf->writeSolid( mLayer, currentColor(), pt1, pt2, pt3, pt4 );
+    mDxf->writeSolid( mLayer, mBrush.color(), pt1, pt2, pt3, pt4 );
   }
 }
 
@@ -162,7 +169,10 @@ void QgsDxfPaintEngine::endPolygon()
 {
   if ( mCurrentPolygon.size() > 1 )
   {
-    drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::OddEvenMode );
+    if ( mPen.style() != Qt::NoPen )
+      drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::PolylineMode );
+    if ( mBrush.style() != Qt::NoBrush )
+      drawPolygon( mCurrentPolygon.constData(), mCurrentPolygon.size(), QPaintEngine::OddEvenMode );
   }
   mCurrentPolygon.clear();
 }
@@ -198,7 +208,7 @@ void QgsDxfPaintEngine::endCurve()
 
 void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
 {
-  if ( !mDxf || !mPaintDevice || !lines )
+  if ( !mDxf || !mPaintDevice || !lines || mPen.style() == Qt::NoPen )
   {
     return;
   }
@@ -207,7 +217,7 @@ void QgsDxfPaintEngine::drawLines( const QLineF* lines, int lineCount )
   {
     QgsPoint pt1 = toDxfCoordinates( lines[i].p1() );
     QgsPoint pt2 = toDxfCoordinates( lines[i].p2() );
-    mDxf->writeLine( pt1, pt2, mLayer, "CONTINUOUS", currentColor(), currentWidth() );
+    mDxf->writeLine( pt1, pt2, mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
   }
 }
 
@@ -222,20 +232,6 @@ QgsPoint QgsDxfPaintEngine::toDxfCoordinates( const QPointF& pt ) const
   return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
-QColor QgsDxfPaintEngine::currentColor() const
-{
-  if ( !mDxf )
-  {
-    return QColor();
-  }
-
-  QColor c = mPen.color();
-  if ( mPen.style() == Qt::NoPen )
-  {
-    c = mBrush.color();
-  }
-  return c;
-}
 
 double QgsDxfPaintEngine::currentWidth() const
 {

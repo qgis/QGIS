@@ -88,6 +88,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   // Add supported types to enable creating expression fields in field calculator
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 0, 10 )
+  << QgsVectorDataProvider::NativeType( tr( "Whole number (integer - 64 bit)" ), "int8", QVariant::LongLong )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "double precision", QVariant::Double, -1, -1, -1, -1 )
   << QgsVectorDataProvider::NativeType( tr( "Text, unlimited length (text)" ), "text", QVariant::String, -1, -1, -1, -1 )
   ;
@@ -245,7 +246,7 @@ QStringList QgsDelimitedTextProvider::readCsvtFieldTypes( QString filename, QStr
   // not allowed in OGR CSVT files.  Also doesn't care if int and string fields have
 
   strTypeList = strTypeList.toLower();
-  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
+  QRegExp reTypeList( "^(?:\\s*(\\\"?)(?:integer|real|double|long|longlong|int8|string|date|datetime|time)(?:\\(\\d+(?:\\.\\d+)?\\))?\\1\\s*(?:,|$))+" );
   if ( ! reTypeList.exactMatch( strTypeList ) )
   {
     // Looks like this was supposed to be a CSVT file, so report bad formatted string
@@ -407,6 +408,7 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
 
   QList<bool> isEmpty;
   QList<bool> couldBeInt;
+  QList<bool> couldBeLongLong;
   QList<bool> couldBeDouble;
 
   while ( true )
@@ -561,28 +563,46 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
     {
 
       QString &value = parts[i];
+      // Ignore empty fields - spreadsheet generated CSV files often
+      // have random empty fields at the end of a row
       if ( value.isEmpty() )
         continue;
 
-      // try to convert attribute values to integer and double
+      // Expand the columns to include this non empty field if necessary
 
       while ( couldBeInt.size() <= i )
       {
         isEmpty.append( true );
         couldBeInt.append( false );
+        couldBeLongLong.append( false );
         couldBeDouble.append( false );
       }
+
+      // If this column has been empty so far then initiallize it
+      // for possible types
+
       if ( isEmpty[i] )
       {
         isEmpty[i] = false;
         couldBeInt[i] = true;
+        couldBeLongLong[i] = true;
         couldBeDouble[i] = true;
       }
+
+      // Now test for still valid possible types for the field
+      // Types are possible until first record which cannot be parsed
+
       if ( couldBeInt[i] )
       {
         value.toInt( &couldBeInt[i] );
       }
-      if ( couldBeDouble[i] )
+
+      if ( couldBeLongLong[i] && ! couldBeInt[i] )
+      {
+        value.toLongLong( &couldBeLongLong[i] );
+      }
+
+      if ( couldBeDouble[i] && ! couldBeLongLong[i] )
       {
         if ( ! mDecimalPoint.isEmpty() )
         {
@@ -620,7 +640,12 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
         fieldType = QVariant::Int;
         typeName = "integer";
       }
-      else if ( csvtTypes[i] == "real" )
+      else if ( csvtTypes[i] == "long" || csvtTypes[i] == "longlong" || csvtTypes[i] == "int8" )
+      {
+        fieldType = QVariant::LongLong; //QVariant doesn't support long
+        typeName = "longlong";
+      }
+      else if ( csvtTypes[i] == "real" || csvtTypes[i] == "double" )
       {
         fieldType = QVariant::Double;
         typeName = "double";
@@ -632,6 +657,11 @@ void QgsDelimitedTextProvider::scanFile( bool buildIndexes )
       {
         fieldType = QVariant::Int;
         typeName = "integer";
+      }
+      else if ( couldBeLongLong[i] )
+      {
+        fieldType = QVariant::LongLong;
+        typeName = "longlong";
       }
       else if ( couldBeDouble[i] )
       {
@@ -997,12 +1027,14 @@ bool QgsDelimitedTextProvider::setSubsetString( QString subset, bool updateFeatu
 
   if ( valid )
   {
-
-    if ( mSubsetExpression ) delete mSubsetExpression;
+    QgsExpression * tmpSubsetExpression = mSubsetExpression;
+    // using a tmp pointer to avoid the pointer being dereferenced by
+    // a friend class after it has been freed but before it has been
+    // reassigned
     QString previousSubset = mSubsetString;
     mSubsetString = subset;
     mSubsetExpression = expression;
-
+    if ( tmpSubsetExpression ) delete tmpSubsetExpression;
     // Update the feature count and extents if requested
 
     // Usage of updateFeatureCount is a bit painful, basically expect that it

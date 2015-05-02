@@ -1838,7 +1838,7 @@ bool QgsComposerMapGrid::shouldShowDivisionForDisplayMode( const QgsComposerMapG
          || ( mode == QgsComposerMapGrid::LongitudeOnly && coordinate == QgsComposerMapGrid::Longitude );
 }
 
-bool sortByDistance( const QPair<double, QgsComposerMapGrid::BorderSide>& a, const QPair<double, QgsComposerMapGrid::BorderSide>& b )
+bool sortByDistance( const QPair<qreal , QgsComposerMapGrid::BorderSide>& a, const QPair<qreal , QgsComposerMapGrid::BorderSide>& b )
 {
   return a.first < b.first;
 }
@@ -1885,7 +1885,7 @@ QgsComposerMapGrid::BorderSide QgsComposerMapGrid::borderForLineCoord( const QPo
   }
 
   //otherwise, guess side based on closest map side to point
-  QList< QPair<double, QgsComposerMapGrid::BorderSide > > distanceToSide;
+  QList< QPair<qreal, QgsComposerMapGrid::BorderSide > > distanceToSide;
   distanceToSide << qMakePair( p.x(), QgsComposerMapGrid::Left );
   distanceToSide << qMakePair( mComposerMap->rect().width() - p.x(), QgsComposerMapGrid::Right );
   distanceToSide << qMakePair( p.y(), QgsComposerMapGrid::Top );

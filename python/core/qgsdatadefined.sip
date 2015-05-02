@@ -23,14 +23,27 @@ class QgsDataDefined
                     const QString& field = QString() );
 
     /**
-     * Construct a new data defined object, analyse the expression to determine
-     * if it's a simple field
-     *
+     * Construct a new data defined object, analysing the expression to determine
+     * if it's a simple field reference or an expression.
      * @param expression can be null
      */
-    QgsDataDefined( const QgsExpression * expression );
+    explicit QgsDataDefined( const QgsExpression * expression );
 
-    ~QgsDataDefined();
+    /**
+     * Construct a new data defined object, analysing the string to determine
+     * if it's a simple field reference or an expression
+     * @param string field reference or an expression, can be empty
+     * @note added in QGIS 2.9
+     */
+    explicit QgsDataDefined( const QString& string );
+
+    /**
+     * Copy constructor. Note that copies of data defined objects with expressions
+     * will not be prepared.
+     */
+    QgsDataDefined( const QgsDataDefined& other );
+
+    virtual ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
      * values, ie, disabled, with empty expression and no assigned field
@@ -54,7 +67,22 @@ class QgsDataDefined
     //void setExpressionParams( QMap<QString, QVariant> params );
     void insertExpressionParam( QString key, QVariant param );
 
+    /** Prepares the expression using a vector layer
+     * @param layer vector layer
+     * @returns true if expression was successfully prepared
+     */
     bool prepareExpression( QgsVectorLayer* layer );
+
+    /** Prepares the expression using a fields collection
+     * @param fields
+     * @returns true if expression was successfully prepared
+     * @note added in QGIS 2.9
+     */
+    bool prepareExpression( const QgsFields &fields );
+
+    /** Returns whether the data defined object's expression is prepared
+     * @returns true if expression is prepared
+     */
     bool expressionIsPrepared() const;
 
     QgsExpression* expression();

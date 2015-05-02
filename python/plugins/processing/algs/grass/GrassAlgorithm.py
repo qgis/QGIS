@@ -190,7 +190,7 @@ class GrassAlgorithm(GeoAlgorithm):
                                 / layer.width())
 
         if cellsize == 0:
-            cellsize = 1
+            cellsize = 100
         return cellsize
 
     def processAlgorithm(self, progress):

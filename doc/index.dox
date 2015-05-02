@@ -28,22 +28,20 @@ See \ref api_break for information about incompatible changes to API between rel
 
 Earlier versions of the documentation are also available on the QGIS
 website:
-
-<ul>
-<li><a href="http://qgis.org/api/2.6">2.6</a>
-<li><a href="http://qgis.org/api/2.4">2.4</a>
-<li><a href="http://qgis.org/api/2.2">2.2</a>
-<li><a href="http://qgis.org/api/2.0">2.0</a>
-<li><a href="http://qgis.org/api/1.8">1.8</a>
-<li><a href="http://qgis.org/api/1.7">1.7</a>
-<li><a href="http://qgis.org/api/1.6">1.6</a>
-</ul>
+<a href="http://qgis.org/api/2.8">2.8</a>,
+<a href="http://qgis.org/api/2.6">2.6</a>,
+<a href="http://qgis.org/api/2.4">2.4</a>,
+<a href="http://qgis.org/api/2.2">2.2</a>,
+<a href="http://qgis.org/api/2.0">2.0</a>,
+<a href="http://qgis.org/api/1.8">1.8</a>,
+<a href="http://qgis.org/api/1.7">1.7</a> and
+<a href="http://qgis.org/api/1.6">1.6</a>
 
 \section index_maillist Mailing Lists
-<ul>
-<li>For support we encourage you to join our <a
+
+For support we encourage you to join our <a
 href="http://qgis.org/en/site/forusers/support.html#mailing-lists">mailing lists</a> for
-users and developers.</li> </ul>
+users and developers.
 
 \section index_bugs Bug Reporting
 If you think you have found a bug, please report it using our <a

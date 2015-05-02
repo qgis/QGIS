@@ -322,7 +322,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
     if ( mSource->mForce2d )
     {
       geom = QString( "%1(%2)" )
-                   // Force_2D before 2.0
+             // Force_2D before 2.0
              .arg( mConn->majorVersion() < 2 ? "force_2d"
                    // ST_Force2D since 2.1.0
                    : mConn->majorVersion() > 2 || mConn->minorVersion() > 0 ? "st_force2d"
@@ -569,7 +569,6 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p )
     : mConnInfo( p->mUri.connectionInfo() )
     , mGeometryColumn( p->mGeometryColumn )
-    , mSqlWhereClause( p->mSqlWhereClause )
     , mFields( p->mAttributeFields )
     , mSpatialColType( p->mSpatialColType )
     , mRequestedSrid( p->mRequestedSrid )
@@ -582,6 +581,11 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider* p
     , mQuery( p->mQuery )
     , mShared( p->mShared )
 {
+  mSqlWhereClause = p->filterWhereClause();
+
+  if ( mSqlWhereClause.startsWith( " WHERE " ) )
+    mSqlWhereClause = mSqlWhereClause.mid( 7 );
+
   if ( p->mTransaction )
   {
     mTransactionConnection = p->mTransaction->connection();

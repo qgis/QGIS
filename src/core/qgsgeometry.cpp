@@ -29,7 +29,6 @@ email                : morb at ozemail dot com dot au
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsmessagelog.h"
 #include "qgsgeometryvalidator.h"
 
 #include <QDebug>
@@ -4679,7 +4678,7 @@ bool QgsGeometry::convertToMultiType()
 
 void QgsGeometry::transformVertex( QgsWkbPtr &wkbPtr, const QTransform& trans, bool hasZValue )
 {
-  double x, y, rotated_x, rotated_y;
+  qreal x, y, rotated_x, rotated_y;
 
   QgsWkbPtr tmp = wkbPtr;
   tmp >> x >> y;
@@ -5797,6 +5796,116 @@ QgsGeometry* QgsGeometry::simplify( double tolerance )
   CATCH_GEOS( 0 )
 }
 
+QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double offset )
+{
+  switch ( wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      //can't smooth a point based geometry
+      return new QgsGeometry( *this );
+
+    case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
+    {
+      QgsPolyline line = asPolyline();
+      return QgsGeometry::fromPolyline( smoothLine( line, iterations, offset ) );
+    }
+
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
+    {
+      QgsMultiPolyline multiline = asMultiPolyline();
+      QgsMultiPolyline resultMultiline;
+      QgsMultiPolyline::const_iterator lineIt = multiline.constBegin();
+      for ( ; lineIt != multiline.constEnd(); ++lineIt )
+      {
+        resultMultiline << smoothLine( *lineIt, iterations, offset );
+      }
+      return QgsGeometry::fromMultiPolyline( resultMultiline );
+    }
+
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+    {
+      QgsPolygon poly = asPolygon();
+      return QgsGeometry::fromPolygon( smoothPolygon( poly, iterations, offset ) );
+    }
+
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
+    {
+      QgsMultiPolygon multipoly = asMultiPolygon();
+      QgsMultiPolygon resultMultipoly;
+      QgsMultiPolygon::const_iterator polyIt = multipoly.constBegin();
+      for ( ; polyIt != multipoly.constEnd(); ++polyIt )
+      {
+        resultMultipoly << smoothPolygon( *polyIt, iterations, offset );
+      }
+      return QgsGeometry::fromMultiPolygon( resultMultipoly );
+    }
+    break;
+
+    case QGis::WKBUnknown:
+    default:
+      return new QgsGeometry( *this );
+  }
+}
+
+inline QgsPoint interpolatePointOnLine( const QgsPoint& p1, const QgsPoint& p2, const double offset )
+{
+  double deltaX = p2.x() - p1.x();
+  double deltaY = p2.y() - p1.y();
+  return QgsPoint( p1.x() + deltaX * offset, p1.y() + deltaY * offset );
+}
+
+QgsPolyline QgsGeometry::smoothLine( const QgsPolyline& polyline, const unsigned int iterations, const double offset ) const
+{
+  QgsPolyline result = polyline;
+  for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
+  {
+    QgsPolyline outputLine = QgsPolyline();
+    for ( int i = 0; i < result.count() - 1; i++ )
+    {
+      const QgsPoint& p1 = result.at( i );
+      const QgsPoint& p2 = result.at( i + 1 );
+      outputLine << ( i == 0 ? result.at( i ) : interpolatePointOnLine( p1, p2, offset ) );
+      outputLine << ( i == result.count() - 2 ? result.at( i + 1 ) : interpolatePointOnLine( p1, p2, 1.0 - offset ) );
+    }
+    result = outputLine;
+  }
+  return result;
+}
+
+QgsPolygon QgsGeometry::smoothPolygon( const QgsPolygon& polygon, const unsigned int iterations, const double offset ) const
+{
+  QgsPolygon resultPoly;
+  QgsPolygon::const_iterator ringIt = polygon.constBegin();
+  for ( ; ringIt != polygon.constEnd(); ++ringIt )
+  {
+    QgsPolyline resultRing = *ringIt;
+    for ( unsigned int iteration = 0; iteration < iterations; ++iteration )
+    {
+      QgsPolyline outputRing = QgsPolyline();
+      for ( int i = 0; i < resultRing.count() - 1; ++i )
+      {
+        const QgsPoint& p1 = resultRing.at( i );
+        const QgsPoint& p2 = resultRing.at( i + 1 );
+        outputRing << interpolatePointOnLine( p1, p2, offset );
+        outputRing << interpolatePointOnLine( p1, p2, 1.0 - offset );
+      }
+      //close polygon
+      outputRing << outputRing.at( 0 );
+
+      resultRing = outputRing;
+    }
+    resultPoly << resultRing;
+  }
+  return resultPoly;
+}
+
 QgsGeometry* QgsGeometry::centroid()
 {
   if ( mDirtyGeos )
@@ -6631,4 +6740,44 @@ QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
   QgsGeometry *ret = new QgsGeometry();
   ret->fromGeos( geomUnion );
   return ret;
+}
+
+bool QgsGeometry::compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon )
+{
+  if ( p1.count() != p2.count() )
+    return false;
+
+  for ( int i = 0; i < p1.count(); ++i )
+  {
+    if ( !p1.at( i ).compare( p2.at( i ), epsilon ) )
+      return false;
+  }
+  return true;
+}
+
+bool QgsGeometry::compare( const QgsPolygon &p1, const QgsPolygon &p2, double epsilon )
+{
+  if ( p1.count() != p2.count() )
+    return false;
+
+  for ( int i = 0; i < p1.count(); ++i )
+  {
+    if ( !QgsGeometry::compare( p1.at( i ), p2.at( i ), epsilon ) )
+      return false;
+  }
+  return true;
+}
+
+
+bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2, double epsilon )
+{
+  if ( p1.count() != p2.count() )
+    return false;
+
+  for ( int i = 0; i < p1.count(); ++i )
+  {
+    if ( !QgsGeometry::compare( p1.at( i ), p2.at( i ), epsilon ) )
+      return false;
+  }
+  return true;
 }

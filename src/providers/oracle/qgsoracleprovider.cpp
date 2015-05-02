@@ -461,7 +461,7 @@ QString QgsOracleUtils::whereClause( QgsFeatureIds featureIds, const QgsFields &
   {
     whereClauses << whereClause( featureId, fields, primaryKeyType, primaryKeyAttrs, sharedData );
   }
-  return whereClauses.join( " AND " );
+  return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
 }
 
 

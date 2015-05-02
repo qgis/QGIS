@@ -20,6 +20,7 @@
 
 #include <QComboBox>
 #include <QListWidget>
+#include <QLineEdit>
 
 class QgsValueRelationWidgetFactory;
 
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     QComboBox* mComboBox;
     QListWidget* mListWidget;
+    QLineEdit* mLineEdit;
 
     ValueRelationCache mCache;
     QgsVectorLayer* mLayer;

@@ -275,28 +275,83 @@ namespace pal
     return f->uid;
   }
 
+  LabelPosition::Quadrant FeaturePart::quadrantFromOffset() const
+  {
+    if ( f->quadOffsetX < 0 )
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAboveLeft;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelowLeft;
+      }
+      else
+      {
+        return LabelPosition::QuadrantLeft;
+      }
+    }
+    else  if ( f->quadOffsetX > 0 )
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAboveRight;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelowRight;
+      }
+      else
+      {
+        return LabelPosition::QuadrantRight;
+      }
+    }
+    else
+    {
+      if ( f->quadOffsetY < 0 )
+      {
+        return LabelPosition::QuadrantAbove;
+      }
+      else if ( f->quadOffsetY > 0 )
+      {
+        return LabelPosition::QuadrantBelow;
+      }
+      else
+      {
+        return LabelPosition::QuadrantOver;
+      }
+    }
+  }
+
   int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width, double angle )
   {
     Q_UNUSED( scale );
     Q_UNUSED( delta_width );
-    int nbp = 3;
+    int nbp = 1;
     *lPos = new LabelPosition *[nbp];
 
     // get from feature
-    double label_x = f->label_x;
-    double label_y = f->label_y;
     double labelW = f->label_x;
     double labelH = f->label_y;
 
-    double xdiff = 0.0;
-    double ydiff = 0.0;
-    double lx = 0.0;
-    double ly = 0.0;
     double cost = 0.0001;
     int id = 0;
 
-    xdiff -= label_x / 2.0;
-    ydiff -= label_y / 2.0;
+    double xdiff = -labelW / 2.0;
+    double ydiff = -labelH / 2.0;
+
+    if ( f->quadOffset )
+    {
+      if ( f->quadOffsetX != 0 )
+      {
+        xdiff += labelW / 2.0 * f->quadOffsetX;
+      }
+      if ( f->quadOffsetY != 0 )
+      {
+        ydiff += labelH / 2.0 * f->quadOffsetY;
+      }
+    }
 
     if ( ! f->fixedPosition() )
     {
@@ -306,31 +361,6 @@ namespace pal
         double yd = xdiff * sin( angle ) + ydiff * cos( angle );
         xdiff = xd;
         ydiff = yd;
-      }
-    }
-
-    if ( angle != 0 )
-    {
-      // use LabelPosition construction to calculate new rotated label dimensions
-      pal::LabelPosition* lp  = new LabelPosition( 1, lx, ly, label_x, label_y, angle, 0.0, this );
-
-      double amin[2], amax[2];
-      lp->getBoundingBox( amin, amax );
-      labelW = amax[0] - amin[0];
-      labelH = amax[1] - amin[1];
-
-      delete lp;
-    }
-
-    if ( f->quadOffset )
-    {
-      if ( f->quadOffsetX != 0 )
-      {
-        xdiff += labelW / 2 * f->quadOffsetX;
-      }
-      if ( f->quadOffsetY != 0 )
-      {
-        ydiff += labelH / 2 * f->quadOffsetY;
       }
     }
 
@@ -346,18 +376,10 @@ namespace pal
       }
     }
 
-    lx = x + xdiff;
-    ly = y + ydiff;
+    double lx = x + xdiff;
+    double ly = y + ydiff;
 
-//    double offset = label_x / 4;
-    double offset = 0.0; // don't shift what is supposed to be fixed
-
-    // at the center
-    ( *lPos )[0] = new LabelPosition( id, lx, ly, label_x, label_y, angle, cost, this );
-    // shifted to the sides - with higher cost
-    cost = 0.0021;
-    ( *lPos )[1] = new LabelPosition( id, lx + offset, ly, label_x, label_y, angle, cost, this );
-    ( *lPos )[2] = new LabelPosition( id, lx - offset, ly, label_x, label_y, angle, cost, this );
+    ( *lPos )[0] = new LabelPosition( id, lx, ly, labelW, labelH, angle, cost, this );
     return nbp;
   }
 
@@ -451,6 +473,8 @@ namespace pal
       if ( alpha > a360 )
         alpha -= a360;
 
+      LabelPosition::Quadrant quadrant = LabelPosition::QuadrantOver;
+
       if ( alpha < gamma1 || alpha > a360 - gamma1 )  // on the right
       {
         lx += distlabel;
@@ -460,44 +484,53 @@ namespace pal
 
         //ly += -yrm/2.0 + tan(alpha)*(distlabel + xrm/2);
         ly += -yrm + yrm * iota / ( 2 * gamma1 );
+
+        quadrant = LabelPosition::QuadrantRight;
       }
       else if ( alpha < a90 - gamma2 )  // top-right
       {
         lx += distlabel * cos( alpha );
         ly += distlabel * sin( alpha );
+        quadrant = LabelPosition::QuadrantAboveRight;
       }
       else if ( alpha < a90 + gamma2 ) // top
       {
         //lx += -xrm/2.0 - tan(alpha+a90)*(distlabel + yrm/2);
         lx += -xrm * ( alpha - a90 + gamma2 ) / ( 2 * gamma2 );
         ly += distlabel;
+        quadrant = LabelPosition::QuadrantAbove;
       }
       else if ( alpha < a180 - gamma1 )  // top left
       {
         lx += distlabel * cos( alpha ) - xrm;
         ly += distlabel * sin( alpha );
+        quadrant = LabelPosition::QuadrantAboveLeft;
       }
       else if ( alpha < a180 + gamma1 ) // left
       {
         lx += -distlabel - xrm;
         //ly += -yrm/2.0 - tan(alpha)*(distlabel + xrm/2);
         ly += - ( alpha - a180 + gamma1 ) * yrm / ( 2 * gamma1 );
+        quadrant = LabelPosition::QuadrantLeft;
       }
       else if ( alpha < a270 - gamma2 ) // down - left
       {
         lx += distlabel * cos( alpha ) - xrm;
         ly += distlabel * sin( alpha ) - yrm;
+        quadrant = LabelPosition::QuadrantBelowLeft;
       }
       else if ( alpha < a270 + gamma2 ) // down
       {
         ly += -distlabel - yrm;
         //lx += -xrm/2.0 + tan(alpha+a90)*(distlabel + yrm/2);
         lx += -xrm + ( alpha - a270 + gamma2 ) * xrm / ( 2 * gamma2 );
+        quadrant = LabelPosition::QuadrantBelow;
       }
-      else if ( alpha < a360 )
+      else if ( alpha < a360 ) // down - right
       {
         lx += distlabel * cos( alpha );
         ly += distlabel * sin( alpha ) - yrm;
+        quadrant = LabelPosition::QuadrantBelowRight;
       }
 
       double cost;
@@ -507,7 +540,7 @@ namespace pal
       else
         cost = 0.0001 + 0.0020 * double( icost ) / double( nbp - 1 );
 
-      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost, this );
+      ( *lPos )[i] = new LabelPosition( i, lx, ly, xrm, yrm, angle, cost, this, false, quadrant );
 
       icost += inc;
 

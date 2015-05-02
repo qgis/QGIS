@@ -29,13 +29,14 @@ struct QgsDiagramLayerSettings
 
     //pal placement properties
     Placement placement;
-    LinePlacementFlags placementFlags;
+    unsigned int placementFlags;
     int priority; // 0 = low, 10 = high
     bool obstacle; // whether it's an obstacle
     double dist; // distance from the feature (in mm)
     QgsDiagramRendererV2* renderer; // if any renderer is assigned, it is owned by this class
     int xPosColumn; //attribute index for x coordinate (or -1 if position not data defined)
     int yPosColumn;//attribute index for y coordinate (or -1 if position not data defined)
+    bool showAll;
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
@@ -70,6 +71,7 @@ class QgsDiagramSettings
     };
 
     QgsDiagramSettings();
+    bool enabled;
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
@@ -85,6 +87,7 @@ class QgsDiagramSettings
     bool scaleByArea;
     int angleOffset;
 
+    bool scaleBasedVisibility;
     //scale range (-1 if no lower / upper bound )
     double minScaleDenominator;
     double maxScaleDenominator;

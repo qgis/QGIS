@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsfield.h"
+#include "qgsfield_p.h"
 
 #include <QSettings>
 #include <QtCore/qmath.h>
@@ -34,9 +35,20 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 #endif
 
 QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
-    : mName( name ), mType( type ), mTypeName( typeName )
-    , mLength( len ), mPrecision( prec ), mComment( comment )
 {
+  d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
+}
+
+QgsField::QgsField( const QgsField &other )
+    : d( other.d )
+{
+
+}
+
+QgsField &QgsField::operator =( const QgsField & other )
+{
+  d = other.d;
+  return *this;
 }
 
 
@@ -46,8 +58,7 @@ QgsField::~QgsField()
 
 bool QgsField::operator==( const QgsField& other ) const
 {
-  return (( mName == other.mName ) && ( mType == other.mType )
-          && ( mLength == other.mLength ) && ( mPrecision == other.mPrecision ) );
+  return *( other.d ) == *d;
 }
 
 bool QgsField::operator!=( const QgsField& other ) const
@@ -55,64 +66,63 @@ bool QgsField::operator!=( const QgsField& other ) const
   return !( *this == other );
 }
 
-
 const QString & QgsField::name() const
 {
-  return mName;
+  return d->name;
 }
 
 QVariant::Type QgsField::type() const
 {
-  return mType;
+  return d->type;
 }
 
 const QString & QgsField::typeName() const
 {
-  return mTypeName;
+  return d->typeName;
 }
 
 int QgsField::length() const
 {
-  return mLength;
+  return d->length;
 }
 
 int QgsField::precision() const
 {
-  return mPrecision;
+  return d->precision;
 }
 
 const QString & QgsField::comment() const
 {
-  return mComment;
+  return d->comment;
 }
 
-void QgsField::setName( const QString & nam )
+void QgsField::setName( const QString& name )
 {
-  mName = nam;
+  d->name = name;
 }
 
 void QgsField::setType( QVariant::Type type )
 {
-  mType = type;
+  d->type = type;
 }
 
-void QgsField::setTypeName( const QString & typeName )
+void QgsField::setTypeName( const QString& typeName )
 {
-  mTypeName = typeName;
+  d->typeName = typeName;
 }
 
 void QgsField::setLength( int len )
 {
-  mLength = len;
+  d->length = len;
 }
-void QgsField::setPrecision( int prec )
+void QgsField::setPrecision( int precision )
 {
-  mPrecision = prec;
+  d->precision = precision;
 }
 
-void QgsField::setComment( const QString & comment )
+void QgsField::setComment( const QString& comment )
 {
-  mComment = comment;
+  d->comment = comment;
 }
 
 QString QgsField::displayString( const QVariant& v ) const
@@ -123,8 +133,8 @@ QString QgsField::displayString( const QVariant& v ) const
     return settings.value( "qgis/nullValue", "NULL" ).toString();
   }
 
-  if ( mType == QVariant::Double && mPrecision > 0 )
-    return QString::number( v.toDouble(), 'f', mPrecision );
+  if ( d->type == QVariant::Double && d->precision > 0 )
+    return QString::number( v.toDouble(), 'f', d->precision );
 
   return v.toString();
 }
@@ -133,33 +143,33 @@ bool QgsField::convertCompatible( QVariant& v ) const
 {
   if ( v.isNull() )
   {
-    v.convert( mType );
+    v.convert( d->type );
     return true;
   }
 
-  if ( mType == QVariant::Int && v.toInt() != v.toLongLong() )
+  if ( d->type == QVariant::Int && v.toInt() != v.toLongLong() )
   {
-    v = QVariant( mType );
+    v = QVariant( d->type );
     return false;
   }
 
-  if ( !v.convert( mType ) )
+  if ( !v.convert( d->type ) )
   {
-    v = QVariant( mType );
+    v = QVariant( d->type );
     return false;
   }
 
-  if ( mType == QVariant::Double && mPrecision > 0 )
+  if ( d->type == QVariant::Double && d->precision > 0 )
   {
-    double s = qPow( 10, mPrecision );
+    double s = qPow( 10, d->precision );
     double d = v.toDouble() * s;
     v = QVariant(( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
     return true;
   }
 
-  if ( mType == QVariant::String && mLength > 0 && v.toString().length() > mLength )
+  if ( d->type == QVariant::String && d->length > 0 && v.toString().length() > d->length )
   {
-    v = v.toString().left( mLength );
+    v = v.toString().left( d->length );
     return false;
   }
 

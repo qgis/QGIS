@@ -50,7 +50,7 @@ class roughness(GdalAlgorithm):
         self.addParameter(ParameterBoolean(self.COMPUTE_EDGES,
             self.tr('Compute edges'), False))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Roughness')))
 
     def processAlgorithm(self, progress):
         arguments = ['roughness']

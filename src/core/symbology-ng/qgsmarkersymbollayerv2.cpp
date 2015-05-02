@@ -684,6 +684,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   copyDataDefinedProperties( m );
+  copyPaintEffect( m );
   return m;
 }
 
@@ -884,7 +885,7 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
     bc = QgsSymbolLayerV2Utils::decodeColor( colorExpression->evaluate( *f ).toString() );
   }
 
-  QgsExpression* outlinecolorExpression = expression( "outline_color" );
+  QgsExpression* outlinecolorExpression = expression( "color_border" );
   if ( outlinecolorExpression )
   {
     pc = QgsSymbolLayerV2Utils::decodeColor( outlinecolorExpression->evaluate( *f ).toString() );
@@ -1501,6 +1502,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
   copyDataDefinedProperties( m );
+  copyPaintEffect( m );
   return m;
 }
 
@@ -1828,6 +1830,7 @@ QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  copyPaintEffect( m );
   return m;
 }
 

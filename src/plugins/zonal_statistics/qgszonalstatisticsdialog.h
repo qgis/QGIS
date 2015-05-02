@@ -1,4 +1,4 @@
-/***************************************************************************
+﻿/***************************************************************************
                           qgszonalstatisticsdialog.h  -  description
                              -----------------------
     begin                : September 1st, 2009
@@ -19,9 +19,11 @@
 #define QGSZONALSTATISTICSDIALOG_H
 
 #include "ui_qgszonalstatisticsdialogbase.h"
+#include "qgszonalstatistics.h"
 
 class QgisInterface;
 class QgsVectorLayer;
+class QgsRasterLayer;
 
 class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDialogBase
 {
@@ -31,9 +33,12 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
     ~QgsZonalStatisticsDialog();
 
     QString rasterFilePath() const;
-    int rasterBand() const {return 1;} //todo: expose that in the GUI
+    int rasterBand() const;
     QgsVectorLayer* polygonLayer() const;
+    QgsRasterLayer* rasterLayer() const;
+
     QString attributePrefix() const;
+    QgsZonalStatistics::Statistics selectedStats() const;
 
   private:
     QgsZonalStatisticsDialog();
@@ -45,6 +50,11 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
     bool prefixIsValid( const QString& prefix ) const;
 
     QgisInterface* mIface;
+
+  private slots:
+
+    void on_mRasterLayerComboBox_currentIndexChanged( int index );
+
 };
 
 #endif // QGSZONALSTATISTICSDIALOG_H

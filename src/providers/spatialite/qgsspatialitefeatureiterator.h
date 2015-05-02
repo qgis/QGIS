@@ -71,6 +71,7 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
 
     QString whereClauseRect();
     QString whereClauseFid();
+    QString whereClauseFids();
     QString mbr( const QgsRectangle& rect );
     bool prepareStatement( QString whereClause );
     QString quotedPrimaryKey();

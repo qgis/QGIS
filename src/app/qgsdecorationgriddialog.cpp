@@ -79,6 +79,7 @@ void QgsDecorationGridDialog::updateGuiElements()
   mAnnotationDirectionComboBox->setCurrentIndex(( int ) mDeco.gridAnnotationDirection() );
   mCoordinatePrecisionSpinBox->setValue( mDeco.gridAnnotationPrecision() );
 
+  mDistanceToMapFrameSpinBox->setValue( mDeco.annotationFrameDistance() );
   // QPen gridPen = mDeco.gridPen();
   // mLineWidthSpinBox->setValue( gridPen.widthF() );
   // mLineColorButton->setColor( gridPen.color() );

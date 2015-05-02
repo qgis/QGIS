@@ -325,6 +325,7 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
   sl->setBorderWidthUnit( mBorderWidthUnit );
   sl->setBorderWidthMapUnitScale( mBorderWidthMapUnitScale );
   copyDataDefinedProperties( sl );
+  copyPaintEffect( sl );
   return sl;
 }
 
@@ -909,6 +910,7 @@ QgsSymbolLayerV2* QgsGradientFillSymbolLayerV2::clone() const
   sl->setOffsetUnit( mOffsetUnit );
   sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
   copyDataDefinedProperties( sl );
+  copyPaintEffect( sl );
   return sl;
 }
 
@@ -1504,6 +1506,7 @@ QgsSymbolLayerV2* QgsShapeburstFillSymbolLayerV2::clone() const
   sl->setOffsetUnit( mOffsetUnit );
   sl->setOffsetMapUnitScale( mOffsetMapUnitScale );
   copyDataDefinedProperties( sl );
+  copyPaintEffect( sl );
   return sl;
 }
 
@@ -2038,6 +2041,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
     clonedLayer->setSubSymbol( mOutline->clone() );
   }
   copyDataDefinedProperties( clonedLayer );
+  copyPaintEffect( clonedLayer );
   return clonedLayer;
 }
 
@@ -2814,6 +2818,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mFillLineSymbol->clone() );
   }
+  copyPaintEffect( clonedLayer );
   return clonedLayer;
 }
 
@@ -3236,6 +3241,7 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
+  copyPaintEffect( clonedLayer );
   return clonedLayer;
 }
 
@@ -3418,6 +3424,7 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2::clone() const
   x->mColor = mColor;
   x->setSubSymbol( mMarker->clone() );
   x->setPointOnSurface( mPointOnSurface );
+  copyPaintEffect( x );
   return x;
 }
 
@@ -3690,6 +3697,7 @@ QgsSymbolLayerV2 *QgsRasterFillSymbolLayer::clone() const
   sl->setWidthUnit( mWidthUnit );
   sl->setWidthMapUnitScale( mWidthMapUnitScale );
   copyDataDefinedProperties( sl );
+  copyPaintEffect( sl );
   return sl;
 }
 

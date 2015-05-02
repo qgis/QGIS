@@ -36,296 +36,303 @@ from .dlg_create_index import DlgCreateIndex
 
 from .ui.ui_DlgTableProperties import Ui_DbManagerDlgTableProperties as Ui_Dialog
 
+
 class DlgTableProperties(QDialog, Ui_Dialog):
-        def __init__(self, table, parent=None):
-                QDialog.__init__(self, parent)
-                self.table = table
-                self.setupUi(self)
+    def __init__(self, table, parent=None):
+        QDialog.__init__(self, parent)
+        self.table = table
+        self.setupUi(self)
 
-                self.db = self.table.database()
+        self.db = self.table.database()
 
-                m = TableFieldsModel(self)
-                self.viewFields.setModel(m)
+        m = TableFieldsModel(self)
+        self.viewFields.setModel(m)
 
-                m = TableConstraintsModel(self)
-                self.viewConstraints.setModel(m)
+        m = TableConstraintsModel(self)
+        self.viewConstraints.setModel(m)
 
-                m = TableIndexesModel(self)
-                self.viewIndexes.setModel(m)
+        m = TableIndexesModel(self)
+        self.viewIndexes.setModel(m)
 
-                self.connect(self.btnAddColumn, SIGNAL("clicked()"), self.addColumn)
-                self.connect(self.btnAddGeometryColumn, SIGNAL("clicked()"), self.addGeometryColumn)
-                self.connect(self.btnEditColumn, SIGNAL("clicked()"), self.editColumn)
-                self.connect(self.btnDeleteColumn, SIGNAL("clicked()"), self.deleteColumn)
+        self.connect(self.btnAddColumn, SIGNAL("clicked()"), self.addColumn)
+        self.connect(self.btnAddGeometryColumn, SIGNAL("clicked()"), self.addGeometryColumn)
+        self.connect(self.btnEditColumn, SIGNAL("clicked()"), self.editColumn)
+        self.connect(self.btnDeleteColumn, SIGNAL("clicked()"), self.deleteColumn)
 
-                self.connect(self.btnAddConstraint, SIGNAL("clicked()"), self.addConstraint)
-                self.connect(self.btnDeleteConstraint, SIGNAL("clicked()"), self.deleteConstraint)
+        self.connect(self.btnAddConstraint, SIGNAL("clicked()"), self.addConstraint)
+        self.connect(self.btnDeleteConstraint, SIGNAL("clicked()"), self.deleteConstraint)
 
-                self.connect(self.btnAddIndex, SIGNAL("clicked()"), self.createIndex)
-                self.connect(self.btnAddSpatialIndex, SIGNAL("clicked()"), self.createSpatialIndex)
-                self.connect(self.btnDeleteIndex, SIGNAL("clicked()"), self.deleteIndex)
+        self.connect(self.btnAddIndex, SIGNAL("clicked()"), self.createIndex)
+        self.connect(self.btnAddSpatialIndex, SIGNAL("clicked()"), self.createSpatialIndex)
+        self.connect(self.btnDeleteIndex, SIGNAL("clicked()"), self.deleteIndex)
 
-                self.populateViews()
-                self.checkSupports()
-
-
-        def checkSupports(self):
-                allowEditColumns = self.db.connector.hasTableColumnEditingSupport()
-                self.btnEditColumn.setEnabled(allowEditColumns)
-                self.btnDeleteColumn.setEnabled(allowEditColumns)
-
-                allowSpatial = self.db.connector.hasSpatialSupport()
-                self.btnAddGeometryColumn.setEnabled(allowSpatial)
-                self.btnAddSpatialIndex.setEnabled(allowSpatial)
+        self.populateViews()
+        self.checkSupports()
 
 
-        def populateViews(self):
-                self.populateFields()
-                self.populateConstraints()
-                self.populateIndexes()
+    def checkSupports(self):
+        allowEditColumns = self.db.connector.hasTableColumnEditingSupport()
+        self.btnEditColumn.setEnabled(allowEditColumns)
+        self.btnDeleteColumn.setEnabled(allowEditColumns)
+
+        allowSpatial = self.db.connector.hasSpatialSupport()
+        self.btnAddGeometryColumn.setEnabled(allowSpatial)
+        self.btnAddSpatialIndex.setEnabled(allowSpatial)
 
 
-        def populateFields(self):
-                """ load field information from database """
-
-                m = self.viewFields.model()
-                m.clear()
-
-                for fld in self.table.fields():
-                        m.append( fld )
-
-                for col in range(4):
-                        self.viewFields.resizeColumnToContents(col)
-
-        def currentColumn(self):
-                """ returns row index of selected column """
-                sel = self.viewFields.selectionModel()
-                indexes = sel.selectedRows()
-                if len(indexes) == 0:
-                        QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
-                        return -1
-                return indexes[0].row()
-
-        def addColumn(self):
-                """ open dialog to set column info and add column to table """
-                dlg = DlgFieldProperties(self, None, self.table)
-                if not dlg.exec_():
-                        return
-                fld = dlg.getField()
-
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                self.emit(SIGNAL("aboutToChangeTable()"))
-                try:
-                        # add column to table
-                        self.table.addField(fld)
-                        self.populateViews()
-                except BaseError, e:
-                        DlgDbError.showError(e, self)
-                        return
-                finally:
-                        QApplication.restoreOverrideCursor()
-
-        def addGeometryColumn(self):
-                """ open dialog to add geometry column """
-                dlg = DlgAddGeometryColumn(self, self.table)
-                if not dlg.exec_():
-                        return
-                self.populateViews()
-
-        def editColumn(self):
-                """ open dialog to change column info and alter table appropriately """
-                index = self.currentColumn()
-                if index == -1:
-                        return
-
-                m = self.viewFields.model()
-                # get column in table
-                # (there can be missing number if someone deleted a column)
-                fld = m.getObject(index)
-
-                dlg = DlgFieldProperties(self, fld, self.table)
-                if not dlg.exec_():
-                        return
-                new_fld = dlg.getField(True)
-
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                self.emit(SIGNAL("aboutToChangeTable()"))
-                try:
-                        fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String())
-                        self.populateViews()
-                except BaseError, e:
-                        DlgDbError.showError(e, self)
-                        return
-                finally:
-                        QApplication.restoreOverrideCursor()
-
-        def deleteColumn(self):
-                """ delete currently selected column """
-                index = self.currentColumn()
-                if index == -1:
-                        return
-
-                m = self.viewFields.model()
-                fld = m.getObject(index)
-
-                res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete column '%s'?") % fld.name, QMessageBox.Yes | QMessageBox.No)
-                if res != QMessageBox.Yes:
-                        return
-
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                self.emit(SIGNAL("aboutToChangeTable()"))
-                try:
-                        fld.delete()
-                        self.populateViews()
-                except BaseError, e:
-                        DlgDbError.showError(e, self)
-                        return
-                finally:
-                        QApplication.restoreOverrideCursor()
+    def populateViews(self):
+        self.populateFields()
+        self.populateConstraints()
+        self.populateIndexes()
 
 
-        def populateConstraints(self):
-                constraints = self.table.constraints()
-                if constraints is None:
-                        self.hideConstraints()  # not supported
-                        return
+    def populateFields(self):
+        """ load field information from database """
 
-                m = self.viewConstraints.model()
-                m.clear()
+        m = self.viewFields.model()
+        m.clear()
 
-                for constr in constraints:
-                        m.append( constr )
+        for fld in self.table.fields():
+            m.append(fld)
 
-                for col in range(3):
-                        self.viewConstraints.resizeColumnToContents(col)
+        for col in range(4):
+            self.viewFields.resizeColumnToContents(col)
 
-        def hideConstraints(self):
-                index = self.tabs.indexOf(self.tabConstraints)
-                if index >= 0:
-                        self.tabs.setTabEnabled(index, False)
+    def currentColumn(self):
+        """ returns row index of selected column """
+        sel = self.viewFields.selectionModel()
+        indexes = sel.selectedRows()
+        if len(indexes) == 0:
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
+            return -1
+        return indexes[0].row()
 
-        def addConstraint(self):
-                """ add primary key or unique constraint """
+    def addColumn(self):
+        """ open dialog to set column info and add column to table """
+        dlg = DlgFieldProperties(self, None, self.table)
+        if not dlg.exec_():
+            return
+        fld = dlg.getField()
 
-                dlg = DlgCreateConstraint(self, self.table)
-                if not dlg.exec_():
-                        return
-                self.populateViews()
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.emit(SIGNAL("aboutToChangeTable()"))
+        try:
+            # add column to table
+            self.table.addField(fld)
+            self.populateViews()
+        except BaseError, e:
+            DlgDbError.showError(e, self)
+            return
+        finally:
+            QApplication.restoreOverrideCursor()
 
-        def deleteConstraint(self):
-                """ delete a constraint """
+    def addGeometryColumn(self):
+        """ open dialog to add geometry column """
+        dlg = DlgAddGeometryColumn(self, self.table)
+        if not dlg.exec_():
+            return
+        self.populateViews()
 
-                index = self.currentConstraint()
-                if index == -1:
-                        return
+    def editColumn(self):
+        """ open dialog to change column info and alter table appropriately """
+        index = self.currentColumn()
+        if index == -1:
+            return
 
-                m = self.viewConstraints.model()
-                constr = m.getObject(index)
+        m = self.viewFields.model()
+        # get column in table
+        # (there can be missing number if someone deleted a column)
+        fld = m.getObject(index)
 
-                res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete constraint '%s'?") % constr.name, QMessageBox.Yes | QMessageBox.No)
-                if res != QMessageBox.Yes:
-                        return
+        dlg = DlgFieldProperties(self, fld, self.table)
+        if not dlg.exec_():
+            return
+        new_fld = dlg.getField(True)
 
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                self.emit(SIGNAL("aboutToChangeTable()"))
-                try:
-                        constr.delete()
-                        self.populateViews()
-                except BaseError, e:
-                        DlgDbError.showError(e, self)
-                        return
-                finally:
-                        QApplication.restoreOverrideCursor()
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.emit(SIGNAL("aboutToChangeTable()"))
+        try:
+            fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String())
+            self.populateViews()
+        except BaseError, e:
+            DlgDbError.showError(e, self)
+            return
+        finally:
+            QApplication.restoreOverrideCursor()
 
-        def currentConstraint(self):
-                """ returns row index of selected index """
-                sel = self.viewConstraints.selectionModel()
-                indexes = sel.selectedRows()
-                if len(indexes) == 0:
-                        QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
-                        return -1
-                return indexes[0].row()
+    def deleteColumn(self):
+        """ delete currently selected column """
+        index = self.currentColumn()
+        if index == -1:
+            return
+
+        m = self.viewFields.model()
+        fld = m.getObject(index)
+
+        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete column '%s'?") % fld.name,
+                                   QMessageBox.Yes | QMessageBox.No)
+        if res != QMessageBox.Yes:
+            return
+
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.emit(SIGNAL("aboutToChangeTable()"))
+        try:
+            fld.delete()
+            self.populateViews()
+        except BaseError, e:
+            DlgDbError.showError(e, self)
+            return
+        finally:
+            QApplication.restoreOverrideCursor()
 
 
-        def populateIndexes(self):
-                indexes = self.table.indexes()
-                if indexes is None:
-                        self.hideIndexes()
-                        return
+    def populateConstraints(self):
+        constraints = self.table.constraints()
+        if constraints is None:
+            self.hideConstraints()  # not supported
+            return
 
-                m = self.viewIndexes.model()
-                m.clear()
+        m = self.viewConstraints.model()
+        m.clear()
 
-                for idx in indexes:
-                        m.append( idx )
+        for constr in constraints:
+            m.append(constr)
 
-                for col in range(2):
-                        self.viewIndexes.resizeColumnToContents(col)
+        for col in range(3):
+            self.viewConstraints.resizeColumnToContents(col)
 
-        def hideIndexes(self):
-                index = self.tabs.indexOf(self.tabIndexes)
-                if index >= 0:
-                        self.tabs.setTabEnabled(index, False)
+    def hideConstraints(self):
+        index = self.tabs.indexOf(self.tabConstraints)
+        if index >= 0:
+            self.tabs.setTabEnabled(index, False)
 
-        def createIndex(self):
-                """ create an index """
-                dlg = DlgCreateIndex(self, self.table)
-                if not dlg.exec_():
-                        return
-                self.populateViews()
+    def addConstraint(self):
+        """ add primary key or unique constraint """
 
-        def createSpatialIndex(self):
-                """ create spatial index for the geometry column """
-                if self.table.type != self.table.VectorType:
-                        QMessageBox.information(self, self.tr("DB Manager"), self.tr("The selected table has no geometry"))
-                        return
+        dlg = DlgCreateConstraint(self, self.table)
+        if not dlg.exec_():
+            return
+        self.populateViews()
 
-                res = QMessageBox.question(self, self.tr("Create?"), self.tr("Create spatial index for field %s?") % self.table.geomColumn, QMessageBox.Yes | QMessageBox.No)
-                if res != QMessageBox.Yes:
-                        return
+    def deleteConstraint(self):
+        """ delete a constraint """
 
-                # TODO: first check whether the index doesn't exist already
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                self.emit(SIGNAL("aboutToChangeTable()"))
+        index = self.currentConstraint()
+        if index == -1:
+            return
 
-                try:
-                        self.table.createSpatialIndex()
-                        self.populateViews()
-                except BaseError, e:
-                        DlgDbError.showError(e, self)
-                        return
-                finally:
-                        QApplication.restoreOverrideCursor()
+        m = self.viewConstraints.model()
+        constr = m.getObject(index)
 
-        def currentIndex(self):
-                """ returns row index of selected index """
-                sel = self.viewIndexes.selectionModel()
-                indexes = sel.selectedRows()
-                if len(indexes) == 0:
-                        QMessageBox.information(self, self.tr("DB Manager"), self.tr("Nothing selected"))
-                        return -1
-                return indexes[0].row()
+        res = QMessageBox.question(self, self.tr("Are you sure"),
+                                   self.tr("really delete constraint '%s'?") % constr.name,
+                                   QMessageBox.Yes | QMessageBox.No)
+        if res != QMessageBox.Yes:
+            return
 
-        def deleteIndex(self):
-                """ delete currently selected index """
-                index = self.currentIndex()
-                if index == -1:
-                        return
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.emit(SIGNAL("aboutToChangeTable()"))
+        try:
+            constr.delete()
+            self.populateViews()
+        except BaseError, e:
+            DlgDbError.showError(e, self)
+            return
+        finally:
+            QApplication.restoreOverrideCursor()
 
-                m = self.viewIndexes.model()
-                idx = m.getObject(index)
+    def currentConstraint(self):
+        """ returns row index of selected index """
+        sel = self.viewConstraints.selectionModel()
+        indexes = sel.selectedRows()
+        if len(indexes) == 0:
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
+            return -1
+        return indexes[0].row()
 
-                res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete index '%s'?") % idx.name, QMessageBox.Yes | QMessageBox.No)
-                if res != QMessageBox.Yes:
-                        return
 
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                self.emit(SIGNAL("aboutToChangeTable()"))
-                try:
-                        idx.delete()
-                        self.populateViews()
-                except BaseError, e:
-                        DlgDbError.showError(e, self)
-                        return
-                finally:
-                        QApplication.restoreOverrideCursor()
+    def populateIndexes(self):
+        indexes = self.table.indexes()
+        if indexes is None:
+            self.hideIndexes()
+            return
+
+        m = self.viewIndexes.model()
+        m.clear()
+
+        for idx in indexes:
+            m.append(idx)
+
+        for col in range(2):
+            self.viewIndexes.resizeColumnToContents(col)
+
+    def hideIndexes(self):
+        index = self.tabs.indexOf(self.tabIndexes)
+        if index >= 0:
+            self.tabs.setTabEnabled(index, False)
+
+    def createIndex(self):
+        """ create an index """
+        dlg = DlgCreateIndex(self, self.table)
+        if not dlg.exec_():
+            return
+        self.populateViews()
+
+    def createSpatialIndex(self):
+        """ create spatial index for the geometry column """
+        if self.table.type != self.table.VectorType:
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("The selected table has no geometry"))
+            return
+
+        res = QMessageBox.question(self, self.tr("Create?"),
+                                   self.tr("Create spatial index for field %s?") % self.table.geomColumn,
+                                   QMessageBox.Yes | QMessageBox.No)
+        if res != QMessageBox.Yes:
+            return
+
+        # TODO: first check whether the index doesn't exist already
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.emit(SIGNAL("aboutToChangeTable()"))
+
+        try:
+            self.table.createSpatialIndex()
+            self.populateViews()
+        except BaseError, e:
+            DlgDbError.showError(e, self)
+            return
+        finally:
+            QApplication.restoreOverrideCursor()
+
+    def currentIndex(self):
+        """ returns row index of selected index """
+        sel = self.viewIndexes.selectionModel()
+        indexes = sel.selectedRows()
+        if len(indexes) == 0:
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("Nothing selected"))
+            return -1
+        return indexes[0].row()
+
+    def deleteIndex(self):
+        """ delete currently selected index """
+        index = self.currentIndex()
+        if index == -1:
+            return
+
+        m = self.viewIndexes.model()
+        idx = m.getObject(index)
+
+        res = QMessageBox.question(self, self.tr("Are you sure"), self.tr("really delete index '%s'?") % idx.name,
+                                   QMessageBox.Yes | QMessageBox.No)
+        if res != QMessageBox.Yes:
+            return
+
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        self.emit(SIGNAL("aboutToChangeTable()"))
+        try:
+            idx.delete()
+            self.populateViews()
+        except BaseError, e:
+            DlgDbError.showError(e, self)
+            return
+        finally:
+            QApplication.restoreOverrideCursor()

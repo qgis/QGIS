@@ -50,7 +50,7 @@ class pct2rgb(GdalAlgorithm):
             options.append(str(i + 1))
         self.addParameter(ParameterSelection(pct2rgb.NBAND,
             self.tr('Band to convert'), options))
-        self.addOutput(OutputRaster(pct2rgb.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(pct2rgb.OUTPUT, self.tr('PCT to RGB')))
 
     def processAlgorithm(self, progress):
         arguments = []

@@ -45,7 +45,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
 
-  verticalHeader()->setDefaultSectionSize( 20 );
+  //verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
 
   mTableDelegate = new QgsAttributeTableDelegate( this );

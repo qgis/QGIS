@@ -27,9 +27,9 @@ from PyQt4.QtGui import QAction, QIcon, QApplication
 # @param db is the selected database
 # @param mainwindow is the DBManager mainwindow
 def load(db, mainwindow):
-        # add the action to the DBManager menu
-        action = QAction( QIcon(), QApplication.translate("DBManagerPlugin", "&Versioning"), db )
-        mainwindow.registerAction( action, QApplication.translate("DBManagerPlugin", "&Table"), run )
+    # add the action to the DBManager menu
+    action = QAction(QIcon(), QApplication.translate("DBManagerPlugin", "&Versioning"), db)
+    mainwindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"), run)
 
 
 # The run function is called once the user clicks on the action TopoViewer
@@ -38,11 +38,12 @@ def load(db, mainwindow):
 # @param action is the clicked action on the DBManager menu/toolbar
 # @param mainwindow is the DBManager mainwindow
 def run(item, action, mainwindow):
-        from .dlg_versioning import DlgVersioning
-        dlg = DlgVersioning( item, mainwindow )
+    from .dlg_versioning import DlgVersioning
 
-        QApplication.restoreOverrideCursor()
-        try:
-                dlg.exec_()
-        finally:
-                QApplication.setOverrideCursor(Qt.WaitCursor)
+    dlg = DlgVersioning(item, mainwindow)
+
+    QApplication.restoreOverrideCursor()
+    try:
+        dlg.exec_()
+    finally:
+        QApplication.setOverrideCursor(Qt.WaitCursor)

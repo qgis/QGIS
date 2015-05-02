@@ -572,7 +572,7 @@ bool QgsMapToolLabel::dataDefinedShowHide( QgsVectorLayer* vlayer, const QgsFeat
 bool QgsMapToolLabel::diagramMoveable( QgsMapLayer* ml, int& xCol, int& yCol ) const
 {
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( ml );
-  if ( vlayer && vlayer->diagramRenderer() )
+  if ( vlayer && vlayer->diagramsEnabled() )
   {
     const QgsDiagramLayerSettings *dls = vlayer->diagramLayerSettings();
     if ( dls && dls->xPosColumn >= 0 && dls->yPosColumn >= 0 )

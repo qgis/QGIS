@@ -342,6 +342,17 @@ class QgsGeometry
     /** Returns a simplified version of this geometry using a specified tolerance value */
     QgsGeometry* simplify( double tolerance ) /Factory/;
 
+    /**Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
+     * roughly doubles the number of vertices in a geometry.
+     * @param iterations number of smoothing iterations to run. More iterations results
+     * in a smoother geometry
+     * @param offset fraction of line to create new vertices along, between 0 and 1.0
+     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+     * @note added in 2.9
+     */
+    QgsGeometry* smooth( const unsigned int iterations = 1, const double offset = 0.25 ) /Factory/;
+
     /** Returns the center of mass of a geometry
     * @note for line based geometries, the center point of the line is returned,
     * and for point based geometries, the point itself is returned */
@@ -353,7 +364,7 @@ class QgsGeometry
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
     QgsGeometry* convexHull() /Factory/;
 
-    /* Return interpolated point on line at distance */
+    /** Return interpolated point on line at distance */
     QgsGeometry* interpolate( double distance ) /Factory/;
 
     /** Returns a geometry representing the points shared by this geometry and other. */
@@ -475,5 +486,37 @@ class QgsGeometry
         @returns the new computed QgsGeometry, or null
     */
     static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList ) /Factory/;
+
+    /** Compares two polylines for equality within a specified tolerance.
+     * @param p1 first polyline
+     * @param p2 second polyline
+     * @param epsilon maximum difference for coordinates between the polylines
+     * @returns true if polylines have the same number of points and all
+     * points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON );
+
+    /** Compares two polygons for equality within a specified tolerance.
+     * @param p1 first polygon
+     * @param p2 second polygon
+     * @param epsilon maximum difference for coordinates between the polygons
+     * @returns true if polygons have the same number of rings, and each ring has the same
+     * number of points and all points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+
+    /** Compares two multipolygons for equality within a specified tolerance.
+     * @param p1 first multipolygon
+     * @param p2 second multipolygon
+     * @param epsilon maximum difference for coordinates between the multipolygons
+     * @returns true if multipolygons have the same number of polygons, the polygons have the same number
+     * of rings, and each ring has the same number of points and all points are equal within the specified
+     * tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+
 }; // class QgsGeometry
 

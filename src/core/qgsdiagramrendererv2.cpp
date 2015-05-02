@@ -34,6 +34,7 @@ QgsDiagramLayerSettings::QgsDiagramLayerSettings()
     , xform( 0 )
     , xPosColumn( -1 )
     , yPosColumn( -1 )
+    , showAll( true )
 {
 }
 
@@ -53,6 +54,7 @@ void QgsDiagramLayerSettings::readXML( const QDomElement& elem, const QgsVectorL
   dist = elem.attribute( "dist" ).toDouble();
   xPosColumn = elem.attribute( "xPosColumn" ).toInt();
   yPosColumn = elem.attribute( "yPosColumn" ).toInt();
+  showAll = ( elem.attribute( "showAll", "0" ) != "0" );
 }
 
 void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const
@@ -67,6 +69,7 @@ void QgsDiagramLayerSettings::writeXML( QDomElement& layerElem, QDomDocument& do
   diagramLayerElem.setAttribute( "dist", QString::number( dist ) );
   diagramLayerElem.setAttribute( "xPosColumn", xPosColumn );
   diagramLayerElem.setAttribute( "yPosColumn", yPosColumn );
+  diagramLayerElem.setAttribute( "showAll", showAll );
   layerElem.appendChild( diagramLayerElem );
 }
 
@@ -74,6 +77,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
 {
   Q_UNUSED( layer );
 
+  enabled = ( elem.attribute( "enabled", "1" ) != "0" );
   font.fromString( elem.attribute( "font" ) );
   backgroundColor.setNamedColor( elem.attribute( "backgroundColor" ) );
   backgroundColor.setAlpha( elem.attribute( "backgroundAlpha" ).toInt() );
@@ -87,6 +91,14 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
 
   minScaleDenominator = elem.attribute( "minScaleDenominator", "-1" ).toDouble();
   maxScaleDenominator = elem.attribute( "maxScaleDenominator", "-1" ).toDouble();
+  if ( elem.hasAttribute( "scaleBasedVisibility" ) )
+  {
+    scaleBasedVisibility = ( elem.attribute( "scaleBasedVisibility", "1" ) != "0" );
+  }
+  else
+  {
+    scaleBasedVisibility = minScaleDenominator >= 0 && maxScaleDenominator >= 0;
+  }
 
   //mm vs map units
   if ( elem.attribute( "sizeType" ) == "MM" )
@@ -186,6 +198,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   Q_UNUSED( layer );
 
   QDomElement categoryElem = doc.createElement( "DiagramCategory" );
+  categoryElem.setAttribute( "enabled", enabled );
   categoryElem.setAttribute( "font", font.toString() );
   categoryElem.setAttribute( "backgroundColor", backgroundColor.name() );
   categoryElem.setAttribute( "backgroundAlpha", backgroundColor.alpha() );
@@ -194,6 +207,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
   categoryElem.setAttribute( "penColor", penColor.name() );
   categoryElem.setAttribute( "penAlpha", penColor.alpha() );
   categoryElem.setAttribute( "penWidth", QString::number( penWidth ) );
+  categoryElem.setAttribute( "scaleBasedVisibility", scaleBasedVisibility );
   categoryElem.setAttribute( "minScaleDenominator", QString::number( minScaleDenominator ) );
   categoryElem.setAttribute( "maxScaleDenominator", QString::number( maxScaleDenominator ) );
   categoryElem.setAttribute( "transparency", QString::number( transparency ) );

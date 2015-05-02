@@ -47,7 +47,12 @@
 
 extern "C"
 {
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#define G_adjust_Cell_head(cellhd,row_flag,col_flag) (G_adjust_Cell_head(cellhd,row_flag,col_flag),0)
+#endif
 #include <grass/glocale.h>
 }
 
@@ -1625,7 +1630,7 @@ void QgsGrassModule::run()
     mOutputTextBrowser->clear();
 
     QProcessEnvironment environment = QProcessEnvironment::systemEnvironment();
-    environment.insert( "GRASS_HTML_BROWSER", QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
+    environment.insert( "GRASS_HTML_BROWSER", QgsGrassUtils::htmlBrowserPath() );
 
     // Warning: it is not useful to write requested region to WIND file and
     //          reset then to original beacuse it is reset before

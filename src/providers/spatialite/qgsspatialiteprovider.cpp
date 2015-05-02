@@ -157,7 +157,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-          fldIdx = 0;
+          fldIdx = -1; // it is incremented in the for loop, i.e. restarts at 0
         }
       }
     }

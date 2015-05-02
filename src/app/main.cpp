@@ -606,7 +606,7 @@ int main( int argc, char *argv[] )
   // Initialise the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(ANDROID)
   bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
 #else
   bool myUseGuiFlag = true;
@@ -681,6 +681,24 @@ int main( int argc, char *argv[] )
   if ( QFile::exists( gdalPlugins ) && !getenv( "GDAL_DRIVER_PATH" ) )
   {
     setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
+  }
+
+  // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
+  if ( !getenv( "GDAL_DATA" ) )
+  {
+    QStringList gdalShares;
+    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
+    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+    << appResources.append( "/share/gdal" )
+    << appResources.append( "/gdal" );
+    Q_FOREACH ( const QString& gdalShare, gdalShares )
+    {
+      if ( QFile::exists( gdalShare ) )
+      {
+        setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
+        break;
+      }
+    }
   }
 #endif
 

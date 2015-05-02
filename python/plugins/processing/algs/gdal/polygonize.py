@@ -50,7 +50,7 @@ class polygonize(GdalAlgorithm):
             self.tr('Input layer'), False))
         self.addParameter(ParameterString(polygonize.FIELD,
             self.tr('Output field name'), 'DN'))
-        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputVector(polygonize.OUTPUT, self.tr('Vectorized')))
 
     def processAlgorithm(self, progress):
         arguments = []
