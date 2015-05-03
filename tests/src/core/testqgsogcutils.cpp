@@ -174,7 +174,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "<BBOX><PropertyName>Name>NAME</PropertyName><gml:Box srsName='foo'>"
     "<gml:coordinates>135.2239,34.4879 135.8578,34.8471</gml:coordinates></gml:Box></BBOX>"
     "</Filter>" )
-  << QString( "bbox($geometry, geomFromGML('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
+  << QString( "intersects_bbox($geometry, geom_from_gml('<Box srsName=\"foo\"><coordinates>135.2239,34.4879 135.8578,34.8471</coordinates></Box>'))" );
 
   QTest::newRow( "Intersects" ) << QString(
     "<Filter>"
@@ -185,7 +185,7 @@ void TestQgsOgcUtils::testExpressionFromOgcFilter_data()
     "</gml:Point>"
     "</Intersects>"
     "</Filter>" )
-  << QString( "intersects($geometry, geomFromGML('<Point><coordinates>123,456</coordinates></Point>'))" );
+  << QString( "intersects($geometry, geom_from_gml('<Point><coordinates>123,456</coordinates></Point>'))" );
 }
 
 void TestQgsOgcUtils::testExpressionFromOgcFilter()
@@ -326,7 +326,7 @@ void TestQgsOgcUtils::testExpressionToOgcFilter_data()
 
   /*
   QTest::newRow( "bbox with GML3 Envelope" )
-  << QString( "bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
+  << QString( "intersects_bbox($geometry, geomFromGML('<gml:Envelope><gml:lowerCorner>13.0983 31.5899</gml:lowerCorner><gml:upperCorner>35.5472 42.8143</gml:upperCorner></gml:Envelope>'))" )
   << QString(
   "<ogc:Filter>"
     "<ogc:BBOX>"

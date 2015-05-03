@@ -1,11 +1,11 @@
-<h3>geomToWKT function</h3>
+<h3>geom_to_wkt function</h3>
 Returns the Well-Known Text (WKT) representation of the geometry without SRID metadata.
 
 <h4>Syntax</h4>
-<pre>geomToWKT(a)</pre>
+<pre>geom_to_wkt(a)</pre>
 
 <h4>Arguments</h4>
 a &rarr; geometry
 
 <h4>Example</h4>
-<pre> geomToWKT( $geometry ) &rarr; POINT(6 50)</pre>
+<pre> geom_to_wkt( $geometry ) &rarr; POINT(6 50)</pre>

@@ -1,8 +1,8 @@
-<h3>todate() function</h3>
+<h3>to_date() function</h3>
 Convert a string into Qt data type.
 
 <h4>Syntax</h4>
-<code>todate('string')</code><br>
+<code>to_date('string')</code><br>
 
 <h4>Arguments</h4>
 <code>string</code> - is string in Qt date format.
@@ -10,4 +10,4 @@ Convert a string into Qt data type.
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>todate('2012-05-04') &rarr; 2012-05-04</code><br>
+<code>to_date('2012-05-04') &rarr; 2012-05-04</code><br>
