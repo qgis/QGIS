@@ -392,10 +392,11 @@ void QgsSymbolV2LegendNode::updateLabel()
 // -------------------------------------------------------------------------
 
 
-QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon, QObject* parent )
+QgsSimpleLegendNode::QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon, QObject* parent, const QString & key )
     : QgsLayerTreeModelLegendNode( nodeLayer, parent )
     , mLabel( label )
     , mIcon( icon )
+    , mKey( key )
 {
 }
 
@@ -405,6 +406,11 @@ QVariant QgsSimpleLegendNode::data( int role ) const
     return mLabel;
   else if ( role == Qt::DecorationRole )
     return mIcon;
+  else if ( role == RuleKeyRole && ! mKey.isEmpty())
+  {
+    std::cerr << "vmodbg key " << mKey.toStdString() << "\n";
+    return mKey;
+  }
   else
     return QVariant();
 }
