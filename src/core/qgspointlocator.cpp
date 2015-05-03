@@ -634,11 +634,14 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
     QgsRectangle rect = *mExtent;
     if ( mTransform )
     {
-      try {
+      try
+      {
         rect = mTransform->transformBoundingBox( rect, QgsCoordinateTransform::ReverseTransform );
-      } catch (const QgsException& e) {
+      }
+      catch ( const QgsException& e )
+      {
         // See http://hub.qgis.org/issues/12634
-        QgsDebugMsg( QString("could not transform bounding box to map, skipping the snap filter (%1)").arg(e.what()) );
+        QgsDebugMsg( QString( "could not transform bounding box to map, skipping the snap filter (%1)" ).arg( e.what() ) );
       }
     }
     request.setFilterRect( rect );
@@ -652,11 +655,14 @@ bool QgsPointLocator::rebuildIndex( int maxFeaturesToIndex )
 
     if ( mTransform )
     {
-      try {
+      try
+      {
         f.geometry()->transform( *mTransform );
-      } catch (const QgsException& e) {
+      }
+      catch ( const QgsException& e )
+      {
         // See http://hub.qgis.org/issues/12634
-        QgsDebugMsg( QString("could not transform geometry to map, skipping the snap for it (%1)").arg(e.what()) );
+        QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         continue;
       }
     }
@@ -724,11 +730,14 @@ void QgsPointLocator::onFeatureAdded( QgsFeatureId fid )
 
     if ( mTransform )
     {
-      try {
+      try
+      {
         f.geometry()->transform( *mTransform );
-      } catch (const QgsException& e) {
+      }
+      catch ( const QgsException& e )
+      {
         // See http://hub.qgis.org/issues/12634
-        QgsDebugMsg( QString("could not transform geometry to map, skipping the snap for it (%1)").arg(e.what()) );
+        QgsDebugMsg( QString( "could not transform geometry to map, skipping the snap for it (%1)" ).arg( e.what() ) );
         return;
       }
     }

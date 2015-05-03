@@ -81,8 +81,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 %TypeHeaderCode
 #include <qgsgraduatedsymbolrendererv2.h>
 %End
-
   public:
+
     QgsGraduatedSymbolRendererV2( QString attrName = QString(), QgsRangeList ranges = QgsRangeList() );
 
     virtual ~QgsGraduatedSymbolRendererV2();
@@ -152,10 +152,12 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @param nclasses The number of classes to calculate (approximate for some modes)
     //! @note Added in 2.6
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+
     //! Evaluates the data expression and returns the list of values from the layer
     //! @param vlayer  The layer for which to evaluate the expression
     //! @note Added in 2.6
-    QList<double> getDataValues( QgsVectorLayer *vlayer );
+    //! @deprecated use QgsVectorLayer::getDoubleValues instead
+    QList<double> getDataValues( QgsVectorLayer *vlayer ) /Deprecated/;
 
     //! Return the label format used to generate default classification labels
     //! @note Added in 2.6
@@ -179,7 +181,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
       QgsSymbolV2* symbol /Transfer/,
       QgsVectorColorRampV2* ramp /Transfer/,
       bool inverted = false,
-      QgsRendererRangeV2LabelFormat labelFormat=QgsRendererRangeV2LabelFormat()
+      QgsRendererRangeV2LabelFormat legendFormat = QgsRendererRangeV2LabelFormat()
     );
 
     //! create renderer from XML element

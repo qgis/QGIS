@@ -408,7 +408,7 @@ QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
 
 #if QT_VERSION >= 0x050000
 QFunctionPointer QgsProviderRegistry::function( QString const & providerKey,
-                                                QString const & functionName )
+    QString const & functionName )
 {
   QLibrary myLib( library( providerKey ) );
 

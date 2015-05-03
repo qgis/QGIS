@@ -41,7 +41,14 @@ MACRO (CHECK_GRASS G_PREFIX)
           MARK_AS_ADVANCED ( GRASS_LIBRARY${GRASS_FIND_VERSION}_${LIB} )
 
           SET(LIB_PATH NOTFOUND)
+          # FIND_PATH and FIND_LIBRARY normally search standard locations
+          # before the specified paths. To search non-standard paths first,
+          # FIND_* is invoked first with specified paths and NO_DEFAULT_PATH
+          # and then again with no specified paths to search the default
+          # locations. When an earlier FIND_* succeeds, subsequent FIND_*s
+          # searching for the same item do nothing. 
           FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} PATHS ${G_PREFIX}/lib NO_DEFAULT_PATH)
+          FIND_LIBRARY(LIB_PATH NAMES grass_${LIB} PATHS ${G_PREFIX}/lib)
 
           IF(LIB_PATH)
             SET(GRASS_LIBRARY${GRASS_FIND_VERSION}_${LIB} ${LIB_PATH})

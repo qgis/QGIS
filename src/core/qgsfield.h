@@ -19,15 +19,20 @@
 #include <QString>
 #include <QVariant>
 #include <QVector>
+#include <QSharedDataPointer>
 
 typedef QList<int> QgsAttributeList;
 
 class QgsExpression;
+class QgsFieldPrivate;
+class QgsFieldsPrivate;
 
-/** \ingroup core
+/** \class QgsField
+  * \ingroup core
   * Encapsulate a field in an attribute table or data source.
   * QgsField stores metadata about an attribute field, including name, type
   * length, and if applicable, precision.
+  * \note QgsField objects are implicitly shared.
  */
 
 class CORE_EXPORT QgsField
@@ -52,14 +57,22 @@ class CORE_EXPORT QgsField
               int prec = 0,
               QString comment = QString() );
 
+    /** Copy constructor
+     */
+    QgsField( const QgsField& other );
+
+    /** Assignment operator
+     */
+    QgsField& operator =( const QgsField &other );
+
     //! Destructor
-    ~QgsField();
+    virtual ~QgsField();
 
     bool operator==( const QgsField& other ) const;
     bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
-    const QString & name() const;
+    const QString& name() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -70,15 +83,13 @@ class CORE_EXPORT QgsField
       the data store reports it, with no attempt to standardize the value.
       @return QString containing the field type
      */
-    const QString & typeName() const;
-
+    const QString& typeName() const;
 
     /**
       Gets the length of the field.
       @return int containing the length of the field
      */
     int length() const;
-
 
     /**
       Gets the precision of the field. Not all field types have a related precision.
@@ -89,13 +100,13 @@ class CORE_EXPORT QgsField
     /**
     Returns the field comment
     */
-    const QString & comment() const;
+    const QString& comment() const;
 
     /**
       Set the field name.
-      @param nam Name of the field
+      @param name Name of the field
      */
-    void setName( const QString & nam );
+    void setName( const QString& name );
 
     /**
       Set variant type.
@@ -104,9 +115,9 @@ class CORE_EXPORT QgsField
 
     /**
       Set the field type.
-      @param typ Field type
+      @param typeName Field type
      */
-    void setTypeName( const QString & typ );
+    void setTypeName( const QString& typeName );
 
     /**
       Set the field length.
@@ -116,15 +127,14 @@ class CORE_EXPORT QgsField
 
     /**
       Set the field precision.
-      @param prec Precision of the field
+      @param precision Precision of the field
      */
-    void setPrecision( int prec );
-
+    void setPrecision( int precision );
 
     /**
       Set the field comment
       */
-    void setComment( const QString & comment );
+    void setComment( const QString& comment );
 
     /** Formats string for display*/
     QString displayString( const QVariant& v ) const;
@@ -140,34 +150,19 @@ class CORE_EXPORT QgsField
 
   private:
 
-    //! Name
-    QString mName;
-
-    //! Variant type
-    QVariant::Type mType;
-
-    //! Type name from provider
-    QString mTypeName;
-
-    //! Length
-    int mLength;
-
-    //! Precision
-    int mPrecision;
-
-    //! Comment
-    QString mComment;
+    QSharedDataPointer<QgsFieldPrivate> d;
 
 }; // class QgsField
 
 
-/**
- \ingroup core
- Container of fields for a vector layer.
-
- In addition to storing a list of QgsField instances, it also:
- - allows quick lookups of field names to index in the list
- - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+/** \class QgsFields
+ * \ingroup core
+ * Container of fields for a vector layer.
+ *
+ * In addition to storing a list of QgsField instances, it also:
+ * - allows quick lookups of field names to index in the list
+ *- keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ * \note QgsFields objects are implicitly shared.
  */
 class CORE_EXPORT QgsFields
 {
@@ -197,6 +192,20 @@ class CORE_EXPORT QgsFields
       int originIndex;     //!< index specific to the origin
     } Field;
 
+    /** Constructor for an empty field container
+     */
+    QgsFields();
+
+    /** Copy constructor
+     */
+    QgsFields( const QgsFields& other );
+
+    /** Assignment operator
+     */
+    QgsFields& operator =( const QgsFields &other );
+
+    virtual ~QgsFields();
+
     //! Remove all fields
     void clear();
     //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
@@ -209,34 +218,34 @@ class CORE_EXPORT QgsFields
     void extend( const QgsFields& other );
 
     //! Check whether the container is empty
-    inline bool isEmpty() const { return mFields.isEmpty(); }
+    bool isEmpty() const;
     //! Return number of items
-    inline int count() const { return mFields.count(); }
+    int count() const;
     //! Return number of items
-    inline int size() const { return mFields.count(); }
+    int size() const;
     //! Return if a field index is valid
     //! @param i  Index of the field which needs to be checked
     //! @return   True if the field exists
-    inline bool exists( int i ) const { return i >= 0 && i < mFields.count(); }
+    bool exists( int i ) const;
 
     //! Get field at particular index (must be in range 0..N-1)
-    inline const QgsField& operator[]( int i ) const { return mFields[i].field; }
+    const QgsField& operator[]( int i ) const;
     //! Get field at particular index (must be in range 0..N-1)
-    inline QgsField& operator[]( int i ) { return mFields[i].field; }
+    QgsField& operator[]( int i );
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& at( int i ) const { return mFields[i].field; }
+    const QgsField& at( int i ) const;
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( int fieldIdx ) const { return mFields[fieldIdx].field; }
+    const QgsField& field( int fieldIdx ) const;
     //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( const QString& name ) const { return mFields[ indexFromName( name )].field; }
+    const QgsField& field( const QString& name ) const;
 
     //! Get field's origin (value from an enumeration)
     FieldOrigin fieldOrigin( int fieldIdx ) const;
     //! Get field's origin index (its meaning is specific to each type of origin)
-    int fieldOriginIndex( int fieldIdx ) const { return mFields[fieldIdx].originIndex; }
+    int fieldOriginIndex( int fieldIdx ) const;
 
     //! Look up field's index from name. Returns -1 on error
-    int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }
+    int indexFromName( const QString& name ) const;
 
     //! Look up field's index from name - case insensitive
     //! TODO: sort out case sensitive (indexFromName()) vs insensitive (fieldNameIndex()) calls
@@ -251,20 +260,14 @@ class CORE_EXPORT QgsFields
     QList<QgsField> toList() const;
 
     //! @note added in 2.6
-    bool operator==( const QgsFields& other ) const { return mFields == other.mFields; }
+    bool operator==( const QgsFields& other ) const;
     //! @note added in 2.6
     bool operator!=( const QgsFields& other ) const { return !( *this == other ); }
 
-  protected:
-    //! internal storage of the container
-    QVector<Field> mFields;
+  private:
 
-    //! map for quick resolution of name to index
-    QHash<QString, int> mNameToIndex;
+    QSharedDataPointer<QgsFieldsPrivate> d;
 
 };
-
-
-
 
 #endif

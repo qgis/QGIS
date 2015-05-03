@@ -79,15 +79,17 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     // export to spatialite
 
     enum ExportType { Point, Polyline, Polygon };
-    bool exportSpatiaLite( ExportType type, const QString& tableName, const QStringList& tagKeys = QStringList() );
+    bool exportSpatiaLite( ExportType type, const QString& tableName,
+                           const QStringList& tagKeys = QStringList(),
+                           const QStringList& noNullTagKeys = QStringList() );
 
   protected:
     bool prepareStatements();
     int runCountStatement( const char* sql ) const;
     void deleteStatement( sqlite3_stmt*& stmt );
 
-    void exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys );
-    void exportSpatiaLiteWays( bool closed, const QString& tableName, const QStringList& tagKeys );
+    void exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
+    void exportSpatiaLiteWays( bool closed, const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
     bool createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys );
     bool createSpatialIndex( const QString& tableName );
 
