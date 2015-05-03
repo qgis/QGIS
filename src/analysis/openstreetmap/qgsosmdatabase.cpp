@@ -297,9 +297,9 @@ bool QgsOSMDatabase::prepareStatements()
   return true;
 }
 
-
-
-bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName, const QStringList& tagKeys )
+bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName,
+                                       const QStringList& tagKeys,
+                                       const QStringList& notNullTagKeys)
 {
   mError.clear();
 
@@ -321,9 +321,9 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
   Q_UNUSED( retX );
 
   if ( type == Polyline || type == Polygon )
-    exportSpatiaLiteWays( type == Polygon, tableName, tagKeys );
+    exportSpatiaLiteWays( type == Polygon, tableName, tagKeys, notNullTagKeys );
   else if ( type == Point )
-    exportSpatiaLiteNodes( tableName, tagKeys );
+    exportSpatiaLiteNodes( tableName, tagKeys, notNullTagKeys );
   else
     Q_ASSERT( false && "Unknown export type" );
 
@@ -338,7 +338,7 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
 }
 
 
-bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys )
+bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys)
 {
   QString sqlCreateTable = QString( "CREATE TABLE %1 (id INTEGER PRIMARY KEY" ).arg( quotedIdentifier( tableName ) );
   for ( int i = 0; i < tagKeys.count(); ++i )
@@ -385,7 +385,7 @@ bool QgsOSMDatabase::createSpatialIndex( const QString& tableName )
 }
 
 
-void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys )
+void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys )
 {
   QString sqlInsertPoint = QString( "INSERT INTO %1 VALUES (?" ).arg( quotedIdentifier( tableName ) );
   for ( int i = 0; i < tagKeys.count(); ++i )
@@ -407,6 +407,11 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
     // skip untagged nodes: probably they form a part of ways
     if ( t.count() == 0 )
       continue;
+
+    //check not null tags
+    for( int i = 0; i < notNullTagKeys.count(); ++i )
+      if ( !t.contains( notNullTagKeys[i] ) )
+        continue;
 
     QgsGeometry* geom = QgsGeometry::fromPoint( n.point() );
     int col = 0;
@@ -440,7 +445,9 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
 }
 
 
-void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName, const QStringList& tagKeys )
+void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName,
+                                           const QStringList& tagKeys,
+                                           const QStringList& notNullTagKeys)
 {
   Q_UNUSED( tagKeys );
 
@@ -476,6 +483,16 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
 
     if ( closed != isArea )
       continue; // skip if it's not what we're looking for
+
+    bool skipNull = false;
+
+    //check not null tags
+    for( int i = 0; i < notNullTagKeys.count() && skipNull == false; ++i )
+      if ( !t.contains( notNullTagKeys[i] ) )
+        skipNull = true;
+
+    if(skipNull)
+        continue;
 
     QgsGeometry* geom = closed ? QgsGeometry::fromPolygon( QgsPolygon() << polyline ) : QgsGeometry::fromPolyline( polyline );
     int col = 0;
