@@ -33,6 +33,9 @@ class QgsStatisticalSummary
         Minority, //!< Minority of values
         Majority, //!< Majority of values
         Variety, //!< Variety (count of distinct) values
+        FirstQuartile, //!< First quartile
+        ThirdQuartile, //!< Third quartile
+        InterQuartileRange, //!< Inter quartile range (IQR)
         All
     };
     
@@ -127,6 +130,27 @@ class QgsStatisticalSummary
      * @see minority
      */
     double majority() const;
+    
+        /** Returns the first quartile of the values. The quartile is calculated using the
+     * "Tukey's hinges" method.
+     * @see thirdQuartile
+     * @see interQuartileRange
+     */
+    double firstQuartile() const;
+
+    /** Returns the third quartile of the values. The quartile is calculated using the
+     * "Tukey's hinges" method.
+     * @see firstQuartile
+     * @see interQuartileRange
+     */
+    double thirdQuartile() const;
+
+    /** Returns the inter quartile range of the values. The quartiles are calculated using the
+     * "Tukey's hinges" method.
+     * @see firstQuartile
+     * @see thirdQuartile
+     */
+    double interQuartileRange() const;
 
 };
 

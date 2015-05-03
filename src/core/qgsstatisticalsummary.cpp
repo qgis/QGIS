@@ -41,6 +41,8 @@ void QgsStatisticalSummary::reset()
   mSampleStdev = 0;
   mMinority = 0;
   mMajority = 0;
+  mFirstQuartile = 0;
+  mThirdQuartile = 0;
   mValueCount.clear();
 }
 
@@ -76,9 +78,13 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
     mSampleStdev = qPow( sumSquared / ( values.count() - 1 ), 0.5 );
   }
 
-  if ( mStatistics & QgsStatisticalSummary::Median )
+  QList<double> sorted;
+  if ( mStatistics & QgsStatisticalSummary::Median
+       || mStatistics & QgsStatisticalSummary::FirstQuartile
+       || mStatistics & QgsStatisticalSummary::ThirdQuartile
+       || mStatistics & QgsStatisticalSummary::InterQuartileRange )
   {
-    QList<double> sorted = values;
+    sorted = values;
     qSort( sorted.begin(), sorted.end() );
     bool even = ( mCount % 2 ) < 1;
     if ( even )
@@ -88,6 +94,68 @@ void QgsStatisticalSummary::calculate( const QList<double> &values )
     else //odd
     {
       mMedian = sorted[( mCount + 1 ) / 2 - 1];
+    }
+  }
+
+  if ( mStatistics & QgsStatisticalSummary::FirstQuartile
+       || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+  {
+    if (( mCount % 2 ) < 1 )
+    {
+      int halfCount = mCount / 2;
+      bool even = ( halfCount % 2 ) < 1;
+      if ( even )
+      {
+        mFirstQuartile = ( sorted[halfCount / 2 - 1] + sorted[halfCount / 2] ) / 2.0;
+      }
+      else //odd
+      {
+        mFirstQuartile = sorted[( halfCount  + 1 ) / 2 - 1];
+      }
+    }
+    else
+    {
+      int halfCount = mCount / 2 + 1;
+      bool even = ( halfCount % 2 ) < 1;
+      if ( even )
+      {
+        mFirstQuartile = ( sorted[halfCount / 2 - 1] + sorted[halfCount / 2] ) / 2.0;
+      }
+      else //odd
+      {
+        mFirstQuartile = sorted[( halfCount  + 1 ) / 2 - 1];
+      }
+    }
+  }
+
+  if ( mStatistics & QgsStatisticalSummary::ThirdQuartile
+       || mStatistics & QgsStatisticalSummary::InterQuartileRange )
+  {
+    if (( mCount % 2 ) < 1 )
+    {
+      int halfCount = mCount / 2;
+      bool even = ( halfCount % 2 ) < 1;
+      if ( even )
+      {
+        mThirdQuartile = ( sorted[ halfCount + halfCount / 2 - 1] + sorted[ halfCount + halfCount / 2] ) / 2.0;
+      }
+      else //odd
+      {
+        mThirdQuartile = sorted[( halfCount + 1 ) / 2 - 1 + halfCount ];
+      }
+    }
+    else
+    {
+      int halfCount = mCount / 2 + 1;
+      bool even = ( halfCount % 2 ) < 1;
+      if ( even )
+      {
+        mThirdQuartile = ( sorted[ halfCount + halfCount / 2 - 2 ] + sorted[ halfCount + halfCount / 2 - 1 ] ) / 2.0;
+      }
+      else //odd
+      {
+        mThirdQuartile = sorted[( halfCount + 1 ) / 2 - 2 + halfCount ];
+      }
     }
   }
 

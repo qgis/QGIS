@@ -84,6 +84,39 @@ void TestQgsStatisticSummary::stats()
   QCOMPARE( s.variety(), 7 );
   QCOMPARE( s.minority(), 3.0 );
   QCOMPARE( s.majority(), 12.0 );
+
+  //test quartiles. lots of possibilities here, involving odd/even/divisible by 4 counts
+  values.clear();
+  values << 7 << 15 << 36 << 39 << 40 << 41;
+  s.calculate( values );
+  QCOMPARE( s.median(), 37.5 );
+  QCOMPARE( s.firstQuartile(), 15.0 );
+  QCOMPARE( s.thirdQuartile(), 40.0 );
+  QCOMPARE( s.interQuartileRange(), 25.0 );
+
+  values.clear();
+  values << 7 << 15 << 36 << 39 << 40 << 41 << 43 << 49;
+  s.calculate( values );
+  QCOMPARE( s.median(), 39.5 );
+  QCOMPARE( s.firstQuartile(), 25.5 );
+  QCOMPARE( s.thirdQuartile(), 42.0 );
+  QCOMPARE( s.interQuartileRange(), 16.5 );
+
+  values.clear();
+  values << 6 << 7 << 15 << 36 << 39 << 40 << 41 << 42 << 43 << 47 << 49;
+  s.calculate( values );
+  QCOMPARE( s.median(), 40.0 );
+  QCOMPARE( s.firstQuartile(), 25.5 );
+  QCOMPARE( s.thirdQuartile(), 42.5 );
+  QCOMPARE( s.interQuartileRange(), 17.0 );
+
+  values.clear();
+  values << 6 << 7 << 15 << 36 << 39 << 40 << 41 << 42 << 43 << 47 << 49 << 50 << 58;
+  s.calculate( values );
+  QCOMPARE( s.median(), 41.0 );
+  QCOMPARE( s.firstQuartile(), 36.0 );
+  QCOMPARE( s.thirdQuartile(), 47.0 );
+  QCOMPARE( s.interQuartileRange(), 11.0 );
 }
 
 QTEST_MAIN( TestQgsStatisticSummary )

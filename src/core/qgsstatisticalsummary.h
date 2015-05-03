@@ -49,7 +49,10 @@ class CORE_EXPORT QgsStatisticalSummary
       Minority = 512, //!< Minority of values
       Majority = 1024, //!< Majority of values
       Variety = 2048, //!< Variety (count of distinct) values
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety
+      FirstQuartile = 4096, //!< First quartile
+      ThirdQuartile = 8192, //!< Third quartile
+      InterQuartileRange = 16384, //!< Inter quartile range (IQR)
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | FirstQuartile | ThirdQuartile | InterQuartileRange
     };
     Q_DECLARE_FLAGS( Statistics, Statistic )
 
@@ -143,6 +146,27 @@ class CORE_EXPORT QgsStatisticalSummary
      */
     double majority() const { return mMajority; }
 
+    /** Returns the first quartile of the values. The quartile is calculated using the
+     * "Tukey's hinges" method.
+     * @see thirdQuartile
+     * @see interQuartileRange
+     */
+    double firstQuartile() const { return mFirstQuartile; }
+
+    /** Returns the third quartile of the values. The quartile is calculated using the
+     * "Tukey's hinges" method.
+     * @see firstQuartile
+     * @see interQuartileRange
+     */
+    double thirdQuartile() const { return mThirdQuartile; }
+
+    /** Returns the inter quartile range of the values. The quartiles are calculated using the
+     * "Tukey's hinges" method.
+     * @see firstQuartile
+     * @see thirdQuartile
+     */
+    double interQuartileRange() const { return mThirdQuartile - mFirstQuartile; }
+
   private:
 
     Statistics mStatistics;
@@ -157,6 +181,8 @@ class CORE_EXPORT QgsStatisticalSummary
     double mSampleStdev;
     double mMinority;
     double mMajority;
+    double mFirstQuartile;
+    double mThirdQuartile;
     QMap< double, int > mValueCount;
 };
 
