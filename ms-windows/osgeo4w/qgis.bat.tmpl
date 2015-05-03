@@ -16,6 +16,7 @@ if not exist %USERPROFILE%\.qgis2\ mkdir %USERPROFILE%\.qgis2\
 if not exist %USERPROFILE%\.qgis2\processing\ mkdir %USERPROFILE%\.qgis2\processing\
 mkdir %USERPROFILE%\.qgis2\processing\rlibs
 :SETRLIBS
-set R_LIBS_USER=%USERPROFILE%\.qgis2\processing\rlibs
+set R_LIBS_USER="%USERPROFILE%\.qgis2\processing\rlibs"
+setx R_LIBS_USER "%USERPROFILE%\.qgis2\processing\rlibs"
 :END
 start "QGIS" /B "%OSGEO4W_ROOT%"\bin\@package@-bin.exe %*
