@@ -30,8 +30,9 @@
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
+#include "qgsfield.h"
 
-class QgsFieldPrivate : public QSharedData
+class CORE_EXPORT QgsFieldPrivate : public QSharedData
 {
   public:
 
@@ -47,7 +48,8 @@ class QgsFieldPrivate : public QSharedData
         , length( len )
         , precision( prec )
         , comment( comment )
-    {}
+    {
+    }
 
     QgsFieldPrivate( const QgsFieldPrivate& other )
         : QSharedData( other )
@@ -85,6 +87,32 @@ class QgsFieldPrivate : public QSharedData
 
     //! Comment
     QString comment;
+};
+
+
+class CORE_EXPORT QgsFieldsPrivate : public QSharedData
+{
+  public:
+
+    QgsFieldsPrivate()
+    {
+    }
+
+    QgsFieldsPrivate( const QgsFieldsPrivate& other )
+        : QSharedData( other )
+        , fields( other.fields )
+        , nameToIndex( other.nameToIndex )
+    {
+    }
+
+    ~QgsFieldsPrivate() {}
+
+    //! internal storage of the container
+    QVector<QgsFields::Field> fields;
+
+    //! map for quick resolution of name to index
+    QHash<QString, int> nameToIndex;
+
 };
 
 /// @endcond

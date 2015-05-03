@@ -1,10 +1,9 @@
-
-/**
-  \class QgsField
-  \brief Class to encapsulate a field in an attribute table or data source.
-
-  QgsField stores metadata about an attribute field, including name, type
-  length, and if applicable, precision.
+/** \class QgsField
+  * \ingroup core
+  * Encapsulate a field in an attribute table or data source.
+  * QgsField stores metadata about an attribute field, including name, type
+  * length, and if applicable, precision.
+  * \note QgsField objects are implicitly shared.
  */
 
 class QgsField
@@ -39,7 +38,7 @@ public:
     QgsField( const QgsField& other );
 
     //! Destructor
-    ~QgsField();
+    virtual ~QgsField();
 
     bool operator==( const QgsField& other ) const;
     bool operator!=( const QgsField& other ) const;
@@ -175,6 +174,15 @@ public:
 }; // class QgsField
 
 
+/** \class QgsFields
+ * \ingroup core
+ * Container of fields for a vector layer.
+ *
+ * In addition to storing a list of QgsField instances, it also:
+ * - allows quick lookups of field names to index in the list
+ *- keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
+ * \note QgsFields objects are implicitly shared.
+ */
 
 class QgsFields
 {
@@ -191,6 +199,16 @@ class QgsFields
       OriginEdit,      //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
       OriginExpression //!< field is calculated from an expression
     };
+
+    /** Constructor for an empty field container
+     */
+    QgsFields();
+
+    /** Copy constructor
+     */
+    QgsFields( const QgsFields& other );
+
+    virtual ~QgsFields();
 
     //! Remove all fields
     void clear();
