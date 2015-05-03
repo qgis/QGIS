@@ -83,7 +83,7 @@ class QgsExpression
 
     double scale();
 
-    //! Return the expression string that was given when created.
+    //! Alias for dump()
     const QString expression() const;
 
     //! Return the expression string that represents this QgsExpression.
@@ -202,6 +202,13 @@ class QgsExpression
         /** Does this function use a geometry object. */
         bool usesgeometry();
 
+        /** Returns a list of possible aliases for the function. These include
+         * other permissible names for the function, eg deprecated names.
+         * @return list of known aliases
+         * @note added in QGIS 2.9
+         */
+        virtual QStringList aliases() const;
+
         /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
          * Functions are non lazy default and will be given the node return value when called **/
@@ -231,7 +238,7 @@ class QgsExpression
     static bool isFunctionName( QString name );
 
     // return index of the function in Functions array
-    static int functionIndex( QString name );
+    static int functionIndex( const QString& name );
 
     /**  Returns the number of functions defined in the parser
       *  @return The number of function defined in the parser.

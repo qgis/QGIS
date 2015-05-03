@@ -184,10 +184,12 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @param nclasses The number of classes to calculate (approximate for some modes)
     //! @note Added in 2.6
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+
     //! Evaluates the data expression and returns the list of values from the layer
     //! @param vlayer  The layer for which to evaluate the expression
     //! @note Added in 2.6
-    QList<double> getDataValues( QgsVectorLayer *vlayer );
+    //! @deprecated use QgsVectorLayer::getDoubleValues instead
+    Q_DECL_DEPRECATED QList<double> getDataValues( QgsVectorLayer *vlayer );
 
     //! Return the label format used to generate default classification labels
     //! @note Added in 2.6
@@ -266,7 +268,6 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! set the method used for graduation (either size or color)
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
-
 
     void setRotationField( QString fieldOrExpression ) override;
     QString rotationField() const override;

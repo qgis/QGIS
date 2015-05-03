@@ -31,7 +31,7 @@ class GUI_EXPORT QgsUserInputToolBar : public QToolBar
     void addUserInputWidget( QWidget* widget );
 
   protected:
-    void paintEvent(QPaintEvent *event);
+    void paintEvent( QPaintEvent *event );
 
   private slots:
     void widgetDestroyed( QObject* obj );

@@ -1,8 +1,8 @@
-<h3>tostring() function</h3>
+<h3>to_string() function</h3>
 Converts a number to string.
 
 <p><h4>Syntax</h4>
-     tostring(<i>number</i>)</p>
+     to_string(<i>number</i>)</p>
 
 <p><h4>Arguments</h4>
 <!-- List args for functions here-->
@@ -10,4 +10,4 @@ Converts a number to string.
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->
-     tostring(123) &rarr; '123'</p>
+     to_string(123) &rarr; '123'</p>

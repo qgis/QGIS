@@ -817,40 +817,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
 
 QList<double> QgsGraduatedSymbolRendererV2::getDataValues( QgsVectorLayer *vlayer )
 {
-  QList<double> values;
-
-  QScopedPointer<QgsExpression> expression;
-  int attrNum = vlayer->fieldNameIndex( mAttrName );
-
-  if ( attrNum == -1 )
-  {
-    // try to use expression
-    expression.reset( new QgsExpression( mAttrName ) );
-    if ( expression->hasParserError() || !expression->prepare( vlayer->pendingFields() ) )
-      return values; // should have a means to report errors
-  }
-
-  QgsFeature f;
-  QStringList lst;
-  if ( expression.isNull() )
-    lst.append( mAttrName );
-  else
-    lst = expression->referencedColumns();
-
-  QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
-                           .setFlags(( expression && expression->needsGeometry() ) ?
-                                     QgsFeatureRequest::NoFlags :
-                                     QgsFeatureRequest::NoGeometry )
-                           .setSubsetOfAttributes( lst, vlayer->pendingFields() ) );
-
-  // create list of non-null attribute values
-  while ( fit.nextFeature( f ) )
-  {
-    QVariant v = expression ? expression->evaluate( f ) : f.attribute( attrNum );
-    if ( !v.isNull() )
-      values.append( v.toDouble() );
-  }
-  return values;
+  bool ok;
+  return vlayer->getDoubleValues( mAttrName, ok );
 }
 
 void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses )
@@ -873,10 +841,11 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
 
   int attrNum = vlayer->fieldNameIndex( mAttrName );
 
+  bool ok;
   if ( attrNum == -1 )
   {
-    values = getDataValues( vlayer );
-    if ( values.isEmpty() )
+    values = vlayer->getDoubleValues( mAttrName, ok );
+    if ( !ok || values.isEmpty() )
       return;
 
     qSort( values ); // vmora: is wondering if O( n log(n) ) is really necessary here, min and max are O( n )
@@ -906,7 +875,7 @@ void QgsGraduatedSymbolRendererV2::updateClasses( QgsVectorLayer *vlayer, Mode m
     // get values from layer
     if ( !valuesLoaded )
     {
-      values = getDataValues( vlayer );
+      values = vlayer->getDoubleValues( mAttrName, ok );
     }
 
     // calculate the breaks

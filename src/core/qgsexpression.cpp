@@ -1666,22 +1666,33 @@ const QStringList &QgsExpression::BuiltinFunctions()
     << "asin" << "acos" << "atan" << "atan2"
     << "exp" << "ln" << "log10" << "log"
     << "round" << "rand" << "randf" << "max" << "min" << "clamp"
-    << "scale_linear" << "scale_exp" << "floor" << "ceil"
-    << "toint" << "toreal" << "tostring"
-    << "todatetime" << "todate" << "totime" << "tointerval"
-    << "coalesce" << "regexp_match" << "$now" << "age" << "year"
+    << "scale_linear" << "scale_exp" << "floor" << "ceil" << "$pi"
+    << "toint" << "to_int" << "toreal" << "to_real" << "tostring" << "to_string"
+    << "todatetime" << "to_datetime" << "todate" << "to_date"
+    << "totime" << "to_time" << "tointerval" << "to_interval"
+    << "coalesce" << "if" << "regexp_match" << "age" << "year"
     << "month" << "week" << "day" << "hour"
     << "minute" << "second" << "lower" << "upper"
     << "title" << "length" << "replace" << "trim" << "wordwrap"
     << "regexp_replace" << "regexp_substr"
     << "substr" << "concat" << "strpos" << "left"
-    << "right" << "rpad" << "lpad"
+    << "right" << "rpad" << "lpad" << "format"
     << "format_number" << "format_date"
     << "color_rgb" << "color_rgba" << "ramp_color"
     << "color_hsl" << "color_hsla" << "color_hsv" << "color_hsva"
     << "color_cymk" << "color_cymka"
     << "xat" << "yat" << "$area"
     << "$length" << "$perimeter" << "$x" << "$y"
+    << "x_at" << "xat" << "y_at" << "yat" << "x_min" << "xmin" << "x_max" << "xmax"
+    << "y_min" << "ymin" << "y_max" << "ymax" << "geom_from_wkt" << "geomFromWKT"
+    << "geom_from_gml" << "geomFromGML" << "intersects_bbox" << "bbox"
+    << "disjoint" << "intersects" << "touches" << "crosses" << "contains"
+    << "overlaps" << "within" << "buffer" << "centroid" << "bounds"
+    << "bounds_width" << "bounds_height" << "convex_hull" << "difference"
+    << "distance" << "intersection" << "sym_difference" << "combine"
+    << "union" << "geom_to_wkt" << "geomToWKT" << "geometry"
+    << "transform" << "get_feature" << "getFeature"
+    << "attribute"
     << "$rownum" << "$id" << "$scale" << "_specialcol_";
   }
   return gmBuiltinFunctions;
@@ -1717,18 +1728,18 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "scale_exp", 6, fcnExpScale, "Math" )
     << new StaticFunction( "floor", 1, fcnFloor, "Math" )
     << new StaticFunction( "ceil", 1, fcnCeil, "Math" )
-    << new StaticFunction( "$pi", 0, fcnPi, "Math" )
-    << new StaticFunction( "toint", 1, fcnToInt, "Conversions" )
-    << new StaticFunction( "toreal", 1, fcnToReal, "Conversions" )
-    << new StaticFunction( "tostring", 1, fcnToString, "Conversions" )
-    << new StaticFunction( "todatetime", 1, fcnToDateTime, "Conversions" )
-    << new StaticFunction( "todate", 1, fcnToDate, "Conversions" )
-    << new StaticFunction( "totime", 1, fcnToTime, "Conversions" )
-    << new StaticFunction( "tointerval", 1, fcnToInterval, "Conversions" )
+    << new StaticFunction( "pi", 0, fcnPi, "Math", QString(), false, QStringList(), false, QStringList() << "$pi" )
+    << new StaticFunction( "to_int", 1, fcnToInt, "Conversions", QString(), false, QStringList(), false, QStringList() << "toint" )
+    << new StaticFunction( "to_real", 1, fcnToReal, "Conversions", QString(), false, QStringList(), false, QStringList() << "toreal" )
+    << new StaticFunction( "to_string", 1, fcnToString, "Conversions", QString(), false, QStringList(), false, QStringList() << "tostring" )
+    << new StaticFunction( "to_datetime", 1, fcnToDateTime, "Conversions", QString(), false, QStringList(), false, QStringList() << "todatetime" )
+    << new StaticFunction( "to_date", 1, fcnToDate, "Conversions", QString(), false, QStringList(), false, QStringList() << "todate" )
+    << new StaticFunction( "to_time", 1, fcnToTime, "Conversions", QString(), false, QStringList(), false, QStringList() << "totime" )
+    << new StaticFunction( "to_interval", 1, fcnToInterval, "Conversions", QString(), false, QStringList(), false, QStringList() << "tointerval" )
     << new StaticFunction( "coalesce", -1, fcnCoalesce, "Conditionals" )
     << new StaticFunction( "if", 3, fcnIf, "Conditionals", "", False, QStringList(), true )
     << new StaticFunction( "regexp_match", 2, fcnRegexpMatch, "Conditionals" )
-    << new StaticFunction( "$now", 0, fcnNow, "Date and Time" )
+    << new StaticFunction( "now", 0, fcnNow, "Date and Time", QString(), false, QStringList(), false, QStringList() << "$now" )
     << new StaticFunction( "age", 2, fcnAge, "Date and Time" )
     << new StaticFunction( "year", 1, fcnYear, "Date and Time" )
     << new StaticFunction( "month", 1, fcnMonth, "Date and Time" )
@@ -1771,15 +1782,15 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "$perimeter", 0, fcnGeomPerimeter, "GeometryGroup", "", true )
     << new StaticFunction( "$x", 0, fcnX, "GeometryGroup", "", true )
     << new StaticFunction( "$y", 0, fcnY, "GeometryGroup", "", true )
-    << new StaticFunction( "xat", 1, fcnXat, "GeometryGroup", "", true )
-    << new StaticFunction( "yat", 1, fcnYat, "GeometryGroup", "", true )
-    << new StaticFunction( "xmin", 1, fcnXMin, "GeometryGroup", "", true )
-    << new StaticFunction( "xmax", 1, fcnXMax, "GeometryGroup", "", true )
-    << new StaticFunction( "ymin", 1, fcnYMin, "GeometryGroup", "", true )
-    << new StaticFunction( "ymax", 1, fcnYMax, "GeometryGroup", "", true )
-    << new StaticFunction( "geomFromWKT", 1, fcnGeomFromWKT, "GeometryGroup" )
-    << new StaticFunction( "geomFromGML", 1, fcnGeomFromGML, "GeometryGroup" )
-    << new StaticFunction( "bbox", 2, fcnBbox, "GeometryGroup" )
+    << new StaticFunction( "x_at", 1, fcnXat, "GeometryGroup", "", true, QStringList(), false, QStringList() << "xat" )
+    << new StaticFunction( "y_at", 1, fcnYat, "GeometryGroup", "", true, QStringList(), false, QStringList() << "yat" )
+    << new StaticFunction( "x_min", 1, fcnXMin, "GeometryGroup", "", true, QStringList(), false, QStringList() << "xmin" )
+    << new StaticFunction( "x_max", 1, fcnXMax, "GeometryGroup", "", true, QStringList(), false, QStringList() << "xmax" )
+    << new StaticFunction( "y_min", 1, fcnYMin, "GeometryGroup", "", true, QStringList(), false, QStringList() << "ymin" )
+    << new StaticFunction( "y_max", 1, fcnYMax, "GeometryGroup", "", true, QStringList(), false, QStringList() << "ymax" )
+    << new StaticFunction( "geom_from_wkt", 1, fcnGeomFromWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromWKT" )
+    << new StaticFunction( "geom_from_gml", 1, fcnGeomFromGML, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomFromGML" )
+    << new StaticFunction( "intersects_bbox", 2, fcnBbox, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "bbox" )
     << new StaticFunction( "disjoint", 2, fcnDisjoint, "GeometryGroup" )
     << new StaticFunction( "intersects", 2, fcnIntersects, "GeometryGroup" )
     << new StaticFunction( "touches", 2, fcnTouches, "GeometryGroup" )
@@ -1792,22 +1803,22 @@ const QList<QgsExpression::Function*> &QgsExpression::Functions()
     << new StaticFunction( "bounds", 1, fcnBounds, "GeometryGroup", "", true )
     << new StaticFunction( "bounds_width", 1, fcnBoundsWidth, "GeometryGroup", "", true )
     << new StaticFunction( "bounds_height", 1, fcnBoundsHeight, "GeometryGroup", "", true )
-    << new StaticFunction( "convexHull", 1, fcnConvexHull, "GeometryGroup" )
+    << new StaticFunction( "convex_hull", 1, fcnConvexHull, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "convexHull" )
     << new StaticFunction( "difference", 2, fcnDifference, "GeometryGroup" )
     << new StaticFunction( "distance", 2, fcnDistance, "GeometryGroup" )
     << new StaticFunction( "intersection", 2, fcnIntersection, "GeometryGroup" )
-    << new StaticFunction( "symDifference", 2, fcnSymDifference, "GeometryGroup" )
+    << new StaticFunction( "sym_difference", 2, fcnSymDifference, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "symDifference" )
     << new StaticFunction( "combine", 2, fcnCombine, "GeometryGroup" )
     << new StaticFunction( "union", 2, fcnCombine, "GeometryGroup" )
-    << new StaticFunction( "geomToWKT", -1, fcnGeomToWKT, "GeometryGroup" )
+    << new StaticFunction( "geom_to_wkt", -1, fcnGeomToWKT, "GeometryGroup", QString(), false, QStringList(), false, QStringList() << "geomToWKT" )
     << new StaticFunction( "geometry", 1, fcnGetGeometry, "GeometryGroup" )
     << new StaticFunction( "transform", 3, fcnTransformGeometry, "GeometryGroup" )
     << new StaticFunction( "$rownum", 0, fcnRowNumber, "Record" )
     << new StaticFunction( "$id", 0, fcnFeatureId, "Record" )
     << new StaticFunction( "$currentfeature", 0, fcnFeature, "Record" )
     << new StaticFunction( "$scale", 0, fcnScale, "Record" )
-    << new StaticFunction( "$uuid", 0, fcnUuid, "Record" )
-    << new StaticFunction( "getFeature", 3, fcnGetFeature, "Record" )
+    << new StaticFunction( "uuid", 0, fcnUuid, "Record", QString(), false, QStringList(), false, QStringList() << "$uuid" )
+    << new StaticFunction( "get_feature", 3, fcnGetFeature, "Record", QString(), false, QStringList(), false, QStringList() << "getFeature" )
 
     //return all attributes string for referencedColumns - this is caught by
     // QgsFeatureRequest::setSubsetOfAttributes and causes all attributes to be fetched by the
@@ -1933,13 +1944,18 @@ bool QgsExpression::isFunctionName( QString name )
   return functionIndex( name ) != -1;
 }
 
-int QgsExpression::functionIndex( QString name )
+int QgsExpression::functionIndex( const QString &name )
 {
   int count = functionCount();
   for ( int i = 0; i < count; i++ )
   {
     if ( QString::compare( name, Functions()[i]->name(), Qt::CaseInsensitive ) == 0 )
       return i;
+    foreach ( QString alias, Functions()[i]->aliases() )
+    {
+      if ( QString::compare( name, alias, Qt::CaseInsensitive ) == 0 )
+        return i;
+    }
   }
   return -1;
 }

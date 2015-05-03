@@ -182,7 +182,7 @@ class QgsComposerMap : QgsComposerItem
     /**Called when atlas preview is toggled, to force map item to update its extent and redraw
      * @deprecated no longer required
     */
-    void toggleAtlasPreview();
+    void toggleAtlasPreview() /Deprecated/;
 
     /**Returns a pointer to the current map extent, which is either the original user specified
      * extent or the temporary atlas-driven feature extent depending on the current atlas state
@@ -620,7 +620,7 @@ class QgsComposerMap : QgsComposerItem
     /** Returns true if the extent is forced to center on the overview
      * @deprecated use overview()->centered() or overviews() instead
     */
-    bool overviewCentered() const;
+    bool overviewCentered() const /Deprecated/;
 
     /** Set the overview's centering mode
      * @deprecated use overview()->setCentered() or overviews() instead

@@ -408,6 +408,8 @@ void QgsExpressionBuilderWidget::updateFunctionTree()
       continue;
     if ( func->params() != 0 )
       name += "(";
+    else if ( !name.startsWith( "$" ) )
+      name += "()";
     registerItem( func->group(), func->name(), " " + name + " ", func->helptext() );
   }
 

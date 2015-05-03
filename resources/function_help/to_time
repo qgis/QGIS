@@ -1,8 +1,8 @@
-<h3>totime() function</h3>
+<h3>to_time() function</h3>
 Convert a string into Qt time type.
 
 <h4>Syntax</h4>
-<code>totime('string')</code><br>
+<code>to_time('string')</code><br>
 
 <h4>Arguments</h4>
 <code>string</code> - is string in Qt time format.
@@ -10,4 +10,4 @@ Convert a string into Qt time type.
 
 <h4>Example</h4>
 <!-- Show example of function.-->
-<code>totime('12:30:01') &rarr; 12:30:01</code><br>
+<code>to_time('12:30:01') &rarr; 12:30:01</code><br>

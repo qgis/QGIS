@@ -2128,7 +2128,7 @@ static QgsGeometry* geometryFromConstExpr( const QgsExpression::Node* node )
   {
     const QgsExpression::NodeFunction* fnNode = static_cast<const QgsExpression::NodeFunction*>( node );
     QgsExpression::Function* fnDef = QgsExpression::Functions()[fnNode->fnIndex()];
-    if ( fnDef->name() == "geomFromWKT" )
+    if ( fnDef->name() == "geom_from_wkt" )
     {
       const QList<QgsExpression::Node*>& args = fnNode->args()->list();
       if ( args[0]->nodeType() == QgsExpression::ntLiteral )
@@ -2146,7 +2146,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
 {
   QgsExpression::Function* fd = QgsExpression::Functions()[node->fnIndex()];
 
-  if ( fd->name() == "bbox" )
+  if ( fd->name() == "intersects_bbox" )
   {
     QList<QgsExpression::Node*> argNodes = node->args()->list();
     Q_ASSERT( argNodes.count() == 2 ); // binary spatial ops must have two args
@@ -2203,12 +2203,12 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
 
     const QgsExpression::NodeFunction* otherFn = static_cast<const QgsExpression::NodeFunction*>( otherNode );
     QgsExpression::Function* otherFnDef = QgsExpression::Functions()[otherFn->fnIndex()];
-    if ( otherFnDef->name() == "geomFromWKT" )
+    if ( otherFnDef->name() == "geom_from_wkt" )
     {
       QgsExpression::Node* firstFnArg = otherFn->args()->list()[0];
       if ( firstFnArg->nodeType() != QgsExpression::ntLiteral )
       {
-        errorMessage = "geomFromWKT: argument must be string literal";
+        errorMessage = "geom_from_wkt: argument must be string literal";
         return QDomElement();
       }
       QString wkt = static_cast<const QgsExpression::NodeLiteral*>( firstFnArg )->value().toString();
@@ -2216,12 +2216,12 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       otherGeomElem = QgsOgcUtils::geometryToGML( geom, doc );
       delete geom;
     }
-    else if ( otherFnDef->name() == "geomFromGML" )
+    else if ( otherFnDef->name() == "geom_from_gml" )
     {
       QgsExpression::Node* firstFnArg = otherFn->args()->list()[0];
       if ( firstFnArg->nodeType() != QgsExpression::ntLiteral )
       {
-        errorMessage = "geomFromGML: argument must be string literal";
+        errorMessage = "geom_from_gml: argument must be string literal";
         return QDomElement();
       }
 
@@ -2229,7 +2229,7 @@ QDomElement QgsOgcUtils::expressionFunctionToOgcFilter( const QgsExpression::Nod
       QString gml = static_cast<const QgsExpression::NodeLiteral*>( firstFnArg )->value().toString();
       if ( !geomDoc.setContent( gml, true ) )
       {
-        errorMessage = "geomFromGML: unable to parse XML";
+        errorMessage = "geom_from_gml: unable to parse XML";
         return QDomElement();
       }
 

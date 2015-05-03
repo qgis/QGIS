@@ -9888,6 +9888,10 @@ void QgisApp::keyReleaseEvent( QKeyEvent *event )
     event->setAccepted( accepted ); // don't close my Top Level Widget !
     accepted = false;// close the app next time when the user press back button
   }
+  else
+  {
+    QMainWindow::keyReleaseEvent( event );
+  }
 }
 #endif
 

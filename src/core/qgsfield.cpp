@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsfield.h"
+#include "qgsfield_p.h"
 
 #include <QSettings>
 #include <QtCore/qmath.h>
@@ -34,9 +35,20 @@ QgsField::QgsField( QString nam, QString typ, int len, int prec, bool num,
 #endif
 
 QgsField::QgsField( QString name, QVariant::Type type, QString typeName, int len, int prec, QString comment )
-    : mName( name ), mType( type ), mTypeName( typeName )
-    , mLength( len ), mPrecision( prec ), mComment( comment )
 {
+  d = new QgsFieldPrivate( name, type, typeName, len, prec, comment );
+}
+
+QgsField::QgsField( const QgsField &other )
+    : d( other.d )
+{
+
+}
+
+QgsField &QgsField::operator =( const QgsField & other )
+{
+  d = other.d;
+  return *this;
 }
 
 
@@ -46,8 +58,7 @@ QgsField::~QgsField()
 
 bool QgsField::operator==( const QgsField& other ) const
 {
-  return (( mName == other.mName ) && ( mType == other.mType )
-          && ( mLength == other.mLength ) && ( mPrecision == other.mPrecision ) );
+  return *( other.d ) == *d;
 }
 
 bool QgsField::operator!=( const QgsField& other ) const
@@ -55,64 +66,63 @@ bool QgsField::operator!=( const QgsField& other ) const
   return !( *this == other );
 }
 
-
 const QString & QgsField::name() const
 {
-  return mName;
+  return d->name;
 }
 
 QVariant::Type QgsField::type() const
 {
-  return mType;
+  return d->type;
 }
 
 const QString & QgsField::typeName() const
 {
-  return mTypeName;
+  return d->typeName;
 }
 
 int QgsField::length() const
 {
-  return mLength;
+  return d->length;
 }
 
 int QgsField::precision() const
 {
-  return mPrecision;
+  return d->precision;
 }
 
 const QString & QgsField::comment() const
 {
-  return mComment;
+  return d->comment;
 }
 
-void QgsField::setName( const QString & nam )
+void QgsField::setName( const QString& name )
 {
-  mName = nam;
+  d->name = name;
 }
 
 void QgsField::setType( QVariant::Type type )
 {
-  mType = type;
+  d->type = type;
 }
 
-void QgsField::setTypeName( const QString & typeName )
+void QgsField::setTypeName( const QString& typeName )
 {
-  mTypeName = typeName;
+  d->typeName = typeName;
 }
 
 void QgsField::setLength( int len )
 {
-  mLength = len;
+  d->length = len;
 }
-void QgsField::setPrecision( int prec )
+void QgsField::setPrecision( int precision )
 {
-  mPrecision = prec;
+  d->precision = precision;
 }
 
-void QgsField::setComment( const QString & comment )
+void QgsField::setComment( const QString& comment )
 {
-  mComment = comment;
+  d->comment = comment;
 }
 
 QString QgsField::displayString( const QVariant& v ) const
@@ -123,8 +133,8 @@ QString QgsField::displayString( const QVariant& v ) const
     return settings.value( "qgis/nullValue", "NULL" ).toString();
   }
 
-  if ( mType == QVariant::Double && mPrecision > 0 )
-    return QString::number( v.toDouble(), 'f', mPrecision );
+  if ( d->type == QVariant::Double && d->precision > 0 )
+    return QString::number( v.toDouble(), 'f', d->precision );
 
   return v.toString();
 }
@@ -133,33 +143,33 @@ bool QgsField::convertCompatible( QVariant& v ) const
 {
   if ( v.isNull() )
   {
-    v.convert( mType );
+    v.convert( d->type );
     return true;
   }
 
-  if ( mType == QVariant::Int && v.toInt() != v.toLongLong() )
+  if ( d->type == QVariant::Int && v.toInt() != v.toLongLong() )
   {
-    v = QVariant( mType );
+    v = QVariant( d->type );
     return false;
   }
 
-  if ( !v.convert( mType ) )
+  if ( !v.convert( d->type ) )
   {
-    v = QVariant( mType );
+    v = QVariant( d->type );
     return false;
   }
 
-  if ( mType == QVariant::Double && mPrecision > 0 )
+  if ( d->type == QVariant::Double && d->precision > 0 )
   {
-    double s = qPow( 10, mPrecision );
+    double s = qPow( 10, d->precision );
     double d = v.toDouble() * s;
     v = QVariant(( d < 0 ? ceil( d - 0.5 ) : floor( d + 0.5 ) ) / s );
     return true;
   }
 
-  if ( mType == QVariant::String && mLength > 0 && v.toString().length() > mLength )
+  if ( d->type == QVariant::String && d->length > 0 && v.toString().length() > d->length )
   {
-    v = v.toString().left( mLength );
+    v = v.toString().left( d->length );
     return false;
   }
 
@@ -168,33 +178,54 @@ bool QgsField::convertCompatible( QVariant& v ) const
 
 ////////////////////////////////////////////////////////////////////////////
 
+QgsFields::QgsFields()
+{
+  d = new QgsFieldsPrivate( );
+}
+
+QgsFields::QgsFields( const QgsFields &other )
+    : d( other.d )
+{
+}
+
+QgsFields &QgsFields::operator =( const QgsFields & other )
+{
+  d = other.d;
+  return *this;
+}
+
+QgsFields::~QgsFields()
+{
+
+}
+
 void QgsFields::clear()
 {
-  mFields.clear();
-  mNameToIndex.clear();
+  d->fields.clear();
+  d->nameToIndex.clear();
 }
 
 bool QgsFields::append( const QgsField& field, FieldOrigin origin, int originIndex )
 {
-  if ( mNameToIndex.contains( field.name() ) )
+  if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
   if ( originIndex == -1 && origin == OriginProvider )
-    originIndex = mFields.count();
-  mFields.append( Field( field, origin, originIndex ) );
+    originIndex = d->fields.count();
+  d->fields.append( Field( field, origin, originIndex ) );
 
-  mNameToIndex.insert( field.name(), mFields.count() - 1 );
+  d->nameToIndex.insert( field.name(), d->fields.count() - 1 );
   return true;
 }
 
 bool QgsFields::appendExpressionField( const QgsField& field, int originIndex )
 {
-  if ( mNameToIndex.contains( field.name() ) )
+  if ( d->nameToIndex.contains( field.name() ) )
     return false;
 
-  mFields.append( Field( field, OriginExpression, originIndex ) );
+  d->fields.append( Field( field, OriginExpression, originIndex ) );
 
-  mNameToIndex.insert( field.name(), mFields.count() - 1 );
+  d->nameToIndex.insert( field.name(), d->fields.count() - 1 );
   return true;
 }
 
@@ -203,8 +234,8 @@ void QgsFields::remove( int fieldIdx )
   if ( !exists( fieldIdx ) )
     return;
 
-  mNameToIndex.remove( mFields[fieldIdx].field.name() );
-  mFields.remove( fieldIdx );
+  d->nameToIndex.remove( d->fields[fieldIdx].field.name() );
+  d->fields.remove( fieldIdx );
 }
 
 void QgsFields::extend( const QgsFields& other )
@@ -215,27 +246,87 @@ void QgsFields::extend( const QgsFields& other )
   }
 }
 
+bool QgsFields::isEmpty() const
+{
+  return d->fields.isEmpty();
+}
+
+int QgsFields::count() const
+{
+  return d->fields.count();
+}
+
+int QgsFields::size() const
+{
+  return d->fields.count();
+}
+
+bool QgsFields::exists( int i ) const
+{
+  return i >= 0 && i < d->fields.count();
+}
+
+QgsField &QgsFields::operator[]( int i )
+{
+  return d->fields[i].field;
+}
+
+const QgsField &QgsFields::at( int i ) const
+{
+  return d->fields[i].field;
+}
+
+const QgsField &QgsFields::field( int fieldIdx ) const
+{
+  return d->fields[fieldIdx].field;
+}
+
+const QgsField &QgsFields::field( const QString &name ) const
+{
+  return d->fields[ indexFromName( name )].field;
+}
+
+const QgsField &QgsFields::operator[]( int i ) const
+{
+  return d->fields[i].field;
+}
+
 QgsFields::FieldOrigin QgsFields::fieldOrigin( int fieldIdx ) const
 {
   if ( !exists( fieldIdx ) )
     return OriginUnknown;
 
-  return mFields[fieldIdx].origin;
+  return d->fields[fieldIdx].origin;
+}
+
+int QgsFields::fieldOriginIndex( int fieldIdx ) const
+{
+  return d->fields[fieldIdx].originIndex;
+}
+
+int QgsFields::indexFromName( const QString &name ) const
+{
+  return d->nameToIndex.value( name, -1 );
 }
 
 QList<QgsField> QgsFields::toList() const
 {
   QList<QgsField> lst;
-  for ( int i = 0; i < mFields.count(); ++i )
-    lst.append( mFields[i].field );
+  for ( int i = 0; i < d->fields.count(); ++i )
+    lst.append( d->fields[i].field );
   return lst;
+}
+
+bool QgsFields::operator==( const QgsFields &other ) const
+{
+  return d->fields == other.d->fields;
 }
 
 int QgsFields::fieldNameIndex( const QString& fieldName ) const
 {
   for ( int idx = 0; idx < count(); ++idx )
   {
-    if ( QString::compare( mFields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( d->fields[idx].field.name(), fieldName, Qt::CaseInsensitive ) == 0 )
     {
       return idx;
     }
@@ -246,7 +337,7 @@ int QgsFields::fieldNameIndex( const QString& fieldName ) const
 QgsAttributeList QgsFields::allAttributesList() const
 {
   QgsAttributeList lst;
-  for ( int i = 0; i < mFields.count(); ++i )
+  for ( int i = 0; i < d->fields.count(); ++i )
     lst.append( i );
   return lst;
 }
