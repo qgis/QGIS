@@ -297,6 +297,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "concat numbers" ) << "1 || 2" << false << QVariant( "12" );
 
       // math functions
+      QTest::newRow( "pi" ) << "pi()" << false << QVariant( M_PI );
       QTest::newRow( "sqrt" ) << "sqrt(16)" << false << QVariant( 4. );
       QTest::newRow( "abs(0.1)" ) << "abs(0.1)" << false << QVariant( 0.1 );
       QTest::newRow( "abs(0)" ) << "abs(0)" << false << QVariant( 0. );
