@@ -369,7 +369,7 @@ class Grass7Algorithm(GeoAlgorithm):
 
                 if self.grassName == 'r.horizon':
                     command += out.name + uniqueSufix + '_0'
-                elif  self.grassName == 'r.composite':
+                elif self.grassName == 'r.composite':
                     commands.append(command)
                     outputCommands.append(command)
                 else:

@@ -21,24 +21,23 @@ class QgsStatisticalSummary
     //! Enumeration of flags that specify statistics to be calculated
     enum Statistic
     {
-        Count ,  //!< Count
-        Sum,  //!< Sum of values
-        Mean,  //!< Mean of values
-        Median, //!< Median of values
-        StDev, //!< Standard deviation of values
-        StDevSample, //!< Sample standard deviation of values
-        Min,  //!< Min of values
-        Max,  //!< Max of values
-        Range, //!< Range of values (max - min)
-        Minority, //!< Minority of values
-        Majority, //!< Majority of values
-        Variety, //!< Variety (count of distinct) values
-        FirstQuartile, //!< First quartile
-        ThirdQuartile, //!< Third quartile
-        InterQuartileRange, //!< Inter quartile range (IQR)
-        All
+      Count,  //!< Count
+      Sum,  //!< Sum of values
+      Mean,  //!< Mean of values
+      Median, //!< Median of values
+      StDev, //!< Standard deviation of values
+      StDevSample, //!< Sample standard deviation of values
+      Min,  //!< Min of values
+      Max,  //!< Max of values
+      Range, //!< Range of values (max - min)
+      Minority, //!< Minority of values
+      Majority, //!< Majority of values
+      Variety, //!< Variety (count of distinct) values
+      FirstQuartile, //!< First quartile
+      ThirdQuartile, //!< Third quartile
+      InterQuartileRange, //!< Inter quartile range (IQR)
+      All
     };
-    
     typedef QFlags<QgsStatisticalSummary::Statistic> Statistics;
 
     /** Constructor for QgsStatisticalSummary
@@ -130,8 +129,8 @@ class QgsStatisticalSummary
      * @see minority
      */
     double majority() const;
-    
-        /** Returns the first quartile of the values. The quartile is calculated using the
+
+    /** Returns the first quartile of the values. The quartile is calculated using the
      * "Tukey's hinges" method.
      * @see thirdQuartile
      * @see interQuartileRange
@@ -155,5 +154,4 @@ class QgsStatisticalSummary
 };
 
 QFlags<QgsStatisticalSummary::Statistic> operator|(QgsStatisticalSummary::Statistic f1, QFlags<QgsStatisticalSummary::Statistic> f2);
-
 

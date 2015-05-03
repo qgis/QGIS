@@ -72,9 +72,9 @@ void QgsUserInputToolBar::widgetDestroyed( QObject *obj )
   }
 }
 
-void QgsUserInputToolBar::paintEvent(QPaintEvent * event)
+void QgsUserInputToolBar::paintEvent( QPaintEvent * event )
 {
-  QToolBar::paintEvent(event);
+  QToolBar::paintEvent( event );
   if ( mWidgetList.count() == 0 )
   {
     hide();

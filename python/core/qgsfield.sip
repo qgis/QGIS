@@ -44,7 +44,7 @@ public:
     bool operator!=( const QgsField& other ) const;
 
     //! Gets the name of the field
-    const QString & name() const;
+    const QString& name() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
@@ -55,15 +55,13 @@ public:
       the data store reports it, with no attempt to standardize the value.
       @return QString containing the field type
      */
-    const QString & typeName() const;
-
+    const QString& typeName() const;
 
     /**
       Gets the length of the field.
       @return int containing the length of the field
      */
     int length() const;
-
 
     /**
       Gets the precision of the field. Not all field types have a related precision.
@@ -74,7 +72,7 @@ public:
     /**
     Returns the field comment
     */
-    const QString & comment() const;
+    const QString& comment() const;
 
     /**
       Set the field name.
@@ -104,7 +102,6 @@ public:
       @param precision Precision of the field
      */
     void setPrecision( int precision );
-
 
     /**
       Set the field comment
@@ -239,7 +236,7 @@ class QgsFields
     bool exists( int i ) const;
 
     //! Get field at particular index (must be in range 0..N-1)
-    // inline const QgsField& operator[]( int i ) const;
+    // const QgsField& operator[]( int i ) const;
     QgsField& operator[](int i) /Factory/;
 %MethodCode
   SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());

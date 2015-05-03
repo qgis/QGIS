@@ -83,7 +83,7 @@ class QgsExpression
 
     double scale();
 
-    //! Return the expression string that was given when created.
+    //! Alias for dump()
     const QString expression() const;
 
     //! Return the expression string that represents this QgsExpression.

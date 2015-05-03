@@ -269,7 +269,6 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 2.10
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
 
-
     void setRotationField( QString fieldOrExpression ) override;
     QString rotationField() const override;
 

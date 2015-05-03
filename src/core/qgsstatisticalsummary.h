@@ -37,8 +37,8 @@ class CORE_EXPORT QgsStatisticalSummary
     //! Enumeration of flags that specify statistics to be calculated
     enum Statistic
     {
-      Count       = 1,  //!< Count
-      Sum    = 2,  //!< Sum of values
+      Count = 1,  //!< Count
+      Sum = 2,  //!< Sum of values
       Mean = 4,  //!< Mean of values
       Median = 8, //!< Median of values
       StDev = 16, //!< Standard deviation of values

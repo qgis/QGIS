@@ -88,15 +88,15 @@ struct QgsVectorJoinInfo
 #include "qgsvectorlayer.h"
 %End
 
-  /**Join field in the target layer*/
+  /** Join field in the target layer*/
   QString targetFieldName;
-  /**Source layer*/
+  /** Source layer*/
   QString joinLayerId;
-  /**Join field in the source layer*/
+  /** Join field in the source layer*/
   QString joinFieldName;
-  /**True if the join is cached in virtual memory*/
+  /** True if the join is cached in virtual memory*/
   bool memoryCache;
-  /**Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
+  /** Cache for joined attributes to provide fast lookup (size is 0 if no memory caching)
     @note not available in python bindings
     */
   // QHash< QString, QgsAttributeMap> cachedAttributes;
@@ -1130,7 +1130,7 @@ class QgsVectorLayer : QgsMapLayer
 
     /**Returns maximum value for an attribute column or invalid variant in case of error */
     QVariant maximumValue( int index );
-    
+
     /** Fetches all values from a specified field name or expression.
      * @param fieldOrExpression field name or an expression string
      * @param ok will be set to false if field or expression is invalid, otherwise true
@@ -1139,7 +1139,7 @@ class QgsVectorLayer : QgsMapLayer
      * @see getDoubleValues
      */
     QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok );
-    
+
     /** Fetches all double values from a specified field name or expression. Null values or
      * invalid expression results are skipped.
      * @param fieldOrExpression field name or an expression string evaluating to a double value

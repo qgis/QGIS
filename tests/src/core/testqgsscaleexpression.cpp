@@ -37,9 +37,9 @@ class TestQgsScaleExpression: public QObject
     {
       {
         QgsScaleExpression exp( "scale_linear(column, 1, 7, 2, 10)" );
-        QCOMPARE( bool(exp), true );
+        QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Linear );
-        QCOMPARE( exp.baseExpression(), QString("column") );
+        QCOMPARE( exp.baseExpression(), QString( "column" ) );
         QCOMPARE( exp.minValue(), 1. );
         QCOMPARE( exp.maxValue(), 7. );
         QCOMPARE( exp.minSize(), 2. );
@@ -47,34 +47,34 @@ class TestQgsScaleExpression: public QObject
       }
       {
         QgsScaleExpression exp( "scale_exp(column, 1, 7, 2, 10, 0.5)" );
-        QCOMPARE( bool(exp), true );
+        QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Area );
       }
       {
         QgsScaleExpression exp( "scale_exp(column, 1, 7, 2, 10, 0.57)" );
-        QCOMPARE( bool(exp), true );
+        QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Flannery );
       }
       {
         QgsScaleExpression exp( "scale_exp(column, 1, 7, 2, 10, 0.51)" );
-        QCOMPARE( bool(exp), false );
+        QCOMPARE( bool( exp ), false );
         QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
       }
       {
         QgsScaleExpression exp( "scale_exp(column, 1, 7, a, 10, 0.5)" );
-        QCOMPARE( bool(exp), false );
+        QCOMPARE( bool( exp ), false );
         QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
       }
-        {
-          QgsScaleExpression exp( "scale_exp(column, 1, 7)" );
-          QCOMPARE( bool(exp), false );
-          QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
-        }
+      {
+        QgsScaleExpression exp( "scale_exp(column, 1, 7)" );
+        QCOMPARE( bool( exp ), false );
+        QCOMPARE( exp.type(), QgsScaleExpression::Unknown );
+      }
       {
         QgsScaleExpression exp( QgsScaleExpression::Linear, "column", 1, 7, 2, 10 );
-        QCOMPARE( bool(exp), true );
+        QCOMPARE( bool( exp ), true );
         QCOMPARE( exp.type(), QgsScaleExpression::Linear );
-        QCOMPARE( exp.baseExpression(), QString("column") );
+        QCOMPARE( exp.baseExpression(), QString( "column" ) );
         QCOMPARE( exp.minValue(), 1. );
         QCOMPARE( exp.maxValue(), 7. );
         QCOMPARE( exp.minSize(), 2. );
