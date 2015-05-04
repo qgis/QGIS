@@ -44,7 +44,7 @@ QgsOSMExportDialog::QgsOSMExportDialog( QWidget *parent ) :
   connect( btnUnselectAll, SIGNAL( clicked() ), this, SLOT( onUnselectAll() ) );
 
   mTagsModel = new QStandardItemModel( this );
-  mTagsModel->setHorizontalHeaderLabels( QStringList() << tr( "Tag" ) << tr( "Count" ) );
+  mTagsModel->setHorizontalHeaderLabels( QStringList() << tr( "Tag" ) << tr( "Count" ) << tr( "Not null" ) );
   viewTags->setModel( mTagsModel );
 }
 
@@ -106,7 +106,7 @@ void QgsOSMExportDialog::onLoadTags()
   QList<QgsOSMTagCountPair> pairs = mDatabase->usedTags( !radPoints->isChecked() );
   mDatabase->close();
 
-  mTagsModel->setColumnCount( 2 );
+  mTagsModel->setColumnCount( 3 );
   mTagsModel->setRowCount( pairs.count() );
 
   for ( int i = 0; i < pairs.count(); ++i )
@@ -115,9 +115,15 @@ void QgsOSMExportDialog::onLoadTags()
     QStandardItem* item = new QStandardItem( p.first );
     item->setCheckable( true );
     mTagsModel->setItem( i, 0, item );
+
     QStandardItem* item2 = new QStandardItem();
     item2->setData( p.second, Qt::DisplayRole );
     mTagsModel->setItem( i, 1, item2 );
+
+    QStandardItem* item3 = new QStandardItem();
+    item3->setData( "Not null", Qt::DisplayRole );
+    item3->setCheckable( true );
+    mTagsModel->setItem( i, 2, item3 );
   }
 
   viewTags->resizeColumnToContents( 0 );
@@ -144,15 +150,20 @@ void QgsOSMExportDialog::onOK()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QStringList tagKeys;
+  QStringList notNullTagKeys;
 
   for ( int i = 0; i < mTagsModel->rowCount(); ++i )
   {
     QStandardItem* item = mTagsModel->item( i, 0 );
     if ( item->checkState() == Qt::Checked )
       tagKeys << item->text();
+
+    QStandardItem* item2 = mTagsModel->item( i, 2 );
+    if ( item2->checkState() == Qt::Checked )
+      notNullTagKeys << item->text();
   }
 
-  bool res = mDatabase->exportSpatiaLite( type, editLayerName->text(), tagKeys );
+  bool res = mDatabase->exportSpatiaLite( type, editLayerName->text(), tagKeys, notNullTagKeys );
 
   // load the layer into canvas if that was requested
   if ( chkLoadWhenFinished->isChecked() )
