@@ -35,6 +35,7 @@ class TestQgsField: public QObject
     void assignment();
     void gettersSetters(); //test getters and setters
     void equality(); //test equality operators
+    void asVariant(); //test conversion to and from a QVariant
   private:
 };
 
@@ -145,6 +146,18 @@ void TestQgsField::equality()
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
   field2.setPrecision( 2 );
+}
+
+void TestQgsField::asVariant()
+{
+  QgsField original( "original", QVariant::Double, "double", 5, 2, "comment" );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( original );
+  QVERIFY( var.isValid() );
+
+  QgsField fromVar = qvariant_cast<QgsField>( var );
+  QCOMPARE( fromVar, original );
 }
 
 QTEST_MAIN( TestQgsField )

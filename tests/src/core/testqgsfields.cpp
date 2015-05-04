@@ -34,6 +34,7 @@ class TestQgsFields: public QObject
     void copy();// test cpy destruction (double delete)
     void assignment();
     void equality(); //test equality operators
+    void asVariant(); //test conversion to and from a QVariant
   private:
 };
 
@@ -123,6 +124,24 @@ void TestQgsFields::equality()
   fields2.append( field3 );
   QVERIFY( !( fields1 == fields2 ) );
   QVERIFY( fields1 != fields2 );
+}
+
+void TestQgsFields::asVariant()
+{
+  QgsField field1;
+  field1.setName( "name" );
+  QgsField field2;
+  field2.setName( "name" );
+  QgsFields original;
+  original.append( field1 );
+  original.append( field2 );
+
+  //convert to and from a QVariant
+  QVariant var = QVariant::fromValue( original );
+  QVERIFY( var.isValid() );
+
+  QgsFields fromVar = qvariant_cast<QgsFields>( var );
+  QCOMPARE( fromVar, original );
 }
 
 QTEST_MAIN( TestQgsFields )

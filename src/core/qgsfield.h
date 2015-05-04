@@ -154,6 +154,8 @@ class CORE_EXPORT QgsField
 
 }; // class QgsField
 
+Q_DECLARE_METATYPE( QgsField );
+
 
 /** \class QgsFields
  * \ingroup core
@@ -269,5 +271,7 @@ class CORE_EXPORT QgsFields
     QSharedDataPointer<QgsFieldsPrivate> d;
 
 };
+
+Q_DECLARE_METATYPE( QgsFields );
 
 #endif
