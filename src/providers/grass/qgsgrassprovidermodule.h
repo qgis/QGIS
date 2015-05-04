@@ -44,24 +44,55 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
     QString mGisdbase;
 };
 
-// Vector is collection of layers
-class QgsGrassVectorItem : public QgsDataCollectionItem
+class QgsGrassObjectItemBase
+{
+  public:
+    QgsGrassObjectItemBase( QgsGrassObject grassObject );
+
+  public:
+    void deleteGrassObject( QgsDataItem* parent );
+
+  protected:
+    QgsGrassObject mGrassObject;
+};
+
+class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
 {
     Q_OBJECT
   public:
-    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject vector, QString path );
+    QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject grassObject,
+                        QString name, QString path, QString uri,
+                        LayerType layerType, QString providerKey,
+                        bool deleteAction = true );
+
+    virtual QList<QAction*> actions() override;
+
+  public slots:
+    void deleteGrassObject();
+
+  protected:
+    //QgsGrassObject mGrassObject;
+    bool mDeleteAction;
+};
+
+// Vector is collection of layers
+class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectItemBase
+{
+    Q_OBJECT
+  public:
+    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path );
     ~QgsGrassVectorItem() {}
 
     virtual QList<QAction*> actions() override;
 
   public slots:
-    void deleteMap();
+    void deleteGrassObject();
 
   private:
     QgsGrassObject mVector;
 };
 
-class QgsGrassVectorLayerItem : public QgsLayerItem
+class QgsGrassVectorLayerItem : public QgsGrassObjectItem
 {
     Q_OBJECT
   public:
@@ -69,15 +100,27 @@ class QgsGrassVectorLayerItem : public QgsLayerItem
                              QString path, QString uri, LayerType layerType, bool singleLayer );
 
     QString layerName() const override;
-    virtual QList<QAction*> actions() override;
+    //virtual QList<QAction*> actions() override;
 
   public slots:
-    void deleteMap();
+    //void deleteMap();
 
   private:
     // layer from single layer vector map (cannot have delete action)
-    QgsGrassObject mVector;
     bool mSingleLayer;
+};
+
+class QgsGrassRasterItem : public QgsGrassObjectItem
+{
+    Q_OBJECT
+  public:
+    QgsGrassRasterItem( QgsDataItem* parent, QgsGrassObject grassObject,
+                        QString path, QString uri );
+
+    //virtual QList<QAction*> actions() override;
+
+  public slots:
+    //void deleteMap();
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

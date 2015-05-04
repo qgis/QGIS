@@ -68,6 +68,7 @@ class QgsGrassObject
     //! Element type
     enum Type { None, Raster, Vector, Region };
 
+    QgsGrassObject() {}
     QgsGrassObject( const QString& gisdbase, const QString& location = QString::null,
                     const QString& mapset = QString::null, const QString& name = QString::null,
                     Type type = None );

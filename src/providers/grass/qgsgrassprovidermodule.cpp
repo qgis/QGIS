@@ -147,8 +147,8 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
     QString uri = mDirPath + "/" + "cellhd" + "/" + name;
     QgsDebugMsg( "uri = " + uri );
 
-    QgsLayerItem *layer = new QgsLayerItem( this, name, path, uri, QgsLayerItem::Raster, "grassraster" );
-    layer->setState( Populated );
+    QgsGrassObject rasterObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Raster );
+    QgsGrassRasterItem *layer = new QgsGrassRasterItem( this, rasterObject, path, uri );
 
     items.append( layer );
   }
@@ -156,11 +156,62 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   return items;
 }
 
-QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject vector, QString path ) :
-    QgsDataCollectionItem( parent, vector.name(), path )
-    , mVector( vector )
+QgsGrassObjectItemBase::QgsGrassObjectItemBase( QgsGrassObject grassObject ) :
+    mGrassObject( grassObject )
 {
-  QgsDebugMsg( "name = " + vector.name() + " path = " + path );
+}
+
+void QgsGrassObjectItemBase::deleteGrassObject( QgsDataItem* parent )
+{
+  QgsDebugMsg( "Entered" );
+
+  if ( !QgsGrass::deleteObjectDialog( mGrassObject ) )
+    return;
+
+  // Warning if failed is currently in QgsGrass::deleteMap
+  if ( QgsGrass::deleteObject( mGrassObject ) )
+  {
+    // message on success is redundant, like in normal file browser
+    if ( parent )
+      parent->refresh();
+  }
+}
+
+QgsGrassObjectItem::QgsGrassObjectItem( QgsDataItem* parent, QgsGrassObject grassObject,
+                                        QString name, QString path, QString uri,
+                                        LayerType layerType, QString providerKey,
+                                        bool deleteAction )
+    : QgsLayerItem( parent, name, path, uri, layerType, providerKey )
+    , QgsGrassObjectItemBase( grassObject )
+    , mDeleteAction( deleteAction )
+{
+  setState( Populated ); // no children, to show non expandable in browser
+}
+
+QList<QAction*> QgsGrassObjectItem::actions()
+{
+  QList<QAction*> lst;
+
+  if ( mDeleteAction )
+  {
+    QAction* actionDelete = new QAction( tr( "Delete" ), this );
+    connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteGrassObject() ) );
+    lst.append( actionDelete );
+  }
+
+  return lst;
+}
+
+void QgsGrassObjectItem::deleteGrassObject()
+{
+  QgsGrassObjectItemBase::deleteGrassObject( parent() );
+}
+
+QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject grassObject, QString path ) :
+    QgsDataCollectionItem( parent, grassObject.name(), path )
+    , QgsGrassObjectItemBase( grassObject )
+{
+  QgsDebugMsg( "name = " + grassObject.name() + " path = " + path );
   setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
 }
 
@@ -169,71 +220,34 @@ QList<QAction*> QgsGrassVectorItem::actions()
   QList<QAction*> lst;
 
   QAction* actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteMap() ) );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteGrassObject() ) );
   lst.append( actionDelete );
 
   return lst;
 }
 
-void QgsGrassVectorItem::deleteMap()
+void QgsGrassVectorItem::deleteGrassObject()
 {
-  QgsDebugMsg( "Entered" );
-
-  if ( !QgsGrass::deleteObjectDialog( mVector ) )
-    return;
-
-  // Warning if failed is currently in QgsGrass::deleteMap
-  if ( QgsGrass::deleteObject( mVector ) )
-  {
-    // message on success is redundant, like in normal file browser
-    if ( mParent )
-      mParent->refresh();
-  }
+  QgsGrassObjectItemBase::deleteGrassObject( parent() );
 }
 
-QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassObject vector, QString layerName,
+QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassObject grassObject, QString layerName,
     QString path, QString uri,
     LayerType layerType, bool singleLayer )
-    : QgsLayerItem( parent, layerName, path, uri, layerType, "grass" )
-    , mVector( vector )
-    , mSingleLayer( singleLayer )
+    : QgsGrassObjectItem( parent, grassObject, layerName, path, uri, layerType, "grass", singleLayer )
 {
-  setState( Populated ); // no children, to show non expandable in browser
 }
 
 QString QgsGrassVectorLayerItem::layerName() const
 {
   // to get map + layer when added from browser
-  return mVector.name() + " " + name();
+  return mGrassObject.name() + " " + name();
 }
 
-
-QList<QAction*> QgsGrassVectorLayerItem::actions()
+QgsGrassRasterItem::QgsGrassRasterItem( QgsDataItem* parent, QgsGrassObject grassObject,
+                                        QString path, QString uri )
+    : QgsGrassObjectItem( parent, grassObject, grassObject.name(), path, uri, QgsLayerItem::Raster, "grassraster" )
 {
-  QList<QAction*> lst;
-
-  if ( mSingleLayer )
-  {
-    QAction* actionDelete = new QAction( tr( "Delete" ), this );
-    connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteMap() ) );
-    lst.append( actionDelete );
-  }
-
-  return lst;
-}
-
-void QgsGrassVectorLayerItem::deleteMap()
-{
-  QgsDebugMsg( "Entered" );
-
-  if ( !QgsGrass::deleteObjectDialog( mVector ) )
-    return;
-
-  if ( QgsGrass::deleteObject( mVector ) )
-  {
-    if ( mParent )
-      mParent->refresh();
-  }
 }
 
 QGISEXTERN int dataCapabilities()
