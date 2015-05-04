@@ -18,6 +18,7 @@
 #include "diagram/qgspiediagram.h"
 #include "diagram/qgshistogramdiagram.h"
 #include "qgsrendercontext.h"
+#include "qgslayertreemodellegendnode.h"
 
 #include <QDomElement>
 #include <QPainter>
@@ -167,6 +168,11 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
       newColor.setAlpha( 255 - transparency );
       categoryColors.append( newColor );
       categoryAttributes.append( attrElem.attribute( "field" ) );
+      categoryLabels.append( attrElem.attribute( "label" ) );
+      if ( categoryLabels.back().isEmpty() )
+      {
+        categoryLabels.back() = categoryAttributes.back();
+      }
     }
   }
   else
@@ -189,6 +195,7 @@ void QgsDiagramSettings::readXML( const QDomElement& elem, const QgsVectorLayer*
     for ( ; catIt != catList.constEnd(); ++catIt )
     {
       categoryAttributes.append( *catIt );
+      categoryLabels.append( *catIt );
     }
   }
 }
@@ -277,6 +284,7 @@ void QgsDiagramSettings::writeXML( QDomElement& rendererElem, QDomDocument& doc,
 
     attributeElem.setAttribute( "field", categoryAttributes.at( i ) );
     attributeElem.setAttribute( "color", categoryColors.at( i ).name() );
+    attributeElem.setAttribute( "label", categoryLabels.at( i ) );
     categoryElem.appendChild( attributeElem );
   }
 
@@ -532,4 +540,31 @@ void QgsLinearlyInterpolatedDiagramRenderer::writeXML( QDomElement& layerElem, Q
   mSettings.writeXML( rendererElem, doc, layer );
   _writeXML( rendererElem, doc, layer );
   layerElem.appendChild( rendererElem );
+}
+
+QList< QgsLayerTreeModelLegendNode* > QgsDiagramSettings::legendItems( QgsLayerTreeLayer* nodeLayer ) const
+{
+  QList< QgsLayerTreeModelLegendNode * > list;
+  for ( int i = 0 ; i < categoryLabels.size(); ++i )
+  {
+    QPixmap pix( 16, 16 );
+    pix.fill( categoryColors[i] );
+    list << new QgsSimpleLegendNode( nodeLayer, categoryLabels[i], QIcon( pix ), 0, QString( "diagram_%1" ).arg( QString::number( i ) ) );
+  }
+  return list;
+}
+
+QList< QgsLayerTreeModelLegendNode* > QgsDiagramRendererV2::legendItems( QgsLayerTreeLayer* ) const
+{
+  return QList< QgsLayerTreeModelLegendNode * >();
+}
+
+QList< QgsLayerTreeModelLegendNode* > QgsSingleCategoryDiagramRenderer::legendItems( QgsLayerTreeLayer* nodeLayer ) const
+{
+  return mSettings.legendItems( nodeLayer );
+}
+
+QList< QgsLayerTreeModelLegendNode* > QgsLinearlyInterpolatedDiagramRenderer::legendItems( QgsLayerTreeLayer* nodeLayer ) const
+{
+  return mSettings.legendItems( nodeLayer );
 }

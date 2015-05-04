@@ -587,6 +587,7 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRendererV2* r )
 {
   delete mDiagramRenderer;
   mDiagramRenderer = r;
+  emit rendererChanged();
 }
 
 QGis::GeometryType QgsVectorLayer::geometryType() const

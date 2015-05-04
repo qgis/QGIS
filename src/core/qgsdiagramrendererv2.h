@@ -33,6 +33,8 @@ class QgsPalGeometry;
 class QgsCoordinateTransform;
 class QgsMapToPixel;
 class QgsVectorLayer;
+class QgsLayerTreeModelLegendNode;
+class QgsLayerTreeLayer;
 
 namespace pal { class Layer; }
 
@@ -129,6 +131,8 @@ class CORE_EXPORT QgsDiagramSettings
     QFont font;
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
+    //! @note added in 2.10
+    QList< QString > categoryLabels;
     QSizeF size; //size
     SizeType sizeType; //mm or map units
     QColor backgroundColor;
@@ -151,6 +155,13 @@ class CORE_EXPORT QgsDiagramSettings
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer );
     void writeXML( QDomElement& rendererElem, QDomDocument& doc, const QgsVectorLayer* layer ) const;
+
+    /** Returns list of legend nodes for the diagram
+     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * @note added in 2.10
+     */
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const;
+
 };
 
 //additional diagram settings for interpolated size rendering
@@ -198,6 +209,12 @@ class CORE_EXPORT QgsDiagramRendererV2
     virtual void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) = 0;
     virtual void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const = 0;
 
+    /** Returns list of legend nodes for the diagram
+     * @note caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+     * @note added in 2.10
+     */
+    virtual QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const;
+
   protected:
     QgsDiagramRendererV2( const QgsDiagramRendererV2& other );
 
@@ -244,6 +261,8 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRendererV2
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) override;
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
+
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const override;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) override;
@@ -294,6 +313,8 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     void readXML( const QDomElement& elem, const QgsVectorLayer* layer ) override;
     void writeXML( QDomElement& layerElem, QDomDocument& doc, const QgsVectorLayer* layer ) const override;
+
+    QList< QgsLayerTreeModelLegendNode* > legendItems( QgsLayerTreeLayer* nodeLayer ) const override;
 
   protected:
     bool diagramSettings( const QgsFeature &feature, const QgsRenderContext& c, QgsDiagramSettings& s ) override;

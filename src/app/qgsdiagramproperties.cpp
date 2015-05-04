@@ -309,9 +309,11 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
 
       QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
       QList< QString > categoryAttributes = settingList.at( 0 ).categoryAttributes;
+      QList< QString > categoryLabels = settingList.at( 0 ).categoryLabels;
       QList< QString >::const_iterator catIt = categoryAttributes.constBegin();
       QList< QColor >::const_iterator coIt = categoryColors.constBegin();
-      for ( ; catIt != categoryAttributes.constEnd(); ++catIt, ++coIt )
+      QList< QString >::const_iterator labIt = categoryLabels.constBegin();
+      for ( ; catIt != categoryAttributes.constEnd(); ++catIt, ++coIt, ++labIt )
       {
         QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
         newItem->setText( 0, *catIt );
@@ -320,6 +322,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer* layer, QWidget* pare
         QColor col( *coIt );
         col.setAlpha( 255 );
         newItem->setBackground( 1, QBrush( col ) );
+        newItem->setText( 2, *labIt );
+        newItem->setFlags( newItem->flags() | Qt::ItemIsEditable );
       }
     }
 
@@ -645,15 +649,18 @@ void QgsDiagramProperties::apply()
 
   QList<QColor> categoryColors;
   QList<QString> categoryAttributes;
+  QList<QString> categoryLabels;
   for ( int i = 0; i < mDiagramAttributesTreeWidget->topLevelItemCount(); ++i )
   {
     QColor color = mDiagramAttributesTreeWidget->topLevelItem( i )->background( 1 ).color();
     color.setAlpha( 255 - ds.transparency );
     categoryColors.append( color );
     categoryAttributes.append( mDiagramAttributesTreeWidget->topLevelItem( i )->data( 0, Qt::UserRole ).toString() );
+    categoryLabels.append( mDiagramAttributesTreeWidget->topLevelItem( i )->text( 2 ) );
   }
   ds.categoryColors = categoryColors;
   ds.categoryAttributes = categoryAttributes;
+  ds.categoryLabels = categoryLabels;
   ds.size = QSizeF( mDiagramSizeSpinBox->value(), mDiagramSizeSpinBox->value() );
   ds.sizeType = static_cast<QgsDiagramSettings::SizeType>( mDiagramUnitComboBox->itemData( mDiagramUnitComboBox->currentIndex() ).toInt() );
   ds.labelPlacementMethod = static_cast<QgsDiagramSettings::LabelPlacementMethod>( mLabelPlacementComboBox->itemData( mLabelPlacementComboBox->currentIndex() ).toInt() );
