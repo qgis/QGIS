@@ -367,7 +367,7 @@ void TestQgsGrassProvider::info()
   {
     es = expectedStats.value( map );
     // TODO: QgsGrass::info() may open dialog window on error which blocks tests
-    QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, "test", map, QgsGrass::Raster, "stats",
+    QHash<QString, QString> info = QgsGrass::info( mGisdbase, mLocation, "test", map, QgsGrassObject::Raster, "stats",
                                    expectedExtent, 10, 10, 5000, false );
     reportRow( "map: " + map );
     QgsRasterBandStats s;
@@ -379,7 +379,7 @@ void TestQgsGrassProvider::info()
     compare( es.minimumValue, s.minimumValue, ok );
     compare( es.maximumValue, s.maximumValue, ok );
 
-    QgsRectangle extent = QgsGrass::extent( mGisdbase, mLocation, "test", map, QgsGrass::Raster, false );
+    QgsRectangle extent = QgsGrass::extent( mGisdbase, mLocation, "test", map, QgsGrassObject::Raster, false );
     reportRow( "expectedExtent: " + expectedExtent.toString() );
     reportRow( "extent: " + extent.toString() );
     if ( extent != expectedExtent )
