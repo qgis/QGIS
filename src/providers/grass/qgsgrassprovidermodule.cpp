@@ -19,6 +19,7 @@
 #include "qgsgrass.h"
 #include "qgslogger.h"
 
+#include <QAction>
 #include <QFileInfo>
 #include <QDir>
 
@@ -34,7 +35,6 @@ QgsGrassLocationItem::QgsGrassLocationItem( QgsDataItem* parent, QString dirPath
   // set Directory type so that when sorted it gets into dirs (after the dir it represents)
   mType = QgsDataItem::Directory;
 }
-QgsGrassLocationItem::~QgsGrassLocationItem() {}
 
 bool QgsGrassLocationItem::isLocation( QString path )
 {
@@ -75,8 +75,6 @@ QgsGrassMapsetItem::QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QS
   mIconName = "grass_mapset.png";
 }
 
-QgsGrassMapsetItem::~QgsGrassMapsetItem() {}
-
 bool QgsGrassMapsetItem::isMapset( QString path )
 {
   return QFile::exists( path + "/WIND" );
@@ -96,11 +94,13 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
     QString mapPath = mPath + "/vector/" + name;
 
-    QgsDataCollectionItem *map = 0;
+    QgsGrassObject vectorObject( mGisdbase, mLocation, mName, name, QgsGrassObject::Vector );
+    QgsGrassVectorItem *map = 0;
     if ( layerNames.size() > 1 )
     {
-      map = new QgsDataCollectionItem( this, name, mapPath );
-      map->setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
+      //map = new QgsDataCollectionItem( this, name, mapPath );
+      //map->setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
+      map = new QgsGrassVectorItem( this, vectorObject, mapPath );
     }
     foreach ( QString layerName, layerNames )
     {
@@ -122,13 +122,13 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
       if ( !map )
       {
         /* This may happen (one layer only) in GRASS 7 with points (no topo layers) */
-        QgsLayerItem *layer = new QgsLayerItem( this, name + " " + baseLayerName, layerPath, uri, layerType, "grass" );
-        layer->setState( Populated );
+        QgsLayerItem *layer = new QgsGrassVectorLayerItem( this, vectorObject, name + " " + baseLayerName, layerPath, uri, layerType, true );
+        //layer->setState( Populated );
         items.append( layer );
       }
       else
       {
-        QgsLayerItem *layer = new QgsGrassVectorLayerItem( map, name, baseLayerName, layerPath, uri, layerType, "grass" );
+        QgsLayerItem *layer = new QgsGrassVectorLayerItem( map, vectorObject, baseLayerName, layerPath, uri, layerType, false );
         map->addChild( layer );
       }
     }
@@ -156,9 +156,47 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
   return items;
 }
 
-QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QString mapName, QString layerName, QString path, QString uri, LayerType layerType, QString providerKey )
-    : QgsLayerItem( parent, layerName, path, uri, layerType, providerKey )
-    , mMapName( mapName )
+QgsGrassVectorItem::QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject vector, QString path ) :
+    QgsDataCollectionItem( parent, vector.name(), path )
+    , mVector( vector )
+{
+  QgsDebugMsg( "name = " + vector.name() + " path = " + path );
+  setCapabilities( QgsDataItem::NoCapabilities ); // disable fertility
+}
+
+QList<QAction*> QgsGrassVectorItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteMap() ) );
+  lst.append( actionDelete );
+
+  return lst;
+}
+
+void QgsGrassVectorItem::deleteMap()
+{
+  QgsDebugMsg( "Entered" );
+
+  if ( !QgsGrass::deleteObjectDialog( mVector ) )
+    return;
+
+  // Warning if failed is currently in QgsGrass::deleteMap
+  if ( QgsGrass::deleteObject( mVector ) )
+  {
+    // message on success is redundant, like in normal file browser
+    if ( mParent )
+      mParent->refresh();
+  }
+}
+
+QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassObject vector, QString layerName,
+    QString path, QString uri,
+    LayerType layerType, bool singleLayer )
+    : QgsLayerItem( parent, layerName, path, uri, layerType, "grass" )
+    , mVector( vector )
+    , mSingleLayer( singleLayer )
 {
   setState( Populated ); // no children, to show non expandable in browser
 }
@@ -166,7 +204,36 @@ QgsGrassVectorLayerItem::QgsGrassVectorLayerItem( QgsDataItem* parent, QString m
 QString QgsGrassVectorLayerItem::layerName() const
 {
   // to get map + layer when added from browser
-  return mMapName + " " + name();
+  return mVector.name() + " " + name();
+}
+
+
+QList<QAction*> QgsGrassVectorLayerItem::actions()
+{
+  QList<QAction*> lst;
+
+  if ( mSingleLayer )
+  {
+    QAction* actionDelete = new QAction( tr( "Delete" ), this );
+    connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteMap() ) );
+    lst.append( actionDelete );
+  }
+
+  return lst;
+}
+
+void QgsGrassVectorLayerItem::deleteMap()
+{
+  QgsDebugMsg( "Entered" );
+
+  if ( !QgsGrass::deleteObjectDialog( mVector ) )
+    return;
+
+  if ( QgsGrass::deleteObject( mVector ) )
+  {
+    if ( mParent )
+      mParent->refresh();
+  }
 }
 
 QGISEXTERN int dataCapabilities()

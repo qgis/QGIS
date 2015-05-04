@@ -17,12 +17,12 @@
 #define QGSGRASSPROVIDERMODULE_H
 
 #include "qgsdataitem.h"
+#include "qgsgrass.h"
 
 class QgsGrassLocationItem : public QgsDirectoryItem
 {
   public:
     QgsGrassLocationItem( QgsDataItem* parent, QString dirPath, QString path );
-    ~QgsGrassLocationItem();
 
     QIcon icon() override { return QgsDataItem::icon(); }
 
@@ -34,7 +34,6 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
 {
   public:
     QgsGrassMapsetItem( QgsDataItem* parent, QString dirPath, QString path );
-    ~QgsGrassMapsetItem();
 
     QIcon icon() override { return QgsDataItem::icon(); }
 
@@ -45,16 +44,40 @@ class QgsGrassMapsetItem : public QgsDirectoryItem
     QString mGisdbase;
 };
 
-class QgsGrassVectorLayerItem : public QgsLayerItem
+// Vector is collection of layers
+class QgsGrassVectorItem : public QgsDataCollectionItem
 {
+    Q_OBJECT
   public:
-    QgsGrassVectorLayerItem( QgsDataItem* parent, QString mapName, QString layerName, QString path, QString uri, LayerType layerType, QString providerKey );
-    ~QgsGrassVectorLayerItem() {};
+    QgsGrassVectorItem( QgsDataItem* parent, QgsGrassObject vector, QString path );
+    ~QgsGrassVectorItem() {}
 
-    QString layerName() const override;
+    virtual QList<QAction*> actions() override;
+
+  public slots:
+    void deleteMap();
 
   private:
-    QString mMapName;
+    QgsGrassObject mVector;
+};
+
+class QgsGrassVectorLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+  public:
+    QgsGrassVectorLayerItem( QgsDataItem* parent, QgsGrassObject vector, QString layerName,
+                             QString path, QString uri, LayerType layerType, bool singleLayer );
+
+    QString layerName() const override;
+    virtual QList<QAction*> actions() override;
+
+  public slots:
+    void deleteMap();
+
+  private:
+    // layer from single layer vector map (cannot have delete action)
+    QgsGrassObject mVector;
+    bool mSingleLayer;
 };
 
 #endif // QGSGRASSPROVIDERMODULE_H

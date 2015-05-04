@@ -447,38 +447,22 @@ void QgsGrassBrowser::deleteMap()
     QString mapset = mModel->itemMapset( *it );
     QString map = mModel->itemMap( *it );
 
-    QString typeName;
-    if ( type == QgsGrassModel::Raster )
-      typeName = "rast";
-    else if ( type == QgsGrassModel::Vector )
-      typeName = "vect";
-    else if ( type == QgsGrassModel::Region )
-      typeName = "region";
-
     if ( mapset != QgsGrass::getDefaultMapset() )
     {
       continue; // should not happen
     }
 
-    QString module = "g.remove";
-#ifdef WIN32
-    module.append( ".exe" );
-#endif
-    QProcess process( this );
-    QStringList args( typeName + "=" + map );
-    process.start( module, QStringList( typeName + "=" + map ) );
-    if ( !process.waitForFinished() || process.exitCode() != 0 )
-    {
-      QString output( process.readAllStandardOutput() );
-      QString error( process.readAllStandardError() );
-      QMessageBox::warning( 0, tr( "Warning" ),
-                            tr( "Cannot delete map %1" )
-                            .arg( map )
-                            + tr( "<br>command: %1 %2<br>%3<br>%4" )
-                            .arg( map ).arg( module ).arg( args.join( " " ) )
-                            .arg( output ).arg( error ) );
-    }
-    else
+    QgsGrassObject::Type mapType;
+    if ( type == QgsGrassModel::Raster )
+      mapType = QgsGrassObject::Raster;
+    else if ( type == QgsGrassModel::Vector )
+      mapType = QgsGrassObject::Vector;
+    else if ( type == QgsGrassModel::Region )
+      mapType = QgsGrassObject::Region;
+
+    QgsGrassObject object( gisbase, location, mapset, map, mapType );
+
+    if ( QgsGrass::deleteObject( object ) )
     {
       refresh();
     }
@@ -528,17 +512,17 @@ bool QgsGrassBrowser::getItemRegion( const QModelIndex & index, struct Cell_head
   QString mapset = mModel->itemMapset( index );
   QString map = mModel->itemMap( index );
 
-  int mapType = QgsGrass::Raster; //default in case no case matches
+  QgsGrassObject::Type mapType = QgsGrassObject::Raster; //default in case no case matches
   switch ( type )
   {
     case QgsGrassModel::Raster :
-      mapType = QgsGrass::Raster;
+      mapType = QgsGrassObject::Raster;
       break;
     case QgsGrassModel::Vector :
-      mapType = QgsGrass::Vector;
+      mapType = QgsGrassObject::Vector;
       break;
     case QgsGrassModel::Region :
-      mapType = QgsGrass::Region;
+      mapType = QgsGrassObject::Region;
       break;
     default:
       break;

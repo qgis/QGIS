@@ -61,6 +61,40 @@ class QgsRectangle;
 #define BOUND_BOX bound_box
 #endif
 
+// Element info container
+class QgsGrassObject
+{
+  public:
+    //! Element type
+    enum Type { None, Raster, Vector, Region };
+
+    QgsGrassObject( const QString& gisdbase, const QString& location = QString::null,
+                    const QString& mapset = QString::null, const QString& name = QString::null,
+                    Type type = None );
+    QString gisdbase() const { return mGisdbase; }
+    void setGisdbase( const QString& gisdbase ) { mGisdbase = gisdbase; }
+    QString location() const { return mLocation; }
+    void setLocation( const QString& location ) { mLocation = location; }
+    QString mapset() const { return mMapset; }
+    void setMapset( const QString& mapset ) { mMapset = mapset; }
+    QString name() const { return mName; }
+    void setName( const QString& name ) { mName = name; }
+    QString fullName() const { return mName + "@" + mMapset; }
+    Type type() const { return mType; }
+    void setType( Type type ) { mType = type; }
+    // element name used as modules param, e.g. g.remove element=name
+    QString elementShort() const;
+    // descriptive full name
+    QString elementName() const;
+    static QString elementName( Type type );
+  private:
+    QString mGisdbase;
+    QString mLocation;
+    QString mMapset;
+    QString mName;  // map name
+    Type mType;
+};
+
 /*!
    Methods for C library initialization and error handling.
 */
@@ -129,9 +163,6 @@ class QgsGrass
       FATAL /*!< Fatal error */
     };
 
-    //! Map type
-    enum MapType { None, Raster, Vector, Region };
-
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
     static GRASS_LIB_EXPORT void resetError( void );  // reset error status
 
@@ -187,7 +218,7 @@ class QgsGrass
     static GRASS_LIB_EXPORT void setRegion( struct Cell_head *window, QgsRectangle rect );
 
     // ! Get map region
-    static GRASS_LIB_EXPORT bool mapRegion( int type, QString gisdbase,
+    static GRASS_LIB_EXPORT bool mapRegion( QgsGrassObject::Type type, QString gisdbase,
                                             QString location, QString mapset, QString map,
                                             struct Cell_head *window );
 
@@ -225,15 +256,18 @@ class QgsGrass
     // ! Get current gisrc path
     static GRASS_LIB_EXPORT QString gisrcFilePath();
 
-    // ! Start a GRASS module in any gisdbase/location
+    // ! Start a GRASS module in any gisdbase/location/mapset
+    // @param qgisModule append GRASS major version (for modules built in qgis)
     static GRASS_LIB_EXPORT QProcess *startModule( const QString& gisdbase, const QString&  location,
-        const QString&  moduleName, const QStringList& arguments,
-        QTemporaryFile &gisrcFile );
+        const QString& mapset, const QString&  moduleName,
+        const QStringList& arguments, QTemporaryFile &gisrcFile,
+        bool qgisModule = true );
 
     // ! Run a GRASS module in any gisdbase/location
     static GRASS_LIB_EXPORT QByteArray runModule( const QString& gisdbase, const QString&  location,
-        const QString&  moduleName, const QStringList& arguments,
-        int timeOut = 30000 );
+        const QString& mapset, const QString&  moduleName,
+        const QStringList& arguments, int timeOut = 30000,
+        bool qgisModule = true );
 
     /** \brief Get info string from qgis.g.info module
      * @param info info type
@@ -249,8 +283,8 @@ class QgsGrass
      * @timeOut timeout
      */
     static GRASS_LIB_EXPORT QString getInfo( const QString&  info, const QString&  gisdbase,
-        const QString&  location, const QString&  mapset = "",
-        const QString&  map = "", const MapType type = None,
+        const QString&  location, const QString&  mapset = "PERMANENT",
+        const QString&  map = QString::null, const QgsGrassObject::Type type = QgsGrassObject::None,
         double x = 0.0, double y = 0.0,
         const QgsRectangle& extent = QgsRectangle(), int sampleRows = 0,
         int sampleCols = 0, int timeOut = 30000 );
@@ -265,7 +299,7 @@ class QgsGrass
     // @param interactive - show warning dialog on error
     static GRASS_LIB_EXPORT QgsRectangle extent( const QString& gisdbase, const QString& location,
         const QString& mapset, const QString& map,
-        MapType type = None, bool interactive = true );
+        QgsGrassObject::Type type = QgsGrassObject::None, bool interactive = true );
 
     // ! Get raster map size
     static GRASS_LIB_EXPORT void size( const QString& gisdbase, const QString& location,
@@ -276,7 +310,7 @@ class QgsGrass
     // @param interactive - show warning dialog on error
     static GRASS_LIB_EXPORT QHash<QString, QString> info( const QString& gisdbase, const QString& location,
         const QString& mapset, const QString& map,
-        MapType type,
+        QgsGrassObject::Type type,
         const QString& info = "info",
         const QgsRectangle& extent = QgsRectangle(),
         int sampleRows = 0, int sampleCols = 0,
@@ -288,7 +322,15 @@ class QgsGrass
 
     // ! Get map value / feature info
     static GRASS_LIB_EXPORT QMap<QString, QString> query( QString gisdbase, QString location,
-        QString mapset, QString map, MapType type, double x, double y );
+        QString mapset, QString map, QgsGrassObject::Type type, double x, double y );
+
+    // ! Delete map
+    static GRASS_LIB_EXPORT bool deleteObject( const QgsGrassObject & object );
+
+    /** Ask user confirmation to delete a map
+     *  @return true if confirmed
+     */
+    static GRASS_LIB_EXPORT bool deleteObjectDialog( const QgsGrassObject & object );
 
     //! Library version
     static GRASS_LIB_EXPORT int versionMajor();

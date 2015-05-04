@@ -986,14 +986,14 @@ QStringList QgsGrassModuleStandardOptions::checkRegion()
     if ( !item )
       continue;
 
-    QgsGrass::MapType mapType = QgsGrass::Vector;
+    QgsGrassObject::Type mapType = QgsGrassObject::Vector;
     switch ( item->type() )
     {
       case QgsGrassModuleInput::Raster :
-        mapType = QgsGrass::Raster;
+        mapType = QgsGrassObject::Raster;
         break;
       case QgsGrassModuleInput::Vector :
-        mapType = QgsGrass::Vector;
+        mapType = QgsGrassObject::Vector;
         break;
     }
 
@@ -1165,15 +1165,15 @@ bool QgsGrassModuleStandardOptions::inputRegion( struct Cell_head *window, QgsCo
         if ( !all && !item->useRegion() )
           continue;
 
-        QgsGrass::MapType mapType = QgsGrass::Vector;
+        QgsGrassObject::Type mapType = QgsGrassObject::Vector;
 
         switch ( item->type() )
         {
           case QgsGrassModuleInput::Raster :
-            mapType = QgsGrass::Raster;
+            mapType = QgsGrassObject::Raster;
             break;
           case QgsGrassModuleInput::Vector :
-            mapType = QgsGrass::Vector;
+            mapType = QgsGrassObject::Vector;
             break;
         }
 
