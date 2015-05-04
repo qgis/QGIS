@@ -299,7 +299,7 @@ bool QgsOSMDatabase::prepareStatements()
 
 bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName,
                                        const QStringList& tagKeys,
-                                       const QStringList& notNullTagKeys)
+                                       const QStringList& notNullTagKeys )
 {
   mError.clear();
 
@@ -338,7 +338,7 @@ bool QgsOSMDatabase::exportSpatiaLite( ExportType type, const QString& tableName
 }
 
 
-bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys)
+bool QgsOSMDatabase::createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys )
 {
   QString sqlCreateTable = QString( "CREATE TABLE %1 (id INTEGER PRIMARY KEY" ).arg( quotedIdentifier( tableName ) );
   for ( int i = 0; i < tagKeys.count(); ++i )
@@ -409,9 +409,13 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
       continue;
 
     //check not null tags
-    for( int i = 0; i < notNullTagKeys.count(); ++i )
+    bool skipNull = false;
+    for ( int i = 0; i < notNullTagKeys.count() && !skipNull; ++i )
       if ( !t.contains( notNullTagKeys[i] ) )
-        continue;
+        skipNull = true;
+
+    if ( skipNull )
+      continue;
 
     QgsGeometry* geom = QgsGeometry::fromPoint( n.point() );
     int col = 0;
@@ -446,8 +450,8 @@ void QgsOSMDatabase::exportSpatiaLiteNodes( const QString& tableName, const QStr
 
 
 void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName,
-                                           const QStringList& tagKeys,
-                                           const QStringList& notNullTagKeys)
+    const QStringList& tagKeys,
+    const QStringList& notNullTagKeys )
 {
   Q_UNUSED( tagKeys );
 
@@ -487,12 +491,12 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     bool skipNull = false;
 
     //check not null tags
-    for( int i = 0; i < notNullTagKeys.count() && skipNull == false; ++i )
+    for ( int i = 0; i < notNullTagKeys.count() && skipNull == false; ++i )
       if ( !t.contains( notNullTagKeys[i] ) )
         skipNull = true;
 
-    if(skipNull)
-        continue;
+    if ( skipNull )
+      continue;
 
     QgsGeometry* geom = closed ? QgsGeometry::fromPolygon( QgsPolygon() << polyline ) : QgsGeometry::fromPolyline( polyline );
     int col = 0;

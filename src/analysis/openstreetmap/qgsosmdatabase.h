@@ -88,8 +88,8 @@ class ANALYSIS_EXPORT QgsOSMDatabase
     int runCountStatement( const char* sql ) const;
     void deleteStatement( sqlite3_stmt*& stmt );
 
-    void exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys );
-    void exportSpatiaLiteWays( bool closed, const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys );
+    void exportSpatiaLiteNodes( const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
+    void exportSpatiaLiteWays( bool closed, const QString& tableName, const QStringList& tagKeys, const QStringList& notNullTagKeys = QStringList() );
     bool createSpatialTable( const QString& tableName, const QString& geometryType, const QStringList& tagKeys );
     bool createSpatialIndex( const QString& tableName );
 
