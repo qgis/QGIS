@@ -488,10 +488,9 @@ void QgsOSMDatabase::exportSpatiaLiteWays( bool closed, const QString& tableName
     if ( closed != isArea )
       continue; // skip if it's not what we're looking for
 
-    bool skipNull = false;
-
     //check not null tags
-    for ( int i = 0; i < notNullTagKeys.count() && skipNull == false; ++i )
+    bool skipNull = false;
+    for ( int i = 0; i < notNullTagKeys.count() && !skipNull; ++i )
       if ( !t.contains( notNullTagKeys[i] ) )
         skipNull = true;
 
