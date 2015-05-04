@@ -708,7 +708,7 @@ void QgsGeometry::fromGeos( GEOSGeometry *geos )
   mDirtyGeos  = false;
 }
 
-QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist )
+QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist ) const
 {
   // TODO: implement with GEOS
   if ( mDirtyWkb )
@@ -957,7 +957,7 @@ QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& 
   return p;
 }
 
-void QgsGeometry::adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex )
+void QgsGeometry::adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex ) const
 {
   // TODO: implement with GEOS
   if ( mDirtyWkb )
@@ -1865,7 +1865,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   }
 }
 
-QgsPoint QgsGeometry::vertexAt( int atVertex )
+QgsPoint QgsGeometry::vertexAt( int atVertex ) const
 {
   if ( atVertex < 0 )
     return QgsPoint( 0, 0 );
@@ -2043,7 +2043,7 @@ QgsPoint QgsGeometry::vertexAt( int atVertex )
   }
 }
 
-double QgsGeometry::sqrDistToVertexAt( QgsPoint& point, int atVertex )
+double QgsGeometry::sqrDistToVertexAt( QgsPoint& point, int atVertex ) const
 {
   QgsPoint pnt = vertexAt( atVertex );
   if ( pnt != QgsPoint( 0, 0 ) )
@@ -2059,7 +2059,7 @@ double QgsGeometry::sqrDistToVertexAt( QgsPoint& point, int atVertex )
   }
 }
 
-double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVertex )
+double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVertex ) const
 {
   double sqrDist = std::numeric_limits<double>::max();
 
@@ -2114,7 +2114,7 @@ double QgsGeometry::closestSegmentWithContext(
   QgsPoint& minDistPoint,
   int& afterVertex,
   double *leftOf,
-  double epsilon )
+  double epsilon ) const
 {
   QgsDebugMsgLevel( "Entering.", 3 );
 
@@ -3227,7 +3227,7 @@ int QgsGeometry::makeDifference( QgsGeometry* other )
   return 0;
 }
 
-QgsRectangle QgsGeometry::boundingBox()
+QgsRectangle QgsGeometry::boundingBox() const
 {
   double xmin =  std::numeric_limits<double>::max();
   double ymin =  std::numeric_limits<double>::max();
@@ -4587,7 +4587,7 @@ bool QgsGeometry::exportGeosToWkb() const
   return false;
 }
 
-QgsGeometry* QgsGeometry::convertToType( QGis::GeometryType destType, bool destMultipart )
+QgsGeometry* QgsGeometry::convertToType( QGis::GeometryType destType, bool destMultipart ) const
 {
   switch ( destType )
   {
@@ -5665,7 +5665,7 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon() const
   return polygons;
 }
 
-double QgsGeometry::area()
+double QgsGeometry::area() const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5685,7 +5685,7 @@ double QgsGeometry::area()
   return area;
 }
 
-double QgsGeometry::length()
+double QgsGeometry::length() const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5704,7 +5704,7 @@ double QgsGeometry::length()
 
   return length;
 }
-double QgsGeometry::distance( QgsGeometry& geom )
+double QgsGeometry::distance( const QgsGeometry& geom ) const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5726,7 +5726,7 @@ double QgsGeometry::distance( QgsGeometry& geom )
   return dist;
 }
 
-QgsGeometry* QgsGeometry::buffer( double distance, int segments )
+QgsGeometry* QgsGeometry::buffer( double distance, int segments ) const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5741,7 +5741,7 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry*QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit )
+QgsGeometry*QgsGeometry::buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const
 {
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
@@ -5761,7 +5761,7 @@ QgsGeometry*QgsGeometry::buffer( double distance, int segments, int endCapStyle,
 #endif
 }
 
-QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit )
+QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const
 {
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
  ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=3)))
@@ -5781,7 +5781,7 @@ QgsGeometry* QgsGeometry::offsetCurve( double distance, int segments, int joinSt
 #endif
 }
 
-QgsGeometry* QgsGeometry::simplify( double tolerance )
+QgsGeometry* QgsGeometry::simplify( double tolerance ) const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5796,7 +5796,7 @@ QgsGeometry* QgsGeometry::simplify( double tolerance )
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double offset )
+QgsGeometry* QgsGeometry::smooth( const unsigned int iterations, const double offset ) const
 {
   switch ( wkbType() )
   {
@@ -5906,7 +5906,7 @@ QgsPolygon QgsGeometry::smoothPolygon( const QgsPolygon& polygon, const unsigned
   return resultPoly;
 }
 
-QgsGeometry* QgsGeometry::centroid()
+QgsGeometry* QgsGeometry::centroid() const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5921,7 +5921,7 @@ QgsGeometry* QgsGeometry::centroid()
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry* QgsGeometry::pointOnSurface()
+QgsGeometry* QgsGeometry::pointOnSurface() const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5936,7 +5936,7 @@ QgsGeometry* QgsGeometry::pointOnSurface()
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry* QgsGeometry::convexHull()
+QgsGeometry* QgsGeometry::convexHull() const
 {
   if ( mDirtyGeos )
     exportWkbToGeos();
@@ -5951,7 +5951,7 @@ QgsGeometry* QgsGeometry::convexHull()
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry* QgsGeometry::interpolate( double distance )
+QgsGeometry* QgsGeometry::interpolate( double distance ) const
 {
 #if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
     ((GEOS_VERSION_MAJOR>3) || ((GEOS_VERSION_MAJOR==3) && (GEOS_VERSION_MINOR>=2)))
@@ -5972,7 +5972,7 @@ QgsGeometry* QgsGeometry::interpolate( double distance )
 #endif
 }
 
-QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
+QgsGeometry* QgsGeometry::intersection( const QgsGeometry* geometry ) const
 {
   if ( !geometry )
     return NULL;
@@ -5993,7 +5993,7 @@ QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
+QgsGeometry* QgsGeometry::combine( const QgsGeometry *geometry ) const
 {
   if ( !geometry )
     return NULL;
@@ -6027,7 +6027,7 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
   CATCH_GEOS( new QgsGeometry( *this ) ) //return this geometry if union not possible
 }
 
-QgsGeometry* QgsGeometry::difference( QgsGeometry* geometry )
+QgsGeometry* QgsGeometry::difference( const QgsGeometry* geometry ) const
 {
   if ( !geometry )
     return NULL;
@@ -6048,7 +6048,7 @@ QgsGeometry* QgsGeometry::difference( QgsGeometry* geometry )
   CATCH_GEOS( 0 )
 }
 
-QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
+QgsGeometry* QgsGeometry::symDifference( const QgsGeometry* geometry ) const
 {
   if ( !geometry )
     return NULL;
@@ -6362,7 +6362,7 @@ void QgsGeometry::validateGeometry( QList<Error> &errors )
   QgsGeometryValidator::validateGeometry( this, errors );
 }
 
-bool QgsGeometry::isGeosValid()
+bool QgsGeometry::isGeosValid() const
 {
   try
   {
@@ -6380,12 +6380,12 @@ bool QgsGeometry::isGeosValid()
   }
 }
 
-bool QgsGeometry::isGeosEqual( QgsGeometry &g )
+bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
 {
   return geosRelOp( GEOSEquals_r, this, &g );
 }
 
-bool QgsGeometry::isGeosEmpty()
+bool QgsGeometry::isGeosEmpty() const
 {
   try
   {
@@ -6403,7 +6403,7 @@ bool QgsGeometry::isGeosEmpty()
   }
 }
 
-double QgsGeometry::leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 )
+double QgsGeometry::leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 ) const
 {
   double f1 = x - x1;
   double f2 = y2 - y1;
@@ -6412,7 +6412,7 @@ double QgsGeometry::leftOf( double x, double y, double& x1, double& y1, double& 
   return f1*f2 - f3*f4;
 }
 
-QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart )
+QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart ) const
 {
   switch ( type() )
   {
@@ -6503,7 +6503,7 @@ QgsGeometry* QgsGeometry::convertToPoint( bool destMultipart )
   }
 }
 
-QgsGeometry* QgsGeometry::convertToLine( bool destMultipart )
+QgsGeometry* QgsGeometry::convertToLine( bool destMultipart ) const
 {
   switch ( type() )
   {
@@ -6610,7 +6610,7 @@ QgsGeometry* QgsGeometry::convertToLine( bool destMultipart )
   }
 }
 
-QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
+QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart ) const
 {
   switch ( type() )
   {
@@ -6729,7 +6729,7 @@ QgsGeometry* QgsGeometry::convertToPolygon( bool destMultipart )
   }
 }
 
-QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry*> &geometryList )
+QgsGeometry *QgsGeometry::unaryUnion( const QList<QgsGeometry *> &geometryList )
 {
   QList<GEOSGeometry*> geoms;
   foreach ( QgsGeometry* g, geometryList )

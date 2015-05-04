@@ -116,27 +116,27 @@ class QgsGeometry
     bool isMultipart() const;
 
     /** compare geometries using GEOS */
-    bool isGeosEqual( QgsGeometry & );
+    bool isGeosEqual( QgsGeometry & ) const;
 
     /** check validity using GEOS */
-    bool isGeosValid();
+    bool isGeosValid() const;
 
     /** check if geometry is empty using GEOS */
-    bool isGeosEmpty();
+    bool isGeosEmpty() const;
 
     /** get area of geometry using GEOS */
-    double area();
+    double area() const;
 
     /** get length of geometry using GEOS */
-    double length();
+    double length() const;
 
-    double distance( QgsGeometry& geom );
+    double distance( const QgsGeometry& geom ) const;
 
     /**
        Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
     and the indices of the vertices before/after. The vertices before/after are -1 if not present
     */
-    QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ );
+    QgsPoint closestVertex( const QgsPoint& point, int& atVertex /Out/, int& beforeVertex /Out/, int& afterVertex /Out/, double& sqrDist /Out/ ) const;
 
     /**
        Returns the indexes of the vertices before and after the given vertex index.
@@ -150,7 +150,7 @@ class QgsGeometry
           account the first vertex is equal to the last vertex (and will
           skip equal vertex positions).
     */
-    void adjacentVertices( int atVertex, int& beforeVertex /Out/, int& afterVertex /Out/ );
+    void adjacentVertices( int atVertex, int& beforeVertex /Out/, int& afterVertex /Out/ ) const;
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
@@ -190,14 +190,14 @@ class QgsGeometry
      *  @param atVertex index of the vertex
      *  @return Coordinates of the vertex or QgsPoint(0,0) on error
      */
-    QgsPoint vertexAt( int atVertex );
+    QgsPoint vertexAt( int atVertex ) const;
 
     /**
      *  Returns the squared cartesian distance between the given point
      *  to the given vertex index (vertex at the given position number,
      *  ring and item (first number is index 0))
      */
-    double sqrDistToVertexAt( QgsPoint& point /In/, int atVertex );
+    double sqrDistToVertexAt( QgsPoint& point /In/, int atVertex ) const;
 
     /**
      * Searches for the closest vertex in this geometry to the given point.
@@ -205,7 +205,7 @@ class QgsGeometry
      * @param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestVertexWithContext( const QgsPoint& point, int& atVertex /Out/ );
+    double closestVertexWithContext( const QgsPoint& point, int& atVertex /Out/ ) const;
 
     /**
      * Searches for the closest segment of geometry to the given point
@@ -217,7 +217,7 @@ class QgsGeometry
      * @param epsilon epsilon for segment snapping
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& afterVertex /Out/ );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint /Out/, int& afterVertex /Out/ ) const;
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -285,7 +285,7 @@ class QgsGeometry
     int makeDifference( QgsGeometry* other );
 
     /**Returns the bounding box of this feature*/
-    QgsRectangle boundingBox();
+    QgsRectangle boundingBox() const;
 
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects( const QgsRectangle& r ) const;
@@ -319,7 +319,7 @@ class QgsGeometry
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
-    QgsGeometry* buffer( double distance, int segments ) /Factory/;
+    QgsGeometry* buffer( double distance, int segments ) const /Factory/;
 
     /** Returns a buffer region around the geometry, with additional style options.
      * @param distance    buffer distance
@@ -330,17 +330,17 @@ class QgsGeometry
      * @note added in 2.4
      * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) /Factory/;
+    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const /Factory/;
 
     /** Returns an offset line at a given distance and side from an input line.
      * See buffer() method for details on parameters.
      * @note added in 2.4
      * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) /Factory/;
+    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const /Factory/;
 
     /** Returns a simplified version of this geometry using a specified tolerance value */
-    QgsGeometry* simplify( double tolerance ) /Factory/;
+    QgsGeometry* simplify( double tolerance ) const /Factory/;
 
     /**Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
      * roughly doubles the number of vertices in a geometry.
@@ -351,35 +351,35 @@ class QgsGeometry
      * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
      * @note added in 2.9
      */
-    QgsGeometry* smooth( const unsigned int iterations = 1, const double offset = 0.25 ) /Factory/;
+    QgsGeometry* smooth( const unsigned int iterations = 1, const double offset = 0.25 ) const /Factory/;
 
     /** Returns the center of mass of a geometry
     * @note for line based geometries, the center point of the line is returned,
     * and for point based geometries, the point itself is returned */
-    QgsGeometry* centroid() /Factory/;
+    QgsGeometry* centroid() const /Factory/;
 
     /** Returns a point within a geometry */
-    QgsGeometry* pointOnSurface() /Factory/;
+    QgsGeometry* pointOnSurface() const /Factory/;
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
-    QgsGeometry* convexHull() /Factory/;
+    QgsGeometry* convexHull() const /Factory/;
 
     /** Return interpolated point on line at distance */
-    QgsGeometry* interpolate( double distance ) /Factory/;
+    QgsGeometry* interpolate( double distance ) const /Factory/;
 
     /** Returns a geometry representing the points shared by this geometry and other. */
-    QgsGeometry* intersection( QgsGeometry* geometry ) /Factory/;
+    QgsGeometry* intersection( const QgsGeometry* geometry ) const /Factory/;
 
     /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
      * @note this operation is not called union since its a reserved word in C++.*/
-    QgsGeometry* combine( QgsGeometry* geometry ) /Factory/;
+    QgsGeometry* combine( const QgsGeometry* geometry ) const /Factory/;
 
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
-    QgsGeometry* difference( QgsGeometry* geometry ) /Factory/;
+    QgsGeometry* difference( const QgsGeometry* geometry ) const /Factory/;
 
     /** Returns a Geometry representing the points making up this Geometry that do not make up other. */
-    QgsGeometry* symDifference( QgsGeometry* geometry ) /Factory/;
+    QgsGeometry* symDifference( const QgsGeometry* geometry ) const /Factory/;
 
     /** Exports the geometry to WKT
      *  @note precision parameter added in 2.4
@@ -399,7 +399,7 @@ class QgsGeometry
      * @return the converted geometry or NULL pointer if the conversion fails.
      * @note added in 2.2
      */
-    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) /Factory/;
+    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) const /Factory/;
 
     /* Accessor functions for getting geometry data */
 
