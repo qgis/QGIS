@@ -30,7 +30,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     Q_OBJECT
 
   public:
-    QgsSymbolsListWidget( const QgsVectorLayer * layer, QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent );
+    QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer );
 
   public slots:
     void setSymbolFromStyle( const QModelIndex & index );

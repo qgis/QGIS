@@ -38,7 +38,7 @@
 #include <cmath>
 
 inline
-QString rotateEnMasse( double additionalRotation, const QString & exprStr )
+QString rotateWholeSymbol( double additionalRotation, const QString & exprStr )
 {
   return additionalRotation
          ? QgsExpression( QString::number( additionalRotation ) + " + (" + exprStr + ")" ).dump()
@@ -46,7 +46,7 @@ QString rotateEnMasse( double additionalRotation, const QString & exprStr )
 }
 
 inline
-QString scaleEnMasse( double scaleFactor, const QString & exprStr )
+QString scaleWholeSymbol( double scaleFactor, const QString & exprStr )
 {
   return ( qAbs( scaleFactor - 1 ) > 1e-6 )
          ? QgsExpression( QString::number( scaleFactor ) + "*(" + exprStr + ")" ).dump()
@@ -54,7 +54,7 @@ QString scaleEnMasse( double scaleFactor, const QString & exprStr )
 }
 
 inline
-QString scaleEnMasseOffset( double scaleFactorX, double scaleFactorY, const QString & exprStr )
+QString scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const QString & exprStr )
 {
   return QgsExpression(
            ( scaleFactorX ? "tostring(" + QString::number( scaleFactorX ) + "*(" + exprStr + "))" : "'0'" ) +
@@ -568,7 +568,7 @@ void QgsMarkerSymbolV2::setAngleExpression( const QString & exprStr )
     if ( !exprStr.length() )
       layer->removeDataDefinedProperty( "angle" );
     else
-      layer->setDataDefinedProperty( "angle", rotateEnMasse( layer->angle() - rot, exprStr ) );
+      layer->setDataDefinedProperty( "angle", rotateWholeSymbol( layer->angle() - rot, exprStr ) );
   }
 }
 
@@ -596,7 +596,7 @@ QString QgsMarkerSymbolV2::angleExpression() const
   {
     const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
     const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "angle" ) ).dump() );
-    if ( rotateEnMasse( layer->angle() - rot, exprStr ) != sizeExpr )
+    if ( rotateWholeSymbol( layer->angle() - rot, exprStr ) != sizeExpr )
       expr.reset();
     break;
   }
@@ -656,9 +656,9 @@ void QgsMarkerSymbolV2::setSizeExpression( const QString & exprStr )
     }
     else
     {
-      layer->setDataDefinedProperty( "size", scaleEnMasse( layer->size() / sz, exprStr ) );
+      layer->setDataDefinedProperty( "size", scaleWholeSymbol( layer->size() / sz, exprStr ) );
       if ( layer->offset().x() || layer->offset().y() )
-        layer->setDataDefinedProperty( "offset", scaleEnMasseOffset(
+        layer->setDataDefinedProperty( "offset", scaleWholeSymbol(
                                          layer->offset().x() / sz, layer->offset().y() / sz, exprStr ) );
     }
   }
@@ -692,8 +692,8 @@ QString QgsMarkerSymbolV2::sizeExpression() const
     const QgsMarkerSymbolLayerV2* layer = static_cast<const QgsMarkerSymbolLayerV2 *>( *it );
     const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "size" ) ).dump() );
     const QString offsetExpr( QgsExpression( layer->dataDefinedPropertyString( "offset" ) ).dump() );
-    if ( scaleEnMasse( layer->size() / sz, exprStr ) != sizeExpr
-         || (( layer->offset().x() || layer->offset().y() ) && scaleEnMasseOffset( layer->offset().x() / sz, layer->offset().y() / sz, exprStr ) != offsetExpr ) )
+    if ( scaleWholeSymbol( layer->size() / sz, exprStr ) != sizeExpr
+         || (( layer->offset().x() || layer->offset().y() ) && scaleWholeSymbol( layer->offset().x() / sz, layer->offset().y() / sz, exprStr ) != offsetExpr ) )
     {
       expr.reset();
       break;
@@ -837,9 +837,9 @@ void QgsLineSymbolV2::setWidthExpression( const QString & exprStr )
     }
     else
     {
-      layer->setDataDefinedProperty( "width", scaleEnMasse( layer->width() / wd, exprStr ) );
+      layer->setDataDefinedProperty( "width", scaleWholeSymbol( layer->width() / wd, exprStr ) );
       if ( layer->offset() )
-        layer->setDataDefinedProperty( "offset", scaleEnMasse( layer->offset() / wd, exprStr ) );
+        layer->setDataDefinedProperty( "offset", scaleWholeSymbol( layer->offset() / wd, exprStr ) );
     }
   }
 }
@@ -872,8 +872,8 @@ QString QgsLineSymbolV2::widthExpression() const
     const QgsLineSymbolLayerV2* layer = static_cast<const QgsLineSymbolLayerV2*>( *it );
     const QString sizeExpr( QgsExpression( layer->dataDefinedPropertyString( "width" ) ).dump() );
     const QString offsetExpr( QgsExpression( layer->dataDefinedPropertyString( "offset" ) ).dump() );
-    if ( scaleEnMasse( layer->width() / wd, exprStr ) != sizeExpr
-         || ( layer->offset() && scaleEnMasse( layer->offset() / wd, exprStr ) != offsetExpr ) )
+    if ( scaleWholeSymbol( layer->width() / wd, exprStr ) != sizeExpr
+         || ( layer->offset() && scaleWholeSymbol( layer->offset() / wd, exprStr ) != offsetExpr ) )
     {
       expr.reset();
       break;

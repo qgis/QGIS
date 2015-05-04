@@ -381,8 +381,4 @@ class QgsSymbolLayerV2Utils
      */
     static QList<double> prettyBreaks( double minimum, double maximum, int classes );
 
-    /** Crop transparent area around image
-     *  the cropped image is centered if smaller than minSize
-     */
-    static QImage crop(const QImage & image, const QSize & minSize);
 };

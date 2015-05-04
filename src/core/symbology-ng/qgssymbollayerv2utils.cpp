@@ -3925,31 +3925,3 @@ QList<double> QgsSymbolLayerV2Utils::prettyBreaks( double minimum, double maximu
   return breaks;
 }
 
-QImage QgsSymbolLayerV2Utils::crop( const QImage & image, const QSize & minSize )
-{
-  int xmin = image.width(), xmax = 0, ymin = image.height(), ymax = 0;
-  for ( int x = 0; x < image.width(); x++ )
-  {
-    for ( int y = 0; y < image.height(); y++ )
-    {
-      if ( qAlpha( image.pixel( x, y ) ) )
-      {
-        xmin = qMin( x, xmin );
-        xmax = qMax( x, xmax );
-        ymin = qMin( y, ymin );
-        ymax = qMax( y, ymax );
-      }
-    }
-  }
-  if ( xmax - xmin < minSize.width() ) // centers image on x
-  {
-    xmin = qMax(( xmax + xmin ) / 2 - minSize.width() / 2, 0 );
-    xmax = xmin + minSize.width();
-  }
-  if ( ymax - ymin < minSize.height() ) // centers image on y
-  {
-    ymin = qMax(( ymax + ymin ) / 2 - minSize.height() / 2, 0 );
-    ymax = ymin + minSize.height();
-  }
-  return image.copy( xmin, ymin, xmax - xmin, ymax - ymin );
-}

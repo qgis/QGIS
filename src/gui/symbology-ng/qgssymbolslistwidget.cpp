@@ -40,7 +40,7 @@
 #include <QScopedPointer>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( const QgsVectorLayer * layer, QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent, const QgsVectorLayer * layer )
     : QWidget( parent )
     , mSymbol( symbol )
     , mStyle( style )
@@ -106,7 +106,7 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( const QgsVectorLayer * layer, QgsSym
   connect( mWidthDDBtn, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( setLineWidthExpression( const QString& ) ) );
   connect( mWidthDDBtn, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( setActiveLineWidthExpression( bool ) ) );
 
-  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  if ( mSymbol->type() == QgsSymbolV2::Marker && mLayer )
     mSizeDDBtn->setAssistant( new QgsSizeScaleWidget( mLayer, static_cast<const QgsMarkerSymbolV2*>( mSymbol ) ) );
 
 
@@ -381,15 +381,23 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     spinSize->setValue( markerSymbol->size() );
     spinAngle->setValue( markerSymbol->angle() );
 
+    if ( mLayer )
     {
-      QgsDataDefined dd( markerSymbol->sizeExpression() );
-      mSizeDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse size expression" );
-      spinSize->setEnabled( !mSizeDDBtn->isActive() );
+      {
+        QgsDataDefined dd( markerSymbol->sizeExpression() );
+        mSizeDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse size expression" );
+        spinSize->setEnabled( !mSizeDDBtn->isActive() );
+      }
+      {
+        QgsDataDefined dd( markerSymbol->angleExpression() );
+        mRotationDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse rotation expression" );
+        spinAngle->setEnabled( !mRotationDDBtn->isActive() );
+      }
     }
+    else
     {
-      QgsDataDefined dd( markerSymbol->angleExpression() );
-      mRotationDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse rotation expression" );
-      spinAngle->setEnabled( !mRotationDDBtn->isActive() );
+      mSizeDDBtn->setEnabled( false );
+      mRotationDDBtn->setEnabled( false );
     }
   }
   else if ( mSymbol->type() == QgsSymbolV2::Line )
@@ -397,10 +405,15 @@ void QgsSymbolsListWidget::updateSymbolInfo()
     QgsLineSymbolV2* lineSymbol = static_cast<QgsLineSymbolV2*>( mSymbol );
     spinWidth->setValue( lineSymbol->width() );
 
+    if ( mLayer )
     {
       QgsDataDefined dd( lineSymbol->widthExpression() );
       mWidthDDBtn->init( mLayer, &dd, QgsDataDefinedButton::Double, "En masse width expression" );
       spinWidth->setEnabled( !mWidthDDBtn->isActive() );
+    }
+    else
+    {
+      mWidthDDBtn->setEnabled( false );
     }
   }
 

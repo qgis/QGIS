@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsimageoperation.h"
 #include "qgsvectorlayer.h"
 
 
@@ -191,7 +192,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
         // crop
         if ( mItem.symbol()->type() == QgsSymbolV2::Marker && mCrop )
         {
-          pix = QPixmap::fromImage( QgsSymbolLayerV2Utils::crop(
+          pix = QPixmap::fromImage( QgsImageOperation::cropTransparent(
                                       QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(),
                                           QSize( 512, 512 ),
                                           validData ? &context : 0
@@ -199,7 +200,7 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
         }
         else if ( mItem.symbol()->type() == QgsSymbolV2::Line && mCrop )
         {
-          pix = QPixmap::fromImage( QgsSymbolLayerV2Utils::crop(
+          pix = QPixmap::fromImage( QgsImageOperation::cropTransparent(
                                       QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(),
                                           QSize( mIconSize.width(), 512 ),
                                           validData ? &context : 0
