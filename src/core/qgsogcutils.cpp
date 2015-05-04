@@ -1931,15 +1931,32 @@ QDomElement QgsOgcUtils::expressionNodeToOgcFilter( const QgsExpression::Node* n
 
 QDomElement QgsOgcUtils::expressionUnaryOperatorToOgcFilter( const QgsExpression::NodeUnaryOperator* node, QDomDocument& doc, QString& errorMessage )
 {
+
+  QDomElement operandElem = expressionNodeToOgcFilter( node->operand(), doc, errorMessage );
+  if ( !errorMessage.isEmpty() )
+    return QDomElement();
+
   QDomElement uoElem;
   switch ( node->op() )
   {
     case QgsExpression::uoMinus:
       uoElem = doc.createElement( "ogc:Literal" );
-      uoElem.appendChild( doc.createTextNode( "-" ) );
+      if ( node->operand()->nodeType() == QgsExpression::ntLiteral )
+      {
+        // operand expression already created a Literal node:
+        // take the literal value, prepend - and remove old literal node
+        uoElem.appendChild( doc.createTextNode( "-" + operandElem.text() ) );
+        doc.removeChild(operandElem);
+      }
+      else
+      {
+          errorMessage = QString( "This use of unary operator not implemented yet" );
+          return QDomElement();
+      }
       break;
     case QgsExpression::uoNot:
       uoElem = doc.createElement( "ogc:Not" );
+      uoElem.appendChild( operandElem );
       break;
 
     default:
@@ -1947,11 +1964,6 @@ QDomElement QgsOgcUtils::expressionUnaryOperatorToOgcFilter( const QgsExpression
       return QDomElement();
   }
 
-  QDomElement operandElem = expressionNodeToOgcFilter( node->operand(), doc, errorMessage );
-  if ( !errorMessage.isEmpty() )
-    return QDomElement();
-
-  uoElem.appendChild( operandElem );
   return uoElem;
 }
 
