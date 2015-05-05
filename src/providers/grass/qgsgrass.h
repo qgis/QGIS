@@ -62,7 +62,7 @@ class QgsRectangle;
 #endif
 
 // Element info container
-class QgsGrassObject
+class GRASS_LIB_EXPORT QgsGrassObject
 {
   public:
     //! Element type

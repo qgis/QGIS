@@ -25,7 +25,7 @@ class QgsGrassModelItem;
 /*! \class QgsGrassModel
  *  \brief Model representing GRASS location structure.
  */
-class QgsGrassModel: public QAbstractItemModel
+class QgsGrassModel : public QAbstractItemModel
 {
     Q_OBJECT
 
