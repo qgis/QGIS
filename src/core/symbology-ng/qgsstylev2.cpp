@@ -770,7 +770,7 @@ QStringList QgsStyleV2::findSymbols( StyleEntity type, QString qword )
   }
 
   QString item = ( type == SymbolEntity ) ? "symbol" : "colorramp";
-  char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE xml LIKE '%%%q%%'",
+  char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE name LIKE '%%%q%%'",
                                  item.toUtf8().constData(), qword.toUtf8().constData() );
 
   sqlite3_stmt *ppStmt;
@@ -780,54 +780,6 @@ QStringList QgsStyleV2::findSymbols( StyleEntity type, QString qword )
   while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
   {
     symbols << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
-  }
-
-  sqlite3_finalize( ppStmt );
-
-  query = sqlite3_mprintf( "SELECT id FROM tag WHERE name LIKE '%%%q%%'", qword.toUtf8().constData() );
-  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
-
-  QStringList tagids;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    tagids << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
-  }
-
-  sqlite3_finalize( ppStmt );
-
-
-  QString dummy = tagids.join( ", " );
-
-  if ( type == SymbolEntity )
-  {
-    query = sqlite3_mprintf( "SELECT symbol_id FROM tagmap WHERE tag_id IN (%q)",
-                             dummy.toUtf8().constData() );
-  }
-  else
-  {
-    query = sqlite3_mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id IN (%q)",
-                             dummy.toUtf8().constData() );
-  }
-  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
-
-  QStringList symbolids;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    symbolids << QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
-  }
-
-  sqlite3_finalize( ppStmt );
-
-
-  dummy = symbolids.join( ", " );
-  query = sqlite3_mprintf( "SELECT name FROM %q  WHERE id IN (%q)",
-                           item.toUtf8().constData(), dummy.toUtf8().constData() );
-  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, NULL );
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
-  {
-    QString symbolName = QString::fromUtf8(( const char * ) sqlite3_column_text( ppStmt, 0 ) );
-    if ( !symbols.contains( symbolName ) )
-      symbols << symbolName;
   }
 
   sqlite3_finalize( ppStmt );
