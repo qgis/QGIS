@@ -62,7 +62,7 @@ class QgsPythonUtils;
 class QgsRectangle;
 class QgsSnappingUtils;
 class QgsUndoWidget;
-class QgsUserInputToolBar;
+class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsDoubleSpinBox;
@@ -1653,7 +1653,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QWidget *mMacrosWarn;
 
     //! A tool bar for user input
-    QgsUserInputToolBar* mUserInputToolBar;
+    QgsUserInputDockWidget* mUserInputDockWidget;
 
     QgsVectorLayerTools* mVectorLayerTools;
 

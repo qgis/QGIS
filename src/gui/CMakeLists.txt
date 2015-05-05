@@ -227,7 +227,7 @@ qgsslider.cpp
 qgssublayersdialog.cpp
 qgssvgannotationitem.cpp
 qgstextannotationitem.cpp
-qgsuserinputtoolbar.cpp
+qgsuserinputdockwidget.cpp
 qgsvertexmarker.cpp
 qgsunitselectionwidget.cpp
 )
@@ -332,7 +332,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsslider.h
   qgssublayersdialog.h
   qgsunitselectionwidget.h
-  qgsuserinputtoolbar.h
+  qgsuserinputdockwidget.h
 
   raster/qgsrasterminmaxwidget.h
   raster/qgspalettedrendererwidget.h
@@ -466,7 +466,7 @@ SET(QGIS_GUI_HDRS
   qgsrubberband.h
   qgssvgannotationitem.h
   qgstextannotationitem.h
-  qgsuserinputtoolbar.h
+  qgsuserinputdockwidget.h
   qgsvectorlayertools.h
   qgsvertexmarker.h
 

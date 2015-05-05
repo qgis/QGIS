@@ -199,7 +199,7 @@
 #include "qgstextannotationitem.h"
 #include "qgstipgui.h"
 #include "qgsundowidget.h"
-#include "qgsuserinputtoolbar.h"
+#include "qgsuserinputdockwidget.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -580,6 +580,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mInfoBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   centralLayout->addWidget( mInfoBar, 0, 0, 1, 1 );
 
+  // User Input Dock Widget
+  mUserInputDockWidget = new QgsUserInputDockWidget( this );
+  mUserInputDockWidget->setObjectName( "UserInputToolBar" );
+
   //set the focus to the map canvas
   mMapCanvas->setFocus();
 
@@ -637,6 +641,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
   mAdvancedDigitizingDockWidget->hide();
+
+  addDockWidget( Qt::BottomDockWidgetArea, mUserInputDockWidget );
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
@@ -979,8 +985,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mSplitParts;
   delete mMapTools.mSvgAnnotation;
   delete mMapTools.mTextAnnotation;
-
-  delete mUserInputToolBar;
 
   delete mpMaptip;
 
@@ -1731,10 +1735,6 @@ void QgisApp::createToolBars()
 
   // Cad toolbar
   mAdvancedDigitizeToolBar->insertAction( mActionUndo, mAdvancedDigitizingDockWidget->enableAction() );
-
-  // User Input Tool Bar
-  mUserInputToolBar = new QgsUserInputToolBar();
-  addToolBar( mUserInputToolBar, Qt::BottomToolBarArea );
 }
 
 void QgisApp::createStatusBar()
@@ -2411,7 +2411,7 @@ QgsMessageBar* QgisApp::messageBar()
 
 void QgisApp::addUserInputWidget( QWidget *widget )
 {
-  mUserInputToolBar->addUserInputWidget( widget );
+  mUserInputDockWidget->addUserInputWidget( widget );
 }
 
 
