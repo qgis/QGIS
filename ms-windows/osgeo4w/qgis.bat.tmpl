@@ -9,4 +9,14 @@ rem Set VSI cache to be used as buffer, see #6448
 set VSI_CACHE=TRUE
 set VSI_CACHE_SIZE=1000000
 set QT_PLUGIN_PATH=%OSGEO4W_ROOT%\apps\@package@\qtplugins;%OSGEO4W_ROOT%\apps\qt4\plugins
+if not [%R_LIBS_USER%] == [] GOTO END
+if not [%R_LIBS%] == [] GOTO END
+if exist %USERPROFILE%\.qgis2\processing\rlibs GOTO SETRLIBS 
+if not exist %USERPROFILE%\.qgis2\ mkdir %USERPROFILE%\.qgis2\
+if not exist %USERPROFILE%\.qgis2\processing\ mkdir %USERPROFILE%\.qgis2\processing\
+mkdir %USERPROFILE%\.qgis2\processing\rlibs
+:SETRLIBS
+set R_LIBS_USER="%USERPROFILE%\.qgis2\processing\rlibs"
+setx R_LIBS_USER "%USERPROFILE%\.qgis2\processing\rlibs"
+:END
 start "QGIS" /B "%OSGEO4W_ROOT%"\bin\@package@-bin.exe %*

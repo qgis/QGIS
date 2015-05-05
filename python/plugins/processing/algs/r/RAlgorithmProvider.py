@@ -63,6 +63,10 @@ class RAlgorithmProvider(AlgorithmProvider):
                 RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder()))
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
+                RUtils.R_LIBS_USER, self.tr('Folder for R user libraries'), RUtils.RLibs()))
+
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
