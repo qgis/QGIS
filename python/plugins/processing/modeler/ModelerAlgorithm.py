@@ -35,6 +35,8 @@ import traceback
 from PyQt4.QtCore import QCoreApplication, QPointF
 from PyQt4.QtGui import QIcon
 from qgis.core import QgsRasterLayer, QgsVectorLayer
+from qgis.gui import QgsMessageBar
+from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -332,7 +334,13 @@ class ModelerAlgorithm(GeoAlgorithm):
         algInstance = alg.algorithm
         for param in algInstance.parameters:
             if not param.hidden:
-                value = self.resolveValue(alg.params[param.name])
+                if param.name in alg.params:
+                    value = self.resolveValue(alg.params[param.name])
+                else:
+                    iface.messageBar().pushMessage(self.tr("Warning"),
+                                                   self.tr("Parameter %s in algorithm %s in the model is run with default value! Edit the model to make sure that this is correct." % (param.name, alg.name)), 
+                                                   QgsMessageBar.WARNING, 4)
+                    value = None
                 if value is None and isinstance(param, ParameterExtent):
                     value = self.getMinCoveringExtent()
                 # We allow unexistent filepaths, since that allows
