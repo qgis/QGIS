@@ -582,7 +582,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // User Input Dock Widget
   mUserInputDockWidget = new QgsUserInputDockWidget( this );
-  mUserInputDockWidget->setObjectName( "UserInputToolBar" );
+  mUserInputDockWidget->setObjectName( "UserInputDockWidget" );
 
   //set the focus to the map canvas
   mMapCanvas->setFocus();
@@ -642,7 +642,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addDockWidget( Qt::LeftDockWidgetArea, mAdvancedDigitizingDockWidget );
   mAdvancedDigitizingDockWidget->hide();
 
-  addDockWidget( Qt::BottomDockWidgetArea, mUserInputDockWidget );
+  QMainWindow::addDockWidget( Qt::BottomDockWidgetArea, mUserInputDockWidget );
+  mUserInputDockWidget->setFloating( true );
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );

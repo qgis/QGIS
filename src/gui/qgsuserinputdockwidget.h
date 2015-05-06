@@ -31,6 +31,7 @@ class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
     QgsUserInputDockWidget( QWidget* parent = 0 );
     ~QgsUserInputDockWidget();
 
+    //! add a widget to be displayed in the dock
     void addUserInputWidget( QWidget* widget );
 
   protected:
@@ -39,17 +40,19 @@ class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
   private slots:
     void widgetDestroyed( QObject* obj );
 
+    //! when area change, update the layout according to the new dock location
     void areaChanged( Qt::DockWidgetArea area );
+    void floatingChanged( bool floating );
 
   private:
-    bool isLayoutHorizontal();
-
     void createLayout();
+
+    void updateLayoutDirection();
 
     // list of widget with their corresponding line separator
     QMap<QWidget*, QFrame*> mWidgetList;
 
-    Qt::DockWidgetArea mDockArea;
+    bool mLayoutHorizontal;
     QBoxLayout* mLayout;
 };
 
