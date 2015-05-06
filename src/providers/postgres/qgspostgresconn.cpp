@@ -133,6 +133,8 @@ QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
 const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
 
+QStringList QgsPostgresConn::mSystemColumns = QStringList() << "tableoid" << "xmin" << "cmin" << "xmax" << "cmax" << "ctid";
+
 QgsPostgresConn *QgsPostgresConn::connectDb( QString conninfo, bool readonly, bool shared, bool transaction )
 {
   QMap<QString, QgsPostgresConn *> &connections =
@@ -334,10 +336,18 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty& layerProperty, co
   {
     for ( int i = 0; i < colRes.PQntuples(); i++ )
     {
+      QString colName = colRes.PQgetvalue( i, 0 );
+      if ( mSystemColumns.contains( colName ) )
+      {
+        //system columns (tableoid, xmin, cmin,... ) are skipped as candidates for primary key and
+        //spatial columns
+        continue;
+      }
+
       if ( fetchPkCandidates )
       {
         //QgsDebugMsg( colRes.PQgetvalue( i, 0 ) );
-        layerProperty.pkCols << colRes.PQgetvalue( i, 0 );
+        layerProperty.pkCols << colName;
       }
 
       if ( colRes.PQgetisnull( i, 1 ) == 0 )

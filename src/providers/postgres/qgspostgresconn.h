@@ -365,6 +365,8 @@ class QgsPostgresConn : public QObject
     /** count number of spatial columns in a given relation */
     void addColumnInfo( QgsPostgresLayerProperty& layerProperty, const QString& schemaName, const QString& viewName, bool fetchPkCandidates );
 
+    static QStringList mSystemColumns;
+
     //! List of the supported layers
     QVector<QgsPostgresLayerProperty> mLayersSupported;
 
