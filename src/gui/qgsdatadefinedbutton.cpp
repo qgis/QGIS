@@ -262,6 +262,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
   mDefineMenu->addSeparator();
 
+  bool fieldActive = false;
   if ( !mDataTypesString.isEmpty() )
   {
     QAction* fieldTitleAct = mDefineMenu->addAction( tr( "Attribute field" ) );
@@ -284,6 +285,7 @@ void QgsDataDefinedButton::aboutToShowMenu()
         {
           act->setCheckable( true );
           act->setChecked( !useExpression() );
+          fieldActive = !useExpression();
         }
       }
     }
@@ -295,6 +297,9 @@ void QgsDataDefinedButton::aboutToShowMenu()
 
     mDefineMenu->addSeparator();
   }
+
+  mFieldsMenu->menuAction()->setCheckable( true );
+  mFieldsMenu->menuAction()->setChecked( fieldActive );
 
   QAction* exprTitleAct = mDefineMenu->addAction( tr( "Expression" ) );
   exprTitleAct->setFont( titlefont );
