@@ -31,16 +31,17 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsMapToolOffsetCurve( QgsMapCanvas* canvas );
     ~QgsMapToolOffsetCurve();
 
-    void canvasPressEvent( QMouseEvent * e ) override;
     void canvasReleaseEvent( QMouseEvent * e ) override;
     void canvasMoveEvent( QMouseEvent * e ) override;
 
   private slots:
-    /**Places curve offset to value entered in the spin box*/
+    /** Places curve offset to value entered in the spin box*/
     void placeOffsetCurveToValue();
 
-  private:
+    /** Apply the offset either from the spin box or from the mouse event */
+    void applyOffset();
 
+  private:
     /**Rubberband that shows the position of the offset curve*/
     QgsRubberBand* mRubberBand;
     /**Geometry to manipulate*/
