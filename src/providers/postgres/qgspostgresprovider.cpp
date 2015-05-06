@@ -2513,9 +2513,10 @@ QgsRectangle QgsPostgresProvider::extent()
 
     if ( ext.isEmpty() )
     {
-      sql = QString( "SELECT %1(%2) FROM %3%4" )
+      sql = QString( "SELECT %1(%2%3) FROM %4%5" )
             .arg( connectionRO()->majorVersion() < 2 ? "extent" : "st_extent" )
             .arg( quotedIdentifier( mGeometryColumn ) )
+            .arg( mSpatialColType == sctPcPatch ? "::geometry" : "" )
             .arg( mQuery )
             .arg( filterWhereClause() );
 
@@ -2609,6 +2610,8 @@ bool QgsPostgresProvider::getGeometryDetails()
               mSpatialColType = sctGeography;
             else if ( geomColType == "topogeometry" )
               mSpatialColType = sctTopoGeometry;
+            else if ( geomColType == "pcpatch" )
+              mSpatialColType = sctPcPatch;
             else
               mSpatialColType = sctNone;
           }
@@ -2714,6 +2717,30 @@ bool QgsPostgresProvider::getGeometryDetails()
       }
     }
 
+    if ( detectedType.isEmpty() && connectionRO()->hasPointcloud() )
+    {
+      // check pointcloud columns
+      sql = QString( "SELECT 'POLYGON',srid FROM pointcloud_columns WHERE \"table\"=%1 AND \"column\"=%2 AND \"schema\"=%3" )
+            .arg( quotedValue( tableName ) )
+            .arg( quotedValue( geomCol ) )
+            .arg( quotedValue( schemaName ) );
+
+      QgsDebugMsg( QString( "Getting pointcloud column: %1" ).arg( sql ) );
+      result = connectionRO()->PQexec( sql, false );
+      QgsDebugMsg( QString( "Pointcloud column query returned %1" ).arg( result.PQntuples() ) );
+
+      if ( result.PQntuples() == 1 )
+      {
+        detectedType = result.PQgetvalue( 0, 0 );
+        detectedSrid = result.PQgetvalue( 0, 1 );
+        mSpatialColType = sctPcPatch;
+      }
+      else
+      {
+        connectionRO()->PQexecNR( "COMMIT" );
+      }
+    }
+
     if ( mSpatialColType == sctNone )
     {
       sql = QString( "SELECT t.typname FROM "
@@ -2736,6 +2763,8 @@ bool QgsPostgresProvider::getGeometryDetails()
           mSpatialColType = sctGeography;
         else if ( geomColType == "topogeometry" )
           mSpatialColType = sctTopoGeometry;
+        else if ( geomColType == "pcpatch" )
+          mSpatialColType = sctPcPatch;
       }
       else
       {
