@@ -55,6 +55,28 @@ QgsDataDefined::QgsDataDefined( const QgsDataDefined &other )
 
 }
 
+QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString &baseName )
+{
+  QString prefix;
+  if ( !baseName.isEmpty() )
+  {
+    prefix.append( QString( "%1_dd_" ).arg( baseName ) );
+  }
+
+  if ( !map.contains( QString( "%1expression" ).arg( prefix ) ) )
+  {
+    //requires at least the expression value
+    return 0;
+  }
+
+  bool active = ( map.value( QString( "%1active" ).arg( prefix ), "1" ) != QString( "0" ) );
+  QString expression = map.value( QString( "%1expression" ).arg( prefix ) );
+  bool useExpression = ( map.value( QString( "%1useexpr" ).arg( prefix ), "1" ) != QString( "0" ) );
+  QString field = map.value( QString( "%1field" ).arg( prefix ), QString() );
+
+  return new QgsDataDefined( active, useExpression, expression, field );
+}
+
 QgsDataDefined::QgsDataDefined( const QString & string )
 {
   QgsExpression expression( string );
@@ -138,6 +160,18 @@ bool QgsDataDefined::prepareExpression( const QgsFields &fields )
 
 QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
 {
+  if ( layer )
+  {
+    return referencedColumns( layer->pendingFields() );
+  }
+  else
+  {
+    return referencedColumns( );
+  }
+}
+
+QStringList QgsDataDefined::referencedColumns( const QgsFields &fields )
+{
   if ( !mExprRefColumns.isEmpty() )
   {
     return mExprRefColumns;
@@ -147,7 +181,7 @@ QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
   {
     if ( !mExpression || !mExpressionPrepared )
     {
-      prepareExpression( layer );
+      prepareExpression( fields );
     }
   }
   else if ( !mField.isEmpty() )
@@ -163,13 +197,19 @@ void QgsDataDefined::insertExpressionParam( QString key, QVariant param )
   mExpressionParams.insert( key, param );
 }
 
-QMap< QString, QString > QgsDataDefined::toMap()
+QgsStringMap QgsDataDefined::toMap( const QString &baseName )
 {
-  QMap< QString, QString > map;
-  map.insert( "active", ( mActive ? "1" : "0" ) );
-  map.insert( "useexpr", ( mUseExpression ? "1" : "0" ) );
-  map.insert( "expression", mExpressionString );
-  map.insert( "field", mField );
+  QgsStringMap map;
+  QString prefix;
+  if ( !baseName.isEmpty() )
+  {
+    prefix.append( QString( "%1_dd_" ).arg( baseName ) );
+  }
+
+  map.insert( QString( "%1active" ).arg( prefix ), ( mActive ? "1" : "0" ) );
+  map.insert( QString( "%1useexpr" ).arg( prefix ), ( mUseExpression ? "1" : "0" ) );
+  map.insert( QString( "%1expression" ).arg( prefix ), mExpressionString );
+  map.insert( QString( "%1field" ).arg( prefix ), mField );
 
   return map;
 }

@@ -39,6 +39,7 @@ class TestQgsDataDefined: public QObject
     void defaultValues(); //test hasDefaultValues method
     void equality(); //test equality operators
     void xmlMethods(); //test saving and reading from xml
+    void mapMethods(); //test saving and reading from a string map
 
   private:
 };
@@ -198,6 +199,54 @@ void TestQgsDataDefined::xmlMethods()
   //test reading from null element
   QDomElement badElem;
   QVERIFY( !dd2.setFromXmlElement( badElem ) );
+}
+
+void TestQgsDataDefined::mapMethods()
+{
+  //test reading empty map
+  QgsStringMap empty;
+  QgsDataDefined* fromEmpty = QgsDataDefined::fromMap( empty );
+  QVERIFY( !fromEmpty );
+
+  //no base name
+  QgsDataDefined dd1;
+  dd1.setActive( true );
+  dd1.setField( QString( "field" ) );
+  dd1.setExpressionString( QString( "expression" ) );
+  dd1.setUseExpression( true );
+  QgsStringMap map1 = dd1.toMap();
+
+  QgsDataDefined* dd2 = QgsDataDefined::fromMap( map1 );
+  QCOMPARE( *dd2, dd1 );
+  delete dd2;
+
+  //base name
+  QgsDataDefined dd3;
+  dd3.setActive( false );
+  dd3.setField( QString( "field2" ) );
+  dd3.setExpressionString( QString( "expression2" ) );
+  dd3.setUseExpression( false );
+  QgsStringMap map2 = dd3.toMap( QString( "basename" ) );
+
+  QgsDataDefined* dd4 = QgsDataDefined::fromMap( map2, QString( "basename" ) );
+  QCOMPARE( *dd4, dd3 );
+  delete dd4;
+
+  // read with invalid basename
+  dd4 = QgsDataDefined::fromMap( map2, QString( "xx" ) );
+  QVERIFY( !dd4 );
+
+  //test read map with only an expression
+  QgsStringMap expMapOnly;
+  expMapOnly.insert( QString( "expression" ), QString( "test_exp" ) );
+
+  dd4 = QgsDataDefined::fromMap( expMapOnly );
+  QVERIFY( dd4 );
+  QCOMPARE( dd4->expressionString(), QString( "test_exp" ) );
+  QVERIFY( dd4->isActive() );
+  QVERIFY( dd4->useExpression() );
+
+  delete dd4;
 }
 
 QTEST_MAIN( TestQgsDataDefined )

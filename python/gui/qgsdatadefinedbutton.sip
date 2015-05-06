@@ -64,15 +64,21 @@ class QgsDataDefinedButton : QToolButton
 
     QMap< QString, QString > definedProperty() const;
 
+    /** Updates a QgsDataDefined with the current settings from the button
+     * @param dd QgsDataDefined to update
+     * @note added in QGIS 2.9
+     */
+    void updateDataDefined( QgsDataDefined* dd ) const;
+
     /**
      * Whether the current data definition or expression is to be used
      */
-    bool isActive();
+    bool isActive() const;
 
     /**
      * Whether the current expression is to be used instead of field mapping
      */
-    bool useExpression();
+    bool useExpression() const;
 
     /**
      * The current defined expression

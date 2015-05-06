@@ -193,6 +193,17 @@ void QgsDataDefinedButton::init( const QgsVectorLayer* vl,
   updateGui();
 }
 
+void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
+{
+  if ( !dd )
+    return;
+
+  dd->setActive( isActive() );
+  dd->setUseExpression( useExpression() );
+  dd->setExpressionString( getExpression() );
+  dd->setField( getField() );
+}
+
 void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
 {
   // Ctrl-click to toggle activated state

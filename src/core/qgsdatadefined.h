@@ -18,10 +18,11 @@
 #include <QStringList>
 #include <QDomElement>
 #include <QMap>
+#include "qgis.h"
+#include "qgsfield.h"
 
 class QgsExpression;
 class QgsVectorLayer;
-class QgsFields;
 
 /** \ingroup core
  * \class QgsDataDefined
@@ -65,6 +66,15 @@ class CORE_EXPORT QgsDataDefined
      */
     QgsDataDefined( const QgsDataDefined& other );
 
+    /** Creates a QgsDataDefined from a decoded QgsStringMap.
+     * @param map string map encoding of QgsDataDefined
+     * @param baseName base name for values in the string map
+     * @returns new QgsDataDefined if string map was successfully interpreted
+     * @see toMap
+     * @note added in QGIS 2.9
+     */
+    static QgsDataDefined* fromMap( const QgsStringMap& map, const QString& baseName = QString() );
+
     virtual ~QgsDataDefined();
 
     /**Returns whether the data defined container is set to all the default
@@ -100,7 +110,7 @@ class CORE_EXPORT QgsDataDefined
      * @returns true if expression was successfully prepared
      * @note added in QGIS 2.9
      */
-    bool prepareExpression( const QgsFields &fields );
+    bool prepareExpression( const QgsFields &fields = QgsFields() );
 
     /** Returns whether the data defined object's expression is prepared
      * @returns true if expression is prepared
@@ -108,13 +118,27 @@ class CORE_EXPORT QgsDataDefined
     bool expressionIsPrepared() const { return mExpressionPrepared; }
 
     QgsExpression* expression() { return mExpression; }
+
+    /** Returns the columns referenced by the QgsDataDefined
+     * @param layer vector layer, used for preparing the expression if required
+     */
     QStringList referencedColumns( QgsVectorLayer* layer );
+
+    /** Returns the columns referenced by the QgsDataDefined
+     * @param fields vector layer, used for preparing the expression if required
+     * @note added in QGIS 2.9
+     */
+    QStringList referencedColumns( const QgsFields& fields = QgsFields() );
 
     QString field() const { return mField; }
     void setField( const QString& field ) { mField = field; }
 
-    // @note not available in python bindings
-    QMap< QString, QString > toMap();
+    /** Encodes the QgsDataDefined into a string map.
+     * @param baseName optional base name for values in the string map. Can be used
+     * to differentiate multiple QgsDataDefineds encoded in the same string map.
+     * @see fromMap
+     */
+    QgsStringMap toMap( const QString& baseName = QString() );
 
     /**Returns a DOM element containing the properties of the data defined container.
      * @param document DOM document
