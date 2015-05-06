@@ -266,15 +266,20 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
            .arg( mSource->mRequestedSrid.isEmpty() ? mSource->mDetectedSrid : mSource->mRequestedSrid );
   }
 
-  QString whereClause = QString( "%1 && %2" )
+  QString whereClause = QString( "%1%2 && %3" )
                         .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
+                        .arg( mSource->mSpatialColType == sctPcPatch ? "::geometry" : "" )
                         .arg( qBox );
+
+  bool castToGeometry = mSource->mSpatialColType == sctGeography ||
+                        mSource->mSpatialColType == sctPcPatch;
+
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
     whereClause += QString( " AND %1(%2%3,%4)" )
                    .arg( mConn->majorVersion() < 2 ? "intersects" : "st_intersects" )
                    .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                   .arg( mSource->mSpatialColType == sctGeography ? "::geometry" : "" )
+                   .arg( castToGeometry ? "::geometry" : "" )
                    .arg( qBox );
   }
 
@@ -283,13 +288,13 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
     whereClause += QString( " AND %1(%2%3)=%4" )
                    .arg( mConn->majorVersion() < 2 ? "srid" : "st_srid" )
                    .arg( QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn ) )
-                   .arg( mSource->mSpatialColType == sctGeography ? "::geography" : "" )
+                   .arg( castToGeometry ? "::geometry" : "" )
                    .arg( mSource->mRequestedSrid );
   }
 
   if ( mSource->mRequestedGeomType != QGis::WKBUnknown && mSource->mRequestedGeomType != mSource->mDetectedGeomType )
   {
-    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, mSource->mRequestedGeomType, mSource->mSpatialColType == sctGeography ) );
+    whereClause += QString( " AND %1" ).arg( QgsPostgresConn::postgisTypeFilter( mSource->mGeometryColumn, mSource->mRequestedGeomType, castToGeometry ) );
   }
 
   return whereClause;
@@ -316,7 +321,8 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString& whereClause )
   {
     QString geom = QgsPostgresConn::quotedIdentifier( mSource->mGeometryColumn );
 
-    if ( mSource->mSpatialColType == sctGeography )
+    if ( mSource->mSpatialColType == sctGeography ||
+         mSource->mSpatialColType == sctPcPatch )
       geom += "::geometry";
 
     if ( mSource->mForce2d )
