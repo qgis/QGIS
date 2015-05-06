@@ -2331,7 +2331,7 @@ bool QgsPalLayerSettings::dataDefinedValEval( const QString& valType,
     {
       QString colorstr = exprVal.toString().trimmed();
       QgsDebugMsgLevel( dbgStr.arg( colorstr ), 4 );
-      QColor color = QgsSymbolLayerV2Utils::decodeColor( colorstr );
+      QColor color = QgsSymbolLayerV2Utils::parseColor( colorstr );
 
       if ( color.isValid() )
       {

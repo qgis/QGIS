@@ -336,8 +336,8 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   labelFont.fromString( symbologyElem.attribute( "labelFont", "" ) );
   r->setLabelFont( labelFont );
   r->setCircleWidth( symbologyElem.attribute( "circleWidth", "0.4" ).toDouble() );
-  r->setCircleColor( QgsSymbolLayerV2Utils::decodeColor( symbologyElem.attribute( "circleColor", "" ) ) );
-  r->setLabelColor( QgsSymbolLayerV2Utils::decodeColor( symbologyElem.attribute( "labelColor", "" ) ) );
+  r->setCircleColor( QgsSymbolLayerV2Utils::parseColor( symbologyElem.attribute( "circleColor", "" ) ) );
+  r->setLabelColor( QgsSymbolLayerV2Utils::parseColor( symbologyElem.attribute( "labelColor", "" ) ) );
   r->setCircleRadiusAddition( symbologyElem.attribute( "circleRadiusAddition", "0.0" ).toDouble() );
   r->setMaxLabelScaleDenominator( symbologyElem.attribute( "maxLabelScaleDenominator", "-1" ).toDouble() );
   r->setTolerance( symbologyElem.attribute( "tolerance", "0.00001" ).toDouble() );

@@ -209,12 +209,12 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   if ( hasDataDefinedProperty( "fill_color" ) )
   {
     QString colorString = evaluateDataDefinedProperty( "fill_color", context.feature() ).toString();
-    mBrush.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
+    mBrush.setColor( QColor( QgsSymbolLayerV2Utils::parseColor( colorString ) ) );
   }
   if ( hasDataDefinedProperty( "outline_color" ) )
   {
     QString colorString = evaluateDataDefinedProperty( "outline_color", context.feature() ).toString();
-    mPen.setColor( QColor( QgsSymbolLayerV2Utils::decodeColor( colorString ) ) );
+    mPen.setColor( QColor( QgsSymbolLayerV2Utils::parseColor( colorString ) ) );
   }
   double scaledWidth = mSymbolWidth;
   double scaledHeight = mSymbolHeight;
