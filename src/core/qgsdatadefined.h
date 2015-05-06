@@ -88,7 +88,7 @@ class CORE_EXPORT QgsDataDefined
     void setActive( bool active ) { mActive = active; }
 
     bool useExpression() const { return mUseExpression; }
-    void setUseExpression( bool use ) { mUseExpression = use; }
+    void setUseExpression( bool use );
 
     QString expressionString() const { return mExpressionString; }
     void setExpressionString( const QString& expr );
@@ -131,7 +131,7 @@ class CORE_EXPORT QgsDataDefined
     QStringList referencedColumns( const QgsFields& fields = QgsFields() );
 
     QString field() const { return mField; }
-    void setField( const QString& field ) { mField = field; }
+    void setField( const QString& field );
 
     /** Encodes the QgsDataDefined into a string map.
      * @param baseName optional base name for values in the string map. Can be used

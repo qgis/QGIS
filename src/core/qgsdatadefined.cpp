@@ -98,10 +98,17 @@ bool QgsDataDefined::hasDefaultValues() const
   return ( !mActive && !mUseExpression && mExpressionString.isEmpty() && mField.isEmpty() );
 }
 
+void QgsDataDefined::setUseExpression( bool use )
+{
+  mUseExpression = use;
+  mExprRefColumns.clear();
+}
+
 void QgsDataDefined::setExpressionString( const QString &expr )
 {
   mExpressionString = expr;
   mExpressionPrepared = false;
+  mExprRefColumns.clear();
 }
 
 bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
@@ -145,6 +152,7 @@ bool QgsDataDefined::prepareExpression( const QgsFields &fields )
   }
 
   mExpression->prepare( fields );
+  mExprRefColumns = mExpression->referencedColumns();
 
   if ( mExpression->hasEvalError() )
   {
@@ -153,7 +161,6 @@ bool QgsDataDefined::prepareExpression( const QgsFields &fields )
   }
 
   mExpressionPrepared = true;
-  mExprRefColumns = mExpression->referencedColumns();
 
   return true;
 }
@@ -190,6 +197,12 @@ QStringList QgsDataDefined::referencedColumns( const QgsFields &fields )
   }
 
   return mExprRefColumns;
+}
+
+void QgsDataDefined::setField( const QString &field )
+{
+  mField = field;
+  mExprRefColumns.clear();
 }
 
 void QgsDataDefined::insertExpressionParam( QString key, QVariant param )

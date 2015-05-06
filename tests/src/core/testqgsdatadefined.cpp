@@ -40,6 +40,7 @@ class TestQgsDataDefined: public QObject
     void equality(); //test equality operators
     void xmlMethods(); //test saving and reading from xml
     void mapMethods(); //test saving and reading from a string map
+    void referencedColumns(); //test referenced columns method
 
   private:
 };
@@ -247,6 +248,49 @@ void TestQgsDataDefined::mapMethods()
   QVERIFY( dd4->useExpression() );
 
   delete dd4;
+}
+
+void TestQgsDataDefined::referencedColumns()
+{
+  QgsDataDefined dd;
+  dd.setActive( true );
+  dd.setUseExpression( true );
+
+  QStringList cols = dd.referencedColumns();
+  QVERIFY( cols.isEmpty() );
+
+  //set as expression
+  dd.setExpressionString( "1+col1+col2" );
+  cols = dd.referencedColumns();
+  QCOMPARE( cols.length(), 2 );
+  QVERIFY( cols.contains( QString( "col1" ) ) );
+  QVERIFY( cols.contains( QString( "col2" ) ) );
+
+  //alter expression and check that referenced columns is updated
+  dd.setExpressionString( "1+col1+col2+col3" );
+  cols = dd.referencedColumns();
+  QCOMPARE( cols.length(), 3 );
+  QVERIFY( cols.contains( QString( "col1" ) ) );
+  QVERIFY( cols.contains( QString( "col2" ) ) );
+  QVERIFY( cols.contains( QString( "col3" ) ) );
+
+  //switch to field
+  dd.setUseExpression( false );
+  cols = dd.referencedColumns();
+  QVERIFY( cols.isEmpty() );
+
+  dd.setField( "field" );
+  cols = dd.referencedColumns();
+  QCOMPARE( cols.length(), 1 );
+  QVERIFY( cols.contains( QString( "field" ) ) );
+
+  //switch back to expression
+  dd.setUseExpression( true );
+  cols = dd.referencedColumns();
+  QCOMPARE( cols.length(), 3 );
+  QVERIFY( cols.contains( QString( "col1" ) ) );
+  QVERIFY( cols.contains( QString( "col2" ) ) );
+  QVERIFY( cols.contains( QString( "col3" ) ) );
 }
 
 QTEST_MAIN( TestQgsDataDefined )
