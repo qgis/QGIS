@@ -48,8 +48,8 @@
 
 void QgsSymbolLayerV2Widget::registerDataDefinedButton( QgsDataDefinedButton * button, const QString & propertyName, QgsDataDefinedButton::DataType type, const QString & description )
 {
-  QgsDataDefined dd( symbolLayer()->dataDefinedProperty( propertyName ) );
-  button->init( mVectorLayer, &dd, type, description );
+  const QgsDataDefined* dd = symbolLayer()->getDataDefinedProperty( propertyName );
+  button->init( mVectorLayer, dd, type, description );
   button->setProperty( "propertyName", propertyName );
   connect( button, SIGNAL( dataDefinedChanged( const QString& ) ), this, SLOT( updateDataDefinedProperty() ) );
   connect( button, SIGNAL( dataDefinedActivated( bool ) ), this, SLOT( updateDataDefinedProperty() ) );
@@ -59,10 +59,15 @@ void QgsSymbolLayerV2Widget::updateDataDefinedProperty()
 {
   QgsDataDefinedButton* button = qobject_cast<QgsDataDefinedButton*>( sender() );
   const QString propertyName( button->property( "propertyName" ).toString() );
-  if ( button->isActive() )
-    symbolLayer()->setDataDefinedProperty( propertyName, button->currentDefinition() );
-  else
-    symbolLayer()->removeDataDefinedProperty( propertyName );
+
+  QgsDataDefined* dd = symbolLayer()->getDataDefinedProperty( propertyName );
+  if ( !dd )
+  {
+    dd = new QgsDataDefined();
+    symbolLayer()->setDataDefinedProperty( propertyName, dd );
+  }
+  button->updateDataDefined( dd );
+
   emit changed();
 }
 

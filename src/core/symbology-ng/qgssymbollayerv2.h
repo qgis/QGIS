@@ -32,6 +32,7 @@
 
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h" // QgsStringMap
+#include "qgsfield.h"
 
 class QPainter;
 class QSize;
@@ -39,6 +40,7 @@ class QPolygonF;
 
 class QgsDxfExport;
 class QgsExpression;
+class QgsDataDefined;
 class QgsRenderContext;
 class QgsPaintEffect;
 
@@ -51,15 +53,19 @@ class CORE_EXPORT QgsSymbolLayerV2
     // not necessarily supported by all symbol layers...
     virtual QColor color() const { return mColor; }
     virtual void setColor( const QColor& color ) { mColor = color; }
+
     /** Set outline color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual void setOutlineColor( const QColor& color ) { Q_UNUSED( color ); }
+
     /** Get outline color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual QColor outlineColor() const { return QColor(); }
+
     /** Set fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual void setFillColor( const QColor& color ) { Q_UNUSED( color ); }
+
     /** Get fill color. Supported by marker and fill layers.
      * @note added in 2.1 */
     virtual QColor fillColor() const { return QColor(); }
@@ -105,15 +111,93 @@ class CORE_EXPORT QgsSymbolLayerV2
     void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
     int renderingPass() const { return mRenderingPass; }
 
-    // symbol layers normally only use additional attributes to provide data defined settings
+    /** Returns the set of attributes referenced by the layer. This includes attributes
+     * required by any data defined properties associated with the layer.
+     */
     virtual QSet<QString> usedAttributes() const;
 
-    virtual const QgsExpression* dataDefinedProperty( const QString& property ) const;
-    virtual QString dataDefinedPropertyString( const QString& property ) const;
-    virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
+    /** Returns a data defined expression for a property, if set
+     * @deprecated use getDataDefinedProperty instead
+     */
+    Q_DECL_DEPRECATED virtual const QgsExpression* dataDefinedProperty( const QString& property ) const;
+
+    /** Returns a data defined expression for a property, if set
+     * @deprecated use getDataDefinedProperty instead
+     */
+    Q_DECL_DEPRECATED virtual QString dataDefinedPropertyString( const QString& property ) const;
+
+    /** Sets a data defined expression for a property
+     * @deprecated use setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined ) instead
+     */
+    Q_DECL_DEPRECATED virtual void setDataDefinedProperty( const QString& property, const QString& expressionString );
+
+    /** Returns the data defined property corresponding to the specified property key
+     * @param property property key
+     * @returns matching data defined property if it exists
+     * @note added in QGIS 2.9
+     * @see setDataDefinedProperty
+     * @see hasDataDefinedProperty
+     * @see evaluateDataDefinedProperty
+     */
+    virtual QgsDataDefined* getDataDefinedProperty( const QString& property ) const;
+
+    /** Sets a data defined property for the layer.
+     * @param property unique property key. Any existing data defined with the same
+     * key will be deleted and overriden.
+     * @param dataDefined data defined object to associate with property key. Ownership
+     * is transferred to the layer.
+     * @note added in QGIS 2.9
+     * @see getDataDefinedProperty
+     * @see removeDataDefinedProperty
+     */
+    virtual void setDataDefinedProperty( const QString& property, QgsDataDefined* dataDefined );
+
+    /** Removes a data defined property from the layer.
+     * @param property unique property key. If an associated QgsDataDefined object exists,
+     * it will be deleted and removed from the layer.
+     * @note added in QGIS 2.9
+     * @see setDataDefinedProperty
+     * @see removeDataDefinedProperties
+     */
     virtual void removeDataDefinedProperty( const QString& property );
+
+    /** Removes all data defined properties from the layer and deletes associated
+     * objects.
+     * @see removeDataDefinedProperty
+     * @note added in QGIS 2.9
+     */
     virtual void removeDataDefinedProperties();
-    bool hasDataDefinedProperties() const { return mDataDefinedProperties.size() > 0; }
+
+    /** Checks whether the layer has any associated data defined properties.
+     * @returns true if layer has data defined properties
+     * @see hasDataDefinedProperty
+     */
+    virtual bool hasDataDefinedProperties() const;
+
+    /** Checks whether the layer has a matching data defined property and if
+     * that property is currently actived.
+     * @param property property key
+     * @returns true if data defined property exists and is active
+     * @see hasDataDefinedProperties
+     * @see evaluateDataDefinedProperty
+     * @see getDataDefinedProperty
+     * @note added in QGIS 2.9
+     */
+    virtual bool hasDataDefinedProperty( const QString& property ) const;
+
+    /** Evaluates the matching data defined property and returns the calculated
+     * value. Prior to evaluation the data defined property must be prepared
+     * by calling @link prepareExpressions @endlink.
+     * @param property property key
+     * @param feature pointer to the feature to use during expression or field
+     * evaluation
+     * @returns calculated value for data defined property, or an invalid QVariant
+     * if property does not exist or is deactived.
+     * @see hasDataDefinedProperty
+     * @see getDataDefinedProperty
+     * @note added in QGIS 2.9
+     */
+    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) const;
 
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,
@@ -154,20 +238,45 @@ class CORE_EXPORT QgsSymbolLayerV2
     QColor mColor;
     int mRenderingPass;
 
-    QMap< QString, QgsExpression* > mDataDefinedProperties;
+    QMap< QString, QgsDataDefined* > mDataDefinedProperties;
     QgsPaintEffect* mPaintEffect;
+    QgsFields mFields;
 
     // Configuration of selected symbology implementation
     static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
     static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
     static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
 
+    /** Prepares all data defined property expressions for evaluation. This should
+     * be called prior to evaluating data defined properties.
+     * @param fields associated layer fields
+     * @param scale map scale
+     */
     virtual void prepareExpressions( const QgsFields* fields, double scale = -1.0 );
-    virtual QgsExpression* expression( const QString& property ) const;
-    /**Saves data defined properties to string map*/
+
+    /** Returns the data defined expression associated with a property
+     * @deprecated use getDataDefinedProperty or evaluateDataDefinedProperty instead
+     */
+    Q_DECL_DEPRECATED virtual QgsExpression* expression( const QString& property ) const;
+
+    /** Saves all data defined properties to a string map.
+     * @param stringMap destination string map
+     * @see restoreDataDefinedProperties
+    */
     void saveDataDefinedProperties( QgsStringMap& stringMap ) const;
-    /**Copies data defined properties of this layer to another symbol layer*/
+
+    /** Restores all data defined properties from string map.
+     * @param stringMap source string map
+     * @note added in QGIS 2.9
+     * @see saveDataDefinedProperties
+    */
+    void restoreDataDefinedProperties( const QgsStringMap& stringMap );
+
+    /** Copies all data defined properties of this layer to another symbol layer.
+     * @param destLayer destination layer
+    */
     void copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) const;
+
     /**Copies paint effect of this layer to another symbol layer
      * @param destLayer destination layer
      * @note added in QGIS 2.9
@@ -272,10 +381,6 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
   private:
     static QgsMarkerSymbolLayerV2::HorizontalAnchorPoint decodeHorizontalAnchorPoint( const QString& str );
     static QgsMarkerSymbolLayerV2::VerticalAnchorPoint decodeVerticalAnchorPoint( const QString& str );
-
-    QgsExpression* mOffsetExpression;
-    QgsExpression* mHorizontalAnchorExpression;
-    QgsExpression* mVerticalAnchorExpression;
 };
 
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2

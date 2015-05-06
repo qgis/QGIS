@@ -22,6 +22,7 @@
 #include "qgsgeometrysimplifier.h"
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
+#include "qgsdatadefined.h"
 
 #include <QSize>
 #include <QPainter>
@@ -30,7 +31,14 @@
 
 const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& property ) const
 {
-  QMap< QString, QgsExpression* >::const_iterator it = mDataDefinedProperties.find( property );
+  Q_NOWARN_DEPRECATED_PUSH
+  return expression( property );
+  Q_NOWARN_DEPRECATED_POP
+}
+
+QgsDataDefined *QgsSymbolLayerV2::getDataDefinedProperty( const QString &property ) const
+{
+  QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.find( property );
   if ( it != mDataDefinedProperties.constEnd() )
   {
     return it.value();
@@ -40,29 +48,30 @@ const QgsExpression* QgsSymbolLayerV2::dataDefinedProperty( const QString& prope
 
 QgsExpression* QgsSymbolLayerV2::expression( const QString& property ) const
 {
-  QMap< QString, QgsExpression* >::const_iterator it = mDataDefinedProperties.find( property );
-  if ( it != mDataDefinedProperties.constEnd() )
-  {
-    return it.value();
-  }
-  return 0;
+  QgsDataDefined* dd = getDataDefinedProperty( property );
+  return dd ? dd->expression() : 0;
 }
 
 QString QgsSymbolLayerV2::dataDefinedPropertyString( const QString& property ) const
 {
-  const QgsExpression* ex = dataDefinedProperty( property );
-  return ex ? ex->expression() : QString();
+  const QgsDataDefined* dd = getDataDefinedProperty( property );
+  return dd ? dd->expressionString() : QString();
 }
 
 void QgsSymbolLayerV2::setDataDefinedProperty( const QString& property, const QString& expressionString )
 {
+  setDataDefinedProperty( property, new QgsDataDefined( expressionString ) );
+}
+
+void QgsSymbolLayerV2::setDataDefinedProperty( const QString &property, QgsDataDefined *dataDefined )
+{
   removeDataDefinedProperty( property );
-  mDataDefinedProperties.insert( property, new QgsExpression( expressionString ) );
+  mDataDefinedProperties.insert( property, dataDefined );
 }
 
 void QgsSymbolLayerV2::removeDataDefinedProperty( const QString& property )
 {
-  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.find( property );
+  QMap< QString, QgsDataDefined* >::iterator it = mDataDefinedProperties.find( property );
   if ( it != mDataDefinedProperties.end() )
   {
     delete( it.value() );
@@ -72,12 +81,50 @@ void QgsSymbolLayerV2::removeDataDefinedProperty( const QString& property )
 
 void QgsSymbolLayerV2::removeDataDefinedProperties()
 {
-  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.begin();
+  QMap< QString, QgsDataDefined* >::iterator it = mDataDefinedProperties.begin();
   for ( ; it != mDataDefinedProperties.constEnd(); ++it )
   {
     delete( it.value() );
   }
   mDataDefinedProperties.clear();
+}
+
+bool QgsSymbolLayerV2::hasDataDefinedProperties() const
+{
+  if ( mDataDefinedProperties.isEmpty() )
+    return false;
+
+  QMap< QString, QgsDataDefined* >::const_iterator it = mDataDefinedProperties.constBegin();
+  for ( ; it != mDataDefinedProperties.constEnd(); ++it )
+  {
+    if ( hasDataDefinedProperty( it.key() ) )
+      return true;
+  }
+
+  return false;
+}
+
+bool QgsSymbolLayerV2::hasDataDefinedProperty( const QString& property ) const
+{
+  QgsDataDefined* dd = getDataDefinedProperty( property );
+  return dd && dd->isActive();
+}
+
+QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString &property, const QgsFeature* feature ) const
+{
+  QgsDataDefined* dd = getDataDefinedProperty( property );
+  if ( !dd || !dd->isActive() )
+    return QVariant();
+
+  if ( dd->useExpression() )
+    return dd->expression()->evaluate( feature );
+  else if ( feature && !dd->field().isEmpty() && !mFields.isEmpty() )
+  {
+    int attributeIndex = mFields.fieldNameIndex( dd->field() );
+    if ( attributeIndex >= 0 )
+      return feature->attribute( attributeIndex );
+  }
+  return QVariant();
 }
 
 bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,
@@ -163,22 +210,33 @@ QgsSymbolLayerV2::QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked )
 
 void QgsSymbolLayerV2::prepareExpressions( const QgsFields* fields, double scale )
 {
-  if ( !fields )
-  {
-    return;
-  }
-
-  QMap< QString, QgsExpression* >::iterator it = mDataDefinedProperties.begin();
+  QMap< QString, QgsDataDefined* >::iterator it = mDataDefinedProperties.begin();
   for ( ; it != mDataDefinedProperties.end(); ++it )
   {
     if ( it.value() )
     {
-      it.value()->prepare( *fields );
+      QMap<QString, QVariant> params;
       if ( scale > 0 )
       {
-        it.value()->setScale( scale );
+        params.insert( "scale", scale );
+      }
+      it.value()->setExpressionParams( params );
+
+      if ( fields )
+      {
+        it.value()->prepareExpression( *fields );
+      }
+      else
+      {
+        it.value()->prepareExpression();
       }
     }
+  }
+
+  if ( fields )
+  {
+    //QgsFields is implicitly shared, so it's cheap to make a copy
+    mFields = *fields;
   }
 }
 
@@ -192,33 +250,54 @@ QSet<QString> QgsSymbolLayerV2::usedAttributes() const
 {
   QStringList columns;
 
-  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  QMap< QString, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
   for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
   {
-    if ( ddIt.value() )
+    if ( ddIt.value() && ddIt.value()->isActive() )
     {
       columns.append( ddIt.value()->referencedColumns() );
     }
   }
 
-  QSet<QString> attributes;
-  QStringList::const_iterator it = columns.constBegin();
-  for ( ; it != columns.constEnd(); ++it )
-  {
-    attributes.insert( *it );
-  }
-
-  return attributes;
+  return columns.toSet();
 }
 
 void QgsSymbolLayerV2::saveDataDefinedProperties( QgsStringMap& stringMap ) const
 {
-  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  QMap< QString, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
   for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
   {
     if ( ddIt.value() )
     {
-      stringMap.insert( ddIt.key() + "_expression", ddIt.value()->expression() );
+      stringMap.unite( ddIt.value()->toMap( ddIt.key() ) );
+    }
+  }
+}
+
+void QgsSymbolLayerV2::restoreDataDefinedProperties( const QgsStringMap &stringMap )
+{
+  QgsStringMap::const_iterator propIt = stringMap.constBegin();
+  for ( ; propIt != stringMap.constEnd(); ++propIt )
+  {
+    if ( propIt.key().endsWith( "_dd_expression" ) )
+    {
+      //found a data defined property
+
+      //get data defined property name by stripping "_dd_expression" from property key
+      QString propertyName = propIt.key().left( propIt.key().length() - 14 );
+
+      QgsDataDefined* dd = QgsDataDefined::fromMap( stringMap, propertyName );
+      if ( dd )
+        setDataDefinedProperty( propertyName, dd );
+    }
+    else if ( propIt.key().endsWith( "_expression" ) )
+    {
+      //old style data defined property, upgrade
+
+      //get data defined property name by stripping "_expression" from property key
+      QString propertyName = propIt.key().left( propIt.key().length() - 11 );
+
+      setDataDefinedProperty( propertyName, new QgsDataDefined( propIt.value() ) );
     }
   }
 }
@@ -230,12 +309,12 @@ void QgsSymbolLayerV2::copyDataDefinedProperties( QgsSymbolLayerV2* destLayer ) 
 
   destLayer->removeDataDefinedProperties();
 
-  QMap< QString, QgsExpression* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
+  QMap< QString, QgsDataDefined* >::const_iterator ddIt = mDataDefinedProperties.constBegin();
   for ( ; ddIt != mDataDefinedProperties.constEnd(); ++ddIt )
   {
     if ( ddIt.value() )
     {
-      destLayer->setDataDefinedProperty( ddIt.key(), ddIt.value()->expression() );
+      destLayer->setDataDefinedProperty( ddIt.key(), new QgsDataDefined( *( ddIt.value() ) ) );
     }
   }
 }
@@ -258,9 +337,7 @@ QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     , mHorizontalAnchorPoint( HCenter )
     , mVerticalAnchorPoint( VCenter )
 {
-  mOffsetExpression = NULL;
-  mHorizontalAnchorExpression = NULL;
-  mVerticalAnchorExpression = NULL;
+
 }
 
 QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
@@ -281,9 +358,6 @@ QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
 void QgsMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   Q_UNUSED( context );
-  mOffsetExpression = expression( "offset" );
-  mHorizontalAnchorExpression = expression( "horizontal_anchor_point" );
-  mVerticalAnchorExpression = expression( "vertical_anchor_point" );
 }
 
 void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
@@ -310,9 +384,9 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
   offsetX = mOffset.x();
   offsetY = mOffset.y();
 
-  if ( mOffsetExpression )
+  if ( hasDataDefinedProperty( "offset" ) )
   {
-    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( mOffsetExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    QPointF offset = QgsSymbolLayerV2Utils::decodePoint( evaluateDataDefinedProperty( "offset", context.feature() ).toString() );
     offsetX = offset.x();
     offsetY = offset.y();
   }
@@ -322,13 +396,13 @@ void QgsMarkerSymbolLayerV2::markerOffset( const QgsSymbolV2RenderContext& conte
 
   HorizontalAnchorPoint horizontalAnchorPoint = mHorizontalAnchorPoint;
   VerticalAnchorPoint verticalAnchorPoint = mVerticalAnchorPoint;
-  if ( mHorizontalAnchorExpression )
+  if ( hasDataDefinedProperty( "horizontal_anchor_point" ) )
   {
-    horizontalAnchorPoint = decodeHorizontalAnchorPoint( mHorizontalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    horizontalAnchorPoint = decodeHorizontalAnchorPoint( evaluateDataDefinedProperty( "horizontal_anchor_point", context.feature() ).toString() );
   }
-  if ( mVerticalAnchorExpression )
+  if ( hasDataDefinedProperty( "vertical_anchor_point" ) )
   {
-    verticalAnchorPoint = decodeVerticalAnchorPoint( mVerticalAnchorExpression->evaluate( const_cast<QgsFeature*>( context.feature() ) ).toString() );
+    verticalAnchorPoint = decodeVerticalAnchorPoint( evaluateDataDefinedProperty( "vertical_anchor_point", context.feature() ).toString() );
   }
 
   //correct horizontal position according to anchor point
