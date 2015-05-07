@@ -82,7 +82,7 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
 
   if ( hasDataDefinedProperty( "color" ) )
   {
-    brush.setColor( QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
+    brush.setColor( QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
   }
   if ( hasDataDefinedProperty( "fill_style" ) )
   {
@@ -90,7 +90,7 @@ void QgsSimpleFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   }
   if ( hasDataDefinedProperty( "color_border" ) )
   {
-    pen.setColor( QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color_border", context.feature() ).toString() ) );
+    pen.setColor( QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color_border", context.feature() ).toString() ) );
   }
   if ( hasDataDefinedProperty( "width_border" ) )
   {
@@ -389,7 +389,7 @@ QColor QgsSimpleFillSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& con
 {
   if ( hasDataDefinedProperty( "border_color" ) )
   {
-    return QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "border_color", context.feature() ).toString() );
+    return QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "border_color", context.feature() ).toString() );
   }
   return mBorderColor;
 }
@@ -403,7 +403,7 @@ QColor QgsSimpleFillSymbolLayerV2::dxfBrushColor( const QgsSymbolV2RenderContext
 {
   if ( hasDataDefinedProperty( "color" ) )
   {
-    return QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
+    return QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
   }
   return mColor;
 }
@@ -540,14 +540,14 @@ void QgsGradientFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderC
   QColor color = mColor;
   if ( hasDataDefinedProperty( "color" ) )
   {
-    color = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
+    color = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
   }
 
   //second gradient color
   QColor color2 = mColor2;
   if ( hasDataDefinedProperty( "color2" ) )
   {
-    color2 = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color2", context.feature() ).toString() );
+    color2 = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color2", context.feature() ).toString() );
   }
 
   //gradient rotation angle
@@ -1020,14 +1020,14 @@ void QgsShapeburstFillSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2Rende
   color = mColor;
   if ( hasDataDefinedProperty( "color" ) )
   {
-    color = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
+    color = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
   }
 
   //second gradient color
   color2 = mColor2;
   if ( hasDataDefinedProperty( "color2" ) )
   {
-    color2 = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color2", context.feature() ).toString() );
+    color2 = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color2", context.feature() ).toString() );
   }
 
   //blur radius
@@ -2123,12 +2123,12 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2RenderCon
   QColor svgFillColor = mSvgFillColor;
   if ( hasDataDefinedProperty( "svgFillColor" ) )
   {
-    svgFillColor = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "svgFillColor", context.feature() ).toString() );
+    svgFillColor = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "svgFillColor", context.feature() ).toString() );
   }
   QColor svgOutlineColor = mSvgOutlineColor;
   if ( hasDataDefinedProperty( "svgOutlineColor" ) )
   {
-    svgOutlineColor = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "svgOutlineColor", context.feature() ).toString() );
+    svgOutlineColor = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "svgOutlineColor", context.feature() ).toString() );
   }
   double outlineWidth = mSvgOutlineWidth;
   if ( hasDataDefinedProperty( "svgOutlineWidth" ) )
@@ -2820,7 +2820,7 @@ void QgsLinePatternFillSymbolLayer::applyDataDefinedSettings( const QgsSymbolV2R
   QColor color = mColor;
   if ( hasDataDefinedProperty( "color" ) )
   {
-    color = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
+    color = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() );
   }
   applyPattern( context, mBrush, lineAngle, distance, lineWidth, color );
 }

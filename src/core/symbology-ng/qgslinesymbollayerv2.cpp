@@ -479,7 +479,7 @@ void QgsSimpleLineSymbolLayerV2::applyDataDefinedSymbology( QgsSymbolV2RenderCon
   //color
   if ( hasDataDefinedProperty( "color" ) )
   {
-    pen.setColor( QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
+    pen.setColor( QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
   }
 
   //offset
@@ -585,7 +585,7 @@ QColor QgsSimpleLineSymbolLayerV2::dxfColor( const QgsSymbolV2RenderContext& con
 {
   if ( hasDataDefinedProperty( "color" ) )
   {
-    return ( QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
+    return ( QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
   }
   return mColor;
 }

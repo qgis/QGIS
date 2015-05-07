@@ -563,12 +563,12 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
     if ( hasDataDefinedProperty( "color" ) )
     {
-      mBrush.setColor( QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
+      mBrush.setColor( QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", context.feature() ).toString() ) );
     }
     if ( hasDataDefinedProperty( "color_border" ) )
     {
-      mPen.setColor( QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color_border", context.feature() ).toString() ) );
-      mSelPen.setColor( QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color_border", context.feature() ).toString() ) );
+      mPen.setColor( QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color_border", context.feature() ).toString() ) );
+      mSelPen.setColor( QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color_border", context.feature() ).toString() ) );
     }
     if ( hasDataDefinedProperty( "outline_width" ) )
     {
@@ -831,11 +831,11 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   QColor bc = mBrush.color();
   if ( hasDataDefinedProperty( "color" ) )
   {
-    bc = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color", f ).toString() );
+    bc = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color", f ).toString() );
   }
   if ( hasDataDefinedProperty( "color_border" ) )
   {
-    pc = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "color_border", f ).toString() );
+    pc = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "color_border", f ).toString() );
   }
 
   //offset
@@ -1294,13 +1294,13 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   QColor fillColor = mFillColor;
   if ( hasDataDefinedProperty( "fill" ) )
   {
-    fillColor = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "fill", context.feature() ).toString() );
+    fillColor = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "fill", context.feature() ).toString() );
   }
 
   QColor outlineColor = mOutlineColor;
   if ( hasDataDefinedProperty( "outline" ) )
   {
-    outlineColor = QgsSymbolLayerV2Utils::parseColor( evaluateDataDefinedProperty( "outline", context.feature() ).toString() );
+    outlineColor = QgsSymbolLayerV2Utils::decodeColor( evaluateDataDefinedProperty( "outline", context.feature() ).toString() );
   }
 
   bool fitsInCache = true;
