@@ -5090,6 +5090,7 @@ void QgisApp::saveAsRasterFile()
     QProgressDialog pd( 0, tr( "Abort..." ), 0, 0 );
     // Show the dialo immediately because cloning pipe can take some time (WCS)
     pd.setLabelText( tr( "Reading raster" ) );
+    pd.setWindowTitle( tr( "Saving raster" ) );
     pd.show();
     pd.setWindowModality( Qt::WindowModal );
 

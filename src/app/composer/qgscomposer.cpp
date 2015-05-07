@@ -1588,6 +1588,7 @@ void QgsComposer::exportCompositionAsPDF( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    progress.setWindowTitle( tr( "Exporting atlas" ) );
     QApplication::setOverrideCursor( Qt::BusyCursor );
 
     for ( int featureI = 0; featureI < atlasMap->numFeatures(); ++featureI )
@@ -1749,6 +1750,7 @@ void QgsComposer::printComposition( QgsComposer::OutputMode mode )
       return;
     }
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    progress.setWindowTitle( tr( "Exporting atlas" ) );
 
     for ( int i = 0; i < atlasMap->numFeatures(); ++i )
     {
@@ -2016,6 +2018,7 @@ void QgsComposer::exportCompositionAsImage( QgsComposer::OutputMode mode )
     }
 
     QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+    progress.setWindowTitle( tr( "Exporting atlas" ) );
 
     for ( int feature = 0; feature < atlasMap->numFeatures(); ++feature )
     {
@@ -2290,6 +2293,7 @@ void QgsComposer::exportCompositionAsSVG( QgsComposer::OutputMode mode )
     }
   }
   QProgressDialog progress( tr( "Rendering maps..." ), tr( "Abort" ), 0, atlasMap->numFeatures(), this );
+  progress.setWindowTitle( tr( "Exporting atlas" ) );
 
   do
   {

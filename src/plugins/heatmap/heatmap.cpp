@@ -225,7 +225,8 @@ void Heatmap::run()
   int totalFeatures = inputLayer->featureCount();
   int counter = 0;
 
-  QProgressDialog p( tr( "Creating heatmap" ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
+  QProgressDialog p( tr( "Rendering heatmap..." ), tr( "Abort" ), 0, totalFeatures, mQGisIface->mainWindow() );
+  progressDialog.setWindowTitle( tr( "QGIS" ) );
   p.setWindowModality( Qt::ApplicationModal );
   p.show();
 

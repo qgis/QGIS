@@ -773,6 +773,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
 
   long nFeatures = pendingFeatureCount();
   QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
+  progressDialog.setWindowTitle( tr( "QGIS" ) );
   progressDialog.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 
