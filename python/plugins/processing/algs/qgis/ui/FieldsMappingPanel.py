@@ -44,6 +44,8 @@ class FieldsMappingModel(QtCore.QAbstractTableModel):
         (QtCore.QVariant.Int, "Integer"),
         (QtCore.QVariant.Double, "Double"),
         (QtCore.QVariant.String, "String"),
+        (QtCore.QVariant.DateTime, "Date"),
+        (QtCore.QVariant.LongLong, "Double"),        
         (QtCore.QVariant.Date, "Date")])
 
     columns = [
