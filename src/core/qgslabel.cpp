@@ -45,9 +45,9 @@
 #endif
 
 QgsLabel::QgsLabel( const QgsFields & fields )
-    : mMinScale( 0 ),
-    mMaxScale( 100000000 ),
-    mScaleBasedVisibility( false )
+    : mMinScale( 0 )
+    , mMaxScale( 100000000 )
+    , mScaleBasedVisibility( false )
 {
   mFields = fields;
   mLabelFieldIdx.resize( LabelFieldCount );

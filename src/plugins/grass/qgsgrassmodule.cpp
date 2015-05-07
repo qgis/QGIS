@@ -3274,8 +3274,8 @@ QgsGrassModuleItem::~QgsGrassModuleItem() {}
 QgsGrassModuleGroupBoxItem::QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     bool direct, QWidget * parent )
-    : QGroupBox( parent ),
-    QgsGrassModuleItem( module, key, qdesc, gdesc, gnode, direct )
+    : QGroupBox( parent )
+    , QgsGrassModuleItem( module, key, qdesc, gdesc, gnode, direct )
 {
   adjustTitle();
 
@@ -3584,8 +3584,8 @@ QgsGrassModuleField::QgsGrassModuleField(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
-    mModuleStandardOptions( options ), mLayerInput( 0 )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    , mModuleStandardOptions( options ), mLayerInput( 0 )
 {
   if ( mTitle.isEmpty() )
   {
@@ -3673,9 +3673,10 @@ QgsGrassModuleSelection::QgsGrassModuleSelection(
   QgsGrassModule *module, QgsGrassModuleStandardOptions *options,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
-    mModuleStandardOptions( options ), mLayerInput( 0 ),
-    mVectorLayer( 0 )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    , mModuleStandardOptions( options )
+    , mLayerInput( 0 )
+    , mVectorLayer( 0 )
 {
   if ( mTitle.isEmpty() )
   {
@@ -3785,8 +3786,8 @@ QgsGrassModuleFile::QgsGrassModuleFile(
   QgsGrassModule *module,
   QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget * parent )
-    :  QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent ),
-    mType( Old )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
+    , mType( Old )
 {
   if ( mTitle.isEmpty() )
   {

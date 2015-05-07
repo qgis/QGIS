@@ -120,10 +120,10 @@ void QgsWCSConnectionItem::deleteConnection()
 // ---------------------------------------------------------------------------
 
 QgsWCSLayerItem::QgsWCSLayerItem( QgsDataItem* parent, QString name, QString path, const QgsWcsCapabilitiesProperty& capabilitiesProperty, QgsDataSourceURI dataSourceUri, const QgsWcsCoverageSummary& coverageSummary )
-    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wcs" ),
-    mCapabilities( capabilitiesProperty ),
-    mDataSourceUri( dataSourceUri ),
-    mCoverageSummary( coverageSummary )
+    : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wcs" )
+    , mCapabilities( capabilitiesProperty )
+    , mDataSourceUri( dataSourceUri )
+    , mCoverageSummary( coverageSummary )
 {
   mSupportedCRS = mCoverageSummary.supportedCrs;
   QgsDebugMsg( "uri = " + mDataSourceUri.encodedUri() );

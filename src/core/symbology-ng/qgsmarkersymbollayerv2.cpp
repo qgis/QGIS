@@ -495,10 +495,10 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   double angle = mAngle;
   if ( hasDataDefinedProperty( "angle" ) )
   {
-    angle = evaluateDataDefinedProperty("angle", context.feature() ).toDouble();
+    angle = evaluateDataDefinedProperty( "angle", context.feature() ).toDouble();
   }
 
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty("angle");
+  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( "angle" );
   if ( hasDataDefinedRotation )
   {
     // For non-point markers, "dataDefinedRotation" means following the
@@ -523,9 +523,9 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
   //data defined shape?
   bool createdNewPath = false;
-  if ( hasDataDefinedProperty("name") )
+  if ( hasDataDefinedProperty( "name" ) )
   {
-    QString name = evaluateDataDefinedProperty("name", context.feature() ).toString();
+    QString name = evaluateDataDefinedProperty( "name", context.feature() ).toString();
     if ( !prepareShape( name ) ) // drawing as a polygon
     {
       preparePath( name ); // drawing as a painter path

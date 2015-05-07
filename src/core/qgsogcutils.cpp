@@ -1946,12 +1946,12 @@ QDomElement QgsOgcUtils::expressionUnaryOperatorToOgcFilter( const QgsExpression
         // operand expression already created a Literal node:
         // take the literal value, prepend - and remove old literal node
         uoElem.appendChild( doc.createTextNode( "-" + operandElem.text() ) );
-        doc.removeChild(operandElem);
+        doc.removeChild( operandElem );
       }
       else
       {
-          errorMessage = QString( "This use of unary operator not implemented yet" );
-          return QDomElement();
+        errorMessage = QString( "This use of unary operator not implemented yet" );
+        return QDomElement();
       }
       break;
     case QgsExpression::uoNot:

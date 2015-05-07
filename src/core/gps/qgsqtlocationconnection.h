@@ -23,15 +23,15 @@
 #include <QtCore/QPointer>
 
 #if defined(HAVE_QT_MOBILITY_LOCATION )
-  #include <QtLocation/QGeoPositionInfoSource>
-  #include <QtLocation/QGeoSatelliteInfo>
-  #include <QtLocation/QGeoSatelliteInfoSource>
+#include <QtLocation/QGeoPositionInfoSource>
+#include <QtLocation/QGeoSatelliteInfo>
+#include <QtLocation/QGeoSatelliteInfoSource>
 
-  QTM_USE_NAMESPACE
+QTM_USE_NAMESPACE
 #else // Using QtPositioning
-  #include <QtPositioning/QGeoPositionInfoSource>
-  #include <QtPositioning/QGeoSatelliteInfo>
-  #include <QtPositioning/QGeoSatelliteInfoSource>
+#include <QtPositioning/QGeoPositionInfoSource>
+#include <QtPositioning/QGeoSatelliteInfo>
+#include <QtPositioning/QGeoSatelliteInfoSource>
 #endif
 
 class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection

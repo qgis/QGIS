@@ -33,9 +33,10 @@
 #include <QPainter>
 
 QgsRasterResampleFilter::QgsRasterResampleFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input ),
-    mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ),
-    mMaxOversampling( 2.0 )
+    : QgsRasterInterface( input )
+    , mZoomedInResampler( 0 )
+    , mZoomedOutResampler( 0 )
+    , mMaxOversampling( 2.0 )
 {
 }
 
