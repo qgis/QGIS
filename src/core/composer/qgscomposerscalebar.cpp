@@ -226,14 +226,14 @@ void QgsComposerScaleBar::invalidateCurrentMap()
 // nextNiceNumber(4573.23, d) = 5000 (d=1) -> 4600 (d=10) -> 4580 (d=100) -> 4574 (d=1000) -> etc
 inline double nextNiceNumber( double a, double d = 1 )
 {
-  double s = pow10( floor( log10( a ) ) ) / d;
+  double s = qPow( 10.0, floor( log10( a ) ) ) / d;
   return ceil( a / s ) * s;
 }
 
 // prevNiceNumber(4573.23, d) = 4000 (d=1) -> 4500 (d=10) -> 4570 (d=100) -> 4573 (d=1000) -> etc
 inline double prevNiceNumber( double a, double d = 1 )
 {
-  double s = pow10( floor( log10( a ) ) ) / d;
+  double s = qPow( 10.0, floor( log10( a ) ) ) / d;
   return floor( a / s ) * s;
 }
 
@@ -455,7 +455,7 @@ void QgsComposerScaleBar::applyDefaultSize( QgsComposerScaleBar::ScaleBarUnits u
 
     double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
     int segmentMagnitude = floor( log10( segmentWidth ) );
-    double unitsPerSegment = upperMagnitudeMultiplier * ( pow( 10.0, segmentMagnitude ) );
+    double unitsPerSegment = upperMagnitudeMultiplier * ( qPow( 10.0, segmentMagnitude ) );
     double multiplier = floor(( widthInSelectedUnits / ( unitsPerSegment * 10.0 ) ) / 2.5 ) * 2.5;
 
     if ( multiplier > 0 )
