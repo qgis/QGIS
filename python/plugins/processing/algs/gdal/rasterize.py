@@ -77,7 +77,7 @@ class rasterize(OgrAlgorithm):
         self.addParameter(ParameterNumber(self.HEIGHT,
             self.tr('Vertical'), 0.0, 99999999.999999, 100.0))
         self.addParameter(ParameterSelection(self.RTYPE, self.tr('Raster type'),
-            self.TYPE, 0))
+            self.TYPE, 1))
         self.addParameter(ParameterString(self.NO_DATA,
             self.tr("Nodata value"),
             '-9999'))
