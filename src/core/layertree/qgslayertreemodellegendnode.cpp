@@ -24,6 +24,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsimageoperation.h"
 #include "qgsvectorlayer.h"
 
 
@@ -135,6 +136,7 @@ QgsSymbolV2LegendNode::QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, cons
     : QgsLayerTreeModelLegendNode( nodeLayer, parent )
     , mItem( item )
     , mSymbolUsesMapUnits( false )
+    , mIconSize( 16, 16 )
 {
   updateLabel();
 
@@ -155,6 +157,58 @@ Qt::ItemFlags QgsSymbolV2LegendNode::flags() const
 }
 
 
+QSize QgsSymbolV2LegendNode::minimumIconSize() const
+{
+  QSize minSz;
+  if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbolV2::Marker )
+  {
+    QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
+    QPixmap pix = QPixmap::fromImage( QgsImageOperation::cropTransparent(
+                                        QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(),
+                                            QSize( 512, 512 ),
+                                            context.data()
+                                                                                  ).toImage(), mIconSize ) );
+    minSz = pix.size();
+  }
+  else if ( mItem.symbol() && mItem.symbol()->type() == QgsSymbolV2::Line )
+  {
+    QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
+    QPixmap pix = QPixmap::fromImage( QgsImageOperation::cropTransparent(
+                                        QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(),
+                                            QSize( mIconSize.width(), 512 ),
+                                            context.data()
+                                                                                  ).toImage(), mIconSize ) );
+    minSz = pix.size();
+  }
+  else
+  {
+    minSz = mIconSize;
+  }
+
+  if ( mItem.level() != 0 && !( model() && model()->testFlag( QgsLayerTreeModel::ShowLegendAsTree ) ) )
+    minSz.setWidth( indentSize + minSz.width() );
+
+  return minSz;
+}
+
+inline
+QgsRenderContext * QgsSymbolV2LegendNode::createTemporaryRenderContext() const
+{
+  double scale = 0.0;
+  double mupp = 0.0;
+  int dpi = 0;
+  if ( model() )
+    model()->legendMapViewData( &mupp, &dpi, &scale );
+  bool validData = mupp != 0 && dpi != 0 && scale != 0;
+
+  // setup temporary render context
+  QScopedPointer<QgsRenderContext> context( new QgsRenderContext );
+  context->setScaleFactor( dpi / 25.4 );
+  context->setRendererScale( scale );
+  context->setMapToPixel( QgsMapToPixel( mupp ) ); // hope it's ok to leave out other params
+  return validData ? context.take() : 0;
+}
+
 QVariant QgsSymbolV2LegendNode::data( int role ) const
 {
   if ( role == Qt::DisplayRole )
@@ -167,31 +221,17 @@ QVariant QgsSymbolV2LegendNode::data( int role ) const
   }
   else if ( role == Qt::DecorationRole )
   {
-    QSize iconSize( 16, 16 ); // TODO: configurable
-    const int indentSize = 20;
-    if ( mPixmap.isNull() )
+    if ( mPixmap.isNull() || mPixmap.size() != mIconSize )
     {
       QPixmap pix;
       if ( mItem.symbol() )
       {
-        double scale = 0.0;
-        double mupp = 0.0;
-        int dpi = 0;
-        if ( model() )
-          model()->legendMapViewData( &mupp, &dpi, &scale );
-        bool validData = mupp != 0 && dpi != 0 && scale != 0;
-
-        // setup temporary render context
-        QgsRenderContext context;
-        context.setScaleFactor( dpi / 25.4 );
-        context.setRendererScale( scale );
-        context.setMapToPixel( QgsMapToPixel( mupp ) ); // hope it's ok to leave out other params
-
-        pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), iconSize, validData ? &context : 0 );
+        QScopedPointer<QgsRenderContext> context( createTemporaryRenderContext() );
+        pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mItem.symbol(), mIconSize, context.data() );
       }
       else
       {
-        pix = QPixmap( iconSize );
+        pix = QPixmap( mIconSize );
         pix.fill( Qt::transparent );
       }
 
