@@ -112,13 +112,13 @@ QgsSizeScaleWidget::QgsSizeScaleWidget( const QgsVectorLayer * layer, const QgsM
 QgsDataDefined* QgsSizeScaleWidget::dataDefined() const
 {
   return new QgsDataDefined( QgsScaleExpression(
-                           QgsScaleExpression::Type( scaleMethodComboBox->itemData( scaleMethodComboBox->currentIndex() ).toInt() ),
-                           mExpressionWidget->currentField(),
-                           minValueSpinBox->value(),
-                           maxValueSpinBox->value(),
-                           minSizeSpinBox->value(),
-                           maxSizeSpinBox->value()
-                         ).expression() );
+                               QgsScaleExpression::Type( scaleMethodComboBox->itemData( scaleMethodComboBox->currentIndex() ).toInt() ),
+                               mExpressionWidget->currentField(),
+                               minValueSpinBox->value(),
+                               maxValueSpinBox->value(),
+                               minSizeSpinBox->value(),
+                               maxSizeSpinBox->value()
+                             ).expression() );
 }
 
 
@@ -144,8 +144,10 @@ void QgsSizeScaleWidget::updatePreview()
     symbol->setAngleExpression( "" ); // to avoid symbol not beeing drawn
     symbol->setSize( expr.size( breaks[i] ) );
     QgsSymbolV2LegendNode node( mLayerTreeLayer, QgsLegendSymbolItemV2( symbol.data(), QString::number( i ), 0 ) );
+    const QSize sz( node.minimumIconSize() );
+    node.setIconSize( sz );
     QScopedPointer< QStandardItem > item( new QStandardItem( node.data( Qt::DecorationRole ).value<QPixmap>(), QString::number( breaks[i] ) ) );
-    widthMax = qMax( item->icon().actualSize( QSize( 512, 512 ) ).rwidth(), widthMax );
+    widthMax = qMax( sz.width(), widthMax );
     mPreviewList.appendRow( item.take() );
   }
 
