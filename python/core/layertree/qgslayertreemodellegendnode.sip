@@ -141,11 +141,9 @@ class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize iconSize() const;
 
-    //! Enable/dissapbe cropping of symbol to minimun size
+    //! Get the minimum icon size to prevent cropping
     //! @note added in 2.10
-    void setCrop( bool isCropRequired );
-    //! @note added in 2.10
-    bool crop() const;
+    QSize minimumIconSize() const;
 };
 
 

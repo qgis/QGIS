@@ -200,7 +200,7 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
   }
 
   // we have varying icon sizes, and we want icon to be centered and
-  // text to be left aligned, so we have to compute the max size of icons
+  // text to be left aligned, so we have to compute the max width of icons
   QList<QgsSymbolV2LegendNode*> symbolNodes;
   int widthMax = 0;
   foreach ( const QgsLegendSymbolItemV2& i, r->legendSymbolItemsV2() )
@@ -209,22 +209,19 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
     nodes.append( n );
     if ( i.symbol() )
     {
+      const QSize sz( n->minimumIconSize() );
+      widthMax = qMax( sz.width(), widthMax );
+      n->setIconSize( sz );
       symbolNodes.append( n );
-      n->setCrop( true );
-      QPixmap pix( n->data( Qt::DecorationRole ).value<QPixmap>() );
-      widthMax = qMax( pix.width(), widthMax );
-      n->setCrop( false );
-      n->setIconSize( pix.size() );
     }
   }
 
   foreach ( QgsSymbolV2LegendNode* n, symbolNodes )
   {
     Q_ASSERT( widthMax > 0 );
-    n->setIconSize( QSize( widthMax + 2, n->iconSize().rheight() + 2 ) );
-    n->setCrop( false );
+    const int twiceMarginWidth = 2; // a one pixel margin avoids hugly rendering of icon
+    n->setIconSize( QSize( widthMax + twiceMarginWidth, n->iconSize().rheight() + twiceMarginWidth ) );
   }
-
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
     nodes[0]->setEmbeddedInParent( true );

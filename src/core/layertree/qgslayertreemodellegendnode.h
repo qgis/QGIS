@@ -29,6 +29,7 @@ class QgsLayerTreeModel;
 class QgsLegendSettings;
 class QgsMapSettings;
 class QgsSymbolV2;
+class QgsRenderContext;
 
 /**
  * The QgsLegendRendererItem class is abstract interface for legend items
@@ -168,11 +169,9 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     //! @note added in 2.10
     QSize iconSize() const { return mIconSize; }
 
-    //! Enable/dissapbe cropping of symbol to minimun size
+    //! Get the minimum icon size to prevent cropping
     //! @note added in 2.10
-    void setCrop( bool isCropRequired ) { mCrop = isCropRequired; }
-    //! @note added in 2.10
-    bool crop() const { return mCrop; }
+    QSize minimumIconSize() const;
 
   private:
     void updateLabel();
@@ -183,7 +182,13 @@ class CORE_EXPORT QgsSymbolV2LegendNode : public QgsLayerTreeModelLegendNode
     QString mLabel;
     bool mSymbolUsesMapUnits;
     QSize mIconSize;
-    bool mCrop;
+
+    // ident the symbol icon to make it look like a tree structure
+    static const int indentSize = 20;
+
+    // return a temporary context or null if legendMapViewData are not valid
+    QgsRenderContext * createTemporaryRenderContext() const;
+
 };
 
 
