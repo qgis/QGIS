@@ -3323,8 +3323,8 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QStringList& attrNames,
 
   lyr.xform = &mMapSettings->mapToPixel();
   lyr.ct = 0;
-  if ( mMapSettings->hasCrsTransformEnabled() )
-    lyr.ct = new QgsCoordinateTransform( layer->crs(), mMapSettings->destinationCrs() );
+  if ( mMapSettings->hasCrsTransformEnabled() && ctx.coordinateTransform() )
+    lyr.ct = ctx.coordinateTransform()->clone();
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
 
