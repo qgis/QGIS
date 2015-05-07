@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     /** Sets the maximum size (in millimeters) for scale bar segments. This
      * property is only effective if the @link segmentSizeMode @endlink is set
      * to @link SegmentSizeFitWidth @endlink.
-     * @param minWidth maximum width in millimeters
+     * @param maxWidth maximum width in millimeters
      * @see minBarWidth
      * @see setMaxBarWidth
      * @see setSegmentSizeMode
