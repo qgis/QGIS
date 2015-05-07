@@ -163,31 +163,31 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   //compatibility with old project file format
   if ( !properties["width_field"].isEmpty() )
   {
-    layer->setDataDefinedProperty( "width", new QgsDataDefined( new QgsExpression( properties["width_field"] ) ) );
+    layer->setDataDefinedProperty( "width", new QgsDataDefined( properties["width_field"] ) );
   }
   if ( !properties["height_field"].isEmpty() )
   {
-    layer->setDataDefinedProperty( "height", new QgsDataDefined( new QgsExpression( properties["height_field"] ) ) );
+    layer->setDataDefinedProperty( "height", new QgsDataDefined( properties["height_field"] ) );
   }
   if ( !properties["rotation_field"].isEmpty() )
   {
-    layer->setDataDefinedProperty( "rotation", new QgsDataDefined( new QgsExpression( properties["rotation_field"] ) ) );
+    layer->setDataDefinedProperty( "rotation", new QgsDataDefined( properties["rotation_field"] ) );
   }
   if ( !properties["outline_width_field"].isEmpty() )
   {
-    layer->setDataDefinedProperty( "outline_width", new QgsDataDefined( new QgsExpression( properties[ "outline_width_field" ] ) ) );
+    layer->setDataDefinedProperty( "outline_width", new QgsDataDefined( properties[ "outline_width_field" ] ) );
   }
   if ( !properties["fill_color_field"].isEmpty() )
   {
-    layer->setDataDefinedProperty( "fill_color", new QgsDataDefined( new QgsExpression( properties["fill_color_field"] ) ) );
+    layer->setDataDefinedProperty( "fill_color", new QgsDataDefined( properties["fill_color_field"] ) );
   }
   if ( !properties["outline_color_field"].isEmpty() )
   {
-    layer->setDataDefinedProperty( "outline_color", new QgsDataDefined( new QgsExpression( properties["outline_color_field"] ) ) );
+    layer->setDataDefinedProperty( "outline_color", new QgsDataDefined( properties["outline_color_field"] ) );
   }
   if ( !properties["symbol_name_field"].isEmpty() )
   {
-    layer->setDataDefinedProperty( "symbol_name", new QgsDataDefined( new QgsExpression( properties["symbol_name_field"] ) ) );
+    layer->setDataDefinedProperty( "symbol_name", new QgsDataDefined( properties["symbol_name_field"] ) );
   }
 
   return layer;
