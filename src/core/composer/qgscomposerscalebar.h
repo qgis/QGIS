@@ -48,6 +48,12 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
       NauticalMiles
     };
 
+    enum SegmentSizeMode
+    {
+      SegmentSizeFixed = 0,
+      SegmentSizeFitWidth = 1
+    };
+
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
@@ -66,6 +72,15 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
     void setNumUnitsPerSegment( double units );
+
+    SegmentSizeMode segmentSizeMode() const { return mSegmentSizeMode; }
+    void setSegmentSizeMode( SegmentSizeMode mode );
+
+    double minBarWidth() const { return mMinBarWidth; }
+    void setMinBarWidth( double minWidth );
+
+    double maxBarWidth() const { return mMaxBarWidth; }
+    void setMaxBarWidth( double maxWidth );
 
     double numMapUnitsPerScaleBarUnit() const {return mNumMapUnitsPerScaleBarUnit;}
     void setNumMapUnitsPerScaleBarUnit( double d ) {mNumMapUnitsPerScaleBarUnit = d;}
@@ -249,6 +264,12 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     double mNumUnitsPerSegment;
     /**Number of map units per scale bar units (e.g. 1000 to have km for a map with m units)*/
     double mNumMapUnitsPerScaleBarUnit;
+    /**Either fixed (i.e. mNumUnitsPerSegment) or try to best fit scale bar width (mMinBarWidth, mMaxBarWidth)*/
+    SegmentSizeMode mSegmentSizeMode;
+    /**Minimum allowed bar width, when mSegmentSizeMode is FitWidth*/
+    double mMinBarWidth;
+    /**Maximum allowed bar width, when mSegmentSizeMode is FitWidth*/
+    double mMaxBarWidth;
 
     /**Labeling of map units*/
     QString mUnitLabeling;

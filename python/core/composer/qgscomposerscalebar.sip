@@ -25,6 +25,12 @@ class QgsComposerScaleBar: QgsComposerItem
       NauticalMiles
     };
 
+    enum SegmentSizeMode
+    {
+      SegmentSizeFixed = 0,
+      SegmentSizeFitWidth = 1
+    };
+
     QgsComposerScaleBar( QgsComposition* composition /TransferThis/ );
     ~QgsComposerScaleBar();
 
@@ -43,6 +49,15 @@ class QgsComposerScaleBar: QgsComposerItem
 
     double numUnitsPerSegment() const;
     void setNumUnitsPerSegment( double units );
+
+    SegmentSizeMode segmentSizeMode() const;
+    void setSegmentSizeMode( SegmentSizeMode mode );
+
+    double minBarWidth() const;
+    void setMinBarWidth( double minWidth );
+
+    double maxBarWidth() const;
+    void setMaxBarWidth( double maxWidth );
 
     double numMapUnitsPerScaleBarUnit() const;
     void setNumMapUnitsPerScaleBarUnit( double d );
