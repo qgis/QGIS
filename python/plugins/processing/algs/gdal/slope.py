@@ -63,7 +63,7 @@ class slope(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Slope')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['slope']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         output = unicode(self.getOutputValue(self.OUTPUT))
@@ -87,5 +87,4 @@ class slope(GdalAlgorithm):
         if self.getParameterValue(self.AS_PERCENT):
             arguments.append('-p')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

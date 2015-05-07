@@ -65,7 +65,7 @@ class ColorRelief(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Color relief')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['color-relief']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getParameterValue(self.COLOR_TABLE)))
@@ -87,5 +87,4 @@ class ColorRelief(GdalAlgorithm):
         elif mode == 2:
             arguments.append('-nearest_color_entry')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

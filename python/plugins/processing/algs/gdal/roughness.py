@@ -52,7 +52,7 @@ class roughness(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Roughness')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['roughness']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         output = unicode(self.getOutputValue(self.OUTPUT))
@@ -67,5 +67,4 @@ class roughness(GdalAlgorithm):
         if self.getParameterValue(self.COMPUTE_EDGES):
             arguments.append('-compute_edges')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

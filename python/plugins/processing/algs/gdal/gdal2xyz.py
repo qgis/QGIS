@@ -52,7 +52,7 @@ class gdal2xyz(GdalAlgorithm):
 
         self.addOutput(OutputTable(self.OUTPUT, self.tr('xyz')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-band')
         arguments.append(str(self.getParameterValue(self.BAND)))
@@ -68,4 +68,4 @@ class gdal2xyz(GdalAlgorithm):
         else:
             commands = ['gdal2xyz.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands, progress

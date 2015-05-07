@@ -66,7 +66,7 @@ class fillnodata(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Filled')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
@@ -102,4 +102,4 @@ class fillnodata(GdalAlgorithm):
             commands = ['gdal_fillnodata.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

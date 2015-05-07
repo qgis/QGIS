@@ -73,7 +73,7 @@ class proximity(GdalAlgorithm):
             self.tr('Output raster type'), self.TYPE, 5))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Distance')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
@@ -116,4 +116,4 @@ class proximity(GdalAlgorithm):
             commands = ['gdal_proximity.py',
                         GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

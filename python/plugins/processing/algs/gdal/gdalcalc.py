@@ -100,7 +100,7 @@ class gdalcalc(GdalAlgorithm):
             self.tr('Additional creation parameters'), '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Calculated')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         extra = str(self.getParameterValue(self.EXTRA))
         #debug = self.getParameterValue(self.DEBUG)
@@ -154,6 +154,6 @@ class gdalcalc(GdalAlgorithm):
         arguments.append(out)
 
         if isWindows():
-            GdalUtils.runGdal(['gdal_calc',  GdalUtils.escapeAndJoin(arguments)], progress)
+            return ['gdal_calc',  GdalUtils.escapeAndJoin(arguments)]
         else:
-            GdalUtils.runGdal(['gdal_calc.py', GdalUtils.escapeAndJoin(arguments)], progress)
+            return ['gdal_calc.py', GdalUtils.escapeAndJoin(arguments)]

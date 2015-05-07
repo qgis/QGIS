@@ -54,7 +54,7 @@ class gdaltindex(GdalAlgorithm):
             self.tr('Skip files with different projection reference'), False))
         self.addOutput(OutputVector(gdaltindex.OUTPUT, self.tr('Tiled')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         fieldName = str(self.getParameterValue(self.FIELD_NAME))
 
         arguments = []
@@ -67,4 +67,4 @@ class gdaltindex(GdalAlgorithm):
         arguments.extend(unicode(self.getParameterValue(gdaltindex.INPUT)).split(';'))
 
 
-        GdalUtils.runGdal(['gdaltindex', GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaltindex', GdalUtils.escapeAndJoin(arguments)]

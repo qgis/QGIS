@@ -59,7 +59,7 @@ class merge(GdalAlgorithm):
 
         self.addOutput(OutputRaster(merge.OUTPUT, self.tr('Merged')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
@@ -81,4 +81,4 @@ class merge(GdalAlgorithm):
         else:
             commands = ['gdal_merge.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

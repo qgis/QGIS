@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterRaster
 from processing.core.parameters import ParameterTableField
@@ -35,7 +34,6 @@ from processing.core.parameters import ParameterSelection
 from processing.core.outputs import OutputRaster
 from processing.algs.gdal.OgrAlgorithm import OgrAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import isWindows
 
 
 class rasterize_over(OgrAlgorithm):
@@ -71,5 +69,4 @@ class rasterize_over(OgrAlgorithm):
         arguments.append(ogrLayer)
         arguments.append(ogrRasterLayer)
 
-        GdalUtils.runGdal(['gdal_rasterize',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]

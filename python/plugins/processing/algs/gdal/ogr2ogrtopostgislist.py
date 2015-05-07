@@ -151,7 +151,7 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
             self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         settings = QSettings()
         mySettings = '/PostgreSQL/connections/' + connection
@@ -279,4 +279,4 @@ class Ogr2OgrToPostGisList(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

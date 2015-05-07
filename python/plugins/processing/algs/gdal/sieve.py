@@ -58,7 +58,7 @@ class sieve(GdalAlgorithm):
 
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Sieved')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         output = self.getOutputValue(self.OUTPUT)
 
         arguments = []
@@ -82,4 +82,4 @@ class sieve(GdalAlgorithm):
         else:
             commands = ['gdal_sieve.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

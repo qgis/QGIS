@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.core.parameters import ParameterVector
 from processing.core.parameters import ParameterTableField
 from processing.core.parameters import ParameterSelection
@@ -102,7 +101,7 @@ class rasterize(OgrAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT,
             self.tr('Rasterized')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         noData = str(self.getParameterValue(self.NO_DATA))
@@ -157,5 +156,4 @@ class rasterize(OgrAlgorithm):
         arguments.append(ogrLayer)
 
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
-        GdalUtils.runGdal(['gdal_rasterize',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]

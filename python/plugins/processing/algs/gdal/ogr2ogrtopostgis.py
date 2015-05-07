@@ -148,7 +148,7 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
             self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inLayer = self.getParameterValue(self.INPUT_LAYER)
         ogrLayer = self.ogrConnectionString(inLayer)[1:-1]
         ssrs = unicode(self.getParameterValue(self.S_SRS))
@@ -273,4 +273,4 @@ class Ogr2OgrToPostGis(OgrAlgorithm):
         else:
             commands = ['ogr2ogr', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

@@ -54,15 +54,17 @@ class information(GdalAlgorithm):
         self.addOutput(OutputHTML(information.OUTPUT,
             self.tr('Layer information')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         if self.getParameterValue(information.NOGCP):
             arguments.append('-nogcp')
         if self.getParameterValue(information.NOMETADATA):
             arguments.append('-nomd')
         arguments.append(self.getParameterValue(information.INPUT))
-        GdalUtils.runGdal(['gdalinfo', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        return ['gdalinfo', GdalUtils.escapeAndJoin(arguments)]
+
+    def processAlgorithm(self, progress):
+        GdalUtils.runGdal(self.getConsoleCommands(), progress)
         output = self.getOutputValue(information.OUTPUT)
         f = open(output, 'w')
         f.write('<pre>')
