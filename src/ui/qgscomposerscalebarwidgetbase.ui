@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>358</width>
-    <height>429</height>
+    <width>456</width>
+    <height>662</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -51,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-73</y>
-        <width>340</width>
-        <height>819</height>
+        <y>-275</y>
+        <width>438</width>
+        <height>914</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -81,7 +90,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Map</string>
+             <string>&amp;Map</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -107,7 +116,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="mStyleLabel">
             <property name="text">
-             <string>Style</string>
+             <string>St&amp;yle</string>
             </property>
             <property name="buddy">
              <cstring>mStyleComboBox</cstring>
@@ -138,7 +147,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="mUnitLabelLabel">
             <property name="text">
-             <string>Label</string>
+             <string>&amp;Label</string>
             </property>
             <property name="wordWrap">
              <bool>true</bool>
@@ -154,7 +163,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="mMapUnitsPerBarUnitLabel">
             <property name="text">
-             <string>Map units per bar unit</string>
+             <string>Map &amp;units per bar unit</string>
             </property>
             <property name="wordWrap">
              <bool>false</bool>
@@ -172,7 +181,7 @@
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -197,7 +206,7 @@
          <property name="collapsed" stdset="0">
           <bool>false</bool>
          </property>
-         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1">
+         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,0,0">
           <item row="0" column="0">
            <widget class="QLabel" name="mSegmentLabel">
             <property name="text">
@@ -205,47 +214,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QgsSpinBox" name="mSegmentsLeftSpinBox">
-              <property name="suffix">
-               <string/>
-              </property>
-              <property name="prefix">
-               <string>left </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsSpinBox" name="mNumberOfSegmentsSpinBox">
-              <property name="suffix">
-               <string/>
-              </property>
-              <property name="prefix">
-               <string>right </string>
-              </property>
-              <property name="value">
-               <number>0</number>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="mSegmentSizeLabel">
-            <property name="text">
-             <string>Size</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mSegmentSizeSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
+          <item row="2" column="2">
            <widget class="QgsDoubleSpinBox" name="mSegmentSizeSpinBox">
             <property name="suffix">
              <string> units</string>
@@ -256,19 +225,74 @@
             <property name="maximum">
              <double>9999999999999.000000000000000</double>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="5" column="0" colspan="2">
            <widget class="QLabel" name="label">
             <property name="text">
              <string>Height</string>
             </property>
            </widget>
           </item>
-          <item row="2" column="1">
+          <item row="1" column="2">
+           <widget class="QgsSpinBox" name="mNumberOfSegmentsSpinBox">
+            <property name="suffix">
+             <string/>
+            </property>
+            <property name="prefix">
+             <string>right </string>
+            </property>
+            <property name="value">
+             <number>0</number>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QgsSpinBox" name="mMaxWidthSpinBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="prefix">
+             <string>max </string>
+            </property>
+            <property name="maximum">
+             <number>999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QgsSpinBox" name="mSegmentsLeftSpinBox">
+            <property name="suffix">
+             <string/>
+            </property>
+            <property name="prefix">
+             <string>left </string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QgsSpinBox" name="mMinWidthSpinBox">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="prefix">
+             <string>min </string>
+            </property>
+            <property name="maximum">
+             <number>999</number>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="2">
            <widget class="QgsSpinBox" name="mHeightSpinBox">
             <property name="suffix">
              <string> mm</string>
@@ -276,8 +300,25 @@
             <property name="prefix">
              <string/>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QRadioButton" name="mFixedSizeRadio">
+            <property name="text">
+             <string>Fi&amp;xed width</string>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QRadioButton" name="mFitWidthRadio">
+            <property name="text">
+             <string>Fit segment width</string>
             </property>
            </widget>
           </item>
@@ -363,7 +404,7 @@
             <property name="value">
              <double>0.200000000000000</double>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -657,7 +698,11 @@
   <tabstop>mGroupBoxSegments</tabstop>
   <tabstop>mSegmentsLeftSpinBox</tabstop>
   <tabstop>mNumberOfSegmentsSpinBox</tabstop>
+  <tabstop>mFixedSizeRadio</tabstop>
   <tabstop>mSegmentSizeSpinBox</tabstop>
+  <tabstop>mFitWidthRadio</tabstop>
+  <tabstop>mMinWidthSpinBox</tabstop>
+  <tabstop>mMaxWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
   <tabstop>groupBox_5</tabstop>
   <tabstop>mBoxSizeSpinBox</tabstop>
