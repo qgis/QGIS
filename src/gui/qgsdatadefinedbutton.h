@@ -92,8 +92,16 @@ class GUI_EXPORT QgsDataDefinedButton: public QToolButton
     /** Updates a QgsDataDefined with the current settings from the button
      * @param dd QgsDataDefined to update
      * @note added in QGIS 2.9
+     * @see currentDataDefined
      */
     void updateDataDefined( QgsDataDefined* dd ) const;
+
+    /** Returns a QgsDataDefined which reflects the current settings from the
+     * button.
+     * @note added in QGIS 2.9
+     * @see updateDataDefined
+     */
+    QgsDataDefined currentDataDefined() const;
 
     /**
      * Whether the current data definition or expression is to be used

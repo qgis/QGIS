@@ -204,6 +204,13 @@ void QgsDataDefinedButton::updateDataDefined( QgsDataDefined *dd ) const
   dd->setField( getField() );
 }
 
+QgsDataDefined QgsDataDefinedButton::currentDataDefined() const
+{
+  QgsDataDefined dd;
+  updateDataDefined( &dd );
+  return dd;
+}
+
 void QgsDataDefinedButton::mouseReleaseEvent( QMouseEvent *event )
 {
   // Ctrl-click to toggle activated state
