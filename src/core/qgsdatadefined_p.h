@@ -85,4 +85,6 @@ class CORE_EXPORT QgsDataDefinedPrivate : public QSharedData
     QStringList exprRefColumns;
 };
 
+/// @endcond
+
 #endif // QGSDATADEFINED_PRIVATE_H
