@@ -1,6 +1,7 @@
 /** \ingroup core
  * \class QgsDataDefined
  * A container class for data source field mapping or expression.
+ * \note QgsDataDefined objects are implicitly shared.
  */
 
 class QgsDataDefined
@@ -115,7 +116,7 @@ class QgsDataDefined
      * to differentiate multiple QgsDataDefineds encoded in the same string map.
      * @see fromMap
      */
-    QMap< QString, QString > toMap( const QString& baseName = QString() );
+    QMap< QString, QString > toMap( const QString& baseName = QString() ) const;
 
     /**Returns a DOM element containing the properties of the data defined container.
      * @param document DOM document

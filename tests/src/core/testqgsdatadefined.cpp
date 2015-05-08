@@ -35,6 +35,7 @@ class TestQgsDataDefined: public QObject
     void cleanup();// will be called after every testfunction.
     void create();//test creating a data defined container
     void copy();// test cpy destruction (double delete)
+    void assignment();
     void gettersSetters(); //test getters and setters
     void defaultValues(); //test hasDefaultValues method
     void equality(); //test equality operators
@@ -92,13 +93,26 @@ void TestQgsDataDefined::create()
 
 void TestQgsDataDefined::copy()
 {
-  QgsDataDefined dd( true, true, QString( "sqrt(2)" ), QString( "field" ) );
-  dd.prepareExpression( NULL );
-  QgsDataDefined cpy( dd );
-  QVERIFY( cpy == dd );
-  QgsDataDefined assigned;
-  assigned = dd;
-  QVERIFY( assigned == dd );
+  QgsDataDefined original( true, true, QString( "sqrt(2)" ), QString( "field" ) );
+  original.prepareExpression( NULL );
+  QgsDataDefined copy( original );
+  QVERIFY( copy == original );
+
+  copy.setActive( false );
+  QVERIFY( original.isActive() );
+  QVERIFY( copy != original );
+}
+
+void TestQgsDataDefined::assignment()
+{
+  QgsDataDefined original( true, true, QString( "sqrt(2)" ), QString( "field" ) );
+  QgsDataDefined copy;
+  copy = original;
+  QVERIFY( copy == original );
+
+  copy.setActive( false );
+  QVERIFY( original.isActive() );
+  QVERIFY( copy != original );
 }
 
 void TestQgsDataDefined::gettersSetters()

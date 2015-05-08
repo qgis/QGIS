@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatadefined.h"
+#include "qgsdatadefined_p.h"
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
@@ -24,33 +25,22 @@ QgsDataDefined::QgsDataDefined( bool active,
                                 bool useexpr,
                                 const QString& expr,
                                 const QString& field )
-    : mActive( active )
-    , mUseExpression( useexpr )
-    , mExpressionString( expr )
-    , mField( field )
 {
-  mExpression = 0;
-  mExpressionPrepared = false;
+  d = new QgsDataDefinedPrivate( active, useexpr, expr, field );
 }
 
 QgsDataDefined::QgsDataDefined( const QgsExpression * expression )
-    : mActive( bool( expression ) )
-    , mUseExpression( expression && ! expression->isField() )
-    , mExpressionString( mUseExpression ? expression->expression() : "" )
-    , mField( !mUseExpression ? ( expression ? expression->expression() : "" ) : "" )
 {
-  mExpression = 0;
-  mExpressionPrepared = false;
+  bool active = bool( expression );
+  bool useExpression = expression && ! expression->isField();
+  d = new QgsDataDefinedPrivate( active,
+                                 useExpression,
+                                 useExpression ? expression->expression() : QString(),
+                                 !useExpression ? ( expression ? expression->expression() : QString() ) : QString() );
 }
 
 QgsDataDefined::QgsDataDefined( const QgsDataDefined &other )
-    : mExpression( 0 )
-    , mActive( other.isActive() )
-    , mUseExpression( other.useExpression() )
-    , mExpressionString( other.expressionString() )
-    , mField( other.field() )
-    , mExpressionParams( other.expressionParams() )
-    , mExpressionPrepared( false )
+    : d( other.d )
 {
 
 }
@@ -80,35 +70,80 @@ QgsDataDefined* QgsDataDefined::fromMap( const QgsStringMap &map, const QString 
 QgsDataDefined::QgsDataDefined( const QString & string )
 {
   QgsExpression expression( string );
-  mActive = expression.rootNode();
-  mUseExpression = mActive && ! expression.isField();
-  mExpressionString = mUseExpression ? expression.expression() : QString();
-  mField = expression.isField() ? expression.rootNode()->dump() : QString();
-  mExpression = 0;
-  mExpressionPrepared = false;
+
+  bool active = expression.rootNode();
+  bool useExpression = active && ! expression.isField();
+  d = new QgsDataDefinedPrivate( active,
+                                 useExpression,
+                                 useExpression ? expression.expression() : QString(),
+                                 expression.isField() ? expression.rootNode()->dump() : QString() );
 }
 
 QgsDataDefined::~QgsDataDefined()
 {
-  delete mExpression;
+
 }
 
 bool QgsDataDefined::hasDefaultValues() const
 {
-  return ( !mActive && !mUseExpression && mExpressionString.isEmpty() && mField.isEmpty() );
+  return ( !d->active && !d->useExpression && d->expressionString.isEmpty() && d->field.isEmpty() );
+}
+
+bool QgsDataDefined::isActive() const
+{
+  return d->active;
+}
+
+void QgsDataDefined::setActive( bool active )
+{
+  if ( active == d->active )
+    return;
+
+  d.detach();
+  d->active = active;
+}
+
+bool QgsDataDefined::useExpression() const
+{
+  return d->useExpression;
 }
 
 void QgsDataDefined::setUseExpression( bool use )
 {
-  mUseExpression = use;
-  mExprRefColumns.clear();
+  if ( use == d->useExpression )
+    return;
+
+  d.detach();
+  d->useExpression = use;
+  d->exprRefColumns.clear();
+}
+
+QString QgsDataDefined::expressionString() const
+{
+  return d->expressionString;
 }
 
 void QgsDataDefined::setExpressionString( const QString &expr )
 {
-  mExpressionString = expr;
-  mExpressionPrepared = false;
-  mExprRefColumns.clear();
+  if ( expr == d->expressionString )
+    return;
+
+  d.detach();
+
+  d->expressionString = expr;
+  d->expressionPrepared = false;
+  d->exprRefColumns.clear();
+}
+
+QMap<QString, QVariant> QgsDataDefined::expressionParams() const
+{
+  return d->expressionParams;
+}
+
+void QgsDataDefined::setExpressionParams( QMap<QString, QVariant> params )
+{
+  d.detach();
+  d->expressionParams = params;
 }
 
 bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
@@ -127,42 +162,56 @@ bool QgsDataDefined::prepareExpression( QgsVectorLayer* layer )
 
 bool QgsDataDefined::prepareExpression( const QgsFields &fields )
 {
-  if ( !mUseExpression || mExpressionString.isEmpty() )
+  if ( !d->useExpression || d->expressionString.isEmpty() )
   {
     return false;
   }
 
-  mExpression = new QgsExpression( mExpressionString );
-  if ( mExpression->hasParserError() )
+  d.detach();
+  delete d->expression;
+  d->expression = new QgsExpression( d->expressionString );
+  if ( d->expression->hasParserError() )
   {
-    QgsDebugMsg( "Parser error:" + mExpression->parserErrorString() );
+    QgsDebugMsg( "Parser error:" + d->expression->parserErrorString() );
     return false;
   }
 
   // setup expression parameters
-  QVariant scaleV = mExpressionParams.value( "scale" );
+  QVariant scaleV = d->expressionParams.value( "scale" );
   if ( scaleV.isValid() )
   {
     bool ok;
     double scale = scaleV.toDouble( &ok );
     if ( ok )
     {
-      mExpression->setScale( scale );
+      d->expression->setScale( scale );
     }
   }
 
-  mExpression->prepare( fields );
-  mExprRefColumns = mExpression->referencedColumns();
+  d->expression->prepare( fields );
+  d->exprRefColumns = d->expression->referencedColumns();
 
-  if ( mExpression->hasEvalError() )
+  if ( d->expression->hasEvalError() )
   {
-    QgsDebugMsg( "Prepare error:" + mExpression->evalErrorString() );
+    d->expressionPrepared = false;
+    QgsDebugMsg( "Prepare error:" + d->expression->evalErrorString() );
     return false;
   }
 
-  mExpressionPrepared = true;
+  d->expressionPrepared = true;
 
   return true;
+}
+
+bool QgsDataDefined::expressionIsPrepared() const
+{
+  return d->expressionPrepared;
+}
+
+QgsExpression *QgsDataDefined::expression()
+{
+  d.detach();
+  return d->expression;
 }
 
 QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
@@ -179,38 +228,49 @@ QStringList QgsDataDefined::referencedColumns( QgsVectorLayer* layer )
 
 QStringList QgsDataDefined::referencedColumns( const QgsFields &fields )
 {
-  if ( !mExprRefColumns.isEmpty() )
+  if ( !d->exprRefColumns.isEmpty() )
   {
-    return mExprRefColumns;
+    return d->exprRefColumns;
   }
 
-  if ( mUseExpression )
+  d.detach();
+  if ( d->useExpression )
   {
-    if ( !mExpression || !mExpressionPrepared )
+    if ( !d->expression || !d->expressionPrepared )
     {
       prepareExpression( fields );
     }
   }
-  else if ( !mField.isEmpty() )
+  else if ( !d->field.isEmpty() )
   {
-    mExprRefColumns << mField;
+    d->exprRefColumns << d->field;
   }
 
-  return mExprRefColumns;
+  return d->exprRefColumns;
+}
+
+QString QgsDataDefined::field() const
+{
+  return d->field;
 }
 
 void QgsDataDefined::setField( const QString &field )
 {
-  mField = field;
-  mExprRefColumns.clear();
+  if ( field == d->field )
+    return;
+
+  d.detach();
+  d->field = field;
+  d->exprRefColumns.clear();
 }
 
 void QgsDataDefined::insertExpressionParam( QString key, QVariant param )
 {
-  mExpressionParams.insert( key, param );
+  d.detach();
+  d->expressionParams.insert( key, param );
 }
 
-QgsStringMap QgsDataDefined::toMap( const QString &baseName )
+QgsStringMap QgsDataDefined::toMap( const QString &baseName ) const
 {
   QgsStringMap map;
   QString prefix;
@@ -219,10 +279,10 @@ QgsStringMap QgsDataDefined::toMap( const QString &baseName )
     prefix.append( QString( "%1_dd_" ).arg( baseName ) );
   }
 
-  map.insert( QString( "%1active" ).arg( prefix ), ( mActive ? "1" : "0" ) );
-  map.insert( QString( "%1useexpr" ).arg( prefix ), ( mUseExpression ? "1" : "0" ) );
-  map.insert( QString( "%1expression" ).arg( prefix ), mExpressionString );
-  map.insert( QString( "%1field" ).arg( prefix ), mField );
+  map.insert( QString( "%1active" ).arg( prefix ), ( d->active ? "1" : "0" ) );
+  map.insert( QString( "%1useexpr" ).arg( prefix ), ( d->useExpression ? "1" : "0" ) );
+  map.insert( QString( "%1expression" ).arg( prefix ), d->expressionString );
+  map.insert( QString( "%1field" ).arg( prefix ), d->field );
 
   return map;
 }
@@ -230,10 +290,10 @@ QgsStringMap QgsDataDefined::toMap( const QString &baseName )
 QDomElement QgsDataDefined::toXmlElement( QDomDocument &document, const QString& elementName ) const
 {
   QDomElement element = document.createElement( elementName );
-  element.setAttribute( "active", mActive ? "true" : "false" );
-  element.setAttribute( "useExpr", mUseExpression ? "true" : "false" );
-  element.setAttribute( "expr", mExpressionString );
-  element.setAttribute( "field", mField );
+  element.setAttribute( "active", d->active ? "true" : "false" );
+  element.setAttribute( "useExpr", d->useExpression ? "true" : "false" );
+  element.setAttribute( "expr", d->expressionString );
+  element.setAttribute( "field", d->field );
   return element;
 }
 
@@ -244,17 +304,17 @@ bool QgsDataDefined::setFromXmlElement( const QDomElement &element )
     return false;
   }
 
-  mActive = element.attribute( "active" ).compare( "true", Qt::CaseInsensitive ) == 0;
-  mUseExpression = element.attribute( "useExpr" ).compare( "true", Qt::CaseInsensitive ) == 0;
-  mField = element.attribute( "field" );
+  d.detach();
+  d->active = element.attribute( "active" ).compare( "true", Qt::CaseInsensitive ) == 0;
+  d->useExpression = element.attribute( "useExpr" ).compare( "true", Qt::CaseInsensitive ) == 0;
+  d->field = element.attribute( "field" );
   setExpressionString( element.attribute( "expr" ) );
   return true;
 }
 
 bool QgsDataDefined::operator==( const QgsDataDefined &other ) const
 {
-  return other.isActive() == mActive && other.useExpression() == mUseExpression &&
-         other.field() == mField && other.expressionString() == mExpressionString;
+  return *( other.d ) == *d;
 }
 
 bool QgsDataDefined::operator!=( const QgsDataDefined &other ) const
@@ -264,17 +324,7 @@ bool QgsDataDefined::operator!=( const QgsDataDefined &other ) const
 
 QgsDataDefined &QgsDataDefined::operator=( const QgsDataDefined & rhs )
 {
-  if ( &rhs == this )
-    return *this;
-
-  delete mExpression;
-  mExpression = 0;
-  mActive = rhs.isActive();
-  mUseExpression = rhs.useExpression();
-  mExpressionString = rhs.expressionString();
-  mField = rhs.field();
-  mExpressionParams = rhs.expressionParams();
-  mExpressionPrepared = false;
-  mExprRefColumns.clear();
+  d.detach();
+  d = rhs.d;
   return *this;
 }

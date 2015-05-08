@@ -487,6 +487,7 @@ SET(QGIS_CORE_HDRS
   qgscsexception.h
   qgsdartmeasurement.h
   qgsdatadefined.h
+  qgsdatadefined_p.h
   qgsdataitem.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
