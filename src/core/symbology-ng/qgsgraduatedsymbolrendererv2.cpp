@@ -21,6 +21,8 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
+#include "qgsscaleexpression.h"
+#include "qgsdatadefined.h"
 
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -1149,6 +1151,57 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
     lst << qMakePair( range.label(), pix );
   }
   return lst;
+}
+
+QgsLegendSymbolListV2 QgsGraduatedSymbolRendererV2::legendSymbolItemsV2() const
+{
+  QgsLegendSymbolListV2 list;
+  if ( mSourceSymbol.data() && mSourceSymbol->type() == QgsSymbolV2::Marker )
+  {
+    // check that all symbols that have the same size expression
+    QgsDataDefined ddSize;
+    foreach ( QgsRendererRangeV2 range, mRanges )
+    {
+      const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( range.symbol() );
+      if ( !ddSize.hasDefaultValues() && symbol->dataDefinedSize() != ddSize )
+      {
+        // no common size expression
+        return QgsFeatureRendererV2::legendSymbolItemsV2();
+      }
+      else
+      {
+        ddSize = symbol->dataDefinedSize();
+      }
+    }
+
+    if ( !ddSize.isActive() || !ddSize.useExpression() )
+    {
+      return QgsFeatureRendererV2::legendSymbolItemsV2();
+    }
+
+    QgsScaleExpression exp( ddSize.expressionString() );
+    if ( exp.type() != QgsScaleExpression::Unknown )
+    {
+      QgsLegendSymbolItemV2 title( NULL, exp.baseExpression(), "" );
+      list << title;
+      foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      {
+        QgsLegendSymbolItemV2 si( mSourceSymbol.data(), QString::number( v ), "" );
+        QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+        s->setColor( QColor( 0, 0, 0 ) );
+        s->setDataDefinedSize( QgsDataDefined() );
+        s->setSize( exp.size( v ) );
+        list << si;
+      }
+      // now list the graduated symbols
+      const QgsLegendSymbolListV2 list2 = QgsFeatureRendererV2::legendSymbolItemsV2() ;
+      foreach ( QgsLegendSymbolItemV2 item, list2 )
+        list << item;
+      return list;
+    }
+  }
+
+  return QgsFeatureRendererV2::legendSymbolItemsV2();
 }
 
 QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems( double scaleDenominator, QString rule )

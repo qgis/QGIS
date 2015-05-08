@@ -21,7 +21,7 @@
 #endif
 
 #define DEG2RAD(x)    ((x)*M_PI/180)
-#define DEFAULT_SCALE_METHOD              QgsSymbolV2::ScaleArea
+#define DEFAULT_SCALE_METHOD              QgsSymbolV2::ScaleDiameter
 
 #include <QColor>
 #include <QMap>
@@ -330,7 +330,7 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
     QgsSymbolV2::ScaleMethod scaleMethod() const { return mScaleMethod; }
 
     void setOffset( QPointF offset ) { mOffset = offset; }
-    QPointF offset() { return mOffset; }
+    QPointF offset() const { return mOffset; }
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const override;
 
