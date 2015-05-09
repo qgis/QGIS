@@ -210,7 +210,10 @@ bool QgsDataDefined::expressionIsPrepared() const
 
 QgsExpression *QgsDataDefined::expression()
 {
-  d.detach();
+  //Ideally there should be a detach here, but that causes issues
+  //as detaching can create a new expression which will be unprepared
+  //TODO - revisit after QgsExpression is made implicitly shared
+  //d.detach();
   return d->expression;
 }
 
