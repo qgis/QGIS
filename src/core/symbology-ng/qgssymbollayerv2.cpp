@@ -117,7 +117,9 @@ QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString &property,
     return QVariant();
 
   if ( dd->useExpression() )
-    return dd->expression()->evaluate( feature );
+  {
+    return dd->expression() ? dd->expression()->evaluate( feature ) : QVariant();
+  }
   else if ( feature && !dd->field().isEmpty() && !mFields.isEmpty() )
   {
     int attributeIndex = mFields.fieldNameIndex( dd->field() );
