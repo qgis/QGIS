@@ -110,23 +110,45 @@ bool QgsSymbolLayerV2::hasDataDefinedProperty( const QString& property ) const
   return dd && dd->isActive();
 }
 
-QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString &property, const QgsFeature* feature ) const
+QVariant QgsSymbolLayerV2::evaluateDataDefinedProperty( const QString &property, const QgsFeature* feature, const QVariant& defaultVal, bool *ok ) const
 {
+  if ( ok )
+    *ok = false;
+
   QgsDataDefined* dd = getDataDefinedProperty( property );
   if ( !dd || !dd->isActive() )
-    return QVariant();
+    return defaultVal;
 
   if ( dd->useExpression() )
   {
-    return dd->expression() ? dd->expression()->evaluate( feature ) : QVariant();
+    if ( dd->expression() )
+    {
+      QVariant result = dd->expression()->evaluate( feature );
+      if ( result.isValid() )
+      {
+        if ( ok )
+          *ok = true;
+        return result;
+      }
+      else
+        return defaultVal;
+    }
+    else
+    {
+      return defaultVal;
+    }
   }
   else if ( feature && !dd->field().isEmpty() && !mFields.isEmpty() )
   {
     int attributeIndex = mFields.fieldNameIndex( dd->field() );
     if ( attributeIndex >= 0 )
+    {
+      if ( ok )
+        *ok = true;
       return feature->attribute( attributeIndex );
+    }
   }
-  return QVariant();
+  return defaultVal;
 }
 
 bool QgsSymbolLayerV2::writeDxf( QgsDxfExport& e,

@@ -191,13 +191,15 @@ class CORE_EXPORT QgsSymbolLayerV2
      * @param property property key
      * @param feature pointer to the feature to use during expression or field
      * evaluation
-     * @returns calculated value for data defined property, or an invalid QVariant
+     * @param defaultVal default value to return if evaluation was not successful
+     * @param ok if specified, will be set to true if evaluation was successful
+     * @returns calculated value for data defined property, or default value
      * if property does not exist or is deactived.
      * @see hasDataDefinedProperty
      * @see getDataDefinedProperty
      * @note added in QGIS 2.9
      */
-    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature ) const;
+    virtual QVariant evaluateDataDefinedProperty( const QString& property, const QgsFeature* feature, const QVariant& defaultVal = QVariant(), bool *ok = 0 ) const;
 
     virtual bool writeDxf( QgsDxfExport& e,
                            double mmMapUnitScaleFactor,

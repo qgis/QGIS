@@ -204,7 +204,9 @@ class QgsSymbolLayerV2
      * @param property property key
      * @param feature pointer to the feature to use during expression or field
      * evaluation
-     * @returns calculated value for data defined property, or an invalid QVariant
+     * @param defaultVal default value to return if evaluation was not successful
+     * @param ok if specified, will be set to true if evaluation was successful
+     * @returns calculated value for data defined property, or default value
      * if property does not exist or is deactived.
      * @see hasDataDefinedProperty
      * @see getDataDefinedProperty
