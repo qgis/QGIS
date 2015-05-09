@@ -366,6 +366,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
 
+  if ( mFilePath.startsWith( "MySQL:" ) && !mLayerName.isEmpty() )
+  {
+    mFilePath += ",tables=" + mLayerName;
+  }
+
   // first try to open in update mode (unless specified otherwise)
   if ( !openReadOnly )
     ogrDataSource = OGROpen( TO8F( mFilePath ), true, &ogrDriver );
