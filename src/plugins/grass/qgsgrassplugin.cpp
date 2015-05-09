@@ -310,7 +310,7 @@ void QgsGrassPlugin::saveMapset()
 
   // Save working mapset in project file
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingGisdbase",
-                                      QgsGrass::getDefaultGisdbase() );
+                                      QgsProject::instance()->writePath( QgsGrass::getDefaultGisdbase() ) );
 
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingLocation",
                                       QgsGrass::getDefaultLocation() );
@@ -802,8 +802,10 @@ void QgsGrassPlugin::projectRead()
   QgsDebugMsg( "entered." );
 
   bool ok;
-  QString gisdbase = QgsProject::instance()->readEntry(
-                       "GRASS", "/WorkingGisdbase", "", &ok ).trimmed();
+  QString gisdbase = QgsProject::instance()->readPath(
+                       QgsProject::instance()->readEntry(
+                         "GRASS", "/WorkingGisdbase", "", &ok ).trimmed()
+                     );
   QString location = QgsProject::instance()->readEntry(
                        "GRASS", "/WorkingLocation", "", &ok ).trimmed();
   QString mapset = QgsProject::instance()->readEntry(
