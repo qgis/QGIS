@@ -438,6 +438,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QString name, QWidget * parent ) :
     , mModel( 0 )
     , mProxyModel( 0 )
     , mPropertiesWidgetEnabled( false )
+    , mPropertiesWidgetHeight( 0 )
 {
   setupUi( this );
 

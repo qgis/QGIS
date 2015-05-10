@@ -452,7 +452,7 @@ void QgsGrassBrowser::deleteMap()
       continue; // should not happen
     }
 
-    QgsGrassObject::Type mapType;
+    QgsGrassObject::Type mapType = QgsGrassObject::None;
     if ( type == QgsGrassModel::Raster )
       mapType = QgsGrassObject::Raster;
     else if ( type == QgsGrassModel::Vector )
