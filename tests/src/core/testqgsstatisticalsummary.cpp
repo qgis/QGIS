@@ -32,6 +32,7 @@ class TestQgsStatisticSummary: public QObject
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
     void stats();
+    void maxMin();
 
   private:
 
@@ -117,6 +118,19 @@ void TestQgsStatisticSummary::stats()
   QCOMPARE( s.firstQuartile(), 36.0 );
   QCOMPARE( s.thirdQuartile(), 47.0 );
   QCOMPARE( s.interQuartileRange(), 11.0 );
+}
+
+void TestQgsStatisticSummary::maxMin()
+{
+  QgsStatisticalSummary s( QgsStatisticalSummary::All );
+
+  //test max/min of negative value list
+  QList<double> negativeVals;
+  negativeVals << -5.0 << -10.0 << -15.0;
+  s.calculate( negativeVals );
+
+  QCOMPARE( s.min(), -15.0 );
+  QCOMPARE( s.max(), -5.0 );
 }
 
 QTEST_MAIN( TestQgsStatisticSummary )

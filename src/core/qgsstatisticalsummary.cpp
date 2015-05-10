@@ -36,7 +36,7 @@ void QgsStatisticalSummary::reset()
   mMean = 0;
   mMedian = 0;
   mMin = std::numeric_limits<double>::max();
-  mMax = std::numeric_limits<double>::min();
+  mMax = -std::numeric_limits<double>::max();
   mStdev = 0;
   mSampleStdev = 0;
   mMinority = 0;
