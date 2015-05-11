@@ -86,7 +86,7 @@ void QgsDxfPaintEngine::drawPolygon( const QPointF *points, int pointCount, Poly
 
   if ( mode == QPaintEngine::PolylineMode )
   {
-    mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", mPen.color(), currentWidth(), true );
+    mDxf->writePolyline( polyline, mLayer, "CONTINUOUS", mPen.color(), currentWidth() );
   }
   else
   {

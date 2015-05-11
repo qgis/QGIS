@@ -670,7 +670,7 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
       }
       //close ellipse with first point
       line.push_back( line.at( 0 ) );
-      e.writePolyline( line, layerName, "SOLID", oc, outlineWidth, true );
+      e.writePolyline( line, layerName, "SOLID", oc, outlineWidth );
     }
   }
   else if ( symbolName == "rectangle" )
@@ -689,13 +689,13 @@ bool QgsEllipseSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScaleFa
     QPointF pt2( t.map( QPointF( halfWidth, 0 ) ) );
     line1[0] = pt1;
     line1[1] = pt2;
-    e.writePolyline( line1, layerName, "CONTINUOUS", oc, outlineWidth, false );
+    e.writePolyline( line1, layerName, "CONTINUOUS", oc, outlineWidth );
     QgsPolyline line2( 2 );
     QPointF pt3( t.map( QPointF( 0, halfHeight ) ) );
     QPointF pt4( t.map( QPointF( 0, -halfHeight ) ) );
     line2[0] = pt3;
     line2[1] = pt4;
-    e.writePolyline( line2, layerName, "CONTINUOUS", oc, outlineWidth, false );
+    e.writePolyline( line2, layerName, "CONTINUOUS", oc, outlineWidth );
     return true;
   }
   else if ( symbolName == "triangle" )

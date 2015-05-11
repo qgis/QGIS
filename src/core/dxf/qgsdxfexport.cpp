@@ -3338,8 +3338,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
   }
 }
 
-void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color,
-                                  double width, bool polygon )
+void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color, double width )
 {
   writeGroup( 0, "LWPOLYLINE" );
   writeHandle();
@@ -3349,16 +3348,17 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   writeGroup( 6, lineStyleName );
   writeGroup( color );
 
-  writeGroup( 90, line.size() );
+  bool polygon = line[0] == line[ line.size() - 1 ];
+  int n = line.size();
+  if ( polygon )
+    --n;
 
+  writeGroup( 90, n );
   writeGroup( 70, polygon ? 1 : 0 );
   writeGroup( 43, width );
 
-  QgsPolyline::const_iterator lineIt = line.constBegin();
-  for ( ; lineIt != line.constEnd(); ++lineIt )
-  {
-    writeGroup( 0, *lineIt );
-  }
+  for ( int i = 0; i < n; i++ )
+    writeGroup( 0, line[i] );
 }
 
 void QgsDxfExport::writePolygon( const QgsPolygon& polygon, const QString& layer, const QString& hatchPattern, QColor color )
@@ -3405,7 +3405,7 @@ void QgsDxfExport::writeLine( const QgsPoint& pt1, const QgsPoint& pt2, const QS
   QgsPolyline line( 2 );
   line[0] = pt1;
   line[1] = pt2;
-  writePolyline( line, layer, lineStyleName, color, width, false );
+  writePolyline( line, layer, lineStyleName, color, width );
 }
 
 void QgsDxfExport::writePoint( const QString& layer, QColor color, const QgsPoint& pt )
@@ -3652,7 +3652,7 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
       if ( !offsetLine )
         offsetLine = nonConstGeom;
 
-      writePolyline( offsetLine->asPolyline(), layer, lineStyleName, penColor, width, false );
+      writePolyline( offsetLine->asPolyline(), layer, lineStyleName, penColor, width );
 
       if ( offsetLine != nonConstGeom )
         delete offsetLine;
@@ -3671,7 +3671,7 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
       QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
       for ( ; lIt != multiLine.constEnd(); ++lIt )
       {
-        writePolyline( *lIt, layer, lineStyleName, penColor, width, false );
+        writePolyline( *lIt, layer, lineStyleName, penColor, width );
       }
 
       if ( offsetLine != nonConstGeom )
@@ -3691,7 +3691,7 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
       for ( ; polyIt != polygon.constEnd(); ++polyIt ) // iterate over rings
       {
-        writePolyline( *polyIt, layer, lineStyleName, penColor, width, false );
+        writePolyline( *polyIt, layer, lineStyleName, penColor, width );
       }
 
       if ( offsetPolygon != nonConstGeom )
@@ -3714,7 +3714,7 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
         QgsPolygon::const_iterator polyIt = mpIt->constBegin();
         for ( ; polyIt != mpIt->constEnd(); ++polyIt )
         {
-          writePolyline( *polyIt, layer, lineStyleName, penColor, width, true );
+          writePolyline( *polyIt, layer, lineStyleName, penColor, width );
         }
       }
 
