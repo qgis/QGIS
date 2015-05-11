@@ -1743,7 +1743,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  QgsGeometry* geom = f.geometry();
+  const QgsGeometry* geom = f.constGeometry();
   if ( !geom )
   {
     return;
@@ -3366,7 +3366,7 @@ void QgsPalLabeling::registerFeature( const QString& layerID, QgsFeature& f, con
   lyr.registerFeature( f, context, dxfLayer );
 }
 
-bool QgsPalLabeling::geometryRequiresPreparation( QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
+bool QgsPalLabeling::geometryRequiresPreparation( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, QgsGeometry* clipGeometry )
 {
   if ( !geometry )
   {
@@ -3393,7 +3393,7 @@ bool QgsPalLabeling::geometryRequiresPreparation( QgsGeometry* geometry, const Q
   return false;
 }
 
-QgsGeometry* QgsPalLabeling::prepareGeometry( QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
+QgsGeometry* QgsPalLabeling::prepareGeometry( const QgsGeometry* geometry, const QgsRenderContext& context, const QgsCoordinateTransform* ct, double minSize, QgsGeometry* clipGeometry )
 {
   if ( !geometry )
   {
@@ -3532,7 +3532,7 @@ void QgsPalLabeling::registerDiagramFeature( const QString& layerID, QgsFeature&
   }
 
   //convert geom to geos
-  QgsGeometry* geom = feat.geometry();
+  const QgsGeometry* geom = feat.constGeometry();
   QScopedPointer<QgsGeometry> extentGeom( QgsGeometry::fromRect( mMapSettings->visibleExtent() ) );
 
   const GEOSGeometry* geos_geom = 0;

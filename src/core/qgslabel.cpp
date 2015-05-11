@@ -514,7 +514,7 @@ QgsLabelAttributes *QgsLabel::labelAttributes( void )
 
 void QgsLabel::labelPoint( std::vector<labelpoint>& points, QgsFeature & feature )
 {
-  QgsGeometry *geometry = feature.geometry();
+  const QgsGeometry *geometry = feature.constGeometry();
   const unsigned char *geom = geometry->asWkb();
   size_t geomlen = geometry->wkbSize();
   QGis::WkbType wkbType = geometry->wkbType();

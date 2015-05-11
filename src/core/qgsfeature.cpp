@@ -114,6 +114,11 @@ QgsGeometry *QgsFeature::geometry() const
   return mGeometry;
 }
 
+const QgsGeometry* QgsFeature::constGeometry() const
+{
+  return mGeometry;
+}
+
 QgsGeometry *QgsFeature::geometryAndOwnership()
 {
   mOwnsGeometry = false;

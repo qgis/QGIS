@@ -172,7 +172,7 @@ int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputT
     return 1;
   }
 
-  QgsGeometry* g = f->geometry();
+  const QgsGeometry* g = f->constGeometry();
   {
     if ( !g )
     {

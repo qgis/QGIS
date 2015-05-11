@@ -580,11 +580,12 @@ void QgsRelationReferenceWidget::highlightFeature( QgsFeature f, CanvasExtent ca
       return;
   }
 
-  QgsGeometry* geom = f.geometry();
-  if ( !geom )
+  if ( !f.constGeometry() )
   {
     return;
   }
+
+  const QgsGeometry* geom = f.constGeometry();
 
   // scale or pan
   if ( canvasExtent == Scale )

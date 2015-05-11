@@ -511,7 +511,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     const QgsFeature* f = context.feature();
     if ( f )
     {
-      QgsGeometry *g = f->geometry();
+      const QgsGeometry *g = f->constGeometry();
       if ( g && g->type() == QGis::Point )
       {
         const QgsMapToPixel& m2p = context.renderContext().mapToPixel();
@@ -1288,7 +1288,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     const QgsFeature* f = context.feature();
     if ( f )
     {
-      QgsGeometry *g = f->geometry();
+      const QgsGeometry *g = f->constGeometry();
       if ( g && g->type() == QGis::Point )
       {
         const QgsMapToPixel& m2p = context.renderContext().mapToPixel();

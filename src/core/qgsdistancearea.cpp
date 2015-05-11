@@ -254,7 +254,7 @@ bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
   return true;
 }
 
-double QgsDistanceArea::measure( QgsGeometry* geometry )
+double QgsDistanceArea::measure( const QgsGeometry *geometry )
 {
   if ( !geometry )
     return 0.0;
@@ -329,7 +329,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   }
 }
 
-double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
+double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry )
 {
   if ( !geometry )
     return 0.0;

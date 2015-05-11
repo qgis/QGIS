@@ -1050,7 +1050,7 @@ QDomElement QgsOgcUtils::rectangleToGMLEnvelope( QgsRectangle* env, QDomDocument
   return envElem;
 }
 
-QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc, QString format, const int &precision )
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry* geometry, QDomDocument& doc, QString format, const int &precision )
 {
   if ( !geometry || !geometry->asWkb() )
     return QDomElement();
@@ -1344,7 +1344,7 @@ QDomElement QgsOgcUtils::geometryToGML( QgsGeometry* geometry, QDomDocument& doc
   }
 }
 
-QDomElement QgsOgcUtils::geometryToGML( QgsGeometry *geometry, QDomDocument &doc, const int &precision )
+QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry *geometry, QDomDocument &doc, const int &precision )
 {
   return geometryToGML( geometry, doc, "GML2", precision );
 }

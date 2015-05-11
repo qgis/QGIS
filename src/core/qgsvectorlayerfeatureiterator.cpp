@@ -299,9 +299,9 @@ void QgsVectorLayerFeatureIterator::useAddedFeature( const QgsFeature& src, QgsF
   f.setValid( true );
   f.setFields( &mSource->mFields );
 
-  if ( src.geometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
+  if ( src.constGeometry() && !( mRequest.flags() & QgsFeatureRequest::NoGeometry ) )
   {
-    f.setGeometry( *src.geometry() );
+    f.setGeometry( new QgsGeometry( *src.constGeometry() ) );
 
     // simplify the edited geometry using its simplifier configured
     if ( mEditGeometrySimplifier )

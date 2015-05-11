@@ -243,7 +243,7 @@ void Heatmap::run()
       break;
     }
 
-    QgsGeometry* featureGeometry = myFeature.geometry();
+    const QgsGeometry* featureGeometry = myFeature.constGeometry();
     if ( !featureGeometry )
     {
       continue;

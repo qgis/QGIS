@@ -885,7 +885,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList & flist )
 
     if ( !mGeometryColName.isEmpty() )
     {
-      QgsGeometry *geom = it->geometry();
+      const QgsGeometry *geom = it->constGeometry();
       if ( mUseWkb )
       {
         QByteArray bytea = QByteArray(( char* )geom->asWkb(), geom->wkbSize() );

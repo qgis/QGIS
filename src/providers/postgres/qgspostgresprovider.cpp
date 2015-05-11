@@ -1773,7 +1773,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       QStringList params;
       if ( !mGeometryColumn.isNull() )
       {
-        appendGeomParam( features->geometry(), params );
+        appendGeomParam( features->constGeometry(), params );
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
@@ -2149,7 +2149,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
   return returnvalue;
 }
 
-void QgsPostgresProvider::appendGeomParam( QgsGeometry *geom, QStringList &params ) const
+void QgsPostgresProvider::appendGeomParam( const QgsGeometry *geom, QStringList &params ) const
 {
   if ( !geom )
   {

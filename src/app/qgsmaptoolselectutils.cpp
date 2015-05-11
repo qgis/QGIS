@@ -162,7 +162,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
     if ( r && !r->willRenderFeature( f ) )
       continue;
 
-    QgsGeometry* g = f.geometry();
+    const QgsGeometry* g = f.constGeometry();
     if ( doContains )
     {
       if ( !selectGeomTrans.contains( g ) )

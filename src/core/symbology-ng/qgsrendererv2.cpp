@@ -243,7 +243,7 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 {
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
-  QgsGeometry* geom = feature.geometry();
+  const QgsGeometry* geom = feature.constGeometry();
   switch ( geom->wkbType() )
   {
     case QGis::WKBPoint:

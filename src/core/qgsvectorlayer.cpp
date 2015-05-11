@@ -671,9 +671,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
                         .setFilterFid( fid )
                         .setSubsetOfAttributes( QgsAttributeList() ) )
            .nextFeature( fet ) &&
-           fet.geometry() )
+           fet.constGeometry() )
       {
-        r = fet.geometry()->boundingBox();
+        r = fet.constGeometry()->boundingBox();
         retval.combineExtentWith( &r );
       }
     }
@@ -687,9 +687,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
     {
       if ( mSelectedFeatureIds.contains( fet.id() ) )
       {
-        if ( fet.geometry() )
+        if ( fet.constGeometry() )
         {
-          r = fet.geometry()->boundingBox();
+          r = fet.constGeometry()->boundingBox();
           retval.combineExtentWith( &r );
         }
       }
@@ -874,9 +874,9 @@ QgsRectangle QgsVectorLayer::extent()
 
     for ( QgsFeatureMap::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); ++it )
     {
-      if ( it->geometry() )
+      if ( it->constGeometry() )
       {
-        QgsRectangle r = it->geometry()->boundingBox();
+        QgsRectangle r = it->constGeometry()->boundingBox();
         rect.combineExtentWith( &r );
       }
     }
@@ -889,9 +889,9 @@ QgsRectangle QgsVectorLayer::extent()
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.geometry() && fet.geometry()->type() != QGis::UnknownGeometry )
+      if ( fet.constGeometry() && fet.constGeometry()->type() != QGis::UnknownGeometry )
       {
-        QgsRectangle bb = fet.geometry()->boundingBox();
+        QgsRectangle bb = fet.constGeometry()->boundingBox();
         rect.combineExtentWith( &bb );
       }
     }
@@ -983,7 +983,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
 {
   QgsFeatureRequest req;
   req.setFilterFid( f.id() );
-  if ( !f.geometry() )
+  if ( !f.constGeometry() )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   if ( f.attributes().isEmpty() )
     req.setSubsetOfAttributes( QgsAttributeList() );
@@ -995,7 +995,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
     return false;
   }
 
-  if ( f.geometry() && current.geometry() && f.geometry() != current.geometry() && !f.geometry()->isGeosEqual( *current.geometry() ) )
+  if ( f.constGeometry() && current.constGeometry() && f.constGeometry() != current.constGeometry() && !f.constGeometry()->isGeosEqual( *current.constGeometry() ) )
   {
     if ( !changeGeometry( f.id(), f.geometry() ) )
     {
@@ -1175,7 +1175,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds
     }
 
     //call geometry->makeDifference for each feature
-    QgsGeometry *currentGeom = f.geometry();
+    const QgsGeometry *currentGeom = f.constGeometry();
     if ( currentGeom )
     {
       if ( geom->makeDifference( currentGeom ) != 0 )
@@ -1188,7 +1188,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds
   return returnValue;
 }
 
-int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
+int QgsVectorLayer::addTopologicalPoints( const QgsGeometry *geom )
 {
   if ( !mEditBuffer || !mDataProvider )
     return -1;
@@ -2495,7 +2495,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
     while ( fit.nextFeature( f ) )
     {
-      snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
+      snapToGeometry( startPoint, f.id(), f.constGeometry(), sqrSnappingTolerance, snappingResults, snap_to );
       ++n;
     }
   }
@@ -2505,7 +2505,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
 void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
                                      QgsFeatureId featureId,
-                                     QgsGeometry* geom,
+                                     const QgsGeometry* geom,
                                      double sqrSnappingTolerance,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to ) const

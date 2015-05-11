@@ -677,7 +677,7 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
   {
     return;
   }
-  if ( !feat.geometry() )
+  if ( !feat.constGeometry() )
   {
     return;
   }
@@ -697,16 +697,16 @@ void QgsSpatialQueryDialog::zoomFeature( QgsVectorLayer* lyr, QgsFeatureId fid )
 
       QMessageBox::warning( this, tr( "Zoom to feature" ), msg, QMessageBox::Ok );
     }
-    mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
   }
   else if ( srsSource == srcMapcanvas )
   {
-    mIface->mapCanvas()->setExtent( feat.geometry()->boundingBox() );
+    mIface->mapCanvas()->setExtent( feat.constGeometry()->boundingBox() );
   }
   else
   {
     QgsCoordinateTransform * coordTransform =  new QgsCoordinateTransform( srsSource, srcMapcanvas );
-    QgsRectangle rectExtent = coordTransform->transform( feat.geometry()->boundingBox() );
+    QgsRectangle rectExtent = coordTransform->transform( feat.constGeometry()->boundingBox() );
     delete coordTransform;
     mIface->mapCanvas()->setExtent( rectExtent );
   }

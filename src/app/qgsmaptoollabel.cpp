@@ -83,7 +83,7 @@ void QgsMapToolLabel::createRubberBands()
     QgsFeature f;
     if ( currentFeature( f, true ) )
     {
-      QgsGeometry* geom = f.geometry();
+      const QgsGeometry* geom = f.constGeometry();
       if ( geom )
       {
         mFeatureRubberBand = new QgsRubberBand( mCanvas, geom->type() );

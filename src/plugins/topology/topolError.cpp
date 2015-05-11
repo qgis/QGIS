@@ -38,7 +38,7 @@ bool TopolError::fixMove( FeatureLayer fl1, FeatureLayer fl2 )
 
 
   // 0 means success
-  if ( !f1.geometry()->makeDifference( f2.geometry() ) )
+  if ( !f1.geometry()->makeDifference( f2.constGeometry() ) )
     return fl1.layer->changeGeometry( f1.id(), f1.geometry() );
 
   return false;
@@ -65,7 +65,7 @@ bool TopolError::fixUnion( FeatureLayer fl1, FeatureLayer fl2 )
   if ( !ok )
     return false;
 
-  QgsGeometry* g = f1.geometry()->combine( f2.geometry() );
+  QgsGeometry* g = f1.constGeometry()->combine( f2.constGeometry() );
   if ( !g )
     return false;
 
@@ -87,7 +87,7 @@ bool TopolError::fixSnap()
   if ( !ok )
     return false;
 
-  QgsGeometry* ge = f1.geometry();
+  const QgsGeometry* ge = f1.constGeometry();
 
   QgsPolyline line = ge->asPolyline();
   line.last() = mConflict->asPolyline().last();
@@ -139,7 +139,7 @@ TopolErrorIntersection::TopolErrorIntersection( QgsRectangle theBoundingBox, Qgs
   mFixMap[QObject::tr( "Delete red feature" )] = &TopolErrorIntersection::fixDeleteSecond;
 
   // allow union only when both features have the same geometry type
-  if ( theFeaturePairs.first().feature.geometry()->type() == theFeaturePairs[1].feature.geometry()->type() )
+  if ( theFeaturePairs.first().feature.constGeometry()->type() == theFeaturePairs[1].feature.constGeometry()->type() )
   {
     mFixMap[QObject::tr( "Union to blue feature" )] = &TopolErrorIntersection::fixUnionFirst;
     mFixMap[QObject::tr( "Union to red feature" )] = &TopolErrorIntersection::fixUnionSecond;

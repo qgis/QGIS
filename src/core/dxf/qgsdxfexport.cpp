@@ -3586,9 +3586,10 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
   if ( !fet )
     return;
 
-  QgsGeometry *geom = fet->geometry();
-  if ( !geom )
+  if ( !fet->constGeometry() )
     return;
+
+  const QgsGeometry *geom = fet->constGeometry();
 
   QGis::WkbType geometryType = geom->wkbType();
 
@@ -3646,22 +3647,25 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
     // single line
     if ( geometryType == QGis::WKBLineString || geometryType == QGis::WKBLineString25D )
     {
-      QgsGeometry *offsetLine = offset == 0.0 ? geom : geom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry* offsetLine = offset == 0.0 ? nonConstGeom : nonConstGeom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetLine )
-        offsetLine = geom;
+        offsetLine = nonConstGeom;
 
       writePolyline( offsetLine->asPolyline(), layer, lineStyleName, penColor, width, false );
 
-      if ( offsetLine != geom )
+      if ( offsetLine != nonConstGeom )
         delete offsetLine;
+      delete nonConstGeom;
     }
 
     // multiline
     if ( geometryType == QGis::WKBMultiLineString || geometryType == QGis::WKBMultiLineString25D )
     {
-      QgsGeometry *offsetLine = offset == 0.0 ? geom : geom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry *offsetLine = offset == 0.0 ? nonConstGeom : nonConstGeom->offsetCurve( offset, 0, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetLine )
-        offsetLine = geom;
+        offsetLine = nonConstGeom;
 
       QgsMultiPolyline multiLine = offsetLine->asMultiPolyline();
       QgsMultiPolyline::const_iterator lIt = multiLine.constBegin();
@@ -3670,16 +3674,18 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
         writePolyline( *lIt, layer, lineStyleName, penColor, width, false );
       }
 
-      if ( offsetLine != geom )
+      if ( offsetLine != nonConstGeom )
         delete offsetLine;
+      delete nonConstGeom;
     }
 
     // polygon
     if ( geometryType == QGis::WKBPolygon || geometryType == QGis::WKBPolygon25D )
     {
-      QgsGeometry *offsetPolygon = offset == 0.0 ? geom : geom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry *offsetPolygon = offset == 0.0 ? nonConstGeom : nonConstGeom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetPolygon )
-        offsetPolygon = geom;
+        offsetPolygon = nonConstGeom;
 
       QgsPolygon polygon = offsetPolygon->asPolygon();
       QgsPolygon::const_iterator polyIt = polygon.constBegin();
@@ -3688,16 +3694,18 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
         writePolyline( *polyIt, layer, lineStyleName, penColor, width, false );
       }
 
-      if ( offsetPolygon != geom )
+      if ( offsetPolygon != nonConstGeom )
         delete offsetPolygon;
+      delete nonConstGeom;
     }
 
     // multipolygon or polygon
     if ( geometryType == QGis::WKBMultiPolygon || geometryType == QGis::WKBMultiPolygon25D )
     {
-      QgsGeometry *offsetPolygon = offset == 0.0 ? geom : geom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
+      QgsGeometry* nonConstGeom = new QgsGeometry( *geom );
+      QgsGeometry *offsetPolygon = offset == 0.0 ? nonConstGeom : nonConstGeom->buffer( -offset, 0, GEOSBUF_CAP_FLAT, GEOSBUF_JOIN_MITRE, 2.0 );
       if ( !offsetPolygon )
-        offsetPolygon = geom;
+        offsetPolygon = nonConstGeom;
 
       QgsMultiPolygon mp = offsetPolygon->asMultiPolygon();
       QgsMultiPolygon::const_iterator mpIt = mp.constBegin();
@@ -3710,8 +3718,9 @@ void QgsDxfExport::addFeature( const QgsSymbolV2RenderContext& ctx, const QStrin
         }
       }
 
-      if ( offsetPolygon != geom )
+      if ( offsetPolygon != nonConstGeom )
         delete offsetPolygon;
+      delete nonConstGeom;
     }
   }
 

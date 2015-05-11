@@ -259,12 +259,12 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       break;
     }
 
-    QgsGeometry* featureGeometry = f.geometry();
-    if ( !featureGeometry )
+    if ( !f.constGeometry() )
     {
       ++featureCounter;
       continue;
     }
+    const QgsGeometry* featureGeometry = f.constGeometry();
 
     QgsRectangle featureRect = featureGeometry->boundingBox().intersect( &rasterBBox );
     if ( featureRect.isEmpty() )
@@ -409,7 +409,7 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   return 0;
 }
 
-void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry* poly, int pixelOffsetX,
+void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeometry* poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
 {
   double cellCenterX, cellCenterY;
@@ -465,7 +465,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
   GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
 }
 
-void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX,
+void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const QgsGeometry* poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
 {
   stats.reset();

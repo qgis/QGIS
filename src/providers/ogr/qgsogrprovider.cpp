@@ -977,14 +977,14 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   OGRFeatureH feature = OGR_F_Create( fdef );
 
-  if ( f.geometry() && f.geometry()->wkbSize() > 0 )
+  if ( f.constGeometry() && f.constGeometry()->wkbSize() > 0 )
   {
-    const unsigned char* wkb = f.geometry()->asWkb();
+    const unsigned char* wkb = f.constGeometry()->asWkb();
     OGRGeometryH geom = NULL;
 
     if ( wkb )
     {
-      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
+      if ( OGR_G_CreateFromWkb( const_cast<unsigned char *>( wkb ), NULL, &geom, f.constGeometry()->wkbSize() ) != OGRERR_NONE )
       {
         pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
         return false;

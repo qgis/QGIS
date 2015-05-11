@@ -242,9 +242,9 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
       QgsFeature f;
       while ( fit.nextFeature( f ) )
       {
-        if ( f.geometry() )
+        if ( f.constGeometry() )
         {
-          double currentDistance = pointGeometry->distance( *f.geometry() );
+          double currentDistance = pointGeometry->distance( *f.constGeometry() );
           if ( currentDistance < minDistance )
           {
             minDistance = currentDistance;
@@ -260,7 +260,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
         return;
       }
 
-      QgsRectangle bound = cf.geometry()->boundingBox();
+      QgsRectangle bound = cf.constGeometry()->boundingBox();
       mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
 
       if ( !mAnchorPoint )
@@ -276,7 +276,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
       mRotatedFeatures << cf.id(); //todo: take the closest feature, not the first one...
 
       mRubberBand = createRubberBand( vlayer->geometryType() );
-      mRubberBand->setToGeometry( cf.geometry(), vlayer );
+      mRubberBand->setToGeometry( cf.constGeometry(), vlayer );
     }
     else
     {
@@ -288,7 +288,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QMouseEvent * e )
       QgsFeatureIterator it = vlayer->selectedFeaturesIterator();
       while ( it.nextFeature( feat ) )
       {
-        mRubberBand->addGeometry( feat.geometry(), vlayer );
+        mRubberBand->addGeometry( feat.constGeometry(), vlayer );
       }
     }
 
@@ -376,7 +376,7 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
   {
     QgsFeature feat;
     vlayer->getFeatures( QgsFeatureRequest().setFilterFid( id ) ).nextFeature( feat );
-    QgsGeometry* geom = feat.geometry();
+    const QgsGeometry* geom = feat.constGeometry();
     i = start;
 
     QgsPoint vertex = geom->vertexAt( i );

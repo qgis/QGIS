@@ -69,7 +69,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void deleteDistanceWidget();
     void setOffsetForRubberBand( double offset );
     /**Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
-    QgsGeometry* linestringFromPolygon( QgsGeometry* featureGeom, int vertex );
+    QgsGeometry* linestringFromPolygon( const QgsGeometry *featureGeom, int vertex );
     /**Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
     QgsGeometry* convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti );
     /**Converts offset line back to a multiline if necessary*/

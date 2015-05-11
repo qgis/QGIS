@@ -965,7 +965,7 @@ void QgsGml::calculateExtentFromFeatures()
   }
 
   QgsFeature* currentFeature = 0;
-  QgsGeometry* currentGeometry = 0;
+  const QgsGeometry* currentGeometry = 0;
   bool bboxInitialised = false; //gets true once bbox has been set to the first geometry
 
   for ( int i = 0; i < mFeatures.size(); ++i )
@@ -975,7 +975,7 @@ void QgsGml::calculateExtentFromFeatures()
     {
       continue;
     }
-    currentGeometry = currentFeature->geometry();
+    currentGeometry = currentFeature->constGeometry();
     if ( currentGeometry )
     {
       if ( !bboxInitialised )

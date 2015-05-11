@@ -1016,7 +1016,7 @@ static QVariant fcnSeconds( const QVariantList& values, const QgsFeature*, QgsEx
 
 
 #define ENSURE_GEOM_TYPE(f, g, geomtype)   if (!f) return QVariant(); \
-  QgsGeometry* g = f->geometry(); \
+  const QgsGeometry* g = f->constGeometry(); \
   if (!g || g->type() != geomtype) return QVariant();
 
 
@@ -1079,7 +1079,7 @@ static QVariant fcnYat( const QVariantList& values, const QgsFeature* f, QgsExpr
 }
 static QVariant fcnGeometry( const QVariantList&, const QgsFeature* f, QgsExpression* )
 {
-  QgsGeometry* geom = f ? f->geometry() : 0;
+  const QgsGeometry* geom = f ? f->constGeometry() : 0;
   if ( geom )
     return  QVariant::fromValue( *geom );
   else
@@ -1109,19 +1109,19 @@ static QVariant fcnGeomArea( const QVariantList&, const QgsFeature* f, QgsExpres
 {
   ENSURE_GEOM_TYPE( f, g, QGis::Polygon );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measure( f->geometry() ) );
+  return QVariant( calc->measure( f->constGeometry() ) );
 }
 static QVariant fcnGeomLength( const QVariantList&, const QgsFeature* f, QgsExpression* parent )
 {
   ENSURE_GEOM_TYPE( f, g, QGis::Line );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measure( f->geometry() ) );
+  return QVariant( calc->measure( f->constGeometry() ) );
 }
 static QVariant fcnGeomPerimeter( const QVariantList&, const QgsFeature* f, QgsExpression* parent )
 {
   ENSURE_GEOM_TYPE( f, g, QGis::Polygon );
   QgsDistanceArea* calc = parent->geomCalculator();
-  return QVariant( calc->measurePerimeter( f->geometry() ) );
+  return QVariant( calc->measurePerimeter( f->constGeometry() ) );
 }
 
 static QVariant fcnBounds( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
@@ -1555,7 +1555,7 @@ static QVariant fcnSpecialColumn( const QVariantList& values, const QgsFeature* 
 static QVariant fcnGetGeometry( const QVariantList& values, const QgsFeature*, QgsExpression* parent )
 {
   QgsFeature feat = getFeature( values.at( 0 ), parent );
-  QgsGeometry* geom = feat.geometry();
+  const QgsGeometry* geom = feat.constGeometry();
   if ( geom )
     return QVariant::fromValue( *geom );
   return QVariant();

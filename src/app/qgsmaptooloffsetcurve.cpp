@@ -287,7 +287,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     if ( vl->geometryType() == QGis::Polygon )
     {
       //make linestring from polygon ring and return this geometry
-      return linestringFromPolygon( snappedFeature.geometry(), partVertexNr );
+      return linestringFromPolygon( snappedFeature.constGeometry(), partVertexNr );
     }
 
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
@@ -305,7 +305,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       ++selIt;
       for ( ; selIt != selectedFeatures.end(); ++selIt )
       {
-        QgsGeometry* combined = geom->combine( selIt->geometry() );
+        QgsGeometry* combined = geom->combine( selIt->constGeometry() );
         delete geom;
         geom = combined;
       }
@@ -413,7 +413,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
 #endif //GEOS_VERSION>=3.3
 }
 
-QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( QgsGeometry* featureGeom, int vertex )
+QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry* featureGeom, int vertex )
 {
   if ( !featureGeom )
   {

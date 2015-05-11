@@ -282,7 +282,7 @@ class QgsGeometry
     /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
        @return 0 in case of success*/
-    int makeDifference( QgsGeometry* other );
+    int makeDifference( const QgsGeometry* other );
 
     /**Returns the bounding box of this feature*/
     QgsRectangle boundingBox() const;

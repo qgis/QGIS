@@ -84,11 +84,11 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   Q_UNUSED( layer );
 
   //check, if there is already a point at that position
-  if ( !feature.geometry() )
+  if ( !feature.constGeometry() )
     return false;
 
   //point position in screen coords
-  QgsGeometry* geom = feature.geometry();
+  const QgsGeometry* geom = feature.constGeometry();
   QGis::WkbType geomType = geom->wkbType();
   if ( geomType != QGis::WKBPoint && geomType != QGis::WKBPoint25D )
   {
@@ -99,7 +99,7 @@ bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( selected )
     mSelectedFeatures.insert( feature.id() );
 
-  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.geometry()->asPoint() ) );
+  QList<QgsFeatureId> intersectList = mSpatialIndex->intersects( searchRect( feature.constGeometry()->asPoint() ) );
   if ( intersectList.empty() )
   {
     mSpatialIndex->insertFeature( feature );
@@ -131,7 +131,7 @@ void QgsPointDisplacementRenderer::drawGroup( const DisplacementGroup& group, Qg
   bool selected = mSelectedFeatures.contains( feature.id() ); // maybe we should highlight individual features instead of the whole group?
 
   QPointF pt;
-  _getPoint( pt, context, feature.geometry()->asWkb() );
+  _getPoint( pt, context, feature.constGeometry()->asWkb() );
 
   //get list of labels and symbols
   QStringList labelAttributeList;

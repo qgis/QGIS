@@ -3169,7 +3169,7 @@ int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
   }
 }
 
-int QgsGeometry::makeDifference( QgsGeometry* other )
+int QgsGeometry::makeDifference( const QgsGeometry* other )
 {
   //make sure geos geometry is up to date
   if ( !other )
@@ -6317,10 +6317,10 @@ int QgsGeometry::avoidIntersections( QMap<QgsVectorLayer*, QSet< QgsFeatureId > 
         if ( ignoreIds.contains( f.id() ) )
           continue;
 
-        if ( !f.geometry() )
+        if ( !f.constGeometry() )
           continue;
 
-        nearGeometries << GEOSGeom_clone_r( geosinit.ctxt, f.geometry()->asGeos() );
+        nearGeometries << GEOSGeom_clone_r( geosinit.ctxt, f.constGeometry()->asGeos() );
       }
     }
   }
