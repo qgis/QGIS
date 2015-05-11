@@ -56,7 +56,7 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
     , mNoDataBitmapWidth( 0 )
     , mNoDataBitmapSize( 0 )
 {
-  reset( mDataType, mWidth, mHeight );
+  ( void )reset( mDataType, mWidth, mHeight );
 }
 
 QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue )
@@ -73,7 +73,7 @@ QgsRasterBlock::QgsRasterBlock( QGis::DataType theDataType, int theWidth, int th
     , mNoDataBitmapWidth( 0 )
     , mNoDataBitmapSize( 0 )
 {
-  reset( mDataType, mWidth, mHeight, mNoDataValue );
+  ( void )reset( mDataType, mWidth, mHeight, mNoDataValue );
 }
 
 QgsRasterBlock::~QgsRasterBlock()
@@ -679,7 +679,7 @@ bool QgsRasterBlock::convert( QGis::DataType destDataType )
 
   if ( typeIsNumeric( mDataType ) && typeIsNumeric( destDataType ) )
   {
-    void *data = convert( mData, mDataType, destDataType, mWidth * mHeight );
+    void *data = convert( mData, mDataType, destDataType, ( qgssize )mWidth * ( qgssize )mHeight );
 
     if ( data == 0 )
     {
@@ -728,7 +728,7 @@ void QgsRasterBlock::applyNoDataValues( const QgsRasterRangeList & rangeList )
     return;
   }
 
-  qgssize size = mWidth * mHeight;
+  qgssize size = ( qgssize )mWidth * ( qgssize )mHeight;
   for ( qgssize i = 0; i < size; ++i )
   {
     double val = value( i );

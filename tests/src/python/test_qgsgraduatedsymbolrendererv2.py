@@ -334,6 +334,18 @@ class TestQgsGraduatedSymbolRendererV2(TestCase):
             renderer.setScaleMethod(sm)
             self.assertEqual(str(sm),str(renderer.scaleMethod()),
                              "Get/set renderer scale method")
+        # test for classificatio with varying size
+        renderer.setGraduatedMethod(QgsGraduatedSymbolRendererV2.GraduatedSize)
+        renderer.setSourceColorRamp(None)
+        renderer.addClassLowerUpper(0, 2)
+        renderer.addClassLowerUpper(2, 4)
+        renderer.addClassLowerUpper(4, 6)
+        renderer.setSymbolSizes(2,13)
+        self.assertEqual(renderer.maxSymbolSize(), 13)
+        self.assertEqual(renderer.minSymbolSize(), 2)
+        refSizes = [2, (13+2)*.5, 13]
+        for idx, symbol in enumerate(renderer.symbols()):
+            self.assertEqual(symbol.size(), refSizes[idx])
 
 
 

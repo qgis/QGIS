@@ -15,12 +15,6 @@
   </property>
   <widget class="QWidget" name="mContents">
    <layout class="QVBoxLayout" name="verticalLayout">
-    <property name="spacing">
-     <number>5</number>
-    </property>
-    <property name="margin">
-     <number>0</number>
-    </property>
     <item>
      <layout class="QHBoxLayout" name="mLayoutHeader">
       <property name="spacing">
@@ -106,6 +100,29 @@
         <property name="icon">
          <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/mActionCollapseTree.png</normaloff>:/images/themes/default/mActionCollapseTree.png</iconset>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="mBtnPropertiesWidget">
+        <property name="toolTip">
+         <string>Enable / disable properties widget</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../../images/images.qrc">
+          <normaloff>:/images/themes/default/mActionPropertiesWidget.png</normaloff>:/images/themes/default/mActionPropertiesWidget.png</iconset>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
         </property>
         <property name="autoRaise">
          <bool>true</bool>
@@ -221,11 +238,36 @@
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="mLayoutBrowser">
-      <property name="spacing">
-       <number>5</number>
+     <widget class="QSplitter" name="mSplitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-     </layout>
+      <widget class="QWidget" name="verticalLayoutWidget">
+       <layout class="QVBoxLayout" name="mLayoutBrowser"/>
+      </widget>
+      <widget class="QWidget" name="mPropertiesWidget" native="true">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="mPropertiesLayout"/>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>

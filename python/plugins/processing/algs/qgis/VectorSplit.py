@@ -67,13 +67,12 @@ class VectorSplit(GeoAlgorithm):
         geomType = layer.wkbType()
 
         total = 100.0 / len(uniqueValues)
-        features = vector.features(layer)
 
         for count, i in enumerate(uniqueValues):
             fName = u'{0}_{1}.shp'.format(baseName, unicode(i).strip())
 
             writer = vector.VectorWriter(fName, None, fields, geomType, crs)
-            for f in features:
+            for f in vector.features(layer):
                 if f[fieldName] == i:
                     writer.addFeature(f)
             del writer

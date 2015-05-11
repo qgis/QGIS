@@ -19,7 +19,6 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvaluerelationconfigdlg.h"
-#include "qgsvaluerelationwidgetfactory.h"
 #include "qgsvectorlayer.h"
 
 #include <QSettings>
@@ -53,6 +52,7 @@ QgsEditorWidgetConfig QgsValueRelationWidgetFactory::readConfig( const QDomEleme
   cfg.insert( "OrderByValue", configElement.attribute( "OrderByValue" ) );
   cfg.insert( "AllowMulti", configElement.attribute( "AllowMulti" ) );
   cfg.insert( "AllowNull", configElement.attribute( "AllowNull" ) );
+  cfg.insert( "UseCompleter", configElement.attribute( "UseCompleter" ) );
 
   return cfg;
 }
@@ -70,6 +70,7 @@ void QgsValueRelationWidgetFactory::writeConfig( const QgsEditorWidgetConfig& co
   configElement.setAttribute( "OrderByValue", config.value( "OrderByValue" ).toBool() );
   configElement.setAttribute( "AllowMulti", config.value( "AllowMulti" ).toBool() );
   configElement.setAttribute( "AllowNull", config.value( "AllowNull" ).toBool() );
+  configElement.setAttribute( "UseCompleter", config.value( "UseCompleter" ).toBool() );
 }
 
 QString QgsValueRelationWidgetFactory::representValue( QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, const QVariant& cache, const QVariant& value ) const

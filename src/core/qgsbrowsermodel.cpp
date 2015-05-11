@@ -19,6 +19,8 @@
 
 #include "qgis.h"
 #include "qgsapplication.h"
+#include "qgsdataitemprovider.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgsdataprovider.h"
 #include "qgsmimedatautils.h"
 #include "qgslogger.h"
@@ -123,40 +125,19 @@ void QgsBrowserModel::addRootItems()
   mRootItems << vols;
 #endif
 
-  // Add non file top level items
-  QStringList providersList = QgsProviderRegistry::instance()->providerList();
-
   // container for displaying providers as sorted groups (by QgsDataProvider::DataCapability enum)
   QMap<int, QgsDataItem *> providerMap;
 
-  foreach ( QString key, providersList )
+  foreach ( QgsDataItemProvider* pr, QgsDataItemProviderRegistry::instance()->providers() )
   {
-    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
-    if ( !library )
-      continue;
-
-    dataCapabilities_t * dataCapabilities = ( dataCapabilities_t * ) cast_to_fptr( library->resolve( "dataCapabilities" ) );
-    if ( !dataCapabilities )
-    {
-      QgsDebugMsg( library->fileName() + " does not have dataCapabilities" );
-      continue;
-    }
-
-    int capabilities = dataCapabilities();
+    int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
     {
-      QgsDebugMsg( library->fileName() + " does not have any dataCapabilities" );
+      QgsDebugMsg( pr->name() + " does not have any dataCapabilities" );
       continue;
     }
 
-    dataItem_t *dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
-    if ( !dataItem )
-    {
-      QgsDebugMsg( library->fileName() + " does not have dataItem" );
-      continue;
-    }
-
-    QgsDataItem *item = dataItem( "", NULL );  // empty path -> top level
+    QgsDataItem *item = pr->createDataItem( "", NULL );  // empty path -> top level
     if ( item )
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );

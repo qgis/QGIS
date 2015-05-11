@@ -88,7 +88,7 @@ class ANALYSIS_EXPORT QgsInterpolator
        @param zCoord true if the z-coordinate of the geometry is to be interpolated
        @param attributeValue the attribute value for interpolation (if not interpolated from z-coordinate)
      @return 0 in case of success*/
-    int addVerticesToCache( QgsGeometry* geom, bool zCoord, double attributeValue );
+    int addVerticesToCache( const QgsGeometry* geom, bool zCoord, double attributeValue );
 };
 
 #endif

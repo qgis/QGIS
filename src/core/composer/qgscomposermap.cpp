@@ -270,14 +270,19 @@ void QgsComposerMap::cache( void )
   int w = widthMM * horizontalVScaleFactor;
   int h = heightMM * horizontalVScaleFactor;
 
-  if ( w > 5000 ) //limit size of image for better performance
+  // limit size of image for better performance
+  if ( w > 5000 || h > 5000 )
   {
-    w = 5000;
-  }
-
-  if ( h > 5000 )
-  {
-    h = 5000;
+    if ( w > h )
+    {
+      w = 5000;
+      h = w * heightMM / widthMM;
+    }
+    else
+    {
+      h = 5000;
+      w = h * widthMM / heightMM;
+    }
   }
 
   mCacheImage = QImage( w, h, QImage::Format_ARGB32 );
@@ -481,9 +486,8 @@ bool QgsComposerMap::shouldDrawPart( PartType part ) const
   return true; // for Layer
 }
 
-void QgsComposerMap::updateCachedImage( void )
+void QgsComposerMap::updateCachedImage()
 {
-  syncLayerSet(); //layer list may have changed
   mCacheUpdated = false;
   cache();
   QGraphicsRectItem::update();
@@ -495,6 +499,12 @@ void QgsComposerMap::renderModeUpdateCachedImage()
   {
     updateCachedImage();
   }
+}
+
+void QgsComposerMap::layersChanged()
+{
+  syncLayerSet();
+  renderModeUpdateCachedImage();
 }
 
 void QgsComposerMap::setCacheUpdated( bool u )
@@ -1164,8 +1174,8 @@ void QgsComposerMap::connectUpdateSlot()
   QgsMapLayerRegistry* layerRegistry = QgsMapLayerRegistry::instance();
   if ( layerRegistry )
   {
-    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( updateCachedImage() ) );
-    connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( updateCachedImage() ) );
+    connect( layerRegistry, SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( layersChanged() ) );
+    connect( layerRegistry, SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layersChanged() ) );
   }
 }
 

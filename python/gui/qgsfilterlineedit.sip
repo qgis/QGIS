@@ -7,7 +7,7 @@ class QgsFilterLineEdit : QLineEdit
 #include <qgsfilterlineedit.h>
 %End
   public:
-    QgsFilterLineEdit( QWidget* parent = 0, QString nullValue = QString::null );
+    QgsFilterLineEdit( QWidget* parent /TransferThis/ = 0, QString nullValue = QString::null );
 
     void setNullValue( QString nullValue );
 

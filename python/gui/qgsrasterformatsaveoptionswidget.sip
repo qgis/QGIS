@@ -16,7 +16,7 @@ class QgsRasterFormatSaveOptionsWidget : QWidget
       ProfileLineEdit // Profile + LineEdit
     };
 
-    QgsRasterFormatSaveOptionsWidget( QWidget* parent = 0, QString format = "GTiff",
+    QgsRasterFormatSaveOptionsWidget( QWidget* parent /TransferThis/ = 0, QString format = "GTiff",
                                       QgsRasterFormatSaveOptionsWidget::Type type = Default,
                                       QString provider = "gdal" );
     ~QgsRasterFormatSaveOptionsWidget();

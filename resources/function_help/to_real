@@ -1,0 +1,13 @@
+<h3>to_real() function</h3>
+Converts a string to real number. Nothing changed if a value cannot be converted to real (e.g '123.56asd' is invalid). Numbers are rounded after saving changes if the precision is smaller than the result of the conversion.
+
+<p><h4>Syntax</h4>
+     to_real(<i>string</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  string</i> &rarr; is string.  The String to convert to real number.</p>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     to_real('123.45') &rarr; 123.45</p>

@@ -33,7 +33,6 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsfield.h"
 #include "qgslogger.h"
 
 #include <QByteArray>
@@ -78,6 +77,9 @@ static QString GRASS_DESCRIPTION = "Grass provider"; // XXX verify this
 
 QgsGrassProvider::QgsGrassProvider( QString uri )
     : QgsVectorDataProvider( uri )
+    , mLayerField( -1 )
+    , mLayerType( POINT )
+    , mGrassType( 0 )
     , mQgisType( QGis::WKBUnknown )
     , mLayerId( -1 )
     , mMap()
@@ -119,7 +121,6 @@ QgsGrassProvider::QgsGrassProvider( QString uri )
   /* Parse Layer, supported layers <field>_point, <field>_line, <field>_area
   *  Layer is opened even if it is empty (has no features)
   */
-  mLayerField = -1;
   if ( mLayer.compare( "boundary" ) == 0 ) // currently not used
   {
     mLayerType = BOUNDARY;

@@ -123,7 +123,8 @@ QgsWmsProvider::QgsWmsProvider( QString const& uri, const QgsWmsCapabilities* ca
     return;
   }
 
-  addLayers();
+  if ( !addLayers() )
+    return;
 
   // if there are already parsed capabilities, use them!
   if ( capabilities )
@@ -265,15 +266,14 @@ QString QgsWmsProvider::getLegendGraphicUrl() const
   return url.isEmpty() ? url : prepareUri( url );
 }
 
-void QgsWmsProvider::addLayers()
+bool QgsWmsProvider::addLayers()
 {
   QgsDebugMsg( "Entering: layers:" + mSettings.mActiveSubLayers.join( ", " ) + ", styles:" + mSettings.mActiveSubStyles.join( ", " ) );
 
   if ( mSettings.mActiveSubLayers.size() != mSettings.mActiveSubStyles.size() )
   {
     QgsMessageLog::logMessage( tr( "Number of layers and styles don't match" ), tr( "WMS" ) );
-    mValid = false;
-    return;
+    return false;
   }
 
   // Set the visibility of these new layers on by default
@@ -290,6 +290,8 @@ void QgsWmsProvider::addLayers()
     mTileLayer = 0;
 
   QgsDebugMsg( "Exiting." );
+
+  return true;
 }
 
 void QgsWmsProvider::setConnectionName( QString const &connName )
@@ -486,7 +488,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
   mCachedViewWidth = pixelWidth;
   mCachedViewHeight = pixelHeight;
 
-  if ( !mSettings.mTiled && !mSettings.mMaxWidth && !mSettings.mMaxHeight )
+  if ( !mSettings.mTiled && mSettings.mMaxWidth == 0 && mSettings.mMaxHeight == 0 )
   {
     // Calculate active layers that are also visible.
 
@@ -598,7 +600,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
 
       tileMode = mTileLayer->tileMode;
     }
-    else
+    else if ( mSettings.mMaxWidth != 0 && mSettings.mMaxHeight != 0 )
     {
       static QgsWmtsTileMatrix tempTm;
       tempTm.topLeft      = QgsPoint( mLayerExtent.xMinimum(), mLayerExtent.yMaximum() );
@@ -609,6 +611,11 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
       tm = &tempTm;
 
       tileMode = WMSC;
+    }
+    else
+    {
+      QgsDebugMsg( "empty tile size" );
+      return mCachedImage;
     }
 
     QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
@@ -2610,7 +2617,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
             QgsDebugMsg( QString( "feature id = %1 : %2 attributes" ).arg( id ).arg( feature->attributes().size() ) );
 
-            if ( coordinateTransform && feature->geometry() )
+            if ( coordinateTransform && feature->constGeometry() )
             {
               feature->geometry()->transform( *coordinateTransform );
             }
@@ -2722,7 +2729,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPoint & thePoint, Qgs
 
                   feature.setGeometryAndOwnership( wkb, wkbSize );
 
-                  if ( coordinateTransform && feature.geometry() )
+                  if ( coordinateTransform && feature.constGeometry() )
                   {
                     feature.geometry()->transform( *coordinateTransform );
                   }

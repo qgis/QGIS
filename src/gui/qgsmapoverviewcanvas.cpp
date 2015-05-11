@@ -125,11 +125,11 @@ void QgsMapOverviewCanvas::drawExtentRect()
   const QPolygonF& vPoly = mMapCanvas->mapSettings().visiblePolygon();
   const QgsMapToPixel& cXf = mSettings.mapToPixel();
   QVector< QPoint > pts;
-  pts.push_back( cXf.transform( QgsPoint(vPoly[0]) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint(vPoly[1]) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint(vPoly[2]) ).toQPointF().toPoint() );
-  pts.push_back( cXf.transform( QgsPoint(vPoly[3]) ).toQPointF().toPoint() );
-  mPanningWidget->setPolygon( QPolygon(pts) );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[0] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[1] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[2] ) ).toQPointF().toPoint() );
+  pts.push_back( cXf.transform( QgsPoint( vPoly[3] ) ).toQPointF().toPoint() );
+  mPanningWidget->setPolygon( QPolygon( pts ) );
   mPanningWidget->show(); // show if hidden
 }
 

@@ -239,11 +239,13 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboPlacement</tabstop>
   <tabstop>cboStyle</tabstop>
+  <tabstop>pbnChangeColor</tabstop>
   <tabstop>spnSize</tabstop>
   <tabstop>chkEnable</tabstop>
   <tabstop>chkSnapping</tabstop>

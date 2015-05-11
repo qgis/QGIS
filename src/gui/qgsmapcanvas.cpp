@@ -223,7 +223,6 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   // create map canvas item which will show the map
   mMap = new QgsMapCanvasMap( this );
-  mScene->addItem( mMap );
 
   // project handling
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
@@ -418,6 +417,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       if ( !currentLayer )
         continue;
       disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      disconnect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -433,6 +433,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
       // Ticket #811 - racicot
       QgsMapLayer *currentLayer = layer( i );
       connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+      connect( currentLayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerCrsChange() ) );
       QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
       if ( isVectLyr )
       {
@@ -518,7 +519,14 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
     if ( !mSettings.visibleExtent().isEmpty() )
     {
       QgsCoordinateTransform transform( mSettings.destinationCrs(), crs );
-      rect = transform.transformBoundingBox( mSettings.visibleExtent() );
+      try
+      {
+        rect = transform.transformBoundingBox( mSettings.visibleExtent() );
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+      }
     }
     if ( !rect.isEmpty() )
     {
@@ -726,7 +734,7 @@ void QgsMapCanvas::rendererJobFinished()
 
     p.end();
 
-    mMap->setContent( img, imageRect( img ) );
+    mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
   }
 
   // now we are in a slot called from mJob - do not delete it immediately
@@ -737,11 +745,11 @@ void QgsMapCanvas::rendererJobFinished()
   emit mapCanvasRefreshed();
 }
 
-QgsRectangle QgsMapCanvas::imageRect( const QImage& img )
+QgsRectangle QgsMapCanvas::imageRect( const QImage& img, const QgsMapSettings& mapSettings )
 {
-  // This is an hack to pass QgsMapCanvasItem::setRect what it
+  // This is a hack to pass QgsMapCanvasItem::setRect what it
   // expects (encoding of position and size of the item)
-  const QgsMapToPixel& m2p = mSettings.mapToPixel();
+  const QgsMapToPixel& m2p = mapSettings.mapToPixel();
   QgsPoint topLeft = m2p.toMapPoint( 0, 0 );
   double res = m2p.mapUnitsPerPixel();
   QgsRectangle rect( topLeft.x(), topLeft.y(), topLeft.x() + img.width()*res, topLeft.y() - img.height()*res );
@@ -751,7 +759,7 @@ QgsRectangle QgsMapCanvas::imageRect( const QImage& img )
 void QgsMapCanvas::mapUpdateTimeout()
 {
   const QImage& img = mJob->renderedImage();
-  mMap->setContent( img, imageRect( img ) );
+  mMap->setContent( img, imageRect( img, mJob->mapSettings() ) );
 }
 
 void QgsMapCanvas::stopRendering()
@@ -843,6 +851,14 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
 
   if ( r.isEmpty() )
   {
+    if ( !mSettings.hasValidSettings() )
+    {
+      // we can't even just move the map center
+      QgsDebugMsg( "Empty extent - ignoring" );
+      return;
+    }
+
+    // ### QGIS 3: do not allow empty extent - require users to call setCenter() explicitly
     QgsDebugMsg( "Empty extent - keeping old scale with new center!" );
     setCenter( r.center() );
   }
@@ -1564,6 +1580,15 @@ void QgsMapCanvas::layerStateChange()
 
 } // layerStateChange
 
+void QgsMapCanvas::layerCrsChange()
+{
+  // called when a layer's CRS has been changed
+  QObject *theSender = sender();
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( theSender );
+  QString destAuthId = mSettings.destinationCrs().authid();
+  getDatumTransformInfo( layer, layer->crs().authid(), destAuthId );
+
+} // layerCrsChange
 
 
 void QgsMapCanvas::freeze( bool frz )

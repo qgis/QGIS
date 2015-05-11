@@ -1,21 +1,15 @@
 /****************************************************************************
-** $Id: dl_exception.h 163 2003-07-01 15:51:48Z andrew $
-**
-** Copyright (C) 2001-2003 RibbonSoft. All rights reserved.
+** Copyright (C) 2001-2013 RibbonSoft, GmbH. All rights reserved.
 ** Copyright (C) 2001 Robert J. Campbell Jr.
 **
 ** This file is part of the dxflib project.
 **
-** This file may be distributed and/or modified under the terms of the
-** GNU General Public License version 2 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.
-**
-** This program is free software; you can redistribute it and/or modify  
+** This file is free software; you can redistribute it and/or modify
 ** it under the terms of the GNU General Public License as published by
-** the Free Software Foundation; version 2 of the License
+** the Free Software Foundation; either version 2 of the License, or
+** (at your option) any later version.
 **
-** Licensees holding valid dxflib Professional Edition licenses may use
+** Licensees holding valid dxflib Professional Edition licenses may use 
 ** this file in accordance with the dxflib Commercial License
 ** Agreement provided with the Software.
 **
@@ -32,6 +26,8 @@
 #ifndef DL_EXCEPTION_H
 #define DL_EXCEPTION_H
 
+#include "dl_global.h"
+
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
@@ -39,21 +35,21 @@
 /**
  * Used for exception handling.
  */
-class DL_Exception {}
+class DXFLIB_EXPORT DL_Exception {}
 ;
 
 /**
  * Used for exception handling.
  */
-class DL_NullStrExc : public DL_Exception {}
+class DXFLIB_EXPORT DL_NullStrExc : public DL_Exception {}
 ;
 
 /**
  * Used for exception handling.
  */
-class DL_GroupCodeExc : public DL_Exception
-{
-    DL_GroupCodeExc() {}
+class DXFLIB_EXPORT DL_GroupCodeExc : public DL_Exception {
+    DL_GroupCodeExc(int gc=0) : groupCode(gc) {}
+    int groupCode;
 };
 #endif
 

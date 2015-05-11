@@ -169,8 +169,8 @@ QSqlQuery* eVisDatabaseConnection::query( QString sqlStatement )
     //set forward only is required for OBDC on linux
     mQuery = QSqlQuery( mDatabase );
     mQuery.setForwardOnly( true );
-    mQuery.exec( sqlStatement );
-    if ( mQuery.isActive() )
+    bool execOk = mQuery.exec( sqlStatement );
+    if ( execOk && mQuery.isActive() )
     {
       return &mQuery;
     }

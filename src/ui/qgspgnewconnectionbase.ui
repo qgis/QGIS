@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>425</width>
+    <width>431</width>
     <height>599</height>
    </rect>
   </property>
@@ -314,6 +314,7 @@
   <tabstop>chkStorePassword</tabstop>
   <tabstop>btnConnect</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
+  <tabstop>cb_dontResolveType</tabstop>
   <tabstop>cb_publicSchemaOnly</tabstop>
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>

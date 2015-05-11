@@ -63,6 +63,9 @@ import doDefineProj
 import doSpatialIndex
 import doEliminate
 
+# load icons for actions
+import resources_rc
+
 class fToolsPlugin:
   def __init__(self,iface):
     self.iface = iface

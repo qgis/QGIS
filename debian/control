@@ -271,7 +271,7 @@ Description: QGIS server providing various OGC services
  .
  This package contains the QGIS server.
 
-Package: libqgis-customwidgets{QGIS_ABI}
+Package: libqgis-customwidgets
 Architecture: any
 Depends:
  qt4-designer,

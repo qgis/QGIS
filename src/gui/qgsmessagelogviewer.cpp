@@ -32,7 +32,6 @@
 
 QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
-    , mShowToolTips( true )
 {
   Q_UNUSED( statusBar )
   setupUi( this );
@@ -49,10 +48,6 @@ QgsMessageLogViewer::~QgsMessageLogViewer()
 
 void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
 {
-#ifdef ANDROID
-  mButton->setToolTip( tr( "Message(s) logged." ) );
-#endif
-
   if ( tag.isNull() )
     tag = tr( "General" );
 

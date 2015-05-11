@@ -21,7 +21,7 @@ class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
      * @param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * @param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent = 0 );
+    QgsAttributeTableFilterModel( QgsMapCanvas* canvas, QgsAttributeTableModel* sourceModel, QObject* parent /TransferThis/ = 0 );
 
     void setSourceModel( QgsAttributeTableModel* sourceModel );
 

@@ -1,2 +1,3 @@
 version=3
+opts="dversionmangle=s/\+(debian|dfsg|ds|deb)\d*$//,uversionmangle=s/(\d)[_\.\-\+]?((RC|rc|pre|dev|beta|alpha)\d*)$/$1~$2/" \
 http://qgis.org/downloads/ (?:.*/)?(?:rel|v|qgis)[\-\_](\d[\d\-\.]+)\.(?:tgz|tbz|txz|(?:tar\.(?:gz|bz2|xz)))

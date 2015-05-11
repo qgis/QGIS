@@ -216,7 +216,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( mAddA.count() == 1 );
 
       // change geometry
-      QgsGeometry* newGeom = new QgsGeometry( *ff.geometry() );
+      QgsGeometry* newGeom = new QgsGeometry( *ff.constGeometry() );
       newGeom->moveVertex( 10, 10, 2 ); // change 11,11 to 10,10
       mVL->changeGeometry( ff.id(), newGeom );
       delete newGeom;

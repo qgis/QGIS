@@ -148,7 +148,7 @@ class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 #include <qgslayertreemodellegendnode.h>
 %End
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0 );
+    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0, const QString& key = QString() );
 
     virtual QVariant data( int role ) const;
 };

@@ -57,9 +57,9 @@ class QgsGdalProviderBase
     static int gdalGetOverviewCount( GDALRasterBandH hBand );
   protected:
 
-    QGis::DataType dataTypeFromGdal( int theGdalDataType ) const;
+    QGis::DataType dataTypeFromGdal( const GDALDataType theGdalDataType ) const;
 
-    int colorInterpretationFromGdal( int gdalColorInterpretation ) const;
+    int colorInterpretationFromGdal( const GDALColorInterp gdalColorInterpretation ) const;
 
     QList<QgsColorRampShader::ColorRampItem> colorTable( GDALDatasetH gdalDataset, int bandNo )const;
 

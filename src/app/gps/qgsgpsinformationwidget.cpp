@@ -136,28 +136,28 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
                               );
 
   // grids, axes
-  QwtPolarGrid * mypSatellitesGrid = new QwtPolarGrid();
-  mypSatellitesGrid->setGridAttribute( QwtPolarGrid::AutoScaling, false );   // This fixes the issue of autoscaling on the Radius grid. It is ON by default AND is separate from the scaleData.doAutoScale in QwtPolarPlot::setScale(), etc. THIS IS VERY TRICKY!
-  mypSatellitesGrid->setPen( QPen( Qt::black ) );
+  mpSatellitesGrid = new QwtPolarGrid();
+  mpSatellitesGrid->setGridAttribute( QwtPolarGrid::AutoScaling, false );   // This fixes the issue of autoscaling on the Radius grid. It is ON by default AND is separate from the scaleData.doAutoScale in QwtPolarPlot::setScale(), etc. THIS IS VERY TRICKY!
+  mpSatellitesGrid->setPen( QPen( Qt::black ) );
   QPen minorPen( Qt::gray );  // moved outside of for loop; NOTE setting the minor pen isn't necessary if the minor grids aren't shown
   for ( int scaleId = 0; scaleId < QwtPolar::ScaleCount; scaleId++ )
   {
-    //mypSatellitesGrid->showGrid( scaleId );
-    //mypSatellitesGrid->showMinorGrid(scaleId);
-    mypSatellitesGrid->setMinorGridPen( scaleId, minorPen );
+    //mpSatellitesGrid->showGrid( scaleId );
+    //mpSatellitesGrid->showMinorGrid(scaleId);
+    mpSatellitesGrid->setMinorGridPen( scaleId, minorPen );
   }
-//  mypSatellitesGrid->setAxisPen( QwtPolar::AxisAzimuth, QPen( Qt::black ) );
+//  mpSatellitesGrid->setAxisPen( QwtPolar::AxisAzimuth, QPen( Qt::black ) );
 
-  mypSatellitesGrid->showAxis( QwtPolar::AxisAzimuth, true );
-  mypSatellitesGrid->showAxis( QwtPolar::AxisLeft, false ); //alt axis
-  mypSatellitesGrid->showAxis( QwtPolar::AxisRight, false );//alt axis
-  mypSatellitesGrid->showAxis( QwtPolar::AxisTop, false );//alt axis
-  mypSatellitesGrid->showAxis( QwtPolar::AxisBottom, false );//alt axis
-  mypSatellitesGrid->showGrid( QwtPolar::ScaleAzimuth, false ); // hide the grid; just show ticks at edge
-  mypSatellitesGrid->showGrid( QwtPolar::ScaleRadius, true );
-//  mypSatellitesGrid->showMinorGrid( QwtPolar::ScaleAzimuth, true );
-  mypSatellitesGrid->showMinorGrid( QwtPolar::ScaleRadius, true );   // for 22.5, 67.5 degree circles
-  mypSatellitesGrid->attach( mpSatellitesWidget );
+  mpSatellitesGrid->showAxis( QwtPolar::AxisAzimuth, true );
+  mpSatellitesGrid->showAxis( QwtPolar::AxisLeft, false ); //alt axis
+  mpSatellitesGrid->showAxis( QwtPolar::AxisRight, false );//alt axis
+  mpSatellitesGrid->showAxis( QwtPolar::AxisTop, false );//alt axis
+  mpSatellitesGrid->showAxis( QwtPolar::AxisBottom, false );//alt axis
+  mpSatellitesGrid->showGrid( QwtPolar::ScaleAzimuth, false ); // hide the grid; just show ticks at edge
+  mpSatellitesGrid->showGrid( QwtPolar::ScaleRadius, true );
+//  mpSatellitesGrid->showMinorGrid( QwtPolar::ScaleAzimuth, true );
+  mpSatellitesGrid->showMinorGrid( QwtPolar::ScaleRadius, true );   // for 22.5, 67.5 degree circles
+  mpSatellitesGrid->attach( mpSatellitesWidget );
 
   //QwtLegend *legend = new QwtLegend;
   //mpSatellitesWidget->insertLegend(legend, QwtPolarPlot::BottomLegend);
@@ -253,8 +253,12 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
     disconnectGps();
   }
 
-  if ( mpMapMarker )
-    delete mpMapMarker;
+  delete mpMapMarker;
+  delete mpRubberBand;
+
+#if (WITH_QWTPOLAR)
+  delete mpSatellitesGrid;
+#endif
 
   QSettings mySettings;
   mySettings.setValue( "/gps/lastPort", mCboDevices->itemData( mCboDevices->currentIndex() ).toString() );
@@ -303,10 +307,6 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
     mySettings.setValue( "/gps/panMode", "none" );
   }
 
-  if ( mpRubberBand )
-  {
-    delete mpRubberBand;
-  }
 }
 
 void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int theValue )

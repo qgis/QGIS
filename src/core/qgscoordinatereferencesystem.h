@@ -378,8 +378,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param theDescription A textual description of the srs.
      */
     void setDescription( QString theDescription );
-    /* Set the Proj Proj4String.
-     * @param  QString theProj4String Proj4 format specifies
+
+    /*! Set the Proj Proj4String.
+     * @param theProj4String Proj4 format specifies
      * (excluding proj and ellips) that define this srs.
      * @note some content of the PROJ4 string may be stripped off by this
      * method due to the parsing of the string by OSRNewSpatialReference .
@@ -389,6 +390,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * +proj=longlat +datum=WGS84 +no_defs
      */
     void setProj4String( QString theProj4String );
+
     /*! Set this Geographic? flag
      * @param theGeoFlag Whether this is a geographic or projected coordinate system
      */

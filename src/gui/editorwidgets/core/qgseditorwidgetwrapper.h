@@ -82,6 +82,15 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     QgsField field();
 
     /**
+     * Access the default value of the field.
+     *
+     * @return the default value of the field
+     *
+     * @see layer()
+     */
+    QVariant defaultValue();
+
+    /**
      * Will return a wrapper for a given widget
      * @param widget The widget which was created by a wrapper
      * @return The wrapper for the widget or NULL

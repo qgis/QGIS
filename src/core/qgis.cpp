@@ -23,6 +23,7 @@
 #include <QColor>
 #include <QDate>
 #include <QTime>
+#include <QLocale>
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
@@ -120,6 +121,18 @@ QString QGis::tr( QGis::UnitType unit )
   return QCoreApplication::translate( "QGis::UnitType", qPrintable( toLiteral( unit ) ) );
 }
 
+QGis::UnitType QGis::fromTr( QString literal, QGis::UnitType defaultType )
+{
+  for ( unsigned int i = 0; i < ( sizeof( qgisUnitTypes ) / sizeof( qgisUnitTypes[0] ) ); i++ )
+  {
+    if ( literal == QGis::tr( static_cast<UnitType>( i ) ) )
+    {
+      return static_cast<UnitType>( i );
+    }
+  }
+  return defaultType;
+}
+
 double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit )
 {
 #define DEGREE_TO_METER 111319.49079327358
@@ -170,6 +183,20 @@ double QGis::fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUni
     }
   }
   return 1.0;
+}
+
+double QGis::permissiveToDouble( QString string, bool &ok )
+{
+  //remove any thousands seperators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toDouble( string, &ok );
+}
+
+int QGis::permissiveToInt( QString string, bool &ok )
+{
+  //remove any thousands seperators
+  string.remove( QLocale::system().groupSeparator() );
+  return QLocale::system().toInt( string, &ok );
 }
 
 void *qgsMalloc( size_t size )

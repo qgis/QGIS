@@ -15,6 +15,7 @@
 
 #include "qgsapplication.h"
 #include "qgscrscache.h"
+#include "qgsdataitemproviderregistry.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
@@ -331,7 +332,10 @@ const QString QgsApplication::prefixPath()
 {
   if ( ABISYM( mRunningFromBuildDir ) )
   {
-    qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
+    static bool once = true;
+    if ( once )
+      qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
+    once = false;
   }
 
   return ABISYM( mPrefixPath );
@@ -619,12 +623,6 @@ void QgsApplication::initQgis()
 
 void QgsApplication::exitQgis()
 {
-  // Cleanup known singletons
-  QgsMapLayerRegistry::cleanup();
-  QgsNetworkAccessManager::cleanup();
-  QgsCoordinateTransformCache::cleanup();
-
-  // Cleanup providers
   delete QgsProviderRegistry::instance();
 }
 

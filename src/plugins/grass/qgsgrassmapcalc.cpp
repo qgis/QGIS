@@ -512,7 +512,7 @@ QStringList QgsGrassMapcalc::checkRegion()
     if ( mm.size() > 1 )
       mapset = mm.at( 1 );
 
-    if ( !QgsGrass::mapRegion( QgsGrass::Raster,
+    if ( !QgsGrass::mapRegion( QgsGrassObject::Raster,
                                QgsGrass::getDefaultGisdbase(),
                                QgsGrass::getDefaultLocation(), mapset, map,
                                &window ) )
@@ -570,7 +570,7 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateRefere
     if ( mm.size() > 1 )
       mapset = mm.at( 1 );
 
-    if ( !QgsGrass::mapRegion( QgsGrass::Raster,
+    if ( !QgsGrass::mapRegion( QgsGrassObject::Raster,
                                QgsGrass::getDefaultGisdbase(),
                                QgsGrass::getDefaultLocation(), mapset, map,
                                &mapWindow ) )

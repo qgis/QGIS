@@ -136,7 +136,7 @@ QVector<QgsDataItem*> QgsMssqlConnectionItem::createChildren()
   // issue the sql query
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );
-  q.exec( query );
+  ( void )q.exec( query );
 
   if ( q.isActive() )
   {

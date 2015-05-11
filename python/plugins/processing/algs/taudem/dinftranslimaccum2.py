@@ -109,7 +109,7 @@ class DinfTransLimAccum2(GeoAlgorithm):
         if param is not None:
             commands.append('-o')
             commands.append(param)
-        if str(self.getParameterValue(self.EDGE_CONTAM)).lower() == 'false':
+        if not self.getParameterValue(self.EDGE_CONTAM):
             commands.append('-nc')
 
         commands.append('-tla')

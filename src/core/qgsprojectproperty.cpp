@@ -305,8 +305,7 @@ void QgsPropertyKey::dump( int tabs ) const
     {
       if ( i.next().value()->isValue() )
       {
-        QgsPropertyValue * propertyValue =
-          dynamic_cast<QgsPropertyValue*>( i.value() );
+        QgsPropertyValue * propertyValue = static_cast<QgsPropertyValue*>( i.value() );
 
         if ( QVariant::StringList == propertyValue->value().type() )
         {

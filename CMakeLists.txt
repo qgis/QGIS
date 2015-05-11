@@ -1,5 +1,5 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "2")
-SET(CPACK_PACKAGE_VERSION_MINOR "7")
+SET(CPACK_PACKAGE_VERSION_MINOR "9")
 SET(CPACK_PACKAGE_VERSION_PATCH "0")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 SET(RELEASE_NAME "Master")
@@ -35,11 +35,24 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 #SET (CMAKE_USE_RELATIVE_PATHS ON)
 
 # try to configure and build GRASS plugin by default
-SET (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS plugin should be built")
-IF (WITH_GRASS)
-  FIND_PACKAGE(GRASS)
-  SET (GRASS_PREFIX ${GRASS_PREFIX} CACHE PATH "Path to GRASS base directory")
-ENDIF (WITH_GRASS)
+FOREACH (GRASS_SEARCH_VERSION 6 7)
+  # For GRASS 6 are used cached variables without version suffix so that existing caches don't have to be reconfigured.
+  # Cached variables: WITH_GRASS, WITH_GRASS7, GRASS_PREFIX, GRASS_PREFIX7, GRASS_INCLUDE_DIR, GRASS_INCLUDE_DIR7
+  # Everywhere else each variable has version major appended.
+  # Normal variables: GRASS_FOUND6, GRASS_FOUND7, GRASS_MAJOR_VERSION6, GRASS_MAJOR_VERSION7, etc.
+  # In addition there is also GRASS_FOUND, which is TRUE if at least one version of GRASS was found
+  IF (GRASS_SEARCH_VERSION EQUAL 6)
+    SET (GRASS_CACHE_VERSION "")
+  ELSE (GRASS_SEARCH_VERSION EQUAL 6)
+    SET (GRASS_CACHE_VERSION ${GRASS_SEARCH_VERSION})
+  ENDIF (GRASS_SEARCH_VERSION EQUAL 6)
+
+  SET (WITH_GRASS${GRASS_CACHE_VERSION} TRUE CACHE BOOL "Determines whether GRASS ${GRASS_SEARCH_VERSION} plugin should be built")
+  IF (WITH_GRASS${GRASS_CACHE_VERSION})
+    FIND_PACKAGE(GRASS ${GRASS_SEARCH_VERSION})
+    SET (GRASS_PREFIX${GRASS_CACHE_VERSION} ${GRASS_PREFIX${GRASS_SEARCH_VERSION}} CACHE PATH "Path to GRASS ${GRASS_SEARCH_VERSION} base directory")
+  ENDIF (WITH_GRASS${GRASS_CACHE_VERSION})
+ENDFOREACH (GRASS_SEARCH_VERSION)
 
 SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
 
@@ -73,6 +86,8 @@ SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql drive
 SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
 IF(WITH_ORACLE)
   SET(HAVE_ORACLE TRUE)
+  SET(ORACLE_INCLUDEDIR "" CACHE STRING "Path to OCI headers")
+  SET(ORACLE_LIBDIR "" CACHE STRING "Path to OCI libraries")
 ENDIF(WITH_ORACLE)
 
 
@@ -227,6 +242,7 @@ IF (ENABLE_QT5)
   FIND_PACKAGE(Qt5Svg REQUIRED)
   FIND_PACKAGE(Qt5Concurrent REQUIRED)
   FIND_PACKAGE(Qt5PrintSupport REQUIRED)
+  FIND_PACKAGE(Qt5Positioning)
   FIND_PACKAGE(Qt5WebKit REQUIRED)
   FIND_PACKAGE(Qt5WebKitWidgets REQUIRED)
   FIND_PACKAGE(Qt5Test REQUIRED)
@@ -293,7 +309,7 @@ IF (ENABLE_TESTS)
     IMMEDIATE @ONLY)
   # For server side testing we have no X, we can use xfvb as a fake x
   # sudo apt-get install xfvb
-  add_custom_target(check-no-x COMMAND xvfb-run --server-args="-screen 10 1024x768x24" ctest --output-on-failure)
+  add_custom_target(check-no-x COMMAND xvfb-run --server-args=-screen\ 10\ 1024x768x24 ctest --output-on-failure)
 ENDIF (ENABLE_TESTS)
 
 IF (SUPPRESS_QT_WARNINGS)
@@ -315,6 +331,10 @@ FIND_PROGRAM(QT_LRELEASE_EXECUTABLE
 
 #############################################################
 # enable use of c++11 features where available
+# full c++11 support in clang 3.3+: http://clang.llvm.org/cxx_status.html
+# for Mac, this is probably Apple LLVM 4.2 (based on LLVM 3.2svn, in XCode 4.6+)
+#   or definitely Apple LLVM 5.0 (based on LLVM 3.3svn, in Xcode 5+):
+#   https://gist.github.com/yamaya/2924292
 
 IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
   EXECUTE_PROCESS(COMMAND ${CMAKE_CXX_COMPILER} -dumpversion OUTPUT_VARIABLE GCC_VERSION)
@@ -323,9 +343,11 @@ IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "GNU")
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
   ENDIF()
 ELSEIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-  SET(USE_CXX_11 TRUE)
-  #deprecated-register breaks Travis builds
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-error=c++11-narrowing -Wno-deprecated-register")
+  IF ((NOT APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "3.2")
+       OR (APPLE AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.1"))
+    SET(USE_CXX_11 TRUE)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-error=c++11-narrowing")
+  ENDIF()
 ELSE()
   SET(USE_CXX_11 FALSE)
 ENDIF()
@@ -368,9 +390,9 @@ IF (PEDANTIC)
     # There are redundant declarations in Qt and GDAL
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
 
-    IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
       SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-return-type-c-linkage -Wno-overloaded-virtual")
-    ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
     # add any extra CXXFLAGS flags set by user. can be -D CXX_EXTRA_FLAGS or environment variable
     # command line -D option overrides environment variable
@@ -387,13 +409,13 @@ IF (PEDANTIC)
 
 ENDIF (PEDANTIC)
 
-IF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+IF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
   SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Qunused-arguments")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
   SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Qunused-arguments")
   SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Qunused-arguments")
-ENDIF ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+ENDIF ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
 
 IF(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986

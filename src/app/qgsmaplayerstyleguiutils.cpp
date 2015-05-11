@@ -25,6 +25,12 @@
 #include "qgsmaplayerstylemanager.h"
 
 
+QgsMapLayerStyleGuiUtils* QgsMapLayerStyleGuiUtils::instance()
+{
+  static QgsMapLayerStyleGuiUtils sInstance;
+  return &sInstance;
+}
+
 QAction* QgsMapLayerStyleGuiUtils::actionAddStyle( QgsMapLayer* layer, QObject* parent )
 {
   QAction* a = new QAction( tr( "Add" ), parent );

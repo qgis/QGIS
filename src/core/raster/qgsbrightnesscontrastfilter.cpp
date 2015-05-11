@@ -23,9 +23,9 @@
 #include <QDomElement>
 
 QgsBrightnessContrastFilter::QgsBrightnessContrastFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input ),
-    mBrightness( 0 ),
-    mContrast( 0 )
+    : QgsRasterInterface( input )
+    , mBrightness( 0 )
+    , mContrast( 0 )
 {
 }
 

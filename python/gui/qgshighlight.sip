@@ -4,7 +4,7 @@ class QgsHighlight : QgsMapCanvasItem
 #include <qgshighlight.h>
 %End
   public:
-    QgsHighlight( QgsMapCanvas *mapCanvas, QgsGeometry *geom, QgsVectorLayer *layer );
+    QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry *geom, QgsVectorLayer *layer );
     ~QgsHighlight();
 
     /** Set line/outline to color, polygon fill to color with alpha = 63.

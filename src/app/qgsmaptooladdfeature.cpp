@@ -269,7 +269,7 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
           emit messageEmitted( tr( "An error was reported during intersection removal" ), QgsMessageBar::CRITICAL );
         }
 
-        if ( !f->geometry()->asWkb() ) //avoid intersection might have removed the whole geometry
+        if ( !f->constGeometry()->asWkb() ) //avoid intersection might have removed the whole geometry
         {
           QString reason;
           if ( avoidIntersectionsReturn != 2 )
@@ -306,13 +306,13 @@ void QgsMapToolAddFeature::canvasMapReleaseEvent( QgsMapMouseEvent* e )
             //can only add topological points if background layer is editable...
             if ( vl && vl->geometryType() == QGis::Polygon && vl->isEditable() )
             {
-              vl->addTopologicalPoints( f->geometry() );
+              vl->addTopologicalPoints( f->constGeometry() );
             }
           }
         }
         else if ( topologicalEditing )
         {
-          vlayer->addTopologicalPoints( f->geometry() );
+          vlayer->addTopologicalPoints( f->constGeometry() );
         }
       }
 

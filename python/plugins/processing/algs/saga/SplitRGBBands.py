@@ -70,30 +70,18 @@ class SplitRGBBands(GeoAlgorithm):
         g = self.getOutputValue(SplitRGBBands.G)
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
-        if isWindows():
-            commands.append('io_gdal 0 -GRIDS "' + temp + '" -FILES "' + input
-                            + '"')
-            commands.append('io_gdal 1 -GRIDS "' + temp
-                            + '_0001.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + r + '"'
-                            )
-            commands.append('io_gdal 1 -GRIDS "' + temp
-                            + '_0002.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + g + '"'
-                            )
-            commands.append('io_gdal 1 -GRIDS "' + temp
-                            + '_0003.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + b + '"'
-                            )
-        else:
-            commands.append('libio_gdal 0 -GRIDS "' + temp + '" -FILES "'
-                            + input + '"')
-            commands.append('libio_gdal 1 -GRIDS "' + temp
-                            + '_0001.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + r + '"'
-                            )
-            commands.append('libio_gdal 1 -GRIDS "' + temp
-                            + '_0002.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + g + '"'
-                            )
-            commands.append('libio_gdal 1 -GRIDS "' + temp
-                            + '_0003.sgrd" -FORMAT 1 -TYPE 0 -FILE "' + b + '"'
-                            )
+        version = SagaUtils.getSagaInstalledVersion(True)
+        trailing = "000" if version != "2.1.4" else ""
+        lib = "" if isWindows() else "lib"
+        commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)
+                        + '"')
+        commands.append('%sio_gdal 1 -GRIDS "%s_%s1.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, r)
+                        )
+        commands.append('%sio_gdal 1 -GRIDS "%s_%s2.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, g)
+                        )
+        commands.append('%sio_gdal 1 -GRIDS "%s_%s3.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, b)
+                        )
+
 
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
         SagaUtils.executeSaga(progress)

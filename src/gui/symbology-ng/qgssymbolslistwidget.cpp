@@ -35,21 +35,32 @@
 #include <QMenu>
 
 
-QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent ) : QWidget( parent )
+QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbolV2* symbol, QgsStyleV2* style, QMenu* menu, QWidget* parent )
+    : QWidget( parent )
+    , mAdvancedMenu( 0 )
+    , mClipFeaturesAction( 0 )
 {
   mSymbol = symbol;
   mStyle = style;
 
   setupUi( this );
 
-  mSymbolUnitWidget->setUnits( QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), 1 );
+  mSymbolUnitWidget->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::MapUnit );
 
   btnAdvanced->hide(); // advanced button is hidden by default
   if ( menu ) // show it if there is a menu pointer
   {
-    btnAdvanced->setMenu( menu );
+    mAdvancedMenu = menu;
     btnAdvanced->show();
+    btnAdvanced->setMenu( mAdvancedMenu );
   }
+  else
+  {
+    btnAdvanced->setMenu( new QMenu( this ) );
+  }
+  mClipFeaturesAction = new QAction( tr( "Clip features to canvas extent" ), this );
+  mClipFeaturesAction->setCheckable( true );
+  connect( mClipFeaturesAction, SIGNAL( toggled( bool ) ), this, SLOT( clipFeaturesToggled( bool ) ) );
 
   // populate the groups
   groupsCombo->addItem( "" );
@@ -163,6 +174,15 @@ void QgsSymbolsListWidget::openStyleManager()
   populateSymbolView();
 }
 
+void QgsSymbolsListWidget::clipFeaturesToggled( bool checked )
+{
+  if ( !mSymbol )
+    return;
+
+  mSymbol->setClipFeaturesToExtent( checked );
+  emit changed();
+}
+
 void QgsSymbolsListWidget::setSymbolColor( const QColor& color )
 {
   mSymbol->setColor( color );
@@ -236,8 +256,8 @@ void QgsSymbolsListWidget::on_mSymbolUnitWidget_changed()
 {
   if ( mSymbol )
   {
-    QgsSymbolV2::OutputUnit unit = static_cast<QgsSymbolV2::OutputUnit>( mSymbolUnitWidget->getUnit() );
-    mSymbol->setOutputUnit( unit );
+
+    mSymbol->setOutputUnit( mSymbolUnitWidget->unit() );
     mSymbol->setMapUnitScale( mSymbolUnitWidget->getMapUnitScale() );
 
     emit changed();
@@ -294,6 +314,21 @@ void QgsSymbolsListWidget::updateSymbolInfo()
   mTransparencySlider->setValue( transparency * 255 );
   displayTransparency( mSymbol->alpha() );
   mTransparencySlider->blockSignals( false );
+
+  if ( mSymbol->type() == QgsSymbolV2::Line || mSymbol->type() == QgsSymbolV2::Fill )
+  {
+    //add clip features option for line or fill symbols
+    btnAdvanced->menu()->addAction( mClipFeaturesAction );
+  }
+  else
+  {
+    btnAdvanced->menu()->removeAction( mClipFeaturesAction );
+  }
+  btnAdvanced->setVisible( mAdvancedMenu || !btnAdvanced->menu()->isEmpty() );
+
+  mClipFeaturesAction->blockSignals( true );
+  mClipFeaturesAction->setChecked( mSymbol->clipFeaturesToExtent() );
+  mClipFeaturesAction->blockSignals( false );
 }
 
 void QgsSymbolsListWidget::setSymbolFromStyle( const QModelIndex & index )

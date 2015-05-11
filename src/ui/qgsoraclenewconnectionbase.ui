@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>489</height>
+    <height>508</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -248,6 +248,7 @@
   <tabstop>txtPort</tabstop>
   <tabstop>txtUsername</tabstop>
   <tabstop>txtPassword</tabstop>
+  <tabstop>txtOptions</tabstop>
   <tabstop>chkStoreUsername</tabstop>
   <tabstop>chkStorePassword</tabstop>
   <tabstop>btnConnect</tabstop>

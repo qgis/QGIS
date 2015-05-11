@@ -21,7 +21,6 @@
 #include "Line3D.h"
 #include "Vector3D.h"
 #include <qpainter.h>
-#include "Line3D.h"
 #include <TriangleInterpolator.h>
 
 /**Interface for Triangulation classes*/

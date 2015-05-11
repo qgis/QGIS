@@ -181,9 +181,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QgsAttributeList pkAttributeIndexes() override { return mPrimaryKeyAttrs; }
 
-    /**Returns the default value for field specified by @c fieldName */
-    QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
-
     /**Returns the default value for field specified by @c fieldId */
     QVariant defaultValue( int fieldId ) override;
 
@@ -461,7 +458,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     int mEnabledCapabilities;
 
-    void appendGeomParam( QgsGeometry *geom, QStringList &param ) const;
+    void appendGeomParam( const QgsGeometry *geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;
 
     QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
@@ -482,6 +479,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsPostgresTransaction* mTransaction;
 
     void setTransaction( QgsTransaction* transaction ) override;
+
+    QHash<int, QString> mDefaultValues;
 };
 
 

@@ -391,7 +391,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
       if ( mFeatureMap2[*cit].feature.id() == it->feature.id() )
         continue;
 
-      QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
+      const QgsGeometry* g2 = mFeatureMap2[*cit].feature.constGeometry();
       if ( !g2 )
       {
         QgsMessageLog::logMessage( tr( "Invalid second geometry in duplicate geometry test." ), tr( "Topology plugin" ) );
@@ -512,7 +512,7 @@ ErrorList topolTest::checkOverlaps( double tolerance, QgsVectorLayer *layer1, Qg
       if ( mFeatureMap2[*cit].feature.id() == it->feature.id() )
         continue;
 
-      QgsGeometry* g2 = mFeatureMap2[*cit].feature.geometry();
+      const QgsGeometry* g2 = mFeatureMap2[*cit].feature.constGeometry();
       if ( !g2 )
       {
         QgsMessageLog::logMessage( tr( "Invalid second geometry in overlaps test." ), tr( "Topology plugin" ) );
@@ -930,7 +930,7 @@ ErrorList topolTest::checkPointCoveredBySegment( double tolerance, QgsVectorLaye
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
 
       if ( !g2 )
       {
@@ -1160,7 +1160,7 @@ ErrorList topolTest::checkOverlapWithLayer( double tolerance, QgsVectorLayer* la
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
 
       // skip itself, when invoked with the same layer
       if ( skipItself && f.id() == it->feature.id() )
@@ -1255,7 +1255,7 @@ ErrorList topolTest::checkPointCoveredByLineEnds( double tolerance, QgsVectorLay
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
@@ -1342,7 +1342,7 @@ ErrorList topolTest::checkyLineEndsCoveredByPoints( double tolerance, QgsVectorL
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
@@ -1436,7 +1436,7 @@ ErrorList topolTest::checkPointInPolygon( double tolerance, QgsVectorLayer *laye
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
@@ -1511,7 +1511,7 @@ ErrorList topolTest::checkPolygonContainsPoint( double tolerance, QgsVectorLayer
     for ( ; cit != crossingIdsEnd; ++cit )
     {
       QgsFeature& f = mFeatureMap2[*cit].feature;
-      QgsGeometry* g2 = f.geometry();
+      const QgsGeometry* g2 = f.constGeometry();
       if ( !g2 || !g2->asGeos() )
       {
         QgsMessageLog::logMessage( tr( "Second geometry missing or GEOS import failed." ), tr( "Topology plugin" ) );
@@ -1592,7 +1592,7 @@ void topolTest::fillFeatureMap( QgsVectorLayer* layer, QgsRectangle extent )
 
   while ( fit.nextFeature( f ) )
   {
-    if ( f.geometry() )
+    if ( f.constGeometry() )
     {
       mFeatureMap2[f.id()] = FeatureLayer( layer, f );
     }
@@ -1618,7 +1618,7 @@ void topolTest::fillFeatureList( QgsVectorLayer* layer, QgsRectangle extent )
 
   while ( fit.nextFeature( f ) )
   {
-    if ( f.geometry() )
+    if ( f.constGeometry() )
     {
       mFeatureList1 << FeatureLayer( layer, f );
     }
@@ -1657,7 +1657,7 @@ QgsSpatialIndex* topolTest::createIndex( QgsVectorLayer* layer, QgsRectangle ext
       return 0;
     }
 
-    if ( f.geometry() )
+    if ( f.constGeometry() )
     {
       index->insertFeature( f );
       mFeatureMap2[f.id()] = FeatureLayer( layer, f );

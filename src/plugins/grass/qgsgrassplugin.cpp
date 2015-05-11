@@ -44,11 +44,18 @@
 
 extern "C"
 {
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
+#else
+#include <grass/vector.h>
+#endif
 #include <grass/version.h>
 }
 
-static const QString pluginVersion = QObject::tr( "Version 0.1" );
+static const QString pluginName = QObject::tr( "GRASS %1" ).arg( GRASS_VERSION_MAJOR );
+static const QString pluginDescription = QObject::tr( "GRASS %1 (Geographic Resources Analysis Support System)" ).arg( GRASS_VERSION_MAJOR );
+static const QString pluginCategory = QObject::tr( "Plugins" );
+static const QString pluginVersion = QObject::tr( "Version 2.0" );
 static const QString pluginIcon = ":/images/themes/default/grass/grass_tools.png";
 
 /**
@@ -58,11 +65,7 @@ static const QString pluginIcon = ":/images/themes/default/grass/grass_tools.png
  * @param theQgisInterFace Pointer to the QGIS interface object
  */
 QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
-    : pluginNameQString( tr( "GrassVector" ) )
-    , pluginVersionQString( tr( "0.1" ) )
-    , pluginDescriptionQString( tr( "GRASS layer" ) )
-    , pluginCategoryQString( tr( "Plugins" ) )
-    , mToolBarPointer( 0 )
+    : mToolBarPointer( 0 )
     , qGisInterface( theQgisInterFace )
     , mCanvas( 0 )
     , mRegionAction( 0 )
@@ -85,8 +88,11 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace )
 
 QgsGrassPlugin::~QgsGrassPlugin()
 {
-  if ( mTools )
-    mTools->closeTools();
+  QgsDebugMsg( "entered." );
+  // When main app is closed, QgsGrassTools (probably because of dock widget) are destroyed before QgsGrassPlugin
+  // -> do not call mTools here
+  //if ( mTools )
+  //  mTools->closeTools();
   if ( mEdit )
     mEdit->closeEdit();
   QString err = QgsGrass::closeMapset();
@@ -95,22 +101,22 @@ QgsGrassPlugin::~QgsGrassPlugin()
 /* Following functions return name, description, version, and type for the plugin */
 QString QgsGrassPlugin::name()
 {
-  return pluginNameQString;
+  return pluginName;
 }
 
 QString QgsGrassPlugin::version()
 {
-  return pluginVersionQString;
+  return pluginVersion;
 }
 
 QString QgsGrassPlugin::description()
 {
-  return pluginDescriptionQString;
+  return pluginDescription;
 }
 
 QString QgsGrassPlugin::category()
 {
-  return pluginCategoryQString;
+  return pluginCategory;
 }
 
 void QgsGrassPlugin::help()
@@ -240,35 +246,24 @@ void QgsGrassPlugin::initGui()
   mRegionBand->setWidth( mRegionPen.width() );
 
   mapsetChanged();
+
+  // open tools when plugin is loaded so that main app restores tools dock widget state
+  mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow() );
+  qGisInterface->addDockWidget( Qt::RightDockWidgetArea, mTools );
 }
 
 void QgsGrassPlugin::mapsetChanged()
 {
   if ( !QgsGrass::activeMode() )
   {
-#ifdef GRASS_DIRECT
-    mOpenToolsAction->setEnabled( true );
-#else
-    mOpenToolsAction->setEnabled( false );
-#endif
     mRegionAction->setEnabled( false );
     mEditRegionAction->setEnabled( false );
     mRegionBand->reset();
     mCloseMapsetAction->setEnabled( false );
     mNewVectorAction->setEnabled( false );
-
-#if 0
-    if ( mTools )
-    {
-      mTools->hide();
-      delete mTools;
-      mTools = 0;
-    }
-#endif
   }
   else
   {
-    mOpenToolsAction->setEnabled( true );
     mRegionAction->setEnabled( true );
     mEditRegionAction->setEnabled( true );
     mCloseMapsetAction->setEnabled( true );
@@ -279,12 +274,11 @@ void QgsGrassPlugin::mapsetChanged()
     mRegionAction->setChecked( on );
     switchRegion( on );
 
-#if 0
     if ( mTools )
     {
       mTools->mapsetChanged();
     }
-#endif
+
     QString gisdbase = QgsGrass::getDefaultGisdbase();
     QString location = QgsGrass::getDefaultLocation();
     try
@@ -301,7 +295,6 @@ void QgsGrassPlugin::mapsetChanged()
     setTransform();
     redrawRegion();
   }
-  if ( mTools ) mTools->mapsetChanged();
 }
 
 void QgsGrassPlugin::saveMapset()
@@ -310,7 +303,7 @@ void QgsGrassPlugin::saveMapset()
 
   // Save working mapset in project file
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingGisdbase",
-                                      QgsGrass::getDefaultGisdbase() );
+                                      QgsProject::instance()->writePath( QgsGrass::getDefaultGisdbase() ) );
 
   QgsProject::instance()->writeEntry( "GRASS", "/WorkingLocation",
                                       QgsGrass::getDefaultLocation() );
@@ -472,13 +465,14 @@ void QgsGrassPlugin::addRaster()
 // Open tools
 void QgsGrassPlugin::openTools()
 {
+#if 0
   if ( !mTools )
   {
     mTools = new QgsGrassTools( qGisInterface, qGisInterface->mainWindow(), 0, Qt::Dialog );
 
     connect( mTools, SIGNAL( regionChanged() ), this, SLOT( redrawRegion() ) );
   }
-
+#endif
   mTools->show();
 }
 
@@ -802,8 +796,10 @@ void QgsGrassPlugin::projectRead()
   QgsDebugMsg( "entered." );
 
   bool ok;
-  QString gisdbase = QgsProject::instance()->readEntry(
-                       "GRASS", "/WorkingGisdbase", "", &ok ).trimmed();
+  QString gisdbase = QgsProject::instance()->readPath(
+                       QgsProject::instance()->readEntry(
+                         "GRASS", "/WorkingGisdbase", "", &ok ).trimmed()
+                     );
   QString location = QgsProject::instance()->readEntry(
                        "GRASS", "/WorkingLocation", "", &ok ).trimmed();
   QString mapset = QgsProject::instance()->readEntry(
@@ -882,11 +878,8 @@ void QgsGrassPlugin::unload()
   delete mEditAction;
   delete mNewVectorAction;
 
-  if ( mToolBarPointer )
-  {
-    delete mToolBarPointer;
-    mToolBarPointer = 0;
-  }
+  delete mToolBarPointer;
+  mToolBarPointer = 0;
 
   // disconnect slots of QgsGrassPlugin so they're not fired also after unload
   disconnect( mCanvas, SIGNAL( renderComplete( QPainter * ) ), this, SLOT( postRender( QPainter * ) ) );
@@ -896,6 +889,9 @@ void QgsGrassPlugin::unload()
   QWidget* qgis = qGisInterface->mainWindow();
   disconnect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
+
+  delete mTools;
+  mTools = 0;
 }
 
 // Set icons to the current theme
@@ -973,19 +969,19 @@ QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-  return QObject::tr( "GRASS" );
+  return pluginName;
 }
 
 // Return the description
 QGISEXTERN QString description()
 {
-  return QObject::tr( "GRASS layer" );
+  return pluginDescription;
 }
 
 // Return the category
 QGISEXTERN QString category()
 {
-  return QObject::tr( "Plugins" );
+  return pluginCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

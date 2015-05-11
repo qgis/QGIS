@@ -141,13 +141,13 @@ bool QgsMemoryFeatureIterator::nextFeatureTraverseAll( QgsFeature& feature )
       if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
       {
         // using exact test when checking for intersection
-        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
+        if ( mSelectIterator->constGeometry() && mSelectIterator->constGeometry()->intersects( mSelectRectGeom ) )
           hasFeature = true;
       }
       else
       {
         // check just bounding box against rect when not using intersection
-        if ( mSelectIterator->geometry() && mSelectIterator->geometry()->boundingBox().intersects( mRequest.filterRect() ) )
+        if ( mSelectIterator->constGeometry() && mSelectIterator->constGeometry()->boundingBox().intersects( mRequest.filterRect() ) )
           hasFeature = true;
       }
     }

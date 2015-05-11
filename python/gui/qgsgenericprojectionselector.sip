@@ -28,7 +28,7 @@ class QgsGenericProjectionSelector : QDialog //, private Ui::QgsGenericProjectio
     /**
      * Constructor
      */
-    QgsGenericProjectionSelector( QWidget *parent = 0,
+    QgsGenericProjectionSelector( QWidget *parent /TransferThis/ = 0,
                                   Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     //! Destructor

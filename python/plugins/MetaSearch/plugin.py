@@ -29,7 +29,7 @@ from PyQt4.QtCore import QCoreApplication
 from PyQt4.QtGui import QAction, QIcon
 
 from MetaSearch.dialogs.maindialog import MetaSearchDialog
-from MetaSearch.util import StaticContext, open_url
+from MetaSearch.util import get_help_url, open_url, StaticContext
 
 LOGGER = logging.getLogger('MetaSearch')
 
@@ -94,4 +94,4 @@ class MetaSearchPlugin(object):
     def help(self):
         """open help in user's default web browser"""
 
-        open_url(self.context.metadata.get('general', 'homepage'))
+        open_url(get_help_url())

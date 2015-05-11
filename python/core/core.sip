@@ -26,6 +26,8 @@
 %Include qgscrscache.sip
 %Include qgsdatadefined.sip
 %Include qgsdataitem.sip
+%Include qgsdataitemprovider.sip
+%Include qgsdataitemproviderregistry.sip
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdatumtransformstore.sip
@@ -95,11 +97,13 @@
 %Include qgsrendercontext.sip
 %Include qgsrunprocess.sip
 %Include qgsscalecalculator.sip
+%Include qgsscaleexpression.sip
 %Include qgsscaleutils.sip
 %Include qgssimplifymethod.sip
 %Include qgssnapper.sip
 %Include qgssnappingutils.sip
 %Include qgsspatialindex.sip
+%Include qgsstatisticalsummary.sip
 %Include qgstolerance.sip
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
@@ -120,6 +124,7 @@
 %Include qgsprojectfiletransform.sip
 %Include qgsvectorlayereditutils.sip
 %Include qgsvectorlayerfeatureiterator.sip
+%Include qgslayerdefinition.sip
 
 %Include composer/qgsaddremoveitemcommand.sip
 %Include composer/qgsaddremovemultiframecommand.sip
@@ -171,6 +176,14 @@
 %Include diagram/qgstextdiagram.sip
 
 %Include effects/qgsimageoperation.sip
+%Include effects/qgspainteffect.sip
+%Include effects/qgseffectstack.sip
+%Include effects/qgsblureffect.sip
+%Include effects/qgsshadoweffect.sip
+%Include effects/qgsgloweffect.sip
+%Include effects/qgstransformeffect.sip
+%Include effects/qgscoloreffect.sip
+%Include effects/qgspainteffectregistry.sip
 
 %Include gps/qgsgpsconnection.sip
 %Include gps/qgsgpsconnectionregistry.sip

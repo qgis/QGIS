@@ -20,6 +20,15 @@
 #include "qgslogger.h"
 
 //
+// Static calls to enforce singleton behaviour
+//
+QgsMapLayerRegistry *QgsMapLayerRegistry::instance()
+{
+  static QgsMapLayerRegistry sInstance;
+  return &sInstance;
+}
+
+//
 // Main class begins now...
 //
 

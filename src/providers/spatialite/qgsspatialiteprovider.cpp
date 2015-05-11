@@ -157,7 +157,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         {
           // it already exists, try again with a new name
           primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-          fldIdx = 0;
+          fldIdx = -1; // it is incremented in the for loop, i.e. restarts at 0
         }
       }
     }
@@ -411,11 +411,19 @@ QgsSpatiaLiteProvider::createEmptyLayer(
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     : QgsVectorDataProvider( uri )
+    , valid( false )
+    , isQuery( false )
+    , mTableBased( false )
+    , mViewBased( false )
+    , mVShapeBased( false )
+    , mReadOnly( false )
     , geomType( QGis::WKBUnknown )
     , sqliteHandle( NULL )
     , mSrid( -1 )
+    , numberFeatures( 0 )
     , spatialIndexRTree( false )
     , spatialIndexMbrCache( false )
+    , enabledCapabilities( 0 )
     , mGotSpatialiteVersion( false )
     , mSpatialiteVersionMajor( 0 )
     , mSpatialiteVersionMinor( 0 )
@@ -425,7 +433,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
   // parsing members from the uri structure
   mTableName = anUri.table();
-  mGeometryColumn = anUri.geometryColumn();
+  mGeometryColumn = anUri.geometryColumn().toLower();
   mSqlitePath = anUri.database();
   mSubsetString = anUri.sql();
   mPrimaryKey = anUri.keyColumn();
@@ -433,11 +441,9 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
   // trying to open the SQLite DB
   spatialite_init( 0 );
-  valid = true;
   handle = QgsSqliteHandle::openDb( mSqlitePath );
   if ( handle == NULL )
   {
-    valid = false;
     return;
   }
   sqliteHandle = handle->handle();
@@ -486,7 +492,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   {
     // invalid metadata
     numberFeatures = 0;
-    valid = false;
 
     QgsDebugMsg( "Invalid SpatiaLite layer" );
     closeDb();
@@ -514,7 +519,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     {
       // the table is not a geometry table
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       gaiaFreeVectorLayersList( list );
@@ -523,7 +527,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     if ( !getTableSummaryAbstractInterface( lyr ) )     // gets the extent and feature count
     {
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       gaiaFreeVectorLayersList( list );
@@ -543,7 +546,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     {
       // the table is not a geometry table
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       return;
@@ -551,7 +553,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     if ( !getTableSummary() )     // gets the extent and feature count
     {
       numberFeatures = 0;
-      valid = false;
       QgsDebugMsg( "Invalid SpatiaLite layer" );
       closeDb();
       return;
@@ -561,7 +562,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   }
   if ( sqliteHandle == NULL )
   {
-    valid = false;
     QgsDebugMsg( "Invalid SpatiaLite layer" );
     return;
   }
@@ -576,6 +576,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (double)" ), "FLOAT", QVariant::Double )
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "INTEGER", QVariant::LongLong )
   ;
+  valid = true;
 }
 
 QgsSpatiaLiteProvider::~QgsSpatiaLiteProvider()
@@ -612,7 +613,7 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
   while ( fld )
   {
     QString name = QString::fromUtf8( fld->AttributeFieldName );
-    if ( name != mGeometryColumn )
+    if ( name.toLower() != mGeometryColumn )
     {
       const char *type = "TEXT";
       QVariant::Type fieldType = QVariant::String; // default: SQLITE_TEXT
@@ -746,7 +747,7 @@ void QgsSpatiaLiteProvider::loadFields()
           QgsDebugMsg( "found primaryKey " + name );
         }
 
-        if ( name != mGeometryColumn )
+        if ( name.toLower() != mGeometryColumn )
         {
           // for sure any SQLite value can be represented as SQLITE_TEXT
           QVariant::Type fieldType = QVariant::String;
@@ -813,7 +814,7 @@ void QgsSpatiaLiteProvider::loadFields()
           QgsDebugMsg( "found primaryKey " + name );
         }
 
-        if ( name != mGeometryColumn )
+        if ( name.toLower() != mGeometryColumn )
         {
           // for sure any SQLite value can be represented as SQLITE_TEXT
           QVariant::Type fieldType = QVariant::String;
@@ -3605,7 +3606,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
         if ( !mGeometryColumn.isEmpty() )
         {
           // binding GEOMETRY to Prepared Statement
-          if ( !feature->geometry() )
+          if ( !feature->constGeometry() )
           {
             sqlite3_bind_null( stmt, ++ia );
           }
@@ -3613,8 +3614,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
           {
             unsigned char *wkb = NULL;
             size_t wkb_size;
-            convertFromGeosWKB( feature->geometry()->asWkb(),
-                                feature->geometry()->wkbSize(),
+            convertFromGeosWKB( feature->constGeometry()->asWkb(),
+                                feature->constGeometry()->wkbSize(),
                                 &wkb, &wkb_size, nDims );
             if ( !wkb )
               sqlite3_bind_null( stmt, ++ia );
@@ -3709,7 +3710,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     if ( toCommit )
     {
       // ROLLBACK after some previous error
-      sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+      ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
     }
   }
 
@@ -3788,7 +3789,7 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
   }
 
   return false;
@@ -3854,7 +3855,7 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
   }
 
   return false;
@@ -3960,7 +3961,7 @@ abort:
   if ( toCommit )
   {
     // ROLLBACK after some previous error
-    sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    ( void )sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
   }
 
   return false;
@@ -4145,7 +4146,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
 
   QString sql;
 
-  if ( mGeometryColumn.isEmpty() )
+  if ( mGeometryColumn.isEmpty() && !( mQuery.startsWith( "(" ) && mQuery.endsWith( ")" ) ) )
   {
     // checking if is a non-spatial table
     sql = QString( "SELECT type FROM sqlite_master "

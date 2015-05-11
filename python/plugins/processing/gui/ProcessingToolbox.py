@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import Qt, QSettings
+from PyQt4.QtCore import Qt, QSettings, QCoreApplication
 from PyQt4.QtGui import QDockWidget, QMenu, QAction, QTreeWidgetItem
 from qgis.utils import iface
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -404,7 +404,7 @@ class TreeProviderItem(QTreeWidgetItem):
             groupItem.addChild(algItem)
 
         self.setText(0, self.provider.getDescription()
-                    + ' [' + str(count) + ' geoalgorithms]')
+                  + QCoreApplication.translate( "TreeProviderItem", " [{0} geoalgorithms]" ).format( count ) )
         self.setToolTip(0, self.text(0))
         for groupItem in groups.values():
             self.addChild(groupItem)

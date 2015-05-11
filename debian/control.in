@@ -9,7 +9,7 @@ Build-Depends:
 #sid jessie wheezy saucy sid-oracle trusty utopic vivid# debhelper (>= 9),
 #precise# debhelper (>= 7),
  flex,
- grass-dev,
+ grass-dev (<< 7),
  libexpat1-dev,
  libfcgi-dev,
 #sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
@@ -32,7 +32,7 @@ Build-Depends:
  pyqt4-dev-tools,
  python-qscintilla2,
 #precise saucy wheezy# python,
-#precise saucy# python-central (>=0.5),
+#precise saucy# python-central (>= 0.5),
 #saucy wheezy# python-dev,
 #saucy# libpython2.7-dev,
 #sid jessie sid-oracle trusty utopic vivid# python-all (>= 2.6.6-3~), python-all-dev (>= 2.6.6-3~),
@@ -210,7 +210,7 @@ Package: libqgis-dev
 Architecture: any
 Section: libdevel
 Depends:
- grass-dev,
+ grass-dev (<< 7),
  libexpat1-dev,
 #sid jessie sid-oracle trusty utopic vivid# libgdal-dev (>= 1.10.1-0~),
 #precise# libgdal-dev (>= 1.9.0) | libgdal1-dev (<< 1.9.0),
@@ -224,12 +224,13 @@ Depends:
  libqgis-gui{QGIS_ABI} (= ${binary:Version}),
  libqgis-analysis{QGIS_ABI} (= ${binary:Version}),
  libqgis-networkanalysis{QGIS_ABI} (= ${binary:Version}),
+ libqgis-server{QGIS_ABI} (= ${binary:Version}),
  libqgisgrass{QGIS_ABI} (= ${binary:Version}),
  libqgispython{QGIS_ABI} (= ${binary:Version}),
- libqt4-dev (>=4.6.0),
+ libqt4-dev (>= 4.7.0),
  libsqlite3-dev,
- python-qt4 (>=4.1.0),
- python-qt4-dev (>=4.1.0),
+ python-qt4 (>= 4.1.0),
+ python-qt4-dev (>= 4.1.0),
  qt4-designer,
  ${misc:Depends}
 Recommends: libqgis-customwidgets
@@ -250,7 +251,8 @@ Depends:
  qgis-plugin-grass-common (= ${source:Version}),
  ${shlibs:Depends},
  ${misc:Depends},
- grass{GRASS_ABI}
+#!precise# grass-core (<< 7)
+#precise# grass (<< 7)
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -262,7 +264,6 @@ Architecture: all
 Depends:
 #sid jessie saucy sid-oracle trusty# python2.7,
 #wheezy precise# python,
- ${python:Depends},
  ${misc:Depends}
 Breaks: qgis-common (<< 1.5)
 Replaces: qgis-common (<< 1.5)

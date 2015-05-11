@@ -14,6 +14,7 @@ ParameterNumber|betweeness_thresh|Betweeness threshold in network generalization
 ParameterNumber|alpha|Snakes alpha parameter|None|None|1.0
 ParameterNumber|beta|Snakes beta parameter|None|None|1.0
 ParameterNumber|iterations|Number of iterations|None|None|1
-ParameterBoolean|-c|Copy attributes|True
+ParameterBoolean|-t|Do not copy attributes|False
+ParameterBoolean|-l|Disable loop support|True
 OutputVector|output|Output layer
 

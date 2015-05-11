@@ -620,7 +620,8 @@ void QgsAttributeTableModel::prefetchColumnData( int column )
     QStringList fldNames;
     fldNames << fields[ fieldId ].name();
 
-    QgsFeatureIterator it = mLayerCache->getFeatures( QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fldNames, fields ) );
+    QgsFeatureRequest r( mFeatureRequest );
+    QgsFeatureIterator it = mLayerCache->getFeatures( r.setFlags( QgsFeatureRequest::NoGeometry ).setSubsetOfAttributes( fldNames, fields ) );
 
     QgsFeature f;
     while ( it.nextFeature( f ) )
@@ -637,4 +638,9 @@ void QgsAttributeTableModel::setRequest( const QgsFeatureRequest& request )
   mFeatureRequest = request;
   if ( layer() && !layer()->hasGeometryType() )
     mFeatureRequest.setFlags( mFeatureRequest.flags() | QgsFeatureRequest::NoGeometry );
+}
+
+const QgsFeatureRequest &QgsAttributeTableModel::request() const
+{
+  return mFeatureRequest;
 }

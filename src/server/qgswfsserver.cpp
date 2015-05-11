@@ -463,10 +463,12 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
         QgsFeature feature;
         QgsAttributeMap featureAttributes;
-        const QgsFields& fields = provider->fields();
+        //const QgsFields& fields = provider->fields();
+        const QgsFields& fields = layer->pendingFields();
 
         mWithGeom = true;
-        QgsAttributeList attrIndexes = provider->attributeIndexes();
+        //QgsAttributeList attrIndexes = provider->attributeIndexes();
+        QgsAttributeList attrIndexes = layer->pendingAllAttributesList();
 
         QDomNodeList queryChildNodes = queryElem.childNodes();
         if ( queryChildNodes.size() )
@@ -804,12 +806,14 @@ int QgsWFSServer::getFeature( QgsRequestHandler& request, const QString& format 
 
       QgsFeature feature;
       QgsAttributeMap featureAttributes;
-      const QgsFields& fields = provider->fields();
+      //const QgsFields& fields = provider->fields();
+      const QgsFields& fields = layer->pendingFields();
 
       //map extent
       searchRect = layer->extent();
 
-      QgsAttributeList attrIndexes = provider->attributeIndexes();
+      //QgsAttributeList attrIndexes = provider->attributeIndexes();
+      QgsAttributeList attrIndexes = layer->pendingAllAttributesList();
       if ( mPropertyName != "*" )
       {
         QStringList attrList = mPropertyName.split( "," );
@@ -1356,7 +1360,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
   // Store the created feature id for WFS
   QStringList insertResults;
   // Get the WFS layers id
-  QStringList wfsLayersId = mConfigParser->wfsLayers();
+  QStringList wfsLayersId = mConfigParser ? mConfigParser->wfsLayers() : QStringList();
 
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
@@ -1373,7 +1377,7 @@ QDomDocument QgsWFSServer::transaction( const QString& requestBody )
     currentLayer = layerList.at( 0 );
 
     QgsVectorLayer* layer = qobject_cast<QgsVectorLayer*>( currentLayer );
-    // it's a vectorlayer and definy by the administrator as a WFS layer
+    // it's a vectorlayer and defined by the administrator as a WFS layer
     if ( layer && wfsLayersId.contains( layer->id() ) )
     {
       // Get the provider and it's capabilities

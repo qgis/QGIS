@@ -30,7 +30,6 @@
 #include "qgseditorwidgetconfig.h"
 #include "qgsfield.h"
 #include "qgssnapper.h"
-#include "qgsfield.h"
 #include "qgsrelation.h"
 #include "qgsvectorsimplifymethod.h"
 
@@ -655,9 +654,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @param exp The expression which calculates the field
      * @param fld The field to calculate
      *
-     * @note added in 2.6
+     * @return The index of the new field
+     *
+     * @note added in 2.6, return value added in 2.9
      */
-    void addExpressionField( const QString& exp, const QgsField& fld );
+    int addExpressionField( const QString& exp, const QgsField& fld );
 
     /**
      * Remove an expression field
@@ -667,6 +668,28 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 2.6
      */
     void removeExpressionField( int index );
+
+    /**
+     * Returns the expressoin used for a given expression field
+     *
+     * @param index An index of an epxression based (virtual) field
+     *
+     * @return The expression for the field at index
+     *
+     * @note added in 2.9
+     */
+    const QString expressionField( int index );
+
+    /**
+     * Changes the expression used to define an expression based (virtual) field
+     *
+     * @param index The index of the expression to change
+     *
+     * @param exp The new expression to set
+     *
+     * @note added in 2.9
+     */
+    void updateExpressionField( int index, const QString& exp );
 
     /** Get the label object associated with this layer */
     QgsLabel *label();
@@ -765,6 +788,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
     QgsRectangle boundingBoxOfSelected();
+
+    /** Returns whether the layer contains labels which are enabled and should be drawn.
+     * @return true if layer contains enabled labels
+     * @note added in QGIS 2.9
+     */
+    bool labelsEnabled() const;
+
+    /** Returns whether the layer contains diagrams which are enabled and should be drawn.
+     * @return true if layer contains enabled diagrams
+     * @note added in QGIS 2.9
+     */
+    bool diagramsEnabled() const;
 
     /** Sets diagram rendering object (takes ownership) */
     void setDiagramRenderer( QgsDiagramRendererV2* r );
@@ -1021,7 +1056,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note geom is not going to be modified by the function
      * @return 0 in case of success
      */
-    int addTopologicalPoints( QgsGeometry* geom );
+    int addTopologicalPoints( const QgsGeometry* geom );
 
     /** Adds a vertex to segments which intersect point p but don't
      * already have a vertex there. If a feature already has a vertex at position p,
@@ -1039,11 +1074,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
 
-    /** Set labels on */
-    void enableLabels( bool on );
+    /** Set labels on
+     * @deprecated this method is for the old labeling engine
+    */
+    Q_DECL_DEPRECATED void enableLabels( bool on );
 
-    /** Label is on */
-    bool hasLabelsEnabled() const;
+    /** Label is on
+     * @deprecated this method is for the old labeling engine, use labelsEnabled instead
+    */
+    Q_DECL_DEPRECATED bool hasLabelsEnabled() const;
 
     /** Returns true if the provider is in editing mode */
     virtual bool isEditable() const override;
@@ -1087,8 +1126,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool draw( QgsRenderContext& rendererContext ) override;
 
-    /** Draws the layer labels using coordinate transformation */
-    void drawLabels( QgsRenderContext& rendererContext ) override;
+    /** Draws the layer labels using the old labeling engine
+     * @note deprecated
+    */
+    Q_DECL_DEPRECATED void drawLabels( QgsRenderContext& rendererContext ) override;
 
     /** Return the extent of the layer as a QRect */
     QgsRectangle extent() override;
@@ -1452,14 +1493,33 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Returns maximum value for an attribute column or invalid variant in case of error */
     QVariant maximumValue( int index );
 
-    /* Set the blending mode used for rendering each feature */
+    /** Fetches all values from a specified field name or expression.
+     * @param fieldOrExpression field name or an expression string
+     * @param ok will be set to false if field or expression is invalid, otherwise true
+     * @returns list of fetched values
+     * @note added in QGIS 2.9
+     * @see getDoubleValues
+     */
+    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok );
+
+    /** Fetches all double values from a specified field name or expression. Null values or
+     * invalid expression results are skipped.
+     * @param fieldOrExpression field name or an expression string evaluating to a double value
+     * @param ok will be set to false if field or expression is invalid, otherwise true
+     * @returns list of fetched values
+     * @note added in QGIS 2.9
+     * @see getValues
+     */
+    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok );
+
+    /** Set the blending mode used for rendering each feature */
     void setFeatureBlendMode( const QPainter::CompositionMode &blendMode );
-    /* Returns the current blending mode for features */
+    /** Returns the current blending mode for features */
     QPainter::CompositionMode featureBlendMode() const;
 
-    /* Set the transparency for the vector layer */
+    /** Set the transparency for the vector layer */
     void setLayerTransparency( int layerTransparency );
-    /* Returns the current transparency for the vector layer */
+    /** Returns the current transparency for the vector layer */
     int layerTransparency() const;
 
     QString metadata() override;
@@ -1696,7 +1756,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     void snapToGeometry( const QgsPoint& startPoint,
                          QgsFeatureId featureId,
-                         QgsGeometry* geom,
+                         const QgsGeometry *geom,
                          double sqrSnappingTolerance,
                          QMultiMap<double, QgsSnappingResult>& snappingResults,
                          QgsSnapper::SnappingType snap_to ) const;

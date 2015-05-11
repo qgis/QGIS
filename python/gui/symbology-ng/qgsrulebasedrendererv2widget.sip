@@ -106,7 +106,7 @@ class QgsRendererRulePropsDialog : QDialog
 %End
 
   public:
-    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent = 0 );
+    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style, QWidget* parent /TransferThis/ = 0 );
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRendererV2::Rule* rule();

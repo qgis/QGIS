@@ -40,6 +40,7 @@ class QSignalMapper;
 
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
+class QgsRubberBand;
 
 class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDialog
 {
@@ -201,6 +202,8 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
 
     QgsVectorLayer* mLayer;
     QgsFieldModel* mFieldModel;
+
+    QgsRubberBand *mRubberBand;
 };
 
 #endif

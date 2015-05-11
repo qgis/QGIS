@@ -351,8 +351,8 @@
   <tabstop>mSymbologyExportComboBox</tabstop>
   <tabstop>mScaleSpinBox</tabstop>
   <tabstop>mOgrDatasourceOptions</tabstop>
-  <tabstop>buttonBox</tabstop>
   <tabstop>mOgrLayerOptions</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

@@ -22,5 +22,5 @@ ParameterNumber|NPOINTS_MAX|Max. Number of m_Points|None|None|20
 ParameterNumber|MAXRADIUS|Maximum Search Radius (map units)|None|None|1000.0
 ParameterNumber|USER_CELL_SIZE|Grid Size|0|None|1.0
 Extent USER_X_EXTENT_MIN USER_X_EXTENT_MAX USER_Y_EXTENT_MIN USER_Y_EXTENT_MIN
-OutputRaster|GRID|Grid
+OutputRaster|GRID|Universal kriging
 OutputRaster|VARIANCE|Variance

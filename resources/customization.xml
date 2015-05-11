@@ -391,7 +391,6 @@
     <widget objectName="btnAddCategory" class="QPushButton" label="Add"/>
     <widget objectName="btnDeleteCategories" class="QPushButton" label="Delete"/>
     <widget objectName="btnDeleteAllCategories" class="QPushButton" label="Delete all"/>
-    <widget objectName="btnJoinCategories" class="QPushButton" label="Join"/>
     <widget objectName="btnAdvanced" class="QPushButton" label="Advanced"/>
   </widget>
   <widget objectName="QgsTileScaleWidget" class="QWidget" label="">

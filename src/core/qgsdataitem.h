@@ -74,10 +74,13 @@ class CORE_EXPORT QgsDataItem : public QObject
       Populated     //!< children created
     };
 
+    //! @note added in 2.8
     State state() const;
 
     /** Set item state. It also take care about starting/stopping loading icon animation.
-     * @param state */
+     * @param state
+     * @note added in 2.8
+     */
     virtual void setState( State state );
 
     //! @deprecated in 2.8, use state()
@@ -261,7 +264,8 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
       Polygon,
       TableLayer,
       Database,
-      Table
+      Table,
+      Plugin     //!< added in 2.10
     };
 
     QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );
@@ -362,7 +366,8 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
     /* static QVector<QgsDataProvider*> mProviders; */
     //! @note not available via python bindings
-    static QVector<QLibrary*> mLibraries;
+    //! @note deprecated since 2.10 - use QgsDataItemProviderRegistry
+    Q_DECL_DEPRECATED static QVector<QLibrary*> mLibraries;
 
   public slots:
     virtual void childrenCreated() override;

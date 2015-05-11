@@ -265,7 +265,10 @@ void QgsBookmarks::zoomToBookmark()
 
 void QgsBookmarks::importFromXML()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), ".",
+  QSettings settings;
+
+  QString lastUsedDir = settings.value( "/Bookmark/LastUsedDirectory", QVariant() ).toString();
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -296,21 +299,21 @@ void QgsBookmarks::importFromXML()
   for ( int i = 0;i < nodeList.count(); i++ )
   {
     QDomNode bookmark = nodeList.at( i );
-    QDomElement name = bookmark.firstChildElement( "Name" );
-    QDomElement prjname = bookmark.firstChildElement( "Project" );
-    QDomElement xmin = bookmark.firstChildElement( "xMin" );
-    QDomElement xmax = bookmark.firstChildElement( "xMax" );
-    QDomElement ymin = bookmark.firstChildElement( "yMin" );
-    QDomElement ymax = bookmark.firstChildElement( "yMax" );
-    QDomElement srid = bookmark.firstChildElement( "SRID" );
+    QDomElement name = bookmark.firstChildElement( "name" );
+    QDomElement prjname = bookmark.firstChildElement( "project" );
+    QDomElement xmin = bookmark.firstChildElement( "xmin" );
+    QDomElement xmax = bookmark.firstChildElement( "xmax" );
+    QDomElement ymin = bookmark.firstChildElement( "ymin" );
+    QDomElement ymax = bookmark.firstChildElement( "ymax" );
+    QDomElement srid = bookmark.firstChildElement( "sr_id" );
 
     queries += "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
                "  VALUES (NULL,"
                "'" + name.text() + "',"
                "'" + prjname.text() + "',"
                + xmin.text() + ","
-               + xmax.text() + ","
                + ymin.text() + ","
+               + xmax.text() + ","
                + ymax.text() + ","
                + srid.text() + ");";
   }
@@ -338,7 +341,10 @@ void QgsBookmarks::importFromXML()
 
 void QgsBookmarks::exportToXML()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), ".",
+  QSettings settings;
+
+  QString lastUsedDir = settings.value( "/Bookmark/LastUsedDirectory", QVariant() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
                      tr( "XML files( *.xml *.XML )" ) );
   if ( fileName.isEmpty() )
   {
@@ -358,6 +364,10 @@ void QgsBookmarks::exportToXML()
   int rowCount = lstBookmarks->model()->rowCount();
   int colCount = lstBookmarks->model()->columnCount();
 
+  QList<QString> headerList;
+  headerList << "id" << "name" << "project" << "xmin"
+  << "ymin" << "xmax" << "ymax" << "sr_id";
+
   for ( int i = 0; i < rowCount; ++i )
   {
     QDomElement bookmark = doc.createElement( "bookmark" );
@@ -369,8 +379,8 @@ void QgsBookmarks::exportToXML()
       {
         QString value = idx.data( Qt::DisplayRole ).toString();
         QDomText idText = doc.createTextNode( value );
-        QVariant header = lstBookmarks->model()->headerData( j, Qt::Horizontal );
-        QDomElement id = doc.createElement( header.toString() );
+        QString header = headerList.at( j );
+        QDomElement id = doc.createElement( header );
         id.appendChild( idText );
         bookmark.appendChild( id );
       }
@@ -388,4 +398,6 @@ void QgsBookmarks::exportToXML()
   out.setCodec( "UTF - 8" );
   doc.save( out, 2 );
   f.close();
+
+  settings.setValue( "/Bookmark/LastUsedDirectory", QFileInfo( fileName ).path() );
 }

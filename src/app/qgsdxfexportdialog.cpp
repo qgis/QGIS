@@ -408,6 +408,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
   restoreGeometry( s.value( "/Windows/DxfExport/geometry" ).toByteArray() );
+  mEncoding->addItems( QgsDxfExport::encodings() );
+  mEncoding->setCurrentIndex( mEncoding->findText( s.value( "qgis/lastDxfEncoding", "CP1252" ).toString() ) );
 }
 
 
@@ -541,4 +543,10 @@ void QgsDxfExportDialog::saveSettings()
   s.setValue( "qgis/lastDxfSymbologyMode", mSymbologyModeComboBox->currentIndex() );
   s.setValue( "qgis/lastSymbologyExportScale", mScaleWidget->scale() );
   s.setValue( "qgis/lastDxfMapRectangle", mMapExtentCheckBox->isChecked() );
+  s.setValue( "qgis/lastDxfEncoding", mEncoding->currentText() );
+}
+
+QString QgsDxfExportDialog::encoding() const
+{
+  return mEncoding->currentText();
 }

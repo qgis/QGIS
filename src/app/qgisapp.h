@@ -55,12 +55,14 @@ class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAdvancedDigitizing;
+class QgsPluginLayer;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRectangle;
 class QgsSnappingUtils;
 class QgsUndoWidget;
+class QgsUserInputDockWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsDoubleSpinBox;
@@ -90,6 +92,7 @@ class QgsTileScaleWidget;
 #include <QAbstractSocket>
 #include <QPointer>
 #include <QSslError>
+#include <QDateTime>
 
 #include "qgsconfig.h"
 #include "qgsfeature.h"
@@ -191,6 +194,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Return the messageBar object which allows displaying unobtrusive messages to the user.*/
     QgsMessageBar *messageBar();
+
+    /** Adds a widget to the user input tool br.*/
+    void addUserInputWidget( QWidget* widget );
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
@@ -618,6 +624,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     /** Open a raster layer using the Raster Data Provider. */
     QgsRasterLayer *addRasterLayer( QString const & uri, QString const & baseName, QString const & providerKey );
+
+    /** Open a plugin layer using its provider */
+    QgsPluginLayer* addPluginLayer( const QString& uri, const QString& baseName, const QString& providerKey );
 
     void addWfsLayer( QString uri, QString typeName );
 
@@ -1395,6 +1404,54 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     class Tools
     {
       public:
+
+        Tools()
+            : mZoomIn( 0 )
+            , mZoomOut( 0 )
+            , mPan( 0 )
+#ifdef HAVE_TOUCH
+            , mTouch( 0 )
+#endif
+            , mIdentify( 0 )
+            , mFeatureAction( 0 )
+            , mMeasureDist( 0 )
+            , mMeasureArea( 0 )
+            , mMeasureAngle( 0 )
+            , mAddFeature( 0 )
+            , mMoveFeature( 0 )
+            , mOffsetCurve( 0 )
+            , mReshapeFeatures( 0 )
+            , mSplitFeatures( 0 )
+            , mSplitParts( 0 )
+            , mSelect( 0 )
+            , mSelectFeatures( 0 )
+            , mSelectPolygon( 0 )
+            , mSelectFreehand( 0 )
+            , mSelectRadius( 0 )
+            , mVertexAdd( 0 )
+            , mVertexMove( 0 )
+            , mVertexDelete( 0 )
+            , mAddRing( 0 )
+            , mFillRing( 0 )
+            , mAddPart( 0 )
+            , mSimplifyFeature( 0 )
+            , mDeleteRing( 0 )
+            , mDeletePart( 0 )
+            , mNodeTool( 0 )
+            , mRotatePointSymbolsTool( 0 )
+            , mAnnotation( 0 )
+            , mFormAnnotation( 0 )
+            , mHtmlAnnotation( 0 )
+            , mSvgAnnotation( 0 )
+            , mTextAnnotation( 0 )
+            , mPinLabels( 0 )
+            , mShowHideLabels( 0 )
+            , mMoveLabel( 0 )
+            , mRotateFeature( 0 )
+            , mRotateLabel( 0 )
+            , mChangeLabelProperties( 0 )
+        {}
+
         QgsMapTool *mZoomIn;
         QgsMapTool *mZoomOut;
         QgsMapTool *mPan;
@@ -1496,8 +1553,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QCursor *mOverviewMapCursor;
     //! Current map window extent in real-world coordinates
     QRect *mMapWindow;
-    //! The previously selected non zoom map tool.
-    int mPreviousNonZoomMapTool;
     QString mStartupPath;
     //! full path name of the current map file (if it has been saved or loaded)
     QString mFullPathName;
@@ -1597,11 +1652,16 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMessageBar *mInfoBar;
     QWidget *mMacrosWarn;
 
+    //! A tool bar for user input
+    QgsUserInputDockWidget* mUserInputDockWidget;
+
     QgsVectorLayerTools* mVectorLayerTools;
 
     QToolButton* mBtnFilterLegend;
 
     QgsSnappingUtils* mSnappingUtils;
+
+    QDateTime mProjectLastModified;
 
 #ifdef HAVE_TOUCH
     bool gestureEvent( QGestureEvent *event );

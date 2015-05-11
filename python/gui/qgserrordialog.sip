@@ -4,7 +4,7 @@ class QgsErrorDialog : QDialog
 #include <qgserrordialog.h>
 %End
   public:
-    QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsErrorDialog();
 
     /** Show dialog with error

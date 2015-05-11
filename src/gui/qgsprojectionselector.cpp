@@ -581,22 +581,14 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
     showDBMissingWarning( mSrsDatabaseFileName );
     return;
   }
-  // prepare the sql statement
+
   const char *tail;
   sqlite3_stmt *stmt;
-  // get total count of records in the projection table
-  QString sql = "select count(*) from tbl_srs";
-
-  rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
-  Q_ASSERT( rc == SQLITE_OK );
-  sqlite3_step( stmt );
-  sqlite3_finalize( stmt );
-
   // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
-  sql = QString( "select description, srs_id, upper(auth_name||':'||auth_id), is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
-        .arg( sqlFilter );
+  QString sql = QString( "select description, srs_id, upper(auth_name||':'||auth_id), is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
+                .arg( sqlFilter );
 
   rc = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &stmt, &tail );
   // XXX Need to free memory from the error msg if one is set

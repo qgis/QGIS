@@ -25,6 +25,7 @@
 #include "qgsogcutils.h"
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
+#include "qgspainteffect.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -183,6 +184,7 @@ QgsFeatureRendererV2* QgsSingleSymbolRendererV2::clone() const
   r->setRotationField( rotationField() );
   r->setSizeScaleField( sizeScaleField() );
   r->setScaleMethod( scaleMethod() );
+  copyPaintEffect( r );
   return r;
 }
 
@@ -352,6 +354,9 @@ QDomElement QgsSingleSymbolRendererV2::save( QDomDocument& doc )
     sizeScaleElem.setAttribute( "field", QgsSymbolLayerV2Utils::fieldOrExpressionFromExpression( mSizeScale.data() ) );
   sizeScaleElem.setAttribute( "scalemethod", QgsSymbolLayerV2Utils::encodeScaleMethod( mScaleMethod ) );
   rendererElem.appendChild( sizeScaleElem );
+
+  if ( mPaintEffect )
+    mPaintEffect->saveProperties( doc, rendererElem );
 
   return rendererElem;
 }

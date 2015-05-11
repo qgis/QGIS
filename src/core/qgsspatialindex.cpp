@@ -35,7 +35,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
         : mList( list ) {}
 
     void visitNode( const INode& n ) override
-    { Q_UNUSED( n ); }
+      { Q_UNUSED( n ); }
 
     void visitData( const IData& d ) override
     {
@@ -43,7 +43,7 @@ class QgisVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData*>& v ) override
-    { Q_UNUSED( v ); }
+      { Q_UNUSED( v ); }
 
   private:
     QList<QgsFeatureId>& mList;
@@ -56,7 +56,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
         : mNewIndex( newIndex ) {}
 
     void visitNode( const INode& n ) override
-    { Q_UNUSED( n ); }
+      { Q_UNUSED( n ); }
 
     void visitData( const IData& d ) override
     {
@@ -67,7 +67,7 @@ class QgsSpatialIndexCopyVisitor : public SpatialIndex::IVisitor
     }
 
     void visitData( std::vector<const IData*>& v ) override
-    { Q_UNUSED( v ); }
+      { Q_UNUSED( v ); }
 
   private:
     SpatialIndex::ISpatialIndex* mNewIndex;
@@ -234,12 +234,13 @@ Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
 
 bool QgsSpatialIndex::featureInfo( const QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id )
 {
-  QgsGeometry *g = f.geometry();
-  if ( !g )
+  if ( !f.constGeometry() )
     return false;
 
+  QgsGeometry g( *f.constGeometry() );
+
   id = f.id();
-  r = rectToRegion( g->boundingBox() );
+  r = rectToRegion( g.boundingBox() );
   return true;
 }
 

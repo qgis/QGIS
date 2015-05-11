@@ -51,7 +51,9 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
     const QMap<QString, QVariant> *options,
     QProgressDialog *progress )
     : mErrorCount( 0 )
+    , mAttributeCount( -1 )
     , mProgress( progress )
+
 {
   mProvider = NULL;
 
@@ -75,8 +77,6 @@ QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
   }
 
   delete myLib;
-
-  mAttributeCount = -1;
 
   // create an empty layer
   QString errMsg;
@@ -136,8 +136,8 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
   const QgsAttributes &attrs = feat.attributes();
 
   QgsFeature newFeat;
-  if ( feat.geometry() )
-    newFeat.setGeometry( *feat.geometry() );
+  if ( feat.constGeometry() )
+    newFeat.setGeometry( *feat.constGeometry() );
 
   newFeat.initAttributes( mAttributeCount );
 

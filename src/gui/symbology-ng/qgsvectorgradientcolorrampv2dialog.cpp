@@ -19,7 +19,6 @@
 #include "qgsdialog.h"
 #include "qgscolordialog.h"
 #include "qgscptcityarchive.h"
-#include "qgscolordialog.h"
 
 #include <QColorDialog>
 #include <QInputDialog>

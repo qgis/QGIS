@@ -23,7 +23,6 @@
 #include "qgsspatialindex.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
-#include "qgsfield.h"
 #include "qgsdistancearea.h"
 
 class QgsVectorFileWriter;

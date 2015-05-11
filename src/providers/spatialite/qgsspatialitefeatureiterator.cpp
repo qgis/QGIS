@@ -44,6 +44,11 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
     whereClause += whereClauseFid();
   }
 
+  if ( request.filterType() == QgsFeatureRequest::FilterFids )
+  {
+    whereClause += whereClauseFids();
+  }
+
   if ( !mSource->mSubsetString.isEmpty() )
   {
     if ( !whereClause.isEmpty() )
@@ -194,6 +199,16 @@ QString QgsSpatiaLiteFeatureIterator::quotedPrimaryKey()
 QString QgsSpatiaLiteFeatureIterator::whereClauseFid()
 {
   return QString( "%1=%2" ).arg( quotedPrimaryKey() ).arg( mRequest.filterFid() );
+}
+
+QString QgsSpatiaLiteFeatureIterator::whereClauseFids()
+{
+  QStringList whereClauses;
+  foreach ( const QgsFeatureId featureId, mRequest.filterFids() )
+  {
+    whereClauses << QString( "%1=%2" ).arg( quotedPrimaryKey() ).arg( featureId );
+  }
+  return whereClauses.isEmpty() ? "" : whereClauses.join( " OR " ).prepend( "(" ).append( ")" );
 }
 
 QString QgsSpatiaLiteFeatureIterator::whereClauseRect()

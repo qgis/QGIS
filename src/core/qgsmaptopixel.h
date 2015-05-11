@@ -74,19 +74,19 @@ class CORE_EXPORT QgsMapToPixel
      * @param y y coordinate of point to transform
      * @return QgsPoint in device coordinates
     */
-    QgsPoint transform( double x, double y ) const;
+    QgsPoint transform( qreal x, qreal y ) const;
     /*! Transform device coordinates to map (world) coordinates
     * @param x x coordinate of point to be converted to map cooordinates
     * @param y y coordinate of point to be converted to map cooordinates
     * @return QgsPoint in map coordinates
     */
 
-    /* Transform device coordinates to map coordinates. Modifies the
+    /*! Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform. */
     void transformInPlace( qreal& x, qreal& y ) const;
 
-    /* Transform device coordinates to map coordinates. Modifies the
+    /*! Transform device coordinates to map coordinates. Modifies the
        given coordinates in place. Intended as a fast way to do the
        transform.
        @note not available in python bindings
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsMapToPixel
      */
     QgsPoint toMapCoordinates( QPoint p ) const;
 
-    QgsPoint toMapPoint( double x, double y ) const;
+    QgsPoint toMapPoint( qreal x, qreal y ) const;
 
     /*! Set map units per pixel
     * @param mapUnitsPerPixel Map units per pixel

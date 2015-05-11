@@ -29,7 +29,15 @@ if [ -z "$ASTYLE" ]; then
 fi
 
 if ! type -p flip >/dev/null; then
+	echo "flip not found" >&2
 	flip() {
+		:
+	}
+fi
+
+if ! type -p pep8 >/dev/null; then
+	echo "pep8 not found" >&2
+	pep8() {
 		:
 	}
 fi
@@ -60,7 +68,7 @@ $ARTISTIC_STYLE_OPTIONS \
 
 for f in "$@"; do
 	case "$f" in
-        src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*)
+        src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py)
                 echo -ne "$f skipped $elcr"
                 continue
                 ;;
@@ -73,11 +81,11 @@ for f in "$@"; do
                 cmd=:
                 ;;
 
-	python/ext-libs/*)
-		cmd=:
+	*.py)
+		cmd="pep8 --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
 		;;
 
-        *.py|*.sip)
+        *.sip)
                 cmd="perl -i.prepare -pe 's/[\r\t ]+$//;'"
                 ;;
 

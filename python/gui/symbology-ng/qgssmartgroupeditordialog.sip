@@ -5,7 +5,7 @@ class QgsSmartGroupCondition : QWidget
 %End
 
   public:
-    QgsSmartGroupCondition( int id,  QWidget *parent = NULL );
+    QgsSmartGroupCondition( int id,  QWidget *parent /TransferThis/ = NULL );
 
     //! returns the constraint key
     QString constraint();
@@ -36,7 +36,7 @@ class QgsSmartGroupEditorDialog : QDialog
 %End
 
   public:
-    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent = NULL );
+    QgsSmartGroupEditorDialog( QgsStyleV2* style, QWidget* parent /TransferThis/ = NULL );
     ~QgsSmartGroupEditorDialog();
 
     //! returns the value from mNameLineEdit

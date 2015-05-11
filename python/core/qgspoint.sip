@@ -113,6 +113,14 @@ class QgsPoint
     /**Calculates azimuth between this point and other one (clockwise in degree, starting from north) */
     double azimuth( const QgsPoint& other );
 
+    /** Compares this point with another point with a fuzzy tolerance
+     * @param other point to compare with
+     * @param epsilon maximum difference for coordinates between the points
+     * @returns true if points are equal within specified tolerance
+     * @note added in QGIS 2.9
+    */
+    bool compare( const QgsPoint &other, double epsilon = 4 * DBL_EPSILON ) const;
+
     //! equality operator
     bool operator==( const QgsPoint &other );
 

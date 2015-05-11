@@ -7,7 +7,7 @@ SET(QGIS_APP_SRCS
   qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
-  qgsaddjoindialog.cpp
+  qgsjoindialog.cpp
   qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
   qgsattributetypedialog.cpp
@@ -163,7 +163,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisappstylesheet.h
   qgsabout.h
   qgsaddattrdialog.h
-  qgsaddjoindialog.h
+  qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
   qgsattributeactiondialog.h

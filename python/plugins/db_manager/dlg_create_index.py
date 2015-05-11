@@ -31,53 +31,54 @@ from .db_plugins.plugin import TableIndex
 
 from .ui.ui_DlgCreateIndex import Ui_DbManagerDlgCreateIndex as Ui_Dialog
 
+
 class DlgCreateIndex(QDialog, Ui_Dialog):
-        def __init__(self, parent=None, table=None, db=None):
-                QDialog.__init__(self, parent)
-                self.table = table
-                self.db = self.table.database() if self.table and self.table.database() else db
-                self.setupUi(self)
+    def __init__(self, parent=None, table=None, db=None):
+        QDialog.__init__(self, parent)
+        self.table = table
+        self.db = self.table.database() if self.table and self.table.database() else db
+        self.setupUi(self)
 
-                self.connect(self.buttonBox, SIGNAL("accepted()"), self.createIndex)
+        self.connect(self.buttonBox, SIGNAL("accepted()"), self.createIndex)
 
-                self.connect(self.cboColumn, SIGNAL("currentIndexChanged(int)"), self.columnChanged)
-                self.populateColumns()
-
-
-        def populateColumns(self):
-                self.cboColumn.clear()
-                for fld in self.table.fields():
-                        self.cboColumn.addItem(fld.name)
-
-        def columnChanged(self):
-                self.editName.setText(u"idx_%s_%s" % (self.table.name, self.cboColumn.currentText()))
+        self.connect(self.cboColumn, SIGNAL("currentIndexChanged(int)"), self.columnChanged)
+        self.populateColumns()
 
 
-        def createIndex(self):
-                idx = self.getIndex()
-                if idx.name == "":
-                        QMessageBox.critical(self, self.tr("Error"), self.tr("Please enter some name for the index"))
-                        return
+    def populateColumns(self):
+        self.cboColumn.clear()
+        for fld in self.table.fields():
+            self.cboColumn.addItem(fld.name)
 
-                # now create the index
-                QApplication.setOverrideCursor(Qt.WaitCursor)
-                try:
-                        self.table.addIndex(idx)
-                except DbError, e:
-                        DlgDbError.showError(e, self)
-                        return
-                finally:
-                        QApplication.restoreOverrideCursor()
+    def columnChanged(self):
+        self.editName.setText(u"idx_%s_%s" % (self.table.name, self.cboColumn.currentText()))
 
-                self.accept()
 
-        def getIndex(self):
-                idx = TableIndex(self.table)
-                idx.name = self.editName.text()
-                idx.columns = []
-                colname = self.cboColumn.currentText()
-                for fld in self.table.fields():
-                        if fld.name == colname:
-                                idx.columns.append( fld.num )
-                                break
-                return idx
+    def createIndex(self):
+        idx = self.getIndex()
+        if idx.name == "":
+            QMessageBox.critical(self, self.tr("Error"), self.tr("Please enter some name for the index"))
+            return
+
+        # now create the index
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        try:
+            self.table.addIndex(idx)
+        except DbError, e:
+            DlgDbError.showError(e, self)
+            return
+        finally:
+            QApplication.restoreOverrideCursor()
+
+        self.accept()
+
+    def getIndex(self):
+        idx = TableIndex(self.table)
+        idx.name = self.editName.text()
+        idx.columns = []
+        colname = self.cboColumn.currentText()
+        for fld in self.table.fields():
+            if fld.name == colname:
+                idx.columns.append(fld.num)
+                break
+        return idx

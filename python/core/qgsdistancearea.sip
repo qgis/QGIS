@@ -56,10 +56,10 @@ class QgsDistanceArea
     double ellipsoidInverseFlattening() const;
 
     //! general measurement (line distance or polygon area)
-    double measure( QgsGeometry* geometry );
+    double measure( const QgsGeometry* geometry );
 
     //! measures perimeter of polygon
-    double measurePerimeter( QgsGeometry* geometry );
+    double measurePerimeter( const QgsGeometry* geometry );
 
     //! measures line
     double measureLine( const QList<QgsPoint>& points );

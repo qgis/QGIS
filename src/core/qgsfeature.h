@@ -185,7 +185,12 @@ class CORE_EXPORT QgsFeature
     /**
      * Get the geometry object associated with this feature
      */
-    QgsGeometry *geometry() const;
+    QgsGeometry* geometry() const;
+
+    /** Gets a const pointer to the geometry object associated with this feature
+     * @note added in QGIS 2.9
+     */
+    const QgsGeometry* constGeometry() const;
 
     /**
      * Get the geometry object associated with this feature

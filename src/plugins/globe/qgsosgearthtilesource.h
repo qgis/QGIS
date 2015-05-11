@@ -60,7 +60,7 @@ namespace osgEarth
         {
           //All QGIS tiles are in JPEG format
           return "jpg";
-      }
+        }
 
         virtual bool supportsPersistentCaching() const
         {

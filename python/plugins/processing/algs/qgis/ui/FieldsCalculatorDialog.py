@@ -182,6 +182,12 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
         self.alg.setParameterValue('FORMULA', self.builder.expressionText())
         self.alg.setOutputValue('OUTPUT_LAYER',
                 self.leOutputFile.text())
+
+        msg = self.alg.checkParameterValuesBeforeExecuting()
+        if msg:
+            QMessageBox.warning(
+                self, self.tr('Unable to execute algorithm'), msg)
+            return False
         return True
 
     def accept(self):
@@ -199,11 +205,6 @@ class FieldsCalculatorDialog(QDialog, Ui_FieldsCalculator):
                                            not keepOpen)
                 if not keepOpen:
                     QDialog.reject(self)
-            else:
-                QMessageBox.critical(self,
-                                     self.tr('Unable to execute algorithm'),
-                                     self.tr('Wrong or missing parameter '
-                                             'values'))
         finally:
             QApplication.restoreOverrideCursor()
 

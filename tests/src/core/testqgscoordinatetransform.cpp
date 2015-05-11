@@ -61,6 +61,12 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   expectedRect.setYMinimum( -39.7222 );
   expectedRect.setXMaximum( -176.549 );
   expectedRect.setYMaximum( -36.3951 );
+
+  qDebug( "BBox transform x min: %.17f", resultRect.xMinimum() );
+  qDebug( "BBox transform x max: %.17f", resultRect.xMaximum() );
+  qDebug( "BBox transform y min: %.17f", resultRect.yMinimum() );
+  qDebug( "BBox transform y max: %.17f", resultRect.yMaximum() );
+
   QVERIFY( qgsDoubleNear( resultRect.xMinimum(), expectedRect.xMinimum(), 0.001 ) );
   QVERIFY( qgsDoubleNear( resultRect.yMinimum(), expectedRect.yMinimum(), 0.001 ) );
   QVERIFY( qgsDoubleNear( resultRect.xMaximum(), expectedRect.xMaximum(), 0.001 ) );
@@ -69,3 +75,4 @@ void TestQgsCoordinateTransform::transformBoundingBox()
 
 QTEST_MAIN( TestQgsCoordinateTransform )
 #include "testqgscoordinatetransform.moc"
+

@@ -23,8 +23,7 @@
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
 
 QgsRendererV2Widget* QgsPointDisplacementRendererWidget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -215,12 +214,7 @@ void QgsPointDisplacementRendererWidget::on_mLabelFontButton_clicked()
   }
 
   bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for QT Carbon
-  QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, mRenderer->labelFont(), 0, tr( "Label Font" ) );
-#endif
+  QFont newFont = QgisGui::getFont( ok, mRenderer->labelFont(), tr( "Label Font" ) );
   if ( ok )
   {
     mRenderer->setLabelFont( newFont );

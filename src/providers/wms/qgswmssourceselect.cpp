@@ -32,7 +32,6 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmsconnection.h"
-#include "qgswmsprovider.h"
 #include "qgswmssourceselect.h"
 #include "qgswmtsdimensions.h"
 #include "qgsnetworkaccessmanager.h"

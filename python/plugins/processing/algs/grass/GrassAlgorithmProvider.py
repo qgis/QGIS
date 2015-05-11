@@ -88,7 +88,7 @@ class GrassAlgorithmProvider(AlgorithmProvider):
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
-        return 'GRASS commands'
+        return self.tr('GRASS commands')
 
     def getName(self):
         return 'grass'

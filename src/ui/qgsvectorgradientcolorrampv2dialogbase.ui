@@ -220,14 +220,19 @@
    <class>QgsColorButtonV2</class>
    <extends>QToolButton</extends>
    <header>qgscolorbuttonv2.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>btnColor1</tabstop>
   <tabstop>btnColor2</tabstop>
+  <tabstop>cboType</tabstop>
   <tabstop>groupStops</tabstop>
   <tabstop>treeStops</tabstop>
   <tabstop>btnAddStop</tabstop>
+  <tabstop>btnRemoveStop</tabstop>
+  <tabstop>btnInformation</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

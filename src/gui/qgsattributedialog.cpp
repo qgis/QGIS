@@ -25,7 +25,7 @@
 #include <QSettings>
 
 
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QgsDistanceArea myDa, QWidget* parent, bool showDialogButtons )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, const QgsDistanceArea &myDa, QWidget* parent, bool showDialogButtons )
     : QDialog( parent )
     , mHighlight( 0 )
     , mOwnedFeature( featureOwner ? thepFeature : 0 )
@@ -39,7 +39,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeat
     mAttributeForm->hideButtonBox();
 }
 
-QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, QgsAttributeEditorContext context )
+QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer* vl, QgsFeature* thepFeature, bool featureOwner, QWidget* parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
     : QDialog( parent )
     , mHighlight( 0 )
     , mOwnedFeature( featureOwner ? thepFeature : 0 )
@@ -97,7 +97,7 @@ void QgsAttributeDialog::show( bool autoDelete )
   activateWindow();
 }
 
-void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAttributeEditorContext& context, QWidget* parent )
+void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, const QgsAttributeEditorContext &context, QWidget* parent )
 {
   setWindowTitle( tr( "%1 - Feature Attributes" ).arg( layer->name() ) );
   setLayout( new QGridLayout() );
@@ -108,6 +108,7 @@ void QgsAttributeDialog::init( QgsVectorLayer* layer, QgsFeature* feature, QgsAt
   QDialogButtonBox* buttonBox = mAttributeForm->findChild<QDialogButtonBox*>();
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( layer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
 
   QgsActionMenu* menu = new QgsActionMenu( layer, &mAttributeForm->feature(), this );
   if ( menu->actions().size() > 0 )

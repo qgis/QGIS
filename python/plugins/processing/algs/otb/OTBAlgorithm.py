@@ -269,7 +269,7 @@ class OTBAlgorithm(GeoAlgorithm):
             elif isinstance(param, ParameterMultipleInput):
                 commands.append(param.name)
                 files = str(param.value).split(";")
-                paramvalue = " ".join(["\"" + f + "\"" for f in files])
+                paramvalue = " ".join(["\"" + f + " \"" for f in files])
                 commands.append(paramvalue)
             elif isinstance(param, ParameterSelection):
                 commands.append(param.name)

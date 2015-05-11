@@ -57,7 +57,10 @@ class ANALYSIS_EXPORT QgsRasterCalcNode
       opLE,         // <=
       opAND,
       opOR,
-      opSIGN    //change sign
+      opSIGN,       // change sign
+      opLOG,
+      opLOG10,
+      opNONE,
     };
 
     QgsRasterCalcNode();

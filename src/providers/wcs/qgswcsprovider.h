@@ -232,7 +232,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     QString prepareUri( QString uri ) const;
 
-    QString coverageMetadata( QgsWcsCoverageSummary c );
+    QString coverageMetadata( const QgsWcsCoverageSummary& c );
 
     //! remove query item and replace it with a new value
     void setQueryItem( QUrl &url, QString key, QString value );
@@ -297,10 +297,10 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /** \brief Gdal data types used to represent data in in QGIS,
                may be longer than source data type to keep nulls
                indexed from 0 */
-    QList<int>mGdalDataType;
+    QList<GDALDataType> mGdalDataType;
 
     /** GDAL source data types, indexed from 0 */
-    QList<int>mSrcGdalDataType;
+    QList<GDALDataType> mSrcGdalDataType;
 
     /** \brief Cell value representing no data. e.g. -9999, indexed from 0  */
     //QList<double> mNoDataValue;

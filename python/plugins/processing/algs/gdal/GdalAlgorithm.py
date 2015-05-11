@@ -17,6 +17,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
 __copyright__ = '(C) 2012, Victor Olaya'
@@ -29,6 +30,8 @@ import os
 from PyQt4 import QtGui
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.core.GeoAlgorithm import GeoAlgorithm
+from processing.algs.gdal.GdalAlgorithmDialog import GdalAlgorithmDialog
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class GdalAlgorithm(GeoAlgorithm):
@@ -36,7 +39,16 @@ class GdalAlgorithm(GeoAlgorithm):
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')
 
+    def getCustomParametersDialog(self):
+        return GdalAlgorithmDialog(self)
+
+    def processAlgorithm(self, progress):
+        GdalUtils.runGdal(self.getConsoleCommands(), progress)
+
 class GdalScriptAlgorithm(ScriptAlgorithm):
 
     def getIcon(self):
         return QtGui.QIcon(os.path.dirname(__file__) + '/../../images/gdal.png')
+
+    def getCustomParametersDialog(self):
+        return GdalAlgorithmDialog(self)

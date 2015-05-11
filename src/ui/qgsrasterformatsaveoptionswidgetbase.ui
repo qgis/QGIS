@@ -206,6 +206,18 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mProfileComboBox</tabstop>
+  <tabstop>mProfileNewButton</tabstop>
+  <tabstop>mProfileDeleteButton</tabstop>
+  <tabstop>mProfileResetButton</tabstop>
+  <tabstop>mOptionsTable</tabstop>
+  <tabstop>mOptionsAddButton</tabstop>
+  <tabstop>mOptionsDeleteButton</tabstop>
+  <tabstop>mOptionsValidateButton</tabstop>
+  <tabstop>mOptionsHelpButton</tabstop>
+  <tabstop>mOptionsLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

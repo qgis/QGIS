@@ -68,4 +68,5 @@ class LAStoolsUtils:
                                 stderr=subprocess.STDOUT, universal_newlines=False).stdout
         for line in iter(proc.readline, ""):
             loglines.append(line)
+            progress.setConsoleInfo(line)
         ProcessingLog.addToLog(ProcessingLog.LOG_INFO, loglines)

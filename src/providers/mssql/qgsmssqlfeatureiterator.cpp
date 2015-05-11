@@ -97,11 +97,11 @@ void QgsMssqlFeatureIterator::BuildStatement( const QgsFeatureRequest& request )
 
     foo.setRealNumberPrecision( 8 );
     foo.setRealNumberNotation( QTextStream::FixedNotation );
-    foo <<  request.filterRect().xMinimum() << " " <<  request.filterRect().yMinimum() << ", "
-    <<  request.filterRect().xMaximum() << " " <<  request.filterRect().yMinimum() << ", "
-    <<  request.filterRect().xMaximum() << " " <<  request.filterRect().yMaximum() << ", "
-    <<  request.filterRect().xMinimum() << " " <<  request.filterRect().yMaximum() << ", "
-    <<  request.filterRect().xMinimum() << " " <<  request.filterRect().yMinimum();
+    foo <<  qgsDoubleToString( request.filterRect().xMinimum() ) << " " <<  qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
+    <<  qgsDoubleToString( request.filterRect().xMaximum() ) << " " << qgsDoubleToString( request.filterRect().yMinimum() ) << ", "
+    <<  qgsDoubleToString( request.filterRect().xMaximum() ) << " " <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
+    <<  qgsDoubleToString( request.filterRect().xMinimum() ) << " " <<  qgsDoubleToString( request.filterRect().yMaximum() ) << ", "
+    <<  qgsDoubleToString( request.filterRect().xMinimum() ) << " " <<  qgsDoubleToString( request.filterRect().yMinimum() );
 
     mStatement += QString( " where [%1].STIntersects([%2]::STGeomFromText('POLYGON((%3))',%4)) = 1" ).arg(
                     mSource->mGeometryColName, mSource->mGeometryColType, r, QString::number( mSource->mSRId ) );

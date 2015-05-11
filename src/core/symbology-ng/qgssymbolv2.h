@@ -37,6 +37,10 @@ class QgsFields;
 class QgsSymbolLayerV2;
 class QgsRenderContext;
 class QgsVectorLayer;
+class QgsPaintEffect;
+class QgsMarkerSymbolLayerV2;
+class QgsLineSymbolLayerV2;
+class QgsFillSymbolLayerV2;
 
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
 
@@ -51,6 +55,8 @@ class CORE_EXPORT QgsSymbolV2
       Mixed, //mixed units in symbol layers
       Pixel
     };
+
+    typedef QList<OutputUnit> OutputUnitList;
 
     enum SymbolType
     {
@@ -155,6 +161,26 @@ class CORE_EXPORT QgsSymbolV2
     void setRenderHints( int hints ) { mRenderHints = hints; }
     int renderHints() const { return mRenderHints; }
 
+    /**Sets whether features drawn by the symbol should be clipped to the render context's
+     * extent. If this option is enabled then features which are partially outside the extent
+     * will be clipped. This speeds up rendering of the feature, but may have undesirable
+     * side effects for certain symbol types.
+     * @param clipFeaturesToExtent set to true to enable clipping (defaults to true)
+     * @note added in QGIS 2.9
+     * @see clipFeaturesToExtent
+     */
+    void setClipFeaturesToExtent( bool clipFeaturesToExtent ) { mClipFeaturesToExtent = clipFeaturesToExtent; }
+
+    /**Returns whether features drawn by the symbol will be clipped to the render context's
+     * extent. If this option is enabled then features which are partially outside the extent
+     * will be clipped. This speeds up rendering of the feature, but may have undesirable
+     * side effects for certain symbol types.
+     * @returns true if features will be clipped
+     * @note added in QGIS 2.9
+     * @see setClipFeaturesToExtent
+     */
+    double clipFeaturesToExtent() const { return mClipFeaturesToExtent; }
+
     QSet<QString> usedAttributes() const;
 
     void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
@@ -176,8 +202,10 @@ class CORE_EXPORT QgsSymbolV2
     qreal mAlpha;
 
     int mRenderHints;
+    bool mClipFeaturesToExtent;
 
     const QgsVectorLayer* mLayer; //current vectorlayer
+
 };
 
 ///////////////////////
@@ -263,6 +291,11 @@ class CORE_EXPORT QgsMarkerSymbolV2 : public QgsSymbolV2
     void renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, const QPointF& point, QgsSymbolV2RenderContext& context );
+
 };
 
 
@@ -283,6 +316,11 @@ class CORE_EXPORT QgsLineSymbolV2 : public QgsSymbolV2
     void renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPolylineUsingLayer( QgsLineSymbolLayerV2* layer, const QPolygonF& points, QgsSymbolV2RenderContext& context );
+
 };
 
 
@@ -300,6 +338,14 @@ class CORE_EXPORT QgsFillSymbolV2 : public QgsSymbolV2
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
     virtual QgsSymbolV2* clone() const override;
+
+  private:
+
+    void renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolV2RenderContext &context );
+    /**Calculates the bounds of a polygon including rings*/
+    QRectF polygonBounds( const QPolygonF &points, const QList<QPolygonF> *rings ) const;
+    /**Translates the rings in a polygon by a set distance*/
+    QList<QPolygonF>* translateRings( const QList<QPolygonF> *rings, double dx, double dy ) const;
 };
 
 #endif

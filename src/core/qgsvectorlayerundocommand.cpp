@@ -50,7 +50,7 @@ void QgsVectorLayerUndoCommandAddFeature::undo()
 #endif
   mBuffer->mAddedFeatures.remove( mFeature.id() );
 
-  if ( mFeature.geometry() )
+  if ( mFeature.constGeometry() )
     cache()->removeGeometry( mFeature.id() );
 
   emit mBuffer->featureDeleted( mFeature.id() );
@@ -60,8 +60,8 @@ void QgsVectorLayerUndoCommandAddFeature::redo()
 {
   mBuffer->mAddedFeatures.insert( mFeature.id(), mFeature );
 
-  if ( mFeature.geometry() )
-    cache()->cacheGeometry( mFeature.id(), *mFeature.geometry() );
+  if ( mFeature.constGeometry() )
+    cache()->cacheGeometry( mFeature.id(), *mFeature.constGeometry() );
 
   emit mBuffer->featureAdded( mFeature.id() );
 }
@@ -119,7 +119,7 @@ QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry
   {
     QgsFeatureMap::const_iterator it = mBuffer->mAddedFeatures.find( mFid );
     Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
-    mOldGeom = new QgsGeometry( *it.value().geometry() );
+    mOldGeom = new QgsGeometry( *it.value().constGeometry() );
   }
   else
   {
@@ -185,7 +185,7 @@ void QgsVectorLayerUndoCommandChangeGeometry::undo()
       QgsFeature f;
       if ( layer()->getFeatures( QgsFeatureRequest().setFilterFid( mFid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) && f.geometry() )
       {
-        cache()->cacheGeometry( mFid, *f.geometry() );
+        cache()->cacheGeometry( mFid, *f.constGeometry() );
         emit mBuffer->geometryChanged( mFid, *f.geometry() );
       }
     }

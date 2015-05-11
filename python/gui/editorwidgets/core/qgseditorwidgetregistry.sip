@@ -51,7 +51,7 @@ class QgsEditorWidgetRegistry : QObject
                                     const QgsEditorWidgetConfig& config,
                                     QWidget* editor,
                                     QWidget* parent /TransferThis/,
-                                    const QgsAttributeEditorContext context = QgsAttributeEditorContext() ) /Factory/;
+                                    const QgsAttributeEditorContext& context = QgsAttributeEditorContext() ) /Factory/;
 
     /**
      * Creates a configuration widget

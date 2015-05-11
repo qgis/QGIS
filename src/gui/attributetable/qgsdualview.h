@@ -78,7 +78,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param request    Use a modified request to limit the shown features
      * @param context    The context in which this view is shown
      */
-    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), QgsAttributeEditorContext context = QgsAttributeEditorContext() );
+    void init( QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request = QgsFeatureRequest(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
 
     /**
      * Change the current view mode.
@@ -206,16 +206,16 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * @param i       The number of features already loaded
      * @param cancel  Set to true to cancel
      */
-    virtual void progress( int i, bool& cancel );
+    virtual void progress( int i, bool &cancel );
 
     /**
      * Will be called, once all the features are loaded.
-     * Use e.g. to close a dialog created from {@link progress( int i, bool& cancel )}
+     * Use e.g. to close a dialog created from progress( int i, bool &cancel )
      */
     virtual void finished();
 
   private:
-    void initLayerCache( QgsVectorLayer *layer );
+    void initLayerCache( QgsVectorLayer *layer, bool cacheGeometry );
     void initModels( QgsMapCanvas* mapCanvas, const QgsFeatureRequest& request );
 
     QgsAttributeEditorContext mEditorContext;

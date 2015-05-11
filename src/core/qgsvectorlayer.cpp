@@ -179,9 +179,7 @@ QgsVectorLayer::QgsVectorLayer( QString vectorLayerPath,
   }
 
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged() ) );
-
   connect( this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( repaintRequested() ) );
-
   connect( QgsProject::instance()->relationManager(), SIGNAL( relationsLoaded() ), this, SLOT( onRelationsLoaded() ) );
 
   // Default simplify drawing settings
@@ -589,13 +587,14 @@ void QgsVectorLayer::setDiagramRenderer( QgsDiagramRendererV2* r )
 {
   delete mDiagramRenderer;
   mDiagramRenderer = r;
+  emit rendererChanged();
 }
 
 QGis::GeometryType QgsVectorLayer::geometryType() const
 {
   if ( mDataProvider )
   {
-    int type = mDataProvider->geometryType();
+    QGis::WkbType type = mDataProvider->geometryType();
     switch ( type )
     {
       case QGis::WKBPoint:
@@ -672,9 +671,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
                         .setFilterFid( fid )
                         .setSubsetOfAttributes( QgsAttributeList() ) )
            .nextFeature( fet ) &&
-           fet.geometry() )
+           fet.constGeometry() )
       {
-        r = fet.geometry()->boundingBox();
+        r = fet.constGeometry()->boundingBox();
         retval.combineExtentWith( &r );
       }
     }
@@ -688,9 +687,9 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
     {
       if ( mSelectedFeatureIds.contains( fet.id() ) )
       {
-        if ( fet.geometry() )
+        if ( fet.constGeometry() )
         {
-          r = fet.geometry()->boundingBox();
+          r = fet.constGeometry()->boundingBox();
           retval.combineExtentWith( &r );
         }
       }
@@ -711,6 +710,24 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   }
 
   return retval;
+}
+
+bool QgsVectorLayer::labelsEnabled() const
+{
+  return customProperty( "labeling/enabled", QVariant( false ) ).toBool();
+}
+
+bool QgsVectorLayer::diagramsEnabled() const
+{
+  if ( !mDiagramRenderer || !mDiagramLayerSettings )
+    return false;
+
+  QList<QgsDiagramSettings> settingList = mDiagramRenderer->diagramSettings();
+  if ( settingList.size() > 0 )
+  {
+    return settingList.at( 0 ).enabled;
+  }
+  return false;
 }
 
 long QgsVectorLayer::featureCount() const
@@ -756,6 +773,7 @@ bool QgsVectorLayer::countSymbolFeatures( bool showProgress )
 
   long nFeatures = pendingFeatureCount();
   QProgressDialog progressDialog( tr( "Updating feature count for layer %1" ).arg( name() ), tr( "Abort" ), 0, nFeatures );
+  progressDialog.setWindowTitle( tr( "QGIS" ) );
   progressDialog.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 
@@ -856,9 +874,9 @@ QgsRectangle QgsVectorLayer::extent()
 
     for ( QgsFeatureMap::iterator it = mEditBuffer->mAddedFeatures.begin(); it != mEditBuffer->mAddedFeatures.end(); ++it )
     {
-      if ( it->geometry() )
+      if ( it->constGeometry() )
       {
-        QgsRectangle r = it->geometry()->boundingBox();
+        QgsRectangle r = it->constGeometry()->boundingBox();
         rect.combineExtentWith( &r );
       }
     }
@@ -871,9 +889,9 @@ QgsRectangle QgsVectorLayer::extent()
     QgsFeature fet;
     while ( fit.nextFeature( fet ) )
     {
-      if ( fet.geometry() && fet.geometry()->type() != QGis::UnknownGeometry )
+      if ( fet.constGeometry() && fet.constGeometry()->type() != QGis::UnknownGeometry )
       {
-        QgsRectangle bb = fet.geometry()->boundingBox();
+        QgsRectangle bb = fet.constGeometry()->boundingBox();
         rect.combineExtentWith( &bb );
       }
     }
@@ -965,7 +983,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
 {
   QgsFeatureRequest req;
   req.setFilterFid( f.id() );
-  if ( !f.geometry() )
+  if ( !f.constGeometry() )
     req.setFlags( QgsFeatureRequest::NoGeometry );
   if ( f.attributes().isEmpty() )
     req.setSubsetOfAttributes( QgsAttributeList() );
@@ -977,7 +995,7 @@ bool QgsVectorLayer::updateFeature( QgsFeature &f )
     return false;
   }
 
-  if ( f.geometry() && current.geometry() && f.geometry() != current.geometry() && !f.geometry()->isGeosEqual( *current.geometry() ) )
+  if ( f.constGeometry() && current.constGeometry() && f.constGeometry() != current.constGeometry() && !f.constGeometry()->isGeosEqual( *current.constGeometry() ) )
   {
     if ( !changeGeometry( f.id(), f.geometry() ) )
     {
@@ -1157,7 +1175,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds
     }
 
     //call geometry->makeDifference for each feature
-    QgsGeometry *currentGeom = f.geometry();
+    const QgsGeometry *currentGeom = f.constGeometry();
     if ( currentGeom )
     {
       if ( geom->makeDifference( currentGeom ) != 0 )
@@ -1170,7 +1188,7 @@ int QgsVectorLayer::removePolygonIntersections( QgsGeometry* geom, QgsFeatureIds
   return returnValue;
 }
 
-int QgsVectorLayer::addTopologicalPoints( QgsGeometry* geom )
+int QgsVectorLayer::addTopologicalPoints( const QgsGeometry *geom )
 {
   if ( !mEditBuffer || !mDataProvider )
     return -1;
@@ -1250,8 +1268,21 @@ bool QgsVectorLayer::startEditing()
   connect( mEditBuffer, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ), this, SIGNAL( attributeValueChanged( QgsFeatureId, int, QVariant ) ) );
   connect( mEditBuffer, SIGNAL( attributeAdded( int ) ), this, SIGNAL( attributeAdded( int ) ) );
   connect( mEditBuffer, SIGNAL( attributeDeleted( int ) ), this, SIGNAL( attributeDeleted( int ) ) );
+
+  connect( mEditBuffer, SIGNAL( committedAttributesDeleted( const QString &, const QgsAttributeList & ) ),
+           this, SIGNAL( committedAttributesDeleted( const QString &, const QgsAttributeList & ) ) );
+
+  connect( mEditBuffer, SIGNAL( committedAttributesAdded( const QString &, const QList<QgsField> & ) ),
+           this, SIGNAL( committedAttributesAdded( const QString &, const QList<QgsField> & ) ) );
+
   connect( mEditBuffer, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ), this, SIGNAL( committedFeaturesAdded( QString, QgsFeatureList ) ) );
   connect( mEditBuffer, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ), this, SIGNAL( committedFeaturesRemoved( QString, QgsFeatureIds ) ) );
+
+  connect( mEditBuffer, SIGNAL( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ),
+           this, SIGNAL( committedAttributeValuesChanges( const QString &, const QgsChangedAttributesMap & ) ) );
+
+  connect( mEditBuffer, SIGNAL( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ),
+           this, SIGNAL( committedGeometriesChanges( const QString &, const QgsGeometryMap & ) ) );
 
   updateFields();
 
@@ -1578,6 +1609,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     QDomNode labelnode = node.namedItem( "label" );
     QDomElement element = labelnode.toElement();
     int hasLabelsEnabled = element.text().toInt();
+    Q_NOWARN_DEPRECATED_PUSH
     if ( hasLabelsEnabled < 1 )
     {
       enableLabels( false );
@@ -1586,6 +1618,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     {
       enableLabels( true );
     }
+    Q_NOWARN_DEPRECATED_POP
 
     QDomNode labelattributesnode = node.namedItem( "labelattributes" );
 
@@ -1758,7 +1791,7 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
     for ( int i = 0; i < childNodeList.size(); i++ )
     {
       QDomElement childElem = childNodeList.at( i ).toElement();
-      QgsAttributeEditorElement* myElem = attributeEditorElementFromDomElement( childElem, container );
+      QgsAttributeEditorElement *myElem = attributeEditorElementFromDomElement( childElem, container );
       if ( myElem )
         container->addChildElement( myElem );
     }
@@ -1768,7 +1801,7 @@ QgsAttributeEditorElement* QgsVectorLayer::attributeEditorElementFromDomElement(
   else if ( elem.tagName() == "attributeEditorField" )
   {
     QString name = elem.attribute( "name" );
-    int idx = *( dataProvider()->fieldNameMap() ).find( name );
+    int idx = fieldNameIndex( name );
     newElement = new QgsAttributeEditorField( name, idx, parent );
   }
   else if ( elem.tagName() == "attributeEditorRelation" )
@@ -1837,6 +1870,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     QDomElement labelElem = doc.createElement( "label" );
     QDomText labelText = doc.createTextNode( "" );
 
+    Q_NOWARN_DEPRECATED_PUSH
     if ( hasLabelsEnabled() )
     {
       labelText.setData( "1" );
@@ -1845,6 +1879,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     {
       labelText.setData( "0" );
     }
+    Q_NOWARN_DEPRECATED_POP
     labelElem.appendChild( labelText );
 
     node.appendChild( labelElem );
@@ -2327,13 +2362,26 @@ const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
 QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
   QgsFeatureList features;
-
-  QgsFeatureIterator it = selectedFeaturesIterator();
-
   QgsFeature f;
-  while ( it.nextFeature( f ) )
+
+  if ( mSelectedFeatureIds.count() <= 8 )
   {
-    features.push_back( f );
+    // for small amount of selected features, fetch them directly
+    // because request with FilterFids would go iterate over the whole layer
+    foreach ( int fid, mSelectedFeatureIds )
+    {
+      getFeatures( QgsFeatureRequest( fid ) ).nextFeature( f );
+      features << f;
+    }
+  }
+  else
+  {
+    QgsFeatureIterator it = selectedFeaturesIterator();
+
+    while ( it.nextFeature( f ) )
+    {
+      features.push_back( f );
+    }
   }
 
   return features;
@@ -2341,10 +2389,16 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
 
 QgsFeatureIterator QgsVectorLayer::selectedFeaturesIterator( QgsFeatureRequest request )
 {
+  if ( mSelectedFeatureIds.count() == 0 )
+    return QgsFeatureIterator();
+
   if ( geometryType() == QGis::NoGeometry )
     request.setFlags( QgsFeatureRequest::NoGeometry );
 
-  request.setFilterFids( mSelectedFeatureIds );
+  if ( mSelectedFeatureIds.count() == 1 )
+    request.setFilterFid( *mSelectedFeatureIds.constBegin() );
+  else
+    request.setFilterFids( mSelectedFeatureIds );
 
   return getFeatures( request );
 }
@@ -2441,7 +2495,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
     while ( fit.nextFeature( f ) )
     {
-      snapToGeometry( startPoint, f.id(), f.geometry(), sqrSnappingTolerance, snappingResults, snap_to );
+      snapToGeometry( startPoint, f.id(), f.constGeometry(), sqrSnappingTolerance, snappingResults, snap_to );
       ++n;
     }
   }
@@ -2451,7 +2505,7 @@ int QgsVectorLayer::snapWithContext( const QgsPoint& startPoint, double snapping
 
 void QgsVectorLayer::snapToGeometry( const QgsPoint& startPoint,
                                      QgsFeatureId featureId,
-                                     QgsGeometry* geom,
+                                     const QgsGeometry* geom,
                                      double sqrSnappingTolerance,
                                      QMultiMap<double, QgsSnappingResult>& snappingResults,
                                      QgsSnapper::SnappingType snap_to ) const
@@ -2813,12 +2867,13 @@ const QList< QgsVectorJoinInfo >& QgsVectorLayer::vectorJoins() const
   return mJoinBuffer->vectorJoins();
 }
 
-void QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
+int QgsVectorLayer::addExpressionField( const QString& exp, const QgsField& fld )
 {
   mExpressionFieldBuffer->addExpression( exp, fld );
   updateFields();
   int idx = mUpdatedFields.indexFromName( fld.name() );
   emit attributeAdded( idx );
+  return idx;
 }
 
 void QgsVectorLayer::removeExpressionField( int index )
@@ -2827,6 +2882,18 @@ void QgsVectorLayer::removeExpressionField( int index )
   mExpressionFieldBuffer->removeExpression( oi );
   updateFields();
   emit attributeDeleted( index );
+}
+
+const QString QgsVectorLayer::expressionField( int index )
+{
+  int oi = mUpdatedFields.fieldOriginIndex( index );
+  return mExpressionFieldBuffer->expressions().value( oi ).expression;
+}
+
+void QgsVectorLayer::updateExpressionField( int index, const QString& exp )
+{
+  int oi = mUpdatedFields.fieldOriginIndex( index );
+  mExpressionFieldBuffer->updateExpression( oi, exp );
 }
 
 void QgsVectorLayer::updateFields()
@@ -3076,6 +3143,67 @@ QVariant QgsVectorLayer::maximumValue( int index )
   Q_ASSERT_X( false, "QgsVectorLayer::maximumValue()", "Unknown source of the field!" );
   return QVariant();
 }
+
+QList<QVariant> QgsVectorLayer::getValues( const QString &fieldOrExpression, bool& ok )
+{
+  QList<QVariant> values;
+
+  QScopedPointer<QgsExpression> expression;
+  int attrNum = fieldNameIndex( fieldOrExpression );
+
+  if ( attrNum == -1 )
+  {
+    // try to use expression
+    expression.reset( new QgsExpression( fieldOrExpression ) );
+    if ( expression->hasParserError() || !expression->prepare( pendingFields() ) )
+    {
+      ok = false;
+      return values;
+    }
+  }
+
+  QgsFeature f;
+  QStringList lst;
+  if ( expression.isNull() )
+    lst.append( fieldOrExpression );
+  else
+    lst = expression->referencedColumns();
+
+  QgsFeatureIterator fit = getFeatures( QgsFeatureRequest()
+                                        .setFlags(( expression && expression->needsGeometry() ) ?
+                                                  QgsFeatureRequest::NoFlags :
+                                                  QgsFeatureRequest::NoGeometry )
+                                        .setSubsetOfAttributes( lst, pendingFields() ) );
+
+  // create list of non-null attribute values
+  while ( fit.nextFeature( f ) )
+  {
+    QVariant v = expression ? expression->evaluate( f ) : f.attribute( attrNum );
+    values << v;
+  }
+  ok = true;
+  return values;
+}
+
+QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression, bool& ok )
+{
+  QList<double> values;
+
+  QList<QVariant> variantValues = getValues( fieldOrExpression, ok );
+  if ( !ok )
+    return values;
+
+  bool convertOk;
+  foreach ( QVariant value, variantValues )
+  {
+    double val = value.toDouble( &convertOk );
+    if ( convertOk )
+      values << val;
+  }
+  ok = true;
+  return values;
+}
+
 
 /** Write blend mode for features */
 void QgsVectorLayer::setFeatureBlendMode( const QPainter::CompositionMode &featureBlendMode )
@@ -3702,7 +3830,8 @@ QList<QgsAttributeEditorElement*> QgsAttributeEditorContainer::findElements( Qgs
     if ( elem->type() == AeTypeContainer )
     {
       QgsAttributeEditorContainer* cont = dynamic_cast<QgsAttributeEditorContainer*>( elem );
-      results += cont->findElements( type );
+      if ( cont )
+        results += cont->findElements( type );
     }
   }
 

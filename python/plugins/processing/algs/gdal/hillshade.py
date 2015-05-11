@@ -68,9 +68,9 @@ class hillshade(GdalAlgorithm):
         self.addParameter(ParameterNumber(self.ALTITUDE,
             self.tr('Altitude of the light'), 0.0, 99999999.999999, 45.0))
 
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output file')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Hillshade')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = ['hillshade']
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
@@ -93,5 +93,4 @@ class hillshade(GdalAlgorithm):
             arguments.append('-alg')
             arguments.append('ZevenbergenThorne')
 
-        GdalUtils.runGdal(['gdaldem',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdaldem', GdalUtils.escapeAndJoin(arguments)]

@@ -461,12 +461,9 @@
     </widget>
    </item>
   </layout>
-  <zorder>mRasterBandsGroupBox</zorder>
-  <zorder>mResultGroupBox</zorder>
+  <zorder>splitter_2</zorder>
   <zorder>mButtonBox</zorder>
   <zorder>mExpressionValidLabel</zorder>
-  <zorder>verticalLayoutWidget</zorder>
-  <zorder>mOperatorsGroupBox</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -476,6 +473,43 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mButtonBox</tabstop>
+  <tabstop>mRasterBandsListWidget</tabstop>
+  <tabstop>mOutputLayerLineEdit</tabstop>
+  <tabstop>mOutputLayerPushButton</tabstop>
+  <tabstop>mCurrentLayerExtentButton</tabstop>
+  <tabstop>mXMinSpinBox</tabstop>
+  <tabstop>mXMaxSpinBox</tabstop>
+  <tabstop>mYMinSpinBox</tabstop>
+  <tabstop>mYMaxSpinBox</tabstop>
+  <tabstop>mNColumnsSpinBox</tabstop>
+  <tabstop>mNRowsSpinBox</tabstop>
+  <tabstop>mOutputFormatComboBox</tabstop>
+  <tabstop>mAddResultToProjectCheckBox</tabstop>
+  <tabstop>mPlusPushButton</tabstop>
+  <tabstop>mMultiplyPushButton</tabstop>
+  <tabstop>mSqrtButton</tabstop>
+  <tabstop>mSinButton</tabstop>
+  <tabstop>mExpButton</tabstop>
+  <tabstop>mACosButton</tabstop>
+  <tabstop>mOpenBracketPushButton</tabstop>
+  <tabstop>mMinusPushButton</tabstop>
+  <tabstop>mDividePushButton</tabstop>
+  <tabstop>mCosButton</tabstop>
+  <tabstop>mASinButton</tabstop>
+  <tabstop>mTanButton</tabstop>
+  <tabstop>mATanButton</tabstop>
+  <tabstop>mCloseBracketPushButton</tabstop>
+  <tabstop>mLessButton</tabstop>
+  <tabstop>mGreaterButton</tabstop>
+  <tabstop>mEqualButton</tabstop>
+  <tabstop>mLesserEqualButton</tabstop>
+  <tabstop>mGreaterEqualButton</tabstop>
+  <tabstop>mAndButton</tabstop>
+  <tabstop>mOrButton</tabstop>
+  <tabstop>mExpressionTextEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

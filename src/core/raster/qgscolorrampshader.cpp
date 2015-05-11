@@ -27,6 +27,7 @@ originally part of the larger QgsRasterLayer class
 
 QgsColorRampShader::QgsColorRampShader( double theMinimumValue, double theMaximumValue )
     : QgsRasterShaderFunction( theMinimumValue, theMaximumValue )
+    , mColorRampType( INTERPOLATED )
     , mClip( false )
 {
   QgsDebugMsg( "called." );

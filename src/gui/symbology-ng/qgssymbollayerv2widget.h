@@ -43,8 +43,9 @@ class GUI_EXPORT QgsSymbolLayerV2Widget : public QWidget
     /** Get label for data defined entry.
      * Implemented only for 'size' of marker symbols
      * @note added in 2.1
+     * @deprecated no longer used
      */
-    virtual QString dataDefinedPropertyLabel( const QString &entryName );
+    Q_DECL_DEPRECATED virtual QString dataDefinedPropertyLabel( const QString &entryName );
 
   signals:
     void changed();

@@ -11,7 +11,7 @@ class QgsQueryBuilder : QDialog
      * @param parent Parent widget
      * @param fl dialog flags
      */
-    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = 0,
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0,
                      Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
 
     ~QgsQueryBuilder();

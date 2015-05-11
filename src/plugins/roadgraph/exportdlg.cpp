@@ -15,6 +15,7 @@
 #include <qcombobox.h>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QUuid>
 #include <qdialogbuttonbox.h>
 #include <qmessagebox.h>
 
@@ -76,7 +77,7 @@ QgsVectorLayer* RgExportDlg::mapLayer() const
   if ( layerId == QString( "-1" ) )
   {
     // create a temporary layer
-    myLayer = new QgsVectorLayer( "LineString?crs=epsg:4326", "shortest path", "memory" );
+    myLayer = new QgsVectorLayer( QString( "LineString?crs=epsg:4326&memoryid=%1" ).arg( QUuid::createUuid().toString() ), "shortest path", "memory" );
 
     QgsVectorDataProvider *prov = myLayer->dataProvider();
     if ( prov == NULL )

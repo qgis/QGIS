@@ -163,7 +163,7 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature& feature )
       break;
 
     case QgsFeatureRequest::FilterRect:
-      if ( feature.geometry() && feature.geometry()->intersects( mFilterRect ) )
+      if ( feature.constGeometry() && feature.constGeometry()->intersects( mFilterRect ) )
         return true;
       else
         return false;

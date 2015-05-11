@@ -182,6 +182,16 @@ bool QgsRasterMatrix::changeSign()
   return oneArgumentOperation( opSIGN );
 }
 
+bool QgsRasterMatrix::log()
+{
+  return oneArgumentOperation( opLOG );
+}
+
+bool QgsRasterMatrix::log10()
+{
+  return oneArgumentOperation( opLOG10 );
+}
+
 bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
 {
   if ( !mData )
@@ -228,6 +238,13 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           break;
         case opSIGN:
           mData[i] = static_cast<float>( -value );
+          break;
+        case opLOG:
+          mData[i] = static_cast<float>( ::log( value ) );
+          break;
+        case opLOG10:
+          mData[i] = static_cast<float>( ::log10( value ) );
+          break;
       }
     }
   }
@@ -550,7 +567,7 @@ bool QgsRasterMatrix::twoArgumentOperation( TwoArgOperator op, const QgsRasterMa
 
 bool QgsRasterMatrix::testPowerValidity( double base, double power )
 {
-  if (( base == 0 && power < 0 ) || ( power < 0 && ( power - floor( power ) ) > 0 ) )
+  if (( base == 0 && power < 0 ) || ( base < 0 && ( power - floor( power ) ) > 0 ) )
   {
     return false;
   }

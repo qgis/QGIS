@@ -317,6 +317,24 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>chkEnable</tabstop>
+  <tabstop>mIntervalXEdit</tabstop>
+  <tabstop>mIntervalYEdit</tabstop>
+  <tabstop>mGridTypeComboBox</tabstop>
+  <tabstop>mLineSymbolButton</tabstop>
+  <tabstop>mMarkerSymbolButton</tabstop>
+  <tabstop>mOffsetXEdit</tabstop>
+  <tabstop>mOffsetYEdit</tabstop>
+  <tabstop>mDrawAnnotationCheckBox</tabstop>
+  <tabstop>mAnnotationDirectionComboBox</tabstop>
+  <tabstop>mAnnotationFontButton</tabstop>
+  <tabstop>mDistanceToMapFrameSpinBox</tabstop>
+  <tabstop>mCoordinatePrecisionSpinBox</tabstop>
+  <tabstop>mPbtnUpdateFromExtents</tabstop>
+  <tabstop>mPbtnUpdateFromLayer</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/images">
-        <file alias="last-hackfest.jpg">developers/essen-2012.jpg</file>
+        <file alias="last-hackfest.jpg">developers/essen-2014.jpg</file>
         <file>flags/af.png</file>
         <file>flags/ar.png</file>
         <file>flags/bg.png</file>
@@ -232,6 +232,7 @@
         <file>themes/default/mActionPanToSelected.svg</file>
         <file>themes/default/mActionPinLabels.svg</file>
         <file>themes/default/mActionProjectProperties.png</file>
+        <file>themes/default/mActionPropertiesWidget.png</file>
         <file>themes/default/mActionPropertyItem.png</file>
         <file>themes/default/mActionQgisHomePage.png</file>
         <file>themes/default/mActionRaiseItems.png</file>
@@ -469,7 +470,6 @@
         <file>themes/default/mActionHighlightFeature.svg</file>
         <file>themes/default/mActionScaleHighlightFeature.svg</file>
         <file>themes/default/mActionPanHighlightFeature.svg</file>
-        <file>flags/sr@latin.png</file>
         <file>themes/default/cadtools/construction.png</file>
         <file>themes/default/cadtools/delta.png</file>
         <file>themes/default/cadtools/cad.png</file>
@@ -479,6 +479,8 @@
         <file>themes/default/mIconSuccess.png</file>
         <file>themes/default/bubble.svg</file>
         <file>themes/default/mIconClear.png</file>
+        <file>flags/zh.png</file>
+        <file>themes/default/mIconPaintEffects.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

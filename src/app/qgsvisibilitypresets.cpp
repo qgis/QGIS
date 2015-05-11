@@ -339,52 +339,7 @@ void QgsVisibilityPresets::applyState( const QString& presetName )
   applyStateToLayerTreeGroup( QgsProject::instance()->layerTreeRoot(), mPresets[presetName] );
 
   // also make sure that the preset is up-to-date (not containing any non-existent legend items)
-  if ( mPresets[presetName] == currentState() )
-    return; // no need for update
-
-  PresetRecord& rec = mPresets[presetName];
-  foreach ( QString layerID, rec.mPerLayerCheckedLegendSymbols.keys() )
-  {
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerID ) );
-    if ( !vl || !vl->rendererV2() )
-      continue;
-
-    // first verify if the layer still has checkable legend items
-    // if not, remove the entry for the layer
-
-    if ( !vl->rendererV2()->legendSymbolItemsCheckable() )
-    {
-      rec.mPerLayerCheckedLegendSymbols.remove( layerID );
-      continue;
-    }
-
-    // now verify that all recorded legend items still exist
-    // if not, remove them from the layer's entry
-
-    QSet<QString> validRuleKeys;
-    foreach ( const QgsLegendSymbolItemV2& item, vl->rendererV2()->legendSymbolItemsV2() )
-      validRuleKeys << item.ruleKey();
-
-    QSet<QString> invalidRuleKeys;
-    foreach ( QString ruleKey, rec.mPerLayerCheckedLegendSymbols[layerID] )
-      if ( !validRuleKeys.contains( ruleKey ) )
-        invalidRuleKeys << ruleKey;
-
-    foreach ( QString invalidRuleKey, invalidRuleKeys )
-      rec.mPerLayerCheckedLegendSymbols[layerID].remove( invalidRuleKey );
-  }
-
-  // fix non-existent layer styles
-  foreach ( QString layerID, rec.mPerLayerCurrentStyle.keys() )
-  {
-    QgsMapLayer* ml = QgsMapLayerRegistry::instance()->mapLayer( layerID );
-    if ( !ml )
-      continue;
-
-    QString name = rec.mPerLayerCurrentStyle[layerID];
-    if ( !ml->styleManager()->styles().contains( name ) )
-      rec.mPerLayerCurrentStyle[layerID] = ml->styleManager()->currentStyle();
-  }
+  mPresets[presetName] = currentState();
 }
 
 void QgsVisibilityPresets::reconnectToLayersStyleManager()

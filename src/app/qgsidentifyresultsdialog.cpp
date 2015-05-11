@@ -741,11 +741,11 @@ void QgsIdentifyResultsDialog::addFeature( QgsRasterLayer *layer,
     featItem->addChild( attrItem ); // before setHtml()!
     if ( !attributes.isEmpty() )
     {
-      attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain" );
+      attrItem->setContent( attributes.begin().value().toUtf8(), currentFormat == QgsRaster::IdentifyFormatHtml ? "text/html" : "text/plain; charset=utf-8" );
     }
     else
     {
-      attrItem->setContent( tr( "No attributes." ).toUtf8(), "text/plain" );
+      attrItem->setContent( tr( "No attributes." ).toUtf8(), "text/plain; charset=utf-8" );
     }
   }
   else
@@ -1490,11 +1490,10 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   if ( !featItem )
     return;
 
-
   if ( mHighlights.contains( featItem ) )
     return;
 
-  if ( !featItem->feature().geometry() || featItem->feature().geometry()->wkbType() == QGis::WKBUnknown )
+  if ( !featItem->feature().constGeometry() || featItem->feature().constGeometry()->wkbType() == QGis::WKBUnknown )
     return;
 
   QgsHighlight *highlight = 0;
@@ -1504,7 +1503,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   }
   else
   {
-    highlight = new QgsHighlight( mCanvas, featItem->feature().geometry(), layer );
+    highlight = new QgsHighlight( mCanvas, featItem->feature().constGeometry(), layer );
     highlight->setWidth( 2 );
   }
 
@@ -1543,11 +1542,11 @@ void QgsIdentifyResultsDialog::zoomToFeature()
     return;
 
   QgsFeature feat = featItem->feature();
-  if ( !feat.geometry() )
+  if ( !feat.constGeometry() )
     return;
 
   // TODO: verify CRS for raster WMS features
-  QgsRectangle rect = mCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.geometry()->boundingBox() );
+  QgsRectangle rect = mCanvas->mapSettings().layerExtentToOutputExtent( layer, feat.constGeometry()->boundingBox() );
 
   if ( rect.isEmpty() )
   {

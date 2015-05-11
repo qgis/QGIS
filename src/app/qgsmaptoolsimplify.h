@@ -83,7 +83,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     void updateSimplificationPreview();
 
-    int vertexCount( QgsGeometry* g ) const;
+    int vertexCount( const QgsGeometry *g ) const;
 
     // data
     /** Dialog with slider to set correct tolerance value */

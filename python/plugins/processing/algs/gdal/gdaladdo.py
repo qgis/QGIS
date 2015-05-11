@@ -73,9 +73,9 @@ class gdaladdo(GdalAlgorithm):
             self.tr('Resampling method'), self.METHODS, 0))
         self.addParameter(ParameterSelection(self.FORMAT,
             self.tr('Overview format'), self.FORMATS, 0))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer'), True))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Pyramidized'), True))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         inFile = self.getParameterValue(self.INPUT)
         clearOverviews = self.getParameterValue(self.CLEAN)
         ovrFormat = self.getParameterValue(self.FORMAT)
@@ -97,5 +97,4 @@ class gdaladdo(GdalAlgorithm):
         arguments.extend(self.getParameterValue(self.LEVELS).split(' '))
         self.setOutputValue(self.OUTPUT, inFile)
 
-        GdalUtils.runGdal(['gdaladdo', GdalUtils.escapeAndJoin(arguments)],
-                          progress)
+        return ['gdaladdo', GdalUtils.escapeAndJoin(arguments)]

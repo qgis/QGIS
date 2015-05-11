@@ -97,7 +97,7 @@ class ScriptAlgorithm(GeoAlgorithm):
                 except:
                     raise WrongScriptException(
                         self.tr('Could not load script: %s\n'
-                                'Problem with line: %d', 'ScriptAlgorithm') % (self.descriptionFile, line))
+                                'Problem with line: %s', 'ScriptAlgorithm') % (self.descriptionFile, line))
             self.script += line
             line = lines.readline()
         lines.close()
@@ -230,7 +230,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         else:
             raise WrongScriptException(
                 self.tr('Could not load script: %s.\n'
-                        'Problem with line %d', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
+                        'Problem with line "%s"', 'ScriptAlgorithm') % (self.descriptionFile or '', line))
 
     def processDescriptionParameterLine(self, line):
         try:

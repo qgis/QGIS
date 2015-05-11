@@ -35,7 +35,15 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     /**Returns properties changed by the user*/
     const QgsAttributeMap& changedProperties() const { return mChangedProperties; }
 
+  signals:
+
+    /** Emitted when dialog settings are applied
+     * @note added in QGIS 2.9
+     */
+    void applied();
+
   private slots:
+    void on_buttonBox_clicked( QAbstractButton * button );
     void on_mShowLabelChkbx_toggled( bool chkd );
     void on_mAlwaysShowChkbx_toggled( bool chkd );
     void on_mMinScaleSpinBox_valueChanged( int i );
@@ -64,6 +72,9 @@ class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPro
     void disableGuiElements();
     /**Block / unblock all input element signals*/
     void blockElementSignals( bool block );
+
+    void setDataDefinedValues( const QgsPalLayerSettings &layerSettings, QgsVectorLayer* vlayer );
+    void enableDataDefinedWidgets( QgsVectorLayer* vlayer );
 
     /** Updates font when family or style is updated */
     void updateFont( const QFont& font, bool block = true );

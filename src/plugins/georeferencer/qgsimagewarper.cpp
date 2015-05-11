@@ -67,7 +67,7 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const Resampl
   }
   psWarpOptions->pfnProgress = GDALTermProgress;
   psWarpOptions->pfnTransformer = pfnTransform;
-  psWarpOptions->eResampleAlg = GDALResampleAlg( resampling );
+  psWarpOptions->eResampleAlg = toGDALResampleAlg( resampling );
 
   return true;
 }
@@ -359,4 +359,26 @@ int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const cha
 
   mWarpCanceled = false;
   return true;
+}
+
+GDALResampleAlg QgsImageWarper::toGDALResampleAlg( const QgsImageWarper::ResamplingMethod method ) const
+{
+  switch ( method )
+  {
+    case NearestNeighbour:
+      return GRA_NearestNeighbour;
+    case Bilinear:
+      return  GRA_Bilinear;
+    case Cubic:
+      return GRA_Cubic;
+    case CubicSpline:
+      return GRA_CubicSpline;
+    case Lanczos:
+      return GRA_Lanczos;
+    default:
+      return GRA_NearestNeighbour;
+  };
+
+  //avoid warning
+  return GRA_NearestNeighbour;
 }

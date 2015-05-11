@@ -262,7 +262,7 @@ void QgisAppStyleSheet::setActiveValues()
 #endif
 
   // window servers
-#ifdef Q_OS_UNIX
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
   mX11WS = true;
 #else
   mX11WS = false;

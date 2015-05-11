@@ -330,7 +330,11 @@
   <tabstop>spinCandPoint</tabstop>
   <tabstop>spinCandLine</tabstop>
   <tabstop>spinCandPolygon</tabstop>
+  <tabstop>mDrawOutlinesChkBox</tabstop>
+  <tabstop>chkShowPartialsLabels</tabstop>
+  <tabstop>chkShowAllLabels</tabstop>
   <tabstop>chkShowCandidates</tabstop>
+  <tabstop>mShadowDebugRectChkBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

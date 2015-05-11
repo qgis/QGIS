@@ -63,6 +63,9 @@ class RAlgorithmProvider(AlgorithmProvider):
                 RUtils.R_FOLDER, self.tr('R folder'), RUtils.RFolder()))
             ProcessingConfig.addSetting(Setting(
                 self.getDescription(),
+                RUtils.R_LIBS_USER, self.tr('R user library folder'), RUtils.RLibs()))
+            ProcessingConfig.addSetting(Setting(
+                self.getDescription(),
                 RUtils.R_USE64, self.tr('Use 64 bit version'), False))
 
     def unload(self):
@@ -70,6 +73,7 @@ class RAlgorithmProvider(AlgorithmProvider):
         ProcessingConfig.removeSetting(RUtils.RSCRIPTS_FOLDER)
         if isWindows():
             ProcessingConfig.removeSetting(RUtils.R_FOLDER)
+            ProcessingConfig.removeSetting(RUtils.R_LIBS_USER)
             ProcessingConfig.removeSetting(RUtils.R_USE64)
 
     def getIcon(self):

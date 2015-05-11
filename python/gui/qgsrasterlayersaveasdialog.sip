@@ -25,7 +25,7 @@ class QgsRasterLayerSaveAsDialog : QDialog
     QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
                                 QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
                                 const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-                                QWidget* parent = 0, Qt::WindowFlags f = 0 );
+                                QWidget* parent /TransferThis/ = 0, Qt::WindowFlags f = 0 );
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;

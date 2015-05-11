@@ -954,6 +954,24 @@ class TestQgsVectorLayer(TestCase):
         assert self.blendModeTest == QPainter.CompositionMode_Screen
         assert layer.featureBlendMode() == QPainter.CompositionMode_Screen
 
+    def test_ExpressionField( self ):
+        layer = createLayerWithOnePoint()
+
+        cnt = layer.pendingFields().count()
+
+        idx = layer.addExpressionField( '5', QgsField( 'test', QVariant.LongLong ) )
+
+        assert( layer.getFeatures().next()[idx] == 5 )
+        assert( layer.pendingFields().count() == cnt + 1 )
+
+        layer.updateExpressionField( idx, '9' )
+
+        assert( layer.getFeatures().next()[idx] == 9 )
+
+        layer.removeExpressionField( idx )
+
+        assert( layer.pendingFields().count() == cnt )
+
     def onLayerTransparencyChanged( self, tr ):
         self.transparencyTest = tr
 

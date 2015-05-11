@@ -20,7 +20,7 @@ QgsRasterCalcNode::QgsRasterCalcNode()
     , mLeft( 0 )
     , mRight( 0 )
     , mNumber( 0 )
-    , mOperator( opPLUS ) //not used
+    , mOperator( opNONE )
 {
 }
 
@@ -29,7 +29,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( double number )
     , mLeft( 0 )
     , mRight( 0 )
     , mNumber( number )
-    , mOperator( opPLUS ) //not used
+    , mOperator( opNONE )
 {
 }
 
@@ -48,8 +48,10 @@ QgsRasterCalcNode::QgsRasterCalcNode( const QString& rasterName )
     , mRight( 0 )
     , mNumber( 0 )
     , mRasterName( rasterName )
-    , mOperator( opPLUS ) //not used
+    , mOperator( opNONE )
 {
+  if ( mRasterName.startsWith( '"' ) && mRasterName.endsWith( '"' ) )
+    mRasterName = mRasterName.mid( 1, mRasterName.size() - 2 );
 }
 
 QgsRasterCalcNode::~QgsRasterCalcNode()
@@ -160,6 +162,12 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterMatrix*>& rasterData, 
         break;
       case opSIGN:
         leftMatrix.changeSign();
+        break;
+      case opLOG:
+        leftMatrix.log();
+        break;
+      case opLOG10:
+        leftMatrix.log10();
         break;
       default:
         return false;

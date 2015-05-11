@@ -40,6 +40,12 @@ QgsPluginLayer* QgsPluginLayerType::createLayer()
   return NULL;
 }
 
+QgsPluginLayer* QgsPluginLayerType::createLayer( const QString& uri )
+{
+  Q_UNUSED( uri );
+  return NULL;
+}
+
 bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer *layer )
 {
   Q_UNUSED( layer );
@@ -121,7 +127,7 @@ QgsPluginLayerType* QgsPluginLayerRegistry::pluginLayerType( QString typeName )
 }
 
 
-QgsPluginLayer* QgsPluginLayerRegistry::createLayer( QString typeName )
+QgsPluginLayer* QgsPluginLayerRegistry::createLayer( QString typeName, const QString& uri )
 {
   QgsPluginLayerType* type = pluginLayerType( typeName );
   if ( !type )
@@ -130,5 +136,8 @@ QgsPluginLayer* QgsPluginLayerRegistry::createLayer( QString typeName )
     return NULL;
   }
 
-  return type->createLayer();
+  if ( !uri.isEmpty() )
+    return type->createLayer( uri );
+  else
+    return type->createLayer();
 }

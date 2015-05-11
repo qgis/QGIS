@@ -254,7 +254,7 @@ bool  QgsDistanceArea::setEllipsoid( double semiMajor, double semiMinor )
   return true;
 }
 
-double QgsDistanceArea::measure( QgsGeometry* geometry )
+double QgsDistanceArea::measure( const QgsGeometry *geometry )
 {
   if ( !geometry )
     return 0.0;
@@ -278,6 +278,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   {
     case QGis::WKBLineString25D:
       hasZptr = true;
+      //intentional fall-through
     case QGis::WKBLineString:
       measureLine( wkb, &res, hasZptr );
       QgsDebugMsg( "returning " + QString::number( res ) );
@@ -285,6 +286,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
 
     case QGis::WKBMultiLineString25D:
       hasZptr = true;
+      //intentional fall-through
     case QGis::WKBMultiLineString:
       wkbPtr >> count;
       for ( i = 0; i < count; i++ )
@@ -297,6 +299,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
 
     case QGis::WKBPolygon25D:
       hasZptr = true;
+      //intentional fall-through
     case QGis::WKBPolygon:
       measurePolygon( wkb, &res, 0, hasZptr );
       QgsDebugMsg( "returning " + QString::number( res ) );
@@ -304,6 +307,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
 
     case QGis::WKBMultiPolygon25D:
       hasZptr = true;
+      //intentional fall-through
     case QGis::WKBMultiPolygon:
       wkbPtr >> count;
       for ( i = 0; i < count; i++ )
@@ -325,7 +329,7 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
   }
 }
 
-double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
+double QgsDistanceArea::measurePerimeter( const QgsGeometry* geometry )
 {
   if ( !geometry )
     return 0.0;
@@ -354,6 +358,7 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
 
     case QGis::WKBPolygon25D:
       hasZptr = true;
+      //intentional fall-through
     case QGis::WKBPolygon:
       measurePolygon( wkb, 0, &res, hasZptr );
       QgsDebugMsg( "returning " + QString::number( res ) );
@@ -361,6 +366,7 @@ double QgsDistanceArea::measurePerimeter( QgsGeometry* geometry )
 
     case QGis::WKBMultiPolygon25D:
       hasZptr = true;
+      //intentional fall-through
     case QGis::WKBMultiPolygon:
       wkbPtr >> count;
       for ( i = 0; i < count; i++ )
@@ -1017,10 +1023,10 @@ QString QgsDistanceArea::textUnit( double value, int decimals, QGis::UnitType u,
       break;
     case QGis::UnknownUnit:
       unitLabel = QObject::tr( " unknown" );
+      //intentional fall-through
     default:
       QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( u ) );
-  };
-
+  }
 
   return QLocale::system().toString( value, 'f', decimals ) + unitLabel;
 }

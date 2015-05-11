@@ -81,8 +81,8 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 %TypeHeaderCode
 #include <qgsgraduatedsymbolrendererv2.h>
 %End
-
   public:
+
     QgsGraduatedSymbolRendererV2( QString attrName = QString(), QgsRangeList ranges = QgsRangeList() );
 
     virtual ~QgsGraduatedSymbolRendererV2();
@@ -152,10 +152,12 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
     //! @param nclasses The number of classes to calculate (approximate for some modes)
     //! @note Added in 2.6
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+
     //! Evaluates the data expression and returns the list of values from the layer
     //! @param vlayer  The layer for which to evaluate the expression
     //! @note Added in 2.6
-    QList<double> getDataValues( QgsVectorLayer *vlayer );
+    //! @deprecated use QgsVectorLayer::getDoubleValues instead
+    QList<double> getDataValues( QgsVectorLayer *vlayer ) /Deprecated/;
 
     //! Return the label format used to generate default classification labels
     //! @note Added in 2.6
@@ -179,7 +181,7 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
       QgsSymbolV2* symbol /Transfer/,
       QgsVectorColorRampV2* ramp /Transfer/,
       bool inverted = false,
-      QgsRendererRangeV2LabelFormat labelFormat=QgsRendererRangeV2LabelFormat()
+      QgsRendererRangeV2LabelFormat legendFormat = QgsRendererRangeV2LabelFormat()
     );
 
     //! create renderer from XML element
@@ -211,6 +213,29 @@ class QgsGraduatedSymbolRendererV2 : QgsFeatureRendererV2
 
     /** Update all the symbols but leave breaks and colors. */
     void updateSymbols( QgsSymbolV2* sym /Transfer/ );
+
+    //! set varying symbol size for classes
+    //! @note the classes must already be set so that symbols exist
+    //! @note added in 2.10
+    void setSymbolSizes( double minSize, double maxSize );
+
+    //! return the min symbol size when graduated by size
+    //! @note added in 2.10
+    double minSymbolSize() const;
+
+    //! return the max symbol size when graduated by size
+    //! @note added in 2.10
+    double maxSymbolSize() const;
+
+    enum GraduatedMethod {GraduatedColor = 0, GraduatedSize = 1 };
+
+    //! return the method used for graduation (either size or color)
+    //! @note added in 2.10
+    GraduatedMethod graduatedMethod() const;
+
+    //! set the method used for graduation (either size or color)
+    //! @note added in 2.10
+    void setGraduatedMethod( GraduatedMethod method );
 
     void setRotationField( QString fieldOrExpression );
     QString rotationField() const;

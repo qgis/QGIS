@@ -30,9 +30,29 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-import PyQt4.pyqtconfig
+try:
+    import PyQt4.pyqtconfig
+    pyqtcfg = PyQt4.pyqtconfig.Configuration()
+except ImportError:
+    import PyQt4.QtCore
+    import sipconfig # won't work for SIP v5
+    import os.path
+    cfg = sipconfig.Configuration()
+    sip_dir = cfg.default_sip_dir
+    for p in (os.path.join(sip_dir, "PyQt4"), sip_dir):
+        if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
+            sip_dir = p
+            break
+    cfg = {
+        'pyqt_version': PyQt4.QtCore.PYQT_VERSION,
+        'pyqt_version_str': PyQt4.QtCore.PYQT_VERSION_STR,
+        'pyqt_sip_flags': PyQt4.QtCore.PYQT_CONFIGURATION['sip_flags'],
+        'pyqt_mod_dir': cfg.default_mod_dir,
+        'pyqt_sip_dir': sip_dir,
+        'pyqt_bin_dir': cfg.default_bin_dir,
+    }
+    pyqtcfg = sipconfig.Configuration([cfg])
 
-pyqtcfg = PyQt4.pyqtconfig.Configuration()
 print("pyqt_version:%06.0x" % pyqtcfg.pyqt_version)
 print("pyqt_version_num:%d" % pyqtcfg.pyqt_version)
 print("pyqt_version_str:%s" % pyqtcfg.pyqt_version_str)

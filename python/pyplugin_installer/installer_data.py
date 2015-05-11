@@ -618,9 +618,9 @@ class Plugins(QObject):
       elif testLoad:
         # only testLoad if compatible version
         try:
-          exec "import %s" % key in globals(), locals()
-          exec "reload (%s)" % key in globals(), locals()
-          exec "%s.classFactory(iface)" % key in globals(), locals()
+          pkg = __import__(key)
+          reload(pkg)
+          pkg.classFactory(iface)
         except Exception, e:
           error = "broken"
           errorDetails = unicode(e.args[0])

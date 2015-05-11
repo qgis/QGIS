@@ -29,131 +29,136 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 from .db_model import DBModel
 from .db_plugins.plugin import DBPlugin, Schema, Table
 
+
 class DBTree(QTreeView):
-  def __init__(self, mainWindow):
-    QTreeView.__init__(self, mainWindow)
-    self.mainWindow = mainWindow
+    def __init__(self, mainWindow):
+        QTreeView.__init__(self, mainWindow)
+        self.mainWindow = mainWindow
 
-    self.setModel( DBModel(self) )
-    self.setHeaderHidden(True)
-    self.setEditTriggers(QTreeView.EditKeyPressed|QTreeView.SelectedClicked)
+        self.setModel(DBModel(self))
+        self.setHeaderHidden(True)
+        self.setEditTriggers(QTreeView.EditKeyPressed | QTreeView.SelectedClicked)
 
-    self.setDragEnabled(True)
-    self.setAcceptDrops(True)
-    self.setDropIndicatorShown(True)
+        self.setDragEnabled(True)
+        self.setAcceptDrops(True)
+        self.setDropIndicatorShown(True)
 
-    self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"), self.currentItemChanged)
-    self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
-    self.connect(self, SIGNAL("collapsed(const QModelIndex&)"), self.itemChanged)
-    self.connect(self.model(), SIGNAL("dataChanged(const QModelIndex&, const QModelIndex&)"), self.modelDataChanged)
-    self.connect(self.model(), SIGNAL("notPopulated"), self.collapse)
+        self.connect(self.selectionModel(), SIGNAL("currentChanged(const QModelIndex&, const QModelIndex&)"),
+                     self.currentItemChanged)
+        self.connect(self, SIGNAL("expanded(const QModelIndex&)"), self.itemChanged)
+        self.connect(self, SIGNAL("collapsed(const QModelIndex&)"), self.itemChanged)
+        self.connect(self.model(), SIGNAL("dataChanged(const QModelIndex&, const QModelIndex&)"), self.modelDataChanged)
+        self.connect(self.model(), SIGNAL("notPopulated"), self.collapse)
 
-  def refreshItem(self, item=None):
-    if item is None:
-      item = self.currentItem()
-      if item is None: return
-    self.model().refreshItem(item)
+    def refreshItem(self, item=None):
+        if item is None:
+            item = self.currentItem()
+            if item is None: return
+        self.model().refreshItem(item)
 
-  def showSystemTables(self, show):
-    pass
+    def showSystemTables(self, show):
+        pass
 
-  def currentItem(self):
-    indexes = self.selectedIndexes()
-    if len(indexes) <= 0:
-      return
-    return self.model().getItem(indexes[0])
-
-
-  def currentDatabase(self):
-    item = self.currentItem()
-    if item is None: return
-
-    if isinstance(item, (DBPlugin, Schema, Table)):
-      return item.database()
-    return None
-
-  def currentSchema(self):
-    item = self.currentItem()
-    if item is None: return
-
-    if isinstance(item, (Schema, Table)):
-      return item.schema()
-    return None
-
-  def currentTable(self):
-    item = self.currentItem()
-    if item is None: return
-
-    if isinstance(item, Table):
-      return item
-    return None
+    def currentItem(self):
+        indexes = self.selectedIndexes()
+        if len(indexes) <= 0:
+            return
+        return self.model().getItem(indexes[0])
 
 
-  def itemChanged(self, index):
-    self.setCurrentIndex(index)
-    self.emit( SIGNAL('selectedItemChanged'), self.currentItem() )
+    def currentDatabase(self):
+        item = self.currentItem()
+        if item is None: return
 
-  def modelDataChanged(self, indexFrom, indexTo):
-    self.itemChanged(indexTo)
+        if isinstance(item, (DBPlugin, Schema, Table)):
+            return item.database()
+        return None
 
-  def currentItemChanged(self, current, previous):
-    self.itemChanged(current)
+    def currentSchema(self):
+        item = self.currentItem()
+        if item is None: return
 
-  def contextMenuEvent(self, ev):
-    index = self.indexAt( ev.pos() )
-    if not index.isValid():
-      return
+        if isinstance(item, (Schema, Table)):
+            return item.schema()
+        return None
 
-    if index != self.currentIndex():
-      self.itemChanged(index)
+    def currentTable(self):
+        item = self.currentItem()
+        if item is None: return
 
-    item = self.currentItem()
+        if isinstance(item, Table):
+            return item
+        return None
 
-    menu = QMenu(self)
 
-    if isinstance(item, (Table, Schema)):
-      menu.addAction(self.tr("Rename"), self.rename)
-      menu.addAction(self.tr("Delete"), self.delete)
+    def itemChanged(self, index):
+        self.setCurrentIndex(index)
+        self.emit(SIGNAL('selectedItemChanged'), self.currentItem())
 
-      if isinstance(item, Table):
-        menu.addSeparator()
-        menu.addAction(self.tr("Add to canvas"), self.addLayer)
+    def modelDataChanged(self, indexFrom, indexTo):
+        self.itemChanged(indexTo)
 
-    elif isinstance(item, DBPlugin) and item.database() is not None:
-      menu.addAction(self.tr("Re-connect"), self.reconnect)
+    def currentItemChanged(self, current, previous):
+        self.itemChanged(current)
 
-    if not menu.isEmpty():
-      menu.exec_(ev.globalPos())
+    def contextMenuEvent(self, ev):
+        index = self.indexAt(ev.pos())
+        if not index.isValid():
+            return
 
-    menu.deleteLater()
+        if index != self.currentIndex():
+            self.itemChanged(index)
 
-  def rename(self):
-    index = self.currentIndex()
-    item = self.model().getItem(index)
-    if isinstance(item, (Table, Schema)):
-      self.edit( index )
+        item = self.currentItem()
 
-  def delete(self):
-    item = self.currentItem()
-    if isinstance(item, (Table, Schema)):
-      self.mainWindow.invokeCallback(item.database().deleteActionSlot)
+        menu = QMenu(self)
 
-  def addLayer(self):
-    table = self.currentTable()
-    if table is not None:
-      layer = table.toMapLayer()
-      layers = QgsMapLayerRegistry.instance().addMapLayers([layer])
-      if len(layers) != 1:
-        QgsMessageLog.instance().logMessage( self.tr( "%1 is an invalid layer - not loaded" ).replace( "%1", layer.publicSource() ) )
-        msgLabel = QLabel( self.tr( "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info." ).replace( "%1", layer.publicSource() ), self.mainWindow.infoBar )
-        msgLabel.setWordWrap( True )
-        self.connect( msgLabel, SIGNAL("linkActivated( QString )" ),
-                      self.mainWindow.iface.mainWindow().findChild( QWidget, "MessageLog" ), SLOT( "show()" ) )
-        self.connect( msgLabel, SIGNAL("linkActivated( QString )" ),
-                      self.mainWindow.iface.mainWindow(), SLOT( "raise()" ) )
-        self.mainWindow.infoBar.pushItem( QgsMessageBarItem( msgLabel, QgsMessageBar.WARNING ) )
+        if isinstance(item, (Table, Schema)):
+            menu.addAction(self.tr("Rename"), self.rename)
+            menu.addAction(self.tr("Delete"), self.delete)
 
-  def reconnect(self):
-    db = self.currentDatabase()
-    if db is not None:
-      self.mainWindow.invokeCallback(db.reconnectActionSlot)
+            if isinstance(item, Table):
+                menu.addSeparator()
+                menu.addAction(self.tr("Add to canvas"), self.addLayer)
+
+        elif isinstance(item, DBPlugin) and item.database() is not None:
+            menu.addAction(self.tr("Re-connect"), self.reconnect)
+
+        if not menu.isEmpty():
+            menu.exec_(ev.globalPos())
+
+        menu.deleteLater()
+
+    def rename(self):
+        index = self.currentIndex()
+        item = self.model().getItem(index)
+        if isinstance(item, (Table, Schema)):
+            self.edit(index)
+
+    def delete(self):
+        item = self.currentItem()
+        if isinstance(item, (Table, Schema)):
+            self.mainWindow.invokeCallback(item.database().deleteActionSlot)
+
+    def addLayer(self):
+        table = self.currentTable()
+        if table is not None:
+            layer = table.toMapLayer()
+            layers = QgsMapLayerRegistry.instance().addMapLayers([layer])
+            if len(layers) != 1:
+                QgsMessageLog.instance().logMessage(
+                    self.tr("%1 is an invalid layer - not loaded").replace("%1", layer.publicSource()))
+                msgLabel = QLabel(self.tr(
+                    "%1 is an invalid layer and cannot be loaded. Please check the <a href=\"#messageLog\">message log</a> for further info.").replace(
+                    "%1", layer.publicSource()), self.mainWindow.infoBar)
+                msgLabel.setWordWrap(True)
+                self.connect(msgLabel, SIGNAL("linkActivated( QString )"),
+                             self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog"), SLOT("show()"))
+                self.connect(msgLabel, SIGNAL("linkActivated( QString )"),
+                             self.mainWindow.iface.mainWindow(), SLOT("raise()"))
+                self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, QgsMessageBar.WARNING))
+
+    def reconnect(self):
+        db = self.currentDatabase()
+        if db is not None:
+            self.mainWindow.invokeCallback(db.reconnectActionSlot)

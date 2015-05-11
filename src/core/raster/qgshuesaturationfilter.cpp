@@ -23,15 +23,15 @@
 
 
 QgsHueSaturationFilter::QgsHueSaturationFilter( QgsRasterInterface* input )
-    : QgsRasterInterface( input ),
-    mSaturation( 0 ),
-    mSaturationScale( 1 ),
-    mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff ),
-    mColorizeOn( false ),
-    mColorizeColor( QColor::fromRgb( 255, 128, 128 ) ),
-    mColorizeH( 0 ),
-    mColorizeS( 50 ),
-    mColorizeStrength( 100 )
+    : QgsRasterInterface( input )
+    , mSaturation( 0 )
+    , mSaturationScale( 1 )
+    , mGrayscaleMode( QgsHueSaturationFilter::GrayscaleOff )
+    , mColorizeOn( false )
+    , mColorizeColor( QColor::fromRgb( 255, 128, 128 ) )
+    , mColorizeH( 0 )
+    , mColorizeS( 50 )
+    , mColorizeStrength( 100 )
 {
 }
 

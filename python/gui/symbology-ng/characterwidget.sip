@@ -4,7 +4,7 @@ class CharacterWidget : QWidget
 #include <characterwidget.h>
 %End
   public:
-    CharacterWidget( QWidget *parent = 0 );
+    CharacterWidget( QWidget *parent /TransferThis/ = 0 );
     QSize sizeHint() const;
 
     int getColumns() const;

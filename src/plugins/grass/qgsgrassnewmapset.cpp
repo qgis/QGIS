@@ -1263,7 +1263,8 @@ void QgsGrassNewMapset::createMapset()
 
     // TODO: add QgsGrass::setLocation or G_make_location with
     //       database path
-    QgsGrass::activeMode(); // because it calls private QgsGrass::init()
+    ( void )QgsGrass::activeMode(); // because it calls private QgsGrass::init()
+
 #if defined(WIN32)
     G__setenv(( char * ) "GISDBASE", QgsGrass::shortPath( mDatabaseLineEdit->text() ).toUtf8().data() );
 #else
@@ -1274,7 +1275,11 @@ void QgsGrassNewMapset::createMapset()
 
     try
     {
+#if GRASS_VERSION_MAJOR < 7
       ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits, stdout );
+#else
+      ret = G_make_location( location.toUtf8().data(), &mCellHead, mProjInfo, mProjUnits );
+#endif
     }
     catch ( QgsGrass::Exception &e )
     {

@@ -29,9 +29,10 @@
 #include "qgslonglongvalidator.h"
 #include "qgsfield.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QString dateFormat )
+QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QString defaultValue, QString dateFormat )
     : QValidator( parent )
     , mField( field )
+    , mDefaultValue( defaultValue )
     , mDateFormat( dateFormat )
 {
   switch ( mField.type() )
@@ -105,6 +106,9 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
     return Acceptable;
   }
 
+  if ( s == mDefaultValue )
+    return Acceptable;
+
   // delegate to the child validator if any
   if ( mValidator )
   {
@@ -115,10 +119,10 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   {
     // allow to enter the NULL representation, which might be
     // longer than the actual field
-    if ( mNullValue.size() > 0 &&
-         s.size() > 0 &&
-         s.size() < mNullValue.size() &&
-         s == mNullValue.left( s.size() ) )
+    if ( mNullValue.size() > 0 && s.size() > 0 && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
+      return Intermediate;
+
+    if ( mDefaultValue.size() > 0 && s.size() > 0 && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
       return Intermediate;
 
     if ( s == mNullValue )
@@ -146,7 +150,7 @@ void QgsFieldValidator::fixup( QString &s ) const
   {
     mValidator->fixup( s );
   }
-  else if ( mField.type() == QVariant::String && mField.length() > 0 && s.size() > mField.length() )
+  else if ( mField.type() == QVariant::String && mField.length() > 0 && s.size() > mField.length() && s != mDefaultValue )
   {
     // if the value is longer, this must be a partial NULL representation
     s = mNullValue;

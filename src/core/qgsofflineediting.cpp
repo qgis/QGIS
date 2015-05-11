@@ -562,7 +562,9 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
         QList<QgsMapLayer *>() << newLayer );
 
       // copy style
+      Q_NOWARN_DEPRECATED_PUSH
       bool hasLabels = layer->hasLabelsEnabled();
+      Q_NOWARN_DEPRECATED_POP
       if ( !hasLabels )
       {
         // NOTE: copy symbology before adding the layer so it is displayed correctly
@@ -580,11 +582,14 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
           int index = parentTreeGroup->children().indexOf( layerTreeLayer );
           // Move the new layer from the root group to the new group
           QgsLayerTreeLayer* newLayerTreeLayer = layerTreeRoot->findLayer( newLayer->id() );
-          QgsLayerTreeNode* newLayerTreeLayerClone = newLayerTreeLayer->clone();
-          QgsLayerTreeGroup* grp = qobject_cast<QgsLayerTreeGroup*>( newLayerTreeLayer->parent() );
-          parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
-          if ( grp )
-            grp->removeChildNode( newLayerTreeLayer );
+          if ( newLayerTreeLayer )
+          {
+            QgsLayerTreeNode* newLayerTreeLayerClone = newLayerTreeLayer->clone();
+            QgsLayerTreeGroup* grp = qobject_cast<QgsLayerTreeGroup*>( newLayerTreeLayer->parent() );
+            parentTreeGroup->insertChildNode( index, newLayerTreeLayerClone );
+            if ( grp )
+              grp->removeChildNode( newLayerTreeLayer );
+          }
         }
       }
 
@@ -599,7 +604,7 @@ QgsVectorLayer* QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlit
       QgsFeature f;
 
       // NOTE: force feature recount for PostGIS layer, else only visible features are counted, before iterating over all features (WORKAROUND)
-      layer->setSubsetString( "" );
+      layer->setSubsetString( layer->subsetString() );
 
       QgsFeatureIterator fit = layer->dataProvider()->getFeatures();
 

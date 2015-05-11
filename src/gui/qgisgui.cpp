@@ -15,11 +15,11 @@
 #include "qgisgui.h"
 
 #include <QSettings>
-#include <QObject> //for tr
 #include <QImageWriter>
 #include "qgsencodingfiledialog.h"
 #include "qgslogger.h"
-#include <memory> //for auto_ptr
+
+#include <QFontDialog>
 
 
 namespace QgisGui
@@ -137,6 +137,7 @@ namespace QgisGui
       settings.setValue( "/UI/lastSaveAsImageDir", QFileInfo( outputFileName ).absolutePath() );
     }
 #else
+
     //create a file dialog using the filter list generated above
     QScopedPointer<QFileDialog> fileDialog( new QFileDialog( theParent, theMessage, initialPath, QStringList( filterMap.keys() ).join( ";;" ) ) );
 
@@ -145,9 +146,9 @@ namespace QgisGui
     fileDialog->setAcceptMode( QFileDialog::AcceptSave );
     fileDialog->setConfirmOverwrite( true );
 
-    if ( !lastUsedFilter.isEmpty() )     // set the filter to the last one used
+    if ( !selectedFilter.isEmpty() )     // set the filter to the last one used
     {
-      fileDialog->selectNameFilter( lastUsedFilter );
+      fileDialog->selectNameFilter( selectedFilter );
     }
 
     //prompt the user for a fileName
@@ -185,6 +186,19 @@ namespace QgisGui
     QString longName = format.toUpper() + " format";
     QString glob = "*." + format;
     return createFileFilter_( longName, glob );
+  }
+
+  QFont getFont( bool &ok, const QFont &initial, const QString &title )
+  {
+    // parent is intentionally not set to 'this' as
+    // that would make it follow the style sheet font
+    // see also #12233 and #4937
+#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
+    // Native Mac dialog works only for Qt Carbon
+    return QFontDialog::getFont( &ok, initial, 0, title, QFontDialog::DontUseNativeDialog );
+#else
+    return QFontDialog::getFont( &ok, initial, 0, title );
+#endif
   }
 
 } // end of QgisGui namespace

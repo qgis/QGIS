@@ -6,7 +6,7 @@ class QgsMapOverviewCanvas : QWidget
 %End
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL );
+    QgsMapOverviewCanvas( QWidget * parent /TransferThis/ = 0, QgsMapCanvas* mapCanvas = NULL );
 
     ~QgsMapOverviewCanvas();
 

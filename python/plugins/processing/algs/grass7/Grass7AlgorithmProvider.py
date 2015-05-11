@@ -93,7 +93,7 @@ class Grass7AlgorithmProvider(AlgorithmProvider):
         self.algs = self.preloadedAlgs
 
     def getDescription(self):
-        return 'GRASS GIS 7 commands'
+        return self.tr('GRASS GIS 7 commands')
 
     def getName(self):
         return 'grass70'

@@ -27,7 +27,6 @@
 #include "qgsmaprenderer.h"
 #include "qgsstylev2.h"
 #include "qgssymbolv2.h"
-//#include "qgssymbolv2propertiesdialog.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsvectorlayer.h"
@@ -39,8 +38,8 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsvisibilitypresets.h"
-#include <QColorDialog>
-#include <QFontDialog>
+#include "qgisgui.h"
+
 #include <QMessageBox>
 
 QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
@@ -48,8 +47,6 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
     , mComposerMap( composerMap )
 {
   setupUi( this );
-
-  mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerMap );
@@ -135,6 +132,8 @@ QgsComposerMapWidget::QgsComposerMapWidget( QgsComposerMap* composerMap )
 
   if ( composerMap )
   {
+    mLabel->setText( tr( "Map %1" ).arg( composerMap->id() ) );
+
     connect( composerMap, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
 
     QgsAtlasComposition* atlas = atlasComposition();
@@ -1556,7 +1555,7 @@ void QgsComposerMapWidget::on_mGridLineStyleButton_clicked()
   }
 
   QgsLineSymbolV2* newSymbol = dynamic_cast<QgsLineSymbolV2*>( grid->lineSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -1581,7 +1580,7 @@ void QgsComposerMapWidget::on_mGridMarkerStyleButton_clicked()
   }
 
   QgsMarkerSymbolV2* newSymbol = dynamic_cast<QgsMarkerSymbolV2*>( grid->markerSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {
@@ -2086,12 +2085,7 @@ void QgsComposerMapWidget::on_mAnnotationFontButton_clicked()
   }
 
   bool ok;
-#if defined(Q_OS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
-  // Native Mac dialog works only for Qt Carbon
-  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-  QFont newFont = QFontDialog::getFont( &ok, grid->annotationFont() );
-#endif
+  QFont newFont = QgisGui::getFont( ok, grid->annotationFont() );
   if ( ok )
   {
     mComposerMap->beginCommand( tr( "Annotation font changed" ) );
@@ -2561,7 +2555,7 @@ void QgsComposerMapWidget::on_mOverviewFrameStyleButton_clicked()
   }
 
   QgsFillSymbolV2* newSymbol = dynamic_cast<QgsFillSymbolV2*>( overview->frameSymbol()->clone() );
-  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0 );
+  QgsSymbolV2SelectorDialog d( newSymbol, QgsStyleV2::defaultStyle(), 0, this );
 
   if ( d.exec() == QDialog::Accepted )
   {

@@ -1,0 +1,7 @@
+Stream Definition By Threshold (multifile)
+threshold
+Stream Network Analysis tools
+ParameterFile|-ssa|Accumulated Stream Source Grid|True|False
+ParameterNumber|-thresh|Threshold|1|None|100
+ParameterFile|-mask|Mask Grid|True|True
+OutputDirectory|-src|Stream Raster Grid

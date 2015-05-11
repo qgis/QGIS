@@ -48,9 +48,9 @@ class rgb2pct(GdalAlgorithm):
             self.tr('Input layer'), False))
         self.addParameter(ParameterNumber(rgb2pct.NCOLORS,
             self.tr('Number of colors'), 1, None, 2))
-        self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(rgb2pct.OUTPUT, self.tr('RGB to PCT')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         arguments = []
         arguments.append('-n')
         arguments.append(str(self.getParameterValue(rgb2pct.NCOLORS)))
@@ -66,4 +66,4 @@ class rgb2pct(GdalAlgorithm):
         else:
             commands = ['rgb2pct.py', GdalUtils.escapeAndJoin(arguments)]
 
-        GdalUtils.runGdal(commands, progress)
+        return commands

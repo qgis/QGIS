@@ -197,6 +197,6 @@ void QgsPgNewConnection::testConnection()
   {
     QMessageBox::information( this,
                               tr( "Test connection" ),
-                              tr( "Connection failed - Check settings and try again.\n\n" ) );
+                              tr( "Connection failed - consult message log for details.\n\n" ) );
   }
 }

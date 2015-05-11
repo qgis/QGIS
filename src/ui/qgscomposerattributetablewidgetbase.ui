@@ -47,7 +47,7 @@
         <x>0</x>
         <y>0</y>
         <width>392</width>
-        <height>1202</height>
+        <height>1192</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -156,7 +156,7 @@
             <property name="maximum">
              <number>99999</number>
             </property>
-            <property name="showClearButton">
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -267,7 +267,10 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>
@@ -407,7 +410,10 @@
             <property name="suffix">
              <string> mm</string>
             </property>
-            <property name="showClearButton">
+            <property name="singleStep">
+             <double>0.100000000000000</double>
+            </property>
+            <property name="showClearButton" stdset="0">
              <bool>false</bool>
             </property>
            </widget>

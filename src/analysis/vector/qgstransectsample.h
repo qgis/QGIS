@@ -71,7 +71,7 @@ class ANALYSIS_EXPORT QgsTransectSample
         @param clippedBaseline base line geometry clipped to the stratum
         @param tolerance buffer distance (in layer units)
         @return clipped buffer line or 0 in case of error*/
-    static QgsGeometry* clipBufferLine( QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance );
+    static QgsGeometry* clipBufferLine( const QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance );
 };
 
 #endif // QGSTRANSECTSAMPLE_H

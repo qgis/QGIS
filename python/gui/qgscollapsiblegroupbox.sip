@@ -1,7 +1,7 @@
 class QgsGroupBoxCollapseButton : QToolButton
 {
   public:
-    QgsGroupBoxCollapseButton( QWidget *parent = 0 );
+    QgsGroupBoxCollapseButton( QWidget *parent /TransferThis/ = 0 );
 
     ~QgsGroupBoxCollapseButton();
 
@@ -31,8 +31,8 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 #include <qgscollapsiblegroupbox.h>
 %End
   public:
-    QgsCollapsibleGroupBoxBasic( QWidget *parent = 0 );
-    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent = 0 );
+    QgsCollapsibleGroupBoxBasic( QWidget *parent /TransferThis/ = 0 );
+    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent /TransferThis/ = 0 );
     ~QgsCollapsibleGroupBoxBasic();
 
     bool isCollapsed() const;
@@ -89,8 +89,8 @@ class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 #include <qgscollapsiblegroupbox.h>
 %End
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = 0, QSettings* settings = 0 );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( QWidget *parent /TransferThis/ = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent /TransferThis/ = 0, QSettings* settings = 0 );
     ~QgsCollapsibleGroupBox();
 
     // set custom QSettings pointer if group box was already created from QtDesigner promotion

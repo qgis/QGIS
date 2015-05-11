@@ -22,15 +22,14 @@
 #include <QList>
 #include <QDomDocument>
 
-#include "qgsfield.h"
-#include "qgsdistancearea.h"
-
 class QgsFeature;
 class QgsGeometry;
 class QgsOgcUtils;
 class QgsVectorLayer;
 class QgsVectorDataProvider;
-
+class QgsField;
+class QgsFields;
+class QgsDistanceArea;
 class QDomElement;
 
 /**
@@ -155,6 +154,11 @@ class CORE_EXPORT QgsExpression
     //! Check whether a special column exists
     //! @note added in 2.2
     static bool hasSpecialColumn( const QString& name );
+
+    /** Checks whether an expression consists only of a single field reference
+     * @note added in 2.9
+     */
+    bool isField() const { return rootNode() && dynamic_cast<const NodeColumnRef*>( rootNode() ) ;}
 
     static bool isValid( const QString& text, const QgsFields& fields, QString &errorMessage );
 
@@ -291,6 +295,13 @@ class CORE_EXPORT QgsExpression
         /** Does this function use a geometry object. */
         bool usesgeometry() { return mUsesGeometry; }
 
+        /** Returns a list of possible aliases for the function. These include
+         * other permissible names for the function, eg deprecated names.
+         * @return list of known aliases
+         * @note added in QGIS 2.9
+         */
+        virtual QStringList aliases() const { return QStringList(); }
+
         /** True if this function should use lazy evaluation.  Lazy evaluation functions take QgsExpression::Node objects
          * rather than the node results when called.  You can use node->eval(parent, feature) to evaluate the node and return the result
          * Functions are non lazy default and will be given the node return value when called **/
@@ -326,16 +337,19 @@ class CORE_EXPORT QgsExpression
     class StaticFunction : public Function
     {
       public:
-        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false )
-            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval ), mFnc( fcn ) {}
+        StaticFunction( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false, QStringList referencedColumns = QStringList(), bool lazyEval = false, const QStringList& aliases = QStringList() )
+            : Function( fnname, params, group, helpText, usesGeometry, referencedColumns, lazyEval ), mFnc( fcn ), mAliases( aliases ) {}
 
         virtual QVariant func( const QVariantList& values, const QgsFeature* f, QgsExpression* parent ) override
         {
           return mFnc( values, f, parent );
         }
 
+        virtual QStringList aliases() const override { return mAliases; }
+
       private:
         FcnEval mFnc;
+        QStringList mAliases;
     };
 
     static const QList<Function*> &Functions();
@@ -351,7 +365,7 @@ class CORE_EXPORT QgsExpression
     static bool isFunctionName( QString name );
 
     // return index of the function in Functions array
-    static int functionIndex( QString name );
+    static int functionIndex( const QString& name );
 
     /**  Returns the number of functions defined in the parser
       *  @return The number of function defined in the parser.
@@ -522,10 +536,10 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const override { QStringList lst( mNode->referencedColumns() ); foreach ( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const override { bool needs = false; foreach ( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
-          virtual void accept( Visitor& v ) const override { v.visit( *this ); }
+        virtual void accept( Visitor& v ) const override { v.visit( *this ); }
 
-          protected:
-            Node* mNode;
+      protected:
+        Node* mNode;
         NodeList* mList;
         bool mNotIn;
     };

@@ -38,16 +38,8 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, private Ui::QgsMessageLogV
     QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsMessageLogViewer();
 
-    //! @note added in 2.4
-    void setShowToolTips( bool enabled ) { mShowToolTips = enabled; }
-    //! @note added in 2.4
-    bool showToolTips() const { return mShowToolTips; }
-
   public slots:
     void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
-
-  private:
-    bool mShowToolTips;
 
   private slots:
     void closeTab( int index );

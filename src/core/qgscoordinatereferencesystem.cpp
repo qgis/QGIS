@@ -1512,13 +1512,12 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS( QString name )
   }
   QgsDebugMsg( QString( "Update or insert sql \n%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  sqlite3_step( myPreparedStatement );
-
-  QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
 
   qint64 return_id;
-  if ( myResult == SQLITE_OK )
+  if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
+
     return_id = sqlite3_last_insert_rowid( myDatabase );
     setInternalId( return_id );
 
@@ -1716,14 +1715,13 @@ int QgsCoordinateReferenceSystem::syncDb()
   {
     qCritical( "Could not begin transaction: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
     return -1;
-
   }
 
   // fix up database, if not done already //
   if ( sqlite3_exec( database, "alter table tbl_srs add noupdate boolean", 0, 0, 0 ) == SQLITE_OK )
-    sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", 0, 0, 0 );
+    ( void )sqlite3_exec( database, "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", 0, 0, 0 );
 
-  sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", 0, 0, 0 );
+  ( void )sqlite3_exec( database, "UPDATE tbl_srs SET srid=141001 WHERE srid=41001 AND auth_name='OSGEO' AND auth_id='41001'", 0, 0, 0 );
 
   OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
   const char *tail;

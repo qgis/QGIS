@@ -37,7 +37,7 @@
 
 int QgsAttributeForm::sFormCounter = 0;
 
-QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, QgsAttributeEditorContext context, QWidget* parent )
+QgsAttributeForm::QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature &feature, const QgsAttributeEditorContext &context, QWidget* parent )
     : QWidget( parent )
     , mLayer( vl )
     , mContext( context )
@@ -571,7 +571,7 @@ QWidget* QgsAttributeForm::createWidgetFromDef( const QgsAttributeEditorElement 
       if ( !fieldDef )
         break;
 
-      int fldIdx = fieldDef->idx();
+      int fldIdx = vl->fieldNameIndex( fieldDef->name() );
       if ( fldIdx < vl->pendingFields().count() && fldIdx >= 0 )
       {
         const QString widgetType = mLayer->editorWidgetV2( fldIdx );

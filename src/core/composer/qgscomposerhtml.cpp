@@ -24,6 +24,7 @@
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsdistancearea.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -92,6 +93,7 @@ QgsComposerHtml::QgsComposerHtml()
     , mLoaded( false )
     , mHtmlUnitsToMM( 1.0 )
     , mRenderedPage( 0 )
+    , mEvaluateExpressions( true )
     , mUseSmartBreaks( true )
     , mMaxBreakDistance( 10 )
     , mExpressionFeature( 0 )

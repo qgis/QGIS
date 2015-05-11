@@ -1,0 +1,7 @@
+D8 Distance To Streams (multifile)
+d8hdisttostrm
+Specialized Grid Analysis tools
+ParameterFile|-p|D8 Flow Direction Grid|True|False
+ParameterFile|-src|Stream Raster Grid|True|False
+ParameterNumber|-thresh|Threshold|1|500|50
+OutputDirectory|-dist|Output Distance to Streams

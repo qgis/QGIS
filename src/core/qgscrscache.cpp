@@ -18,6 +18,13 @@
 #include "qgscrscache.h"
 #include "qgscoordinatetransform.h"
 
+
+QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
+{
+  static QgsCoordinateTransformCache mInstance;
+  return &mInstance;
+}
+
 QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
 {
   QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator tIt = mTransforms.constBegin();
@@ -25,8 +32,6 @@ QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
   {
     delete tIt.value();
   }
-
-  mTransforms.clear();
 }
 
 const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )

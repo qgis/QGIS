@@ -45,7 +45,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " the QGIS home page."
                       ) );
   addGenericTip( myTip );
-  myTip.setTitle( tr( "Become an QGIS translator" ) );
+  myTip.setTitle( tr( "Become a QGIS translator" ) );
   myTip.setContent( tr( "Would you like to see QGIS"
                         " in your native language? We are looking for more translators"
                         " and would appreciate your help! The translation process is"

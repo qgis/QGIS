@@ -38,28 +38,28 @@ class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override
     {
       if ( source_parent == qobject_cast<QStandardItemModel*>( sourceModel() )->invisibleRootItem()->index() )
-      return true;
+        return true;
 
       return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
     }
-  };
+};
 
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class QgsExpressionItem : public QStandardItem
 {
-public:
-  enum ItemType
-  {
-    Header,
-    Field,
-    ExpressionNode
-  };
+  public:
+    enum ItemType
+    {
+      Header,
+      Field,
+      ExpressionNode
+    };
 
-  QgsExpressionItem( QString label,
-                     QString expressionText,
-                     QString helpText,
-                     QgsExpressionItem::ItemType itemType = ExpressionNode )
+    QgsExpressionItem( QString label,
+                       QString expressionText,
+                       QString helpText,
+                       QgsExpressionItem::ItemType itemType = ExpressionNode )
         : QStandardItem( label )
     {
       mExpressionText = expressionText;

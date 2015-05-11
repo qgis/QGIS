@@ -23,6 +23,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsrendererv2.h"
 #include "qgsvectorlayer.h"
+#include "qgsdiagramrendererv2.h"
 
 
 QgsMapLayerLegend::QgsMapLayerLegend( QObject *parent ) :
@@ -205,6 +206,16 @@ QList<QgsLayerTreeModelLegendNode*> QgsDefaultVectorLayerLegend::createLayerTree
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
     nodes[0]->setEmbeddedInParent( true );
+
+
+  if ( mLayer->diagramsEnabled() )
+  {
+    foreach ( QgsLayerTreeModelLegendNode * i, mLayer->diagramRenderer()->legendItems( nodeLayer ) )
+    {
+      nodes.append( i );
+    }
+  }
+
 
   return nodes;
 }

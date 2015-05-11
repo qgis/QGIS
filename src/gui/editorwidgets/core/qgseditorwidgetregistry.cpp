@@ -47,9 +47,9 @@ QgsEditorWidgetRegistry* QgsEditorWidgetRegistry::instance()
   return &sInstance;
 }
 
-void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas* mapCanvas, QgsMessageBar* messageBar )
+void QgsEditorWidgetRegistry::initEditors( QgsMapCanvas *mapCanvas, QgsMessageBar *messageBar )
 {
-  QgsEditorWidgetRegistry* reg = instance();
+  QgsEditorWidgetRegistry *reg = instance();
   reg->registerWidget( "Classification", new QgsClassificationWidgetWrapperFactory( tr( "Classification" ) ) );
   reg->registerWidget( "Range", new QgsRangeWidgetFactory( tr( "Range" ) ) );
   reg->registerWidget( "UniqueValues", new QgsUniqueValueWidgetFactory( tr( "Unique Values" ) ) );
@@ -81,7 +81,7 @@ QgsEditorWidgetRegistry::~QgsEditorWidgetRegistry()
   qDeleteAll( mWidgetFactories.values() );
 }
 
-QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext context )
+QgsEditorWidgetWrapper* QgsEditorWidgetRegistry::create( const QString& widgetId, QgsVectorLayer* vl, int fieldIdx, const QgsEditorWidgetConfig& config, QWidget* editor, QWidget* parent, const QgsAttributeEditorContext &context )
 {
   if ( mWidgetFactories.contains( widgetId ) )
   {

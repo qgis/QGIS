@@ -294,7 +294,8 @@ bool QgsGeorefTransform::getLinearOriginScale( QgsPoint &origin, double &scaleX,
   {
     return false;
   }
-  return dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation )->getOriginScale( origin, scaleX, scaleY );
+  QgsLinearGeorefTransform* transform = dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation );
+  return transform && transform->getOriginScale( origin, scaleX, scaleY );
 }
 
 bool QgsGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double& rotation ) const

@@ -23,9 +23,7 @@
 #include "qgscomposeritemwidget.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
-#include <QFontDialog>
-#include <QColorDialog>
-#include <QInputDialog>
+#include "qgisgui.h"
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -41,6 +39,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QMessageBox>
+#include <QInputDialog>
 
 
 
@@ -109,11 +108,11 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend )
   mainLayout->addWidget( itemPropertiesWidget );
 
   mItemTreeView->setHeaderHidden( true );
-  mItemTreeView->setModel( legend->modelV2() );
-  mItemTreeView->setMenuProvider( new QgsComposerLegendMenuProvider( mItemTreeView, this ) );
 
   if ( legend )
   {
+    mItemTreeView->setModel( legend->modelV2() );
+    mItemTreeView->setMenuProvider( new QgsComposerLegendMenuProvider( mItemTreeView, this ) );
     connect( legend, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
     mWrapCharLineEdit->setText( legend->wrapChar() );
   }
@@ -369,12 +368,7 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Title ).font() );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::Title ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Title font changed" ) );
@@ -391,12 +385,7 @@ void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Group ).font() );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::Group ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend group font changed" ) );
@@ -413,12 +402,7 @@ void QgsComposerLegendWidget::on_mLayerFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font() );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::Subgroup ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend layer font changed" ) );
@@ -435,12 +419,7 @@ void QgsComposerLegendWidget::on_mItemFontButton_clicked()
   if ( mLegend )
   {
     bool ok;
-#if defined(Q_OS_MAC) && defined(QT_MAC_USE_COCOA)
-    // Native Mac dialog works only for Qt Carbon
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font(), 0, QString(), QFontDialog::DontUseNativeDialog );
-#else
-    QFont newFont = QFontDialog::getFont( &ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font() );
-#endif
+    QFont newFont = QgisGui::getFont( ok, mLegend->style( QgsComposerLegendStyle::SymbolLabel ).font() );
     if ( ok )
     {
       mLegend->beginCommand( tr( "Legend item font changed" ) );
@@ -652,7 +631,7 @@ void QgsComposerLegendWidget::on_mAddToolButton_clicked()
   {
     QList<QgsMapLayer*> layers = canvas->layers();
 
-    QgsComposerLegendLayersDialog addDialog( layers );
+    QgsComposerLegendLayersDialog addDialog( layers, this );
     if ( addDialog.exec() == QDialog::Accepted )
     {
       QgsMapLayer* layer = addDialog.selectedLayer();

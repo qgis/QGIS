@@ -93,6 +93,7 @@ QgsRasterProjector::QgsRasterProjector(
     , mDestRowsPerMatrixRow( 0.0 )
     , mDestColsPerMatrixCol( 0.0 )
     , pHelperTop( 0 ), pHelperBottom( 0 )
+    , mHelperTopRow( 0 )
     , mCPCols( 0 )
     , mCPRows( 0 )
     , mSqrTolerance( 0.0 )
@@ -253,7 +254,7 @@ void QgsRasterProjector::calc()
   double myDestRes = mDestXRes < mDestYRes ? mDestXRes : mDestYRes;
   mSqrTolerance = myDestRes * myDestRes;
 
-  const QgsCoordinateTransform* ct = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+  const QgsCoordinateTransform* inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
 
   // Initialize the matrix by corners and middle points
   mCPCols = mCPRows = 3;
@@ -273,20 +274,20 @@ void QgsRasterProjector::calc()
   }
   for ( int i = 0; i < mCPRows; i++ )
   {
-    calcRow( i, ct );
+    calcRow( i, inverseCt );
   }
 
   while ( true )
   {
-    bool myColsOK = checkCols( ct );
+    bool myColsOK = checkCols( inverseCt );
     if ( !myColsOK )
     {
-      insertRows( ct );
+      insertRows( inverseCt );
     }
-    bool myRowsOK = checkRows( ct );
+    bool myRowsOK = checkRows( inverseCt );
     if ( !myRowsOK )
     {
-      insertCols( ct );
+      insertCols( inverseCt );
     }
     if ( myColsOK && myRowsOK )
     {
@@ -893,10 +894,10 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   // we cannot fill output block with no data because we use memcpy for data, not setValue().
   bool doNoData = !QgsRasterBlock::typeIsNumeric( inputBlock->dataType() ) && inputBlock->hasNoData() && !inputBlock->hasNoDataValue();
 
-  const QgsCoordinateTransform* ct = 0;
+  const QgsCoordinateTransform* inverseCt = 0;
   if ( !mApproximate )
   {
-    ct = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
+    inverseCt = QgsCoordinateTransformCache::instance()->transform( mDestCRS.authid(), mSrcCRS.authid(), mDestDatumTransform, mSrcDatumTransform );
   }
 
   outputBlock->setIsNoData();
@@ -906,7 +907,7 @@ QgsRasterBlock * QgsRasterProjector::block( int bandNo, QgsRectangle  const & ex
   {
     for ( int j = 0; j < width; ++j )
     {
-      bool inside = srcRowCol( i, j, &srcRow, &srcCol, ct );
+      bool inside = srcRowCol( i, j, &srcRow, &srcCol, inverseCt );
       if ( !inside ) continue; // we have everything set to no data
 
       qgssize srcIndex = ( qgssize )srcRow * mSrcCols + srcCol;

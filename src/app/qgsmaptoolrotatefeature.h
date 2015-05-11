@@ -16,12 +16,54 @@
 #ifndef QGSMAPTOOLROTATEFEATURE_H
 #define QGSMAPTOOLROTATEFEATURE_H
 
+#include <QWidget>
+
 #include "qgsmaptooledit.h"
 #include "qgsvectorlayer.h"
 
+
+class QgsDoubleSpinBox;
+class QHBoxLayout;
+class QgsSpinBox;
 class QgsVertexMarker;
 
-/**Map tool for translating feature position by mouse drag*/
+class APP_EXPORT QgsAngleMagnetWidget : public QWidget
+{
+    Q_OBJECT
+
+  public:
+
+    explicit QgsAngleMagnetWidget( QString label = QString( "" ), QWidget *parent = 0 );
+
+    ~QgsAngleMagnetWidget();
+
+    void setAngle( double angle );
+
+    double angle();
+
+    void setMagnet( int magnet );
+
+  signals:
+    void angleChanged( double angle );
+    void angleEditingFinished( double angle );
+
+
+  public slots:
+
+  protected:
+    bool eventFilter( QObject *obj, QEvent *ev );
+
+  private slots:
+    void angleSpinBoxValueChanged( double angle );
+
+  private:
+    QHBoxLayout* mLayout;
+    QgsDoubleSpinBox* mAngleSpinBox;
+    QgsSpinBox* mMagnetSpinBox;
+};
+
+
+/** Map tool to rotate features */
 class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 {
     Q_OBJECT
@@ -31,27 +73,25 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
 
     virtual void canvasMoveEvent( QMouseEvent * e ) override;
 
-    virtual void canvasPressEvent( QMouseEvent * e ) override;
-
     virtual void canvasReleaseEvent( QMouseEvent * e ) override;
 
-    void keyPressEvent( QKeyEvent* e ) override;
-
-    void keyReleaseEvent( QKeyEvent* e ) override;
-
-
-    //! to reset the rotation anchor to selectionbound center
-    void resetAnchor();
     //! called when map tool is being deactivated
     void deactivate() override;
 
     void activate() override;
 
+  private slots:
+    void updateRubberband( double rotation );
+
+    void applyRotation( double rotation );
 
   private:
 
     QgsGeometry rotateGeometry( QgsGeometry geom, QgsPoint point, double angle );
     QgsPoint rotatePoint( QgsPoint point, double angle );
+    void deleteRubberband();
+    void createRotationWidget();
+    void deleteRotationWidget();
 
     /**Start point of the move in map coordinates*/
     QgsPoint mStartPointMapCoords;
@@ -68,8 +108,10 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     QPoint mStPoint;
     QgsVertexMarker* mAnchorPoint;
 
-    /** flag if crtl is pressed */
-    bool mCtrl;
+    bool mRotationActive;
+
+    /** Shows current angle value and allows numerical editing*/
+    QgsAngleMagnetWidget* mRotationWidget;
 };
 
 #endif

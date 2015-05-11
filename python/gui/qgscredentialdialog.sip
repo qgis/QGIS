@@ -8,7 +8,7 @@ class QgsCredentialDialog : QDialog, QgsCredentials
 %End
 
   public:
-    QgsCredentialDialog( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsCredentialDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
     ~QgsCredentialDialog();
 
   protected:

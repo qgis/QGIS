@@ -21,15 +21,17 @@ email                : brush.tyler@gmail.com
 """
 
 import os
+
 current_dir = os.path.dirname(__file__)
 
-def load(dbplugin, mainwindow):
-        for name in os.listdir(current_dir):
-                if not os.path.isdir( os.path.join( current_dir, name ) ):
-                        continue
-                try:
-                        exec( u"from .%s import load" % name  )
-                except ImportError, e:
-                        continue
 
-                load(dbplugin, mainwindow)
+def load(dbplugin, mainwindow):
+    for name in os.listdir(current_dir):
+        if not os.path.isdir(os.path.join(current_dir, name)):
+            continue
+        try:
+            exec ( u"from .%s import load" % name  )
+        except ImportError, e:
+            continue
+
+        load(dbplugin, mainwindow)

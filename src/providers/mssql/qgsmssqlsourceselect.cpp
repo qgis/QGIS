@@ -541,7 +541,7 @@ void QgsMssqlSourceSelect::on_btnConnect_clicked()
   // issue the sql query
   QSqlQuery q = QSqlQuery( db );
   q.setForwardOnly( true );
-  q.exec( query );
+  ( void )q.exec( query );
 
   if ( q.isActive() )
   {

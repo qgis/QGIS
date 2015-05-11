@@ -23,7 +23,25 @@
 
 extern "C"
 {
+#if GRASS_VERSION_MAJOR < 7
 #include <grass/Vect.h>
+#else
+#include <grass/gis.h>
+#include <grass/vector.h>
+#include <grass/raster.h>
+#define G_get_cellhd(name,mapset,cellhd) (Rast_get_cellhd(name,mapset,cellhd),0)
+#define G_raster_map_type Rast_map_type
+#define G_read_fp_range Rast_read_fp_range
+#define G_get_fp_range_min_max Rast_get_fp_range_min_max
+#define G_read_history Rast_read_history
+#define G_read_cats Rast_read_cats
+#define G_free_cats Rast_free_cats
+#define datsrc_1 fields[HIST_DATSRC_1]
+#define datsrc_2 fields[HIST_DATSRC_2]
+#define keywrd fields[HIST_KEYWRD]
+#define edlinecnt nlines
+#define edhist lines
+#endif
 }
 
 

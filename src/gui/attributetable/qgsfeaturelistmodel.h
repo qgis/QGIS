@@ -46,6 +46,20 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     virtual QVariant data( const QModelIndex& index, int role ) const override;
     virtual Qt::ItemFlags flags( const QModelIndex& index ) const override;
 
+    /**
+     * @brief If true is specified, a NULL value will be injected
+     * @param injectNull state of null value injection
+     * @note added in 2.9
+     */
+    void setInjectNull( bool injectNull );
+
+    /**
+     * @brief Returns the current state of null value injection
+     * @return If a NULL value is added
+     * @note added in 2.9
+     */
+    bool injectNull();
+
     QgsAttributeTableModel* masterModel();
 
     /**
@@ -94,6 +108,7 @@ class GUI_EXPORT QgsFeatureListModel : public QAbstractProxyModel, public QgsFea
     QgsExpression* mExpression;
     QgsAttributeTableFilterModel* mFilterModel;
     QString mParserErrorString;
+    bool mInjectNull;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

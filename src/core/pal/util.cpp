@@ -183,25 +183,16 @@ namespace pal
     }
   }
 
-
-
-
-//inline bool ptrGeomEq (const geos::geom::Geometry *l, const geos::geom::Geometry *r){
   inline bool ptrGeomEq( const GEOSGeometry *l, const GEOSGeometry *r )
   {
     return l == r;
   }
 
-//LinkedList<const geos::geom::Geometry*> * unmulti (geos::geom::Geometry *the_geom){
   LinkedList<const GEOSGeometry*> * unmulti( const GEOSGeometry *the_geom )
   {
-
-    //LinkedList<const geos::geom::Geometry*> *queue = new  LinkedList<const geos::geom::Geometry*>(ptrGeomEq);
-    //LinkedList<const geos::geom::Geometry*> *final_queue = new  LinkedList<const geos::geom::Geometry*>(ptrGeomEq);
     LinkedList<const GEOSGeometry*> *queue = new  LinkedList<const GEOSGeometry*> ( ptrGeomEq );
     LinkedList<const GEOSGeometry*> *final_queue = new  LinkedList<const GEOSGeometry*> ( ptrGeomEq );
 
-    //const geos::geom::Geometry *geom;
     const GEOSGeometry *geom;
 
     queue->push_back( the_geom );
@@ -214,9 +205,6 @@ namespace pal
       GEOSContextHandle_t geosctxt = geosContext();
       switch ( GEOSGeomTypeId_r( geosctxt, geom ) )
       {
-          //case geos::geom::GEOS_MULTIPOINT:
-          //case geos::geom::GEOS_MULTILINESTRING:
-          //case geos::geom::GEOS_MULTIPOLYGON:
         case GEOS_MULTIPOINT:
         case GEOS_MULTILINESTRING:
         case GEOS_MULTIPOLYGON:
@@ -233,7 +221,8 @@ namespace pal
           break;
         default:
           delete final_queue;
-          final_queue = NULL;
+          delete queue;
+          return NULL;
       }
     }
     delete queue;

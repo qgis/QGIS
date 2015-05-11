@@ -253,6 +253,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mColumnsTableView</tabstop>
+  <tabstop>mColumnUpPushButton</tabstop>
+  <tabstop>mColumnDownPushButton</tabstop>
+  <tabstop>mAddColumnPushButton</tabstop>
+  <tabstop>mRemoveColumnPushButton</tabstop>
+  <tabstop>mResetColumnsPushButton</tabstop>
+  <tabstop>mSortColumnComboBox</tabstop>
+  <tabstop>mOrderComboBox</tabstop>
+  <tabstop>mAddSortColumnPushButton</tabstop>
+  <tabstop>mSortColumnTableView</tabstop>
+  <tabstop>mSortColumnUpPushButton</tabstop>
+  <tabstop>mSortColumnDownPushButton</tabstop>
+  <tabstop>mRemoveSortColumnPushButton</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>

@@ -14,16 +14,7 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <property name="spacing">
@@ -97,7 +88,7 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+E</string>
+        <string>Ctrl+S</string>
        </property>
        <property name="checkable">
         <bool>false</bool>
@@ -263,7 +254,7 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+S</string>
+        <string>Ctrl+R</string>
        </property>
        <property name="autoRaise">
         <bool>true</bool>
@@ -730,6 +721,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsFieldExpressionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfieldexpressionwidget.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -739,11 +735,6 @@
    <extends>QStackedWidget</extends>
    <header>qgsdualview.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">qgsfieldexpressionwidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -155,30 +155,30 @@ class CORE_EXPORT QgsGeometry
     QGis::GeometryType type() const;
 
     /** Returns true if wkb of the geometry is of WKBMulti* type */
-    bool isMultipart();
+    bool isMultipart() const;
 
     /** compare geometries using GEOS */
-    bool isGeosEqual( QgsGeometry & );
+    bool isGeosEqual( const QgsGeometry & ) const;
 
     /** check validity using GEOS */
-    bool isGeosValid();
+    bool isGeosValid() const;
 
     /** check if geometry is empty using GEOS */
-    bool isGeosEmpty();
+    bool isGeosEmpty() const;
 
     /** get area of geometry using GEOS */
-    double area();
+    double area() const;
 
     /** get length of geometry using GEOS */
-    double length();
+    double length() const;
 
-    double distance( QgsGeometry& geom );
+    double distance( const QgsGeometry &geom ) const;
 
     /**
        Returns the vertex closest to the given point, the corresponding vertex index, squared distance snap point / target point
     and the indices of the vertices before/after. The vertices before/after are -1 if not present
     */
-    QgsPoint closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist );
+    QgsPoint closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist ) const;
 
     /**
        Returns the indexes of the vertices before and after the given vertex index.
@@ -192,7 +192,7 @@ class CORE_EXPORT QgsGeometry
           account the first vertex is equal to the last vertex (and will
           skip equal vertex positions).
     */
-    void adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex );
+    void adjacentVertices( int atVertex, int& beforeVertex, int& afterVertex ) const;
 
     /** Insert a new vertex before the given vertex index,
      *  ring and item (first number is index 0)
@@ -232,14 +232,14 @@ class CORE_EXPORT QgsGeometry
      *  @param atVertex index of the vertex
      *  @return Coordinates of the vertex or QgsPoint(0,0) on error
      */
-    QgsPoint vertexAt( int atVertex );
+    QgsPoint vertexAt( int atVertex ) const;
 
     /**
      *  Returns the squared cartesian distance between the given point
      *  to the given vertex index (vertex at the given position number,
      *  ring and item (first number is index 0))
      */
-    double sqrDistToVertexAt( QgsPoint& point, int atVertex );
+    double sqrDistToVertexAt( QgsPoint& point, int atVertex ) const;
 
     /**
      * Searches for the closest vertex in this geometry to the given point.
@@ -247,7 +247,7 @@ class CORE_EXPORT QgsGeometry
      * @param atVertex Receives index of the closest vertex
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestVertexWithContext( const QgsPoint& point, int& atVertex );
+    double closestVertexWithContext( const QgsPoint& point, int& atVertex ) const;
 
     /**
      * Searches for the closest segment of geometry to the given point
@@ -259,7 +259,7 @@ class CORE_EXPORT QgsGeometry
      * @param epsilon epsilon for segment snapping
      * @return The squared cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& afterVertex, double* leftOf = 0, double epsilon = DEFAULT_SEGMENT_EPSILON );
+    double closestSegmentWithContext( const QgsPoint& point, QgsPoint& minDistPoint, int& afterVertex, double* leftOf = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /**Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      @return 0 in case of success (ring added), 1 problem with geometry type, 2 ring not closed,
@@ -324,10 +324,10 @@ class CORE_EXPORT QgsGeometry
     /**Changes this geometry such that it does not intersect the other geometry
        @param other geometry that should not be intersect
        @return 0 in case of success*/
-    int makeDifference( QgsGeometry* other );
+    int makeDifference( const QgsGeometry *other );
 
     /**Returns the bounding box of this feature*/
-    QgsRectangle boundingBox();
+    QgsRectangle boundingBox() const;
 
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects( const QgsRectangle& r ) const;
@@ -361,7 +361,7 @@ class CORE_EXPORT QgsGeometry
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
-    QgsGeometry* buffer( double distance, int segments );
+    QgsGeometry* buffer( double distance, int segments ) const;
 
     /** Returns a buffer region around the geometry, with additional style options.
      * @param distance    buffer distance
@@ -372,45 +372,56 @@ class CORE_EXPORT QgsGeometry
      * @note added in 2.4
      * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit );
+    QgsGeometry* buffer( double distance, int segments, int endCapStyle, int joinStyle, double mitreLimit ) const;
 
     /** Returns an offset line at a given distance and side from an input line.
      * See buffer() method for details on parameters.
      * @note added in 2.4
      * @note needs GEOS >= 3.3 - otherwise always returns 0
      */
-    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit );
+    QgsGeometry* offsetCurve( double distance, int segments, int joinStyle, double mitreLimit ) const;
 
     /** Returns a simplified version of this geometry using a specified tolerance value */
-    QgsGeometry* simplify( double tolerance );
+    QgsGeometry* simplify( double tolerance ) const;
+
+    /**Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
+     * roughly doubles the number of vertices in a geometry.
+     * @param iterations number of smoothing iterations to run. More iterations results
+     * in a smoother geometry
+     * @param offset fraction of line to create new vertices along, between 0 and 1.0
+     * eg the default value of 0.25 will create new vertices 25% and 75% along each line segment
+     * of the geometry for each iteration. Smaller values result in "tighter" smoothing.
+     * @note added in 2.9
+     */
+    QgsGeometry* smooth( const unsigned int iterations = 1, const double offset = 0.25 ) const;
 
     /** Returns the center of mass of a geometry
     * @note for line based geometries, the center point of the line is returned,
     * and for point based geometries, the point itself is returned */
-    QgsGeometry* centroid();
+    QgsGeometry* centroid() const;
 
     /** Returns a point within a geometry */
-    QgsGeometry* pointOnSurface();
+    QgsGeometry* pointOnSurface() const;
 
     /** Returns the smallest convex polygon that contains all the points in the geometry. */
-    QgsGeometry* convexHull();
+    QgsGeometry* convexHull() const;
 
-    /* Return interpolated point on line at distance */
-    QgsGeometry* interpolate( double distance );
+    /** Return interpolated point on line at distance */
+    QgsGeometry* interpolate( double distance ) const;
 
     /** Returns a geometry representing the points shared by this geometry and other. */
-    QgsGeometry* intersection( QgsGeometry* geometry );
+    QgsGeometry* intersection( const QgsGeometry *geometry ) const;
 
     /** Returns a geometry representing all the points in this geometry and other (a
      * union geometry operation).
      * @note this operation is not called union since its a reserved word in C++.*/
-    QgsGeometry* combine( QgsGeometry* geometry );
+    QgsGeometry* combine( const QgsGeometry* geometry ) const;
 
     /** Returns a geometry representing the points making up this geometry that do not make up other. */
-    QgsGeometry* difference( QgsGeometry* geometry );
+    QgsGeometry* difference( const QgsGeometry* geometry ) const;
 
     /** Returns a Geometry representing the points making up this Geometry that do not make up other. */
-    QgsGeometry* symDifference( QgsGeometry* geometry );
+    QgsGeometry* symDifference( const QgsGeometry* geometry ) const;
 
     /** Exports the geometry to WKT
      *  @note precision parameter added in 2.4
@@ -430,7 +441,7 @@ class CORE_EXPORT QgsGeometry
      * @return the converted geometry or NULL pointer if the conversion fails.
      * @note added in 2.2
      */
-    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false );
+    QgsGeometry* convertToType( QGis::GeometryType destType, bool destMultipart = false ) const;
 
     /* Accessor functions for getting geometry data */
 
@@ -507,7 +518,7 @@ class CORE_EXPORT QgsGeometry
         Error( QString m ) : message( m ), hasLocation( false ) {}
         Error( QString m, QgsPoint p ) : message( m ), location( p ), hasLocation( true ) {}
 
-        QString what() { return message; };
+        QString what() { return message; }
         QgsPoint where() { return location; }
         bool hasWhere() { return hasLocation; }
     };
@@ -519,7 +530,38 @@ class CORE_EXPORT QgsGeometry
         @param geometryList a list of QgsGeometry* as input
         @returns the new computed QgsGeometry, or null
     */
-    static QgsGeometry *unaryUnion( const QList<QgsGeometry*>& geometryList );
+    static QgsGeometry *unaryUnion( const QList< QgsGeometry*>& geometryList );
+
+    /** Compares two polylines for equality within a specified tolerance.
+     * @param p1 first polyline
+     * @param p2 second polyline
+     * @param epsilon maximum difference for coordinates between the polylines
+     * @returns true if polylines have the same number of points and all
+     * points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolyline& p1, const QgsPolyline& p2, double epsilon = 4 * DBL_EPSILON );
+
+    /** Compares two polygons for equality within a specified tolerance.
+     * @param p1 first polygon
+     * @param p2 second polygon
+     * @param epsilon maximum difference for coordinates between the polygons
+     * @returns true if polygons have the same number of rings, and each ring has the same
+     * number of points and all points are equal within the specified tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsPolygon& p1, const QgsPolygon& p2, double epsilon = 4 * DBL_EPSILON );
+
+    /** Compares two multipolygons for equality within a specified tolerance.
+     * @param p1 first multipolygon
+     * @param p2 second multipolygon
+     * @param epsilon maximum difference for coordinates between the multipolygons
+     * @returns true if multipolygons have the same number of polygons, the polygons have the same number
+     * of rings, and each ring has the same number of points and all points are equal within the specified
+     * tolerance
+     * @note added in QGIS 2.9
+    */
+    static bool compare( const QgsMultiPolygon& p1, const QgsMultiPolygon& p2, double epsilon = 4 * DBL_EPSILON );
 
   private:
     // Private variables
@@ -620,6 +662,11 @@ class CORE_EXPORT QgsGeometry
     @return the reshaped polygon or 0 in case of error*/
     static GEOSGeometry* reshapePolygon( const GEOSGeometry* polygon, const GEOSGeometry* reshapeLineGeos );
 
+    /**Smooths a polygon using the Chaikin algorithm*/
+    QgsPolygon smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25 ) const;
+    /**Smooths a polyline using the Chaikin algorithm*/
+    QgsPolyline smoothLine( const QgsPolyline &polyline, const unsigned int iterations = 1, const double offset = 0.25 ) const;
+
     /**Nodes together a split line and a (multi-) polygon geometry in a multilinestring
      @return the noded multiline geometry or 0 in case of error. The calling function takes ownership of the node geometry*/
     static GEOSGeometry* nodeGeometries( const GEOSGeometry *splitLine, const GEOSGeometry *poly );
@@ -655,18 +702,18 @@ class CORE_EXPORT QgsGeometry
                            const QgsGeometry* a, const QgsGeometry* b );
 
     /**Returns < 0 if point(x/y) is left of the line x1,y1 -> x1,y2*/
-    double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 );
+    double leftOf( double x, double y, double& x1, double& y1, double& x2, double& y2 ) const;
 
     static inline bool moveVertex( QgsWkbPtr &wkbPtr, const double &x, const double &y, int atVertex, bool hasZValue, int &pointIndex, bool isRing );
     static inline int deleteVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int atVertex, bool hasZValue, int &pointIndex, bool isRing, bool lastItem );
     static inline bool insertVertex( QgsConstWkbPtr &srcPtr, QgsWkbPtr &dstPtr, int beforeVertex, const double &x, const double &y, bool hasZValue, int &pointIndex, bool isRing );
 
     /** try to convert the geometry to a point */
-    QgsGeometry* convertToPoint( bool destMultipart );
+    QgsGeometry* convertToPoint( bool destMultipart ) const;
     /** try to convert the geometry to a line */
-    QgsGeometry* convertToLine( bool destMultipart );
+    QgsGeometry* convertToLine( bool destMultipart ) const;
     /** try to convert the geometry to a polygon */
-    QgsGeometry* convertToPolygon( bool destMultipart );
+    QgsGeometry* convertToPolygon( bool destMultipart ) const;
 
     static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon );
     static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon );
@@ -686,12 +733,18 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( unsigned int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline const QgsWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v = d; return *this; }
+#endif
 
     inline QgsWkbPtr &operator<<( const double &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const int &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const unsigned int &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const char &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline QgsWkbPtr &operator<<( const QGis::WkbType &v ) { memcpy( mP, &v, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline QgsWkbPtr &operator<<( const qreal &v ) { double d = v; memcpy( mP, &d, sizeof( d ) ); mP += sizeof( d ); return *this; }
+#endif
 
     inline void operator+=( int n ) { mP += n; }
 
@@ -710,6 +763,9 @@ class CORE_EXPORT QgsConstWkbPtr
     inline const QgsConstWkbPtr &operator>>( unsigned int &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( char &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
     inline const QgsConstWkbPtr &operator>>( QGis::WkbType &v ) const { memcpy( &v, mP, sizeof( v ) ); mP += sizeof( v ); return *this; }
+#ifdef QT_ARCH_ARM
+    inline const QgsConstWkbPtr &operator>>( qreal &v ) const { double d; memcpy( &d, mP, sizeof( d ) ); mP += sizeof( d ); v = d; return *this; }
+#endif
 
     inline void operator+=( int n ) { mP += n; }
 

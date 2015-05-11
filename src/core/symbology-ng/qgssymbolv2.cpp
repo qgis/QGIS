@@ -25,6 +25,8 @@
 
 #include "qgsproject.h"
 #include "qgsstylev2.h"
+#include "qgspainteffect.h"
+#include "qgseffectstack.h"
 
 #include <QColor>
 #include <QImage>
@@ -34,7 +36,12 @@
 #include <cmath>
 
 QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
-    : mType( type ), mLayers( layers ), mAlpha( 1.0 ), mRenderHints( 0 ), mLayer( NULL )
+    : mType( type )
+    , mLayers( layers )
+    , mAlpha( 1.0 )
+    , mRenderHints( 0 )
+    , mClipFeaturesToExtent( true )
+    , mLayer( 0 )
 {
 
   // check they're all correct symbol layers
@@ -50,7 +57,6 @@ QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
       mLayers.removeAt( i-- );
     }
   }
-
 }
 
 QgsSymbolV2::~QgsSymbolV2()
@@ -579,6 +585,29 @@ QgsSymbolV2::ScaleMethod QgsMarkerSymbolV2::scaleMethod()
   return layer->scaleMethod();
 }
 
+void QgsMarkerSymbolV2::renderPointUsingLayer( QgsMarkerSymbolLayerV2* layer, const QPointF& point, QgsSymbolV2RenderContext& context )
+{
+  static QPointF nullPoint( 0, 0 );
+
+  QgsPaintEffect* effect = layer->paintEffect();
+  if ( effect && effect->enabled() )
+  {
+    QPainter* p = context.renderContext().painter();
+    p->save();
+    p->translate( point );
+
+    effect->begin( context.renderContext() );
+    layer->renderPoint( nullPoint, context );
+    effect->end( context.renderContext() );
+
+    p->restore();
+  }
+  else
+  {
+    layer->renderPoint( point, context );
+  }
+}
+
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, 0, mapUnitScale() );
@@ -586,14 +615,15 @@ void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, 
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
-      (( QgsMarkerSymbolLayerV2* ) mLayers[layer] )->renderPoint( point, symbolContext );
+    {
+      renderPointUsingLayer(( QgsMarkerSymbolLayerV2* ) mLayers[layer], point, symbolContext );
+    }
     return;
   }
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    QgsMarkerSymbolLayerV2* layer = ( QgsMarkerSymbolLayerV2* ) * it;
-    layer->renderPoint( point, symbolContext );
+    renderPointUsingLayer(( QgsMarkerSymbolLayerV2* ) * it, point, symbolContext );
   }
 }
 
@@ -602,6 +632,7 @@ QgsSymbolV2* QgsMarkerSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 
@@ -651,19 +682,45 @@ double QgsLineSymbolV2::width()
 
 void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
+  //save old painter
+  QPainter* renderPainter = context.painter();
   QgsSymbolV2RenderContext symbolContext( context, outputUnit(), mAlpha, selected, mRenderHints, f, 0, mapUnitScale() );
 
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
-      (( QgsLineSymbolLayerV2* ) mLayers[layer] )->renderPolyline( points, symbolContext );
+    {
+      renderPolylineUsingLayer(( QgsLineSymbolLayerV2* ) mLayers[layer], points, symbolContext );
+    }
     return;
   }
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    QgsLineSymbolLayerV2* layer = ( QgsLineSymbolLayerV2* ) * it;
-    layer->renderPolyline( points, symbolContext );
+    renderPolylineUsingLayer(( QgsLineSymbolLayerV2* ) * it, points, symbolContext );
+  }
+
+  context.setPainter( renderPainter );
+}
+
+void QgsLineSymbolV2::renderPolylineUsingLayer( QgsLineSymbolLayerV2 *layer, const QPolygonF &points, QgsSymbolV2RenderContext &context )
+{
+  QgsPaintEffect* effect = layer->paintEffect();
+  if ( effect && effect->enabled() )
+  {
+    QPainter* p = context.renderContext().painter();
+    p->save();
+    p->translate( points.boundingRect().topLeft() );
+
+    effect->begin( context.renderContext() );
+    layer->renderPolyline( points.translated( -points.boundingRect().topLeft() ), context );
+    effect->end( context.renderContext() );
+
+    p->restore();
+  }
+  else
+  {
+    layer->renderPolyline( points, context );
   }
 }
 
@@ -673,6 +730,7 @@ QgsSymbolV2* QgsLineSymbolV2::clone() const
   QgsSymbolV2* cloneSymbol = new QgsLineSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 
@@ -694,37 +752,92 @@ void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* 
   {
     if ( layer >= 0 && layer < mLayers.count() )
     {
-      QgsSymbolV2::SymbolType layertype = mLayers.at( layer )->type();
-      if ( layertype == QgsSymbolV2::Fill )
-        (( QgsFillSymbolLayerV2* ) mLayers[layer] )->renderPolygon( points, rings, symbolContext );
-      else if ( layertype == QgsSymbolV2::Line )
-        (( QgsLineSymbolLayerV2* ) mLayers[layer] )->renderPolygonOutline( points, rings, symbolContext );
+      renderPolygonUsingLayer( mLayers[layer], points, rings, symbolContext );
     }
     return;
   }
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    QgsSymbolV2::SymbolType layertype = ( *it )->type();
+    renderPolygonUsingLayer( *it, points, rings, symbolContext );
+  }
+}
+
+void QgsFillSymbolV2::renderPolygonUsingLayer( QgsSymbolLayerV2* layer, const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+  QgsSymbolV2::SymbolType layertype = layer->type();
+
+  QgsPaintEffect* effect = layer->paintEffect();
+  if ( effect && effect->enabled() )
+  {
+    QRectF bounds = polygonBounds( points, rings );
+    QList<QPolygonF>* translatedRings = translateRings( rings, -bounds.left(), -bounds.top() );
+
+    QPainter* p = context.renderContext().painter();
+    p->save();
+    p->translate( bounds.topLeft() );
+
+    effect->begin( context.renderContext() );
     if ( layertype == QgsSymbolV2::Fill )
     {
-      QgsFillSymbolLayerV2* layer = ( QgsFillSymbolLayerV2* ) * it;
-      layer->renderPolygon( points, rings, symbolContext );
+      (( QgsFillSymbolLayerV2* )layer )->renderPolygon( points.translated( -bounds.topLeft() ), translatedRings, context );
     }
     else if ( layertype == QgsSymbolV2::Line )
     {
-      QgsLineSymbolLayerV2* layer = ( QgsLineSymbolLayerV2* ) * it;
-      layer->renderPolygonOutline( points, rings, symbolContext );
+      (( QgsLineSymbolLayerV2* )layer )->renderPolygonOutline( points.translated( -bounds.topLeft() ), translatedRings, context );
+    }
+    delete translatedRings;
+
+    effect->end( context.renderContext() );
+    p->restore();
+  }
+  else
+  {
+    if ( layertype == QgsSymbolV2::Fill )
+    {
+      (( QgsFillSymbolLayerV2* )layer )->renderPolygon( points, rings, context );
+    }
+    else if ( layertype == QgsSymbolV2::Line )
+    {
+      (( QgsLineSymbolLayerV2* )layer )->renderPolygonOutline( points, rings, context );
     }
   }
 }
 
+QRectF QgsFillSymbolV2::polygonBounds( const QPolygonF& points, const QList<QPolygonF>* rings ) const
+{
+  QRectF bounds = points.boundingRect();
+  if ( rings )
+  {
+    QList<QPolygonF>::const_iterator it = rings->constBegin();
+    for ( ; it != rings->constEnd(); ++it )
+    {
+      bounds = bounds.united(( *it ).boundingRect() );
+    }
+  }
+  return bounds;
+}
+
+QList<QPolygonF>* QgsFillSymbolV2::translateRings( const QList<QPolygonF>* rings, double dx, double dy ) const
+{
+  if ( !rings )
+    return 0;
+
+  QList<QPolygonF>* translatedRings = new QList<QPolygonF>;
+  QList<QPolygonF>::const_iterator it = rings->constBegin();
+  for ( ; it != rings->constEnd(); ++it )
+  {
+    translatedRings->append(( *it ).translated( dx, dy ) );
+  }
+  return translatedRings;
+}
 
 QgsSymbolV2* QgsFillSymbolV2::clone() const
 {
   QgsSymbolV2* cloneSymbol = new QgsFillSymbolV2( cloneLayers() );
   cloneSymbol->setAlpha( mAlpha );
   cloneSymbol->setLayer( mLayer );
+  cloneSymbol->setClipFeaturesToExtent( mClipFeaturesToExtent );
   return cloneSymbol;
 }
 

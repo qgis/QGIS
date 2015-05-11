@@ -22,9 +22,9 @@ class QgsColorScheme
      */
     enum SchemeFlag
     {
-      ShowInColorDialog, /*< show scheme in color picker dialog */
-      ShowInColorButtonMenu, /*< show scheme in color button drop down menu */
-      ShowInAllContexts /*< show scheme in all contexts */
+      ShowInColorDialog, /*!< show scheme in color picker dialog */
+      ShowInColorButtonMenu, /*!< show scheme in color button drop down menu */
+      ShowInAllContexts /*!< show scheme in all contexts */
     };
     typedef QFlags<QgsColorScheme::SchemeFlag> SchemeFlags;
 

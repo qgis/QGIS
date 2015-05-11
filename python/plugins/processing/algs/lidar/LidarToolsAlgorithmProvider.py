@@ -223,7 +223,7 @@ class LidarToolsAlgorithmProvider(AlgorithmProvider):
         return 'lidartools'
 
     def getDescription(self):
-        return 'Tools for LiDAR data'
+        return self.tr('Tools for LiDAR data')
 
     def getIcon(self):
         return QIcon(os.path.dirname(__file__) + '/../../images/tool.png')

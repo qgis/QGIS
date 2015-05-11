@@ -54,9 +54,9 @@ class ClipByExtent(GdalAlgorithm):
         self.addParameter(ParameterExtent(self.PROJWIN, self.tr('Clipping extent')))
         self.addParameter(ParameterString(self.EXTRA,
             self.tr('Additional creation parameters'), '', optional=True))
-        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Output layer')))
+        self.addOutput(OutputRaster(self.OUTPUT, self.tr('Clipped')))
 
-    def processAlgorithm(self, progress):
+    def getConsoleCommands(self):
         out = self.getOutputValue(self.OUTPUT)
         noData = str(self.getParameterValue(self.NO_DATA))
         projwin = str(self.getParameterValue(self.PROJWIN))
@@ -82,5 +82,4 @@ class ClipByExtent(GdalAlgorithm):
         arguments.append(self.getParameterValue(self.INPUT))
         arguments.append(out)
 
-        GdalUtils.runGdal(['gdal_translate',
-                          GdalUtils.escapeAndJoin(arguments)], progress)
+        return ['gdal_translate', GdalUtils.escapeAndJoin(arguments)]

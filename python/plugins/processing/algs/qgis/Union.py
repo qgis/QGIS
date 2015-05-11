@@ -65,9 +65,8 @@ class Union(GeoAlgorithm):
         for inFeatA in featuresA:
             progress.setPercentage(nElement / float(nFeat) * 50)
             nElement += 1
-            found = False
+            lstIntersectingB = []
             geom = QgsGeometry(inFeatA.geometry())
-            diff_geom = QgsGeometry(geom)
             atMapA = inFeatA.attributes()
             intersects = indexA.intersects(geom.boundingBox())
             if len(intersects) < 1:
@@ -89,8 +88,8 @@ class Union(GeoAlgorithm):
                     tmpGeom = QgsGeometry(inFeatB.geometry())
 
                     if geom.intersects(tmpGeom):
-                        found = True
                         int_geom = geom.intersection(tmpGeom)
+                        lstIntersectingB.append(tmpGeom)
 
                         if int_geom is None:
                            # There was a problem creating the intersection
@@ -99,14 +98,6 @@ class Union(GeoAlgorithm):
                                         'intersection'))
                         else:
                             int_geom = QgsGeometry(int_geom)
-
-                        if diff_geom.intersects(tmpGeom):
-                            diff_geom = diff_geom.difference(tmpGeom)
-                            if diff_geom is None:
-                                # It's possible there was an error here?
-                                diff_geom = QgsGeometry()
-                            else:
-                                diff_geom = QgsGeometry(diff_geom)
 
                         if int_geom.wkbType() == 0:
                             # Intersection produced different geomety types
@@ -124,20 +115,15 @@ class Union(GeoAlgorithm):
                         except Exception, err:
                             raise GeoAlgorithmExecutionException(
                                 self.tr('Feature exception while computing union'))
-                    else:
-                      # This only happends if the bounding box intersects,
-                      # but the geometry doesn't
-                        try:
-                            outFeat.setGeometry(geom)
-                            outFeat.setAttributes(atMapA)
-                            writer.addFeature(outFeat)
-                        except:
-                            # Also shoudn't ever happen
-                            raise GeoAlgorithmExecutionException(
-                                self.tr('Feature exception while computing union'))
 
-                if found:
-                    try:
+                try:
+                        # the remaining bit of inFeatA's geometry
+                        # if there is nothing left, this will just silently fail and we're good
+                        diff_geom = QgsGeometry( geom )
+                        if len(lstIntersectingB) != 0:
+                            intB = QgsGeometry.unaryUnion(lstIntersectingB)
+                            diff_geom = diff_geom.difference(intB)
+
                         if diff_geom.wkbType() == 0:
                             temp_list = diff_geom.asGeometryCollection()
                             for i in temp_list:
@@ -146,7 +132,7 @@ class Union(GeoAlgorithm):
                         outFeat.setGeometry(diff_geom)
                         outFeat.setAttributes(atMapA)
                         writer.addFeature(outFeat)
-                    except Exception, err:
+                except Exception, err:
                         raise GeoAlgorithmExecutionException(
                             self.tr('Feature exception while computing union'))
 

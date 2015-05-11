@@ -194,6 +194,54 @@ class TestQgsVectorLayer : public QObject
       QVERIFY( myCount == 3 );
     }
 
+    void QgsVectorLayerGetValues()
+    {
+      QgsVectorLayer* layer = new QgsVectorLayer( "Point?field=col1:real", "layer", "memory" );
+      QVERIFY( layer->isValid() );
+      QgsFeature f1( layer->dataProvider()->fields(), 1 );
+      f1.setAttribute( "col1", 1 );
+      QgsFeature f2( layer->dataProvider()->fields(), 2 );
+      f2.setAttribute( "col1", 2 );
+      QgsFeature f3( layer->dataProvider()->fields(), 3 );
+      f3.setAttribute( "col1", 3 );
+      QgsFeature f4( layer->dataProvider()->fields(), 4 );
+      f4.setAttribute( "col1", QVariant() );
+      layer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 << f3 << f4 );
+
+      bool ok;
+      QList<QVariant> varList = layer->getValues( "col1", ok );
+      QVERIFY( ok );
+      QCOMPARE( varList.length(), 4 );
+      QCOMPARE( varList.at( 0 ), QVariant( 1 ) );
+      QCOMPARE( varList.at( 1 ), QVariant( 2 ) );
+      QCOMPARE( varList.at( 2 ), QVariant( 3 ) );
+      QCOMPARE( varList.at( 3 ), QVariant() );
+
+      QList<double> doubleList = layer->getDoubleValues( "col1", ok );
+      QVERIFY( ok );
+      QCOMPARE( doubleList.length(), 3 );
+      QCOMPARE( doubleList.at( 0 ), 1.0 );
+      QCOMPARE( doubleList.at( 1 ), 2.0 );
+      QCOMPARE( doubleList.at( 2 ), 3.0 );
+
+      QList<QVariant> expVarList = layer->getValues( "tostring(col1) || ' '", ok );
+      QVERIFY( ok );
+      QCOMPARE( expVarList.length(), 4 );
+      QCOMPARE( expVarList.at( 0 ).toString(), QString( "1 " ) );
+      QCOMPARE( expVarList.at( 1 ).toString(), QString( "2 " ) );
+      QCOMPARE( expVarList.at( 2 ).toString(), QString( "3 " ) );
+      QCOMPARE( expVarList.at( 3 ), QVariant() );
+
+      QList<double> expDoubleList = layer->getDoubleValues( "col1 * 2", ok );
+      QVERIFY( ok );
+      QCOMPARE( expDoubleList.length(), 3 );
+      QCOMPARE( expDoubleList.at( 0 ), 2.0 );
+      QCOMPARE( expDoubleList.at( 1 ), 4.0 );
+      QCOMPARE( expDoubleList.at( 2 ), 6.0 );
+
+      delete layer;
+    }
+
     void QgsVectorLayerstorageType() {}
     void QgsVectorLayercapabilitiesString() {}
     void QgsVectorLayerdataComment() {}

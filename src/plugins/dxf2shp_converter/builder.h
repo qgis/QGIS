@@ -22,18 +22,15 @@
 
 #include "dxflib/src/dl_creationadapter.h"
 #include "shapelib-1.2.10/shapefil.h"
-#include "getInsertions.h"
-#include <vector>
+
+#include <QList>
+#include <QString>
+
 
 class Builder: public DL_CreationAdapter
 {
   public:
-    Builder( std::string theFname,
-             int theShapefileType,
-             double *theGrpXVals, double *theGrpYVals,
-             std::string *theGrpNames,
-             int theInsertCount,
-             bool theConvertText );
+    Builder( QString theFname, int theShapefileType, bool theConvertText, bool theConvertInserts );
     ~Builder();
 
     void FinalizeAnyPolyline();
@@ -41,6 +38,7 @@ class Builder: public DL_CreationAdapter
     virtual void addLayer( const DL_LayerData &data ) override;
     virtual void addPoint( const DL_PointData &data ) override;
     virtual void addLine( const DL_LineData &data ) override;
+    virtual void addInsert( const DL_InsertData &data ) override;
     virtual void addPolyline( const DL_PolylineData &data ) override;
     virtual void addArc( const DL_ArcData &data ) override;
     virtual void addCircle( const DL_CircleData &data ) override;
@@ -52,30 +50,32 @@ class Builder: public DL_CreationAdapter
 
     void print_shpObjects();
 
-    int textObjectsSize();
-    std::string outputShp();
-    std::string outputTShp();
+    int textObjectsSize() const { return textObjects.size(); }
+    int insertObjectsSize() const { return insertObjects.size(); }
+    QString outputShp() const { return outputshp; }
+    QString outputTShp() const { return outputtshp; }
+    QString outputIShp() const { return outputishp; }
 
   private:
-    std::string fname;
+    QString fname;
     int shapefileType; // SHPT_POINT, ...
-    double *grpXVals;
-    double *grpYVals;
-    std::string *grpNames;
-    int insertCount;
     bool convertText;
+    bool convertInserts;
 
-    std::string outputdbf;
-    std::string outputshp;
-    std::string outputtdbf;
-    std::string outputtshp;
+    QString outputdbf;
+    QString outputshp;
 
-    std::vector <DL_VertexData> polyVertex;
-    std::vector <SHPObject *> shpObjects; // all read objects are stored here
-    std::vector <DL_TextData> textObjects;
+    QString outputtdbf;
+    QString outputtshp;
 
-    int fetchedprims;
-    int fetchedtexts;
+    QString outputidbf;
+    QString outputishp;
+
+    QList<SHPObject *> shpObjects; // all read objects are stored here
+
+    QList<DL_VertexData> polyVertex;
+    QList<DL_TextData> textObjects;
+    QList<DL_InsertData> insertObjects;
 
     bool ignoringBlock;
     bool current_polyline_willclose;
@@ -84,5 +84,4 @@ class Builder: public DL_CreationAdapter
     long current_polyline_pointcount;
 
     double closePolyX, closePolyY, closePolyZ;
-    double currentBlockX, currentBlockY;
 };

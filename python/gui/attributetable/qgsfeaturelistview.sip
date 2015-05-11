@@ -9,7 +9,7 @@ class QgsFeatureListView : QListView
      *
      * @param parent   owner
      */
-    explicit QgsFeatureListView( QWidget* parent = 0 );
+    explicit QgsFeatureListView( QWidget* parent /TransferThis/ = 0 );
 
     /**
      * Destructor

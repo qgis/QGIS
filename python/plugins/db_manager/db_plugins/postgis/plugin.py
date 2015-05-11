@@ -27,306 +27,321 @@ from PyQt4.QtCore import QSettings, Qt, QRegExp
 from PyQt4.QtGui import QIcon, QAction, QApplication, QMessageBox
 from qgis.gui import QgsMessageBar
 
-from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, TableField, TableConstraint, TableIndex, TableTrigger, TableRule
+from ..plugin import ConnectionError, InvalidDataException, DBPlugin, Database, Schema, Table, VectorTable, RasterTable, \
+    TableField, TableConstraint, TableIndex, TableTrigger, TableRule
 
 try:
-        from . import resources_rc
+    from . import resources_rc
 except ImportError:
-        pass
+    pass
+
 
 def classFactory():
-        return PostGisDBPlugin
+    return PostGisDBPlugin
+
 
 class PostGisDBPlugin(DBPlugin):
+    @classmethod
+    def icon(self):
+        return QIcon(":/db_manager/postgis/icon")
 
-        @classmethod
-        def icon(self):
-                return QIcon(":/db_manager/postgis/icon")
+    @classmethod
+    def typeName(self):
+        return 'postgis'
 
-        @classmethod
-        def typeName(self):
-                return 'postgis'
+    @classmethod
+    def typeNameString(self):
+        return 'PostGIS'
 
-        @classmethod
-        def typeNameString(self):
-                return 'PostGIS'
+    @classmethod
+    def providerName(self):
+        return 'postgres'
 
-        @classmethod
-        def providerName(self):
-                return 'postgres'
+    @classmethod
+    def connectionSettingsKey(self):
+        return '/PostgreSQL/connections'
 
-        @classmethod
-        def connectionSettingsKey(self):
-                return '/PostgreSQL/connections'
+    def databasesFactory(self, connection, uri):
+        return PGDatabase(connection, uri)
 
-        def databasesFactory(self, connection, uri):
-                return PGDatabase(connection, uri)
+    def connect(self, parent=None):
+        conn_name = self.connectionName()
+        settings = QSettings()
+        settings.beginGroup(u"/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
-        def connect(self, parent=None):
-                conn_name = self.connectionName()
-                settings = QSettings()
-                settings.beginGroup( u"/%s/%s" % (self.connectionSettingsKey(), conn_name) )
+        if not settings.contains("database"):  # non-existent entry?
+            raise InvalidDataException(self.tr('There is no defined database connection "%s".') % conn_name)
 
-                if not settings.contains( "database" ): # non-existent entry?
-                        raise InvalidDataException( self.tr('There is no defined database connection "%s".') % conn_name )
+        from qgis.core import QgsDataSourceURI
 
-                from qgis.core import QgsDataSourceURI
-                uri = QgsDataSourceURI()
+        uri = QgsDataSourceURI()
 
-                settingsList = ["service", "host", "port", "database", "username", "password"]
-                service, host, port, database, username, password = map(lambda x: settings.value(x, "", type=str), settingsList)
+        settingsList = ["service", "host", "port", "database", "username", "password"]
+        service, host, port, database, username, password = map(lambda x: settings.value(x, "", type=str), settingsList)
 
-                useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
-                sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
+        useEstimatedMetadata = settings.value("estimatedMetadata", False, type=bool)
+        sslmode = settings.value("sslmode", QgsDataSourceURI.SSLprefer, type=int)
 
-                settings.endGroup()
+        settings.endGroup()
 
-                if service:
-                        uri.setConnection(service, database, username, password, sslmode)
-                else:
-                        uri.setConnection(host, port, database, username, password, sslmode)
+        if service:
+            uri.setConnection(service, database, username, password, sslmode)
+        else:
+            uri.setConnection(host, port, database, username, password, sslmode)
 
-                uri.setUseEstimatedMetadata(useEstimatedMetadata)
+        uri.setUseEstimatedMetadata(useEstimatedMetadata)
 
-                try:
-                        return self.connectToUri(uri)
-                except ConnectionError, e:
-                        return False
+        try:
+            return self.connectToUri(uri)
+        except ConnectionError, e:
+            return False
+
 
 class PGDatabase(Database):
-        def __init__(self, connection, uri):
-                Database.__init__(self, connection, uri)
+    def __init__(self, connection, uri):
+        Database.__init__(self, connection, uri)
 
-        def connectorsFactory(self, uri):
-                return PostGisDBConnector(uri)
+    def connectorsFactory(self, uri):
+        return PostGisDBConnector(uri)
 
-        def dataTablesFactory(self, row, db, schema=None):
-                return PGTable(row, db, schema)
+    def dataTablesFactory(self, row, db, schema=None):
+        return PGTable(row, db, schema)
 
-        def vectorTablesFactory(self, row, db, schema=None):
-                return PGVectorTable(row, db, schema)
+    def vectorTablesFactory(self, row, db, schema=None):
+        return PGVectorTable(row, db, schema)
 
-        def rasterTablesFactory(self, row, db, schema=None):
-                return PGRasterTable(row, db, schema)
+    def rasterTablesFactory(self, row, db, schema=None):
+        return PGRasterTable(row, db, schema)
 
-        def schemasFactory(self, row, db):
-                return PGSchema(row, db)
+    def schemasFactory(self, row, db):
+        return PGSchema(row, db)
 
-        def sqlResultModel(self, sql, parent):
-                from .data_model import PGSqlResultModel
-                return PGSqlResultModel(self, sql, parent)
+    def sqlResultModel(self, sql, parent):
+        from .data_model import PGSqlResultModel
+
+        return PGSqlResultModel(self, sql, parent)
 
 
-        def registerDatabaseActions(self, mainWindow):
-                Database.registerDatabaseActions(self, mainWindow)
+    def registerDatabaseActions(self, mainWindow):
+        Database.registerDatabaseActions(self, mainWindow)
 
-                # add a separator
-                separator = QAction(self)
-                separator.setSeparator(True)
-                mainWindow.registerAction( separator, self.tr("&Table") )
+        # add a separator
+        separator = QAction(self)
+        separator.setSeparator(True)
+        mainWindow.registerAction(separator, self.tr("&Table"))
 
-                action = QAction(self.tr("Run &Vacuum Analyze"), self)
-                mainWindow.registerAction( action, self.tr("&Table"), self.runVacuumAnalyzeActionSlot )
+        action = QAction(self.tr("Run &Vacuum Analyze"), self)
+        mainWindow.registerAction(action, self.tr("&Table"), self.runVacuumAnalyzeActionSlot)
 
-        def runVacuumAnalyzeActionSlot(self, item, action, parent):
-                QApplication.restoreOverrideCursor()
-                try:
-                        if not isinstance(item, Table) or item.isView:
-                                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), QgsMessageBar.INFO, parent.iface.messageTimeout())
-                                return
-                finally:
-                        QApplication.setOverrideCursor(Qt.WaitCursor)
+    def runVacuumAnalyzeActionSlot(self, item, action, parent):
+        QApplication.restoreOverrideCursor()
+        try:
+            if not isinstance(item, Table) or item.isView:
+                parent.infoBar.pushMessage(self.tr("Select a table for vacuum analyze."), QgsMessageBar.INFO,
+                                           parent.iface.messageTimeout())
+                return
+        finally:
+            QApplication.setOverrideCursor(Qt.WaitCursor)
 
-                item.runVacuumAnalyze()
+        item.runVacuumAnalyze()
 
 
 class PGSchema(Schema):
-        def __init__(self, row, db):
-                Schema.__init__(self, db)
-                self.oid, self.name, self.owner, self.perms, self.comment = row
+    def __init__(self, row, db):
+        Schema.__init__(self, db)
+        self.oid, self.name, self.owner, self.perms, self.comment = row
 
 
 class PGTable(Table):
-        def __init__(self, row, db, schema=None):
-                Table.__init__(self, db, schema)
-                self.name, schema_name, self.isView, self.owner, self.estimatedRowCount, self.pages, self.comment = row
-                self.estimatedRowCount = int(self.estimatedRowCount)
+    def __init__(self, row, db, schema=None):
+        Table.__init__(self, db, schema)
+        self.name, schema_name, self.isView, self.owner, self.estimatedRowCount, self.pages, self.comment = row
+        self.estimatedRowCount = int(self.estimatedRowCount)
 
-        def runVacuumAnalyze(self):
+    def runVacuumAnalyze(self):
+        self.aboutToChange()
+        self.database().connector.runVacuumAnalyze((self.schemaName(), self.name))
+        # TODO: change only this item, not re-create all the tables in the schema/database
+        self.schema().refresh() if self.schema() else self.database().refresh()
+
+    def runAction(self, action):
+        action = unicode(action)
+
+        if action.startswith("vacuumanalyze/"):
+            if action == "vacuumanalyze/run":
+                self.runVacuumAnalyze()
+                return True
+
+        elif action.startswith("rule/"):
+            parts = action.split('/')
+            rule_name = parts[1]
+            rule_action = parts[2]
+
+            msg = u"Do you want to %s rule %s?" % (rule_action, rule_name)
+
+            QApplication.restoreOverrideCursor()
+
+            try:
+                if QMessageBox.question(None, self.tr("Table rule"), msg,
+                                        QMessageBox.Yes | QMessageBox.No) == QMessageBox.No:
+                    return False
+            finally:
+                QApplication.setOverrideCursor(Qt.WaitCursor)
+
+            if rule_action == "delete":
                 self.aboutToChange()
-                self.database().connector.runVacuumAnalyze( (self.schemaName(), self.name) )
-                # TODO: change only this item, not re-create all the tables in the schema/database
-                self.schema().refresh() if self.schema() else self.database().refresh()
+                self.database().connector.deleteTableRule(rule_name, (self.schemaName(), self.name))
+                self.refreshRules()
+                return True
 
-        def runAction(self, action):
-                action = unicode(action)
+        return Table.runAction(self, action)
 
-                if action.startswith( "vacuumanalyze/" ):
-                        if action == "vacuumanalyze/run":
-                                self.runVacuumAnalyze()
-                                return True
+    def tableFieldsFactory(self, row, table):
+        return PGTableField(row, table)
 
-                elif action.startswith( "rule/" ):
-                        parts = action.split('/')
-                        rule_name = parts[1]
-                        rule_action = parts[2]
+    def tableConstraintsFactory(self, row, table):
+        return PGTableConstraint(row, table)
 
-                        msg = u"Do you want to %s rule %s?" % (rule_action, rule_name)
+    def tableIndexesFactory(self, row, table):
+        return PGTableIndex(row, table)
 
-                        QApplication.restoreOverrideCursor()
+    def tableTriggersFactory(self, row, table):
+        return PGTableTrigger(row, table)
 
-                        try:
-                                if QMessageBox.question(None, self.tr("Table rule"), msg, QMessageBox.Yes|QMessageBox.No) == QMessageBox.No:
-                                        return False
-                        finally:
-                                QApplication.setOverrideCursor(Qt.WaitCursor)
+    def tableRulesFactory(self, row, table):
+        return PGTableRule(row, table)
 
-                        if rule_action == "delete":
-                                self.aboutToChange()
-                                self.database().connector.deleteTableRule(rule_name, (self.schemaName(), self.name))
-                                self.refreshRules()
-                                return True
+    def info(self):
+        from .info_model import PGTableInfo
 
-                return Table.runAction(self, action)
+        return PGTableInfo(self)
 
-        def tableFieldsFactory(self, row, table):
-                return PGTableField(row, table)
+    def tableDataModel(self, parent):
+        from .data_model import PGTableDataModel
 
-        def tableConstraintsFactory(self, row, table):
-                return PGTableConstraint(row, table)
-
-        def tableIndexesFactory(self, row, table):
-                return PGTableIndex(row, table)
-
-        def tableTriggersFactory(self, row, table):
-                return PGTableTrigger(row, table)
-
-        def tableRulesFactory(self, row, table):
-                return PGTableRule(row, table)
-
-        def info(self):
-                from .info_model import PGTableInfo
-                return PGTableInfo(self)
-
-        def tableDataModel(self, parent):
-                from .data_model import PGTableDataModel
-                return PGTableDataModel(self, parent)
+        return PGTableDataModel(self, parent)
 
 
 class PGVectorTable(PGTable, VectorTable):
-        def __init__(self, row, db, schema=None):
-                PGTable.__init__(self, row[:-4], db, schema)
-                VectorTable.__init__(self, db, schema)
-                self.geomColumn, self.geomType, self.geomDim, self.srid = row[-4:]
+    def __init__(self, row, db, schema=None):
+        PGTable.__init__(self, row[:-4], db, schema)
+        VectorTable.__init__(self, db, schema)
+        self.geomColumn, self.geomType, self.geomDim, self.srid = row[-4:]
 
-        def info(self):
-                from .info_model import PGVectorTableInfo
-                return PGVectorTableInfo(self)
+    def info(self):
+        from .info_model import PGVectorTableInfo
 
-        def runAction(self, action):
-                if PGTable.runAction(self, action):
-                        return True
-                return VectorTable.runAction(self, action)
+        return PGVectorTableInfo(self)
+
+    def runAction(self, action):
+        if PGTable.runAction(self, action):
+            return True
+        return VectorTable.runAction(self, action)
+
 
 class PGRasterTable(PGTable, RasterTable):
-        def __init__(self, row, db, schema=None):
-                PGTable.__init__(self, row[:-6], db, schema)
-                RasterTable.__init__(self, db, schema)
-                self.geomColumn, self.pixelType, self.pixelSizeX, self.pixelSizeY, self.isExternal, self.srid = row[-6:]
-                self.geomType = 'RASTER'
+    def __init__(self, row, db, schema=None):
+        PGTable.__init__(self, row[:-6], db, schema)
+        RasterTable.__init__(self, db, schema)
+        self.geomColumn, self.pixelType, self.pixelSizeX, self.pixelSizeY, self.isExternal, self.srid = row[-6:]
+        self.geomType = 'RASTER'
 
-        def info(self):
-                from .info_model import PGRasterTableInfo
-                return PGRasterTableInfo(self)
+    def info(self):
+        from .info_model import PGRasterTableInfo
 
-        def gdalUri(self):
-                uri = self.database().uri()
-                schema = ( u'schema=%s' % self.schemaName() ) if self.schemaName() else ''
-                dbname = ( u'dbname=%s' % uri.database() ) if uri.database() else ''
-                host = ( u'host=%s' % uri.host() ) if uri.host() else ''
-                user = ( u'user=%s' % uri.username() ) if uri.username() else ''
-                passw = ( u'password=%s' % uri.password() ) if uri.password() else ''
-                port = ( u'port=%s' % uri.port() ) if uri.port() else ''
+        return PGRasterTableInfo(self)
 
-                # Find first raster field
-                col = ''
-                for fld in self.fields():
-                  if fld.dataType == "raster":
-                          col = u'column=%s' % fld.name
-                          break
+    def gdalUri(self):
+        uri = self.database().uri()
+        schema = ( u'schema=%s' % self.schemaName() ) if self.schemaName() else ''
+        dbname = ( u'dbname=%s' % uri.database() ) if uri.database() else ''
+        host = ( u'host=%s' % uri.host() ) if uri.host() else ''
+        user = ( u'user=%s' % uri.username() ) if uri.username() else ''
+        passw = ( u'password=%s' % uri.password() ) if uri.password() else ''
+        port = ( u'port=%s' % uri.port() ) if uri.port() else ''
 
-                gdalUri = u'PG: %s %s %s %s %s mode=2 %s %s table=%s' % \
-                    (dbname, host, user, passw, port, schema, col, self.name)
+        # Find first raster field
+        col = ''
+        for fld in self.fields():
+            if fld.dataType == "raster":
+                col = u'column=%s' % fld.name
+                break
 
-                return gdalUri
+        gdalUri = u'PG: %s %s %s %s %s mode=2 %s %s table=%s' % \
+                  (dbname, host, user, passw, port, schema, col, self.name)
 
-        def mimeUri(self):
-                uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
-                return uri
+        return gdalUri
 
-        def toMapLayer(self):
-                from qgis.core import QgsRasterLayer, QgsContrastEnhancement
-                rl = QgsRasterLayer(self.gdalUri(), self.name)
-                if rl.isValid():
-                        rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
-                return rl
+    def mimeUri(self):
+        uri = u"raster:gdal:%s:%s" % (self.name, self.gdalUri())
+        return uri
+
+    def toMapLayer(self):
+        from qgis.core import QgsRasterLayer, QgsContrastEnhancement
+
+        rl = QgsRasterLayer(self.gdalUri(), self.name)
+        if rl.isValid():
+            rl.setContrastEnhancement(QgsContrastEnhancement.StretchToMinimumMaximum)
+        return rl
+
 
 class PGTableField(TableField):
-        def __init__(self, row, table):
-                TableField.__init__(self, table)
-                self.num, self.name, self.dataType, self.charMaxLen, self.modifier, self.notNull, self.hasDefault, self.default, typeStr = row
-                self.primaryKey = False
+    def __init__(self, row, table):
+        TableField.__init__(self, table)
+        self.num, self.name, self.dataType, self.charMaxLen, self.modifier, self.notNull, self.hasDefault, self.default, typeStr = row
+        self.primaryKey = False
 
-                # get modifier (e.g. "precision,scale") from formatted type string
-                trimmedTypeStr = typeStr.strip()
-                regex = QRegExp( "\((.+)\)$" )
-                startpos = regex.indexIn( trimmedTypeStr )
-                if startpos >= 0:
-                        self.modifier = regex.cap(1).strip()
-                else:
-                        self.modifier = None
+        # get modifier (e.g. "precision,scale") from formatted type string
+        trimmedTypeStr = typeStr.strip()
+        regex = QRegExp("\((.+)\)$")
+        startpos = regex.indexIn(trimmedTypeStr)
+        if startpos >= 0:
+            self.modifier = regex.cap(1).strip()
+        else:
+            self.modifier = None
 
-                # find out whether fields are part of primary key
-                for con in self.table().constraints():
-                        if con.type == TableConstraint.TypePrimaryKey and self.num in con.columns:
-                                self.primaryKey = True
-                                break
+        # find out whether fields are part of primary key
+        for con in self.table().constraints():
+            if con.type == TableConstraint.TypePrimaryKey and self.num in con.columns:
+                self.primaryKey = True
+                break
 
 
 class PGTableConstraint(TableConstraint):
-        def __init__(self, row, table):
-                TableConstraint.__init__(self, table)
-                self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[:5]
-                self.columns = map(int, columns.split(' '))
+    def __init__(self, row, table):
+        TableConstraint.__init__(self, table)
+        self.name, constr_type_str, self.isDefferable, self.isDeffered, columns = row[:5]
+        self.columns = map(int, columns.split(' '))
 
-                if constr_type_str in TableConstraint.types:
-                        self.type = TableConstraint.types[constr_type_str]
-                else:
-                        self.type = TableConstraint.TypeUnknown
+        if constr_type_str in TableConstraint.types:
+            self.type = TableConstraint.types[constr_type_str]
+        else:
+            self.type = TableConstraint.TypeUnknown
 
-                if self.type == TableConstraint.TypeCheck:
-                        self.checkSource = row[5]
-                elif self.type == TableConstraint.TypeForeignKey:
-                        self.foreignTable = row[6]
-                        self.foreignOnUpdate = TableConstraint.onAction[row[7]]
-                        self.foreignOnDelete = TableConstraint.onAction[row[8]]
-                        self.foreignMatchType = TableConstraint.matchTypes[row[9]]
-                        self.foreignKeys = row[10]
+        if self.type == TableConstraint.TypeCheck:
+            self.checkSource = row[5]
+        elif self.type == TableConstraint.TypeForeignKey:
+            self.foreignTable = row[6]
+            self.foreignOnUpdate = TableConstraint.onAction[row[7]]
+            self.foreignOnDelete = TableConstraint.onAction[row[8]]
+            self.foreignMatchType = TableConstraint.matchTypes[row[9]]
+            self.foreignKeys = row[10]
 
 
 class PGTableIndex(TableIndex):
-        def __init__(self, row, table):
-                TableIndex.__init__(self, table)
-                self.name, columns, self.isUnique = row
-                self.columns = map(int, columns.split(' '))
+    def __init__(self, row, table):
+        TableIndex.__init__(self, table)
+        self.name, columns, self.isUnique = row
+        self.columns = map(int, columns.split(' '))
 
 
 class PGTableTrigger(TableTrigger):
-        def __init__(self, row, table):
-                TableTrigger.__init__(self, table)
-                self.name, self.function, self.type, self.enabled = row
+    def __init__(self, row, table):
+        TableTrigger.__init__(self, table)
+        self.name, self.function, self.type, self.enabled = row
+
 
 class PGTableRule(TableRule):
-        def __init__(self, row, table):
-                TableRule.__init__(self, table)
-                self.name, self.definition = row
+    def __init__(self, row, table):
+        TableRule.__init__(self, table)
+        self.name, self.definition = row

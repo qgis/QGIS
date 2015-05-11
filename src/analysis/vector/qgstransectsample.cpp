@@ -138,12 +138,11 @@ int QgsTransectSample::createSample( QProgressDialog* pd )
       break;
     }
 
-
-    QgsGeometry* strataGeom = fet.geometry();
-    if ( !strataGeom )
+    if ( !fet.constGeometry() )
     {
       continue;
     }
+    const QgsGeometry* strataGeom = fet.constGeometry();
 
     //find baseline for strata
     QVariant strataId = fet.attribute( mStrataIdAttribute );
@@ -539,7 +538,7 @@ QgsGeometry* QgsTransectSample::closestMultilineElement( const QgsPoint& pt, Qgs
   return closestLine;
 }
 
-QgsGeometry* QgsTransectSample::clipBufferLine( QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
+QgsGeometry* QgsTransectSample::clipBufferLine( const QgsGeometry* stratumGeom, QgsGeometry* clippedBaseline, double tolerance )
 {
   if ( !stratumGeom || !clippedBaseline || clippedBaseline->wkbType() == QGis::WKBUnknown )
   {

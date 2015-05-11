@@ -47,37 +47,37 @@ class GUI_EXPORT QgsLongLongValidator : public QValidator
     QValidator::State validate( QString &input, int& ) const override
     {
       if ( input.isEmpty() )
-      return Intermediate;
+        return Intermediate;
 
       if ( b >= 0 && input.startsWith( '-' ) )
         return Invalid;
 
-        if ( t < 0 && input.startsWith( '+' ) )
-          return Invalid;
+      if ( t < 0 && input.startsWith( '+' ) )
+        return Invalid;
 
-          if ( input == "-" || input == "+" )
-            return Intermediate;
+      if ( input == "-" || input == "+" )
+        return Intermediate;
 
 
-            bool ok;
-            qlonglong entered = input.toLongLong( &ok );
-            if ( !ok )
-              return Invalid;
+      bool ok;
+      qlonglong entered = input.toLongLong( &ok );
+      if ( !ok )
+        return Invalid;
 
-              if ( entered >= b && entered <= t )
-                return Acceptable;
+      if ( entered >= b && entered <= t )
+        return Acceptable;
 
-                if ( entered >= 0 )
-              {
-                // the -entered < b condition is necessary to allow people to type
-                // the minus last (e.g. for right-to-left languages)
-                return ( entered > t && -entered < b ) ? Invalid : Intermediate;
-                }
-                else
-                {
-                  return ( entered < b ) ? Invalid : Intermediate;
-                }
-  }
+      if ( entered >= 0 )
+      {
+        // the -entered < b condition is necessary to allow people to type
+        // the minus last (e.g. for right-to-left languages)
+        return ( entered > t && -entered < b ) ? Invalid : Intermediate;
+      }
+      else
+      {
+        return ( entered < b ) ? Invalid : Intermediate;
+      }
+    }
 
     void setBottom( qint64 bottom ) { b = bottom; }
     void setTop( qint64 top ) { t = top; }

@@ -27,7 +27,7 @@ class QgsComposerModel : QAbstractItemModel
      * @param composition composition to attach to
      * @param parent parent object
      */
-    explicit QgsComposerModel( QgsComposition* composition, QObject* parent = 0 );
+    explicit QgsComposerModel( QgsComposition* composition, QObject* parent /TransferThis/ = 0 );
 
     ~QgsComposerModel();
 

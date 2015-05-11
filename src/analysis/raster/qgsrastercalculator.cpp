@@ -178,7 +178,11 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     {
       double sourceTransformation[6];
       GDALRasterBandH sourceRasterBand = mInputRasterBands[bufferIt.key()];
-      GDALGetGeoTransform( GDALGetBandDataset( sourceRasterBand ), sourceTransformation );
+      if ( GDALGetGeoTransform( GDALGetBandDataset( sourceRasterBand ), sourceTransformation ) != CE_None )
+      {
+        qWarning( "GDALGetGeoTransform failed!" );
+      }
+
       //the function readRasterPart calls GDALRasterIO (and ev. does some conversion if raster transformations are not the same)
       readRasterPart( targetGeoTransform, 0, i, mNumOutputColumns, 1, sourceTransformation, sourceRasterBand, bufferIt.value()->data() );
     }

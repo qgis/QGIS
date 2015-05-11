@@ -177,6 +177,15 @@ bool QgsRenderChecker::runTest( QString theTestName,
   // Load the expected result pixmap
   //
   QImage myExpectedImage( mExpectedImageFile );
+  if ( myExpectedImage.isNull() )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not load expected image from " << mExpectedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Expected "
+              "Image File could not be loaded.</td></tr></table>\n";
+    return false;
+  }
   mMatchTarget = myExpectedImage.width() * myExpectedImage.height();
   //
   // Now render our layers onto a pixmap
@@ -205,7 +214,15 @@ bool QgsRenderChecker::runTest( QString theTestName,
 
   myImage.setDotsPerMeterX( myExpectedImage.dotsPerMeterX() );
   myImage.setDotsPerMeterY( myExpectedImage.dotsPerMeterY() );
-  myImage.save( mRenderedImageFile, "PNG", 100 );
+  if ( ! myImage.save( mRenderedImageFile, "PNG", 100 ) )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not save rendered image to " << mRenderedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+              "Image File could not be saved.</td></tr></table>\n";
+    return false;
+  }
 
   //create a world file to go with the image...
 
@@ -243,7 +260,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   {
     mRenderedImageFile = theRenderedImageFile;
   }
-  if ( mRenderedImageFile.isEmpty() )
+  else if ( mRenderedImageFile.isEmpty() )
   {
     qDebug( "QgsRenderChecker::runTest failed - Rendered Image File not set." );
     mReport = "<table>"
@@ -257,6 +274,15 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //
   QImage myExpectedImage( mExpectedImageFile );
   QImage myResultImage( mRenderedImageFile );
+  if ( myResultImage.isNull() )
+  {
+    qDebug() << "QgsRenderChecker::runTest failed - Could not load rendered image from " << mRenderedImageFile;
+    mReport = "<table>"
+              "<tr><td>Test Result:</td><td>Expected Result:</td></tr>\n"
+              "<tr><td>Nothing rendered</td>\n<td>Failed because Rendered "
+              "Image File could not be loaded.</td></tr></table>\n";
+    return false;
+  }
   QImage myDifferenceImage( myExpectedImage.width(),
                             myExpectedImage.height(),
                             QImage::Format_RGB32 );
@@ -264,6 +290,17 @@ bool QgsRenderChecker::compareImages( QString theTestName,
                             QDir::separator() +
                             theTestName + "_result_diff.png";
   myDifferenceImage.fill( qRgb( 152, 219, 249 ) );
+
+  //check for mask
+  QString maskImagePath = mExpectedImageFile;
+  maskImagePath.chop( 4 ); //remove .png extension
+  maskImagePath += "_mask.png";
+  QImage* maskImage = new QImage( maskImagePath );
+  bool hasMask = !maskImage->isNull();
+  if ( hasMask )
+  {
+    qDebug( "QgsRenderChecker using mask image" );
+  }
 
   //
   // Set pixel count score and target
@@ -338,6 +375,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
     mReport += "<font color=red>Expected image and result image for " + theTestName + " are different dimensions - FAILING!</font>";
     mReport += "</td></tr>";
     mReport += myImagesString;
+    delete maskImage;
     return false;
   }
 
@@ -348,29 +386,42 @@ bool QgsRenderChecker::compareImages( QString theTestName,
 
   mMismatchCount = 0;
   int colorTolerance = ( int ) mColorTolerance;
-  for ( int x = 0; x < myExpectedImage.width(); ++x )
+  for ( int y = 0; y < myExpectedImage.height(); ++y )
   {
-    for ( int y = 0; y < myExpectedImage.height(); ++y )
+    const QRgb* expectedScanline = ( const QRgb* )myExpectedImage.constScanLine( y );
+    const QRgb* resultScanline = ( const QRgb* )myResultImage.constScanLine( y );
+    const QRgb* maskScanline = hasMask ? ( const QRgb* )maskImage->constScanLine( y ) : 0;
+    QRgb* diffScanline = ( QRgb* )myDifferenceImage.scanLine( y );
+
+    for ( int x = 0; x < myExpectedImage.width(); ++x )
     {
-      QRgb myExpectedPixel = myExpectedImage.pixel( x, y );
-      QRgb myActualPixel = myResultImage.pixel( x, y );
-      if ( mColorTolerance == 0 )
+      int maskTolerance = hasMask ? qRed( maskScanline[ x ] ) : 0;
+      int pixelTolerance = qMax( colorTolerance, maskTolerance );
+      if ( pixelTolerance == 255 )
+      {
+        //skip pixel
+        continue;
+      }
+
+      QRgb myExpectedPixel = expectedScanline[x];
+      QRgb myActualPixel = resultScanline[x];
+      if ( pixelTolerance == 0 )
       {
         if ( myExpectedPixel != myActualPixel )
         {
           ++mMismatchCount;
-          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+          diffScanline[ x ] = qRgb( 255, 0, 0 );
         }
       }
       else
       {
-        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > colorTolerance ||
-             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > colorTolerance ||
-             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > colorTolerance ||
-             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > colorTolerance )
+        if ( qAbs( qRed( myExpectedPixel ) - qRed( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qGreen( myExpectedPixel ) - qGreen( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qBlue( myExpectedPixel ) - qBlue( myActualPixel ) ) > pixelTolerance ||
+             qAbs( qAlpha( myExpectedPixel ) - qAlpha( myActualPixel ) ) > pixelTolerance )
         {
           ++mMismatchCount;
-          myDifferenceImage.setPixel( x, y, qRgb( 255, 0, 0 ) );
+          diffScanline[ x ] = qRgb( 255, 0, 0 );
         }
       }
     }
@@ -379,6 +430,7 @@ bool QgsRenderChecker::compareImages( QString theTestName,
   //save the diff image to disk
   //
   myDifferenceImage.save( myDiffImageFile );
+  delete maskImage;
 
   //
   // Send match result to debug

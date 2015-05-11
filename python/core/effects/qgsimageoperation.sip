@@ -24,17 +24,17 @@ class QgsImageOperation
     */
     enum GrayscaleMode
     {
-      GrayscaleLightness, /*< keep the lightness of the color, drops the saturation */
-      GrayscaleLuminosity, /*< grayscale by perceptual luminosity (weighted sum of color RGB components) */
-      GrayscaleAverage /*< grayscale by taking average of color RGB components */
+      GrayscaleLightness, /*!< keep the lightness of the color, drops the saturation */
+      GrayscaleLuminosity, /*!< grayscale by perceptual luminosity (weighted sum of color RGB components) */
+      GrayscaleAverage /*!< grayscale by taking average of color RGB components */
     };
 
     /** Flip operation types
     */
     enum FlipType
     {
-      FlipHorizontal, /*< flip the image horizontally */
-      FlipVertical /*< flip the image vertically */
+      FlipHorizontal, /*!< flip the image horizontally */
+      FlipVertical /*!< flip the image vertically */
     };
 
     /**Convert a QImage to a grayscale image. Alpha channel is preserved.
@@ -130,5 +130,14 @@ class QgsImageOperation
      * @param type type of flip to perform (horizontal or vertical)
      */
     static void flipImage( QImage &image, FlipType type );
+
+    /** Crop any transparent border from around an image.
+     * @param image source image
+     * @param minSize minimum size for cropped image, if desired. If the
+     * cropped image is smaller than the minimum size, it will be centered
+     * in the returned image.
+     * @note added in QGIS 2.9
+     */
+    static QImage cropTransparent( const QImage & image, const QSize& minSize = QSize() );
 
 };

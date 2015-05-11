@@ -5,7 +5,7 @@ class QgsBrushStyleComboBox : QComboBox
 %End
 
   public:
-    QgsBrushStyleComboBox( QWidget* parent = NULL );
+    QgsBrushStyleComboBox( QWidget* parent /TransferThis/ = NULL );
 
     Qt::BrushStyle brushStyle() const;
 

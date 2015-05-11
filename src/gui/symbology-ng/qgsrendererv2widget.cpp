@@ -16,13 +16,12 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include "qgscolordialog.h"
-#include <QMessageBox>
-#include <QInputDialog>
-#include <QMenu>
-
 #include "qgssymbollevelsv2dialog.h"
 #include "qgsexpressionbuilderdialog.h"
 
+#include <QMessageBox>
+#include <QInputDialog>
+#include <QMenu>
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
     : QWidget(), mLayer( layer ), mStyle( style )
@@ -184,9 +183,7 @@ void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
 
 ////////////
 
-//#include <QAction>
 #include "qgsfield.h"
-#include <QMenu>
 
 QgsRendererV2DataDefinedMenus::QgsRendererV2DataDefinedMenus( QMenu* menu, QgsVectorLayer* layer, QString rotationField, QString sizeScaleField, QgsSymbolV2::ScaleMethod scaleMethod )
     : QObject( menu ), mLayer( layer )

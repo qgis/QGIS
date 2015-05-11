@@ -53,7 +53,7 @@ namespace pal
           const char * what() const throw() override
           {
             return "Not yet implemented... sorry";
-        }
+          }
       };
 
       /** \brief Try to access an unknown feature
@@ -63,7 +63,7 @@ namespace pal
           const char * what() const throw() override
           {
             return "Feature not found";
-        }
+          }
       };
 
       /** \brief Try to access an unknown layer
@@ -73,7 +73,7 @@ namespace pal
           const char * what() const throw() override
           {
             return "Layer not found";
-        }
+          }
       };
 
       /** \brief layer already exists
@@ -83,7 +83,7 @@ namespace pal
           const char * what() const throw() override
           {
             return "Layers names must be unique";
-        }
+          }
       };
 
       /** \brief features already exists
@@ -93,7 +93,7 @@ namespace pal
           const char * what() const throw() override
           {
             return "Features IDs must be unique within a layer";
-        }
+          }
       };
 
       /** \brief thrown when a value is not in the valid scale range
@@ -109,7 +109,7 @@ namespace pal
           const char * what() const throw() override
           {
             return "value not allowed";
-        }
+          }
       };
   };
 

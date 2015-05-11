@@ -684,7 +684,14 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs,
     if ( transformExtent && !mExtent.isEmpty() )
     {
       QgsCoordinateTransform transform( *mDestCRS, crs );
-      rect = transform.transformBoundingBox( mExtent );
+      try
+      {
+        rect = transform.transformBoundingBox( mExtent );
+      }
+      catch ( QgsCsException &e )
+      {
+        QgsDebugMsg( QString( "Transform error caught: %1" ).arg( e.what() ) );
+      }
     }
 
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );

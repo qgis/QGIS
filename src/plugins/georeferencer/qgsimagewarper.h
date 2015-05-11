@@ -95,6 +95,8 @@ class QgsImageWarper
     static int CPL_STDCALL updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg );
 
     static bool mWarpCanceled;
+
+    GDALResampleAlg toGDALResampleAlg( const ResamplingMethod method ) const;
 };
 
 

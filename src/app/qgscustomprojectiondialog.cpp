@@ -161,9 +161,8 @@ bool  QgsCustomProjectionDialog::deleteCRS( QString id )
     Q_ASSERT( myResult == SQLITE_OK );
   }
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  sqlite3_step( myPreparedStatement );
   // XXX Need to free memory from the error msg if one is set
-  if ( myResult != SQLITE_OK )
+  if ( myResult != SQLITE_OK || sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
   {
     QgsDebugMsg( QString( "failed to remove CRS from database in custom projection dialog: %1 [%2]" ).arg( mySql ).arg( sqlite3_errmsg( myDatabase ) ) );
   }
@@ -218,11 +217,11 @@ void  QgsCustomProjectionDialog::insertProjection( QString myProjectionAcronym )
                 + ")"
                 ;
         myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
-        sqlite3_step( myPreparedStatement );
-        if ( myResult != SQLITE_OK )
+        if ( myResult != SQLITE_OK || sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
         {
           QgsDebugMsg( QString( "Update or insert failed in custom projection dialog: %1 [%2]" ).arg( mySql ).arg( sqlite3_errmsg( myDatabase ) ) );
         }
+
         sqlite3_finalize( myPreparedStatement );
       }
 
@@ -279,9 +278,8 @@ bool QgsCustomProjectionDialog::saveCRS( QgsCoordinateReferenceSystem myCRS, QSt
       Q_ASSERT( myResult == SQLITE_OK );
     }
     myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-    sqlite3_step( myPreparedStatement );
     // XXX Need to free memory from the error msg if one is set
-    if ( myResult != SQLITE_OK )
+    if ( myResult != SQLITE_OK || sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
     {
       QgsDebugMsg( QString( "failed to write to database in custom projection dialog: %1 [%2]" ).arg( mySql ).arg( sqlite3_errmsg( myDatabase ) ) );
     }

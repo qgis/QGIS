@@ -131,7 +131,7 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
 
       int snapVertex = match.vertexIndex();
       vlayer->getFeatures( QgsFeatureRequest().setFilterFid( match.featureId() ) ).nextFeature( f );
-      QgsGeometry* g = f.geometry();
+      const QgsGeometry* g = f.constGeometry();
       if ( !g->isMultipart() )
         return geomPart;
       if ( g->wkbType() == QGis::WKBMultiPoint || g->wkbType() == QGis::WKBMultiPoint25D )
@@ -164,7 +164,7 @@ QgsGeometry* QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId& f
                                layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
       QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ) );
       fit.nextFeature( f );
-      QgsGeometry* g = f.geometry();
+      const QgsGeometry* g = f.constGeometry();
       if ( !g )
         return geomPart;
       if ( !g->isMultipart() )

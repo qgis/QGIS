@@ -177,7 +177,7 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowSelected:
-      return layer()->selectedFeaturesIds().contains( masterModel()->rowToId( sourceRow ) );
+      return layer()->selectedFeaturesIds().isEmpty() || layer()->selectedFeaturesIds().contains( masterModel()->rowToId( sourceRow ) );
 
     case ShowVisible:
       return mFilteredFeatures.contains( masterModel()->rowToId( sourceRow ) );
@@ -265,7 +265,16 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
 
   renderer->startRender( renderContext, layer()->pendingFields() );
 
-  QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( QgsFeatureRequest().setFilterRect( rect ) );
+  QgsFeatureRequest r( masterModel()->request() );
+  if ( r.filterType() == QgsFeatureRequest::FilterRect )
+  {
+    r.setFilterRect( r.filterRect().intersect( &rect ) );
+  }
+  else
+  {
+    r.setFilterRect( rect );
+  }
+  QgsFeatureIterator features = masterModel()->layerCache()->getFeatures( r );
 
   QgsFeature f;
 
