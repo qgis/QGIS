@@ -3339,7 +3339,7 @@ void QgsDxfExport::writePoint( const QgsPoint& pt, const QString& layer, QColor 
 }
 
 void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer, const QString& lineStyleName, QColor color,
-                                  double width, bool polygon )
+                                  double width, bool )
 {
   writeGroup( 0, "LWPOLYLINE" );
   writeHandle();
@@ -3349,16 +3349,17 @@ void QgsDxfExport::writePolyline( const QgsPolyline& line, const QString& layer,
   writeGroup( 6, lineStyleName );
   writeGroup( color );
 
-  writeGroup( 90, line.size() );
+  bool polygon = line[0] == line[ line.size() - 1 ];
+  int n = line.size();
+  if ( polygon )
+    --n;
 
+  writeGroup( 90, n );
   writeGroup( 70, polygon ? 1 : 0 );
   writeGroup( 43, width );
 
-  QgsPolyline::const_iterator lineIt = line.constBegin();
-  for ( ; lineIt != line.constEnd(); ++lineIt )
-  {
-    writeGroup( 0, *lineIt );
-  }
+  for ( int i = 0; i < n; i++ )
+    writeGroup( 0, line[i] );
 }
 
 void QgsDxfExport::writePolygon( const QgsPolygon& polygon, const QString& layer, const QString& hatchPattern, QColor color )

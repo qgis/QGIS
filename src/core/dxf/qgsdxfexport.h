@@ -80,7 +80,7 @@ class CORE_EXPORT QgsDxfExport
 
     //! draw dxf primitives
     void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, QColor color,
-                        double width = -1, bool polygon = false );
+                        double width = -1, bool unusedPolygonFlag = false );
 
     void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, QColor color );
 
