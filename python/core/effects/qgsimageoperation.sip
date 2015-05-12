@@ -136,8 +136,9 @@ class QgsImageOperation
      * @param minSize minimum size for cropped image, if desired. If the
      * cropped image is smaller than the minimum size, it will be centered
      * in the returned image.
+     * @param center croped image will be centered on the center of the original image
      * @note added in QGIS 2.9
      */
-    static QImage cropTransparent( const QImage & image, const QSize& minSize = QSize() );
+    static QImage cropTransparent( const QImage & image, const QSize& minSize = QSize(), bool center = false );
 
 };

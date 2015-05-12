@@ -793,7 +793,7 @@ void QgsImageOperation::flipImage( QImage &image, QgsImageOperation::FlipType ty
   runLineOperation( image, flipOperation );
 }
 
-QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &minSize )
+QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &minSize, bool center )
 {
   int width = image.width();
   int height = image.height();
@@ -827,6 +827,16 @@ QImage QgsImageOperation::cropTransparent( const QImage &image, const QSize &min
       ymin = qMax(( ymax + ymin ) / 2 - minSize.height() / 2, 0 );
       ymax = ymin + minSize.height();
     }
+  }
+  if ( center )
+  {
+    // recompute min and max to center image
+    const int dx = qMax( qAbs( xmax - width / 2 ), qAbs( xmin - width / 2 ) );
+    const int dy = qMax( qAbs( ymax - height / 2 ), qAbs( ymin - height / 2 ) );
+    xmin = qMax( 0, width / 2 - dx );
+    xmax = qMin( width, width / 2 + dx );
+    ymin = qMax( 0, height / 2 - dy );
+    ymax = qMin( height, height / 2 + dy );
   }
   return image.copy( xmin, ymin, xmax - xmin, ymax - ymin );
 }
