@@ -866,7 +866,7 @@ QString QgsPostgresConn::postgisVersion()
 
   mGotPostgisVersion = true;
 
-  result = PQexec( "SELECT 'pointcloud_columns'::regclass", false );
+  result = PQexec( "SELECT oid FROM pg_catalog.pg_extension WHERE extname = 'pointcloud_postgis'", false );
   mPointcloudAvailable = result.PQntuples() == 1;
 
   return mPostgisVersionInfo;
