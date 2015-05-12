@@ -184,6 +184,7 @@ QgsPostgresConn::QgsPostgresConn( QString conninfo, bool readOnly, bool shared, 
     , mPostgisVersionMinor( 0 )
     , mGistAvailable( false )
     , mProjAvailable( false )
+    , mPointcloudAvailable( false )
     , mUseWkbHex( false )
     , mReadOnly( readOnly )
     , mSwapEndian( false )
@@ -866,8 +867,13 @@ QString QgsPostgresConn::postgisVersion()
 
   mGotPostgisVersion = true;
 
+  QgsDebugMsg( "Checking for pointcloud support" );
   result = PQexec( "SELECT oid FROM pg_catalog.pg_extension WHERE extname = 'pointcloud_postgis'", false );
-  mPointcloudAvailable = result.PQntuples() == 1;
+  if ( result.PQntuples() == 1 )
+  {
+    mPointcloudAvailable = true;
+    QgsDebugMsg( "Pointcloud support available!" );
+  }
 
   return mPostgisVersionInfo;
 }
