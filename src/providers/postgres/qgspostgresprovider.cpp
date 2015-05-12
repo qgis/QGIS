@@ -3581,6 +3581,12 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
     return "";
   }
 
+  QgsPostgresResult result = conn->PQexec( "SELECT COUNT(*) FROM information_schema.tables WHERE table_name='layer_styles'" );
+  if ( result.PQgetvalue( 0, 0 ).toInt() == 0 )
+  {
+    return "";
+  }
+
   QString selectQmlQuery = QString( "SELECT styleQML"
                                     " FROM layer_styles"
                                     " WHERE f_table_catalog=%1"
@@ -3594,10 +3600,11 @@ QGISEXTERN QString loadStyle( const QString& uri, QString& errCause )
                            .arg( QgsPostgresConn::quotedValue( dsUri.table() ) )
                            .arg( QgsPostgresConn::quotedValue( dsUri.geometryColumn() ) );
 
-  QgsPostgresResult result = conn->PQexec( selectQmlQuery, false );
+  result = conn->PQexec( selectQmlQuery );
 
   QString style = result.PQntuples() == 1 ? result.PQgetvalue( 0, 0 ) : "";
   conn->unref();
+
   return style;
 }
 
