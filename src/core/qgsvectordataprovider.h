@@ -290,6 +290,13 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
     int fieldNameIndex( const QString& fieldName ) const;
 
     /**
+     * Returns feature datasource ID from the internal QGIS feature ID
+     *
+     * @note added in 2.14
+     */
+    virtual QVariant dataSourceFeatureId( const QgsFeatureId fid ) const;
+
+    /**
      * Return a map where the key is the name of the field and the value is its index
      */
     QMap<QString, int> fieldNameMap() const;

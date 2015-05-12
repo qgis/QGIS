@@ -210,7 +210,6 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
 }
 
-
 int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
 {
   const QgsFields &theFields = fields();
@@ -223,6 +222,12 @@ int QgsVectorDataProvider::fieldNameIndex( const QString& fieldName ) const
     }
   }
   return -1;
+}
+
+QVariant QgsVectorDataProvider::dataSourceFeatureId( const QgsFeatureId fid ) const
+{
+  Q_UNUSED( fid );
+  return QVariant();
 }
 
 QMap<QString, int> QgsVectorDataProvider::fieldNameMap() const
