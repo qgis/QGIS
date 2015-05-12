@@ -270,6 +270,20 @@ class QgsExpression
 
     class Node
     {
+      %ConvertToSubClassCode
+        switch (sipCpp->nodeType())
+        {
+          case QgsExpression::ntUnaryOperator:   sipClass = sipClass_QgsExpression_NodeUnaryOperator; break;
+          case QgsExpression::ntBinaryOperator:  sipClass = sipClass_QgsExpression_NodeBinaryOperator; break;
+          case QgsExpression::ntInOperator:      sipClass = sipClass_QgsExpression_NodeInOperator; break;
+          case QgsExpression::ntFunction:        sipClass = sipClass_QgsExpression_NodeFunction; break;
+          case QgsExpression::ntLiteral:         sipClass = sipClass_QgsExpression_NodeLiteral; break;
+          case QgsExpression::ntColumnRef:       sipClass = sipClass_QgsExpression_NodeColumnRef; break;
+          case QgsExpression::ntCondition:       sipClass = sipClass_QgsExpression_NodeCondition; break;
+          default:                               sipClass = 0; break;
+        }
+      %End
+
       public:
         virtual ~Node();
         virtual QgsExpression::NodeType nodeType() const = 0;
