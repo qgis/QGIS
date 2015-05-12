@@ -393,7 +393,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     }
     else if ( i == sctTopoGeometry )
     {
-      if ( ! hasTopology() ) continue;
+      if ( !hasTopology() )
+        continue;
 
       schemaName = "l.schema_name";
       tableName  = "l.table_name";
@@ -411,7 +412,8 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     }
     else if ( i == sctPcPatch )
     {
-      if ( ! hasPointcloud() ) continue;
+      if ( !hasPointcloud() )
+        continue;
 
       tableName  = "l.\"table\"";
       schemaName = "l.\"schema\"";
@@ -757,7 +759,6 @@ bool QgsPostgresConn::hasGEOS()
 {
   // make sure info is up to date for the current connection
   postgisVersion();
-  // get geos capability
   return mGeosAvailable;
 }
 
@@ -768,7 +769,6 @@ bool QgsPostgresConn::hasTopology()
 {
   // make sure info is up to date for the current connection
   postgisVersion();
-  // get topology capability
   return mTopologyAvailable;
 }
 
@@ -777,9 +777,9 @@ bool QgsPostgresConn::hasTopology()
  */
 bool QgsPostgresConn::hasPointcloud()
 {
-  // TODO: use mPointcloudAvailable function instead
-  QgsPostgresResult result = PQexec( "SELECT 'pointcloud_columns'::regclass" );
-  return result.PQntuples() == 1;
+  // make sure info is up to date for the current connection
+  postgisVersion();
+  return mPointcloudAvailable;
 }
 
 /* Functions for determining available features in postGIS */
@@ -865,6 +865,9 @@ QString QgsPostgresConn::postgisVersion()
   }
 
   mGotPostgisVersion = true;
+
+  result = PQexec( "SELECT 'pointcloud_columns'::regclass", false );
+  mPointcloudAvailable = result.PQntuples() == 1;
 
   return mPostgisVersionInfo;
 }

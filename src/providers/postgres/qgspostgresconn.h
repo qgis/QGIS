@@ -359,6 +359,9 @@ class QgsPostgresConn : public QObject
     //! PROJ4 capability
     bool mProjAvailable;
 
+    //! pointcloud support available
+    bool mPointcloudAvailable;
+
     //! encode wkb in hex
     bool mUseWkbHex;
 
