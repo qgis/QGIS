@@ -39,6 +39,7 @@ symbology-ng/qgssymbolslistwidget.cpp
 symbology-ng/qgssvgselectorwidget.cpp
 symbology-ng/qgslayerpropertieswidget.cpp
 symbology-ng/qgssmartgroupeditordialog.cpp
+symbology-ng/qgssizescalewidget.cpp
 
 effects/qgseffectdrawmodecombobox.cpp
 effects/qgspainteffectpropertieswidget.cpp
@@ -371,6 +372,7 @@ SET(QGIS_GUI_MOC_HDRS
   symbology-ng/qgsvectorfieldsymbollayerwidget.h
   symbology-ng/qgsvectorgradientcolorrampv2dialog.h
   symbology-ng/qgsvectorrandomcolorrampv2dialog.h
+  symbology-ng/qgssizescalewidget.h
 
   attributetable/qgsattributetabledelegate.h
   attributetable/qgsattributetablefiltermodel.h

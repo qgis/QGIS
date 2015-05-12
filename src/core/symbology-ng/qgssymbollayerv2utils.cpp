@@ -3924,3 +3924,4 @@ QList<double> QgsSymbolLayerV2Utils::prettyBreaks( double minimum, double maximu
 
   return breaks;
 }
+

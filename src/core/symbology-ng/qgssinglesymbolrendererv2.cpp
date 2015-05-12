@@ -26,6 +26,7 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsinvertedpolygonrenderer.h"
 #include "qgspainteffect.h"
+#include "qgsscaleexpression.h"
 
 #include <QDomDocument>
 #include <QDomElement>
@@ -368,6 +369,7 @@ QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize ic
   {
     QPixmap pix = QgsSymbolLayerV2Utils::symbolPreviewPixmap( mSymbol.data(), iconSize );
     lst << qMakePair( QString(), pix );
+
   }
   return lst;
 }
@@ -384,7 +386,28 @@ QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems( double scaleDe
 QgsLegendSymbolListV2 QgsSingleSymbolRendererV2::legendSymbolItemsV2() const
 {
   QgsLegendSymbolListV2 lst;
+  if ( mSymbol->type() == QgsSymbolV2::Marker )
+  {
+    const QgsMarkerSymbolV2 * symbol = static_cast<const QgsMarkerSymbolV2 *>( mSymbol.data() );
+    QgsScaleExpression exp( symbol->sizeExpression() );
+    if ( exp )
+    {
+      QgsLegendSymbolItemV2 title( NULL, exp.baseExpression(), 0 );
+      lst << title;
+      foreach ( double v, QgsSymbolLayerV2Utils::prettyBreaks( exp.minValue(), exp.maxValue(), 4 ) )
+      {
+        QgsLegendSymbolItemV2 si( mSymbol.data(), QString::number( v ), 0 );
+        QgsMarkerSymbolV2 * s = static_cast<QgsMarkerSymbolV2 *>( si.symbol() );
+        s->setSizeExpression( "" );
+        s->setSize( exp.size( v ) );
+        lst << si;
+      }
+      return lst;
+    }
+  }
+
   lst << QgsLegendSymbolItemV2( mSymbol.data(), QString(), 0 );
+
   return lst;
 }
 
