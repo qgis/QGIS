@@ -183,6 +183,7 @@
 %Include editorwidgets/core/qgseditorwidgetfactory.sip
 %Include editorwidgets/core/qgseditorwidgetregistry.sip
 %Include editorwidgets/core/qgseditorwidgetwrapper.sip
+%Include editorwidgets/core/qgswidgetwrapper.sip
 %Include editorwidgets/qgsdoublespinbox.sip
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
