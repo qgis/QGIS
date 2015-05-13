@@ -27,7 +27,8 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString&
     , mPyFunctionName( function )
     , mPyFormVarName( pyFormName )
 {
-  mPyLayerVarName = QString( "_qgis_layer_%1" ).arg( form->layer()->id() );
+  static int sLayerCounter = 0;
+  mPyLayerVarName = QString( "_qgis_layer_%1_%2" ).arg( form->layer()->id() ).arg( sLayerCounter++ );
   mPyLayerVarName.replace( QRegExp( "[^a-zA-Z0-9_]" ), "_" ); // clean identifier
 
   QString initLayer = QString( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
