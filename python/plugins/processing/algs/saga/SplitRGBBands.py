@@ -71,10 +71,10 @@ class SplitRGBBands(GeoAlgorithm):
         b = self.getOutputValue(SplitRGBBands.B)
         commands = []
         version = SagaUtils.getSagaInstalledVersion(True)
-        trailing = "000" if version != "2.1.4" else ""
-        lib = "" if isWindows() else "lib"
+        trailing = ""
+        lib = ""
         commands.append('%sio_gdal 0 -GRIDS "%s" -FILES "%s"' % (lib, temp, input)
-                        + '"')
+                        )
         commands.append('%sio_gdal 1 -GRIDS "%s_%s1.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, r)
                         )
         commands.append('%sio_gdal 1 -GRIDS "%s_%s2.sgrd" -FORMAT 1 -TYPE 0 -FILE "%s"' %(lib, temp, trailing, g)
