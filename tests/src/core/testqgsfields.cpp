@@ -45,6 +45,10 @@ class TestQgsFields: public QObject
     void byName();
     void fieldOrigin();
     void fieldOriginIndex();
+    void indexFromName();
+    void toList();
+    void allAttrsList();
+    void appendExpressionField();
 
   private:
 };
@@ -291,11 +295,108 @@ void TestQgsFields::fieldOrigin()
 
   QCOMPARE( fields.fieldOrigin( 0 ), QgsFields::OriginJoin );
   QCOMPARE( fields.fieldOrigin( 1 ), QgsFields::OriginExpression );
+  QCOMPARE( fields.fieldOrigin( 2 ), QgsFields::OriginUnknown );
 }
 
 void TestQgsFields::fieldOriginIndex()
 {
+  QgsFields fields;
+  QgsField field( QString( "testfield" ) );
+  fields.append( field , QgsFields::OriginProvider, 5 );
+  QCOMPARE( fields.fieldOriginIndex( 0 ), 5 );
 
+  QgsField field2( QString( "testfield2" ) );
+  fields.append( field2, QgsFields::OriginProvider, 10 );
+  QCOMPARE( fields.fieldOriginIndex( 1 ), 10 );
+
+  QgsField field3( QString( "testfield3" ) );
+  //field origin index not specified with OriginProvider, should be automatic
+  fields.append( field3, QgsFields::OriginProvider );
+  QCOMPARE( fields.fieldOriginIndex( 2 ), 2 );
+
+  QgsField field4( QString( "testfield4" ) );
+  //field origin index not specified with other than OriginProvider, should remain -1
+  fields.append( field4, QgsFields::OriginEdit );
+  QCOMPARE( fields.fieldOriginIndex( 3 ), -1 );
+}
+
+void TestQgsFields::indexFromName()
+{
+  QgsFields fields;
+  QgsField field( QString( "testfield" ) );
+  fields.append( field );
+  QgsField field2( QString( "testfield2" ) );
+  fields.append( field2 );
+  QgsField field3( QString( "testfield3" ) );
+  fields.append( field3 );
+
+  QCOMPARE( fields.indexFromName( QString( "bad" ) ), -1 );
+  QCOMPARE( fields.fieldNameIndex( QString( "bad" ) ), -1 );
+  QCOMPARE( fields.indexFromName( QString( "testfield" ) ), 0 );
+  QCOMPARE( fields.fieldNameIndex( QString( "testfield" ) ), 0 );
+  QCOMPARE( fields.indexFromName( QString( "testfield3" ) ), 2 );
+  QCOMPARE( fields.fieldNameIndex( QString( "testfield3" ) ), 2 );
+
+  //indexFromName is case sensitive, fieldNameIndex isn't
+  QCOMPARE( fields.indexFromName( QString( "teStFiEld2" ) ), -1 );
+  QCOMPARE( fields.fieldNameIndex( QString( "teStFiEld2" ) ), 1 );
+}
+
+void TestQgsFields::toList()
+{
+  QgsFields fields;
+  QList<QgsField> list = fields.toList();
+  QVERIFY( list.isEmpty() );
+
+  QgsField field( QString( "testfield" ) );
+  fields.append( field );
+  QgsField field2( QString( "testfield2" ) );
+  fields.append( field2 );
+  QgsField field3( QString( "testfield3" ) );
+  fields.append( field3 );
+
+  list = fields.toList();
+  QCOMPARE( list.at( 0 ), field );
+  QCOMPARE( list.at( 1 ), field2 );
+  QCOMPARE( list.at( 2 ), field3 );
+}
+
+void TestQgsFields::allAttrsList()
+{
+  QgsFields fields;
+  QgsAttributeList attrList = fields.allAttributesList();
+  QVERIFY( attrList.isEmpty() );
+
+  QgsField field( QString( "testfield" ) );
+  fields.append( field );
+  QgsField field2( QString( "testfield2" ) );
+  fields.append( field2 );
+  QgsField field3( QString( "testfield3" ) );
+  fields.append( field3 );
+
+  attrList = fields.allAttributesList();
+  QCOMPARE( attrList.at( 0 ), 0 );
+  QCOMPARE( attrList.at( 1 ), 1 );
+  QCOMPARE( attrList.at( 2 ), 2 );
+}
+
+void TestQgsFields::appendExpressionField()
+{
+  QgsFields fields;
+  QgsField field( QString( "testfield" ) );
+  fields.append( field );
+  QgsField field2( QString( "testfield2" ) );
+  fields.append( field2 );
+
+  QgsField dupeName( QString( "testfield" ) );
+  QVERIFY( !fields.appendExpressionField( dupeName, 1 ) );
+
+  //good name
+  QgsField exprField( QString( "expression" ) );
+  QVERIFY( fields.appendExpressionField( exprField, 5 ) );
+  QCOMPARE( fields.count(), 3 );
+  QCOMPARE( fields.fieldOrigin( 2 ), QgsFields::OriginExpression );
+  QCOMPARE( fields.fieldOriginIndex( 2 ), 5 );
 }
 
 QTEST_MAIN( TestQgsFields )
