@@ -43,6 +43,7 @@ INCLUDE_DIRECTORIES(
      ${GEOS_INCLUDE_DIR}
      ../../analysis/interpolation
      ../../core
+     ../../core/geometry
      ../../core/raster
      ../../gui
      ..

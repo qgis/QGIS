@@ -31,6 +31,7 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgswkbptr.h"
 
 #include <QDomElement>
 #include <QDomDocument>

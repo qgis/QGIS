@@ -122,6 +122,7 @@ INCLUDE_DIRECTORIES(
   ..
   ${CMAKE_CURRENT_BINARY_DIR}
   ../../core
+  ../../core/geometry
   ../../core/raster
   ../../gui
   ../../providers/grass
