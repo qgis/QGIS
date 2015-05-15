@@ -492,11 +492,11 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   QPointF off( offsetX, offsetY );
 
   //angle
-  double angle = mAngle;
+  double angle = mAngle + mLineAngle;
   bool usingDataDefinedRotation = false;
   if ( hasDataDefinedProperty( "angle" ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle, &ok ).toDouble();
+    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle, &ok ).toDouble() + mLineAngle;;
     usingDataDefinedRotation = ok;
   }
 
@@ -873,10 +873,10 @@ bool QgsSimpleMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitSc
   QPointF off( offsetX, offsetY );
 
   //angle
-  double angle = mAngle;
+  double angle = mAngle + mLineAngle;
   if ( context && hasDataDefinedProperty( "angle" ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", f, mAngle ).toDouble();
+    angle = evaluateDataDefinedProperty( "angle", f, mAngle ).toDouble() + mLineAngle;
   }
 
   angle = -angle; //rotation in Qt is counterclockwise
@@ -1271,10 +1271,10 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   markerOffset( context, scaledSize, scaledSize, offsetX, offsetY );
   QPointF outputOffset( offsetX, offsetY );
 
-  double angle = mAngle;
+  double angle = mAngle + mLineAngle;
   if ( hasDataDefinedProperty( "angle" ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle ).toDouble();
+    angle = evaluateDataDefinedProperty( "angle", context.feature(), mAngle ).toDouble() + mLineAngle;
   }
 
   bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation || hasDataDefinedProperty( "angle" );
@@ -1603,10 +1603,10 @@ bool QgsSvgMarkerSymbolLayerV2::writeDxf( QgsDxfExport& e, double mmMapUnitScale
 
   QPointF outputOffset( offsetX, offsetY );
 
-  double angle = mAngle;
+  double angle = mAngle + mLineAngle;
   if ( hasDataDefinedProperty( "angle" ) )
   {
-    angle = evaluateDataDefinedProperty( "angle", f, mAngle ).toDouble();
+    angle = evaluateDataDefinedProperty( "angle", f, mAngle ).toDouble() + mLineAngle;
   }
   //angle = -angle; //rotation in Qt is counterclockwise
   if ( angle )
@@ -1721,8 +1721,8 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
   double offsetY = 0;
   markerOffset( context, offsetX, offsetY );
   QPointF outputOffset( offsetX, offsetY );
-  if ( mAngle )
-    outputOffset = _rotatedOffset( outputOffset, mAngle );
+  if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
+    outputOffset = _rotatedOffset( outputOffset, mAngle + mLineAngle );
   p->translate( point + outputOffset );
 
   if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
@@ -1731,8 +1731,8 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
     p->scale( s, s );
   }
 
-  if ( mAngle != 0 )
-    p->rotate( mAngle );
+  if ( !qgsDoubleNear( mAngle + mLineAngle, 0.0 ) )
+    p->rotate( mAngle + mLineAngle );
 
   p->drawText( -mChrOffset, mChr );
   p->restore();
