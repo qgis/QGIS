@@ -63,7 +63,7 @@ class TestQgsGeometryAvoidIntersections(TestCase):
     # create a geometry and remove its intersections with other geometries
 
     g = QgsGeometry.fromWkt(newg_wkt)
-    assert g.avoidIntersections() == 2
+    assert g.avoidIntersections() == 0
 
     # the resulting multi-polygon must have exactly three parts
     # (in QGIS 2.0 it has one more tiny part that appears at the border between two of the original polygons)

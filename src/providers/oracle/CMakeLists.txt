@@ -33,6 +33,7 @@ QT4_WRAP_CPP(ORACLE_MOC_SRCS ${ORACLE_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
   ../../core
+  ../../core/geometry
   ../../gui
   ${GEOS_INCLUDE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui

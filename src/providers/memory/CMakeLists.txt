@@ -4,6 +4,7 @@ SET (MEMORY_SRCS qgsmemoryprovider.cpp qgsmemoryfeatureiterator.cpp)
 INCLUDE_DIRECTORIES(
   .
   ../../core
+  ../../core/geometry
   ${GEOS_INCLUDE_DIR}
 )
 

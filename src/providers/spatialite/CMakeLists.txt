@@ -41,6 +41,7 @@ ENDIF(SPATIALITE_VERSION_G_4_1_1)
 INCLUDE_DIRECTORIES(
   ${QSCINTILLA_INCLUDE_DIR}
   ../../core
+  ../../core/geometry
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${SPATIALITE_INCLUDE_DIR}

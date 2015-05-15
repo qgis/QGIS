@@ -39,7 +39,7 @@ class TestQgsGeometry(TestCase):
     wkbPtr = 1
 
     def testWktPointLoading(self):
-        myWKT='POINT(10 10)'
+        myWKT='Point (10 10)'
         myGeometry = QgsGeometry.fromWkt(myWKT)
         myMessage = ('Expected:\n%s\nGot:\n%s\n' %
                      (QGis.WKBPoint, myGeometry.type()))
@@ -244,7 +244,7 @@ class TestQgsGeometry(TestCase):
         myEndLength = len(mySimpleGeometry.exportToWkt())
         myMessage = 'Before simplify: %i\nAfter simplify: %i\n : Tolerance %e' % (
             myStartLength, myEndLength, myTolerance)
-        myMinimumLength = len('POLYGON(())')
+        myMinimumLength = len('Polygon(())')
         assert myEndLength > myMinimumLength, myMessage
 
     def testClipping(self):
@@ -319,7 +319,8 @@ class TestQgsGeometry(TestCase):
                 #print 'Difference: %s' % myDifferenceGeometry.exportToWkt()
                 print 'Symmetrical: %s' % mySymmetricalGeometry.exportToWkt()
 
-                myExpectedWkt = 'LINESTRING(20 20, 30 30)'
+                myExpectedWkt = 'Polygon ((20 20, 20 30, 30 30, 30 20, 20 20))'
+
                 # There should only be one feature that intersects this clip
                 # poly so this assertion should work.
                 assert compareWkt( myExpectedWkt,
@@ -379,7 +380,7 @@ class TestQgsGeometry(TestCase):
         self.assertEqual( minDistPoint, QgsPoint(5,0) )
         self.assertEqual( afterVertex, 1)
 
-        (point, atVertex, beforeVertex, afterVertex, dist ) = polyline.closestVertex( QgsPoint(0,1) )
+        (point, atVertex, beforeVertex, afterVertex, dist ) = polyline.closestVertex( QgsPoint(0,-1) )
         self.assertEqual( point, QgsPoint(0,0) )
         self.assertEqual( beforeVertex, 0 )
         self.assertEqual( atVertex, 1 )
@@ -400,7 +401,7 @@ class TestQgsGeometry(TestCase):
                 [ QgsPoint(3,0), QgsPoint(3,1), QgsPoint(5,1), QgsPoint(5,0), QgsPoint(6,0), ]
             ]
         )
-        (point, atVertex, beforeVertex, afterVertex, dist ) = polyline.closestVertex( QgsPoint(6,1) )
+        (point, atVertex, beforeVertex, afterVertex, dist ) = polyline.closestVertex( QgsPoint(5,2) )
         self.assertEqual( point, QgsPoint(5,1) )
         self.assertEqual( beforeVertex, 6 )
         self.assertEqual( atVertex, 7 )
@@ -745,56 +746,23 @@ class TestQgsGeometry(TestCase):
 
         # #9423
         points = [ QgsPoint(10, 30), QgsPoint(40, 20), QgsPoint(30,10), QgsPoint(20,10) ]
-        wkt = "MULTIPOINT (10 30, 40 20, 30 10, 20 10)"
+        wkt = "MultiPoint ((10 30),(40 20),(30 10),(20 10))"
         multipoint = QgsGeometry.fromWkt(wkt)
-        assert multipoint.isMultipart(), "Expected MULTIPOINT to be multipart"
+        assert multipoint.isMultipart(), "Expected MultiPoint to be multipart"
         assert multipoint.wkbType() == QGis.WKBMultiPoint, "Expected wkbType to be WKBMultipoint"
         i = 0
         for p in multipoint.asMultiPoint():
                 assert p == points[i], "Expected %s at %d, got %s" % (points[i].toString(), i, p.toString())
                 i+=1
 
-        multipoint = QgsGeometry.fromWkt( "MULTIPOINT(5 5)" )
-        assert multipoint.vertexAt( 0 ) == QgsPoint(5,5), "MULTIPOINT fromWkt failed"
-
-        assert multipoint.insertVertex(4, 4, 0), "MULTIPOINT insert 4,4 at 0 failed"
-        expwkt = "MULTIPOINT(4 4, 5 5)"
-        wkt = multipoint.exportToWkt()
-        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
-
-        assert multipoint.insertVertex(7, 7, 2), "MULTIPOINT append 7,7 at 2 failed"
-        expwkt = "MULTIPOINT(4 4, 5 5, 7 7)"
-        wkt = multipoint.exportToWkt()
-        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
-
-        assert multipoint.insertVertex(6, 6, 2), "MULTIPOINT append 6,6 at 2 failed"
-        expwkt = "MULTIPOINT(4 4, 5 5, 6 6, 7 7)"
-        wkt = multipoint.exportToWkt()
-        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
-
-        assert not multipoint.deleteVertex(4), "MULTIPOINT delete at 4 unexpectedly succeeded"
-        assert not multipoint.deleteVertex(-1), "MULTIPOINT delete at -1 unexpectedly succeeded"
-
-        assert multipoint.deleteVertex(1), "MULTIPOINT delete at 1 failed"
-        expwkt = "MULTIPOINT(4 4, 6 6, 7 7)"
-        wkt = multipoint.exportToWkt()
-        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
-
-        assert multipoint.deleteVertex(2), "MULTIPOINT delete at 2 failed"
-        expwkt = "MULTIPOINT(4 4, 6 6)"
-        wkt = multipoint.exportToWkt()
-        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
-
-        assert multipoint.deleteVertex(0), "MULTIPOINT delete at 2 failed"
-        expwkt = "MULTIPOINT(6 6)"
-        wkt = multipoint.exportToWkt()
-        assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
+        multipoint = QgsGeometry.fromWkt( "MultiPoint ((5 5))" )
+        assert multipoint.vertexAt( 0 ) == QgsPoint(5,5), "MultiPoint fromWkt failed"
 
     def testMoveVertex(self):
-        multipoint = QgsGeometry.fromWkt( "MULTIPOINT(5 0,0 0,0 4,5 4,5 1,1 1,1 3,4 3,4 2,2 2)" )
+        multipoint = QgsGeometry.fromWkt( "MultiPoint ((5 0),(0 0),(0 4),(5 4),(5 1),(1 1),(1 3),(4 3),(4 2),(2 2))" )
         for i in range(0,10):
           assert multipoint.moveVertex( i+1, -1-i, i ), "move vertex %d failed" % i
-        expwkt = "MULTIPOINT(1 -1, 2 -2, 3 -3, 4 -4, 5 -5, 6 -6, 7 -7, 8 -8, 9 -9, 10 -10)"
+        expwkt = "MultiPoint ((1 -1),(2 -2),(3 -3),(4 -4),(5 -5),(6 -6),(7 -7),(8 -8),(9 -9),(10 -10))"
         wkt = multipoint.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -807,9 +775,9 @@ class TestQgsGeometry(TestCase):
         # ! 5-+-+-+-4 !
         # |
         # 1-+-+-+-+-0 !
-        polyline = QgsGeometry.fromWkt( "LINESTRING(5 0,0 0,0 4,5 4,5 1,1 1,1 3,4 3,4 2,2 2)" )
+        polyline = QgsGeometry.fromWkt( "LineString (5 0, 0 0, 0 4, 5 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)" )
         assert polyline.moveVertex( 5.5, 4.5, 3 ), "move vertex failed"
-        expwkt = "LINESTRING(5 0, 0 0, 0 4, 5.5 4.5, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
+        expwkt = "LineString (5 0, 0 0, 0 4, 5.5 4.5, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -818,23 +786,23 @@ class TestQgsGeometry(TestCase):
         # 6 2-3
         # | |
         # 0-1
-        polygon = QgsGeometry.fromWkt( "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))" )
+        polygon = QgsGeometry.fromWkt( "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))" )
 
         assert not polygon.moveVertex( 3, 4, -10 ), "move vertex unexpectedly succeeded"
         assert not polygon.moveVertex( 3, 4, 7 ), "move vertex unexpectedly succeeded"
 
         assert polygon.moveVertex( 1, 2, 0 ), "move vertex failed"
-        expwkt = "POLYGON((1 2,1 0,1 1,2 1,2 2,0 2,1 2))"
+        expwkt = "Polygon ((1 2, 1 0, 1 1, 2 1, 2 2, 0 2, 1 2))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.moveVertex( 3, 4, 3 ), "move vertex failed"
-        expwkt = "POLYGON((1 2,1 0,1 1,3 4,2 2,0 2,1 2))"
+        expwkt = "Polygon ((1 2, 1 0, 1 1, 3 4, 2 2, 0 2, 1 2))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.moveVertex( 2, 3, 6 ), "move vertex failed"
-        expwkt = "POLYGON((2 3,1 0,1 1,3 4,2 2,0 2,2 3))"
+        expwkt = "Polygon ((2 3, 1 0, 1 1, 3 4, 2 2, 0 2, 2 3))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -843,19 +811,19 @@ class TestQgsGeometry(TestCase):
         # 6 2-3 1-2!+
         # | |     | |
         # 0-1     7-8
-        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
+        polygon = QgsGeometry.fromWkt( "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))" )
         assert polygon.moveVertex( 6, 2, 9 ), "move vertex failed"
-        expwkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,6 2,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 6 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.moveVertex( 1, 2, 0 ), "move vertex failed"
-        expwkt = "MULTIPOLYGON(((1 2,1 0,1 1,2 1,2 2,0 2,1 2)),((4 0,5 0,6 2,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((1 2, 1 0, 1 1, 2 1, 2 2, 0 2, 1 2)),((4 0, 5 0, 6 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.moveVertex( 2, 1, 7 ), "move vertex failed"
-        expwkt = "MULTIPOLYGON(((1 2,1 0,1 1,2 1,2 2,0 2,1 2)),((2 1,5 0,6 2,3 2,3 1,4 1,2 1)))"
+        expwkt = "MultiPolygon (((1 2, 1 0, 1 1, 2 1, 2 2, 0 2, 1 2)),((2 1, 5 0, 6 2, 3 2, 3 1, 4 1, 2 1)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -869,9 +837,9 @@ class TestQgsGeometry(TestCase):
         # ! 5-+-+-+-4
         # |
         # 1-+-+-+-+-0
-        polyline = QgsGeometry.fromWkt( "LINESTRING(5 0,0 0,0 4,5 4,5 1,1 1,1 3,4 3,4 2,2 2)" )
+        polyline = QgsGeometry.fromWkt( "LineString (5 0, 0 0, 0 4, 5 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)" )
         assert polyline.deleteVertex( 3 ), "Delete vertex 5 4 failed"
-        expwkt = "LINESTRING(5 0, 0 0, 0 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
+        expwkt = "LineString (5 0, 0 0, 0 4, 5 1, 1 1, 1 3, 4 3, 4 2, 2 2)"
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -881,9 +849,9 @@ class TestQgsGeometry(TestCase):
         #   2-3 6-+-7
         #   | | |   |
         # 0-1 4 5   8-9
-        polyline = QgsGeometry.fromWkt("MULTILINESTRING((0 0, 1 0, 1 1, 2 1,2 0),(3 0, 3 1, 5 1, 5 0, 6 0))")
+        polyline = QgsGeometry.fromWkt("MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0),(3 0, 3 1, 5 1, 5 0, 6 0))")
         assert polyline.deleteVertex(5), "Delete vertex 5 failed"
-        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
+        expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -891,14 +859,14 @@ class TestQgsGeometry(TestCase):
         assert not polyline.deleteVertex(100), "Delete vertex 100 unexpectedly succeeded"
 
         assert polyline.deleteVertex(0), "Delete vertex 0 failed"
-        expwkt = "MULTILINESTRING((1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
+        expwkt = "MultiLineString ((1 0, 1 1, 2 1, 2 0), (3 1, 5 1, 5 0, 6 0))"
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        polyline = QgsGeometry.fromWkt("MULTILINESTRING((0 0, 1 0, 1 1, 2 1,2 0),(3 0, 3 1, 5 1, 5 0, 6 0))")
+        polyline = QgsGeometry.fromWkt("MultiLineString ((0 0, 1 0, 1 1, 2 1,2 0),(3 0, 3 1, 5 1, 5 0, 6 0))")
         for i in range(5):
                 assert polyline.deleteVertex(5), "Delete vertex 5 failed"
-        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0))"
+        expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0))"
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -907,21 +875,22 @@ class TestQgsGeometry(TestCase):
         # | 2-3
         # | |
         # 0-1
-        polygon = QgsGeometry.fromWkt("POLYGON((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))")
+        polygon = QgsGeometry.fromWkt("Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))")
 
         assert polygon.deleteVertex(2), "Delete vertex 2 failed"
         print "FIXME: exportToWkt doesn't put a blank behind the comma"
-        expwkt = "POLYGON((0 0,1 0,2 1,2 2,0 2,0 0))"
+        expwkt = "Polygon ((0 0, 1 0, 2 1, 2 2, 0 2, 0 0))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.deleteVertex(0), "Delete vertex 0 failed"
-        expwkt = "POLYGON((1 0,2 1,2 2,0 2,1 0))"
+        expwkt = "Polygon ((1 0, 2 1, 2 2, 0 2, 1 0))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.deleteVertex(4), "Delete vertex 4 failed"
-        expwkt = "POLYGON((2 1,2 2,0 2,2 1))"
+        #"Polygon ((2 1, 2 2, 0 2, 2 1))" #several possibilities are correct here
+        expwkt = "Polygon ((0 2, 2 1, 2 2, 0 2))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -933,27 +902,27 @@ class TestQgsGeometry(TestCase):
         # 6 2-3 1-2 +
         # | |     | |
         # 0-1     7-8
-        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
+        polygon = QgsGeometry.fromWkt( "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))" )
         assert polygon.deleteVertex( 9 ), "Delete vertex 5 2 failed"
-        expwkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.deleteVertex( 0 ), "Delete vertex 0 failed"
-        expwkt = "MULTIPOLYGON(((1 0,1 1,2 1,2 2,0 2,1 0)),((4 0,5 0,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((1 0, 1 1, 2 1, 2 2, 0 2, 1 0)),((4 0, 5 0, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert polygon.deleteVertex( 6 ), "Delete vertex 6 failed"
-        expwkt = "MULTIPOLYGON(((1 0,1 1,2 1,2 2,0 2,1 0)),((5 0,3 2,3 1,4 1,5 0)))"
+        expwkt = "MultiPolygon (((1 0, 1 1, 2 1, 2 2, 0 2, 1 0)),((5 0, 3 2, 3 1, 4 1, 5 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
-        for i in range(6):
+        polygon = QgsGeometry.fromWkt( "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))" )
+        for i in range(3): #cannot have less than four points in a ring
              assert polygon.deleteVertex( 0 ), "Delete vertex 0 failed"
 
-        expwkt = "MULTIPOLYGON(((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((2 1, 2 2, 0 2, 2 1)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -964,103 +933,102 @@ class TestQgsGeometry(TestCase):
         # + 5-6 0-1 5-6 0-1 +
         # |                 |
         # 0-+-+-+-+---+-+-+-1
-        polygon = QgsGeometry.fromWkt( "POLYGON((0 0,9 0,9 3,0 3,0 0),(1 1,2 1,2 2,1 2,1 1),(3 1,4 1,4 2,3 2,3 1),(5 1,6 1,6 2,5 2,5 1),(7 1,8 1,8 2,7 2,7 1))" )
+        polygon = QgsGeometry.fromWkt( "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1),(5 1, 6 1, 6 2, 5 2, 5 1),(7 1, 8 1, 8 2, 7 2, 7 1))" )
         #                                          0   1   2   3   4     5   6   7   8   9    10  11  12  13  14    15  16  17  18  19    20  21  22  23  24
 
-        for i in range(4):
-            assert polygon.deleteVertex(16), "Delete vertex 16 failed" % i
+        #cannot have less than 4 vertices in a ring
+        assert polygon.deleteVertex(16), "Delete vertex 16 failed" % i
 
-        expwkt = "POLYGON((0 0,9 0,9 3,0 3,0 0),(1 1,2 1,2 2,1 2,1 1),(3 1,4 1,4 2,3 2,3 1),(7 1,8 1,8 2,7 2,7 1))"
+        expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(1 1, 2 1, 2 2, 1 2, 1 1),(3 1, 4 1, 4 2, 3 2, 3 1),(5 1, 6 2, 5 2, 5 1),(7 1, 8 1, 8 2, 7 2, 7 1))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        for i in range(3):
-            for j in range(4):
-               assert polygon.deleteVertex(5), "Delete vertex 5 failed" % i
+        #ring needs to have at least 4 vertices!
+        assert polygon.deleteVertex(5), "Delete vertex 5 failed" % i
 
-        expwkt = "POLYGON((0 0,9 0,9 3,0 3,0 0))"
+        expwkt = "Polygon ((0 0, 9 0, 9 3, 0 3, 0 0),(2 1, 2 2, 1 2, 2 1),(3 1, 4 1, 4 2, 3 2, 3 1),(5 1, 6 2, 5 2, 5 1),(7 1, 8 1, 8 2, 7 2, 7 1))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
     def testInsertVertex(self):
-        linestring = QgsGeometry.fromWkt( "LINESTRING(1 0,2 0)" )
+        linestring = QgsGeometry.fromWkt( "LineString(1 0, 2 0)" )
 
         if TestQgsGeometry.wkbPtr:
           # CHANGE old implementation fails to insert vertex
           assert linestring.insertVertex( 0, 0, 0 ), "Insert vertex 0 0 at 0 failed"
-          expwkt = "LINESTRING(0 0, 1 0, 2 0)"
+          expwkt = "LineString (0 0, 1 0, 2 0)"
           wkt = linestring.exportToWkt()
           assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert linestring.insertVertex( 1.5, 0, 2 if TestQgsGeometry.wkbPtr else 1 ), "Insert vertex 1.5 0 at 2 failed"
-        expwkt = "LINESTRING(0 0, 1 0, 1.5 0, 2 0)" if TestQgsGeometry.wkbPtr else "LINESTRING(1 0, 1.5 0, 2 0)"
+        expwkt = "LineString (0 0, 1 0, 1.5 0, 2 0)" if TestQgsGeometry.wkbPtr else "LineString(1 0, 1.5 0, 2 0)"
         wkt = linestring.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         assert not linestring.insertVertex( 3, 0, 5 ), "Insert vertex 3 0 at 5 should have failed"
 
-        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
+        polygon = QgsGeometry.fromWkt( "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))" )
         assert polygon.insertVertex( 0, 0, 8 ), "Insert vertex 0 0 at 8 failed"
-        expwkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,0 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 0 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
 
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
-        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
+        polygon = QgsGeometry.fromWkt( "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))" )
         assert polygon.insertVertex( 0, 0, 7 ), "Insert vertex 0 0 at 7 failed"
-        expwkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((0 0,4 0,5 0,5 2,3 2,3 1,4 1,0 0)))"
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((0 0, 4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 0 0)))"
         wkt = polygon.exportToWkt()
 
         if TestQgsGeometry.wkbPtr:
-          # CHANGE old implementation produces: MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),())
+          # CHANGE old implementation produces: MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),())
           assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
     def testTranslate(self):
-        point = QgsGeometry.fromWkt( "POINT(1 1)" )
+        point = QgsGeometry.fromWkt( "Point (1 1)" )
         assert point.translate( 1, 2 )==0, "Translate failed"
-        expwkt = "POINT(2 3)"
+        expwkt = "Point (2 3)"
         wkt = point.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        point = QgsGeometry.fromWkt( "MULTIPOINT(1 1,2 2,3 3)" )
+        point = QgsGeometry.fromWkt( "MultiPoint ((1 1),(2 2),(3 3))" )
         assert point.translate( 1, 2 )==0, "Translate failed"
-        expwkt = "MULTIPOINT(2 3, 3 4, 4 5)"
+        expwkt = "MultiPoint ((2 3),(3 4),(4 5))"
         wkt = point.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        linestring = QgsGeometry.fromWkt( "LINESTRING(1 0,2 0)" )
+        linestring = QgsGeometry.fromWkt( "LineString (1 0, 2 0)" )
         assert linestring.translate( 1, 2 )==0, "Translate failed"
-        expwkt = "LINESTRING(2 2, 3 2)"
+        expwkt = "LineString (2 2, 3 2)"
         wkt = linestring.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
+        polygon = QgsGeometry.fromWkt( "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))" )
         assert polygon.translate( 1, 2 )==0, "Translate failed"
-        expwkt = "MULTIPOLYGON(((1 2,2 2,2 3,3 3,3 4,1 4,1 2)),((5 2,6 2,6 2,4 4,4 3,5 3,5 2)))"
+        expwkt = "MultiPolygon (((1 2, 2 2, 2 3, 3 3, 3 4, 1 4, 1 2)),((5 2, 6 2, 6 2, 4 4, 4 3, 5 3, 5 2)))"
         wkt = polygon.exportToWkt()
 
         ct = QgsCoordinateTransform()
 
-        point = QgsGeometry.fromWkt( "POINT(1 1)" )
+        point = QgsGeometry.fromWkt( "Point (1 1)" )
         assert point.transform( ct )==0, "Translate failed"
-        expwkt = "POINT(1 1)"
+        expwkt = "Point (1 1)"
         wkt = point.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        point = QgsGeometry.fromWkt( "MULTIPOINT(1 1,2 2,3 3)" )
+        point = QgsGeometry.fromWkt( "MultiPoint ((1 1),(2 2),(3 3))" )
         assert point.transform( ct )==0, "Translate failed"
-        expwkt = "MULTIPOINT(1 1, 2 2, 3 3)"
+        expwkt = "MultiPoint ((1 1),(2 2),(3 3))"
         wkt = point.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        linestring = QgsGeometry.fromWkt( "LINESTRING(1 0,2 0)" )
+        linestring = QgsGeometry.fromWkt( "LineString (1 0, 2 0)" )
         assert linestring.transform( ct )==0, "Translate failed"
-        expwkt = "LINESTRING(1 0, 2 0)"
+        expwkt = "LineString (1 0, 2 0)"
         wkt = linestring.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
-        polygon = QgsGeometry.fromWkt( "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
+        polygon = QgsGeometry.fromWkt( "MultiPolygon(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))" )
         assert polygon.transform( ct )==0, "Translate failed"
-        expwkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
 
     def testBoundingBox(self):
@@ -1147,13 +1115,13 @@ class TestQgsGeometry(TestCase):
         polyline = QgsGeometry.fromPolyline( points[0] )
         assert polyline.addPart( points[1][0:1] ) == 2, "addPart with one point line unexpectedly succeeded."
         assert polyline.addPart( points[1][0:2] ) == 0, "addPart with two point line failed."
-        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
+        expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
         wkt = polyline.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
         polyline = QgsGeometry.fromPolyline( points[0] )
         assert polyline.addPart( points[1] ) == 0, "addPart with %d point line failed." % len(points[1])
-        expwkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
+        expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1, 5 1, 5 0, 6 0))"
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -1173,7 +1141,7 @@ class TestQgsGeometry(TestCase):
         assert polygon.addPart( [ QgsPoint(4,0), QgsPoint(5,0), QgsPoint(4,0) ] ) == 2, "addPart with 'closed' three point ring unexpectedly succeeded."
 
         assert polygon.addPart( points[1][0] ) == 0, "addPart failed"
-        expwkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         wkt = polygon.exportToWkt()
         assert compareWkt( expwkt, wkt ), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt )
 
@@ -1194,32 +1162,32 @@ class TestQgsGeometry(TestCase):
         # POINT TO POINT
         point = QgsGeometry.fromPoint(QgsPoint(1,1))
         wkt = point.convertToType(QGis.Point, False).exportToWkt()
-        expWkt = "POINT(1 1)"
+        expWkt = "Point (1 1)"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from point to point. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # POINT TO MULTIPOINT
+        # POINT TO MultiPoint
         point = QgsGeometry.fromPoint(QgsPoint(1,1))
         wkt = point.convertToType(QGis.Point, True).exportToWkt()
-        expWkt = "MULTIPOINT(1 1)"
+        expWkt = "MultiPoint ((1 1))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from point to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # LINE TO MULTIPOINT
+        # LINE TO MultiPoint
         line = QgsGeometry.fromPolyline(points[0][0])
         wkt = line.convertToType(QGis.Point, True).exportToWkt()
-        expWkt = "MULTIPOINT(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from line to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTILINE TO MULTIPOINT
+        # MULTILINE TO MultiPoint
         multiLine = QgsGeometry.fromMultiPolyline(points[2])
         wkt = multiLine.convertToType(QGis.Point, True).exportToWkt()
-        expWkt = "MULTIPOINT(10 0, 13 0, 13 3, 10 3, 10 0, 11 1, 12 1, 12 2, 11 2, 11 1)"
+        expWkt = "MultiPoint ((10 0),(13 0),(13 3),(10 3),(10 0),(11 1),(12 1),(12 2),(11 2),(11 1))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # POLYGON TO MULTIPOINT
+        # Polygon TO MultiPoint
         polygon = QgsGeometry.fromPolygon(points[0])
         wkt = polygon.convertToType(QGis.Point, True).exportToWkt()
-        expWkt = "MULTIPOINT(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from poylgon to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTIPOLYGON TO MULTIPOINT
+        # MultiPolygon TO MultiPoint
         multiPolygon = QgsGeometry.fromMultiPolygon(points)
         wkt = multiPolygon.convertToType(QGis.Point, True).exportToWkt()
-        expWkt = "MULTIPOINT(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0, 4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0, 10 0, 13 0, 13 3, 10 3, 10 0, 11 1, 12 1, 12 2, 11 2, 11 1)"
+        expWkt = "MultiPoint ((0 0),(1 0),(1 1),(2 1),(2 2),(0 2),(0 0),(4 0),(5 0),(5 2),(3 2),(3 1),(4 1),(4 0),(10 0),(13 0),(13 3),(10 3),(10 0),(11 1),(12 1),(12 2),(11 2),(11 1))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoylgon to multipoint. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
 
 
@@ -1227,99 +1195,99 @@ class TestQgsGeometry(TestCase):
         # POINT TO LINE
         point = QgsGeometry.fromPoint(QgsPoint(1,1))
         assert point.convertToType(QGis.Line, False) is None , "convertToType with a point should return a null geometry"
-        # MULTIPOINT TO LINE
+        # MultiPoint TO LINE
         multipoint = QgsGeometry.fromMultiPoint(points[0][0])
         wkt = multipoint.convertToType(QGis.Line, False).exportToWkt()
-        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTIPOINT TO MULTILINE
+        # MultiPoint TO MULTILINE
         multipoint = QgsGeometry.fromMultiPoint(points[0][0])
         wkt = multipoint.convertToType(QGis.Line, True).exportToWkt()
-        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
+        expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
         # MULTILINE (which has a single part) TO LINE
         multiLine = QgsGeometry.fromMultiPolyline(points[0])
         wkt = multiLine.convertToType(QGis.Line, False).exportToWkt()
-        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
         # LINE TO MULTILINE
         line = QgsGeometry.fromPolyline(points[0][0])
         wkt = line.convertToType(QGis.Line, True).exportToWkt()
-        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
+        expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from line to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # POLYGON TO LINE
+        # Polygon TO LINE
         polygon = QgsGeometry.fromPolygon(points[0])
         wkt = polygon.convertToType(QGis.Line, False).exportToWkt()
-        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon to line. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # POLYGON TO MULTILINE
+        # Polygon TO MULTILINE
         polygon = QgsGeometry.fromPolygon(points[0])
         wkt = polygon.convertToType(QGis.Line, True).exportToWkt()
-        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
+        expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # POLYGON with ring TO MULTILINE
+        # Polygon with ring TO MULTILINE
         polygon = QgsGeometry.fromPolygon(points[2])
         wkt = polygon.convertToType(QGis.Line, True).exportToWkt()
-        expWkt = "MULTILINESTRING((10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
+        expWkt = "MultiLineString ((10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon with ring to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTIPOLYGON (which has a single part) TO LINE
+        # MultiPolygon (which has a single part) TO LINE
         multiPolygon = QgsGeometry.fromMultiPolygon([points[0]])
         wkt = multiPolygon.convertToType(QGis.Line, False).exportToWkt()
-        expWkt = "LINESTRING(0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
+        expWkt = "LineString (0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multipolygon to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTIPOLYGON TO MULTILINE
+        # MultiPolygon TO MULTILINE
         multiPolygon = QgsGeometry.fromMultiPolygon(points)
         wkt = multiPolygon.convertToType(QGis.Line, True).exportToWkt()
-        expWkt = "MULTILINESTRING((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0), (4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0), (10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
+        expWkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0), (4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0), (10 0, 13 0, 13 3, 10 3, 10 0), (11 1, 12 1, 12 2, 11 2, 11 1))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multipolygon to multiline. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
 
 
-        ######## TO POLYGON ########
-        # MULTIPOINT TO POLYGON
+        ######## TO Polygon ########
+        # MultiPoint TO Polygon
         multipoint = QgsGeometry.fromMultiPoint(points[0][0])
         wkt = multipoint.convertToType(QGis.Polygon, False).exportToWkt()
-        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTIPOINT TO MULTIPOLYGON
+        # MultiPoint TO MultiPolygon
         multipoint = QgsGeometry.fromMultiPoint(points[0][0])
         wkt = multipoint.convertToType(QGis.Polygon, True).exportToWkt()
-        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)))"
+        expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multipoint to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # LINE TO POLYGON
+        # LINE TO Polygon
         line = QgsGeometry.fromPolyline(points[0][0])
         wkt = line.convertToType(QGis.Polygon, False).exportToWkt()
-        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from line to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # LINE ( 3 vertices, with first = last ) TO POLYGON
+        # LINE ( 3 vertices, with first = last ) TO Polygon
         line = QgsGeometry.fromPolyline([QgsPoint(1,1),QgsPoint(0,0),QgsPoint(1,1)])
         assert line.convertToType(QGis.Polygon, False) is None , "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry"
-        # MULTILINE ( with a part of 3 vertices, with first = last ) TO MULTIPOLYGON
+        # MULTILINE ( with a part of 3 vertices, with first = last ) TO MultiPolygon
         multiline = QgsGeometry.fromMultiPolyline([points[0][0],[QgsPoint(1,1),QgsPoint(0,0),QgsPoint(1,1)]])
         assert multiline.convertToType(QGis.Polygon, True) is None , "convertToType to polygon of a 3 vertices lines with first and last vertex identical should return a null geometry"
-        # LINE TO MULTIPOLYGON
+        # LINE TO MultiPolygon
         line = QgsGeometry.fromPolyline(points[0][0])
         wkt = line.convertToType(QGis.Polygon, True).exportToWkt()
-        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)))"
+        expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from line to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTILINE (which has a single part) TO POLYGON
+        # MULTILINE (which has a single part) TO Polygon
         multiLine = QgsGeometry.fromMultiPolyline(points[0])
         wkt = multiLine.convertToType(QGis.Polygon, False).exportToWkt()
-        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTILINE TO MULTIPOLYGON
+        # MULTILINE TO MultiPolygon
         multiLine = QgsGeometry.fromMultiPolyline([points[0][0],points[1][0]])
         wkt = multiLine.convertToType(QGis.Polygon, True).exportToWkt()
-        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)),((4 0,5 0,5 2,3 2,3 1,4 1,4 0)))"
+        expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # POLYGON TO MULTIPOLYGON
+        # Polygon TO MultiPolygon
         polygon = QgsGeometry.fromPolygon(points[0])
         wkt = polygon.convertToType(QGis.Polygon, True).exportToWkt()
-        expWkt = "MULTIPOLYGON(((0 0,1 0,1 1,2 1,2 2,0 2,0 0)))"
+        expWkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from polygon to multipolygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
-        # MULTIPOLYGON (which has a single part) TO POLYGON
+        # MultiPolygon (which has a single part) TO Polygon
         multiPolygon = QgsGeometry.fromMultiPolygon([points[0]])
         wkt = multiPolygon.convertToType(QGis.Polygon, False).exportToWkt()
-        expWkt = "POLYGON((0 0,1 0,1 1,2 1,2 2,0 2,0 0))"
+        expWkt = "Polygon ((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0))"
         assert compareWkt( expWkt, wkt ), "convertToType failed: from multiline to polygon. Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt )
 
 if __name__ == '__main__':

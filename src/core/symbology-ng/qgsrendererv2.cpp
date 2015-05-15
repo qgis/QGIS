@@ -32,6 +32,7 @@
 #include "qgspainteffect.h"
 #include "qgseffectstack.h"
 #include "qgspainteffectregistry.h"
+#include "qgswkbptr.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -244,7 +245,13 @@ void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymb
 {
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
-  const QgsGeometry* geom = feature.constGeometry();
+  QgsGeometry* geom = feature.geometry();
+  if ( !geom )
+  {
+    return;
+  }
+  geom->convertToStraightSegment();
+
   switch ( geom->wkbType() )
   {
     case QGis::WKBPoint:

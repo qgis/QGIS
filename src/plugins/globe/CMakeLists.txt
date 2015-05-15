@@ -56,7 +56,7 @@ INCLUDE_DIRECTORIES(
      ${OSGEARTH_INCLUDE_DIR}
      ${OSG_INCLUDE_DIR}
      ${GEOS_INCLUDE_DIR}
-     ../../core ../../core/raster
+     ../../core ../../core/geometry ../../core/raster
      ../../gui
      ..
 )
